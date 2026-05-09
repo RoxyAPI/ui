@@ -110,6 +110,18 @@ async function copyAssets() {
 	);
 }
 
+// Each workspace publishes from its own package directory. npm auto-includes
+// README.md and LICENSE from that directory only, so the root files do not
+// land in the tarball. Copy them into both packages before each build so
+// npmjs.com renders the same README the github repo shows.
+async function copyRootDocsToWorkspaces() {
+	const targets = ['packages/ui', 'packages/ui-react'];
+	for (const target of targets) {
+		await copyFile('README.md', `${target}/README.md`);
+		await copyFile('LICENSE', `${target}/LICENSE`);
+	}
+}
+
 async function buildReactBundles() {
 	const reactDist = 'packages/ui-react/dist';
 	await mkdir(reactDist, { recursive: true });
@@ -200,6 +212,9 @@ async function main() {
 
 	console.log('Copying assets...');
 	await copyAssets();
+
+	console.log('Mirroring README and LICENSE into each workspace...');
+	await copyRootDocsToWorkspaces();
 
 	console.log('Generating widgets entry...');
 	execSync('bun run scripts/build-widgets.ts', { stdio: 'inherit' });
