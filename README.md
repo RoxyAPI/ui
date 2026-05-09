@@ -28,7 +28,7 @@ Vanilla HTML. Three lines. No build step.
 
 ```html
 <script
-	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/roxy-ui.js"
+	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"
 	crossorigin="anonymous"
 	defer
 ></script>
@@ -99,9 +99,9 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 |---|---|
 | npm `@roxyapi/ui` | `npmjs.com/package/@roxyapi/ui` |
 | npm `@roxyapi/ui-react` | `npmjs.com/package/@roxyapi/ui-react` |
-| jsdelivr full UMD | `cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/roxy-ui.js` |
-| jsdelivr per-component UMD | `cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/components/{name}.js` |
-| Widgets auto-mount | `cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/widgets.js` |
+| jsdelivr full UMD | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
+| jsdelivr per-component UMD | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
+| Widgets auto-mount | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
 | shadcn registry | `bunx shadcn add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/{name}.json` |
 
 ## Phase 1 components

@@ -40,7 +40,7 @@ Use the table below. Match the user request against the endpoint, render the mat
 
 ```html
 <script
-	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/roxy-ui.js"
+	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"
 	crossorigin="anonymous"
 ></script>
 
@@ -123,7 +123,7 @@ Use the publishable key flow for vibecoder embeds.
 
 ```html
 <script
-	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/widgets.js"
+	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js"
 	defer
 ></script>
 

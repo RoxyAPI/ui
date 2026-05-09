@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 add_action('wp_enqueue_scripts', function () {
 	wp_enqueue_script(
 		'roxy-ui-widgets',
-		'https://cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/widgets.js',
+		'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js',
 		[],
 		null,
 		['strategy' => 'defer']
