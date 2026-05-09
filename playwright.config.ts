@@ -1,5 +1,21 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const ALL_PROJECTS = [
+	{ name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+	{ name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+	{ name: 'webkit', use: { ...devices['Desktop Safari'] } },
+];
+
+// PLAYWRIGHT_PROJECTS=chromium,firefox limits the matrix. Empty or unset
+// runs every project. Local dev sets chromium, release.yml installs all.
+const requested = process.env.PLAYWRIGHT_PROJECTS?.split(',')
+	.map((s) => s.trim())
+	.filter(Boolean);
+
+const projects = requested?.length
+	? ALL_PROJECTS.filter((p) => requested.includes(p.name))
+	: ALL_PROJECTS;
+
 export default defineConfig({
 	testDir: './packages/ui/tests/e2e',
 	fullyParallel: true,
@@ -17,18 +33,5 @@ export default defineConfig({
 		reuseExistingServer: !process.env.CI,
 		timeout: 30_000,
 	},
-	projects: [
-		{
-			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
-		},
-		{
-			name: 'firefox',
-			use: { ...devices['Desktop Firefox'] },
-		},
-		{
-			name: 'webkit',
-			use: { ...devices['Desktop Safari'] },
-		},
-	],
+	projects,
 });
