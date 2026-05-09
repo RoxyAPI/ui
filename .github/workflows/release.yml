@@ -1,16 +1,20 @@
 name: Release
 
+# Manual-only release for v0.x. Pick patch / minor / major from the Actions UI.
+# Auto-triggers commented out until the pipeline is proven across 2-3 manual
+# releases. Uncomment to mirror sdk-typescript and sdk-python (cron + spec
+# dispatch from the main app) once we trust the build end to end.
 on:
-  repository_dispatch:
-    types: [openapi-updated]
-  schedule:
-    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       version_bump:
         description: 'patch | minor | major'
         required: false
         default: 'patch'
+  # repository_dispatch:
+  #   types: [openapi-updated]
+  # schedule:
+  #   - cron: '0 6 * * *'
 
 jobs:
   release:
