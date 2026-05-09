@@ -25,6 +25,8 @@ pre-push:
       run: bun run test
       priority: 3
     test-e2e:
+      env:
+        PLAYWRIGHT_PROJECTS: chromium
       run: bun run test:e2e
       priority: 4
     docs-drift:
