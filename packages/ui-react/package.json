@@ -1,7 +1,7 @@
 {
 	"name": "@roxyapi/ui-react",
 	"version": "0.1.0",
-	"description": "React wrappers for the RoxyAPI web component library. Lazy loads the jsdelivr UMD on mount. No runtime dependency on @roxyapi/ui.",
+	"description": "React components for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, biorhythm, I Ching, and more. One key, beautiful in 30 minutes.",
 	"type": "module",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",

@@ -204,7 +204,7 @@ async function main() {
 	console.log('Generating widgets entry...');
 	execSync('bun run scripts/build-widgets.ts', { stdio: 'inherit' });
 
-	console.log('Generating React thin shells...');
+	console.log('Generating React component wrappers...');
 	execSync('bun run scripts/build-react.ts', { stdio: 'inherit' });
 
 	console.log('Building React wrapper bundles...');

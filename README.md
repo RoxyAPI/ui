@@ -11,16 +11,16 @@
 [![API Reference](https://img.shields.io/badge/api%20reference-roxyapi.com-blue)](https://roxyapi.com/api-reference)
 [![Pricing](https://img.shields.io/badge/pricing-roxyapi.com-blue)](https://roxyapi.com/pricing)
 
-Web components for the RoxyAPI catalog. Drop ten domains of astrology, tarot, numerology, and more into any framework with one script tag or one npm install. Stateless components, typed responses, beautiful defaults in 30 minutes.
+Web components for the RoxyAPI catalog. Drop astrology, tarot, numerology, and every other RoxyAPI domain into any framework with one script tag or one npm install. Stateless components, typed responses, beautiful defaults in 30 minutes.
 
 ## Why developers use Roxy UI
 
-- One key, ten domains, eighteen Phase 1 components: charts, tables, cards, forms.
-- Lit web components. Works in React, Vue, Svelte, Angular, Solid, vanilla HTML, WordPress.
-- Stateless components. Caller fetches via `@roxyapi/sdk`, passes the response as `data`.
+- One API key. Charts, tables, cards, forms for every domain in the catalog.
+- Works in React, Vue, Svelte, Angular, Solid, vanilla HTML, WordPress.
+- Stateless. Caller fetches via `@roxyapi/sdk`, passes the response as `data`.
 - Theming via CSS custom properties. No Tailwind required, no class-name overrides.
 - A11y zero violations under axe-core. Keyboard navigation. Reduced-motion honored.
-- Tree-shake friendly: per component, ten kilobytes gzipped. Full UMD bundle, twenty-six kilobytes gzipped.
+- Tree-shake friendly. Tight bundle budget enforced in CI.
 
 ## Start with one component
 
@@ -59,7 +59,7 @@ import '@roxyapi/ui';
 import '@roxyapi/ui/components/natal-chart';
 ```
 
-React users want the wrapper package.
+React users get a typed package with the same components.
 
 ```bash
 npm install @roxyapi/ui-react
@@ -72,8 +72,6 @@ export function Chart({ data }: { data: NatalChart }) {
 	return <RoxyNatalChart data={data} />;
 }
 ```
-
-The React wrapper has no runtime dependency on `@roxyapi/ui`. It lazy loads the jsdelivr UMD bundle on mount, so ui patches ship via jsdelivr without a coordinated React release.
 
 ## Quick start
 
@@ -162,10 +160,10 @@ roxy-natal-chart {
 
 - Verified astronomical calculations from Roxy Ephemeris, verified against NASA JPL Horizons.
 - Stable, versioned API. New endpoints regenerate component types automatically.
-- Consistent response formats across all ten domains.
+- Consistent response formats across every domain in the catalog.
 - A11y zero violations enforced in CI.
-- Per-component bundle budget: thirty kilobytes gzipped maximum.
-- Phase 1 covers the highest-demand endpoints in Western, Vedic, numerology, tarot, biorhythm, I Ching, with helpers for location search and schema-driven forms.
+- Tight per-component bundle budget enforced in CI.
+- Coverage of the highest-demand endpoints across Western astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching, plus helpers for location search and schema-driven forms.
 
 ## Built for AI agents
 

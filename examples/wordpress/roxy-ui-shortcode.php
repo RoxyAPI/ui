@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Roxy UI shortcode (example)
- * Description: WordPress shortcode that loads the Roxy UI jsdelivr UMD and renders any custom element by name.
+ * Description: WordPress shortcode that renders any Roxy UI component by name.
  * Version: 0.1.0
  * License: MIT
  *

@@ -2,7 +2,7 @@
 	"name": "@roxyapi/ui-monorepo",
 	"version": "0.1.0",
 	"private": true,
-	"description": "Web component library for the RoxyAPI catalog. 18 Phase 1 components covering 10 spiritual intelligence domains.",
+	"description": "Web component library for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, and more. One key, beautiful in 30 minutes.",
 	"workspaces": [
 		"packages/*"
 	],

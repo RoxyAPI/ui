@@ -1,7 +1,7 @@
 /**
- * Idempotent jsdelivr UMD loader. Safe to call from many components on the
- * same page; only injects the script once per version. Skips on the server
- * (no document) so React server components do not break.
+ * Loads the matching component bundle on first mount. Idempotent across
+ * many components on the same page. Skips on the server (no document) so
+ * React server components and Next.js SSR work without a flash.
  */
 const SCRIPT_ID = 'roxyapi-ui-loader';
 const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@0/dist/cdn';

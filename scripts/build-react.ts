@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 /**
- * Codegen thin React wrappers for each Lit element. The output package
- * @roxyapi/ui-react has NO runtime dependency on @roxyapi/ui. It lazy-loads
- * the jsdelivr UMD bundle on mount and renders the registered custom element
- * with prop forwarding and CustomEvent -> on{X} bridging.
+ * Codegen for @roxyapi/ui-react. For every Lit element in the manifest,
+ * emit a typed React component file that forwards props, bridges
+ * CustomEvent -> on{X} React handlers, and ensures the matching component
+ * bundle is loaded before render.
  *
- * Decoupling rule: ui patches ship via jsdelivr without forcing a ui-react
+ * Internal release-coupling rule: ui patches ship without forcing a ui-react
  * release. ui-react releases only when the component list changes.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -34,9 +34,9 @@ function pascalCase(name: string): string {
 }
 
 const LOAD_UI_TS = `/**
- * Idempotent jsdelivr UMD loader. Safe to call from many components on the
- * same page; only injects the script once per version. Skips on the server
- * (no document) so React server components do not break.
+ * Loads the matching component bundle on first mount. Idempotent across
+ * many components on the same page. Skips on the server (no document) so
+ * React server components and Next.js SSR work without a flash.
  */
 const SCRIPT_ID = 'roxyapi-ui-loader';
 const CDN_BASE = ${JSON.stringify(CDN_BASE)};

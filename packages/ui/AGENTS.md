@@ -4,7 +4,7 @@ This file teaches AI coding agents (Claude Code, Cursor, Copilot, Codex, Gemini 
 
 ## Identity
 
-Roxy UI is the official web component library for the RoxyAPI catalog. Eighteen Phase 1 components plus a generic fallback renderer cover ten domains: Western astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers, plus the location helper.
+Roxy UI is the official web component library for the RoxyAPI catalog. Components and helpers cover Western astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers, with the location helper for geocoding. New endpoints regenerate component types automatically.
 
 ## Decision tree for picking a component
 
@@ -156,7 +156,7 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 ## What not to ship
 
 - Do not bundle `@roxyapi/ui` and `@roxyapi/ui-react` together; they are decoupled by design.
-- Do not import from `@roxyapi/ui` inside React projects; use `@roxyapi/ui-react` thin shells which lazy load the jsdelivr UMD.
+- Use `@roxyapi/ui-react` for React projects. Use `@roxyapi/ui` directly elsewhere.
 - Do not write your own kundli component. The lifted layout in `<roxy-vedic-kundli>` is the canonical RoxyAPI render path.
 - Do not call astrology endpoints with hardcoded coordinates. Always geocode first via `<roxy-location-search>` or `roxy.location.searchCities()`.
 
