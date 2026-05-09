@@ -78,9 +78,23 @@ jobs:
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           BUMP="${{ github.event.inputs.version_bump || 'patch' }}"
-          (cd packages/ui && npm version "$BUMP" --no-git-tag-version)
-          (cd packages/ui-react && npm version "$BUMP" --no-git-tag-version)
-          VERSION=$(node -p "require('./packages/ui/package.json').version")
+          bump() {
+            local file="$1/package.json"
+            local current new
+            current=$(jq -r '.version' "$file")
+            IFS='.' read -r MA MI PA <<< "$current"
+            case "$BUMP" in
+              major) MA=$((MA+1)); MI=0; PA=0 ;;
+              minor) MI=$((MI+1)); PA=0 ;;
+              *)     PA=$((PA+1)) ;;
+            esac
+            new="$MA.$MI.$PA"
+            jq --arg v "$new" '.version = $v' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+            echo "$1 -> $new"
+          }
+          bump packages/ui
+          bump packages/ui-react
+          VERSION=$(jq -r '.version' packages/ui/package.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           bun run build
 
