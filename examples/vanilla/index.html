@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Roxy UI - vanilla HTML example</title>
+	<style>
+		body {
+			font-family: system-ui, -apple-system, sans-serif;
+			max-width: 720px;
+			margin: 0 auto;
+			padding: 32px 16px;
+			background: #fafafa;
+			color: #0a0a0a;
+		}
+		h1 { letter-spacing: -0.02em; }
+		.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff; }
+		input { padding: 8px 12px; border-radius: 8px; border: 1px solid #e4e4e7; font-size: 14px; }
+		button { background: #f59e0b; color: white; border: 0; padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+	</style>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/roxy-ui.js"
+		crossorigin="anonymous"
+		defer
+	></script>
+</head>
+<body>
+	<h1>Vanilla HTML, no build step</h1>
+	<p>One script tag, then drop the elements directly. Set <code>window.ROXY_API_KEY</code> in your environment, or replace the placeholder in the snippet below.</p>
+
+	<div class="card">
+		<h2>Step 1. Pick a city</h2>
+		<roxy-location-search id="loc" placeholder="Type Mumbai, Tokyo, New York"></roxy-location-search>
+	</div>
+
+	<div class="card">
+		<h2>Step 2. Generate the kundli</h2>
+		<form id="form" style="display: flex; gap: 8px; flex-wrap: wrap;">
+			<input id="date" type="date" value="1990-01-15" required>
+			<input id="time" type="time" value="14:30" required>
+			<button type="submit">Generate</button>
+		</form>
+		<div style="margin-top: 16px;">
+			<roxy-vedic-kundli id="kundli"></roxy-vedic-kundli>
+		</div>
+	</div>
+
+	<div class="card">
+		<h2>Step 3. Daily horoscope</h2>
+		<roxy-horoscope-card id="horoscope" period="daily"></roxy-horoscope-card>
+	</div>
+
+	<script type="module">
+		const API = 'https://roxyapi.com/api/v2';
+		const KEY = window.ROXY_API_KEY ?? 'roxy_xxx';
+
+		const loc = document.getElementById('loc');
+		const kundliEl = document.getElementById('kundli');
+		const horoscopeEl = document.getElementById('horoscope');
+		let location = null;
+
+		loc.addEventListener('roxy-location-select', (e) => {
+			location = e.detail;
+			console.log('Selected', location);
+		});
+
+		document.getElementById('form').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			if (!location) {
+				alert('Pick a city first');
+				return;
+			}
+			const date = document.getElementById('date').value;
+			const time = document.getElementById('time').value + ':00';
+			const res = await fetch(`${API}/vedic-astrology/birth-chart`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'X-API-Key': KEY },
+				body: JSON.stringify({
+					date,
+					time,
+					latitude: location.latitude,
+					longitude: location.longitude,
+					timezone: location.timezone,
+				}),
+			});
+			kundliEl.data = await res.json();
+		});
+
+		(async () => {
+			const res = await fetch(`${API}/astrology/horoscope/aries/daily`, {
+				headers: { 'X-API-Key': KEY },
+			});
+			horoscopeEl.data = await res.json();
+		})();
+	</script>
+</body>
+</html>

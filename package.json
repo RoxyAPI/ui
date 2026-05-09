@@ -1,0 +1,79 @@
+{
+	"name": "@roxyapi/ui-monorepo",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Web component library for the RoxyAPI catalog. 18 Phase 1 components covering 10 spiritual intelligence domains.",
+	"workspaces": [
+		"packages/*"
+	],
+	"engines": {
+		"bun": ">=1.2",
+		"node": ">=20"
+	},
+	"scripts": {
+		"generate": "bun run scripts/generate.ts",
+		"build": "bun run scripts/build.ts",
+		"build:react": "bun run scripts/build-react.ts",
+		"build:registry": "bun run scripts/build-registry.ts",
+		"build:widgets": "bun run scripts/build-widgets.ts",
+		"docs:sync": "bun run scripts/sync-docs.ts",
+		"banner": "bun run scripts/generate-banner.ts",
+		"preview": "bun run scripts/preview.ts",
+		"typecheck": "tsc --noEmit",
+		"test": "bun test packages/ui/tests/utils.test.ts packages/ui/tests/components.test.ts --timeout 10000",
+		"test:e2e": "playwright test",
+		"check": "biome check . --fix",
+		"postinstall": "bun run generate || true"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.9",
+		"@hey-api/client-fetch": "0.13.1",
+		"@hey-api/openapi-ts": "0.94.5",
+		"@playwright/test": "^1.49.0",
+		"@axe-core/playwright": "^4.10.0",
+		"@types/bun": "^1.2.0",
+		"@types/node": "^22.10.0",
+		"@types/react": "^19.0.0",
+		"esbuild": "^0.25.0",
+		"happy-dom": "^15.11.0",
+		"lefthook": "^2.1.4",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tsup": "^8.5.1",
+		"typescript": "^5.7.0",
+		"vite": "^6.0.0"
+	},
+	"dependencies": {
+		"lit": "^3.2.0"
+	},
+	"keywords": [
+		"web-components",
+		"lit",
+		"astrology",
+		"vedic",
+		"tarot",
+		"numerology",
+		"horoscope",
+		"kundli",
+		"natal-chart",
+		"birth-chart",
+		"iching",
+		"crystals",
+		"angel-numbers",
+		"dreams",
+		"biorhythm",
+		"shadcn",
+		"shadow-dom",
+		"jsdelivr",
+		"roxyapi"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/RoxyAPI/ui.git"
+	},
+	"homepage": "https://roxyapi.com/ui",
+	"bugs": {
+		"url": "https://github.com/RoxyAPI/ui/issues"
+	}
+}

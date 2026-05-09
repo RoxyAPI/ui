@@ -1,0 +1,52 @@
+{
+	"name": "@roxyapi/ui-react",
+	"version": "0.1.0",
+	"description": "React wrappers for the RoxyAPI web component library. Lazy loads the jsdelivr UMD on mount. No runtime dependency on @roxyapi/ui.",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./components/*": {
+			"types": "./dist/components/*.d.ts",
+			"import": "./dist/components/*.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src",
+		"AGENTS.md"
+	],
+	"keywords": [
+		"react",
+		"react-components",
+		"web-components",
+		"astrology",
+		"vedic",
+		"tarot",
+		"roxyapi"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/RoxyAPI/ui.git",
+		"directory": "packages/ui-react"
+	},
+	"homepage": "https://roxyapi.com/ui",
+	"bugs": {
+		"url": "https://github.com/RoxyAPI/ui/issues"
+	},
+	"peerDependencies": {
+		"react": ">=18.0.0",
+		"react-dom": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

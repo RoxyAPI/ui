@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Roxy UI widgets - auto-mount example</title>
+	<style>
+		body {
+			font-family: system-ui, sans-serif;
+			max-width: 720px;
+			margin: 0 auto;
+			padding: 32px 16px;
+		}
+		.card {
+			border: 1px solid #e4e4e7;
+			border-radius: 12px;
+			padding: 16px;
+			margin-bottom: 16px;
+			background: #fff;
+		}
+	</style>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/widgets.js"
+		defer
+	></script>
+</head>
+<body>
+	<h1>Auto-mounted widgets</h1>
+	<p>Replace <code>pk_xxx</code> with a publishable key from your RoxyAPI dashboard. The widget script reads the data attributes, calls the matching endpoint, and renders the matching component.</p>
+
+	<div class="card">
+		<h2>Daily horoscope (Aries)</h2>
+		<div
+			data-roxy-widget="horoscope-card"
+			data-publishable-key="pk_xxx"
+			data-sign="aries"
+			data-period="daily"
+		></div>
+	</div>
+
+	<div class="card">
+		<h2>Vedic kundli</h2>
+		<div
+			data-roxy-widget="vedic-kundli"
+			data-publishable-key="pk_xxx"
+			data-date="1990-01-15"
+			data-time="14:30:00"
+			data-latitude="28.6139"
+			data-longitude="77.209"
+			data-timezone="5.5"
+		></div>
+	</div>
+
+	<div class="card">
+		<h2>Daily tarot card</h2>
+		<div
+			data-roxy-widget="tarot-card"
+			data-publishable-key="pk_xxx"
+		></div>
+	</div>
+</body>
+</html>

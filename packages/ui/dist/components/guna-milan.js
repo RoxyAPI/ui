@@ -1,0 +1,302 @@
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+
+// packages/ui/src/components/guna-milan.ts
+import { css as css2, html, LitElement, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+// packages/ui/src/utils/base-styles.ts
+import { css } from "lit";
+var baseStyles = css`
+	:host {
+		display: block;
+		container-type: inline-size;
+		font-family: var(
+			--roxy-font-sans,
+			system-ui,
+			-apple-system,
+			BlinkMacSystemFont,
+			'Segoe UI',
+			Roboto,
+			sans-serif
+		);
+		color: var(--roxy-fg, #0a0a0a);
+		background: transparent;
+		font-size: var(--roxy-text-base, 1rem);
+		line-height: var(--roxy-leading-normal, 1.5);
+		animation: roxy-fade-in var(--roxy-motion-duration, 200ms)
+			var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1)) both;
+	}
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	@keyframes roxy-fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(2px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:host {
+			animation: none;
+		}
+	}
+
+	.roxy-skeleton {
+		background: linear-gradient(
+			90deg,
+			var(--roxy-border, #e4e4e7) 0%,
+			color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent) 50%,
+			var(--roxy-border, #e4e4e7) 100%
+		);
+		background-size: 200% 100%;
+		animation: roxy-shimmer 1.4s ease-in-out infinite;
+		border-radius: var(--roxy-radius-md, 8px);
+	}
+
+	@keyframes roxy-shimmer {
+		0% {
+			background-position: 200% 0;
+		}
+		100% {
+			background-position: -200% 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.roxy-skeleton {
+			animation: none;
+		}
+	}
+
+	.roxy-empty {
+		padding: var(--roxy-space-lg, 1.5rem);
+		color: var(--roxy-muted, #71717a);
+		text-align: center;
+		font-size: var(--roxy-text-sm, 0.875rem);
+	}
+
+	:host(:focus-within) .roxy-card {
+		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+		outline-offset: 2px;
+	}
+`;
+
+// packages/ui/src/components/guna-milan.ts
+var STANDARD_CATEGORIES = [
+  "Varna",
+  "Vasya",
+  "Tara",
+  "Yoni",
+  "Maitri",
+  "Gana",
+  "Bhakoot",
+  "Nadi"
+];
+var RoxyGunaMilan = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.data = null;
+  }
+  render() {
+    const d = this.data;
+    if (!d)
+      return html`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
+    const total = d.total ?? d.totalScore ?? 0;
+    const max = d.maxScore ?? 36;
+    const breakdown = (d.breakdown ?? []).filter(
+      (b) => b && (b.name || b.score !== void 0)
+    );
+    return html`<article class="card" aria-label="Guna Milan score">
+			<div class="score-bar">
+				<div>
+					<span class="total">${total}</span>
+					<span class="over"> / ${max}</span>
+					${typeof d.percentage === "number" ? html`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
+								${d.percentage}%
+							</small>` : nothing}
+				</div>
+				${d.recommendation ? html`<span class="recommendation">${d.recommendation}</span>` : nothing}
+			</div>
+
+			${breakdown.length > 0 ? html`<table>
+						<thead>
+							<tr>
+								<th>Category</th>
+								<th>Progress</th>
+								<th class="score">Score</th>
+							</tr>
+						</thead>
+						<tbody>
+							${breakdown.map((b) => {
+      const score = b.score ?? 0;
+      const maxScore = b.max ?? b.maxScore ?? defaultMax(b.name);
+      const pct = maxScore ? score / maxScore * 100 : 0;
+      return html`<tr>
+									<td>${b.name ?? ""}</td>
+									<td class="bar-cell">
+										<div class="mini-bar">
+											<span style="width: ${pct}%"></span>
+										</div>
+									</td>
+									<td class="score">${score} / ${maxScore}</td>
+								</tr>`;
+    })}
+						</tbody>
+					</table>` : nothing}
+			${(d.doshas?.length ?? 0) > 0 || (d.doshaCancellations?.length ?? 0) > 0 ? html`<div class="tags">
+						${d.doshas?.map((x) => html`<span class="dosha">${x}</span>`)}
+						${d.doshaCancellations?.map((x) => html`<span class="cancel">${x}</span>`)}
+					</div>` : nothing}
+		</article>`;
+  }
+};
+RoxyGunaMilan.styles = [
+  baseStyles,
+  css2`
+			.card {
+				background: var(--roxy-bg, #fff);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			.score-bar {
+				display: grid;
+				grid-template-columns: 1fr auto;
+				align-items: center;
+				gap: var(--roxy-space-md, 1rem);
+			}
+			.total {
+				font-size: 2.25rem;
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-accent-fg, #b45309);
+				font-variant-numeric: tabular-nums;
+				line-height: 1;
+			}
+			.over {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-base, 1rem);
+			}
+			.recommendation {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-secondary, #475569);
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			th,
+			td {
+				padding: var(--roxy-space-sm, 0.5rem);
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				text-align: left;
+			}
+			th {
+				color: var(--roxy-muted, #71717a);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: uppercase;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				letter-spacing: 0.06em;
+			}
+			td.score {
+				text-align: right;
+				font-variant-numeric: tabular-nums;
+				color: var(--roxy-fg, #0a0a0a);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			td.bar-cell {
+				width: 30%;
+			}
+			.mini-bar {
+				height: 8px;
+				background: var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-full, 9999px);
+				overflow: hidden;
+			}
+			.mini-bar > span {
+				display: block;
+				height: 100%;
+				background: var(--roxy-accent, #f59e0b);
+				transition:
+					width var(--roxy-motion-duration, 200ms)
+					var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			}
+
+			.tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.tags span {
+				padding: 2px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.tags .dosha {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
+				color: var(--roxy-danger, #dc2626);
+			}
+			.tags .cancel {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 18%, transparent);
+				color: var(--roxy-success, #16a34a);
+			}
+		`
+];
+__decorateClass([
+  property({ attribute: false })
+], RoxyGunaMilan.prototype, "data", 2);
+RoxyGunaMilan = __decorateClass([
+  customElement("roxy-guna-milan")
+], RoxyGunaMilan);
+function defaultMax(name) {
+  if (!name) return 1;
+  switch (name.toLowerCase()) {
+    case "varna":
+      return 1;
+    case "vasya":
+      return 2;
+    case "tara":
+      return 3;
+    case "yoni":
+      return 4;
+    case "maitri":
+      return 5;
+    case "gana":
+      return 6;
+    case "bhakoot":
+      return 7;
+    case "nadi":
+      return 8;
+    default:
+      return 1;
+  }
+}
+var GUNA_CATEGORIES = STANDARD_CATEGORIES;
+export {
+  GUNA_CATEGORIES,
+  RoxyGunaMilan
+};
+//# sourceMappingURL=guna-milan.js.map

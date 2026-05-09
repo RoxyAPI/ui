@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-05-09T08:41:14.769Z",
+  "components": [
+    "kp-planets-table",
+    "numerology-card",
+    "biorhythm-chart",
+    "horoscope-card",
+    "endpoint-form",
+    "tarot-card",
+    "panchang-table",
+    "location-search",
+    "vedic-kundli",
+    "data",
+    "dosha-card",
+    "compatibility-card",
+    "guna-milan",
+    "moon-phase",
+    "natal-chart",
+    "synastry-chart",
+    "tarot-spread",
+    "hexagram",
+    "dasha-timeline"
+  ]
+}

@@ -1,0 +1,221 @@
+import { css, html, LitElement, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { MOON_PHASE_EMOJI } from '../tokens/index.js';
+import { baseStyles } from '../utils/base-styles.js';
+
+interface MoonPhaseData {
+	date?: string;
+	phase?: string;
+	illumination?: number;
+	age?: number;
+	sign?: string;
+	degree?: number;
+	distance?: number;
+	meaning?: {
+		name?: string;
+		symbol?: string;
+		description?: string;
+		keywords?: string[];
+	};
+	month?: string;
+	year?: number;
+	phases?: Array<MoonPhaseData>;
+	upcoming?: Array<MoonPhaseData>;
+}
+
+/**
+ * Moon phase card. Renders /astrology/moon-phase/{current,upcoming,calendar/...}.
+ */
+@customElement('roxy-moon-phase')
+export class RoxyMoonPhase extends LitElement {
+	static styles = [
+		baseStyles,
+		css`
+			.card {
+				background: var(--roxy-bg, #fff);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			.hero {
+				display: flex;
+				align-items: center;
+				gap: var(--roxy-space-md, 1rem);
+			}
+			.emoji {
+				font-size: 3rem;
+				line-height: 1;
+			}
+			.label {
+				margin: 0;
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: capitalize;
+			}
+			.date {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+
+			.stats {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+				gap: var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-secondary, #475569);
+			}
+			.stats div span:first-child {
+				display: block;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+			.stats strong {
+				color: var(--roxy-fg, #0a0a0a);
+				font-variant-numeric: tabular-nums;
+			}
+
+			.meaning {
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.keywords {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+				margin-top: var(--roxy-space-sm, 0.5rem);
+			}
+			.keywords span {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+				padding: 2px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+
+			.list {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.list-item {
+				display: grid;
+				grid-template-columns: 2.5rem 1fr auto;
+				gap: var(--roxy-space-sm, 0.5rem);
+				align-items: center;
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				padding: var(--roxy-space-sm, 0.5rem) 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.list-item:last-child {
+				border-bottom: none;
+			}
+		`,
+	];
+
+	@property({ attribute: false })
+	data: MoonPhaseData | null = null;
+
+	@property({ type: String, reflect: true })
+	mode: 'current' | 'upcoming' | 'calendar' = 'current';
+
+	render() {
+		const d = this.data;
+		if (!d)
+			return html`<div class="roxy-empty" role="status">No moon phase data</div>`;
+		const list = d.phases ?? d.upcoming ?? [];
+		if (this.mode !== 'current' && list.length > 0) {
+			return html`<article
+				class="card"
+				aria-label="Moon phase calendar"
+			>
+				<h2 class="label">${d.month ?? 'Moon phases'} ${d.year ?? ''}</h2>
+				<div class="list" role="list">
+					${list.map((phase) => this.renderListItem(phase))}
+				</div>
+			</article>`;
+		}
+		return this.renderSingle(d);
+	}
+
+	private renderSingle(d: MoonPhaseData) {
+		const emoji = phaseEmoji(d.phase);
+		return html`<article class="card" aria-label="Current moon phase">
+			<div class="hero">
+				<span class="emoji" aria-hidden="true">${emoji}</span>
+				<div>
+					<h2 class="label">${d.phase ?? 'Moon'}</h2>
+					${d.date ? html`<div class="date">${d.date}</div>` : nothing}
+				</div>
+			</div>
+			<div class="stats">
+				${
+					typeof d.illumination === 'number'
+						? html`<div>
+							<span>Illumination</span>
+							<strong>${(d.illumination * 100).toFixed(0)}%</strong>
+						</div>`
+						: nothing
+				}
+				${
+					typeof d.age === 'number'
+						? html`<div>
+							<span>Age</span>
+							<strong>${d.age.toFixed(1)} days</strong>
+						</div>`
+						: nothing
+				}
+				${
+					d.sign
+						? html`<div>
+							<span>Sign</span>
+							<strong>${d.sign}</strong>
+						</div>`
+						: nothing
+				}
+				${
+					typeof d.distance === 'number'
+						? html`<div>
+							<span>Distance</span>
+							<strong>${(d.distance / 1000).toFixed(0)}k km</strong>
+						</div>`
+						: nothing
+				}
+			</div>
+			${
+				d.meaning?.description
+					? html`<p class="meaning">${d.meaning.description}</p>`
+					: nothing
+			}
+			${
+				d.meaning?.keywords?.length
+					? html`<div class="keywords">
+						${d.meaning.keywords.map((k) => html`<span>${k}</span>`)}
+					</div>`
+					: nothing
+			}
+		</article>`;
+	}
+
+	private renderListItem(p: MoonPhaseData) {
+		const emoji = phaseEmoji(p.phase);
+		return html`<div class="list-item" role="listitem">
+			<span aria-hidden="true">${emoji}</span>
+			<span>${p.phase}</span>
+			<span>${p.date ?? ''}</span>
+		</div>`;
+	}
+}
+
+function phaseEmoji(phase: string | undefined): string {
+	if (!phase) return '🌙';
+	return MOON_PHASE_EMOJI[phase.toLowerCase()] ?? '🌙';
+}
+
+declare global {
+	interface HTMLElementTagNameMap {
+		'roxy-moon-phase': RoxyMoonPhase;
+	}
+}

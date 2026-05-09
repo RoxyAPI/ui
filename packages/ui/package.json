@@ -1,0 +1,74 @@
+{
+	"name": "@roxyapi/ui",
+	"version": "0.1.0",
+	"description": "Web components for the RoxyAPI catalog. Astrology, Vedic, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers. One key, ten domains, beautiful in 30 minutes.",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./components/*": {
+			"types": "./dist/components/*.d.ts",
+			"import": "./dist/components/*.js"
+		},
+		"./styles/tokens.css": "./dist/styles/tokens.css",
+		"./registry/*": "./dist/registry/*.json"
+	},
+	"files": [
+		"dist",
+		"src",
+		"AGENTS.md",
+		"THEMING.md"
+	],
+	"keywords": [
+		"web-components",
+		"lit",
+		"custom-elements",
+		"shadow-dom",
+		"astrology",
+		"vedic",
+		"tarot",
+		"numerology",
+		"horoscope",
+		"kundli",
+		"natal-chart",
+		"birth-chart",
+		"iching",
+		"crystals",
+		"angel-numbers",
+		"dreams",
+		"biorhythm",
+		"shadcn",
+		"jsdelivr",
+		"roxyapi"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/RoxyAPI/ui.git",
+		"directory": "packages/ui"
+	},
+	"homepage": "https://roxyapi.com/ui",
+	"bugs": {
+		"url": "https://github.com/RoxyAPI/ui/issues"
+	},
+	"sideEffects": [
+		"./dist/components/*.js",
+		"./dist/cdn/*.js"
+	],
+	"peerDependencies": {
+		"lit": "^3.0.0"
+	},
+	"dependencies": {
+		"lit": "^3.2.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

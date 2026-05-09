@@ -1,0 +1,45 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"experimentalDecorators": true,
+		"useDefineForClassFields": false,
+		"jsx": "react-jsx",
+		"jsxImportSource": "react",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"types": ["node", "bun"],
+		"baseUrl": ".",
+		"paths": {
+			"@roxyapi/ui": ["packages/ui/src/index.ts"],
+			"@roxyapi/ui/*": ["packages/ui/src/*"]
+		}
+	},
+	"include": [
+		"packages/ui/src/**/*.ts",
+		"packages/ui/tests/**/*.ts",
+		"packages/ui-react/src/**/*.tsx",
+		"packages/ui-react/src/**/*.ts",
+		"scripts/**/*.ts",
+		"apps/docs/**/*.ts",
+		"playwright.config.ts"
+	],
+	"exclude": [
+		"node_modules",
+		"**/dist",
+		"specs",
+		"examples",
+		"registry",
+		"playwright-report",
+		"test-results"
+	]
+}

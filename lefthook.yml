@@ -1,0 +1,32 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome-check:
+      glob: "*.{ts,tsx,js,jsx,json,md}"
+      run: bun run check --staged
+      stage_fixed: true
+    typecheck:
+      run: bun run typecheck
+    build-and-stage-dist:
+      glob: "packages/ui/src/**/*.{ts,css}"
+      run: bun run build && git add packages/ui/dist packages/ui-react/dist
+      stage_fixed: true
+
+pre-push:
+  parallel: false
+  commands:
+    typecheck:
+      run: bun run typecheck
+      priority: 1
+    biome-full:
+      run: bun run check
+      priority: 2
+    test-unit:
+      run: bun run test
+      priority: 3
+    test-e2e:
+      run: bun run test:e2e
+      priority: 4
+    docs-drift:
+      run: bun run docs:sync && git diff --exit-code -- README.md AGENTS.md || { echo "README.md or AGENTS.md drifted from spec, commit the sync output"; exit 1; }
+      priority: 5

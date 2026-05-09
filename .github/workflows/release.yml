@@ -1,0 +1,111 @@
+name: Release
+
+on:
+  repository_dispatch:
+    types: [openapi-updated]
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'patch | minor | major'
+        required: false
+        default: 'patch'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install --frozen-lockfile
+
+      - name: Regenerate types from spec
+        run: bun run generate
+
+      - name: Sync docs from spec
+        run: bun run docs:sync
+
+      - name: Check if spec changed
+        id: diff
+        run: |
+          OLD=$(git show HEAD:specs/openapi.json 2>/dev/null | jq -cS '{paths, components}' || echo '')
+          NEW=$(jq -cS '{paths, components}' specs/openapi.json)
+          if [ "$OLD" = "$NEW" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Typecheck
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: bun run typecheck
+
+      - name: Build
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: bun run build
+
+      - name: Unit tests
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: bun run test
+
+      - name: Install Playwright browsers
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: bunx playwright install --with-deps chromium firefox webkit
+
+      - name: E2E tests
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: bun run test:e2e
+
+      - name: Bump versions and rebuild
+        id: bump
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          BUMP="${{ github.event.inputs.version_bump || 'patch' }}"
+          (cd packages/ui && npm version "$BUMP" --no-git-tag-version)
+          (cd packages/ui-react && npm version "$BUMP" --no-git-tag-version)
+          VERSION=$(node -p "require('./packages/ui/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          bun run build
+
+      - name: Publish @roxyapi/ui
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          npm install -g npm@latest
+          (cd packages/ui && npm publish --access public --provenance)
+
+      - name: Publish @roxyapi/ui-react
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          (cd packages/ui-react && npm publish --access public --provenance)
+
+      - name: Commit, tag, push
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          VERSION=$(node -p "require('./packages/ui/package.json').version")
+          git add packages/ packages/ui/dist packages/ui-react/dist registry/ specs/openapi.json README.md AGENTS.md
+          git commit -m "release: v$VERSION"
+          git tag "v$VERSION"
+          git push --follow-tags
+
+      - name: Create GitHub release
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ steps.bump.outputs.version }}
+          generate_release_notes: true
+          make_latest: 'true'

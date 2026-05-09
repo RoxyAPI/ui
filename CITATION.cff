@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Roxy UI"
+abstract: "Web component library for the RoxyAPI catalog. 18 Phase 1 elements covering astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching, crystals, dreams, and angel numbers. Built on Lit. Distributed via npm and jsdelivr. Stateless components driven by typed responses from the OpenAPI spec."
+authors:
+  - name: "Roxy Labs"
+url: "https://github.com/RoxyAPI/ui"
+repository-code: "https://github.com/RoxyAPI/ui"
+license: MIT
+type: software
+keywords:
+  - web-components
+  - lit
+  - astrology-api
+  - vedic-astrology-api
+  - tarot-api
+  - numerology-api
+  - shadow-dom
+  - shadcn
+  - jsdelivr

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Roxy UI - Vue / vanilla example</title>
+	<script type="importmap">
+		{
+			"imports": {
+				"vue": "https://esm.sh/vue@3"
+			}
+		}
+	</script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1/dist/cdn/roxy-ui.js"
+		crossorigin="anonymous"
+	></script>
+</head>
+<body>
+	<div id="app"></div>
+
+	<script type="module">
+		import { createApp, onMounted, ref } from 'vue';
+
+		const App = {
+			setup() {
+				const horoscope = ref(null);
+				const kundli = ref(null);
+
+				onMounted(async () => {
+					const res = await fetch(
+						'https://roxyapi.com/api/v2/astrology/horoscope/aries/daily',
+						{ headers: { 'X-API-Key': window.ROXY_API_KEY ?? 'roxy_xxx' } },
+					);
+					horoscope.value = await res.json();
+				});
+
+				const onLocation = (event) => {
+					console.log('Location selected', event.detail);
+				};
+
+				return { horoscope, kundli, onLocation };
+			},
+			template: `
+				<main style="max-width: 720px; margin: 0 auto; padding: 32px">
+					<h1>Roxy UI in Vue</h1>
+					<roxy-horoscope-card :data="horoscope" period="daily"></roxy-horoscope-card>
+
+					<h2>Pick a city</h2>
+					<roxy-location-search
+						placeholder="Search city"
+						@roxy-location-select="onLocation"
+					></roxy-location-search>
+
+					<h2>Then render the kundli</h2>
+					<roxy-vedic-kundli :data="kundli"></roxy-vedic-kundli>
+				</main>
+			`,
+		};
+
+		const app = createApp(App);
+		app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith('roxy-');
+		app.mount('#app');
+	</script>
+</body>
+</html>

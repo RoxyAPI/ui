@@ -1,0 +1,147 @@
+/**
+ * Roxy UI design tokens. ~30 CSS custom properties that every component reads
+ * via :host selector. Light + dark defaults. Host page overrides at :root or
+ * per element. No Tailwind, no class-name overrides, no JS theme switcher.
+ *
+ * Light is the default. Dark applies under any of:
+ *   - prefers-color-scheme: dark
+ *   - [data-theme="dark"] on :root or any ancestor
+ *   - .dark class on :root or any ancestor
+ *
+ * Motion gating:
+ *   - --roxy-motion-duration defaults to 200ms. Set to 0ms to disable.
+ *   - prefers-reduced-motion: reduce forces 0ms regardless of host overrides.
+ */
+
+:root,
+:host {
+	/* Color: brand */
+	--roxy-primary: #0f172a;
+	--roxy-secondary: #475569;
+	--roxy-accent: #f59e0b;
+	/* Text-safe accent variant. amber-500 hits 2.14:1 on white which fails
+	 * WCAG AA for body text. amber-700 hits 4.5:1, used wherever the accent
+	 * tone is applied to text. Fills (planet glyphs, chart accents, badges
+	 * with non-text use) keep --roxy-accent. */
+	--roxy-accent-fg: #b45309;
+
+	/* Color: status */
+	--roxy-success: #16a34a;
+	--roxy-warning: #ea580c;
+	--roxy-danger: #dc2626;
+	--roxy-info: #0284c7;
+
+	/* Color: surface */
+	--roxy-bg: #ffffff;
+	--roxy-fg: #0a0a0a;
+	--roxy-muted: #71717a;
+	--roxy-border: #e4e4e7;
+	--roxy-ring: rgba(245, 158, 11, 0.4);
+
+	/* Typography */
+	--roxy-font-sans:
+		"Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		sans-serif;
+	--roxy-font-mono:
+		"Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono",
+		monospace;
+
+	--roxy-text-xs: 0.75rem;
+	--roxy-text-sm: 0.875rem;
+	--roxy-text-base: 1rem;
+	--roxy-text-lg: 1.125rem;
+	--roxy-text-xl: 1.5rem;
+
+	--roxy-weight-normal: 400;
+	--roxy-weight-bold: 600;
+
+	--roxy-leading-tight: 1.2;
+	--roxy-leading-normal: 1.5;
+
+	--roxy-tracking-tight: -0.02em;
+	--roxy-tracking-normal: 0em;
+
+	/* Spacing */
+	--roxy-space-xs: 0.25rem;
+	--roxy-space-sm: 0.5rem;
+	--roxy-space-md: 1rem;
+	--roxy-space-lg: 1.5rem;
+	--roxy-space-xl: 2.5rem;
+
+	/* Radius */
+	--roxy-radius-sm: 4px;
+	--roxy-radius-md: 8px;
+	--roxy-radius-lg: 12px;
+	--roxy-radius-full: 9999px;
+
+	/* Shadow */
+	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+	--roxy-shadow-md:
+		0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+	--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.14);
+
+	/* Motion */
+	--roxy-motion-duration: 200ms;
+	--roxy-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark theme via system preference */
+@media (prefers-color-scheme: dark) {
+	:root,
+	:host {
+		--roxy-primary: #f8fafc;
+		--roxy-secondary: #94a3b8;
+		--roxy-accent: #fbbf24;
+		--roxy-accent-fg: #fbbf24;
+
+		--roxy-success: #22c55e;
+		--roxy-warning: #fb923c;
+		--roxy-danger: #ef4444;
+		--roxy-info: #38bdf8;
+
+		--roxy-bg: #0a0a0a;
+		--roxy-fg: #fafafa;
+		--roxy-muted: #a1a1aa;
+		--roxy-border: #27272a;
+		--roxy-ring: rgba(251, 191, 36, 0.45);
+
+		--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+		--roxy-shadow-md:
+			0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+		--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
+	}
+}
+
+/* Dark theme via host opt-in */
+:root[data-theme="dark"],
+:host([data-theme="dark"]),
+.dark :host {
+	--roxy-primary: #f8fafc;
+	--roxy-secondary: #94a3b8;
+	--roxy-accent: #fbbf24;
+	--roxy-accent-fg: #fbbf24;
+
+	--roxy-success: #22c55e;
+	--roxy-warning: #fb923c;
+	--roxy-danger: #ef4444;
+	--roxy-info: #38bdf8;
+
+	--roxy-bg: #0a0a0a;
+	--roxy-fg: #fafafa;
+	--roxy-muted: #a1a1aa;
+	--roxy-border: #27272a;
+	--roxy-ring: rgba(251, 191, 36, 0.45);
+
+	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+	--roxy-shadow-md:
+		0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+	--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
+}
+
+/* Reduced motion override */
+@media (prefers-reduced-motion: reduce) {
+	:root,
+	:host {
+		--roxy-motion-duration: 0ms;
+	}
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "roxy-ui",
+  "homepage": "https://roxyapi.com/ui",
+  "items": [
+    {
+      "name": "roxy-natal-chart",
+      "description": "Western natal chart wheel for /astrology/natal-chart responses"
+    },
+    {
+      "name": "roxy-horoscope-card",
+      "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/..."
+    },
+    {
+      "name": "roxy-synastry-chart",
+      "description": "Dual-wheel synastry chart with inter-aspects table"
+    },
+    {
+      "name": "roxy-compatibility-card",
+      "description": "Cross-domain compatibility score card"
+    },
+    {
+      "name": "roxy-moon-phase",
+      "description": "Moon phase card and calendar"
+    },
+    {
+      "name": "roxy-vedic-kundli",
+      "description": "South or North Indian Vedic kundli for /vedic-astrology/birth-chart"
+    },
+    {
+      "name": "roxy-panchang-table",
+      "description": "Panchang muhurta table with auspicious and inauspicious periods"
+    },
+    {
+      "name": "roxy-dasha-timeline",
+      "description": "Vimshottari dasha timeline with active mahadasha highlighted"
+    },
+    {
+      "name": "roxy-dosha-card",
+      "description": "Manglik, Kaal Sarp, or Sade Sati presence card"
+    },
+    {
+      "name": "roxy-guna-milan",
+      "description": "36-point Ashtakoota matrimonial compatibility breakdown"
+    },
+    {
+      "name": "roxy-kp-planets-table",
+      "description": "KP planets table with sub-lord and sub-sub-lord columns"
+    },
+    {
+      "name": "roxy-numerology-card",
+      "description": "Numerology card for life path, expression, personal year, or full chart"
+    },
+    {
+      "name": "roxy-tarot-card",
+      "description": "Single tarot card with upright/reversed flip animation"
+    },
+    {
+      "name": "roxy-tarot-spread",
+      "description": "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no"
+    },
+    {
+      "name": "roxy-biorhythm-chart",
+      "description": "Daily biorhythm bars or multi-day forecast cycle lines"
+    },
+    {
+      "name": "roxy-hexagram",
+      "description": "I Ching hexagram with trigram glyphs, judgment, image, and changing lines"
+    },
+    {
+      "name": "roxy-endpoint-form",
+      "description": "Schema-driven form that emits roxy-submit with a validated payload"
+    },
+    {
+      "name": "roxy-location-search",
+      "description": "City search input with debounced /location/search calls"
+    },
+    {
+      "name": "roxy-data",
+      "description": "Generic fallback renderer for any OpenAPI response shape"
+    }
+  ]
+}
