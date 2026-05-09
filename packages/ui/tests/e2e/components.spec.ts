@@ -39,12 +39,16 @@ test.describe('Roxy UI preview', () => {
 			expect(handle, `Component ${tag} should render`).not.toBeNull();
 		}
 
-		// Allow the location search 404 (no live key in preview) but no other errors
+		// Allow the location search 404 (no live key in preview) and generic
+		// browser network noise. WebKit emits "Failed to load resource" as a
+		// console error on every 4xx response; chromium and firefox suppress it.
+		// Real component bugs surface via pageerror or specific console.error.
 		const real = errors.filter(
 			(e) =>
 				!e.includes('roxyapi.com') &&
 				!e.includes('favicon') &&
-				!e.includes('NetworkError'),
+				!e.includes('NetworkError') &&
+				!e.includes('Failed to load resource'),
 		);
 		expect(real, `Console errors: ${real.join(' | ')}`).toEqual([]);
 	});
