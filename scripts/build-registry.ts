@@ -1,16 +1,19 @@
 #!/usr/bin/env bun
 /**
  * Emit shadcn registry JSON entries. Output to registry/{name}.json. Each
- * entry inlines the TypeScript source so devs can install with:
+ * entry ships a small React wrapper (.tsx) that re-exports the component
+ * from @roxyapi/ui-react so the customer ends up with a starter file they
+ * own and can customize, while the heavy Lit element still loads from
+ * jsDelivr at runtime via the npm thin-shell wrapper.
  *
- *   npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/{name}.json
+ * Install path:
+ *   npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/{slug}.json
  *
- * The shadcn CLI 3.0 accepts any URL pointing at registry-item JSON.
+ * The shadcn CLI 3.x accepts any URL pointing at registry-item JSON.
  */
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
 
-const SRC_DIR = 'packages/ui/src/components';
 const OUT_DIR = 'registry';
 const THEME_URL =
 	'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json';
@@ -74,28 +77,105 @@ async function emitTheme() {
 	await writeFile(`${OUT_DIR}/theme.json`, JSON.stringify(entry, null, 2));
 }
 
+function reactWrapperSource(pascal: string, slug: string, description: string) {
+	const sdkExample = SDK_USAGE_HINT[slug] ?? GENERIC_SDK_HINT;
+	return `'use client';
+
+/**
+ * <${pascal} data={...} /> — ${description}.
+ *
+ * You own this file. Customize freely. The underlying Lit element loads
+ * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without
+ * a re-install.
+ *
+ * Typical wiring (server-side fetch, client-side render):
+ *
+ * \`\`\`ts
+ * // app/api/${slug}/route.ts
+ * import { createRoxy } from '@roxyapi/sdk';
+ * const roxy = createRoxy(process.env.ROXY_API_KEY!);
+ * export async function POST(req: Request) {
+ *   ${sdkExample}
+ *   return Response.json(data);
+ * }
+ * \`\`\`
+ *
+ * Theme via --roxy-* CSS custom properties on :root (see globals.css).
+ */
+import { ${pascal} as Element } from '@roxyapi/ui-react';
+import type { ComponentProps } from 'react';
+
+export type ${pascal}Props = ComponentProps<typeof Element>;
+
+export function ${pascal}(props: ${pascal}Props) {
+\treturn <Element {...props} />;
+}
+
+export default ${pascal};
+`;
+}
+
+const GENERIC_SDK_HINT =
+	'const { data } = await roxy.someDomain.someMethod({ body: await req.json() });';
+
+const SDK_USAGE_HINT: Record<string, string> = {
+	'natal-chart':
+		'const { data } = await roxy.astrology.generateNatalChart({ body: await req.json() });',
+	'horoscope-card':
+		'const { sign } = await req.json();\n *   const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign } });',
+	'synastry-chart':
+		'const { data } = await roxy.astrology.calculateSynastry({ body: await req.json() });',
+	'compatibility-card':
+		'const { data } = await roxy.astrology.calculateCompatibility({ body: await req.json() });',
+	'moon-phase': 'const { data } = await roxy.astrology.getCurrentMoonPhase();',
+	'vedic-kundli':
+		'const { data } = await roxy.vedicAstrology.generateBirthChart({ body: await req.json() });',
+	'panchang-table':
+		'const { data } = await roxy.vedicAstrology.getDetailedPanchang({ body: await req.json() });',
+	'dasha-timeline':
+		'const { data } = await roxy.vedicAstrology.getMajorDashas({ body: await req.json() });',
+	'dosha-card':
+		'const { data } = await roxy.vedicAstrology.getManglik({ body: await req.json() });',
+	'guna-milan':
+		'const { data } = await roxy.vedicAstrology.calculateGunMilan({ body: await req.json() });',
+	'kp-planets-table':
+		'const { data } = await roxy.vedicAstrology.getKpPlanets({ body: await req.json() });',
+	'numerology-card':
+		'const { data } = await roxy.numerology.calculateLifePath({ body: await req.json() });',
+	'tarot-card': 'const { data } = await roxy.tarot.getDailyCard();',
+	'tarot-spread':
+		'const { data } = await roxy.tarot.castThreeCard({ body: await req.json() });',
+	'biorhythm-chart':
+		'const { data } = await roxy.biorhythm.getDailyBiorhythm({ body: await req.json() });',
+	hexagram: 'const { data } = await roxy.iching.castReading();',
+	'endpoint-form':
+		'// <RoxyEndpointForm> introspects the OpenAPI spec at runtime — no\n   *   // server route needed unless you want to proxy the form submission.\n   *   const values = await req.json();\n   *   const { data } = await fetch(\\`https://roxyapi.com/api/v2/\\${endpoint}\\`, { ...values });',
+	'location-search':
+		'// <RoxyLocationSearch> calls /location/search directly. No server route\n   *   // needed unless you want to proxy.',
+	data: '// <RoxyData> is the generic fallback renderer. Pass any response shape.',
+};
+
 async function main() {
 	await mkdir(OUT_DIR, { recursive: true });
 
 	await emitTheme();
 
 	for (const { slug, pascal, description } of ROXY_COMPONENTS) {
-		const sourcePath = `${SRC_DIR}/${slug}.ts`;
-		const source = await readFile(sourcePath, 'utf8');
+		const wrapper = reactWrapperSource(pascal, slug, description);
 		const entry = {
 			$schema: 'https://ui.shadcn.com/schema/registry-item.json',
 			name: `roxy-${slug}`,
 			type: 'registry:ui',
 			title: pascal,
 			description,
-			dependencies: ['lit'],
+			dependencies: ['@roxyapi/ui-react', '@roxyapi/sdk'],
 			registryDependencies: [THEME_URL],
 			files: [
 				{
-					path: `components/roxy-${slug}.ts`,
-					content: source,
+					path: `components/roxy-${slug}.tsx`,
+					content: wrapper,
 					type: 'registry:ui',
-					target: `~/components/roxy-ui/${slug}.ts`,
+					target: `~/components/roxy-ui/${slug}.tsx`,
 				},
 			],
 		};
