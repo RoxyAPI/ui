@@ -164,6 +164,56 @@ async function main() {
 			roxy.biorhythm.getDailyBiorhythm({ body: { seed: 'roxy-ui-demo' } }),
 		),
 		run('hex', () => roxy.iching.getRandomHexagram()),
+		run('transits', () =>
+			roxy.astrology.calculateTransits({
+				body: {
+					date: '2026-05-11',
+					time: '12:00:00',
+					natalChart: PERSON1,
+				},
+			}),
+		),
+		run('ashtakavarga', () =>
+			roxy.vedicAstrology.calculateAshtakavarga({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
+		run('shadbala', () =>
+			roxy.vedicAstrology.calculateShadbala({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
+		run('divisional', () =>
+			roxy.vedicAstrology.generateDivisionalChart({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					division: 9,
+				},
+			}),
+		),
+		run('yoga', () => roxy.vedicAstrology.listYogas()),
+		run('choghadiya', () =>
+			roxy.vedicAstrology.getChoghadiya({
+				body: {
+					date: '2026-05-11',
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
 		run('__natal2', () =>
 			roxy.astrology.generateNatalChart({
 				body: { ...PERSON2, houseSystem: 'placidus' },

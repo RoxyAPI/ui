@@ -122,6 +122,72 @@ window.ROXY_COMPONENTS = [
     "topic": "Vedic"
   },
   {
+    "pascal": "RoxyTransitsTable",
+    "tag": "roxy-transits-table",
+    "slug": "transits-table",
+    "heading": "Transits",
+    "description": "Live planet positions plus aspects to a natal chart",
+    "docsLabel": "Western",
+    "endpointLabel": "POST /astrology/transits",
+    "docsSummary": "Transit planet positions plus optional aspects to a natal chart",
+    "topic": "Astrology"
+  },
+  {
+    "pascal": "RoxyDivisionalChart",
+    "tag": "roxy-divisional-chart",
+    "slug": "divisional-chart",
+    "heading": "Divisional chart",
+    "description": "D2 to D60 varga chart wheel with Vargottama markers",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/divisional-chart",
+    "docsSummary": "Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa",
+    "topic": "Vedic"
+  },
+  {
+    "pascal": "RoxyAshtakavargaGrid",
+    "tag": "roxy-ashtakavarga-grid",
+    "slug": "ashtakavarga-grid",
+    "heading": "Ashtakavarga",
+    "description": "Sarva and Bhinna ashtakavarga heatmap with bindu scores",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/ashtakavarga",
+    "docsSummary": "Sarva, Bhinna, and Shodhya Pinda views in a tabbed heatmap",
+    "topic": "Vedic"
+  },
+  {
+    "pascal": "RoxyShadbalaTable",
+    "tag": "roxy-shadbala-table",
+    "slug": "shadbala-table",
+    "heading": "Shadbala",
+    "description": "Six-fold planetary strength with adequacy badge per planet",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/shadbala",
+    "docsSummary": "Six-fold planetary strength bar plus rupas and adequacy badge",
+    "topic": "Vedic"
+  },
+  {
+    "pascal": "RoxyYogaList",
+    "tag": "roxy-yoga-list",
+    "slug": "yoga-list",
+    "heading": "Yoga catalog",
+    "description": "Yoga reference cards from the catalog with optional detail mode",
+    "docsLabel": "Vedic",
+    "endpointLabel": "GET /vedic-astrology/yoga, /yoga/{id}",
+    "docsSummary": "Filterable yoga cards from the 300 plus yoga catalog",
+    "topic": "Vedic"
+  },
+  {
+    "pascal": "RoxyChoghadiyaGrid",
+    "tag": "roxy-choghadiya-grid",
+    "slug": "choghadiya-grid",
+    "heading": "Choghadiya",
+    "description": "Day and night Choghadiya muhurta tiles for activity timing",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/panchang/choghadiya",
+    "docsSummary": "Day and night Choghadiya muhurta tiles colored by effect",
+    "topic": "Vedic"
+  },
+  {
     "pascal": "RoxyNumerologyCard",
     "tag": "roxy-numerology-card",
     "slug": "numerology-card",

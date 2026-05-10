@@ -5,12 +5,15 @@
  *   import '@roxyapi/ui/components/natal-chart';
  */
 
+export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
 // Biorhythm
 export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
+export { RoxyChoghadiyaGrid } from './components/choghadiya-grid.js';
 export { RoxyCompatibilityCard } from './components/compatibility-card.js';
 export { RoxyDashaTimeline } from './components/dasha-timeline.js';
 // Generic fallback first so it is always available for nested rendering
 export { RoxyData } from './components/data.js';
+export { RoxyDivisionalChart } from './components/divisional-chart.js';
 export { RoxyDoshaCard } from './components/dosha-card.js';
 // Helpers
 export { RoxyEndpointForm } from './components/endpoint-form.js';
@@ -21,17 +24,20 @@ export { RoxyHoroscopeCard } from './components/horoscope-card.js';
 export { RoxyKpPlanetsTable } from './components/kp-planets-table.js';
 export { RoxyLocationSearch } from './components/location-search.js';
 export { RoxyMoonPhase } from './components/moon-phase.js';
-// Western
+// Western astrology
 export { RoxyNatalChart } from './components/natal-chart.js';
 // Numerology
 export { RoxyNumerologyCard } from './components/numerology-card.js';
 export { RoxyPanchangTable } from './components/panchang-table.js';
+export { RoxyShadbalaTable } from './components/shadbala-table.js';
 export { RoxySynastryChart } from './components/synastry-chart.js';
 // Tarot
 export { RoxyTarotCard } from './components/tarot-card.js';
 export { RoxyTarotSpread } from './components/tarot-spread.js';
-// Vedic
+export { RoxyTransitsTable } from './components/transits-table.js';
+// Vedic astrology
 export { RoxyVedicKundli } from './components/vedic-kundli.js';
+export { RoxyYogaList } from './components/yoga-list.js';
 
 import { ROXY_COMPONENTS, type RoxyComponentSlug } from './manifest.js';
 

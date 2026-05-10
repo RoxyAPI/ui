@@ -117,26 +117,30 @@ var RoxyDoshaCard = class extends LitElement {
       return html`<div class="roxy-empty" role="status">No dosha data</div>`;
     const present = !!d.present;
     const label = DOSHA_LABELS[this.type] ?? this.type;
-    const sevClass = (d.severity ?? "").toLowerCase();
+    const sevLower = (d.severity ?? "").toLowerCase();
+    const tier = sevLower === "severe" ? 3 : sevLower === "moderate" ? 2 : sevLower === "mild" ? 1 : 0;
+    const pct = tier * 33;
+    const barColor = tier === 3 ? "var(--roxy-danger)" : tier === 2 ? "var(--roxy-warning)" : tier === 1 ? "var(--roxy-success)" : "transparent";
     return html`<article
 			class="card"
 			aria-label=${label}
 		>
 			<header class="head">
 				<h2 class="title">${label}</h2>
-				<div style="display:flex; gap:0.5rem; align-items:center;">
-					<span class=${`badge ${present ? "present" : "absent"}`}>
-						${present ? "Present" : "Absent"}
-					</span>
-					${d.severity ? html`<span
-								class=${`severity ${sevClass}`}
-								role="img"
-								aria-label=${`Severity ${d.severity}`}
-							>
-								<span></span><span></span><span></span>
-							</span>` : nothing}
-				</div>
+				<span class=${`badge ${present ? "present" : "absent"}`}>
+					${present ? "Present" : "Absent"}
+				</span>
 			</header>
+			${d.severity ? html`<div
+						class="severity-bar"
+						role="meter"
+						aria-valuemin="0"
+						aria-valuemax="3"
+						aria-valuenow="${tier}"
+						aria-label="Severity ${d.severity}"
+					>
+						<span class="severity-fill" style="width: ${pct}%; background: ${barColor};"></span>
+					</div>` : nothing}
 			${d.description ? html`<p class="description">${d.description}</p>` : nothing}
 			${this.renderEffects(d)}
 			${d.remedies && d.remedies.length > 0 ? html`<div>
@@ -213,25 +217,24 @@ RoxyDoshaCard.styles = [
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
 				color: var(--roxy-danger-fg, #991b1b);
 			}
-			.severity {
-				display: flex;
-				align-items: center;
-				gap: 4px;
+			.severity-bar {
+				position: relative;
+				width: 100%;
+				height: 8px;
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 30%, transparent);
+				border-radius: 4px;
+				overflow: hidden;
 			}
-			.severity span {
-				width: 14px;
-				height: 4px;
-				border-radius: 2px;
-				background: var(--roxy-border, #e4e4e7);
+			.severity-fill {
+				display: block;
+				height: 100%;
+				transition: width var(--roxy-motion-duration, 200ms) ease-out;
+				border-radius: 4px;
 			}
-			.severity.mild span:nth-child(1) {
-				background: var(--roxy-warning, #ea580c);
-			}
-			.severity.moderate span:nth-child(-n + 2) {
-				background: var(--roxy-warning, #ea580c);
-			}
-			.severity.severe span {
-				background: var(--roxy-danger, #dc2626);
+			@media (prefers-reduced-motion: reduce) {
+				.severity-fill {
+					transition: none;
+				}
 			}
 
 			.description {

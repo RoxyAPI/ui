@@ -89,6 +89,16 @@
 	/* Motion */
 	--roxy-motion-duration: 200ms;
 	--roxy-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+	/* Heat scale: 7-step gradient used by ashtakavarga bindu cells.
+	 * Low bindus (1) are cool green; high bindus (7+) are hot red. */
+	--roxy-heat-1: #f0fdf4;
+	--roxy-heat-2: #d1fae5;
+	--roxy-heat-3: #a7f3d0;
+	--roxy-heat-4: #fde68a;
+	--roxy-heat-5: #fdba74;
+	--roxy-heat-6: #fb923c;
+	--roxy-heat-7: #ef4444;
 }
 
 /* Dark theme via system preference */
@@ -123,6 +133,14 @@
 		--roxy-shadow-md:
 			0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
 		--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
+
+		--roxy-heat-1: #052e16;
+		--roxy-heat-2: #14532d;
+		--roxy-heat-3: #166534;
+		--roxy-heat-4: #92400e;
+		--roxy-heat-5: #b45309;
+		--roxy-heat-6: #c2410c;
+		--roxy-heat-7: #b91c1c;
 	}
 }
 
@@ -182,6 +200,14 @@
 	--roxy-shadow-md:
 		0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
 	--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
+
+	--roxy-heat-1: #052e16;
+	--roxy-heat-2: #14532d;
+	--roxy-heat-3: #166534;
+	--roxy-heat-4: #92400e;
+	--roxy-heat-5: #b45309;
+	--roxy-heat-6: #c2410c;
+	--roxy-heat-7: #b91c1c;
 }
 
 /* Reduced motion override */

@@ -52,6 +52,30 @@
       "description": "KP planets table with sub-lord and sub-sub-lord columns"
     },
     {
+      "name": "roxy-transits-table",
+      "description": "Live planet positions plus aspects to a natal chart"
+    },
+    {
+      "name": "roxy-divisional-chart",
+      "description": "D2 to D60 varga chart wheel with Vargottama markers"
+    },
+    {
+      "name": "roxy-ashtakavarga-grid",
+      "description": "Sarva and Bhinna ashtakavarga heatmap with bindu scores"
+    },
+    {
+      "name": "roxy-shadbala-table",
+      "description": "Six-fold planetary strength with adequacy badge per planet"
+    },
+    {
+      "name": "roxy-yoga-list",
+      "description": "Yoga reference cards from the catalog with optional detail mode"
+    },
+    {
+      "name": "roxy-choghadiya-grid",
+      "description": "Day and night Choghadiya muhurta tiles for activity timing"
+    },
+    {
       "name": "roxy-numerology-card",
       "description": "Numerology card for life path, expression, personal year, or full chart"
     },

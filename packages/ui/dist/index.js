@@ -9,9 +9,124 @@ var __decorateClass = (decorators, target, key, kind) => {
   return result;
 };
 
-// packages/ui/src/components/biorhythm-chart.ts
-import { css as css2, html, LitElement, nothing, svg } from "lit";
-import { customElement, property } from "lit/decorators.js";
+// packages/ui/src/components/ashtakavarga-grid.ts
+import { css as css2, html, LitElement, nothing } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+// packages/ui/src/tokens/index.ts
+var PLANET_GLYPH = {
+  Sun: "\u2609",
+  Moon: "\u263D",
+  Mercury: "\u263F",
+  Venus: "\u2640",
+  Earth: "\u2641",
+  Mars: "\u2642",
+  Jupiter: "\u2643",
+  Saturn: "\u2644",
+  Uranus: "\u2645",
+  Neptune: "\u2646",
+  Pluto: "\u2647",
+  Rahu: "\u260A",
+  Ketu: "\u260B",
+  Ascendant: "Asc",
+  Lagna: "La",
+  NorthNode: "\u260A",
+  SouthNode: "\u260B",
+  "North node": "\u260A",
+  "South node": "\u260B",
+  Chiron: "\u26B7",
+  Lilith: "\u26B8",
+  "Black moon lilith": "\u26B8"
+};
+var PLANET_ABBR = {
+  Sun: "Su",
+  Moon: "Mo",
+  Mercury: "Me",
+  Venus: "Ve",
+  Mars: "Ma",
+  Jupiter: "Ju",
+  Saturn: "Sa",
+  Uranus: "Ur",
+  Neptune: "Ne",
+  Pluto: "Pl",
+  Rahu: "Ra",
+  Ketu: "Ke",
+  Ascendant: "Asc",
+  Lagna: "La"
+};
+var SIGN_GLYPH = {
+  Aries: "\u2648",
+  Taurus: "\u2649",
+  Gemini: "\u264A",
+  Cancer: "\u264B",
+  Leo: "\u264C",
+  Virgo: "\u264D",
+  Libra: "\u264E",
+  Scorpio: "\u264F",
+  Sagittarius: "\u2650",
+  Capricorn: "\u2651",
+  Aquarius: "\u2652",
+  Pisces: "\u2653"
+};
+var SIGN_ABBR = {
+  Aries: "Ar",
+  Taurus: "Ta",
+  Gemini: "Ge",
+  Cancer: "Cn",
+  Leo: "Le",
+  Virgo: "Vi",
+  Libra: "Li",
+  Scorpio: "Sc",
+  Sagittarius: "Sg",
+  Capricorn: "Cp",
+  Aquarius: "Aq",
+  Pisces: "Pi"
+};
+var SIGNS_ORDER = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces"
+];
+var RASHI_KEYS = SIGNS_ORDER.map(
+  (s) => s.toLowerCase()
+);
+var TRIGRAM_GLYPH = {
+  heaven: "\u2630",
+  lake: "\u2631",
+  fire: "\u2632",
+  thunder: "\u2633",
+  wind: "\u2634",
+  water: "\u2635",
+  mountain: "\u2636",
+  earth: "\u2637",
+  Heaven: "\u2630",
+  Lake: "\u2631",
+  Fire: "\u2632",
+  Thunder: "\u2633",
+  Wind: "\u2634",
+  Water: "\u2635",
+  Mountain: "\u2636",
+  Earth: "\u2637"
+};
+var MOON_PHASE_EMOJI = {
+  "new moon": "\u{1F311}",
+  "waxing crescent": "\u{1F312}",
+  "first quarter": "\u{1F313}",
+  "waxing gibbous": "\u{1F314}",
+  "full moon": "\u{1F315}",
+  "waning gibbous": "\u{1F316}",
+  "last quarter": "\u{1F317}",
+  "waning crescent": "\u{1F318}"
+};
 
 // packages/ui/src/utils/base-styles.ts
 import { css } from "lit";
@@ -99,7 +214,329 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/components/ashtakavarga-grid.ts
+var TAB_LABELS = {
+  sarva: "Sarvashtakavarga",
+  bhinna: "Bhinnashtakavarga",
+  pinda: "Shodhya Pinda"
+};
+var TABS = ["sarva", "bhinna", "pinda"];
+var RoxyAshtakavargaGrid = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.data = null;
+    this.activeTab = "sarva";
+  }
+  render() {
+    if (!this.data) {
+      return html`<div class="roxy-empty" role="status">No ashtakavarga data</div>`;
+    }
+    const signs = this.data.signs ?? [];
+    return html`<div class="wrap" aria-label="Ashtakavarga grid">
+			<div class="head">
+				<h2 class="title">Ashtakavarga</h2>
+				${signs.length ? html`<p class="subtitle">${signs.length} signs</p>` : nothing}
+			</div>
+
+			<div
+				class="tablist"
+				role="tablist"
+				aria-label="Ashtakavarga views"
+				@keydown=${this.onTabKeyDown}
+			>
+				${TABS.map(
+      (tab) => html`<button
+						class="tab"
+						role="tab"
+						id="tab-${tab}"
+						aria-selected=${this.activeTab === tab ? "true" : "false"}
+						aria-controls="panel-${tab}"
+						tabindex=${this.activeTab === tab ? "0" : "-1"}
+						@click=${() => {
+        this.activeTab = tab;
+      }}
+					>
+						${TAB_LABELS[tab]}
+					</button>`
+    )}
+			</div>
+
+			<div
+				id="panel-${this.activeTab}"
+				role="tabpanel"
+				aria-labelledby="tab-${this.activeTab}"
+			>
+				${this.activeTab === "sarva" ? this.renderSarva(signs) : this.activeTab === "bhinna" ? this.renderBhinna(signs) : this.renderPinda()}
+			</div>
+		</div>`;
+  }
+  onTabKeyDown(e) {
+    const idx = TABS.indexOf(this.activeTab);
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      this.activeTab = TABS[(idx + 1) % TABS.length];
+      this.focusActiveTab();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      this.activeTab = TABS[(idx - 1 + TABS.length) % TABS.length];
+      this.focusActiveTab();
+    }
+  }
+  focusActiveTab() {
+    requestAnimationFrame(() => {
+      const btn = this.shadowRoot?.querySelector(
+        `#tab-${this.activeTab}`
+      );
+      btn?.focus();
+    });
+  }
+  heatClass(count) {
+    if (count <= 1) return "heat-1";
+    if (count <= 2) return "heat-2";
+    if (count <= 3) return "heat-3";
+    if (count <= 4) return "heat-4";
+    if (count <= 5) return "heat-5";
+    if (count <= 6) return "heat-6";
+    return "heat-7";
+  }
+  renderSarva(signs) {
+    const sav = this.data.sarvashtakavarga;
+    if (!sav) return html`<p class="roxy-empty">No sarvashtakavarga data</p>`;
+    return html`<div class="overflow-scroll">
+			<table aria-label="Sarvashtakavarga bindu counts per sign">
+				<thead>
+					<tr>
+						<th scope="col">Sign</th>
+						<th scope="col">Bindus</th>
+					</tr>
+				</thead>
+				<tbody>
+					${signs.map((sign, i) => {
+      const count = sav.bindus[i] ?? 0;
+      const hc = this.heatClass(count);
+      return html`<tr>
+							<td>
+								<div class="planet-cell">
+									<span class="glyph" aria-hidden="true">${SIGN_GLYPH[sign] ?? ""}</span>
+									${sign}
+								</div>
+							</td>
+							<td class="${`heat-cell ${hc}`}">${count}</td>
+						</tr>`;
+    })}
+				</tbody>
+				<tfoot>
+					<tr class="total-row">
+						<td>Total</td>
+						<td>${sav.total}</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>`;
+  }
+  renderBhinna(signs) {
+    const bhinna = this.data.bhinnashtakavarga;
+    if (!bhinna?.length)
+      return html`<p class="roxy-empty">No bhinnashtakavarga data</p>`;
+    return html`<div class="overflow-scroll">
+			<table class="bhinna-table" aria-label="Bhinnashtakavarga planet-by-sign grid">
+				<thead>
+					<tr>
+						<th scope="col">Planet</th>
+						${signs.map(
+      (s) => html`<th scope="col" title=${s}>${SIGN_GLYPH[s] ?? s.slice(0, 2)}</th>`
+    )}
+						<th scope="col">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					${bhinna.map(
+      (row) => html`<tr>
+						<td>${row.planet}</td>
+						${row.bindus.map((count) => {
+        const hc = this.heatClass(count);
+        return html`<td class="${`heat-cell ${hc}`}">${count}</td>`;
+      })}
+						<td>${row.total}</td>
+					</tr>`
+    )}
+				</tbody>
+			</table>
+		</div>`;
+  }
+  renderPinda() {
+    const pinda = this.data.shodhyaPinda;
+    if (!pinda?.length)
+      return html`<p class="roxy-empty">No shodhya pinda data</p>`;
+    return html`<div class="overflow-scroll">
+			<table aria-label="Shodhya Pinda planet strength scores">
+				<thead>
+					<tr>
+						<th scope="col">Planet</th>
+						<th scope="col">Rashi Pinda</th>
+						<th scope="col">Graha Pinda</th>
+						<th scope="col">Shodhya Pinda</th>
+					</tr>
+				</thead>
+				<tbody>
+					${pinda.map(
+      (row) => html`<tr>
+							<td>${row.planet}</td>
+							<td>${row.rashiPinda}</td>
+							<td>${row.grahaPinda}</td>
+							<td>${row.shodhyaPinda}</td>
+						</tr>`
+    )}
+				</tbody>
+			</table>
+		</div>`;
+  }
+};
+RoxyAshtakavargaGrid.styles = [
+  baseStyles,
+  css2`
+			.wrap {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			.head {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: var(--roxy-space-md, 1rem);
+				flex-wrap: wrap;
+			}
+
+			.title {
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0;
+			}
+
+			.subtitle {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				margin: 0;
+			}
+
+			/* Tabs */
+			.tablist {
+				display: flex;
+				gap: 2px;
+				border-bottom: 2px solid var(--roxy-border, #e4e4e7);
+			}
+
+			.tab {
+				padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				background: none;
+				border: none;
+				border-bottom: 2px solid transparent;
+				margin-bottom: -2px;
+				cursor: pointer;
+				color: var(--roxy-muted, #71717a);
+				font-family: inherit;
+				transition: color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
+			}
+
+			.tab[aria-selected='true'] {
+				color: var(--roxy-accent-fg, #b45309);
+				border-bottom-color: var(--roxy-accent, #f59e0b);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+
+			.tab:hover:not([aria-selected='true']) {
+				color: var(--roxy-fg, #0a0a0a);
+			}
+
+			/* Tables */
+			.overflow-scroll {
+				overflow-x: auto;
+				-webkit-overflow-scrolling: touch;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+
+			th,
+			td {
+				padding: var(--roxy-space-sm, 0.5rem);
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				text-align: center;
+			}
+
+			th {
+				color: var(--roxy-muted, #71717a);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: uppercase;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				letter-spacing: 0.06em;
+			}
+
+			td:first-child,
+			th:first-child {
+				text-align: left;
+			}
+
+			.glyph {
+				font-size: 1.1em;
+				margin-right: 3px;
+				line-height: 1;
+			}
+
+			.planet-cell {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				white-space: nowrap;
+			}
+
+			.total-row td {
+				font-weight: var(--roxy-weight-bold, 600);
+				border-top: 2px solid var(--roxy-border, #e4e4e7);
+				border-bottom: none;
+			}
+
+			/* Heat cells */
+			.heat-cell {
+				border-radius: var(--roxy-radius-sm, 4px);
+				font-weight: var(--roxy-weight-bold, 600);
+				min-width: 2rem;
+				font-variant-numeric: tabular-nums;
+			}
+
+			.heat-1 { background: var(--roxy-heat-1, #f0fdf4); color: var(--roxy-fg, #0a0a0a); }
+			.heat-2 { background: var(--roxy-heat-2, #d1fae5); color: var(--roxy-fg, #0a0a0a); }
+			.heat-3 { background: var(--roxy-heat-3, #a7f3d0); color: var(--roxy-fg, #0a0a0a); }
+			.heat-4 { background: var(--roxy-heat-4, #fde68a); color: var(--roxy-fg, #0a0a0a); }
+			.heat-5 { background: var(--roxy-heat-5, #fdba74); color: var(--roxy-fg, #0a0a0a); }
+			.heat-6 { background: var(--roxy-heat-6, #fb923c); color: var(--roxy-fg, #0a0a0a); }
+			.heat-7 { background: var(--roxy-heat-7, #ef4444); color: var(--roxy-fg, #0a0a0a); }
+
+			/* Bhinna grid: planet header column narrower */
+			.bhinna-table th:first-child,
+			.bhinna-table td:first-child {
+				min-width: 5rem;
+			}
+		`
+];
+__decorateClass([
+  property({ attribute: false })
+], RoxyAshtakavargaGrid.prototype, "data", 2);
+__decorateClass([
+  state()
+], RoxyAshtakavargaGrid.prototype, "activeTab", 2);
+RoxyAshtakavargaGrid = __decorateClass([
+  customElement("roxy-ashtakavarga-grid")
+], RoxyAshtakavargaGrid);
+
 // packages/ui/src/components/biorhythm-chart.ts
+import { css as css3, html as html2, LitElement as LitElement2, nothing as nothing2, svg } from "lit";
+import { customElement as customElement2, property as property2 } from "lit/decorators.js";
 var CYCLE_COLOR = {
   physical: "#dc2626",
   emotional: "#0284c7",
@@ -112,7 +549,7 @@ var CYCLE_COLOR = {
   mastery: "#6366f1",
   wisdom: "#475569"
 };
-var RoxyBiorhythmChart = class extends LitElement {
+var RoxyBiorhythmChart = class extends LitElement2 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -121,7 +558,7 @@ var RoxyBiorhythmChart = class extends LitElement {
   render() {
     const d = this.data;
     if (!d)
-      return html`<div class="roxy-empty" role="status">No biorhythm data</div>`;
+      return html2`<div class="roxy-empty" role="status">No biorhythm data</div>`;
     if (this.mode === "critical-days" && "criticalDays" in d) {
       return this.renderCritical(d);
     }
@@ -137,16 +574,16 @@ var RoxyBiorhythmChart = class extends LitElement {
       const normalized = Math.abs(v) > 1 ? v / 100 : v;
       return [cycle, normalized];
     });
-    return html`<section class="wrap" aria-label="Daily biorhythm">
+    return html2`<section class="wrap" aria-label="Daily biorhythm">
 			<header class="head">
 				<h2 class="title">Biorhythm</h2>
-				${typeof d.energyRating === "number" ? html`<span class="energy">Energy ${d.energyRating}/10</span>` : nothing}
+				${typeof d.energyRating === "number" ? html2`<span class="energy">Energy ${d.energyRating}/10</span>` : nothing2}
 			</header>
 			<div class="bars" role="list">
 				${entries.map(([cycle, v]) => {
       const pct = (v + 1) / 2 * 100;
       const color = CYCLE_COLOR[cycle] ?? "var(--roxy-accent, #f59e0b)";
-      return html`<div class="bar" role="listitem">
+      return html2`<div class="bar" role="listitem">
 						<span style="text-transform: capitalize">${cycle}</span>
 						<span class="track">
 							<span
@@ -158,14 +595,14 @@ var RoxyBiorhythmChart = class extends LitElement {
 					</div>`;
     })}
 			</div>
-			${d.dailyMessage ? html`<p class="advice">${d.dailyMessage}</p>` : nothing}
-			${d.advice ? html`<p class="advice">${d.advice}</p>` : nothing}
+			${d.dailyMessage ? html2`<p class="advice">${d.dailyMessage}</p>` : nothing2}
+			${d.advice ? html2`<p class="advice">${d.advice}</p>` : nothing2}
 		</section>`;
   }
   renderForecast(d) {
     const days = d.days ?? [];
     if (days.length === 0)
-      return html`<div class="roxy-empty" role="status">No forecast</div>`;
+      return html2`<div class="roxy-empty" role="status">No forecast</div>`;
     const w = 600;
     const h = 160;
     const xStep = w / Math.max(days.length - 1, 1);
@@ -175,7 +612,7 @@ var RoxyBiorhythmChart = class extends LitElement {
       "intellectual",
       "intuitive"
     ];
-    return html`<section class="wrap" aria-label="Biorhythm forecast">
+    return html2`<section class="wrap" aria-label="Biorhythm forecast">
 			<header class="head">
 				<h2 class="title">Forecast</h2>
 				<span class="energy">${d.startDate} - ${d.endDate}</span>
@@ -205,18 +642,18 @@ var RoxyBiorhythmChart = class extends LitElement {
       return svg`<polyline points=${points} fill="none" stroke=${color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />`;
     })}
 			</svg>
-			${d.summary?.periodAdvice ? html`<p class="advice">${d.summary.periodAdvice}</p>` : nothing}
+			${d.summary?.periodAdvice ? html2`<p class="advice">${d.summary.periodAdvice}</p>` : nothing2}
 		</section>`;
   }
   renderCritical(d) {
-    return html`<section class="wrap" aria-label="Critical days">
+    return html2`<section class="wrap" aria-label="Critical days">
 			<header class="head">
 				<h2 class="title">Critical days</h2>
 				<span class="energy">${d.totalCriticalDays} total</span>
 			</header>
 			<div>
 				${d.criticalDays.map(
-      (day) => html`<span class="crit"
+      (day) => html2`<span class="crit"
 						>${day.date} · ${day.cycle} ${day.severity}</span
 					>`
     )}
@@ -226,7 +663,7 @@ var RoxyBiorhythmChart = class extends LitElement {
 };
 RoxyBiorhythmChart.styles = [
   baseStyles,
-  css2`
+  css3`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -305,18 +742,182 @@ RoxyBiorhythmChart.styles = [
 		`
 ];
 __decorateClass([
-  property({ attribute: false })
+  property2({ attribute: false })
 ], RoxyBiorhythmChart.prototype, "data", 2);
 __decorateClass([
-  property({ type: String, reflect: true })
+  property2({ type: String, reflect: true })
 ], RoxyBiorhythmChart.prototype, "mode", 2);
 RoxyBiorhythmChart = __decorateClass([
-  customElement("roxy-biorhythm-chart")
+  customElement2("roxy-biorhythm-chart")
 ], RoxyBiorhythmChart);
 
+// packages/ui/src/components/choghadiya-grid.ts
+import { css as css4, html as html3, LitElement as LitElement3, nothing as nothing3 } from "lit";
+import { customElement as customElement3, property as property3 } from "lit/decorators.js";
+
+// packages/ui/src/utils/string.ts
+function capitalize(s) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+function humanize(s) {
+  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
+}
+
+// packages/ui/src/components/choghadiya-grid.ts
+function fmtTime(iso) {
+  try {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return iso;
+  }
+}
+var RoxyChoghadiyaGrid = class extends LitElement3 {
+  constructor() {
+    super(...arguments);
+    this.data = null;
+  }
+  renderTile(period) {
+    const effectClass = period.effect === "Good" ? "good" : period.effect === "Bad" ? "bad" : "neutral";
+    const lordGlyph = PLANET_GLYPH[capitalize(period.lord)] ?? "";
+    const timeRange = `${fmtTime(period.start)} - ${fmtTime(period.end)}`;
+    return html3`<div class="cho-tile ${effectClass}" role="listitem">
+			<span class="tile-name">${period.name}</span>
+			<span class="tile-time" aria-label="Time range">${timeRange}</span>
+			<span class="tile-lord">
+				${lordGlyph ? html3`<span aria-hidden="true">${lordGlyph}</span>` : nothing3}
+				${period.lord}
+			</span>
+		</div>`;
+  }
+  render() {
+    if (!this.data)
+      return html3`<div class="roxy-empty" role="status">No choghadiya data</div>`;
+    const { date, dayChoghadiya, nightChoghadiya } = this.data;
+    return html3`<div class="wrap">
+			<div class="header">
+				<h2 class="title">Choghadiya</h2>
+				${date ? html3`<p class="subtitle">${date}</p>` : nothing3}
+			</div>
+
+			<div class="cho-grid">
+				<section class="period-col" aria-label="Day muhurta periods">
+					<h3 class="period-heading">Day</h3>
+					<div role="list" aria-label="Daytime choghadiya">
+						${dayChoghadiya && dayChoghadiya.length > 0 ? dayChoghadiya.map((p) => this.renderTile(p)) : html3`<p class="roxy-empty" role="status">No daytime periods</p>`}
+					</div>
+				</section>
+
+				<section class="period-col" aria-label="Night muhurta periods">
+					<h3 class="period-heading">Night</h3>
+					<div role="list" aria-label="Nighttime choghadiya">
+						${nightChoghadiya && nightChoghadiya.length > 0 ? nightChoghadiya.map((p) => this.renderTile(p)) : html3`<p class="roxy-empty" role="status">No nighttime periods</p>`}
+					</div>
+				</section>
+			</div>
+		</div>`;
+  }
+};
+RoxyChoghadiyaGrid.styles = [
+  baseStyles,
+  css4`
+			.wrap {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+			.header {
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.title {
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0;
+			}
+			.subtitle {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
+				margin: 0;
+			}
+			.cho-grid {
+				display: grid;
+				grid-template-columns: 1fr;
+				gap: var(--roxy-space-md, 1rem);
+			}
+			@media (min-width: 720px) {
+				.cho-grid {
+					grid-template-columns: 1fr 1fr;
+				}
+			}
+			.period-col {
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.period-heading {
+				font-size: var(--roxy-text-base, 1rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0 0 var(--roxy-space-xs, 0.25rem);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.cho-tile {
+				display: grid;
+				grid-template-columns: 1fr auto;
+				align-items: center;
+				gap: 0.25em 0.75em;
+				padding: 0.55em 0.85em;
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+			}
+			.cho-tile.good {
+				background: color-mix(in srgb, var(--roxy-success, #22c55e) 18%, transparent);
+				border-color: color-mix(in srgb, var(--roxy-success, #22c55e) 45%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.cho-tile.bad {
+				background: color-mix(in srgb, var(--roxy-danger, #ef4444) 18%, transparent);
+				border-color: color-mix(in srgb, var(--roxy-danger, #ef4444) 45%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.cho-tile.neutral {
+				background: transparent;
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.tile-name {
+				font-size: var(--roxy-text-base, 1rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				grid-column: 1;
+			}
+			.tile-time {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				opacity: 0.8;
+				white-space: nowrap;
+				grid-column: 2;
+				grid-row: 1 / 3;
+				text-align: right;
+				align-self: center;
+			}
+			.tile-lord {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				opacity: 0.85;
+				grid-column: 1;
+				display: flex;
+				align-items: center;
+				gap: 0.25em;
+			}
+		`
+];
+__decorateClass([
+  property3({ attribute: false })
+], RoxyChoghadiyaGrid.prototype, "data", 2);
+RoxyChoghadiyaGrid = __decorateClass([
+  customElement3("roxy-choghadiya-grid")
+], RoxyChoghadiyaGrid);
+
 // packages/ui/src/components/compatibility-card.ts
-import { css as css3, html as html2, LitElement as LitElement2, nothing as nothing2 } from "lit";
-import { customElement as customElement2, property as property2 } from "lit/decorators.js";
+import { css as css5, html as html4, LitElement as LitElement4, nothing as nothing4 } from "lit";
+import { customElement as customElement4, property as property4 } from "lit/decorators.js";
 
 // packages/ui/src/utils/format.ts
 function formatTime(input) {
@@ -371,7 +972,7 @@ function normalizeAspect(a) {
 }
 
 // packages/ui/src/components/compatibility-card.ts
-var RoxyCompatibilityCard = class extends LitElement2 {
+var RoxyCompatibilityCard = class extends LitElement4 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -392,7 +993,7 @@ var RoxyCompatibilityCard = class extends LitElement2 {
   render() {
     const d = this.data;
     if (!d)
-      return html2`<div class="roxy-empty" role="status">No compatibility data</div>`;
+      return html4`<div class="roxy-empty" role="status">No compatibility data</div>`;
     const score = d.overallScore;
     const breakdown = this.getBreakdown();
     const rating = "rating" in d ? d.rating : void 0;
@@ -403,21 +1004,21 @@ var RoxyCompatibilityCard = class extends LitElement2 {
     const strengths = "strengths" in d ? d.strengths : void 0;
     const challenges = "challenges" in d ? d.challenges : void 0;
     const keyAspects = "keyAspects" in d ? d.keyAspects : void 0;
-    return html2`<article
+    return html4`<article
 			class="card"
 			aria-label=${`Compatibility (${this.mode})`}
 		>
 			<div class="head">
 				<h2>${this.mode} compatibility</h2>
 				<div>
-					${typeof score === "number" ? html2`<div class="score">${formatNumber(score, 0)}</div>` : nothing2}
-					${rating ? html2`<div class="rating">${rating}</div>` : nothing2}
+					${typeof score === "number" ? html4`<div class="score">${formatNumber(score, 0)}</div>` : nothing4}
+					${rating ? html4`<div class="rating">${rating}</div>` : nothing4}
 				</div>
 			</div>
 
-			${Object.keys(breakdown).length > 0 ? html2`<div role="list">
+			${Object.keys(breakdown).length > 0 ? html4`<div role="list">
 						${Object.entries(breakdown).map(
-      ([k, v]) => html2`<div class="bar-row" role="listitem">
+      ([k, v]) => html4`<div class="bar-row" role="listitem">
 								<span style="text-transform: capitalize">${k}</span>
 								<span class="bar"
 									><span style="width: ${Math.max(0, Math.min(100, v))}%"></span
@@ -425,40 +1026,40 @@ var RoxyCompatibilityCard = class extends LitElement2 {
 								<span>${formatNumber(v, 0)}</span>
 							</div>`
     )}
-					</div>` : nothing2}
-			${archetype ? html2`<p>
+					</div>` : nothing4}
+			${archetype ? html4`<p>
 						<span class="archetype">${archetype.label}</span>
-						${archetype.description ? html2` · ${archetype.description}` : nothing2}
-					</p>` : nothing2}
-			${summary ? html2`<p>${summary}</p>` : nothing2}
-			${interpretation && !summary ? html2`<p>${interpretation}</p>` : nothing2}
-			${advice ? html2`<p>${advice}</p>` : nothing2}
-			${(strengths?.length ?? 0) > 0 || (challenges?.length ?? 0) > 0 ? html2`<div class="lists">
-						${strengths?.length ? html2`<div>
+						${archetype.description ? html4` · ${archetype.description}` : nothing4}
+					</p>` : nothing4}
+			${summary ? html4`<p>${summary}</p>` : nothing4}
+			${interpretation && !summary ? html4`<p>${interpretation}</p>` : nothing4}
+			${advice ? html4`<p>${advice}</p>` : nothing4}
+			${(strengths?.length ?? 0) > 0 || (challenges?.length ?? 0) > 0 ? html4`<div class="lists">
+						${strengths?.length ? html4`<div>
 									<h3>Strengths</h3>
 									<ul>
-										${strengths.map((s) => html2`<li>${s}</li>`)}
+										${strengths.map((s) => html4`<li>${s}</li>`)}
 									</ul>
-								</div>` : nothing2}
-						${challenges?.length ? html2`<div>
+								</div>` : nothing4}
+						${challenges?.length ? html4`<div>
 									<h3>Challenges</h3>
 									<ul>
-										${challenges.map((s) => html2`<li>${s}</li>`)}
+										${challenges.map((s) => html4`<li>${s}</li>`)}
 									</ul>
-								</div>` : nothing2}
-					</div>` : nothing2}
-			${keyAspects?.length ? html2`<div>
+								</div>` : nothing4}
+					</div>` : nothing4}
+			${keyAspects?.length ? html4`<div>
 						<h3 style="margin: 0 0 0.25rem; font-size: var(--roxy-text-xs); color: var(--roxy-muted); text-transform: uppercase; letter-spacing: 0.06em;">Key aspects</h3>
 						<ul style="margin: 0; padding-left: 1rem; font-size: var(--roxy-text-sm);">
-							${keyAspects.slice(0, 6).map((a) => html2`<li>${formatAspect(a)}</li>`)}
+							${keyAspects.slice(0, 6).map((a) => html4`<li>${formatAspect(a)}</li>`)}
 						</ul>
-					</div>` : nothing2}
+					</div>` : nothing4}
 		</article>`;
   }
 };
 RoxyCompatibilityCard.styles = [
   baseStyles,
-  css3`
+  css5`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -545,13 +1146,13 @@ RoxyCompatibilityCard.styles = [
 		`
 ];
 __decorateClass([
-  property2({ attribute: false })
+  property4({ attribute: false })
 ], RoxyCompatibilityCard.prototype, "data", 2);
 __decorateClass([
-  property2({ type: String, reflect: true })
+  property4({ type: String, reflect: true })
 ], RoxyCompatibilityCard.prototype, "mode", 2);
 RoxyCompatibilityCard = __decorateClass([
-  customElement2("roxy-compatibility-card")
+  customElement4("roxy-compatibility-card")
 ], RoxyCompatibilityCard);
 function formatAspect(a) {
   const aspect = a.type.toLowerCase().replace(/_/g, "-");
@@ -561,9 +1162,9 @@ function formatAspect(a) {
 }
 
 // packages/ui/src/components/dasha-timeline.ts
-import { css as css4, html as html3, LitElement as LitElement3, nothing as nothing3 } from "lit";
-import { customElement as customElement3, property as property3 } from "lit/decorators.js";
-var RoxyDashaTimeline = class extends LitElement3 {
+import { css as css6, html as html5, LitElement as LitElement5, nothing as nothing5 } from "lit";
+import { customElement as customElement5, property as property5 } from "lit/decorators.js";
+var RoxyDashaTimeline = class extends LitElement5 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -572,44 +1173,44 @@ var RoxyDashaTimeline = class extends LitElement3 {
   render() {
     const d = this.data;
     if (!d)
-      return html3`<div class="roxy-empty" role="status">No dasha data</div>`;
+      return html5`<div class="roxy-empty" role="status">No dasha data</div>`;
     const periods = this.collectPeriods(d);
     const maxYears = periods.length ? Math.max(...periods.map((p) => p.durationYears)) : 0;
-    return html3`<div class="wrap" aria-label="Dasha timeline">
+    return html5`<div class="wrap" aria-label="Dasha timeline">
 			<header class="head">
 				<h2 class="title">
 					${this.period === "major" ? "Vimshottari Mahadasha" : this.period === "sub" ? "Antardasha" : "Active dashas"}
 				</h2>
-				${"nakshatraName" in d && d.nakshatraName ? html3`<div class="nakshatra">
+				${"nakshatraName" in d && d.nakshatraName ? html5`<div class="nakshatra">
 						Moon nakshatra: ${d.nakshatraName}
-						${"nakshatraLord" in d && d.nakshatraLord ? html3`(lord ${d.nakshatraLord})` : nothing3}
-					</div>` : nothing3}
+						${"nakshatraLord" in d && d.nakshatraLord ? html5`(lord ${d.nakshatraLord})` : nothing5}
+					</div>` : nothing5}
 			</header>
 
-			${this.period === "current" ? this.renderCurrent(d) : nothing3}
-			${periods.length > 0 ? html3`<div class="timeline" role="list">
+			${this.period === "current" ? this.renderCurrent(d) : nothing5}
+			${periods.length > 0 ? html5`<div class="timeline" role="list">
 						${periods.map((p) => this.renderBar(p, maxYears))}
-					</div>` : nothing3}
+					</div>` : nothing5}
 		</div>`;
   }
   renderCurrent(d) {
-    if (!("mahadasha" in d)) return nothing3;
-    return html3`<div class="current">
-			${"mahadasha" in d && d.mahadasha ? html3`<div>
+    if (!("mahadasha" in d)) return nothing5;
+    return html5`<div class="current">
+			${"mahadasha" in d && d.mahadasha ? html5`<div>
 					<span>Mahadasha</span>
 					<strong>${d.mahadasha.planet}</strong>
-					${"remainingInMahadasha" in d && d.remainingInMahadasha ? html3`<small>${formatNumber(d.remainingInMahadasha.years + d.remainingInMahadasha.months / 12, 1)} years left</small>` : nothing3}
-				</div>` : nothing3}
-			${"antardasha" in d && d.antardasha ? html3`<div>
+					${"remainingInMahadasha" in d && d.remainingInMahadasha ? html5`<small>${formatNumber(d.remainingInMahadasha.years + d.remainingInMahadasha.months / 12, 1)} years left</small>` : nothing5}
+				</div>` : nothing5}
+			${"antardasha" in d && d.antardasha ? html5`<div>
 					<span>Antardasha</span>
 					<strong>${d.antardasha.planet}</strong>
-					${"remainingInAntardasha" in d && d.remainingInAntardasha ? html3`<small>${formatNumber(d.remainingInAntardasha.years + d.remainingInAntardasha.months / 12, 1)} years left</small>` : nothing3}
-				</div>` : nothing3}
-			${"pratyantardasha" in d && d.pratyantardasha ? html3`<div>
+					${"remainingInAntardasha" in d && d.remainingInAntardasha ? html5`<small>${formatNumber(d.remainingInAntardasha.years + d.remainingInAntardasha.months / 12, 1)} years left</small>` : nothing5}
+				</div>` : nothing5}
+			${"pratyantardasha" in d && d.pratyantardasha ? html5`<div>
 					<span>Pratyantardasha</span>
 					<strong>${d.pratyantardasha.planet}</strong>
-					${"remainingInPratyantardasha" in d && d.remainingInPratyantardasha ? html3`<small>${formatNumber(d.remainingInPratyantardasha.years + d.remainingInPratyantardasha.months / 12, 1)} years left</small>` : nothing3}
-				</div>` : nothing3}
+					${"remainingInPratyantardasha" in d && d.remainingInPratyantardasha ? html5`<small>${formatNumber(d.remainingInPratyantardasha.years + d.remainingInPratyantardasha.months / 12, 1)} years left</small>` : nothing5}
+				</div>` : nothing5}
 		</div>`;
   }
   collectPeriods(d) {
@@ -620,19 +1221,19 @@ var RoxyDashaTimeline = class extends LitElement3 {
   renderBar(p, max) {
     const years = p.durationYears;
     const width = max > 0 ? years / max * 100 : 0;
-    return html3`<div class="bar" role="listitem">
+    return html5`<div class="bar" role="listitem">
 			<span>${p.planet}</span>
 			<span class="bar-track"><span style="width: ${width}%"></span></span>
 			<span class="dates">
 				${p.startDate ? formatYear(p.startDate) : ""}
-				${p.endDate ? html3`- ${formatYear(p.endDate)}` : ""}
+				${p.endDate ? html5`- ${formatYear(p.endDate)}` : ""}
 			</span>
 		</div>`;
   }
 };
 RoxyDashaTimeline.styles = [
   baseStyles,
-  css4`
+  css6`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -710,13 +1311,13 @@ RoxyDashaTimeline.styles = [
 		`
 ];
 __decorateClass([
-  property3({ attribute: false })
+  property5({ attribute: false })
 ], RoxyDashaTimeline.prototype, "data", 2);
 __decorateClass([
-  property3({ type: String, reflect: true })
+  property5({ type: String, reflect: true })
 ], RoxyDashaTimeline.prototype, "period", 2);
 RoxyDashaTimeline = __decorateClass([
-  customElement3("roxy-dasha-timeline")
+  customElement5("roxy-dasha-timeline")
 ], RoxyDashaTimeline);
 function formatYear(s) {
   const m = s.match(/^(\d{4})/);
@@ -724,24 +1325,13 @@ function formatYear(s) {
 }
 
 // packages/ui/src/components/data.ts
-import { css as css5, html as html4, LitElement as LitElement4, nothing as nothing4 } from "lit";
-import { customElement as customElement4, property as property4 } from "lit/decorators.js";
-
-// packages/ui/src/utils/string.ts
-function capitalize(s) {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
-function humanize(s) {
-  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
-}
-
-// packages/ui/src/components/data.ts
+import { css as css7, html as html6, LitElement as LitElement6, nothing as nothing6 } from "lit";
+import { customElement as customElement6, property as property6 } from "lit/decorators.js";
 var TITLE_KEYS = ["title", "name", "label", "heading", "overview", "summary"];
 var IMAGE_KEYS = ["imageUrl", "image", "icon", "symbol"];
 var SKIP_KEYS = ["imageUrl", "image"];
 var MAX_DEPTH = 6;
-var RoxyData = class extends LitElement4 {
+var RoxyData = class extends LitElement6 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -749,12 +1339,12 @@ var RoxyData = class extends LitElement4 {
   }
   render() {
     if (this.data == null) {
-      return html4`<div class="roxy-empty" role="status">No data</div>`;
+      return html6`<div class="roxy-empty" role="status">No data</div>`;
     }
     if (this.depth >= MAX_DEPTH) {
-      return html4`<div class="roxy-empty" role="status">…</div>`;
+      return html6`<div class="roxy-empty" role="status">…</div>`;
     }
-    return html4`<div
+    return html6`<div
 			class="roxy-card"
 			aria-label="Generic data display"
 		>
@@ -762,46 +1352,46 @@ var RoxyData = class extends LitElement4 {
 		</div>`;
   }
   renderValue(value) {
-    if (value === null || value === void 0) return nothing4;
-    if (typeof value === "string") return html4`<p>${value}</p>`;
+    if (value === null || value === void 0) return nothing6;
+    if (typeof value === "string") return html6`<p>${value}</p>`;
     if (typeof value === "number" || typeof value === "boolean") {
-      return html4`<p>${String(value)}</p>`;
+      return html6`<p>${String(value)}</p>`;
     }
     if (Array.isArray(value)) return this.renderArray(value);
     return this.renderObject(value);
   }
   renderArray(arr) {
     if (arr.length === 0) {
-      return html4`<div class="roxy-empty" role="status">Empty list</div>`;
+      return html6`<div class="roxy-empty" role="status">Empty list</div>`;
     }
     const allPrimitive = arr.every(
       (v) => v === null || ["string", "number", "boolean"].includes(typeof v)
     );
     if (allPrimitive) {
-      return html4`<ul class="roxy-chips">
-				${arr.map((v) => html4`<li>${String(v)}</li>`)}
+      return html6`<ul class="roxy-chips">
+				${arr.map((v) => html6`<li>${String(v)}</li>`)}
 			</ul>`;
     }
     const allObjects = arr.every(
       (v) => v !== null && typeof v === "object" && !Array.isArray(v)
     );
     if (allObjects) return this.renderTable(arr);
-    return html4`<ol>
-			${arr.map((v) => html4`<li>${this.renderValue(v)}</li>`)}
+    return html6`<ol>
+			${arr.map((v) => html6`<li>${this.renderValue(v)}</li>`)}
 		</ol>`;
   }
   renderTable(rows) {
     const keys = this.collectKeys(rows);
-    return html4`<table class="roxy-table" role="table">
+    return html6`<table class="roxy-table" role="table">
 			<thead>
 				<tr>
-					${keys.map((k) => html4`<th>${humanize(k)}</th>`)}
+					${keys.map((k) => html6`<th>${humanize(k)}</th>`)}
 				</tr>
 			</thead>
 			<tbody>
 				${rows.map(
-      (row) => html4`<tr>
-						${keys.map((k) => html4`<td>${this.formatPrimitive(row[k])}</td>`)}
+      (row) => html6`<tr>
+						${keys.map((k) => html6`<td>${this.formatPrimitive(row[k])}</td>`)}
 					</tr>`
     )}
 			</tbody>
@@ -816,23 +1406,23 @@ var RoxyData = class extends LitElement4 {
     const rows = Object.entries(obj).filter(
       ([k, v]) => k !== titleKey && k !== summaryKey && !SKIP_KEYS.includes(k) && v !== null && v !== void 0
     );
-    return html4`
-			${imageKey ? html4`<img
+    return html6`
+			${imageKey ? html6`<img
 						class="roxy-image"
 						src=${String(obj[imageKey])}
 						alt=${titleKey ? String(obj[titleKey]) : "illustration"}
 						loading="lazy"
-					/>` : nothing4}
-			${titleKey ? html4`<h3 class="roxy-title">${obj[titleKey]}</h3>` : nothing4}
-			${summaryKey ? html4`<p class="roxy-summary">${obj[summaryKey]}</p>` : nothing4}
-			${rows.length > 0 ? html4`<dl class="roxy-rows">
+					/>` : nothing6}
+			${titleKey ? html6`<h3 class="roxy-title">${obj[titleKey]}</h3>` : nothing6}
+			${summaryKey ? html6`<p class="roxy-summary">${obj[summaryKey]}</p>` : nothing6}
+			${rows.length > 0 ? html6`<dl class="roxy-rows">
 						${rows.map(
-      ([k, v]) => html4`
+      ([k, v]) => html6`
 								<dt>${humanize(k)}</dt>
 								<dd>${this.renderField(v)}</dd>
 							`
     )}
-					</dl>` : nothing4}
+					</dl>` : nothing6}
 		`;
   }
   renderField(value) {
@@ -845,12 +1435,12 @@ var RoxyData = class extends LitElement4 {
         (v) => ["string", "number", "boolean"].includes(typeof v)
       );
       if (allPrimitive) {
-        return html4`<ul class="roxy-chips">
-					${value.map((v) => html4`<li>${String(v)}</li>`)}
+        return html6`<ul class="roxy-chips">
+					${value.map((v) => html6`<li>${String(v)}</li>`)}
 				</ul>`;
       }
     }
-    return html4`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
+    return html6`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
   }
   formatPrimitive(value) {
     if (value === null || value === void 0) return "";
@@ -870,7 +1460,7 @@ var RoxyData = class extends LitElement4 {
 };
 RoxyData.styles = [
   baseStyles,
-  css5`
+  css7`
 			.roxy-card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -967,24 +1557,314 @@ RoxyData.styles = [
 		`
 ];
 __decorateClass([
-  property4({ attribute: false })
+  property6({ attribute: false })
 ], RoxyData.prototype, "data", 2);
 __decorateClass([
-  property4({ attribute: false })
+  property6({ attribute: false })
 ], RoxyData.prototype, "depth", 2);
 RoxyData = __decorateClass([
-  customElement4("roxy-data")
+  customElement6("roxy-data")
 ], RoxyData);
 
+// packages/ui/src/components/divisional-chart.ts
+import { css as css8, html as html7, LitElement as LitElement7, nothing as nothing8 } from "lit";
+import { customElement as customElement7, property as property7 } from "lit/decorators.js";
+
+// packages/ui/src/utils/kundli-render.ts
+import { nothing as nothing7, svg as svg2 } from "lit";
+var RASHI_TO_SIGN = Object.fromEntries(
+  SIGNS_ORDER.map((s) => [s.toLowerCase(), s])
+);
+var SOUTH_HOUSE_CENTERS = {
+  1: { x: 150, y: 58 },
+  2: { x: 205, y: 52 },
+  3: { x: 253, y: 112 },
+  4: { x: 243, y: 150 },
+  5: { x: 253, y: 188 },
+  6: { x: 205, y: 248 },
+  7: { x: 150, y: 242 },
+  8: { x: 95, y: 248 },
+  9: { x: 47, y: 188 },
+  10: { x: 57, y: 150 },
+  11: { x: 47, y: 112 },
+  12: { x: 95, y: 52 }
+};
+var SOUTH_SIGN_POSITIONS = {
+  1: { x: 150, y: 35 },
+  2: { x: 222, y: 40 },
+  3: { x: 265, y: 100 },
+  4: { x: 265, y: 150 },
+  5: { x: 265, y: 200 },
+  6: { x: 222, y: 260 },
+  7: { x: 150, y: 265 },
+  8: { x: 78, y: 260 },
+  9: { x: 35, y: 200 },
+  10: { x: 35, y: 150 },
+  11: { x: 35, y: 100 },
+  12: { x: 78, y: 40 }
+};
+var NORTH_HOUSE_CENTERS = {
+  1: { x: 150, y: 60 },
+  2: { x: 225, y: 100 },
+  3: { x: 255, y: 150 },
+  4: { x: 225, y: 200 },
+  5: { x: 150, y: 240 },
+  6: { x: 75, y: 200 },
+  7: { x: 45, y: 150 },
+  8: { x: 75, y: 100 },
+  9: { x: 100, y: 80 },
+  10: { x: 150, y: 108 },
+  11: { x: 200, y: 80 },
+  12: { x: 200, y: 220 }
+};
+function renderSouthHouseGroup(h) {
+  const center = SOUTH_HOUSE_CENTERS[h.number];
+  const signPos = SOUTH_SIGN_POSITIONS[h.number];
+  if (!center || !signPos) return nothing7;
+  const signAbbr = SIGN_ABBR[h.sign] ?? "";
+  const planets = h.planets;
+  return svg2`
+		<g>
+			${h.isLagna ? svg2`<rect
+							class="lagna-bg"
+							x=${center.x - 30} y=${center.y - 28}
+							width="60" height="56" rx="6"
+						/>` : nothing7}
+			${signAbbr ? svg2`<text class="sign-text" x=${signPos.x} y=${signPos.y} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : nothing7}
+			${h.isLagna ? svg2`<text class="lagna-marker" x=${center.x} y=${center.y - 18} text-anchor="middle" dominant-baseline="central">LAGNA</text>` : nothing7}
+			${planets.map((planet, j) => {
+    const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
+    const lineHeight = 13;
+    const baseY = h.isLagna ? center.y + 8 : center.y;
+    const startY = baseY - (planets.length - 1) * lineHeight / 2;
+    const yPos = startY + j * lineHeight;
+    return svg2`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
+  })}
+		</g>
+	`;
+}
+function renderNorthFrame() {
+  return svg2`
+		<polygon class="line" points="150,10 290,150 150,290 10,150" stroke-width="1.5" />
+		<line class="line" x1="150" y1="10" x2="150" y2="290" stroke-width="1" />
+		<line class="line" x1="10" y1="150" x2="290" y2="150" stroke-width="1" />
+		<line class="line" x1="150" y1="10" x2="10" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+		<line class="line" x1="150" y1="10" x2="290" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+		<line class="line" x1="150" y1="290" x2="10" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+		<line class="line" x1="150" y1="290" x2="290" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+	`;
+}
+function renderNorthHouseGroup(h) {
+  const center = NORTH_HOUSE_CENTERS[h.number];
+  if (!center) return nothing7;
+  const signAbbr = SIGN_ABBR[h.sign] ?? "";
+  const planets = h.planets;
+  return svg2`
+		<g>
+			${h.isLagna ? svg2`<circle class="lagna-bg" cx=${center.x} cy=${center.y} r="22" />` : nothing7}
+			${signAbbr ? svg2`<text class="sign-text" x=${center.x} y=${center.y - 10} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : nothing7}
+			<text class="house-num" x=${center.x} y=${center.y + 2} text-anchor="middle" dominant-baseline="central">${h.number}</text>
+			${planets.map((planet, j) => {
+    const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
+    const lineHeight = 11;
+    const startY = center.y + 14 - (planets.length - 1) * lineHeight / 2;
+    const yPos = startY + j * lineHeight;
+    return svg2`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
+  })}
+		</g>
+	`;
+}
+function renderSouthFrame() {
+  return svg2`
+		<polygon class="line" points="150,10 290,150 150,290 10,150" stroke-width="1.5" />
+		<polygon class="line" points="220,80 220,220 80,220 80,80" stroke-width="1" fill="none" />
+		<line class="line" x1="150" y1="10" x2="80" y2="80" stroke-width="1" />
+		<line class="line" x1="150" y1="10" x2="220" y2="80" stroke-width="1" />
+		<line class="line" x1="290" y1="150" x2="220" y2="80" stroke-width="1" />
+		<line class="line" x1="290" y1="150" x2="220" y2="220" stroke-width="1" />
+		<line class="line" x1="150" y1="290" x2="220" y2="220" stroke-width="1" />
+		<line class="line" x1="150" y1="290" x2="80" y2="220" stroke-width="1" />
+		<line class="line" x1="10" y1="150" x2="80" y2="220" stroke-width="1" />
+		<line class="line" x1="10" y1="150" x2="80" y2="80" stroke-width="1" />
+	`;
+}
+
+// packages/ui/src/components/divisional-chart.ts
+var RoxyDivisionalChart = class extends LitElement7 {
+  constructor() {
+    super(...arguments);
+    this.data = null;
+    this.chartStyle = "south";
+  }
+  buildHouses() {
+    if (!this.data) return [];
+    const chart = this.data.chart;
+    const meta = this.data.chart.meta ?? {};
+    const lagnaSign = meta.Lagna?.rashi ?? "";
+    const houses = [];
+    for (let i = 0; i < 12; i++) {
+      const key = RASHI_KEYS[i];
+      const bucket = chart[key];
+      const planets = (bucket?.signs ?? []).map((p) => p.graha).filter(Boolean);
+      const sign = RASHI_TO_SIGN[key] ?? "";
+      houses.push({
+        number: i + 1,
+        sign,
+        planets,
+        isLagna: lagnaSign ? lagnaSign.toLowerCase() === sign.toLowerCase() : false
+      });
+    }
+    return houses;
+  }
+  render() {
+    if (!this.data)
+      return html7`<div class="roxy-empty" role="status">No divisional chart data</div>`;
+    const { division, vargottama } = this.data;
+    const houses = this.buildHouses();
+    const isNorth = this.chartStyle === "north";
+    return html7`<div class="wrap">
+			<div class="header">
+				<h2 class="title">
+					D${division.number} ${division.name}
+					${division.sanskritName && division.sanskritName !== division.name ? html7`<span class="division-meta"> · ${division.sanskritName}</span>` : nothing8}
+				</h2>
+				${division.significance ? html7`<p class="significance">${division.significance}</p>` : nothing8}
+			</div>
+
+			<svg
+				viewBox="0 0 300 300"
+				role="img"
+				aria-label="D${division.number} ${division.name} divisional chart with twelve sign houses"
+			>
+				<title>D${division.number} ${division.name}</title>
+				${isNorth ? renderNorthFrame() : renderSouthFrame()}
+				${isNorth ? houses.map((h) => renderNorthHouseGroup(h)) : houses.map((h) => renderSouthHouseGroup(h))}
+			</svg>
+
+			${vargottama && vargottama.length > 0 ? html7`<div class="vargottama-row" role="list" aria-label="Vargottama planets">
+						<span class="vargottama-label">Vargottama:</span>
+						${vargottama.map(
+      (planet) => html7`<span class="vargottama-pill" role="listitem">
+									${PLANET_GLYPH[planet] ?? ""} ${planet}
+								</span>`
+    )}
+					</div>` : nothing8}
+		</div>`;
+  }
+};
+RoxyDivisionalChart.styles = [
+  baseStyles,
+  css8`
+			.wrap {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+			.header {
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.title {
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0;
+			}
+			.division-meta {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
+				margin: 0;
+			}
+			.significance {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
+				border-left: 2px solid var(--roxy-border, #e4e4e7);
+				padding-left: var(--roxy-space-sm, 0.5rem);
+				margin: 0;
+			}
+			svg {
+				display: block;
+				width: 100%;
+				max-width: 360px;
+				margin: 0 auto;
+			}
+			.line {
+				fill: transparent;
+				stroke: var(--roxy-border, #e4e4e7);
+			}
+			.sign-text {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 9px;
+				font-weight: 500;
+				font-family: var(--roxy-font-sans);
+			}
+			.planet-text {
+				fill: var(--roxy-fg, #0a0a0a);
+				font-size: 11px;
+				font-weight: 600;
+				font-family: var(--roxy-font-sans);
+			}
+			.house-num {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 9px;
+				font-weight: 400;
+				font-family: var(--roxy-font-sans);
+			}
+			.lagna-marker {
+				fill: var(--roxy-accent-fg, #b45309);
+				font-size: 8px;
+				font-weight: 700;
+				font-family: var(--roxy-font-sans);
+				letter-spacing: 0.05em;
+			}
+			.lagna-bg {
+				fill: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, transparent);
+				stroke: color-mix(in srgb, var(--roxy-accent, #f59e0b) 45%, transparent);
+				stroke-width: 0.8;
+			}
+			.vargottama-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+				align-items: center;
+			}
+			.vargottama-label {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
+				font-weight: 500;
+				margin-right: var(--roxy-space-xs, 0.25rem);
+			}
+			.vargottama-pill {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.2em;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: 600;
+				padding: 0.15em 0.6em;
+				border-radius: 999px;
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 22%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid color-mix(in srgb, var(--roxy-accent, #f59e0b) 45%, transparent);
+			}
+		`
+];
+__decorateClass([
+  property7({ attribute: false })
+], RoxyDivisionalChart.prototype, "data", 2);
+__decorateClass([
+  property7({ type: String, reflect: true, attribute: "chart-style" })
+], RoxyDivisionalChart.prototype, "chartStyle", 2);
+RoxyDivisionalChart = __decorateClass([
+  customElement7("roxy-divisional-chart")
+], RoxyDivisionalChart);
+
 // packages/ui/src/components/dosha-card.ts
-import { css as css6, html as html5, LitElement as LitElement5, nothing as nothing5 } from "lit";
-import { customElement as customElement5, property as property5 } from "lit/decorators.js";
+import { css as css9, html as html8, LitElement as LitElement8, nothing as nothing9 } from "lit";
+import { customElement as customElement8, property as property8 } from "lit/decorators.js";
 var DOSHA_LABELS = {
   manglik: "Mangal Dosha",
   kalsarpa: "Kaal Sarp Dosha",
   sadhesati: "Sade Sati"
 };
-var RoxyDoshaCard = class extends LitElement5 {
+var RoxyDoshaCard = class extends LitElement8 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -993,54 +1873,58 @@ var RoxyDoshaCard = class extends LitElement5 {
   render() {
     const d = this.data;
     if (!d)
-      return html5`<div class="roxy-empty" role="status">No dosha data</div>`;
+      return html8`<div class="roxy-empty" role="status">No dosha data</div>`;
     const present = !!d.present;
     const label = DOSHA_LABELS[this.type] ?? this.type;
-    const sevClass = (d.severity ?? "").toLowerCase();
-    return html5`<article
+    const sevLower = (d.severity ?? "").toLowerCase();
+    const tier = sevLower === "severe" ? 3 : sevLower === "moderate" ? 2 : sevLower === "mild" ? 1 : 0;
+    const pct = tier * 33;
+    const barColor = tier === 3 ? "var(--roxy-danger)" : tier === 2 ? "var(--roxy-warning)" : tier === 1 ? "var(--roxy-success)" : "transparent";
+    return html8`<article
 			class="card"
 			aria-label=${label}
 		>
 			<header class="head">
 				<h2 class="title">${label}</h2>
-				<div style="display:flex; gap:0.5rem; align-items:center;">
-					<span class=${`badge ${present ? "present" : "absent"}`}>
-						${present ? "Present" : "Absent"}
-					</span>
-					${d.severity ? html5`<span
-								class=${`severity ${sevClass}`}
-								role="img"
-								aria-label=${`Severity ${d.severity}`}
-							>
-								<span></span><span></span><span></span>
-							</span>` : nothing5}
-				</div>
+				<span class=${`badge ${present ? "present" : "absent"}`}>
+					${present ? "Present" : "Absent"}
+				</span>
 			</header>
-			${d.description ? html5`<p class="description">${d.description}</p>` : nothing5}
+			${d.severity ? html8`<div
+						class="severity-bar"
+						role="meter"
+						aria-valuemin="0"
+						aria-valuemax="3"
+						aria-valuenow="${tier}"
+						aria-label="Severity ${d.severity}"
+					>
+						<span class="severity-fill" style="width: ${pct}%; background: ${barColor};"></span>
+					</div>` : nothing9}
+			${d.description ? html8`<p class="description">${d.description}</p>` : nothing9}
 			${this.renderEffects(d)}
-			${d.remedies && d.remedies.length > 0 ? html5`<div>
+			${d.remedies && d.remedies.length > 0 ? html8`<div>
 						<h3>Remedies</h3>
 						<ul>
-							${d.remedies.map((r) => html5`<li>${r}</li>`)}
+							${d.remedies.map((r) => html8`<li>${r}</li>`)}
 						</ul>
-					</div>` : nothing5}
-			${"exceptions" in d && d.exceptions && d.exceptions.length > 0 ? html5`<div>
+					</div>` : nothing9}
+			${"exceptions" in d && d.exceptions && d.exceptions.length > 0 ? html8`<div>
 					<h3>Exceptions</h3>
 					<ul>
-						${d.exceptions.map((r) => html5`<li>${r}</li>`)}
+						${d.exceptions.map((r) => html8`<li>${r}</li>`)}
 					</ul>
-				</div>` : nothing5}
+				</div>` : nothing9}
 		</article>`;
   }
   renderEffects(d) {
-    if (!d.effects) return nothing5;
+    if (!d.effects) return nothing9;
     const entries = Object.entries(d.effects).filter(
       ([, v]) => typeof v === "string" && v.length > 0
     );
-    if (entries.length === 0) return nothing5;
-    return html5`<div class="effects">
+    if (entries.length === 0) return nothing9;
+    return html8`<div class="effects">
 			${entries.map(
-      ([k, v]) => html5`<div>
+      ([k, v]) => html8`<div>
 					<h3>${k}</h3>
 					<p>${v}</p>
 				</div>`
@@ -1050,7 +1934,7 @@ var RoxyDoshaCard = class extends LitElement5 {
 };
 RoxyDoshaCard.styles = [
   baseStyles,
-  css6`
+  css9`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -1092,25 +1976,24 @@ RoxyDoshaCard.styles = [
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
 				color: var(--roxy-danger-fg, #991b1b);
 			}
-			.severity {
-				display: flex;
-				align-items: center;
-				gap: 4px;
+			.severity-bar {
+				position: relative;
+				width: 100%;
+				height: 8px;
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 30%, transparent);
+				border-radius: 4px;
+				overflow: hidden;
 			}
-			.severity span {
-				width: 14px;
-				height: 4px;
-				border-radius: 2px;
-				background: var(--roxy-border, #e4e4e7);
+			.severity-fill {
+				display: block;
+				height: 100%;
+				transition: width var(--roxy-motion-duration, 200ms) ease-out;
+				border-radius: 4px;
 			}
-			.severity.mild span:nth-child(1) {
-				background: var(--roxy-warning, #ea580c);
-			}
-			.severity.moderate span:nth-child(-n + 2) {
-				background: var(--roxy-warning, #ea580c);
-			}
-			.severity.severe span {
-				background: var(--roxy-danger, #dc2626);
+			@media (prefers-reduced-motion: reduce) {
+				.severity-fill {
+					transition: none;
+				}
 			}
 
 			.description {
@@ -1142,18 +2025,18 @@ RoxyDoshaCard.styles = [
 		`
 ];
 __decorateClass([
-  property5({ attribute: false })
+  property8({ attribute: false })
 ], RoxyDoshaCard.prototype, "data", 2);
 __decorateClass([
-  property5({ type: String, reflect: true })
+  property8({ type: String, reflect: true })
 ], RoxyDoshaCard.prototype, "type", 2);
 RoxyDoshaCard = __decorateClass([
-  customElement5("roxy-dosha-card")
+  customElement8("roxy-dosha-card")
 ], RoxyDoshaCard);
 
 // packages/ui/src/components/endpoint-form.ts
-import { css as css7, html as html6, LitElement as LitElement6, nothing as nothing6 } from "lit";
-import { customElement as customElement6, property as property6, state } from "lit/decorators.js";
+import { css as css10, html as html9, LitElement as LitElement9, nothing as nothing10 } from "lit";
+import { customElement as customElement9, property as property9, state as state2 } from "lit/decorators.js";
 var specCache = /* @__PURE__ */ new Map();
 async function loadSpec(url) {
   let pending = specCache.get(url);
@@ -1169,7 +2052,7 @@ async function loadSpec(url) {
   }
   return pending;
 }
-var RoxyEndpointForm = class extends LitElement6 {
+var RoxyEndpointForm = class extends LitElement9 {
   constructor() {
     super(...arguments);
     this.endpoint = "vedic-astrology/birth-chart";
@@ -1314,35 +2197,35 @@ var RoxyEndpointForm = class extends LitElement6 {
   }
   render() {
     if (!this.loaded) {
-      return html6`<form><div class="roxy-skeleton" style="height: 8rem"></div></form>`;
+      return html9`<form><div class="roxy-skeleton" style="height: 8rem"></div></form>`;
     }
     if (this.specError) {
-      return html6`<div class="spec-error" role="alert">
+      return html9`<div class="spec-error" role="alert">
 				Schema load failed: ${this.specError}
 				<button type="button" class="submit" @click=${this.retryLoadSchema}>Retry</button>
 			</div>`;
     }
     const renderField = (f) => {
       if (this.hasLocation && (f.name === "latitude" || f.name === "longitude" || f.name === "timezone")) {
-        return nothing6;
+        return nothing10;
       }
       const inputId = `roxy-form-${f.name}`;
-      return html6`<div class="field">
+      return html9`<div class="field">
 				<label for=${inputId}>
-					${humanize(f.name)}${f.required ? html6`<span class="req" aria-hidden="true">*</span>` : nothing6}
+					${humanize(f.name)}${f.required ? html9`<span class="req" aria-hidden="true">*</span>` : nothing10}
 				</label>
-				${f.enum ? html6`<select
+				${f.enum ? html9`<select
 							id=${inputId}
 							?required=${f.required}
 							@change=${(e) => this.setValue(f.name, e.target.value)}
 						>
 							<option value="">Choose</option>
 							${f.enum.map(
-        (opt) => html6`<option value=${opt} ?selected=${this.values[f.name] === opt}>
+        (opt) => html9`<option value=${opt} ?selected=${this.values[f.name] === opt}>
 									${opt}
 								</option>`
       )}
-						</select>` : html6`<input
+						</select>` : html9`<input
 							id=${inputId}
 							type=${this.htmlType(f.type)}
 							?required=${f.required}
@@ -1355,12 +2238,12 @@ var RoxyEndpointForm = class extends LitElement6 {
         this.coerce(f.type, e.target.value)
       )}
 						/>`}
-				${f.description ? html6`<small class="help">${f.description}</small>` : nothing6}
+				${f.description ? html9`<small class="help">${f.description}</small>` : nothing10}
 			</div>`;
     };
-    return html6`<form @submit=${this.onSubmit}>
+    return html9`<form @submit=${this.onSubmit}>
 			<h2 class="title">${humanize(this.endpoint.split("/").pop() ?? "")}</h2>
-			${this.hasLocation ? html6`<div class="location-block">
+			${this.hasLocation ? html9`<div class="location-block">
 						<label>Birth location</label>
 						<roxy-location-search
 							@roxy-location-select=${this.onLocation}
@@ -1369,7 +2252,7 @@ var RoxyEndpointForm = class extends LitElement6 {
 						<small class="help">
 							Required: latitude, longitude, timezone. Pick a city to autofill.
 						</small>
-					</div>` : nothing6}
+					</div>` : nothing10}
 			<div class="fields">
 				${this.fields.map((f) => renderField(f))}
 			</div>
@@ -1401,7 +2284,7 @@ var RoxyEndpointForm = class extends LitElement6 {
 };
 RoxyEndpointForm.styles = [
   baseStyles,
-  css7`
+  css10`
 			form {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -1506,40 +2389,40 @@ RoxyEndpointForm.styles = [
 		`
 ];
 __decorateClass([
-  property6({ type: String, attribute: "data-endpoint" })
+  property9({ type: String, attribute: "data-endpoint" })
 ], RoxyEndpointForm.prototype, "endpoint", 2);
 __decorateClass([
-  property6({ type: String })
+  property9({ type: String })
 ], RoxyEndpointForm.prototype, "method", 2);
 __decorateClass([
-  property6({ type: String, attribute: "spec-url" })
+  property9({ type: String, attribute: "spec-url" })
 ], RoxyEndpointForm.prototype, "specUrl", 2);
 __decorateClass([
-  property6({ type: String, attribute: "submit-label" })
+  property9({ type: String, attribute: "submit-label" })
 ], RoxyEndpointForm.prototype, "submitLabel", 2);
 __decorateClass([
-  state()
+  state2()
 ], RoxyEndpointForm.prototype, "fields", 2);
 __decorateClass([
-  state()
+  state2()
 ], RoxyEndpointForm.prototype, "values", 2);
 __decorateClass([
-  state()
+  state2()
 ], RoxyEndpointForm.prototype, "hasLocation", 2);
 __decorateClass([
-  state()
+  state2()
 ], RoxyEndpointForm.prototype, "loaded", 2);
 __decorateClass([
-  state()
+  state2()
 ], RoxyEndpointForm.prototype, "specError", 2);
 RoxyEndpointForm = __decorateClass([
-  customElement6("roxy-endpoint-form")
+  customElement9("roxy-endpoint-form")
 ], RoxyEndpointForm);
 
 // packages/ui/src/components/guna-milan.ts
-import { css as css8, html as html7, LitElement as LitElement7, nothing as nothing7 } from "lit";
-import { customElement as customElement7, property as property7 } from "lit/decorators.js";
-var RoxyGunaMilan = class extends LitElement7 {
+import { css as css11, html as html10, LitElement as LitElement10, nothing as nothing11 } from "lit";
+import { customElement as customElement10, property as property10 } from "lit/decorators.js";
+var RoxyGunaMilan = class extends LitElement10 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -1547,23 +2430,44 @@ var RoxyGunaMilan = class extends LitElement7 {
   render() {
     const d = this.data;
     if (!d)
-      return html7`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
+      return html10`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
     const breakdown = (d.breakdown ?? []).filter(
       (b) => b?.category !== void 0
     );
-    return html7`<article class="card" aria-label="Guna Milan score">
-			<div class="score-bar">
-				<div>
-					<span class="total">${formatNumber(d.total, 1)}</span>
-					<span class="over"> / ${d.maxScore}</span>
-					${typeof d.percentage === "number" ? html7`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
-								${formatPercent(d.percentage, 1)}
-							</small>` : nothing7}
+    const score = d.total ?? 0;
+    const max = d.maxScore ?? 36;
+    const pct = score / max * 100;
+    const trackColor = "color-mix(in srgb, var(--roxy-border) 50%, transparent)";
+    const fillColor = pct >= 70 ? "var(--roxy-success)" : pct >= 50 ? "var(--roxy-warning)" : "var(--roxy-danger)";
+    const dashFill = pct * 2.827;
+    const dashGap = (100 - pct) * 2.827;
+    return html10`<article class="card" aria-label="Guna Milan score">
+			<div class="score-header">
+				<div class="score-info">
+					<div class="score-bar">
+						<div>
+							<span class="total">${formatNumber(d.total, 1)}</span>
+							<span class="over"> / ${d.maxScore}</span>
+							${typeof d.percentage === "number" ? html10`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
+										${formatPercent(d.percentage, 1)}
+									</small>` : nothing11}
+						</div>
+						${d.recommendation ? html10`<span class="recommendation">${d.recommendation}</span>` : nothing11}
+					</div>
 				</div>
-				${d.recommendation ? html7`<span class="recommendation">${d.recommendation}</span>` : nothing7}
+				<div class="score-ring" role="meter" aria-label="Guna milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
+					<svg viewBox="0 0 100 100" aria-hidden="true">
+						<circle class="ring-track" cx="50" cy="50" r="45" fill="none" stroke="${trackColor}" stroke-width="8"/>
+						<circle class="ring-fill" cx="50" cy="50" r="45" fill="none" stroke="${fillColor}" stroke-width="8"
+								stroke-dasharray="${dashFill},${dashGap}" stroke-linecap="round"
+								transform="rotate(-90 50 50)"/>
+						<text x="50" y="50" text-anchor="middle" dominant-baseline="central" class="ring-text">${score}</text>
+						<text x="50" y="64" text-anchor="middle" dominant-baseline="central" class="ring-max">/${max}</text>
+					</svg>
+				</div>
 			</div>
 
-			${breakdown.length > 0 ? html7`<table>
+			${breakdown.length > 0 ? html10`<table>
 						<thead>
 							<tr>
 								<th>Category</th>
@@ -1573,33 +2477,33 @@ var RoxyGunaMilan = class extends LitElement7 {
 						</thead>
 						<tbody>
 							${breakdown.map((b) => {
-      const score = b.score ?? 0;
+      const score2 = b.score ?? 0;
       const maxScore = b.maxScore ?? defaultMax(b.category);
-      const pct = maxScore ? score / maxScore * 100 : 0;
-      return html7`<tr>
+      const pct2 = maxScore ? score2 / maxScore * 100 : 0;
+      return html10`<tr>
 									<td>${b.category}</td>
 									<td class="bar-cell">
 										<div class="mini-bar">
-											<span style="width: ${pct}%"></span>
+											<span style="width: ${pct2}%"></span>
 										</div>
 									</td>
-									<td class="score">${formatNumber(score, 1)} / ${maxScore}</td>
+									<td class="score">${formatNumber(score2, 1)} / ${maxScore}</td>
 								</tr>`;
     })}
 						</tbody>
-					</table>` : nothing7}
-			${(d.doshas?.length ?? 0) > 0 || (d.doshaCancellations?.length ?? 0) > 0 ? html7`<div class="tags">
-						${d.doshas?.map((x) => html7`<span class="dosha">${x}</span>`)}
+					</table>` : nothing11}
+			${(d.doshas?.length ?? 0) > 0 || (d.doshaCancellations?.length ?? 0) > 0 ? html10`<div class="tags">
+						${d.doshas?.map((x) => html10`<span class="dosha">${x}</span>`)}
 						${d.doshaCancellations?.map(
-      (x) => html7`<span class="cancel" title=${x.reason}>${x.dosha} cancelled</span>`
+      (x) => html10`<span class="cancel" title=${x.reason}>${x.dosha} cancelled</span>`
     )}
-					</div>` : nothing7}
+					</div>` : nothing11}
 		</article>`;
   }
 };
 RoxyGunaMilan.styles = [
   baseStyles,
-  css8`
+  css11`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -1610,6 +2514,14 @@ RoxyGunaMilan.styles = [
 				gap: var(--roxy-space-md, 1rem);
 			}
 
+			.score-header {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+			}
+			.score-info {
+				flex: 1;
+			}
 			.score-bar {
 				display: grid;
 				grid-template-columns: 1fr auto;
@@ -1630,6 +2542,26 @@ RoxyGunaMilan.styles = [
 			.recommendation {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-secondary, #475569);
+			}
+			.score-ring {
+				width: 120px;
+				height: 120px;
+				flex-shrink: 0;
+			}
+			.score-ring svg {
+				width: 100%;
+				height: 100%;
+			}
+			.score-ring .ring-text {
+				font-size: 22px;
+				font-weight: 700;
+				fill: var(--roxy-fg, #0a0a0a);
+				font-family: var(--roxy-font-sans);
+			}
+			.score-ring .ring-max {
+				font-size: 10px;
+				fill: var(--roxy-muted, #71717a);
+				font-family: var(--roxy-font-sans);
 			}
 
 			table {
@@ -1695,10 +2627,10 @@ RoxyGunaMilan.styles = [
 		`
 ];
 __decorateClass([
-  property7({ attribute: false })
+  property10({ attribute: false })
 ], RoxyGunaMilan.prototype, "data", 2);
 RoxyGunaMilan = __decorateClass([
-  customElement7("roxy-guna-milan")
+  customElement10("roxy-guna-milan")
 ], RoxyGunaMilan);
 function defaultMax(name) {
   if (!name) return 1;
@@ -1725,126 +2657,9 @@ function defaultMax(name) {
 }
 
 // packages/ui/src/components/hexagram.ts
-import { css as css9, html as html8, LitElement as LitElement8, nothing as nothing8, svg as svg2 } from "lit";
-import { customElement as customElement8, property as property8 } from "lit/decorators.js";
-
-// packages/ui/src/tokens/index.ts
-var PLANET_GLYPH = {
-  Sun: "\u2609",
-  Moon: "\u263D",
-  Mercury: "\u263F",
-  Venus: "\u2640",
-  Earth: "\u2641",
-  Mars: "\u2642",
-  Jupiter: "\u2643",
-  Saturn: "\u2644",
-  Uranus: "\u2645",
-  Neptune: "\u2646",
-  Pluto: "\u2647",
-  Rahu: "\u260A",
-  Ketu: "\u260B",
-  Ascendant: "Asc",
-  Lagna: "La",
-  NorthNode: "\u260A",
-  SouthNode: "\u260B",
-  "North node": "\u260A",
-  "South node": "\u260B",
-  Chiron: "\u26B7",
-  Lilith: "\u26B8",
-  "Black moon lilith": "\u26B8"
-};
-var PLANET_ABBR = {
-  Sun: "Su",
-  Moon: "Mo",
-  Mercury: "Me",
-  Venus: "Ve",
-  Mars: "Ma",
-  Jupiter: "Ju",
-  Saturn: "Sa",
-  Uranus: "Ur",
-  Neptune: "Ne",
-  Pluto: "Pl",
-  Rahu: "Ra",
-  Ketu: "Ke",
-  Ascendant: "Asc",
-  Lagna: "La"
-};
-var SIGN_GLYPH = {
-  Aries: "\u2648",
-  Taurus: "\u2649",
-  Gemini: "\u264A",
-  Cancer: "\u264B",
-  Leo: "\u264C",
-  Virgo: "\u264D",
-  Libra: "\u264E",
-  Scorpio: "\u264F",
-  Sagittarius: "\u2650",
-  Capricorn: "\u2651",
-  Aquarius: "\u2652",
-  Pisces: "\u2653"
-};
-var SIGN_ABBR = {
-  Aries: "Ar",
-  Taurus: "Ta",
-  Gemini: "Ge",
-  Cancer: "Cn",
-  Leo: "Le",
-  Virgo: "Vi",
-  Libra: "Li",
-  Scorpio: "Sc",
-  Sagittarius: "Sg",
-  Capricorn: "Cp",
-  Aquarius: "Aq",
-  Pisces: "Pi"
-};
-var SIGNS_ORDER = [
-  "Aries",
-  "Taurus",
-  "Gemini",
-  "Cancer",
-  "Leo",
-  "Virgo",
-  "Libra",
-  "Scorpio",
-  "Sagittarius",
-  "Capricorn",
-  "Aquarius",
-  "Pisces"
-];
-var RASHI_KEYS = SIGNS_ORDER.map(
-  (s) => s.toLowerCase()
-);
-var TRIGRAM_GLYPH = {
-  heaven: "\u2630",
-  lake: "\u2631",
-  fire: "\u2632",
-  thunder: "\u2633",
-  wind: "\u2634",
-  water: "\u2635",
-  mountain: "\u2636",
-  earth: "\u2637",
-  Heaven: "\u2630",
-  Lake: "\u2631",
-  Fire: "\u2632",
-  Thunder: "\u2633",
-  Wind: "\u2634",
-  Water: "\u2635",
-  Mountain: "\u2636",
-  Earth: "\u2637"
-};
-var MOON_PHASE_EMOJI = {
-  "new moon": "\u{1F311}",
-  "waxing crescent": "\u{1F312}",
-  "first quarter": "\u{1F313}",
-  "waxing gibbous": "\u{1F314}",
-  "full moon": "\u{1F315}",
-  "waning gibbous": "\u{1F316}",
-  "last quarter": "\u{1F317}",
-  "waning crescent": "\u{1F318}"
-};
-
-// packages/ui/src/components/hexagram.ts
-var RoxyHexagram = class extends LitElement8 {
+import { css as css12, html as html11, LitElement as LitElement11, nothing as nothing12, svg as svg3 } from "lit";
+import { customElement as customElement11, property as property11 } from "lit/decorators.js";
+var RoxyHexagram = class extends LitElement11 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -1874,7 +2689,7 @@ var RoxyHexagram = class extends LitElement8 {
   render() {
     const resolved = this.resolveHexagram();
     if (!resolved)
-      return html8`<div class="roxy-empty" role="status">No hexagram data</div>`;
+      return html11`<div class="roxy-empty" role="status">No hexagram data</div>`;
     const {
       hex: h,
       lines: castLines,
@@ -1884,52 +2699,52 @@ var RoxyHexagram = class extends LitElement8 {
     } = resolved;
     const lines = castLines ?? this.derivedLines(h);
     const changing = new Set(changingLinePositions ?? []);
-    return html8`<article class="card" aria-label="I Ching hexagram">
+    return html11`<article class="card" aria-label="I Ching hexagram">
 			<div class="glyphs">
-				${h.symbol ? html8`<div class="symbol">${h.symbol}</div>` : nothing8}
+				${h.symbol ? html11`<div class="symbol">${h.symbol}</div>` : nothing12}
 				<div class="lines" aria-hidden="true">
 					${lines.slice().reverse().map((l, idx) => {
       const realIdx = lines.length - 1 - idx + 1;
       const isChanging = changing.has(realIdx);
       const broken = l === 6 || l === 8;
       const cls = `${broken ? "broken" : "solid"}${isChanging ? " changing" : ""}`;
-      return html8`<div class="line ${cls}">
-								${broken ? svg2`<span class="seg"></span><span class="seg"></span>` : svg2`<span class="seg"></span>`}
+      return html11`<div class="line ${cls}">
+								${broken ? svg3`<span class="seg"></span><span class="seg"></span>` : svg3`<span class="seg"></span>`}
 							</div>`;
     })}
 				</div>
 			</div>
 			<div>
 				<h2 class="title">
-					${h.number ? html8`${h.number}. ` : nothing8}${h.english ?? h.chinese ?? "Hexagram"}
+					${h.number ? html11`${h.number}. ` : nothing12}${h.english ?? h.chinese ?? "Hexagram"}
 				</h2>
 				<p class="subtitle">
-					${h.chinese ? html8`${h.chinese}` : nothing8}
-					${h.pinyin ? html8` · ${h.pinyin}` : nothing8}
+					${h.chinese ? html11`${h.chinese}` : nothing12}
+					${h.pinyin ? html11` · ${h.pinyin}` : nothing12}
 				</p>
 				<div class="trigrams">
-					${h.upperTrigram ? html8`<div>
+					${h.upperTrigram ? html11`<div>
 								Upper
 								<span class="tri-glyph"
 									>${TRIGRAM_GLYPH[h.upperTrigram] ?? ""}</span
 								>${h.upperTrigram}
-							</div>` : nothing8}
-					${h.lowerTrigram ? html8`<div>
+							</div>` : nothing12}
+					${h.lowerTrigram ? html11`<div>
 								Lower
 								<span class="tri-glyph"
 									>${TRIGRAM_GLYPH[h.lowerTrigram] ?? ""}</span
 								>${h.lowerTrigram}
-							</div>` : nothing8}
+							</div>` : nothing12}
 				</div>
-				${h.judgment ? html8`<p class="judgment">${h.judgment}</p>` : nothing8}
-				${h.image ? html8`<p class="image">${h.image}</p>` : nothing8}
-				${dailyMessage ? html8`<p class="message">${dailyMessage}</p>` : nothing8}
-				${h.interpretation?.general ? html8`<p>${h.interpretation.general}</p>` : nothing8}
-				${changing.size > 0 ? html8`<div class="changing">
+				${h.judgment ? html11`<p class="judgment">${h.judgment}</p>` : nothing12}
+				${h.image ? html11`<p class="image">${h.image}</p>` : nothing12}
+				${dailyMessage ? html11`<p class="message">${dailyMessage}</p>` : nothing12}
+				${h.interpretation?.general ? html11`<p>${h.interpretation.general}</p>` : nothing12}
+				${changing.size > 0 ? html11`<div class="changing">
 							Changing lines: ${Array.from(changing).sort((a, b) => a - b).join(", ")}.
-							${resultingHexagram?.english ? html8` Becomes hexagram ${resultingHexagram.number}
-										${resultingHexagram.english}.` : nothing8}
-						</div>` : nothing8}
+							${resultingHexagram?.english ? html11` Becomes hexagram ${resultingHexagram.number}
+										${resultingHexagram.english}.` : nothing12}
+						</div>` : nothing12}
 			</div>
 		</article>`;
   }
@@ -1950,7 +2765,7 @@ var RoxyHexagram = class extends LitElement8 {
 };
 RoxyHexagram.styles = [
   baseStyles,
-  css9`
+  css12`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -2060,19 +2875,19 @@ RoxyHexagram.styles = [
 		`
 ];
 __decorateClass([
-  property8({ attribute: false })
+  property11({ attribute: false })
 ], RoxyHexagram.prototype, "data", 2);
 __decorateClass([
-  property8({ type: String, reflect: true })
+  property11({ type: String, reflect: true })
 ], RoxyHexagram.prototype, "mode", 2);
 RoxyHexagram = __decorateClass([
-  customElement8("roxy-hexagram")
+  customElement11("roxy-hexagram")
 ], RoxyHexagram);
 
 // packages/ui/src/components/horoscope-card.ts
-import { css as css10, html as html9, LitElement as LitElement9, nothing as nothing9 } from "lit";
-import { customElement as customElement9, property as property9 } from "lit/decorators.js";
-var RoxyHoroscopeCard = class extends LitElement9 {
+import { css as css13, html as html12, LitElement as LitElement12, nothing as nothing13 } from "lit";
+import { customElement as customElement12, property as property12 } from "lit/decorators.js";
+var RoxyHoroscopeCard = class extends LitElement12 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -2081,12 +2896,12 @@ var RoxyHoroscopeCard = class extends LitElement9 {
   render() {
     const d = this.data;
     if (!d)
-      return html9`<div class="roxy-empty" role="status">No horoscope data</div>`;
+      return html12`<div class="roxy-empty" role="status">No horoscope data</div>`;
     const sign = d.sign ?? "";
     const glyph = sign ? SIGN_GLYPH[capitalize(sign)] ?? "" : "";
     const energy = "energyRating" in d && typeof d.energyRating === "number" ? d.energyRating : null;
     const dateLabel = "date" in d && d.date || "week" in d && d.week || "month" in d && d.month || "";
-    return html9`<article
+    return html12`<article
 			class="card"
 			aria-label=${`${this.period} horoscope for ${sign}`}
 		>
@@ -2094,39 +2909,39 @@ var RoxyHoroscopeCard = class extends LitElement9 {
 				<span class="glyph" aria-hidden="true">${glyph}</span>
 				<div>
 					<h2 class="title">${sign} ${this.period}</h2>
-					${dateLabel ? html9`<div class="date">${dateLabel}</div>` : nothing9}
+					${dateLabel ? html12`<div class="date">${dateLabel}</div>` : nothing13}
 				</div>
-				${energy !== null ? html9`<span class="energy" aria-label=${`Energy ${energy} of 10`}>
+				${energy !== null ? html12`<span class="energy" aria-label=${`Energy ${energy} of 10`}>
 							Energy ${energy}/10
 							<span class="energy-bar"
 								><span style="width: ${energy / 10 * 100}%"></span
 							></span>
-						</span>` : nothing9}
+						</span>` : nothing13}
 			</header>
 
-			${d.overview ? html9`<p class="overview">${d.overview}</p>` : nothing9}
+			${d.overview ? html12`<p class="overview">${d.overview}</p>` : nothing13}
 
 			<div class="sections">
-				${d.love ? html9`<div class="section">
+				${d.love ? html12`<div class="section">
 							<h3>Love</h3>
 							<p>${d.love}</p>
-						</div>` : nothing9}
-				${d.career ? html9`<div class="section">
+						</div>` : nothing13}
+				${d.career ? html12`<div class="section">
 							<h3>Career</h3>
 							<p>${d.career}</p>
-						</div>` : nothing9}
-				${d.health ? html9`<div class="section">
+						</div>` : nothing13}
+				${d.health ? html12`<div class="section">
 							<h3>Health</h3>
 							<p>${d.health}</p>
-						</div>` : nothing9}
-				${d.finance ? html9`<div class="section">
+						</div>` : nothing13}
+				${d.finance ? html12`<div class="section">
 							<h3>Finance</h3>
 							<p>${d.finance}</p>
-						</div>` : nothing9}
-				${"advice" in d && d.advice ? html9`<div class="section">
+						</div>` : nothing13}
+				${"advice" in d && d.advice ? html12`<div class="section">
 							<h3>Advice</h3>
 							<p>${d.advice}</p>
-						</div>` : nothing9}
+						</div>` : nothing13}
 			</div>
 
 			${(() => {
@@ -2136,25 +2951,25 @@ var RoxyHoroscopeCard = class extends LitElement9 {
       const luckyDays = "luckyDays" in d && d.luckyDays ? d.luckyDays : [];
       const compatibleSigns = d.compatibleSigns ?? [];
       if (luckyNumber === void 0 && !luckyColor && luckyNumbers.length === 0 && luckyDays.length === 0 && compatibleSigns.length === 0)
-        return nothing9;
-      return html9`<div class="lucky">
-						${luckyNumber !== void 0 ? html9`<span>Lucky number <strong>${luckyNumber}</strong></span>` : nothing9}
-						${luckyColor ? html9`<span>Lucky color <strong>${luckyColor}</strong></span>` : nothing9}
-						${luckyNumbers.length ? html9`<span
+        return nothing13;
+      return html12`<div class="lucky">
+						${luckyNumber !== void 0 ? html12`<span>Lucky number <strong>${luckyNumber}</strong></span>` : nothing13}
+						${luckyColor ? html12`<span>Lucky color <strong>${luckyColor}</strong></span>` : nothing13}
+						${luckyNumbers.length ? html12`<span
 									>Lucky numbers
 									<strong>${luckyNumbers.join(", ")}</strong></span
-								>` : nothing9}
-						${luckyDays.length ? html9`<span
+								>` : nothing13}
+						${luckyDays.length ? html12`<span
 									>Lucky days <strong>${luckyDays.join(", ")}</strong></span
-								>` : nothing9}
-						${compatibleSigns.length ? html9`<span class="compat-wrap">
+								>` : nothing13}
+						${compatibleSigns.length ? html12`<span class="compat-wrap">
 									Best with
 									<span class="compat"
 										>${compatibleSigns.map(
-        (s) => html9`<span>${s}</span>`
+        (s) => html12`<span>${s}</span>`
       )}</span
 									>
-								</span>` : nothing9}
+								</span>` : nothing13}
 					</div>`;
     })()}
 		</article>`;
@@ -2162,7 +2977,7 @@ var RoxyHoroscopeCard = class extends LitElement9 {
 };
 RoxyHoroscopeCard.styles = [
   baseStyles,
-  css10`
+  css13`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -2287,35 +3102,35 @@ RoxyHoroscopeCard.styles = [
 		`
 ];
 __decorateClass([
-  property9({ attribute: false })
+  property12({ attribute: false })
 ], RoxyHoroscopeCard.prototype, "data", 2);
 __decorateClass([
-  property9({ type: String, reflect: true })
+  property12({ type: String, reflect: true })
 ], RoxyHoroscopeCard.prototype, "period", 2);
 RoxyHoroscopeCard = __decorateClass([
-  customElement9("roxy-horoscope-card")
+  customElement12("roxy-horoscope-card")
 ], RoxyHoroscopeCard);
 
 // packages/ui/src/components/kp-planets-table.ts
-import { css as css11, html as html10, LitElement as LitElement10, nothing as nothing10 } from "lit";
-import { customElement as customElement10, property as property10 } from "lit/decorators.js";
-var RoxyKpPlanetsTable = class extends LitElement10 {
+import { css as css14, html as html13, LitElement as LitElement13, nothing as nothing14 } from "lit";
+import { customElement as customElement13, property as property13 } from "lit/decorators.js";
+var RoxyKpPlanetsTable = class extends LitElement13 {
   constructor() {
     super(...arguments);
     this.data = null;
   }
   render() {
     if (!this.data)
-      return html10`<div class="roxy-empty" role="status">No KP data</div>`;
+      return html13`<div class="roxy-empty" role="status">No KP data</div>`;
     const planets = this.data.planets ?? [];
-    return html10`<div
+    return html13`<div
 			class="wrap"
 			aria-label="KP planets table"
 			tabindex="0"
 		>
 			<header class="head">
 				<h2 class="title">KP planets</h2>
-				${typeof this.data.ayanamsa === "number" ? html10`<span class="ayanamsa">Ayanamsa: ${formatNumber(this.data.ayanamsa, 2)}°</span>` : nothing10}
+				${typeof this.data.ayanamsa === "number" ? html13`<span class="ayanamsa">Ayanamsa: ${formatNumber(this.data.ayanamsa, 2)}°</span>` : nothing14}
 			</header>
 			<table role="table">
 				<thead>
@@ -2332,10 +3147,10 @@ var RoxyKpPlanetsTable = class extends LitElement10 {
 				</thead>
 				<tbody>
 					${planets.map(
-      (p) => html10`<tr>
+      (p) => html13`<tr>
 							<td class="planet">
 								${p.planet}
-								${p.retrograde ? html10`<span class="retro">R</span>` : nothing10}
+								${p.retrograde ? html13`<span class="retro">R</span>` : nothing14}
 							</td>
 							<td>${p.sign ?? ""}</td>
 							<td>${p.signLord ?? ""}</td>
@@ -2353,7 +3168,7 @@ var RoxyKpPlanetsTable = class extends LitElement10 {
 };
 RoxyKpPlanetsTable.styles = [
   baseStyles,
-  css11`
+  css14`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
@@ -2415,15 +3230,15 @@ RoxyKpPlanetsTable.styles = [
 		`
 ];
 __decorateClass([
-  property10({ attribute: false })
+  property13({ attribute: false })
 ], RoxyKpPlanetsTable.prototype, "data", 2);
 RoxyKpPlanetsTable = __decorateClass([
-  customElement10("roxy-kp-planets-table")
+  customElement13("roxy-kp-planets-table")
 ], RoxyKpPlanetsTable);
 
 // packages/ui/src/components/location-search.ts
-import { css as css12, html as html11, LitElement as LitElement11, nothing as nothing11 } from "lit";
-import { customElement as customElement11, property as property11, state as state2 } from "lit/decorators.js";
+import { css as css15, html as html14, LitElement as LitElement14, nothing as nothing15 } from "lit";
+import { customElement as customElement14, property as property14, state as state3 } from "lit/decorators.js";
 
 // packages/ui/src/utils/debounce.ts
 function debounce(fn, wait) {
@@ -2445,7 +3260,7 @@ function debounce(fn, wait) {
 }
 
 // packages/ui/src/components/location-search.ts
-var RoxyLocationSearch = class extends LitElement11 {
+var RoxyLocationSearch = class extends LitElement14 {
   constructor() {
     super(...arguments);
     this.endpoint = "https://roxyapi.com/api/v2/location/search";
@@ -2575,7 +3390,7 @@ var RoxyLocationSearch = class extends LitElement11 {
     );
   }
   render() {
-    return html11`<div class="field">
+    return html14`<div class="field">
 			<input
 				type="text"
 				role="combobox"
@@ -2591,14 +3406,14 @@ var RoxyLocationSearch = class extends LitElement11 {
       if (this.results.length > 0) this.isOpen = true;
     }}
 			/>
-			${this.isLoading ? html11`<span class="spinner" role="status" aria-label="Loading"></span>` : nothing11}
-			${this.isOpen ? html11`<ul
+			${this.isLoading ? html14`<span class="spinner" role="status" aria-label="Loading"></span>` : nothing15}
+			${this.isOpen ? html14`<ul
 						id="roxy-location-listbox"
 						class="results"
 						role="listbox"
 					>
-						${this.results.length === 0 ? html11`<li class="empty" role="status">No cities found</li>` : this.results.map(
-      (city, idx) => html11`<li role="presentation">
+						${this.results.length === 0 ? html14`<li class="empty" role="status">No cities found</li>` : this.results.map(
+      (city, idx) => html14`<li role="presentation">
 										<button
 											type="button"
 											class="option"
@@ -2611,7 +3426,7 @@ var RoxyLocationSearch = class extends LitElement11 {
 										>
 											<span class="city">${city.city}</span>
 											<span class="where"
-												>${city.province ? html11`${city.province}, ` : ""}${city.country}</span
+												>${city.province ? html14`${city.province}, ` : ""}${city.country}</span
 											>
 											<span class="tz"
 												>UTC${city.utcOffset >= 0 ? "+" : ""}${city.utcOffset}</span
@@ -2619,13 +3434,13 @@ var RoxyLocationSearch = class extends LitElement11 {
 										</button>
 									</li>`
     )}
-					</ul>` : nothing11}
+					</ul>` : nothing15}
 		</div>`;
   }
 };
 RoxyLocationSearch.styles = [
   baseStyles,
-  css12`
+  css15`
 			:host {
 				display: block;
 				position: relative;
@@ -2729,43 +3544,43 @@ RoxyLocationSearch.styles = [
 		`
 ];
 __decorateClass([
-  property11({ type: String, attribute: "api-key" })
+  property14({ type: String, attribute: "api-key" })
 ], RoxyLocationSearch.prototype, "apiKey", 2);
 __decorateClass([
-  property11({ type: String, attribute: "publishable-key" })
+  property14({ type: String, attribute: "publishable-key" })
 ], RoxyLocationSearch.prototype, "publishableKey", 2);
 __decorateClass([
-  property11({ type: String })
+  property14({ type: String })
 ], RoxyLocationSearch.prototype, "endpoint", 2);
 __decorateClass([
-  property11({ type: String })
+  property14({ type: String })
 ], RoxyLocationSearch.prototype, "placeholder", 2);
 __decorateClass([
-  property11({ type: String, attribute: "default-value" })
+  property14({ type: String, attribute: "default-value" })
 ], RoxyLocationSearch.prototype, "defaultValue", 2);
 __decorateClass([
-  state2()
+  state3()
 ], RoxyLocationSearch.prototype, "query", 2);
 __decorateClass([
-  state2()
+  state3()
 ], RoxyLocationSearch.prototype, "results", 2);
 __decorateClass([
-  state2()
+  state3()
 ], RoxyLocationSearch.prototype, "isOpen", 2);
 __decorateClass([
-  state2()
+  state3()
 ], RoxyLocationSearch.prototype, "isLoading", 2);
 __decorateClass([
-  state2()
+  state3()
 ], RoxyLocationSearch.prototype, "highlight", 2);
 RoxyLocationSearch = __decorateClass([
-  customElement11("roxy-location-search")
+  customElement14("roxy-location-search")
 ], RoxyLocationSearch);
 
 // packages/ui/src/components/moon-phase.ts
-import { css as css13, html as html12, LitElement as LitElement12, nothing as nothing12 } from "lit";
-import { customElement as customElement12, property as property12 } from "lit/decorators.js";
-var RoxyMoonPhase = class extends LitElement12 {
+import { css as css16, html as html15, LitElement as LitElement15, nothing as nothing16 } from "lit";
+import { customElement as customElement15, property as property15 } from "lit/decorators.js";
+var RoxyMoonPhase = class extends LitElement15 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -2774,12 +3589,12 @@ var RoxyMoonPhase = class extends LitElement12 {
   render() {
     const d = this.data;
     if (!d)
-      return html12`<div class="roxy-empty" role="status">No moon phase data</div>`;
+      return html15`<div class="roxy-empty" role="status">No moon phase data</div>`;
     const list = "phases" in d ? d.phases : "calendar" in d ? d.calendar : [];
     if (this.mode !== "current" && list.length > 0) {
       const month = "month" in d ? d.month : void 0;
       const year = "year" in d ? d.year : void 0;
-      return html12`<article
+      return html15`<article
 				class="card"
 				aria-label="Moon phase calendar"
 			>
@@ -2789,46 +3604,46 @@ var RoxyMoonPhase = class extends LitElement12 {
 				</div>
 			</article>`;
     }
-    if (!("phase" in d)) return nothing12;
+    if (!("phase" in d)) return nothing16;
     return this.renderSingle(d);
   }
   renderSingle(d) {
     const emoji = phaseEmoji(d.phase);
-    return html12`<article class="card" aria-label="Current moon phase">
+    return html15`<article class="card" aria-label="Current moon phase">
 			<div class="hero">
 				<span class="emoji" aria-hidden="true">${emoji}</span>
 				<div>
 					<h2 class="label">${d.phase ?? "Moon"}</h2>
-					${d.date ? html12`<div class="date">${d.date}</div>` : nothing12}
+					${d.date ? html15`<div class="date">${d.date}</div>` : nothing16}
 				</div>
 			</div>
 			<div class="stats">
-				${typeof d.illumination === "number" ? html12`<div>
+				${typeof d.illumination === "number" ? html15`<div>
 							<span>Illumination</span>
 							<strong>${formatIllumination(d.illumination)}</strong>
-						</div>` : nothing12}
-				${typeof d.age === "number" ? html12`<div>
+						</div>` : nothing16}
+				${typeof d.age === "number" ? html15`<div>
 							<span>Age</span>
 							<strong>${formatNumber(d.age, 1)} days</strong>
-						</div>` : nothing12}
-				${d.sign ? html12`<div>
+						</div>` : nothing16}
+				${d.sign ? html15`<div>
 							<span>Sign</span>
 							<strong>${d.sign}</strong>
-						</div>` : nothing12}
-				${typeof d.distance === "number" ? html12`<div>
+						</div>` : nothing16}
+				${typeof d.distance === "number" ? html15`<div>
 							<span>Distance</span>
 							<strong>${(d.distance / 1e3).toFixed(0)}k km</strong>
-						</div>` : nothing12}
+						</div>` : nothing16}
 			</div>
-			${d.meaning?.description ? html12`<p class="meaning">${d.meaning.description}</p>` : nothing12}
-			${d.meaning?.keywords?.length ? html12`<div class="keywords">
-						${d.meaning.keywords.map((k) => html12`<span>${k}</span>`)}
-					</div>` : nothing12}
+			${d.meaning?.description ? html15`<p class="meaning">${d.meaning.description}</p>` : nothing16}
+			${d.meaning?.keywords?.length ? html15`<div class="keywords">
+						${d.meaning.keywords.map((k) => html15`<span>${k}</span>`)}
+					</div>` : nothing16}
 		</article>`;
   }
   renderListItem(p) {
     const emoji = phaseEmoji(p.phase);
-    return html12`<div class="list-item" role="listitem">
+    return html15`<div class="list-item" role="listitem">
 			<span aria-hidden="true">${emoji}</span>
 			<span>${p.phase}</span>
 			<span>${p.date ?? ""}</span>
@@ -2837,7 +3652,7 @@ var RoxyMoonPhase = class extends LitElement12 {
 };
 RoxyMoonPhase.styles = [
   baseStyles,
-  css13`
+  css16`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -2922,13 +3737,13 @@ RoxyMoonPhase.styles = [
 		`
 ];
 __decorateClass([
-  property12({ attribute: false })
+  property15({ attribute: false })
 ], RoxyMoonPhase.prototype, "data", 2);
 __decorateClass([
-  property12({ type: String, reflect: true })
+  property15({ type: String, reflect: true })
 ], RoxyMoonPhase.prototype, "mode", 2);
 RoxyMoonPhase = __decorateClass([
-  customElement12("roxy-moon-phase")
+  customElement15("roxy-moon-phase")
 ], RoxyMoonPhase);
 function phaseEmoji(phase) {
   if (!phase) return "\u{1F319}";
@@ -2940,8 +3755,8 @@ function formatIllumination(v) {
 }
 
 // packages/ui/src/components/natal-chart.ts
-import { css as css14, html as html13, LitElement as LitElement13, nothing as nothing13, svg as svg3 } from "lit";
-import { customElement as customElement13, property as property13 } from "lit/decorators.js";
+import { css as css17, html as html16, LitElement as LitElement16, nothing as nothing17, svg as svg4 } from "lit";
+import { customElement as customElement16, property as property16 } from "lit/decorators.js";
 
 // packages/ui/src/utils/degree.ts
 function polarToCartesian(cx, cy, radius, angleDeg) {
@@ -2953,15 +3768,15 @@ function polarToCartesian(cx, cy, radius, angleDeg) {
 }
 
 // packages/ui/src/components/natal-chart.ts
-var SIZE = 384;
+var SIZE = 420;
 var CENTER = SIZE / 2;
-var OUTER_R = 150;
-var SIGN_R = 134;
-var HOUSE_R = 110;
-var PLANET_R = 88;
-var ANGLE_TICK_R = 162;
-var ANGLE_LABEL_R = 176;
-var RoxyNatalChart = class extends LitElement13 {
+var OUTER_R = 164;
+var SIGN_R = 146;
+var HOUSE_R = 120;
+var PLANET_R = 96;
+var ANGLE_TICK_R = 178;
+var ANGLE_LABEL_R = 196;
+var RoxyNatalChart = class extends LitElement16 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -2982,15 +3797,15 @@ var RoxyNatalChart = class extends LitElement13 {
   }
   render() {
     if (!this.data)
-      return html13`<div class="roxy-empty" role="status">No chart data</div>`;
+      return html16`<div class="roxy-empty" role="status">No chart data</div>`;
     const planets = this.getPlanets();
     const aspects = this.data.aspects ?? [];
-    return html13`<div class="wrap">
+    return html16`<div class="wrap">
 			<header>
 				<h2 class="title">Natal chart</h2>
-				${this.data.birthDetails ? html13`<div class="meta">
+				${this.data.birthDetails ? html16`<div class="meta">
 							${[this.data.birthDetails.date, this.data.birthDetails.time].filter(Boolean).join(" \xB7 ")}
-						</div>` : nothing13}
+						</div>` : nothing17}
 			</header>
 			<svg
 				viewBox="0 0 ${SIZE} ${SIZE}"
@@ -3033,6 +3848,8 @@ var RoxyNatalChart = class extends LitElement13 {
 				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
 				<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
+			${this.renderDetails()}
+			${this.renderInterpretations()}
 		</div>`;
   }
   renderAngles() {
@@ -3047,7 +3864,7 @@ var RoxyNatalChart = class extends LitElement13 {
     const tickInner = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
     const tickOuter = polarToCartesian(CENTER, CENTER, ANGLE_TICK_R, angle);
     const labelPos = polarToCartesian(CENTER, CENTER, ANGLE_LABEL_R, angle);
-    return svg3`
+    return svg4`
 			<g>
 				<line class="angle-tick" x1=${tickInner.x} y1=${tickInner.y} x2=${tickOuter.x} y2=${tickOuter.y} />
 				<text class="angle-marker" x=${labelPos.x} y=${labelPos.y} text-anchor="middle" dominant-baseline="central">${label}</text>
@@ -3059,14 +3876,14 @@ var RoxyNatalChart = class extends LitElement13 {
       const angle = this.toAngle(i * 30);
       const start = polarToCartesian(CENTER, CENTER, HOUSE_R, angle);
       const end = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
-      return svg3`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.8" />`;
+      return svg4`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.8" />`;
     });
   }
   renderSigns() {
     return SIGNS_ORDER.map((sign, i) => {
       const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
-      return svg3`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
+      return svg4`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
     });
   }
   renderHouseNumbers() {
@@ -3075,19 +3892,89 @@ var RoxyNatalChart = class extends LitElement13 {
       const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER, CENTER, HOUSE_R - 12, angle);
       const houseNum = (i - ascSignIndex + 12) % 12 + 1;
-      return svg3`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${houseNum}</text>`;
+      return svg4`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${houseNum}</text>`;
     });
   }
   renderPlanets(planets) {
     return planets.map((p) => {
-      if (!Number.isFinite(p.longitude)) return nothing13;
+      if (!Number.isFinite(p.longitude)) return nothing17;
       const angle = this.toAngle(p.longitude);
       const pos = polarToCartesian(CENTER, CENTER, PLANET_R, angle);
       const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
       const retro = p.isRetrograde ? " R" : "";
       const display = retro ? `${glyph}\u1D3F` : glyph;
-      return svg3`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro}</title>${display}</text>`;
+      return svg4`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro}</title>${display}</text>`;
     });
+  }
+  renderDetails() {
+    const summary = this.data?.summary;
+    const ai = this.data?.aspectsInterpretation;
+    if (!summary && !ai) return nothing17;
+    const retrogrades = summary?.retrogradePlanets ?? [];
+    const elementDist = summary?.elementDistribution ?? {};
+    const modalityDist = summary?.modalityDistribution ?? {};
+    const elementMax = Math.max(1, ...Object.values(elementDist));
+    const modalityMax = Math.max(1, ...Object.values(modalityDist));
+    return html16`<div class="details">
+			${summary?.dominantElement || summary?.dominantModality ? html16`<div class="pill-row">
+						${summary.dominantElement ? html16`<span class="pill">Dominant element: ${summary.dominantElement}</span>` : nothing17}
+						${summary.dominantModality ? html16`<span class="pill">Dominant modality: ${summary.dominantModality}</span>` : nothing17}
+					</div>` : nothing17}
+			${ai ? html16`<div class="pill-row">
+						<span class="pill pill--success">Harmonious ${ai.harmonious}</span>
+						<span class="pill pill--danger">Challenging ${ai.challenging}</span>
+						<span class="pill pill--muted">Neutral ${ai.neutral}</span>
+					</div>` : nothing17}
+			${retrogrades.length > 0 ? html16`<div class="pill-row">
+						${retrogrades.map((p) => {
+      const glyph = PLANET_GLYPH[p] ?? p.slice(0, 2);
+      return html16`<span class="pill pill--muted">${glyph} ${p} R</span>`;
+    })}
+					</div>` : nothing17}
+			${ai?.summary ? html16`<p class="summary">${ai.summary}</p>` : nothing17}
+			${Object.keys(elementDist).length > 0 || Object.keys(modalityDist).length > 0 ? html16`<div class="dist-grid">
+						${Object.keys(elementDist).length > 0 ? html16`<div class="dist-section">
+									<h3>Elements</h3>
+									${Object.entries(elementDist).map(
+      ([label, count]) => html16`<div class="dist-row">
+											<span>${label}</span>
+											<div class="dist-bar"><span style="width: ${Math.round(count / elementMax * 100)}%"></span></div>
+											<span>${count}</span>
+										</div>`
+    )}
+								</div>` : nothing17}
+						${Object.keys(modalityDist).length > 0 ? html16`<div class="dist-section">
+									<h3>Modalities</h3>
+									${Object.entries(modalityDist).map(
+      ([label, count]) => html16`<div class="dist-row">
+											<span>${label}</span>
+											<div class="dist-bar"><span style="width: ${Math.round(count / modalityMax * 100)}%"></span></div>
+											<span>${count}</span>
+										</div>`
+    )}
+								</div>` : nothing17}
+					</div>` : nothing17}
+		</div>`;
+  }
+  renderInterpretations() {
+    const planets = this.getPlanets().filter((p) => p.interpretation);
+    if (planets.length === 0) return nothing17;
+    return html16`<section class="interpretations">
+			<h3>Planet readings</h3>
+			${planets.map((p) => {
+      const interp = p.interpretation;
+      const glyph = PLANET_GLYPH[capitalize(p.name)] ?? "";
+      const deg = formatNumber(p.degree ?? 0, 1);
+      return html16`<details class="interp-card">
+					<summary>${glyph} ${p.name} <small>${p.sign ?? ""} ${deg}</small></summary>
+					<div class="interp-body">
+						${interp.summary ? html16`<p class="interp-summary">${interp.summary}</p>` : nothing17}
+						${interp.detailed ? html16`<p class="interp-detail">${interp.detailed}</p>` : nothing17}
+						${interp.keywords?.length ? html16`<div class="interp-keywords">${interp.keywords.map((k) => html16`<span class="kw">${k}</span>`)}</div>` : nothing17}
+					</div>
+				</details>`;
+    })}
+		</section>`;
   }
   renderAspects(planets, aspects) {
     const planetMap = /* @__PURE__ */ new Map();
@@ -3099,7 +3986,7 @@ var RoxyNatalChart = class extends LitElement13 {
     return aspects.map((a) => {
       const l1 = planetMap.get(capitalize(a.planet1));
       const l2 = planetMap.get(capitalize(a.planet2));
-      if (l1 === void 0 || l2 === void 0) return nothing13;
+      if (l1 === void 0 || l2 === void 0) return nothing17;
       const p1 = polarToCartesian(
         CENTER,
         CENTER,
@@ -3115,13 +4002,13 @@ var RoxyNatalChart = class extends LitElement13 {
       const aspectName = normalizeAspect(a);
       const aspectClass = ASPECT_CLASS[aspectName] ?? "aspect-other";
       const orbLabel = formatNumber(a.orb, 1);
-      return svg3`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${a.planet1} ${aspectName || ""} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}\xB0)` : ""}</title></line>`;
+      return svg4`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${a.planet1} ${aspectName || ""} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}\xB0)` : ""}</title></line>`;
     });
   }
 };
 RoxyNatalChart.styles = [
   baseStyles,
-  css14`
+  css17`
 			.wrap {
 				width: 100%;
 				display: grid;
@@ -3220,22 +4107,152 @@ RoxyNatalChart.styles = [
 				margin-right: 4px;
 				vertical-align: middle;
 			}
+
+			.details {
+				margin-top: var(--roxy-space-md, 1rem);
+			}
+
+			.pill-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+				margin-bottom: var(--roxy-space-xs, 0.25rem);
+			}
+
+			.pill {
+				padding: 2px 8px;
+				border-radius: var(--roxy-radius-sm, 4px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				background: color-mix(in srgb, var(--roxy-fg, #0f172a) 8%, transparent);
+				color: var(--roxy-fg, #0f172a);
+			}
+
+			.pill--success {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 15%, transparent);
+				color: var(--roxy-success, #16a34a);
+			}
+
+			.pill--danger {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 15%, transparent);
+				color: var(--roxy-danger, #dc2626);
+			}
+
+			.pill--muted {
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+
+			.summary {
+				color: var(--roxy-fg, #0f172a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				margin: var(--roxy-space-md, 1rem) 0;
+			}
+
+			.dist-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			@container (max-width: 639px) {
+				.dist-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			.dist-section h3 {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-muted, #71717a);
+				margin: 0 0 var(--roxy-space-xs, 0.25rem);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+
+			.dist-row {
+				display: grid;
+				grid-template-columns: 4rem 1fr 1.5rem;
+				align-items: center;
+				gap: var(--roxy-space-xs, 0.25rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-fg, #0f172a);
+				margin-bottom: 4px;
+			}
+
+			.dist-bar {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 20%, transparent);
+				height: 6px;
+				border-radius: 3px;
+			}
+
+			.dist-bar > span {
+				display: block;
+				height: 100%;
+				background: var(--roxy-accent, #f59e0b);
+				border-radius: 3px;
+			}
+
+			.interpretations {
+				margin-top: var(--roxy-space-md, 1rem);
+			}
+			.interpretations h3 {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: 600;
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+			}
+			.interp-card {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				margin-bottom: var(--roxy-space-xs, 0.25rem);
+			}
+			.interp-card summary {
+				cursor: pointer;
+				font-weight: 500;
+				color: var(--roxy-fg, #0f172a);
+			}
+			.interp-card summary small {
+				color: var(--roxy-muted, #71717a);
+				margin-left: 0.5em;
+				font-weight: 400;
+			}
+			.interp-body {
+				margin-top: var(--roxy-space-xs, 0.25rem);
+				color: var(--roxy-fg, #0f172a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.interp-keywords {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.25rem;
+				margin-top: 0.5rem;
+			}
+			.interp-keywords .kw {
+				padding: 1px 8px;
+				border-radius: 9999px;
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+				color: var(--roxy-accent-fg, #b45309);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
 		`
 ];
 __decorateClass([
-  property13({ attribute: false })
+  property16({ attribute: false })
 ], RoxyNatalChart.prototype, "data", 2);
 __decorateClass([
-  property13({ type: String, attribute: "house-system", reflect: true })
+  property16({ type: String, attribute: "house-system", reflect: true })
 ], RoxyNatalChart.prototype, "houseSystem", 2);
 RoxyNatalChart = __decorateClass([
-  customElement13("roxy-natal-chart")
+  customElement16("roxy-natal-chart")
 ], RoxyNatalChart);
 
 // packages/ui/src/components/numerology-card.ts
-import { css as css15, html as html14, LitElement as LitElement14, nothing as nothing14 } from "lit";
-import { customElement as customElement14, property as property14 } from "lit/decorators.js";
-var RoxyNumerologyCard = class extends LitElement14 {
+import { css as css18, html as html17, LitElement as LitElement17, nothing as nothing18 } from "lit";
+import { customElement as customElement17, property as property17 } from "lit/decorators.js";
+var RoxyNumerologyCard = class extends LitElement17 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -3244,7 +4261,7 @@ var RoxyNumerologyCard = class extends LitElement14 {
   render() {
     const d = this.data;
     if (!d)
-      return html14`<div class="roxy-empty" role="status">No numerology data</div>`;
+      return html17`<div class="roxy-empty" role="status">No numerology data</div>`;
     const headerLabel = LABELS[this.type] ?? this.type;
     if ("coreNumbers" in d) return this.renderChart(d, headerLabel);
     if ("personalYear" in d) return this.renderPersonalYear(d, headerLabel);
@@ -3255,61 +4272,61 @@ var RoxyNumerologyCard = class extends LitElement14 {
   }
   renderNumberCard(d, headerLabel) {
     const keywords = d.meaning?.keywords ?? [];
-    return html14`<article class="card" aria-label=${headerLabel}>
+    return html17`<article class="card" aria-label=${headerLabel}>
 			<div class="hero">
-				${typeof d.number === "number" ? html14`<div class="numeral">${d.number}</div>` : nothing14}
+				${typeof d.number === "number" ? html17`<div class="numeral">${d.number}</div>` : nothing18}
 				<div>
 					<p class="label">${headerLabel}</p>
-					${d.meaning?.title ? html14`<h2 class="title">${d.meaning.title}</h2>` : nothing14}
+					${d.meaning?.title ? html17`<h2 class="title">${d.meaning.title}</h2>` : nothing18}
 				</div>
 			</div>
-			${d.meaning?.description ? html14`<p class="meaning">${d.meaning.description}</p>` : nothing14}
-			${d.calculation ? html14`<pre class="calc">${d.calculation}</pre>` : nothing14}
-			${keywords.length > 0 ? html14`<div class="chips">
-						${keywords.map((k) => html14`<span>${k}</span>`)}
-					</div>` : nothing14}
-			${d.hasKarmicDebt && d.karmicDebtNumber ? html14`<div class="karmic">
+			${d.meaning?.description ? html17`<p class="meaning">${d.meaning.description}</p>` : nothing18}
+			${d.calculation ? html17`<pre class="calc">${d.calculation}</pre>` : nothing18}
+			${keywords.length > 0 ? html17`<div class="chips">
+						${keywords.map((k) => html17`<span>${k}</span>`)}
+					</div>` : nothing18}
+			${d.hasKarmicDebt && d.karmicDebtNumber ? html17`<div class="karmic">
 						Karmic debt ${d.karmicDebtNumber}.
 						${karmicDebtText(d.karmicDebtMeaning)}
-					</div>` : nothing14}
+					</div>` : nothing18}
 		</article>`;
   }
   renderPersonalYear(d, headerLabel) {
-    return html14`<article class="card" aria-label=${headerLabel}>
+    return html17`<article class="card" aria-label=${headerLabel}>
 			<div class="hero">
-				${typeof d.personalYear === "number" ? html14`<div class="numeral">${d.personalYear}</div>` : nothing14}
+				${typeof d.personalYear === "number" ? html17`<div class="numeral">${d.personalYear}</div>` : nothing18}
 				<div>
 					<p class="label">${headerLabel}</p>
-					${d.theme ? html14`<h2 class="title">${d.theme}</h2>` : nothing14}
+					${d.theme ? html17`<h2 class="title">${d.theme}</h2>` : nothing18}
 				</div>
 			</div>
-			${d.forecast ? html14`<p class="meaning">${d.forecast}</p>` : nothing14}
-			${d.advice ? html14`<p>${d.advice}</p>` : nothing14}
+			${d.forecast ? html17`<p class="meaning">${d.forecast}</p>` : nothing18}
+			${d.advice ? html17`<p>${d.advice}</p>` : nothing18}
 		</article>`;
   }
   renderChart(d, headerLabel) {
     const cores = Object.entries(d.coreNumbers).filter(
       ([, v]) => v !== null && v !== void 0
     );
-    return html14`<article class="card" aria-label=${headerLabel}>
+    return html17`<article class="card" aria-label=${headerLabel}>
 			<div>
 				<p class="label">${headerLabel}</p>
-				${d.profile?.name ? html14`<h2 class="title">${d.profile.name}</h2>` : nothing14}
+				${d.profile?.name ? html17`<h2 class="title">${d.profile.name}</h2>` : nothing18}
 			</div>
-			${cores.length > 0 ? html14`<div class="cores">
+			${cores.length > 0 ? html17`<div class="cores">
 						${cores.map(
-      ([k, v]) => html14`<div class="item">
+      ([k, v]) => html17`<div class="item">
 								<span>${humanize(k)}</span>
 								<strong>${v.number ?? ""}</strong>
 							</div>`
     )}
-					</div>` : nothing14}
+					</div>` : nothing18}
 		</article>`;
   }
 };
 RoxyNumerologyCard.styles = [
   baseStyles,
-  css15`
+  css18`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -3408,13 +4425,13 @@ RoxyNumerologyCard.styles = [
 		`
 ];
 __decorateClass([
-  property14({ attribute: false })
+  property17({ attribute: false })
 ], RoxyNumerologyCard.prototype, "data", 2);
 __decorateClass([
-  property14({ type: String, reflect: true })
+  property17({ type: String, reflect: true })
 ], RoxyNumerologyCard.prototype, "type", 2);
 RoxyNumerologyCard = __decorateClass([
-  customElement14("roxy-numerology-card")
+  customElement17("roxy-numerology-card")
 ], RoxyNumerologyCard);
 var LABELS = {
   "life-path": "Life Path",
@@ -3428,9 +4445,9 @@ function karmicDebtText(value) {
 }
 
 // packages/ui/src/components/panchang-table.ts
-import { css as css16, html as html15, LitElement as LitElement15, nothing as nothing15 } from "lit";
-import { customElement as customElement15, property as property15 } from "lit/decorators.js";
-var RoxyPanchangTable = class extends LitElement15 {
+import { css as css19, html as html18, LitElement as LitElement18, nothing as nothing19 } from "lit";
+import { customElement as customElement18, property as property18 } from "lit/decorators.js";
+var RoxyPanchangTable = class extends LitElement18 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -3439,7 +4456,7 @@ var RoxyPanchangTable = class extends LitElement15 {
   render() {
     const d = this.data;
     if (!d)
-      return html15`<div class="roxy-empty" role="status">No panchang data</div>`;
+      return html18`<div class="roxy-empty" role="status">No panchang data</div>`;
     const detailed = "sunrise" in d ? d : null;
     const fivefold = [
       ["Tithi", this.formatPart(d.tithi)],
@@ -3462,7 +4479,7 @@ var RoxyPanchangTable = class extends LitElement15 {
       ["Yamaganda", detailed.yamaganda],
       ["Gulika", detailed.gulika]
     ] : [];
-    return html15`<div class="wrap" aria-label="Panchang">
+    return html18`<div class="wrap" aria-label="Panchang">
 			<header class="head">
 				<h2 class="title">Panchang</h2>
 				<span class="date">${detailed ? formatDate(detailed.date) : ""}</span>
@@ -3470,35 +4487,35 @@ var RoxyPanchangTable = class extends LitElement15 {
 			<table>
 				<tbody>
 					${fivefold.map(
-      ([k, v]) => html15`<tr>
+      ([k, v]) => html18`<tr>
 							<th>${k}</th>
 							<td>${v}</td>
 						</tr>`
     )}
-					${detailed?.sunrise ? html15`<tr>
+					${detailed?.sunrise ? html18`<tr>
 								<th>Sunrise</th>
 								<td>${formatTime(detailed.sunrise)}</td>
-							</tr>` : nothing15}
-					${detailed?.sunset ? html15`<tr>
+							</tr>` : nothing19}
+					${detailed?.sunset ? html18`<tr>
 								<th>Sunset</th>
 								<td>${formatTime(detailed.sunset)}</td>
-							</tr>` : nothing15}
-					${detailed?.moonrise ? html15`<tr>
+							</tr>` : nothing19}
+					${detailed?.moonrise ? html18`<tr>
 								<th>Moonrise</th>
 								<td>${formatTime(detailed.moonrise)}</td>
-							</tr>` : nothing15}
-					${detailed?.moonset ? html15`<tr>
+							</tr>` : nothing19}
+					${detailed?.moonset ? html18`<tr>
 								<th>Moonset</th>
 								<td>${formatTime(detailed.moonset)}</td>
-							</tr>` : nothing15}
+							</tr>` : nothing19}
 				</tbody>
 			</table>
-			${this.detail === "detailed" && (muhurtas.some((m) => !!m[1]) || inauspicious.some((m) => !!m[1])) ? html15`
+			${this.detail === "detailed" && (muhurtas.some((m) => !!m[1]) || inauspicious.some((m) => !!m[1])) ? html18`
 						<div class="section">Auspicious muhurtas</div>
 						<table>
 							<tbody>
 								${muhurtas.filter(([, v]) => !!v).map(
-      ([k, v]) => html15`<tr>
+      ([k, v]) => html18`<tr>
 											<th>${k}</th>
 											<td>${formatTimeRange(v)}</td>
 										</tr>`
@@ -3509,14 +4526,14 @@ var RoxyPanchangTable = class extends LitElement15 {
 						<table>
 							<tbody>
 								${inauspicious.filter(([, v]) => !!v).map(
-      ([k, v]) => html15`<tr>
+      ([k, v]) => html18`<tr>
 											<th>${k}</th>
 											<td>${formatTimeRange(v)}</td>
 										</tr>`
     )}
 							</tbody>
 						</table>
-					` : nothing15}
+					` : nothing19}
 		</div>`;
   }
   formatPart(v) {
@@ -3536,7 +4553,7 @@ var RoxyPanchangTable = class extends LitElement15 {
 };
 RoxyPanchangTable.styles = [
   baseStyles,
-  css16`
+  css19`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
@@ -3597,32 +4614,275 @@ RoxyPanchangTable.styles = [
 		`
 ];
 __decorateClass([
-  property15({ attribute: false })
+  property18({ attribute: false })
 ], RoxyPanchangTable.prototype, "data", 2);
 __decorateClass([
-  property15({ type: String, reflect: true })
+  property18({ type: String, reflect: true })
 ], RoxyPanchangTable.prototype, "detail", 2);
 RoxyPanchangTable = __decorateClass([
-  customElement15("roxy-panchang-table")
+  customElement18("roxy-panchang-table")
 ], RoxyPanchangTable);
 
+// packages/ui/src/components/shadbala-table.ts
+import { css as css20, html as html19, LitElement as LitElement19, nothing as nothing20 } from "lit";
+import { customElement as customElement19, property as property19 } from "lit/decorators.js";
+var BALA_COMPONENTS = [
+  { key: "sthanaBala", label: "Sthana", color: "var(--roxy-info, #0284c7)" },
+  { key: "digBala", label: "Dig", color: "var(--roxy-success, #16a34a)" },
+  { key: "kalaBala", label: "Kala", color: "var(--roxy-warning, #ea580c)" },
+  { key: "chestaBala", label: "Chesta", color: "var(--roxy-accent, #f59e0b)" },
+  {
+    key: "naisargikaBala",
+    label: "Naisargika",
+    color: "var(--roxy-secondary, #475569)"
+  },
+  { key: "drikBala", label: "Drik", color: "var(--roxy-danger, #dc2626)" }
+];
+var RoxyShadbalaTable = class extends LitElement19 {
+  constructor() {
+    super(...arguments);
+    this.data = null;
+  }
+  render() {
+    if (!this.data?.planets?.length) {
+      return html19`<div class="roxy-empty" role="status">No shadbala data</div>`;
+    }
+    const sorted = [...this.data.planets].sort(
+      (a, b) => a.relativeRank - b.relativeRank
+    );
+    return html19`<div class="wrap" aria-label="Shadbala planetary strength">
+			<div class="head">
+				<h2 class="title">Shadbala</h2>
+				<p class="subtitle">${sorted.length} planets ranked by strength</p>
+			</div>
+
+			<div role="list" aria-label="Planet strength bars">
+				${sorted.map((p) => this.renderPlanetRow(p))}
+			</div>
+
+			<div class="legend" aria-label="Strength component legend">
+				${BALA_COMPONENTS.map(
+      (b) => html19`<div class="legend-row">
+						<span
+							class="legend-swatch"
+							style="background: ${b.color}"
+							aria-hidden="true"
+						></span>
+						${b.label}
+					</div>`
+    )}
+			</div>
+		</div>`;
+  }
+  renderPlanetRow(p) {
+    const glyph = PLANET_GLYPH[capitalize(p.planet)] ?? "";
+    const values = BALA_COMPONENTS.map((b) => Math.max(0, p[b.key]));
+    const total = values.reduce((s, v) => s + v, 0);
+    const isAdequate = typeof p.strengthRatio === "number" && p.strengthRatio >= 1;
+    const badgeClass = isAdequate ? "adequacy-badge--adequate" : "adequacy-badge--weak";
+    const badgeLabel = isAdequate ? "adequate" : "weak";
+    const rupasStr = formatNumber(p.totalRupas, 2) && formatNumber(p.minRequired, 2) ? `${formatNumber(p.totalRupas, 2)} / ${formatNumber(p.minRequired, 2)} R` : "";
+    return html19`<div class="planet-row" role="listitem" aria-label="${p.planet} shadbala">
+			<div class="planet-label">
+				<span class="glyph" aria-hidden="true">${glyph}</span>
+				${p.planet}
+				<span class="rank-badge" aria-label="rank ${p.relativeRank}">#${p.relativeRank}</span>
+			</div>
+			<div class="bar-wrap">
+				<div class="bar" role="img" aria-label="Strength components for ${p.planet}">
+					${total > 0 ? BALA_COMPONENTS.map((b, i) => {
+      const v = values[i];
+      if (v <= 0) return nothing20;
+      const grow = v / total * 100;
+      return html19`<div
+									class="bar-segment"
+									style="flex-grow: ${grow}; background: ${b.color};"
+									title="${b.label}: ${formatNumber(v, 1)}"
+								></div>`;
+    }) : nothing20}
+				</div>
+			</div>
+			<div class="pills">
+				${rupasStr ? html19`<span class="rupas-label">${rupasStr}</span>` : nothing20}
+				<span class="${`adequacy-badge ${badgeClass}`}">${badgeLabel}</span>
+			</div>
+		</div>`;
+  }
+};
+RoxyShadbalaTable.styles = [
+  baseStyles,
+  css20`
+			.wrap {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			.head {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: var(--roxy-space-md, 1rem);
+				flex-wrap: wrap;
+			}
+
+			.title {
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0;
+			}
+
+			.subtitle {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				margin: 0;
+			}
+
+			.planet-row {
+				display: grid;
+				grid-template-columns: 8rem 1fr auto;
+				align-items: center;
+				gap: var(--roxy-space-sm, 0.5rem);
+				padding: var(--roxy-space-sm, 0.5rem) 0;
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+			}
+
+			.planet-row:last-of-type {
+				border-bottom: none;
+			}
+
+			.planet-label {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+
+			.glyph {
+				font-size: 1.2em;
+				line-height: 1;
+			}
+
+			.bar-wrap {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+			}
+
+			.bar {
+				display: flex;
+				height: 12px;
+				border-radius: var(--roxy-radius-sm, 4px);
+				overflow: hidden;
+				background: var(--roxy-border, #e4e4e7);
+			}
+
+			.bar-segment {
+				height: 100%;
+				transition: flex-grow var(--roxy-motion-duration, 200ms)
+					var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			}
+
+			.pills {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+				gap: 4px;
+			}
+
+			.rupas-label {
+				font-variant-numeric: tabular-nums;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				white-space: nowrap;
+			}
+
+			.adequacy-badge {
+				display: inline-block;
+				padding: 1px 6px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+
+			.adequacy-badge--adequate {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
+				color: var(--roxy-success-fg, #166534);
+			}
+
+			.adequacy-badge--weak {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
+				color: var(--roxy-danger-fg, #991b1b);
+			}
+
+			.rank-badge {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-accent-fg, #b45309);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+
+			.legend {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				border-top: 1px solid var(--roxy-border, #e4e4e7);
+				padding-top: var(--roxy-space-sm, 0.5rem);
+			}
+
+			.legend-row {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+			}
+
+			.legend-swatch {
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				border-radius: var(--roxy-radius-sm, 4px);
+				flex-shrink: 0;
+			}
+
+			@container (max-width: 480px) {
+				.planet-row {
+					grid-template-columns: 6rem 1fr;
+					grid-template-rows: auto auto;
+				}
+				.pills {
+					grid-column: 1 / -1;
+					flex-direction: row;
+					align-items: center;
+					justify-content: flex-start;
+				}
+			}
+		`
+];
+__decorateClass([
+  property19({ attribute: false })
+], RoxyShadbalaTable.prototype, "data", 2);
+RoxyShadbalaTable = __decorateClass([
+  customElement19("roxy-shadbala-table")
+], RoxyShadbalaTable);
+
 // packages/ui/src/components/synastry-chart.ts
-import { css as css17, html as html16, LitElement as LitElement16, nothing as nothing16, svg as svg4 } from "lit";
-import { customElement as customElement16, property as property16 } from "lit/decorators.js";
+import { css as css21, html as html20, LitElement as LitElement20, nothing as nothing21, svg as svg5 } from "lit";
+import { customElement as customElement20, property as property20 } from "lit/decorators.js";
 var SIZE2 = 360;
 var CENTER2 = SIZE2 / 2;
 var OUTER_R2 = 170;
 var SIGN_R2 = 154;
 var P1_R = 124;
 var P2_R = 96;
-var RoxySynastryChart = class extends LitElement16 {
+var RoxySynastryChart = class extends LitElement20 {
   constructor() {
     super(...arguments);
     this.data = null;
   }
   render() {
     if (!this.data)
-      return html16`<div class="roxy-empty" role="status">No synastry data</div>`;
+      return html20`<div class="roxy-empty" role="status">No synastry data</div>`;
     const { person1, person2, compatibilityScore, analysis } = this.data;
     const interAspects = this.data.interAspects ?? [];
     const p1Planets = person1?.planets ?? [];
@@ -3633,15 +4893,15 @@ var RoxySynastryChart = class extends LitElement16 {
     const challenges = analysis?.challenges ?? [];
     const hasPlanets = p1Planets.length > 0 && p2Planets.length > 0;
     if (!hasPlanets) {
-      return html16`<div
+      return html20`<div
 				class="wrap"
 				aria-label="Synastry compatibility chart"
 			>
 				<div class="head">
 					<h2 class="title">Synastry</h2>
-					${typeof score === "number" ? html16`<span class="score" aria-label=${`Score ${score} of 100`}
+					${typeof score === "number" ? html20`<span class="score" aria-label=${`Score ${score} of 100`}
 								>${score} / 100</span
-							>` : nothing16}
+							>` : nothing21}
 				</div>
 				<div class="missing-planets" role="status">
 					Synastry response missing planet positions. Pass
@@ -3649,33 +4909,33 @@ var RoxySynastryChart = class extends LitElement16 {
 					<code>person2.planets</code> arrays from the natal-chart endpoint, or
 					use the <code>&lt;roxy-data&gt;</code> fallback.
 				</div>
-				${summaryText ? html16`<p class="summary">${summaryText}</p>` : nothing16}
-				${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing16}
-				${strengths.length > 0 || challenges.length > 0 ? html16`<div class="lists">
-							${strengths.length ? html16`<div>
+				${summaryText ? html20`<p class="summary">${summaryText}</p>` : nothing21}
+				${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing21}
+				${strengths.length > 0 || challenges.length > 0 ? html20`<div class="lists">
+							${strengths.length ? html20`<div>
 										<h3>Strengths</h3>
 										<ul>
-											${strengths.map((s) => html16`<li>${s}</li>`)}
+											${strengths.map((s) => html20`<li>${s}</li>`)}
 										</ul>
-									</div>` : nothing16}
-							${challenges.length ? html16`<div>
+									</div>` : nothing21}
+							${challenges.length ? html20`<div>
 										<h3>Challenges</h3>
 										<ul>
-											${challenges.map((s) => html16`<li>${s}</li>`)}
+											${challenges.map((s) => html20`<li>${s}</li>`)}
 										</ul>
-									</div>` : nothing16}
-						</div>` : nothing16}
+									</div>` : nothing21}
+						</div>` : nothing21}
 			</div>`;
     }
-    return html16`<div
+    return html20`<div
 			class="wrap"
 			aria-label="Synastry compatibility chart"
 		>
 			<div class="head">
 				<h2 class="title">Synastry</h2>
-				${typeof score === "number" ? html16`<span class="score" aria-label=${`Score ${score} of 100`}
+				${typeof score === "number" ? html20`<span class="score" aria-label=${`Score ${score} of 100`}
 							>${score} / 100</span
-						>` : nothing16}
+						>` : nothing21}
 			</div>
 			<svg
 				viewBox="0 0 ${SIZE2} ${SIZE2}"
@@ -3714,22 +4974,22 @@ var RoxySynastryChart = class extends LitElement16 {
 				<span><span class="swatch" style="background: var(--roxy-success)"></span>harmonious</span>
 				<span><span class="swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
-			${summaryText ? html16`<p class="summary">${summaryText}</p>` : nothing16}
-			${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing16}
-			${strengths.length > 0 || challenges.length > 0 ? html16`<div class="lists">
-						${strengths.length ? html16`<div>
+			${summaryText ? html20`<p class="summary">${summaryText}</p>` : nothing21}
+			${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing21}
+			${strengths.length > 0 || challenges.length > 0 ? html20`<div class="lists">
+						${strengths.length ? html20`<div>
 									<h3>Strengths</h3>
 									<ul>
-										${strengths.map((s) => html16`<li>${s}</li>`)}
+										${strengths.map((s) => html20`<li>${s}</li>`)}
 									</ul>
-								</div>` : nothing16}
-						${challenges.length ? html16`<div>
+								</div>` : nothing21}
+						${challenges.length ? html20`<div>
 									<h3>Challenges</h3>
 									<ul>
-										${challenges.map((s) => html16`<li>${s}</li>`)}
+										${challenges.map((s) => html20`<li>${s}</li>`)}
 									</ul>
-								</div>` : nothing16}
-					</div>` : nothing16}
+								</div>` : nothing21}
+					</div>` : nothing21}
 		</div>`;
   }
   toAngle(longitude) {
@@ -3740,19 +5000,19 @@ var RoxySynastryChart = class extends LitElement16 {
       const angle = this.toAngle(i * 30);
       const start = polarToCartesian(CENTER2, CENTER2, P2_R - 14, angle);
       const end = polarToCartesian(CENTER2, CENTER2, OUTER_R2, angle);
-      return svg4`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.6" />`;
+      return svg5`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.6" />`;
     });
   }
   renderSigns() {
     return SIGNS_ORDER.map((s, i) => {
       const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER2, CENTER2, SIGN_R2, angle);
-      return svg4`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[s]}</text>`;
+      return svg5`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[s]}</text>`;
     });
   }
   renderRing(planets, radius, cls) {
     return planets.map((p) => {
-      if (!Number.isFinite(p.longitude)) return nothing16;
+      if (!Number.isFinite(p.longitude)) return nothing21;
       const pos = polarToCartesian(
         CENTER2,
         CENTER2,
@@ -3760,7 +5020,7 @@ var RoxySynastryChart = class extends LitElement16 {
         this.toAngle(p.longitude)
       );
       const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
-      return svg4`<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}</title>${glyph}</text>`;
+      return svg5`<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}</title>${glyph}</text>`;
     });
   }
   renderInterAspectLines(p1, p2, aspects) {
@@ -3775,17 +5035,17 @@ var RoxySynastryChart = class extends LitElement16 {
     return aspects.map((a) => {
       const l1 = longitudeOf(p1, a.planet1);
       const l2 = longitudeOf(p2, a.planet2);
-      if (l1 === void 0 || l2 === void 0) return nothing16;
+      if (l1 === void 0 || l2 === void 0) return nothing21;
       const out = polarToCartesian(CENTER2, CENTER2, P1_R - 12, this.toAngle(l1));
       const inn = polarToCartesian(CENTER2, CENTER2, P2_R + 8, this.toAngle(l2));
       const aspectName = normalizeAspect(a);
       const cls = ASPECT_CLASS[aspectName] ?? "aspect-other";
       const orbLabel = formatNumber(a.orb, 1);
-      return svg4`<line class=${`aspect ${cls}`} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}\xB0)` : ""}</title></line>`;
+      return svg5`<line class=${`aspect ${cls}`} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}\xB0)` : ""}</title></line>`;
     });
   }
   renderAspects(aspects) {
-    return html16`<table>
+    return html20`<table>
 			<thead>
 				<tr>
 					<th>Planet 1</th>
@@ -3797,7 +5057,7 @@ var RoxySynastryChart = class extends LitElement16 {
 			</thead>
 			<tbody>
 				${aspects.slice(0, 12).map(
-      (a) => html16`<tr>
+      (a) => html20`<tr>
 						<td>${a.planet1}</td>
 						<td>${a.planet2}</td>
 						<td>${normalizeAspect(a) || ""}</td>
@@ -3811,7 +5071,7 @@ var RoxySynastryChart = class extends LitElement16 {
 };
 RoxySynastryChart.styles = [
   baseStyles,
-  css17`
+  css21`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -3966,10 +5226,10 @@ RoxySynastryChart.styles = [
 		`
 ];
 __decorateClass([
-  property16({ attribute: false })
+  property20({ attribute: false })
 ], RoxySynastryChart.prototype, "data", 2);
 RoxySynastryChart = __decorateClass([
-  customElement16("roxy-synastry-chart")
+  customElement20("roxy-synastry-chart")
 ], RoxySynastryChart);
 function formatStrength(s) {
   if (typeof s === "number") return Math.round(s).toString();
@@ -3977,9 +5237,9 @@ function formatStrength(s) {
 }
 
 // packages/ui/src/components/tarot-card.ts
-import { css as css18, html as html17, LitElement as LitElement17, nothing as nothing17 } from "lit";
-import { customElement as customElement17, property as property17, state as state3 } from "lit/decorators.js";
-var RoxyTarotCard = class extends LitElement17 {
+import { css as css22, html as html21, LitElement as LitElement21, nothing as nothing22 } from "lit";
+import { customElement as customElement21, property as property21, state as state4 } from "lit/decorators.js";
+var RoxyTarotCard = class extends LitElement21 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -3991,7 +5251,7 @@ var RoxyTarotCard = class extends LitElement17 {
   render() {
     const d = this.data;
     if (!d)
-      return html17`<div class="roxy-empty" role="status">No tarot data</div>`;
+      return html21`<div class="roxy-empty" role="status">No tarot data</div>`;
     if ("card" in d) return this.renderDailyCard(d);
     return this.renderFullCard(d);
   }
@@ -3999,9 +5259,9 @@ var RoxyTarotCard = class extends LitElement17 {
     const card = d.card;
     const isReversed = this.flipped !== Boolean(card.reversed);
     const keywords = card.keywords ?? [];
-    return html17`<article class="card" aria-label=${card.name ?? "Tarot card"}>
+    return html21`<article class="card" aria-label=${card.name ?? "Tarot card"}>
 			<div class="image-wrap">
-				${card.imageUrl ? html17`<img
+				${card.imageUrl ? html21`<img
 							class=${`image ${isReversed ? "reversed" : ""}`}
 							src=${card.imageUrl}
 							alt=${card.name ?? "Tarot card"}
@@ -4013,7 +5273,7 @@ var RoxyTarotCard = class extends LitElement17 {
         this.toggleFlip();
       }
     }}
-						/>` : html17`<div
+						/>` : html21`<div
 							class=${`image ${isReversed ? "reversed" : ""}`}
 							style="aspect-ratio: 0.6; display: flex; align-items: center; justify-content: center; color: var(--roxy-muted)"
 						>
@@ -4022,15 +5282,15 @@ var RoxyTarotCard = class extends LitElement17 {
 			</div>
 			<div>
 				<div class="meta">
-					${card.arcana ? html17`${card.arcana} arcana` : nothing17}
-					${isReversed ? html17` · reversed` : nothing17}
+					${card.arcana ? html21`${card.arcana} arcana` : nothing22}
+					${isReversed ? html21` · reversed` : nothing22}
 				</div>
 				<h2 class="title">${card.name ?? "Tarot card"}</h2>
-				${d.dailyMessage ? html17`<p class="message">${d.dailyMessage}</p>` : nothing17}
-				${card.meaning ? html17`<p>${card.meaning}</p>` : nothing17}
-				${keywords.length > 0 ? html17`<div class="chips">
-							${keywords.map((k) => html17`<span>${k}</span>`)}
-						</div>` : nothing17}
+				${d.dailyMessage ? html21`<p class="message">${d.dailyMessage}</p>` : nothing22}
+				${card.meaning ? html21`<p>${card.meaning}</p>` : nothing22}
+				${keywords.length > 0 ? html21`<div class="chips">
+							${keywords.map((k) => html21`<span>${k}</span>`)}
+						</div>` : nothing22}
 				<button
 					class="flip"
 					type="button"
@@ -4046,9 +5306,9 @@ var RoxyTarotCard = class extends LitElement17 {
     const isReversed = this.flipped;
     const orientedMeaning = isReversed ? d.reversed : d.upright;
     const keywords = isReversed ? d.keywords?.reversed ?? [] : d.keywords?.upright ?? [];
-    return html17`<article class="card" aria-label=${d.name ?? "Tarot card"}>
+    return html21`<article class="card" aria-label=${d.name ?? "Tarot card"}>
 			<div class="image-wrap">
-				${d.imageUrl ? html17`<img
+				${d.imageUrl ? html21`<img
 							class=${`image ${isReversed ? "reversed" : ""}`}
 							src=${d.imageUrl}
 							alt=${d.name ?? "Tarot card"}
@@ -4060,7 +5320,7 @@ var RoxyTarotCard = class extends LitElement17 {
         this.toggleFlip();
       }
     }}
-						/>` : html17`<div
+						/>` : html21`<div
 							class=${`image ${isReversed ? "reversed" : ""}`}
 							style="aspect-ratio: 0.6; display: flex; align-items: center; justify-content: center; color: var(--roxy-muted)"
 						>
@@ -4069,15 +5329,15 @@ var RoxyTarotCard = class extends LitElement17 {
 			</div>
 			<div>
 				<div class="meta">
-					${d.arcana ? html17`${d.arcana} arcana` : nothing17}
-					${d.number !== void 0 && d.number !== null ? html17` · ${d.number}` : nothing17}
-					${isReversed ? html17` · reversed` : nothing17}
+					${d.arcana ? html21`${d.arcana} arcana` : nothing22}
+					${d.number !== void 0 && d.number !== null ? html21` · ${d.number}` : nothing22}
+					${isReversed ? html21` · reversed` : nothing22}
 				</div>
 				<h2 class="title">${d.name ?? "Tarot card"}</h2>
-				${orientedMeaning?.description ? html17`<p>${orientedMeaning.description}</p>` : nothing17}
-				${keywords.length > 0 ? html17`<div class="chips">
-							${keywords.map((k) => html17`<span>${k}</span>`)}
-						</div>` : nothing17}
+				${orientedMeaning?.description ? html21`<p>${orientedMeaning.description}</p>` : nothing22}
+				${keywords.length > 0 ? html21`<div class="chips">
+							${keywords.map((k) => html21`<span>${k}</span>`)}
+						</div>` : nothing22}
 				<button
 					class="flip"
 					type="button"
@@ -4092,7 +5352,7 @@ var RoxyTarotCard = class extends LitElement17 {
 };
 RoxyTarotCard.styles = [
   baseStyles,
-  css18`
+  css22`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -4185,19 +5445,19 @@ RoxyTarotCard.styles = [
 		`
 ];
 __decorateClass([
-  property17({ attribute: false })
+  property21({ attribute: false })
 ], RoxyTarotCard.prototype, "data", 2);
 __decorateClass([
-  state3()
+  state4()
 ], RoxyTarotCard.prototype, "flipped", 2);
 RoxyTarotCard = __decorateClass([
-  customElement17("roxy-tarot-card")
+  customElement21("roxy-tarot-card")
 ], RoxyTarotCard);
 
 // packages/ui/src/components/tarot-spread.ts
-import { css as css19, html as html18, LitElement as LitElement18, nothing as nothing18 } from "lit";
-import { customElement as customElement18, property as property18 } from "lit/decorators.js";
-var RoxyTarotSpread = class extends LitElement18 {
+import { css as css23, html as html22, LitElement as LitElement22, nothing as nothing23 } from "lit";
+import { customElement as customElement22, property as property22 } from "lit/decorators.js";
+var RoxyTarotSpread = class extends LitElement22 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -4206,7 +5466,7 @@ var RoxyTarotSpread = class extends LitElement18 {
   render() {
     const d = this.data;
     if (!d)
-      return html18`<div class="roxy-empty" role="status">No tarot spread</div>`;
+      return html22`<div class="roxy-empty" role="status">No tarot spread</div>`;
     const isYesNo = "answer" in d;
     const isDrawn = "cards" in d && !("spread" in d);
     const positions = isDrawn ? [] : "positions" in d ? d.positions ?? [] : [];
@@ -4218,60 +5478,60 @@ var RoxyTarotSpread = class extends LitElement18 {
     const summary = "summary" in d ? d.summary : void 0;
     const yesNoInterp = isYesNo ? d.interpretation : void 0;
     const answerClass = answer ? answer.toLowerCase().replace(/[^a-z]/g, "") : "";
-    return html18`<article class="wrap" aria-label="Tarot spread">
+    return html22`<article class="wrap" aria-label="Tarot spread">
 			<header class="head">
 				<h2 class="title">${spreadLabel}</h2>
-				${question ? html18`<span class="question">"${question}"</span>` : nothing18}
+				${question ? html22`<span class="question">"${question}"</span>` : nothing23}
 			</header>
-			${isYesNo ? html18`<div>
+			${isYesNo ? html22`<div>
 						<span class=${`answer ${answerClass}`}>${answer}</span>
-						${strength ? html18`<small> · ${strength}</small>` : nothing18}
-					</div>` : nothing18}
-			${positions.length > 0 ? html18`<div class="grid">
+						${strength ? html22`<small> · ${strength}</small>` : nothing23}
+					</div>` : nothing23}
+			${positions.length > 0 ? html22`<div class="grid">
 						${positions.map(
-      (p) => html18`<div class="card">
+      (p) => html22`<div class="card">
 								<p class="label">${p.name ?? ""}</p>
 								<div class="image">
-									${p.card?.imageUrl ? html18`<img
+									${p.card?.imageUrl ? html22`<img
 												src=${p.card.imageUrl}
 												alt=${p.card.name ?? "tarot card"}
 												class=${p.card.reversed ? "reversed" : ""}
-											/>` : html18`${p.card?.name ?? "?"}`}
+											/>` : html22`${p.card?.name ?? "?"}`}
 								</div>
 								<p class="name">
 									${p.card?.name ?? ""}
-									${p.card?.reversed ? html18`<small>(reversed)</small>` : nothing18}
+									${p.card?.reversed ? html22`<small>(reversed)</small>` : nothing23}
 								</p>
-								${p.interpretation ? html18`<p class="interp">${p.interpretation}</p>` : nothing18}
+								${p.interpretation ? html22`<p class="interp">${p.interpretation}</p>` : nothing23}
 							</div>`
     )}
-					</div>` : nothing18}
-			${cards.length > 0 ? html18`<div class="grid">
+					</div>` : nothing23}
+			${cards.length > 0 ? html22`<div class="grid">
 						${cards.map(
-      (c) => html18`<div class="card">
+      (c) => html22`<div class="card">
 								<div class="image">
-									${c.imageUrl ? html18`<img
+									${c.imageUrl ? html22`<img
 												src=${c.imageUrl}
 												alt=${c.name ?? "tarot card"}
 												class=${c.reversed ? "reversed" : ""}
-											/>` : html18`${c.name ?? "?"}`}
+											/>` : html22`${c.name ?? "?"}`}
 								</div>
 								<p class="name">
 									${c.name ?? ""}
-									${c.reversed ? html18`<small>(reversed)</small>` : nothing18}
+									${c.reversed ? html22`<small>(reversed)</small>` : nothing23}
 								</p>
-								${c.meaning ? html18`<p class="interp">${c.meaning}</p>` : nothing18}
+								${c.meaning ? html22`<p class="interp">${c.meaning}</p>` : nothing23}
 							</div>`
     )}
-					</div>` : nothing18}
-			${summary ? html18`<p class="reading">${summary}</p>` : nothing18}
-			${yesNoInterp ? html18`<p class="reading">${yesNoInterp}</p>` : nothing18}
+					</div>` : nothing23}
+			${summary ? html22`<p class="reading">${summary}</p>` : nothing23}
+			${yesNoInterp ? html22`<p class="reading">${yesNoInterp}</p>` : nothing23}
 		</article>`;
   }
 };
 RoxyTarotSpread.styles = [
   baseStyles,
-  css19`
+  css23`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -4380,50 +5640,338 @@ RoxyTarotSpread.styles = [
 		`
 ];
 __decorateClass([
-  property18({ attribute: false })
+  property22({ attribute: false })
 ], RoxyTarotSpread.prototype, "data", 2);
 __decorateClass([
-  property18({ type: String, reflect: true })
+  property22({ type: String, reflect: true })
 ], RoxyTarotSpread.prototype, "spread", 2);
 RoxyTarotSpread = __decorateClass([
-  customElement18("roxy-tarot-spread")
+  customElement22("roxy-tarot-spread")
 ], RoxyTarotSpread);
 
+// packages/ui/src/components/transits-table.ts
+import { css as css24, html as html23, LitElement as LitElement23, nothing as nothing24 } from "lit";
+import { customElement as customElement23, property as property23 } from "lit/decorators.js";
+var RoxyTransitsTable = class extends LitElement23 {
+  constructor() {
+    super(...arguments);
+    this.data = null;
+  }
+  render() {
+    if (!this.data?.transitPlanets?.length) {
+      return html23`<div class="roxy-empty" role="status">No transits data</div>`;
+    }
+    const {
+      transitDate,
+      transitTime,
+      transitPlanets,
+      transitAspects,
+      summary
+    } = this.data;
+    const dateStr = [formatDate(transitDate), formatTime(transitTime)].filter(Boolean).join(" ");
+    return html23`<div class="wrap" aria-label="Transit positions table">
+			<div class="head">
+				<h2 class="title">Transits</h2>
+				${dateStr ? html23`<p class="subtitle">${dateStr}</p>` : nothing24}
+			</div>
+
+			${summary ? this.renderSummaryPills(summary) : nothing24}
+
+			<div>
+				<p class="section-label">Planet positions</p>
+				<div class="overflow-scroll">
+					${this.renderPlanetsTable(transitPlanets)}
+				</div>
+			</div>
+
+			${transitAspects?.length ? html23`<div>
+						<p class="section-label">Transit aspects</p>
+						<div class="overflow-scroll">
+							${this.renderAspectsTable(transitAspects)}
+						</div>
+					</div>` : nothing24}
+		</div>`;
+  }
+  renderSummaryPills(summary) {
+    return html23`<div class="summary-pills" role="region" aria-label="Aspect summary">
+			<span class="pill pill--muted">
+				Total: ${summary.totalAspects}
+			</span>
+			<span class="pill pill--success">
+				Harmonious: ${summary.harmonious}
+			</span>
+			<span class="pill pill--danger">
+				Challenging: ${summary.challenging}
+			</span>
+			<span class="pill pill--muted">
+				Neutral: ${summary.neutral}
+			</span>
+		</div>`;
+  }
+  renderPlanetsTable(planets) {
+    return html23`<table class="planets-table">
+			<thead>
+				<tr>
+					<th scope="col">Planet</th>
+					<th scope="col">Sign</th>
+					<th scope="col">Degree</th>
+					<th scope="col">Speed</th>
+				</tr>
+			</thead>
+			<tbody>
+				${planets.map((p) => {
+      const pGlyph = PLANET_GLYPH[capitalize(p.name)] ?? "";
+      const sGlyph = SIGN_GLYPH[capitalize(p.sign)] ?? "";
+      const speedArrow = p.speed >= 0 ? "\u2191" : "\u2193";
+      return html23`<tr>
+						<td>
+							<div class="planet-cell">
+								<span class="glyph" aria-hidden="true">${pGlyph}</span>
+								${p.name}
+								${p.isRetrograde ? html23`<span class="retro-badge" aria-label="retrograde">R</span>` : nothing24}
+							</div>
+						</td>
+						<td>
+							<div class="planet-cell">
+								<span class="glyph" aria-hidden="true">${sGlyph}</span>
+								${p.sign}
+							</div>
+						</td>
+						<td class="num">${formatNumber(p.degree, 2)}</td>
+						<td class="speed">
+							<span class="speed-arrow" aria-hidden="true">${speedArrow}</span>
+							${formatNumber(Math.abs(p.speed), 4)}
+						</td>
+					</tr>`;
+    })}
+			</tbody>
+		</table>`;
+  }
+  renderAspectsTable(aspects) {
+    return html23`<table class="aspects-table">
+			<thead>
+				<tr>
+					<th scope="col">Transit Planet</th>
+					<th scope="col">Natal Planet</th>
+					<th scope="col">Type</th>
+					<th scope="col">Orb</th>
+					<th scope="col">Status</th>
+					<th scope="col">Strength</th>
+					<th scope="col" class="interp">Interpretation</th>
+				</tr>
+			</thead>
+			<tbody>
+				${aspects.map((a) => {
+      const tGlyph = PLANET_GLYPH[capitalize(a.transitPlanet)] ?? "";
+      const nGlyph = PLANET_GLYPH[capitalize(a.natalPlanet)] ?? "";
+      const natureClass = `nature-${(a.nature ?? "").toLowerCase()}`;
+      const summary = a.interpretation?.summary ?? "";
+      const truncated = summary.length > 120 ? `${summary.slice(0, 120)}...` : summary;
+      return html23`<tr>
+						<td>
+							<div class="arrow-cell">
+								<span class="glyph" aria-hidden="true">${tGlyph}</span>
+								${a.transitPlanet}
+							</div>
+						</td>
+						<td>
+							<div class="arrow-cell">
+								<span class="glyph" aria-hidden="true">${nGlyph}</span>
+								${a.natalPlanet}
+							</div>
+						</td>
+						<td class=${natureClass}>${(a.type ?? "").toLowerCase()}</td>
+						<td class="num">${formatNumber(a.orb, 2)}</td>
+						<td>${a.isApplying ? "Applying" : "Separating"}</td>
+						<td class="num">${formatNumber(a.strength, 1)}</td>
+						<td class="interp" title=${summary}>${truncated}</td>
+					</tr>`;
+    })}
+			</tbody>
+		</table>`;
+  }
+};
+RoxyTransitsTable.styles = [
+  baseStyles,
+  css24`
+			.wrap {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			.head {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: var(--roxy-space-md, 1rem);
+				flex-wrap: wrap;
+			}
+
+			.title {
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0;
+			}
+
+			.subtitle {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				margin: 0;
+			}
+
+			.summary-pills {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+
+			.pill {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				padding: 2px var(--roxy-space-sm, 0.5rem);
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				border: 1px solid currentColor;
+			}
+
+			.pill--muted {
+				color: var(--roxy-fg, #0a0a0a);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
+			}
+
+			.pill--success {
+				color: var(--roxy-success-fg, #166534);
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 10%, transparent);
+			}
+
+			.pill--danger {
+				color: var(--roxy-danger-fg, #991b1b);
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 10%, transparent);
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+
+			th,
+			td {
+				padding: var(--roxy-space-sm, 0.5rem);
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				text-align: left;
+			}
+
+			th {
+				color: var(--roxy-muted, #71717a);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: uppercase;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				letter-spacing: 0.06em;
+			}
+
+			.section-label {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0 0 var(--roxy-space-xs, 0.25rem) 0;
+			}
+
+			.glyph {
+				font-size: 1.1em;
+				margin-right: 2px;
+				line-height: 1;
+			}
+
+			.planet-cell {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				white-space: nowrap;
+			}
+
+			.retro-badge {
+				display: inline-block;
+				font-size: 0.7em;
+				padding: 1px 4px;
+				border-radius: var(--roxy-radius-sm, 4px);
+				background: color-mix(in srgb, var(--roxy-warning, #ea580c) 12%, transparent);
+				color: var(--roxy-warning-fg, #9a3412);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin-left: 2px;
+				vertical-align: middle;
+			}
+
+			.speed {
+				font-variant-numeric: tabular-nums;
+				color: var(--roxy-muted, #71717a);
+				white-space: nowrap;
+			}
+
+			.speed-arrow {
+				font-size: 0.85em;
+			}
+
+			td.num {
+				font-variant-numeric: tabular-nums;
+				color: var(--roxy-muted, #71717a);
+			}
+
+			.nature-harmonious {
+				color: var(--roxy-success-fg, #166534);
+			}
+
+			.nature-challenging {
+				color: var(--roxy-danger-fg, #991b1b);
+			}
+
+			.nature-neutral {
+				color: var(--roxy-muted, #71717a);
+			}
+
+			.arrow-cell {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				white-space: nowrap;
+			}
+
+			.interp {
+				color: var(--roxy-secondary, #475569);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				max-width: 22rem;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			@container (max-width: 600px) {
+				.interp {
+					display: none;
+				}
+			}
+
+			.overflow-scroll {
+				overflow-x: auto;
+				-webkit-overflow-scrolling: touch;
+			}
+		`
+];
+__decorateClass([
+  property23({ attribute: false })
+], RoxyTransitsTable.prototype, "data", 2);
+RoxyTransitsTable = __decorateClass([
+  customElement23("roxy-transits-table")
+], RoxyTransitsTable);
+
 // packages/ui/src/components/vedic-kundli.ts
-import { css as css20, html as html19, LitElement as LitElement19, nothing as nothing19, svg as svg5 } from "lit";
-import { customElement as customElement19, property as property19 } from "lit/decorators.js";
-var SOUTH_HOUSE_CENTERS = {
-  1: { x: 150, y: 58 },
-  2: { x: 205, y: 52 },
-  3: { x: 253, y: 112 },
-  4: { x: 243, y: 150 },
-  5: { x: 253, y: 188 },
-  6: { x: 205, y: 248 },
-  7: { x: 150, y: 242 },
-  8: { x: 95, y: 248 },
-  9: { x: 47, y: 188 },
-  10: { x: 57, y: 150 },
-  11: { x: 47, y: 112 },
-  12: { x: 95, y: 52 }
-};
-var SOUTH_SIGN_POSITIONS = {
-  1: { x: 150, y: 35 },
-  2: { x: 222, y: 40 },
-  3: { x: 265, y: 100 },
-  4: { x: 265, y: 150 },
-  5: { x: 265, y: 200 },
-  6: { x: 222, y: 260 },
-  7: { x: 150, y: 265 },
-  8: { x: 78, y: 260 },
-  9: { x: 35, y: 200 },
-  10: { x: 35, y: 150 },
-  11: { x: 35, y: 100 },
-  12: { x: 78, y: 40 }
-};
-var RASHI_TO_SIGN = Object.fromEntries(
-  SIGNS_ORDER.map((s) => [s.toLowerCase(), s])
-);
-var RoxyVedicKundli = class extends LitElement19 {
+import { css as css25, html as html24, LitElement as LitElement24 } from "lit";
+import { customElement as customElement24, property as property24 } from "lit/decorators.js";
+var RoxyVedicKundli = class extends LitElement24 {
   constructor() {
     super(...arguments);
     this.data = null;
@@ -4432,24 +5980,28 @@ var RoxyVedicKundli = class extends LitElement19 {
   buildHouses() {
     if (!this.data) return [];
     const data = this.data;
+    const lagnaSign = this.data?.meta?.Lagna?.rashi ?? "";
     const houses = [];
     for (let i = 0; i < 12; i++) {
       const key = RASHI_KEYS[i];
       const bucket = data[key];
       const planets = (bucket?.signs ?? []).map((p) => p.graha).filter(Boolean);
+      const sign = RASHI_TO_SIGN[key] ?? "";
       houses.push({
-        house: i + 1,
-        sign: RASHI_TO_SIGN[key] ?? "",
-        planets
+        number: i + 1,
+        sign,
+        planets,
+        isLagna: lagnaSign ? lagnaSign.toLowerCase() === sign.toLowerCase() : false
       });
     }
     return houses;
   }
   render() {
     if (!this.data)
-      return html19`<div class="roxy-empty" role="status">No kundli data</div>`;
+      return html24`<div class="roxy-empty" role="status">No kundli data</div>`;
     const houses = this.buildHouses();
-    return html19`<div class="wrap">
+    const isNorth = this.chartStyle === "north";
+    return html24`<div class="wrap">
 			<h2 class="title">Vedic kundli</h2>
 			<svg
 				viewBox="0 0 300 300"
@@ -4457,57 +6009,15 @@ var RoxyVedicKundli = class extends LitElement19 {
 				aria-label="Vedic birth chart with twelve sign houses"
 			>
 				<title>Vedic kundli</title>
-				<polygon class="line" points="150,10 290,150 150,290 10,150" stroke-width="1.5" />
-				<polygon
-					class="line"
-					points="220,80 220,220 80,220 80,80"
-					stroke-width="1"
-					fill="none"
-				/>
-				<line class="line" x1="150" y1="10" x2="80" y2="80" stroke-width="1" />
-				<line class="line" x1="150" y1="10" x2="220" y2="80" stroke-width="1" />
-				<line class="line" x1="290" y1="150" x2="220" y2="80" stroke-width="1" />
-				<line class="line" x1="290" y1="150" x2="220" y2="220" stroke-width="1" />
-				<line class="line" x1="150" y1="290" x2="220" y2="220" stroke-width="1" />
-				<line class="line" x1="150" y1="290" x2="80" y2="220" stroke-width="1" />
-				<line class="line" x1="10" y1="150" x2="80" y2="220" stroke-width="1" />
-				<line class="line" x1="10" y1="150" x2="80" y2="80" stroke-width="1" />
-				${houses.map((h) => this.renderHouseGroup(h))}
+				${isNorth ? renderNorthFrame() : renderSouthFrame()}
+				${isNorth ? houses.map((h) => renderNorthHouseGroup(h)) : houses.map((h) => renderSouthHouseGroup(h))}
 			</svg>
 		</div>`;
-  }
-  isLagna(h) {
-    const ascSign = this.data?.meta?.Lagna?.rashi;
-    if (!ascSign) return false;
-    return ascSign.toLowerCase() === h.sign.toLowerCase();
-  }
-  renderHouseGroup(h) {
-    const center = SOUTH_HOUSE_CENTERS[h.house];
-    const signPos = SOUTH_SIGN_POSITIONS[h.house];
-    if (!center || !signPos) return nothing19;
-    const signAbbr = SIGN_ABBR[h.sign] ?? "";
-    const planets = h.planets ?? [];
-    const isLagna = this.isLagna(h);
-    return svg5`
-			<g>
-				${isLagna ? svg5`<rect class="lagna-bg" x=${center.x - 30} y=${center.y - 28} width="60" height="56" rx="6" />` : nothing19}
-				${signAbbr ? svg5`<text class="sign-text" x=${signPos.x} y=${signPos.y} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : nothing19}
-				${isLagna ? svg5`<text class="lagna-marker" x=${center.x} y=${center.y - 18} text-anchor="middle" dominant-baseline="central">LAGNA</text>` : nothing19}
-				${planets.map((planet, j) => {
-      const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
-      const lineHeight = 13;
-      const baseY = isLagna ? center.y + 8 : center.y;
-      const startY = baseY - (planets.length - 1) * lineHeight / 2;
-      const yPos = startY + j * lineHeight;
-      return svg5`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
-    })}
-			</g>
-		`;
   }
 };
 RoxyVedicKundli.styles = [
   baseStyles,
-  css20`
+  css25`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -4539,6 +6049,12 @@ RoxyVedicKundli.styles = [
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
 			}
+			.house-num {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 9px;
+				font-weight: 400;
+				font-family: var(--roxy-font-sans);
+			}
 			.lagna-marker {
 				fill: var(--roxy-accent-fg, #b45309);
 				font-size: 8px;
@@ -4554,14 +6070,282 @@ RoxyVedicKundli.styles = [
 		`
 ];
 __decorateClass([
-  property19({ attribute: false })
+  property24({ attribute: false })
 ], RoxyVedicKundli.prototype, "data", 2);
 __decorateClass([
-  property19({ type: String, reflect: true, attribute: "chart-style" })
+  property24({ type: String, reflect: true, attribute: "chart-style" })
 ], RoxyVedicKundli.prototype, "chartStyle", 2);
 RoxyVedicKundli = __decorateClass([
-  customElement19("roxy-vedic-kundli")
+  customElement24("roxy-vedic-kundli")
 ], RoxyVedicKundli);
+
+// packages/ui/src/components/yoga-list.ts
+import { css as css26, html as html25, LitElement as LitElement25, nothing as nothing25 } from "lit";
+import { customElement as customElement25, property as property25, state as state5 } from "lit/decorators.js";
+var RoxyYogaList = class extends LitElement25 {
+  constructor() {
+    super(...arguments);
+    this.data = null;
+    this.filter = "";
+    this.handleInput = debounce((e) => {
+      this.filter = e.target.value;
+    }, 200);
+  }
+  renderQualityChip(quality) {
+    const cls = `quality-chip quality-${quality}`;
+    return html25`<span class=${cls}>${quality}</span>`;
+  }
+  renderDetailCard(yoga) {
+    return html25`<div class="detail-card">
+			<p class="detail-name">
+				${yoga.name}
+				${yoga.quality ? this.renderQualityChip(yoga.quality) : nothing25}
+			</p>
+			${yoga.description ? html25`<p class="description">${yoga.description}</p>` : nothing25}
+			${yoga.result ? html25`<details>
+						<summary>Effects</summary>
+						<div class="result-body">${yoga.result}</div>
+					</details>` : nothing25}
+		</div>`;
+  }
+  render() {
+    if (!this.data)
+      return html25`<div class="roxy-empty" role="status">No yoga data</div>`;
+    const d = this.data;
+    const lc = this.filter.toLowerCase();
+    if ("description" in d && typeof d.description === "string") {
+      const yoga = d;
+      return html25`<div class="wrap">${this.renderDetailCard(yoga)}</div>`;
+    }
+    if ("yogas" in d && Array.isArray(d.yogas)) {
+      const allYogas = d.yogas;
+      const isDetailArray = allYogas.length > 0 && "description" in allYogas[0];
+      if (isDetailArray) {
+        const detailYogas = allYogas;
+        const filtered2 = lc ? detailYogas.filter((y) => y.name.toLowerCase().includes(lc)) : detailYogas;
+        const total2 = d.total;
+        return html25`<div class="wrap">
+					<div class="head">
+						<h2 class="title">Yoga catalog</h2>
+						${total2 !== void 0 ? html25`<span class="count">${total2} total</span>` : nothing25}
+					</div>
+					<div class="search-wrap">
+						<input
+							class="search"
+							type="search"
+							placeholder="Filter yogas..."
+							aria-label="Filter yoga list by name"
+							.value=${this.filter}
+							@input=${this.handleInput}
+						/>
+					</div>
+					<div
+						class="detail-grid"
+						role="region"
+						aria-live="polite"
+						aria-label="Yoga results"
+					>
+						${filtered2.length > 0 ? filtered2.map((y) => this.renderDetailCard(y)) : html25`<p class="no-results">No yogas match your search.</p>`}
+					</div>
+				</div>`;
+      }
+      const catalogYogas = allYogas;
+      const filtered = lc ? catalogYogas.filter((y) => y.name.toLowerCase().includes(lc)) : catalogYogas;
+      const total = d.total;
+      return html25`<div class="wrap">
+				<div class="head">
+					<h2 class="title">Yoga catalog</h2>
+					${total !== void 0 ? html25`<span class="count">${total} total</span>` : nothing25}
+				</div>
+				<div class="search-wrap">
+					<input
+						class="search"
+						type="search"
+						placeholder="Filter yogas..."
+						aria-label="Filter yoga list by name"
+						.value=${this.filter}
+						@input=${this.handleInput}
+					/>
+				</div>
+				<div
+					class="grid"
+					role="region"
+					aria-live="polite"
+					aria-label="Yoga results"
+				>
+					${filtered.length > 0 ? filtered.map(
+        (y) => html25`<div class="yoga-chip">
+									${y.name}
+									<span class="yoga-id">${y.id}</span>
+								</div>`
+      ) : html25`<p class="no-results">No yogas match your search.</p>`}
+				</div>
+			</div>`;
+    }
+    return html25`<div class="roxy-empty" role="status">No yoga data</div>`;
+  }
+};
+RoxyYogaList.styles = [
+  baseStyles,
+  css26`
+			.wrap {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+			.head {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.title {
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0;
+			}
+			.count {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
+			}
+			.search-wrap {
+				display: flex;
+				align-items: center;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.search {
+				width: 100%;
+				max-width: 280px;
+				padding: 0.35em 0.75em;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-family: var(--roxy-font-sans);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				background: var(--roxy-bg, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				outline: none;
+			}
+			.search::placeholder {
+				color: var(--roxy-fg, #0a0a0a);
+				opacity: 0.65;
+			}
+			.search:focus {
+				border-color: var(--roxy-accent, #f59e0b);
+				box-shadow: 0 0 0 2px color-mix(in srgb, var(--roxy-accent, #f59e0b) 30%, transparent);
+			}
+			.grid {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+				grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+			}
+			.yoga-chip {
+				padding: 0.4em 0.8em;
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				background: var(--roxy-bg, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				word-break: break-word;
+			}
+			.yoga-chip .yoga-id {
+				display: block;
+				font-size: 0.7em;
+				color: var(--roxy-fg, #0a0a0a);
+				opacity: 0.75;
+				margin-top: 0.15em;
+			}
+			.detail-card {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-md, 1rem);
+				background: var(--roxy-bg, #fff);
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.detail-name {
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				margin: 0;
+				display: flex;
+				align-items: center;
+				gap: var(--roxy-space-sm, 0.5rem);
+				flex-wrap: wrap;
+			}
+			.quality-chip {
+				display: inline-block;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: 600;
+				padding: 0.15em 0.6em;
+				border-radius: 999px;
+			}
+			.quality-Positive {
+				background: color-mix(in srgb, var(--roxy-success, #22c55e) 18%, transparent);
+				color: var(--roxy-success-fg, #15803d);
+				border: 1px solid color-mix(in srgb, var(--roxy-success, #22c55e) 40%, transparent);
+			}
+			.quality-Negative {
+				background: color-mix(in srgb, var(--roxy-danger, #ef4444) 18%, transparent);
+				color: var(--roxy-danger-fg, #b91c1c);
+				border: 1px solid color-mix(in srgb, var(--roxy-danger, #ef4444) 40%, transparent);
+			}
+			.quality-Both {
+				background: color-mix(in srgb, var(--roxy-warning, #f59e0b) 18%, transparent);
+				color: var(--roxy-warning-fg, #b45309);
+				border: 1px solid color-mix(in srgb, var(--roxy-warning, #f59e0b) 40%, transparent);
+			}
+			.description {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
+				margin: 0;
+				line-height: var(--roxy-leading-normal, 1.5);
+			}
+			details {
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			details summary {
+				cursor: pointer;
+				color: var(--roxy-accent-fg, #b45309);
+				font-weight: 500;
+				padding: 0.25em 0;
+				list-style: none;
+				display: flex;
+				align-items: center;
+				gap: 0.4em;
+			}
+			details summary::before {
+				content: '+';
+				font-size: 1.1em;
+				line-height: 1;
+			}
+			details[open] summary::before {
+				content: '-';
+			}
+			details .result-body {
+				padding-top: var(--roxy-space-xs, 0.25rem);
+				color: var(--roxy-fg, #0a0a0a);
+				line-height: var(--roxy-leading-normal, 1.5);
+			}
+			.no-results {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				padding: var(--roxy-space-md, 1rem) 0;
+				text-align: center;
+			}
+			.detail-grid {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+		`
+];
+__decorateClass([
+  property25({ attribute: false })
+], RoxyYogaList.prototype, "data", 2);
+__decorateClass([
+  state5()
+], RoxyYogaList.prototype, "filter", 2);
+RoxyYogaList = __decorateClass([
+  customElement25("roxy-yoga-list")
+], RoxyYogaList);
 
 // packages/ui/src/manifest.ts
 var ROXY_COMPONENTS = [
@@ -4687,6 +6471,72 @@ var ROXY_COMPONENTS = [
     topic: "Vedic"
   },
   {
+    pascal: "RoxyTransitsTable",
+    tag: "roxy-transits-table",
+    slug: "transits-table",
+    heading: "Transits",
+    description: "Live planet positions plus aspects to a natal chart",
+    docsLabel: "Western",
+    endpointLabel: "POST /astrology/transits",
+    docsSummary: "Transit planet positions plus optional aspects to a natal chart",
+    topic: "Astrology"
+  },
+  {
+    pascal: "RoxyDivisionalChart",
+    tag: "roxy-divisional-chart",
+    slug: "divisional-chart",
+    heading: "Divisional chart",
+    description: "D2 to D60 varga chart wheel with Vargottama markers",
+    docsLabel: "Vedic",
+    endpointLabel: "POST /vedic-astrology/divisional-chart",
+    docsSummary: "Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa",
+    topic: "Vedic"
+  },
+  {
+    pascal: "RoxyAshtakavargaGrid",
+    tag: "roxy-ashtakavarga-grid",
+    slug: "ashtakavarga-grid",
+    heading: "Ashtakavarga",
+    description: "Sarva and Bhinna ashtakavarga heatmap with bindu scores",
+    docsLabel: "Vedic",
+    endpointLabel: "POST /vedic-astrology/ashtakavarga",
+    docsSummary: "Sarva, Bhinna, and Shodhya Pinda views in a tabbed heatmap",
+    topic: "Vedic"
+  },
+  {
+    pascal: "RoxyShadbalaTable",
+    tag: "roxy-shadbala-table",
+    slug: "shadbala-table",
+    heading: "Shadbala",
+    description: "Six-fold planetary strength with adequacy badge per planet",
+    docsLabel: "Vedic",
+    endpointLabel: "POST /vedic-astrology/shadbala",
+    docsSummary: "Six-fold planetary strength bar plus rupas and adequacy badge",
+    topic: "Vedic"
+  },
+  {
+    pascal: "RoxyYogaList",
+    tag: "roxy-yoga-list",
+    slug: "yoga-list",
+    heading: "Yoga catalog",
+    description: "Yoga reference cards from the catalog with optional detail mode",
+    docsLabel: "Vedic",
+    endpointLabel: "GET /vedic-astrology/yoga, /yoga/{id}",
+    docsSummary: "Filterable yoga cards from the 300 plus yoga catalog",
+    topic: "Vedic"
+  },
+  {
+    pascal: "RoxyChoghadiyaGrid",
+    tag: "roxy-choghadiya-grid",
+    slug: "choghadiya-grid",
+    heading: "Choghadiya",
+    description: "Day and night Choghadiya muhurta tiles for activity timing",
+    docsLabel: "Vedic",
+    endpointLabel: "POST /vedic-astrology/panchang/choghadiya",
+    docsSummary: "Day and night Choghadiya muhurta tiles colored by effect",
+    topic: "Vedic"
+  },
+  {
     pascal: "RoxyNumerologyCard",
     tag: "roxy-numerology-card",
     slug: "numerology-card",
@@ -4788,10 +6638,13 @@ export {
   ROXY_COMPONENTS,
   ROXY_UI_COMPONENTS,
   ROXY_UI_VERSION,
+  RoxyAshtakavargaGrid,
   RoxyBiorhythmChart,
+  RoxyChoghadiyaGrid,
   RoxyCompatibilityCard,
   RoxyDashaTimeline,
   RoxyData,
+  RoxyDivisionalChart,
   RoxyDoshaCard,
   RoxyEndpointForm,
   RoxyGunaMilan,
@@ -4803,9 +6656,12 @@ export {
   RoxyNatalChart,
   RoxyNumerologyCard,
   RoxyPanchangTable,
+  RoxyShadbalaTable,
   RoxySynastryChart,
   RoxyTarotCard,
   RoxyTarotSpread,
-  RoxyVedicKundli
+  RoxyTransitsTable,
+  RoxyVedicKundli,
+  RoxyYogaList
 };
 //# sourceMappingURL=index.js.map

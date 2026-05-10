@@ -33,6 +33,12 @@ const SECTIONS: Section[] = [
 	{ id: 'hex', tag: 'roxy-hexagram' },
 	{ id: 'data', tag: 'roxy-data' },
 	{ id: 'form', tag: 'roxy-endpoint-form' },
+	{ id: 'transits', tag: 'roxy-transits-table' },
+	{ id: 'divisional', tag: 'roxy-divisional-chart' },
+	{ id: 'ashtakavarga', tag: 'roxy-ashtakavarga-grid' },
+	{ id: 'shadbala', tag: 'roxy-shadbala-table' },
+	{ id: 'yoga', tag: 'roxy-yoga-list' },
+	{ id: 'choghadiya', tag: 'roxy-choghadiya-grid' },
 ];
 
 const FORBIDDEN: Array<{ pattern: RegExp; label: string }> = [

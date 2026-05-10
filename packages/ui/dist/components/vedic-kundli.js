@@ -10,7 +10,7 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 
 // packages/ui/src/components/vedic-kundli.ts
-import { css as css2, html, LitElement, nothing, svg } from "lit";
+import { css as css2, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 // packages/ui/src/tokens/index.ts
@@ -148,13 +148,19 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/kundli-render.ts
+import { nothing, svg } from "lit";
+
 // packages/ui/src/utils/string.ts
 function capitalize(s) {
   if (!s) return "";
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
-// packages/ui/src/components/vedic-kundli.ts
+// packages/ui/src/utils/kundli-render.ts
+var RASHI_TO_SIGN = Object.fromEntries(
+  SIGNS_ORDER.map((s) => [s.toLowerCase(), s])
+);
 var SOUTH_HOUSE_CENTERS = {
   1: { x: 150, y: 58 },
   2: { x: 205, y: 52 },
@@ -183,9 +189,93 @@ var SOUTH_SIGN_POSITIONS = {
   11: { x: 35, y: 100 },
   12: { x: 78, y: 40 }
 };
-var RASHI_TO_SIGN = Object.fromEntries(
-  SIGNS_ORDER.map((s) => [s.toLowerCase(), s])
-);
+var NORTH_HOUSE_CENTERS = {
+  1: { x: 150, y: 60 },
+  2: { x: 225, y: 100 },
+  3: { x: 255, y: 150 },
+  4: { x: 225, y: 200 },
+  5: { x: 150, y: 240 },
+  6: { x: 75, y: 200 },
+  7: { x: 45, y: 150 },
+  8: { x: 75, y: 100 },
+  9: { x: 100, y: 80 },
+  10: { x: 150, y: 108 },
+  11: { x: 200, y: 80 },
+  12: { x: 200, y: 220 }
+};
+function renderSouthHouseGroup(h) {
+  const center = SOUTH_HOUSE_CENTERS[h.number];
+  const signPos = SOUTH_SIGN_POSITIONS[h.number];
+  if (!center || !signPos) return nothing;
+  const signAbbr = SIGN_ABBR[h.sign] ?? "";
+  const planets = h.planets;
+  return svg`
+		<g>
+			${h.isLagna ? svg`<rect
+							class="lagna-bg"
+							x=${center.x - 30} y=${center.y - 28}
+							width="60" height="56" rx="6"
+						/>` : nothing}
+			${signAbbr ? svg`<text class="sign-text" x=${signPos.x} y=${signPos.y} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : nothing}
+			${h.isLagna ? svg`<text class="lagna-marker" x=${center.x} y=${center.y - 18} text-anchor="middle" dominant-baseline="central">LAGNA</text>` : nothing}
+			${planets.map((planet, j) => {
+    const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
+    const lineHeight = 13;
+    const baseY = h.isLagna ? center.y + 8 : center.y;
+    const startY = baseY - (planets.length - 1) * lineHeight / 2;
+    const yPos = startY + j * lineHeight;
+    return svg`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
+  })}
+		</g>
+	`;
+}
+function renderNorthFrame() {
+  return svg`
+		<polygon class="line" points="150,10 290,150 150,290 10,150" stroke-width="1.5" />
+		<line class="line" x1="150" y1="10" x2="150" y2="290" stroke-width="1" />
+		<line class="line" x1="10" y1="150" x2="290" y2="150" stroke-width="1" />
+		<line class="line" x1="150" y1="10" x2="10" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+		<line class="line" x1="150" y1="10" x2="290" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+		<line class="line" x1="150" y1="290" x2="10" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+		<line class="line" x1="150" y1="290" x2="290" y2="150" stroke-width="0.6" stroke-dasharray="3,3" />
+	`;
+}
+function renderNorthHouseGroup(h) {
+  const center = NORTH_HOUSE_CENTERS[h.number];
+  if (!center) return nothing;
+  const signAbbr = SIGN_ABBR[h.sign] ?? "";
+  const planets = h.planets;
+  return svg`
+		<g>
+			${h.isLagna ? svg`<circle class="lagna-bg" cx=${center.x} cy=${center.y} r="22" />` : nothing}
+			${signAbbr ? svg`<text class="sign-text" x=${center.x} y=${center.y - 10} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : nothing}
+			<text class="house-num" x=${center.x} y=${center.y + 2} text-anchor="middle" dominant-baseline="central">${h.number}</text>
+			${planets.map((planet, j) => {
+    const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
+    const lineHeight = 11;
+    const startY = center.y + 14 - (planets.length - 1) * lineHeight / 2;
+    const yPos = startY + j * lineHeight;
+    return svg`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
+  })}
+		</g>
+	`;
+}
+function renderSouthFrame() {
+  return svg`
+		<polygon class="line" points="150,10 290,150 150,290 10,150" stroke-width="1.5" />
+		<polygon class="line" points="220,80 220,220 80,220 80,80" stroke-width="1" fill="none" />
+		<line class="line" x1="150" y1="10" x2="80" y2="80" stroke-width="1" />
+		<line class="line" x1="150" y1="10" x2="220" y2="80" stroke-width="1" />
+		<line class="line" x1="290" y1="150" x2="220" y2="80" stroke-width="1" />
+		<line class="line" x1="290" y1="150" x2="220" y2="220" stroke-width="1" />
+		<line class="line" x1="150" y1="290" x2="220" y2="220" stroke-width="1" />
+		<line class="line" x1="150" y1="290" x2="80" y2="220" stroke-width="1" />
+		<line class="line" x1="10" y1="150" x2="80" y2="220" stroke-width="1" />
+		<line class="line" x1="10" y1="150" x2="80" y2="80" stroke-width="1" />
+	`;
+}
+
+// packages/ui/src/components/vedic-kundli.ts
 var RoxyVedicKundli = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -195,15 +285,18 @@ var RoxyVedicKundli = class extends LitElement {
   buildHouses() {
     if (!this.data) return [];
     const data = this.data;
+    const lagnaSign = this.data?.meta?.Lagna?.rashi ?? "";
     const houses = [];
     for (let i = 0; i < 12; i++) {
       const key = RASHI_KEYS[i];
       const bucket = data[key];
       const planets = (bucket?.signs ?? []).map((p) => p.graha).filter(Boolean);
+      const sign = RASHI_TO_SIGN[key] ?? "";
       houses.push({
-        house: i + 1,
-        sign: RASHI_TO_SIGN[key] ?? "",
-        planets
+        number: i + 1,
+        sign,
+        planets,
+        isLagna: lagnaSign ? lagnaSign.toLowerCase() === sign.toLowerCase() : false
       });
     }
     return houses;
@@ -212,6 +305,7 @@ var RoxyVedicKundli = class extends LitElement {
     if (!this.data)
       return html`<div class="roxy-empty" role="status">No kundli data</div>`;
     const houses = this.buildHouses();
+    const isNorth = this.chartStyle === "north";
     return html`<div class="wrap">
 			<h2 class="title">Vedic kundli</h2>
 			<svg
@@ -220,52 +314,10 @@ var RoxyVedicKundli = class extends LitElement {
 				aria-label="Vedic birth chart with twelve sign houses"
 			>
 				<title>Vedic kundli</title>
-				<polygon class="line" points="150,10 290,150 150,290 10,150" stroke-width="1.5" />
-				<polygon
-					class="line"
-					points="220,80 220,220 80,220 80,80"
-					stroke-width="1"
-					fill="none"
-				/>
-				<line class="line" x1="150" y1="10" x2="80" y2="80" stroke-width="1" />
-				<line class="line" x1="150" y1="10" x2="220" y2="80" stroke-width="1" />
-				<line class="line" x1="290" y1="150" x2="220" y2="80" stroke-width="1" />
-				<line class="line" x1="290" y1="150" x2="220" y2="220" stroke-width="1" />
-				<line class="line" x1="150" y1="290" x2="220" y2="220" stroke-width="1" />
-				<line class="line" x1="150" y1="290" x2="80" y2="220" stroke-width="1" />
-				<line class="line" x1="10" y1="150" x2="80" y2="220" stroke-width="1" />
-				<line class="line" x1="10" y1="150" x2="80" y2="80" stroke-width="1" />
-				${houses.map((h) => this.renderHouseGroup(h))}
+				${isNorth ? renderNorthFrame() : renderSouthFrame()}
+				${isNorth ? houses.map((h) => renderNorthHouseGroup(h)) : houses.map((h) => renderSouthHouseGroup(h))}
 			</svg>
 		</div>`;
-  }
-  isLagna(h) {
-    const ascSign = this.data?.meta?.Lagna?.rashi;
-    if (!ascSign) return false;
-    return ascSign.toLowerCase() === h.sign.toLowerCase();
-  }
-  renderHouseGroup(h) {
-    const center = SOUTH_HOUSE_CENTERS[h.house];
-    const signPos = SOUTH_SIGN_POSITIONS[h.house];
-    if (!center || !signPos) return nothing;
-    const signAbbr = SIGN_ABBR[h.sign] ?? "";
-    const planets = h.planets ?? [];
-    const isLagna = this.isLagna(h);
-    return svg`
-			<g>
-				${isLagna ? svg`<rect class="lagna-bg" x=${center.x - 30} y=${center.y - 28} width="60" height="56" rx="6" />` : nothing}
-				${signAbbr ? svg`<text class="sign-text" x=${signPos.x} y=${signPos.y} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : nothing}
-				${isLagna ? svg`<text class="lagna-marker" x=${center.x} y=${center.y - 18} text-anchor="middle" dominant-baseline="central">LAGNA</text>` : nothing}
-				${planets.map((planet, j) => {
-      const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
-      const lineHeight = 13;
-      const baseY = isLagna ? center.y + 8 : center.y;
-      const startY = baseY - (planets.length - 1) * lineHeight / 2;
-      const yPos = startY + j * lineHeight;
-      return svg`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
-    })}
-			</g>
-		`;
   }
 };
 RoxyVedicKundli.styles = [
@@ -300,6 +352,12 @@ RoxyVedicKundli.styles = [
 				fill: var(--roxy-fg, #0a0a0a);
 				font-size: 11px;
 				font-weight: 600;
+				font-family: var(--roxy-font-sans);
+			}
+			.house-num {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 9px;
+				font-weight: 400;
 				font-family: var(--roxy-font-sans);
 			}
 			.lagna-marker {

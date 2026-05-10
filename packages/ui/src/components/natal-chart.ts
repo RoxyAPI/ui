@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
+import { polarToCartesian } from '../utils/degree.js';
 import {
 	ASPECT_CLASS,
 	formatNumber,
@@ -14,14 +14,14 @@ import { capitalize } from '../utils/string.js';
 type PlanetEntry = NatalChartResponse['planets'][number];
 type AspectEntry = NatalChartResponse['aspects'][number];
 
-const SIZE = 384;
+const SIZE = 420;
 const CENTER = SIZE / 2;
-const OUTER_R = 150;
-const SIGN_R = 134;
-const HOUSE_R = 110;
-const PLANET_R = 88;
-const ANGLE_TICK_R = 162;
-const ANGLE_LABEL_R = 176;
+const OUTER_R = 164;
+const SIGN_R = 146;
+const HOUSE_R = 120;
+const PLANET_R = 96;
+const ANGLE_TICK_R = 178;
+const ANGLE_LABEL_R = 196;
 
 /**
  * Western natal chart wheel. Renders the 12 zodiac signs, 12 houses, planet
@@ -130,6 +130,136 @@ export class RoxyNatalChart extends LitElement {
 				margin-right: 4px;
 				vertical-align: middle;
 			}
+
+			.details {
+				margin-top: var(--roxy-space-md, 1rem);
+			}
+
+			.pill-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+				margin-bottom: var(--roxy-space-xs, 0.25rem);
+			}
+
+			.pill {
+				padding: 2px 8px;
+				border-radius: var(--roxy-radius-sm, 4px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				background: color-mix(in srgb, var(--roxy-fg, #0f172a) 8%, transparent);
+				color: var(--roxy-fg, #0f172a);
+			}
+
+			.pill--success {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 15%, transparent);
+				color: var(--roxy-success, #16a34a);
+			}
+
+			.pill--danger {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 15%, transparent);
+				color: var(--roxy-danger, #dc2626);
+			}
+
+			.pill--muted {
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+
+			.summary {
+				color: var(--roxy-fg, #0f172a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				margin: var(--roxy-space-md, 1rem) 0;
+			}
+
+			.dist-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			@container (max-width: 639px) {
+				.dist-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			.dist-section h3 {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-muted, #71717a);
+				margin: 0 0 var(--roxy-space-xs, 0.25rem);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+
+			.dist-row {
+				display: grid;
+				grid-template-columns: 4rem 1fr 1.5rem;
+				align-items: center;
+				gap: var(--roxy-space-xs, 0.25rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-fg, #0f172a);
+				margin-bottom: 4px;
+			}
+
+			.dist-bar {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 20%, transparent);
+				height: 6px;
+				border-radius: 3px;
+			}
+
+			.dist-bar > span {
+				display: block;
+				height: 100%;
+				background: var(--roxy-accent, #f59e0b);
+				border-radius: 3px;
+			}
+
+			.interpretations {
+				margin-top: var(--roxy-space-md, 1rem);
+			}
+			.interpretations h3 {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: 600;
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+			}
+			.interp-card {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				margin-bottom: var(--roxy-space-xs, 0.25rem);
+			}
+			.interp-card summary {
+				cursor: pointer;
+				font-weight: 500;
+				color: var(--roxy-fg, #0f172a);
+			}
+			.interp-card summary small {
+				color: var(--roxy-muted, #71717a);
+				margin-left: 0.5em;
+				font-weight: 400;
+			}
+			.interp-body {
+				margin-top: var(--roxy-space-xs, 0.25rem);
+				color: var(--roxy-fg, #0f172a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.interp-keywords {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.25rem;
+				margin-top: 0.5rem;
+			}
+			.interp-keywords .kw {
+				padding: 1px 8px;
+				border-radius: 9999px;
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+				color: var(--roxy-accent-fg, #b45309);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
 		`,
 	];
 
@@ -216,6 +346,8 @@ export class RoxyNatalChart extends LitElement {
 				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
 				<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
+			${this.renderDetails()}
+			${this.renderInterpretations()}
 		</div>`;
 	}
 
@@ -277,6 +409,109 @@ export class RoxyNatalChart extends LitElement {
 			const display = retro ? `${glyph}ᴿ` : glyph;
 			return svg`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro}</title>${display}</text>`;
 		});
+	}
+
+	private renderDetails() {
+		const summary = this.data?.summary;
+		const ai = this.data?.aspectsInterpretation;
+		if (!summary && !ai) return nothing;
+
+		const retrogrades = summary?.retrogradePlanets ?? [];
+		const elementDist = summary?.elementDistribution ?? {};
+		const modalityDist = summary?.modalityDistribution ?? {};
+		const elementMax = Math.max(1, ...Object.values(elementDist));
+		const modalityMax = Math.max(1, ...Object.values(modalityDist));
+
+		return html`<div class="details">
+			${
+				summary?.dominantElement || summary?.dominantModality
+					? html`<div class="pill-row">
+						${summary.dominantElement ? html`<span class="pill">Dominant element: ${summary.dominantElement}</span>` : nothing}
+						${summary.dominantModality ? html`<span class="pill">Dominant modality: ${summary.dominantModality}</span>` : nothing}
+					</div>`
+					: nothing
+			}
+			${
+				ai
+					? html`<div class="pill-row">
+						<span class="pill pill--success">Harmonious ${ai.harmonious}</span>
+						<span class="pill pill--danger">Challenging ${ai.challenging}</span>
+						<span class="pill pill--muted">Neutral ${ai.neutral}</span>
+					</div>`
+					: nothing
+			}
+			${
+				retrogrades.length > 0
+					? html`<div class="pill-row">
+						${retrogrades.map((p) => {
+							const glyph = PLANET_GLYPH[p] ?? p.slice(0, 2);
+							return html`<span class="pill pill--muted">${glyph} ${p} R</span>`;
+						})}
+					</div>`
+					: nothing
+			}
+			${ai?.summary ? html`<p class="summary">${ai.summary}</p>` : nothing}
+			${
+				Object.keys(elementDist).length > 0 ||
+				Object.keys(modalityDist).length > 0
+					? html`<div class="dist-grid">
+						${
+							Object.keys(elementDist).length > 0
+								? html`<div class="dist-section">
+									<h3>Elements</h3>
+									${Object.entries(elementDist).map(
+										([label, count]) => html`<div class="dist-row">
+											<span>${label}</span>
+											<div class="dist-bar"><span style="width: ${Math.round((count / elementMax) * 100)}%"></span></div>
+											<span>${count}</span>
+										</div>`,
+									)}
+								</div>`
+								: nothing
+						}
+						${
+							Object.keys(modalityDist).length > 0
+								? html`<div class="dist-section">
+									<h3>Modalities</h3>
+									${Object.entries(modalityDist).map(
+										([label, count]) => html`<div class="dist-row">
+											<span>${label}</span>
+											<div class="dist-bar"><span style="width: ${Math.round((count / modalityMax) * 100)}%"></span></div>
+											<span>${count}</span>
+										</div>`,
+									)}
+								</div>`
+								: nothing
+						}
+					</div>`
+					: nothing
+			}
+		</div>`;
+	}
+
+	private renderInterpretations() {
+		const planets = this.getPlanets().filter((p) => p.interpretation);
+		if (planets.length === 0) return nothing;
+		return html`<section class="interpretations">
+			<h3>Planet readings</h3>
+			${planets.map((p) => {
+				const interp = p.interpretation!;
+				const glyph = PLANET_GLYPH[capitalize(p.name)] ?? '';
+				const deg = formatNumber(p.degree ?? 0, 1);
+				return html`<details class="interp-card">
+					<summary>${glyph} ${p.name} <small>${p.sign ?? ''} ${deg}</small></summary>
+					<div class="interp-body">
+						${interp.summary ? html`<p class="interp-summary">${interp.summary}</p>` : nothing}
+						${interp.detailed ? html`<p class="interp-detail">${interp.detailed}</p>` : nothing}
+						${
+							interp.keywords?.length
+								? html`<div class="interp-keywords">${interp.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
+								: nothing
+						}
+					</div>
+				</details>`;
+			})}
+		</section>`;
 	}
 
 	private renderAspects(planets: PlanetEntry[], aspects: AspectEntry[]) {

@@ -31,10 +31,13 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var src_exports = {};
 __export(src_exports, {
   ROXY_UI_VERSION: () => ROXY_UI_VERSION,
+  RoxyAshtakavargaGrid: () => RoxyAshtakavargaGrid,
   RoxyBiorhythmChart: () => RoxyBiorhythmChart,
+  RoxyChoghadiyaGrid: () => RoxyChoghadiyaGrid,
   RoxyCompatibilityCard: () => RoxyCompatibilityCard,
   RoxyDashaTimeline: () => RoxyDashaTimeline,
   RoxyData: () => RoxyData,
+  RoxyDivisionalChart: () => RoxyDivisionalChart,
   RoxyDoshaCard: () => RoxyDoshaCard,
   RoxyEndpointForm: () => RoxyEndpointForm,
   RoxyGunaMilan: () => RoxyGunaMilan,
@@ -46,10 +49,13 @@ __export(src_exports, {
   RoxyNatalChart: () => RoxyNatalChart,
   RoxyNumerologyCard: () => RoxyNumerologyCard,
   RoxyPanchangTable: () => RoxyPanchangTable,
+  RoxyShadbalaTable: () => RoxyShadbalaTable,
   RoxySynastryChart: () => RoxySynastryChart,
   RoxyTarotCard: () => RoxyTarotCard,
   RoxyTarotSpread: () => RoxyTarotSpread,
+  RoxyTransitsTable: () => RoxyTransitsTable,
   RoxyVedicKundli: () => RoxyVedicKundli,
+  RoxyYogaList: () => RoxyYogaList,
   ensureScriptLoaded: () => ensureScriptLoaded
 });
 module.exports = __toCommonJS(src_exports);
@@ -601,10 +607,10 @@ var RoxyKpPlanetsTable = React11.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/numerology-card.tsx
+// packages/ui-react/src/components/transits-table.tsx
 var React12 = __toESM(require("react"), 1);
-var RoxyNumerologyCard = React12.forwardRef(
-  function RoxyNumerologyCard2({ data, className, style, ...rest }, ref) {
+var RoxyTransitsTable = React12.forwardRef(
+  function RoxyTransitsTable2({ data, className, style, ...rest }, ref) {
     const internal = React12.useRef(null);
     React12.useImperativeHandle(
       ref,
@@ -638,7 +644,7 @@ var RoxyNumerologyCard = React12.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React12.createElement("roxy-numerology-card", {
+    return React12.createElement("roxy-transits-table", {
       ref: internal,
       className,
       style,
@@ -647,10 +653,10 @@ var RoxyNumerologyCard = React12.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/tarot-card.tsx
+// packages/ui-react/src/components/divisional-chart.tsx
 var React13 = __toESM(require("react"), 1);
-var RoxyTarotCard = React13.forwardRef(
-  function RoxyTarotCard2({ data, className, style, ...rest }, ref) {
+var RoxyDivisionalChart = React13.forwardRef(
+  function RoxyDivisionalChart2({ data, className, style, ...rest }, ref) {
     const internal = React13.useRef(null);
     React13.useImperativeHandle(
       ref,
@@ -684,7 +690,7 @@ var RoxyTarotCard = React13.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React13.createElement("roxy-tarot-card", {
+    return React13.createElement("roxy-divisional-chart", {
       ref: internal,
       className,
       style,
@@ -693,10 +699,10 @@ var RoxyTarotCard = React13.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/tarot-spread.tsx
+// packages/ui-react/src/components/ashtakavarga-grid.tsx
 var React14 = __toESM(require("react"), 1);
-var RoxyTarotSpread = React14.forwardRef(
-  function RoxyTarotSpread2({ data, className, style, ...rest }, ref) {
+var RoxyAshtakavargaGrid = React14.forwardRef(
+  function RoxyAshtakavargaGrid2({ data, className, style, ...rest }, ref) {
     const internal = React14.useRef(null);
     React14.useImperativeHandle(
       ref,
@@ -730,7 +736,7 @@ var RoxyTarotSpread = React14.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React14.createElement("roxy-tarot-spread", {
+    return React14.createElement("roxy-ashtakavarga-grid", {
       ref: internal,
       className,
       style,
@@ -739,10 +745,10 @@ var RoxyTarotSpread = React14.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/biorhythm-chart.tsx
+// packages/ui-react/src/components/shadbala-table.tsx
 var React15 = __toESM(require("react"), 1);
-var RoxyBiorhythmChart = React15.forwardRef(
-  function RoxyBiorhythmChart2({ data, className, style, ...rest }, ref) {
+var RoxyShadbalaTable = React15.forwardRef(
+  function RoxyShadbalaTable2({ data, className, style, ...rest }, ref) {
     const internal = React15.useRef(null);
     React15.useImperativeHandle(
       ref,
@@ -776,7 +782,7 @@ var RoxyBiorhythmChart = React15.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React15.createElement("roxy-biorhythm-chart", {
+    return React15.createElement("roxy-shadbala-table", {
       ref: internal,
       className,
       style,
@@ -785,10 +791,10 @@ var RoxyBiorhythmChart = React15.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/hexagram.tsx
+// packages/ui-react/src/components/yoga-list.tsx
 var React16 = __toESM(require("react"), 1);
-var RoxyHexagram = React16.forwardRef(
-  function RoxyHexagram2({ data, className, style, ...rest }, ref) {
+var RoxyYogaList = React16.forwardRef(
+  function RoxyYogaList2({ data, className, style, ...rest }, ref) {
     const internal = React16.useRef(null);
     React16.useImperativeHandle(
       ref,
@@ -822,7 +828,7 @@ var RoxyHexagram = React16.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React16.createElement("roxy-hexagram", {
+    return React16.createElement("roxy-yoga-list", {
       ref: internal,
       className,
       style,
@@ -831,10 +837,10 @@ var RoxyHexagram = React16.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/endpoint-form.tsx
+// packages/ui-react/src/components/choghadiya-grid.tsx
 var React17 = __toESM(require("react"), 1);
-var RoxyEndpointForm = React17.forwardRef(
-  function RoxyEndpointForm2({ className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
+var RoxyChoghadiyaGrid = React17.forwardRef(
+  function RoxyChoghadiyaGrid2({ data, className, style, ...rest }, ref) {
     const internal = React17.useRef(null);
     React17.useImperativeHandle(
       ref,
@@ -857,28 +863,10 @@ var RoxyEndpointForm = React17.forwardRef(
     }, []);
     React17.useEffect(() => {
       const el = internal.current;
-      const handler = onRoxySubmit;
-      if (!el || !handler) return;
-      const listener = (event) => handler(event);
-      el.addEventListener("roxy-submit", listener);
-      return () => el.removeEventListener("roxy-submit", listener);
-    }, [onRoxySubmit, loaded2]);
-    React17.useEffect(() => {
-      const el = internal.current;
-      const handler = onRoxyValidationError;
-      if (!el || !handler) return;
-      const listener = (event) => handler(event);
-      el.addEventListener("roxy-validation-error", listener);
-      return () => el.removeEventListener("roxy-validation-error", listener);
-    }, [onRoxyValidationError, loaded2]);
-    React17.useEffect(() => {
-      const el = internal.current;
-      const handler = onRoxySpecError;
-      if (!el || !handler) return;
-      const listener = (event) => handler(event);
-      el.addEventListener("roxy-spec-error", listener);
-      return () => el.removeEventListener("roxy-spec-error", listener);
-    }, [onRoxySpecError, loaded2]);
+      if (el && data !== void 0) {
+        el.data = data;
+      }
+    }, [data, loaded2]);
     if (error) {
       return React17.createElement(
         "div",
@@ -886,7 +874,7 @@ var RoxyEndpointForm = React17.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React17.createElement("roxy-endpoint-form", {
+    return React17.createElement("roxy-choghadiya-grid", {
       ref: internal,
       className,
       style,
@@ -895,10 +883,10 @@ var RoxyEndpointForm = React17.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/location-search.tsx
+// packages/ui-react/src/components/numerology-card.tsx
 var React18 = __toESM(require("react"), 1);
-var RoxyLocationSearch = React18.forwardRef(
-  function RoxyLocationSearch2({ className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
+var RoxyNumerologyCard = React18.forwardRef(
+  function RoxyNumerologyCard2({ data, className, style, ...rest }, ref) {
     const internal = React18.useRef(null);
     React18.useImperativeHandle(
       ref,
@@ -921,20 +909,10 @@ var RoxyLocationSearch = React18.forwardRef(
     }, []);
     React18.useEffect(() => {
       const el = internal.current;
-      const handler = onRoxyLocationSelect;
-      if (!el || !handler) return;
-      const listener = (event) => handler(event);
-      el.addEventListener("roxy-location-select", listener);
-      return () => el.removeEventListener("roxy-location-select", listener);
-    }, [onRoxyLocationSelect, loaded2]);
-    React18.useEffect(() => {
-      const el = internal.current;
-      const handler = onRoxyValidationError;
-      if (!el || !handler) return;
-      const listener = (event) => handler(event);
-      el.addEventListener("roxy-validation-error", listener);
-      return () => el.removeEventListener("roxy-validation-error", listener);
-    }, [onRoxyValidationError, loaded2]);
+      if (el && data !== void 0) {
+        el.data = data;
+      }
+    }, [data, loaded2]);
     if (error) {
       return React18.createElement(
         "div",
@@ -942,7 +920,7 @@ var RoxyLocationSearch = React18.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React18.createElement("roxy-location-search", {
+    return React18.createElement("roxy-numerology-card", {
       ref: internal,
       className,
       style,
@@ -951,10 +929,10 @@ var RoxyLocationSearch = React18.forwardRef(
   }
 );
 
-// packages/ui-react/src/components/data.tsx
+// packages/ui-react/src/components/tarot-card.tsx
 var React19 = __toESM(require("react"), 1);
-var RoxyData = React19.forwardRef(
-  function RoxyData2({ className, style, ...rest }, ref) {
+var RoxyTarotCard = React19.forwardRef(
+  function RoxyTarotCard2({ data, className, style, ...rest }, ref) {
     const internal = React19.useRef(null);
     React19.useImperativeHandle(
       ref,
@@ -975,6 +953,12 @@ var RoxyData = React19.forwardRef(
         active = false;
       };
     }, []);
+    React19.useEffect(() => {
+      const el = internal.current;
+      if (el && data !== void 0) {
+        el.data = data;
+      }
+    }, [data, loaded2]);
     if (error) {
       return React19.createElement(
         "div",
@@ -982,7 +966,305 @@ var RoxyData = React19.forwardRef(
         `Roxy UI script load failed: ${error.message}`
       );
     }
-    return React19.createElement("roxy-data", {
+    return React19.createElement("roxy-tarot-card", {
+      ref: internal,
+      className,
+      style,
+      ...rest
+    });
+  }
+);
+
+// packages/ui-react/src/components/tarot-spread.tsx
+var React20 = __toESM(require("react"), 1);
+var RoxyTarotSpread = React20.forwardRef(
+  function RoxyTarotSpread2({ data, className, style, ...rest }, ref) {
+    const internal = React20.useRef(null);
+    React20.useImperativeHandle(
+      ref,
+      () => internal.current,
+      []
+    );
+    const [loaded2, setLoaded] = React20.useState(false);
+    const [error, setError] = React20.useState(null);
+    React20.useEffect(() => {
+      let active = true;
+      ensureScriptLoaded().then(() => {
+        if (active) setLoaded(true);
+      }).catch((err) => {
+        if (!active) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
+    React20.useEffect(() => {
+      const el = internal.current;
+      if (el && data !== void 0) {
+        el.data = data;
+      }
+    }, [data, loaded2]);
+    if (error) {
+      return React20.createElement(
+        "div",
+        { role: "alert", className, style },
+        `Roxy UI script load failed: ${error.message}`
+      );
+    }
+    return React20.createElement("roxy-tarot-spread", {
+      ref: internal,
+      className,
+      style,
+      ...rest
+    });
+  }
+);
+
+// packages/ui-react/src/components/biorhythm-chart.tsx
+var React21 = __toESM(require("react"), 1);
+var RoxyBiorhythmChart = React21.forwardRef(
+  function RoxyBiorhythmChart2({ data, className, style, ...rest }, ref) {
+    const internal = React21.useRef(null);
+    React21.useImperativeHandle(
+      ref,
+      () => internal.current,
+      []
+    );
+    const [loaded2, setLoaded] = React21.useState(false);
+    const [error, setError] = React21.useState(null);
+    React21.useEffect(() => {
+      let active = true;
+      ensureScriptLoaded().then(() => {
+        if (active) setLoaded(true);
+      }).catch((err) => {
+        if (!active) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
+    React21.useEffect(() => {
+      const el = internal.current;
+      if (el && data !== void 0) {
+        el.data = data;
+      }
+    }, [data, loaded2]);
+    if (error) {
+      return React21.createElement(
+        "div",
+        { role: "alert", className, style },
+        `Roxy UI script load failed: ${error.message}`
+      );
+    }
+    return React21.createElement("roxy-biorhythm-chart", {
+      ref: internal,
+      className,
+      style,
+      ...rest
+    });
+  }
+);
+
+// packages/ui-react/src/components/hexagram.tsx
+var React22 = __toESM(require("react"), 1);
+var RoxyHexagram = React22.forwardRef(
+  function RoxyHexagram2({ data, className, style, ...rest }, ref) {
+    const internal = React22.useRef(null);
+    React22.useImperativeHandle(
+      ref,
+      () => internal.current,
+      []
+    );
+    const [loaded2, setLoaded] = React22.useState(false);
+    const [error, setError] = React22.useState(null);
+    React22.useEffect(() => {
+      let active = true;
+      ensureScriptLoaded().then(() => {
+        if (active) setLoaded(true);
+      }).catch((err) => {
+        if (!active) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
+    React22.useEffect(() => {
+      const el = internal.current;
+      if (el && data !== void 0) {
+        el.data = data;
+      }
+    }, [data, loaded2]);
+    if (error) {
+      return React22.createElement(
+        "div",
+        { role: "alert", className, style },
+        `Roxy UI script load failed: ${error.message}`
+      );
+    }
+    return React22.createElement("roxy-hexagram", {
+      ref: internal,
+      className,
+      style,
+      ...rest
+    });
+  }
+);
+
+// packages/ui-react/src/components/endpoint-form.tsx
+var React23 = __toESM(require("react"), 1);
+var RoxyEndpointForm = React23.forwardRef(
+  function RoxyEndpointForm2({ className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
+    const internal = React23.useRef(null);
+    React23.useImperativeHandle(
+      ref,
+      () => internal.current,
+      []
+    );
+    const [loaded2, setLoaded] = React23.useState(false);
+    const [error, setError] = React23.useState(null);
+    React23.useEffect(() => {
+      let active = true;
+      ensureScriptLoaded().then(() => {
+        if (active) setLoaded(true);
+      }).catch((err) => {
+        if (!active) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
+    React23.useEffect(() => {
+      const el = internal.current;
+      const handler = onRoxySubmit;
+      if (!el || !handler) return;
+      const listener = (event) => handler(event);
+      el.addEventListener("roxy-submit", listener);
+      return () => el.removeEventListener("roxy-submit", listener);
+    }, [onRoxySubmit, loaded2]);
+    React23.useEffect(() => {
+      const el = internal.current;
+      const handler = onRoxyValidationError;
+      if (!el || !handler) return;
+      const listener = (event) => handler(event);
+      el.addEventListener("roxy-validation-error", listener);
+      return () => el.removeEventListener("roxy-validation-error", listener);
+    }, [onRoxyValidationError, loaded2]);
+    React23.useEffect(() => {
+      const el = internal.current;
+      const handler = onRoxySpecError;
+      if (!el || !handler) return;
+      const listener = (event) => handler(event);
+      el.addEventListener("roxy-spec-error", listener);
+      return () => el.removeEventListener("roxy-spec-error", listener);
+    }, [onRoxySpecError, loaded2]);
+    if (error) {
+      return React23.createElement(
+        "div",
+        { role: "alert", className, style },
+        `Roxy UI script load failed: ${error.message}`
+      );
+    }
+    return React23.createElement("roxy-endpoint-form", {
+      ref: internal,
+      className,
+      style,
+      ...rest
+    });
+  }
+);
+
+// packages/ui-react/src/components/location-search.tsx
+var React24 = __toESM(require("react"), 1);
+var RoxyLocationSearch = React24.forwardRef(
+  function RoxyLocationSearch2({ className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
+    const internal = React24.useRef(null);
+    React24.useImperativeHandle(
+      ref,
+      () => internal.current,
+      []
+    );
+    const [loaded2, setLoaded] = React24.useState(false);
+    const [error, setError] = React24.useState(null);
+    React24.useEffect(() => {
+      let active = true;
+      ensureScriptLoaded().then(() => {
+        if (active) setLoaded(true);
+      }).catch((err) => {
+        if (!active) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
+    React24.useEffect(() => {
+      const el = internal.current;
+      const handler = onRoxyLocationSelect;
+      if (!el || !handler) return;
+      const listener = (event) => handler(event);
+      el.addEventListener("roxy-location-select", listener);
+      return () => el.removeEventListener("roxy-location-select", listener);
+    }, [onRoxyLocationSelect, loaded2]);
+    React24.useEffect(() => {
+      const el = internal.current;
+      const handler = onRoxyValidationError;
+      if (!el || !handler) return;
+      const listener = (event) => handler(event);
+      el.addEventListener("roxy-validation-error", listener);
+      return () => el.removeEventListener("roxy-validation-error", listener);
+    }, [onRoxyValidationError, loaded2]);
+    if (error) {
+      return React24.createElement(
+        "div",
+        { role: "alert", className, style },
+        `Roxy UI script load failed: ${error.message}`
+      );
+    }
+    return React24.createElement("roxy-location-search", {
+      ref: internal,
+      className,
+      style,
+      ...rest
+    });
+  }
+);
+
+// packages/ui-react/src/components/data.tsx
+var React25 = __toESM(require("react"), 1);
+var RoxyData = React25.forwardRef(
+  function RoxyData2({ className, style, ...rest }, ref) {
+    const internal = React25.useRef(null);
+    React25.useImperativeHandle(
+      ref,
+      () => internal.current,
+      []
+    );
+    const [loaded2, setLoaded] = React25.useState(false);
+    const [error, setError] = React25.useState(null);
+    React25.useEffect(() => {
+      let active = true;
+      ensureScriptLoaded().then(() => {
+        if (active) setLoaded(true);
+      }).catch((err) => {
+        if (!active) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
+    if (error) {
+      return React25.createElement(
+        "div",
+        { role: "alert", className, style },
+        `Roxy UI script load failed: ${error.message}`
+      );
+    }
+    return React25.createElement("roxy-data", {
       ref: internal,
       className,
       style,

@@ -1,7 +1,15 @@
 export {
+	RoxyAshtakavargaGrid,
+	type RoxyAshtakavargaGridProps,
+} from './components/ashtakavarga-grid.js';
+export {
 	RoxyBiorhythmChart,
 	type RoxyBiorhythmChartProps,
 } from './components/biorhythm-chart.js';
+export {
+	RoxyChoghadiyaGrid,
+	type RoxyChoghadiyaGridProps,
+} from './components/choghadiya-grid.js';
 export {
 	RoxyCompatibilityCard,
 	type RoxyCompatibilityCardProps,
@@ -11,6 +19,10 @@ export {
 	type RoxyDashaTimelineProps,
 } from './components/dasha-timeline.js';
 export { RoxyData, type RoxyDataProps } from './components/data.js';
+export {
+	RoxyDivisionalChart,
+	type RoxyDivisionalChartProps,
+} from './components/divisional-chart.js';
 export {
 	RoxyDoshaCard,
 	type RoxyDoshaCardProps,
@@ -53,6 +65,10 @@ export {
 	type RoxyPanchangTableProps,
 } from './components/panchang-table.js';
 export {
+	RoxyShadbalaTable,
+	type RoxyShadbalaTableProps,
+} from './components/shadbala-table.js';
+export {
 	RoxySynastryChart,
 	type RoxySynastryChartProps,
 } from './components/synastry-chart.js';
@@ -65,7 +81,15 @@ export {
 	type RoxyTarotSpreadProps,
 } from './components/tarot-spread.js';
 export {
+	RoxyTransitsTable,
+	type RoxyTransitsTableProps,
+} from './components/transits-table.js';
+export {
 	RoxyVedicKundli,
 	type RoxyVedicKundliProps,
 } from './components/vedic-kundli.js';
+export {
+	RoxyYogaList,
+	type RoxyYogaListProps,
+} from './components/yoga-list.js';
 export { ensureScriptLoaded, ROXY_UI_VERSION } from './load-ui.js';

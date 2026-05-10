@@ -168,6 +168,56 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'transits',
+		tag: 'roxy-transits-table',
+		seoLine: 'Live planet transits with aspects to a natal chart',
+		sdkCall: `  const { data } = await roxy.astrology.calculateTransits({
+    body: {
+      date: '2026-05-11',
+      time: '12:00:00',
+      natalChart: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n      ')},
+    },
+  });`,
+	}),
+	entry({
+		id: 'divisional',
+		tag: 'roxy-divisional-chart',
+		seoLine: 'Vedic D2 to D60 divisional varga chart wheel',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.generateDivisionalChart({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude, division: 9 }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'ashtakavarga',
+		tag: 'roxy-ashtakavarga-grid',
+		seoLine: 'Sarva and Bhinna ashtakavarga heatmap with bindu scores',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateAshtakavarga({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'shadbala',
+		tag: 'roxy-shadbala-table',
+		seoLine: 'Six-fold planetary strength bar with adequacy badges',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateShadbala({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'yoga',
+		tag: 'roxy-yoga-list',
+		seoLine: 'Filterable yoga catalog with detail cards',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.listYogas();`,
+	}),
+	entry({
+		id: 'choghadiya',
+		tag: 'roxy-choghadiya-grid',
+		seoLine: 'Day and night Choghadiya muhurta tiles for activity timing',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getChoghadiya({
+    body: { date: '2026-05-11', latitude: 19.076, longitude: 72.877 },
+  });`,
+	}),
+	entry({
 		id: 'num',
 		tag: 'roxy-numerology-card',
 		seoLine: 'Numerology life path calculator with master number detection',

@@ -14,7 +14,7 @@
 
 import { execSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join } from 'node:path';
 
 // ---------------------------------------------------------------------------
 // File allowlist — only these paths are scanned. Glob patterns are expanded

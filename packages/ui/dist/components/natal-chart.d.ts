@@ -19,6 +19,8 @@ export declare class RoxyNatalChart extends LitElement {
     private renderSigns;
     private renderHouseNumbers;
     private renderPlanets;
+    private renderDetails;
+    private renderInterpretations;
     private renderAspects;
 }
 declare global {

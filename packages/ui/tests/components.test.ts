@@ -8,10 +8,13 @@ import '../src/index.js';
 import {
 	ROXY_UI_COMPONENTS,
 	ROXY_UI_VERSION,
+	RoxyAshtakavargaGrid,
 	RoxyBiorhythmChart,
+	RoxyChoghadiyaGrid,
 	RoxyCompatibilityCard,
 	RoxyDashaTimeline,
 	RoxyData,
+	RoxyDivisionalChart,
 	RoxyDoshaCard,
 	RoxyEndpointForm,
 	RoxyGunaMilan,
@@ -23,10 +26,13 @@ import {
 	RoxyNatalChart,
 	RoxyNumerologyCard,
 	RoxyPanchangTable,
+	RoxyShadbalaTable,
 	RoxySynastryChart,
 	RoxyTarotCard,
 	RoxyTarotSpread,
+	RoxyTransitsTable,
 	RoxyVedicKundli,
+	RoxyYogaList,
 } from '../src/index.js';
 
 describe('package exports', () => {
@@ -310,6 +316,36 @@ const specs: ComponentSpec<HTMLElement>[] = [
 		ctor: RoxyLocationSearch as unknown as new () => HTMLElement,
 		sample: null,
 		attrs: { placeholder: 'Search city' },
+	},
+	{
+		tag: 'roxy-transits-table',
+		ctor: RoxyTransitsTable as unknown as new () => HTMLElement,
+		sample: null,
+	},
+	{
+		tag: 'roxy-divisional-chart',
+		ctor: RoxyDivisionalChart as unknown as new () => HTMLElement,
+		sample: null,
+	},
+	{
+		tag: 'roxy-ashtakavarga-grid',
+		ctor: RoxyAshtakavargaGrid as unknown as new () => HTMLElement,
+		sample: null,
+	},
+	{
+		tag: 'roxy-shadbala-table',
+		ctor: RoxyShadbalaTable as unknown as new () => HTMLElement,
+		sample: null,
+	},
+	{
+		tag: 'roxy-yoga-list',
+		ctor: RoxyYogaList as unknown as new () => HTMLElement,
+		sample: null,
+	},
+	{
+		tag: 'roxy-choghadiya-grid',
+		ctor: RoxyChoghadiyaGrid as unknown as new () => HTMLElement,
+		sample: null,
 	},
 ];
 

@@ -132,16 +132,37 @@ var RoxyGunaMilan = class extends LitElement {
     const breakdown = (d.breakdown ?? []).filter(
       (b) => b?.category !== void 0
     );
+    const score = d.total ?? 0;
+    const max = d.maxScore ?? 36;
+    const pct = score / max * 100;
+    const trackColor = "color-mix(in srgb, var(--roxy-border) 50%, transparent)";
+    const fillColor = pct >= 70 ? "var(--roxy-success)" : pct >= 50 ? "var(--roxy-warning)" : "var(--roxy-danger)";
+    const dashFill = pct * 2.827;
+    const dashGap = (100 - pct) * 2.827;
     return html`<article class="card" aria-label="Guna Milan score">
-			<div class="score-bar">
-				<div>
-					<span class="total">${formatNumber(d.total, 1)}</span>
-					<span class="over"> / ${d.maxScore}</span>
-					${typeof d.percentage === "number" ? html`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
-								${formatPercent(d.percentage, 1)}
-							</small>` : nothing}
+			<div class="score-header">
+				<div class="score-info">
+					<div class="score-bar">
+						<div>
+							<span class="total">${formatNumber(d.total, 1)}</span>
+							<span class="over"> / ${d.maxScore}</span>
+							${typeof d.percentage === "number" ? html`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
+										${formatPercent(d.percentage, 1)}
+									</small>` : nothing}
+						</div>
+						${d.recommendation ? html`<span class="recommendation">${d.recommendation}</span>` : nothing}
+					</div>
 				</div>
-				${d.recommendation ? html`<span class="recommendation">${d.recommendation}</span>` : nothing}
+				<div class="score-ring" role="meter" aria-label="Guna milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
+					<svg viewBox="0 0 100 100" aria-hidden="true">
+						<circle class="ring-track" cx="50" cy="50" r="45" fill="none" stroke="${trackColor}" stroke-width="8"/>
+						<circle class="ring-fill" cx="50" cy="50" r="45" fill="none" stroke="${fillColor}" stroke-width="8"
+								stroke-dasharray="${dashFill},${dashGap}" stroke-linecap="round"
+								transform="rotate(-90 50 50)"/>
+						<text x="50" y="50" text-anchor="middle" dominant-baseline="central" class="ring-text">${score}</text>
+						<text x="50" y="64" text-anchor="middle" dominant-baseline="central" class="ring-max">/${max}</text>
+					</svg>
+				</div>
 			</div>
 
 			${breakdown.length > 0 ? html`<table>
@@ -154,17 +175,17 @@ var RoxyGunaMilan = class extends LitElement {
 						</thead>
 						<tbody>
 							${breakdown.map((b) => {
-      const score = b.score ?? 0;
+      const score2 = b.score ?? 0;
       const maxScore = b.maxScore ?? defaultMax(b.category);
-      const pct = maxScore ? score / maxScore * 100 : 0;
+      const pct2 = maxScore ? score2 / maxScore * 100 : 0;
       return html`<tr>
 									<td>${b.category}</td>
 									<td class="bar-cell">
 										<div class="mini-bar">
-											<span style="width: ${pct}%"></span>
+											<span style="width: ${pct2}%"></span>
 										</div>
 									</td>
-									<td class="score">${formatNumber(score, 1)} / ${maxScore}</td>
+									<td class="score">${formatNumber(score2, 1)} / ${maxScore}</td>
 								</tr>`;
     })}
 						</tbody>
@@ -191,6 +212,14 @@ RoxyGunaMilan.styles = [
 				gap: var(--roxy-space-md, 1rem);
 			}
 
+			.score-header {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+			}
+			.score-info {
+				flex: 1;
+			}
 			.score-bar {
 				display: grid;
 				grid-template-columns: 1fr auto;
@@ -211,6 +240,26 @@ RoxyGunaMilan.styles = [
 			.recommendation {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-secondary, #475569);
+			}
+			.score-ring {
+				width: 120px;
+				height: 120px;
+				flex-shrink: 0;
+			}
+			.score-ring svg {
+				width: 100%;
+				height: 100%;
+			}
+			.score-ring .ring-text {
+				font-size: 22px;
+				font-weight: 700;
+				fill: var(--roxy-fg, #0a0a0a);
+				font-family: var(--roxy-font-sans);
+			}
+			.score-ring .ring-max {
+				font-size: 10px;
+				fill: var(--roxy-muted, #71717a);
+				font-family: var(--roxy-font-sans);
 			}
 
 			table {

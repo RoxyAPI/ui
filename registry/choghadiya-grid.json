@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-choghadiya-grid",
+  "type": "registry:ui",
+  "title": "RoxyChoghadiyaGrid",
+  "description": "Day and night Choghadiya muhurta tiles for activity timing",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.3/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-choghadiya-grid.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyChoghadiyaGrid data={...} />: Day and night Choghadiya muhurta tiles for activity timing.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/choghadiya-grid/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyChoghadiyaGrid as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyChoghadiyaGridProps = ComponentProps<typeof Element>;\n\nexport function RoxyChoghadiyaGrid(props: RoxyChoghadiyaGridProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyChoghadiyaGrid;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/choghadiya-grid.tsx"
+    }
+  ]
+}

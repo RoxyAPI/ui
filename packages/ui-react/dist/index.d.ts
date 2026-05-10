@@ -10,6 +10,12 @@ export { RoxyDashaTimeline, type RoxyDashaTimelineProps } from './components/das
 export { RoxyDoshaCard, type RoxyDoshaCardProps } from './components/dosha-card.js';
 export { RoxyGunaMilan, type RoxyGunaMilanProps } from './components/guna-milan.js';
 export { RoxyKpPlanetsTable, type RoxyKpPlanetsTableProps } from './components/kp-planets-table.js';
+export { RoxyTransitsTable, type RoxyTransitsTableProps } from './components/transits-table.js';
+export { RoxyDivisionalChart, type RoxyDivisionalChartProps } from './components/divisional-chart.js';
+export { RoxyAshtakavargaGrid, type RoxyAshtakavargaGridProps } from './components/ashtakavarga-grid.js';
+export { RoxyShadbalaTable, type RoxyShadbalaTableProps } from './components/shadbala-table.js';
+export { RoxyYogaList, type RoxyYogaListProps } from './components/yoga-list.js';
+export { RoxyChoghadiyaGrid, type RoxyChoghadiyaGridProps } from './components/choghadiya-grid.js';
 export { RoxyNumerologyCard, type RoxyNumerologyCardProps } from './components/numerology-card.js';
 export { RoxyTarotCard, type RoxyTarotCardProps } from './components/tarot-card.js';
 export { RoxyTarotSpread, type RoxyTarotSpreadProps } from './components/tarot-spread.js';

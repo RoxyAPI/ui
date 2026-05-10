@@ -44,6 +44,12 @@ const TARGETS: Target[] = [
 	{ id: 'data', label: 'data' },
 	{ id: 'form', label: 'endpoint-form' },
 	{ id: 'loc', label: 'location-search' },
+	{ id: 'transits', label: 'transits-table' },
+	{ id: 'divisional', label: 'divisional-chart' },
+	{ id: 'ashtakavarga', label: 'ashtakavarga-grid' },
+	{ id: 'shadbala', label: 'shadbala-table' },
+	{ id: 'yoga', label: 'yoga-list' },
+	{ id: 'choghadiya', label: 'choghadiya-grid' },
 ];
 
 async function ensureServer(): Promise<{ stop: () => Promise<void> }> {

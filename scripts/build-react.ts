@@ -64,6 +64,13 @@ const DATA_TYPES: Record<string, string> = {
 		'GetDailyBiorhythmResponse | GetForecastResponse | GetCriticalDaysResponse',
 	hexagram:
 		'GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse',
+	'transits-table': 'TransitsResponse',
+	'divisional-chart': 'DivisionalChartResponse',
+	'ashtakavarga-grid': 'AshtakavargaResponse',
+	'shadbala-table': 'ShadbalaResponse',
+	'yoga-list':
+		'ListYogasResponse | GetYogaResponse | { yogas: GetYogaResponse[] }',
+	'choghadiya-grid': 'GetChoghadiyaResponse',
 	// helpers and the generic fallback have no fixed shape
 	'endpoint-form': 'unknown',
 	'location-search': 'unknown',
