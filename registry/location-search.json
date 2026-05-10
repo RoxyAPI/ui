@@ -5,16 +5,15 @@
   "title": "RoxyLocationSearch",
   "description": "City search input with debounced /location/search calls",
   "dependencies": [
-    "@roxyapi/ui-react",
-    "@roxyapi/sdk"
+    "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/theme.json"
   ],
   "files": [
     {
       "path": "components/roxy-location-search.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyLocationSearch data={...} /> — City search input with debounced /location/search calls.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/location-search/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   // <RoxyLocationSearch> calls /location/search directly. No server route\n   *   // needed unless you want to proxy.\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyLocationSearch as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyLocationSearchProps = ComponentProps<typeof Element>;\n\nexport function RoxyLocationSearch(props: RoxyLocationSearchProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyLocationSearch;\n",
+      "content": "'use client';\n\n/**\n * <RoxyLocationSearch data={...} />: City search input with debounced /location/search calls.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Wiring:\n *\n * ```tsx\n * // <RoxyLocationSearch> calls /location/search itself. No server route\n * // needed. Set publishable-key on the element so the call carries auth:\n * <RoxyLocationSearch\n *   publishable-key={process.env.NEXT_PUBLIC_ROXY_PUBLISHABLE_KEY}\n *   onRoxyLocationSelect={(e) => console.log(e.detail)}\n * />\n * ```\n *\n * The element debounces input and emits roxy-location-select with the\n * selected location. Validate the publishable key in your RoxyAPI dashboard.\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyLocationSearch as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyLocationSearchProps = ComponentProps<typeof Element>;\n\nexport function RoxyLocationSearch(props: RoxyLocationSearchProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyLocationSearch;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/location-search.tsx"
     }

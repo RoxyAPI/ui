@@ -14,14 +14,22 @@
         "--roxy-accent": "var(--primary, #f59e0b)",
         "--roxy-accent-fg": "var(--primary-foreground, #b45309)",
         "--roxy-success": "var(--chart-2, #16a34a)",
+        "--roxy-success-fg": "#166534",
         "--roxy-warning": "var(--chart-3, #f59e0b)",
+        "--roxy-warning-fg": "#9a3412",
         "--roxy-danger": "var(--destructive, #dc2626)",
+        "--roxy-danger-fg": "var(--destructive-foreground, #991b1b)",
         "--roxy-info": "var(--chart-1, #2563eb)",
+        "--roxy-info-fg": "#075985",
         "--roxy-radius-md": "var(--radius, 12px)",
         "--roxy-shadow-md": "0 4px 12px rgba(0,0,0,0.08)",
         "--roxy-motion-duration": "200ms"
       },
       ".dark": {
+        "--roxy-success-fg": "#86efac",
+        "--roxy-warning-fg": "#fdba74",
+        "--roxy-danger-fg": "#fca5a5",
+        "--roxy-info-fg": "#7dd3fc",
         "--roxy-shadow-md": "0 4px 12px rgba(0,0,0,0.4)"
       }
     }

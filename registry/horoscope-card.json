@@ -5,16 +5,15 @@
   "title": "RoxyHoroscopeCard",
   "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/...",
   "dependencies": [
-    "@roxyapi/ui-react",
-    "@roxyapi/sdk"
+    "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/theme.json"
   ],
   "files": [
     {
       "path": "components/roxy-horoscope-card.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyHoroscopeCard data={...} /> — Daily, weekly, or monthly horoscope card for /astrology/horoscope/....\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/horoscope-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { sign } = await req.json();\n *   const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign } });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyHoroscopeCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyHoroscopeCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyHoroscopeCard(props: RoxyHoroscopeCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyHoroscopeCard;\n",
+      "content": "'use client';\n\n/**\n * <RoxyHoroscopeCard data={...} />: Daily, weekly, or monthly horoscope card for /astrology/horoscope/....\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/horoscope-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { sign } = await req.json();\n *   const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign } });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyHoroscopeCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyHoroscopeCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyHoroscopeCard(props: RoxyHoroscopeCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyHoroscopeCard;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/horoscope-card.tsx"
     }

@@ -5,16 +5,15 @@
   "title": "RoxyCompatibilityCard",
   "description": "Cross-domain compatibility score card",
   "dependencies": [
-    "@roxyapi/ui-react",
-    "@roxyapi/sdk"
+    "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/theme.json"
   ],
   "files": [
     {
       "path": "components/roxy-compatibility-card.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyCompatibilityCard data={...} /> — Cross-domain compatibility score card.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/compatibility-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.astrology.calculateCompatibility({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyCompatibilityCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyCompatibilityCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyCompatibilityCard(props: RoxyCompatibilityCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyCompatibilityCard;\n",
+      "content": "'use client';\n\n/**\n * <RoxyCompatibilityCard data={...} />: Cross-domain compatibility score card.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/compatibility-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.astrology.calculateCompatibility({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyCompatibilityCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyCompatibilityCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyCompatibilityCard(props: RoxyCompatibilityCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyCompatibilityCard;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/compatibility-card.tsx"
     }

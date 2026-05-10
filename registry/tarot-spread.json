@@ -5,16 +5,15 @@
   "title": "RoxyTarotSpread",
   "description": "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",
   "dependencies": [
-    "@roxyapi/ui-react",
-    "@roxyapi/sdk"
+    "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/theme.json"
   ],
   "files": [
     {
       "path": "components/roxy-tarot-spread.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyTarotSpread data={...} /> — Tarot spread renderer for three-card, Celtic Cross, love, or yes/no.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/tarot-spread/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.tarot.castThreeCard({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyTarotSpread as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyTarotSpreadProps = ComponentProps<typeof Element>;\n\nexport function RoxyTarotSpread(props: RoxyTarotSpreadProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyTarotSpread;\n",
+      "content": "'use client';\n\n/**\n * <RoxyTarotSpread data={...} />: Tarot spread renderer for three-card, Celtic Cross, love, or yes/no.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/tarot-spread/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.tarot.castThreeCard({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyTarotSpread as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyTarotSpreadProps = ComponentProps<typeof Element>;\n\nexport function RoxyTarotSpread(props: RoxyTarotSpreadProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyTarotSpread;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/tarot-spread.tsx"
     }

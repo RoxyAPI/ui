@@ -5,16 +5,15 @@
   "title": "RoxyEndpointForm",
   "description": "Schema-driven form that emits roxy-submit with a validated payload",
   "dependencies": [
-    "@roxyapi/ui-react",
-    "@roxyapi/sdk"
+    "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/theme.json"
   ],
   "files": [
     {
       "path": "components/roxy-endpoint-form.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyEndpointForm data={...} /> — Schema-driven form that emits roxy-submit with a validated payload.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/endpoint-form/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   // <RoxyEndpointForm> introspects the OpenAPI spec at runtime — no\n   *   // server route needed unless you want to proxy the form submission.\n   *   const values = await req.json();\n   *   const { data } = await fetch(\\`https://roxyapi.com/api/v2/\\${endpoint}\\`, { ...values });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyEndpointForm as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyEndpointFormProps = ComponentProps<typeof Element>;\n\nexport function RoxyEndpointForm(props: RoxyEndpointFormProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyEndpointForm;\n",
+      "content": "'use client';\n\n/**\n * <RoxyEndpointForm data={...} />: Schema-driven form that emits roxy-submit with a validated payload.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Wiring:\n *\n * ```tsx\n * // <RoxyEndpointForm> introspects the OpenAPI spec at runtime and emits\n * // roxy-submit with a validated payload. Listen for the event and call\n * // any endpoint server-side:\n * <RoxyEndpointForm\n *   endpoint=\"/astrology/natal-chart\"\n *   onRoxySubmit={async (e) => {\n *     const res = await fetch('/api/natal-chart', {\n *       method: 'POST',\n *       body: JSON.stringify(e.detail),\n *     });\n *     setData(await res.json());\n *   }}\n * />\n * ```\n *\n * The form derives field types, validation, and helper labels from the\n * spec. Override per-field via the x-roxy-ui spec extension.\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyEndpointForm as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyEndpointFormProps = ComponentProps<typeof Element>;\n\nexport function RoxyEndpointForm(props: RoxyEndpointFormProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyEndpointForm;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/endpoint-form.tsx"
     }

@@ -5,16 +5,15 @@
   "title": "RoxyPanchangTable",
   "description": "Panchang muhurta table with auspicious and inauspicious periods",
   "dependencies": [
-    "@roxyapi/ui-react",
-    "@roxyapi/sdk"
+    "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/theme.json"
   ],
   "files": [
     {
       "path": "components/roxy-panchang-table.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyPanchangTable data={...} /> — Panchang muhurta table with auspicious and inauspicious periods.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/panchang-table/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.vedicAstrology.getDetailedPanchang({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyPanchangTable as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyPanchangTableProps = ComponentProps<typeof Element>;\n\nexport function RoxyPanchangTable(props: RoxyPanchangTableProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyPanchangTable;\n",
+      "content": "'use client';\n\n/**\n * <RoxyPanchangTable data={...} />: Panchang muhurta table with auspicious and inauspicious periods.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/panchang-table/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.vedicAstrology.getDetailedPanchang({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyPanchangTable as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyPanchangTableProps = ComponentProps<typeof Element>;\n\nexport function RoxyPanchangTable(props: RoxyPanchangTableProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyPanchangTable;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/panchang-table.tsx"
     }

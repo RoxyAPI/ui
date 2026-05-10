@@ -5,16 +5,15 @@
   "title": "RoxyData",
   "description": "Generic fallback renderer for any OpenAPI response shape",
   "dependencies": [
-    "@roxyapi/ui-react",
-    "@roxyapi/sdk"
+    "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/theme.json"
   ],
   "files": [
     {
       "path": "components/roxy-data.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyData data={...} /> — Generic fallback renderer for any OpenAPI response shape.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/data/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   // <RoxyData> is the generic fallback renderer. Pass any response shape.\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyData as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyDataProps = ComponentProps<typeof Element>;\n\nexport function RoxyData(props: RoxyDataProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyData;\n",
+      "content": "'use client';\n\n/**\n * <RoxyData data={...} />: Generic fallback renderer for any OpenAPI response shape.\n *\n * You own this file. Customize freely. The underlying Lit element loads\n * from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without\n * a re-install.\n *\n * Wiring:\n *\n * ```tsx\n * // <RoxyData> is a pure renderer. No fetch, no server route.\n * // Pass any RoxyAPI response directly:\n * <RoxyData data={response} />\n * ```\n *\n * Use this as a fallback for response shapes that do not yet have a\n * dedicated component, or for prototyping a new endpoint.\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyData as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyDataProps = ComponentProps<typeof Element>;\n\nexport function RoxyData(props: RoxyDataProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyData;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/data.tsx"
     }
