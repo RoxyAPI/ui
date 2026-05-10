@@ -19,7 +19,6 @@
 		"docs:sync": "bun run scripts/sync-docs.ts",
 		"version:sync": "bun run scripts/sync-version.ts",
 		"manifest:sync": "bun run scripts/sync-manifest.ts",
-		"banner": "bun run scripts/generate-banner.ts",
 		"preview": "bun run scripts/preview.ts",
 		"screenshots": "bun run scripts/screenshots.ts",
 		"audit": "bun run scripts/audit.ts",
