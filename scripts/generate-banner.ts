@@ -26,7 +26,7 @@ const args = [
 	'--eyebrow',
 	'Roxy UI',
 	'--title',
-	'Drop-in components for every RoxyAPI domain',
+	'Complete UI library for astrology, vedic, tarot, and more',
 	'--subtitle',
 	'npm install @roxyapi/ui',
 	'--foot',

@@ -1,6 +1,6 @@
 <p align="center">
 	<a href="https://roxyapi.com/ui">
-		<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/banner.png" alt="Roxy UI: drop-in components for every RoxyAPI domain" width="100%">
+		<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/banner.png" alt="Roxy UI: complete UI library for astrology, vedic, tarot, and more" width="100%">
 	</a>
 </p>
 
