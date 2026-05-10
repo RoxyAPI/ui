@@ -23,3 +23,9 @@ playwright-report/
 test-results/
 .turbo/
 *.tsbuildinfo
+
+# Stale tsc declaration emit alongside source. tsc is configured to emit into
+# dist/, but past misconfig left .d.ts siblings of .ts files in src/. Ignore so
+# new emit drift never gets committed.
+packages/*/src/**/*.d.ts
+packages/*/src/**/*.d.ts.map

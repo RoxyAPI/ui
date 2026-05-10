@@ -55,8 +55,8 @@ window.ROXY_COMPONENTS = [
     "heading": "Compatibility score",
     "endpoints": [
       "astrology.calculateCompatibility",
-      "numerology.calculateCompatibility",
-      "biorhythm.calculateCompatibility"
+      "numerology.calculateNumCompatibility",
+      "biorhythm.calculateBioCompatibility"
     ],
     "description": "Cross-domain compatibility score card",
     "docsLabel": "Cross",
@@ -73,7 +73,7 @@ window.ROXY_COMPONENTS = [
     "endpoints": [
       "astrology.getCurrentMoonPhase",
       "astrology.getUpcomingMoonPhases",
-      "astrology.getMoonPhaseCalendar"
+      "astrology.getMoonCalendar"
     ],
     "description": "Moon phase card and calendar",
     "docsLabel": "Western",
@@ -137,8 +137,8 @@ window.ROXY_COMPONENTS = [
     "heading": "Manglik dosha",
     "endpoints": [
       "vedicAstrology.checkManglikDosha",
-      "vedicAstrology.checkKalSarpaDosha",
-      "vedicAstrology.checkSadeSati"
+      "vedicAstrology.checkKalsarpaDosha",
+      "vedicAstrology.checkSadhesati"
     ],
     "description": "Manglik, Kaal Sarp, or Sade Sati presence card",
     "docsLabel": "Vedic",
@@ -186,7 +186,7 @@ window.ROXY_COMPONENTS = [
       "numerology.calculateLifePath",
       "numerology.calculateExpression",
       "numerology.calculatePersonalYear",
-      "numerology.calculateChart"
+      "numerology.generateNumerologyChart"
     ],
     "description": "Numerology card for life path, expression, personal year, or full chart",
     "docsLabel": "Numerology",
@@ -219,9 +219,9 @@ window.ROXY_COMPONENTS = [
     "endpoints": [
       "tarot.castThreeCard",
       "tarot.castCelticCross",
-      "tarot.castLove",
+      "tarot.castLoveSpread",
       "tarot.castYesNo",
-      "tarot.draw"
+      "tarot.drawCards"
     ],
     "description": "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",
     "docsLabel": "Tarot",
@@ -254,9 +254,9 @@ window.ROXY_COMPONENTS = [
     "heading": "I Ching hexagram",
     "endpoints": [
       "iching.getHexagram",
-      "iching.castHexagram",
+      "iching.castReading",
       "iching.getDailyHexagram",
-      "iching.castDailyHexagram",
+      "iching.castDailyReading",
       "iching.getRandomHexagram"
     ],
     "description": "I Ching hexagram with trigram glyphs, judgment, image, and changing lines",
@@ -276,7 +276,8 @@ window.ROXY_COMPONENTS = [
     "docsLabel": "Helper",
     "endpointLabel": "Any endpoint via x-roxy-ui hints",
     "docsSummary": "Schema-driven form, emits roxy-submit",
-    "topic": "Helpers"
+    "topic": "Helpers",
+    "selfFetching": true
   },
   {
     "pascal": "RoxyLocationSearch",
@@ -285,13 +286,14 @@ window.ROXY_COMPONENTS = [
     "domain": "utility",
     "heading": "City search",
     "endpoints": [
-      "location.search"
+      "location.searchCities"
     ],
     "description": "City search input with debounced /location/search calls",
     "docsLabel": "Helper",
     "endpointLabel": "GET /location/search",
     "docsSummary": "Debounced city search input, emits roxy-location-select",
-    "topic": "Helpers"
+    "topic": "Helpers",
+    "selfFetching": true
   },
   {
     "pascal": "RoxyData",
@@ -304,6 +306,7 @@ window.ROXY_COMPONENTS = [
     "docsLabel": "Helper",
     "endpointLabel": "Any response shape",
     "docsSummary": "Generic fallback renderer for unknown shapes",
-    "topic": "Helpers"
+    "topic": "Helpers",
+    "selfFetching": true
   }
 ];
