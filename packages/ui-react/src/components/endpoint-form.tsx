@@ -3,12 +3,10 @@ import { ensureScriptLoaded } from '../load-ui.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
-	'children' | 'data'
+	'children'
 >;
 
 export interface RoxyEndpointFormProps extends ElementAttrs {
-	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: unknown;
 	className?: string;
 	style?: React.CSSProperties;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-submit`. */
@@ -20,7 +18,7 @@ export interface RoxyEndpointFormProps extends ElementAttrs {
 }
 
 export const RoxyEndpointForm = React.forwardRef<HTMLElement | null, RoxyEndpointFormProps>(
-	function RoxyEndpointForm({ data, className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
+	function RoxyEndpointForm({ className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -44,13 +42,6 @@ export const RoxyEndpointForm = React.forwardRef<HTMLElement | null, RoxyEndpoin
 				active = false;
 			};
 		}, []);
-
-		React.useEffect(() => {
-			const el = internal.current;
-			if (el && data !== undefined) {
-				(el as unknown as { data: unknown }).data = data;
-			}
-		}, [data, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

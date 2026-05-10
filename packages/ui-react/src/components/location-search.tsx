@@ -1,15 +1,13 @@
+import type { SearchCitiesResponse } from '@roxyapi/ui/types';
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { SearchCitiesResponse } from '@roxyapi/ui/types';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
-	'children' | 'data'
+	'children'
 >;
 
 export interface RoxyLocationSearchProps extends ElementAttrs {
-	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: unknown;
 	className?: string;
 	style?: React.CSSProperties;
 	/** Fires when the underlying <roxy-location-search> dispatches `roxy-location-select`. */
@@ -19,7 +17,7 @@ export interface RoxyLocationSearchProps extends ElementAttrs {
 }
 
 export const RoxyLocationSearch = React.forwardRef<HTMLElement | null, RoxyLocationSearchProps>(
-	function RoxyLocationSearch({ data, className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
+	function RoxyLocationSearch({ className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -43,13 +41,6 @@ export const RoxyLocationSearch = React.forwardRef<HTMLElement | null, RoxyLocat
 				active = false;
 			};
 		}, []);
-
-		React.useEffect(() => {
-			const el = internal.current;
-			if (el && data !== undefined) {
-				(el as unknown as { data: unknown }).data = data;
-			}
-		}, [data, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;
