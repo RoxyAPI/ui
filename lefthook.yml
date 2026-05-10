@@ -3,7 +3,12 @@ pre-commit:
   commands:
     biome-check:
       glob: "*.{ts,tsx,js,jsx,json}"
-      run: bun run check --staged
+      # Skip when only deletions or `.d.ts` files are staged. biome refuses an
+      # empty file list with exit 1, which would block deletion-only commits.
+      run: |
+        staged=$(git diff --name-only --cached --diff-filter=ACMR | grep -E '\.(ts|tsx|js|jsx|json)$' | grep -vE '\.d\.ts$' || true)
+        if [ -z "$staged" ]; then exit 0; fi
+        bun run check --staged
       stage_fixed: true
     typecheck:
       run: bun run typecheck
