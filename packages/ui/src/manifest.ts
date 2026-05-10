@@ -1,22 +1,13 @@
 /**
  * Single source of truth for component metadata. Every consumer that needs
- * the (tag, pascal, slug, domain, description, heading, endpoints) tuple
- * reads from here: scripts/build-react.ts, scripts/build-registry.ts,
- * scripts/sync-docs.ts, scripts/build-widgets.ts, and the browser-side
- * apps/docs/manifest.js (mirrored at build time).
+ * the (tag, pascal, slug, description, heading) tuple reads from here:
+ * scripts/build-react.ts, scripts/build-registry.ts, scripts/sync-docs.ts,
+ * scripts/build-widgets.ts, and the browser-side apps/docs/manifest.js
+ * (mirrored at build time).
  *
  * Hand-maintained. Add a component → add one entry here. The OpenAPI spec
  * does not yet carry component metadata, so this stays manual.
  */
-
-export type RoxyDomain =
-	| 'astrology'
-	| 'vedic'
-	| 'numerology'
-	| 'tarot'
-	| 'biorhythm'
-	| 'iching'
-	| 'utility';
 
 export interface RoxyComponent {
 	/** Pascal-case React export name, e.g. RoxyNatalChart */
@@ -25,12 +16,8 @@ export interface RoxyComponent {
 	tag: string;
 	/** Slug used in registry filenames and shadcn paths, e.g. natal-chart */
 	slug: string;
-	/** Domain bucket for filtering. */
-	domain: RoxyDomain;
 	/** Short human-readable heading shown on demo cards. */
 	heading: string;
-	/** SDK methods this component is designed to render. */
-	endpoints: string[];
 	/** One-line description for registry / docs / SEO meta. */
 	description: string;
 	/** Domain column label in the synced README/AGENTS table. */
@@ -58,9 +45,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyNatalChart',
 		tag: 'roxy-natal-chart',
 		slug: 'natal-chart',
-		domain: 'astrology',
 		heading: 'Natal chart',
-		endpoints: ['astrology.generateNatalChart'],
 		description:
 			'Western natal chart wheel for /astrology/natal-chart responses',
 		docsLabel: 'Western',
@@ -72,13 +57,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyHoroscopeCard',
 		tag: 'roxy-horoscope-card',
 		slug: 'horoscope-card',
-		domain: 'astrology',
 		heading: 'Daily horoscope',
-		endpoints: [
-			'astrology.getDailyHoroscope',
-			'astrology.getWeeklyHoroscope',
-			'astrology.getMonthlyHoroscope',
-		],
 		description:
 			'Daily, weekly, or monthly horoscope card for /astrology/horoscope/...',
 		docsLabel: 'Western',
@@ -90,9 +69,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxySynastryChart',
 		tag: 'roxy-synastry-chart',
 		slug: 'synastry-chart',
-		domain: 'astrology',
 		heading: 'Synastry',
-		endpoints: ['astrology.calculateSynastry'],
 		description: 'Dual-wheel synastry chart with inter-aspects table',
 		docsLabel: 'Western',
 		endpointLabel: 'POST /astrology/synastry',
@@ -103,13 +80,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyCompatibilityCard',
 		tag: 'roxy-compatibility-card',
 		slug: 'compatibility-card',
-		domain: 'astrology',
 		heading: 'Compatibility score',
-		endpoints: [
-			'astrology.calculateCompatibility',
-			'numerology.calculateNumCompatibility',
-			'biorhythm.calculateBioCompatibility',
-		],
 		description: 'Cross-domain compatibility score card',
 		docsLabel: 'Cross',
 		endpointLabel:
@@ -121,13 +92,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyMoonPhase',
 		tag: 'roxy-moon-phase',
 		slug: 'moon-phase',
-		domain: 'astrology',
 		heading: 'Moon phase',
-		endpoints: [
-			'astrology.getCurrentMoonPhase',
-			'astrology.getUpcomingMoonPhases',
-			'astrology.getMoonCalendar',
-		],
 		description: 'Moon phase card and calendar',
 		docsLabel: 'Western',
 		endpointLabel: 'GET /astrology/moon-phase/{current,upcoming,calendar/...}',
@@ -138,9 +103,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyVedicKundli',
 		tag: 'roxy-vedic-kundli',
 		slug: 'vedic-kundli',
-		domain: 'vedic',
 		heading: 'Vedic kundli',
-		endpoints: ['vedicAstrology.generateBirthChart'],
 		description:
 			'South or North Indian Vedic kundli for /vedic-astrology/birth-chart',
 		docsLabel: 'Vedic',
@@ -152,12 +115,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyPanchangTable',
 		tag: 'roxy-panchang-table',
 		slug: 'panchang-table',
-		domain: 'vedic',
 		heading: 'Panchang',
-		endpoints: [
-			'vedicAstrology.getBasicPanchang',
-			'vedicAstrology.getDetailedPanchang',
-		],
 		description:
 			'Panchang muhurta table with auspicious and inauspicious periods',
 		docsLabel: 'Vedic',
@@ -169,13 +127,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyDashaTimeline',
 		tag: 'roxy-dasha-timeline',
 		slug: 'dasha-timeline',
-		domain: 'vedic',
 		heading: 'Vimshottari dasha',
-		endpoints: [
-			'vedicAstrology.getCurrentDasha',
-			'vedicAstrology.getMajorDashas',
-			'vedicAstrology.getSubDashas',
-		],
 		description: 'Vimshottari dasha timeline with active mahadasha highlighted',
 		docsLabel: 'Vedic',
 		endpointLabel: 'POST /vedic-astrology/dasha/{current,major,sub/...}',
@@ -186,13 +138,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyDoshaCard',
 		tag: 'roxy-dosha-card',
 		slug: 'dosha-card',
-		domain: 'vedic',
 		heading: 'Manglik dosha',
-		endpoints: [
-			'vedicAstrology.checkManglikDosha',
-			'vedicAstrology.checkKalsarpaDosha',
-			'vedicAstrology.checkSadhesati',
-		],
 		description: 'Manglik, Kaal Sarp, or Sade Sati presence card',
 		docsLabel: 'Vedic',
 		endpointLabel: 'POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}',
@@ -203,9 +149,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyGunaMilan',
 		tag: 'roxy-guna-milan',
 		slug: 'guna-milan',
-		domain: 'vedic',
 		heading: 'Guna milan',
-		endpoints: ['vedicAstrology.calculateGunMilan'],
 		description: '36-point Ashtakoota matrimonial compatibility breakdown',
 		docsLabel: 'Vedic',
 		endpointLabel: 'POST /vedic-astrology/compatibility',
@@ -216,9 +160,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyKpPlanetsTable',
 		tag: 'roxy-kp-planets-table',
 		slug: 'kp-planets-table',
-		domain: 'vedic',
 		heading: 'KP planets',
-		endpoints: ['vedicAstrology.getKpPlanets'],
 		description: 'KP planets table with sub-lord and sub-sub-lord columns',
 		docsLabel: 'Vedic (KP)',
 		endpointLabel: 'POST /vedic-astrology/kp/planets',
@@ -229,14 +171,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyNumerologyCard',
 		tag: 'roxy-numerology-card',
 		slug: 'numerology-card',
-		domain: 'numerology',
 		heading: 'Life path number',
-		endpoints: [
-			'numerology.calculateLifePath',
-			'numerology.calculateExpression',
-			'numerology.calculatePersonalYear',
-			'numerology.generateNumerologyChart',
-		],
 		description:
 			'Numerology card for life path, expression, personal year, or full chart',
 		docsLabel: 'Numerology',
@@ -249,9 +184,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyTarotCard',
 		tag: 'roxy-tarot-card',
 		slug: 'tarot-card',
-		domain: 'tarot',
 		heading: 'Daily tarot card',
-		endpoints: ['tarot.getCard', 'tarot.getDailyCard'],
 		description: 'Single tarot card with upright/reversed flip animation',
 		docsLabel: 'Tarot',
 		endpointLabel: 'GET /tarot/cards/{id}, POST /tarot/daily',
@@ -262,15 +195,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyTarotSpread',
 		tag: 'roxy-tarot-spread',
 		slug: 'tarot-spread',
-		domain: 'tarot',
 		heading: 'Three-card spread',
-		endpoints: [
-			'tarot.castThreeCard',
-			'tarot.castCelticCross',
-			'tarot.castLoveSpread',
-			'tarot.castYesNo',
-			'tarot.drawCards',
-		],
 		description:
 			'Tarot spread renderer for three-card, Celtic Cross, love, or yes/no',
 		docsLabel: 'Tarot',
@@ -283,13 +208,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyBiorhythmChart',
 		tag: 'roxy-biorhythm-chart',
 		slug: 'biorhythm-chart',
-		domain: 'biorhythm',
 		heading: 'Daily biorhythm',
-		endpoints: [
-			'biorhythm.getDailyBiorhythm',
-			'biorhythm.getForecast',
-			'biorhythm.getCriticalDays',
-		],
 		description: 'Daily biorhythm bars or multi-day forecast cycle lines',
 		docsLabel: 'Biorhythm',
 		endpointLabel: 'POST /biorhythm/{daily,forecast,critical-days}',
@@ -300,15 +219,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyHexagram',
 		tag: 'roxy-hexagram',
 		slug: 'hexagram',
-		domain: 'iching',
 		heading: 'I Ching hexagram',
-		endpoints: [
-			'iching.getHexagram',
-			'iching.castReading',
-			'iching.getDailyHexagram',
-			'iching.castDailyReading',
-			'iching.getRandomHexagram',
-		],
 		description:
 			'I Ching hexagram with trigram glyphs, judgment, image, and changing lines',
 		docsLabel: 'I Ching',
@@ -321,9 +232,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyEndpointForm',
 		tag: 'roxy-endpoint-form',
 		slug: 'endpoint-form',
-		domain: 'utility',
 		heading: 'Schema-driven form',
-		endpoints: [],
 		description:
 			'Schema-driven form that emits roxy-submit with a validated payload',
 		docsLabel: 'Helper',
@@ -336,9 +245,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyLocationSearch',
 		tag: 'roxy-location-search',
 		slug: 'location-search',
-		domain: 'utility',
 		heading: 'City search',
-		endpoints: ['location.searchCities'],
 		description: 'City search input with debounced /location/search calls',
 		docsLabel: 'Helper',
 		endpointLabel: 'GET /location/search',
@@ -350,9 +257,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyData',
 		tag: 'roxy-data',
 		slug: 'data',
-		domain: 'utility',
 		heading: 'Generic renderer',
-		endpoints: [],
 		description: 'Generic fallback renderer for any OpenAPI response shape',
 		docsLabel: 'Helper',
 		endpointLabel: 'Any response shape',
@@ -362,5 +267,4 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 	},
 ];
 
-export type RoxyComponentTag = (typeof ROXY_COMPONENTS)[number]['tag'];
 export type RoxyComponentSlug = (typeof ROXY_COMPONENTS)[number]['slug'];

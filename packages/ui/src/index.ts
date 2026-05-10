@@ -39,13 +39,9 @@ export {
 	ROXY_COMPONENTS,
 	type RoxyComponent,
 	type RoxyComponentSlug,
-	type RoxyComponentTag,
-	type RoxyDomain,
 } from './manifest.js';
 export { ROXY_UI_VERSION } from './version.js';
 
 /** Slugs in declaration order. Kept for the auto-mount widgets script and downstream codegen. */
 export const ROXY_UI_COMPONENTS: readonly RoxyComponentSlug[] =
 	ROXY_COMPONENTS.map((c) => c.slug) as RoxyComponentSlug[];
-
-export type RoxyUIComponentName = RoxyComponentSlug;
