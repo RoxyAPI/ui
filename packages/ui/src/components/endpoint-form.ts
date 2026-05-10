@@ -41,13 +41,18 @@ const specCache = new Map<string, Promise<OpenApiDoc>>();
 async function loadSpec(url: string): Promise<OpenApiDoc> {
 	let pending = specCache.get(url);
 	if (!pending) {
-		pending = fetch(url).then(async (res) => {
-			if (!res.ok) {
+		pending = fetch(url)
+			.then(async (res) => {
+				if (!res.ok) throw new Error(`HTTP ${res.status}`);
+				return (await res.json()) as OpenApiDoc;
+			})
+			.catch((err) => {
+				// Evict the rejected promise BEFORE rethrowing so subsequent
+				// callers (the user clicking Retry, a remount) hit the network
+				// again instead of replaying the cached failure forever.
 				specCache.delete(url);
-				throw new Error(`HTTP ${res.status}`);
-			}
-			return (await res.json()) as OpenApiDoc;
-		});
+				throw err;
+			});
 		specCache.set(url, pending);
 	}
 	return pending;
@@ -159,6 +164,17 @@ export class RoxyEndpointForm extends LitElement {
 				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 				outline-offset: 2px;
 			}
+			.spec-error {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+				justify-items: start;
+				background: var(--roxy-bg, #fff);
+				border: 1px solid var(--roxy-danger, #dc2626);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				color: var(--roxy-danger-fg, #991b1b);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
 		`,
 	];
 
@@ -186,12 +202,16 @@ export class RoxyEndpointForm extends LitElement {
 	@state()
 	private loaded = false;
 
+	@state()
+	private specError: string | null = null;
+
 	connectedCallback(): void {
 		super.connectedCallback();
 		void this.loadSchema();
 	}
 
 	private async loadSchema() {
+		this.specError = null;
 		try {
 			const spec = await loadSpec(this.specUrl);
 			const path = `/${this.endpoint.replace(/^\//, '')}`;
@@ -211,7 +231,11 @@ export class RoxyEndpointForm extends LitElement {
 						}>;
 				  }
 				| undefined;
-			if (!op) return;
+			if (!op) {
+				throw new Error(
+					`Endpoint ${this.method} ${path} not found in OpenAPI spec`,
+				);
+			}
 
 			const schemas = spec.components?.schemas ?? {};
 			const fields: FieldDef[] = [];
@@ -266,10 +290,25 @@ export class RoxyEndpointForm extends LitElement {
 			}
 			this.values = init;
 			this.loaded = true;
-		} catch (_err) {
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
+			this.specError = message;
 			this.loaded = true;
+			this.dispatchEvent(
+				new CustomEvent('roxy-spec-error', {
+					detail: { url: this.specUrl, message },
+					bubbles: true,
+					composed: true,
+				}),
+			);
 		}
 	}
+
+	private retryLoadSchema = () => {
+		this.loaded = false;
+		this.specError = null;
+		void this.loadSchema();
+	};
 
 	private resolve(
 		schema: OpenApiSchema | OpenApiSchemaRef | undefined,
@@ -342,6 +381,13 @@ export class RoxyEndpointForm extends LitElement {
 	render() {
 		if (!this.loaded) {
 			return html`<form><div class="roxy-skeleton" style="height: 8rem"></div></form>`;
+		}
+
+		if (this.specError) {
+			return html`<div class="spec-error" role="alert">
+				Schema load failed: ${this.specError}
+				<button type="button" class="submit" @click=${this.retryLoadSchema}>Retry</button>
+			</div>`;
 		}
 
 		const renderField = (f: FieldDef) => {

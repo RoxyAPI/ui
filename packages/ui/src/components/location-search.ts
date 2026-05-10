@@ -161,6 +161,8 @@ export class RoxyLocationSearch extends LitElement {
 	private highlight = -1;
 
 	private clickOutsideHandler?: (e: MouseEvent) => void;
+	private abortController?: AbortController;
+	private secretKeyWarned = false;
 	private debouncedFetch = debounce((q: string) => {
 		void this.fetchResults(q);
 	}, 300);
@@ -180,9 +182,41 @@ export class RoxyLocationSearch extends LitElement {
 		if (this.clickOutsideHandler) {
 			document.removeEventListener('mousedown', this.clickOutsideHandler);
 		}
+		this.debouncedFetch.cancel();
+		if (this.abortController) {
+			this.abortController.abort();
+			this.abortController = undefined;
+		}
+	}
+
+	private warnIfSecretKey() {
+		if (this.secretKeyWarned) return;
+		if (!this.apiKey) return;
+		// Browser-safe publishable keys carry the `pk_` prefix and a server-side
+		// origin allowlist. Anything else (a raw secret key, UUID-style token)
+		// must not ship to the browser.
+		if (this.apiKey.startsWith('pk_')) return;
+		this.secretKeyWarned = true;
+		const message =
+			'Possible secret key in client-side <roxy-location-search>; use a `pk_` publishable key with origin allowlist instead.';
+		// eslint-disable-next-line no-console
+		console.warn(message);
+		this.dispatchEvent(
+			new CustomEvent('roxy-validation-error', {
+				detail: { reason: 'possible-secret-key', message },
+				bubbles: true,
+				composed: true,
+			}),
+		);
 	}
 
 	private async fetchResults(q: string) {
+		this.warnIfSecretKey();
+		// Abort any in-flight request so a stale response cannot overwrite a
+		// fresher one (debounced typing) or land after disconnect.
+		if (this.abortController) this.abortController.abort();
+		const controller = new AbortController();
+		this.abortController = controller;
 		this.isLoading = true;
 		try {
 			const url = new URL(this.endpoint);
@@ -193,17 +227,22 @@ export class RoxyLocationSearch extends LitElement {
 			};
 			if (this.apiKey) headers['X-API-Key'] = this.apiKey;
 			if (this.publishableKey) headers['X-API-Key'] = this.publishableKey;
-			const res = await fetch(url, { headers });
+			const res = await fetch(url, { headers, signal: controller.signal });
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			const json = (await res.json()) as SearchCitiesResponse;
+			if (controller.signal.aborted) return;
 			this.results = json.cities ?? [];
 			this.isOpen = this.results.length > 0;
 			this.highlight = this.results.length > 0 ? 0 : -1;
-		} catch (_err) {
+		} catch (err) {
+			if ((err as { name?: string })?.name === 'AbortError') return;
 			this.results = [];
 			this.isOpen = false;
 		} finally {
-			this.isLoading = false;
+			if (this.abortController === controller) {
+				this.abortController = undefined;
+			}
+			if (!controller.signal.aborted) this.isLoading = false;
 		}
 	}
 

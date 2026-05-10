@@ -25,6 +25,14 @@ const TITLE_KEYS = ['title', 'name', 'label', 'heading', 'overview', 'summary'];
 const IMAGE_KEYS = ['imageUrl', 'image', 'icon', 'symbol'];
 const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body rows
 
+// Hard cap on recursion. Real RoxyAPI responses nest at most 5-6 deep; anything
+// deeper is either a circular reference (which would otherwise infinite-loop)
+// or a payload too rich for the generic fallback to render usefully. The
+// recursion is otherwise safe: <roxy-data> is registered globally by its
+// `@customElement` decorator on import, so the nested template resolves to
+// this same class without a separate import.
+const MAX_DEPTH = 6;
+
 @customElement('roxy-data')
 export class RoxyData extends LitElement {
 	static styles = [
@@ -129,9 +137,20 @@ export class RoxyData extends LitElement {
 	@property({ attribute: false })
 	data: Json = null;
 
+	/**
+	 * Internal recursion depth. Nested <roxy-data> instances inherit this from
+	 * the parent and increment to guard against circular references in the
+	 * input. Not part of the public API; do not set from consumer code.
+	 */
+	@property({ attribute: false })
+	depth = 0;
+
 	render() {
 		if (this.data == null) {
 			return html`<div class="roxy-empty" role="status">No data</div>`;
+		}
+		if (this.depth >= MAX_DEPTH) {
+			return html`<div class="roxy-empty" role="status">…</div>`;
 		}
 		return html`<div
 			class="roxy-card"
@@ -252,7 +271,7 @@ export class RoxyData extends LitElement {
 				</ul>`;
 			}
 		}
-		return html`<roxy-data .data=${value}></roxy-data>`;
+		return html`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
 	}
 
 	private formatPrimitive(value: Json | undefined): string {

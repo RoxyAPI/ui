@@ -172,6 +172,23 @@ export class RoxySynastryChart extends LitElement {
 				padding-left: var(--roxy-space-md, 1rem);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
+
+			.missing-planets {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 8%, transparent);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-md, 1rem);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				line-height: 1.5;
+			}
+			.missing-planets code {
+				font-family: var(--roxy-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+				font-size: 0.95em;
+				background: color-mix(in srgb, var(--roxy-fg, #0a0a0a) 6%, transparent);
+				padding: 0 4px;
+				border-radius: 4px;
+			}
 		`,
 	];
 
@@ -193,6 +210,63 @@ export class RoxySynastryChart extends LitElement {
 		const summaryText = analysis?.overall;
 		const strengths = analysis?.strengths ?? [];
 		const challenges = analysis?.challenges ?? [];
+
+		// /astrology/synastry does not return per-person planet positions, so the
+		// dual-wheel cannot be drawn from a bare synastry response. Surface this
+		// explicitly instead of rendering a blank wheel; keep the inter-aspects
+		// table when it is present so callers still get useful output.
+		const hasPlanets = p1Planets.length > 0 && p2Planets.length > 0;
+		if (!hasPlanets) {
+			return html`<div
+				class="wrap"
+				aria-label="Synastry compatibility chart"
+			>
+				<div class="head">
+					<h2 class="title">Synastry</h2>
+					${
+						typeof score === 'number'
+							? html`<span class="score" aria-label=${`Score ${score} of 100`}
+								>${score} / 100</span
+							>`
+							: nothing
+					}
+				</div>
+				<div class="missing-planets" role="status">
+					Synastry response missing planet positions. Pass
+					<code>data</code> with <code>person1.planets</code> and
+					<code>person2.planets</code> arrays from the natal-chart endpoint, or
+					use the <code>&lt;roxy-data&gt;</code> fallback.
+				</div>
+				${summaryText ? html`<p class="summary">${summaryText}</p>` : nothing}
+				${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing}
+				${
+					strengths.length > 0 || challenges.length > 0
+						? html`<div class="lists">
+							${
+								strengths.length
+									? html`<div>
+										<h3>Strengths</h3>
+										<ul>
+											${strengths.map((s) => html`<li>${s}</li>`)}
+										</ul>
+									</div>`
+									: nothing
+							}
+							${
+								challenges.length
+									? html`<div>
+										<h3>Challenges</h3>
+										<ul>
+											${challenges.map((s) => html`<li>${s}</li>`)}
+										</ul>
+									</div>`
+									: nothing
+							}
+						</div>`
+						: nothing
+				}
+			</div>`;
+		}
 
 		return html`<div
 			class="wrap"
