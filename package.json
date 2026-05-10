@@ -27,6 +27,7 @@
 		"test": "bun test packages/ui/tests/utils.test.ts packages/ui/tests/components.test.ts --timeout 10000",
 		"test:e2e": "playwright test",
 		"check": "biome check . --fix",
+		"brand:check": "bun run scripts/brand-grep.ts",
 		"postinstall": "bun run generate || true"
 	},
 	"devDependencies": {

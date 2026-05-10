@@ -27,14 +27,17 @@ pre-push:
     biome-full:
       run: bun run check
       priority: 3
+    brand-grep:
+      run: bun run scripts/brand-grep.ts
+      priority: 4
     test-unit:
       run: bun run test
-      priority: 4
+      priority: 5
     test-e2e:
       env:
         PLAYWRIGHT_PROJECTS: chromium
       run: bun run test:e2e
-      priority: 5
+      priority: 6
     audit:
       run: |
         bun run build
@@ -48,7 +51,7 @@ pre-push:
         AUDIT_EXIT=$?
         kill $PREVIEW_PID 2>/dev/null || true
         exit $AUDIT_EXIT
-      priority: 6
+      priority: 7
     docs-drift:
       run: bun run docs:sync && git diff --exit-code -- README.md AGENTS.md || { echo "README.md or AGENTS.md drifted from spec, commit the sync output"; exit 1; }
-      priority: 7
+      priority: 8

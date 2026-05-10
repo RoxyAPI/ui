@@ -24,6 +24,8 @@ jobs:
             || { echo "::error::OpenAPI spec or generated types are stale. Run 'bun run generate' locally and commit."; exit 1; }
 
       - run: bun run check
+      - name: Brand-rule grep
+        run: bun run scripts/brand-grep.ts
       - run: bun run typecheck
       - run: bun run build
       - run: bun run test
