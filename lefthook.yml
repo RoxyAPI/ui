@@ -36,11 +36,17 @@ pre-push:
       run: bun run test:e2e
       priority: 5
     audit:
-      run: bun run build && bun run preview &
-        sleep 2 &&
-        bun run audit;
-        AUDIT_EXIT=$?;
-        pkill -f "bun run scripts/preview.ts" || true;
+      run: |
+        bun run build
+        bun run preview > /tmp/lefthook-preview.log 2>&1 &
+        PREVIEW_PID=$!
+        for i in $(seq 1 30); do
+          curl -sf http://localhost:3001/ -o /dev/null && break
+          sleep 1
+        done
+        bun run audit
+        AUDIT_EXIT=$?
+        kill $PREVIEW_PID 2>/dev/null || true
         exit $AUDIT_EXIT
       priority: 6
     docs-drift:
