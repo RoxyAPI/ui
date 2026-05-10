@@ -1,9 +1,12 @@
 import * as React from 'react';
-type DivAttrs = React.HTMLAttributes<HTMLElement>;
-export interface RoxyPanchangTableProps extends Omit<DivAttrs, 'children' | 'onSelect'> {
-    data?: unknown;
-    [attr: string]: unknown;
+import type { GetBasicPanchangResponse, GetDetailedPanchangResponse } from '@roxyapi/ui/types';
+type ElementAttrs = Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'data'>;
+export interface RoxyPanchangTableProps extends ElementAttrs {
+    /** Spec-derived response payload. Pass the raw RoxyAPI response. */
+    data?: GetBasicPanchangResponse | GetDetailedPanchangResponse;
+    className?: string;
+    style?: React.CSSProperties;
 }
-export declare const RoxyPanchangTable: React.ForwardRefExoticComponent<Omit<RoxyPanchangTableProps, "ref"> & React.RefAttributes<HTMLElement>>;
+export declare const RoxyPanchangTable: React.ForwardRefExoticComponent<RoxyPanchangTableProps & React.RefAttributes<HTMLElement | null>>;
 export {};
 //# sourceMappingURL=panchang-table.d.ts.map

@@ -1,9 +1,12 @@
 import * as React from 'react';
-type DivAttrs = React.HTMLAttributes<HTMLElement>;
-export interface RoxyHoroscopeCardProps extends Omit<DivAttrs, 'children' | 'onSelect'> {
-    data?: unknown;
-    [attr: string]: unknown;
+import type { GetDailyHoroscopeResponse, GetMonthlyHoroscopeResponse, GetWeeklyHoroscopeResponse } from '@roxyapi/ui/types';
+type ElementAttrs = Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'data'>;
+export interface RoxyHoroscopeCardProps extends ElementAttrs {
+    /** Spec-derived response payload. Pass the raw RoxyAPI response. */
+    data?: GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse;
+    className?: string;
+    style?: React.CSSProperties;
 }
-export declare const RoxyHoroscopeCard: React.ForwardRefExoticComponent<Omit<RoxyHoroscopeCardProps, "ref"> & React.RefAttributes<HTMLElement>>;
+export declare const RoxyHoroscopeCard: React.ForwardRefExoticComponent<RoxyHoroscopeCardProps & React.RefAttributes<HTMLElement | null>>;
 export {};
 //# sourceMappingURL=horoscope-card.d.ts.map

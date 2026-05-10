@@ -21,6 +21,12 @@ type Json = string | number | boolean | null | Json[] | {
 export declare class RoxyData extends LitElement {
     static styles: import("lit").CSSResult[];
     data: Json;
+    /**
+     * Internal recursion depth. Nested <roxy-data> instances inherit this from
+     * the parent and increment to guard against circular references in the
+     * input. Not part of the public API; do not set from consumer code.
+     */
+    depth: number;
     render(): TemplateResult<1>;
     private renderValue;
     private renderArray;

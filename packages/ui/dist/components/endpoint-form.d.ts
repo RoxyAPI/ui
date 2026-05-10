@@ -20,8 +20,10 @@ export declare class RoxyEndpointForm extends LitElement {
     private values;
     private hasLocation;
     private loaded;
+    private specError;
     connectedCallback(): void;
     private loadSchema;
+    private retryLoadSchema;
     private resolve;
     private fieldType;
     private setValue;

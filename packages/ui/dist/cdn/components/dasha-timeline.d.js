@@ -1,0 +1,2 @@
+"use strict";var RoxyUI_dasha_timeline;(RoxyUI_dasha_timeline||={}).d=(()=>{var r=Object.defineProperty;var o=Object.getOwnPropertyDescriptor;var i=Object.getOwnPropertyNames;var l=Object.prototype.hasOwnProperty;var p=(a,e,n,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let t of i(e))!l.call(a,t)&&t!==n&&r(a,t,{get:()=>e[t],enumerable:!(s=o(e,t))||s.enumerable});return a};var m=a=>p(r({},"__esModule",{value:!0}),a);var D={};return m(D);})();
+//# sourceMappingURL=dasha-timeline.d.js.map

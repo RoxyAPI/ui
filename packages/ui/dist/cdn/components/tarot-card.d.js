@@ -1,0 +1,2 @@
+"use strict";var RoxyUI_tarot_card;(RoxyUI_tarot_card||={}).d=(()=>{var l=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var i=Object.getOwnPropertyNames;var d=Object.prototype.hasOwnProperty;var s=(t,e,o,r)=>{if(e&&typeof e=="object"||typeof e=="function")for(let a of i(e))!d.call(t,a)&&a!==o&&l(t,a,{get:()=>e[a],enumerable:!(r=p(e,a))||r.enumerable});return t};var n=t=>s(l({},"__esModule",{value:!0}),t);var m={};return n(m);})();
+//# sourceMappingURL=tarot-card.d.js.map

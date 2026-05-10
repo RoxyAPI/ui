@@ -1,0 +1,2 @@
+"use strict";var RoxyUI_panchang_table;(RoxyUI_panchang_table||={}).d=(()=>{var l=Object.defineProperty;var i=Object.getOwnPropertyDescriptor;var c=Object.getOwnPropertyNames;var o=Object.prototype.hasOwnProperty;var p=(a,e,s,n)=>{if(e&&typeof e=="object"||typeof e=="function")for(let t of c(e))!o.call(a,t)&&t!==s&&l(a,t,{get:()=>e[t],enumerable:!(n=i(e,t))||n.enumerable});return a};var r=a=>p(l({},"__esModule",{value:!0}),a);var m={};return r(m);})();
+//# sourceMappingURL=panchang-table.d.js.map

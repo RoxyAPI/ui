@@ -1,0 +1,2 @@
+"use strict";var RoxyUI_location_search;(RoxyUI_location_search||={}).d=(()=>{var r=Object.defineProperty;var n=Object.getOwnPropertyDescriptor;var o=Object.getOwnPropertyNames;var c=Object.prototype.hasOwnProperty;var p=(t,e,l,i)=>{if(e&&typeof e=="object"||typeof e=="function")for(let a of o(e))!c.call(t,a)&&a!==l&&r(t,a,{get:()=>e[a],enumerable:!(i=n(e,a))||i.enumerable});return t};var s=t=>p(r({},"__esModule",{value:!0}),t);var d={};return s(d);})();
+//# sourceMappingURL=location-search.d.js.map

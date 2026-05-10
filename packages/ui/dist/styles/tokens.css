@@ -100,10 +100,18 @@
 		--roxy-accent: #fbbf24;
 		--roxy-accent-fg: #fbbf24;
 
+		/* Status -fg overrides must mirror the explicit [data-theme="dark"] block
+		 * below. Without these, a user on system dark with no data-theme attribute
+		 * inherits the light-mode -fg values (e.g. #166534 success) which renders
+		 * as near-invisible dark green on a near-black surface and fails WCAG AA. */
 		--roxy-success: #22c55e;
+		--roxy-success-fg: #86efac;
 		--roxy-warning: #fb923c;
+		--roxy-warning-fg: #fdba74;
 		--roxy-danger: #ef4444;
+		--roxy-danger-fg: #fca5a5;
 		--roxy-info: #38bdf8;
+		--roxy-info-fg: #7dd3fc;
 
 		--roxy-bg: #0a0a0a;
 		--roxy-fg: #fafafa;
@@ -118,7 +126,7 @@
 	}
 }
 
-/* Light theme override — beats the @media (prefers-color-scheme: dark) block
+/* Light theme override. Beats the @media (prefers-color-scheme: dark) block
  * when the host explicitly opts back into light. Without this, a dark-mode OS
  * pins the tokens to dark even after data-theme="light" is set. */
 :root[data-theme="light"],

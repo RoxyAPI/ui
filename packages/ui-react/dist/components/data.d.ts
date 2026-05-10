@@ -1,9 +1,11 @@
 import * as React from 'react';
-type DivAttrs = React.HTMLAttributes<HTMLElement>;
-export interface RoxyDataProps extends Omit<DivAttrs, 'children' | 'onSelect'> {
+type ElementAttrs = Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'data'>;
+export interface RoxyDataProps extends ElementAttrs {
+    /** Spec-derived response payload. Pass the raw RoxyAPI response. */
     data?: unknown;
-    [attr: string]: unknown;
+    className?: string;
+    style?: React.CSSProperties;
 }
-export declare const RoxyData: React.ForwardRefExoticComponent<Omit<RoxyDataProps, "ref"> & React.RefAttributes<HTMLElement>>;
+export declare const RoxyData: React.ForwardRefExoticComponent<RoxyDataProps & React.RefAttributes<HTMLElement | null>>;
 export {};
 //# sourceMappingURL=data.d.ts.map

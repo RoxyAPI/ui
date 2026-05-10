@@ -103,14 +103,19 @@ var baseStyles = css`
 var TITLE_KEYS = ["title", "name", "label", "heading", "overview", "summary"];
 var IMAGE_KEYS = ["imageUrl", "image", "icon", "symbol"];
 var SKIP_KEYS = ["imageUrl", "image"];
+var MAX_DEPTH = 6;
 var RoxyData = class extends LitElement {
   constructor() {
     super(...arguments);
     this.data = null;
+    this.depth = 0;
   }
   render() {
     if (this.data == null) {
       return html`<div class="roxy-empty" role="status">No data</div>`;
+    }
+    if (this.depth >= MAX_DEPTH) {
+      return html`<div class="roxy-empty" role="status">…</div>`;
     }
     return html`<div
 			class="roxy-card"
@@ -208,7 +213,7 @@ var RoxyData = class extends LitElement {
 				</ul>`;
       }
     }
-    return html`<roxy-data .data=${value}></roxy-data>`;
+    return html`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
   }
   formatPrimitive(value) {
     if (value === null || value === void 0) return "";
@@ -330,6 +335,9 @@ RoxyData.styles = [
 __decorateClass([
   property({ attribute: false })
 ], RoxyData.prototype, "data", 2);
+__decorateClass([
+  property({ attribute: false })
+], RoxyData.prototype, "depth", 2);
 RoxyData = __decorateClass([
   customElement("roxy-data")
 ], RoxyData);

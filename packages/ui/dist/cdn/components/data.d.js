@@ -1,0 +1,2 @@
+"use strict";var RoxyUI_data;(RoxyUI_data||={}).d=(()=>{var l=Object.defineProperty;var n=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var o=Object.prototype.hasOwnProperty;var s=(t,e,i,a)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of p(e))!o.call(t,r)&&r!==i&&l(t,r,{get:()=>e[r],enumerable:!(a=n(e,r))||a.enumerable});return t};var m=t=>s(l({},"__esModule",{value:!0}),t);var d={};return m(d);})();
+//# sourceMappingURL=data.d.js.map

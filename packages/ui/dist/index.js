@@ -719,14 +719,19 @@ import { customElement as customElement4, property as property4 } from "lit/deco
 var TITLE_KEYS = ["title", "name", "label", "heading", "overview", "summary"];
 var IMAGE_KEYS = ["imageUrl", "image", "icon", "symbol"];
 var SKIP_KEYS = ["imageUrl", "image"];
+var MAX_DEPTH = 6;
 var RoxyData = class extends LitElement4 {
   constructor() {
     super(...arguments);
     this.data = null;
+    this.depth = 0;
   }
   render() {
     if (this.data == null) {
       return html4`<div class="roxy-empty" role="status">No data</div>`;
+    }
+    if (this.depth >= MAX_DEPTH) {
+      return html4`<div class="roxy-empty" role="status">…</div>`;
     }
     return html4`<div
 			class="roxy-card"
@@ -824,7 +829,7 @@ var RoxyData = class extends LitElement4 {
 				</ul>`;
       }
     }
-    return html4`<roxy-data .data=${value}></roxy-data>`;
+    return html4`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
   }
   formatPrimitive(value) {
     if (value === null || value === void 0) return "";
@@ -946,6 +951,9 @@ RoxyData.styles = [
 __decorateClass([
   property4({ attribute: false })
 ], RoxyData.prototype, "data", 2);
+__decorateClass([
+  property4({ attribute: false })
+], RoxyData.prototype, "depth", 2);
 RoxyData = __decorateClass([
   customElement4("roxy-data")
 ], RoxyData);
@@ -1133,11 +1141,11 @@ async function loadSpec(url) {
   let pending = specCache.get(url);
   if (!pending) {
     pending = fetch(url).then(async (res) => {
-      if (!res.ok) {
-        specCache.delete(url);
-        throw new Error(`HTTP ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.json();
+    }).catch((err) => {
+      specCache.delete(url);
+      throw err;
     });
     specCache.set(url, pending);
   }
@@ -1154,6 +1162,12 @@ var RoxyEndpointForm = class extends LitElement6 {
     this.values = {};
     this.hasLocation = false;
     this.loaded = false;
+    this.specError = null;
+    this.retryLoadSchema = () => {
+      this.loaded = false;
+      this.specError = null;
+      void this.loadSchema();
+    };
     this.onLocation = (e) => {
       const detail = e.detail;
       if (detail) {
@@ -1194,11 +1208,16 @@ var RoxyEndpointForm = class extends LitElement6 {
     void this.loadSchema();
   }
   async loadSchema() {
+    this.specError = null;
     try {
       const spec = await loadSpec(this.specUrl);
       const path = `/${this.endpoint.replace(/^\//, "")}`;
       const op = spec.paths?.[path]?.[this.method.toLowerCase()];
-      if (!op) return;
+      if (!op) {
+        throw new Error(
+          `Endpoint ${this.method} ${path} not found in OpenAPI spec`
+        );
+      }
       const schemas = spec.components?.schemas ?? {};
       const fields = [];
       let bodySchema;
@@ -1243,8 +1262,17 @@ var RoxyEndpointForm = class extends LitElement6 {
       }
       this.values = init;
       this.loaded = true;
-    } catch (_err) {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.specError = message;
       this.loaded = true;
+      this.dispatchEvent(
+        new CustomEvent("roxy-spec-error", {
+          detail: { url: this.specUrl, message },
+          bubbles: true,
+          composed: true
+        })
+      );
     }
   }
   resolve(schema, all) {
@@ -1269,6 +1297,12 @@ var RoxyEndpointForm = class extends LitElement6 {
   render() {
     if (!this.loaded) {
       return html6`<form><div class="roxy-skeleton" style="height: 8rem"></div></form>`;
+    }
+    if (this.specError) {
+      return html6`<div class="spec-error" role="alert">
+				Schema load failed: ${this.specError}
+				<button type="button" class="submit" @click=${this.retryLoadSchema}>Retry</button>
+			</div>`;
     }
     const renderField = (f) => {
       if (this.hasLocation && (f.name === "latitude" || f.name === "longitude" || f.name === "timezone")) {
@@ -1440,6 +1474,17 @@ RoxyEndpointForm.styles = [
 				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 				outline-offset: 2px;
 			}
+			.spec-error {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+				justify-items: start;
+				background: var(--roxy-bg, #fff);
+				border: 1px solid var(--roxy-danger, #dc2626);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				color: var(--roxy-danger-fg, #991b1b);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
 		`
 ];
 __decorateClass([
@@ -1466,6 +1511,9 @@ __decorateClass([
 __decorateClass([
   state()
 ], RoxyEndpointForm.prototype, "loaded", 2);
+__decorateClass([
+  state()
+], RoxyEndpointForm.prototype, "specError", 2);
 RoxyEndpointForm = __decorateClass([
   customElement6("roxy-endpoint-form")
 ], RoxyEndpointForm);
@@ -2344,10 +2392,20 @@ import { customElement as customElement11, property as property11, state as stat
 // packages/ui/src/utils/debounce.ts
 function debounce(fn, wait) {
   let timer;
-  return ((...args) => {
+  const debounced = ((...args) => {
     if (timer) clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), wait);
+    timer = setTimeout(() => {
+      timer = void 0;
+      fn(...args);
+    }, wait);
   });
+  debounced.cancel = () => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = void 0;
+    }
+  };
+  return debounced;
 }
 
 // packages/ui/src/components/location-search.ts
@@ -2362,6 +2420,7 @@ var RoxyLocationSearch = class extends LitElement11 {
     this.isOpen = false;
     this.isLoading = false;
     this.highlight = -1;
+    this.secretKeyWarned = false;
     this.debouncedFetch = debounce((q) => {
       void this.fetchResults(q);
     }, 300);
@@ -2413,8 +2472,32 @@ var RoxyLocationSearch = class extends LitElement11 {
     if (this.clickOutsideHandler) {
       document.removeEventListener("mousedown", this.clickOutsideHandler);
     }
+    this.debouncedFetch.cancel();
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = void 0;
+    }
+  }
+  warnIfSecretKey() {
+    if (this.secretKeyWarned) return;
+    if (!this.apiKey) return;
+    if (this.apiKey.startsWith("pk_")) return;
+    this.secretKeyWarned = true;
+    const message = "Possible secret key in client-side <roxy-location-search>; use a `pk_` publishable key with origin allowlist instead.";
+    console.warn(message);
+    this.dispatchEvent(
+      new CustomEvent("roxy-validation-error", {
+        detail: { reason: "possible-secret-key", message },
+        bubbles: true,
+        composed: true
+      })
+    );
   }
   async fetchResults(q) {
+    this.warnIfSecretKey();
+    if (this.abortController) this.abortController.abort();
+    const controller = new AbortController();
+    this.abortController = controller;
     this.isLoading = true;
     try {
       const url = new URL(this.endpoint);
@@ -2425,17 +2508,22 @@ var RoxyLocationSearch = class extends LitElement11 {
       };
       if (this.apiKey) headers["X-API-Key"] = this.apiKey;
       if (this.publishableKey) headers["X-API-Key"] = this.publishableKey;
-      const res = await fetch(url, { headers });
+      const res = await fetch(url, { headers, signal: controller.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
+      if (controller.signal.aborted) return;
       this.results = json.cities ?? [];
       this.isOpen = this.results.length > 0;
       this.highlight = this.results.length > 0 ? 0 : -1;
-    } catch (_err) {
+    } catch (err) {
+      if (err?.name === "AbortError") return;
       this.results = [];
       this.isOpen = false;
     } finally {
-      this.isLoading = false;
+      if (this.abortController === controller) {
+        this.abortController = void 0;
+      }
+      if (!controller.signal.aborted) this.isLoading = false;
     }
   }
   select(city) {
@@ -3538,6 +3626,42 @@ var RoxySynastryChart = class extends LitElement16 {
     const summaryText = analysis?.overall;
     const strengths = analysis?.strengths ?? [];
     const challenges = analysis?.challenges ?? [];
+    const hasPlanets = p1Planets.length > 0 && p2Planets.length > 0;
+    if (!hasPlanets) {
+      return html16`<div
+				class="wrap"
+				aria-label="Synastry compatibility chart"
+			>
+				<div class="head">
+					<h2 class="title">Synastry</h2>
+					${typeof score === "number" ? html16`<span class="score" aria-label=${`Score ${score} of 100`}
+								>${score} / 100</span
+							>` : nothing16}
+				</div>
+				<div class="missing-planets" role="status">
+					Synastry response missing planet positions. Pass
+					<code>data</code> with <code>person1.planets</code> and
+					<code>person2.planets</code> arrays from the natal-chart endpoint, or
+					use the <code>&lt;roxy-data&gt;</code> fallback.
+				</div>
+				${summaryText ? html16`<p class="summary">${summaryText}</p>` : nothing16}
+				${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing16}
+				${strengths.length > 0 || challenges.length > 0 ? html16`<div class="lists">
+							${strengths.length ? html16`<div>
+										<h3>Strengths</h3>
+										<ul>
+											${strengths.map((s) => html16`<li>${s}</li>`)}
+										</ul>
+									</div>` : nothing16}
+							${challenges.length ? html16`<div>
+										<h3>Challenges</h3>
+										<ul>
+											${challenges.map((s) => html16`<li>${s}</li>`)}
+										</ul>
+									</div>` : nothing16}
+						</div>` : nothing16}
+			</div>`;
+    }
     return html16`<div
 			class="wrap"
 			aria-label="Synastry compatibility chart"
@@ -3830,6 +3954,23 @@ RoxySynastryChart.styles = [
 				margin: 0;
 				padding-left: var(--roxy-space-md, 1rem);
 				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+
+			.missing-planets {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 8%, transparent);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-md, 1rem);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				line-height: 1.5;
+			}
+			.missing-planets code {
+				font-family: var(--roxy-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+				font-size: 0.95em;
+				background: color-mix(in srgb, var(--roxy-fg, #0a0a0a) 6%, transparent);
+				padding: 0 4px;
+				border-radius: 4px;
 			}
 		`
 ];
@@ -4527,8 +4668,8 @@ var ROXY_COMPONENTS = [
     heading: "Compatibility score",
     endpoints: [
       "astrology.calculateCompatibility",
-      "numerology.calculateCompatibility",
-      "biorhythm.calculateCompatibility"
+      "numerology.calculateNumCompatibility",
+      "biorhythm.calculateBioCompatibility"
     ],
     description: "Cross-domain compatibility score card",
     docsLabel: "Cross",
@@ -4545,7 +4686,7 @@ var ROXY_COMPONENTS = [
     endpoints: [
       "astrology.getCurrentMoonPhase",
       "astrology.getUpcomingMoonPhases",
-      "astrology.getMoonPhaseCalendar"
+      "astrology.getMoonCalendar"
     ],
     description: "Moon phase card and calendar",
     docsLabel: "Western",
@@ -4607,8 +4748,8 @@ var ROXY_COMPONENTS = [
     heading: "Manglik dosha",
     endpoints: [
       "vedicAstrology.checkManglikDosha",
-      "vedicAstrology.checkKalSarpaDosha",
-      "vedicAstrology.checkSadeSati"
+      "vedicAstrology.checkKalsarpaDosha",
+      "vedicAstrology.checkSadhesati"
     ],
     description: "Manglik, Kaal Sarp, or Sade Sati presence card",
     docsLabel: "Vedic",
@@ -4652,7 +4793,7 @@ var ROXY_COMPONENTS = [
       "numerology.calculateLifePath",
       "numerology.calculateExpression",
       "numerology.calculatePersonalYear",
-      "numerology.calculateChart"
+      "numerology.generateNumerologyChart"
     ],
     description: "Numerology card for life path, expression, personal year, or full chart",
     docsLabel: "Numerology",
@@ -4682,9 +4823,9 @@ var ROXY_COMPONENTS = [
     endpoints: [
       "tarot.castThreeCard",
       "tarot.castCelticCross",
-      "tarot.castLove",
+      "tarot.castLoveSpread",
       "tarot.castYesNo",
-      "tarot.draw"
+      "tarot.drawCards"
     ],
     description: "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",
     docsLabel: "Tarot",
@@ -4717,9 +4858,9 @@ var ROXY_COMPONENTS = [
     heading: "I Ching hexagram",
     endpoints: [
       "iching.getHexagram",
-      "iching.castHexagram",
+      "iching.castReading",
       "iching.getDailyHexagram",
-      "iching.castDailyHexagram",
+      "iching.castDailyReading",
       "iching.getRandomHexagram"
     ],
     description: "I Ching hexagram with trigram glyphs, judgment, image, and changing lines",
@@ -4739,7 +4880,8 @@ var ROXY_COMPONENTS = [
     docsLabel: "Helper",
     endpointLabel: "Any endpoint via x-roxy-ui hints",
     docsSummary: "Schema-driven form, emits roxy-submit",
-    topic: "Helpers"
+    topic: "Helpers",
+    selfFetching: true
   },
   {
     pascal: "RoxyLocationSearch",
@@ -4747,12 +4889,13 @@ var ROXY_COMPONENTS = [
     slug: "location-search",
     domain: "utility",
     heading: "City search",
-    endpoints: ["location.search"],
+    endpoints: ["location.searchCities"],
     description: "City search input with debounced /location/search calls",
     docsLabel: "Helper",
     endpointLabel: "GET /location/search",
     docsSummary: "Debounced city search input, emits roxy-location-select",
-    topic: "Helpers"
+    topic: "Helpers",
+    selfFetching: true
   },
   {
     pascal: "RoxyData",
@@ -4765,7 +4908,8 @@ var ROXY_COMPONENTS = [
     docsLabel: "Helper",
     endpointLabel: "Any response shape",
     docsSummary: "Generic fallback renderer for unknown shapes",
-    topic: "Helpers"
+    topic: "Helpers",
+    selfFetching: true
   }
 ];
 

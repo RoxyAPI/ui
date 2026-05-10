@@ -102,10 +102,20 @@ var baseStyles = css`
 // packages/ui/src/utils/debounce.ts
 function debounce(fn, wait) {
   let timer;
-  return ((...args) => {
+  const debounced = ((...args) => {
     if (timer) clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), wait);
+    timer = setTimeout(() => {
+      timer = void 0;
+      fn(...args);
+    }, wait);
   });
+  debounced.cancel = () => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = void 0;
+    }
+  };
+  return debounced;
 }
 
 // packages/ui/src/components/location-search.ts
@@ -120,6 +130,7 @@ var RoxyLocationSearch = class extends LitElement {
     this.isOpen = false;
     this.isLoading = false;
     this.highlight = -1;
+    this.secretKeyWarned = false;
     this.debouncedFetch = debounce((q) => {
       void this.fetchResults(q);
     }, 300);
@@ -171,8 +182,32 @@ var RoxyLocationSearch = class extends LitElement {
     if (this.clickOutsideHandler) {
       document.removeEventListener("mousedown", this.clickOutsideHandler);
     }
+    this.debouncedFetch.cancel();
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = void 0;
+    }
+  }
+  warnIfSecretKey() {
+    if (this.secretKeyWarned) return;
+    if (!this.apiKey) return;
+    if (this.apiKey.startsWith("pk_")) return;
+    this.secretKeyWarned = true;
+    const message = "Possible secret key in client-side <roxy-location-search>; use a `pk_` publishable key with origin allowlist instead.";
+    console.warn(message);
+    this.dispatchEvent(
+      new CustomEvent("roxy-validation-error", {
+        detail: { reason: "possible-secret-key", message },
+        bubbles: true,
+        composed: true
+      })
+    );
   }
   async fetchResults(q) {
+    this.warnIfSecretKey();
+    if (this.abortController) this.abortController.abort();
+    const controller = new AbortController();
+    this.abortController = controller;
     this.isLoading = true;
     try {
       const url = new URL(this.endpoint);
@@ -183,17 +218,22 @@ var RoxyLocationSearch = class extends LitElement {
       };
       if (this.apiKey) headers["X-API-Key"] = this.apiKey;
       if (this.publishableKey) headers["X-API-Key"] = this.publishableKey;
-      const res = await fetch(url, { headers });
+      const res = await fetch(url, { headers, signal: controller.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
+      if (controller.signal.aborted) return;
       this.results = json.cities ?? [];
       this.isOpen = this.results.length > 0;
       this.highlight = this.results.length > 0 ? 0 : -1;
-    } catch (_err) {
+    } catch (err) {
+      if (err?.name === "AbortError") return;
       this.results = [];
       this.isOpen = false;
     } finally {
-      this.isLoading = false;
+      if (this.abortController === controller) {
+        this.abortController = void 0;
+      }
+      if (!controller.signal.aborted) this.isLoading = false;
     }
   }
   select(city) {

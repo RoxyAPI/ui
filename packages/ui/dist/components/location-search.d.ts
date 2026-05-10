@@ -28,9 +28,12 @@ export declare class RoxyLocationSearch extends LitElement {
     private isLoading;
     private highlight;
     private clickOutsideHandler?;
+    private abortController?;
+    private secretKeyWarned;
     private debouncedFetch;
     connectedCallback(): void;
     disconnectedCallback(): void;
+    private warnIfSecretKey;
     private fetchResults;
     private onInput;
     private select;
