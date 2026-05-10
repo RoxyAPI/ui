@@ -221,7 +221,7 @@ For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your se
 | jsDelivr CDN (full bundle) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
 | jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
 | Widgets auto-mount | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
-| shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/{name}.json` |
+| shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
 
 ## Components
 
@@ -451,7 +451,7 @@ Mock `@roxyapi/sdk` at the network boundary so unit tests do not hit the live AP
 Use the shadcn registry. The registry drops the component source, a wrapper file, and a CSS theme bridge into your repo. Edit anything; the source is yours from that point.
 
 ```bash
-npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/natal-chart.json
+npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json
 ```
 </details>
 

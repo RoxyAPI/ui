@@ -503,7 +503,7 @@
 				]
 			},
 			{
-				"@type": "SoftwareApplication",
+				"@type": ["SoftwareApplication", "SoftwareSourceCode"],
 				"@id": "https://roxyapi.github.io/ui/#software",
 				"name": "RoxyAPI UI",
 				"alternateName": ["@roxyapi/ui", "@roxyapi/ui-react"],
@@ -560,7 +560,7 @@
 				"name": "Can I use RoxyAPI UI with shadcn in a Next.js or React app?",
 				"acceptedAnswer": {
 					"@type": "Answer",
-					"text": "Yes. RoxyAPI UI ships a shadcn registry alongside the npm packages. Install any component the same way as shadcn primitives: npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/natal-chart.json. The component source lands in your project for full ownership and Tailwind-friendly theming. To skip the URL on every install, add a namespace to your components.json (registries: { '@roxyapi': 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/{name}.json' }) and then use npx shadcn@latest add @roxyapi/natal-chart. The shadcn registry approach pairs cleanly with shadcn primitives like button, card, and dialog in the same Next.js or React app."
+					"text": "Yes. RoxyAPI UI ships a shadcn registry alongside the npm packages. Install any component the same way as shadcn primitives: npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json. The component source lands in your project for full ownership and Tailwind-friendly theming. To skip the URL on every install, add a namespace to your components.json (registries: { '@roxyapi': 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json' }) and then use npx shadcn@latest add @roxyapi/natal-chart. The shadcn registry approach pairs cleanly with shadcn primitives like button, card, and dialog in the same Next.js or React app."
 				}
 			},
 			{
@@ -603,7 +603,7 @@
 					<span aria-hidden="true">$</span>
 					<span data-copy-label>npm install @roxyapi/ui</span>
 				</button>
-				<button type="button" class="btn btn--ghost" data-copy-text="npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/natal-chart.json">
+				<button type="button" class="btn btn--ghost" data-copy-text="npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json">
 					<span data-copy-label>shadcn add</span>
 				</button>
 				<a class="btn btn--ghost" href="https://roxyapi.com/pricing" target="_blank" rel="noopener">Get an API key</a>
@@ -693,7 +693,7 @@
 				<article style="border: 1px solid var(--roxy-border); border-radius: 10px; padding: 1rem;">
 					<h3 style="margin: 0 0 0.375rem; font-size: 0.9375rem; font-weight: 600;">shadcn registry</h3>
 					<p style="margin: 0 0 0.625rem; font-size: 0.8125rem; color: var(--roxy-muted);">Drop-in components fork into your repo, theme freely.</p>
-					<button type="button" class="btn btn--xs btn--ghost" data-copy-text="npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/natal-chart.json">
+					<button type="button" class="btn btn--xs btn--ghost" data-copy-text="npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json">
 						<span data-copy-label>npx shadcn@latest add</span>
 					</button>
 				</article>
@@ -716,10 +716,10 @@
 			</details>
 			<details>
 				<summary>Can I use RoxyAPI UI with shadcn in a Next.js or React app?</summary>
-				<p>Yes. Every component is published to a shadcn-compatible registry. Install with <code>npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/natal-chart.json</code>. The source lands in your repo for full ownership and Tailwind-friendly theming. Map a namespace in your <code>components.json</code> to skip the URL on every install:</p>
+				<p>Yes. Every component is published to a shadcn-compatible registry. Install with <code>npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json</code>. The source lands in your repo for full ownership and Tailwind-friendly theming. Map a namespace in your <code>components.json</code> to skip the URL on every install:</p>
 				<pre style="background: color-mix(in srgb, var(--roxy-border) 25%, transparent); padding: 0.75rem; border-radius: 6px; font-size: 0.8125rem; overflow-x: auto;"><code>{
   "registries": {
-    "@roxyapi": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.1.2/registry/{name}.json"
+    "@roxyapi": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json"
   }
 }</code></pre>
 				<p>Then <code>npx shadcn@latest add @roxyapi/natal-chart</code>. Pairs cleanly with shadcn's own button, card, and dialog primitives in the same app.</p>

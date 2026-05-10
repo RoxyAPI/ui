@@ -4,11 +4,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyNatalChart",
     "tag": "roxy-natal-chart",
     "slug": "natal-chart",
-    "domain": "astrology",
     "heading": "Natal chart",
-    "endpoints": [
-      "astrology.generateNatalChart"
-    ],
     "description": "Western natal chart wheel for /astrology/natal-chart responses",
     "docsLabel": "Western",
     "endpointLabel": "POST /astrology/natal-chart",
@@ -19,13 +15,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyHoroscopeCard",
     "tag": "roxy-horoscope-card",
     "slug": "horoscope-card",
-    "domain": "astrology",
     "heading": "Daily horoscope",
-    "endpoints": [
-      "astrology.getDailyHoroscope",
-      "astrology.getWeeklyHoroscope",
-      "astrology.getMonthlyHoroscope"
-    ],
     "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/...",
     "docsLabel": "Western",
     "endpointLabel": "GET /astrology/horoscope/{sign}/{daily,weekly,monthly}",
@@ -36,11 +26,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxySynastryChart",
     "tag": "roxy-synastry-chart",
     "slug": "synastry-chart",
-    "domain": "astrology",
     "heading": "Synastry",
-    "endpoints": [
-      "astrology.calculateSynastry"
-    ],
     "description": "Dual-wheel synastry chart with inter-aspects table",
     "docsLabel": "Western",
     "endpointLabel": "POST /astrology/synastry",
@@ -51,13 +37,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyCompatibilityCard",
     "tag": "roxy-compatibility-card",
     "slug": "compatibility-card",
-    "domain": "astrology",
     "heading": "Compatibility score",
-    "endpoints": [
-      "astrology.calculateCompatibility",
-      "numerology.calculateNumCompatibility",
-      "biorhythm.calculateBioCompatibility"
-    ],
     "description": "Cross-domain compatibility score card",
     "docsLabel": "Cross",
     "endpointLabel": "POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility",
@@ -68,13 +48,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyMoonPhase",
     "tag": "roxy-moon-phase",
     "slug": "moon-phase",
-    "domain": "astrology",
     "heading": "Moon phase",
-    "endpoints": [
-      "astrology.getCurrentMoonPhase",
-      "astrology.getUpcomingMoonPhases",
-      "astrology.getMoonCalendar"
-    ],
     "description": "Moon phase card and calendar",
     "docsLabel": "Western",
     "endpointLabel": "GET /astrology/moon-phase/{current,upcoming,calendar/...}",
@@ -85,11 +59,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyVedicKundli",
     "tag": "roxy-vedic-kundli",
     "slug": "vedic-kundli",
-    "domain": "vedic",
     "heading": "Vedic kundli",
-    "endpoints": [
-      "vedicAstrology.generateBirthChart"
-    ],
     "description": "South or North Indian Vedic kundli for /vedic-astrology/birth-chart",
     "docsLabel": "Vedic",
     "endpointLabel": "POST /vedic-astrology/birth-chart",
@@ -100,12 +70,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyPanchangTable",
     "tag": "roxy-panchang-table",
     "slug": "panchang-table",
-    "domain": "vedic",
     "heading": "Panchang",
-    "endpoints": [
-      "vedicAstrology.getBasicPanchang",
-      "vedicAstrology.getDetailedPanchang"
-    ],
     "description": "Panchang muhurta table with auspicious and inauspicious periods",
     "docsLabel": "Vedic",
     "endpointLabel": "POST /vedic-astrology/panchang/{basic,detailed}",
@@ -116,13 +81,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyDashaTimeline",
     "tag": "roxy-dasha-timeline",
     "slug": "dasha-timeline",
-    "domain": "vedic",
     "heading": "Vimshottari dasha",
-    "endpoints": [
-      "vedicAstrology.getCurrentDasha",
-      "vedicAstrology.getMajorDashas",
-      "vedicAstrology.getSubDashas"
-    ],
     "description": "Vimshottari dasha timeline with active mahadasha highlighted",
     "docsLabel": "Vedic",
     "endpointLabel": "POST /vedic-astrology/dasha/{current,major,sub/...}",
@@ -133,13 +92,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyDoshaCard",
     "tag": "roxy-dosha-card",
     "slug": "dosha-card",
-    "domain": "vedic",
     "heading": "Manglik dosha",
-    "endpoints": [
-      "vedicAstrology.checkManglikDosha",
-      "vedicAstrology.checkKalsarpaDosha",
-      "vedicAstrology.checkSadhesati"
-    ],
     "description": "Manglik, Kaal Sarp, or Sade Sati presence card",
     "docsLabel": "Vedic",
     "endpointLabel": "POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}",
@@ -150,11 +103,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyGunaMilan",
     "tag": "roxy-guna-milan",
     "slug": "guna-milan",
-    "domain": "vedic",
     "heading": "Guna milan",
-    "endpoints": [
-      "vedicAstrology.calculateGunMilan"
-    ],
     "description": "36-point Ashtakoota matrimonial compatibility breakdown",
     "docsLabel": "Vedic",
     "endpointLabel": "POST /vedic-astrology/compatibility",
@@ -165,11 +114,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyKpPlanetsTable",
     "tag": "roxy-kp-planets-table",
     "slug": "kp-planets-table",
-    "domain": "vedic",
     "heading": "KP planets",
-    "endpoints": [
-      "vedicAstrology.getKpPlanets"
-    ],
     "description": "KP planets table with sub-lord and sub-sub-lord columns",
     "docsLabel": "Vedic (KP)",
     "endpointLabel": "POST /vedic-astrology/kp/planets",
@@ -180,14 +125,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyNumerologyCard",
     "tag": "roxy-numerology-card",
     "slug": "numerology-card",
-    "domain": "numerology",
     "heading": "Life path number",
-    "endpoints": [
-      "numerology.calculateLifePath",
-      "numerology.calculateExpression",
-      "numerology.calculatePersonalYear",
-      "numerology.generateNumerologyChart"
-    ],
     "description": "Numerology card for life path, expression, personal year, or full chart",
     "docsLabel": "Numerology",
     "endpointLabel": "POST /numerology/{life-path,expression,personal-year,chart}",
@@ -198,12 +136,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyTarotCard",
     "tag": "roxy-tarot-card",
     "slug": "tarot-card",
-    "domain": "tarot",
     "heading": "Daily tarot card",
-    "endpoints": [
-      "tarot.getCard",
-      "tarot.getDailyCard"
-    ],
     "description": "Single tarot card with upright/reversed flip animation",
     "docsLabel": "Tarot",
     "endpointLabel": "GET /tarot/cards/{id}, POST /tarot/daily",
@@ -214,15 +147,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyTarotSpread",
     "tag": "roxy-tarot-spread",
     "slug": "tarot-spread",
-    "domain": "tarot",
     "heading": "Three-card spread",
-    "endpoints": [
-      "tarot.castThreeCard",
-      "tarot.castCelticCross",
-      "tarot.castLoveSpread",
-      "tarot.castYesNo",
-      "tarot.drawCards"
-    ],
     "description": "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",
     "docsLabel": "Tarot",
     "endpointLabel": "POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw",
@@ -233,13 +158,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyBiorhythmChart",
     "tag": "roxy-biorhythm-chart",
     "slug": "biorhythm-chart",
-    "domain": "biorhythm",
     "heading": "Daily biorhythm",
-    "endpoints": [
-      "biorhythm.getDailyBiorhythm",
-      "biorhythm.getForecast",
-      "biorhythm.getCriticalDays"
-    ],
     "description": "Daily biorhythm bars or multi-day forecast cycle lines",
     "docsLabel": "Biorhythm",
     "endpointLabel": "POST /biorhythm/{daily,forecast,critical-days}",
@@ -250,15 +169,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyHexagram",
     "tag": "roxy-hexagram",
     "slug": "hexagram",
-    "domain": "iching",
     "heading": "I Ching hexagram",
-    "endpoints": [
-      "iching.getHexagram",
-      "iching.castReading",
-      "iching.getDailyHexagram",
-      "iching.castDailyReading",
-      "iching.getRandomHexagram"
-    ],
     "description": "I Ching hexagram with trigram glyphs, judgment, image, and changing lines",
     "docsLabel": "I Ching",
     "endpointLabel": "GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",
@@ -269,9 +180,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyEndpointForm",
     "tag": "roxy-endpoint-form",
     "slug": "endpoint-form",
-    "domain": "utility",
     "heading": "Schema-driven form",
-    "endpoints": [],
     "description": "Schema-driven form that emits roxy-submit with a validated payload",
     "docsLabel": "Helper",
     "endpointLabel": "Any endpoint via x-roxy-ui hints",
@@ -283,11 +192,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyLocationSearch",
     "tag": "roxy-location-search",
     "slug": "location-search",
-    "domain": "utility",
     "heading": "City search",
-    "endpoints": [
-      "location.searchCities"
-    ],
     "description": "City search input with debounced /location/search calls",
     "docsLabel": "Helper",
     "endpointLabel": "GET /location/search",
@@ -299,9 +204,7 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyData",
     "tag": "roxy-data",
     "slug": "data",
-    "domain": "utility",
     "heading": "Generic renderer",
-    "endpoints": [],
     "description": "Generic fallback renderer for any OpenAPI response shape",
     "docsLabel": "Helper",
     "endpointLabel": "Any response shape",
