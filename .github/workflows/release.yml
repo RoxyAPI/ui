@@ -144,6 +144,14 @@ jobs:
           git tag "v$VERSION"
           git push --follow-tags
 
+      - name: Pack npm tarballs for release assets
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          mkdir -p .release-assets
+          (cd packages/ui && npm pack --pack-destination ../../.release-assets)
+          (cd packages/ui-react && npm pack --pack-destination ../../.release-assets)
+          ls -la .release-assets/
+
       - name: Create GitHub release
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v3
@@ -151,3 +159,5 @@ jobs:
           tag_name: v${{ steps.bump.outputs.version }}
           generate_release_notes: true
           make_latest: 'true'
+          files: |
+            .release-assets/*.tgz

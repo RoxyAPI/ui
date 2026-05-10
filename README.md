@@ -366,7 +366,7 @@ The server component fetches, the client component renders. The API key never cr
 <details>
 <summary><strong>Tailwind v3 vs v4 compatibility?</strong></summary>
 
-Both work. Components do not consume Tailwind utilities. Tailwind utilities apply outside the components on wrappers and containers; inside the Shadow DOM, components read `--roxy-*` CSS custom properties only.
+Both work. Components do not consume Tailwind utilities. Tailwind utilities apply outside the components on parent layout elements and containers; inside the Shadow DOM, components read `--roxy-*` CSS custom properties only.
 
 For Tailwind v4 users, the shadcn registry installs a CSS bridge that maps your existing v4 design tokens onto `--roxy-*`. For Tailwind v3 users, set `--roxy-*` directly on `:root`, or write a tiny bridge:
 
@@ -400,7 +400,7 @@ useEffect(() => {
 return <roxy-location-search ref={ref} />;
 ```
 
-Upgrade to React 19 when you can; the wrappers route everything cleanly.
+Upgrade to React 19 when you can; the React components route everything cleanly.
 </details>
 
 <details>
@@ -460,7 +460,7 @@ Mock `@roxyapi/sdk` at the network boundary so unit tests do not hit the live AP
 <details>
 <summary><strong>What if I want to fork or own a component?</strong></summary>
 
-Use the shadcn registry. The registry drops the component source, a wrapper file, and a CSS theme bridge into your repo. Edit anything; the source is yours from that point.
+Use the shadcn registry. The registry drops the React component source and a CSS theme bridge into your repo. Edit anything; the source is yours from that point.
 
 ```bash
 npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json

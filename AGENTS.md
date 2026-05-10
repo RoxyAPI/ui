@@ -213,7 +213,7 @@ No field renames. No glue code. Use the decision tree above to pick the componen
 
 ### Pattern 6: Next.js RSC streaming
 
-Server fetches with the secret key, client renders with the wrapper. The API key never crosses the network.
+Server fetches with the secret key, client renders with the React component. The API key never crosses the network.
 
 ```tsx
 // app/page.tsx (Server Component)

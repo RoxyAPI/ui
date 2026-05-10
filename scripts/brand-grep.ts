@@ -133,6 +133,16 @@ const CATEGORY_A_PATTERNS: Pattern[] = [
 	{
 		category: 'A',
 		label: 'forbidden-phrase',
+		test: ci(/\b(react|typed)\s+wrappers?\b/i),
+	},
+	{
+		category: 'A',
+		label: 'forbidden-phrase',
+		test: ci(/\bwrapper\s+(file|around)\b/i),
+	},
+	{
+		category: 'A',
+		label: 'forbidden-phrase',
 		test: ci(/decoupled\s+release|coordinated\s+release/i),
 	},
 	{
@@ -288,6 +298,8 @@ const EXTRACTION_RES: RegExp[] = [
 	/jsdelivr\s+UMD/i,
 	/lazy[-\s]?load(?:s|ing)?/i,
 	/thin\s+(wrapper|shell|shells)/i,
+	/\b(react|typed)\s+wrappers?\b/i,
+	/\bwrapper\s+(file|around)\b/i,
 	/decoupled\s+release|coordinated\s+release/i,
 	/no\s+runtime\s+(dependency|deps)/i,
 	/\bforwardRef\b/,
