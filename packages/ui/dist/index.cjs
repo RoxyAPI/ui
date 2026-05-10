@@ -5807,7 +5807,6 @@ var RoxyTransitsTable = class extends import_lit25.LitElement {
 					<th scope="col">Orb</th>
 					<th scope="col">Status</th>
 					<th scope="col">Strength</th>
-					<th scope="col" class="interp">Interpretation</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -5816,26 +5815,28 @@ var RoxyTransitsTable = class extends import_lit25.LitElement {
       const nGlyph = PLANET_GLYPH[capitalize(a.natalPlanet)] ?? "";
       const natureClass = `nature-${(a.nature ?? "").toLowerCase()}`;
       const summary = a.interpretation?.summary ?? "";
-      const truncated = summary.length > 120 ? `${summary.slice(0, 120)}...` : summary;
-      return import_lit25.html`<tr>
-						<td>
-							<div class="arrow-cell">
-								<span class="glyph" aria-hidden="true">${tGlyph}</span>
-								${a.transitPlanet}
-							</div>
-						</td>
-						<td>
-							<div class="arrow-cell">
-								<span class="glyph" aria-hidden="true">${nGlyph}</span>
-								${a.natalPlanet}
-							</div>
-						</td>
-						<td class=${natureClass}>${(a.type ?? "").toLowerCase()}</td>
-						<td class="num">${formatNumber(a.orb, 2)}</td>
-						<td>${a.isApplying ? "Applying" : "Separating"}</td>
-						<td class="num">${formatNumber(a.strength, 1)}</td>
-						<td class="interp" title=${summary}>${truncated}</td>
-					</tr>`;
+      const rowClass = summary ? "aspect-row" : "aspect-row no-interp";
+      return import_lit25.html`<tr class=${rowClass}>
+							<td>
+								<div class="arrow-cell">
+									<span class="glyph" aria-hidden="true">${tGlyph}</span>
+									${a.transitPlanet}
+								</div>
+							</td>
+							<td>
+								<div class="arrow-cell">
+									<span class="glyph" aria-hidden="true">${nGlyph}</span>
+									${a.natalPlanet}
+								</div>
+							</td>
+							<td class=${natureClass}>${(a.type ?? "").toLowerCase()}</td>
+							<td class="num">${formatNumber(a.orb, 2)}</td>
+							<td>${a.isApplying ? "Applying" : "Separating"}</td>
+							<td class="num">${formatNumber(a.strength, 1)}</td>
+						</tr>
+						${summary ? import_lit25.html`<tr class="interp-row">
+										<td colspan="6">${summary}</td>
+									</tr>` : import_lit25.nothing}`;
     })}
 			</tbody>
 		</table>`;
@@ -5990,19 +5991,23 @@ RoxyTransitsTable.styles = [
 				white-space: nowrap;
 			}
 
-			.interp {
+			.interp-row td {
+				padding-top: 0;
+				padding-bottom: var(--roxy-space-sm, 0.5rem);
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
 				color: var(--roxy-secondary, #475569);
 				font-size: var(--roxy-text-xs, 0.75rem);
-				max-width: 22rem;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
+				line-height: 1.45;
 			}
 
-			@container (max-width: 600px) {
-				.interp {
-					display: none;
-				}
+			.aspect-row td {
+				border-bottom: none;
+				padding-bottom: 4px;
+			}
+
+			.aspect-row.no-interp td {
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				padding-bottom: var(--roxy-space-sm, 0.5rem);
 			}
 
 			.overflow-scroll {

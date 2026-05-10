@@ -3609,29 +3609,30 @@
 					<th scope="col">Orb</th>
 					<th scope="col">Status</th>
 					<th scope="col">Strength</th>
-					<th scope="col" class="interp">Interpretation</th>
 				</tr>
 			</thead>
 			<tbody>
-				${e.map(t=>{let s=L[C(t.transitPlanet)]??"",o=L[C(t.natalPlanet)]??"",l=`nature-${(t.nature??"").toLowerCase()}`,d=t.interpretation?.summary??"",p=d.length>120?`${d.slice(0,120)}...`:d;return a`<tr>
-						<td>
-							<div class="arrow-cell">
-								<span class="glyph" aria-hidden="true">${s}</span>
-								${t.transitPlanet}
-							</div>
-						</td>
-						<td>
-							<div class="arrow-cell">
-								<span class="glyph" aria-hidden="true">${o}</span>
-								${t.natalPlanet}
-							</div>
-						</td>
-						<td class=${l}>${(t.type??"").toLowerCase()}</td>
-						<td class="num">${w(t.orb,2)}</td>
-						<td>${t.isApplying?"Applying":"Separating"}</td>
-						<td class="num">${w(t.strength,1)}</td>
-						<td class="interp" title=${d}>${p}</td>
-					</tr>`})}
+				${e.map(t=>{let s=L[C(t.transitPlanet)]??"",o=L[C(t.natalPlanet)]??"",l=`nature-${(t.nature??"").toLowerCase()}`,d=t.interpretation?.summary??"";return a`<tr class=${d?"aspect-row":"aspect-row no-interp"}>
+							<td>
+								<div class="arrow-cell">
+									<span class="glyph" aria-hidden="true">${s}</span>
+									${t.transitPlanet}
+								</div>
+							</td>
+							<td>
+								<div class="arrow-cell">
+									<span class="glyph" aria-hidden="true">${o}</span>
+									${t.natalPlanet}
+								</div>
+							</td>
+							<td class=${l}>${(t.type??"").toLowerCase()}</td>
+							<td class="num">${w(t.orb,2)}</td>
+							<td>${t.isApplying?"Applying":"Separating"}</td>
+							<td class="num">${w(t.strength,1)}</td>
+						</tr>
+						${d?a`<tr class="interp-row">
+										<td colspan="6">${d}</td>
+									</tr>`:n}`})}
 			</tbody>
 		</table>`}};ie.styles=[b,x`
 			.wrap {
@@ -3780,19 +3781,23 @@
 				white-space: nowrap;
 			}
 
-			.interp {
+			.interp-row td {
+				padding-top: 0;
+				padding-bottom: var(--roxy-space-sm, 0.5rem);
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
 				color: var(--roxy-secondary, #475569);
 				font-size: var(--roxy-text-xs, 0.75rem);
-				max-width: 22rem;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
+				line-height: 1.45;
 			}
 
-			@container (max-width: 600px) {
-				.interp {
-					display: none;
-				}
+			.aspect-row td {
+				border-bottom: none;
+				padding-bottom: 4px;
+			}
+
+			.aspect-row.no-interp td {
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				padding-bottom: var(--roxy-space-sm, 0.5rem);
 			}
 
 			.overflow-scroll {
