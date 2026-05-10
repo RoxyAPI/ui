@@ -24,6 +24,13 @@ test-results/
 .turbo/
 *.tsbuildinfo
 
+# Ad-hoc screenshots / attachments dropped at repo root by chat tools.
+# Real assets live under assets/ and are explicitly tracked.
+/image.png
+/screenshot*.png
+/*.tmp
+/*.log
+
 # Stale tsc declaration emit alongside source. tsc is configured to emit into
 # dist/, but past misconfig left .d.ts siblings of .ts files in src/. Ignore so
 # new emit drift never gets committed.
