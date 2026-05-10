@@ -336,7 +336,7 @@ export class RoxyTransitsTable extends LitElement {
 				const interp = a.interpretation;
 				const type = (a.type ?? '').toLowerCase();
 				const status = a.isApplying ? 'Applying' : 'Separating';
-				return html`<details class="aspect-card" role="listitem" ?open=${idx === 0}>
+				return html`<details class="aspect-card" role="listitem" name="transit-aspects" ?open=${idx === 0}>
 					<summary>
 						<span aria-hidden="true">${tGlyph}</span>
 						${a.transitPlanet}

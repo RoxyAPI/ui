@@ -385,7 +385,7 @@ var RoxyNatalChart = class extends LitElement {
       const interp = p.interpretation;
       const glyph = PLANET_GLYPH[capitalize(p.name)] ?? "";
       const deg = formatNumber(p.degree ?? 0, 1);
-      return html`<details class="interp-card" ?open=${idx === 0}>
+      return html`<details class="interp-card" name="natal-planet-readings" ?open=${idx === 0}>
 					<summary>${glyph} ${p.name} <small>${p.sign ?? ""} ${deg}</small></summary>
 					<div class="interp-body">
 						${interp.summary ? html`<p class="interp-summary">${interp.summary}</p>` : nothing}

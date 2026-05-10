@@ -3965,7 +3965,7 @@ var RoxyNatalChart = class extends LitElement16 {
       const interp = p.interpretation;
       const glyph = PLANET_GLYPH[capitalize(p.name)] ?? "";
       const deg = formatNumber(p.degree ?? 0, 1);
-      return html16`<details class="interp-card" ?open=${idx === 0}>
+      return html16`<details class="interp-card" name="natal-planet-readings" ?open=${idx === 0}>
 					<summary>${glyph} ${p.name} <small>${p.sign ?? ""} ${deg}</small></summary>
 					<div class="interp-body">
 						${interp.summary ? html16`<p class="interp-summary">${interp.summary}</p>` : nothing17}
@@ -5756,7 +5756,7 @@ var RoxyTransitsTable = class extends LitElement23 {
       const interp = a.interpretation;
       const type = (a.type ?? "").toLowerCase();
       const status = a.isApplying ? "Applying" : "Separating";
-      return html23`<details class="aspect-card" role="listitem" ?open=${idx === 0}>
+      return html23`<details class="aspect-card" role="listitem" name="transit-aspects" ?open=${idx === 0}>
 					<summary>
 						<span aria-hidden="true">${tGlyph}</span>
 						${a.transitPlanet}

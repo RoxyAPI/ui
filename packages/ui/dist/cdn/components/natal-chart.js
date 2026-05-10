@@ -171,7 +171,7 @@
 					</div>`:c}
 		</div>`}renderInterpretations(){let e=this.getPlanets().filter(r=>r.interpretation);return e.length===0?c:m`<section class="interpretations">
 			<h3>Planet readings</h3>
-			${e.map((r,s)=>{let i=r.interpretation,o=Y[k(r.name)]??"",l=dt(r.degree??0,1);return m`<details class="interp-card" ?open=${s===0}>
+			${e.map((r,s)=>{let i=r.interpretation,o=Y[k(r.name)]??"",l=dt(r.degree??0,1);return m`<details class="interp-card" name="natal-planet-readings" ?open=${s===0}>
 					<summary>${o} ${r.name} <small>${r.sign??""} ${l}</small></summary>
 					<div class="interp-body">
 						${i.summary?m`<p class="interp-summary">${i.summary}</p>`:c}

@@ -2294,7 +2294,7 @@
 					</div>`:n}
 		</div>`}renderInterpretations(){let e=this.getPlanets().filter(r=>r.interpretation);return e.length===0?n:t`<section class="interpretations">
 			<h3>Planet readings</h3>
-			${e.map((r,s)=>{let o=r.interpretation,l=L[C(r.name)]??"",d=w(r.degree??0,1);return t`<details class="interp-card" ?open=${s===0}>
+			${e.map((r,s)=>{let o=r.interpretation,l=L[C(r.name)]??"",d=w(r.degree??0,1);return t`<details class="interp-card" name="natal-planet-readings" ?open=${s===0}>
 					<summary>${l} ${r.name} <small>${r.sign??""} ${d}</small></summary>
 					<div class="interp-body">
 						${o.summary?t`<p class="interp-summary">${o.summary}</p>`:n}
@@ -3601,7 +3601,7 @@
 					</tr>`})}
 			</tbody>
 		</table>`}renderAspectsList(e){return t`<div role="list" aria-label="Transit aspects">
-			${e.map((r,s)=>{let o=L[C(r.transitPlanet)]??"",l=L[C(r.natalPlanet)]??"",d=(r.nature??"neutral").toLowerCase(),c=r.interpretation,m=(r.type??"").toLowerCase(),h=r.isApplying?"Applying":"Separating";return t`<details class="aspect-card" role="listitem" ?open=${s===0}>
+			${e.map((r,s)=>{let o=L[C(r.transitPlanet)]??"",l=L[C(r.natalPlanet)]??"",d=(r.nature??"neutral").toLowerCase(),c=r.interpretation,m=(r.type??"").toLowerCase(),h=r.isApplying?"Applying":"Separating";return t`<details class="aspect-card" role="listitem" name="transit-aspects" ?open=${s===0}>
 					<summary>
 						<span aria-hidden="true">${o}</span>
 						${r.transitPlanet}

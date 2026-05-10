@@ -148,7 +148,7 @@
 					</tr>`})}
 			</tbody>
 		</table>`}renderAspectsList(e){return u`<div role="list" aria-label="Transit aspects">
-			${e.map((r,o)=>{let i=V[O(r.transitPlanet)]??"",n=V[O(r.natalPlanet)]??"",l=(r.nature??"neutral").toLowerCase(),a=r.interpretation,d=(r.type??"").toLowerCase(),h=r.isApplying?"Applying":"Separating";return u`<details class="aspect-card" role="listitem" ?open=${o===0}>
+			${e.map((r,o)=>{let i=V[O(r.transitPlanet)]??"",n=V[O(r.natalPlanet)]??"",l=(r.nature??"neutral").toLowerCase(),a=r.interpretation,d=(r.type??"").toLowerCase(),h=r.isApplying?"Applying":"Separating";return u`<details class="aspect-card" role="listitem" name="transit-aspects" ?open=${o===0}>
 					<summary>
 						<span aria-hidden="true">${i}</span>
 						${r.transitPlanet}
