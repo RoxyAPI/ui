@@ -4,6 +4,10 @@
   "homepage": "https://roxyapi.com/ui",
   "items": [
     {
+      "name": "theme",
+      "description": "Roxy UI theme variables and shadcn bridge"
+    },
+    {
       "name": "roxy-natal-chart",
       "description": "Western natal chart wheel for /astrology/natal-chart responses"
     },

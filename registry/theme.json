@@ -1,0 +1,48 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme",
+  "type": "registry:theme",
+  "title": "Roxy UI theme",
+  "description": "CSS variables driving every Roxy UI component. Maps the customer existing shadcn tokens (--background, --primary, --border, --radius) onto --roxy-* via CSS fallback chain. Override any --roxy-* directly to lock a specific surface.",
+  "cssVars": {
+    "light": {
+      "--roxy-bg": "#fafafa",
+      "--roxy-fg": "#0a0a0a",
+      "--roxy-muted": "#71717a",
+      "--roxy-border": "#e4e4e7",
+      "--roxy-accent": "#f59e0b",
+      "--roxy-accent-fg": "#b45309",
+      "--roxy-success": "#16a34a",
+      "--roxy-warning": "#f59e0b",
+      "--roxy-danger": "#dc2626",
+      "--roxy-info": "#2563eb",
+      "--roxy-radius-md": "12px",
+      "--roxy-shadow-md": "0 4px 12px rgba(0,0,0,0.08)",
+      "--roxy-motion-duration": "200ms"
+    },
+    "dark": {
+      "--roxy-bg": "#0a0a0a",
+      "--roxy-fg": "#fafafa",
+      "--roxy-muted": "#a1a1aa",
+      "--roxy-border": "#27272a",
+      "--roxy-accent": "#fbbf24",
+      "--roxy-accent-fg": "#fde68a",
+      "--roxy-shadow-md": "0 4px 12px rgba(0,0,0,0.4)"
+    }
+  },
+  "css": {
+    "@layer base": {
+      ":root": {
+        "--roxy-bg": "var(--background, #fafafa)",
+        "--roxy-fg": "var(--foreground, #0a0a0a)",
+        "--roxy-muted": "var(--muted-foreground, #71717a)",
+        "--roxy-border": "var(--border, #e4e4e7)",
+        "--roxy-accent": "var(--primary, #f59e0b)",
+        "--roxy-accent-fg": "var(--primary-foreground, #b45309)",
+        "--roxy-success": "var(--chart-2, #16a34a)",
+        "--roxy-danger": "var(--destructive, #dc2626)",
+        "--roxy-radius-md": "var(--radius, 12px)"
+      }
+    }
+  }
+}
