@@ -1,6 +1,7 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { humanize } from '../utils/string.js';
 
 interface OpenApiSchemaRef {
 	$ref?: string;
@@ -485,13 +486,6 @@ export class RoxyEndpointForm extends LitElement {
 		}
 		return v;
 	}
-}
-
-function humanize(s: string): string {
-	return s
-		.replace(/[_-]+/g, ' ')
-		.replace(/([a-z])([A-Z])/g, '$1 $2')
-		.replace(/^\w/, (c) => c.toUpperCase());
 }
 
 declare global {

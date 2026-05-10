@@ -7,6 +7,7 @@ import type {
 	GetWeeklyHoroscopeResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { capitalize } from '../utils/string.js';
 
 type HoroscopeData =
 	| GetDailyHoroscopeResponse
@@ -290,10 +291,6 @@ export class RoxyHoroscopeCard extends LitElement {
 			})()}
 		</article>`;
 	}
-}
-
-function capitalize(s: string): string {
-	return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
 declare global {

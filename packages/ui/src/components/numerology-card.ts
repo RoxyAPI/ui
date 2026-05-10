@@ -7,6 +7,7 @@ import type {
 	GenerateNumerologyChartResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { humanize } from '../utils/string.js';
 
 type NumerologyData =
 	| CalculateLifePathResponse
@@ -235,13 +236,6 @@ function karmicDebtText(value: KarmicDebtMeaning | undefined): string {
 	return [value.description, value.challenge, value.resolution]
 		.filter(Boolean)
 		.join(' ');
-}
-
-function humanize(s: string): string {
-	return s
-		.replace(/[_-]+/g, ' ')
-		.replace(/([a-z])([A-Z])/g, '$1 $2')
-		.replace(/^\w/, (c) => c.toUpperCase());
 }
 
 declare global {

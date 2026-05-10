@@ -51,7 +51,25 @@ export function formatPercent(value: unknown, dp = 1): string {
 	return n ? `${n}%` : '';
 }
 
-export function formatLongitude(value: unknown): string {
-	if (typeof value !== 'number' || !Number.isFinite(value)) return '';
-	return `${formatNumber(value, 2)}°`;
+/**
+ * CSS class name per aspect type. Used by natal and synastry chart aspect
+ * lines so the same color encoding (harmonious vs challenging) applies in
+ * both wheels. Keys are lowercase canonical names, values are CSS class
+ * suffixes the chart components define in their `:host` styles.
+ */
+export const ASPECT_CLASS: Record<string, string> = {
+	conjunction: 'aspect-conjunction',
+	sextile: 'aspect-sextile',
+	square: 'aspect-square',
+	trine: 'aspect-trine',
+	opposition: 'aspect-opposition',
+};
+
+/**
+ * Normalize an aspect entry's `type` field to a lowercase, hyphen-separated
+ * canonical name (`SEMI_SEXTILE` → `semi-sextile`). Accepts any aspect-shaped
+ * object so both natal and synastry inter-aspect entries can share this.
+ */
+export function normalizeAspect(a: { type?: string }): string {
+	return (a.type ?? '').toLowerCase().replace(/_/g, '-');
 }

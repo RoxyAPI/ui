@@ -1,10 +1,15 @@
 import { css, html, LitElement, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
-import { formatNumber } from '../utils/format.js';
+import {
+	ASPECT_CLASS,
+	formatNumber,
+	normalizeAspect,
+} from '../utils/format.js';
+import { capitalize } from '../utils/string.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
 type AspectEntry = NatalChartResponse['aspects'][number];
@@ -245,21 +250,7 @@ export class RoxyNatalChart extends LitElement {
 	}
 
 	private renderSigns() {
-		const order = [
-			'Aries',
-			'Taurus',
-			'Gemini',
-			'Cancer',
-			'Leo',
-			'Virgo',
-			'Libra',
-			'Scorpio',
-			'Sagittarius',
-			'Capricorn',
-			'Aquarius',
-			'Pisces',
-		];
-		return order.map((sign, i) => {
+		return SIGNS_ORDER.map((sign, i) => {
 			const angle = this.toAngle(i * 30 + 15);
 			const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
 			return svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
@@ -317,23 +308,6 @@ export class RoxyNatalChart extends LitElement {
 			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${a.planet1} ${aspectName || ''} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
-}
-
-function capitalize(s: string): string {
-	if (!s) return '';
-	return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
-
-const ASPECT_CLASS: Record<string, string> = {
-	conjunction: 'aspect-conjunction',
-	sextile: 'aspect-sextile',
-	square: 'aspect-square',
-	trine: 'aspect-trine',
-	opposition: 'aspect-opposition',
-};
-
-function normalizeAspect(a: AspectEntry): string {
-	return (a.type ?? '').toLowerCase().replace(/_/g, '-');
 }
 
 declare global {
