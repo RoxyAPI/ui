@@ -25,11 +25,17 @@
 	 * with non-text use) keep --roxy-accent. */
 	--roxy-accent-fg: #b45309;
 
-	/* Color: status */
+	/* Color: status. The base value (success, warning, danger, info) is for
+	 * fills and tints. The -fg variant is darker so text on a light tint passes
+	 * WCAG AA (>= 4.5:1 on white). Use -fg whenever status color hits text. */
 	--roxy-success: #16a34a;
+	--roxy-success-fg: #166534;
 	--roxy-warning: #ea580c;
+	--roxy-warning-fg: #9a3412;
 	--roxy-danger: #dc2626;
+	--roxy-danger-fg: #991b1b;
 	--roxy-info: #0284c7;
+	--roxy-info-fg: #075985;
 
 	/* Color: surface */
 	--roxy-bg: #ffffff;
@@ -112,6 +118,34 @@
 	}
 }
 
+/* Light theme override — beats the @media (prefers-color-scheme: dark) block
+ * when the host explicitly opts back into light. Without this, a dark-mode OS
+ * pins the tokens to dark even after data-theme="light" is set. */
+:root[data-theme="light"],
+:host([data-theme="light"]),
+.light :host {
+	--roxy-primary: #0f172a;
+	--roxy-secondary: #475569;
+	--roxy-accent: #f59e0b;
+	--roxy-accent-fg: #b45309;
+
+	--roxy-success: #16a34a;
+	--roxy-warning: #ea580c;
+	--roxy-danger: #dc2626;
+	--roxy-info: #0284c7;
+
+	--roxy-bg: #ffffff;
+	--roxy-fg: #0a0a0a;
+	--roxy-muted: #71717a;
+	--roxy-border: #e4e4e7;
+	--roxy-ring: rgba(245, 158, 11, 0.4);
+
+	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+	--roxy-shadow-md:
+		0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+	--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.14);
+}
+
 /* Dark theme via host opt-in */
 :root[data-theme="dark"],
 :host([data-theme="dark"]),
@@ -122,9 +156,13 @@
 	--roxy-accent-fg: #fbbf24;
 
 	--roxy-success: #22c55e;
+	--roxy-success-fg: #86efac;
 	--roxy-warning: #fb923c;
+	--roxy-warning-fg: #fdba74;
 	--roxy-danger: #ef4444;
+	--roxy-danger-fg: #fca5a5;
 	--roxy-info: #38bdf8;
+	--roxy-info-fg: #7dd3fc;
 
 	--roxy-bg: #0a0a0a;
 	--roxy-fg: #fafafa;

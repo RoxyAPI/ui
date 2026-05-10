@@ -1,6 +1,6 @@
 {
 	"name": "@roxyapi/ui-monorepo",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"description": "Web component library for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, and more. One key, beautiful in 30 minutes.",
 	"workspaces": [
@@ -17,8 +17,12 @@
 		"build:registry": "bun run scripts/build-registry.ts",
 		"build:widgets": "bun run scripts/build-widgets.ts",
 		"docs:sync": "bun run scripts/sync-docs.ts",
+		"version:sync": "bun run scripts/sync-version.ts",
+		"manifest:sync": "bun run scripts/sync-manifest.ts",
 		"banner": "bun run scripts/generate-banner.ts",
 		"preview": "bun run scripts/preview.ts",
+		"screenshots": "bun run scripts/screenshots.ts",
+		"audit": "bun run scripts/audit.ts",
 		"typecheck": "tsc --noEmit",
 		"test": "bun test packages/ui/tests/utils.test.ts packages/ui/tests/components.test.ts --timeout 10000",
 		"test:e2e": "playwright test",
@@ -26,11 +30,12 @@
 		"postinstall": "bun run generate || true"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "^4.10.0",
 		"@biomejs/biome": "^2.4.9",
 		"@hey-api/client-fetch": "0.13.1",
 		"@hey-api/openapi-ts": "0.94.5",
 		"@playwright/test": "^1.49.0",
-		"@axe-core/playwright": "^4.10.0",
+		"@roxyapi/sdk": "^1.2.23",
 		"@types/bun": "^1.2.0",
 		"@types/node": "^22.10.0",
 		"@types/react": "^19.0.0",
@@ -39,6 +44,7 @@
 		"lefthook": "^2.1.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"sharp": "^0.34.5",
 		"tsup": "^8.5.1",
 		"typescript": "^5.7.0",
 		"vite": "^6.0.0"

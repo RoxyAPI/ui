@@ -22,6 +22,11 @@ export const PLANET_GLYPH: Record<string, string> = {
 	Lagna: 'La',
 	NorthNode: '☊',
 	SouthNode: '☋',
+	'North node': '☊',
+	'South node': '☋',
+	Chiron: '⚷',
+	Lilith: '⚸',
+	'Black moon lilith': '⚸',
 };
 
 export const PLANET_ABBR: Record<string, string> = {

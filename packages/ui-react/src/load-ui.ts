@@ -8,7 +8,7 @@ const CDN_BASE = "https://cdn.jsdelivr.net/npm/@roxyapi/ui@0/dist/cdn";
 
 let loaded: Promise<void> | null = null;
 
-export function ensureScriptLoaded(version: string = '0.1.0'): Promise<void> {
+export function ensureScriptLoaded(version: string = '0.1.1'): Promise<void> {
 	if (typeof document === 'undefined') return Promise.resolve();
 	if (loaded) return loaded;
 

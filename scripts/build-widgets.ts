@@ -14,9 +14,13 @@
  * Linktree, plain HTML). The pk_* + allowed_origins enforcement lives in
  * the main app and is a separate manual task.
  */
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
-const ROXY_UI_VERSION = '0.1.0';
+const ROXY_UI_VERSION = (
+	JSON.parse(await readFile('packages/ui/package.json', 'utf8')) as {
+		version: string;
+	}
+).version;
 
 const SCRIPT = `(function () {
 	'use strict';

@@ -33,29 +33,19 @@ export { RoxyTarotSpread } from './components/tarot-spread.js';
 // Vedic
 export { RoxyVedicKundli } from './components/vedic-kundli.js';
 
-export const ROXY_UI_VERSION = '0.1.0';
+import { ROXY_COMPONENTS, type RoxyComponentSlug } from './manifest.js';
 
-/** Component manifest used by the widgets auto-mount script and registry build. */
-export const ROXY_UI_COMPONENTS = [
-	'natal-chart',
-	'horoscope-card',
-	'synastry-chart',
-	'compatibility-card',
-	'moon-phase',
-	'vedic-kundli',
-	'panchang-table',
-	'dasha-timeline',
-	'dosha-card',
-	'guna-milan',
-	'kp-planets-table',
-	'numerology-card',
-	'tarot-card',
-	'tarot-spread',
-	'biorhythm-chart',
-	'hexagram',
-	'endpoint-form',
-	'location-search',
-	'data',
-] as const;
+export {
+	ROXY_COMPONENTS,
+	type RoxyComponent,
+	type RoxyComponentSlug,
+	type RoxyComponentTag,
+	type RoxyDomain,
+} from './manifest.js';
+export { ROXY_UI_VERSION } from './version.js';
 
-export type RoxyUIComponentName = (typeof ROXY_UI_COMPONENTS)[number];
+/** Slugs in declaration order. Kept for the auto-mount widgets script and downstream codegen. */
+export const ROXY_UI_COMPONENTS: readonly RoxyComponentSlug[] =
+	ROXY_COMPONENTS.map((c) => c.slug) as RoxyComponentSlug[];
+
+export type RoxyUIComponentName = RoxyComponentSlug;

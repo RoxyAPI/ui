@@ -9,29 +9,16 @@
  * release. ui-react releases only when the component list changes.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
 
-const COMPONENTS_FILE = 'packages/ui/src/index.ts';
 const OUT_DIR = 'packages/ui-react/src';
 
-const ROXY_UI_VERSION = '0.1.0';
+const ROXY_UI_VERSION = (
+	JSON.parse(await readFile('packages/ui/package.json', 'utf8')) as {
+		version: string;
+	}
+).version;
 const CDN_BASE = `https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION.split('.')[0]}/dist/cdn`;
-
-async function readComponentList(): Promise<string[]> {
-	const text = await readFile(COMPONENTS_FILE, 'utf8');
-	const match = text.match(/ROXY_UI_COMPONENTS\s*=\s*\[([\s\S]*?)\]/);
-	if (!match) throw new Error('Could not parse ROXY_UI_COMPONENTS');
-	return match[1]
-		.split(',')
-		.map((s) => s.trim().replace(/['"]/g, ''))
-		.filter(Boolean);
-}
-
-function pascalCase(name: string): string {
-	return name
-		.split('-')
-		.map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-		.join('');
-}
 
 const LOAD_UI_TS = `/**
  * Loads the matching component bundle on first mount. Idempotent across
@@ -77,20 +64,20 @@ export function ensureScriptLoaded(version: string = '${ROXY_UI_VERSION}'): Prom
 `;
 
 const COMPONENT_TEMPLATE = (
-	name: string,
+	slug: string,
 	pascal: string,
 ) => `import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
 
 type DivAttrs = React.HTMLAttributes<HTMLElement>;
 
-export interface Roxy${pascal}Props extends Omit<DivAttrs, 'children' | 'onSelect'> {
+export interface ${pascal}Props extends Omit<DivAttrs, 'children' | 'onSelect'> {
 	data?: unknown;
 	[attr: string]: unknown;
 }
 
-export const Roxy${pascal} = React.forwardRef<HTMLElement, Roxy${pascal}Props>(
-	function Roxy${pascal}({ data, ...rest }, ref) {
+export const ${pascal} = React.forwardRef<HTMLElement, ${pascal}Props>(
+	function ${pascal}({ data, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle(ref, () => internal.current as HTMLElement);
 		const [loaded, setLoaded] = React.useState(false);
@@ -111,14 +98,12 @@ export const Roxy${pascal} = React.forwardRef<HTMLElement, Roxy${pascal}Props>(
 			}
 		}, [data, loaded]);
 
-		return React.createElement('roxy-${name}', { ref: internal, ...rest });
+		return React.createElement('roxy-${slug}', { ref: internal, ...rest });
 	},
 );
 `;
 
 async function main() {
-	const components = await readComponentList();
-
 	await mkdir(OUT_DIR, { recursive: true });
 	await mkdir(`${OUT_DIR}/components`, { recursive: true });
 
@@ -127,19 +112,18 @@ async function main() {
 	const exportLines: string[] = [
 		`export { ensureScriptLoaded } from './load-ui.js';`,
 	];
-	for (const name of components) {
-		const pascal = `${pascalCase(name)}`;
+	for (const { slug, pascal } of ROXY_COMPONENTS) {
 		await writeFile(
-			`${OUT_DIR}/components/${name}.tsx`,
-			COMPONENT_TEMPLATE(name, pascal),
+			`${OUT_DIR}/components/${slug}.tsx`,
+			COMPONENT_TEMPLATE(slug, pascal),
 		);
-		exportLines.push(
-			`export { Roxy${pascal} } from './components/${name}.js';`,
-		);
+		exportLines.push(`export { ${pascal} } from './components/${slug}.js';`);
 	}
 
 	await writeFile(`${OUT_DIR}/index.ts`, `${exportLines.join('\n')}\n`);
-	console.log(`Generated React wrappers for ${components.length} components.`);
+	console.log(
+		`Generated React wrappers for ${ROXY_COMPONENTS.length} components.`,
+	);
 }
 
 main().catch((err) => {
