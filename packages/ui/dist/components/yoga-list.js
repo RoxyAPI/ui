@@ -99,34 +99,15 @@ var baseStyles = css`
 	}
 `;
 
-// packages/ui/src/utils/debounce.ts
-function debounce(fn, wait) {
-  let timer;
-  const debounced = ((...args) => {
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => {
-      timer = void 0;
-      fn(...args);
-    }, wait);
-  });
-  debounced.cancel = () => {
-    if (timer) {
-      clearTimeout(timer);
-      timer = void 0;
-    }
-  };
-  return debounced;
-}
-
 // packages/ui/src/components/yoga-list.ts
 var RoxyYogaList = class extends LitElement {
   constructor() {
     super(...arguments);
     this.data = null;
     this.filter = "";
-    this.handleInput = debounce((e) => {
+    this.handleInput = (e) => {
       this.filter = e.target.value;
-    }, 200);
+    };
   }
   renderQualityChip(quality) {
     const cls = `quality-chip quality-${quality}`;

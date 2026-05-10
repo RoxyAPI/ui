@@ -494,11 +494,11 @@ export class RoxyNatalChart extends LitElement {
 		if (planets.length === 0) return nothing;
 		return html`<section class="interpretations">
 			<h3>Planet readings</h3>
-			${planets.map((p) => {
+			${planets.map((p, idx) => {
 				const interp = p.interpretation!;
 				const glyph = PLANET_GLYPH[capitalize(p.name)] ?? '';
 				const deg = formatNumber(p.degree ?? 0, 1);
-				return html`<details class="interp-card">
+				return html`<details class="interp-card" ?open=${idx === 0}>
 					<summary>${glyph} ${p.name} <small>${p.sign ?? ''} ${deg}</small></summary>
 					<div class="interp-body">
 						${interp.summary ? html`<p class="interp-summary">${interp.summary}</p>` : nothing}

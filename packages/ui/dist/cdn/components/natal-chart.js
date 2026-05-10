@@ -171,12 +171,12 @@
 					</div>`:c}
 		</div>`}renderInterpretations(){let e=this.getPlanets().filter(r=>r.interpretation);return e.length===0?c:m`<section class="interpretations">
 			<h3>Planet readings</h3>
-			${e.map(r=>{let s=r.interpretation,i=Y[k(r.name)]??"",o=dt(r.degree??0,1);return m`<details class="interp-card">
-					<summary>${i} ${r.name} <small>${r.sign??""} ${o}</small></summary>
+			${e.map((r,s)=>{let i=r.interpretation,o=Y[k(r.name)]??"",l=dt(r.degree??0,1);return m`<details class="interp-card" ?open=${s===0}>
+					<summary>${o} ${r.name} <small>${r.sign??""} ${l}</small></summary>
 					<div class="interp-body">
-						${s.summary?m`<p class="interp-summary">${s.summary}</p>`:c}
-						${s.detailed?m`<p class="interp-detail">${s.detailed}</p>`:c}
-						${s.keywords?.length?m`<div class="interp-keywords">${s.keywords.map(l=>m`<span class="kw">${l}</span>`)}</div>`:c}
+						${i.summary?m`<p class="interp-summary">${i.summary}</p>`:c}
+						${i.detailed?m`<p class="interp-detail">${i.detailed}</p>`:c}
+						${i.keywords?.length?m`<div class="interp-keywords">${i.keywords.map(a=>m`<span class="kw">${a}</span>`)}</div>`:c}
 					</div>
 				</details>`})}
 		</section>`}renderAspects(e,r){let s=new Map;for(let i of e){if(typeof i.longitude!="number")continue;let o=k(i.name);o&&s.set(o,i.longitude)}return r.map(i=>{let o=s.get(k(i.planet1)),l=s.get(k(i.planet2));if(o===void 0||l===void 0)return c;let a=f(u,u,J-18,this.toAngle(o)),d=f(u,u,J-18,this.toAngle(l)),p=Ut(i),h=Lt[p]??"aspect-other",g=dt(i.orb,1);return E`<line class=${`aspect ${h}`} x1=${a.x} y1=${a.y} x2=${d.x} y2=${d.y}><title>${i.planet1} ${p||""} ${i.planet2}${g?` (orb ${g}\xB0)`:""}</title></line>`})}};b.styles=[Ot,N`

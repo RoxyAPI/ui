@@ -2,7 +2,6 @@ import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { GetYogaResponse, ListYogasResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { debounce } from '../utils/debounce.js';
 
 type YogaListData =
 	| ListYogasResponse
@@ -178,9 +177,9 @@ export class RoxyYogaList extends LitElement {
 	@state()
 	private filter = '';
 
-	private readonly handleInput = debounce((e: Event) => {
+	private readonly handleInput = (e: Event) => {
 		this.filter = (e.target as HTMLInputElement).value;
-	}, 200);
+	};
 
 	private renderQualityChip(quality: string) {
 		const cls = `quality-chip quality-${quality}`;

@@ -11,7 +11,7 @@ export declare class RoxyTransitsTable extends LitElement {
     render(): import("lit").TemplateResult<1>;
     private renderSummaryPills;
     private renderPlanetsTable;
-    private renderAspectsTable;
+    private renderAspectsList;
 }
 declare global {
     interface HTMLElementTagNameMap {

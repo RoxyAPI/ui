@@ -3961,11 +3961,11 @@ var RoxyNatalChart = class extends LitElement16 {
     if (planets.length === 0) return nothing17;
     return html16`<section class="interpretations">
 			<h3>Planet readings</h3>
-			${planets.map((p) => {
+			${planets.map((p, idx) => {
       const interp = p.interpretation;
       const glyph = PLANET_GLYPH[capitalize(p.name)] ?? "";
       const deg = formatNumber(p.degree ?? 0, 1);
-      return html16`<details class="interp-card">
+      return html16`<details class="interp-card" ?open=${idx === 0}>
 					<summary>${glyph} ${p.name} <small>${p.sign ?? ""} ${deg}</small></summary>
 					<div class="interp-body">
 						${interp.summary ? html16`<p class="interp-summary">${interp.summary}</p>` : nothing17}
@@ -5687,7 +5687,7 @@ var RoxyTransitsTable = class extends LitElement23 {
 			${transitAspects?.length ? html23`<div>
 						<p class="section-label">Transit aspects</p>
 						<div class="overflow-scroll">
-							${this.renderAspectsTable(transitAspects)}
+							${this.renderAspectsList(transitAspects)}
 						</div>
 					</div>` : nothing24}
 		</div>`;
@@ -5747,49 +5747,38 @@ var RoxyTransitsTable = class extends LitElement23 {
 			</tbody>
 		</table>`;
   }
-  renderAspectsTable(aspects) {
-    return html23`<table class="aspects-table">
-			<thead>
-				<tr>
-					<th scope="col">Transit Planet</th>
-					<th scope="col">Natal Planet</th>
-					<th scope="col">Type</th>
-					<th scope="col">Orb</th>
-					<th scope="col">Status</th>
-					<th scope="col">Strength</th>
-				</tr>
-			</thead>
-			<tbody>
-				${aspects.map((a) => {
+  renderAspectsList(aspects) {
+    return html23`<div role="list" aria-label="Transit aspects">
+			${aspects.map((a, idx) => {
       const tGlyph = PLANET_GLYPH[capitalize(a.transitPlanet)] ?? "";
       const nGlyph = PLANET_GLYPH[capitalize(a.natalPlanet)] ?? "";
-      const natureClass = `nature-${(a.nature ?? "").toLowerCase()}`;
-      const summary = a.interpretation?.summary ?? "";
-      const rowClass = summary ? "aspect-row" : "aspect-row no-interp";
-      return html23`<tr class=${rowClass}>
-							<td>
-								<div class="arrow-cell">
-									<span class="glyph" aria-hidden="true">${tGlyph}</span>
-									${a.transitPlanet}
-								</div>
-							</td>
-							<td>
-								<div class="arrow-cell">
-									<span class="glyph" aria-hidden="true">${nGlyph}</span>
-									${a.natalPlanet}
-								</div>
-							</td>
-							<td class=${natureClass}>${(a.type ?? "").toLowerCase()}</td>
-							<td class="num">${formatNumber(a.orb, 2)}</td>
-							<td>${a.isApplying ? "Applying" : "Separating"}</td>
-							<td class="num">${formatNumber(a.strength, 1)}</td>
-						</tr>
-						${summary ? html23`<tr class="interp-row">
-										<td colspan="6">${summary}</td>
-									</tr>` : nothing24}`;
+      const nature = (a.nature ?? "neutral").toLowerCase();
+      const interp = a.interpretation;
+      const type = (a.type ?? "").toLowerCase();
+      const status = a.isApplying ? "Applying" : "Separating";
+      return html23`<details class="aspect-card" role="listitem" ?open=${idx === 0}>
+					<summary>
+						<span aria-hidden="true">${tGlyph}</span>
+						${a.transitPlanet}
+						<span class="nature-badge ${nature}">${type}</span>
+						<span aria-hidden="true">${nGlyph}</span>
+						${a.natalPlanet}
+						<span class="meta">
+							${status} · orb ${formatNumber(a.orb, 2)}° · strength ${formatNumber(a.strength, 1)}
+						</span>
+					</summary>
+					<div class="interp-body">
+						${interp?.summary ? html23`<p>${interp.summary}</p>` : nothing24}
+						${interp?.impact ? html23`<p><strong>Impact:</strong> ${interp.impact}</p>` : nothing24}
+						${interp?.timing ? html23`<p><strong>Timing:</strong> ${interp.timing}</p>` : nothing24}
+						${interp?.guidance ? html23`<p><strong>Guidance:</strong> ${interp.guidance}</p>` : nothing24}
+						${interp?.keywords?.length ? html23`<div class="interp-keywords">
+										${interp.keywords.map((k) => html23`<span class="kw">${k}</span>`)}
+									</div>` : nothing24}
+					</div>
+				</details>`;
     })}
-			</tbody>
-		</table>`;
+		</div>`;
   }
 };
 RoxyTransitsTable.styles = [
@@ -5922,47 +5911,73 @@ RoxyTransitsTable.styles = [
 				color: var(--roxy-muted, #71717a);
 			}
 
-			.nature-harmonious {
-				color: var(--roxy-success-fg, #166534);
-			}
-
-			.nature-challenging {
-				color: var(--roxy-danger-fg, #991b1b);
-			}
-
-			.nature-neutral {
-				color: var(--roxy-muted, #71717a);
-			}
-
-			.arrow-cell {
-				display: inline-flex;
-				align-items: center;
-				gap: 4px;
-				white-space: nowrap;
-			}
-
-			.interp-row td {
-				padding-top: 0;
-				padding-bottom: var(--roxy-space-sm, 0.5rem);
-				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
-				color: var(--roxy-secondary, #475569);
-				font-size: var(--roxy-text-xs, 0.75rem);
-				line-height: 1.45;
-			}
-
-			.aspect-row td {
-				border-bottom: none;
-				padding-bottom: 4px;
-			}
-
-			.aspect-row.no-interp td {
-				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
-				padding-bottom: var(--roxy-space-sm, 0.5rem);
-			}
-
 			.overflow-scroll {
 				overflow-x: auto;
 				-webkit-overflow-scrolling: touch;
+			}
+
+			.aspect-card {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				margin-bottom: var(--roxy-space-xs, 0.25rem);
+			}
+			.aspect-card summary {
+				cursor: pointer;
+				font-weight: 500;
+				color: var(--roxy-fg, #0a0a0a);
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 0.5em;
+			}
+			.aspect-card summary .meta {
+				color: var(--roxy-muted, #71717a);
+				font-weight: 400;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				margin-left: auto;
+				font-variant-numeric: tabular-nums;
+			}
+			.aspect-card .interp-body {
+				margin-top: var(--roxy-space-xs, 0.25rem);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				line-height: 1.45;
+			}
+			.aspect-card .interp-body p {
+				margin: 0 0 var(--roxy-space-xs, 0.25rem);
+			}
+			.interp-keywords {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.25rem;
+				margin-top: 0.5rem;
+			}
+			.interp-keywords .kw {
+				padding: 1px 8px;
+				border-radius: 9999px;
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+				color: var(--roxy-accent-fg, #b45309);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.nature-badge {
+				display: inline-block;
+				padding: 1px 8px;
+				border-radius: 9999px;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: 600;
+			}
+			.nature-badge.harmonious {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
+				color: var(--roxy-success-fg, #166534);
+			}
+			.nature-badge.challenging {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
+				color: var(--roxy-danger-fg, #991b1b);
+			}
+			.nature-badge.neutral {
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
 			}
 		`
 ];
@@ -6092,9 +6107,9 @@ var RoxyYogaList = class extends LitElement25 {
     super(...arguments);
     this.data = null;
     this.filter = "";
-    this.handleInput = debounce((e) => {
+    this.handleInput = (e) => {
       this.filter = e.target.value;
-    }, 200);
+    };
   }
   renderQualityChip(quality) {
     const cls = `quality-chip quality-${quality}`;
