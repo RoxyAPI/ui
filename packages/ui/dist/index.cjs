@@ -6680,7 +6680,7 @@ var ROXY_COMPONENTS = [
 ];
 
 // packages/ui/src/version.ts
-var ROXY_UI_VERSION = "0.1.3";
+var ROXY_UI_VERSION = "0.2.0";
 
 // packages/ui/src/index.ts
 var ROXY_UI_COMPONENTS = ROXY_COMPONENTS.map((c) => c.slug);

@@ -38,7 +38,7 @@ function ensureScriptLoaded(version = "latest") {
   return loaded;
 }
 var load_ui_default = ensureScriptLoaded;
-var ROXY_UI_VERSION = "0.1.3";
+var ROXY_UI_VERSION = "0.2.0";
 export {
   ROXY_UI_VERSION,
   load_ui_default as default,
