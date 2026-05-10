@@ -124,6 +124,13 @@ export class RoxyHoroscopeCard extends LitElement {
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 
+			.compat-wrap {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
 			.compat {
 				display: flex;
 				flex-wrap: wrap;
