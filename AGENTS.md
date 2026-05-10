@@ -112,25 +112,33 @@ Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` f
 ### Pattern 2: React, with the typed SDK
 
 ```tsx
+'use client';
+
 import { createRoxy } from '@roxyapi/sdk';
-import { RoxyNatalChart, RoxyLocationSearch } from '@roxyapi/ui-react';
+import {
+	RoxyNatalChart,
+	RoxyLocationSearch,
+	type RoxyNatalChartProps,
+} from '@roxyapi/ui-react';
 import { useState } from 'react';
 
 const roxy = createRoxy(process.env.NEXT_PUBLIC_ROXY_API_KEY!);
 
 export function BirthChartView() {
-	const [chart, setChart] = useState(null);
+	const [chart, setChart] = useState<RoxyNatalChartProps['data']>(undefined);
 
-	const onLocationSelect = async (e: CustomEvent<{ latitude: number; longitude: number; timezone: number | string }>) => {
+	const onLocationSelect = async (e: CustomEvent<{ latitude?: number; longitude?: number; timezone?: number | string }>) => {
+		const { latitude, longitude, timezone } = e.detail;
+		if (latitude == null || longitude == null) return;
 		const { data } = await roxy.astrology.generateNatalChart({
-			body: { date: '1990-01-15', time: '14:30:00', ...e.detail },
+			body: { date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone },
 		});
 		setChart(data);
 	};
 
 	return (
 		<div>
-			<RoxyLocationSearch onroxy-location-select={onLocationSelect} />
+			<RoxyLocationSearch onRoxyLocationSelect={onLocationSelect} />
 			{chart && <RoxyNatalChart data={chart} />}
 		</div>
 	);

@@ -1,6 +1,5 @@
 import { LitElement } from 'lit';
 import type { NatalChartResponse } from '../types/index.js';
-import { longitudeToSignPosition } from '../utils/degree.js';
 /**
  * Western natal chart wheel. Renders the 12 zodiac signs, 12 houses, planet
  * markers, and aspect lines from a /astrology/natal-chart response.
@@ -27,5 +26,4 @@ declare global {
         'roxy-natal-chart': RoxyNatalChart;
     }
 }
-export { longitudeToSignPosition };
 //# sourceMappingURL=natal-chart.d.ts.map

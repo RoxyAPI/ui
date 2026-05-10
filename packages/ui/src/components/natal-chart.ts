@@ -341,6 +341,3 @@ declare global {
 		'roxy-natal-chart': RoxyNatalChart;
 	}
 }
-
-// Export for external use
-export { longitudeToSignPosition };

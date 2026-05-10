@@ -26,11 +26,11 @@ const args = [
 	'--eyebrow',
 	'Roxy UI',
 	'--title',
-	'Beautiful spiritual components in 30 minutes',
+	'Drop-in components for every RoxyAPI domain',
 	'--subtitle',
 	'npm install @roxyapi/ui',
 	'--foot',
-	'One key. Flat pricing.',
+	'MIT licensed. One API key.',
 	'--output',
 	OUTPUT,
 ];
