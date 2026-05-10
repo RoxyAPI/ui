@@ -4,17 +4,15 @@ name: Deploy demo to GitHub Pages
 # on each published release.
 
 on:
-  # Push trigger disabled until the pipeline is proven. Releases and manual
-  # dispatch still deploy. Uncomment the push block when ready.
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - 'apps/docs/**'
-  #     - 'packages/ui/src/**'
-  #     - 'packages/ui/dist/**'
-  #     - 'specs/openapi.json'
-  #     - 'scripts/build.ts'
-  #     - '.github/workflows/pages.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/docs/**'
+      - 'packages/ui/src/**'
+      - 'packages/ui/dist/**'
+      - 'specs/openapi.json'
+      - 'scripts/build.ts'
+      - '.github/workflows/pages.yml'
   release:
     types: [published]
   workflow_dispatch:

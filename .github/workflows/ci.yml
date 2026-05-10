@@ -1,10 +1,8 @@
 name: CI
 
 on:
-  # Push-to-main trigger disabled until the pipeline is proven. PR runs and
-  # manual dispatch keep the safety net during local iteration.
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
