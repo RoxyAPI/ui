@@ -27324,7 +27324,7 @@ export type ListCountriesErrors = {
 export type ListCountriesError = ListCountriesErrors[keyof ListCountriesErrors];
 export type ListCountriesResponses = {
     /**
-     * Alphabetically sorted list of all 227 countries with ISO codes and city counts
+     * Alphabetically sorted list of all countries with ISO codes and city counts
      */
     200: {
         /**

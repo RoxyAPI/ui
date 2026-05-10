@@ -55165,7 +55165,7 @@
           }
         ],
         "summary": "Search cities worldwide - Geocoding autocomplete with coordinates and timezone",
-        "description": "City autocomplete and geocoding search across 7,000+ locations in 227 countries. Returns geographic coordinates (latitude, longitude), IANA timezone, and DST-aware UTC offset for each match. Built for birth chart location pickers, horoscope apps, event scheduling, and any feature requiring place-to-coordinates resolution. Partial name matching with intelligent ranking: exact prefix matches first, then sorted by population for relevance. Covers all major cities in Europe, Americas, Asia, Africa, and Oceania.",
+        "description": "City autocomplete and geocoding search across 23,000+ locations in 240+ countries, including deep coverage of Indian tier-2 and tier-3 cities. Returns geographic coordinates (latitude, longitude), IANA timezone, and DST-aware UTC offset for each match. Built for birth chart location pickers, horoscope apps, event scheduling, and any feature requiring place-to-coordinates resolution. Partial name matching with intelligent ranking: exact prefix matches first, then sorted by population for relevance. Common alternate names like Bombay, Calcutta, Madras, and Banaras transparently resolve to their canonical entries.",
         "parameters": [
           {
             "schema": {
@@ -55528,8 +55528,8 @@
             "apiKey": []
           }
         ],
-        "summary": "List all 227 countries - ISO codes and city coverage",
-        "description": "Returns all 227 countries with ISO 3166-1 alpha-2 and alpha-3 codes, plus the number of searchable cities per country. Use this endpoint to build country dropdown menus, regional filters, or to check city coverage before querying. Sorted alphabetically by country name. Covers Europe, Americas, Asia, Middle East, Africa, and Oceania.",
+        "summary": "List all countries - ISO codes and city coverage",
+        "description": "Returns every country with ISO 3166-1 alpha-2 and alpha-3 codes, plus the number of searchable cities per country. Use this endpoint to build country dropdown menus, regional filters, or to check city coverage before querying. Sorted alphabetically by country name. Covers Europe, Americas, Asia, Middle East, Africa, and Oceania.",
         "parameters": [
           {
             "schema": {
@@ -55562,7 +55562,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Alphabetically sorted list of all 227 countries with ISO codes and city counts",
+            "description": "Alphabetically sorted list of all countries with ISO codes and city counts",
             "content": {
               "application/json": {
                 "schema": {
@@ -55570,7 +55570,7 @@
                   "properties": {
                     "total": {
                       "type": "number",
-                      "example": 227,
+                      "example": 240,
                       "description": "Total number of countries available."
                     },
                     "limit": {
