@@ -27210,7 +27210,7 @@ export type ListCountriesData = {
     path?: never;
     query?: {
         /**
-         * Maximum items to return per page. Range: 1-50, default 50.
+         * Maximum items to return per page. Range: 1-250, default 50.
          */
         limit?: number;
         /**
@@ -27373,7 +27373,7 @@ export type GetCitiesByCountryData = {
     };
     query?: {
         /**
-         * Maximum items to return per page. Range: 1-200, default 50.
+         * Maximum items to return per page. Range: 1-100, default 20.
          */
         limit?: number;
         /**

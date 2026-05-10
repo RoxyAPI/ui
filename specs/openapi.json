@@ -55535,13 +55535,13 @@
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 50,
+              "maximum": 250,
               "default": 50,
               "example": 50,
-              "description": "Maximum items to return per page. Range: 1-50, default 50."
+              "description": "Maximum items to return per page. Range: 1-250, default 50."
             },
             "required": false,
-            "description": "Maximum items to return per page. Range: 1-50, default 50.",
+            "description": "Maximum items to return per page. Range: 1-250, default 50.",
             "name": "limit",
             "in": "query"
           },
@@ -55869,13 +55869,13 @@
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 200,
-              "default": 50,
-              "example": 50,
-              "description": "Maximum items to return per page. Range: 1-200, default 50."
+              "maximum": 100,
+              "default": 20,
+              "example": 20,
+              "description": "Maximum items to return per page. Range: 1-100, default 20."
             },
             "required": false,
-            "description": "Maximum items to return per page. Range: 1-200, default 50.",
+            "description": "Maximum items to return per page. Range: 1-100, default 20.",
             "name": "limit",
             "in": "query"
           },

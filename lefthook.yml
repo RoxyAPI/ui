@@ -14,20 +14,12 @@ pre-commit:
       run: bun run typecheck
     build-and-stage-dist:
       glob: "packages/ui/src/**/*.{ts,css}"
-      # Build emits codegen across multiple paths. stage_fixed alone only
-      # restages files matching the glob; the build also writes to
-      # ui-react/src (codegen wrappers + load-ui), registry/ (shadcn entries),
-      # apps/docs/manifest.js (browser mirror). List every artifact path
-      # explicitly so the commit captures the full regenerated tree.
-      run: |
-        bun run build
-        git add packages/ui/dist \
-                packages/ui-react/dist \
-                packages/ui-react/src/components \
-                packages/ui-react/src/index.ts \
-                packages/ui-react/src/load-ui.ts \
-                registry \
-                apps/docs/manifest.js
+      # The build emits codegen to dist, packages/ui-react/src (wrappers +
+      # load-ui), registry, apps/docs/manifest.js. Stage every diff so the
+      # commit captures the full regenerated tree without leaving artifacts
+      # behind on disk. Per .gitignore, generated paths (apps/docs/dist,
+      # packages/ui/src/types) are skipped automatically.
+      run: bun run build && git add -A
 
 pre-push:
   parallel: false
