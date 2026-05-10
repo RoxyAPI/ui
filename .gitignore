@@ -4,11 +4,16 @@ node_modules/
 *.env.*
 .DS_Store
 *.log
-specs/openapi.json
+# specs/openapi.json is committed so the repo is self-contained, PR diffs
+# surface upstream API changes, and CI can verify the committed spec matches
+# the live one before a release goes out.
 packages/ui/src/types/
+
+# apps/docs/dist is mirrored from packages/ui/dist on each `bun run build`
+# so local preview at apps/docs/ matches the GitHub Pages layout exactly.
+apps/docs/dist/
 CLAUDE.md
-docs/todo.md
-PHASE_1_REPORT.md
+docs/*
 .vscode/settings.json
 playwright-report/
 test-results/

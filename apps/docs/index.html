@@ -3,197 +3,764 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Roxy UI Preview</title>
-	<link rel="stylesheet" href="/dist/styles/tokens.css">
+	<title>RoxyAPI UI · Astrology, Vedic, numerology, and tarot UI components for web apps</title>
+	<meta name="description" content="Open source MIT licensed UI component library for astrology APIs, Vedic astrology charts, numerology calculators, tarot readers, kundli, panchang, biorhythm, and I Ching. Drop-in design library for React, Next.js, Hono, Vue, Svelte, and vanilla HTML.">
+	<meta name="keywords" content="astrology UI components, vedic astrology charts, numerology calculator UI, tarot reader widget, kundli web component, panchang component, horoscope widget, design library astrology, open source astrology UI library, React astrology components, MCP astrology, AI agent astrology, birth chart web component, synastry chart widget">
+	<meta property="og:title" content="RoxyAPI UI · Drop-in components for astrology, Vedic, tarot, and numerology apps">
+	<meta property="og:description" content="The official MIT licensed UI design library for the RoxyAPI catalog. Astrology charts, Vedic kundli, panchang, tarot readers, numerology cards, biorhythm, I Ching. One script tag. Every domain.">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://roxyapi.github.io/ui/">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="canonical" href="https://roxyapi.github.io/ui/">
+
+	<link rel="stylesheet" href="./dist/styles/tokens.css">
 	<style>
+		* { box-sizing: border-box; }
+
 		body {
 			font-family: var(--roxy-font-sans, system-ui, sans-serif);
-			background: var(--roxy-bg, #fafafa);
-			color: var(--roxy-fg, #0a0a0a);
+			background: var(--roxy-bg);
+			color: var(--roxy-fg);
 			margin: 0;
-			padding: 24px;
+			min-height: 100vh;
+			line-height: 1.5;
+		}
+
+		.container {
+			width: 100%;
 			max-width: 1200px;
 			margin-inline: auto;
+			padding-inline: clamp(1rem, 4vw, 2rem);
 		}
-		h1 {
-			font-size: 2rem;
+
+		.stack > * + * { margin-top: var(--gap, 1rem); }
+
+		button { font: inherit; cursor: pointer; }
+
+		a { color: var(--roxy-accent-fg); text-underline-offset: 2px; }
+
+		code, pre { font-family: var(--roxy-font-mono, ui-monospace, monospace); }
+
+		.eyebrow {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.25rem 0.75rem;
+			border-radius: 9999px;
+			background: color-mix(in srgb, var(--roxy-accent) 14%, transparent);
+			color: var(--roxy-accent-fg);
+			font-size: 0.75rem;
 			font-weight: 600;
-			letter-spacing: -0.02em;
-			margin: 0 0 4px 0;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
 		}
-		h1 .light {
-			font-weight: 400;
-			color: var(--roxy-muted);
+
+		.hero {
+			padding-block: clamp(2rem, 6vw, 4rem) clamp(1rem, 2.5vw, 1.5rem);
 		}
-		header {
-			margin-bottom: 32px;
+		.hero h1 {
+			font-size: clamp(2rem, 5vw, 3.25rem);
+			font-weight: 700;
+			letter-spacing: -0.025em;
+			margin: 0.875rem 0 1rem;
+			line-height: 1.05;
 		}
-		header p {
-			color: var(--roxy-muted);
-			margin: 0;
-			font-size: 0.875rem;
-		}
-		.toggle {
-			margin-bottom: 24px;
-			display: flex;
-			gap: 8px;
-		}
-		.toggle button {
-			background: var(--roxy-bg);
-			border: 1px solid var(--roxy-border);
-			padding: 6px 12px;
-			border-radius: 8px;
-			cursor: pointer;
+		.hero h1 .light { font-weight: 400; color: var(--roxy-muted); }
+		.hero .lede {
+			font-size: clamp(1rem, 1.4vw, 1.125rem);
+			line-height: 1.55;
 			color: var(--roxy-fg);
-			font-family: inherit;
+			max-width: 60ch;
+			margin: 0 0 1.5rem;
+		}
+		.hero .actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.625rem;
+			align-items: center;
+			margin-bottom: 1rem;
+		}
+		.hero .meta-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem 1.25rem;
 			font-size: 0.875rem;
+			color: var(--roxy-muted);
 		}
-		.toggle button[aria-pressed="true"] {
-			background: #b45309;
+		.hero .meta-row a { color: var(--roxy-accent-fg); text-decoration: none; font-weight: 500; }
+		.hero .meta-row a:hover { text-decoration: underline; }
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+			padding: 0.5rem 0.9rem;
+			border-radius: 8px;
+			border: 1px solid transparent;
+			font-size: 0.875rem;
+			font-weight: 500;
+			text-decoration: none;
+			background: var(--roxy-fg);
+			color: var(--roxy-bg);
+			transition: opacity 150ms;
+		}
+		.btn:hover { opacity: 0.9; }
+		.btn--ghost {
+			background: transparent;
+			color: var(--roxy-fg);
+			border-color: var(--roxy-border);
+		}
+		.btn--ghost:hover { background: color-mix(in srgb, var(--roxy-border) 30%, transparent); }
+		.btn--accent {
+			background: var(--roxy-accent-fg);
 			color: white;
-			border-color: #b45309;
 		}
-		.grid {
+		.btn[aria-pressed="true"] {
+			background: var(--roxy-fg);
+			color: var(--roxy-bg);
+		}
+
+		.btn--xs {
+			padding: 0.3rem 0.625rem;
+			font-size: 0.75rem;
+			border-radius: 6px;
+		}
+
+		.toolbar {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1rem;
+			padding-block: 1rem;
+		}
+		.toolbar-group {
+			display: inline-flex;
+			gap: 0.375rem;
+			align-items: center;
+		}
+
+		.outcomes {
+			list-style: none;
+			padding: 0;
+			margin: 0;
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-			gap: 24px;
+			grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+			gap: 1rem 1.5rem;
 		}
-		section {
+		.outcomes li {
+			display: grid;
+			grid-template-columns: auto 1fr;
+			column-gap: 0.625rem;
+			row-gap: 0.125rem;
+		}
+		.outcomes .check {
+			grid-row: 1 / span 2;
+			align-self: start;
+			color: var(--roxy-accent-fg);
+			font-weight: 700;
+			font-size: 0.875rem;
+			line-height: 1.5;
+		}
+		.outcomes .heading {
+			font-weight: 600;
+			color: var(--roxy-fg);
+			font-size: 0.9375rem;
+			line-height: 1.3;
+		}
+		.outcomes .desc {
+			color: var(--roxy-muted);
+			font-size: 0.875rem;
+			line-height: 1.45;
+		}
+
+		.filter-tabs {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.375rem;
+			padding-block: 0.5rem 1rem;
+			border-bottom: 1px solid var(--roxy-border);
+			margin-bottom: 1.25rem;
+			overflow-x: auto;
+		}
+		.filter-tab {
+			padding: 0.4rem 0.85rem;
+			border-radius: 8px;
+			border: 1px solid transparent;
+			background: transparent;
+			color: var(--roxy-muted);
+			font-size: 0.875rem;
+			font-weight: 500;
+			white-space: nowrap;
+		}
+		.filter-tab:hover { color: var(--roxy-fg); }
+		.filter-tab[aria-pressed="true"] {
+			background: color-mix(in srgb, var(--roxy-fg) 8%, transparent);
+			color: var(--roxy-fg);
+			border-color: var(--roxy-border);
+		}
+		.filter-tab .count {
+			margin-left: 0.4rem;
+			padding: 0.05rem 0.4rem;
+			border-radius: 9999px;
+			background: color-mix(in srgb, var(--roxy-border) 80%, transparent);
+			color: var(--roxy-secondary);
+			font-size: 0.6875rem;
+			font-variant-numeric: tabular-nums;
+			font-weight: 600;
+		}
+
+		.demo-grid {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+			gap: 1.25rem;
+			padding-bottom: 2rem;
+		}
+		@media (min-width: 1024px) {
+			.demo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		}
+
+		.demo-card {
 			background: var(--roxy-bg);
 			border: 1px solid var(--roxy-border);
 			border-radius: 12px;
-			padding: 16px;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
 		}
-		section header {
-			margin: 0 0 12px;
-			padding: 0 0 8px;
+		.demo-card[hidden] { display: none; }
+		.demo-card > header {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 0.75rem;
+			padding: 1rem 1.25rem;
 			border-bottom: 1px solid var(--roxy-border);
+		}
+		.demo-card .title-block { min-width: 0; flex: 1; }
+		.demo-card .title-block h2 {
+			margin: 0;
+			font-size: 1rem;
+			font-weight: 600;
+			color: var(--roxy-fg);
+			line-height: 1.3;
+		}
+		.demo-card .title-block .seo-line {
+			margin: 0.25rem 0 0;
+			font-size: 0.8125rem;
+			color: var(--roxy-muted);
+			line-height: 1.4;
+		}
+		.demo-card .title-block .tag-name {
+			font-size: 0.75rem;
+			color: var(--roxy-muted);
+			margin-top: 0.375rem;
+			display: block;
+		}
+
+		.tab-toggle {
+			display: inline-flex;
+			background: color-mix(in srgb, var(--roxy-border) 30%, transparent);
+			border-radius: 8px;
+			padding: 2px;
+			gap: 2px;
+			flex-shrink: 0;
+		}
+		.tab-toggle button {
+			padding: 0.3rem 0.75rem;
+			border: 0;
+			background: transparent;
+			color: var(--roxy-muted);
+			font-size: 0.75rem;
+			font-weight: 500;
+			border-radius: 6px;
+		}
+		.tab-toggle button[aria-selected="true"] {
+			background: var(--roxy-bg);
+			color: var(--roxy-fg);
+			box-shadow: var(--roxy-shadow-sm);
+		}
+
+		[role="tabpanel"][hidden] { display: none; }
+
+		.preview-pad {
+			padding: 1.5rem 1.25rem;
+			min-height: 200px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.code-pad {
+			padding: 1rem 1.25rem;
+			background: color-mix(in srgb, var(--roxy-border) 18%, transparent);
+		}
+		.code-block {
+			position: relative;
+			background: var(--roxy-bg);
+			border: 1px solid var(--roxy-border);
+			border-radius: 8px;
+			overflow: hidden;
+		}
+		.code-block pre {
+			margin: 0;
+			padding: 0.875rem 1rem 0.875rem;
+			font-size: 0.78125rem;
+			line-height: 1.55;
+			overflow-x: auto;
+			color: var(--roxy-fg);
+		}
+		.copy-btn {
+			position: absolute;
+			top: 0.5rem;
+			right: 0.5rem;
+			padding: 0.25rem 0.5rem;
+			border-radius: 5px;
+			border: 1px solid var(--roxy-border);
+			background: var(--roxy-bg);
+			color: var(--roxy-muted);
+			font-size: 0.6875rem;
+			font-weight: 500;
+		}
+		.copy-btn:hover { color: var(--roxy-fg); border-color: var(--roxy-fg); }
+
+		.quickstart {
+			background: color-mix(in srgb, var(--roxy-border) 14%, transparent);
+			border: 1px solid var(--roxy-border);
+			border-radius: 12px;
+			padding: 1.25rem;
+			margin-block: 1rem;
+		}
+		.quickstart summary {
+			font-size: 0.875rem;
+			font-weight: 600;
+			cursor: pointer;
+			list-style: none;
+			color: var(--roxy-fg);
+		}
+		.quickstart summary::after {
+			content: '+';
+			float: right;
+			color: var(--roxy-muted);
+			font-weight: 400;
+			margin-left: 1rem;
+		}
+		.quickstart[open] summary::after { content: '−'; }
+		.quickstart .code-block { margin-top: 1rem; }
+
+		dialog {
+			border: 1px solid var(--roxy-border);
+			border-radius: 12px;
+			padding: 0;
+			background: var(--roxy-bg);
+			color: var(--roxy-fg);
+			box-shadow: var(--roxy-shadow-lg);
+			max-width: 600px;
+			width: calc(100vw - 2rem);
+			max-height: calc(100vh - 2rem);
+			overflow: auto;
+		}
+		dialog::backdrop { background: rgba(0, 0, 0, 0.4); }
+		dialog header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 1rem 1.25rem;
+			border-bottom: 1px solid var(--roxy-border);
+		}
+		dialog header h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+		dialog header button {
+			background: transparent;
+			border: 0;
+			font-size: 1.5rem;
+			color: var(--roxy-muted);
+			padding: 0;
+			width: 28px;
+			height: 28px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+		dialog section { padding: 1.25rem; }
+		dialog footer { padding: 1rem 1.25rem; border-top: 1px solid var(--roxy-border); display: flex; justify-content: flex-end; gap: 0.5rem; }
+		.swatch-row {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+			gap: 0.5rem 1rem;
+		}
+		.mode-tabs {
+			display: inline-flex;
+			background: color-mix(in srgb, var(--roxy-border) 30%, transparent);
+			border-radius: 8px;
+			padding: 2px;
+			gap: 2px;
+			margin-bottom: 0.875rem;
+		}
+		.mode-tabs button {
+			padding: 0.3rem 0.85rem;
+			border: 0;
+			background: transparent;
+			color: var(--roxy-muted);
+			font-size: 0.8125rem;
+			font-weight: 500;
+			border-radius: 6px;
+		}
+		.mode-tabs button[aria-selected="true"] {
+			background: var(--roxy-bg);
+			color: var(--roxy-fg);
+			box-shadow: var(--roxy-shadow-sm);
+		}
+		.swatch-row label {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-size: 0.8125rem;
+			color: var(--roxy-fg);
+		}
+		.swatch-row input[type="color"] {
+			-webkit-appearance: none;
+			appearance: none;
+			width: 26px;
+			height: 26px;
+			border: 1px solid var(--roxy-border);
+			border-radius: 6px;
+			padding: 0;
+			background: transparent;
+			cursor: pointer;
+		}
+		.swatch-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+		.swatch-row input[type="color"]::-webkit-color-swatch { border: none; border-radius: 5px; }
+
+		.faq {
+			margin-block: 2rem;
+			padding-block: 1.5rem;
+			border-top: 1px solid var(--roxy-border);
+		}
+		.faq h2 {
+			font-size: 1.5rem;
+			font-weight: 700;
+			letter-spacing: -0.02em;
+			margin: 0 0 1rem;
+		}
+		.faq details {
+			border-bottom: 1px solid var(--roxy-border);
+			padding-block: 0.875rem;
+		}
+		.faq summary {
+			cursor: pointer;
+			font-weight: 500;
+			list-style: none;
+			color: var(--roxy-fg);
 			display: flex;
 			justify-content: space-between;
-			align-items: center;
+			gap: 1rem;
 		}
-		section h2 {
-			margin: 0;
-			font-size: 0.75rem;
+		.faq summary::after { content: '+'; color: var(--roxy-muted); }
+		.faq details[open] summary::after { content: '−'; }
+		.faq details > p {
+			margin: 0.625rem 0 0;
+			color: var(--roxy-secondary);
+			font-size: 0.9375rem;
+			line-height: 1.55;
+		}
+
+		footer.site-footer {
+			border-top: 1px solid var(--roxy-border);
+			padding-block: 1.5rem 2.5rem;
 			color: var(--roxy-muted);
-			text-transform: uppercase;
-			letter-spacing: 0.06em;
-			font-weight: 600;
+			font-size: 0.8125rem;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem 1.5rem;
+			justify-content: space-between;
 		}
-		section .tag {
-			font-family: var(--roxy-font-mono, monospace);
-			font-size: 0.75rem;
-			color: var(--roxy-muted);
-		}
-		[data-theme="dark"] {
-			background: #0a0a0a;
-		}
+		footer.site-footer a { color: var(--roxy-accent-fg); text-decoration: underline; text-underline-offset: 2px; }
 	</style>
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@graph": [
+			{
+				"@type": "Organization",
+				"@id": "https://roxyapi.com/#organization",
+				"name": "RoxyAPI",
+				"url": "https://roxyapi.com",
+				"logo": "https://roxyapi.com/logo.png",
+				"description": "Multi-domain spiritual intelligence API. Astrology, Vedic, numerology, tarot, biorhythm, I Ching, dreams, crystals, angel numbers, location. One key, every domain, remote MCP.",
+				"sameAs": [
+					"https://github.com/RoxyAPI",
+					"https://www.npmjs.com/org/roxyapi",
+					"https://roxyapi.github.io/ui/"
+				]
+			},
+			{
+				"@type": "SoftwareApplication",
+				"@id": "https://roxyapi.github.io/ui/#software",
+				"name": "RoxyAPI UI",
+				"alternateName": ["@roxyapi/ui", "@roxyapi/ui-react"],
+				"url": "https://roxyapi.github.io/ui/",
+				"downloadUrl": "https://www.npmjs.com/package/@roxyapi/ui",
+				"codeRepository": "https://github.com/RoxyAPI/ui",
+				"applicationCategory": "DeveloperApplication",
+				"applicationSubCategory": "Component Library",
+				"operatingSystem": "Web",
+				"description": "Open source MIT licensed UI component library for the RoxyAPI catalog. Drop-in charts, tables, cards, and forms for astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching. Works with React, Next.js, Hono, Vue, Svelte, vanilla HTML, and shadcn registry.",
+				"license": "https://opensource.org/licenses/MIT",
+				"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+				"author": { "@id": "https://roxyapi.com/#organization" },
+				"publisher": { "@id": "https://roxyapi.com/#organization" },
+				"softwareRequirements": "Modern browser with ES modules support",
+				"programmingLanguage": ["TypeScript", "JavaScript"],
+				"keywords": "astrology UI components, vedic astrology widgets, tarot card component, numerology calculator UI, kundli chart web component, panchang widget, MIT licensed astrology library, shadcn registry astrology"
+			}
+		]
+	}
+	</script>
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		"mainEntity": [
+			{
+				"@type": "Question",
+				"name": "Is there a free open source UI component library for astrology, tarot, and numerology apps?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes. RoxyAPI UI is the official MIT licensed component library for insight and prediction apps. It ships drop-in web components for astrology natal charts, Vedic kundli, panchang tables, dasha timelines, tarot daily cards and spreads, numerology life path cards, biorhythm, and I Ching hexagrams. Distributed via npm as @roxyapi/ui and @roxyapi/ui-react, plus a single script tag from jsDelivr for vanilla HTML."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "How do I add an astrology chart to my website?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Three lines. Drop the @roxyapi/ui script tag from jsDelivr, add a roxy-natal-chart custom element, then call createRoxy from @roxyapi/sdk and assign the response to the element's data property. Works in plain HTML, WordPress, Shopify themes that allow custom code, and any modern browser with no build step."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Does this work with React, Next.js, Vue, and Svelte?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes. The @roxyapi/ui-react package gives typed React wrappers for every component. Vue, Svelte, Angular, Solid, Astro, Qwik, and other frameworks consume the same Lit web components natively without a wrapper. The same components ship to every framework via the catalog at @roxyapi/ui."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Can I use RoxyAPI UI with shadcn in a Next.js or React app?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes. RoxyAPI UI ships a shadcn registry alongside the npm packages. Install any component the same way as shadcn primitives: npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/natal-chart.json. The component source lands in your project for full ownership and Tailwind-friendly theming. To skip the URL on every install, add a namespace to your components.json — registries: { '@roxyapi': 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/{name}.json' } — then use npx shadcn@latest add @roxyapi/natal-chart. The shadcn registry approach pairs cleanly with shadcn's own button, card, dialog primitives in the same Next.js or React app."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Can I use this with AI agents and MCP?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes. RoxyAPI ships a remote MCP server per domain (Streamable HTTP, no local setup) — see roxyapi.com/docs/mcp. Your AI agent receives JSON tool-call responses; the same JSON shape feeds straight into the matching @roxyapi/ui component as the data prop. Render birth charts, kundli, tarot spreads, and biorhythm directly from Claude Code, Cursor, ChatGPT, or any MCP-compatible client."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Is RoxyAPI UI free?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "The components are MIT licensed and free to use, modify, and redistribute. Rendering live data requires a RoxyAPI key (free tier available, paid plans start at $39 per month for ten domains)."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "How do I theme RoxyAPI UI components?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Override CSS custom properties on the root or per element. About 30 design tokens cover color, typography, spacing, radius, shadow, and motion. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
+				}
+			}
+		]
+	}
+	</script>
 </head>
-<body data-theme="light">
-	<header>
-		<h1><span class="light">Roxy</span>UI preview</h1>
-		<p>Every component rendered with sample data. Used by Playwright e2e and for manual eyeballing.</p>
-	</header>
+<body>
+	<main class="container">
+		<section class="hero">
+			<span class="eyebrow">Open Source · MIT · UI Components</span>
+			<h1><span class="light">RoxyAPI</span> UI</h1>
+			<p class="lede">The open source design library for insight apps. Drop-in <strong>UI components</strong> for <strong>astrology</strong>, <strong>Vedic astrology charts</strong>, <strong>numerology</strong>, <strong>tarot readers</strong>, kundli, panchang, biorhythm, and I Ching. Works in React, Next.js, Hono SSR, Vue, Svelte, and vanilla HTML. Production-ready in 30 minutes.</p>
 
-	<div class="toggle">
-		<button id="theme-light" type="button" aria-pressed="true">Light</button>
-		<button id="theme-dark" type="button" aria-pressed="false">Dark</button>
-	</div>
+			<div class="actions">
+				<button type="button" class="btn" data-copy-text="npm install @roxyapi/ui">
+					<span aria-hidden="true">$</span>
+					<span data-copy-label>npm install @roxyapi/ui</span>
+				</button>
+				<button type="button" class="btn btn--ghost" data-copy-text="npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/natal-chart.json">
+					<span data-copy-label>shadcn add</span>
+				</button>
+				<a class="btn btn--ghost" href="https://roxyapi.com/pricing" target="_blank" rel="noopener">Get an API key</a>
+				<a class="btn btn--ghost" href="https://github.com/RoxyAPI/ui" target="_blank" rel="noopener">GitHub</a>
+			</div>
 
-	<main class="grid">
-		<section>
-			<header><h2>Western · natal chart</h2><span class="tag">roxy-natal-chart</span></header>
-			<roxy-natal-chart id="natal"></roxy-natal-chart>
+			<div class="meta-row">
+				<a href="https://roxyapi.com" target="_blank" rel="noopener">RoxyAPI.com</a>
+				<a href="https://roxyapi.com/docs" target="_blank" rel="noopener">Docs</a>
+				<a href="https://www.npmjs.com/package/@roxyapi/ui-react" target="_blank" rel="noopener">@roxyapi/ui-react</a>
+				<a href="https://www.npmjs.com/package/@roxyapi/sdk" target="_blank" rel="noopener">@roxyapi/sdk</a>
+			</div>
+
+			<details class="quickstart">
+				<summary>Quick start · vanilla HTML</summary>
+				<div class="code-block">
+					<button type="button" class="copy-btn" data-copy-target="hero-snippet">Copy</button>
+					<pre><code id="hero-snippet">&lt;script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer&gt;&lt;/script&gt;
+&lt;roxy-natal-chart id="chart"&gt;&lt;/roxy-natal-chart&gt;
+&lt;script type="module"&gt;
+  import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
+  const roxy = createRoxy('YOUR_PUBLISHABLE_KEY');
+  const { data } = await roxy.astrology.generateNatalChart({
+    body: { date: '1990-01-15', time: '14:30:00', latitude: 19.076, longitude: 72.877, timezone: 'Asia/Kolkata' },
+  });
+  document.getElementById('chart').data = data;
+&lt;/script&gt;</code></pre>
+				</div>
+			</details>
 		</section>
-		<section>
-			<header><h2>Western · horoscope</h2><span class="tag">roxy-horoscope-card</span></header>
-			<roxy-horoscope-card id="horoscope" period="daily"></roxy-horoscope-card>
+
+		<div class="toolbar">
+			<div class="toolbar-group" role="group" aria-label="Theme">
+				<button id="theme-light" type="button" class="btn btn--xs btn--ghost" aria-pressed="true">Light</button>
+				<button id="theme-dark" type="button" class="btn btn--xs btn--ghost" aria-pressed="false">Dark</button>
+			</div>
+			<button type="button" class="btn btn--xs btn--ghost" data-dialog-open="customize-dialog">Customize colors</button>
+		</div>
+
+		<nav class="filter-tabs" id="filter-tabs" role="group" aria-label="Filter components by domain"></nav>
+
+		<div class="demo-grid" id="demo-grid"></div>
+
+		<section aria-label="Why use RoxyAPI UI" style="border-top: 1px solid var(--roxy-border); padding-block: 1.5rem; margin-block: 1.5rem 0;">
+			<ul class="outcomes">
+				<li>
+					<span class="check" aria-hidden="true">✓</span>
+					<span class="heading">Astrology, Vedic, numerology, tarot</span>
+					<span class="desc">Every domain shipped in one component library</span>
+				</li>
+				<li>
+					<span class="check" aria-hidden="true">✓</span>
+					<span class="heading">Every RoxyAPI domain, one API key</span>
+					<span class="desc">30 minutes to first render in your app</span>
+				</li>
+				<li>
+					<span class="check" aria-hidden="true">✓</span>
+					<span class="heading">MCP and AI agent ready</span>
+					<span class="desc">Render straight from tool-call JSON responses</span>
+				</li>
+				<li>
+					<span class="check" aria-hidden="true">✓</span>
+					<span class="heading">MIT licensed</span>
+					<span class="desc">No AGPL, no copyleft, no ephemeris fees</span>
+				</li>
+			</ul>
 		</section>
-		<section>
-			<header><h2>Western · synastry</h2><span class="tag">roxy-synastry-chart</span></header>
-			<roxy-synastry-chart id="synastry"></roxy-synastry-chart>
+
+		<section aria-labelledby="install-title" style="border-top: 1px solid var(--roxy-border); padding-block: 1.5rem;">
+			<h2 id="install-title" style="margin: 0 0 0.75rem; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em;">Three ways to install</h2>
+			<p style="color: var(--roxy-muted); margin: 0 0 1rem; font-size: 0.9375rem;">Same web components, three distribution channels. Pick the one that fits your stack.</p>
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+				<article style="border: 1px solid var(--roxy-border); border-radius: 10px; padding: 1rem;">
+					<h3 style="margin: 0 0 0.375rem; font-size: 0.9375rem; font-weight: 600;">npm</h3>
+					<p style="margin: 0 0 0.625rem; font-size: 0.8125rem; color: var(--roxy-muted);">For React, Next.js, Hono, Vue, Svelte, Solid.</p>
+					<button type="button" class="btn btn--xs btn--ghost" data-copy-text="npm install @roxyapi/ui">
+						<span data-copy-label>npm install @roxyapi/ui</span>
+					</button>
+				</article>
+				<article style="border: 1px solid var(--roxy-border); border-radius: 10px; padding: 1rem;">
+					<h3 style="margin: 0 0 0.375rem; font-size: 0.9375rem; font-weight: 600;">jsDelivr</h3>
+					<p style="margin: 0 0 0.625rem; font-size: 0.8125rem; color: var(--roxy-muted);">For vanilla HTML, WordPress, Shopify, no-build sites.</p>
+					<button type="button" class="btn btn--xs btn--ghost" data-copy-text='<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer></script>'>
+						<span data-copy-label>script tag</span>
+					</button>
+				</article>
+				<article style="border: 1px solid var(--roxy-border); border-radius: 10px; padding: 1rem;">
+					<h3 style="margin: 0 0 0.375rem; font-size: 0.9375rem; font-weight: 600;">shadcn registry</h3>
+					<p style="margin: 0 0 0.625rem; font-size: 0.8125rem; color: var(--roxy-muted);">Drop-in components fork into your repo, theme freely.</p>
+					<button type="button" class="btn btn--xs btn--ghost" data-copy-text="npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/natal-chart.json">
+						<span data-copy-label>npx shadcn@latest add</span>
+					</button>
+				</article>
+			</div>
 		</section>
-		<section>
-			<header><h2>Cross · compatibility</h2><span class="tag">roxy-compatibility-card</span></header>
-			<roxy-compatibility-card id="compat" mode="astrology"></roxy-compatibility-card>
+
+		<section class="faq" aria-labelledby="faq-title">
+			<h2 id="faq-title">Frequently asked</h2>
+			<details>
+				<summary>Is there a free open source UI component library for astrology, tarot, and numerology apps?</summary>
+				<p>Yes. RoxyAPI UI is the official MIT licensed component library for insight and prediction apps. It ships drop-in web components for astrology natal charts, Vedic kundli, panchang tables, dasha timelines, tarot daily cards and spreads, numerology life path cards, biorhythm, and I Ching hexagrams.</p>
+			</details>
+			<details>
+				<summary>How do I add an astrology chart to my website?</summary>
+				<p>Three lines. Drop the @roxyapi/ui script tag from jsDelivr, add a roxy-natal-chart custom element, then call createRoxy from @roxyapi/sdk and assign the response to the element data property. Works in plain HTML, WordPress, and any modern browser with no build step.</p>
+			</details>
+			<details>
+				<summary>Does this work with React, Next.js, Vue, and Svelte?</summary>
+				<p>Yes. The <code>@roxyapi/ui-react</code> package ships typed React wrappers. Vue, Svelte, Angular, Solid, Astro, and Qwik consume the same Lit web components natively without a wrapper.</p>
+			</details>
+			<details>
+				<summary>Can I use RoxyAPI UI with shadcn in a Next.js or React app?</summary>
+				<p>Yes. Every component is published to a shadcn-compatible registry. Install with <code>npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/natal-chart.json</code> — the source lands in your repo for full ownership and Tailwind-friendly theming. Map a namespace in your <code>components.json</code> to skip the URL on every install:</p>
+				<pre style="background: color-mix(in srgb, var(--roxy-border) 25%, transparent); padding: 0.75rem; border-radius: 6px; font-size: 0.8125rem; overflow-x: auto;"><code>{
+  "registries": {
+    "@roxyapi": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/{name}.json"
+  }
+}</code></pre>
+				<p>Then <code>npx shadcn@latest add @roxyapi/natal-chart</code>. Pairs cleanly with shadcn's own button, card, and dialog primitives in the same app.</p>
+			</details>
+			<details>
+				<summary>Can I use this with AI agents and MCP?</summary>
+				<p>Yes. RoxyAPI ships a <a href="https://roxyapi.com/docs/mcp" target="_blank" rel="noopener">remote MCP server</a> per domain (Streamable HTTP, no local setup). The same JSON shape your agent receives over MCP feeds straight into the matching component data prop. See <a href="https://roxyapi.com/docs/mcp" target="_blank" rel="noopener">roxyapi.com/docs/mcp</a> for the full setup.</p>
+			</details>
+			<details>
+				<summary>How do I theme components?</summary>
+				<p>Override CSS custom properties on the root or per element. About 30 design tokens cover color, typography, spacing, radius, shadow, and motion. The Customize Colors panel above generates the override CSS for you.</p>
+			</details>
 		</section>
-		<section>
-			<header><h2>Western · moon phase</h2><span class="tag">roxy-moon-phase</span></header>
-			<roxy-moon-phase id="moon" mode="current"></roxy-moon-phase>
-		</section>
-		<section>
-			<header><h2>Vedic · kundli</h2><span class="tag">roxy-vedic-kundli</span></header>
-			<roxy-vedic-kundli id="kundli"></roxy-vedic-kundli>
-		</section>
-		<section>
-			<header><h2>Vedic · panchang</h2><span class="tag">roxy-panchang-table</span></header>
-			<roxy-panchang-table id="panchang" detail="detailed"></roxy-panchang-table>
-		</section>
-		<section>
-			<header><h2>Vedic · dasha timeline</h2><span class="tag">roxy-dasha-timeline</span></header>
-			<roxy-dasha-timeline id="dasha" period="major"></roxy-dasha-timeline>
-		</section>
-		<section>
-			<header><h2>Vedic · dosha</h2><span class="tag">roxy-dosha-card</span></header>
-			<roxy-dosha-card id="dosha" type="manglik"></roxy-dosha-card>
-		</section>
-		<section>
-			<header><h2>Vedic · guna milan</h2><span class="tag">roxy-guna-milan</span></header>
-			<roxy-guna-milan id="guna"></roxy-guna-milan>
-		</section>
-		<section>
-			<header><h2>Vedic · KP planets</h2><span class="tag">roxy-kp-planets-table</span></header>
-			<roxy-kp-planets-table id="kp"></roxy-kp-planets-table>
-		</section>
-		<section>
-			<header><h2>Numerology · life path</h2><span class="tag">roxy-numerology-card</span></header>
-			<roxy-numerology-card id="num" type="life-path"></roxy-numerology-card>
-		</section>
-		<section>
-			<header><h2>Tarot · daily card</h2><span class="tag">roxy-tarot-card</span></header>
-			<roxy-tarot-card id="tarot"></roxy-tarot-card>
-		</section>
-		<section>
-			<header><h2>Tarot · three-card spread</h2><span class="tag">roxy-tarot-spread</span></header>
-			<roxy-tarot-spread id="spread" spread="three-card"></roxy-tarot-spread>
-		</section>
-		<section>
-			<header><h2>Biorhythm · daily</h2><span class="tag">roxy-biorhythm-chart</span></header>
-			<roxy-biorhythm-chart id="bio" mode="daily"></roxy-biorhythm-chart>
-		</section>
-		<section>
-			<header><h2>I Ching · hexagram</h2><span class="tag">roxy-hexagram</span></header>
-			<roxy-hexagram id="hex"></roxy-hexagram>
-		</section>
-		<section>
-			<header><h2>Helper · location search</h2><span class="tag">roxy-location-search</span></header>
-			<roxy-location-search id="loc" placeholder="Try: Mumbai"></roxy-location-search>
-			<small style="color: var(--roxy-muted); font-size: 0.75rem;">Live calls roxyapi.com (no key needed for /location/search)</small>
-		</section>
-		<section>
-			<header><h2>Helper · endpoint form</h2><span class="tag">roxy-endpoint-form</span></header>
-			<roxy-endpoint-form id="form" data-endpoint="numerology/life-path" submit-label="Calculate"></roxy-endpoint-form>
-		</section>
-		<section>
-			<header><h2>Helper · generic data</h2><span class="tag">roxy-data</span></header>
-			<roxy-data id="data"></roxy-data>
-		</section>
+
+		<dialog id="customize-dialog" aria-labelledby="customize-title">
+			<header>
+				<h2 id="customize-title">Customize colors</h2>
+				<button type="button" aria-label="Close" data-dialog-close>×</button>
+			</header>
+			<section>
+				<p style="color: var(--roxy-muted); font-size: 0.875rem; margin: 0 0 0.875rem;">
+					Override CSS custom properties on <code>:root</code> for light, on <code>:root[data-theme="dark"]</code> for dark. Edits below preview live.
+				</p>
+				<div class="mode-tabs" role="tablist" aria-label="Theme mode">
+					<button id="mode-light" type="button" role="tab" aria-selected="true" data-mode="light">Light</button>
+					<button id="mode-dark" type="button" role="tab" aria-selected="false" data-mode="dark">Dark</button>
+				</div>
+				<div id="swatch-row" class="swatch-row"></div>
+				<div class="code-block" style="margin-top: 1rem;">
+					<button type="button" class="copy-btn" data-copy-target="customize-snippet">Copy</button>
+					<pre><code id="customize-snippet"></code></pre>
+				</div>
+			</section>
+			<footer>
+				<button type="button" id="customize-reset" class="btn btn--xs btn--ghost">Reset</button>
+				<button type="button" class="btn btn--xs btn--ghost" data-dialog-close>Done</button>
+			</footer>
+		</dialog>
+
+		<footer class="site-footer">
+			<span>MIT licensed · Built on <a href="https://roxyapi.com" target="_blank" rel="noopener">RoxyAPI</a> · Verified against NASA JPL Horizons</span>
+			<span><a href="https://github.com/RoxyAPI/ui" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.npmjs.com/package/@roxyapi/ui" target="_blank" rel="noopener">npm</a> · <a href="https://roxyapi.com/pricing" target="_blank" rel="noopener">Get an API key</a></span>
+		</footer>
 	</main>
 
-	<script src="/dist/cdn/roxy-ui.js"></script>
-	<script type="module" src="/sample-data.js"></script>
-	<script>
-		const lightBtn = document.getElementById('theme-light');
-		const darkBtn = document.getElementById('theme-dark');
-		function setTheme(theme) {
-			document.body.dataset.theme = theme;
-			document.documentElement.dataset.theme = theme;
-			lightBtn.setAttribute('aria-pressed', theme === 'light');
-			darkBtn.setAttribute('aria-pressed', theme === 'dark');
-		}
-		lightBtn.addEventListener('click', () => setTheme('light'));
-		darkBtn.addEventListener('click', () => setTheme('dark'));
-	</script>
+	<script src="./dist/cdn/roxy-ui.js"></script>
+	<script type="module" src="./sample-data.js"></script>
+	<script src="./manifest.js"></script>
+	<script src="./components-manifest.js"></script>
+	<script src="./page.js"></script>
 </body>
 </html>

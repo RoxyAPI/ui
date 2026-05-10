@@ -6,7 +6,8 @@
 	<script type="importmap">
 		{
 			"imports": {
-				"vue": "https://esm.sh/vue@3"
+				"vue": "https://esm.sh/vue@3",
+				"@roxyapi/sdk": "https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js"
 			}
 		}
 	</script>
@@ -19,7 +20,10 @@
 	<div id="app"></div>
 
 	<script type="module">
+		import { createRoxy } from '@roxyapi/sdk';
 		import { createApp, onMounted, ref } from 'vue';
+
+		const roxy = createRoxy(window.ROXY_API_KEY ?? 'roxy_xxx');
 
 		const App = {
 			setup() {
@@ -27,15 +31,18 @@
 				const kundli = ref(null);
 
 				onMounted(async () => {
-					const res = await fetch(
-						'https://roxyapi.com/api/v2/astrology/horoscope/aries/daily',
-						{ headers: { 'X-API-Key': window.ROXY_API_KEY ?? 'roxy_xxx' } },
-					);
-					horoscope.value = await res.json();
+					const { data } = await roxy.astrology.getDailyHoroscope({
+						path: { sign: 'aries' },
+					});
+					horoscope.value = data;
 				});
 
-				const onLocation = (event) => {
-					console.log('Location selected', event.detail);
+				const onLocation = async (event) => {
+					const { latitude, longitude, timezone } = event.detail;
+					const { data } = await roxy.vedicAstrology.generateBirthChart({
+						body: { date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone },
+					});
+					kundli.value = data;
 				};
 
 				return { horoscope, kundli, onLocation };

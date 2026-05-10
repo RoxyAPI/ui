@@ -15,20 +15,34 @@ pre-commit:
 pre-push:
   parallel: false
   commands:
+    spec-drift:
+      run: |
+        bun run generate
+        git diff --exit-code -- specs/openapi.json packages/ui/src/types/ \
+          || { echo "specs/openapi.json or generated types drifted from live spec. Run 'bun run generate' and commit."; exit 1; }
+      priority: 1
     typecheck:
       run: bun run typecheck
-      priority: 1
+      priority: 2
     biome-full:
       run: bun run check
-      priority: 2
+      priority: 3
     test-unit:
       run: bun run test
-      priority: 3
+      priority: 4
     test-e2e:
       env:
         PLAYWRIGHT_PROJECTS: chromium
       run: bun run test:e2e
-      priority: 4
+      priority: 5
+    audit:
+      run: bun run build && bun run preview &
+        sleep 2 &&
+        bun run audit;
+        AUDIT_EXIT=$?;
+        pkill -f "bun run scripts/preview.ts" || true;
+        exit $AUDIT_EXIT
+      priority: 6
     docs-drift:
       run: bun run docs:sync && git diff --exit-code -- README.md AGENTS.md || { echo "README.md or AGENTS.md drifted from spec, commit the sync output"; exit 1; }
-      priority: 5
+      priority: 7

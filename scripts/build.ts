@@ -110,6 +110,24 @@ async function copyAssets() {
 	);
 }
 
+async function syncSiteAssets() {
+	const target = 'apps/docs/dist';
+	await rm(target, { recursive: true, force: true });
+	await mkdir(target, { recursive: true });
+	await copyDir(DIST, target);
+}
+
+async function copyDir(from: string, to: string) {
+	await mkdir(to, { recursive: true });
+	const entries = await readdir(from, { withFileTypes: true });
+	for (const e of entries) {
+		const src = `${from}/${e.name}`;
+		const dst = `${to}/${e.name}`;
+		if (e.isDirectory()) await copyDir(src, dst);
+		else await copyFile(src, dst);
+	}
+}
+
 // Each workspace publishes from its own package directory. npm auto-includes
 // README.md and LICENSE from that directory only, so the root files do not
 // land in the tarball. Copy them into both packages before each build so
@@ -198,6 +216,12 @@ async function emitMetadata(components: string[]) {
 }
 
 async function main() {
+	console.log('Syncing version...');
+	execSync('bun run scripts/sync-version.ts', { stdio: 'inherit' });
+
+	console.log('Syncing docs manifest mirror...');
+	execSync('bun run scripts/sync-manifest.ts', { stdio: 'inherit' });
+
 	console.log('Cleaning dist...');
 	await clean();
 
@@ -233,6 +257,9 @@ async function main() {
 
 	console.log('Writing manifest...');
 	await emitMetadata(components);
+
+	console.log('Syncing dist into apps/docs for preview parity with Pages...');
+	await syncSiteAssets();
 
 	console.log('Build complete.');
 }

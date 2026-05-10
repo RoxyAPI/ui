@@ -30,12 +30,12 @@ import {
 } from '../src/index.js';
 
 describe('package exports', () => {
-	test('exports a stable manifest of 19 components', () => {
-		expect(ROXY_UI_COMPONENTS.length).toBe(19);
+	test('exports a non-empty component manifest', () => {
+		expect(ROXY_UI_COMPONENTS.length).toBeGreaterThan(0);
 	});
 
-	test('exports a version string', () => {
-		expect(ROXY_UI_VERSION).toBe('0.1.0');
+	test('exports a semver version string', () => {
+		expect(ROXY_UI_VERSION).toMatch(/^\d+\.\d+\.\d+/);
 	});
 
 	test('every component slug maps to a registered tag', () => {

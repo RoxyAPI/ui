@@ -39,6 +39,13 @@ jobs:
       - name: Regenerate types from spec
         run: bun run generate
 
+      - name: Spec drift gate
+        run: |
+          if ! git diff --exit-code -- specs/openapi.json packages/ui/src/types/; then
+            echo "OpenAPI spec or generated types are stale relative to live API. Local must be in sync before release."
+            exit 1
+          fi
+
       - name: Sync docs from spec
         run: bun run docs:sync
 
@@ -52,6 +59,10 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Lint
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: bun run check
 
       - name: Typecheck
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
@@ -72,6 +83,20 @@ jobs:
       - name: E2E tests
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: bun run test:e2e
+
+      - name: UI audit (no [object Object], no empty-state drift)
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          bun run preview &
+          PREVIEW_PID=$!
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3001 > /dev/null && break
+            sleep 1
+          done
+          bun run audit
+          AUDIT_EXIT=$?
+          kill $PREVIEW_PID 2>/dev/null || true
+          exit $AUDIT_EXIT
 
       - name: Bump versions and rebuild
         id: bump
@@ -115,7 +140,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           VERSION=$(node -p "require('./packages/ui/package.json').version")
-          git add packages/ packages/ui/dist packages/ui-react/dist registry/ README.md AGENTS.md
+          git add packages/ packages/ui/dist packages/ui-react/dist registry/ apps/docs/manifest.js README.md AGENTS.md
           git commit -m "release: v$VERSION"
           git tag "v$VERSION"
           git push --follow-tags

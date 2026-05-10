@@ -1,10 +1,13 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
+  # Push-to-main trigger disabled until the pipeline is proven. PR runs and
+  # manual dispatch keep the safety net during local iteration.
+  # push:
+  #   branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -13,6 +16,13 @@ jobs:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+
+      - name: Verify OpenAPI spec is in sync with live API
+        run: |
+          bun run generate
+          git diff --exit-code -- specs/openapi.json packages/ui/src/types/ \
+            || { echo "::error::OpenAPI spec or generated types are stale. Run 'bun run generate' locally and commit."; exit 1; }
+
       - run: bun run check
       - run: bun run typecheck
       - run: bun run build
@@ -22,3 +32,16 @@ jobs:
       - run: bun run test:e2e
         env:
           PLAYWRIGHT_PROJECTS: chromium
+
+      - name: UI audit (no [object Object], no empty-state drift)
+        run: |
+          bun run preview &
+          PREVIEW_PID=$!
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3001 > /dev/null && break
+            sleep 1
+          done
+          bun run audit
+          AUDIT_EXIT=$?
+          kill $PREVIEW_PID 2>/dev/null || true
+          exit $AUDIT_EXIT

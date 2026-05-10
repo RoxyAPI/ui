@@ -1,0 +1,60 @@
+name: Deploy demo to GitHub Pages
+
+# Deploys apps/docs/ to https://roxyapi.github.io/ui/ on every push to main and
+# on each published release. The same URL is iframe-embedded in the main app.
+
+on:
+  # Push trigger disabled until the pipeline is proven. Releases and manual
+  # dispatch still deploy. Uncomment the push block when ready.
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - 'apps/docs/**'
+  #     - 'packages/ui/src/**'
+  #     - 'packages/ui/dist/**'
+  #     - 'specs/openapi.json'
+  #     - 'scripts/build.ts'
+  #     - '.github/workflows/pages.yml'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build the library
+        run: bun run build
+        # build.ts syncs packages/ui/dist into apps/docs/dist so the
+        # site directory is self-contained and matches the local preview.
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: apps/docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
