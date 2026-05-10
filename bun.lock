@@ -42,9 +42,12 @@
       "name": "@roxyapi/ui-react",
       "version": "0.1.2",
       "peerDependencies": {
-        "react": ">=18.0.0",
-        "react-dom": ">=18.0.0",
+        "react": ">=18 <20",
+        "react-dom": ">=18 <20",
       },
+      "optionalPeers": [
+        "react-dom",
+      ],
     },
   },
   "packages": {
