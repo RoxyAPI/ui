@@ -2,7 +2,7 @@
 var SCRIPT_ID = "roxyapi-ui-loader";
 var CDN_BASE = "https://cdn.jsdelivr.net/npm/@roxyapi/ui@0/dist/cdn";
 var loaded = null;
-function ensureScriptLoaded(version = "0.1.1") {
+function ensureScriptLoaded(version = "0.1.2") {
   if (typeof document === "undefined") return Promise.resolve();
   if (loaded) return loaded;
   loaded = new Promise((resolve, reject) => {
