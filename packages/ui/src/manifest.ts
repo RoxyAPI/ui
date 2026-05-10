@@ -41,6 +41,16 @@ export interface RoxyComponent {
 	docsSummary: string;
 	/** Filter category in the browser demo grid. */
 	topic: string;
+	/**
+	 * True when the component does not consume a typed RoxyAPI response from a
+	 * customer server route. Three cases today:
+	 *   - <roxy-data>: pure renderer, accepts any shape, no fetch.
+	 *   - <roxy-location-search>: calls /location/search itself via publishable key.
+	 *   - <roxy-endpoint-form>: introspects the OpenAPI spec, emits roxy-submit.
+	 * The shadcn registry codegen emits a different doc body for these so we
+	 * never document a server route example with an undefined `data` reference.
+	 */
+	selfFetching?: boolean;
 }
 
 export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
@@ -97,8 +107,8 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		heading: 'Compatibility score',
 		endpoints: [
 			'astrology.calculateCompatibility',
-			'numerology.calculateCompatibility',
-			'biorhythm.calculateCompatibility',
+			'numerology.calculateNumCompatibility',
+			'biorhythm.calculateBioCompatibility',
 		],
 		description: 'Cross-domain compatibility score card',
 		docsLabel: 'Cross',
@@ -116,7 +126,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		endpoints: [
 			'astrology.getCurrentMoonPhase',
 			'astrology.getUpcomingMoonPhases',
-			'astrology.getMoonPhaseCalendar',
+			'astrology.getMoonCalendar',
 		],
 		description: 'Moon phase card and calendar',
 		docsLabel: 'Western',
@@ -180,8 +190,8 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		heading: 'Manglik dosha',
 		endpoints: [
 			'vedicAstrology.checkManglikDosha',
-			'vedicAstrology.checkKalSarpaDosha',
-			'vedicAstrology.checkSadeSati',
+			'vedicAstrology.checkKalsarpaDosha',
+			'vedicAstrology.checkSadhesati',
 		],
 		description: 'Manglik, Kaal Sarp, or Sade Sati presence card',
 		docsLabel: 'Vedic',
@@ -225,7 +235,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 			'numerology.calculateLifePath',
 			'numerology.calculateExpression',
 			'numerology.calculatePersonalYear',
-			'numerology.calculateChart',
+			'numerology.generateNumerologyChart',
 		],
 		description:
 			'Numerology card for life path, expression, personal year, or full chart',
@@ -257,9 +267,9 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		endpoints: [
 			'tarot.castThreeCard',
 			'tarot.castCelticCross',
-			'tarot.castLove',
+			'tarot.castLoveSpread',
 			'tarot.castYesNo',
-			'tarot.draw',
+			'tarot.drawCards',
 		],
 		description:
 			'Tarot spread renderer for three-card, Celtic Cross, love, or yes/no',
@@ -294,9 +304,9 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		heading: 'I Ching hexagram',
 		endpoints: [
 			'iching.getHexagram',
-			'iching.castHexagram',
+			'iching.castReading',
 			'iching.getDailyHexagram',
-			'iching.castDailyHexagram',
+			'iching.castDailyReading',
 			'iching.getRandomHexagram',
 		],
 		description:
@@ -320,6 +330,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		endpointLabel: 'Any endpoint via x-roxy-ui hints',
 		docsSummary: 'Schema-driven form, emits roxy-submit',
 		topic: 'Helpers',
+		selfFetching: true,
 	},
 	{
 		pascal: 'RoxyLocationSearch',
@@ -327,12 +338,13 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'location-search',
 		domain: 'utility',
 		heading: 'City search',
-		endpoints: ['location.search'],
+		endpoints: ['location.searchCities'],
 		description: 'City search input with debounced /location/search calls',
 		docsLabel: 'Helper',
 		endpointLabel: 'GET /location/search',
 		docsSummary: 'Debounced city search input, emits roxy-location-select',
 		topic: 'Helpers',
+		selfFetching: true,
 	},
 	{
 		pascal: 'RoxyData',
@@ -346,6 +358,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		endpointLabel: 'Any response shape',
 		docsSummary: 'Generic fallback renderer for unknown shapes',
 		topic: 'Helpers',
+		selfFetching: true,
 	},
 ];
 
