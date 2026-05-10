@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_horoscope_card;(RoxyUI_horoscope_card||={}).d=(()=>{var p=Object.defineProperty;var l=Object.getOwnPropertyDescriptor;var a=Object.getOwnPropertyNames;var c=Object.prototype.hasOwnProperty;var n=(o,e,r,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let t of a(e))!c.call(o,t)&&t!==r&&p(o,t,{get:()=>e[t],enumerable:!(s=l(e,t))||s.enumerable});return o};var y=o=>n(p({},"__esModule",{value:!0}),o);var i={};return y(i);})();
-//# sourceMappingURL=horoscope-card.d.js.map

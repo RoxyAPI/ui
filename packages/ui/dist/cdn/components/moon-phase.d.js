@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_moon_phase;(RoxyUI_moon_phase||={}).d=(()=>{var s=Object.defineProperty;var r=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var i=Object.prototype.hasOwnProperty;var l=(o,e,a,n)=>{if(e&&typeof e=="object"||typeof e=="function")for(let t of p(e))!i.call(o,t)&&t!==a&&s(o,t,{get:()=>e[t],enumerable:!(n=r(e,t))||n.enumerable});return o};var m=o=>l(s({},"__esModule",{value:!0}),o);var d={};return m(d);})();
-//# sourceMappingURL=moon-phase.d.js.map

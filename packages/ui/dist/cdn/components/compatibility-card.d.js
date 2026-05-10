@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_compatibility_card;(RoxyUI_compatibility_card||={}).d=(()=>{var l=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var m=Object.getOwnPropertyNames;var s=Object.prototype.hasOwnProperty;var r=(e,t,o,a)=>{if(t&&typeof t=="object"||typeof t=="function")for(let i of m(t))!s.call(e,i)&&i!==o&&l(e,i,{get:()=>t[i],enumerable:!(a=p(t,i))||a.enumerable});return e};var y=e=>r(l({},"__esModule",{value:!0}),e);var C={};return y(C);})();
-//# sourceMappingURL=compatibility-card.d.js.map

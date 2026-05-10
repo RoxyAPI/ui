@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_dosha_card;(RoxyUI_dosha_card||={}).d=(()=>{var r=Object.defineProperty;var o=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var i=Object.prototype.hasOwnProperty;var n=(a,e,l,t)=>{if(e&&typeof e=="object"||typeof e=="function")for(let s of p(e))!i.call(a,s)&&s!==l&&r(a,s,{get:()=>e[s],enumerable:!(t=o(e,s))||t.enumerable});return a};var d=a=>n(r({},"__esModule",{value:!0}),a);var m={};return d(m);})();
-//# sourceMappingURL=dosha-card.d.js.map

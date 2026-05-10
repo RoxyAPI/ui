@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_guna_milan;(RoxyUI_guna_milan||={}).d=(()=>{var i=Object.defineProperty;var o=Object.getOwnPropertyDescriptor;var r=Object.getOwnPropertyNames;var s=Object.prototype.hasOwnProperty;var m=(t,e,n,a)=>{if(e&&typeof e=="object"||typeof e=="function")for(let l of r(e))!s.call(t,l)&&l!==n&&i(t,l,{get:()=>e[l],enumerable:!(a=o(e,l))||a.enumerable});return t};var p=t=>m(i({},"__esModule",{value:!0}),t);var y={};return p(y);})();
-//# sourceMappingURL=guna-milan.d.js.map

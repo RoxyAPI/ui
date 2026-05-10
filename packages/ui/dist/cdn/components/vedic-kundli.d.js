@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_vedic_kundli;(RoxyUI_vedic_kundli||={}).d=(()=>{var l=Object.defineProperty;var s=Object.getOwnPropertyDescriptor;var o=Object.getOwnPropertyNames;var n=Object.prototype.hasOwnProperty;var p=(t,e,a,i)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of o(e))!n.call(t,r)&&r!==a&&l(t,r,{get:()=>e[r],enumerable:!(i=s(e,r))||i.enumerable});return t};var d=t=>p(l({},"__esModule",{value:!0}),t);var m={};return d(m);})();
-//# sourceMappingURL=vedic-kundli.d.js.map

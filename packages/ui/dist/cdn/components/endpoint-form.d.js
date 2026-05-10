@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_endpoint_form;(RoxyUI_endpoint_form||={}).d=(()=>{var i=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var l=Object.getOwnPropertyNames;var n=Object.prototype.hasOwnProperty;var s=(t,e,o,a)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of l(e))!n.call(t,r)&&r!==o&&i(t,r,{get:()=>e[r],enumerable:!(a=p(e,r))||a.enumerable});return t};var m=t=>s(i({},"__esModule",{value:!0}),t);var d={};return m(d);})();
-//# sourceMappingURL=endpoint-form.d.js.map

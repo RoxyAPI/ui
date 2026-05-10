@@ -76,7 +76,7 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
 }
 ```
 
-Pick a tone, set the vars, every chart and card follows. Full token reference at [packages/ui/THEMING.md](packages/ui/THEMING.md). Live tweaker on the [demo site](https://roxyapi.github.io/ui/).
+Pick a tone, set the vars, every chart and card follows. Full token reference at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). Live tweaker on the [demo site](https://roxyapi.github.io/ui/).
 
 ## Gallery (chart-heavy components)
 
@@ -261,7 +261,7 @@ For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your se
 
 ## Theming
 
-Every component reads from `--roxy-*` CSS custom properties. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. See [THEMING.md](packages/ui/THEMING.md) for the full token reference.
+Every component reads from `--roxy-*` CSS custom properties. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference.
 
 ```css
 :root {

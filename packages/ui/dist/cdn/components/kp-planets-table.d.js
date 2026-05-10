@@ -1,2 +1,0 @@
-"use strict";var RoxyUI_kp_planets_table;(RoxyUI_kp_planets_table||={}).d=(()=>{var s=Object.defineProperty;var n=Object.getOwnPropertyDescriptor;var o=Object.getOwnPropertyNames;var r=Object.prototype.hasOwnProperty;var i=(t,e,p,a)=>{if(e&&typeof e=="object"||typeof e=="function")for(let l of o(e))!r.call(t,l)&&l!==p&&s(t,l,{get:()=>e[l],enumerable:!(a=n(e,l))||a.enumerable});return t};var m=t=>i(s({},"__esModule",{value:!0}),t);var d={};return m(d);})();
-//# sourceMappingURL=kp-planets-table.d.js.map
