@@ -255,6 +255,14 @@ async function main() {
 	if (syn && natal2?.planets)
 		syn.person2 = { ...(syn.person2 ?? {}), planets: natal2.planets };
 
+	// The /vedic-astrology/yoga catalog returns 300+ entries. The demo page
+	// only needs enough to prove the search filter and chip grid render, so
+	// slice to the first 20. Real-world consumers pass the full response.
+	const yogaSample = samples.yoga as { yogas?: unknown[] } | undefined;
+	if (yogaSample?.yogas && yogaSample.yogas.length > 20) {
+		yogaSample.yogas = yogaSample.yogas.slice(0, 20);
+	}
+
 	console.log('\nMirroring inline image URLs locally...');
 	for (const key of Object.keys(samples)) {
 		samples[key] = await mirrorImages(samples[key]);
