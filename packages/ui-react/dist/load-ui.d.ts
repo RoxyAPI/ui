@@ -1,4 +1,4 @@
 export declare function ensureScriptLoaded(version?: string): Promise<void>;
 export default ensureScriptLoaded;
-export declare const ROXY_UI_VERSION = "0.2.0";
+export declare const ROXY_UI_VERSION = "0.2.1";
 //# sourceMappingURL=load-ui.d.ts.map
