@@ -1,6 +1,10 @@
 # AGENTS.md
 
-This file teaches AI coding agents (Claude Code, Cursor, Copilot, Codex, Gemini CLI) how to use Roxy UI when integrating RoxyAPI into a project.
+This file teaches AI coding agents (Claude Code, Cursor, Copilot, Codex, Gemini CLI, and any MCP-compatible client) how to use Roxy UI when integrating RoxyAPI into a project.
+
+This file ships inside both `@roxyapi/ui` and `@roxyapi/ui-react` on npm. After install, read it at `node_modules/@roxyapi/ui/AGENTS.md`.
+
+Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component types: the OpenAPI spec at `roxyapi.com/openapi.json`, regenerated into `packages/ui/src/types/types.gen.ts`.
 
 ## Identity
 
@@ -47,18 +51,11 @@ Use the table below. Match the user request against the endpoint, render the mat
 <roxy-natal-chart id="chart"></roxy-natal-chart>
 
 <script type="module">
-	const res = await fetch('https://roxyapi.com/api/v2/astrology/natal-chart', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json', 'X-API-Key': 'roxy_xxx' },
-		body: JSON.stringify({
-			date: '1990-01-15',
-			time: '14:30:00',
-			latitude: 28.6139,
-			longitude: 77.209,
-			timezone: 5.5,
-		}),
+	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
+	const roxy = createRoxy('roxy_xxx');
+	const { data } = await roxy.astrology.generateNatalChart({
+		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
 	});
-	const data = await res.json();
 	document.getElementById('chart').data = data;
 </script>
 ```
@@ -103,15 +100,12 @@ export function BirthChartView() {
 ></roxy-endpoint-form>
 
 <script type="module">
+	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
+	const roxy = createRoxy('roxy_xxx');
 	const form = document.querySelector('roxy-endpoint-form');
 	form.addEventListener('roxy-submit', async (e) => {
-		const { endpoint, values } = e.detail;
-		const res = await fetch(`https://roxyapi.com/api/v2/${endpoint}`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json', 'X-API-Key': 'roxy_xxx' },
-			body: JSON.stringify(values),
-		});
-		const kundli = await res.json();
+		const { values } = e.detail;
+		const { data: kundli } = await roxy.vedic.generateBirthChart({ body: values });
 		document.querySelector('roxy-vedic-kundli').data = kundli;
 	});
 </script>
@@ -119,7 +113,7 @@ export function BirthChartView() {
 
 ### Pattern 4: widgets auto-mount (no JavaScript wiring)
 
-Use the publishable key flow for vibecoder embeds.
+Use a publishable key (`pk_live_*` or `pk_test_*`) for client-side embeds. Get one at <https://roxyapi.com/account>. Publishable keys are origin-restricted at the API gateway — register the customer's domain (e.g. `https://customer.com`) when creating the key, and the gateway will reject requests from any other origin. Never use a secret key in client-side code (secret keys are unprefixed and live server-side only).
 
 ```html
 <script
@@ -140,6 +134,20 @@ Use the publishable key flow for vibecoder embeds.
 
 The auto-mount script reads `data-*` attributes, calls the matching endpoint, and renders the matching component.
 
+### Pattern 5: MCP tool-call response
+
+A remote MCP server at `roxyapi.com/mcp/{domain}` exposes each RoxyAPI endpoint as an MCP tool. The JSON returned by the tool call has the same shape as the SDK response. Pass it straight into the matching component.
+
+```ts
+// Pseudocode for any MCP-aware agent
+const result = await mcp.call('roxyapi.astrology.generate_natal_chart', {
+	date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5,
+});
+document.querySelector('roxy-natal-chart').data = result;
+```
+
+No field renames. No glue code. Use the decision tree above to pick the component for any tool.
+
 ## Rules every agent must follow
 
 - Always call `/location/search` first before any chart endpoint that takes latitude, longitude, or timezone. Use `<roxy-location-search>` for the input UI.
@@ -148,6 +156,7 @@ The auto-mount script reads `data-*` attributes, calls the matching endpoint, an
 - Theming is CSS custom properties on `:root` or per element. Do not write Tailwind classes inside the components; the shadow DOM ignores them.
 - Honor reduced motion. The library already respects `prefers-reduced-motion: reduce` and the `--roxy-motion-duration` variable.
 - A11y violations are CI failures. Do not paste over `role` or `aria-*` attributes; the components emit them correctly already.
+- Component types come from the OpenAPI spec via `@hey-api/openapi-ts`. Do not redefine response shapes locally; if a field is missing, fix the spec, regenerate, propagate.
 
 ## Domain ordering
 
@@ -155,7 +164,7 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 
 ## What not to ship
 
-- Do not bundle `@roxyapi/ui` and `@roxyapi/ui-react` together; they are decoupled by design.
+- Do not bundle `@roxyapi/ui` and `@roxyapi/ui-react` together; they ship independently.
 - Use `@roxyapi/ui-react` for React projects. Use `@roxyapi/ui` directly elsewhere.
 - Do not write your own kundli component. The lifted layout in `<roxy-vedic-kundli>` is the canonical RoxyAPI render path.
 - Do not call astrology endpoints with hardcoded coordinates. Always geocode first via `<roxy-location-search>` or `roxy.location.searchCities()`.

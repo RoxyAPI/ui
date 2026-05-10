@@ -7,11 +7,78 @@
 # @roxyapi/ui
 
 [![npm](https://img.shields.io/npm/v/@roxyapi/ui)](https://www.npmjs.com/package/@roxyapi/ui)
+[![Live preview](https://img.shields.io/badge/live%20preview-roxyapi.github.io%2Fui-7c3aed?logo=github)](https://roxyapi.github.io/ui/)
 [![Docs](https://img.shields.io/badge/docs-roxyapi.com-blue)](https://roxyapi.com/ui)
 [![API Reference](https://img.shields.io/badge/api%20reference-roxyapi.com-blue)](https://roxyapi.com/api-reference)
 [![Pricing](https://img.shields.io/badge/pricing-roxyapi.com-blue)](https://roxyapi.com/pricing)
+[![License](https://img.shields.io/npm/l/@roxyapi/ui)](LICENSE)
+
+> Live demo: **<https://roxyapi.github.io/ui/>** — every component rendered against real API responses, light + dark, with the React/shadcn install command per card.
 
 Web components for the RoxyAPI catalog. Drop astrology, tarot, numerology, and every other RoxyAPI domain into any framework with one script tag or one npm install. Stateless components, typed responses, beautiful defaults in 30 minutes.
+
+## Gallery
+
+<table>
+<tr>
+<td width="50%"><strong>Natal chart</strong> · <code>&lt;roxy-natal-chart&gt;</code><br><sub>POST /astrology/natal-chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-light.png" alt="Roxy UI natal chart wheel with planet glyphs and aspect lines">
+</picture>
+</td>
+<td width="50%"><strong>Vedic kundli</strong> · <code>&lt;roxy-vedic-kundli&gt;</code><br><sub>POST /vedic-astrology/birth-chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-light.png" alt="Roxy UI Vedic kundli south Indian chart">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Synastry</strong> · <code>&lt;roxy-synastry-chart&gt;</code><br><sub>POST /astrology/synastry</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-light.png" alt="Roxy UI synastry dual-wheel chart with inter-aspects">
+</picture>
+</td>
+<td width="50%"><strong>Moon phase</strong> · <code>&lt;roxy-moon-phase&gt;</code><br><sub>GET /astrology/moon-phase/&lbrace;current,upcoming,calendar&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/moon-phase-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/moon-phase-light.png" alt="Roxy UI moon phase card with illumination and age">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Biorhythm</strong> · <code>&lt;roxy-biorhythm-chart&gt;</code><br><sub>POST /biorhythm/&lbrace;daily,forecast,critical-days&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-light.png" alt="Roxy UI biorhythm chart with physical, emotional, intellectual cycle bars">
+</picture>
+</td>
+<td width="50%"><strong>I Ching hexagram</strong> · <code>&lt;roxy-hexagram&gt;</code><br><sub>GET /iching/hexagrams/&lbrace;number&rbrace;, /iching/cast</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-light.png" alt="Roxy UI I Ching hexagram with trigrams and judgment">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Dasha timeline</strong> · <code>&lt;roxy-dasha-timeline&gt;</code><br><sub>POST /vedic-astrology/dasha/&lbrace;current,major,sub&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-light.png" alt="Roxy UI Vimshottari dasha mahadasha and antardasha timeline">
+</picture>
+</td>
+<td width="50%"><strong>Tarot spread</strong> · <code>&lt;roxy-tarot-spread&gt;</code><br><sub>POST /tarot/spreads/&lbrace;three-card,celtic-cross,love&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/tarot-spread-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/tarot-spread-light.png" alt="Roxy UI tarot spread with three-card layout and reading">
+</picture>
+</td>
+</tr>
+</table>
+
+Tables, cards, forms, and helper components in the [live demo](https://roxyapi.github.io/ui/).
 
 ## Why developers use Roxy UI
 
@@ -34,7 +101,7 @@ Vanilla HTML. Three lines. No build step.
 ></script>
 <roxy-natal-chart id="chart"></roxy-natal-chart>
 <script type="module">
-	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@1/dist/factory.js';
+	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
 	const roxy = createRoxy(import.meta.env?.ROXY_API_KEY);
 	const { data } = await roxy.astrology.generateNatalChart({
 		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
@@ -93,6 +160,15 @@ document.querySelector('roxy-vedic-kundli')!.data = kundli;
 
 Always call `/location/search` first. Every chart endpoint expects latitude, longitude, and timezone.
 
+## API keys
+
+Get keys at <https://roxyapi.com/account>.
+
+- **Secret key** — server-side only. Use in Node, Bun, Hono, Next.js route handlers, Workers. Never commit, never ship in client bundles.
+- **Publishable key** (`pk_live_*` / `pk_test_*`) — safe in browsers, locked to the origins you register on the key. Use with the widgets auto-mount script for WordPress, Shopify, static HTML, vibecoder embeds. The API gateway rejects requests from any origin not on the key's allowlist.
+
+For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your server env. For the widgets auto-mount path (`data-publishable-key="pk_live_xxx"`), use a publishable key with your site's domain registered.
+
 ## Distribution
 
 | Surface | URL |
@@ -102,9 +178,9 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 | jsdelivr full UMD | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
 | jsdelivr per-component UMD | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
 | Widgets auto-mount | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
-| shadcn registry | `bunx shadcn add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/{name}.json` |
+| shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/{name}.json` |
 
-## Phase 1 components
+## Components
 
 <!-- BEGIN:COMPONENTS -->
 | Element | Domain | Endpoint(s) | What it renders |
@@ -167,10 +243,13 @@ roxy-natal-chart {
 
 ## Built for AI agents
 
-- Works with Claude Code, Cursor, Copilot, Codex, Gemini CLI.
-- Ships with `AGENTS.md` so agents know which component to render for which response.
-- Combines with the `@roxyapi/sdk` for typed prop shapes that match the OpenAPI spec.
-- Remote MCP servers per domain at `roxyapi.com/mcp/{domain}`. No local setup, runs in seconds.
+[`AGENTS.md`](AGENTS.md) is bundled inside both npm packages. Once installed, agents can read it from `node_modules/@roxyapi/ui/AGENTS.md` (or `@roxyapi/ui-react/AGENTS.md`) for the component decision tree, integration patterns, and rules.
+
+- Works with Claude Code, Cursor, Copilot, Codex, Gemini CLI, and any MCP-compatible client.
+- Component decision tree maps each RoxyAPI endpoint to the component that renders its response.
+- Typed prop shapes derive from the OpenAPI spec. The SDK at `@roxyapi/sdk` returns shapes that flow straight into `data` — no field renames, no glue code.
+- Remote MCP servers per domain at `roxyapi.com/mcp/{domain}`. No local setup. JSON tool-call responses feed straight into the matching component.
+- Use cases agents handle in one prompt: birth chart from city + DOB, daily tarot embed, Vedic kundli matching, numerology life-path card, biorhythm dashboard, daily horoscope by sign, panchang for the day, I Ching three-coin cast.
 
 ## Build anything, fast
 
@@ -183,7 +262,11 @@ bun run preview
 # http://localhost:3001
 ```
 
-Three steps. Thirty minutes. See [examples](examples/) for a full vanilla HTML, React, Vue, and WordPress integration.
+Local preview serves `apps/docs/` on port 3001. Same directory and same paths the live demo at <https://roxyapi.github.io/ui/> serves. See [examples](examples/) for vanilla HTML, React, Vue, and WordPress.
+
+## Stack and integrations
+
+Roxy UI runs in any framework that supports the DOM: **React, Next.js, Vue, Svelte, Angular, Solid, Astro, Qwik, Hono, Remix, Nuxt, SvelteKit, Lit, plain HTML, WordPress, Shopify themes that allow custom code, and any MCP-compatible AI agent**. Distribution paths: npm, jsDelivr UMD, shadcn registry. Use cases: astrology widgets, kundli matching, daily horoscope, tarot reader, numerology calculator, biorhythm dashboard, I Ching cast, panchang almanac, dasha timeline, moon phase tracker, synastry compatibility, dosha checker.
 
 ## License
 

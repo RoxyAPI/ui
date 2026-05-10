@@ -2,7 +2,7 @@ pre-commit:
   parallel: true
   commands:
     biome-check:
-      glob: "*.{ts,tsx,js,jsx,json,md}"
+      glob: "*.{ts,tsx,js,jsx,json}"
       run: bun run check --staged
       stage_fixed: true
     typecheck:
