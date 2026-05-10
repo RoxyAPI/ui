@@ -271,12 +271,14 @@ async function buildTypes() {
 	}
 }
 
+// Deterministic build metadata: only the component list. A timestamp here
+// would diff on every build and pollute git history of the committed dist.
 async function emitMetadata(components: string[]) {
-	const meta = {
-		generatedAt: new Date().toISOString(),
-		components,
-	};
-	await writeFile(`${DIST}/manifest.json`, JSON.stringify(meta, null, 2));
+	const meta = { components };
+	await writeFile(
+		`${DIST}/manifest.json`,
+		`${JSON.stringify(meta, null, 2)}\n`,
+	);
 }
 
 async function main() {
@@ -324,6 +326,22 @@ async function main() {
 
 	console.log('Syncing dist into apps/docs for preview parity with Pages...');
 	await syncSiteAssets();
+
+	// Format every codegen output through biome so the committed source matches
+	// what pre-commit's biome-check would produce. Without this, codegen emits
+	// double-quoted strings + un-sorted imports, biome reformats to single-quoted
+	// + sorted, and every subsequent rebuild diffs against the committed file.
+	console.log('Formatting codegen output...');
+	try {
+		execSync(
+			'bunx biome check --write packages/ui-react/src registry apps/docs/manifest.js',
+			{ stdio: 'inherit' },
+		);
+	} catch (err) {
+		console.warn(
+			`! biome format on codegen had issues (${err instanceof Error ? err.message : String(err)}); continuing.`,
+		);
+	}
 
 	console.log('Build complete.');
 }

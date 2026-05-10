@@ -1,6 +1,6 @@
+import type { CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '@roxyapi/ui/types';
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '@roxyapi/ui/types';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
