@@ -18,7 +18,10 @@ const ROXY_UI_VERSION = (
 		version: string;
 	}
 ).version;
-const CDN_BASE = `https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION.split('.')[0]}/dist/cdn`;
+// Use @latest while pre-1.0 to match marketing snippets and let bug-fix patches
+// reach customers without forcing a ui-react release. At 1.0 cutover, swap to
+// `@${ROXY_UI_VERSION.split('.')[0]}` so consumers opt into majors explicitly.
+const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
 
 const LOAD_UI_TS = `/**
  * Loads the matching component bundle on first mount. Idempotent across
@@ -35,8 +38,8 @@ export function ensureScriptLoaded(version: string = '${ROXY_UI_VERSION}'): Prom
 	if (loaded) return loaded;
 
 	loaded = new Promise<void>((resolve, reject) => {
-		const major = version.split('.')[0];
-		const url = \`\${CDN_BASE.replace('@${ROXY_UI_VERSION.split('.')[0]}', '@' + major)}/roxy-ui.js\`;
+		void version;
+		const url = \`\${CDN_BASE}/roxy-ui.js\`;
 		let existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
 		if (existing) {
 			if (existing.dataset.loaded === 'true') {

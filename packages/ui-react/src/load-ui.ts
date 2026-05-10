@@ -4,7 +4,7 @@
  * React server components and Next.js SSR work without a flash.
  */
 const SCRIPT_ID = 'roxyapi-ui-loader';
-const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@0/dist/cdn';
+const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
 
 let loaded: Promise<void> | null = null;
 
@@ -13,8 +13,8 @@ export function ensureScriptLoaded(version: string = '0.1.2'): Promise<void> {
 	if (loaded) return loaded;
 
 	loaded = new Promise<void>((resolve, reject) => {
-		const major = version.split('.')[0];
-		const url = `${CDN_BASE.replace('@0', '@' + major)}/roxy-ui.js`;
+		void version;
+		const url = `${CDN_BASE}/roxy-ui.js`;
 		let existing = document.getElementById(
 			SCRIPT_ID,
 		) as HTMLScriptElement | null;

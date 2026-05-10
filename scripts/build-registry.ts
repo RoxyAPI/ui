@@ -18,36 +18,14 @@ const OUT_DIR = 'registry';
 const THEME_URL =
 	'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry/theme.json';
 
-const THEME_LIGHT = {
-	'--roxy-bg': '#fafafa',
-	'--roxy-fg': '#0a0a0a',
-	'--roxy-muted': '#71717a',
-	'--roxy-border': '#e4e4e7',
-	'--roxy-accent': '#f59e0b',
-	'--roxy-accent-fg': '#b45309',
-	'--roxy-success': '#16a34a',
-	'--roxy-warning': '#f59e0b',
-	'--roxy-danger': '#dc2626',
-	'--roxy-info': '#2563eb',
-	'--roxy-radius-md': '12px',
-	'--roxy-shadow-md': '0 4px 12px rgba(0,0,0,0.08)',
-	'--roxy-motion-duration': '200ms',
-};
-
-const THEME_DARK = {
-	'--roxy-bg': '#0a0a0a',
-	'--roxy-fg': '#fafafa',
-	'--roxy-muted': '#a1a1aa',
-	'--roxy-border': '#27272a',
-	'--roxy-accent': '#fbbf24',
-	'--roxy-accent-fg': '#fde68a',
-	'--roxy-shadow-md': '0 4px 12px rgba(0,0,0,0.4)',
-};
-
-// Each --roxy-* falls back through the customer's existing shadcn token. A
-// shadcn user inherits their theme automatically; a non-shadcn user gets the
-// defaults from cssVars above. Customer can still override any --roxy-* directly.
-const SHADCN_BRIDGE = {
+// Defaults + shadcn-token bridge in one block. We deliberately do not use the
+// shadcn registry `cssVars` field because Tailwind v4 mints `--color-{name}`
+// utilities for every var inside `@theme inline { ... }` — that block is where
+// shadcn writes cssVars — and produces malformed `var(----roxy-...)` references
+// for any var name that already starts with `--roxy-`. Putting our vars under
+// `@layer base { :root }` via the `css` field bypasses Tailwind's @theme
+// processing while still cascading into Shadow DOM normally.
+const SHADCN_THEME_CSS = {
 	'@layer base': {
 		':root': {
 			'--roxy-bg': 'var(--background, #fafafa)',
@@ -57,8 +35,15 @@ const SHADCN_BRIDGE = {
 			'--roxy-accent': 'var(--primary, #f59e0b)',
 			'--roxy-accent-fg': 'var(--primary-foreground, #b45309)',
 			'--roxy-success': 'var(--chart-2, #16a34a)',
+			'--roxy-warning': 'var(--chart-3, #f59e0b)',
 			'--roxy-danger': 'var(--destructive, #dc2626)',
+			'--roxy-info': 'var(--chart-1, #2563eb)',
 			'--roxy-radius-md': 'var(--radius, 12px)',
+			'--roxy-shadow-md': '0 4px 12px rgba(0,0,0,0.08)',
+			'--roxy-motion-duration': '200ms',
+		},
+		'.dark': {
+			'--roxy-shadow-md': '0 4px 12px rgba(0,0,0,0.4)',
 		},
 	},
 };
@@ -70,9 +55,8 @@ async function emitTheme() {
 		type: 'registry:theme',
 		title: 'Roxy UI theme',
 		description:
-			'CSS variables driving every Roxy UI component. Maps the customer existing shadcn tokens (--background, --primary, --border, --radius) onto --roxy-* via CSS fallback chain. Override any --roxy-* directly to lock a specific surface.',
-		cssVars: { light: THEME_LIGHT, dark: THEME_DARK },
-		css: SHADCN_BRIDGE,
+			"CSS variables driving every Roxy UI component. Maps the customer's existing shadcn tokens (--background, --primary, --border, --radius) onto --roxy-* via CSS fallback chain. Override any --roxy-* directly to lock a specific surface.",
+		css: SHADCN_THEME_CSS,
 	};
 	await writeFile(`${OUT_DIR}/theme.json`, JSON.stringify(entry, null, 2));
 }
