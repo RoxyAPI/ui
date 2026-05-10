@@ -37,7 +37,7 @@ function ensureScriptLoaded(version = "latest") {
   });
   return loaded;
 }
-var ROXY_UI_VERSION = "0.1.2";
+var ROXY_UI_VERSION = "0.1.3";
 
 // packages/ui-react/src/components/natal-chart.tsx
 import * as React from "react";
