@@ -6,6 +6,7 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"sideEffects": false,
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
@@ -19,18 +20,29 @@
 	},
 	"files": [
 		"dist",
-		"src",
 		"README.md",
 		"LICENSE",
 		"AGENTS.md"
 	],
 	"keywords": [
-		"react",
-		"react-components",
-		"web-components",
 		"astrology",
 		"vedic",
 		"tarot",
+		"numerology",
+		"biorhythm",
+		"iching",
+		"kundli",
+		"natal-chart",
+		"birth-chart",
+		"horoscope",
+		"panchang",
+		"react",
+		"react-components",
+		"web-components",
+		"shadow-dom",
+		"lit",
+		"shadcn",
+		"jsdelivr",
 		"roxyapi"
 	],
 	"license": "MIT",
@@ -43,9 +55,17 @@
 	"bugs": {
 		"url": "https://github.com/RoxyAPI/ui/issues"
 	},
+	"engines": {
+		"node": ">=18"
+	},
 	"peerDependencies": {
-		"react": ">=18.0.0",
-		"react-dom": ">=18.0.0"
+		"react": ">=18 <20",
+		"react-dom": ">=18 <20"
+	},
+	"peerDependenciesMeta": {
+		"react-dom": {
+			"optional": true
+		}
 	},
 	"publishConfig": {
 		"access": "public",

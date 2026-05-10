@@ -1,35 +1,66 @@
+import type { GetCardResponse, GetDailyCardResponse } from '@roxyapi/ui/types';
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
 
-type DivAttrs = React.HTMLAttributes<HTMLElement>;
+type ElementAttrs = Omit<
+	React.HTMLAttributes<HTMLElement>,
+	'children' | 'data'
+>;
 
-export interface RoxyTarotCardProps extends Omit<DivAttrs, 'children' | 'onSelect'> {
-	data?: unknown;
-	[attr: string]: unknown;
+export interface RoxyTarotCardProps extends ElementAttrs {
+	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
+	data?: GetCardResponse | GetDailyCardResponse;
+	className?: string;
+	style?: React.CSSProperties;
+
 }
 
-export const RoxyTarotCard = React.forwardRef<HTMLElement, RoxyTarotCardProps>(
-	function RoxyTarotCard({ data, ...rest }, ref) {
+export const RoxyTarotCard = React.forwardRef<HTMLElement | null, RoxyTarotCardProps>(
+	function RoxyTarotCard({ data, className, style, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
-		React.useImperativeHandle(ref, () => internal.current as HTMLElement);
+		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
+			ref,
+			() => internal.current,
+			[],
+		);
 		const [loaded, setLoaded] = React.useState(false);
+		const [error, setError] = React.useState<Error | null>(null);
 
 		React.useEffect(() => {
 			let active = true;
-			ensureScriptLoaded().then(() => {
-				if (active) setLoaded(true);
-			});
+			ensureScriptLoaded()
+				.then(() => {
+					if (active) setLoaded(true);
+				})
+				.catch((err: unknown) => {
+					if (!active) return;
+					setError(err instanceof Error ? err : new Error(String(err)));
+				});
 			return () => {
 				active = false;
 			};
 		}, []);
 
 		React.useEffect(() => {
-			if (internal.current && data !== undefined) {
-				(internal.current as unknown as { data: unknown }).data = data;
+			const el = internal.current;
+			if (el && data !== undefined) {
+				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
 
-		return React.createElement('roxy-tarot-card', { ref: internal, ...rest });
+		if (error) {
+			return React.createElement(
+				'div',
+				{ role: 'alert', className, style },
+				`Roxy UI script load failed: ${error.message}`,
+			);
+		}
+
+		return React.createElement('roxy-tarot-card', {
+			ref: internal,
+			className,
+			style,
+			...rest,
+		});
 	},
 );

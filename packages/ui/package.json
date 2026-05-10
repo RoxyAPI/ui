@@ -16,6 +16,9 @@
 			"types": "./dist/components/*.d.ts",
 			"import": "./dist/components/*.js"
 		},
+		"./types": {
+			"types": "./dist/types/index.d.ts"
+		},
 		"./styles/tokens.css": "./dist/styles/tokens.css",
 		"./registry/*": "./dist/registry/*.json"
 	},
@@ -63,6 +66,9 @@
 		"./dist/components/*.js",
 		"./dist/cdn/*.js"
 	],
+	"engines": {
+		"node": ">=18"
+	},
 	"peerDependencies": {
 		"lit": "^3.0.0"
 	},

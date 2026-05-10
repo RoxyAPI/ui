@@ -131,14 +131,77 @@ async function copyDir(from: string, to: string) {
 
 // Each workspace publishes from its own package directory. npm auto-includes
 // README.md and LICENSE from that directory only, so the root files do not
-// land in the tarball. Copy them into both packages before each build so
-// npmjs.com renders the same README the github repo shows.
+// land in the tarball. Mirror the root README into both packages, then patch
+// the Install section so each package renders its own primary install path
+// first (jsDelivr UMD + Lit for `@roxyapi/ui`, `npm install @roxyapi/ui-react`
+// + JSX for `@roxyapi/ui-react`). The body of every other section is shared.
 async function copyRootDocsToWorkspaces() {
-	const targets = ['packages/ui', 'packages/ui-react'];
-	for (const target of targets) {
-		await copyFile('README.md', `${target}/README.md`);
-		await copyFile('LICENSE', `${target}/LICENSE`);
+	const root = await Bun.file('README.md').text();
+	const license = await Bun.file('LICENSE').text();
+
+	const uiInstall = `## Install
+
+\`\`\`bash
+npm install @roxyapi/ui
+# or
+bun add @roxyapi/ui
+\`\`\`
+
+\`\`\`ts
+import '@roxyapi/ui';
+// or per component
+import '@roxyapi/ui/components/natal-chart';
+\`\`\`
+
+React users get a typed package with the same components.
+
+\`\`\`bash
+npm install @roxyapi/ui-react
+\`\`\`
+
+\`\`\`tsx
+import { RoxyNatalChart } from '@roxyapi/ui-react';
+
+export function Chart({ data }: { data: NatalChart }) {
+\treturn <RoxyNatalChart data={data} />;
+}
+\`\`\``;
+
+	const reactInstall = `## Install
+
+\`\`\`bash
+npm install @roxyapi/ui-react @roxyapi/sdk
+\`\`\`
+
+\`\`\`tsx
+'use client';
+
+import { RoxyNatalChart } from '@roxyapi/ui-react';
+
+export function Chart({ data }: { data: NatalChart }) {
+\treturn <RoxyNatalChart data={data} />;
+}
+\`\`\`
+
+For frameworks that consume custom elements directly (Vue, Svelte, Angular, Solid, vanilla HTML, WordPress) install \`@roxyapi/ui\` instead.
+
+\`\`\`bash
+npm install @roxyapi/ui
+\`\`\``;
+
+	const installPattern = /^## Install[\s\S]*?(?=^## )/m;
+	if (!installPattern.test(root)) {
+		throw new Error(
+			"copyRootDocsToWorkspaces: '## Install' section not found in README.md",
+		);
 	}
+	const uiReadme = root.replace(installPattern, `${uiInstall}\n\n`);
+	const reactReadme = root.replace(installPattern, `${reactInstall}\n\n`);
+
+	await writeFile('packages/ui/README.md', uiReadme);
+	await writeFile('packages/ui/LICENSE', license);
+	await writeFile('packages/ui-react/README.md', reactReadme);
+	await writeFile('packages/ui-react/LICENSE', license);
 }
 
 async function buildReactBundles() {
