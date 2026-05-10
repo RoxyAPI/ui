@@ -1,6 +1,6 @@
-"use strict";var RoxyUI=(()=>{var he=Object.defineProperty;var qe=Object.getOwnPropertyDescriptor;var wt=Object.getOwnPropertyNames;var St=Object.prototype.hasOwnProperty;var kt=(i,r)=>{for(var e in r)he(i,e,{get:r[e],enumerable:!0})},At=(i,r,e,t)=>{if(r&&typeof r=="object"||typeof r=="function")for(let a of wt(r))!St.call(i,a)&&a!==e&&he(i,a,{get:()=>r[a],enumerable:!(t=qe(r,a))||t.enumerable});return i};var Ct=i=>At(he({},"__esModule",{value:!0}),i),p=(i,r,e,t)=>{for(var a=t>1?void 0:t?qe(r,e):r,o=i.length-1,n;o>=0;o--)(n=i[o])&&(a=(t?n(r,e,a):n(a))||a);return t&&a&&he(r,e,a),a};var hr={};kt(hr,{ROXY_COMPONENTS:()=>Se,ROXY_UI_COMPONENTS:()=>mr,ROXY_UI_VERSION:()=>$t,RoxyBiorhythmChart:()=>T,RoxyCompatibilityCard:()=>N,RoxyDashaTimeline:()=>M,RoxyData:()=>Y,RoxyDoshaCard:()=>z,RoxyEndpointForm:()=>R,RoxyGunaMilan:()=>V,RoxyHexagram:()=>D,RoxyHoroscopeCard:()=>O,RoxyKpPlanetsTable:()=>F,RoxyLocationSearch:()=>_,RoxyMoonPhase:()=>H,RoxyNatalChart:()=>G,RoxyNumerologyCard:()=>j,RoxyPanchangTable:()=>I,RoxySynastryChart:()=>J,RoxyTarotCard:()=>U,RoxyTarotSpread:()=>B,RoxyVedicKundli:()=>q});var ue=globalThis,ge=ue.ShadowRoot&&(ue.ShadyCSS===void 0||ue.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,ke=Symbol(),Ke=new WeakMap,se=class{constructor(r,e,t){if(this._$cssResult$=!0,t!==ke)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=r,this.t=e}get styleSheet(){let r=this.o,e=this.t;if(ge&&r===void 0){let t=e!==void 0&&e.length===1;t&&(r=Ke.get(e)),r===void 0&&((this.o=r=new CSSStyleSheet).replaceSync(this.cssText),t&&Ke.set(e,r))}return r}toString(){return this.cssText}},Ye=i=>new se(typeof i=="string"?i:i+"",void 0,ke),x=(i,...r)=>{let e=i.length===1?i[0]:r.reduce((t,a,o)=>t+(n=>{if(n._$cssResult$===!0)return n.cssText;if(typeof n=="number")return n;throw Error("Value passed to 'css' function must be a 'css' function result: "+n+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(a)+i[o+1],i[0]);return new se(e,i,ke)},Ve=(i,r)=>{if(ge)i.adoptedStyleSheets=r.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(let e of r){let t=document.createElement("style"),a=ue.litNonce;a!==void 0&&t.setAttribute("nonce",a),t.textContent=e.cssText,i.appendChild(t)}},Ae=ge?i=>i:i=>i instanceof CSSStyleSheet?(r=>{let e="";for(let t of r.cssRules)e+=t.cssText;return Ye(e)})(i):i;var{is:Et,defineProperty:_t,getOwnPropertyDescriptor:Rt,getOwnPropertyNames:Pt,getOwnPropertySymbols:Lt,getPrototypeOf:Tt}=Object,ye=globalThis,Fe=ye.trustedTypes,Nt=Fe?Fe.emptyScript:"",Mt=ye.reactiveElementPolyfillSupport,oe=(i,r)=>i,ie={toAttribute(i,r){switch(r){case Boolean:i=i?Nt:null;break;case Object:case Array:i=i==null?i:JSON.stringify(i)}return i},fromAttribute(i,r){let e=i;switch(r){case Boolean:e=i!==null;break;case Number:e=i===null?null:Number(i);break;case Object:case Array:try{e=JSON.parse(i)}catch{e=null}}return e}},xe=(i,r)=>!Et(i,r),Je={attribute:!0,type:String,converter:ie,reflect:!1,useDefault:!1,hasChanged:xe};Symbol.metadata??=Symbol("metadata"),ye.litPropertyMetadata??=new WeakMap;var L=class extends HTMLElement{static addInitializer(r){this._$Ei(),(this.l??=[]).push(r)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(r,e=Je){if(e.state&&(e.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(r)&&((e=Object.create(e)).wrapped=!0),this.elementProperties.set(r,e),!e.noAccessor){let t=Symbol(),a=this.getPropertyDescriptor(r,t,e);a!==void 0&&_t(this.prototype,r,a)}}static getPropertyDescriptor(r,e,t){let{get:a,set:o}=Rt(this.prototype,r)??{get(){return this[e]},set(n){this[e]=n}};return{get:a,set(n){let c=a?.call(this);o?.call(this,n),this.requestUpdate(r,c,t)},configurable:!0,enumerable:!0}}static getPropertyOptions(r){return this.elementProperties.get(r)??Je}static _$Ei(){if(this.hasOwnProperty(oe("elementProperties")))return;let r=Tt(this);r.finalize(),r.l!==void 0&&(this.l=[...r.l]),this.elementProperties=new Map(r.elementProperties)}static finalize(){if(this.hasOwnProperty(oe("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(oe("properties"))){let e=this.properties,t=[...Pt(e),...Lt(e)];for(let a of t)this.createProperty(a,e[a])}let r=this[Symbol.metadata];if(r!==null){let e=litPropertyMetadata.get(r);if(e!==void 0)for(let[t,a]of e)this.elementProperties.set(t,a)}this._$Eh=new Map;for(let[e,t]of this.elementProperties){let a=this._$Eu(e,t);a!==void 0&&this._$Eh.set(a,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(r){let e=[];if(Array.isArray(r)){let t=new Set(r.flat(1/0).reverse());for(let a of t)e.unshift(Ae(a))}else r!==void 0&&e.push(Ae(r));return e}static _$Eu(r,e){let t=e.attribute;return t===!1?void 0:typeof t=="string"?t:typeof r=="string"?r.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(r=>this.enableUpdating=r),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(r=>r(this))}addController(r){(this._$EO??=new Set).add(r),this.renderRoot!==void 0&&this.isConnected&&r.hostConnected?.()}removeController(r){this._$EO?.delete(r)}_$E_(){let r=new Map,e=this.constructor.elementProperties;for(let t of e.keys())this.hasOwnProperty(t)&&(r.set(t,this[t]),delete this[t]);r.size>0&&(this._$Ep=r)}createRenderRoot(){let r=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return Ve(r,this.constructor.elementStyles),r}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(r=>r.hostConnected?.())}enableUpdating(r){}disconnectedCallback(){this._$EO?.forEach(r=>r.hostDisconnected?.())}attributeChangedCallback(r,e,t){this._$AK(r,t)}_$ET(r,e){let t=this.constructor.elementProperties.get(r),a=this.constructor._$Eu(r,t);if(a!==void 0&&t.reflect===!0){let o=(t.converter?.toAttribute!==void 0?t.converter:ie).toAttribute(e,t.type);this._$Em=r,o==null?this.removeAttribute(a):this.setAttribute(a,o),this._$Em=null}}_$AK(r,e){let t=this.constructor,a=t._$Eh.get(r);if(a!==void 0&&this._$Em!==a){let o=t.getPropertyOptions(a),n=typeof o.converter=="function"?{fromAttribute:o.converter}:o.converter?.fromAttribute!==void 0?o.converter:ie;this._$Em=a;let c=n.fromAttribute(e,o.type);this[a]=c??this._$Ej?.get(a)??c,this._$Em=null}}requestUpdate(r,e,t,a=!1,o){if(r!==void 0){let n=this.constructor;if(a===!1&&(o=this[r]),t??=n.getPropertyOptions(r),!((t.hasChanged??xe)(o,e)||t.useDefault&&t.reflect&&o===this._$Ej?.get(r)&&!this.hasAttribute(n._$Eu(r,t))))return;this.C(r,e,t)}this.isUpdatePending===!1&&(this._$ES=this._$EP())}C(r,e,{useDefault:t,reflect:a,wrapped:o},n){t&&!(this._$Ej??=new Map).has(r)&&(this._$Ej.set(r,n??e??this[r]),o!==!0||n!==void 0)||(this._$AL.has(r)||(this.hasUpdated||t||(e=void 0),this._$AL.set(r,e)),a===!0&&this._$Em!==r&&(this._$Eq??=new Set).add(r))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}let r=this.scheduleUpdate();return r!=null&&await r,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(let[a,o]of this._$Ep)this[a]=o;this._$Ep=void 0}let t=this.constructor.elementProperties;if(t.size>0)for(let[a,o]of t){let{wrapped:n}=o,c=this[a];n!==!0||this._$AL.has(a)||c===void 0||this.C(a,void 0,o,c)}}let r=!1,e=this._$AL;try{r=this.shouldUpdate(e),r?(this.willUpdate(e),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(e)):this._$EM()}catch(t){throw r=!1,this._$EM(),t}r&&this._$AE(e)}willUpdate(r){}_$AE(r){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(r)),this.updated(r)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(r){return!0}update(r){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(r){}firstUpdated(r){}};L.elementStyles=[],L.shadowRootOptions={mode:"open"},L[oe("elementProperties")]=new Map,L[oe("finalized")]=new Map,Mt?.({ReactiveElement:L}),(ye.reactiveElementVersions??=[]).push("2.1.2");var Te=globalThis,We=i=>i,fe=Te.trustedTypes,Xe=fe?fe.createPolicy("lit-html",{createHTML:i=>i}):void 0,at="$lit$",K=`lit$${Math.random().toFixed(9).slice(2)}$`,st="?"+K,zt=`<${st}>`,Z=document,le=()=>Z.createComment(""),ce=i=>i===null||typeof i!="object"&&typeof i!="function",Ne=Array.isArray,Dt=i=>Ne(i)||typeof i?.[Symbol.iterator]=="function",Ce=`[ 	
-\f\r]`,ne=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Ze=/-->/g,Qe=/>/g,W=RegExp(`>|${Ce}(?:([^\\s"'>=/]+)(${Ce}*=${Ce}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`,"g"),et=/'/g,tt=/"/g,ot=/^(?:script|style|textarea|title)$/i,Me=i=>(r,...e)=>({_$litType$:i,strings:r,values:e}),s=Me(1),k=Me(2),vr=Me(3),Q=Symbol.for("lit-noChange"),l=Symbol.for("lit-nothing"),rt=new WeakMap,X=Z.createTreeWalker(Z,129);function it(i,r){if(!Ne(i)||!i.hasOwnProperty("raw"))throw Error("invalid template strings array");return Xe!==void 0?Xe.createHTML(r):r}var Ot=(i,r)=>{let e=i.length-1,t=[],a,o=r===2?"<svg>":r===3?"<math>":"",n=ne;for(let c=0;c<e;c++){let d=i[c],g,m,h=-1,w=0;for(;w<d.length&&(n.lastIndex=w,m=n.exec(d),m!==null);)w=n.lastIndex,n===ne?m[1]==="!--"?n=Ze:m[1]!==void 0?n=Qe:m[2]!==void 0?(ot.test(m[2])&&(a=RegExp("</"+m[2],"g")),n=W):m[3]!==void 0&&(n=W):n===W?m[0]===">"?(n=a??ne,h=-1):m[1]===void 0?h=-2:(h=n.lastIndex-m[2].length,g=m[1],n=m[3]===void 0?W:m[3]==='"'?tt:et):n===tt||n===et?n=W:n===Ze||n===Qe?n=ne:(n=W,a=void 0);let b=n===W&&i[c+1].startsWith("/>")?" ":"";o+=n===ne?d+zt:h>=0?(t.push(g),d.slice(0,h)+at+d.slice(h)+K+b):d+K+(h===-2?c:b)}return[it(i,o+(i[e]||"<?>")+(r===2?"</svg>":r===3?"</math>":"")),t]},de=class i{constructor({strings:r,_$litType$:e},t){let a;this.parts=[];let o=0,n=0,c=r.length-1,d=this.parts,[g,m]=Ot(r,e);if(this.el=i.createElement(g,t),X.currentNode=this.el.content,e===2||e===3){let h=this.el.content.firstChild;h.replaceWith(...h.childNodes)}for(;(a=X.nextNode())!==null&&d.length<c;){if(a.nodeType===1){if(a.hasAttributes())for(let h of a.getAttributeNames())if(h.endsWith(at)){let w=m[n++],b=a.getAttribute(h).split(K),$=/([.?@])?(.*)/.exec(w);d.push({type:1,index:o,name:$[2],strings:b,ctor:$[1]==="."?_e:$[1]==="?"?Re:$[1]==="@"?Pe:re}),a.removeAttribute(h)}else h.startsWith(K)&&(d.push({type:6,index:o}),a.removeAttribute(h));if(ot.test(a.tagName)){let h=a.textContent.split(K),w=h.length-1;if(w>0){a.textContent=fe?fe.emptyScript:"";for(let b=0;b<w;b++)a.append(h[b],le()),X.nextNode(),d.push({type:2,index:++o});a.append(h[w],le())}}}else if(a.nodeType===8)if(a.data===st)d.push({type:2,index:o});else{let h=-1;for(;(h=a.data.indexOf(K,h+1))!==-1;)d.push({type:7,index:o}),h+=K.length-1}o++}}static createElement(r,e){let t=Z.createElement("template");return t.innerHTML=r,t}};function te(i,r,e=i,t){if(r===Q)return r;let a=t!==void 0?e._$Co?.[t]:e._$Cl,o=ce(r)?void 0:r._$litDirective$;return a?.constructor!==o&&(a?._$AO?.(!1),o===void 0?a=void 0:(a=new o(i),a._$AT(i,e,t)),t!==void 0?(e._$Co??=[])[t]=a:e._$Cl=a),a!==void 0&&(r=te(i,a._$AS(i,r.values),a,t)),r}var Ee=class{constructor(r,e){this._$AV=[],this._$AN=void 0,this._$AD=r,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(r){let{el:{content:e},parts:t}=this._$AD,a=(r?.creationScope??Z).importNode(e,!0);X.currentNode=a;let o=X.nextNode(),n=0,c=0,d=t[0];for(;d!==void 0;){if(n===d.index){let g;d.type===2?g=new pe(o,o.nextSibling,this,r):d.type===1?g=new d.ctor(o,d.name,d.strings,this,r):d.type===6&&(g=new Le(o,this,r)),this._$AV.push(g),d=t[++c]}n!==d?.index&&(o=X.nextNode(),n++)}return X.currentNode=Z,a}p(r){let e=0;for(let t of this._$AV)t!==void 0&&(t.strings!==void 0?(t._$AI(r,t,e),e+=t.strings.length-2):t._$AI(r[e])),e++}},pe=class i{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(r,e,t,a){this.type=2,this._$AH=l,this._$AN=void 0,this._$AA=r,this._$AB=e,this._$AM=t,this.options=a,this._$Cv=a?.isConnected??!0}get parentNode(){let r=this._$AA.parentNode,e=this._$AM;return e!==void 0&&r?.nodeType===11&&(r=e.parentNode),r}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(r,e=this){r=te(this,r,e),ce(r)?r===l||r==null||r===""?(this._$AH!==l&&this._$AR(),this._$AH=l):r!==this._$AH&&r!==Q&&this._(r):r._$litType$!==void 0?this.$(r):r.nodeType!==void 0?this.T(r):Dt(r)?this.k(r):this._(r)}O(r){return this._$AA.parentNode.insertBefore(r,this._$AB)}T(r){this._$AH!==r&&(this._$AR(),this._$AH=this.O(r))}_(r){this._$AH!==l&&ce(this._$AH)?this._$AA.nextSibling.data=r:this.T(Z.createTextNode(r)),this._$AH=r}$(r){let{values:e,_$litType$:t}=r,a=typeof t=="number"?this._$AC(r):(t.el===void 0&&(t.el=de.createElement(it(t.h,t.h[0]),this.options)),t);if(this._$AH?._$AD===a)this._$AH.p(e);else{let o=new Ee(a,this),n=o.u(this.options);o.p(e),this.T(n),this._$AH=o}}_$AC(r){let e=rt.get(r.strings);return e===void 0&&rt.set(r.strings,e=new de(r)),e}k(r){Ne(this._$AH)||(this._$AH=[],this._$AR());let e=this._$AH,t,a=0;for(let o of r)a===e.length?e.push(t=new i(this.O(le()),this.O(le()),this,this.options)):t=e[a],t._$AI(o),a++;a<e.length&&(this._$AR(t&&t._$AB.nextSibling,a),e.length=a)}_$AR(r=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);r!==this._$AB;){let t=We(r).nextSibling;We(r).remove(),r=t}}setConnected(r){this._$AM===void 0&&(this._$Cv=r,this._$AP?.(r))}},re=class{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(r,e,t,a,o){this.type=1,this._$AH=l,this._$AN=void 0,this.element=r,this.name=e,this._$AM=a,this.options=o,t.length>2||t[0]!==""||t[1]!==""?(this._$AH=Array(t.length-1).fill(new String),this.strings=t):this._$AH=l}_$AI(r,e=this,t,a){let o=this.strings,n=!1;if(o===void 0)r=te(this,r,e,0),n=!ce(r)||r!==this._$AH&&r!==Q,n&&(this._$AH=r);else{let c=r,d,g;for(r=o[0],d=0;d<o.length-1;d++)g=te(this,c[t+d],e,d),g===Q&&(g=this._$AH[d]),n||=!ce(g)||g!==this._$AH[d],g===l?r=l:r!==l&&(r+=(g??"")+o[d+1]),this._$AH[d]=g}n&&!a&&this.j(r)}j(r){r===l?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,r??"")}},_e=class extends re{constructor(){super(...arguments),this.type=3}j(r){this.element[this.name]=r===l?void 0:r}},Re=class extends re{constructor(){super(...arguments),this.type=4}j(r){this.element.toggleAttribute(this.name,!!r&&r!==l)}},Pe=class extends re{constructor(r,e,t,a,o){super(r,e,t,a,o),this.type=5}_$AI(r,e=this){if((r=te(this,r,e,0)??l)===Q)return;let t=this._$AH,a=r===l&&t!==l||r.capture!==t.capture||r.once!==t.once||r.passive!==t.passive,o=r!==l&&(t===l||a);a&&this.element.removeEventListener(this.name,this,t),o&&this.element.addEventListener(this.name,this,r),this._$AH=r}handleEvent(r){typeof this._$AH=="function"?this._$AH.call(this.options?.host??this.element,r):this._$AH.handleEvent(r)}},Le=class{constructor(r,e,t){this.element=r,this.type=6,this._$AN=void 0,this._$AM=e,this.options=t}get _$AU(){return this._$AM._$AU}_$AI(r){te(this,r)}};var Ht=Te.litHtmlPolyfillSupport;Ht?.(de,pe),(Te.litHtmlVersions??=[]).push("3.3.2");var nt=(i,r,e)=>{let t=e?.renderBefore??r,a=t._$litPart$;if(a===void 0){let o=e?.renderBefore??null;t._$litPart$=a=new pe(r.insertBefore(le(),o),o,void 0,e??{})}return a._$AI(i),a};var ze=globalThis,y=class extends L{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){let r=super.createRenderRoot();return this.renderOptions.renderBefore??=r.firstChild,r}update(r){let e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(r),this._$Do=nt(e,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return Q}};y._$litElement$=!0,y.finalized=!0,ze.litElementHydrateSupport?.({LitElement:y});var Gt=ze.litElementPolyfillSupport;Gt?.({LitElement:y});(ze.litElementVersions??=[]).push("4.2.2");var f=i=>(r,e)=>{e!==void 0?e.addInitializer(()=>{customElements.define(i,r)}):customElements.define(i,r)};var jt={attribute:!0,type:String,converter:ie,reflect:!1,hasChanged:xe},It=(i=jt,r,e)=>{let{kind:t,metadata:a}=e,o=globalThis.litPropertyMetadata.get(a);if(o===void 0&&globalThis.litPropertyMetadata.set(a,o=new Map),t==="setter"&&((i=Object.create(i)).wrapped=!0),o.set(e.name,i),t==="accessor"){let{name:n}=e;return{set(c){let d=r.get.call(this);r.set.call(this,c),this.requestUpdate(n,d,i,!0,c)},init(c){return c!==void 0&&this.C(n,void 0,i,c),c}}}if(t==="setter"){let{name:n}=e;return function(c){let d=this[n];r.call(this,c),this.requestUpdate(n,d,i,!0,c)}}throw Error("Unsupported decorator location: "+t)};function u(i){return(r,e)=>typeof e=="object"?It(i,r,e):((t,a,o)=>{let n=a.hasOwnProperty(o);return a.constructor.createProperty(o,t),n?Object.getOwnPropertyDescriptor(a,o):void 0})(i,r,e)}function P(i){return u({...i,state:!0,attribute:!1})}var v=x`
+"use strict";var RoxyUI=(()=>{var he=Object.defineProperty;var Ke=Object.getOwnPropertyDescriptor;var St=Object.getOwnPropertyNames;var kt=Object.prototype.hasOwnProperty;var At=(i,r)=>{for(var e in r)he(i,e,{get:r[e],enumerable:!0})},Ct=(i,r,e,t)=>{if(r&&typeof r=="object"||typeof r=="function")for(let a of St(r))!kt.call(i,a)&&a!==e&&he(i,a,{get:()=>r[a],enumerable:!(t=Ke(r,a))||t.enumerable});return i};var Et=i=>Ct(he({},"__esModule",{value:!0}),i),p=(i,r,e,t)=>{for(var a=t>1?void 0:t?Ke(r,e):r,o=i.length-1,n;o>=0;o--)(n=i[o])&&(a=(t?n(r,e,a):n(a))||a);return t&&a&&he(r,e,a),a};var gr={};At(gr,{ROXY_COMPONENTS:()=>Se,ROXY_UI_COMPONENTS:()=>ur,ROXY_UI_VERSION:()=>wt,RoxyBiorhythmChart:()=>T,RoxyCompatibilityCard:()=>N,RoxyDashaTimeline:()=>M,RoxyData:()=>Y,RoxyDoshaCard:()=>z,RoxyEndpointForm:()=>R,RoxyGunaMilan:()=>V,RoxyHexagram:()=>D,RoxyHoroscopeCard:()=>O,RoxyKpPlanetsTable:()=>F,RoxyLocationSearch:()=>_,RoxyMoonPhase:()=>H,RoxyNatalChart:()=>G,RoxyNumerologyCard:()=>j,RoxyPanchangTable:()=>I,RoxySynastryChart:()=>J,RoxyTarotCard:()=>U,RoxyTarotSpread:()=>B,RoxyVedicKundli:()=>q});var ue=globalThis,ge=ue.ShadowRoot&&(ue.ShadyCSS===void 0||ue.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,ke=Symbol(),Ye=new WeakMap,se=class{constructor(r,e,t){if(this._$cssResult$=!0,t!==ke)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=r,this.t=e}get styleSheet(){let r=this.o,e=this.t;if(ge&&r===void 0){let t=e!==void 0&&e.length===1;t&&(r=Ye.get(e)),r===void 0&&((this.o=r=new CSSStyleSheet).replaceSync(this.cssText),t&&Ye.set(e,r))}return r}toString(){return this.cssText}},Ve=i=>new se(typeof i=="string"?i:i+"",void 0,ke),x=(i,...r)=>{let e=i.length===1?i[0]:r.reduce((t,a,o)=>t+(n=>{if(n._$cssResult$===!0)return n.cssText;if(typeof n=="number")return n;throw Error("Value passed to 'css' function must be a 'css' function result: "+n+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(a)+i[o+1],i[0]);return new se(e,i,ke)},Fe=(i,r)=>{if(ge)i.adoptedStyleSheets=r.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(let e of r){let t=document.createElement("style"),a=ue.litNonce;a!==void 0&&t.setAttribute("nonce",a),t.textContent=e.cssText,i.appendChild(t)}},Ae=ge?i=>i:i=>i instanceof CSSStyleSheet?(r=>{let e="";for(let t of r.cssRules)e+=t.cssText;return Ve(e)})(i):i;var{is:_t,defineProperty:Rt,getOwnPropertyDescriptor:Pt,getOwnPropertyNames:Lt,getOwnPropertySymbols:Tt,getPrototypeOf:Nt}=Object,ye=globalThis,Je=ye.trustedTypes,Mt=Je?Je.emptyScript:"",zt=ye.reactiveElementPolyfillSupport,oe=(i,r)=>i,ie={toAttribute(i,r){switch(r){case Boolean:i=i?Mt:null;break;case Object:case Array:i=i==null?i:JSON.stringify(i)}return i},fromAttribute(i,r){let e=i;switch(r){case Boolean:e=i!==null;break;case Number:e=i===null?null:Number(i);break;case Object:case Array:try{e=JSON.parse(i)}catch{e=null}}return e}},xe=(i,r)=>!_t(i,r),We={attribute:!0,type:String,converter:ie,reflect:!1,useDefault:!1,hasChanged:xe};Symbol.metadata??=Symbol("metadata"),ye.litPropertyMetadata??=new WeakMap;var L=class extends HTMLElement{static addInitializer(r){this._$Ei(),(this.l??=[]).push(r)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(r,e=We){if(e.state&&(e.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(r)&&((e=Object.create(e)).wrapped=!0),this.elementProperties.set(r,e),!e.noAccessor){let t=Symbol(),a=this.getPropertyDescriptor(r,t,e);a!==void 0&&Rt(this.prototype,r,a)}}static getPropertyDescriptor(r,e,t){let{get:a,set:o}=Pt(this.prototype,r)??{get(){return this[e]},set(n){this[e]=n}};return{get:a,set(n){let c=a?.call(this);o?.call(this,n),this.requestUpdate(r,c,t)},configurable:!0,enumerable:!0}}static getPropertyOptions(r){return this.elementProperties.get(r)??We}static _$Ei(){if(this.hasOwnProperty(oe("elementProperties")))return;let r=Nt(this);r.finalize(),r.l!==void 0&&(this.l=[...r.l]),this.elementProperties=new Map(r.elementProperties)}static finalize(){if(this.hasOwnProperty(oe("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(oe("properties"))){let e=this.properties,t=[...Lt(e),...Tt(e)];for(let a of t)this.createProperty(a,e[a])}let r=this[Symbol.metadata];if(r!==null){let e=litPropertyMetadata.get(r);if(e!==void 0)for(let[t,a]of e)this.elementProperties.set(t,a)}this._$Eh=new Map;for(let[e,t]of this.elementProperties){let a=this._$Eu(e,t);a!==void 0&&this._$Eh.set(a,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(r){let e=[];if(Array.isArray(r)){let t=new Set(r.flat(1/0).reverse());for(let a of t)e.unshift(Ae(a))}else r!==void 0&&e.push(Ae(r));return e}static _$Eu(r,e){let t=e.attribute;return t===!1?void 0:typeof t=="string"?t:typeof r=="string"?r.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(r=>this.enableUpdating=r),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(r=>r(this))}addController(r){(this._$EO??=new Set).add(r),this.renderRoot!==void 0&&this.isConnected&&r.hostConnected?.()}removeController(r){this._$EO?.delete(r)}_$E_(){let r=new Map,e=this.constructor.elementProperties;for(let t of e.keys())this.hasOwnProperty(t)&&(r.set(t,this[t]),delete this[t]);r.size>0&&(this._$Ep=r)}createRenderRoot(){let r=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return Fe(r,this.constructor.elementStyles),r}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(r=>r.hostConnected?.())}enableUpdating(r){}disconnectedCallback(){this._$EO?.forEach(r=>r.hostDisconnected?.())}attributeChangedCallback(r,e,t){this._$AK(r,t)}_$ET(r,e){let t=this.constructor.elementProperties.get(r),a=this.constructor._$Eu(r,t);if(a!==void 0&&t.reflect===!0){let o=(t.converter?.toAttribute!==void 0?t.converter:ie).toAttribute(e,t.type);this._$Em=r,o==null?this.removeAttribute(a):this.setAttribute(a,o),this._$Em=null}}_$AK(r,e){let t=this.constructor,a=t._$Eh.get(r);if(a!==void 0&&this._$Em!==a){let o=t.getPropertyOptions(a),n=typeof o.converter=="function"?{fromAttribute:o.converter}:o.converter?.fromAttribute!==void 0?o.converter:ie;this._$Em=a;let c=n.fromAttribute(e,o.type);this[a]=c??this._$Ej?.get(a)??c,this._$Em=null}}requestUpdate(r,e,t,a=!1,o){if(r!==void 0){let n=this.constructor;if(a===!1&&(o=this[r]),t??=n.getPropertyOptions(r),!((t.hasChanged??xe)(o,e)||t.useDefault&&t.reflect&&o===this._$Ej?.get(r)&&!this.hasAttribute(n._$Eu(r,t))))return;this.C(r,e,t)}this.isUpdatePending===!1&&(this._$ES=this._$EP())}C(r,e,{useDefault:t,reflect:a,wrapped:o},n){t&&!(this._$Ej??=new Map).has(r)&&(this._$Ej.set(r,n??e??this[r]),o!==!0||n!==void 0)||(this._$AL.has(r)||(this.hasUpdated||t||(e=void 0),this._$AL.set(r,e)),a===!0&&this._$Em!==r&&(this._$Eq??=new Set).add(r))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}let r=this.scheduleUpdate();return r!=null&&await r,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(let[a,o]of this._$Ep)this[a]=o;this._$Ep=void 0}let t=this.constructor.elementProperties;if(t.size>0)for(let[a,o]of t){let{wrapped:n}=o,c=this[a];n!==!0||this._$AL.has(a)||c===void 0||this.C(a,void 0,o,c)}}let r=!1,e=this._$AL;try{r=this.shouldUpdate(e),r?(this.willUpdate(e),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(e)):this._$EM()}catch(t){throw r=!1,this._$EM(),t}r&&this._$AE(e)}willUpdate(r){}_$AE(r){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(r)),this.updated(r)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(r){return!0}update(r){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(r){}firstUpdated(r){}};L.elementStyles=[],L.shadowRootOptions={mode:"open"},L[oe("elementProperties")]=new Map,L[oe("finalized")]=new Map,zt?.({ReactiveElement:L}),(ye.reactiveElementVersions??=[]).push("2.1.2");var Te=globalThis,Xe=i=>i,fe=Te.trustedTypes,Ze=fe?fe.createPolicy("lit-html",{createHTML:i=>i}):void 0,st="$lit$",K=`lit$${Math.random().toFixed(9).slice(2)}$`,ot="?"+K,Dt=`<${ot}>`,Z=document,le=()=>Z.createComment(""),ce=i=>i===null||typeof i!="object"&&typeof i!="function",Ne=Array.isArray,Ot=i=>Ne(i)||typeof i?.[Symbol.iterator]=="function",Ce=`[ 	
+\f\r]`,ne=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Qe=/-->/g,et=/>/g,W=RegExp(`>|${Ce}(?:([^\\s"'>=/]+)(${Ce}*=${Ce}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`,"g"),tt=/'/g,rt=/"/g,it=/^(?:script|style|textarea|title)$/i,Me=i=>(r,...e)=>({_$litType$:i,strings:r,values:e}),s=Me(1),k=Me(2),$r=Me(3),Q=Symbol.for("lit-noChange"),l=Symbol.for("lit-nothing"),at=new WeakMap,X=Z.createTreeWalker(Z,129);function nt(i,r){if(!Ne(i)||!i.hasOwnProperty("raw"))throw Error("invalid template strings array");return Ze!==void 0?Ze.createHTML(r):r}var Ht=(i,r)=>{let e=i.length-1,t=[],a,o=r===2?"<svg>":r===3?"<math>":"",n=ne;for(let c=0;c<e;c++){let d=i[c],m,g,u=-1,f=0;for(;f<d.length&&(n.lastIndex=f,g=n.exec(d),g!==null);)f=n.lastIndex,n===ne?g[1]==="!--"?n=Qe:g[1]!==void 0?n=et:g[2]!==void 0?(it.test(g[2])&&(a=RegExp("</"+g[2],"g")),n=W):g[3]!==void 0&&(n=W):n===W?g[0]===">"?(n=a??ne,u=-1):g[1]===void 0?u=-2:(u=n.lastIndex-g[2].length,m=g[1],n=g[3]===void 0?W:g[3]==='"'?rt:tt):n===rt||n===tt?n=W:n===Qe||n===et?n=ne:(n=W,a=void 0);let w=n===W&&i[c+1].startsWith("/>")?" ":"";o+=n===ne?d+Dt:u>=0?(t.push(m),d.slice(0,u)+st+d.slice(u)+K+w):d+K+(u===-2?c:w)}return[nt(i,o+(i[e]||"<?>")+(r===2?"</svg>":r===3?"</math>":"")),t]},de=class i{constructor({strings:r,_$litType$:e},t){let a;this.parts=[];let o=0,n=0,c=r.length-1,d=this.parts,[m,g]=Ht(r,e);if(this.el=i.createElement(m,t),X.currentNode=this.el.content,e===2||e===3){let u=this.el.content.firstChild;u.replaceWith(...u.childNodes)}for(;(a=X.nextNode())!==null&&d.length<c;){if(a.nodeType===1){if(a.hasAttributes())for(let u of a.getAttributeNames())if(u.endsWith(st)){let f=g[n++],w=a.getAttribute(u).split(K),$=/([.?@])?(.*)/.exec(f);d.push({type:1,index:o,name:$[2],strings:w,ctor:$[1]==="."?_e:$[1]==="?"?Re:$[1]==="@"?Pe:re}),a.removeAttribute(u)}else u.startsWith(K)&&(d.push({type:6,index:o}),a.removeAttribute(u));if(it.test(a.tagName)){let u=a.textContent.split(K),f=u.length-1;if(f>0){a.textContent=fe?fe.emptyScript:"";for(let w=0;w<f;w++)a.append(u[w],le()),X.nextNode(),d.push({type:2,index:++o});a.append(u[f],le())}}}else if(a.nodeType===8)if(a.data===ot)d.push({type:2,index:o});else{let u=-1;for(;(u=a.data.indexOf(K,u+1))!==-1;)d.push({type:7,index:o}),u+=K.length-1}o++}}static createElement(r,e){let t=Z.createElement("template");return t.innerHTML=r,t}};function te(i,r,e=i,t){if(r===Q)return r;let a=t!==void 0?e._$Co?.[t]:e._$Cl,o=ce(r)?void 0:r._$litDirective$;return a?.constructor!==o&&(a?._$AO?.(!1),o===void 0?a=void 0:(a=new o(i),a._$AT(i,e,t)),t!==void 0?(e._$Co??=[])[t]=a:e._$Cl=a),a!==void 0&&(r=te(i,a._$AS(i,r.values),a,t)),r}var Ee=class{constructor(r,e){this._$AV=[],this._$AN=void 0,this._$AD=r,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(r){let{el:{content:e},parts:t}=this._$AD,a=(r?.creationScope??Z).importNode(e,!0);X.currentNode=a;let o=X.nextNode(),n=0,c=0,d=t[0];for(;d!==void 0;){if(n===d.index){let m;d.type===2?m=new pe(o,o.nextSibling,this,r):d.type===1?m=new d.ctor(o,d.name,d.strings,this,r):d.type===6&&(m=new Le(o,this,r)),this._$AV.push(m),d=t[++c]}n!==d?.index&&(o=X.nextNode(),n++)}return X.currentNode=Z,a}p(r){let e=0;for(let t of this._$AV)t!==void 0&&(t.strings!==void 0?(t._$AI(r,t,e),e+=t.strings.length-2):t._$AI(r[e])),e++}},pe=class i{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(r,e,t,a){this.type=2,this._$AH=l,this._$AN=void 0,this._$AA=r,this._$AB=e,this._$AM=t,this.options=a,this._$Cv=a?.isConnected??!0}get parentNode(){let r=this._$AA.parentNode,e=this._$AM;return e!==void 0&&r?.nodeType===11&&(r=e.parentNode),r}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(r,e=this){r=te(this,r,e),ce(r)?r===l||r==null||r===""?(this._$AH!==l&&this._$AR(),this._$AH=l):r!==this._$AH&&r!==Q&&this._(r):r._$litType$!==void 0?this.$(r):r.nodeType!==void 0?this.T(r):Ot(r)?this.k(r):this._(r)}O(r){return this._$AA.parentNode.insertBefore(r,this._$AB)}T(r){this._$AH!==r&&(this._$AR(),this._$AH=this.O(r))}_(r){this._$AH!==l&&ce(this._$AH)?this._$AA.nextSibling.data=r:this.T(Z.createTextNode(r)),this._$AH=r}$(r){let{values:e,_$litType$:t}=r,a=typeof t=="number"?this._$AC(r):(t.el===void 0&&(t.el=de.createElement(nt(t.h,t.h[0]),this.options)),t);if(this._$AH?._$AD===a)this._$AH.p(e);else{let o=new Ee(a,this),n=o.u(this.options);o.p(e),this.T(n),this._$AH=o}}_$AC(r){let e=at.get(r.strings);return e===void 0&&at.set(r.strings,e=new de(r)),e}k(r){Ne(this._$AH)||(this._$AH=[],this._$AR());let e=this._$AH,t,a=0;for(let o of r)a===e.length?e.push(t=new i(this.O(le()),this.O(le()),this,this.options)):t=e[a],t._$AI(o),a++;a<e.length&&(this._$AR(t&&t._$AB.nextSibling,a),e.length=a)}_$AR(r=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);r!==this._$AB;){let t=Xe(r).nextSibling;Xe(r).remove(),r=t}}setConnected(r){this._$AM===void 0&&(this._$Cv=r,this._$AP?.(r))}},re=class{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(r,e,t,a,o){this.type=1,this._$AH=l,this._$AN=void 0,this.element=r,this.name=e,this._$AM=a,this.options=o,t.length>2||t[0]!==""||t[1]!==""?(this._$AH=Array(t.length-1).fill(new String),this.strings=t):this._$AH=l}_$AI(r,e=this,t,a){let o=this.strings,n=!1;if(o===void 0)r=te(this,r,e,0),n=!ce(r)||r!==this._$AH&&r!==Q,n&&(this._$AH=r);else{let c=r,d,m;for(r=o[0],d=0;d<o.length-1;d++)m=te(this,c[t+d],e,d),m===Q&&(m=this._$AH[d]),n||=!ce(m)||m!==this._$AH[d],m===l?r=l:r!==l&&(r+=(m??"")+o[d+1]),this._$AH[d]=m}n&&!a&&this.j(r)}j(r){r===l?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,r??"")}},_e=class extends re{constructor(){super(...arguments),this.type=3}j(r){this.element[this.name]=r===l?void 0:r}},Re=class extends re{constructor(){super(...arguments),this.type=4}j(r){this.element.toggleAttribute(this.name,!!r&&r!==l)}},Pe=class extends re{constructor(r,e,t,a,o){super(r,e,t,a,o),this.type=5}_$AI(r,e=this){if((r=te(this,r,e,0)??l)===Q)return;let t=this._$AH,a=r===l&&t!==l||r.capture!==t.capture||r.once!==t.once||r.passive!==t.passive,o=r!==l&&(t===l||a);a&&this.element.removeEventListener(this.name,this,t),o&&this.element.addEventListener(this.name,this,r),this._$AH=r}handleEvent(r){typeof this._$AH=="function"?this._$AH.call(this.options?.host??this.element,r):this._$AH.handleEvent(r)}},Le=class{constructor(r,e,t){this.element=r,this.type=6,this._$AN=void 0,this._$AM=e,this.options=t}get _$AU(){return this._$AM._$AU}_$AI(r){te(this,r)}};var Gt=Te.litHtmlPolyfillSupport;Gt?.(de,pe),(Te.litHtmlVersions??=[]).push("3.3.2");var lt=(i,r,e)=>{let t=e?.renderBefore??r,a=t._$litPart$;if(a===void 0){let o=e?.renderBefore??null;t._$litPart$=a=new pe(r.insertBefore(le(),o),o,void 0,e??{})}return a._$AI(i),a};var ze=globalThis,y=class extends L{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){let r=super.createRenderRoot();return this.renderOptions.renderBefore??=r.firstChild,r}update(r){let e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(r),this._$Do=lt(e,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return Q}};y._$litElement$=!0,y.finalized=!0,ze.litElementHydrateSupport?.({LitElement:y});var jt=ze.litElementPolyfillSupport;jt?.({LitElement:y});(ze.litElementVersions??=[]).push("4.2.2");var v=i=>(r,e)=>{e!==void 0?e.addInitializer(()=>{customElements.define(i,r)}):customElements.define(i,r)};var It={attribute:!0,type:String,converter:ie,reflect:!1,hasChanged:xe},Ut=(i=It,r,e)=>{let{kind:t,metadata:a}=e,o=globalThis.litPropertyMetadata.get(a);if(o===void 0&&globalThis.litPropertyMetadata.set(a,o=new Map),t==="setter"&&((i=Object.create(i)).wrapped=!0),o.set(e.name,i),t==="accessor"){let{name:n}=e;return{set(c){let d=r.get.call(this);r.set.call(this,c),this.requestUpdate(n,d,i,!0,c)},init(c){return c!==void 0&&this.C(n,void 0,i,c),c}}}if(t==="setter"){let{name:n}=e;return function(c){let d=this[n];r.call(this,c),this.requestUpdate(n,d,i,!0,c)}}throw Error("Unsupported decorator location: "+t)};function h(i){return(r,e)=>typeof e=="object"?Ut(i,r,e):((t,a,o)=>{let n=a.hasOwnProperty(o);return a.constructor.createProperty(o,t),n?Object.getOwnPropertyDescriptor(a,o):void 0})(i,r,e)}function P(i){return h({...i,state:!0,attribute:!1})}var b=x`
 	:host {
 		display: block;
 		container-type: inline-size;
@@ -82,13 +82,13 @@
 		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 		outline-offset: 2px;
 	}
-`;var lt={physical:"#dc2626",emotional:"#0284c7",intellectual:"#16a34a",intuitive:"#a855f7",aesthetic:"#f59e0b",awareness:"#ec4899",spiritual:"#14b8a6",passion:"#ef4444",mastery:"#6366f1",wisdom:"#475569"},T=class extends y{constructor(){super(...arguments);this.data=null;this.mode="daily"}render(){let e=this.data;return e?this.mode==="critical-days"&&"criticalDays"in e?this.renderCritical(e):this.mode==="forecast"&&"days"in e?this.renderForecast(e):this.renderDaily(e):s`<div class="roxy-empty" role="status">No biorhythm data</div>`}renderDaily(e){let t=e.quickRead??{},a=Object.entries(t).map(([o,n])=>{let c=typeof n=="number"?n:0,d=Math.abs(c)>1?c/100:c;return[o,d]});return s`<section class="wrap" aria-label="Daily biorhythm">
+`;var ct={physical:"#dc2626",emotional:"#0284c7",intellectual:"#16a34a",intuitive:"#a855f7",aesthetic:"#f59e0b",awareness:"#ec4899",spiritual:"#14b8a6",passion:"#ef4444",mastery:"#6366f1",wisdom:"#475569"},T=class extends y{constructor(){super(...arguments);this.data=null;this.mode="daily"}render(){let e=this.data;return e?this.mode==="critical-days"&&"criticalDays"in e?this.renderCritical(e):this.mode==="forecast"&&"days"in e?this.renderForecast(e):this.renderDaily(e):s`<div class="roxy-empty" role="status">No biorhythm data</div>`}renderDaily(e){let t=e.quickRead??{},a=Object.entries(t).map(([o,n])=>{let c=typeof n=="number"?n:0,d=Math.abs(c)>1?c/100:c;return[o,d]});return s`<section class="wrap" aria-label="Daily biorhythm">
 			<header class="head">
 				<h2 class="title">Biorhythm</h2>
 				${typeof e.energyRating=="number"?s`<span class="energy">Energy ${e.energyRating}/10</span>`:l}
 			</header>
 			<div class="bars" role="list">
-				${a.map(([o,n])=>{let c=(n+1)/2*100,d=lt[o]??"var(--roxy-accent, #f59e0b)";return s`<div class="bar" role="listitem">
+				${a.map(([o,n])=>{let c=(n+1)/2*100,d=ct[o]??"var(--roxy-accent, #f59e0b)";return s`<div class="bar" role="listitem">
 						<span style="text-transform: capitalize">${o}</span>
 						<span class="track">
 							<span
@@ -120,7 +120,7 @@
 					stroke="var(--roxy-border, #e4e4e7)"
 					stroke-width="1"
 				/>
-				${c.map(d=>{let g=t.map((h,w)=>{let b=h[d]??0,$=w*n,Be=o/2-b/100*(o/2-8);return`${$.toFixed(2)},${Be.toFixed(2)}`}).join(" "),m=lt[d]??"#475569";return k`<polyline points=${g} fill="none" stroke=${m} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />`})}
+				${c.map(d=>{let m=t.map((u,f)=>{let w=u[d]??0,$=f*n,qe=o/2-w/100*(o/2-8);return`${$.toFixed(2)},${qe.toFixed(2)}`}).join(" "),g=ct[d]??"#475569";return k`<polyline points=${m} fill="none" stroke=${g} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />`})}
 			</svg>
 			${e.summary?.periodAdvice?s`<p class="advice">${e.summary.periodAdvice}</p>`:l}
 		</section>`}renderCritical(e){return s`<section class="wrap" aria-label="Critical days">
@@ -133,7 +133,7 @@
 						>${t.date} · ${t.cycle} ${t.severity}</span
 					>`)}
 			</div>
-		</section>`}};T.styles=[v,x`
+		</section>`}};T.styles=[b,x`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -209,7 +209,7 @@
 				display: inline-block;
 				margin: 2px;
 			}
-		`],p([u({attribute:!1})],T.prototype,"data",2),p([u({type:String,reflect:!0})],T.prototype,"mode",2),T=p([f("roxy-biorhythm-chart")],T);function ee(i){if(typeof i!="string"||i.length===0||/^\d{4}-\d{2}-\d{2}$/.test(i))return"";let e=/^\d{2}:\d{2}(:\d{2})?$/.test(i)?`1970-01-01T${i}`:i,t=new Date(e);return Number.isNaN(t.getTime())?i:t.toLocaleTimeString(void 0,{hour:"numeric",minute:"2-digit",hour12:!0})}function ct(i){if(typeof i!="string"||i.length===0)return"";let r=new Date(/^\d{4}-\d{2}-\d{2}$/.test(i)?`${i}T00:00:00`:i);return Number.isNaN(r.getTime())?i:r.toLocaleDateString(void 0,{month:"short",day:"numeric",year:"numeric"})}function De(i){if(!i)return"";let r=ee(i.start),e=ee(i.end);return r&&e?`${r} - ${e}`:r||e||""}function A(i,r=1){return typeof i!="number"||!Number.isFinite(i)?"":i.toFixed(r).replace(/\.?0+$/,"")}function dt(i,r=1){let e=A(i,r);return e?`${e}%`:""}var N=class extends y{constructor(){super(...arguments);this.data=null;this.mode="astrology"}getBreakdown(){let e=this.data;if(!e)return{};if("categories"in e&&e.categories){let t={};for(let[a,o]of Object.entries(e.categories))typeof o=="number"&&Number.isFinite(o)&&(t[a]=o);return t}return{}}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No compatibility data</div>`;let t=e.overallScore,a=this.getBreakdown(),o="rating"in e?e.rating:void 0,n="archetype"in e?e.archetype:void 0,c="advice"in e?e.advice:void 0,d="summary"in e?e.summary:void 0,g="interpretation"in e?e.interpretation:void 0,m="strengths"in e?e.strengths:void 0,h="challenges"in e?e.challenges:void 0,w="keyAspects"in e?e.keyAspects:void 0;return s`<article
+		`],p([h({attribute:!1})],T.prototype,"data",2),p([h({type:String,reflect:!0})],T.prototype,"mode",2),T=p([v("roxy-biorhythm-chart")],T);function ee(i){if(typeof i!="string"||i.length===0||/^\d{4}-\d{2}-\d{2}$/.test(i))return"";let e=/^\d{2}:\d{2}(:\d{2})?$/.test(i)?`1970-01-01T${i}`:i,t=new Date(e);return Number.isNaN(t.getTime())?i:t.toLocaleTimeString(void 0,{hour:"numeric",minute:"2-digit",hour12:!0})}function dt(i){if(typeof i!="string"||i.length===0)return"";let r=new Date(/^\d{4}-\d{2}-\d{2}$/.test(i)?`${i}T00:00:00`:i);return Number.isNaN(r.getTime())?i:r.toLocaleDateString(void 0,{month:"short",day:"numeric",year:"numeric"})}function De(i){if(!i)return"";let r=ee(i.start),e=ee(i.end);return r&&e?`${r} - ${e}`:r||e||""}function A(i,r=1){return typeof i!="number"||!Number.isFinite(i)?"":i.toFixed(r).replace(/\.?0+$/,"")}function pt(i,r=1){let e=A(i,r);return e?`${e}%`:""}var N=class extends y{constructor(){super(...arguments);this.data=null;this.mode="astrology"}getBreakdown(){let e=this.data;if(!e)return{};if("categories"in e&&e.categories){let t={};for(let[a,o]of Object.entries(e.categories))typeof o=="number"&&Number.isFinite(o)&&(t[a]=o);return t}return{}}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No compatibility data</div>`;let t=e.overallScore,a=this.getBreakdown(),o="rating"in e?e.rating:void 0,n="archetype"in e?e.archetype:void 0,c="advice"in e?e.advice:void 0,d="summary"in e?e.summary:void 0,m="interpretation"in e?e.interpretation:void 0,g="strengths"in e?e.strengths:void 0,u="challenges"in e?e.challenges:void 0,f="keyAspects"in e?e.keyAspects:void 0;return s`<article
 			class="card"
 			aria-label=${`Compatibility (${this.mode})`}
 		>
@@ -222,8 +222,8 @@
 			</div>
 
 			${Object.keys(a).length>0?s`<div role="list">
-						${Object.entries(a).map(([b,$])=>s`<div class="bar-row" role="listitem">
-								<span style="text-transform: capitalize">${b}</span>
+						${Object.entries(a).map(([w,$])=>s`<div class="bar-row" role="listitem">
+								<span style="text-transform: capitalize">${w}</span>
 								<span class="bar"
 									><span style="width: ${Math.max(0,Math.min(100,$))}%"></span
 								></span>
@@ -235,29 +235,29 @@
 						${n.description?s` · ${n.description}`:l}
 					</p>`:l}
 			${d?s`<p>${d}</p>`:l}
-			${g&&!d?s`<p>${g}</p>`:l}
+			${m&&!d?s`<p>${m}</p>`:l}
 			${c?s`<p>${c}</p>`:l}
-			${(m?.length??0)>0||(h?.length??0)>0?s`<div class="lists">
-						${m?.length?s`<div>
+			${(g?.length??0)>0||(u?.length??0)>0?s`<div class="lists">
+						${g?.length?s`<div>
 									<h3>Strengths</h3>
 									<ul>
-										${m.map(b=>s`<li>${b}</li>`)}
+										${g.map(w=>s`<li>${w}</li>`)}
 									</ul>
 								</div>`:l}
-						${h?.length?s`<div>
+						${u?.length?s`<div>
 									<h3>Challenges</h3>
 									<ul>
-										${h.map(b=>s`<li>${b}</li>`)}
+										${u.map(w=>s`<li>${w}</li>`)}
 									</ul>
 								</div>`:l}
 					</div>`:l}
-			${w?.length?s`<div>
+			${f?.length?s`<div>
 						<h3 style="margin: 0 0 0.25rem; font-size: var(--roxy-text-xs); color: var(--roxy-muted); text-transform: uppercase; letter-spacing: 0.06em;">Key aspects</h3>
 						<ul style="margin: 0; padding-left: 1rem; font-size: var(--roxy-text-sm);">
-							${w.slice(0,6).map(b=>s`<li>${Ut(b)}</li>`)}
+							${f.slice(0,6).map(w=>s`<li>${Bt(w)}</li>`)}
 						</ul>
 					</div>`:l}
-		</article>`}};N.styles=[v,x`
+		</article>`}};N.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -341,7 +341,7 @@
 				margin: 0;
 				padding-left: var(--roxy-space-md, 1rem);
 			}
-		`],p([u({attribute:!1})],N.prototype,"data",2),p([u({type:String,reflect:!0})],N.prototype,"mode",2),N=p([f("roxy-compatibility-card")],N);function Ut(i){let r=i.type.toLowerCase().replace(/_/g,"-"),e=typeof i.orb=="number"?` (orb ${A(i.orb,1)}\xB0)`:"",t=[i.planet1,r,i.planet2].filter(Boolean).join(" ");return i.description?`${t}${e} \xB7 ${i.description}`:`${t}${e}`}var M=class extends y{constructor(){super(...arguments);this.data=null;this.period="current"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No dasha data</div>`;let t=this.collectPeriods(e),a=t.length?Math.max(...t.map(o=>o.durationYears)):0;return s`<div class="wrap" aria-label="Dasha timeline">
+		`],p([h({attribute:!1})],N.prototype,"data",2),p([h({type:String,reflect:!0})],N.prototype,"mode",2),N=p([v("roxy-compatibility-card")],N);function Bt(i){let r=i.type.toLowerCase().replace(/_/g,"-"),e=typeof i.orb=="number"?` (orb ${A(i.orb,1)}\xB0)`:"",t=[i.planet1,r,i.planet2].filter(Boolean).join(" ");return i.description?`${t}${e} \xB7 ${i.description}`:`${t}${e}`}var M=class extends y{constructor(){super(...arguments);this.data=null;this.period="current"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No dasha data</div>`;let t=this.collectPeriods(e),a=t.length?Math.max(...t.map(o=>o.durationYears)):0;return s`<div class="wrap" aria-label="Dasha timeline">
 			<header class="head">
 				<h2 class="title">
 					${this.period==="major"?"Vimshottari Mahadasha":this.period==="sub"?"Antardasha":"Active dashas"}
@@ -376,10 +376,10 @@
 			<span>${e.planet}</span>
 			<span class="bar-track"><span style="width: ${o}%"></span></span>
 			<span class="dates">
-				${e.startDate?pt(e.startDate):""}
-				${e.endDate?s`- ${pt(e.endDate)}`:""}
+				${e.startDate?mt(e.startDate):""}
+				${e.endDate?s`- ${mt(e.endDate)}`:""}
 			</span>
-		</div>`}};M.styles=[v,x`
+		</div>`}};M.styles=[b,x`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -454,7 +454,7 @@
 				font-variant-numeric: tabular-nums;
 				text-align: right;
 			}
-		`],p([u({attribute:!1})],M.prototype,"data",2),p([u({type:String,reflect:!0})],M.prototype,"period",2),M=p([f("roxy-dasha-timeline")],M);function pt(i){let r=i.match(/^(\d{4})/);return r?r[1]:i}var Bt=["title","name","label","heading","overview","summary"],qt=["imageUrl","image","icon","symbol"],Kt=["imageUrl","image"],Y=class extends y{constructor(){super(...arguments);this.data=null}render(){return this.data==null?s`<div class="roxy-empty" role="status">No data</div>`:s`<div
+		`],p([h({attribute:!1})],M.prototype,"data",2),p([h({type:String,reflect:!0})],M.prototype,"period",2),M=p([v("roxy-dasha-timeline")],M);function mt(i){let r=i.match(/^(\d{4})/);return r?r[1]:i}var qt=["title","name","label","heading","overview","summary"],Kt=["imageUrl","image","icon","symbol"],Yt=["imageUrl","image"],Y=class extends y{constructor(){super(...arguments);this.data=null}render(){return this.data==null?s`<div class="roxy-empty" role="status">No data</div>`:s`<div
 			class="roxy-card"
 			aria-label="Generic data display"
 		>
@@ -474,7 +474,7 @@
 						${t.map(o=>s`<td>${this.formatPrimitive(a[o])}</td>`)}
 					</tr>`)}
 			</tbody>
-		</table>`}renderObject(e){let t=Bt.find(c=>typeof e[c]=="string"),a=qt.find(c=>typeof e[c]=="string"&&e[c].startsWith("http")),o=t!=="summary"&&typeof e.summary=="string"?"summary":null,n=Object.entries(e).filter(([c,d])=>c!==t&&c!==o&&!Kt.includes(c)&&d!==null&&d!==void 0);return s`
+		</table>`}renderObject(e){let t=qt.find(c=>typeof e[c]=="string"),a=Kt.find(c=>typeof e[c]=="string"&&e[c].startsWith("http")),o=t!=="summary"&&typeof e.summary=="string"?"summary":null,n=Object.entries(e).filter(([c,d])=>c!==t&&c!==o&&!Yt.includes(c)&&d!==null&&d!==void 0);return s`
 			${a?s`<img
 						class="roxy-image"
 						src=${String(e[a])}
@@ -491,7 +491,7 @@
 					</dl>`:l}
 		`}renderField(e){return e==null?"":typeof e=="string"?e:typeof e=="number"||typeof e=="boolean"?String(e):Array.isArray(e)&&e.every(a=>["string","number","boolean"].includes(typeof a))?s`<ul class="roxy-chips">
 					${e.map(a=>s`<li>${String(a)}</li>`)}
-				</ul>`:s`<roxy-data .data=${e}></roxy-data>`}formatPrimitive(e){return e==null?"":typeof e=="string"?e:typeof e=="number"||typeof e=="boolean"?String(e):Array.isArray(e)?e.map(String).join(", "):JSON.stringify(e)}collectKeys(e){let t=new Set;for(let a of e)for(let o of Object.keys(a))t.add(o);return Array.from(t)}humanize(e){return e.replace(/[_-]+/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").replace(/^\w/,t=>t.toUpperCase())}};Y.styles=[v,x`
+				</ul>`:s`<roxy-data .data=${e}></roxy-data>`}formatPrimitive(e){return e==null?"":typeof e=="string"?e:typeof e=="number"||typeof e=="boolean"?String(e):Array.isArray(e)?e.map(String).join(", "):JSON.stringify(e)}collectKeys(e){let t=new Set;for(let a of e)for(let o of Object.keys(a))t.add(o);return Array.from(t)}humanize(e){return e.replace(/[_-]+/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").replace(/^\w/,t=>t.toUpperCase())}};Y.styles=[b,x`
 			.roxy-card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -585,7 +585,7 @@
 				margin: 0 0 var(--roxy-space-xs, 0.25rem) 0;
 				text-transform: capitalize;
 			}
-		`],p([u({attribute:!1})],Y.prototype,"data",2),Y=p([f("roxy-data")],Y);var Yt={manglik:"Mangal Dosha",kalsarpa:"Kaal Sarp Dosha",sadhesati:"Sade Sati"},z=class extends y{constructor(){super(...arguments);this.data=null;this.type="manglik"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No dosha data</div>`;let t=!!e.present,a=Yt[this.type]??this.type,o=(e.severity??"").toLowerCase();return s`<article
+		`],p([h({attribute:!1})],Y.prototype,"data",2),Y=p([v("roxy-data")],Y);var Vt={manglik:"Mangal Dosha",kalsarpa:"Kaal Sarp Dosha",sadhesati:"Sade Sati"},z=class extends y{constructor(){super(...arguments);this.data=null;this.type="manglik"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No dosha data</div>`;let t=!!e.present,a=Vt[this.type]??this.type,o=(e.severity??"").toLowerCase();return s`<article
 			class="card"
 			aria-label=${a}
 		>
@@ -623,7 +623,7 @@
 					<h3>${a}</h3>
 					<p>${o}</p>
 				</div>`)}
-		</div>`}};z.styles=[v,x`
+		</div>`}};z.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -712,9 +712,9 @@
 				margin: 0;
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
-		`],p([u({attribute:!1})],z.prototype,"data",2),p([u({type:String,reflect:!0})],z.prototype,"type",2),z=p([f("roxy-dosha-card")],z);var R=class extends y{constructor(){super(...arguments);this.endpoint="vedic-astrology/birth-chart";this.method="POST";this.specUrl="https://roxyapi.com/api/v2/openapi.json";this.submitLabel="Submit";this.fields=[];this.values={};this.hasLocation=!1;this.loaded=!1;this.onLocation=e=>{let t=e.detail;t&&(this.values={...this.values,latitude:t.latitude,longitude:t.longitude,timezone:t.timezone??t.utcOffset})};this.onSubmit=e=>{e.preventDefault();let t=this.fields.filter(a=>a.required).filter(a=>this.values[a.name]===void 0||this.values[a.name]==="");if(t.length>0){this.dispatchEvent(new CustomEvent("roxy-validation-error",{detail:{missing:t.map(a=>a.name)},bubbles:!0,composed:!0}));return}this.dispatchEvent(new CustomEvent("roxy-submit",{detail:{endpoint:this.endpoint,values:this.values},bubbles:!0,composed:!0}))}}connectedCallback(){super.connectedCallback(),this.loadSchema()}async loadSchema(){try{let e=await fetch(this.specUrl);if(!e.ok)throw new Error(`HTTP ${e.status}`);let t=await e.json(),a=`/${this.endpoint.replace(/^\//,"")}`,o=t.paths?.[a]?.[this.method.toLowerCase()];if(!o)return;let n=t.components?.schemas??{},c=[],d;if(o.requestBody){let m=o.requestBody.content?.["application/json"]?.schema;d=this.resolve(m,n)}if(d?.properties){let m=new Set(d.required??[]);for(let[h,w]of Object.entries(d.properties)){let b=this.resolve(w,n)??{};c.push({name:h,type:this.fieldType(b),required:m.has(h),description:b.description,enum:b.enum,min:b.minimum,max:b.maximum,default:b.default})}}for(let m of o.parameters??[])if(m.in==="path"||m.in==="query"){let h=this.resolve(m.schema,n)??{};c.push({name:m.name,type:this.fieldType(h),required:!!m.required,description:h.description,enum:h.enum,default:h.default})}this.fields=c,this.hasLocation=c.some(m=>m.name==="latitude")&&c.some(m=>m.name==="longitude")&&c.some(m=>m.name==="timezone");let g={};for(let m of c)m.default!==void 0&&(g[m.name]=m.default);this.values=g,this.loaded=!0}catch{this.loaded=!0}}resolve(e,t){if(e){if("$ref"in e&&e.$ref){let a=e.$ref.split("/").pop();return a?t[a]:void 0}return e}}fieldType(e){return e.enum?"enum":e.format==="date"?"date":e.format==="time"?"time":e.format==="date-time"?"datetime":e.type==="integer"||e.type==="number"?"number":"text"}setValue(e,t){this.values={...this.values,[e]:t}}render(){if(!this.loaded)return s`<form><div class="roxy-skeleton" style="height: 8rem"></div></form>`;let e=t=>{if(this.hasLocation&&(t.name==="latitude"||t.name==="longitude"||t.name==="timezone"))return l;let a=`roxy-form-${t.name}`;return s`<div class="field">
+		`],p([h({attribute:!1})],z.prototype,"data",2),p([h({type:String,reflect:!0})],z.prototype,"type",2),z=p([v("roxy-dosha-card")],z);var Oe=new Map;async function Ft(i){let r=Oe.get(i);return r||(r=fetch(i).then(async e=>{if(!e.ok)throw Oe.delete(i),new Error(`HTTP ${e.status}`);return await e.json()}),Oe.set(i,r)),r}var R=class extends y{constructor(){super(...arguments);this.endpoint="vedic-astrology/birth-chart";this.method="POST";this.specUrl="https://roxyapi.com/api/v2/openapi.json";this.submitLabel="Submit";this.fields=[];this.values={};this.hasLocation=!1;this.loaded=!1;this.onLocation=e=>{let t=e.detail;t&&(this.values={...this.values,latitude:t.latitude,longitude:t.longitude,timezone:t.timezone??t.utcOffset})};this.onSubmit=e=>{e.preventDefault();let t=this.fields.filter(a=>a.required).filter(a=>this.values[a.name]===void 0||this.values[a.name]==="");if(t.length>0){this.dispatchEvent(new CustomEvent("roxy-validation-error",{detail:{missing:t.map(a=>a.name)},bubbles:!0,composed:!0}));return}this.dispatchEvent(new CustomEvent("roxy-submit",{detail:{endpoint:this.endpoint,values:this.values},bubbles:!0,composed:!0}))}}connectedCallback(){super.connectedCallback(),this.loadSchema()}async loadSchema(){try{let e=await Ft(this.specUrl),t=`/${this.endpoint.replace(/^\//,"")}`,a=e.paths?.[t]?.[this.method.toLowerCase()];if(!a)return;let o=e.components?.schemas??{},n=[],c;if(a.requestBody){let m=a.requestBody.content?.["application/json"]?.schema;c=this.resolve(m,o)}if(c?.properties){let m=new Set(c.required??[]);for(let[g,u]of Object.entries(c.properties)){let f=this.resolve(u,o)??{};n.push({name:g,type:this.fieldType(f),required:m.has(g),description:f.description,enum:f.enum,min:f.minimum,max:f.maximum,default:f.default})}}for(let m of a.parameters??[])if(m.in==="path"||m.in==="query"){let g=this.resolve(m.schema,o)??{};n.push({name:m.name,type:this.fieldType(g),required:!!m.required,description:g.description,enum:g.enum,default:g.default})}this.fields=n,this.hasLocation=n.some(m=>m.name==="latitude")&&n.some(m=>m.name==="longitude")&&n.some(m=>m.name==="timezone");let d={};for(let m of n)m.default!==void 0&&(d[m.name]=m.default);this.values=d,this.loaded=!0}catch{this.loaded=!0}}resolve(e,t){if(e){if("$ref"in e&&e.$ref){let a=e.$ref.split("/").pop();return a?t[a]:void 0}return e}}fieldType(e){return e.enum?"enum":e.format==="date"?"date":e.format==="time"?"time":e.format==="date-time"?"datetime":e.type==="integer"||e.type==="number"?"number":"text"}setValue(e,t){this.values={...this.values,[e]:t}}render(){if(!this.loaded)return s`<form><div class="roxy-skeleton" style="height: 8rem"></div></form>`;let e=t=>{if(this.hasLocation&&(t.name==="latitude"||t.name==="longitude"||t.name==="timezone"))return l;let a=`roxy-form-${t.name}`;return s`<div class="field">
 				<label for=${a}>
-					${mt(t.name)}${t.required?s`<span class="req" aria-hidden="true">*</span>`:l}
+					${ht(t.name)}${t.required?s`<span class="req" aria-hidden="true">*</span>`:l}
 				</label>
 				${t.enum?s`<select
 							id=${a}
@@ -737,7 +737,7 @@
 						/>`}
 				${t.description?s`<small class="help">${t.description}</small>`:l}
 			</div>`};return s`<form @submit=${this.onSubmit}>
-			<h2 class="title">${mt(this.endpoint.split("/").pop()??"")}</h2>
+			<h2 class="title">${ht(this.endpoint.split("/").pop()??"")}</h2>
 			${this.hasLocation?s`<div class="location-block">
 						<label>Birth location</label>
 						<roxy-location-search
@@ -752,7 +752,7 @@
 				${this.fields.map(t=>e(t))}
 			</div>
 			<button class="submit" type="submit">${this.submitLabel}</button>
-		</form>`}htmlType(e){switch(e){case"date":return"date";case"time":return"time";case"datetime":return"datetime-local";case"number":return"number";default:return"text"}}coerce(e,t){if(t!==""){if(e==="number"){let a=Number(t);return Number.isFinite(a)?a:void 0}return t}}};R.styles=[v,x`
+		</form>`}htmlType(e){switch(e){case"date":return"date";case"time":return"time";case"datetime":return"datetime-local";case"number":return"number";default:return"text"}}coerce(e,t){if(t!==""){if(e==="number"){let a=Number(t);return Number.isFinite(a)?a:void 0}return t}}};R.styles=[b,x`
 			form {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -843,13 +843,13 @@
 				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 				outline-offset: 2px;
 			}
-		`],p([u({type:String,attribute:"data-endpoint"})],R.prototype,"endpoint",2),p([u({type:String})],R.prototype,"method",2),p([u({type:String,attribute:"spec-url"})],R.prototype,"specUrl",2),p([u({type:String,attribute:"submit-label"})],R.prototype,"submitLabel",2),p([P()],R.prototype,"fields",2),p([P()],R.prototype,"values",2),p([P()],R.prototype,"hasLocation",2),p([P()],R.prototype,"loaded",2),R=p([f("roxy-endpoint-form")],R);function mt(i){return i.replace(/[_-]+/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").replace(/^\w/,r=>r.toUpperCase())}var V=class extends y{constructor(){super(...arguments);this.data=null}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No Guna Milan data</div>`;let t=(e.breakdown??[]).filter(a=>a?.category!==void 0);return s`<article class="card" aria-label="Guna Milan score">
+		`],p([h({type:String,attribute:"data-endpoint"})],R.prototype,"endpoint",2),p([h({type:String})],R.prototype,"method",2),p([h({type:String,attribute:"spec-url"})],R.prototype,"specUrl",2),p([h({type:String,attribute:"submit-label"})],R.prototype,"submitLabel",2),p([P()],R.prototype,"fields",2),p([P()],R.prototype,"values",2),p([P()],R.prototype,"hasLocation",2),p([P()],R.prototype,"loaded",2),R=p([v("roxy-endpoint-form")],R);function ht(i){return i.replace(/[_-]+/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").replace(/^\w/,r=>r.toUpperCase())}var V=class extends y{constructor(){super(...arguments);this.data=null}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No Guna Milan data</div>`;let t=(e.breakdown??[]).filter(a=>a?.category!==void 0);return s`<article class="card" aria-label="Guna Milan score">
 			<div class="score-bar">
 				<div>
 					<span class="total">${A(e.total,1)}</span>
 					<span class="over"> / ${e.maxScore}</span>
 					${typeof e.percentage=="number"?s`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
-								${dt(e.percentage,1)}
+								${pt(e.percentage,1)}
 							</small>`:l}
 				</div>
 				${e.recommendation?s`<span class="recommendation">${e.recommendation}</span>`:l}
@@ -864,7 +864,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							${t.map(a=>{let o=a.score??0,n=a.maxScore??Vt(a.category),c=n?o/n*100:0;return s`<tr>
+							${t.map(a=>{let o=a.score??0,n=a.maxScore??Jt(a.category),c=n?o/n*100:0;return s`<tr>
 									<td>${a.category}</td>
 									<td class="bar-cell">
 										<div class="mini-bar">
@@ -879,7 +879,7 @@
 						${e.doshas?.map(a=>s`<span class="dosha">${a}</span>`)}
 						${e.doshaCancellations?.map(a=>s`<span class="cancel" title=${a.reason}>${a.dosha} cancelled</span>`)}
 					</div>`:l}
-		</article>`}};V.styles=[v,x`
+		</article>`}};V.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -972,11 +972,11 @@
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 18%, transparent);
 				color: var(--roxy-success-fg, #166534);
 			}
-		`],p([u({attribute:!1})],V.prototype,"data",2),V=p([f("roxy-guna-milan")],V);function Vt(i){if(!i)return 1;switch(i.toLowerCase()){case"varna":return 1;case"vasya":return 2;case"tara":return 3;case"yoni":return 4;case"maitri":return 5;case"gana":return 6;case"bhakoot":return 7;case"nadi":return 8;default:return 1}}var be={Sun:"\u2609",Moon:"\u263D",Mercury:"\u263F",Venus:"\u2640",Earth:"\u2641",Mars:"\u2642",Jupiter:"\u2643",Saturn:"\u2644",Uranus:"\u2645",Neptune:"\u2646",Pluto:"\u2647",Rahu:"\u260A",Ketu:"\u260B",Ascendant:"Asc",Lagna:"La",NorthNode:"\u260A",SouthNode:"\u260B","North node":"\u260A","South node":"\u260B",Chiron:"\u26B7",Lilith:"\u26B8","Black moon lilith":"\u26B8"},ht={Sun:"Su",Moon:"Mo",Mercury:"Me",Venus:"Ve",Mars:"Ma",Jupiter:"Ju",Saturn:"Sa",Uranus:"Ur",Neptune:"Ne",Pluto:"Pl",Rahu:"Ra",Ketu:"Ke",Ascendant:"Asc",Lagna:"La"},ae={Aries:"\u2648",Taurus:"\u2649",Gemini:"\u264A",Cancer:"\u264B",Leo:"\u264C",Virgo:"\u264D",Libra:"\u264E",Scorpio:"\u264F",Sagittarius:"\u2650",Capricorn:"\u2651",Aquarius:"\u2652",Pisces:"\u2653"},ut={Aries:"Ar",Taurus:"Ta",Gemini:"Ge",Cancer:"Cn",Leo:"Le",Virgo:"Vi",Libra:"Li",Scorpio:"Sc",Sagittarius:"Sg",Capricorn:"Cp",Aquarius:"Aq",Pisces:"Pi"};var Oe={heaven:"\u2630",lake:"\u2631",fire:"\u2632",thunder:"\u2633",wind:"\u2634",water:"\u2635",mountain:"\u2636",earth:"\u2637",Heaven:"\u2630",Lake:"\u2631",Fire:"\u2632",Thunder:"\u2633",Wind:"\u2634",Water:"\u2635",Mountain:"\u2636",Earth:"\u2637"},gt={"new moon":"\u{1F311}","waxing crescent":"\u{1F312}","first quarter":"\u{1F313}","waxing gibbous":"\u{1F314}","full moon":"\u{1F315}","waning gibbous":"\u{1F316}","last quarter":"\u{1F317}","waning crescent":"\u{1F318}"};var D=class extends y{constructor(){super(...arguments);this.data=null;this.mode="lookup"}resolveHexagram(){let e=this.data;if(!e)return null;if("hexagram"in e&&e.hexagram){if("lines"in e){let a=e;return{hex:a.hexagram,lines:a.lines,changingLinePositions:a.changingLinePositions,resultingHexagram:a.resultingHexagram}}let t=e;return{hex:t.hexagram,dailyMessage:t.dailyMessage}}return{hex:e}}render(){let e=this.resolveHexagram();if(!e)return s`<div class="roxy-empty" role="status">No hexagram data</div>`;let{hex:t,lines:a,changingLinePositions:o,dailyMessage:n,resultingHexagram:c}=e,d=a??this.derivedLines(t),g=new Set(o??[]);return s`<article class="card" aria-label="I Ching hexagram">
+		`],p([h({attribute:!1})],V.prototype,"data",2),V=p([v("roxy-guna-milan")],V);function Jt(i){if(!i)return 1;switch(i.toLowerCase()){case"varna":return 1;case"vasya":return 2;case"tara":return 3;case"yoni":return 4;case"maitri":return 5;case"gana":return 6;case"bhakoot":return 7;case"nadi":return 8;default:return 1}}var be={Sun:"\u2609",Moon:"\u263D",Mercury:"\u263F",Venus:"\u2640",Earth:"\u2641",Mars:"\u2642",Jupiter:"\u2643",Saturn:"\u2644",Uranus:"\u2645",Neptune:"\u2646",Pluto:"\u2647",Rahu:"\u260A",Ketu:"\u260B",Ascendant:"Asc",Lagna:"La",NorthNode:"\u260A",SouthNode:"\u260B","North node":"\u260A","South node":"\u260B",Chiron:"\u26B7",Lilith:"\u26B8","Black moon lilith":"\u26B8"},ut={Sun:"Su",Moon:"Mo",Mercury:"Me",Venus:"Ve",Mars:"Ma",Jupiter:"Ju",Saturn:"Sa",Uranus:"Ur",Neptune:"Ne",Pluto:"Pl",Rahu:"Ra",Ketu:"Ke",Ascendant:"Asc",Lagna:"La"},ae={Aries:"\u2648",Taurus:"\u2649",Gemini:"\u264A",Cancer:"\u264B",Leo:"\u264C",Virgo:"\u264D",Libra:"\u264E",Scorpio:"\u264F",Sagittarius:"\u2650",Capricorn:"\u2651",Aquarius:"\u2652",Pisces:"\u2653"},gt={Aries:"Ar",Taurus:"Ta",Gemini:"Ge",Cancer:"Cn",Leo:"Le",Virgo:"Vi",Libra:"Li",Scorpio:"Sc",Sagittarius:"Sg",Capricorn:"Cp",Aquarius:"Aq",Pisces:"Pi"};var He={heaven:"\u2630",lake:"\u2631",fire:"\u2632",thunder:"\u2633",wind:"\u2634",water:"\u2635",mountain:"\u2636",earth:"\u2637",Heaven:"\u2630",Lake:"\u2631",Fire:"\u2632",Thunder:"\u2633",Wind:"\u2634",Water:"\u2635",Mountain:"\u2636",Earth:"\u2637"},yt={"new moon":"\u{1F311}","waxing crescent":"\u{1F312}","first quarter":"\u{1F313}","waxing gibbous":"\u{1F314}","full moon":"\u{1F315}","waning gibbous":"\u{1F316}","last quarter":"\u{1F317}","waning crescent":"\u{1F318}"};var D=class extends y{constructor(){super(...arguments);this.data=null;this.mode="lookup"}resolveHexagram(){let e=this.data;if(!e)return null;if("hexagram"in e&&e.hexagram){if("lines"in e){let a=e;return{hex:a.hexagram,lines:a.lines,changingLinePositions:a.changingLinePositions,resultingHexagram:a.resultingHexagram}}let t=e;return{hex:t.hexagram,dailyMessage:t.dailyMessage}}return{hex:e}}render(){let e=this.resolveHexagram();if(!e)return s`<div class="roxy-empty" role="status">No hexagram data</div>`;let{hex:t,lines:a,changingLinePositions:o,dailyMessage:n,resultingHexagram:c}=e,d=a??this.derivedLines(t),m=new Set(o??[]);return s`<article class="card" aria-label="I Ching hexagram">
 			<div class="glyphs">
 				${t.symbol?s`<div class="symbol">${t.symbol}</div>`:l}
 				<div class="lines" aria-hidden="true">
-					${d.slice().reverse().map((m,h)=>{let w=d.length-1-h+1,b=g.has(w),$=m===6||m===8;return s`<div class="line ${`${$?"broken":"solid"}${b?" changing":""}`}">
+					${d.slice().reverse().map((g,u)=>{let f=d.length-1-u+1,w=m.has(f),$=g===6||g===8;return s`<div class="line ${`${$?"broken":"solid"}${w?" changing":""}`}">
 								${$?k`<span class="seg"></span><span class="seg"></span>`:k`<span class="seg"></span>`}
 							</div>`})}
 				</div>
@@ -993,13 +993,13 @@
 					${t.upperTrigram?s`<div>
 								Upper
 								<span class="tri-glyph"
-									>${Oe[t.upperTrigram]??""}</span
+									>${He[t.upperTrigram]??""}</span
 								>${t.upperTrigram}
 							</div>`:l}
 					${t.lowerTrigram?s`<div>
 								Lower
 								<span class="tri-glyph"
-									>${Oe[t.lowerTrigram]??""}</span
+									>${He[t.lowerTrigram]??""}</span
 								>${t.lowerTrigram}
 							</div>`:l}
 				</div>
@@ -1007,13 +1007,13 @@
 				${t.image?s`<p class="image">${t.image}</p>`:l}
 				${n?s`<p class="message">${n}</p>`:l}
 				${t.interpretation?.general?s`<p>${t.interpretation.general}</p>`:l}
-				${g.size>0?s`<div class="changing">
-							Changing lines: ${Array.from(g).sort((m,h)=>m-h).join(", ")}.
+				${m.size>0?s`<div class="changing">
+							Changing lines: ${Array.from(m).sort((g,u)=>g-u).join(", ")}.
 							${c?.english?s` Becomes hexagram ${c.number}
 										${c.english}.`:l}
 						</div>`:l}
 			</div>
-		</article>`}derivedLines(e){let t=e.symbol.codePointAt(0)??0;if(t>=19904&&t<=19967){let a=t-19904,o=[];for(let n=0;n<6;n++){let c=a>>n&1;o.push(c?8:7)}return o}return Array.from({length:6},()=>7)}};D.styles=[v,x`
+		</article>`}derivedLines(e){let t=e.symbol.codePointAt(0)??0;if(t>=19904&&t<=19967){let a=t-19904,o=[];for(let n=0;n<6;n++){let c=a>>n&1;o.push(c?8:7)}return o}return Array.from({length:6},()=>7)}};D.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -1120,7 +1120,7 @@
 				color: var(--roxy-accent-fg, #b45309);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
-		`],p([u({attribute:!1})],D.prototype,"data",2),p([u({type:String,reflect:!0})],D.prototype,"mode",2),D=p([f("roxy-hexagram")],D);var O=class extends y{constructor(){super(...arguments);this.data=null;this.period="daily"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No horoscope data</div>`;let t=e.sign??"",a=t?ae[Ft(t)]??"":"",o="energyRating"in e&&typeof e.energyRating=="number"?e.energyRating:null,n="date"in e&&e.date||"week"in e&&e.week||"month"in e&&e.month||"";return s`<article
+		`],p([h({attribute:!1})],D.prototype,"data",2),p([h({type:String,reflect:!0})],D.prototype,"mode",2),D=p([v("roxy-hexagram")],D);var O=class extends y{constructor(){super(...arguments);this.data=null;this.period="daily"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No horoscope data</div>`;let t=e.sign??"",a=t?ae[Wt(t)]??"":"",o="energyRating"in e&&typeof e.energyRating=="number"?e.energyRating:null,n="date"in e&&e.date||"week"in e&&e.week||"month"in e&&e.month||"";return s`<article
 			class="card"
 			aria-label=${`${this.period} horoscope for ${t}`}
 		>
@@ -1163,24 +1163,24 @@
 						</div>`:l}
 			</div>
 
-			${(()=>{let c="luckyNumber"in e&&e.luckyNumber!==void 0?e.luckyNumber:void 0,d="luckyColor"in e&&e.luckyColor?e.luckyColor:"",g="luckyNumbers"in e&&e.luckyNumbers?e.luckyNumbers:[],m="luckyDays"in e&&e.luckyDays?e.luckyDays:[],h=e.compatibleSigns??[];return c===void 0&&!d&&g.length===0&&m.length===0&&h.length===0?l:s`<div class="lucky">
+			${(()=>{let c="luckyNumber"in e&&e.luckyNumber!==void 0?e.luckyNumber:void 0,d="luckyColor"in e&&e.luckyColor?e.luckyColor:"",m="luckyNumbers"in e&&e.luckyNumbers?e.luckyNumbers:[],g="luckyDays"in e&&e.luckyDays?e.luckyDays:[],u=e.compatibleSigns??[];return c===void 0&&!d&&m.length===0&&g.length===0&&u.length===0?l:s`<div class="lucky">
 						${c!==void 0?s`<span>Lucky number <strong>${c}</strong></span>`:l}
 						${d?s`<span>Lucky color <strong>${d}</strong></span>`:l}
-						${g.length?s`<span
-									>Lucky numbers
-									<strong>${g.join(", ")}</strong></span
-								>`:l}
 						${m.length?s`<span
-									>Lucky days <strong>${m.join(", ")}</strong></span
+									>Lucky numbers
+									<strong>${m.join(", ")}</strong></span
 								>`:l}
-						${h.length?s`<span class="compat-wrap">
+						${g.length?s`<span
+									>Lucky days <strong>${g.join(", ")}</strong></span
+								>`:l}
+						${u.length?s`<span class="compat-wrap">
 									Best with
 									<span class="compat"
-										>${h.map(w=>s`<span>${w}</span>`)}</span
+										>${u.map(f=>s`<span>${f}</span>`)}</span
 									>
 								</span>`:l}
 					</div>`})()}
-		</article>`}};O.styles=[v,x`
+		</article>`}};O.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -1295,7 +1295,7 @@
 				font-size: var(--roxy-text-xs, 0.75rem);
 				text-transform: capitalize;
 			}
-		`],p([u({attribute:!1})],O.prototype,"data",2),p([u({type:String,reflect:!0})],O.prototype,"period",2),O=p([f("roxy-horoscope-card")],O);function Ft(i){return i.charAt(0).toUpperCase()+i.slice(1).toLowerCase()}var F=class extends y{constructor(){super(...arguments);this.data=null}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No KP data</div>`;let e=this.data.planets??[];return s`<div
+		`],p([h({attribute:!1})],O.prototype,"data",2),p([h({type:String,reflect:!0})],O.prototype,"period",2),O=p([v("roxy-horoscope-card")],O);function Wt(i){return i.charAt(0).toUpperCase()+i.slice(1).toLowerCase()}var F=class extends y{constructor(){super(...arguments);this.data=null}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No KP data</div>`;let e=this.data.planets??[];return s`<div
 			class="wrap"
 			aria-label="KP planets table"
 			tabindex="0"
@@ -1333,7 +1333,7 @@
 						</tr>`)}
 				</tbody>
 			</table>
-		</div>`}};F.styles=[v,x`
+		</div>`}};F.styles=[b,x`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
@@ -1392,7 +1392,7 @@
 				font-size: var(--roxy-text-xs, 0.75rem);
 				margin-left: 4px;
 			}
-		`],p([u({attribute:!1})],F.prototype,"data",2),F=p([f("roxy-kp-planets-table")],F);function yt(i,r){let e;return((...t)=>{e&&clearTimeout(e),e=setTimeout(()=>i(...t),r)})}var _=class extends y{constructor(){super(...arguments);this.endpoint="https://roxyapi.com/api/v2/location/search";this.placeholder="Search city";this.defaultValue="";this.query="";this.results=[];this.isOpen=!1;this.isLoading=!1;this.highlight=-1;this.debouncedFetch=yt(e=>{this.fetchResults(e)},300);this.onInput=e=>{let t=e.target.value;if(this.query=t,t.length<2){this.results=[],this.isOpen=!1,this.highlight=-1;return}this.debouncedFetch(t)};this.onKeyDown=e=>{if(!this.isOpen||this.results.length===0){e.key==="ArrowDown"&&this.query.length>=2&&(this.fetchResults(this.query),e.preventDefault());return}if(e.key==="ArrowDown")e.preventDefault(),this.highlight=(this.highlight+1)%this.results.length;else if(e.key==="ArrowUp")e.preventDefault(),this.highlight=(this.highlight-1+this.results.length)%this.results.length;else if(e.key==="Enter"){e.preventDefault();let t=this.results[this.highlight]??this.results[0];t&&this.select(t)}else e.key==="Escape"&&(this.isOpen=!1)}}connectedCallback(){super.connectedCallback(),this.query=this.defaultValue,this.clickOutsideHandler=e=>{e.composedPath().includes(this)||(this.isOpen=!1)},document.addEventListener("mousedown",this.clickOutsideHandler)}disconnectedCallback(){super.disconnectedCallback(),this.clickOutsideHandler&&document.removeEventListener("mousedown",this.clickOutsideHandler)}async fetchResults(e){this.isLoading=!0;try{let t=new URL(this.endpoint);t.searchParams.set("q",e),t.searchParams.set("limit","8");let a={Accept:"application/json"};this.apiKey&&(a["X-API-Key"]=this.apiKey),this.publishableKey&&(a["X-API-Key"]=this.publishableKey);let o=await fetch(t,{headers:a});if(!o.ok)throw new Error(`HTTP ${o.status}`);let n=await o.json();this.results=n.cities??[],this.isOpen=this.results.length>0,this.highlight=this.results.length>0?0:-1}catch{this.results=[],this.isOpen=!1}finally{this.isLoading=!1}}select(e){this.query=`${e.city}${e.province?`, ${e.province}`:""}, ${e.country}`,this.isOpen=!1,this.results=[],this.dispatchEvent(new CustomEvent("roxy-location-select",{detail:e,bubbles:!0,composed:!0}))}render(){return s`<div class="field">
+		`],p([h({attribute:!1})],F.prototype,"data",2),F=p([v("roxy-kp-planets-table")],F);function xt(i,r){let e;return((...t)=>{e&&clearTimeout(e),e=setTimeout(()=>i(...t),r)})}var _=class extends y{constructor(){super(...arguments);this.endpoint="https://roxyapi.com/api/v2/location/search";this.placeholder="Search city";this.defaultValue="";this.query="";this.results=[];this.isOpen=!1;this.isLoading=!1;this.highlight=-1;this.debouncedFetch=xt(e=>{this.fetchResults(e)},300);this.onInput=e=>{let t=e.target.value;if(this.query=t,t.length<2){this.results=[],this.isOpen=!1,this.highlight=-1;return}this.debouncedFetch(t)};this.onKeyDown=e=>{if(!this.isOpen||this.results.length===0){e.key==="ArrowDown"&&this.query.length>=2&&(this.fetchResults(this.query),e.preventDefault());return}if(e.key==="ArrowDown")e.preventDefault(),this.highlight=(this.highlight+1)%this.results.length;else if(e.key==="ArrowUp")e.preventDefault(),this.highlight=(this.highlight-1+this.results.length)%this.results.length;else if(e.key==="Enter"){e.preventDefault();let t=this.results[this.highlight]??this.results[0];t&&this.select(t)}else e.key==="Escape"&&(this.isOpen=!1)}}connectedCallback(){super.connectedCallback(),this.query=this.defaultValue,this.clickOutsideHandler=e=>{e.composedPath().includes(this)||(this.isOpen=!1)},document.addEventListener("mousedown",this.clickOutsideHandler)}disconnectedCallback(){super.disconnectedCallback(),this.clickOutsideHandler&&document.removeEventListener("mousedown",this.clickOutsideHandler)}async fetchResults(e){this.isLoading=!0;try{let t=new URL(this.endpoint);t.searchParams.set("q",e),t.searchParams.set("limit","8");let a={Accept:"application/json"};this.apiKey&&(a["X-API-Key"]=this.apiKey),this.publishableKey&&(a["X-API-Key"]=this.publishableKey);let o=await fetch(t,{headers:a});if(!o.ok)throw new Error(`HTTP ${o.status}`);let n=await o.json();this.results=n.cities??[],this.isOpen=this.results.length>0,this.highlight=this.results.length>0?0:-1}catch{this.results=[],this.isOpen=!1}finally{this.isLoading=!1}}select(e){this.query=`${e.city}${e.province?`, ${e.province}`:""}, ${e.country}`,this.isOpen=!1,this.results=[],this.dispatchEvent(new CustomEvent("roxy-location-select",{detail:e,bubbles:!0,composed:!0}))}render(){return s`<div class="field">
 			<input
 				type="text"
 				role="combobox"
@@ -1431,7 +1431,7 @@
 										</button>
 									</li>`)}
 					</ul>`:l}
-		</div>`}};_.styles=[v,x`
+		</div>`}};_.styles=[b,x`
 			:host {
 				display: block;
 				position: relative;
@@ -1532,7 +1532,7 @@
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
-		`],p([u({type:String,attribute:"api-key"})],_.prototype,"apiKey",2),p([u({type:String,attribute:"publishable-key"})],_.prototype,"publishableKey",2),p([u({type:String})],_.prototype,"endpoint",2),p([u({type:String})],_.prototype,"placeholder",2),p([u({type:String,attribute:"default-value"})],_.prototype,"defaultValue",2),p([P()],_.prototype,"query",2),p([P()],_.prototype,"results",2),p([P()],_.prototype,"isOpen",2),p([P()],_.prototype,"isLoading",2),p([P()],_.prototype,"highlight",2),_=p([f("roxy-location-search")],_);var H=class extends y{constructor(){super(...arguments);this.data=null;this.mode="current"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No moon phase data</div>`;let t="phases"in e?e.phases:"calendar"in e?e.calendar:[];if(this.mode!=="current"&&t.length>0){let a="month"in e?e.month:void 0,o="year"in e?e.year:void 0;return s`<article
+		`],p([h({type:String,attribute:"api-key"})],_.prototype,"apiKey",2),p([h({type:String,attribute:"publishable-key"})],_.prototype,"publishableKey",2),p([h({type:String})],_.prototype,"endpoint",2),p([h({type:String})],_.prototype,"placeholder",2),p([h({type:String,attribute:"default-value"})],_.prototype,"defaultValue",2),p([P()],_.prototype,"query",2),p([P()],_.prototype,"results",2),p([P()],_.prototype,"isOpen",2),p([P()],_.prototype,"isLoading",2),p([P()],_.prototype,"highlight",2),_=p([v("roxy-location-search")],_);var H=class extends y{constructor(){super(...arguments);this.data=null;this.mode="current"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No moon phase data</div>`;let t="phases"in e?e.phases:"calendar"in e?e.calendar:[];if(this.mode!=="current"&&t.length>0){let a="month"in e?e.month:void 0,o="year"in e?e.year:void 0;return s`<article
 				class="card"
 				aria-label="Moon phase calendar"
 			>
@@ -1540,7 +1540,7 @@
 				<div class="list" role="list">
 					${t.map(n=>this.renderListItem(n))}
 				</div>
-			</article>`}return"phase"in e?this.renderSingle(e):l}renderSingle(e){let t=xt(e.phase);return s`<article class="card" aria-label="Current moon phase">
+			</article>`}return"phase"in e?this.renderSingle(e):l}renderSingle(e){let t=ft(e.phase);return s`<article class="card" aria-label="Current moon phase">
 			<div class="hero">
 				<span class="emoji" aria-hidden="true">${t}</span>
 				<div>
@@ -1551,7 +1551,7 @@
 			<div class="stats">
 				${typeof e.illumination=="number"?s`<div>
 							<span>Illumination</span>
-							<strong>${Jt(e.illumination)}</strong>
+							<strong>${Xt(e.illumination)}</strong>
 						</div>`:l}
 				${typeof e.age=="number"?s`<div>
 							<span>Age</span>
@@ -1570,11 +1570,11 @@
 			${e.meaning?.keywords?.length?s`<div class="keywords">
 						${e.meaning.keywords.map(a=>s`<span>${a}</span>`)}
 					</div>`:l}
-		</article>`}renderListItem(e){let t=xt(e.phase);return s`<div class="list-item" role="listitem">
+		</article>`}renderListItem(e){let t=ft(e.phase);return s`<div class="list-item" role="listitem">
 			<span aria-hidden="true">${t}</span>
 			<span>${e.phase}</span>
 			<span>${e.date??""}</span>
-		</div>`}};H.styles=[v,x`
+		</div>`}};H.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -1656,7 +1656,7 @@
 			.list-item:last-child {
 				border-bottom: none;
 			}
-		`],p([u({attribute:!1})],H.prototype,"data",2),p([u({type:String,reflect:!0})],H.prototype,"mode",2),H=p([f("roxy-moon-phase")],H);function xt(i){return i?gt[i.toLowerCase()]??"\u{1F319}":"\u{1F319}"}function Jt(i){let r=i<=1?i*100:i;return`${Math.round(r)}%`}function C(i,r,e,t){let a=t*Math.PI/180;return{x:i+e*Math.cos(a),y:r+e*Math.sin(a)}}var je=384,S=je/2,He=150,Wt=134,Ge=110,$e=88,Xt=162,Zt=176,G=class extends y{constructor(){super(...arguments);this.data=null;this.houseSystem="placidus"}getPlanets(){return this.data?.planets??[]}getAscendant(){return this.data?.ascendant?.longitude??0}getMidheaven(){let e=this.data?.midheaven?.longitude;return typeof e=="number"?e:null}toAngle(e){return 180+this.getAscendant()-e}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No chart data</div>`;let e=this.getPlanets(),t=this.data.aspects??[];return s`<div class="wrap">
+		`],p([h({attribute:!1})],H.prototype,"data",2),p([h({type:String,reflect:!0})],H.prototype,"mode",2),H=p([v("roxy-moon-phase")],H);function ft(i){return i?yt[i.toLowerCase()]??"\u{1F319}":"\u{1F319}"}function Xt(i){let r=i<=1?i*100:i;return`${Math.round(r)}%`}function C(i,r,e,t){let a=t*Math.PI/180;return{x:i+e*Math.cos(a),y:r+e*Math.sin(a)}}var Ie=384,S=Ie/2,Ge=150,Zt=134,je=110,$e=88,Qt=162,er=176,G=class extends y{constructor(){super(...arguments);this.data=null;this.houseSystem="placidus"}getPlanets(){return this.data?.planets??[]}getAscendant(){return this.data?.ascendant?.longitude??0}getMidheaven(){let e=this.data?.midheaven?.longitude;return typeof e=="number"?e:null}toAngle(e){return 180+this.getAscendant()-e}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No chart data</div>`;let e=this.getPlanets(),t=this.data.aspects??[];return s`<div class="wrap">
 			<header>
 				<h2 class="title">Natal chart</h2>
 				${this.data.birthDetails?s`<div class="meta">
@@ -1664,7 +1664,7 @@
 						</div>`:l}
 			</header>
 			<svg
-				viewBox="0 0 ${je} ${je}"
+				viewBox="0 0 ${Ie} ${Ie}"
 				role="img"
 				aria-label="Natal chart wheel with twelve houses, planets, and aspects"
 			>
@@ -1677,14 +1677,14 @@
 					class="wheel-line"
 					cx=${S}
 					cy=${S}
-					r=${He}
+					r=${Ge}
 					stroke-width="1.5"
 				/>
 				<circle
 					class="wheel-line"
 					cx=${S}
 					cy=${S}
-					r=${Ge}
+					r=${je}
 					stroke-width="1"
 				/>
 				<circle
@@ -1704,12 +1704,12 @@
 				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
 				<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
-		</div>`}renderAngles(){let e=this.getAscendant(),t=this.getMidheaven(),a=[this.renderAngleMark(e,"ASC")];return t!==null&&a.push(this.renderAngleMark(t,"MC")),a}renderAngleMark(e,t){let a=this.toAngle(e),o=C(S,S,He,a),n=C(S,S,Xt,a),c=C(S,S,Zt,a);return k`
+		</div>`}renderAngles(){let e=this.getAscendant(),t=this.getMidheaven(),a=[this.renderAngleMark(e,"ASC")];return t!==null&&a.push(this.renderAngleMark(t,"MC")),a}renderAngleMark(e,t){let a=this.toAngle(e),o=C(S,S,Ge,a),n=C(S,S,Qt,a),c=C(S,S,er,a);return k`
 			<g>
 				<line class="angle-tick" x1=${o.x} y1=${o.y} x2=${n.x} y2=${n.y} />
 				<text class="angle-marker" x=${c.x} y=${c.y} text-anchor="middle" dominant-baseline="central">${t}</text>
 			</g>
-		`}renderSpokes(){return Array.from({length:12},(e,t)=>{let a=this.toAngle(t*30),o=C(S,S,Ge,a),n=C(S,S,He,a);return k`<line class="wheel-line" x1=${o.x} y1=${o.y} x2=${n.x} y2=${n.y} stroke-width="0.8" />`})}renderSigns(){return["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"].map((t,a)=>{let o=this.toAngle(a*30+15),n=C(S,S,Wt,o);return k`<text class="sign-glyph" x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central">${ae[t]}</text>`})}renderHouseNumbers(){let e=Math.floor(this.getAscendant()/30);return Array.from({length:12},(t,a)=>{let o=this.toAngle(a*30+15),n=C(S,S,Ge-12,o),c=(a-e+12)%12+1;return k`<text class="house-num" x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central">${c}</text>`})}renderPlanets(e){return e.map(t=>{if(!Number.isFinite(t.longitude))return l;let a=this.toAngle(t.longitude),o=C(S,S,$e,a),n=be[we(t.name)]??t.name.slice(0,2),c=t.isRetrograde?" R":"",d=c?`${n}\u1D3F`:n;return k`<text class="planet-glyph" x=${o.x} y=${o.y} text-anchor="middle" dominant-baseline="central"><title>${t.name}${c}</title>${d}</text>`})}renderAspects(e,t){let a=new Map;for(let o of e){if(typeof o.longitude!="number")continue;let n=we(o.name);n&&a.set(n,o.longitude)}return t.map(o=>{let n=a.get(we(o.planet1)),c=a.get(we(o.planet2));if(n===void 0||c===void 0)return l;let d=C(S,S,$e-18,this.toAngle(n)),g=C(S,S,$e-18,this.toAngle(c)),m=er(o),h=Qt[m]??"aspect-other",w=A(o.orb,1);return k`<line class=${`aspect ${h}`} x1=${d.x} y1=${d.y} x2=${g.x} y2=${g.y}><title>${o.planet1} ${m||""} ${o.planet2}${w?` (orb ${w}\xB0)`:""}</title></line>`})}};G.styles=[v,x`
+		`}renderSpokes(){return Array.from({length:12},(e,t)=>{let a=this.toAngle(t*30),o=C(S,S,je,a),n=C(S,S,Ge,a);return k`<line class="wheel-line" x1=${o.x} y1=${o.y} x2=${n.x} y2=${n.y} stroke-width="0.8" />`})}renderSigns(){return["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"].map((t,a)=>{let o=this.toAngle(a*30+15),n=C(S,S,Zt,o);return k`<text class="sign-glyph" x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central">${ae[t]}</text>`})}renderHouseNumbers(){let e=Math.floor(this.getAscendant()/30);return Array.from({length:12},(t,a)=>{let o=this.toAngle(a*30+15),n=C(S,S,je-12,o),c=(a-e+12)%12+1;return k`<text class="house-num" x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central">${c}</text>`})}renderPlanets(e){return e.map(t=>{if(!Number.isFinite(t.longitude))return l;let a=this.toAngle(t.longitude),o=C(S,S,$e,a),n=be[we(t.name)]??t.name.slice(0,2),c=t.isRetrograde?" R":"",d=c?`${n}\u1D3F`:n;return k`<text class="planet-glyph" x=${o.x} y=${o.y} text-anchor="middle" dominant-baseline="central"><title>${t.name}${c}</title>${d}</text>`})}renderAspects(e,t){let a=new Map;for(let o of e){if(typeof o.longitude!="number")continue;let n=we(o.name);n&&a.set(n,o.longitude)}return t.map(o=>{let n=a.get(we(o.planet1)),c=a.get(we(o.planet2));if(n===void 0||c===void 0)return l;let d=C(S,S,$e-18,this.toAngle(n)),m=C(S,S,$e-18,this.toAngle(c)),g=rr(o),u=tr[g]??"aspect-other",f=A(o.orb,1);return k`<line class=${`aspect ${u}`} x1=${d.x} y1=${d.y} x2=${m.x} y2=${m.y}><title>${o.planet1} ${g||""} ${o.planet2}${f?` (orb ${f}\xB0)`:""}</title></line>`})}};G.styles=[b,x`
 			.wrap {
 				width: 100%;
 				display: grid;
@@ -1808,7 +1808,7 @@
 				margin-right: 4px;
 				vertical-align: middle;
 			}
-		`],p([u({attribute:!1})],G.prototype,"data",2),p([u({type:String,attribute:"house-system",reflect:!0})],G.prototype,"houseSystem",2),G=p([f("roxy-natal-chart")],G);function we(i){return i?i.charAt(0).toUpperCase()+i.slice(1).toLowerCase():""}var Qt={conjunction:"aspect-conjunction",sextile:"aspect-sextile",square:"aspect-square",trine:"aspect-trine",opposition:"aspect-opposition"};function er(i){return(i.type??"").toLowerCase().replace(/_/g,"-")}var j=class extends y{constructor(){super(...arguments);this.data=null;this.type="life-path"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No numerology data</div>`;let t=tr[this.type]??this.type;return"coreNumbers"in e?this.renderChart(e,t):"personalYear"in e?this.renderPersonalYear(e,t):this.renderNumberCard(e,t)}renderNumberCard(e,t){let a=e.meaning?.keywords??[];return s`<article class="card" aria-label=${t}>
+		`],p([h({attribute:!1})],G.prototype,"data",2),p([h({type:String,attribute:"house-system",reflect:!0})],G.prototype,"houseSystem",2),G=p([v("roxy-natal-chart")],G);function we(i){return i?i.charAt(0).toUpperCase()+i.slice(1).toLowerCase():""}var tr={conjunction:"aspect-conjunction",sextile:"aspect-sextile",square:"aspect-square",trine:"aspect-trine",opposition:"aspect-opposition"};function rr(i){return(i.type??"").toLowerCase().replace(/_/g,"-")}var j=class extends y{constructor(){super(...arguments);this.data=null;this.type="life-path"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No numerology data</div>`;let t=ar[this.type]??this.type;return"coreNumbers"in e?this.renderChart(e,t):"personalYear"in e?this.renderPersonalYear(e,t):this.renderNumberCard(e,t)}renderNumberCard(e,t){let a=e.meaning?.keywords??[];return s`<article class="card" aria-label=${t}>
 			<div class="hero">
 				${typeof e.number=="number"?s`<div class="numeral">${e.number}</div>`:l}
 				<div>
@@ -1823,7 +1823,7 @@
 					</div>`:l}
 			${e.hasKarmicDebt&&e.karmicDebtNumber?s`<div class="karmic">
 						Karmic debt ${e.karmicDebtNumber}.
-						${rr(e.karmicDebtMeaning)}
+						${sr(e.karmicDebtMeaning)}
 					</div>`:l}
 		</article>`}renderPersonalYear(e,t){return s`<article class="card" aria-label=${t}>
 			<div class="hero">
@@ -1842,11 +1842,11 @@
 			</div>
 			${a.length>0?s`<div class="cores">
 						${a.map(([o,n])=>s`<div class="item">
-								<span>${ar(o)}</span>
+								<span>${or(o)}</span>
 								<strong>${n.number??""}</strong>
 							</div>`)}
 					</div>`:l}
-		</article>`}};j.styles=[v,x`
+		</article>`}};j.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -1942,10 +1942,10 @@
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-fg, #0a0a0a);
 			}
-		`],p([u({attribute:!1})],j.prototype,"data",2),p([u({type:String,reflect:!0})],j.prototype,"type",2),j=p([f("roxy-numerology-card")],j);var tr={"life-path":"Life Path",expression:"Expression","personal-year":"Personal Year",chart:"Numerology chart"};function rr(i){return i?[i.description,i.challenge,i.resolution].filter(Boolean).join(" "):""}function ar(i){return i.replace(/[_-]+/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").replace(/^\w/,r=>r.toUpperCase())}var I=class extends y{constructor(){super(...arguments);this.data=null;this.detail="detailed"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No panchang data</div>`;let t="sunrise"in e?e:null,a=[["Tithi",this.formatPart(e.tithi)],["Nakshatra",this.formatPart(e.nakshatra)],["Yoga",this.formatPart(e.yoga)],["Karana",this.formatPart(e.karana)]];t&&a.push(["Vara",this.formatPart(t.vara)]);let o=t?[["Brahma Muhurta",t.brahmaMuhurta],["Abhijit Muhurta",t.abhijitMuhurta],["Vijaya Muhurta",t.vijayaMuhurta],["Godhuli Muhurta",t.godhuliMuhurta],["Nishita Muhurta",t.nishitaMuhurta],["Pratah Sandhya",t.pratahSandhya],["Sayahna Sandhya",t.sayahnaSandhya]]:[],n=t?[["Rahu Kaal",t.rahuKaal],["Yamaganda",t.yamaganda],["Gulika",t.gulika]]:[];return s`<div class="wrap" aria-label="Panchang">
+		`],p([h({attribute:!1})],j.prototype,"data",2),p([h({type:String,reflect:!0})],j.prototype,"type",2),j=p([v("roxy-numerology-card")],j);var ar={"life-path":"Life Path",expression:"Expression","personal-year":"Personal Year",chart:"Numerology chart"};function sr(i){return i?[i.description,i.challenge,i.resolution].filter(Boolean).join(" "):""}function or(i){return i.replace(/[_-]+/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").replace(/^\w/,r=>r.toUpperCase())}var I=class extends y{constructor(){super(...arguments);this.data=null;this.detail="detailed"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No panchang data</div>`;let t="sunrise"in e?e:null,a=[["Tithi",this.formatPart(e.tithi)],["Nakshatra",this.formatPart(e.nakshatra)],["Yoga",this.formatPart(e.yoga)],["Karana",this.formatPart(e.karana)]];t&&a.push(["Vara",this.formatPart(t.vara)]);let o=t?[["Brahma Muhurta",t.brahmaMuhurta],["Abhijit Muhurta",t.abhijitMuhurta],["Vijaya Muhurta",t.vijayaMuhurta],["Godhuli Muhurta",t.godhuliMuhurta],["Nishita Muhurta",t.nishitaMuhurta],["Pratah Sandhya",t.pratahSandhya],["Sayahna Sandhya",t.sayahnaSandhya]]:[],n=t?[["Rahu Kaal",t.rahuKaal],["Yamaganda",t.yamaganda],["Gulika",t.gulika]]:[];return s`<div class="wrap" aria-label="Panchang">
 			<header class="head">
 				<h2 class="title">Panchang</h2>
-				<span class="date">${t?ct(t.date):""}</span>
+				<span class="date">${t?dt(t.date):""}</span>
 			</header>
 			<table>
 				<tbody>
@@ -1991,7 +1991,7 @@
 							</tbody>
 						</table>
 					`:l}
-		</div>`}formatPart(e){if(!e)return"";if(typeof e=="string")return e;if(typeof e=="object"){let t=e;return[t.name,t.lord?`(${t.lord})`:"",t.phase].filter(Boolean).join(" ")}return String(e)}};I.styles=[v,x`
+		</div>`}formatPart(e){if(!e)return"";if(typeof e=="string")return e;if(typeof e=="object"){let t=e;return[t.name,t.lord?`(${t.lord})`:"",t.phase].filter(Boolean).join(" ")}return String(e)}};I.styles=[b,x`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
@@ -2049,18 +2049,18 @@
 				text-transform: uppercase;
 				letter-spacing: 0.06em;
 			}
-		`],p([u({attribute:!1})],I.prototype,"data",2),p([u({type:String,reflect:!0})],I.prototype,"detail",2),I=p([f("roxy-panchang-table")],I);var Ue=360,E=Ue/2,ft=170,sr=154,vt=124,me=96,J=class extends y{constructor(){super(...arguments);this.data=null}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No synastry data</div>`;let{person1:e,person2:t,compatibilityScore:a,analysis:o}=this.data,n=this.data.interAspects??[],c=e?.planets??[],d=t?.planets??[],g=typeof a=="number"?Math.round(a):void 0,m=o?.overall,h=o?.strengths??[],w=o?.challenges??[];return s`<div
+		`],p([h({attribute:!1})],I.prototype,"data",2),p([h({type:String,reflect:!0})],I.prototype,"detail",2),I=p([v("roxy-panchang-table")],I);var Be=360,E=Be/2,vt=170,ir=154,bt=124,me=96,J=class extends y{constructor(){super(...arguments);this.data=null}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No synastry data</div>`;let{person1:e,person2:t,compatibilityScore:a,analysis:o}=this.data,n=this.data.interAspects??[],c=e?.planets??[],d=t?.planets??[],m=typeof a=="number"?Math.round(a):void 0,g=o?.overall,u=o?.strengths??[],f=o?.challenges??[];return s`<div
 			class="wrap"
 			aria-label="Synastry compatibility chart"
 		>
 			<div class="head">
 				<h2 class="title">Synastry</h2>
-				${typeof g=="number"?s`<span class="score" aria-label=${`Score ${g} of 100`}
-							>${g} / 100</span
+				${typeof m=="number"?s`<span class="score" aria-label=${`Score ${m} of 100`}
+							>${m} / 100</span
 						>`:l}
 			</div>
 			<svg
-				viewBox="0 0 ${Ue} ${Ue}"
+				viewBox="0 0 ${Be} ${Be}"
 				role="img"
 				aria-label="Dual chart wheel comparing two natal charts"
 			>
@@ -2069,7 +2069,7 @@
 					class="wheel-line"
 					cx=${E}
 					cy=${E}
-					r=${ft}
+					r=${vt}
 					stroke-width="1.5"
 				/>
 				<circle
@@ -2088,7 +2088,7 @@
 				/>
 				${this.renderSpokes()} ${this.renderSigns()}
 				${this.renderInterAspectLines(c,d,n)}
-				${this.renderRing(c,vt,"p1")} ${this.renderRing(d,me,"p2")}
+				${this.renderRing(c,bt,"p1")} ${this.renderRing(d,me,"p2")}
 			</svg>
 			<div class="legend-row">
 				<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>
@@ -2096,23 +2096,23 @@
 				<span><span class="swatch" style="background: var(--roxy-success)"></span>harmonious</span>
 				<span><span class="swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
-			${m?s`<p class="summary">${m}</p>`:l}
+			${g?s`<p class="summary">${g}</p>`:l}
 			${n.length>0?this.renderAspects(n):l}
-			${h.length>0||w.length>0?s`<div class="lists">
-						${h.length?s`<div>
+			${u.length>0||f.length>0?s`<div class="lists">
+						${u.length?s`<div>
 									<h3>Strengths</h3>
 									<ul>
-										${h.map(b=>s`<li>${b}</li>`)}
+										${u.map(w=>s`<li>${w}</li>`)}
 									</ul>
 								</div>`:l}
-						${w.length?s`<div>
+						${f.length?s`<div>
 									<h3>Challenges</h3>
 									<ul>
-										${w.map(b=>s`<li>${b}</li>`)}
+										${f.map(w=>s`<li>${w}</li>`)}
 									</ul>
 								</div>`:l}
 					</div>`:l}
-		</div>`}toAngle(e){return 180-e}renderSpokes(){return Array.from({length:12},(e,t)=>{let a=this.toAngle(t*30),o=C(E,E,me-14,a),n=C(E,E,ft,a);return k`<line class="wheel-line" x1=${o.x} y1=${o.y} x2=${n.x} y2=${n.y} stroke-width="0.6" />`})}renderSigns(){return["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"].map((t,a)=>{let o=this.toAngle(a*30+15),n=C(E,E,sr,o);return k`<text class="sign" x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central">${ae[t]}</text>`})}renderRing(e,t,a){return e.map(o=>{if(!Number.isFinite(o.longitude))return l;let n=C(E,E,t,this.toAngle(o.longitude)),c=be[Ie(o.name)]??o.name.slice(0,2);return k`<text class=${a} x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central"><title>${o.name}</title>${c}</text>`})}renderInterAspectLines(e,t,a){let o=(n,c)=>{let d=Ie(c);for(let g of n)if(Ie(g.name)===d&&typeof g.longitude=="number")return g.longitude};return a.map(n=>{let c=o(e,n.planet1),d=o(t,n.planet2);if(c===void 0||d===void 0)return l;let g=C(E,E,vt-12,this.toAngle(c)),m=C(E,E,me+8,this.toAngle(d)),h=bt(n),w=or[h]??"aspect-other",b=A(n.orb,1);return k`<line class=${`aspect ${w}`} x1=${g.x} y1=${g.y} x2=${m.x} y2=${m.y}><title>${n.planet1} ${h} ${n.planet2}${b?` (orb ${b}\xB0)`:""}</title></line>`})}renderAspects(e){return s`<table>
+		</div>`}toAngle(e){return 180-e}renderSpokes(){return Array.from({length:12},(e,t)=>{let a=this.toAngle(t*30),o=C(E,E,me-14,a),n=C(E,E,vt,a);return k`<line class="wheel-line" x1=${o.x} y1=${o.y} x2=${n.x} y2=${n.y} stroke-width="0.6" />`})}renderSigns(){return["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"].map((t,a)=>{let o=this.toAngle(a*30+15),n=C(E,E,ir,o);return k`<text class="sign" x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central">${ae[t]}</text>`})}renderRing(e,t,a){return e.map(o=>{if(!Number.isFinite(o.longitude))return l;let n=C(E,E,t,this.toAngle(o.longitude)),c=be[Ue(o.name)]??o.name.slice(0,2);return k`<text class=${a} x=${n.x} y=${n.y} text-anchor="middle" dominant-baseline="central"><title>${o.name}</title>${c}</text>`})}renderInterAspectLines(e,t,a){let o=(n,c)=>{let d=Ue(c);for(let m of n)if(Ue(m.name)===d&&typeof m.longitude=="number")return m.longitude};return a.map(n=>{let c=o(e,n.planet1),d=o(t,n.planet2);if(c===void 0||d===void 0)return l;let m=C(E,E,bt-12,this.toAngle(c)),g=C(E,E,me+8,this.toAngle(d)),u=$t(n),f=nr[u]??"aspect-other",w=A(n.orb,1);return k`<line class=${`aspect ${f}`} x1=${m.x} y1=${m.y} x2=${g.x} y2=${g.y}><title>${n.planet1} ${u} ${n.planet2}${w?` (orb ${w}\xB0)`:""}</title></line>`})}renderAspects(e){return s`<table>
 			<thead>
 				<tr>
 					<th>Planet 1</th>
@@ -2126,12 +2126,12 @@
 				${e.slice(0,12).map(t=>s`<tr>
 						<td>${t.planet1}</td>
 						<td>${t.planet2}</td>
-						<td>${bt(t)||""}</td>
+						<td>${$t(t)||""}</td>
 						<td class="orb">${A(t.orb,1)}</td>
-						<td>${ir(t.strength)}</td>
+						<td>${lr(t.strength)}</td>
 					</tr>`)}
 			</tbody>
-		</table>`}};J.styles=[v,x`
+		</table>`}};J.styles=[b,x`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -2266,7 +2266,7 @@
 				padding-left: var(--roxy-space-md, 1rem);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
-		`],p([u({attribute:!1})],J.prototype,"data",2),J=p([f("roxy-synastry-chart")],J);function Ie(i){return i?i.charAt(0).toUpperCase()+i.slice(1).toLowerCase():""}var or={conjunction:"aspect-conjunction",sextile:"aspect-sextile",square:"aspect-square",trine:"aspect-trine",opposition:"aspect-opposition"};function bt(i){return(i.type??"").toLowerCase().replace(/_/g,"-")}function ir(i){return typeof i=="number"?Math.round(i).toString():""}var U=class extends y{constructor(){super(...arguments);this.data=null;this.flipped=!1;this.toggleFlip=()=>{this.flipped=!this.flipped}}render(){let e=this.data;return e?"card"in e?this.renderDailyCard(e):this.renderFullCard(e):s`<div class="roxy-empty" role="status">No tarot data</div>`}renderDailyCard(e){let t=e.card,a=this.flipped!==!!t.reversed,o=t.keywords??[];return s`<article class="card" aria-label=${t.name??"Tarot card"}>
+		`],p([h({attribute:!1})],J.prototype,"data",2),J=p([v("roxy-synastry-chart")],J);function Ue(i){return i?i.charAt(0).toUpperCase()+i.slice(1).toLowerCase():""}var nr={conjunction:"aspect-conjunction",sextile:"aspect-sextile",square:"aspect-square",trine:"aspect-trine",opposition:"aspect-opposition"};function $t(i){return(i.type??"").toLowerCase().replace(/_/g,"-")}function lr(i){return typeof i=="number"?Math.round(i).toString():""}var U=class extends y{constructor(){super(...arguments);this.data=null;this.flipped=!1;this.toggleFlip=()=>{this.flipped=!this.flipped}}render(){let e=this.data;return e?"card"in e?this.renderDailyCard(e):this.renderFullCard(e):s`<div class="roxy-empty" role="status">No tarot data</div>`}renderDailyCard(e){let t=e.card,a=this.flipped!==!!t.reversed,o=t.keywords??[];return s`<article class="card" aria-label=${t.name??"Tarot card"}>
 			<div class="image-wrap">
 				${t.imageUrl?s`<img
 							class=${`image ${a?"reversed":""}`}
@@ -2338,7 +2338,7 @@
 					Flip card
 				</button>
 			</div>
-		</article>`}};U.styles=[v,x`
+		</article>`}};U.styles=[b,x`
 			.card {
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -2428,13 +2428,13 @@
 			.flip:hover {
 				transform: scale(1.02);
 			}
-		`],p([u({attribute:!1})],U.prototype,"data",2),p([P()],U.prototype,"flipped",2),U=p([f("roxy-tarot-card")],U);var B=class extends y{constructor(){super(...arguments);this.data=null;this.spread="three-card"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No tarot spread</div>`;let t="answer"in e,a="cards"in e&&!("spread"in e),o=a?[]:"positions"in e?e.positions??[]:[],n=a&&"cards"in e?e.cards:[],c=t?e.answer:void 0,d=t?e.strength:void 0,g="spread"in e?e.spread:this.spread.replace(/-/g," "),m="question"in e?e.question:void 0,h="summary"in e?e.summary:void 0,w=t?e.interpretation:void 0,b=c?c.toLowerCase().replace(/[^a-z]/g,""):"";return s`<article class="wrap" aria-label="Tarot spread">
+		`],p([h({attribute:!1})],U.prototype,"data",2),p([P()],U.prototype,"flipped",2),U=p([v("roxy-tarot-card")],U);var B=class extends y{constructor(){super(...arguments);this.data=null;this.spread="three-card"}render(){let e=this.data;if(!e)return s`<div class="roxy-empty" role="status">No tarot spread</div>`;let t="answer"in e,a="cards"in e&&!("spread"in e),o=a?[]:"positions"in e?e.positions??[]:[],n=a&&"cards"in e?e.cards:[],c=t?e.answer:void 0,d=t?e.strength:void 0,m="spread"in e?e.spread:this.spread.replace(/-/g," "),g="question"in e?e.question:void 0,u="summary"in e?e.summary:void 0,f=t?e.interpretation:void 0,w=c?c.toLowerCase().replace(/[^a-z]/g,""):"";return s`<article class="wrap" aria-label="Tarot spread">
 			<header class="head">
-				<h2 class="title">${g}</h2>
-				${m?s`<span class="question">"${m}"</span>`:l}
+				<h2 class="title">${m}</h2>
+				${g?s`<span class="question">"${g}"</span>`:l}
 			</header>
 			${t?s`<div>
-						<span class=${`answer ${b}`}>${c}</span>
+						<span class=${`answer ${w}`}>${c}</span>
 						${d?s`<small> · ${d}</small>`:l}
 					</div>`:l}
 			${o.length>0?s`<div class="grid">
@@ -2470,9 +2470,9 @@
 								${$.meaning?s`<p class="interp">${$.meaning}</p>`:l}
 							</div>`)}
 					</div>`:l}
-			${h?s`<p class="reading">${h}</p>`:l}
-			${w?s`<p class="reading">${w}</p>`:l}
-		</article>`}};B.styles=[v,x`
+			${u?s`<p class="reading">${u}</p>`:l}
+			${f?s`<p class="reading">${f}</p>`:l}
+		</article>`}};B.styles=[b,x`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -2578,7 +2578,7 @@
 				margin: 0;
 				color: var(--roxy-fg, #0a0a0a);
 			}
-		`],p([u({attribute:!1})],B.prototype,"data",2),p([u({type:String,reflect:!0})],B.prototype,"spread",2),B=p([f("roxy-tarot-spread")],B);var nr={1:{x:150,y:58},2:{x:205,y:52},3:{x:253,y:112},4:{x:243,y:150},5:{x:253,y:188},6:{x:205,y:248},7:{x:150,y:242},8:{x:95,y:248},9:{x:47,y:188},10:{x:57,y:150},11:{x:47,y:112},12:{x:95,y:52}},lr={1:{x:150,y:35},2:{x:222,y:40},3:{x:265,y:100},4:{x:265,y:150},5:{x:265,y:200},6:{x:222,y:260},7:{x:150,y:265},8:{x:78,y:260},9:{x:35,y:200},10:{x:35,y:150},11:{x:35,y:100},12:{x:78,y:40}},cr=["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"],dr={aries:"Aries",taurus:"Taurus",gemini:"Gemini",cancer:"Cancer",leo:"Leo",virgo:"Virgo",libra:"Libra",scorpio:"Scorpio",sagittarius:"Sagittarius",capricorn:"Capricorn",aquarius:"Aquarius",pisces:"Pisces"},q=class extends y{constructor(){super(...arguments);this.data=null;this.chartStyle="south"}buildHouses(){if(!this.data)return[];let e=this.data,t=[];for(let a=0;a<12;a++){let o=cr[a],c=(e[o]?.signs??[]).map(d=>d.graha).filter(Boolean);t.push({house:a+1,sign:dr[o]??"",planets:c})}return t}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No kundli data</div>`;let e=this.buildHouses();return s`<div class="wrap">
+		`],p([h({attribute:!1})],B.prototype,"data",2),p([h({type:String,reflect:!0})],B.prototype,"spread",2),B=p([v("roxy-tarot-spread")],B);var cr={1:{x:150,y:58},2:{x:205,y:52},3:{x:253,y:112},4:{x:243,y:150},5:{x:253,y:188},6:{x:205,y:248},7:{x:150,y:242},8:{x:95,y:248},9:{x:47,y:188},10:{x:57,y:150},11:{x:47,y:112},12:{x:95,y:52}},dr={1:{x:150,y:35},2:{x:222,y:40},3:{x:265,y:100},4:{x:265,y:150},5:{x:265,y:200},6:{x:222,y:260},7:{x:150,y:265},8:{x:78,y:260},9:{x:35,y:200},10:{x:35,y:150},11:{x:35,y:100},12:{x:78,y:40}},pr=["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"],mr={aries:"Aries",taurus:"Taurus",gemini:"Gemini",cancer:"Cancer",leo:"Leo",virgo:"Virgo",libra:"Libra",scorpio:"Scorpio",sagittarius:"Sagittarius",capricorn:"Capricorn",aquarius:"Aquarius",pisces:"Pisces"},q=class extends y{constructor(){super(...arguments);this.data=null;this.chartStyle="south"}buildHouses(){if(!this.data)return[];let e=this.data,t=[];for(let a=0;a<12;a++){let o=pr[a],c=(e[o]?.signs??[]).map(d=>d.graha).filter(Boolean);t.push({house:a+1,sign:mr[o]??"",planets:c})}return t}render(){if(!this.data)return s`<div class="roxy-empty" role="status">No kundli data</div>`;let e=this.buildHouses();return s`<div class="wrap">
 			<h2 class="title">Vedic kundli</h2>
 			<svg
 				viewBox="0 0 300 300"
@@ -2603,14 +2603,14 @@
 				<line class="line" x1="10" y1="150" x2="80" y2="80" stroke-width="1" />
 				${e.map(t=>this.renderHouseGroup(t))}
 			</svg>
-		</div>`}isLagna(e){let t=this.data?.meta?.Lagna?.rashi;return t?t.toLowerCase()===e.sign.toLowerCase():!1}renderHouseGroup(e){let t=nr[e.house],a=lr[e.house];if(!t||!a)return l;let o=ut[e.sign]??"",n=e.planets??[],c=this.isLagna(e);return k`
+		</div>`}isLagna(e){let t=this.data?.meta?.Lagna?.rashi;return t?t.toLowerCase()===e.sign.toLowerCase():!1}renderHouseGroup(e){let t=cr[e.house],a=dr[e.house];if(!t||!a)return l;let o=gt[e.sign]??"",n=e.planets??[],c=this.isLagna(e);return k`
 			<g>
 				${c?k`<rect class="lagna-bg" x=${t.x-30} y=${t.y-28} width="60" height="56" rx="6" />`:l}
 				${o?k`<text class="sign-text" x=${a.x} y=${a.y} text-anchor="middle" dominant-baseline="central">${o}</text>`:l}
 				${c?k`<text class="lagna-marker" x=${t.x} y=${t.y-18} text-anchor="middle" dominant-baseline="central">LAGNA</text>`:l}
-				${n.map((d,g)=>{let m=ht[pr(d)]??d.slice(0,2),h=13,$=(c?t.y+8:t.y)-(n.length-1)*h/2+g*h;return k`<text class="planet-text" x=${t.x} y=${$} text-anchor="middle" dominant-baseline="central">${m}</text>`})}
+				${n.map((d,m)=>{let g=ut[hr(d)]??d.slice(0,2),u=13,$=(c?t.y+8:t.y)-(n.length-1)*u/2+m*u;return k`<text class="planet-text" x=${t.x} y=${$} text-anchor="middle" dominant-baseline="central">${g}</text>`})}
 			</g>
-		`}};q.styles=[v,x`
+		`}};q.styles=[b,x`
 			.wrap {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -2654,7 +2654,7 @@
 				stroke: color-mix(in srgb, var(--roxy-accent, #f59e0b) 45%, transparent);
 				stroke-width: 0.8;
 			}
-		`],p([u({attribute:!1})],q.prototype,"data",2),p([u({type:String,reflect:!0,attribute:"chart-style"})],q.prototype,"chartStyle",2),q=p([f("roxy-vedic-kundli")],q);function pr(i){return i?i.charAt(0).toUpperCase()+i.slice(1).toLowerCase():""}var Se=[{pascal:"RoxyNatalChart",tag:"roxy-natal-chart",slug:"natal-chart",domain:"astrology",heading:"Natal chart",endpoints:["astrology.generateNatalChart"],description:"Western natal chart wheel for /astrology/natal-chart responses",docsLabel:"Western",endpointLabel:"POST /astrology/natal-chart",docsSummary:"Natal chart wheel with planet glyphs and aspect lines",topic:"Astrology"},{pascal:"RoxyHoroscopeCard",tag:"roxy-horoscope-card",slug:"horoscope-card",domain:"astrology",heading:"Daily horoscope",endpoints:["astrology.getDailyHoroscope","astrology.getWeeklyHoroscope","astrology.getMonthlyHoroscope"],description:"Daily, weekly, or monthly horoscope card for /astrology/horoscope/...",docsLabel:"Western",endpointLabel:"GET /astrology/horoscope/{sign}/{daily,weekly,monthly}",docsSummary:"Daily, weekly, or monthly horoscope card",topic:"Astrology"},{pascal:"RoxySynastryChart",tag:"roxy-synastry-chart",slug:"synastry-chart",domain:"astrology",heading:"Synastry",endpoints:["astrology.calculateSynastry"],description:"Dual-wheel synastry chart with inter-aspects table",docsLabel:"Western",endpointLabel:"POST /astrology/synastry",docsSummary:"Dual-wheel synastry with inter-aspects table",topic:"Astrology"},{pascal:"RoxyCompatibilityCard",tag:"roxy-compatibility-card",slug:"compatibility-card",domain:"astrology",heading:"Compatibility score",endpoints:["astrology.calculateCompatibility","numerology.calculateCompatibility","biorhythm.calculateCompatibility"],description:"Cross-domain compatibility score card",docsLabel:"Cross",endpointLabel:"POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility",docsSummary:"Score card with category breakdown",topic:"Astrology"},{pascal:"RoxyMoonPhase",tag:"roxy-moon-phase",slug:"moon-phase",domain:"astrology",heading:"Moon phase",endpoints:["astrology.getCurrentMoonPhase","astrology.getUpcomingMoonPhases","astrology.getMoonPhaseCalendar"],description:"Moon phase card and calendar",docsLabel:"Western",endpointLabel:"GET /astrology/moon-phase/{current,upcoming,calendar/...}",docsSummary:"Moon phase card and calendar",topic:"Astrology"},{pascal:"RoxyVedicKundli",tag:"roxy-vedic-kundli",slug:"vedic-kundli",domain:"vedic",heading:"Vedic kundli",endpoints:["vedicAstrology.generateBirthChart"],description:"South or North Indian Vedic kundli for /vedic-astrology/birth-chart",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/birth-chart",docsSummary:"South or North Indian kundli",topic:"Vedic"},{pascal:"RoxyPanchangTable",tag:"roxy-panchang-table",slug:"panchang-table",domain:"vedic",heading:"Panchang",endpoints:["vedicAstrology.getBasicPanchang","vedicAstrology.getDetailedPanchang"],description:"Panchang muhurta table with auspicious and inauspicious periods",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/panchang/{basic,detailed}",docsSummary:"15+ muhurtas in detailed mode",topic:"Vedic"},{pascal:"RoxyDashaTimeline",tag:"roxy-dasha-timeline",slug:"dasha-timeline",domain:"vedic",heading:"Vimshottari dasha",endpoints:["vedicAstrology.getCurrentDasha","vedicAstrology.getMajorDashas","vedicAstrology.getSubDashas"],description:"Vimshottari dasha timeline with active mahadasha highlighted",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/dasha/{current,major,sub/...}",docsSummary:"Vimshottari mahadasha + antardasha + pratyantardasha",topic:"Vedic"},{pascal:"RoxyDoshaCard",tag:"roxy-dosha-card",slug:"dosha-card",domain:"vedic",heading:"Manglik dosha",endpoints:["vedicAstrology.checkManglikDosha","vedicAstrology.checkKalSarpaDosha","vedicAstrology.checkSadeSati"],description:"Manglik, Kaal Sarp, or Sade Sati presence card",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}",docsSummary:"Presence, severity, remedies, scoped effects",topic:"Vedic"},{pascal:"RoxyGunaMilan",tag:"roxy-guna-milan",slug:"guna-milan",domain:"vedic",heading:"Guna milan",endpoints:["vedicAstrology.calculateGunMilan"],description:"36-point Ashtakoota matrimonial compatibility breakdown",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/compatibility",docsSummary:"36-point Ashtakoota with eight sub-scores",topic:"Vedic"},{pascal:"RoxyKpPlanetsTable",tag:"roxy-kp-planets-table",slug:"kp-planets-table",domain:"vedic",heading:"KP planets",endpoints:["vedicAstrology.getKpPlanets"],description:"KP planets table with sub-lord and sub-sub-lord columns",docsLabel:"Vedic (KP)",endpointLabel:"POST /vedic-astrology/kp/planets",docsSummary:"Sub-lord and sub-sub-lord columns",topic:"Vedic"},{pascal:"RoxyNumerologyCard",tag:"roxy-numerology-card",slug:"numerology-card",domain:"numerology",heading:"Life path number",endpoints:["numerology.calculateLifePath","numerology.calculateExpression","numerology.calculatePersonalYear","numerology.calculateChart"],description:"Numerology card for life path, expression, personal year, or full chart",docsLabel:"Numerology",endpointLabel:"POST /numerology/{life-path,expression,personal-year,chart}",docsSummary:"Life path, expression, personal year, full chart",topic:"Numerology"},{pascal:"RoxyTarotCard",tag:"roxy-tarot-card",slug:"tarot-card",domain:"tarot",heading:"Daily tarot card",endpoints:["tarot.getCard","tarot.getDailyCard"],description:"Single tarot card with upright/reversed flip animation",docsLabel:"Tarot",endpointLabel:"GET /tarot/cards/{id}, POST /tarot/daily",docsSummary:"Single card with upright and reversed flip",topic:"Tarot"},{pascal:"RoxyTarotSpread",tag:"roxy-tarot-spread",slug:"tarot-spread",domain:"tarot",heading:"Three-card spread",endpoints:["tarot.castThreeCard","tarot.castCelticCross","tarot.castLove","tarot.castYesNo","tarot.draw"],description:"Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",docsLabel:"Tarot",endpointLabel:"POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw",docsSummary:"Spreads with positions and reading",topic:"Tarot"},{pascal:"RoxyBiorhythmChart",tag:"roxy-biorhythm-chart",slug:"biorhythm-chart",domain:"biorhythm",heading:"Daily biorhythm",endpoints:["biorhythm.getDailyBiorhythm","biorhythm.getForecast","biorhythm.getCriticalDays"],description:"Daily biorhythm bars or multi-day forecast cycle lines",docsLabel:"Biorhythm",endpointLabel:"POST /biorhythm/{daily,forecast,critical-days}",docsSummary:"Daily bars, forecast cycle lines, critical days",topic:"Biorhythm"},{pascal:"RoxyHexagram",tag:"roxy-hexagram",slug:"hexagram",domain:"iching",heading:"I Ching hexagram",endpoints:["iching.getHexagram","iching.castHexagram","iching.getDailyHexagram","iching.castDailyHexagram","iching.getRandomHexagram"],description:"I Ching hexagram with trigram glyphs, judgment, image, and changing lines",docsLabel:"I Ching",endpointLabel:"GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",docsSummary:"Hexagram with trigrams, judgment, image, changing lines",topic:"I Ching"},{pascal:"RoxyEndpointForm",tag:"roxy-endpoint-form",slug:"endpoint-form",domain:"utility",heading:"Schema-driven form",endpoints:[],description:"Schema-driven form that emits roxy-submit with a validated payload",docsLabel:"Helper",endpointLabel:"Any endpoint via x-roxy-ui hints",docsSummary:"Schema-driven form, emits roxy-submit",topic:"Helpers"},{pascal:"RoxyLocationSearch",tag:"roxy-location-search",slug:"location-search",domain:"utility",heading:"City search",endpoints:["location.search"],description:"City search input with debounced /location/search calls",docsLabel:"Helper",endpointLabel:"GET /location/search",docsSummary:"Debounced city search input, emits roxy-location-select",topic:"Helpers"},{pascal:"RoxyData",tag:"roxy-data",slug:"data",domain:"utility",heading:"Generic renderer",endpoints:[],description:"Generic fallback renderer for any OpenAPI response shape",docsLabel:"Helper",endpointLabel:"Any response shape",docsSummary:"Generic fallback renderer for unknown shapes",topic:"Helpers"}];var $t="0.1.2";var mr=Se.map(i=>i.slug);return Ct(hr);})();
+		`],p([h({attribute:!1})],q.prototype,"data",2),p([h({type:String,reflect:!0,attribute:"chart-style"})],q.prototype,"chartStyle",2),q=p([v("roxy-vedic-kundli")],q);function hr(i){return i?i.charAt(0).toUpperCase()+i.slice(1).toLowerCase():""}var Se=[{pascal:"RoxyNatalChart",tag:"roxy-natal-chart",slug:"natal-chart",domain:"astrology",heading:"Natal chart",endpoints:["astrology.generateNatalChart"],description:"Western natal chart wheel for /astrology/natal-chart responses",docsLabel:"Western",endpointLabel:"POST /astrology/natal-chart",docsSummary:"Natal chart wheel with planet glyphs and aspect lines",topic:"Astrology"},{pascal:"RoxyHoroscopeCard",tag:"roxy-horoscope-card",slug:"horoscope-card",domain:"astrology",heading:"Daily horoscope",endpoints:["astrology.getDailyHoroscope","astrology.getWeeklyHoroscope","astrology.getMonthlyHoroscope"],description:"Daily, weekly, or monthly horoscope card for /astrology/horoscope/...",docsLabel:"Western",endpointLabel:"GET /astrology/horoscope/{sign}/{daily,weekly,monthly}",docsSummary:"Daily, weekly, or monthly horoscope card",topic:"Astrology"},{pascal:"RoxySynastryChart",tag:"roxy-synastry-chart",slug:"synastry-chart",domain:"astrology",heading:"Synastry",endpoints:["astrology.calculateSynastry"],description:"Dual-wheel synastry chart with inter-aspects table",docsLabel:"Western",endpointLabel:"POST /astrology/synastry",docsSummary:"Dual-wheel synastry with inter-aspects table",topic:"Astrology"},{pascal:"RoxyCompatibilityCard",tag:"roxy-compatibility-card",slug:"compatibility-card",domain:"astrology",heading:"Compatibility score",endpoints:["astrology.calculateCompatibility","numerology.calculateCompatibility","biorhythm.calculateCompatibility"],description:"Cross-domain compatibility score card",docsLabel:"Cross",endpointLabel:"POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility",docsSummary:"Score card with category breakdown",topic:"Astrology"},{pascal:"RoxyMoonPhase",tag:"roxy-moon-phase",slug:"moon-phase",domain:"astrology",heading:"Moon phase",endpoints:["astrology.getCurrentMoonPhase","astrology.getUpcomingMoonPhases","astrology.getMoonPhaseCalendar"],description:"Moon phase card and calendar",docsLabel:"Western",endpointLabel:"GET /astrology/moon-phase/{current,upcoming,calendar/...}",docsSummary:"Moon phase card and calendar",topic:"Astrology"},{pascal:"RoxyVedicKundli",tag:"roxy-vedic-kundli",slug:"vedic-kundli",domain:"vedic",heading:"Vedic kundli",endpoints:["vedicAstrology.generateBirthChart"],description:"South or North Indian Vedic kundli for /vedic-astrology/birth-chart",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/birth-chart",docsSummary:"South or North Indian kundli",topic:"Vedic"},{pascal:"RoxyPanchangTable",tag:"roxy-panchang-table",slug:"panchang-table",domain:"vedic",heading:"Panchang",endpoints:["vedicAstrology.getBasicPanchang","vedicAstrology.getDetailedPanchang"],description:"Panchang muhurta table with auspicious and inauspicious periods",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/panchang/{basic,detailed}",docsSummary:"15+ muhurtas in detailed mode",topic:"Vedic"},{pascal:"RoxyDashaTimeline",tag:"roxy-dasha-timeline",slug:"dasha-timeline",domain:"vedic",heading:"Vimshottari dasha",endpoints:["vedicAstrology.getCurrentDasha","vedicAstrology.getMajorDashas","vedicAstrology.getSubDashas"],description:"Vimshottari dasha timeline with active mahadasha highlighted",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/dasha/{current,major,sub/...}",docsSummary:"Vimshottari mahadasha + antardasha + pratyantardasha",topic:"Vedic"},{pascal:"RoxyDoshaCard",tag:"roxy-dosha-card",slug:"dosha-card",domain:"vedic",heading:"Manglik dosha",endpoints:["vedicAstrology.checkManglikDosha","vedicAstrology.checkKalSarpaDosha","vedicAstrology.checkSadeSati"],description:"Manglik, Kaal Sarp, or Sade Sati presence card",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}",docsSummary:"Presence, severity, remedies, scoped effects",topic:"Vedic"},{pascal:"RoxyGunaMilan",tag:"roxy-guna-milan",slug:"guna-milan",domain:"vedic",heading:"Guna milan",endpoints:["vedicAstrology.calculateGunMilan"],description:"36-point Ashtakoota matrimonial compatibility breakdown",docsLabel:"Vedic",endpointLabel:"POST /vedic-astrology/compatibility",docsSummary:"36-point Ashtakoota with eight sub-scores",topic:"Vedic"},{pascal:"RoxyKpPlanetsTable",tag:"roxy-kp-planets-table",slug:"kp-planets-table",domain:"vedic",heading:"KP planets",endpoints:["vedicAstrology.getKpPlanets"],description:"KP planets table with sub-lord and sub-sub-lord columns",docsLabel:"Vedic (KP)",endpointLabel:"POST /vedic-astrology/kp/planets",docsSummary:"Sub-lord and sub-sub-lord columns",topic:"Vedic"},{pascal:"RoxyNumerologyCard",tag:"roxy-numerology-card",slug:"numerology-card",domain:"numerology",heading:"Life path number",endpoints:["numerology.calculateLifePath","numerology.calculateExpression","numerology.calculatePersonalYear","numerology.calculateChart"],description:"Numerology card for life path, expression, personal year, or full chart",docsLabel:"Numerology",endpointLabel:"POST /numerology/{life-path,expression,personal-year,chart}",docsSummary:"Life path, expression, personal year, full chart",topic:"Numerology"},{pascal:"RoxyTarotCard",tag:"roxy-tarot-card",slug:"tarot-card",domain:"tarot",heading:"Daily tarot card",endpoints:["tarot.getCard","tarot.getDailyCard"],description:"Single tarot card with upright/reversed flip animation",docsLabel:"Tarot",endpointLabel:"GET /tarot/cards/{id}, POST /tarot/daily",docsSummary:"Single card with upright and reversed flip",topic:"Tarot"},{pascal:"RoxyTarotSpread",tag:"roxy-tarot-spread",slug:"tarot-spread",domain:"tarot",heading:"Three-card spread",endpoints:["tarot.castThreeCard","tarot.castCelticCross","tarot.castLove","tarot.castYesNo","tarot.draw"],description:"Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",docsLabel:"Tarot",endpointLabel:"POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw",docsSummary:"Spreads with positions and reading",topic:"Tarot"},{pascal:"RoxyBiorhythmChart",tag:"roxy-biorhythm-chart",slug:"biorhythm-chart",domain:"biorhythm",heading:"Daily biorhythm",endpoints:["biorhythm.getDailyBiorhythm","biorhythm.getForecast","biorhythm.getCriticalDays"],description:"Daily biorhythm bars or multi-day forecast cycle lines",docsLabel:"Biorhythm",endpointLabel:"POST /biorhythm/{daily,forecast,critical-days}",docsSummary:"Daily bars, forecast cycle lines, critical days",topic:"Biorhythm"},{pascal:"RoxyHexagram",tag:"roxy-hexagram",slug:"hexagram",domain:"iching",heading:"I Ching hexagram",endpoints:["iching.getHexagram","iching.castHexagram","iching.getDailyHexagram","iching.castDailyHexagram","iching.getRandomHexagram"],description:"I Ching hexagram with trigram glyphs, judgment, image, and changing lines",docsLabel:"I Ching",endpointLabel:"GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",docsSummary:"Hexagram with trigrams, judgment, image, changing lines",topic:"I Ching"},{pascal:"RoxyEndpointForm",tag:"roxy-endpoint-form",slug:"endpoint-form",domain:"utility",heading:"Schema-driven form",endpoints:[],description:"Schema-driven form that emits roxy-submit with a validated payload",docsLabel:"Helper",endpointLabel:"Any endpoint via x-roxy-ui hints",docsSummary:"Schema-driven form, emits roxy-submit",topic:"Helpers"},{pascal:"RoxyLocationSearch",tag:"roxy-location-search",slug:"location-search",domain:"utility",heading:"City search",endpoints:["location.search"],description:"City search input with debounced /location/search calls",docsLabel:"Helper",endpointLabel:"GET /location/search",docsSummary:"Debounced city search input, emits roxy-location-select",topic:"Helpers"},{pascal:"RoxyData",tag:"roxy-data",slug:"data",domain:"utility",heading:"Generic renderer",endpoints:[],description:"Generic fallback renderer for any OpenAPI response shape",docsLabel:"Helper",endpointLabel:"Any response shape",docsSummary:"Generic fallback renderer for unknown shapes",topic:"Helpers"}];var wt="0.1.2";var ur=Se.map(i=>i.slug);return Et(gr);})();
 /*! Bundled license information:
 
 @lit/reactive-element/css-tag.js:

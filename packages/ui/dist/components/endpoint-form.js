@@ -100,6 +100,21 @@ var baseStyles = css`
 `;
 
 // packages/ui/src/components/endpoint-form.ts
+var specCache = /* @__PURE__ */ new Map();
+async function loadSpec(url) {
+  let pending = specCache.get(url);
+  if (!pending) {
+    pending = fetch(url).then(async (res) => {
+      if (!res.ok) {
+        specCache.delete(url);
+        throw new Error(`HTTP ${res.status}`);
+      }
+      return await res.json();
+    });
+    specCache.set(url, pending);
+  }
+  return pending;
+}
 var RoxyEndpointForm = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -152,9 +167,7 @@ var RoxyEndpointForm = class extends LitElement {
   }
   async loadSchema() {
     try {
-      const res = await fetch(this.specUrl);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const spec = await res.json();
+      const spec = await loadSpec(this.specUrl);
       const path = `/${this.endpoint.replace(/^\//, "")}`;
       const op = spec.paths?.[path]?.[this.method.toLowerCase()];
       if (!op) return;

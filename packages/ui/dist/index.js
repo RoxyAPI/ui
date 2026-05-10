@@ -1128,6 +1128,21 @@ RoxyDoshaCard = __decorateClass([
 // packages/ui/src/components/endpoint-form.ts
 import { css as css7, html as html6, LitElement as LitElement6, nothing as nothing6 } from "lit";
 import { customElement as customElement6, property as property6, state } from "lit/decorators.js";
+var specCache = /* @__PURE__ */ new Map();
+async function loadSpec(url) {
+  let pending = specCache.get(url);
+  if (!pending) {
+    pending = fetch(url).then(async (res) => {
+      if (!res.ok) {
+        specCache.delete(url);
+        throw new Error(`HTTP ${res.status}`);
+      }
+      return await res.json();
+    });
+    specCache.set(url, pending);
+  }
+  return pending;
+}
 var RoxyEndpointForm = class extends LitElement6 {
   constructor() {
     super(...arguments);
@@ -1180,9 +1195,7 @@ var RoxyEndpointForm = class extends LitElement6 {
   }
   async loadSchema() {
     try {
-      const res = await fetch(this.specUrl);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const spec = await res.json();
+      const spec = await loadSpec(this.specUrl);
       const path = `/${this.endpoint.replace(/^\//, "")}`;
       const op = spec.paths?.[path]?.[this.method.toLowerCase()];
       if (!op) return;

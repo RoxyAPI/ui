@@ -12,6 +12,10 @@ packages/ui/src/types/
 # apps/docs/dist is mirrored from packages/ui/dist on each `bun run build`
 # so local preview at apps/docs/ matches the GitHub Pages layout exactly.
 apps/docs/dist/
+
+# apps/docs/openapi.json is mirrored from specs/openapi.json on each build
+# so the demo's roxy-endpoint-form resolves spec locally, not from live API.
+apps/docs/openapi.json
 CLAUDE.md
 docs/*
 .vscode/settings.json

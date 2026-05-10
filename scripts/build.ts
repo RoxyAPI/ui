@@ -115,6 +115,7 @@ async function syncSiteAssets() {
 	await rm(target, { recursive: true, force: true });
 	await mkdir(target, { recursive: true });
 	await copyDir(DIST, target);
+	await copyFile('specs/openapi.json', 'apps/docs/openapi.json');
 }
 
 async function copyDir(from: string, to: string) {

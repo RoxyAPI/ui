@@ -236,7 +236,7 @@ export default function Page({ data }) {
 		id: 'form',
 		tag: 'roxy-endpoint-form',
 		seoLine: 'Auto-generated input form from any RoxyAPI endpoint schema',
-		attrs: ' data-endpoint="numerology/life-path" submit-label="Calculate"',
+		attrs: ' data-endpoint="numerology/life-path" submit-label="Calculate" spec-url="./openapi.json"',
 		code: `<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer></script>
 <roxy-endpoint-form
   data-endpoint="numerology/life-path"

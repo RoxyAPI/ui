@@ -31,6 +31,28 @@ interface FieldDef {
 	default?: unknown;
 }
 
+interface OpenApiDoc {
+	paths?: Record<string, Record<string, unknown>>;
+	components?: { schemas?: Record<string, OpenApiSchema> };
+}
+
+const specCache = new Map<string, Promise<OpenApiDoc>>();
+
+async function loadSpec(url: string): Promise<OpenApiDoc> {
+	let pending = specCache.get(url);
+	if (!pending) {
+		pending = fetch(url).then(async (res) => {
+			if (!res.ok) {
+				specCache.delete(url);
+				throw new Error(`HTTP ${res.status}`);
+			}
+			return (await res.json()) as OpenApiDoc;
+		});
+		specCache.set(url, pending);
+	}
+	return pending;
+}
+
 /**
  * Schema-driven form. Pass `endpoint` (e.g. "vedic-astrology/birth-chart").
  * The form introspects the cached OpenAPI spec, slots a roxy-location-search
@@ -171,12 +193,7 @@ export class RoxyEndpointForm extends LitElement {
 
 	private async loadSchema() {
 		try {
-			const res = await fetch(this.specUrl);
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			const spec = (await res.json()) as {
-				paths?: Record<string, Record<string, unknown>>;
-				components?: { schemas?: Record<string, OpenApiSchema> };
-			};
+			const spec = await loadSpec(this.specUrl);
 			const path = `/${this.endpoint.replace(/^\//, '')}`;
 			const op = spec.paths?.[path]?.[this.method.toLowerCase()] as
 				| {
