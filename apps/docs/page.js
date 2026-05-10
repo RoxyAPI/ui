@@ -227,6 +227,7 @@
 		}
 	});
 	if (window.parent && window.parent !== window) {
+		document.body.classList.add('is-iframed');
 		try {
 			window.parent.postMessage({ type: 'roxy-ui-ready' }, '*');
 		} catch {}

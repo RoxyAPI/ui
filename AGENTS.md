@@ -12,7 +12,36 @@ Roxy UI is the official web component library for the RoxyAPI catalog. Component
 
 ## Decision tree for picking a component
 
-Use the table below. Match the user request against the endpoint, render the matching component.
+### Pick by user phrase
+
+Map the user's natural-language request to a component first; fall back to the table below if the request names a specific endpoint.
+
+| If the user says... | Render |
+|---|---|
+| "daily horoscope for `{sign}`", "weekly horoscope", "monthly horoscope" | `<roxy-horoscope-card>` |
+| "birth chart", "natal chart", "Western chart", "show me my planets" | `<roxy-natal-chart>` |
+| "match two birth charts", "compare us in Western astrology", "synastry" | `<roxy-synastry-chart>` |
+| "kundli", "Vedic chart", "rashi chart", "South/North Indian chart" | `<roxy-vedic-kundli>` |
+| "kundli matching", "Guna Milan", "match for marriage", "36-point compatibility" | `<roxy-guna-milan>` |
+| "are we compatible", "compatibility score", "love score" (cross-domain) | `<roxy-compatibility-card>` |
+| "panchang for today", "tithi", "nakshatra", "muhurta", "auspicious times" | `<roxy-panchang-table>` |
+| "dasha", "mahadasha", "current planetary period", "Vimshottari" | `<roxy-dasha-timeline>` |
+| "manglik", "kalsarpa", "sadhesati", "any doshas in my chart" | `<roxy-dosha-card>` |
+| "KP planets", "sub-lord", "Krishnamurti" | `<roxy-kp-planets-table>` |
+| "life path number", "expression number", "personal year", "numerology chart" | `<roxy-numerology-card>` |
+| "draw a tarot card", "card of the day", "card meaning" | `<roxy-tarot-card>` |
+| "tarot reading", "three-card spread", "Celtic Cross", "yes or no tarot" | `<roxy-tarot-spread>` |
+| "biorhythm", "physical/emotional/intellectual cycle", "critical days" | `<roxy-biorhythm-chart>` |
+| "I Ching", "hexagram", "cast the coins", "Book of Changes" | `<roxy-hexagram>` |
+| "moon phase", "moon calendar", "next full moon", "current moon" | `<roxy-moon-phase>` |
+| "search a city", "geocode", "lat/long for a place" | `<roxy-location-search>` |
+| "build a form for endpoint X" | `<roxy-endpoint-form>` |
+
+**Fallback rule.** If the response shape does not match any component above, render with `<roxy-data>`. It accepts any RoxyAPI response and produces a structured layout from the JSON.
+
+### Endpoint reference
+
+Use the table below for the formal endpoint to component mapping.
 
 <!-- BEGIN:COMPONENTS -->
 | Element | Domain | Endpoint(s) | What it renders |
@@ -38,6 +67,26 @@ Use the table below. Match the user request against the endpoint, render the mat
 | `<roxy-data>` | Helper | Any response shape | Generic fallback renderer for unknown shapes |
 <!-- END:COMPONENTS -->
 
+## SDK response envelope (read this first)
+
+The `@roxyapi/sdk` returns `{ data, error, request, response }`. **Always destructure `data` before passing to a component.** Passing the full envelope produces `[object Object]` in the rendered chart. This is the single most common integration bug.
+
+```ts
+// Wrong: passes the envelope
+const response = await roxy.astrology.generateNatalChart({ body });
+element.data = response;  // → renders [object Object]
+
+// Right: unwrap data
+const { data } = await roxy.astrology.generateNatalChart({ body });
+element.data = data;
+```
+
+Every snippet below follows this rule.
+
+## Timezone format
+
+Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). The decimal form is what `/location/search` returns; pick one and stay consistent within a single integration.
+
 ## Integration patterns
 
 ### Pattern 1: vanilla HTML, no build step
@@ -52,7 +101,7 @@ Use the table below. Match the user request against the endpoint, render the mat
 
 <script type="module">
 	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-	const roxy = createRoxy('roxy_xxx');
+	const roxy = createRoxy('pk_live_xxx');
 	const { data } = await roxy.astrology.generateNatalChart({
 		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
 	});
@@ -72,7 +121,7 @@ const roxy = createRoxy(process.env.NEXT_PUBLIC_ROXY_API_KEY!);
 export function BirthChartView() {
 	const [chart, setChart] = useState(null);
 
-	const onLocationSelect = async (e: CustomEvent<{ latitude: number; longitude: number; timezone: string }>) => {
+	const onLocationSelect = async (e: CustomEvent<{ latitude: number; longitude: number; timezone: number | string }>) => {
 		const { data } = await roxy.astrology.generateNatalChart({
 			body: { date: '1990-01-15', time: '14:30:00', ...e.detail },
 		});
@@ -101,7 +150,7 @@ export function BirthChartView() {
 
 <script type="module">
 	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-	const roxy = createRoxy('roxy_xxx');
+	const roxy = createRoxy('pk_live_xxx');
 	const form = document.querySelector('roxy-endpoint-form');
 	form.addEventListener('roxy-submit', async (e) => {
 		const { values } = e.detail;
@@ -113,7 +162,7 @@ export function BirthChartView() {
 
 ### Pattern 4: widgets auto-mount (no JavaScript wiring)
 
-Use a publishable key (`pk_live_*` or `pk_test_*`) for client-side embeds. Get one at <https://roxyapi.com/account>. Publishable keys are origin-restricted at the API gateway — register the customer's domain (e.g. `https://customer.com`) when creating the key, and the gateway will reject requests from any other origin. Never use a secret key in client-side code (secret keys are unprefixed and live server-side only).
+Use a publishable key (`pk_live_*` or `pk_test_*`) for client-side embeds. Get one at <https://roxyapi.com/account>. Publishable keys are origin-restricted at the API gateway. Register the customer's domain (e.g. `https://customer.com`) when creating the key, and the gateway will reject requests from any other origin. Never use a secret key in client-side code (secret keys are unprefixed and live server-side only).
 
 ```html
 <script
@@ -148,6 +197,35 @@ document.querySelector('roxy-natal-chart').data = result;
 
 No field renames. No glue code. Use the decision tree above to pick the component for any tool.
 
+### Pattern 6: Next.js RSC streaming
+
+Server fetches with the secret key, client renders with the wrapper. The API key never crosses the network.
+
+```tsx
+// app/page.tsx (Server Component)
+import { createRoxy } from '@roxyapi/sdk';
+import BirthChartView from './birth-chart-view';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+export default async function Page() {
+	const { data } = await roxy.vedicAstrology.generateBirthChart({
+		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+	});
+	return <BirthChartView data={data} />;
+}
+```
+
+```tsx
+// app/birth-chart-view.tsx (Client Component)
+'use client';
+import { RoxyVedicKundli } from '@roxyapi/ui-react';
+
+export default function BirthChartView({ data }: { data: unknown }) {
+	return <RoxyVedicKundli data={data} />;
+}
+```
+
 ## Rules every agent must follow
 
 - Always call `/location/search` first before any chart endpoint that takes latitude, longitude, or timezone. Use `<roxy-location-search>` for the input UI.
@@ -168,6 +246,10 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 - Use `@roxyapi/ui-react` for React projects. Use `@roxyapi/ui` directly elsewhere.
 - Do not write your own kundli component. The lifted layout in `<roxy-vedic-kundli>` is the canonical RoxyAPI render path.
 - Do not call astrology endpoints with hardcoded coordinates. Always geocode first via `<roxy-location-search>` or `roxy.location.searchCities()`.
+- Do not declare a local `interface XyzData` to describe a RoxyAPI response. Import the type from the spec-derived bundle: `import type { XyzResponse } from '@roxyapi/ui'` (or the SDK's typed methods). Local interfaces drift the moment the spec changes.
+- Do not write Tailwind utility classes inside a component. The Shadow DOM boundary stops them at the door. Theme through `--roxy-*` CSS custom properties on `:root` or per element instead.
+- Do not fetch inside chart, table, or card components. They are stateless: pass `data` as a prop. Documented exceptions are `<roxy-location-search>`, `<roxy-endpoint-form>`, and the widgets auto-mount script.
+- Do not redefine theme tokens or invent your own naming. Override the existing `--roxy-*` custom properties; the full list is in `THEMING.md`.
 
 ## Where to look next
 
@@ -175,4 +257,4 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 - Sample data for every component: `apps/docs/sample-data.js`
 - Token reference: `packages/ui/THEMING.md`
 - Live preview: `bun run preview` then open `http://localhost:3001`
-- Money endpoints reference: see the RoxyAPI methodology page at `roxyapi.com/methodology`
+- Endpoint reference: <https://roxyapi.com/api-reference>

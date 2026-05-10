@@ -8,18 +8,19 @@ Every Roxy UI component reads its colors, fonts, spacing, and motion from a sing
 
 | Variable | Light default | Dark default | Used by |
 |---|---|---|---|
-| `--roxy-primary` | `#0f172a` | `#f8fafc` | Headings, primary text |
-| `--roxy-secondary` | `#475569` | `#94a3b8` | Subheadings, muted accents |
+| `--roxy-bg` | `#ffffff` | `#0a0a0a` | Card and chart backgrounds |
+| `--roxy-fg` | `#0a0a0a` | `#fafafa` | Body text, headings |
+| `--roxy-muted` | `#71717a` | `#a1a1aa` | Secondary text, subheadings |
+| `--roxy-border` | `#e4e4e7` | `#27272a` | Wheel lines, table borders |
 | `--roxy-accent` | `#f59e0b` | `#fbbf24` | Planet glyphs, hexagram lines, focused state |
+| `--roxy-accent-fg` | `#b45309` | `#fcd34d` | Accent-on-accent text (WCAG-AA contrast) |
 | `--roxy-success` | `#16a34a` | `#22c55e` | Positive doshas, biorhythm peaks |
 | `--roxy-warning` | `#ea580c` | `#fb923c` | Caution states, mid severity |
 | `--roxy-danger` | `#dc2626` | `#ef4444` | Manglik present, critical days |
 | `--roxy-info` | `#0284c7` | `#38bdf8` | Informational badges |
-| `--roxy-bg` | `#ffffff` | `#0a0a0a` | Card and chart backgrounds |
-| `--roxy-fg` | `#0a0a0a` | `#fafafa` | Body text |
-| `--roxy-muted` | `#71717a` | `#a1a1aa` | Secondary text |
-| `--roxy-border` | `#e4e4e7` | `#27272a` | Wheel lines, table borders |
 | `--roxy-ring` | `rgba(245, 158, 11, 0.4)` | `rgba(251, 191, 36, 0.45)` | Focus outlines |
+
+Status tokens each have a `-fg` variant (e.g. `--roxy-success-fg`) for text rendered on top of the status color, sized for WCAG-AA contrast.
 
 ### Typography
 
@@ -112,7 +113,21 @@ Three opt-in mechanisms work out of the box.
 
 ### Map Tailwind tokens
 
-Tailwind users can map our tokens to theirs in five lines of `globals.css`:
+Tailwind users can map our tokens to theirs in five lines of `globals.css`. Pick the syntax that matches your Tailwind version.
+
+**Tailwind v4 (CSS-first config, recommended):**
+
+```css
+:root {
+	--roxy-bg: var(--color-background);
+	--roxy-fg: var(--color-foreground);
+	--roxy-accent: var(--color-primary);
+	--roxy-border: var(--color-border);
+	--roxy-radius-md: var(--radius);
+}
+```
+
+**Tailwind v3 (`tailwind.config.js`):**
 
 ```css
 :root {
@@ -123,6 +138,8 @@ Tailwind users can map our tokens to theirs in five lines of `globals.css`:
 	--roxy-radius-md: theme(borderRadius.md);
 }
 ```
+
+If you used the shadcn registry path, this bridge installs automatically and reads from your existing shadcn tokens.
 
 ## A11y
 
