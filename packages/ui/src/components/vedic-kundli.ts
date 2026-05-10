@@ -1,15 +1,20 @@
 import { css, html, LitElement, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_ABBR, SIGN_ABBR } from '../tokens/index.js';
+import {
+	PLANET_ABBR,
+	RASHI_KEYS,
+	SIGN_ABBR,
+	SIGNS_ORDER,
+} from '../tokens/index.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { capitalize } from '../utils/string.js';
 
 type RashiBucket = BirthChartResponse['aries'];
 
-// TODO(spec): BirthChartResponse types only `aries` and `meta`, but the API
-// returns all 12 rashi keys (taurus, gemini, ..., pisces) with the same shape
-// as `aries`. Update the OpenAPI schema so the renderer can index by rashi
-// without casts.
+// The /vedic-astrology/birth-chart response carries all 12 rashi keys
+// (aries, taurus, ..., pisces), each shaped like the spec-typed `aries`
+// bucket. This local alias indexes by rashi name without per-call casts.
 type BirthChartByRashi = BirthChartResponse & Record<string, RashiBucket>;
 
 interface KundliHouse {
@@ -48,43 +53,18 @@ const SOUTH_SIGN_POSITIONS: Record<number, { x: number; y: number }> = {
 	12: { x: 78, y: 40 },
 };
 
-const RASHI_KEYS = [
-	'aries',
-	'taurus',
-	'gemini',
-	'cancer',
-	'leo',
-	'virgo',
-	'libra',
-	'scorpio',
-	'sagittarius',
-	'capricorn',
-	'aquarius',
-	'pisces',
-] as const;
-
-const RASHI_TO_SIGN: Record<string, string> = {
-	aries: 'Aries',
-	taurus: 'Taurus',
-	gemini: 'Gemini',
-	cancer: 'Cancer',
-	leo: 'Leo',
-	virgo: 'Virgo',
-	libra: 'Libra',
-	scorpio: 'Scorpio',
-	sagittarius: 'Sagittarius',
-	capricorn: 'Capricorn',
-	aquarius: 'Aquarius',
-	pisces: 'Pisces',
-};
+// `RASHI_TO_SIGN` is derived from the canonical sign list so any future order
+// change in `tokens/index.ts` automatically propagates to the kundli buckets.
+const RASHI_TO_SIGN: Record<string, string> = Object.fromEntries(
+	SIGNS_ORDER.map((s) => [s.toLowerCase(), s] as const),
+);
 
 /**
  * Vedic kundli (D1 Rashi chart). South Indian style by default. Pass `data`
  * from /vedic-astrology/birth-chart. North Indian style via style="north".
  *
- * Lifted from jyotish-vedic-astrology-app/src/components/birth-chart.tsx,
- * keeping HOUSE_CENTERS + SIGN_POSITIONS + abbreviations, dropping the React
- * DOM color-probing hook in favor of CSS custom properties on :host.
+ * Theming flows through CSS custom properties on :host, so the chart adopts
+ * the host page palette without runtime color probing.
  */
 @customElement('roxy-vedic-kundli')
 export class RoxyVedicKundli extends LitElement {
@@ -234,11 +214,6 @@ export class RoxyVedicKundli extends LitElement {
 			</g>
 		`;
 	}
-}
-
-function capitalize(s: string): string {
-	if (!s) return '';
-	return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
 declare global {

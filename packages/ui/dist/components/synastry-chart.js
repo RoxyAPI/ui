@@ -52,6 +52,23 @@ var SIGN_GLYPH = {
   Aquarius: "\u2652",
   Pisces: "\u2653"
 };
+var SIGNS_ORDER = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces"
+];
+var RASHI_KEYS = SIGNS_ORDER.map(
+  (s) => s.toLowerCase()
+);
 
 // packages/ui/src/utils/base-styles.ts
 import { css } from "lit";
@@ -152,6 +169,22 @@ function polarToCartesian(cx, cy, radius, angleDeg) {
 function formatNumber(value, dp = 1) {
   if (typeof value !== "number" || !Number.isFinite(value)) return "";
   return value.toFixed(dp).replace(/\.?0+$/, "");
+}
+var ASPECT_CLASS = {
+  conjunction: "aspect-conjunction",
+  sextile: "aspect-sextile",
+  square: "aspect-square",
+  trine: "aspect-trine",
+  opposition: "aspect-opposition"
+};
+function normalizeAspect(a) {
+  return (a.type ?? "").toLowerCase().replace(/_/g, "-");
+}
+
+// packages/ui/src/utils/string.ts
+function capitalize(s) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
 // packages/ui/src/components/synastry-chart.ts
@@ -290,21 +323,7 @@ var RoxySynastryChart = class extends LitElement {
     });
   }
   renderSigns() {
-    const order = [
-      "Aries",
-      "Taurus",
-      "Gemini",
-      "Cancer",
-      "Leo",
-      "Virgo",
-      "Libra",
-      "Scorpio",
-      "Sagittarius",
-      "Capricorn",
-      "Aquarius",
-      "Pisces"
-    ];
-    return order.map((s, i) => {
+    return SIGNS_ORDER.map((s, i) => {
       const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
       return svg`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[s]}</text>`;
@@ -531,20 +550,6 @@ __decorateClass([
 RoxySynastryChart = __decorateClass([
   customElement("roxy-synastry-chart")
 ], RoxySynastryChart);
-function capitalize(s) {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
-var ASPECT_CLASS = {
-  conjunction: "aspect-conjunction",
-  sextile: "aspect-sextile",
-  square: "aspect-square",
-  trine: "aspect-trine",
-  opposition: "aspect-opposition"
-};
-function normalizeAspect(a) {
-  return (a.type ?? "").toLowerCase().replace(/_/g, "-");
-}
 function formatStrength(s) {
   if (typeof s === "number") return Math.round(s).toString();
   return "";

@@ -4,9 +4,8 @@ import { LitElement } from 'lit';
  * `roxy-location-select` CustomEvent with the chosen city. Required for any
  * chart endpoint.
  *
- * Lifted from jyotish-vedic-astrology-app/src/components/city-search.tsx,
- * keeping the 300ms debounce and click-outside behavior, replacing React
- * state with Lit reactive properties and using direct fetch to RoxyAPI.
+ * Behavior: 300ms input debounce, click-outside dismiss, keyboard navigation
+ * with arrow keys / Enter / Escape, AbortController on stale requests.
  *
  * Attributes:
  *   api-key            optional. Direct call to roxyapi.com when set.

@@ -14,6 +14,23 @@ import { css as css2, html, LitElement, nothing, svg } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 // packages/ui/src/tokens/index.ts
+var SIGNS_ORDER = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces"
+];
+var RASHI_KEYS = SIGNS_ORDER.map(
+  (s) => s.toLowerCase()
+);
 var TRIGRAM_GLYPH = {
   heaven: "\u2630",
   lake: "\u2631",

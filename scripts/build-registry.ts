@@ -3,18 +3,17 @@
  * Emit shadcn registry JSON entries. Output to registry/{name}.json. Each
  * entry ships a small React wrapper (.tsx) that re-exports the component
  * from @roxyapi/ui-react so the customer ends up with a starter file they
- * own and can customize, while the heavy Lit element still loads from
- * jsDelivr at runtime via the npm thin-shell wrapper.
+ * own and can customize.
  *
  * Install path:
  *   npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v{VERSION}/registry/{slug}.json
  *
  * The shadcn CLI 3.x accepts any URL pointing at registry-item JSON.
  *
- * Versioning: registryDependencies pin to the exact `v${VERSION}` git tag (read
- * from packages/ui/package.json). `@main` was a moving branch pointer that
- * jsDelivr caches for hours, leaving supply-chain reproducibility undefined.
- * On every release the version bump propagates automatically into the regen.
+ * Versioning: registryDependencies pin to the exact `v${VERSION}` git tag
+ * (read from packages/ui/package.json) so each install resolves to a stable,
+ * cache-friendly artifact. The version bump propagates automatically into
+ * each regen.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import {
@@ -97,9 +96,8 @@ function docBody(component: RoxyComponent): string {
 	const { pascal, slug, description, selfFetching } = component;
 	const header = `<${pascal} data={...} />: ${description}.
 
-You own this file. Customize freely. The underlying Lit element loads
-from jsDelivr at runtime via @roxyapi/ui-react, so updates ship without
-a re-install.`;
+You own this file. Customize freely. The component is re-exported from
+@roxyapi/ui-react and stays in sync with the published package.`;
 
 	const theme =
 		'Theme via --roxy-* CSS custom properties on :root (see globals.css).';

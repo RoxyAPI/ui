@@ -44,6 +44,23 @@ var SIGN_ABBR = {
   Aquarius: "Aq",
   Pisces: "Pi"
 };
+var SIGNS_ORDER = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces"
+];
+var RASHI_KEYS = SIGNS_ORDER.map(
+  (s) => s.toLowerCase()
+);
 
 // packages/ui/src/utils/base-styles.ts
 import { css } from "lit";
@@ -131,6 +148,12 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/string.ts
+function capitalize(s) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
 // packages/ui/src/components/vedic-kundli.ts
 var SOUTH_HOUSE_CENTERS = {
   1: { x: 150, y: 58 },
@@ -160,34 +183,9 @@ var SOUTH_SIGN_POSITIONS = {
   11: { x: 35, y: 100 },
   12: { x: 78, y: 40 }
 };
-var RASHI_KEYS = [
-  "aries",
-  "taurus",
-  "gemini",
-  "cancer",
-  "leo",
-  "virgo",
-  "libra",
-  "scorpio",
-  "sagittarius",
-  "capricorn",
-  "aquarius",
-  "pisces"
-];
-var RASHI_TO_SIGN = {
-  aries: "Aries",
-  taurus: "Taurus",
-  gemini: "Gemini",
-  cancer: "Cancer",
-  leo: "Leo",
-  virgo: "Virgo",
-  libra: "Libra",
-  scorpio: "Scorpio",
-  sagittarius: "Sagittarius",
-  capricorn: "Capricorn",
-  aquarius: "Aquarius",
-  pisces: "Pisces"
-};
+var RASHI_TO_SIGN = Object.fromEntries(
+  SIGNS_ORDER.map((s) => [s.toLowerCase(), s])
+);
 var RoxyVedicKundli = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -327,10 +325,6 @@ __decorateClass([
 RoxyVedicKundli = __decorateClass([
   customElement("roxy-vedic-kundli")
 ], RoxyVedicKundli);
-function capitalize(s) {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
 export {
   RoxyVedicKundli
 };

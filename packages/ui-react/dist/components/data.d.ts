@@ -1,8 +1,6 @@
 import * as React from 'react';
-type ElementAttrs = Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'data'>;
+type ElementAttrs = Omit<React.HTMLAttributes<HTMLElement>, 'children'>;
 export interface RoxyDataProps extends ElementAttrs {
-    /** Spec-derived response payload. Pass the raw RoxyAPI response. */
-    data?: unknown;
     className?: string;
     style?: React.CSSProperties;
 }

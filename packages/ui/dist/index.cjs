@@ -403,6 +403,16 @@ function formatPercent(value, dp = 1) {
   const n = formatNumber(value, dp);
   return n ? `${n}%` : "";
 }
+var ASPECT_CLASS = {
+  conjunction: "aspect-conjunction",
+  sextile: "aspect-sextile",
+  square: "aspect-square",
+  trine: "aspect-trine",
+  opposition: "aspect-opposition"
+};
+function normalizeAspect(a) {
+  return (a.type ?? "").toLowerCase().replace(/_/g, "-");
+}
 
 // packages/ui/src/components/compatibility-card.ts
 var RoxyCompatibilityCard = class extends import_lit3.LitElement {
@@ -760,6 +770,17 @@ function formatYear(s) {
 // packages/ui/src/components/data.ts
 var import_lit5 = require("lit");
 var import_decorators4 = require("lit/decorators.js");
+
+// packages/ui/src/utils/string.ts
+function capitalize(s) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+function humanize(s) {
+  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
+}
+
+// packages/ui/src/components/data.ts
 var TITLE_KEYS = ["title", "name", "label", "heading", "overview", "summary"];
 var IMAGE_KEYS = ["imageUrl", "image", "icon", "symbol"];
 var SKIP_KEYS = ["imageUrl", "image"];
@@ -818,7 +839,7 @@ var RoxyData = class extends import_lit5.LitElement {
     return import_lit5.html`<table class="roxy-table" role="table">
 			<thead>
 				<tr>
-					${keys.map((k) => import_lit5.html`<th>${this.humanize(k)}</th>`)}
+					${keys.map((k) => import_lit5.html`<th>${humanize(k)}</th>`)}
 				</tr>
 			</thead>
 			<tbody>
@@ -851,7 +872,7 @@ var RoxyData = class extends import_lit5.LitElement {
 			${rows.length > 0 ? import_lit5.html`<dl class="roxy-rows">
 						${rows.map(
       ([k, v]) => import_lit5.html`
-								<dt>${this.humanize(k)}</dt>
+								<dt>${humanize(k)}</dt>
 								<dd>${this.renderField(v)}</dd>
 							`
     )}
@@ -889,9 +910,6 @@ var RoxyData = class extends import_lit5.LitElement {
       for (const k of Object.keys(row)) seen.add(k);
     }
     return Array.from(seen);
-  }
-  humanize(key) {
-    return key.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
   }
 };
 RoxyData.styles = [
@@ -1561,9 +1579,6 @@ __decorateClass([
 RoxyEndpointForm = __decorateClass([
   (0, import_decorators6.customElement)("roxy-endpoint-form")
 ], RoxyEndpointForm);
-function humanize(s) {
-  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
-}
 
 // packages/ui/src/components/guna-milan.ts
 var import_lit8 = require("lit");
@@ -1826,6 +1841,23 @@ var SIGN_ABBR = {
   Aquarius: "Aq",
   Pisces: "Pi"
 };
+var SIGNS_ORDER = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces"
+];
+var RASHI_KEYS = SIGNS_ORDER.map(
+  (s) => s.toLowerCase()
+);
 var TRIGRAM_GLYPH = {
   heaven: "\u2630",
   lake: "\u2631",
@@ -2300,9 +2332,6 @@ __decorateClass([
 RoxyHoroscopeCard = __decorateClass([
   (0, import_decorators9.customElement)("roxy-horoscope-card")
 ], RoxyHoroscopeCard);
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
 
 // packages/ui/src/components/kp-planets-table.ts
 var import_lit11 = require("lit");
@@ -3071,21 +3100,7 @@ var RoxyNatalChart = class extends import_lit14.LitElement {
     });
   }
   renderSigns() {
-    const order = [
-      "Aries",
-      "Taurus",
-      "Gemini",
-      "Cancer",
-      "Leo",
-      "Virgo",
-      "Libra",
-      "Scorpio",
-      "Sagittarius",
-      "Capricorn",
-      "Aquarius",
-      "Pisces"
-    ];
-    return order.map((sign, i) => {
+    return SIGNS_ORDER.map((sign, i) => {
       const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
       return import_lit14.svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
@@ -3105,7 +3120,7 @@ var RoxyNatalChart = class extends import_lit14.LitElement {
       if (!Number.isFinite(p.longitude)) return import_lit14.nothing;
       const angle = this.toAngle(p.longitude);
       const pos = polarToCartesian(CENTER, CENTER, PLANET_R, angle);
-      const glyph = PLANET_GLYPH[capitalize2(p.name)] ?? p.name.slice(0, 2);
+      const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
       const retro = p.isRetrograde ? " R" : "";
       const display = retro ? `${glyph}\u1D3F` : glyph;
       return import_lit14.svg`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro}</title>${display}</text>`;
@@ -3115,12 +3130,12 @@ var RoxyNatalChart = class extends import_lit14.LitElement {
     const planetMap = /* @__PURE__ */ new Map();
     for (const p of planets) {
       if (typeof p.longitude !== "number") continue;
-      const name = capitalize2(p.name);
+      const name = capitalize(p.name);
       if (name) planetMap.set(name, p.longitude);
     }
     return aspects.map((a) => {
-      const l1 = planetMap.get(capitalize2(a.planet1));
-      const l2 = planetMap.get(capitalize2(a.planet2));
+      const l1 = planetMap.get(capitalize(a.planet1));
+      const l2 = planetMap.get(capitalize(a.planet2));
       if (l1 === void 0 || l2 === void 0) return import_lit14.nothing;
       const p1 = polarToCartesian(
         CENTER,
@@ -3253,20 +3268,6 @@ __decorateClass([
 RoxyNatalChart = __decorateClass([
   (0, import_decorators13.customElement)("roxy-natal-chart")
 ], RoxyNatalChart);
-function capitalize2(s) {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
-var ASPECT_CLASS = {
-  conjunction: "aspect-conjunction",
-  sextile: "aspect-sextile",
-  square: "aspect-square",
-  trine: "aspect-trine",
-  opposition: "aspect-opposition"
-};
-function normalizeAspect(a) {
-  return (a.type ?? "").toLowerCase().replace(/_/g, "-");
-}
 
 // packages/ui/src/components/numerology-card.ts
 var import_lit15 = require("lit");
@@ -3335,7 +3336,7 @@ var RoxyNumerologyCard = class extends import_lit15.LitElement {
 			${cores.length > 0 ? import_lit15.html`<div class="cores">
 						${cores.map(
       ([k, v]) => import_lit15.html`<div class="item">
-								<span>${humanize2(k)}</span>
+								<span>${humanize(k)}</span>
 								<strong>${v.number ?? ""}</strong>
 							</div>`
     )}
@@ -3461,9 +3462,6 @@ var LABELS = {
 function karmicDebtText(value) {
   if (!value) return "";
   return [value.description, value.challenge, value.resolution].filter(Boolean).join(" ");
-}
-function humanize2(s) {
-  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
 }
 
 // packages/ui/src/components/panchang-table.ts
@@ -3783,21 +3781,7 @@ var RoxySynastryChart = class extends import_lit17.LitElement {
     });
   }
   renderSigns() {
-    const order = [
-      "Aries",
-      "Taurus",
-      "Gemini",
-      "Cancer",
-      "Leo",
-      "Virgo",
-      "Libra",
-      "Scorpio",
-      "Sagittarius",
-      "Capricorn",
-      "Aquarius",
-      "Pisces"
-    ];
-    return order.map((s, i) => {
+    return SIGNS_ORDER.map((s, i) => {
       const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER2, CENTER2, SIGN_R2, angle);
       return import_lit17.svg`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[s]}</text>`;
@@ -3812,15 +3796,15 @@ var RoxySynastryChart = class extends import_lit17.LitElement {
         radius,
         this.toAngle(p.longitude)
       );
-      const glyph = PLANET_GLYPH[capitalize3(p.name)] ?? p.name.slice(0, 2);
+      const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
       return import_lit17.svg`<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}</title>${glyph}</text>`;
     });
   }
   renderInterAspectLines(p1, p2, aspects) {
     const longitudeOf = (list, name) => {
-      const target = capitalize3(name);
+      const target = capitalize(name);
       for (const p of list) {
-        if (capitalize3(p.name) !== target) continue;
+        if (capitalize(p.name) !== target) continue;
         if (typeof p.longitude === "number") return p.longitude;
       }
       return void 0;
@@ -3831,8 +3815,8 @@ var RoxySynastryChart = class extends import_lit17.LitElement {
       if (l1 === void 0 || l2 === void 0) return import_lit17.nothing;
       const out = polarToCartesian(CENTER2, CENTER2, P1_R - 12, this.toAngle(l1));
       const inn = polarToCartesian(CENTER2, CENTER2, P2_R + 8, this.toAngle(l2));
-      const aspectName = normalizeAspect2(a);
-      const cls = ASPECT_CLASS2[aspectName] ?? "aspect-other";
+      const aspectName = normalizeAspect(a);
+      const cls = ASPECT_CLASS[aspectName] ?? "aspect-other";
       const orbLabel = formatNumber(a.orb, 1);
       return import_lit17.svg`<line class=${`aspect ${cls}`} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}\xB0)` : ""}</title></line>`;
     });
@@ -3853,7 +3837,7 @@ var RoxySynastryChart = class extends import_lit17.LitElement {
       (a) => import_lit17.html`<tr>
 						<td>${a.planet1}</td>
 						<td>${a.planet2}</td>
-						<td>${normalizeAspect2(a) || ""}</td>
+						<td>${normalizeAspect(a) || ""}</td>
 						<td class="orb">${formatNumber(a.orb, 1)}</td>
 						<td>${formatStrength(a.strength)}</td>
 					</tr>`
@@ -4024,20 +4008,6 @@ __decorateClass([
 RoxySynastryChart = __decorateClass([
   (0, import_decorators16.customElement)("roxy-synastry-chart")
 ], RoxySynastryChart);
-function capitalize3(s) {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
-var ASPECT_CLASS2 = {
-  conjunction: "aspect-conjunction",
-  sextile: "aspect-sextile",
-  square: "aspect-square",
-  trine: "aspect-trine",
-  opposition: "aspect-opposition"
-};
-function normalizeAspect2(a) {
-  return (a.type ?? "").toLowerCase().replace(/_/g, "-");
-}
 function formatStrength(s) {
   if (typeof s === "number") return Math.round(s).toString();
   return "";
@@ -4487,34 +4457,9 @@ var SOUTH_SIGN_POSITIONS = {
   11: { x: 35, y: 100 },
   12: { x: 78, y: 40 }
 };
-var RASHI_KEYS = [
-  "aries",
-  "taurus",
-  "gemini",
-  "cancer",
-  "leo",
-  "virgo",
-  "libra",
-  "scorpio",
-  "sagittarius",
-  "capricorn",
-  "aquarius",
-  "pisces"
-];
-var RASHI_TO_SIGN = {
-  aries: "Aries",
-  taurus: "Taurus",
-  gemini: "Gemini",
-  cancer: "Cancer",
-  leo: "Leo",
-  virgo: "Virgo",
-  libra: "Libra",
-  scorpio: "Scorpio",
-  sagittarius: "Sagittarius",
-  capricorn: "Capricorn",
-  aquarius: "Aquarius",
-  pisces: "Pisces"
-};
+var RASHI_TO_SIGN = Object.fromEntries(
+  SIGNS_ORDER.map((s) => [s.toLowerCase(), s])
+);
 var RoxyVedicKundli = class extends import_lit20.LitElement {
   constructor() {
     super(...arguments);
@@ -4586,7 +4531,7 @@ var RoxyVedicKundli = class extends import_lit20.LitElement {
 				${signAbbr ? import_lit20.svg`<text class="sign-text" x=${signPos.x} y=${signPos.y} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : import_lit20.nothing}
 				${isLagna ? import_lit20.svg`<text class="lagna-marker" x=${center.x} y=${center.y - 18} text-anchor="middle" dominant-baseline="central">LAGNA</text>` : import_lit20.nothing}
 				${planets.map((planet, j) => {
-      const abbr = PLANET_ABBR[capitalize4(planet)] ?? planet.slice(0, 2);
+      const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
       const lineHeight = 13;
       const baseY = isLagna ? center.y + 8 : center.y;
       const startY = baseY - (planets.length - 1) * lineHeight / 2;
@@ -4654,10 +4599,6 @@ __decorateClass([
 RoxyVedicKundli = __decorateClass([
   (0, import_decorators19.customElement)("roxy-vedic-kundli")
 ], RoxyVedicKundli);
-function capitalize4(s) {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
 
 // packages/ui/src/manifest.ts
 var ROXY_COMPONENTS = [
@@ -4665,9 +4606,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyNatalChart",
     tag: "roxy-natal-chart",
     slug: "natal-chart",
-    domain: "astrology",
     heading: "Natal chart",
-    endpoints: ["astrology.generateNatalChart"],
     description: "Western natal chart wheel for /astrology/natal-chart responses",
     docsLabel: "Western",
     endpointLabel: "POST /astrology/natal-chart",
@@ -4678,13 +4617,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyHoroscopeCard",
     tag: "roxy-horoscope-card",
     slug: "horoscope-card",
-    domain: "astrology",
     heading: "Daily horoscope",
-    endpoints: [
-      "astrology.getDailyHoroscope",
-      "astrology.getWeeklyHoroscope",
-      "astrology.getMonthlyHoroscope"
-    ],
     description: "Daily, weekly, or monthly horoscope card for /astrology/horoscope/...",
     docsLabel: "Western",
     endpointLabel: "GET /astrology/horoscope/{sign}/{daily,weekly,monthly}",
@@ -4695,9 +4628,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxySynastryChart",
     tag: "roxy-synastry-chart",
     slug: "synastry-chart",
-    domain: "astrology",
     heading: "Synastry",
-    endpoints: ["astrology.calculateSynastry"],
     description: "Dual-wheel synastry chart with inter-aspects table",
     docsLabel: "Western",
     endpointLabel: "POST /astrology/synastry",
@@ -4708,13 +4639,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyCompatibilityCard",
     tag: "roxy-compatibility-card",
     slug: "compatibility-card",
-    domain: "astrology",
     heading: "Compatibility score",
-    endpoints: [
-      "astrology.calculateCompatibility",
-      "numerology.calculateNumCompatibility",
-      "biorhythm.calculateBioCompatibility"
-    ],
     description: "Cross-domain compatibility score card",
     docsLabel: "Cross",
     endpointLabel: "POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility",
@@ -4725,13 +4650,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyMoonPhase",
     tag: "roxy-moon-phase",
     slug: "moon-phase",
-    domain: "astrology",
     heading: "Moon phase",
-    endpoints: [
-      "astrology.getCurrentMoonPhase",
-      "astrology.getUpcomingMoonPhases",
-      "astrology.getMoonCalendar"
-    ],
     description: "Moon phase card and calendar",
     docsLabel: "Western",
     endpointLabel: "GET /astrology/moon-phase/{current,upcoming,calendar/...}",
@@ -4742,9 +4661,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyVedicKundli",
     tag: "roxy-vedic-kundli",
     slug: "vedic-kundli",
-    domain: "vedic",
     heading: "Vedic kundli",
-    endpoints: ["vedicAstrology.generateBirthChart"],
     description: "South or North Indian Vedic kundli for /vedic-astrology/birth-chart",
     docsLabel: "Vedic",
     endpointLabel: "POST /vedic-astrology/birth-chart",
@@ -4755,12 +4672,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyPanchangTable",
     tag: "roxy-panchang-table",
     slug: "panchang-table",
-    domain: "vedic",
     heading: "Panchang",
-    endpoints: [
-      "vedicAstrology.getBasicPanchang",
-      "vedicAstrology.getDetailedPanchang"
-    ],
     description: "Panchang muhurta table with auspicious and inauspicious periods",
     docsLabel: "Vedic",
     endpointLabel: "POST /vedic-astrology/panchang/{basic,detailed}",
@@ -4771,13 +4683,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyDashaTimeline",
     tag: "roxy-dasha-timeline",
     slug: "dasha-timeline",
-    domain: "vedic",
     heading: "Vimshottari dasha",
-    endpoints: [
-      "vedicAstrology.getCurrentDasha",
-      "vedicAstrology.getMajorDashas",
-      "vedicAstrology.getSubDashas"
-    ],
     description: "Vimshottari dasha timeline with active mahadasha highlighted",
     docsLabel: "Vedic",
     endpointLabel: "POST /vedic-astrology/dasha/{current,major,sub/...}",
@@ -4788,13 +4694,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyDoshaCard",
     tag: "roxy-dosha-card",
     slug: "dosha-card",
-    domain: "vedic",
     heading: "Manglik dosha",
-    endpoints: [
-      "vedicAstrology.checkManglikDosha",
-      "vedicAstrology.checkKalsarpaDosha",
-      "vedicAstrology.checkSadhesati"
-    ],
     description: "Manglik, Kaal Sarp, or Sade Sati presence card",
     docsLabel: "Vedic",
     endpointLabel: "POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}",
@@ -4805,9 +4705,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyGunaMilan",
     tag: "roxy-guna-milan",
     slug: "guna-milan",
-    domain: "vedic",
     heading: "Guna milan",
-    endpoints: ["vedicAstrology.calculateGunMilan"],
     description: "36-point Ashtakoota matrimonial compatibility breakdown",
     docsLabel: "Vedic",
     endpointLabel: "POST /vedic-astrology/compatibility",
@@ -4818,9 +4716,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyKpPlanetsTable",
     tag: "roxy-kp-planets-table",
     slug: "kp-planets-table",
-    domain: "vedic",
     heading: "KP planets",
-    endpoints: ["vedicAstrology.getKpPlanets"],
     description: "KP planets table with sub-lord and sub-sub-lord columns",
     docsLabel: "Vedic (KP)",
     endpointLabel: "POST /vedic-astrology/kp/planets",
@@ -4831,14 +4727,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyNumerologyCard",
     tag: "roxy-numerology-card",
     slug: "numerology-card",
-    domain: "numerology",
     heading: "Life path number",
-    endpoints: [
-      "numerology.calculateLifePath",
-      "numerology.calculateExpression",
-      "numerology.calculatePersonalYear",
-      "numerology.generateNumerologyChart"
-    ],
     description: "Numerology card for life path, expression, personal year, or full chart",
     docsLabel: "Numerology",
     endpointLabel: "POST /numerology/{life-path,expression,personal-year,chart}",
@@ -4849,9 +4738,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyTarotCard",
     tag: "roxy-tarot-card",
     slug: "tarot-card",
-    domain: "tarot",
     heading: "Daily tarot card",
-    endpoints: ["tarot.getCard", "tarot.getDailyCard"],
     description: "Single tarot card with upright/reversed flip animation",
     docsLabel: "Tarot",
     endpointLabel: "GET /tarot/cards/{id}, POST /tarot/daily",
@@ -4862,15 +4749,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyTarotSpread",
     tag: "roxy-tarot-spread",
     slug: "tarot-spread",
-    domain: "tarot",
     heading: "Three-card spread",
-    endpoints: [
-      "tarot.castThreeCard",
-      "tarot.castCelticCross",
-      "tarot.castLoveSpread",
-      "tarot.castYesNo",
-      "tarot.drawCards"
-    ],
     description: "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",
     docsLabel: "Tarot",
     endpointLabel: "POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw",
@@ -4881,13 +4760,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyBiorhythmChart",
     tag: "roxy-biorhythm-chart",
     slug: "biorhythm-chart",
-    domain: "biorhythm",
     heading: "Daily biorhythm",
-    endpoints: [
-      "biorhythm.getDailyBiorhythm",
-      "biorhythm.getForecast",
-      "biorhythm.getCriticalDays"
-    ],
     description: "Daily biorhythm bars or multi-day forecast cycle lines",
     docsLabel: "Biorhythm",
     endpointLabel: "POST /biorhythm/{daily,forecast,critical-days}",
@@ -4898,15 +4771,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyHexagram",
     tag: "roxy-hexagram",
     slug: "hexagram",
-    domain: "iching",
     heading: "I Ching hexagram",
-    endpoints: [
-      "iching.getHexagram",
-      "iching.castReading",
-      "iching.getDailyHexagram",
-      "iching.castDailyReading",
-      "iching.getRandomHexagram"
-    ],
     description: "I Ching hexagram with trigram glyphs, judgment, image, and changing lines",
     docsLabel: "I Ching",
     endpointLabel: "GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",
@@ -4917,9 +4782,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyEndpointForm",
     tag: "roxy-endpoint-form",
     slug: "endpoint-form",
-    domain: "utility",
     heading: "Schema-driven form",
-    endpoints: [],
     description: "Schema-driven form that emits roxy-submit with a validated payload",
     docsLabel: "Helper",
     endpointLabel: "Any endpoint via x-roxy-ui hints",
@@ -4931,9 +4794,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyLocationSearch",
     tag: "roxy-location-search",
     slug: "location-search",
-    domain: "utility",
     heading: "City search",
-    endpoints: ["location.searchCities"],
     description: "City search input with debounced /location/search calls",
     docsLabel: "Helper",
     endpointLabel: "GET /location/search",
@@ -4945,9 +4806,7 @@ var ROXY_COMPONENTS = [
     pascal: "RoxyData",
     tag: "roxy-data",
     slug: "data",
-    domain: "utility",
     heading: "Generic renderer",
-    endpoints: [],
     description: "Generic fallback renderer for any OpenAPI response shape",
     docsLabel: "Helper",
     endpointLabel: "Any response shape",

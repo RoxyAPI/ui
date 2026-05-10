@@ -28,6 +28,23 @@ var SIGN_GLYPH = {
   Aquarius: "\u2652",
   Pisces: "\u2653"
 };
+var SIGNS_ORDER = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces"
+];
+var RASHI_KEYS = SIGNS_ORDER.map(
+  (s) => s.toLowerCase()
+);
 
 // packages/ui/src/utils/base-styles.ts
 import { css } from "lit";
@@ -114,6 +131,12 @@ var baseStyles = css`
 		outline-offset: 2px;
 	}
 `;
+
+// packages/ui/src/utils/string.ts
+function capitalize(s) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
 
 // packages/ui/src/components/horoscope-card.ts
 var RoxyHoroscopeCard = class extends LitElement {
@@ -332,9 +355,6 @@ __decorateClass([
 RoxyHoroscopeCard = __decorateClass([
   customElement("roxy-horoscope-card")
 ], RoxyHoroscopeCard);
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
 export {
   RoxyHoroscopeCard
 };

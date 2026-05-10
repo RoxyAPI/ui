@@ -834,7 +834,7 @@ var RoxyHexagram = React16.forwardRef(
 // packages/ui-react/src/components/endpoint-form.tsx
 var React17 = __toESM(require("react"), 1);
 var RoxyEndpointForm = React17.forwardRef(
-  function RoxyEndpointForm2({ data, className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
+  function RoxyEndpointForm2({ className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
     const internal = React17.useRef(null);
     React17.useImperativeHandle(
       ref,
@@ -855,12 +855,6 @@ var RoxyEndpointForm = React17.forwardRef(
         active = false;
       };
     }, []);
-    React17.useEffect(() => {
-      const el = internal.current;
-      if (el && data !== void 0) {
-        el.data = data;
-      }
-    }, [data, loaded2]);
     React17.useEffect(() => {
       const el = internal.current;
       const handler = onRoxySubmit;
@@ -904,7 +898,7 @@ var RoxyEndpointForm = React17.forwardRef(
 // packages/ui-react/src/components/location-search.tsx
 var React18 = __toESM(require("react"), 1);
 var RoxyLocationSearch = React18.forwardRef(
-  function RoxyLocationSearch2({ data, className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
+  function RoxyLocationSearch2({ className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
     const internal = React18.useRef(null);
     React18.useImperativeHandle(
       ref,
@@ -925,12 +919,6 @@ var RoxyLocationSearch = React18.forwardRef(
         active = false;
       };
     }, []);
-    React18.useEffect(() => {
-      const el = internal.current;
-      if (el && data !== void 0) {
-        el.data = data;
-      }
-    }, [data, loaded2]);
     React18.useEffect(() => {
       const el = internal.current;
       const handler = onRoxyLocationSelect;
@@ -966,7 +954,7 @@ var RoxyLocationSearch = React18.forwardRef(
 // packages/ui-react/src/components/data.tsx
 var React19 = __toESM(require("react"), 1);
 var RoxyData = React19.forwardRef(
-  function RoxyData2({ data, className, style, ...rest }, ref) {
+  function RoxyData2({ className, style, ...rest }, ref) {
     const internal = React19.useRef(null);
     React19.useImperativeHandle(
       ref,
@@ -987,12 +975,6 @@ var RoxyData = React19.forwardRef(
         active = false;
       };
     }, []);
-    React19.useEffect(() => {
-      const el = internal.current;
-      if (el && data !== void 0) {
-        el.data = data;
-      }
-    }, [data, loaded2]);
     if (error) {
       return React19.createElement(
         "div",

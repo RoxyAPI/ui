@@ -43,7 +43,7 @@ function ensureScriptLoaded(version = "latest") {
 
 // packages/ui-react/src/components/endpoint-form.tsx
 var RoxyEndpointForm = React.forwardRef(
-  function RoxyEndpointForm2({ data, className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
+  function RoxyEndpointForm2({ className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
     const internal = React.useRef(null);
     React.useImperativeHandle(
       ref,
@@ -64,12 +64,6 @@ var RoxyEndpointForm = React.forwardRef(
         active = false;
       };
     }, []);
-    React.useEffect(() => {
-      const el = internal.current;
-      if (el && data !== void 0) {
-        el.data = data;
-      }
-    }, [data, loaded2]);
     React.useEffect(() => {
       const el = internal.current;
       const handler = onRoxySubmit;

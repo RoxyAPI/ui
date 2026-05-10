@@ -43,7 +43,7 @@ function ensureScriptLoaded(version = "latest") {
 
 // packages/ui-react/src/components/location-search.tsx
 var RoxyLocationSearch = React.forwardRef(
-  function RoxyLocationSearch2({ data, className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
+  function RoxyLocationSearch2({ className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
     const internal = React.useRef(null);
     React.useImperativeHandle(
       ref,
@@ -64,12 +64,6 @@ var RoxyLocationSearch = React.forwardRef(
         active = false;
       };
     }, []);
-    React.useEffect(() => {
-      const el = internal.current;
-      if (el && data !== void 0) {
-        el.data = data;
-      }
-    }, [data, loaded2]);
     React.useEffect(() => {
       const el = internal.current;
       const handler = onRoxyLocationSelect;

@@ -14,6 +14,23 @@ import { css as css2, html, LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 // packages/ui/src/tokens/index.ts
+var SIGNS_ORDER = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces"
+];
+var RASHI_KEYS = SIGNS_ORDER.map(
+  (s) => s.toLowerCase()
+);
 var MOON_PHASE_EMOJI = {
   "new moon": "\u{1F311}",
   "waxing crescent": "\u{1F312}",

@@ -1,9 +1,7 @@
 import * as React from 'react';
 import type { SearchCitiesResponse } from '@roxyapi/ui/types';
-type ElementAttrs = Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'data'>;
+type ElementAttrs = Omit<React.HTMLAttributes<HTMLElement>, 'children'>;
 export interface RoxyLocationSearchProps extends ElementAttrs {
-    /** Spec-derived response payload. Pass the raw RoxyAPI response. */
-    data?: unknown;
     className?: string;
     style?: React.CSSProperties;
     /** Fires when the underlying <roxy-location-search> dispatches `roxy-location-select`. */

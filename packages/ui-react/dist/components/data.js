@@ -43,7 +43,7 @@ function ensureScriptLoaded(version = "latest") {
 
 // packages/ui-react/src/components/data.tsx
 var RoxyData = React.forwardRef(
-  function RoxyData2({ data, className, style, ...rest }, ref) {
+  function RoxyData2({ className, style, ...rest }, ref) {
     const internal = React.useRef(null);
     React.useImperativeHandle(
       ref,
@@ -64,12 +64,6 @@ var RoxyData = React.forwardRef(
         active = false;
       };
     }, []);
-    React.useEffect(() => {
-      const el = internal.current;
-      if (el && data !== void 0) {
-        el.data = data;
-      }
-    }, [data, loaded2]);
     if (error) {
       return React.createElement(
         "div",

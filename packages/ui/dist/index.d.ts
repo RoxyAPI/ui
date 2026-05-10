@@ -24,9 +24,8 @@ export { RoxyTarotCard } from './components/tarot-card.js';
 export { RoxyTarotSpread } from './components/tarot-spread.js';
 export { RoxyVedicKundli } from './components/vedic-kundli.js';
 import { type RoxyComponentSlug } from './manifest.js';
-export { ROXY_COMPONENTS, type RoxyComponent, type RoxyComponentSlug, type RoxyComponentTag, type RoxyDomain, } from './manifest.js';
+export { ROXY_COMPONENTS, type RoxyComponent, type RoxyComponentSlug, } from './manifest.js';
 export { ROXY_UI_VERSION } from './version.js';
 /** Slugs in declaration order. Kept for the auto-mount widgets script and downstream codegen. */
 export declare const ROXY_UI_COMPONENTS: readonly RoxyComponentSlug[];
-export type RoxyUIComponentName = RoxyComponentSlug;
 //# sourceMappingURL=index.d.ts.map

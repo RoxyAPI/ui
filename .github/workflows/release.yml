@@ -1,9 +1,8 @@
 name: Release
 
 # Manual-only release for v0.x. Pick patch / minor / major from the Actions UI.
-# Auto-triggers commented out until the pipeline is proven across 2-3 manual
-# releases. Uncomment to mirror sdk-typescript and sdk-python (cron + spec
-# dispatch from the main app) once we trust the build end to end.
+# Auto-triggers (cron + repository_dispatch) are commented out until the
+# pipeline is proven across a few manual releases.
 on:
   workflow_dispatch:
     inputs:

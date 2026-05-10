@@ -8,10 +8,11 @@
  *     `roxy-location-select`, `roxy-validation-error`, `roxy-spec-error`)
  *     to typed React handler props with proper cleanup;
  *   - forwards `className`, `style`, and arbitrary HTML attributes;
- *   - falls back to a one-line role="alert" if the CDN bundle cannot load.
+ *   - renders a role="alert" element if the bundle fails to load.
  *
- * Internal release-coupling rule: ui patches ship without forcing a ui-react
- * release. ui-react releases only when the component list changes.
+ * Helper widgets that do not consume a typed RoxyAPI response (the
+ * generic renderer, location search, and endpoint form) skip the `data`
+ * prop entirely so the wrapper surface matches the underlying element.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
@@ -23,8 +24,8 @@ const ROXY_UI_VERSION = (
 		version: string;
 	}
 ).version;
-// Use @latest while pre-1.0 to match marketing snippets and let bug-fix patches
-// reach customers without forcing a ui-react release. At 1.0 cutover, swap to
+// Use @latest while pre-1.0 so the loader resolves to the most recent
+// published bundle. At 1.0 cutover, swap to
 // `@${ROXY_UI_VERSION.split('.')[0]}` so consumers opt into majors explicitly.
 const CDN_BASE_LATEST =
 	'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
@@ -141,8 +142,8 @@ const LOAD_UI_TS = `/**
  * React server components and Next.js SSR work without a flash.
  *
  * Pass an explicit \`version\` (e.g. \`'0.1.5'\`) to pin the loaded bundle to a
- * specific @roxyapi/ui release; the default ('latest') tracks the marketing
- * snippets and resolves to whatever jsDelivr has cached for @latest.
+ * specific @roxyapi/ui release; the default ('latest') resolves to whatever
+ * the CDN currently serves for @latest.
  */
 const SCRIPT_ID = 'roxyapi-ui-loader';
 const CDN_BASE_LATEST = ${JSON.stringify(CDN_BASE_LATEST)};
@@ -196,6 +197,7 @@ export const ROXY_UI_VERSION = ${JSON.stringify(ROXY_UI_VERSION)};
 
 function buildComponent(slug: string, pascal: string, tag: string): string {
 	const dataType = DATA_TYPES[slug] ?? 'unknown';
+	const hasData = dataType !== 'unknown';
 	const events = EVENTS[slug] ?? [];
 	const typeRefs = collectTypeRefs(slug);
 
@@ -227,24 +229,40 @@ function buildComponent(slug: string, pascal: string, tag: string): string {
 	const handlerDestructure =
 		events.length > 0 ? `, ${events.map((e) => e.prop).join(', ')}` : '';
 
+	const dataDestructure = hasData ? 'data, ' : '';
+	const dataPropDecl = hasData
+		? `\t/** Spec-derived response payload. Pass the raw RoxyAPI response. */
+\tdata?: ${dataType};
+\t`
+		: '\t';
+	const elementAttrsOmit = hasData ? `'children' | 'data'` : `'children'`;
+	const dataEffectBlock = hasData
+		? `\t\tReact.useEffect(() => {
+\t\t\tconst el = internal.current;
+\t\t\tif (el && data !== undefined) {
+\t\t\t\t(el as unknown as { data: unknown }).data = data;
+\t\t\t}
+\t\t}, [data, loaded]);
+
+`
+		: '';
+
 	return `import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
 ${importLine ? `${importLine}\n` : ''}
 type ElementAttrs = Omit<
 \tReact.HTMLAttributes<HTMLElement>,
-\t'children' | 'data'
+\t${elementAttrsOmit}
 >;
 
 export interface ${pascal}Props extends ElementAttrs {
-\t/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-\tdata?: ${dataType};
-\tclassName?: string;
+${dataPropDecl}className?: string;
 \tstyle?: React.CSSProperties;
 ${eventPropsBlock}
 }
 
 export const ${pascal} = React.forwardRef<HTMLElement | null, ${pascal}Props>(
-\tfunction ${pascal}({ data, className, style${handlerDestructure}, ...rest }, ref) {
+\tfunction ${pascal}({ ${dataDestructure}className, style${handlerDestructure}, ...rest }, ref) {
 \t\tconst internal = React.useRef<HTMLElement | null>(null);
 \t\tReact.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 \t\t\tref,
@@ -269,14 +287,7 @@ export const ${pascal} = React.forwardRef<HTMLElement | null, ${pascal}Props>(
 \t\t\t};
 \t\t}, []);
 
-\t\tReact.useEffect(() => {
-\t\t\tconst el = internal.current;
-\t\t\tif (el && data !== undefined) {
-\t\t\t\t(el as unknown as { data: unknown }).data = data;
-\t\t\t}
-\t\t}, [data, loaded]);
-
-${eventEffectBlocks ? `${eventEffectBlocks}\n\n` : ''}\t\tif (error) {
+${dataEffectBlock}${eventEffectBlocks ? `${eventEffectBlocks}\n\n` : ''}\t\tif (error) {
 \t\t\treturn React.createElement(
 \t\t\t\t'div',
 \t\t\t\t{ role: 'alert', className, style },

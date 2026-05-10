@@ -1,11 +1,12 @@
 import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { humanize } from '../utils/string.js';
 
 /**
- * Generic fallback renderer. Accepts ANY OpenAPI response shape and renders it
- * via field-name heuristics so future spec additions render reasonably without
- * hand-wired components. Mirrors the WordPress GenericRenderer pattern.
+ * Generic fallback renderer. Accepts ANY OpenAPI response shape and renders
+ * it via field-name heuristics so future spec additions render reasonably
+ * without hand-wired components.
  *
  * Heuristic order:
  *   1. Primitive (string, number, boolean) -> single line.
@@ -14,9 +15,8 @@ import { baseStyles } from '../utils/base-styles.js';
  *   4. Object with title-like field -> card with key/value rows.
  *   5. Otherwise -> definition list of all keys.
  *
- * Future spec hint: when the server emits `x-roxy-ui` on a schema, the
- * dispatcher in tool-call (Phase 2.5) will select a hand-tuned component
- * instead of this fallback.
+ * When a schema declares an `x-roxy-ui` hint, a future dispatcher can opt
+ * into a hand-tuned component instead of this fallback.
  */
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
@@ -196,7 +196,7 @@ export class RoxyData extends LitElement {
 		return html`<table class="roxy-table" role="table">
 			<thead>
 				<tr>
-					${keys.map((k) => html`<th>${this.humanize(k)}</th>`)}
+					${keys.map((k) => html`<th>${humanize(k)}</th>`)}
 				</tr>
 			</thead>
 			<tbody>
@@ -246,7 +246,7 @@ export class RoxyData extends LitElement {
 					? html`<dl class="roxy-rows">
 						${rows.map(
 							([k, v]) => html`
-								<dt>${this.humanize(k)}</dt>
+								<dt>${humanize(k)}</dt>
 								<dd>${this.renderField(v)}</dd>
 							`,
 						)}
@@ -289,13 +289,6 @@ export class RoxyData extends LitElement {
 			for (const k of Object.keys(row)) seen.add(k);
 		}
 		return Array.from(seen);
-	}
-
-	private humanize(key: string): string {
-		return key
-			.replace(/[_-]+/g, ' ')
-			.replace(/([a-z])([A-Z])/g, '$1 $2')
-			.replace(/^\w/, (c) => c.toUpperCase());
 	}
 }
 

@@ -1,7 +1,7 @@
 name: Deploy demo to GitHub Pages
 
 # Deploys apps/docs/ to https://roxyapi.github.io/ui/ on every push to main and
-# on each published release. The same URL is iframe-embedded in the main app.
+# on each published release.
 
 on:
   # Push trigger disabled until the pipeline is proven. Releases and manual

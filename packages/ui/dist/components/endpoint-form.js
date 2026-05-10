@@ -99,6 +99,11 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/string.ts
+function humanize(s) {
+  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
+}
+
 // packages/ui/src/components/endpoint-form.ts
 var specCache = /* @__PURE__ */ new Map();
 async function loadSpec(url) {
@@ -481,9 +486,6 @@ __decorateClass([
 RoxyEndpointForm = __decorateClass([
   customElement("roxy-endpoint-form")
 ], RoxyEndpointForm);
-function humanize(s) {
-  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
-}
 export {
   RoxyEndpointForm
 };

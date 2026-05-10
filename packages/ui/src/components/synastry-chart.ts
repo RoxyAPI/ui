@@ -1,22 +1,27 @@
 import { css, html, LitElement, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
 import type {
 	CalculateSynastryResponse,
 	NatalChartResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { polarToCartesian } from '../utils/degree.js';
-import { formatNumber } from '../utils/format.js';
+import {
+	ASPECT_CLASS,
+	formatNumber,
+	normalizeAspect,
+} from '../utils/format.js';
+import { capitalize } from '../utils/string.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
 type InterAspect = CalculateSynastryResponse['interAspects'][number];
 
-// TODO(spec): /astrology/synastry does not expose person1/person2 planet
-// positions, but the wheel needs them to plot the dual chart. The preview
-// injects them via scripts/refresh-samples.ts; production callers see an
-// empty wheel. Either add `planets` to the CalculateSynastry response or
-// document that callers must merge in their own natal-chart payloads.
+// Drawing the dual wheel requires per-person planet longitudes alongside
+// the synastry response. Callers can merge planet arrays from
+// /astrology/natal-chart into `person1.planets` and `person2.planets`
+// before passing the payload in; without them, the component falls back
+// to the inter-aspects table and a status note instead of an empty wheel.
 type SynastryWithPlanets = CalculateSynastryResponse & {
 	person1?: { planets?: PlanetEntry[] };
 	person2?: { planets?: PlanetEntry[] };
@@ -364,21 +369,7 @@ export class RoxySynastryChart extends LitElement {
 	}
 
 	private renderSigns() {
-		const order = [
-			'Aries',
-			'Taurus',
-			'Gemini',
-			'Cancer',
-			'Leo',
-			'Virgo',
-			'Libra',
-			'Scorpio',
-			'Sagittarius',
-			'Capricorn',
-			'Aquarius',
-			'Pisces',
-		];
-		return order.map((s, i) => {
+		return SIGNS_ORDER.map((s, i) => {
 			const angle = this.toAngle(i * 30 + 15);
 			const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
 			return svg`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[s]}</text>`;
@@ -452,23 +443,6 @@ export class RoxySynastryChart extends LitElement {
 			</tbody>
 		</table>`;
 	}
-}
-
-function capitalize(s: string): string {
-	if (!s) return '';
-	return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
-
-const ASPECT_CLASS: Record<string, string> = {
-	conjunction: 'aspect-conjunction',
-	sextile: 'aspect-sextile',
-	square: 'aspect-square',
-	trine: 'aspect-trine',
-	opposition: 'aspect-opposition',
-};
-
-function normalizeAspect(a: InterAspect): string {
-	return (a.type ?? '').toLowerCase().replace(/_/g, '-');
 }
 
 function formatStrength(s: number | undefined): string {

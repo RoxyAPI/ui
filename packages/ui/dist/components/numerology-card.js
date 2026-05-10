@@ -99,6 +99,11 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/string.ts
+function humanize(s) {
+  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
+}
+
 // packages/ui/src/components/numerology-card.ts
 var RoxyNumerologyCard = class extends LitElement {
   constructor() {
@@ -290,9 +295,6 @@ var LABELS = {
 function karmicDebtText(value) {
   if (!value) return "";
   return [value.description, value.challenge, value.resolution].filter(Boolean).join(" ");
-}
-function humanize(s) {
-  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
 }
 export {
   RoxyNumerologyCard

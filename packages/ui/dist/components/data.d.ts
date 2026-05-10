@@ -1,8 +1,8 @@
 import { LitElement, type TemplateResult } from 'lit';
 /**
- * Generic fallback renderer. Accepts ANY OpenAPI response shape and renders it
- * via field-name heuristics so future spec additions render reasonably without
- * hand-wired components. Mirrors the WordPress GenericRenderer pattern.
+ * Generic fallback renderer. Accepts ANY OpenAPI response shape and renders
+ * it via field-name heuristics so future spec additions render reasonably
+ * without hand-wired components.
  *
  * Heuristic order:
  *   1. Primitive (string, number, boolean) -> single line.
@@ -11,9 +11,8 @@ import { LitElement, type TemplateResult } from 'lit';
  *   4. Object with title-like field -> card with key/value rows.
  *   5. Otherwise -> definition list of all keys.
  *
- * Future spec hint: when the server emits `x-roxy-ui` on a schema, the
- * dispatcher in tool-call (Phase 2.5) will select a hand-tuned component
- * instead of this fallback.
+ * When a schema declares an `x-roxy-ui` hint, a future dispatcher can opt
+ * into a hand-tuned component instead of this fallback.
  */
 type Json = string | number | boolean | null | Json[] | {
     [key: string]: Json;
@@ -35,7 +34,6 @@ export declare class RoxyData extends LitElement {
     private renderField;
     private formatPrimitive;
     private collectKeys;
-    private humanize;
 }
 declare global {
     interface HTMLElementTagNameMap {

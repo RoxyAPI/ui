@@ -99,6 +99,11 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/string.ts
+function humanize(s) {
+  return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
+}
+
 // packages/ui/src/components/data.ts
 var TITLE_KEYS = ["title", "name", "label", "heading", "overview", "summary"];
 var IMAGE_KEYS = ["imageUrl", "image", "icon", "symbol"];
@@ -158,7 +163,7 @@ var RoxyData = class extends LitElement {
     return html`<table class="roxy-table" role="table">
 			<thead>
 				<tr>
-					${keys.map((k) => html`<th>${this.humanize(k)}</th>`)}
+					${keys.map((k) => html`<th>${humanize(k)}</th>`)}
 				</tr>
 			</thead>
 			<tbody>
@@ -191,7 +196,7 @@ var RoxyData = class extends LitElement {
 			${rows.length > 0 ? html`<dl class="roxy-rows">
 						${rows.map(
       ([k, v]) => html`
-								<dt>${this.humanize(k)}</dt>
+								<dt>${humanize(k)}</dt>
 								<dd>${this.renderField(v)}</dd>
 							`
     )}
@@ -229,9 +234,6 @@ var RoxyData = class extends LitElement {
       for (const k of Object.keys(row)) seen.add(k);
     }
     return Array.from(seen);
-  }
-  humanize(key) {
-    return key.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
   }
 };
 RoxyData.styles = [

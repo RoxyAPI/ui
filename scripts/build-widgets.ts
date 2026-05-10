@@ -1,18 +1,17 @@
 #!/usr/bin/env bun
 /**
- * Emit packages/ui/dist/cdn/widgets.js, the auto-mount script. After it
- * loads (via jsdelivr), it scans the page for [data-roxy-widget="{name}"]
- * elements with [data-publishable-key="pk_..."] and:
+ * Emit packages/ui/dist/cdn/widgets.js, the auto-mount script. Once loaded
+ * via the CDN it scans the page for [data-roxy-widget="{name}"] elements
+ * carrying [data-publishable-key="pk_..."] and:
  *
  *   1. Builds the matching <roxy-{name}> custom element
- *   2. Ensures roxy-ui.js (the main UMD) is loaded
+ *   2. Ensures the roxy-ui.js bundle is available
  *   3. Forwards data-* attributes onto the element
  *   4. Calls the corresponding /api/v2 endpoint with the publishable key
- *      using only origin-allowed pk_* keys (server enforces allowed_origins)
+ *      (origin-allowlisted pk_* keys enforced server-side)
  *
- * Phase 1 widgets target vibecoder + creator embed surfaces (Stan Store,
- * Linktree, plain HTML). The pk_* + allowed_origins enforcement lives in
- * the main app and is a separate manual task.
+ * Drop-in for plain HTML pages and creator embed surfaces (Stan Store,
+ * Linktree, etc.) where a full SDK install is not practical.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
