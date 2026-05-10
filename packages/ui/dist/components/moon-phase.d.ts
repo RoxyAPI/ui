@@ -1,23 +1,6 @@
-import { LitElement } from 'lit';
-interface MoonPhaseData {
-    date?: string;
-    phase?: string;
-    illumination?: number;
-    age?: number;
-    sign?: string;
-    degree?: number;
-    distance?: number;
-    meaning?: {
-        name?: string;
-        symbol?: string;
-        description?: string;
-        keywords?: string[];
-    };
-    month?: string;
-    year?: number;
-    phases?: Array<MoonPhaseData>;
-    upcoming?: Array<MoonPhaseData>;
-}
+import { LitElement, nothing } from 'lit';
+import type { GetCurrentMoonPhaseResponse, GetMoonCalendarResponse, GetUpcomingMoonPhasesResponse } from '../types/index.js';
+type MoonPhaseData = GetCurrentMoonPhaseResponse | GetUpcomingMoonPhasesResponse | GetMoonCalendarResponse;
 /**
  * Moon phase card. Renders /astrology/moon-phase/{current,upcoming,calendar/...}.
  */
@@ -25,7 +8,7 @@ export declare class RoxyMoonPhase extends LitElement {
     static styles: import("lit").CSSResult[];
     data: MoonPhaseData | null;
     mode: 'current' | 'upcoming' | 'calendar';
-    render(): import("lit").TemplateResult<1>;
+    render(): import("lit").TemplateResult<1> | typeof nothing;
     private renderSingle;
     private renderListItem;
 }

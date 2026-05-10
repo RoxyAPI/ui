@@ -1,15 +1,4 @@
 import { LitElement } from 'lit';
-export interface CityResult {
-    city: string;
-    province?: string;
-    country: string;
-    iso2?: string;
-    latitude: number;
-    longitude: number;
-    timezone: string;
-    utcOffset: number;
-    population?: number;
-}
 /**
  * Stateful location search input. Calls /location/search and emits
  * `roxy-location-select` CustomEvent with the chosen city. Required for any

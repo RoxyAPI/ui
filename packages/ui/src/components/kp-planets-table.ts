@@ -1,27 +1,8 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { KpPlanetsResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-
-interface KpPlanet {
-	planet?: string;
-	name?: string;
-	sign?: string;
-	signLord?: string;
-	nakshatra?: string;
-	nakshatraLord?: string;
-	pada?: number;
-	starLord?: string;
-	subLord?: string;
-	subSubLord?: string;
-	kpNumber?: number;
-	retrograde?: boolean;
-	longitude?: number;
-}
-
-interface KpData {
-	ayanamsa?: number | string;
-	planets?: KpPlanet[];
-}
+import { formatNumber } from '../utils/format.js';
 
 /**
  * KP planets table with sub-lord and sub-sub-lord columns. Renders
@@ -86,7 +67,7 @@ export class RoxyKpPlanetsTable extends LitElement {
 				color: var(--roxy-fg, #0a0a0a);
 			}
 			.retro {
-				color: var(--roxy-warning, #ea580c);
+				color: var(--roxy-warning-fg, #9a3412);
 				font-size: var(--roxy-text-xs, 0.75rem);
 				margin-left: 4px;
 			}
@@ -94,7 +75,7 @@ export class RoxyKpPlanetsTable extends LitElement {
 	];
 
 	@property({ attribute: false })
-	data: KpData | null = null;
+	data: KpPlanetsResponse | null = null;
 
 	render() {
 		if (!this.data)
@@ -109,8 +90,8 @@ export class RoxyKpPlanetsTable extends LitElement {
 			<header class="head">
 				<h2 class="title">KP planets</h2>
 				${
-					this.data.ayanamsa
-						? html`<span class="ayanamsa">Ayanamsa: ${this.data.ayanamsa}</span>`
+					typeof this.data.ayanamsa === 'number'
+						? html`<span class="ayanamsa">Ayanamsa: ${formatNumber(this.data.ayanamsa, 2)}°</span>`
 						: nothing
 				}
 			</header>
@@ -131,13 +112,13 @@ export class RoxyKpPlanetsTable extends LitElement {
 					${planets.map(
 						(p) => html`<tr>
 							<td class="planet">
-								${p.planet ?? p.name ?? ''}
+								${p.planet}
 								${p.retrograde ? html`<span class="retro">R</span>` : nothing}
 							</td>
 							<td>${p.sign ?? ''}</td>
 							<td>${p.signLord ?? ''}</td>
 							<td>${p.nakshatra ?? ''}</td>
-							<td>${p.starLord ?? p.nakshatraLord ?? ''}</td>
+							<td>${p.nakshatraLord ?? ''}</td>
 							<td>${p.subLord ?? ''}</td>
 							<td>${p.subSubLord ?? ''}</td>
 							<td>${p.kpNumber ?? ''}</td>

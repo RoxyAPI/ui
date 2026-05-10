@@ -1,27 +1,21 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { MOON_PHASE_EMOJI } from '../tokens/index.js';
+import type {
+	GetCurrentMoonPhaseResponse,
+	GetMoonCalendarResponse,
+	GetUpcomingMoonPhasesResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatNumber } from '../utils/format.js';
 
-interface MoonPhaseData {
-	date?: string;
-	phase?: string;
-	illumination?: number;
-	age?: number;
-	sign?: string;
-	degree?: number;
-	distance?: number;
-	meaning?: {
-		name?: string;
-		symbol?: string;
-		description?: string;
-		keywords?: string[];
-	};
-	month?: string;
-	year?: number;
-	phases?: Array<MoonPhaseData>;
-	upcoming?: Array<MoonPhaseData>;
-}
+type MoonPhaseData =
+	| GetCurrentMoonPhaseResponse
+	| GetUpcomingMoonPhasesResponse
+	| GetMoonCalendarResponse;
+type MoonListEntry =
+	| GetUpcomingMoonPhasesResponse['phases'][number]
+	| GetMoonCalendarResponse['calendar'][number];
 
 /**
  * Moon phase card. Renders /astrology/moon-phase/{current,upcoming,calendar/...}.
@@ -125,22 +119,26 @@ export class RoxyMoonPhase extends LitElement {
 		const d = this.data;
 		if (!d)
 			return html`<div class="roxy-empty" role="status">No moon phase data</div>`;
-		const list = d.phases ?? d.upcoming ?? [];
+		const list: MoonListEntry[] =
+			'phases' in d ? d.phases : 'calendar' in d ? d.calendar : [];
 		if (this.mode !== 'current' && list.length > 0) {
+			const month = 'month' in d ? d.month : undefined;
+			const year = 'year' in d ? d.year : undefined;
 			return html`<article
 				class="card"
 				aria-label="Moon phase calendar"
 			>
-				<h2 class="label">${d.month ?? 'Moon phases'} ${d.year ?? ''}</h2>
+				<h2 class="label">${month ?? 'Moon phases'} ${year ?? ''}</h2>
 				<div class="list" role="list">
 					${list.map((phase) => this.renderListItem(phase))}
 				</div>
 			</article>`;
 		}
+		if (!('phase' in d)) return nothing;
 		return this.renderSingle(d);
 	}
 
-	private renderSingle(d: MoonPhaseData) {
+	private renderSingle(d: GetCurrentMoonPhaseResponse) {
 		const emoji = phaseEmoji(d.phase);
 		return html`<article class="card" aria-label="Current moon phase">
 			<div class="hero">
@@ -155,7 +153,7 @@ export class RoxyMoonPhase extends LitElement {
 					typeof d.illumination === 'number'
 						? html`<div>
 							<span>Illumination</span>
-							<strong>${(d.illumination * 100).toFixed(0)}%</strong>
+							<strong>${formatIllumination(d.illumination)}</strong>
 						</div>`
 						: nothing
 				}
@@ -163,7 +161,7 @@ export class RoxyMoonPhase extends LitElement {
 					typeof d.age === 'number'
 						? html`<div>
 							<span>Age</span>
-							<strong>${d.age.toFixed(1)} days</strong>
+							<strong>${formatNumber(d.age, 1)} days</strong>
 						</div>`
 						: nothing
 				}
@@ -199,7 +197,7 @@ export class RoxyMoonPhase extends LitElement {
 		</article>`;
 	}
 
-	private renderListItem(p: MoonPhaseData) {
+	private renderListItem(p: MoonListEntry) {
 		const emoji = phaseEmoji(p.phase);
 		return html`<div class="list-item" role="listitem">
 			<span aria-hidden="true">${emoji}</span>
@@ -212,6 +210,11 @@ export class RoxyMoonPhase extends LitElement {
 function phaseEmoji(phase: string | undefined): string {
 	if (!phase) return '🌙';
 	return MOON_PHASE_EMOJI[phase.toLowerCase()] ?? '🌙';
+}
+
+function formatIllumination(v: number): string {
+	const pct = v <= 1 ? v * 100 : v;
+	return `${Math.round(pct)}%`;
 }
 
 declare global {

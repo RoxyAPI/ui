@@ -64,22 +64,27 @@ export class RoxyEndpointForm extends LitElement {
 			.fields {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+				align-items: start;
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.field {
-				display: grid;
+				display: flex;
+				flex-direction: column;
 				gap: var(--roxy-space-xs, 0.25rem);
+				min-width: 0;
 			}
 			label {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-secondary, #475569);
 			}
 			label .req {
-				color: var(--roxy-danger, #dc2626);
+				color: var(--roxy-danger-fg, #991b1b);
 				margin-left: 4px;
 			}
 			input,
 			select {
+				width: 100%;
+				box-sizing: border-box;
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
 				font-size: var(--roxy-text-base, 1rem);
 				font-family: inherit;
@@ -114,7 +119,7 @@ export class RoxyEndpointForm extends LitElement {
 			button.submit {
 				justify-self: start;
 				background: var(--roxy-accent-fg, #b45309);
-				color: #fff;
+				color: var(--roxy-bg, #fff);
 				border: 0;
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-lg, 1.5rem);

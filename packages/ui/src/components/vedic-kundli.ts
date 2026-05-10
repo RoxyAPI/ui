@@ -1,44 +1,21 @@
 import { css, html, LitElement, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { PLANET_ABBR, SIGN_ABBR } from '../tokens/index.js';
+import type { BirthChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 
-interface KundliMeta {
-	[planet: string]: {
-		graha?: string;
-		rashi?: string;
-		longitude?: number;
-		nakshatra?: string;
-		isRetrograde?: boolean;
-	};
-}
+type RashiBucket = BirthChartResponse['aries'];
 
-interface RashiBucket {
-	rashi?: string;
-	signs?: Array<{
-		planet?: string;
-		longitude?: number;
-		isRetrograde?: boolean;
-	}>;
-}
+// TODO(spec): BirthChartResponse types only `aries` and `meta`, but the API
+// returns all 12 rashi keys (taurus, gemini, ..., pisces) with the same shape
+// as `aries`. Update the OpenAPI schema so the renderer can index by rashi
+// without casts.
+type BirthChartByRashi = BirthChartResponse & Record<string, RashiBucket>;
 
 interface KundliHouse {
 	house: number;
 	sign: string;
 	planets: string[];
-}
-
-interface KundliData {
-	meta?: KundliMeta;
-	houses?: Array<{
-		house?: number;
-		number?: number;
-		sign?: string;
-		planets?: string[];
-	}>;
-	combustion?: unknown[];
-	planetaryWar?: unknown[];
-	[rashi: string]: unknown;
 }
 
 const SOUTH_HOUSE_CENTERS: Record<number, { x: number; y: number }> = {
@@ -145,39 +122,35 @@ export class RoxyVedicKundli extends LitElement {
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
 			}
+			.lagna-marker {
+				fill: var(--roxy-accent-fg, #b45309);
+				font-size: 8px;
+				font-weight: 700;
+				font-family: var(--roxy-font-sans);
+				letter-spacing: 0.05em;
+			}
+			.lagna-bg {
+				fill: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, transparent);
+				stroke: color-mix(in srgb, var(--roxy-accent, #f59e0b) 45%, transparent);
+				stroke-width: 0.8;
+			}
 		`,
 	];
 
 	@property({ attribute: false })
-	data: KundliData | null = null;
+	data: BirthChartResponse | null = null;
 
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
 	chartStyle: 'south' | 'north' = 'south';
 
 	private buildHouses(): KundliHouse[] {
 		if (!this.data) return [];
+		const data = this.data as BirthChartByRashi;
 		const houses: KundliHouse[] = [];
-		// Prefer normalized .houses array if present
-		if (Array.isArray(this.data.houses)) {
-			for (const h of this.data.houses) {
-				houses.push({
-					house: (h.house ?? h.number ?? houses.length + 1) as number,
-					sign: h.sign ?? '',
-					planets: h.planets ?? [],
-				});
-			}
-			if (houses.length > 0) return houses;
-		}
-		// Otherwise read the rashi buckets and project them as houses 1..12
-		// keyed by sign order. Lagna-anchored ordering would require knowing
-		// the ascendant rashi; we render rashi buckets directly which is the
-		// canonical South Indian layout.
 		for (let i = 0; i < 12; i++) {
 			const key = RASHI_KEYS[i];
-			const bucket = this.data[key] as RashiBucket | undefined;
-			const planets = (bucket?.signs ?? [])
-				.map((p) => p.planet ?? '')
-				.filter(Boolean);
+			const bucket = data[key];
+			const planets = (bucket?.signs ?? []).map((p) => p.graha).filter(Boolean);
 			houses.push({
 				house: i + 1,
 				sign: RASHI_TO_SIGN[key] ?? '',
@@ -220,23 +193,41 @@ export class RoxyVedicKundli extends LitElement {
 		</div>`;
 	}
 
+	private isLagna(h: KundliHouse): boolean {
+		const ascSign = this.data?.meta?.Lagna?.rashi;
+		if (!ascSign) return false;
+		return ascSign.toLowerCase() === h.sign.toLowerCase();
+	}
+
 	private renderHouseGroup(h: KundliHouse) {
 		const center = SOUTH_HOUSE_CENTERS[h.house];
 		const signPos = SOUTH_SIGN_POSITIONS[h.house];
 		if (!center || !signPos) return nothing;
 		const signAbbr = SIGN_ABBR[h.sign] ?? '';
 		const planets = h.planets ?? [];
+		const isLagna = this.isLagna(h);
 		return svg`
 			<g>
+				${
+					isLagna
+						? svg`<rect class="lagna-bg" x=${center.x - 30} y=${center.y - 28} width="60" height="56" rx="6" />`
+						: nothing
+				}
 				${
 					signAbbr
 						? svg`<text class="sign-text" x=${signPos.x} y=${signPos.y} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>`
 						: nothing
 				}
+				${
+					isLagna
+						? svg`<text class="lagna-marker" x=${center.x} y=${center.y - 18} text-anchor="middle" dominant-baseline="central">LAGNA</text>`
+						: nothing
+				}
 				${planets.map((planet, j) => {
 					const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
 					const lineHeight = 13;
-					const startY = center.y - ((planets.length - 1) * lineHeight) / 2;
+					const baseY = isLagna ? center.y + 8 : center.y;
+					const startY = baseY - ((planets.length - 1) * lineHeight) / 2;
 					const yPos = startY + j * lineHeight;
 					return svg`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
 				})}

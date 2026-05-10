@@ -1,24 +1,6 @@
 import { LitElement } from 'lit';
-interface HoroscopeData {
-    sign?: string;
-    date?: string;
-    overview?: string;
-    love?: string;
-    career?: string;
-    health?: string;
-    finance?: string;
-    advice?: string;
-    luckyNumber?: number | string;
-    luckyColor?: string;
-    compatibleSigns?: string[];
-    moonSign?: string;
-    moonPhase?: string;
-    energyRating?: number;
-    week?: string;
-    month?: string;
-    luckyDays?: string[];
-    luckyNumbers?: number[];
-}
+import type { GetDailyHoroscopeResponse, GetMonthlyHoroscopeResponse, GetWeeklyHoroscopeResponse } from '../types/index.js';
+type HoroscopeData = GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse;
 /**
  * Daily, weekly, or monthly horoscope card. Pass `data` from
  * /astrology/horoscope/{sign}/{daily|weekly|monthly}.

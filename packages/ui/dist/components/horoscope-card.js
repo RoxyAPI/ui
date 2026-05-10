@@ -128,8 +128,8 @@ var RoxyHoroscopeCard = class extends LitElement {
       return html`<div class="roxy-empty" role="status">No horoscope data</div>`;
     const sign = d.sign ?? "";
     const glyph = sign ? SIGN_GLYPH[capitalize(sign)] ?? "" : "";
-    const energy = typeof d.energyRating === "number" ? d.energyRating : null;
-    const dateLabel = d.date ?? d.week ?? d.month ?? "";
+    const energy = "energyRating" in d && typeof d.energyRating === "number" ? d.energyRating : null;
+    const dateLabel = "date" in d && d.date || "week" in d && d.week || "month" in d && d.month || "";
     return html`<article
 			class="card"
 			aria-label=${`${this.period} horoscope for ${sign}`}
@@ -167,31 +167,40 @@ var RoxyHoroscopeCard = class extends LitElement {
 							<h3>Finance</h3>
 							<p>${d.finance}</p>
 						</div>` : nothing}
-				${d.advice ? html`<div class="section">
+				${"advice" in d && d.advice ? html`<div class="section">
 							<h3>Advice</h3>
 							<p>${d.advice}</p>
 						</div>` : nothing}
 			</div>
 
-			${d.luckyNumber || d.luckyColor || (d.compatibleSigns?.length ?? 0) > 0 ? html`<div class="lucky">
-						${d.luckyNumber !== void 0 ? html`<span>Lucky number <strong>${d.luckyNumber}</strong></span>` : nothing}
-						${d.luckyColor ? html`<span>Lucky color <strong>${d.luckyColor}</strong></span>` : nothing}
-						${d.luckyNumbers?.length ? html`<span
+			${(() => {
+      const luckyNumber = "luckyNumber" in d && d.luckyNumber !== void 0 ? d.luckyNumber : void 0;
+      const luckyColor = "luckyColor" in d && d.luckyColor ? d.luckyColor : "";
+      const luckyNumbers = "luckyNumbers" in d && d.luckyNumbers ? d.luckyNumbers : [];
+      const luckyDays = "luckyDays" in d && d.luckyDays ? d.luckyDays : [];
+      const compatibleSigns = d.compatibleSigns ?? [];
+      if (luckyNumber === void 0 && !luckyColor && luckyNumbers.length === 0 && luckyDays.length === 0 && compatibleSigns.length === 0)
+        return nothing;
+      return html`<div class="lucky">
+						${luckyNumber !== void 0 ? html`<span>Lucky number <strong>${luckyNumber}</strong></span>` : nothing}
+						${luckyColor ? html`<span>Lucky color <strong>${luckyColor}</strong></span>` : nothing}
+						${luckyNumbers.length ? html`<span
 									>Lucky numbers
-									<strong>${d.luckyNumbers.join(", ")}</strong></span
+									<strong>${luckyNumbers.join(", ")}</strong></span
 								>` : nothing}
-						${d.luckyDays?.length ? html`<span
-									>Lucky days <strong>${d.luckyDays.join(", ")}</strong></span
+						${luckyDays.length ? html`<span
+									>Lucky days <strong>${luckyDays.join(", ")}</strong></span
 								>` : nothing}
-						${d.compatibleSigns?.length ? html`<span class="compat-wrap">
+						${compatibleSigns.length ? html`<span class="compat-wrap">
 									Best with
 									<span class="compat"
-										>${d.compatibleSigns.map(
-      (s) => html`<span>${s}</span>`
-    )}</span
+										>${compatibleSigns.map(
+        (s) => html`<span>${s}</span>`
+      )}</span
 									>
 								</span>` : nothing}
-					</div>` : nothing}
+					</div>`;
+    })()}
 		</article>`;
   }
 };

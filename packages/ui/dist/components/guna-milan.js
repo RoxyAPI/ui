@@ -99,6 +99,16 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/format.ts
+function formatNumber(value, dp = 1) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
+  return value.toFixed(dp).replace(/\.?0+$/, "");
+}
+function formatPercent(value, dp = 1) {
+  const n = formatNumber(value, dp);
+  return n ? `${n}%` : "";
+}
+
 // packages/ui/src/components/guna-milan.ts
 var STANDARD_CATEGORIES = [
   "Varna",
@@ -119,18 +129,16 @@ var RoxyGunaMilan = class extends LitElement {
     const d = this.data;
     if (!d)
       return html`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
-    const total = d.total ?? d.totalScore ?? 0;
-    const max = d.maxScore ?? 36;
     const breakdown = (d.breakdown ?? []).filter(
-      (b) => b && (b.name || b.score !== void 0)
+      (b) => b?.category !== void 0
     );
     return html`<article class="card" aria-label="Guna Milan score">
 			<div class="score-bar">
 				<div>
-					<span class="total">${total}</span>
-					<span class="over"> / ${max}</span>
+					<span class="total">${formatNumber(d.total, 1)}</span>
+					<span class="over"> / ${d.maxScore}</span>
 					${typeof d.percentage === "number" ? html`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
-								${d.percentage}%
+								${formatPercent(d.percentage, 1)}
 							</small>` : nothing}
 				</div>
 				${d.recommendation ? html`<span class="recommendation">${d.recommendation}</span>` : nothing}
@@ -147,23 +155,25 @@ var RoxyGunaMilan = class extends LitElement {
 						<tbody>
 							${breakdown.map((b) => {
       const score = b.score ?? 0;
-      const maxScore = b.max ?? b.maxScore ?? defaultMax(b.name);
+      const maxScore = b.maxScore ?? defaultMax(b.category);
       const pct = maxScore ? score / maxScore * 100 : 0;
       return html`<tr>
-									<td>${b.name ?? ""}</td>
+									<td>${b.category}</td>
 									<td class="bar-cell">
 										<div class="mini-bar">
 											<span style="width: ${pct}%"></span>
 										</div>
 									</td>
-									<td class="score">${score} / ${maxScore}</td>
+									<td class="score">${formatNumber(score, 1)} / ${maxScore}</td>
 								</tr>`;
     })}
 						</tbody>
 					</table>` : nothing}
 			${(d.doshas?.length ?? 0) > 0 || (d.doshaCancellations?.length ?? 0) > 0 ? html`<div class="tags">
 						${d.doshas?.map((x) => html`<span class="dosha">${x}</span>`)}
-						${d.doshaCancellations?.map((x) => html`<span class="cancel">${x}</span>`)}
+						${d.doshaCancellations?.map(
+      (x) => html`<span class="cancel" title=${x.reason}>${x.dosha} cancelled</span>`
+    )}
 					</div>` : nothing}
 		</article>`;
   }
@@ -257,11 +267,11 @@ RoxyGunaMilan.styles = [
 			}
 			.tags .dosha {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger, #dc2626);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 			.tags .cancel {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 18%, transparent);
-				color: var(--roxy-success, #16a34a);
+				color: var(--roxy-success-fg, #166534);
 			}
 		`
 ];

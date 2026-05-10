@@ -122,25 +122,28 @@ var RoxyBiorhythmChart = class extends LitElement {
     const d = this.data;
     if (!d)
       return html`<div class="roxy-empty" role="status">No biorhythm data</div>`;
-    if (this.mode === "critical-days" && d.criticalDays?.length) {
+    if (this.mode === "critical-days" && "criticalDays" in d) {
       return this.renderCritical(d);
     }
-    if (this.mode === "forecast" && d.days?.length) {
+    if (this.mode === "forecast" && "days" in d) {
       return this.renderForecast(d);
     }
     return this.renderDaily(d);
   }
   renderDaily(d) {
-    const cycles = d.cycles ?? {};
-    const entries = Object.entries(cycles);
+    const raw = d.quickRead ?? {};
+    const entries = Object.entries(raw).map(([cycle, value]) => {
+      const v = typeof value === "number" ? value : 0;
+      const normalized = Math.abs(v) > 1 ? v / 100 : v;
+      return [cycle, normalized];
+    });
     return html`<section class="wrap" aria-label="Daily biorhythm">
 			<header class="head">
 				<h2 class="title">Biorhythm</h2>
 				${typeof d.energyRating === "number" ? html`<span class="energy">Energy ${d.energyRating}/10</span>` : nothing}
 			</header>
 			<div class="bars" role="list">
-				${entries.map(([cycle, value]) => {
-      const v = typeof value === "number" ? value : 0;
+				${entries.map(([cycle, v]) => {
       const pct = (v + 1) / 2 * 100;
       const color = CYCLE_COLOR[cycle] ?? "var(--roxy-accent, #f59e0b)";
       return html`<div class="bar" role="listitem">
@@ -151,15 +154,12 @@ var RoxyBiorhythmChart = class extends LitElement {
 								style="width: ${pct}%; background: ${color}"
 							></span>
 						</span>
-						<span class="value">${(v * 100).toFixed(0)}%</span>
+						<span class="value">${Math.round(v * 100)}%</span>
 					</div>`;
     })}
 			</div>
-			${d.interpretation ? html`<p class="advice">${d.interpretation}</p>` : nothing}
+			${d.dailyMessage ? html`<p class="advice">${d.dailyMessage}</p>` : nothing}
 			${d.advice ? html`<p class="advice">${d.advice}</p>` : nothing}
-			${d.criticalAlerts?.length ? html`<div>
-						${d.criticalAlerts.map((a) => html`<p class="alert">${a}</p>`)}
-					</div>` : nothing}
 		</section>`;
   }
   renderForecast(d) {
@@ -169,13 +169,16 @@ var RoxyBiorhythmChart = class extends LitElement {
     const w = 600;
     const h = 160;
     const xStep = w / Math.max(days.length - 1, 1);
-    const cycles = Object.keys(days[0]?.cycles ?? {});
+    const cycleKeys = [
+      "physical",
+      "emotional",
+      "intellectual",
+      "intuitive"
+    ];
     return html`<section class="wrap" aria-label="Biorhythm forecast">
 			<header class="head">
 				<h2 class="title">Forecast</h2>
-				<span class="energy"
-					>${d.startDate ?? ""} - ${d.endDate ?? ""}</span
-				>
+				<span class="energy">${d.startDate} - ${d.endDate}</span>
 			</header>
 			<svg
 				viewBox="0 0 ${w} ${h}"
@@ -191,11 +194,11 @@ var RoxyBiorhythmChart = class extends LitElement {
 					stroke="var(--roxy-border, #e4e4e7)"
 					stroke-width="1"
 				/>
-				${cycles.map((cycle) => {
+				${cycleKeys.map((cycle) => {
       const points = days.map((day, i) => {
-        const v = day.cycles?.[cycle] ?? 0;
+        const v = day[cycle] ?? 0;
         const x = i * xStep;
-        const y = h / 2 - v * (h / 2 - 8);
+        const y = h / 2 - v / 100 * (h / 2 - 8);
         return `${x.toFixed(2)},${y.toFixed(2)}`;
       }).join(" ");
       const color = CYCLE_COLOR[cycle] ?? "#475569";
@@ -209,14 +212,12 @@ var RoxyBiorhythmChart = class extends LitElement {
     return html`<section class="wrap" aria-label="Critical days">
 			<header class="head">
 				<h2 class="title">Critical days</h2>
-				<span class="energy"
-					>${d.totalCriticalDays ?? d.criticalDays?.length ?? 0} total</span
-				>
+				<span class="energy">${d.totalCriticalDays} total</span>
 			</header>
 			<div>
-				${(d.criticalDays ?? []).map(
+				${d.criticalDays.map(
       (day) => html`<span class="crit"
-						>${day.date} · ${day.cycle ?? ""} ${day.severity ?? ""}</span
+						>${day.date} · ${day.cycle} ${day.severity}</span
 					>`
     )}
 			</div>

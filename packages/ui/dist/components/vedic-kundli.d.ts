@@ -1,25 +1,5 @@
 import { LitElement } from 'lit';
-interface KundliMeta {
-    [planet: string]: {
-        graha?: string;
-        rashi?: string;
-        longitude?: number;
-        nakshatra?: string;
-        isRetrograde?: boolean;
-    };
-}
-interface KundliData {
-    meta?: KundliMeta;
-    houses?: Array<{
-        house?: number;
-        number?: number;
-        sign?: string;
-        planets?: string[];
-    }>;
-    combustion?: unknown[];
-    planetaryWar?: unknown[];
-    [rashi: string]: unknown;
-}
+import type { BirthChartResponse } from '../types/index.js';
 /**
  * Vedic kundli (D1 Rashi chart). South Indian style by default. Pass `data`
  * from /vedic-astrology/birth-chart. North Indian style via style="north".
@@ -30,10 +10,11 @@ interface KundliData {
  */
 export declare class RoxyVedicKundli extends LitElement {
     static styles: import("lit").CSSResult[];
-    data: KundliData | null;
+    data: BirthChartResponse | null;
     chartStyle: 'south' | 'north';
     private buildHouses;
     render(): import("lit").TemplateResult<1>;
+    private isLagna;
     private renderHouseGroup;
 }
 declare global {
@@ -41,5 +22,4 @@ declare global {
         'roxy-vedic-kundli': RoxyVedicKundli;
     }
 }
-export {};
 //# sourceMappingURL=vedic-kundli.d.ts.map

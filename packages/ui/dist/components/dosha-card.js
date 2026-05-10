@@ -138,25 +138,24 @@ var RoxyDoshaCard = class extends LitElement {
 				</div>
 			</header>
 			${d.description ? html`<p class="description">${d.description}</p>` : nothing}
-			${this.renderEffects(d.effects)}
+			${this.renderEffects(d)}
 			${d.remedies && d.remedies.length > 0 ? html`<div>
 						<h3>Remedies</h3>
 						<ul>
 							${d.remedies.map((r) => html`<li>${r}</li>`)}
 						</ul>
 					</div>` : nothing}
-			${d.exceptions && d.exceptions.length > 0 ? html`<div>
-						<h3>Exceptions</h3>
-						<ul>
-							${d.exceptions.map((r) => html`<li>${r}</li>`)}
-						</ul>
-					</div>` : nothing}
+			${"exceptions" in d && d.exceptions && d.exceptions.length > 0 ? html`<div>
+					<h3>Exceptions</h3>
+					<ul>
+						${d.exceptions.map((r) => html`<li>${r}</li>`)}
+					</ul>
+				</div>` : nothing}
 		</article>`;
   }
-  renderEffects(e) {
-    if (!e) return nothing;
-    if (typeof e === "string") return html`<p>${e}</p>`;
-    const entries = Object.entries(e).filter(
+  renderEffects(d) {
+    if (!d.effects) return nothing;
+    const entries = Object.entries(d.effects).filter(
       ([, v]) => typeof v === "string" && v.length > 0
     );
     if (entries.length === 0) return nothing;
@@ -208,11 +207,11 @@ RoxyDoshaCard.styles = [
 			}
 			.badge.absent {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success, #16a34a);
+				color: var(--roxy-success-fg, #166534);
 			}
 			.badge.present {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger, #dc2626);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 			.severity {
 				display: flex;

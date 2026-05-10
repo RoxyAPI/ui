@@ -111,42 +111,63 @@ var RoxyNumerologyCard = class extends LitElement {
     if (!d)
       return html`<div class="roxy-empty" role="status">No numerology data</div>`;
     const headerLabel = LABELS[this.type] ?? this.type;
-    const number = d.personalYear ?? d.number;
-    const cores = d.coreNumbers ? Object.entries(d.coreNumbers).filter(
-      ([, v]) => v !== null && v !== void 0
-    ) : [];
-    return html`<article
-			class="card"
-			aria-label=${headerLabel}
-		>
+    if ("coreNumbers" in d) return this.renderChart(d, headerLabel);
+    if ("personalYear" in d) return this.renderPersonalYear(d, headerLabel);
+    return this.renderNumberCard(
+      d,
+      headerLabel
+    );
+  }
+  renderNumberCard(d, headerLabel) {
+    const keywords = d.meaning?.keywords ?? [];
+    return html`<article class="card" aria-label=${headerLabel}>
 			<div class="hero">
-				${typeof number === "number" ? html`<div class="numeral">${number}</div>` : nothing}
+				${typeof d.number === "number" ? html`<div class="numeral">${d.number}</div>` : nothing}
 				<div>
 					<p class="label">${headerLabel}</p>
-					${d.title ? html`<h2 class="title">${d.title}</h2>` : d.type ? html`<h2 class="title">
-									${d.type === "master" ? "Master number" : "Single digit"}
-								</h2>` : nothing}
+					${d.meaning?.title ? html`<h2 class="title">${d.meaning.title}</h2>` : nothing}
 				</div>
 			</div>
-			${d.theme ? html`<p><strong>Theme:</strong> ${d.theme}</p>` : nothing}
-			${d.meaning ? html`<p class="meaning">${d.meaning}</p>` : nothing}
-			${d.advice ? html`<p>${d.advice}</p>` : nothing}
+			${d.meaning?.description ? html`<p class="meaning">${d.meaning.description}</p>` : nothing}
 			${d.calculation ? html`<pre class="calc">${d.calculation}</pre>` : nothing}
-			${d.keywords?.length ? html`<div class="chips">
-						${d.keywords.map((k) => html`<span>${k}</span>`)}
-					</div>` : nothing}
-			${cores.length > 0 ? html`<div class="cores">
-						${cores.map(([k, v]) => {
-      const value = typeof v === "number" ? v : v.number;
-      return html`<div class="item">
-								<span>${humanize(k)}</span>
-								<strong>${value ?? ""}</strong>
-							</div>`;
-    })}
+			${keywords.length > 0 ? html`<div class="chips">
+						${keywords.map((k) => html`<span>${k}</span>`)}
 					</div>` : nothing}
 			${d.hasKarmicDebt && d.karmicDebtNumber ? html`<div class="karmic">
 						Karmic debt ${d.karmicDebtNumber}.
-						${d.karmicDebtMeaning ? d.karmicDebtMeaning : ""}
+						${karmicDebtText(d.karmicDebtMeaning)}
+					</div>` : nothing}
+		</article>`;
+  }
+  renderPersonalYear(d, headerLabel) {
+    return html`<article class="card" aria-label=${headerLabel}>
+			<div class="hero">
+				${typeof d.personalYear === "number" ? html`<div class="numeral">${d.personalYear}</div>` : nothing}
+				<div>
+					<p class="label">${headerLabel}</p>
+					${d.theme ? html`<h2 class="title">${d.theme}</h2>` : nothing}
+				</div>
+			</div>
+			${d.forecast ? html`<p class="meaning">${d.forecast}</p>` : nothing}
+			${d.advice ? html`<p>${d.advice}</p>` : nothing}
+		</article>`;
+  }
+  renderChart(d, headerLabel) {
+    const cores = Object.entries(d.coreNumbers).filter(
+      ([, v]) => v !== null && v !== void 0
+    );
+    return html`<article class="card" aria-label=${headerLabel}>
+			<div>
+				<p class="label">${headerLabel}</p>
+				${d.profile?.name ? html`<h2 class="title">${d.profile.name}</h2>` : nothing}
+			</div>
+			${cores.length > 0 ? html`<div class="cores">
+						${cores.map(
+      ([k, v]) => html`<div class="item">
+								<span>${humanize(k)}</span>
+								<strong>${v.number ?? ""}</strong>
+							</div>`
+    )}
 					</div>` : nothing}
 		</article>`;
   }
@@ -201,7 +222,8 @@ RoxyNumerologyCard.styles = [
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 30%, transparent);
 				padding: var(--roxy-space-sm, 0.5rem);
 				border-radius: var(--roxy-radius-sm, 4px);
-				word-break: break-all;
+				white-space: pre-wrap;
+				overflow-wrap: anywhere;
 			}
 
 			.chips {
@@ -265,6 +287,10 @@ var LABELS = {
   "personal-year": "Personal Year",
   chart: "Numerology chart"
 };
+function karmicDebtText(value) {
+  if (!value) return "";
+  return [value.description, value.challenge, value.resolution].filter(Boolean).join(" ");
+}
 function humanize(s) {
   return s.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^\w/, (c) => c.toUpperCase());
 }

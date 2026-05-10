@@ -1,32 +1,22 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type {
+	CastCelticCrossResponse,
+	CastLoveSpreadResponse,
+	CastReadingResponse,
+	CastThreeCardResponse,
+	CastYesNoResponse,
+	DrawCardsResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 
-interface TarotPosition {
-	number?: number;
-	label?: string;
-	name?: string;
-	position?: string;
-	card?: {
-		name?: string;
-		imageUrl?: string;
-		reversed?: boolean;
-		keywords?: string[];
-		arcana?: string;
-	};
-	interpretation?: string;
-}
-
-interface TarotSpreadData {
-	spread?: string;
-	positions?: TarotPosition[];
-	cards?: TarotPosition[];
-	reading?: string;
-	question?: string;
-	answer?: 'Yes' | 'No' | 'Maybe' | string;
-	strength?: string;
-	interpretation?: string;
-}
+type TarotSpreadData =
+	| CastThreeCardResponse
+	| CastCelticCrossResponse
+	| CastLoveSpreadResponse
+	| CastYesNoResponse
+	| CastReadingResponse
+	| DrawCardsResponse;
 
 /**
  * Tarot spread card. Renders /tarot/spreads/{three-card,celtic-cross,love},
@@ -72,15 +62,15 @@ export class RoxyTarotSpread extends LitElement {
 			}
 			.answer.yes {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success, #16a34a);
+				color: var(--roxy-success-fg, #166534);
 			}
 			.answer.no {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger, #dc2626);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 			.answer.maybe {
 				background: color-mix(in srgb, var(--roxy-warning, #ea580c) 16%, transparent);
-				color: var(--roxy-warning, #ea580c);
+				color: var(--roxy-warning-fg, #9a3412);
 			}
 
 			.grid {
@@ -157,22 +147,41 @@ export class RoxyTarotSpread extends LitElement {
 		if (!d)
 			return html`<div class="roxy-empty" role="status">No tarot spread</div>`;
 
-		const positions = d.positions ?? d.cards ?? [];
-		const isYesNo = !!d.answer;
-		const answerClass = isYesNo
-			? (d.answer ?? '').toLowerCase().replace(/[^a-z]/g, '')
+		const isYesNo = 'answer' in d;
+		const isDrawn = 'cards' in d && !('spread' in d);
+		const positions = isDrawn
+			? []
+			: 'positions' in d
+				? (d.positions ?? [])
+				: [];
+		const cards = isDrawn && 'cards' in d ? (d as DrawCardsResponse).cards : [];
+		const answer = isYesNo ? (d as CastYesNoResponse).answer : undefined;
+		const strength = isYesNo ? (d as CastYesNoResponse).strength : undefined;
+		const spreadLabel =
+			'spread' in d
+				? (d as CastThreeCardResponse).spread
+				: this.spread.replace(/-/g, ' ');
+		const question =
+			'question' in d ? (d as CastThreeCardResponse).question : undefined;
+		const summary =
+			'summary' in d ? (d as CastThreeCardResponse).summary : undefined;
+		const yesNoInterp = isYesNo
+			? (d as CastYesNoResponse).interpretation
+			: undefined;
+		const answerClass = answer
+			? answer.toLowerCase().replace(/[^a-z]/g, '')
 			: '';
 
 		return html`<article class="wrap" aria-label="Tarot spread">
 			<header class="head">
-				<h2 class="title">${d.spread ?? this.spread.replace(/-/g, ' ')}</h2>
-				${d.question ? html`<span class="question">"${d.question}"</span>` : nothing}
+				<h2 class="title">${spreadLabel}</h2>
+				${question ? html`<span class="question">"${question}"</span>` : nothing}
 			</header>
 			${
 				isYesNo
 					? html`<div>
-						<span class=${`answer ${answerClass}`}>${d.answer}</span>
-						${d.strength ? html`<small> · ${d.strength}</small>` : nothing}
+						<span class=${`answer ${answerClass}`}>${answer}</span>
+						${strength ? html`<small> · ${strength}</small>` : nothing}
 					</div>`
 					: nothing
 			}
@@ -181,7 +190,7 @@ export class RoxyTarotSpread extends LitElement {
 					? html`<div class="grid">
 						${positions.map(
 							(p) => html`<div class="card">
-								<p class="label">${p.label ?? p.name ?? p.position ?? ''}</p>
+								<p class="label">${p.name ?? ''}</p>
 								<div class="image">
 									${
 										p.card?.imageUrl
@@ -197,22 +206,40 @@ export class RoxyTarotSpread extends LitElement {
 									${p.card?.name ?? ''}
 									${p.card?.reversed ? html`<small>(reversed)</small>` : nothing}
 								</p>
-								${
-									p.interpretation
-										? html`<p class="interp">${p.interpretation}</p>`
-										: nothing
-								}
+								${p.interpretation ? html`<p class="interp">${p.interpretation}</p>` : nothing}
 							</div>`,
 						)}
 					</div>`
 					: nothing
 			}
-			${d.reading ? html`<p class="reading">${d.reading}</p>` : nothing}
 			${
-				d.interpretation && !d.reading
-					? html`<p class="reading">${d.interpretation}</p>`
+				cards.length > 0
+					? html`<div class="grid">
+						${cards.map(
+							(c) => html`<div class="card">
+								<div class="image">
+									${
+										c.imageUrl
+											? html`<img
+												src=${c.imageUrl}
+												alt=${c.name ?? 'tarot card'}
+												class=${c.reversed ? 'reversed' : ''}
+											/>`
+											: html`${c.name ?? '?'}`
+									}
+								</div>
+								<p class="name">
+									${c.name ?? ''}
+									${c.reversed ? html`<small>(reversed)</small>` : nothing}
+								</p>
+								${c.meaning ? html`<p class="interp">${c.meaning}</p>` : nothing}
+							</div>`,
+						)}
+					</div>`
 					: nothing
 			}
+			${summary ? html`<p class="reading">${summary}</p>` : nothing}
+			${yesNoInterp ? html`<p class="reading">${yesNoInterp}</p>` : nothing}
 		</article>`;
 	}
 }

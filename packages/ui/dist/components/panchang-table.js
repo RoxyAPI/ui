@@ -99,6 +99,40 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/format.ts
+function formatTime(input) {
+  if (typeof input !== "string" || input.length === 0) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return "";
+  const bareTime = /^\d{2}:\d{2}(:\d{2})?$/.test(input);
+  const iso = bareTime ? `1970-01-01T${input}` : input;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return input;
+  return d.toLocaleTimeString(void 0, {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+function formatDate(input) {
+  if (typeof input !== "string" || input.length === 0) return "";
+  const d = new Date(
+    /^\d{4}-\d{2}-\d{2}$/.test(input) ? `${input}T00:00:00` : input
+  );
+  if (Number.isNaN(d.getTime())) return input;
+  return d.toLocaleDateString(void 0, {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+function formatTimeRange(t) {
+  if (!t) return "";
+  const start = formatTime(t.start);
+  const end = formatTime(t.end);
+  if (start && end) return `${start} - ${end}`;
+  return start || end || "";
+}
+
 // packages/ui/src/components/panchang-table.ts
 var RoxyPanchangTable = class extends LitElement {
   constructor() {
@@ -110,31 +144,32 @@ var RoxyPanchangTable = class extends LitElement {
     const d = this.data;
     if (!d)
       return html`<div class="roxy-empty" role="status">No panchang data</div>`;
+    const detailed = "sunrise" in d ? d : null;
     const fivefold = [
       ["Tithi", this.formatPart(d.tithi)],
       ["Nakshatra", this.formatPart(d.nakshatra)],
       ["Yoga", this.formatPart(d.yoga)],
-      ["Karana", this.formatPart(d.karana)],
-      ["Vara", d.vara ?? ""]
+      ["Karana", this.formatPart(d.karana)]
     ];
-    const muhurtas = [
-      ["Brahma Muhurta", d.brahmaMuhurta],
-      ["Abhijit Muhurta", d.abhijitMuhurta],
-      ["Vijaya Muhurta", d.vijayaMuhurta],
-      ["Godhuli Muhurta", d.godhuliMuhurta],
-      ["Nishita Muhurta", d.nishitaMuhurta],
-      ["Pratah Sandhya", d.pratahSandhya],
-      ["Sayahna Sandhya", d.sayahnaSandhya]
-    ];
-    const inauspicious = [
-      ["Rahu Kaal", d.rahuKaal],
-      ["Yamaganda", d.yamaganda],
-      ["Gulika", d.gulika]
-    ];
+    if (detailed) fivefold.push(["Vara", this.formatPart(detailed.vara)]);
+    const muhurtas = detailed ? [
+      ["Brahma Muhurta", detailed.brahmaMuhurta],
+      ["Abhijit Muhurta", detailed.abhijitMuhurta],
+      ["Vijaya Muhurta", detailed.vijayaMuhurta],
+      ["Godhuli Muhurta", detailed.godhuliMuhurta],
+      ["Nishita Muhurta", detailed.nishitaMuhurta],
+      ["Pratah Sandhya", detailed.pratahSandhya],
+      ["Sayahna Sandhya", detailed.sayahnaSandhya]
+    ] : [];
+    const inauspicious = detailed ? [
+      ["Rahu Kaal", detailed.rahuKaal],
+      ["Yamaganda", detailed.yamaganda],
+      ["Gulika", detailed.gulika]
+    ] : [];
     return html`<div class="wrap" aria-label="Panchang">
 			<header class="head">
 				<h2 class="title">Panchang</h2>
-				<span class="date">${d.date ?? ""}</span>
+				<span class="date">${detailed ? formatDate(detailed.date) : ""}</span>
 			</header>
 			<table>
 				<tbody>
@@ -144,21 +179,21 @@ var RoxyPanchangTable = class extends LitElement {
 							<td>${v}</td>
 						</tr>`
     )}
-					${d.sunrise ? html`<tr>
+					${detailed?.sunrise ? html`<tr>
 								<th>Sunrise</th>
-								<td>${d.sunrise}</td>
+								<td>${formatTime(detailed.sunrise)}</td>
 							</tr>` : nothing}
-					${d.sunset ? html`<tr>
+					${detailed?.sunset ? html`<tr>
 								<th>Sunset</th>
-								<td>${d.sunset}</td>
+								<td>${formatTime(detailed.sunset)}</td>
 							</tr>` : nothing}
-					${d.moonrise ? html`<tr>
+					${detailed?.moonrise ? html`<tr>
 								<th>Moonrise</th>
-								<td>${d.moonrise}</td>
+								<td>${formatTime(detailed.moonrise)}</td>
 							</tr>` : nothing}
-					${d.moonset ? html`<tr>
+					${detailed?.moonset ? html`<tr>
 								<th>Moonset</th>
-								<td>${d.moonset}</td>
+								<td>${formatTime(detailed.moonset)}</td>
 							</tr>` : nothing}
 				</tbody>
 			</table>
@@ -169,7 +204,7 @@ var RoxyPanchangTable = class extends LitElement {
 								${muhurtas.filter(([, v]) => !!v).map(
       ([k, v]) => html`<tr>
 											<th>${k}</th>
-											<td>${formatRange(v)}</td>
+											<td>${formatTimeRange(v)}</td>
 										</tr>`
     )}
 							</tbody>
@@ -180,7 +215,7 @@ var RoxyPanchangTable = class extends LitElement {
 								${inauspicious.filter(([, v]) => !!v).map(
       ([k, v]) => html`<tr>
 											<th>${k}</th>
-											<td>${formatRange(v)}</td>
+											<td>${formatTimeRange(v)}</td>
 										</tr>`
     )}
 							</tbody>
@@ -274,11 +309,6 @@ __decorateClass([
 RoxyPanchangTable = __decorateClass([
   customElement("roxy-panchang-table")
 ], RoxyPanchangTable);
-function formatRange(t) {
-  if (!t) return "";
-  if (t.start && t.end) return `${t.start} - ${t.end}`;
-  return t.start ?? t.end ?? "";
-}
 export {
   RoxyPanchangTable
 };

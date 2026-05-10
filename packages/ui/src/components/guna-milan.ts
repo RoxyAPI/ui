@@ -1,26 +1,8 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { CompatibilityResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-
-interface GunaCategory {
-	name?: string;
-	score?: number;
-	max?: number;
-	maxScore?: number;
-	description?: string;
-}
-
-interface GunaData {
-	total?: number;
-	totalScore?: number;
-	maxScore?: number;
-	percentage?: number;
-	isCompatible?: boolean;
-	recommendation?: string;
-	doshas?: string[];
-	doshaCancellations?: string[];
-	breakdown?: GunaCategory[];
-}
+import { formatNumber, formatPercent } from '../utils/format.js';
 
 const STANDARD_CATEGORIES = [
 	'Varna',
@@ -127,38 +109,36 @@ export class RoxyGunaMilan extends LitElement {
 			}
 			.tags .dosha {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger, #dc2626);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 			.tags .cancel {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 18%, transparent);
-				color: var(--roxy-success, #16a34a);
+				color: var(--roxy-success-fg, #166534);
 			}
 		`,
 	];
 
 	@property({ attribute: false })
-	data: GunaData | null = null;
+	data: CompatibilityResponse | null = null;
 
 	render() {
 		const d = this.data;
 		if (!d)
 			return html`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
 
-		const total = d.total ?? d.totalScore ?? 0;
-		const max = d.maxScore ?? 36;
 		const breakdown = (d.breakdown ?? []).filter(
-			(b) => b && (b.name || b.score !== undefined),
+			(b) => b?.category !== undefined,
 		);
 
 		return html`<article class="card" aria-label="Guna Milan score">
 			<div class="score-bar">
 				<div>
-					<span class="total">${total}</span>
-					<span class="over"> / ${max}</span>
+					<span class="total">${formatNumber(d.total, 1)}</span>
+					<span class="over"> / ${d.maxScore}</span>
 					${
 						typeof d.percentage === 'number'
 							? html`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
-								${d.percentage}%
+								${formatPercent(d.percentage, 1)}
 							</small>`
 							: nothing
 					}
@@ -183,16 +163,16 @@ export class RoxyGunaMilan extends LitElement {
 						<tbody>
 							${breakdown.map((b) => {
 								const score = b.score ?? 0;
-								const maxScore = b.max ?? b.maxScore ?? defaultMax(b.name);
+								const maxScore = b.maxScore ?? defaultMax(b.category);
 								const pct = maxScore ? (score / maxScore) * 100 : 0;
 								return html`<tr>
-									<td>${b.name ?? ''}</td>
+									<td>${b.category}</td>
 									<td class="bar-cell">
 										<div class="mini-bar">
 											<span style="width: ${pct}%"></span>
 										</div>
 									</td>
-									<td class="score">${score} / ${maxScore}</td>
+									<td class="score">${formatNumber(score, 1)} / ${maxScore}</td>
 								</tr>`;
 							})}
 						</tbody>
@@ -203,7 +183,10 @@ export class RoxyGunaMilan extends LitElement {
 				(d.doshas?.length ?? 0) > 0 || (d.doshaCancellations?.length ?? 0) > 0
 					? html`<div class="tags">
 						${d.doshas?.map((x) => html`<span class="dosha">${x}</span>`)}
-						${d.doshaCancellations?.map((x) => html`<span class="cancel">${x}</span>`)}
+						${d.doshaCancellations?.map(
+							(x) =>
+								html`<span class="cancel" title=${x.reason}>${x.dosha} cancelled</span>`,
+						)}
 					</div>`
 					: nothing
 			}
@@ -235,7 +218,6 @@ function defaultMax(name?: string): number {
 	}
 }
 
-// Reference list (kept for documentation, used at codegen time)
 export const GUNA_CATEGORIES = STANDARD_CATEGORIES;
 
 declare global {

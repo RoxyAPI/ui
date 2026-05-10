@@ -1,34 +1,9 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import type { GetCardResponse, GetDailyCardResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 
-interface TarotCard {
-	id?: string;
-	name?: string;
-	arcana?: 'major' | 'minor' | string;
-	number?: number | string;
-	position?: string;
-	reversed?: boolean;
-	keywords?: string[];
-	meaning?:
-		| string
-		| {
-				upright?: string;
-				reversed?: string;
-				spiritual?: string;
-				emotional?: string;
-				physical?: string;
-		  };
-	imageUrl?: string;
-	upright?: { meaning?: string; keywords?: string[] };
-}
-
-interface TarotData {
-	date?: string;
-	seed?: string;
-	card?: TarotCard;
-	dailyMessage?: string;
-}
+type TarotData = GetCardResponse | GetDailyCardResponse;
 
 /**
  * Tarot card. Renders /tarot/cards/{id} or /tarot/daily. Click to flip
@@ -92,11 +67,6 @@ export class RoxyTarotCard extends LitElement {
 				letter-spacing: 0.06em;
 				margin-bottom: var(--roxy-space-sm, 0.5rem);
 			}
-			.position {
-				color: var(--roxy-info, #0284c7);
-				margin-left: var(--roxy-space-xs, 0.25rem);
-				text-transform: capitalize;
-			}
 
 			.message {
 				color: var(--roxy-fg, #0a0a0a);
@@ -137,37 +107,28 @@ export class RoxyTarotCard extends LitElement {
 	];
 
 	@property({ attribute: false })
-	data: TarotData | TarotCard | null = null;
+	data: TarotData | null = null;
 
 	@state()
 	private flipped = false;
-
-	private getCard(): TarotCard | null {
-		if (!this.data) return null;
-		if ('card' in this.data && this.data.card) return this.data.card;
-		return this.data as TarotCard;
-	}
 
 	private toggleFlip = () => {
 		this.flipped = !this.flipped;
 	};
 
 	render() {
-		const card = this.getCard();
-		if (!card)
+		const d = this.data;
+		if (!d)
 			return html`<div class="roxy-empty" role="status">No tarot data</div>`;
 
-		const isReversed = this.flipped !== Boolean(card.reversed); // start at server-provided orientation, toggle on click
-		const meaning =
-			typeof card.meaning === 'string'
-				? card.meaning
-				: ((isReversed ? card.meaning?.reversed : card.meaning?.upright) ??
-					card.meaning?.spiritual ??
-					card.upright?.meaning);
-		const dailyMessage =
-			this.data && 'dailyMessage' in this.data
-				? this.data.dailyMessage
-				: undefined;
+		if ('card' in d) return this.renderDailyCard(d);
+		return this.renderFullCard(d);
+	}
+
+	private renderDailyCard(d: GetDailyCardResponse) {
+		const card = d.card;
+		const isReversed = this.flipped !== Boolean(card.reversed);
+		const keywords = card.keywords ?? [];
 
 		return html`<article class="card" aria-label=${card.name ?? 'Tarot card'}>
 			<div class="image-wrap">
@@ -197,21 +158,74 @@ export class RoxyTarotCard extends LitElement {
 			<div>
 				<div class="meta">
 					${card.arcana ? html`${card.arcana} arcana` : nothing}
-					${card.number !== undefined && card.number !== null ? html` · ${card.number}` : nothing}
 					${isReversed ? html` · reversed` : nothing}
-					${
-						card.position
-							? html`<span class="position">${card.position}</span>`
-							: nothing
-					}
 				</div>
 				<h2 class="title">${card.name ?? 'Tarot card'}</h2>
-				${dailyMessage ? html`<p class="message">${dailyMessage}</p>` : nothing}
-				${meaning ? html`<p>${meaning}</p>` : nothing}
+				${d.dailyMessage ? html`<p class="message">${d.dailyMessage}</p>` : nothing}
+				${card.meaning ? html`<p>${card.meaning}</p>` : nothing}
 				${
-					card.keywords?.length
+					keywords.length > 0
 						? html`<div class="chips">
-							${card.keywords.map((k) => html`<span>${k}</span>`)}
+							${keywords.map((k) => html`<span>${k}</span>`)}
+						</div>`
+						: nothing
+				}
+				<button
+					class="flip"
+					type="button"
+					@click=${this.toggleFlip}
+					aria-pressed=${this.flipped ? 'true' : 'false'}
+				>
+					Flip card
+				</button>
+			</div>
+		</article>`;
+	}
+
+	private renderFullCard(d: GetCardResponse) {
+		const isReversed = this.flipped;
+		const orientedMeaning = isReversed ? d.reversed : d.upright;
+		const keywords = isReversed
+			? (d.keywords?.reversed ?? [])
+			: (d.keywords?.upright ?? []);
+
+		return html`<article class="card" aria-label=${d.name ?? 'Tarot card'}>
+			<div class="image-wrap">
+				${
+					d.imageUrl
+						? html`<img
+							class=${`image ${isReversed ? 'reversed' : ''}`}
+							src=${d.imageUrl}
+							alt=${d.name ?? 'Tarot card'}
+							tabindex="0"
+							@click=${this.toggleFlip}
+							@keydown=${(e: KeyboardEvent) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault();
+									this.toggleFlip();
+								}
+							}}
+						/>`
+						: html`<div
+							class=${`image ${isReversed ? 'reversed' : ''}`}
+							style="aspect-ratio: 0.6; display: flex; align-items: center; justify-content: center; color: var(--roxy-muted)"
+						>
+							${d.name ?? '?'}
+						</div>`
+				}
+			</div>
+			<div>
+				<div class="meta">
+					${d.arcana ? html`${d.arcana} arcana` : nothing}
+					${d.number !== undefined && d.number !== null ? html` · ${d.number}` : nothing}
+					${isReversed ? html` · reversed` : nothing}
+				</div>
+				<h2 class="title">${d.name ?? 'Tarot card'}</h2>
+				${orientedMeaning?.description ? html`<p>${orientedMeaning.description}</p>` : nothing}
+				${
+					keywords.length > 0
+						? html`<div class="chips">
+							${keywords.map((k) => html`<span>${k}</span>`)}
 						</div>`
 						: nothing
 				}

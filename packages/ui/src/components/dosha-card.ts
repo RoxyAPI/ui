@@ -1,25 +1,13 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type {
+	KalsarpaResponse,
+	ManglikResponse,
+	SadhesatiResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 
-interface DoshaData {
-	present?: boolean;
-	severity?: 'Mild' | 'Moderate' | 'Severe' | string;
-	type?: string;
-	description?: string;
-	remedies?: string[];
-	exceptions?: string[];
-	effects?:
-		| string
-		| {
-				marriage?: string;
-				personality?: string;
-				timing?: string;
-				relationships?: string;
-				general?: string;
-				phases?: Record<string, string>;
-		  };
-}
+type DoshaData = ManglikResponse | KalsarpaResponse | SadhesatiResponse;
 
 const DOSHA_LABELS: Record<string, string> = {
 	manglik: 'Mangal Dosha',
@@ -71,11 +59,11 @@ export class RoxyDoshaCard extends LitElement {
 			}
 			.badge.absent {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success, #16a34a);
+				color: var(--roxy-success-fg, #166534);
 			}
 			.badge.present {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger, #dc2626);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 			.severity {
 				display: flex;
@@ -166,7 +154,7 @@ export class RoxyDoshaCard extends LitElement {
 				</div>
 			</header>
 			${d.description ? html`<p class="description">${d.description}</p>` : nothing}
-			${this.renderEffects(d.effects)}
+			${this.renderEffects(d)}
 			${
 				d.remedies && d.remedies.length > 0
 					? html`<div>
@@ -178,22 +166,21 @@ export class RoxyDoshaCard extends LitElement {
 					: nothing
 			}
 			${
-				d.exceptions && d.exceptions.length > 0
+				'exceptions' in d && d.exceptions && d.exceptions.length > 0
 					? html`<div>
-						<h3>Exceptions</h3>
-						<ul>
-							${d.exceptions.map((r) => html`<li>${r}</li>`)}
-						</ul>
-					</div>`
+					<h3>Exceptions</h3>
+					<ul>
+						${d.exceptions.map((r) => html`<li>${r}</li>`)}
+					</ul>
+				</div>`
 					: nothing
 			}
 		</article>`;
 	}
 
-	private renderEffects(e: DoshaData['effects']) {
-		if (!e) return nothing;
-		if (typeof e === 'string') return html`<p>${e}</p>`;
-		const entries = Object.entries(e).filter(
+	private renderEffects(d: DoshaData) {
+		if (!d.effects) return nothing;
+		const entries = Object.entries(d.effects).filter(
 			([, v]) => typeof v === 'string' && v.length > 0,
 		);
 		if (entries.length === 0) return nothing;

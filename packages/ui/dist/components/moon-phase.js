@@ -111,6 +111,12 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/format.ts
+function formatNumber(value, dp = 1) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
+  return value.toFixed(dp).replace(/\.?0+$/, "");
+}
+
 // packages/ui/src/components/moon-phase.ts
 var RoxyMoonPhase = class extends LitElement {
   constructor() {
@@ -122,18 +128,21 @@ var RoxyMoonPhase = class extends LitElement {
     const d = this.data;
     if (!d)
       return html`<div class="roxy-empty" role="status">No moon phase data</div>`;
-    const list = d.phases ?? d.upcoming ?? [];
+    const list = "phases" in d ? d.phases : "calendar" in d ? d.calendar : [];
     if (this.mode !== "current" && list.length > 0) {
+      const month = "month" in d ? d.month : void 0;
+      const year = "year" in d ? d.year : void 0;
       return html`<article
 				class="card"
 				aria-label="Moon phase calendar"
 			>
-				<h2 class="label">${d.month ?? "Moon phases"} ${d.year ?? ""}</h2>
+				<h2 class="label">${month ?? "Moon phases"} ${year ?? ""}</h2>
 				<div class="list" role="list">
 					${list.map((phase) => this.renderListItem(phase))}
 				</div>
 			</article>`;
     }
+    if (!("phase" in d)) return nothing;
     return this.renderSingle(d);
   }
   renderSingle(d) {
@@ -149,11 +158,11 @@ var RoxyMoonPhase = class extends LitElement {
 			<div class="stats">
 				${typeof d.illumination === "number" ? html`<div>
 							<span>Illumination</span>
-							<strong>${(d.illumination * 100).toFixed(0)}%</strong>
+							<strong>${formatIllumination(d.illumination)}</strong>
 						</div>` : nothing}
 				${typeof d.age === "number" ? html`<div>
 							<span>Age</span>
-							<strong>${d.age.toFixed(1)} days</strong>
+							<strong>${formatNumber(d.age, 1)} days</strong>
 						</div>` : nothing}
 				${d.sign ? html`<div>
 							<span>Sign</span>
@@ -277,6 +286,10 @@ RoxyMoonPhase = __decorateClass([
 function phaseEmoji(phase) {
   if (!phase) return "\u{1F319}";
   return MOON_PHASE_EMOJI[phase.toLowerCase()] ?? "\u{1F319}";
+}
+function formatIllumination(v) {
+  const pct = v <= 1 ? v * 100 : v;
+  return `${Math.round(pct)}%`;
 }
 export {
   RoxyMoonPhase

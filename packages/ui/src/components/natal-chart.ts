@@ -1,53 +1,22 @@
 import { css, html, LitElement, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import type { NatalChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
+import { formatNumber } from '../utils/format.js';
 
-interface PlanetEntry {
-	name?: string;
-	planet?: string;
-	longitude?: number;
-	degree?: number;
-	sign?: string;
-	house?: number;
-	retrograde?: boolean;
-	isRetrograde?: boolean;
-}
+type PlanetEntry = NatalChartResponse['planets'][number];
+type AspectEntry = NatalChartResponse['aspects'][number];
 
-interface AspectEntry {
-	planet1?: string;
-	planet2?: string;
-	aspect?: string;
-	orb?: number;
-}
-
-interface HouseEntry {
-	house?: number;
-	number?: number;
-	cusp?: number;
-	sign?: string;
-}
-
-interface NatalChartData {
-	planets?: PlanetEntry[] | Record<string, PlanetEntry>;
-	houses?: HouseEntry[];
-	aspects?: AspectEntry[];
-	ascendant?: number | { longitude?: number; sign?: string };
-	midheaven?: number | { longitude?: number; sign?: string };
-	birthDetails?: {
-		date?: string;
-		time?: string;
-		location?: string;
-	};
-}
-
-const SIZE = 320;
+const SIZE = 384;
 const CENTER = SIZE / 2;
 const OUTER_R = 150;
 const SIGN_R = 134;
 const HOUSE_R = 110;
 const PLANET_R = 88;
+const ANGLE_TICK_R = 162;
+const ANGLE_LABEL_R = 176;
 
 /**
  * Western natal chart wheel. Renders the 12 zodiac signs, 12 houses, planet
@@ -109,9 +78,36 @@ export class RoxyNatalChart extends LitElement {
 			}
 
 			.aspect {
-				stroke: color-mix(in srgb, var(--roxy-accent, #f59e0b) 32%, transparent);
-				stroke-width: 0.6;
+				stroke-width: 0.8;
 				fill: none;
+				opacity: 0.55;
+			}
+			.aspect-trine,
+			.aspect-sextile {
+				stroke: var(--roxy-success, #16a34a);
+			}
+			.aspect-square,
+			.aspect-opposition {
+				stroke: var(--roxy-danger, #dc2626);
+			}
+			.aspect-conjunction {
+				stroke: var(--roxy-accent-fg, #b45309);
+			}
+			.aspect-other {
+				stroke: var(--roxy-muted, #71717a);
+				opacity: 0.4;
+			}
+
+			.angle-marker {
+				fill: var(--roxy-accent-fg, #b45309);
+				font-size: 10px;
+				font-weight: 700;
+				font-family: var(--roxy-font-sans);
+				letter-spacing: 0.04em;
+			}
+			.angle-tick {
+				stroke: var(--roxy-accent-fg, #b45309);
+				stroke-width: 1.5;
 			}
 
 			.legend {
@@ -121,20 +117,38 @@ export class RoxyNatalChart extends LitElement {
 				flex-wrap: wrap;
 				gap: var(--roxy-space-md, 1rem);
 			}
+			.legend-swatch {
+				display: inline-block;
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				margin-right: 4px;
+				vertical-align: middle;
+			}
 		`,
 	];
 
 	@property({ attribute: false })
-	data: NatalChartData | null = null;
+	data: NatalChartResponse | null = null;
 
 	@property({ type: String, attribute: 'house-system', reflect: true })
 	houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch' = 'placidus';
 
 	private getPlanets(): PlanetEntry[] {
-		const p = this.data?.planets;
-		if (!p) return [];
-		if (Array.isArray(p)) return p;
-		return Object.entries(p).map(([name, entry]) => ({ ...entry, name }));
+		return this.data?.planets ?? [];
+	}
+
+	private getAscendant(): number {
+		return this.data?.ascendant?.longitude ?? 0;
+	}
+
+	private getMidheaven(): number | null {
+		const m = this.data?.midheaven?.longitude;
+		return typeof m === 'number' ? m : null;
+	}
+
+	private toAngle(lon: number): number {
+		return 180 + this.getAscendant() - lon;
 	}
 
 	render() {
@@ -149,11 +163,7 @@ export class RoxyNatalChart extends LitElement {
 				${
 					this.data.birthDetails
 						? html`<div class="meta">
-							${[
-								this.data.birthDetails.date,
-								this.data.birthDetails.time,
-								this.data.birthDetails.location,
-							]
+							${[this.data.birthDetails.date, this.data.birthDetails.time]
 								.filter(Boolean)
 								.join(' · ')}
 						</div>`
@@ -193,18 +203,41 @@ export class RoxyNatalChart extends LitElement {
 				/>
 				${this.renderSpokes()} ${this.renderSigns()} ${this.renderHouseNumbers()}
 				${this.renderAspects(planets, aspects)} ${this.renderPlanets(planets)}
+				${this.renderAngles()}
 			</svg>
 			<div class="legend">
 				<span>${planets.length} planets</span>
 				<span>${aspects.length} aspects</span>
-				<span>House system: ${this.houseSystem}</span>
+				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
+				<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
 		</div>`;
 	}
 
+	private renderAngles() {
+		const asc = this.getAscendant();
+		const mc = this.getMidheaven();
+		const items = [this.renderAngleMark(asc, 'ASC')];
+		if (mc !== null) items.push(this.renderAngleMark(mc, 'MC'));
+		return items;
+	}
+
+	private renderAngleMark(longitude: number, label: string) {
+		const angle = this.toAngle(longitude);
+		const tickInner = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
+		const tickOuter = polarToCartesian(CENTER, CENTER, ANGLE_TICK_R, angle);
+		const labelPos = polarToCartesian(CENTER, CENTER, ANGLE_LABEL_R, angle);
+		return svg`
+			<g>
+				<line class="angle-tick" x1=${tickInner.x} y1=${tickInner.y} x2=${tickOuter.x} y2=${tickOuter.y} />
+				<text class="angle-marker" x=${labelPos.x} y=${labelPos.y} text-anchor="middle" dominant-baseline="central">${label}</text>
+			</g>
+		`;
+	}
+
 	private renderSpokes() {
 		return Array.from({ length: 12 }, (_, i) => {
-			const angle = i * 30 - 90;
+			const angle = this.toAngle(i * 30);
 			const start = polarToCartesian(CENTER, CENTER, HOUSE_R, angle);
 			const end = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
 			return svg`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.8" />`;
@@ -227,58 +260,61 @@ export class RoxyNatalChart extends LitElement {
 			'Pisces',
 		];
 		return order.map((sign, i) => {
-			const angle = i * 30 + 15 - 90;
+			const angle = this.toAngle(i * 30 + 15);
 			const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
 			return svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
 		});
 	}
 
 	private renderHouseNumbers() {
+		const ascSignIndex = Math.floor(this.getAscendant() / 30);
 		return Array.from({ length: 12 }, (_, i) => {
-			const angle = i * 30 + 15 - 90;
+			const angle = this.toAngle(i * 30 + 15);
 			const pos = polarToCartesian(CENTER, CENTER, HOUSE_R - 12, angle);
-			return svg`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
+			const houseNum = ((i - ascSignIndex + 12) % 12) + 1;
+			return svg`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${houseNum}</text>`;
 		});
 	}
 
 	private renderPlanets(planets: PlanetEntry[]) {
 		return planets.map((p) => {
-			const lon =
-				typeof p.longitude === 'number'
-					? p.longitude
-					: typeof p.degree === 'number'
-						? p.degree
-						: NaN;
-			if (!Number.isFinite(lon)) return nothing;
-			const angle = lon - 90;
+			if (!Number.isFinite(p.longitude)) return nothing;
+			const angle = this.toAngle(p.longitude);
 			const pos = polarToCartesian(CENTER, CENTER, PLANET_R, angle);
-			const name = p.name ?? p.planet ?? '';
-			const glyph = PLANET_GLYPH[capitalize(name)] ?? name.slice(0, 2);
-			const retro = p.retrograde || p.isRetrograde ? ' R' : '';
-			return svg`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${name}${retro}</title>${glyph}</text>`;
+			const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
+			const retro = p.isRetrograde ? ' R' : '';
+			const display = retro ? `${glyph}ᴿ` : glyph;
+			return svg`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro}</title>${display}</text>`;
 		});
 	}
 
 	private renderAspects(planets: PlanetEntry[], aspects: AspectEntry[]) {
 		const planetMap = new Map<string, number>();
 		for (const p of planets) {
-			const lon =
-				typeof p.longitude === 'number'
-					? p.longitude
-					: typeof p.degree === 'number'
-						? p.degree
-						: null;
-			if (lon === null) continue;
-			const name = capitalize(p.name ?? p.planet ?? '');
-			if (name) planetMap.set(name, lon);
+			if (typeof p.longitude !== 'number') continue;
+			const name = capitalize(p.name);
+			if (name) planetMap.set(name, p.longitude);
 		}
 		return aspects.map((a) => {
-			const l1 = planetMap.get(capitalize(a.planet1 ?? ''));
-			const l2 = planetMap.get(capitalize(a.planet2 ?? ''));
+			const l1 = planetMap.get(capitalize(a.planet1));
+			const l2 = planetMap.get(capitalize(a.planet2));
 			if (l1 === undefined || l2 === undefined) return nothing;
-			const p1 = polarToCartesian(CENTER, CENTER, PLANET_R - 18, l1 - 90);
-			const p2 = polarToCartesian(CENTER, CENTER, PLANET_R - 18, l2 - 90);
-			return svg`<line class="aspect" x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y} />`;
+			const p1 = polarToCartesian(
+				CENTER,
+				CENTER,
+				PLANET_R - 18,
+				this.toAngle(l1),
+			);
+			const p2 = polarToCartesian(
+				CENTER,
+				CENTER,
+				PLANET_R - 18,
+				this.toAngle(l2),
+			);
+			const aspectName = normalizeAspect(a);
+			const aspectClass = ASPECT_CLASS[aspectName] ?? 'aspect-other';
+			const orbLabel = formatNumber(a.orb, 1);
+			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${a.planet1} ${aspectName || ''} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
 }
@@ -286,6 +322,18 @@ export class RoxyNatalChart extends LitElement {
 function capitalize(s: string): string {
 	if (!s) return '';
 	return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
+const ASPECT_CLASS: Record<string, string> = {
+	conjunction: 'aspect-conjunction',
+	sextile: 'aspect-sextile',
+	square: 'aspect-square',
+	trine: 'aspect-trine',
+	opposition: 'aspect-opposition',
+};
+
+function normalizeAspect(a: AspectEntry): string {
+	return (a.type ?? '').toLowerCase().replace(/_/g, '-');
 }
 
 declare global {

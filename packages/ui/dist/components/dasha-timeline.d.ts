@@ -1,35 +1,6 @@
 import { LitElement } from 'lit';
-interface DashaPeriod {
-    mahadashaLord?: string;
-    antardashaLord?: string;
-    pratyantardashaLord?: string;
-    lord?: string;
-    planet?: string;
-    startDate?: string;
-    endDate?: string;
-    years?: number;
-    durationYears?: number;
-}
-interface DashaData {
-    moonNakshatra?: string;
-    nakshatraName?: string;
-    nakshatraLord?: string;
-    mahadasha?: DashaPeriod;
-    antardasha?: DashaPeriod;
-    pratyantardasha?: DashaPeriod;
-    mahadashas?: DashaPeriod[];
-    antardashas?: DashaPeriod[];
-    mahadashaLord?: string;
-    mahadashaPeriod?: DashaPeriod;
-    birthDashaBalance?: {
-        lord?: string;
-        years?: number;
-    };
-    totalYears?: number;
-    remainingInMahadasha?: number;
-    remainingInAntardasha?: number;
-    remainingInPratyantardasha?: number;
-}
+import type { GetCurrentDashaResponse, GetMajorDashasResponse, GetSubDashasResponse } from '../types/index.js';
+type DashaData = GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse;
 /**
  * Dasha timeline. Renders /vedic-astrology/dasha/{current,major,sub/{...}}.
  * Default mode shows the active mahadasha + antardasha + pratyantardasha.

@@ -1,28 +1,17 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { SIGN_GLYPH } from '../tokens/index.js';
+import type {
+	GetDailyHoroscopeResponse,
+	GetMonthlyHoroscopeResponse,
+	GetWeeklyHoroscopeResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 
-interface HoroscopeData {
-	sign?: string;
-	date?: string;
-	overview?: string;
-	love?: string;
-	career?: string;
-	health?: string;
-	finance?: string;
-	advice?: string;
-	luckyNumber?: number | string;
-	luckyColor?: string;
-	compatibleSigns?: string[];
-	moonSign?: string;
-	moonPhase?: string;
-	energyRating?: number;
-	week?: string;
-	month?: string;
-	luckyDays?: string[];
-	luckyNumbers?: number[];
-}
+type HoroscopeData =
+	| GetDailyHoroscopeResponse
+	| GetWeeklyHoroscopeResponse
+	| GetMonthlyHoroscopeResponse;
 
 /**
  * Daily, weekly, or monthly horoscope card. Pass `data` from
@@ -163,8 +152,15 @@ export class RoxyHoroscopeCard extends LitElement {
 
 		const sign = d.sign ?? '';
 		const glyph = sign ? (SIGN_GLYPH[capitalize(sign)] ?? '') : '';
-		const energy = typeof d.energyRating === 'number' ? d.energyRating : null;
-		const dateLabel = d.date ?? d.week ?? d.month ?? '';
+		const energy =
+			'energyRating' in d && typeof d.energyRating === 'number'
+				? d.energyRating
+				: null;
+		const dateLabel =
+			('date' in d && d.date) ||
+			('week' in d && d.week) ||
+			('month' in d && d.month) ||
+			'';
 
 		return html`<article
 			class="card"
@@ -224,7 +220,7 @@ export class RoxyHoroscopeCard extends LitElement {
 						: nothing
 				}
 				${
-					d.advice
+					'advice' in d && d.advice
 						? html`<div class="section">
 							<h3>Advice</h3>
 							<p>${d.advice}</p>
@@ -233,49 +229,65 @@ export class RoxyHoroscopeCard extends LitElement {
 				}
 			</div>
 
-			${
-				d.luckyNumber || d.luckyColor || (d.compatibleSigns?.length ?? 0) > 0
-					? html`<div class="lucky">
+			${(() => {
+				const luckyNumber =
+					'luckyNumber' in d && d.luckyNumber !== undefined
+						? d.luckyNumber
+						: undefined;
+				const luckyColor =
+					'luckyColor' in d && d.luckyColor ? d.luckyColor : '';
+				const luckyNumbers =
+					'luckyNumbers' in d && d.luckyNumbers ? d.luckyNumbers : [];
+				const luckyDays = 'luckyDays' in d && d.luckyDays ? d.luckyDays : [];
+				const compatibleSigns = d.compatibleSigns ?? [];
+				if (
+					luckyNumber === undefined &&
+					!luckyColor &&
+					luckyNumbers.length === 0 &&
+					luckyDays.length === 0 &&
+					compatibleSigns.length === 0
+				)
+					return nothing;
+				return html`<div class="lucky">
 						${
-							d.luckyNumber !== undefined
-								? html`<span>Lucky number <strong>${d.luckyNumber}</strong></span>`
+							luckyNumber !== undefined
+								? html`<span>Lucky number <strong>${luckyNumber}</strong></span>`
 								: nothing
 						}
 						${
-							d.luckyColor
-								? html`<span>Lucky color <strong>${d.luckyColor}</strong></span>`
+							luckyColor
+								? html`<span>Lucky color <strong>${luckyColor}</strong></span>`
 								: nothing
 						}
 						${
-							d.luckyNumbers?.length
+							luckyNumbers.length
 								? html`<span
 									>Lucky numbers
-									<strong>${d.luckyNumbers.join(', ')}</strong></span
+									<strong>${luckyNumbers.join(', ')}</strong></span
 								>`
 								: nothing
 						}
 						${
-							d.luckyDays?.length
+							luckyDays.length
 								? html`<span
-									>Lucky days <strong>${d.luckyDays.join(', ')}</strong></span
+									>Lucky days <strong>${luckyDays.join(', ')}</strong></span
 								>`
 								: nothing
 						}
 						${
-							d.compatibleSigns?.length
+							compatibleSigns.length
 								? html`<span class="compat-wrap">
 									Best with
 									<span class="compat"
-										>${d.compatibleSigns.map(
+										>${compatibleSigns.map(
 											(s) => html`<span>${s}</span>`,
 										)}</span
 									>
 								</span>`
 								: nothing
 						}
-					</div>`
-					: nothing
-			}
+					</div>`;
+			})()}
 		</article>`;
 	}
 }

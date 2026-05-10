@@ -31,7 +31,12 @@ var PLANET_GLYPH = {
   Ascendant: "Asc",
   Lagna: "La",
   NorthNode: "\u260A",
-  SouthNode: "\u260B"
+  SouthNode: "\u260B",
+  "North node": "\u260A",
+  "South node": "\u260B",
+  Chiron: "\u26B7",
+  Lilith: "\u26B8",
+  "Black moon lilith": "\u26B8"
 };
 var SIGN_GLYPH = {
   Aries: "\u2648",
@@ -177,13 +182,21 @@ function polarToCartesian(cx, cy, radius, angleDeg) {
   };
 }
 
+// packages/ui/src/utils/format.ts
+function formatNumber(value, dp = 1) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
+  return value.toFixed(dp).replace(/\.?0+$/, "");
+}
+
 // packages/ui/src/components/natal-chart.ts
-var SIZE = 320;
+var SIZE = 384;
 var CENTER = SIZE / 2;
 var OUTER_R = 150;
 var SIGN_R = 134;
 var HOUSE_R = 110;
 var PLANET_R = 88;
+var ANGLE_TICK_R = 162;
+var ANGLE_LABEL_R = 176;
 var RoxyNatalChart = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -191,10 +204,17 @@ var RoxyNatalChart = class extends LitElement {
     this.houseSystem = "placidus";
   }
   getPlanets() {
-    const p = this.data?.planets;
-    if (!p) return [];
-    if (Array.isArray(p)) return p;
-    return Object.entries(p).map(([name, entry]) => ({ ...entry, name }));
+    return this.data?.planets ?? [];
+  }
+  getAscendant() {
+    return this.data?.ascendant?.longitude ?? 0;
+  }
+  getMidheaven() {
+    const m = this.data?.midheaven?.longitude;
+    return typeof m === "number" ? m : null;
+  }
+  toAngle(lon) {
+    return 180 + this.getAscendant() - lon;
   }
   render() {
     if (!this.data)
@@ -205,11 +225,7 @@ var RoxyNatalChart = class extends LitElement {
 			<header>
 				<h2 class="title">Natal chart</h2>
 				${this.data.birthDetails ? html`<div class="meta">
-							${[
-      this.data.birthDetails.date,
-      this.data.birthDetails.time,
-      this.data.birthDetails.location
-    ].filter(Boolean).join(" \xB7 ")}
+							${[this.data.birthDetails.date, this.data.birthDetails.time].filter(Boolean).join(" \xB7 ")}
 						</div>` : nothing}
 			</header>
 			<svg
@@ -245,17 +261,38 @@ var RoxyNatalChart = class extends LitElement {
 				/>
 				${this.renderSpokes()} ${this.renderSigns()} ${this.renderHouseNumbers()}
 				${this.renderAspects(planets, aspects)} ${this.renderPlanets(planets)}
+				${this.renderAngles()}
 			</svg>
 			<div class="legend">
 				<span>${planets.length} planets</span>
 				<span>${aspects.length} aspects</span>
-				<span>House system: ${this.houseSystem}</span>
+				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
+				<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
 		</div>`;
   }
+  renderAngles() {
+    const asc = this.getAscendant();
+    const mc = this.getMidheaven();
+    const items = [this.renderAngleMark(asc, "ASC")];
+    if (mc !== null) items.push(this.renderAngleMark(mc, "MC"));
+    return items;
+  }
+  renderAngleMark(longitude, label) {
+    const angle = this.toAngle(longitude);
+    const tickInner = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
+    const tickOuter = polarToCartesian(CENTER, CENTER, ANGLE_TICK_R, angle);
+    const labelPos = polarToCartesian(CENTER, CENTER, ANGLE_LABEL_R, angle);
+    return svg`
+			<g>
+				<line class="angle-tick" x1=${tickInner.x} y1=${tickInner.y} x2=${tickOuter.x} y2=${tickOuter.y} />
+				<text class="angle-marker" x=${labelPos.x} y=${labelPos.y} text-anchor="middle" dominant-baseline="central">${label}</text>
+			</g>
+		`;
+  }
   renderSpokes() {
     return Array.from({ length: 12 }, (_, i) => {
-      const angle = i * 30 - 90;
+      const angle = this.toAngle(i * 30);
       const start = polarToCartesian(CENTER, CENTER, HOUSE_R, angle);
       const end = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
       return svg`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.8" />`;
@@ -277,45 +314,58 @@ var RoxyNatalChart = class extends LitElement {
       "Pisces"
     ];
     return order.map((sign, i) => {
-      const angle = i * 30 + 15 - 90;
+      const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
       return svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
     });
   }
   renderHouseNumbers() {
+    const ascSignIndex = Math.floor(this.getAscendant() / 30);
     return Array.from({ length: 12 }, (_, i) => {
-      const angle = i * 30 + 15 - 90;
+      const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER, CENTER, HOUSE_R - 12, angle);
-      return svg`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${i + 1}</text>`;
+      const houseNum = (i - ascSignIndex + 12) % 12 + 1;
+      return svg`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${houseNum}</text>`;
     });
   }
   renderPlanets(planets) {
     return planets.map((p) => {
-      const lon = typeof p.longitude === "number" ? p.longitude : typeof p.degree === "number" ? p.degree : NaN;
-      if (!Number.isFinite(lon)) return nothing;
-      const angle = lon - 90;
+      if (!Number.isFinite(p.longitude)) return nothing;
+      const angle = this.toAngle(p.longitude);
       const pos = polarToCartesian(CENTER, CENTER, PLANET_R, angle);
-      const name = p.name ?? p.planet ?? "";
-      const glyph = PLANET_GLYPH[capitalize(name)] ?? name.slice(0, 2);
-      const retro = p.retrograde || p.isRetrograde ? " R" : "";
-      return svg`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${name}${retro}</title>${glyph}</text>`;
+      const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
+      const retro = p.isRetrograde ? " R" : "";
+      const display = retro ? `${glyph}\u1D3F` : glyph;
+      return svg`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro}</title>${display}</text>`;
     });
   }
   renderAspects(planets, aspects) {
     const planetMap = /* @__PURE__ */ new Map();
     for (const p of planets) {
-      const lon = typeof p.longitude === "number" ? p.longitude : typeof p.degree === "number" ? p.degree : null;
-      if (lon === null) continue;
-      const name = capitalize(p.name ?? p.planet ?? "");
-      if (name) planetMap.set(name, lon);
+      if (typeof p.longitude !== "number") continue;
+      const name = capitalize(p.name);
+      if (name) planetMap.set(name, p.longitude);
     }
     return aspects.map((a) => {
-      const l1 = planetMap.get(capitalize(a.planet1 ?? ""));
-      const l2 = planetMap.get(capitalize(a.planet2 ?? ""));
+      const l1 = planetMap.get(capitalize(a.planet1));
+      const l2 = planetMap.get(capitalize(a.planet2));
       if (l1 === void 0 || l2 === void 0) return nothing;
-      const p1 = polarToCartesian(CENTER, CENTER, PLANET_R - 18, l1 - 90);
-      const p2 = polarToCartesian(CENTER, CENTER, PLANET_R - 18, l2 - 90);
-      return svg`<line class="aspect" x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y} />`;
+      const p1 = polarToCartesian(
+        CENTER,
+        CENTER,
+        PLANET_R - 18,
+        this.toAngle(l1)
+      );
+      const p2 = polarToCartesian(
+        CENTER,
+        CENTER,
+        PLANET_R - 18,
+        this.toAngle(l2)
+      );
+      const aspectName = normalizeAspect(a);
+      const aspectClass = ASPECT_CLASS[aspectName] ?? "aspect-other";
+      const orbLabel = formatNumber(a.orb, 1);
+      return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${a.planet1} ${aspectName || ""} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}\xB0)` : ""}</title></line>`;
     });
   }
 };
@@ -373,9 +423,36 @@ RoxyNatalChart.styles = [
 			}
 
 			.aspect {
-				stroke: color-mix(in srgb, var(--roxy-accent, #f59e0b) 32%, transparent);
-				stroke-width: 0.6;
+				stroke-width: 0.8;
 				fill: none;
+				opacity: 0.55;
+			}
+			.aspect-trine,
+			.aspect-sextile {
+				stroke: var(--roxy-success, #16a34a);
+			}
+			.aspect-square,
+			.aspect-opposition {
+				stroke: var(--roxy-danger, #dc2626);
+			}
+			.aspect-conjunction {
+				stroke: var(--roxy-accent-fg, #b45309);
+			}
+			.aspect-other {
+				stroke: var(--roxy-muted, #71717a);
+				opacity: 0.4;
+			}
+
+			.angle-marker {
+				fill: var(--roxy-accent-fg, #b45309);
+				font-size: 10px;
+				font-weight: 700;
+				font-family: var(--roxy-font-sans);
+				letter-spacing: 0.04em;
+			}
+			.angle-tick {
+				stroke: var(--roxy-accent-fg, #b45309);
+				stroke-width: 1.5;
 			}
 
 			.legend {
@@ -384,6 +461,14 @@ RoxyNatalChart.styles = [
 				display: flex;
 				flex-wrap: wrap;
 				gap: var(--roxy-space-md, 1rem);
+			}
+			.legend-swatch {
+				display: inline-block;
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				margin-right: 4px;
+				vertical-align: middle;
 			}
 		`
 ];
@@ -399,6 +484,16 @@ RoxyNatalChart = __decorateClass([
 function capitalize(s) {
   if (!s) return "";
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+var ASPECT_CLASS = {
+  conjunction: "aspect-conjunction",
+  sextile: "aspect-sextile",
+  square: "aspect-square",
+  trine: "aspect-trine",
+  opposition: "aspect-opposition"
+};
+function normalizeAspect(a) {
+  return (a.type ?? "").toLowerCase().replace(/_/g, "-");
 }
 export {
   RoxyNatalChart,

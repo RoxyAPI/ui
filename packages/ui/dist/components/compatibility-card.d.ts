@@ -1,31 +1,6 @@
 import { LitElement } from 'lit';
-interface CompatibilityData {
-    overallScore?: number;
-    score?: number;
-    rating?: string;
-    relationshipArchetype?: string;
-    advice?: string;
-    summary?: string;
-    categoryScores?: Record<string, number>;
-    categoryBreakdown?: Record<string, number>;
-    emotional?: number;
-    communication?: number;
-    romance?: number;
-    strengths?: string[];
-    challenges?: string[];
-    keyAspects?: string[];
-    elementBalance?: Record<string, number>;
-    person1?: {
-        name?: string;
-        sign?: string;
-        lifePath?: number;
-    };
-    person2?: {
-        name?: string;
-        sign?: string;
-        lifePath?: number;
-    };
-}
+import type { CalculateBioCompatibilityResponse, CalculateCompatibilityResponse, CalculateNumCompatibilityResponse } from '../types/index.js';
+type CompatibilityData = CalculateCompatibilityResponse | CalculateNumCompatibilityResponse | CalculateBioCompatibilityResponse;
 /**
  * Cross-domain compatibility card. Renders /astrology/compatibility-score,
  * /numerology/compatibility, or /biorhythm/compatibility responses.

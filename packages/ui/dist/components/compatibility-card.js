@@ -99,6 +99,12 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/format.ts
+function formatNumber(value, dp = 1) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
+  return value.toFixed(dp).replace(/\.?0+$/, "");
+}
+
 // packages/ui/src/components/compatibility-card.ts
 var RoxyCompatibilityCard = class extends LitElement {
   constructor() {
@@ -109,22 +115,29 @@ var RoxyCompatibilityCard = class extends LitElement {
   getBreakdown() {
     const d = this.data;
     if (!d) return {};
-    if (d.categoryScores) return d.categoryScores;
-    if (d.categoryBreakdown) return d.categoryBreakdown;
-    const inferred = {};
-    if (typeof d.emotional === "number") inferred.emotional = d.emotional;
-    if (typeof d.communication === "number")
-      inferred.communication = d.communication;
-    if (typeof d.romance === "number") inferred.romance = d.romance;
-    if (d.elementBalance) Object.assign(inferred, d.elementBalance);
-    return inferred;
+    if ("categories" in d && d.categories) {
+      const out = {};
+      for (const [k, v] of Object.entries(d.categories)) {
+        if (typeof v === "number" && Number.isFinite(v)) out[k] = v;
+      }
+      return out;
+    }
+    return {};
   }
   render() {
     const d = this.data;
     if (!d)
       return html`<div class="roxy-empty" role="status">No compatibility data</div>`;
-    const score = d.overallScore ?? d.score;
+    const score = d.overallScore;
     const breakdown = this.getBreakdown();
+    const rating = "rating" in d ? d.rating : void 0;
+    const archetype = "archetype" in d ? d.archetype : void 0;
+    const advice = "advice" in d ? d.advice : void 0;
+    const summary = "summary" in d ? d.summary : void 0;
+    const interpretation = "interpretation" in d ? d.interpretation : void 0;
+    const strengths = "strengths" in d ? d.strengths : void 0;
+    const challenges = "challenges" in d ? d.challenges : void 0;
+    const keyAspects = "keyAspects" in d ? d.keyAspects : void 0;
     return html`<article
 			class="card"
 			aria-label=${`Compatibility (${this.mode})`}
@@ -132,8 +145,8 @@ var RoxyCompatibilityCard = class extends LitElement {
 			<div class="head">
 				<h2>${this.mode} compatibility</h2>
 				<div>
-					${typeof score === "number" ? html`<div class="score">${score}</div>` : nothing}
-					${d.rating ? html`<div class="rating">${d.rating}</div>` : nothing}
+					${typeof score === "number" ? html`<div class="score">${formatNumber(score, 0)}</div>` : nothing}
+					${rating ? html`<div class="rating">${rating}</div>` : nothing}
 				</div>
 			</div>
 
@@ -144,34 +157,36 @@ var RoxyCompatibilityCard = class extends LitElement {
 								<span class="bar"
 									><span style="width: ${Math.max(0, Math.min(100, v))}%"></span
 								></span>
-								<span>${v}</span>
+								<span>${formatNumber(v, 0)}</span>
 							</div>`
     )}
 					</div>` : nothing}
-			${d.relationshipArchetype ? html`<p>
-						<span class="archetype">${d.relationshipArchetype}</span>
+			${archetype ? html`<p>
+						<span class="archetype">${archetype.label}</span>
+						${archetype.description ? html` · ${archetype.description}` : nothing}
 					</p>` : nothing}
-			${d.summary ? html`<p>${d.summary}</p>` : nothing}
-			${d.advice ? html`<p>${d.advice}</p>` : nothing}
-			${(d.strengths?.length ?? 0) > 0 || (d.challenges?.length ?? 0) > 0 ? html`<div class="lists">
-						${d.strengths?.length ? html`<div>
+			${summary ? html`<p>${summary}</p>` : nothing}
+			${interpretation && !summary ? html`<p>${interpretation}</p>` : nothing}
+			${advice ? html`<p>${advice}</p>` : nothing}
+			${(strengths?.length ?? 0) > 0 || (challenges?.length ?? 0) > 0 ? html`<div class="lists">
+						${strengths?.length ? html`<div>
 									<h3>Strengths</h3>
 									<ul>
-										${d.strengths.map((s) => html`<li>${s}</li>`)}
+										${strengths.map((s) => html`<li>${s}</li>`)}
 									</ul>
 								</div>` : nothing}
-						${d.challenges?.length ? html`<div>
+						${challenges?.length ? html`<div>
 									<h3>Challenges</h3>
 									<ul>
-										${d.challenges.map((s) => html`<li>${s}</li>`)}
+										${challenges.map((s) => html`<li>${s}</li>`)}
 									</ul>
 								</div>` : nothing}
-						${d.keyAspects?.length ? html`<div>
-									<h3>Key aspects</h3>
-									<ul>
-										${d.keyAspects.map((s) => html`<li>${s}</li>`)}
-									</ul>
-								</div>` : nothing}
+					</div>` : nothing}
+			${keyAspects?.length ? html`<div>
+						<h3 style="margin: 0 0 0.25rem; font-size: var(--roxy-text-xs); color: var(--roxy-muted); text-transform: uppercase; letter-spacing: 0.06em;">Key aspects</h3>
+						<ul style="margin: 0; padding-left: 1rem; font-size: var(--roxy-text-sm);">
+							${keyAspects.slice(0, 6).map((a) => html`<li>${formatAspect(a)}</li>`)}
+						</ul>
 					</div>` : nothing}
 		</article>`;
   }
@@ -242,7 +257,7 @@ RoxyCompatibilityCard.styles = [
 			}
 
 			.archetype {
-				color: var(--roxy-info, #0284c7);
+				color: var(--roxy-accent-fg, #b45309);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 
@@ -273,6 +288,12 @@ __decorateClass([
 RoxyCompatibilityCard = __decorateClass([
   customElement("roxy-compatibility-card")
 ], RoxyCompatibilityCard);
+function formatAspect(a) {
+  const aspect = a.type.toLowerCase().replace(/_/g, "-");
+  const orb = typeof a.orb === "number" ? ` (orb ${formatNumber(a.orb, 1)}\xB0)` : "";
+  const head = [a.planet1, aspect, a.planet2].filter(Boolean).join(" ");
+  return a.description ? `${head}${orb} \xB7 ${a.description}` : `${head}${orb}`;
+}
 export {
   RoxyCompatibilityCard
 };

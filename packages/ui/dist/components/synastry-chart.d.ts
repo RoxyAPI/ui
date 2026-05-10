@@ -1,46 +1,27 @@
 import { LitElement } from 'lit';
-interface PlanetEntry {
-    name?: string;
-    planet?: string;
-    longitude?: number;
-    degree?: number;
-    sign?: string;
-}
-interface InterAspect {
-    planet1?: string;
-    planet2?: string;
-    aspect?: string;
-    orb?: number;
-    strength?: string;
-    interpretation?: string;
-}
-interface SynastryData {
+import type { CalculateSynastryResponse, NatalChartResponse } from '../types/index.js';
+type PlanetEntry = NatalChartResponse['planets'][number];
+type SynastryWithPlanets = CalculateSynastryResponse & {
     person1?: {
-        planets?: PlanetEntry[] | Record<string, PlanetEntry>;
-        name?: string;
+        planets?: PlanetEntry[];
     };
     person2?: {
-        planets?: PlanetEntry[] | Record<string, PlanetEntry>;
-        name?: string;
+        planets?: PlanetEntry[];
     };
-    compatibilityScore?: number;
-    summary?: string;
-    interAspects?: InterAspect[];
-    strengths?: string[];
-    challenges?: string[];
-}
+};
 /**
  * Dual-wheel synastry chart with inter-aspects table. Pass `data` from
  * /astrology/synastry.
  */
 export declare class RoxySynastryChart extends LitElement {
     static styles: import("lit").CSSResult[];
-    data: SynastryData | null;
+    data: SynastryWithPlanets | null;
     render(): import("lit").TemplateResult<1>;
-    private normalizePlanets;
+    private toAngle;
     private renderSpokes;
     private renderSigns;
     private renderRing;
+    private renderInterAspectLines;
     private renderAspects;
 }
 declare global {

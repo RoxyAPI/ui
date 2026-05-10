@@ -1,20 +1,6 @@
 import { LitElement } from 'lit';
-interface DoshaData {
-    present?: boolean;
-    severity?: 'Mild' | 'Moderate' | 'Severe' | string;
-    type?: string;
-    description?: string;
-    remedies?: string[];
-    exceptions?: string[];
-    effects?: string | {
-        marriage?: string;
-        personality?: string;
-        timing?: string;
-        relationships?: string;
-        general?: string;
-        phases?: Record<string, string>;
-    };
-}
+import type { KalsarpaResponse, ManglikResponse, SadhesatiResponse } from '../types/index.js';
+type DoshaData = ManglikResponse | KalsarpaResponse | SadhesatiResponse;
 /**
  * Dosha presence card. Renders /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}.
  * Visual severity indicator + remedies + scoped effects.

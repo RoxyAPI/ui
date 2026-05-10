@@ -1,34 +1,22 @@
 import { css, html, LitElement, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { TRIGRAM_GLYPH } from '../tokens/index.js';
+import type {
+	CastReadingResponse,
+	GetDailyHexagramResponse,
+	GetHexagramResponse,
+	GetRandomHexagramResponse,
+	Hexagram,
+	LookupHexagramResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 
-interface HexagramData {
-	number?: number;
-	symbol?: string;
-	chinese?: string;
-	english?: string;
-	pinyin?: string;
-	upperTrigram?: string;
-	lowerTrigram?: string;
-	judgment?: string;
-	image?: string;
-	interpretation?: {
-		general?: string;
-		love?: string;
-		career?: string;
-		decision?: string;
-		advice?: string;
-	};
-	changingLines?: number[];
-	resultingHexagram?: HexagramData;
-	dailyMessage?: string;
-	hexagram?: HexagramData;
-	lines?: number[]; // 6, 7, 8, 9 cast values
-	changingLinePositions?: number[];
-	seed?: string;
-	date?: string;
-}
+type HexagramData =
+	| GetHexagramResponse
+	| GetRandomHexagramResponse
+	| LookupHexagramResponse
+	| GetDailyHexagramResponse
+	| CastReadingResponse;
 
 /**
  * I Ching hexagram card. Renders /iching/hexagrams/{number}, /iching/cast,
@@ -154,25 +142,48 @@ export class RoxyHexagram extends LitElement {
 	@property({ type: String, reflect: true })
 	mode: 'lookup' | 'cast' | 'daily' = 'lookup';
 
-	private getHexagram(): HexagramData | null {
-		if (!this.data) return null;
-		if ('hexagram' in this.data && this.data.hexagram) {
+	private resolveHexagram(): {
+		hex: Hexagram;
+		lines?: number[];
+		changingLinePositions?: number[];
+		dailyMessage?: string;
+		resultingHexagram?: Hexagram;
+	} | null {
+		const d = this.data;
+		if (!d) return null;
+		if ('hexagram' in d && d.hexagram) {
+			if ('lines' in d) {
+				const cast = d as CastReadingResponse;
+				return {
+					hex: cast.hexagram as Hexagram,
+					lines: cast.lines,
+					changingLinePositions: cast.changingLinePositions,
+					resultingHexagram: cast.resultingHexagram as Hexagram | undefined,
+				};
+			}
+			const daily = d as GetDailyHexagramResponse;
 			return {
-				...this.data.hexagram,
-				lines: this.data.lines,
-				changingLinePositions: this.data.changingLinePositions,
+				hex: daily.hexagram as Hexagram,
+				dailyMessage: daily.dailyMessage,
 			};
 		}
-		return this.data;
+		return { hex: d as Hexagram };
 	}
 
 	render() {
-		const h = this.getHexagram();
-		if (!h)
+		const resolved = this.resolveHexagram();
+		if (!resolved)
 			return html`<div class="roxy-empty" role="status">No hexagram data</div>`;
 
-		const lines = h.lines ?? this.derivedLines(h);
-		const changing = new Set(h.changingLinePositions ?? []);
+		const {
+			hex: h,
+			lines: castLines,
+			changingLinePositions,
+			dailyMessage,
+			resultingHexagram,
+		} = resolved;
+		const lines = castLines ?? this.derivedLines(h);
+		const changing = new Set(changingLinePositions ?? []);
 
 		return html`<article class="card" aria-label="I Ching hexagram">
 			<div class="glyphs">
@@ -229,7 +240,7 @@ export class RoxyHexagram extends LitElement {
 				</div>
 				${h.judgment ? html`<p class="judgment">${h.judgment}</p>` : nothing}
 				${h.image ? html`<p class="image">${h.image}</p>` : nothing}
-				${h.dailyMessage ? html`<p class="message">${h.dailyMessage}</p>` : nothing}
+				${dailyMessage ? html`<p class="message">${dailyMessage}</p>` : nothing}
 				${
 					h.interpretation?.general
 						? html`<p>${h.interpretation.general}</p>`
@@ -242,9 +253,9 @@ export class RoxyHexagram extends LitElement {
 								.sort((a, b) => a - b)
 								.join(', ')}.
 							${
-								h.resultingHexagram?.english
-									? html` Becomes hexagram ${h.resultingHexagram.number}
-										${h.resultingHexagram.english}.`
+								resultingHexagram?.english
+									? html` Becomes hexagram ${resultingHexagram.number}
+										${resultingHexagram.english}.`
 									: nothing
 							}
 						</div>`
@@ -255,8 +266,7 @@ export class RoxyHexagram extends LitElement {
 	}
 
 	/** When the API only ships symbol+number with no line array, render six solid yang. */
-	private derivedLines(h: HexagramData): number[] {
-		if (!h.symbol) return Array.from({ length: 6 }, () => 7);
+	private derivedLines(h: Hexagram): number[] {
 		// Map each character of the unicode hexagram block (U+4DC0..) to broken/solid
 		const cp = h.symbol.codePointAt(0) ?? 0;
 		if (cp >= 0x4dc0 && cp <= 0x4dff) {

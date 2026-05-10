@@ -1,41 +1,6 @@
 import { LitElement } from 'lit';
-interface NumerologyCommon {
-    number?: number;
-    calculation?: string;
-    type?: 'single' | 'master' | string;
-    hasKarmicDebt?: boolean;
-    karmicDebtNumber?: number;
-    karmicDebtMeaning?: string;
-    meaning?: string;
-}
-interface CoreNumber {
-    number?: number;
-    type?: string;
-    meaning?: string;
-    calculation?: string;
-}
-interface FullChart {
-    profile?: {
-        fullName?: string;
-        birthDate?: string;
-    };
-    coreNumbers?: Record<string, CoreNumber | number>;
-    additionalInsights?: Record<string, unknown>;
-    birthDayProfile?: Record<string, unknown>;
-    maturityStatus?: string;
-    luckyAssociations?: Record<string, unknown>;
-    summary?: string;
-}
-interface PersonalYear {
-    year?: number;
-    personalYear?: number;
-    title?: string;
-    theme?: string;
-    keywords?: string[];
-    meaning?: string;
-    advice?: string;
-}
-type NumerologyData = NumerologyCommon & FullChart & PersonalYear;
+import type { CalculateExpressionResponse, CalculateLifePathResponse, CalculatePersonalYearResponse, GenerateNumerologyChartResponse } from '../types/index.js';
+type NumerologyData = CalculateLifePathResponse | CalculateExpressionResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse;
 /**
  * Numerology card. Renders /numerology/{life-path,expression,personal-year,chart}.
  * Use the `type` attribute to switch the layout.
@@ -45,6 +10,9 @@ export declare class RoxyNumerologyCard extends LitElement {
     data: NumerologyData | null;
     type: 'life-path' | 'expression' | 'personal-year' | 'chart';
     render(): import("lit").TemplateResult<1>;
+    private renderNumberCard;
+    private renderPersonalYear;
+    private renderChart;
 }
 declare global {
     interface HTMLElementTagNameMap {

@@ -99,6 +99,12 @@ var baseStyles = css`
 	}
 `;
 
+// packages/ui/src/utils/format.ts
+function formatNumber(value, dp = 1) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
+  return value.toFixed(dp).replace(/\.?0+$/, "");
+}
+
 // packages/ui/src/components/kp-planets-table.ts
 var RoxyKpPlanetsTable = class extends LitElement {
   constructor() {
@@ -116,7 +122,7 @@ var RoxyKpPlanetsTable = class extends LitElement {
 		>
 			<header class="head">
 				<h2 class="title">KP planets</h2>
-				${this.data.ayanamsa ? html`<span class="ayanamsa">Ayanamsa: ${this.data.ayanamsa}</span>` : nothing}
+				${typeof this.data.ayanamsa === "number" ? html`<span class="ayanamsa">Ayanamsa: ${formatNumber(this.data.ayanamsa, 2)}°</span>` : nothing}
 			</header>
 			<table role="table">
 				<thead>
@@ -135,13 +141,13 @@ var RoxyKpPlanetsTable = class extends LitElement {
 					${planets.map(
       (p) => html`<tr>
 							<td class="planet">
-								${p.planet ?? p.name ?? ""}
+								${p.planet}
 								${p.retrograde ? html`<span class="retro">R</span>` : nothing}
 							</td>
 							<td>${p.sign ?? ""}</td>
 							<td>${p.signLord ?? ""}</td>
 							<td>${p.nakshatra ?? ""}</td>
-							<td>${p.starLord ?? p.nakshatraLord ?? ""}</td>
+							<td>${p.nakshatraLord ?? ""}</td>
 							<td>${p.subLord ?? ""}</td>
 							<td>${p.subSubLord ?? ""}</td>
 							<td>${p.kpNumber ?? ""}</td>
@@ -209,7 +215,7 @@ RoxyKpPlanetsTable.styles = [
 				color: var(--roxy-fg, #0a0a0a);
 			}
 			.retro {
-				color: var(--roxy-warning, #ea580c);
+				color: var(--roxy-warning-fg, #9a3412);
 				font-size: var(--roxy-text-xs, 0.75rem);
 				margin-left: 4px;
 			}

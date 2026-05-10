@@ -1,36 +1,25 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type {
+	GetCurrentDashaResponse,
+	GetMajorDashasResponse,
+	GetSubDashasResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatNumber } from '../utils/format.js';
 
-interface DashaPeriod {
-	mahadashaLord?: string;
-	antardashaLord?: string;
-	pratyantardashaLord?: string;
-	lord?: string;
-	planet?: string;
-	startDate?: string;
-	endDate?: string;
-	years?: number;
-	durationYears?: number;
-}
+type DashaData =
+	| GetCurrentDashaResponse
+	| GetMajorDashasResponse
+	| GetSubDashasResponse;
 
-interface DashaData {
-	moonNakshatra?: string;
-	nakshatraName?: string;
-	nakshatraLord?: string;
-	mahadasha?: DashaPeriod;
-	antardasha?: DashaPeriod;
-	pratyantardasha?: DashaPeriod;
-	mahadashas?: DashaPeriod[];
-	antardashas?: DashaPeriod[];
-	mahadashaLord?: string;
-	mahadashaPeriod?: DashaPeriod;
-	birthDashaBalance?: { lord?: string; years?: number };
-	totalYears?: number;
-	remainingInMahadasha?: number;
-	remainingInAntardasha?: number;
-	remainingInPratyantardasha?: number;
-}
+type DashaPeriod = {
+	planet: string;
+	startDate: string;
+	endDate: string;
+	durationYears: number;
+	interpretation?: string;
+};
 
 /**
  * Dasha timeline. Renders /vedic-astrology/dasha/{current,major,sub/{...}}.
@@ -132,7 +121,7 @@ export class RoxyDashaTimeline extends LitElement {
 
 		const periods = this.collectPeriods(d);
 		const maxYears = periods.length
-			? Math.max(...periods.map((p) => p.durationYears ?? p.years ?? 1))
+			? Math.max(...periods.map((p) => p.durationYears))
 			: 0;
 
 		return html`<div class="wrap" aria-label="Dasha timeline">
@@ -147,11 +136,11 @@ export class RoxyDashaTimeline extends LitElement {
 					}
 				</h2>
 				${
-					d.nakshatraName || d.moonNakshatra
+					'nakshatraName' in d && d.nakshatraName
 						? html`<div class="nakshatra">
-							Moon nakshatra: ${d.nakshatraName ?? d.moonNakshatra}
-							${d.nakshatraLord ? html`(lord ${d.nakshatraLord})` : nothing}
-						</div>`
+						Moon nakshatra: ${d.nakshatraName}
+						${'nakshatraLord' in d && d.nakshatraLord ? html`(lord ${d.nakshatraLord})` : nothing}
+					</div>`
 						: nothing
 				}
 			</header>
@@ -168,68 +157,61 @@ export class RoxyDashaTimeline extends LitElement {
 	}
 
 	private renderCurrent(d: DashaData) {
+		if (!('mahadasha' in d)) return nothing;
 		return html`<div class="current">
 			${
-				d.mahadasha
+				'mahadasha' in d && d.mahadasha
 					? html`<div>
-						<span>Mahadasha</span>
-						<strong>${d.mahadasha.lord ?? d.mahadasha.mahadashaLord}</strong>
-						${
-							typeof d.remainingInMahadasha === 'number'
-								? html`<small>${d.remainingInMahadasha.toFixed(1)} years left</small>`
-								: nothing
-						}
-					</div>`
+					<span>Mahadasha</span>
+					<strong>${d.mahadasha.planet}</strong>
+					${
+						'remainingInMahadasha' in d && d.remainingInMahadasha
+							? html`<small>${formatNumber(d.remainingInMahadasha.years + d.remainingInMahadasha.months / 12, 1)} years left</small>`
+							: nothing
+					}
+				</div>`
 					: nothing
 			}
 			${
-				d.antardasha
+				'antardasha' in d && d.antardasha
 					? html`<div>
-						<span>Antardasha</span>
-						<strong>${d.antardasha.lord ?? d.antardasha.antardashaLord}</strong>
-						${
-							typeof d.remainingInAntardasha === 'number'
-								? html`<small>${d.remainingInAntardasha.toFixed(1)} years left</small>`
-								: nothing
-						}
-					</div>`
+					<span>Antardasha</span>
+					<strong>${d.antardasha.planet}</strong>
+					${
+						'remainingInAntardasha' in d && d.remainingInAntardasha
+							? html`<small>${formatNumber(d.remainingInAntardasha.years + d.remainingInAntardasha.months / 12, 1)} years left</small>`
+							: nothing
+					}
+				</div>`
 					: nothing
 			}
 			${
-				d.pratyantardasha
+				'pratyantardasha' in d && d.pratyantardasha
 					? html`<div>
-						<span>Pratyantardasha</span>
-						<strong
-							>${
-								d.pratyantardasha.lord ?? d.pratyantardasha.pratyantardashaLord
-							}</strong
-						>
-						${
-							typeof d.remainingInPratyantardasha === 'number'
-								? html`<small
-									>${d.remainingInPratyantardasha.toFixed(2)} years left</small
-								>`
-								: nothing
-						}
-					</div>`
+					<span>Pratyantardasha</span>
+					<strong>${d.pratyantardasha.planet}</strong>
+					${
+						'remainingInPratyantardasha' in d && d.remainingInPratyantardasha
+							? html`<small>${formatNumber(d.remainingInPratyantardasha.years + d.remainingInPratyantardasha.months / 12, 1)} years left</small>`
+							: nothing
+					}
+				</div>`
 					: nothing
 			}
 		</div>`;
 	}
 
 	private collectPeriods(d: DashaData): DashaPeriod[] {
-		if (this.period === 'major' && d.mahadashas?.length) return d.mahadashas;
-		if (this.period === 'sub' && d.antardashas?.length) return d.antardashas;
-		return d.mahadashas ?? d.antardashas ?? [];
+		if ('mahadashas' in d && d.mahadashas?.length) return d.mahadashas;
+		if ('antardashas' in d && d.antardashas?.length) return d.antardashas;
+		return [];
 	}
 
 	private renderBar(p: DashaPeriod, max: number) {
-		const lord =
-			p.lord ?? p.mahadashaLord ?? p.antardashaLord ?? p.planet ?? '';
-		const years = p.durationYears ?? p.years ?? 0;
+		const years = p.durationYears;
 		const width = max > 0 ? (years / max) * 100 : 0;
 		return html`<div class="bar" role="listitem">
-			<span>${lord}</span>
+			<span>${p.planet}</span>
 			<span class="bar-track"><span style="width: ${width}%"></span></span>
 			<span class="dates">
 				${p.startDate ? formatYear(p.startDate) : ''}

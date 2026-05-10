@@ -1,26 +1,17 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type {
+	CalculateBioCompatibilityResponse,
+	CalculateCompatibilityResponse,
+	CalculateNumCompatibilityResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatNumber } from '../utils/format.js';
 
-interface CompatibilityData {
-	overallScore?: number;
-	score?: number;
-	rating?: string;
-	relationshipArchetype?: string;
-	advice?: string;
-	summary?: string;
-	categoryScores?: Record<string, number>;
-	categoryBreakdown?: Record<string, number>;
-	emotional?: number;
-	communication?: number;
-	romance?: number;
-	strengths?: string[];
-	challenges?: string[];
-	keyAspects?: string[];
-	elementBalance?: Record<string, number>;
-	person1?: { name?: string; sign?: string; lifePath?: number };
-	person2?: { name?: string; sign?: string; lifePath?: number };
-}
+type CompatibilityData =
+	| CalculateCompatibilityResponse
+	| CalculateNumCompatibilityResponse
+	| CalculateBioCompatibilityResponse;
 
 /**
  * Cross-domain compatibility card. Renders /astrology/compatibility-score,
@@ -94,7 +85,7 @@ export class RoxyCompatibilityCard extends LitElement {
 			}
 
 			.archetype {
-				color: var(--roxy-info, #0284c7);
+				color: var(--roxy-accent-fg, #b45309);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 
@@ -126,23 +117,49 @@ export class RoxyCompatibilityCard extends LitElement {
 	private getBreakdown(): Record<string, number> {
 		const d = this.data;
 		if (!d) return {};
-		if (d.categoryScores) return d.categoryScores;
-		if (d.categoryBreakdown) return d.categoryBreakdown;
-		const inferred: Record<string, number> = {};
-		if (typeof d.emotional === 'number') inferred.emotional = d.emotional;
-		if (typeof d.communication === 'number')
-			inferred.communication = d.communication;
-		if (typeof d.romance === 'number') inferred.romance = d.romance;
-		if (d.elementBalance) Object.assign(inferred, d.elementBalance);
-		return inferred;
+		if ('categories' in d && d.categories) {
+			const out: Record<string, number> = {};
+			for (const [k, v] of Object.entries(d.categories)) {
+				if (typeof v === 'number' && Number.isFinite(v)) out[k] = v;
+			}
+			return out;
+		}
+		return {};
 	}
 
 	render() {
 		const d = this.data;
 		if (!d)
 			return html`<div class="roxy-empty" role="status">No compatibility data</div>`;
-		const score = d.overallScore ?? d.score;
+
+		const score = d.overallScore;
 		const breakdown = this.getBreakdown();
+		const rating =
+			'rating' in d
+				? (d as CalculateNumCompatibilityResponse).rating
+				: undefined;
+		const archetype =
+			'archetype' in d
+				? (d as CalculateCompatibilityResponse).archetype
+				: undefined;
+		const advice =
+			'advice' in d
+				? (d as CalculateNumCompatibilityResponse).advice
+				: undefined;
+		const summary =
+			'summary' in d
+				? (d as CalculateCompatibilityResponse).summary
+				: undefined;
+		const interpretation =
+			'interpretation' in d
+				? (d as CalculateCompatibilityResponse).interpretation
+				: undefined;
+		const strengths = 'strengths' in d ? d.strengths : undefined;
+		const challenges = 'challenges' in d ? d.challenges : undefined;
+		const keyAspects =
+			'keyAspects' in d
+				? (d as CalculateCompatibilityResponse).keyAspects
+				: undefined;
 
 		return html`<article
 			class="card"
@@ -153,10 +170,10 @@ export class RoxyCompatibilityCard extends LitElement {
 				<div>
 					${
 						typeof score === 'number'
-							? html`<div class="score">${score}</div>`
+							? html`<div class="score">${formatNumber(score, 0)}</div>`
 							: nothing
 					}
-					${d.rating ? html`<div class="rating">${d.rating}</div>` : nothing}
+					${rating ? html`<div class="rating">${rating}</div>` : nothing}
 				</div>
 			</div>
 
@@ -169,50 +186,42 @@ export class RoxyCompatibilityCard extends LitElement {
 								<span class="bar"
 									><span style="width: ${Math.max(0, Math.min(100, v))}%"></span
 								></span>
-								<span>${v}</span>
+								<span>${formatNumber(v, 0)}</span>
 							</div>`,
 						)}
 					</div>`
 					: nothing
 			}
 			${
-				d.relationshipArchetype
+				archetype
 					? html`<p>
-						<span class="archetype">${d.relationshipArchetype}</span>
+						<span class="archetype">${archetype.label}</span>
+						${archetype.description ? html` · ${archetype.description}` : nothing}
 					</p>`
 					: nothing
 			}
-			${d.summary ? html`<p>${d.summary}</p>` : nothing}
-			${d.advice ? html`<p>${d.advice}</p>` : nothing}
+			${summary ? html`<p>${summary}</p>` : nothing}
+			${interpretation && !summary ? html`<p>${interpretation}</p>` : nothing}
+			${advice ? html`<p>${advice}</p>` : nothing}
 			${
-				(d.strengths?.length ?? 0) > 0 || (d.challenges?.length ?? 0) > 0
+				(strengths?.length ?? 0) > 0 || (challenges?.length ?? 0) > 0
 					? html`<div class="lists">
 						${
-							d.strengths?.length
+							strengths?.length
 								? html`<div>
 									<h3>Strengths</h3>
 									<ul>
-										${d.strengths.map((s) => html`<li>${s}</li>`)}
+										${strengths.map((s) => html`<li>${s}</li>`)}
 									</ul>
 								</div>`
 								: nothing
 						}
 						${
-							d.challenges?.length
+							challenges?.length
 								? html`<div>
 									<h3>Challenges</h3>
 									<ul>
-										${d.challenges.map((s) => html`<li>${s}</li>`)}
-									</ul>
-								</div>`
-								: nothing
-						}
-						${
-							d.keyAspects?.length
-								? html`<div>
-									<h3>Key aspects</h3>
-									<ul>
-										${d.keyAspects.map((s) => html`<li>${s}</li>`)}
+										${challenges.map((s) => html`<li>${s}</li>`)}
 									</ul>
 								</div>`
 								: nothing
@@ -220,8 +229,32 @@ export class RoxyCompatibilityCard extends LitElement {
 					</div>`
 					: nothing
 			}
+			${
+				keyAspects?.length
+					? html`<div>
+						<h3 style="margin: 0 0 0.25rem; font-size: var(--roxy-text-xs); color: var(--roxy-muted); text-transform: uppercase; letter-spacing: 0.06em;">Key aspects</h3>
+						<ul style="margin: 0; padding-left: 1rem; font-size: var(--roxy-text-sm);">
+							${keyAspects.slice(0, 6).map((a) => html`<li>${formatAspect(a)}</li>`)}
+						</ul>
+					</div>`
+					: nothing
+			}
 		</article>`;
 	}
+}
+
+type KeyAspect = CalculateCompatibilityResponse extends {
+	keyAspects: Array<infer T>;
+}
+	? T
+	: never;
+
+function formatAspect(a: KeyAspect): string {
+	const aspect = a.type.toLowerCase().replace(/_/g, '-');
+	const orb =
+		typeof a.orb === 'number' ? ` (orb ${formatNumber(a.orb, 1)}°)` : '';
+	const head = [a.planet1, aspect, a.planet2].filter(Boolean).join(' ');
+	return a.description ? `${head}${orb} · ${a.description}` : `${head}${orb}`;
 }
 
 declare global {

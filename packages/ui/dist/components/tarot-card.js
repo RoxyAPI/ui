@@ -109,18 +109,17 @@ var RoxyTarotCard = class extends LitElement {
       this.flipped = !this.flipped;
     };
   }
-  getCard() {
-    if (!this.data) return null;
-    if ("card" in this.data && this.data.card) return this.data.card;
-    return this.data;
-  }
   render() {
-    const card = this.getCard();
-    if (!card)
+    const d = this.data;
+    if (!d)
       return html`<div class="roxy-empty" role="status">No tarot data</div>`;
+    if ("card" in d) return this.renderDailyCard(d);
+    return this.renderFullCard(d);
+  }
+  renderDailyCard(d) {
+    const card = d.card;
     const isReversed = this.flipped !== Boolean(card.reversed);
-    const meaning = typeof card.meaning === "string" ? card.meaning : (isReversed ? card.meaning?.reversed : card.meaning?.upright) ?? card.meaning?.spiritual ?? card.upright?.meaning;
-    const dailyMessage = this.data && "dailyMessage" in this.data ? this.data.dailyMessage : void 0;
+    const keywords = card.keywords ?? [];
     return html`<article class="card" aria-label=${card.name ?? "Tarot card"}>
 			<div class="image-wrap">
 				${card.imageUrl ? html`<img
@@ -145,15 +144,60 @@ var RoxyTarotCard = class extends LitElement {
 			<div>
 				<div class="meta">
 					${card.arcana ? html`${card.arcana} arcana` : nothing}
-					${card.number !== void 0 && card.number !== null ? html` · ${card.number}` : nothing}
 					${isReversed ? html` · reversed` : nothing}
-					${card.position ? html`<span class="position">${card.position}</span>` : nothing}
 				</div>
 				<h2 class="title">${card.name ?? "Tarot card"}</h2>
-				${dailyMessage ? html`<p class="message">${dailyMessage}</p>` : nothing}
-				${meaning ? html`<p>${meaning}</p>` : nothing}
-				${card.keywords?.length ? html`<div class="chips">
-							${card.keywords.map((k) => html`<span>${k}</span>`)}
+				${d.dailyMessage ? html`<p class="message">${d.dailyMessage}</p>` : nothing}
+				${card.meaning ? html`<p>${card.meaning}</p>` : nothing}
+				${keywords.length > 0 ? html`<div class="chips">
+							${keywords.map((k) => html`<span>${k}</span>`)}
+						</div>` : nothing}
+				<button
+					class="flip"
+					type="button"
+					@click=${this.toggleFlip}
+					aria-pressed=${this.flipped ? "true" : "false"}
+				>
+					Flip card
+				</button>
+			</div>
+		</article>`;
+  }
+  renderFullCard(d) {
+    const isReversed = this.flipped;
+    const orientedMeaning = isReversed ? d.reversed : d.upright;
+    const keywords = isReversed ? d.keywords?.reversed ?? [] : d.keywords?.upright ?? [];
+    return html`<article class="card" aria-label=${d.name ?? "Tarot card"}>
+			<div class="image-wrap">
+				${d.imageUrl ? html`<img
+							class=${`image ${isReversed ? "reversed" : ""}`}
+							src=${d.imageUrl}
+							alt=${d.name ?? "Tarot card"}
+							tabindex="0"
+							@click=${this.toggleFlip}
+							@keydown=${(e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        this.toggleFlip();
+      }
+    }}
+						/>` : html`<div
+							class=${`image ${isReversed ? "reversed" : ""}`}
+							style="aspect-ratio: 0.6; display: flex; align-items: center; justify-content: center; color: var(--roxy-muted)"
+						>
+							${d.name ?? "?"}
+						</div>`}
+			</div>
+			<div>
+				<div class="meta">
+					${d.arcana ? html`${d.arcana} arcana` : nothing}
+					${d.number !== void 0 && d.number !== null ? html` · ${d.number}` : nothing}
+					${isReversed ? html` · reversed` : nothing}
+				</div>
+				<h2 class="title">${d.name ?? "Tarot card"}</h2>
+				${orientedMeaning?.description ? html`<p>${orientedMeaning.description}</p>` : nothing}
+				${keywords.length > 0 ? html`<div class="chips">
+							${keywords.map((k) => html`<span>${k}</span>`)}
 						</div>` : nothing}
 				<button
 					class="flip"
@@ -222,11 +266,6 @@ RoxyTarotCard.styles = [
 				text-transform: uppercase;
 				letter-spacing: 0.06em;
 				margin-bottom: var(--roxy-space-sm, 0.5rem);
-			}
-			.position {
-				color: var(--roxy-info, #0284c7);
-				margin-left: var(--roxy-space-xs, 0.25rem);
-				text-transform: capitalize;
 			}
 
 			.message {

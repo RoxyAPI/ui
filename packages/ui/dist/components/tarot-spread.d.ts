@@ -1,28 +1,6 @@
 import { LitElement } from 'lit';
-interface TarotPosition {
-    number?: number;
-    label?: string;
-    name?: string;
-    position?: string;
-    card?: {
-        name?: string;
-        imageUrl?: string;
-        reversed?: boolean;
-        keywords?: string[];
-        arcana?: string;
-    };
-    interpretation?: string;
-}
-interface TarotSpreadData {
-    spread?: string;
-    positions?: TarotPosition[];
-    cards?: TarotPosition[];
-    reading?: string;
-    question?: string;
-    answer?: 'Yes' | 'No' | 'Maybe' | string;
-    strength?: string;
-    interpretation?: string;
-}
+import type { CastCelticCrossResponse, CastLoveSpreadResponse, CastReadingResponse, CastThreeCardResponse, CastYesNoResponse, DrawCardsResponse } from '../types/index.js';
+type TarotSpreadData = CastThreeCardResponse | CastCelticCrossResponse | CastLoveSpreadResponse | CastYesNoResponse | CastReadingResponse | DrawCardsResponse;
 /**
  * Tarot spread card. Renders /tarot/spreads/{three-card,celtic-cross,love},
  * /tarot/yes-no, /tarot/draw responses.

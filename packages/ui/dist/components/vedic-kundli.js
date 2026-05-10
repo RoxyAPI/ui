@@ -196,21 +196,12 @@ var RoxyVedicKundli = class extends LitElement {
   }
   buildHouses() {
     if (!this.data) return [];
+    const data = this.data;
     const houses = [];
-    if (Array.isArray(this.data.houses)) {
-      for (const h of this.data.houses) {
-        houses.push({
-          house: h.house ?? h.number ?? houses.length + 1,
-          sign: h.sign ?? "",
-          planets: h.planets ?? []
-        });
-      }
-      if (houses.length > 0) return houses;
-    }
     for (let i = 0; i < 12; i++) {
       const key = RASHI_KEYS[i];
-      const bucket = this.data[key];
-      const planets = (bucket?.signs ?? []).map((p) => p.planet ?? "").filter(Boolean);
+      const bucket = data[key];
+      const planets = (bucket?.signs ?? []).map((p) => p.graha).filter(Boolean);
       houses.push({
         house: i + 1,
         sign: RASHI_TO_SIGN[key] ?? "",
@@ -250,19 +241,28 @@ var RoxyVedicKundli = class extends LitElement {
 			</svg>
 		</div>`;
   }
+  isLagna(h) {
+    const ascSign = this.data?.meta?.Lagna?.rashi;
+    if (!ascSign) return false;
+    return ascSign.toLowerCase() === h.sign.toLowerCase();
+  }
   renderHouseGroup(h) {
     const center = SOUTH_HOUSE_CENTERS[h.house];
     const signPos = SOUTH_SIGN_POSITIONS[h.house];
     if (!center || !signPos) return nothing;
     const signAbbr = SIGN_ABBR[h.sign] ?? "";
     const planets = h.planets ?? [];
+    const isLagna = this.isLagna(h);
     return svg`
 			<g>
+				${isLagna ? svg`<rect class="lagna-bg" x=${center.x - 30} y=${center.y - 28} width="60" height="56" rx="6" />` : nothing}
 				${signAbbr ? svg`<text class="sign-text" x=${signPos.x} y=${signPos.y} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>` : nothing}
+				${isLagna ? svg`<text class="lagna-marker" x=${center.x} y=${center.y - 18} text-anchor="middle" dominant-baseline="central">LAGNA</text>` : nothing}
 				${planets.map((planet, j) => {
       const abbr = PLANET_ABBR[capitalize(planet)] ?? planet.slice(0, 2);
       const lineHeight = 13;
-      const startY = center.y - (planets.length - 1) * lineHeight / 2;
+      const baseY = isLagna ? center.y + 8 : center.y;
+      const startY = baseY - (planets.length - 1) * lineHeight / 2;
       const yPos = startY + j * lineHeight;
       return svg`<text class="planet-text" x=${center.x} y=${yPos} text-anchor="middle" dominant-baseline="central">${abbr}</text>`;
     })}
@@ -303,6 +303,18 @@ RoxyVedicKundli.styles = [
 				font-size: 11px;
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
+			}
+			.lagna-marker {
+				fill: var(--roxy-accent-fg, #b45309);
+				font-size: 8px;
+				font-weight: 700;
+				font-family: var(--roxy-font-sans);
+				letter-spacing: 0.05em;
+			}
+			.lagna-bg {
+				fill: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, transparent);
+				stroke: color-mix(in srgb, var(--roxy-accent, #f59e0b) 45%, transparent);
+				stroke-width: 0.8;
 			}
 		`
 ];

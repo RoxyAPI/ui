@@ -31,7 +31,12 @@ var PLANET_GLYPH = {
   Ascendant: "Asc",
   Lagna: "La",
   NorthNode: "\u260A",
-  SouthNode: "\u260B"
+  SouthNode: "\u260B",
+  "North node": "\u260A",
+  "South node": "\u260B",
+  Chiron: "\u26B7",
+  Lilith: "\u26B8",
+  "Black moon lilith": "\u26B8"
 };
 var SIGN_GLYPH = {
   Aries: "\u2648",
@@ -143,6 +148,12 @@ function polarToCartesian(cx, cy, radius, angleDeg) {
   };
 }
 
+// packages/ui/src/utils/format.ts
+function formatNumber(value, dp = 1) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "";
+  return value.toFixed(dp).replace(/\.?0+$/, "");
+}
+
 // packages/ui/src/components/synastry-chart.ts
 var SIZE = 360;
 var CENTER = SIZE / 2;
@@ -158,23 +169,22 @@ var RoxySynastryChart = class extends LitElement {
   render() {
     if (!this.data)
       return html`<div class="roxy-empty" role="status">No synastry data</div>`;
-    const {
-      person1,
-      person2,
-      compatibilityScore,
-      summary,
-      interAspects = []
-    } = this.data;
-    const p1Planets = this.normalizePlanets(person1?.planets);
-    const p2Planets = this.normalizePlanets(person2?.planets);
+    const { person1, person2, compatibilityScore, analysis } = this.data;
+    const interAspects = this.data.interAspects ?? [];
+    const p1Planets = person1?.planets ?? [];
+    const p2Planets = person2?.planets ?? [];
+    const score = typeof compatibilityScore === "number" ? Math.round(compatibilityScore) : void 0;
+    const summaryText = analysis?.overall;
+    const strengths = analysis?.strengths ?? [];
+    const challenges = analysis?.challenges ?? [];
     return html`<div
 			class="wrap"
 			aria-label="Synastry compatibility chart"
 		>
 			<div class="head">
 				<h2 class="title">Synastry</h2>
-				${typeof compatibilityScore === "number" ? html`<span class="score" aria-label=${`Score ${compatibilityScore} of 100`}
-							>${compatibilityScore} / 100</span
+				${typeof score === "number" ? html`<span class="score" aria-label=${`Score ${score} of 100`}
+							>${score} / 100</span
 						>` : nothing}
 			</div>
 			<svg
@@ -205,34 +215,39 @@ var RoxySynastryChart = class extends LitElement {
 					stroke-width="0.6"
 				/>
 				${this.renderSpokes()} ${this.renderSigns()}
+				${this.renderInterAspectLines(p1Planets, p2Planets, interAspects)}
 				${this.renderRing(p1Planets, P1_R, "p1")} ${this.renderRing(p2Planets, P2_R, "p2")}
 			</svg>
-			${summary ? html`<p class="summary">${summary}</p>` : nothing}
+			<div class="legend-row">
+				<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>
+				<span><span class="swatch" style="background: var(--roxy-info)"></span>Person 2</span>
+				<span><span class="swatch" style="background: var(--roxy-success)"></span>harmonious</span>
+				<span><span class="swatch" style="background: var(--roxy-danger)"></span>challenging</span>
+			</div>
+			${summaryText ? html`<p class="summary">${summaryText}</p>` : nothing}
 			${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing}
-			${(this.data.strengths?.length ?? 0) > 0 || (this.data.challenges?.length ?? 0) > 0 ? html`<div class="lists">
-						${this.data.strengths?.length ? html`<div>
+			${strengths.length > 0 || challenges.length > 0 ? html`<div class="lists">
+						${strengths.length ? html`<div>
 									<h3>Strengths</h3>
 									<ul>
-										${this.data.strengths.map((s) => html`<li>${s}</li>`)}
+										${strengths.map((s) => html`<li>${s}</li>`)}
 									</ul>
 								</div>` : nothing}
-						${this.data.challenges?.length ? html`<div>
+						${challenges.length ? html`<div>
 									<h3>Challenges</h3>
 									<ul>
-										${this.data.challenges.map((s) => html`<li>${s}</li>`)}
+										${challenges.map((s) => html`<li>${s}</li>`)}
 									</ul>
 								</div>` : nothing}
 					</div>` : nothing}
 		</div>`;
   }
-  normalizePlanets(p) {
-    if (!p) return [];
-    if (Array.isArray(p)) return p;
-    return Object.entries(p).map(([name, e]) => ({ ...e, name }));
+  toAngle(longitude) {
+    return 180 - longitude;
   }
   renderSpokes() {
     return Array.from({ length: 12 }, (_, i) => {
-      const angle = i * 30 - 90;
+      const angle = this.toAngle(i * 30);
       const start = polarToCartesian(CENTER, CENTER, P2_R - 14, angle);
       const end = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
       return svg`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.6" />`;
@@ -254,19 +269,43 @@ var RoxySynastryChart = class extends LitElement {
       "Pisces"
     ];
     return order.map((s, i) => {
-      const angle = i * 30 + 15 - 90;
+      const angle = this.toAngle(i * 30 + 15);
       const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
       return svg`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[s]}</text>`;
     });
   }
   renderRing(planets, radius, cls) {
     return planets.map((p) => {
-      const lon = typeof p.longitude === "number" ? p.longitude : typeof p.degree === "number" ? p.degree : NaN;
-      if (!Number.isFinite(lon)) return nothing;
-      const pos = polarToCartesian(CENTER, CENTER, radius, lon - 90);
-      const name = p.name ?? p.planet ?? "";
-      const glyph = PLANET_GLYPH[capitalize(name)] ?? name.slice(0, 2);
-      return svg`<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${name}</title>${glyph}</text>`;
+      if (!Number.isFinite(p.longitude)) return nothing;
+      const pos = polarToCartesian(
+        CENTER,
+        CENTER,
+        radius,
+        this.toAngle(p.longitude)
+      );
+      const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
+      return svg`<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}</title>${glyph}</text>`;
+    });
+  }
+  renderInterAspectLines(p1, p2, aspects) {
+    const longitudeOf = (list, name) => {
+      const target = capitalize(name);
+      for (const p of list) {
+        if (capitalize(p.name) !== target) continue;
+        if (typeof p.longitude === "number") return p.longitude;
+      }
+      return void 0;
+    };
+    return aspects.map((a) => {
+      const l1 = longitudeOf(p1, a.planet1);
+      const l2 = longitudeOf(p2, a.planet2);
+      if (l1 === void 0 || l2 === void 0) return nothing;
+      const out = polarToCartesian(CENTER, CENTER, P1_R - 12, this.toAngle(l1));
+      const inn = polarToCartesian(CENTER, CENTER, P2_R + 8, this.toAngle(l2));
+      const aspectName = normalizeAspect(a);
+      const cls = ASPECT_CLASS[aspectName] ?? "aspect-other";
+      const orbLabel = formatNumber(a.orb, 1);
+      return svg`<line class=${`aspect ${cls}`} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}\xB0)` : ""}</title></line>`;
     });
   }
   renderAspects(aspects) {
@@ -281,15 +320,13 @@ var RoxySynastryChart = class extends LitElement {
 				</tr>
 			</thead>
 			<tbody>
-				${aspects.slice(0, 16).map(
+				${aspects.slice(0, 12).map(
       (a) => html`<tr>
-						<td>${a.planet1 ?? ""}</td>
-						<td>${a.planet2 ?? ""}</td>
-						<td>${a.aspect ?? ""}</td>
-						<td class="orb">
-							${typeof a.orb === "number" ? a.orb.toFixed(1) : ""}
-						</td>
-						<td>${a.strength ?? ""}</td>
+						<td>${a.planet1}</td>
+						<td>${a.planet2}</td>
+						<td>${normalizeAspect(a) || ""}</td>
+						<td class="orb">${formatNumber(a.orb, 1)}</td>
+						<td>${formatStrength(a.strength)}</td>
 					</tr>`
     )}
 			</tbody>
@@ -350,6 +387,42 @@ RoxySynastryChart.styles = [
 				font-weight: 600;
 				font-size: 13px;
 			}
+			.aspect {
+				stroke-width: 0.8;
+				fill: none;
+				opacity: 0.5;
+			}
+			.aspect-trine,
+			.aspect-sextile {
+				stroke: var(--roxy-success, #16a34a);
+			}
+			.aspect-square,
+			.aspect-opposition {
+				stroke: var(--roxy-danger, #dc2626);
+			}
+			.aspect-conjunction {
+				stroke: var(--roxy-accent-fg, #b45309);
+			}
+			.aspect-other {
+				stroke: var(--roxy-muted, #71717a);
+				opacity: 0.35;
+			}
+			.legend-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				margin-top: calc(var(--roxy-space-xs, 0.25rem) * -1);
+			}
+			.legend-row .swatch {
+				display: inline-block;
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				margin-right: 4px;
+				vertical-align: middle;
+			}
 
 			.summary {
 				margin: 0;
@@ -408,6 +481,20 @@ RoxySynastryChart = __decorateClass([
 function capitalize(s) {
   if (!s) return "";
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+var ASPECT_CLASS = {
+  conjunction: "aspect-conjunction",
+  sextile: "aspect-sextile",
+  square: "aspect-square",
+  trine: "aspect-trine",
+  opposition: "aspect-opposition"
+};
+function normalizeAspect(a) {
+  return (a.type ?? "").toLowerCase().replace(/_/g, "-");
+}
+function formatStrength(s) {
+  if (typeof s === "number") return Math.round(s).toString();
+  return "";
 }
 export {
   RoxySynastryChart

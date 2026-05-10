@@ -1,24 +1,10 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { debounce } from '../utils/debounce.js';
 
-export interface CityResult {
-	city: string;
-	province?: string;
-	country: string;
-	iso2?: string;
-	latitude: number;
-	longitude: number;
-	timezone: string;
-	utcOffset: number;
-	population?: number;
-}
-
-interface CitySearchResponse {
-	total?: number;
-	cities?: CityResult[];
-}
+type CityResult = SearchCitiesResponse['cities'][number];
 
 /**
  * Stateful location search input. Calls /location/search and emits
@@ -209,7 +195,7 @@ export class RoxyLocationSearch extends LitElement {
 			if (this.publishableKey) headers['X-API-Key'] = this.publishableKey;
 			const res = await fetch(url, { headers });
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			const json = (await res.json()) as CitySearchResponse;
+			const json = (await res.json()) as SearchCitiesResponse;
 			this.results = json.cities ?? [];
 			this.isOpen = this.results.length > 0;
 			this.highlight = this.results.length > 0 ? 0 : -1;

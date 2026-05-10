@@ -1,53 +1,16 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type {
+	GetBasicPanchangResponse,
+	GetDetailedPanchangResponse,
+} from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatDate, formatTime, formatTimeRange } from '../utils/format.js';
 
-interface PanchangTime {
-	start?: string;
-	end?: string;
-}
+type PanchangData = GetBasicPanchangResponse | GetDetailedPanchangResponse;
+type PanchangTime = GetDetailedPanchangResponse['rahuKaal'];
 
-interface PanchangData {
-	date?: string;
-	location?: { name?: string; latitude?: number; longitude?: number };
-	vara?: string;
-	sunrise?: string;
-	sunset?: string;
-	moonrise?: string;
-	moonset?: string;
-	sunSign?: string;
-	moonSign?: string;
-	sunNakshatra?: string;
-	tithi?: string | { name?: string; phase?: string; end?: string };
-	nakshatra?: string | { name?: string; lord?: string; end?: string };
-	yoga?: string | { name?: string; end?: string };
-	karana?: string | { name?: string; end?: string };
-	hora?: string;
-	rahuKaal?: PanchangTime;
-	yamaganda?: PanchangTime;
-	gulika?: PanchangTime;
-	abhijitMuhurta?: PanchangTime;
-	brahmaMuhurta?: PanchangTime;
-	vijayaMuhurta?: PanchangTime;
-	nishitaMuhurta?: PanchangTime;
-	godhuliMuhurta?: PanchangTime;
-	pratahSandhya?: PanchangTime;
-	sayahnaSandhya?: PanchangTime;
-	durMuhurta?: PanchangTime[];
-	varjyam?: PanchangTime[];
-	amritKalam?: PanchangTime[];
-	chandrabalam?: string | string[];
-	tarabalam?: string;
-	panchaka?: string;
-	bhadra?: string;
-	sunLongitude?: number;
-	moonLongitude?: number;
-}
-
-/**
- * Panchang table for /vedic-astrology/panchang/{basic,detailed}. Detailed mode
- * renders 15+ muhurtas. Basic mode renders the five elements only.
- */
+/** Panchang table for /vedic-astrology/panchang/{basic,detailed}. */
 @customElement('roxy-panchang-table')
 export class RoxyPanchangTable extends LitElement {
 	static styles = [
@@ -123,35 +86,40 @@ export class RoxyPanchangTable extends LitElement {
 		const d = this.data;
 		if (!d)
 			return html`<div class="roxy-empty" role="status">No panchang data</div>`;
+		const detailed = 'sunrise' in d ? d : null;
 
-		const fivefold = [
+		const fivefold: Array<[string, string]> = [
 			['Tithi', this.formatPart(d.tithi)],
 			['Nakshatra', this.formatPart(d.nakshatra)],
 			['Yoga', this.formatPart(d.yoga)],
 			['Karana', this.formatPart(d.karana)],
-			['Vara', d.vara ?? ''],
 		];
+		if (detailed) fivefold.push(['Vara', this.formatPart(detailed.vara)]);
 
-		const muhurtas: Array<[string, PanchangTime | undefined]> = [
-			['Brahma Muhurta', d.brahmaMuhurta],
-			['Abhijit Muhurta', d.abhijitMuhurta],
-			['Vijaya Muhurta', d.vijayaMuhurta],
-			['Godhuli Muhurta', d.godhuliMuhurta],
-			['Nishita Muhurta', d.nishitaMuhurta],
-			['Pratah Sandhya', d.pratahSandhya],
-			['Sayahna Sandhya', d.sayahnaSandhya],
-		];
+		const muhurtas: Array<[string, PanchangTime | undefined]> = detailed
+			? [
+					['Brahma Muhurta', detailed.brahmaMuhurta],
+					['Abhijit Muhurta', detailed.abhijitMuhurta],
+					['Vijaya Muhurta', detailed.vijayaMuhurta],
+					['Godhuli Muhurta', detailed.godhuliMuhurta],
+					['Nishita Muhurta', detailed.nishitaMuhurta],
+					['Pratah Sandhya', detailed.pratahSandhya],
+					['Sayahna Sandhya', detailed.sayahnaSandhya],
+				]
+			: [];
 
-		const inauspicious: Array<[string, PanchangTime | undefined]> = [
-			['Rahu Kaal', d.rahuKaal],
-			['Yamaganda', d.yamaganda],
-			['Gulika', d.gulika],
-		];
+		const inauspicious: Array<[string, PanchangTime | undefined]> = detailed
+			? [
+					['Rahu Kaal', detailed.rahuKaal],
+					['Yamaganda', detailed.yamaganda],
+					['Gulika', detailed.gulika],
+				]
+			: [];
 
 		return html`<div class="wrap" aria-label="Panchang">
 			<header class="head">
 				<h2 class="title">Panchang</h2>
-				<span class="date">${d.date ?? ''}</span>
+				<span class="date">${detailed ? formatDate(detailed.date) : ''}</span>
 			</header>
 			<table>
 				<tbody>
@@ -162,34 +130,34 @@ export class RoxyPanchangTable extends LitElement {
 						</tr>`,
 					)}
 					${
-						d.sunrise
+						detailed?.sunrise
 							? html`<tr>
 								<th>Sunrise</th>
-								<td>${d.sunrise}</td>
+								<td>${formatTime(detailed.sunrise)}</td>
 							</tr>`
 							: nothing
 					}
 					${
-						d.sunset
+						detailed?.sunset
 							? html`<tr>
 								<th>Sunset</th>
-								<td>${d.sunset}</td>
+								<td>${formatTime(detailed.sunset)}</td>
 							</tr>`
 							: nothing
 					}
 					${
-						d.moonrise
+						detailed?.moonrise
 							? html`<tr>
 								<th>Moonrise</th>
-								<td>${d.moonrise}</td>
+								<td>${formatTime(detailed.moonrise)}</td>
 							</tr>`
 							: nothing
 					}
 					${
-						d.moonset
+						detailed?.moonset
 							? html`<tr>
 								<th>Moonset</th>
-								<td>${d.moonset}</td>
+								<td>${formatTime(detailed.moonset)}</td>
 							</tr>`
 							: nothing
 					}
@@ -207,7 +175,7 @@ export class RoxyPanchangTable extends LitElement {
 									.map(
 										([k, v]) => html`<tr>
 											<th>${k}</th>
-											<td>${formatRange(v)}</td>
+											<td>${formatTimeRange(v)}</td>
 										</tr>`,
 									)}
 							</tbody>
@@ -220,7 +188,7 @@ export class RoxyPanchangTable extends LitElement {
 									.map(
 										([k, v]) => html`<tr>
 											<th>${k}</th>
-											<td>${formatRange(v)}</td>
+											<td>${formatTimeRange(v)}</td>
 										</tr>`,
 									)}
 							</tbody>
@@ -250,12 +218,6 @@ export class RoxyPanchangTable extends LitElement {
 		}
 		return String(v);
 	}
-}
-
-function formatRange(t: PanchangTime | undefined): string {
-	if (!t) return '';
-	if (t.start && t.end) return `${t.start} - ${t.end}`;
-	return t.start ?? t.end ?? '';
 }
 
 declare global {

@@ -126,23 +126,40 @@ var RoxyHexagram = class extends LitElement {
     this.data = null;
     this.mode = "lookup";
   }
-  getHexagram() {
-    if (!this.data) return null;
-    if ("hexagram" in this.data && this.data.hexagram) {
+  resolveHexagram() {
+    const d = this.data;
+    if (!d) return null;
+    if ("hexagram" in d && d.hexagram) {
+      if ("lines" in d) {
+        const cast = d;
+        return {
+          hex: cast.hexagram,
+          lines: cast.lines,
+          changingLinePositions: cast.changingLinePositions,
+          resultingHexagram: cast.resultingHexagram
+        };
+      }
+      const daily = d;
       return {
-        ...this.data.hexagram,
-        lines: this.data.lines,
-        changingLinePositions: this.data.changingLinePositions
+        hex: daily.hexagram,
+        dailyMessage: daily.dailyMessage
       };
     }
-    return this.data;
+    return { hex: d };
   }
   render() {
-    const h = this.getHexagram();
-    if (!h)
+    const resolved = this.resolveHexagram();
+    if (!resolved)
       return html`<div class="roxy-empty" role="status">No hexagram data</div>`;
-    const lines = h.lines ?? this.derivedLines(h);
-    const changing = new Set(h.changingLinePositions ?? []);
+    const {
+      hex: h,
+      lines: castLines,
+      changingLinePositions,
+      dailyMessage,
+      resultingHexagram
+    } = resolved;
+    const lines = castLines ?? this.derivedLines(h);
+    const changing = new Set(changingLinePositions ?? []);
     return html`<article class="card" aria-label="I Ching hexagram">
 			<div class="glyphs">
 				${h.symbol ? html`<div class="symbol">${h.symbol}</div>` : nothing}
@@ -182,19 +199,18 @@ var RoxyHexagram = class extends LitElement {
 				</div>
 				${h.judgment ? html`<p class="judgment">${h.judgment}</p>` : nothing}
 				${h.image ? html`<p class="image">${h.image}</p>` : nothing}
-				${h.dailyMessage ? html`<p class="message">${h.dailyMessage}</p>` : nothing}
+				${dailyMessage ? html`<p class="message">${dailyMessage}</p>` : nothing}
 				${h.interpretation?.general ? html`<p>${h.interpretation.general}</p>` : nothing}
 				${changing.size > 0 ? html`<div class="changing">
 							Changing lines: ${Array.from(changing).sort((a, b) => a - b).join(", ")}.
-							${h.resultingHexagram?.english ? html` Becomes hexagram ${h.resultingHexagram.number}
-										${h.resultingHexagram.english}.` : nothing}
+							${resultingHexagram?.english ? html` Becomes hexagram ${resultingHexagram.number}
+										${resultingHexagram.english}.` : nothing}
 						</div>` : nothing}
 			</div>
 		</article>`;
   }
   /** When the API only ships symbol+number with no line array, render six solid yang. */
   derivedLines(h) {
-    if (!h.symbol) return Array.from({ length: 6 }, () => 7);
     const cp = h.symbol.codePointAt(0) ?? 0;
     if (cp >= 19904 && cp <= 19967) {
       const offset = cp - 19904;
