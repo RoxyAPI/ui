@@ -43,7 +43,7 @@ jobs:
         # build.ts syncs packages/ui/dist into apps/docs/dist so the
         # site directory is self-contained and matches the local preview.
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
         with:
           enablement: true
 
