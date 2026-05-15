@@ -49,6 +49,7 @@ test-results/
 /screenshot*.png
 /*.tmp
 /*.log
+refs/
 
 # Stale tsc declaration emit alongside source. tsc is configured to emit into
 # dist/, but past misconfig left .d.ts siblings of .ts files in src/. Ignore so

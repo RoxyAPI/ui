@@ -86,4 +86,18 @@ export const baseStyles = css`
 		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 		outline-offset: 2px;
 	}
+
+	/* Force the text-style variant on every Unicode glyph in the component.
+	 * macOS and iOS substitute coloured emoji glyphs for the planetary and
+	 * gender Unicode code points (Mars, Venus, Mercury, etc.) when the
+	 * system colour-emoji font wins font selection. The text-style variant
+	 * keeps glyphs monochrome so they inherit the surrounding fill colour
+	 * and match the brand palette consistently across platforms.
+	 *
+	 * font-variant-emoji is part of CSS Fonts 4 (Safari 17+, Chrome 134+,
+	 * Firefox 139+). On older browsers the rule is silently ignored.
+	 */
+	:host {
+		font-variant-emoji: text;
+	}
 `;

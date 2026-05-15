@@ -4,41 +4,28 @@ import { PLANET_GLYPH } from '../tokens/index.js';
 import type { DivisionalChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
-	buildHousesFromMeta,
-	type HouseDef,
-	renderEastFrame,
-	renderEastHouseGroup,
-	renderNorthFrame,
-	renderNorthHouseGroup,
-	renderSouthFrame,
-	renderSouthHouseGroup,
+	type ChartStyle,
+	type KundliViewModel,
+	renderKundliStyleTablist,
+	renderKundliSvg,
+	toKundliViewModel,
 } from '../utils/kundli-render.js';
+import { kundliStyles } from '../utils/kundli-styles.js';
 
 /**
  * Divisional chart renderer (D2-D60). Accepts a DivisionalChartResponse and
- * renders the same south/north/east kundli wheel as the birth chart, plus
- * division metadata and Vargottama planet pills. The varga response carries a
- * graha-keyed `chart.meta` map (no per-rashi buckets), so houses are bucketed
- * from that map.
+ * renders the same South / North / East kundli grid as the birth chart, plus
+ * division metadata and Vargottama planet pills. A visible tablist lets the
+ * end user switch styles at runtime. The varga response carries a graha-keyed
+ * `chart.meta` map (no per-rashi buckets), so houses are bucketed from that
+ * map.
  */
 @customElement('roxy-divisional-chart')
 export class RoxyDivisionalChart extends LitElement {
 	static styles = [
 		baseStyles,
+		kundliStyles,
 		css`
-			.wrap {
-				display: grid;
-				gap: var(--roxy-space-md, 1rem);
-			}
-			.header {
-				display: grid;
-				gap: var(--roxy-space-xs, 0.25rem);
-			}
-			.title {
-				font-size: var(--roxy-text-lg, 1.125rem);
-				font-weight: var(--roxy-weight-bold, 600);
-				margin: 0;
-			}
 			.division-meta {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-muted, #71717a);
@@ -50,46 +37,6 @@ export class RoxyDivisionalChart extends LitElement {
 				border-left: 2px solid var(--roxy-border, #e4e4e7);
 				padding-left: var(--roxy-space-sm, 0.5rem);
 				margin: 0;
-			}
-			svg {
-				display: block;
-				width: 100%;
-				max-width: 360px;
-				margin: 0 auto;
-			}
-			.line {
-				fill: transparent;
-				stroke: var(--roxy-border, #e4e4e7);
-			}
-			.sign-text {
-				fill: var(--roxy-muted, #71717a);
-				font-size: 9px;
-				font-weight: 500;
-				font-family: var(--roxy-font-sans);
-			}
-			.planet-text {
-				fill: var(--roxy-fg, #0a0a0a);
-				font-size: 11px;
-				font-weight: 600;
-				font-family: var(--roxy-font-sans);
-			}
-			.house-num {
-				fill: var(--roxy-muted, #71717a);
-				font-size: 9px;
-				font-weight: 400;
-				font-family: var(--roxy-font-sans);
-			}
-			.lagna-marker {
-				fill: var(--roxy-accent-fg, #b45309);
-				font-size: 8px;
-				font-weight: 700;
-				font-family: var(--roxy-font-sans);
-				letter-spacing: 0.05em;
-			}
-			.lagna-bg {
-				fill: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, transparent);
-				stroke: color-mix(in srgb, var(--roxy-accent, #f59e0b) 45%, transparent);
-				stroke-width: 0.8;
 			}
 			.vargottama-row {
 				display: flex;
@@ -122,58 +69,54 @@ export class RoxyDivisionalChart extends LitElement {
 	data: DivisionalChartResponse | null = null;
 
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
-	chartStyle: 'south' | 'north' | 'east' = 'south';
+	chartStyle: ChartStyle = 'north';
 
-	private buildHouses(): HouseDef[] {
-		if (!this.data?.chart?.meta) return [];
-		return buildHousesFromMeta(this.data.chart.meta);
+	private setStyle = (next: ChartStyle) => {
+		this.chartStyle = next;
+	};
+
+	private viewModel(): KundliViewModel | null {
+		if (!this.data?.chart?.meta) return null;
+		const { division } = this.data;
+		const label = `D${division.number} ${division.name}`;
+		return toKundliViewModel(this.data.chart.meta, label);
 	}
 
 	render() {
-		if (!this.data)
+		const vm = this.viewModel();
+		if (!this.data || !vm)
 			return html`<div class="roxy-empty" role="status">No divisional chart data</div>`;
 
 		const { division, vargottama } = this.data;
-		const houses = this.buildHouses();
-		const style = this.chartStyle;
-		const frame =
-			style === 'north'
-				? renderNorthFrame()
-				: style === 'east'
-					? renderEastFrame()
-					: renderSouthFrame();
-		const houseGroup =
-			style === 'north'
-				? renderNorthHouseGroup
-				: style === 'east'
-					? renderEastHouseGroup
-					: renderSouthHouseGroup;
 
 		return html`<div class="wrap">
 			<div class="header">
-				<h2 class="title">
-					D${division.number} ${division.name}
+				<div>
+					<h2 class="title">
+						D${division.number} ${division.name}
+						${
+							division.sanskritName && division.sanskritName !== division.name
+								? html`<span class="division-meta"> · ${division.sanskritName}</span>`
+								: nothing
+						}
+					</h2>
 					${
-						division.sanskritName && division.sanskritName !== division.name
-							? html`<span class="division-meta"> · ${division.sanskritName}</span>`
+						division.significance
+							? html`<p class="significance">${division.significance}</p>`
 							: nothing
 					}
-				</h2>
-				${
-					division.significance
-						? html`<p class="significance">${division.significance}</p>`
-						: nothing
-				}
+				</div>
+				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
 			</div>
 
 			<svg
-				viewBox="0 0 300 300"
+				viewBox="0 0 400 400"
+				preserveAspectRatio="xMidYMid meet"
 				role="img"
 				aria-label="D${division.number} ${division.name} divisional chart with twelve sign houses"
 			>
 				<title>D${division.number} ${division.name}</title>
-				${frame}
-				${houses.map((h) => houseGroup(h))}
+				${renderKundliSvg(vm, this.chartStyle)}
 			</svg>
 
 			${

@@ -64,7 +64,8 @@ export class RoxyNatalChart extends LitElement {
 			svg {
 				display: block;
 				width: 100%;
-				max-width: 360px;
+				max-width: 560px;
+				aspect-ratio: 1 / 1;
 				height: auto;
 				margin: 0 auto;
 			}
@@ -93,8 +94,31 @@ export class RoxyNatalChart extends LitElement {
 				font-family: var(--roxy-font-sans);
 			}
 
+			/* Below 480px the chart container shrinks to ~320px on phones.
+			 * Bump in-SVG text up proportionally so the 7px degree band
+			 * does not collapse below ~6px on screen.
+			 */
+			@container (max-width: 480px) {
+				.sign-glyph,
+				.planet-glyph {
+					font-size: 18px;
+				}
+				.planet-deg {
+					font-size: 10px;
+				}
+				.house-num {
+					font-size: 12px;
+				}
+			}
+
 			.planet-deg .retro {
 				fill: var(--roxy-danger, #dc2626);
+			}
+
+			.planet-leader {
+				stroke: var(--roxy-accent, #f59e0b);
+				stroke-width: 0.5;
+				opacity: 0.55;
 			}
 
 			.house-num {
@@ -559,6 +583,10 @@ export class RoxyNatalChart extends LitElement {
 	}
 
 	private renderAngleMark(longitude: number, label: string) {
+		// Tick AND label share the same angle so the label sits right at the
+		// tip of the arrow, where a practitioner expects to find it. The label
+		// halo at radius ANGLE_LABEL_R is clear of the wheel rim, so there is
+		// no overlap with house dividers despite the shared angle.
 		const angle = this.toAngle(longitude);
 		const tickInner = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
 		const tickOuter = polarToCartesian(CENTER, CENTER, ANGLE_TICK_R, angle);
@@ -662,16 +690,71 @@ export class RoxyNatalChart extends LitElement {
 	}
 
 	private renderPlanets(planets: PlanetEntry[]) {
-		return planets.map((p) => {
-			if (!Number.isFinite(p.longitude)) return nothing;
-			const angle = this.toAngle(p.longitude);
-			const glyphPos = polarToCartesian(CENTER, CENTER, PLANET_R, angle);
-			const degPos = polarToCartesian(CENTER, CENTER, PLANET_R - 13, angle);
+		// Stellium-aware angular fan-out. Conjunctions within 8° are the norm
+		// in professional natal charts (Sun-Mercury-Venus cluster, outer-planet
+		// stacks). To keep every glyph legible without losing precision, sort
+		// by longitude and push later members forward in angle until they
+		// clear a minimum separation, then draw a thin leader line from each
+		// displaced glyph back to the planet's true position on the outer
+		// rim. Conventional approach used by professional Western natal
+		// software; preserves both readability and astronomical accuracy.
+		const MIN_SEPARATION = 7;
+		type Placed = {
+			p: PlanetEntry;
+			trueLon: number;
+			displayLon: number;
+		};
+		const sorted: Placed[] = planets
+			.filter((p) => Number.isFinite(p.longitude))
+			.map((p) => ({
+				p,
+				trueLon: normalizeLongitude(p.longitude),
+				displayLon: normalizeLongitude(p.longitude),
+			}))
+			.sort((a, b) => a.trueLon - b.trueLon);
+		// Forward sweep: clamp each to at least prev + MIN_SEPARATION.
+		for (let i = 1; i < sorted.length; i++) {
+			const prev = sorted[i - 1];
+			const cur = sorted[i];
+			if (!prev || !cur) continue;
+			const wanted = prev.displayLon + MIN_SEPARATION;
+			if (cur.displayLon < wanted) cur.displayLon = wanted;
+		}
+		// If the cluster overshot 360°, slide everything back equally so the
+		// stack stays anchored near the original longitudes.
+		const last = sorted[sorted.length - 1];
+		if (last && last.displayLon > 360) {
+			const shift = last.displayLon - 360;
+			for (const s of sorted) s.displayLon -= shift;
+		}
+		return sorted.map(({ p, trueLon, displayLon }) => {
+			const trueAngle = this.toAngle(trueLon);
+			const displayAngle = this.toAngle(displayLon);
+			const glyphPos = polarToCartesian(CENTER, CENTER, PLANET_R, displayAngle);
+			const degPos = polarToCartesian(
+				CENTER,
+				CENTER,
+				PLANET_R - 13,
+				displayAngle,
+			);
+			const rimPos = polarToCartesian(CENTER, CENTER, OUTER_R - 4, trueAngle);
+			const leaderInner = polarToCartesian(
+				CENTER,
+				CENTER,
+				PLANET_R + 8,
+				displayAngle,
+			);
 			const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
 			const sp = longitudeToSignPosition(p.longitude);
 			const retro = p.isRetrograde === true;
 			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
+			const offset = Math.abs(displayLon - trueLon) > 0.5;
 			return svg`<g>
+				${
+					offset
+						? svg`<line class="planet-leader" x1=${rimPos.x} y1=${rimPos.y} x2=${leaderInner.x} y2=${leaderInner.y} />`
+						: nothing
+				}
 				<text class="planet-glyph" x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro ? ' retrograde' : ''} - ${degLabel} ${p.sign ?? ''}</title>${glyph}</text>
 				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${degLabel}${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
 			</g>`;

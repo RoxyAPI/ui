@@ -6,7 +6,7 @@ import type {
 	NatalChartResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { polarToCartesian } from '../utils/degree.js';
+import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
 import {
 	ASPECT_CLASS,
 	formatNumber,
@@ -72,7 +72,9 @@ export class RoxySynastryChart extends LitElement {
 			svg {
 				display: block;
 				width: 100%;
-				max-width: 400px;
+				max-width: 560px;
+				aspect-ratio: 1 / 1;
+				height: auto;
 				margin: 0 auto;
 			}
 
@@ -93,6 +95,31 @@ export class RoxySynastryChart extends LitElement {
 				fill: var(--roxy-info, #0284c7);
 				font-weight: 600;
 				font-size: 13px;
+			}
+			.person-tag {
+				font-size: 7px;
+				font-weight: 700;
+				opacity: 0.85;
+			}
+			.planet-deg {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 7px;
+				font-family: var(--roxy-font-sans);
+			}
+			.planet-deg .retro {
+				fill: var(--roxy-danger, #dc2626);
+			}
+			.asc-tick {
+				stroke: var(--roxy-accent-fg, #b45309);
+				stroke-width: 1;
+				opacity: 0.75;
+			}
+			.asc-label {
+				fill: var(--roxy-accent-fg, #b45309);
+				font-size: 9px;
+				font-weight: 700;
+				font-family: var(--roxy-font-sans);
+				letter-spacing: 0.04em;
 			}
 			.aspect {
 				stroke-width: 0.8;
@@ -316,7 +343,8 @@ export class RoxySynastryChart extends LitElement {
 				/>
 				${this.renderSpokes()} ${this.renderSigns()}
 				${this.renderInterAspectLines(p1Planets, p2Planets, interAspects)}
-				${this.renderRing(p1Planets, P1_R, 'p1')} ${this.renderRing(p2Planets, P2_R, 'p2')}
+				${this.renderRing(p1Planets, P1_R, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, 'p2', 2)}
+				${this.renderAscendants(this.data)}
 			</svg>
 			<div class="legend-row">
 				<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>
@@ -376,18 +404,66 @@ export class RoxySynastryChart extends LitElement {
 		});
 	}
 
-	private renderRing(planets: PlanetEntry[], radius: number, cls: string) {
+	private renderRing(
+		planets: PlanetEntry[],
+		radius: number,
+		cls: string,
+		personIndex: 1 | 2,
+	) {
 		return planets.map((p) => {
 			if (!Number.isFinite(p.longitude)) return nothing;
-			const pos = polarToCartesian(
+			const angle = this.toAngle(p.longitude);
+			const pos = polarToCartesian(CENTER, CENTER, radius, angle);
+			// Degree label sits one tier inward from the glyph so the two
+			// concentric rings never blur their numbers into the aspect lines.
+			const degOffset = personIndex === 1 ? -12 : -10;
+			const degPos = polarToCartesian(
 				CENTER,
 				CENTER,
-				radius,
-				this.toAngle(p.longitude),
+				radius + degOffset,
+				angle,
 			);
 			const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
-			return svg`<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}</title>${glyph}</text>`;
+			const sp = longitudeToSignPosition(p.longitude);
+			const retro = p.isRetrograde === true;
+			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
+			const tooltip = `${p.name}${retro ? ' retrograde' : ''} - ${degLabel} ${sp.sign}`;
+			return svg`<g>
+				<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${tooltip}</title>${glyph}<tspan class="person-tag" dy="-0.55em" dx="0.15em">${personIndex}</tspan></text>
+				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${sp.degree}°${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
+			</g>`;
 		});
+	}
+
+	/**
+	 * Ascendant markers for both people. Drawn as small spokes at the inner
+	 * rim with the label outside, so the two rising signs are immediately
+	 * scannable on the wheel without depending on tooltips.
+	 */
+	private renderAscendants(data: SynastryWithPlanets) {
+		const items: ReturnType<typeof svg>[] = [];
+		const make = (
+			asc: { sign: string; degree: number } | undefined,
+			personIndex: 1 | 2,
+		) => {
+			if (!asc) return;
+			const signIdx = SIGNS_ORDER.findIndex(
+				(s) => s.toLowerCase() === asc.sign.toLowerCase(),
+			);
+			if (signIdx === -1) return;
+			const longitude = signIdx * 30 + asc.degree;
+			const angle = this.toAngle(longitude);
+			const innerR = personIndex === 1 ? P1_R + 14 : P2_R + 14;
+			const tickPos = polarToCartesian(CENTER, CENTER, innerR, angle);
+			const labelPos = polarToCartesian(CENTER, CENTER, OUTER_R + 14, angle);
+			items.push(svg`<g>
+				<line class="asc-tick" x1=${tickPos.x} y1=${tickPos.y} x2=${labelPos.x} y2=${labelPos.y} />
+				<text class="asc-label" x=${labelPos.x} y=${labelPos.y} text-anchor="middle" dominant-baseline="central">Asc${personIndex}</text>
+			</g>`);
+		};
+		make(data.person1?.ascendant, 1);
+		make(data.person2?.ascendant, 2);
+		return items;
 	}
 
 	private renderInterAspectLines(

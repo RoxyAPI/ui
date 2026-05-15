@@ -68,6 +68,13 @@ export class RoxyDashaTimeline extends LitElement {
 				color: var(--roxy-fg, #0a0a0a);
 			}
 
+			.balance {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
+				border-left: 2px solid var(--roxy-border, #e4e4e7);
+				padding-left: var(--roxy-space-sm, 0.5rem);
+				margin: 0;
+			}
 			.timeline {
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
@@ -79,25 +86,68 @@ export class RoxyDashaTimeline extends LitElement {
 				align-items: center;
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
+			.bar.now strong {
+				color: var(--roxy-accent-fg, #b45309);
+			}
+			.now-badge {
+				display: inline-block;
+				margin-left: 0.4em;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-accent-fg, #b45309);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
 			.bar-track {
+				position: relative;
 				height: 14px;
 				background: var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-full, 9999px);
 				overflow: hidden;
 			}
-			.bar-track > span {
+			.bar-fill {
 				display: block;
 				height: 100%;
 				background: var(--roxy-accent, #f59e0b);
+				opacity: 0.45;
 				transition:
 					width var(--roxy-motion-duration, 200ms)
 					var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			}
+			.bar-now .bar-fill {
+				opacity: 1;
+			}
+			.bar-progress {
+				position: absolute;
+				top: -2px;
+				bottom: -2px;
+				width: 2px;
+				background: var(--roxy-accent-fg, #b45309);
+				border-radius: 2px;
+				box-shadow: 0 0 0 2px
+					color-mix(in srgb, var(--roxy-accent, #f59e0b) 35%, transparent);
 			}
 			.dates {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-variant-numeric: tabular-nums;
 				text-align: right;
+			}
+			details.interp {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				background: var(--roxy-bg, #fff);
+			}
+			details.interp summary {
+				cursor: pointer;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			details.interp p {
+				margin: var(--roxy-space-sm, 0.5rem) 0 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-muted, #71717a);
 			}
 		`,
 	];
@@ -139,6 +189,7 @@ export class RoxyDashaTimeline extends LitElement {
 				}
 			</header>
 
+			${this.renderBirthBalance(d)}
 			${this.period === 'current' ? this.renderCurrent(d) : nothing}
 			${
 				periods.length > 0
@@ -147,7 +198,35 @@ export class RoxyDashaTimeline extends LitElement {
 					</div>`
 					: nothing
 			}
+			${this.renderActiveInterpretation(periods)}
 		</div>`;
+	}
+
+	private renderBirthBalance(d: DashaData) {
+		if (!('birthDashaBalance' in d) || !d.birthDashaBalance) return nothing;
+		const b = d.birthDashaBalance;
+		const lord = 'nakshatraLord' in d && d.nakshatraLord ? d.nakshatraLord : '';
+		const yrs = b.years ?? 0;
+		const mo = b.months ?? 0;
+		const da = b.days ?? 0;
+		const parts: string[] = [];
+		if (yrs) parts.push(`${yrs}y`);
+		if (mo) parts.push(`${mo}m`);
+		if (da) parts.push(`${da}d`);
+		const remaining = parts.length ? parts.join(' ') : '0d';
+		return html`<p class="balance">
+			Birth dasha balance: ${remaining} of
+			${lord ? html`<strong>${lord}</strong>` : 'the opening mahadasha'} remained at birth.
+		</p>`;
+	}
+
+	private renderActiveInterpretation(periods: DashaPeriod[]) {
+		const active = periods.find((p) => this.isCurrent(p));
+		if (!active?.interpretation) return nothing;
+		return html`<details class="interp">
+			<summary>${active.planet} mahadasha interpretation</summary>
+			<p>${active.interpretation}</p>
+		</details>`;
 	}
 
 	private renderCurrent(d: DashaData) {
@@ -201,12 +280,64 @@ export class RoxyDashaTimeline extends LitElement {
 		return [];
 	}
 
+	/** True when the current wall-clock time falls between the period's start and end. */
+	private isCurrent(p: DashaPeriod): boolean {
+		if (!p.startDate || !p.endDate) return false;
+		const now = Date.now();
+		const start = Date.parse(p.startDate);
+		const end = Date.parse(p.endDate);
+		if (Number.isNaN(start) || Number.isNaN(end)) return false;
+		return now >= start && now < end;
+	}
+
+	/**
+	 * Fractional progress (0..1) through a period at the current time. Used to
+	 * draw a vertical "now" marker inside the active bar. Returns -1 outside the
+	 * period so the caller can skip the marker.
+	 */
+	private progressIn(p: DashaPeriod): number {
+		if (!p.startDate || !p.endDate) return -1;
+		const start = Date.parse(p.startDate);
+		const end = Date.parse(p.endDate);
+		const now = Date.now();
+		if (
+			Number.isNaN(start) ||
+			Number.isNaN(end) ||
+			now < start ||
+			now >= end ||
+			end <= start
+		) {
+			return -1;
+		}
+		return (now - start) / (end - start);
+	}
+
 	private renderBar(p: DashaPeriod, max: number) {
 		const years = p.durationYears;
 		const width = max > 0 ? (years / max) * 100 : 0;
-		return html`<div class="bar" role="listitem">
-			<span>${p.planet}</span>
-			<span class="bar-track"><span style="width: ${width}%"></span></span>
+		const current = this.isCurrent(p);
+		const progress = current ? this.progressIn(p) : -1;
+		const trackClass = current ? 'bar-track bar-now' : 'bar-track';
+		return html`<div
+			class=${current ? 'bar now' : 'bar'}
+			role="listitem"
+			aria-current=${current ? 'time' : 'false'}
+		>
+			<span>
+				<strong>${p.planet}</strong>${current ? html`<span class="now-badge">Now</span>` : nothing}
+			</span>
+			<span class=${trackClass}>
+				<span class="bar-fill" style="width: ${width}%"></span>
+				${
+					progress >= 0
+						? html`<span
+							class="bar-progress"
+							style="left: ${progress * width}%"
+							aria-hidden="true"
+						></span>`
+						: nothing
+				}
+			</span>
 			<span class="dates">
 				${p.startDate ? formatYear(p.startDate) : ''}
 				${p.endDate ? html`- ${formatYear(p.endDate)}` : ''}

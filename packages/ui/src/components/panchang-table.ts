@@ -116,6 +116,9 @@ export class RoxyPanchangTable extends LitElement {
 				]
 			: [];
 
+		const transitions =
+			detailed && 'transitions' in detailed ? detailed.transitions : undefined;
+
 		return html`<div class="wrap" aria-label="Panchang">
 			<header class="head">
 				<h2 class="title">Panchang</h2>
@@ -164,6 +167,21 @@ export class RoxyPanchangTable extends LitElement {
 				</tbody>
 			</table>
 			${
+				transitions
+					? html`
+						<div class="section">Next transitions</div>
+						<table>
+							<tbody>
+								${this.renderTransitionRow('Tithi', transitions.tithi)}
+								${this.renderTransitionRow('Nakshatra', transitions.nakshatra)}
+								${this.renderTransitionRow('Yoga', transitions.yoga)}
+								${this.renderTransitionRow('Karana', transitions.karana)}
+							</tbody>
+						</table>
+					`
+					: nothing
+			}
+			${
 				this.detail === 'detailed' &&
 				(muhurtas.some((m) => !!m[1]) || inauspicious.some((m) => !!m[1]))
 					? html`
@@ -199,6 +217,19 @@ export class RoxyPanchangTable extends LitElement {
 		</div>`;
 	}
 
+	private renderTransitionRow(
+		label: string,
+		t: { endsAt?: string; next?: string } | undefined,
+	) {
+		if (!t?.endsAt) return nothing;
+		const when = formatTime(t.endsAt);
+		const next = t.next ? ` → ${t.next}` : '';
+		return html`<tr>
+			<th>${label}</th>
+			<td>ends ${when}${next}</td>
+		</tr>`;
+	}
+
 	private formatPart(v: unknown): string {
 		if (!v) return '';
 		if (typeof v === 'string') return v;
@@ -207,11 +238,13 @@ export class RoxyPanchangTable extends LitElement {
 				name?: string;
 				lord?: string;
 				phase?: string;
+				paksha?: string;
 				end?: string;
 			};
 			const parts = [
 				obj.name,
-				obj.lord ? `(${obj.lord})` : '',
+				obj.paksha ? `(${obj.paksha} paksha)` : '',
+				obj.lord ? `· ${obj.lord}` : '',
 				obj.phase,
 			].filter(Boolean);
 			return parts.join(' ');

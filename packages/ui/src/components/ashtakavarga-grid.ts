@@ -129,26 +129,67 @@ export class RoxyAshtakavargaGrid extends LitElement {
 				border-bottom: none;
 			}
 
-			/* Heat cells */
+			/* Heat cells. Single base hue (var --roxy-heat) mixed with
+			 * transparent at increasing percentages produces seven readable
+			 * tiers in both light and dark themes. Text colour stays
+			 * var(--roxy-fg) so it inverts with the host theme without
+			 * per-tier overrides. */
 			.heat-cell {
 				border-radius: var(--roxy-radius-sm, 4px);
 				font-weight: var(--roxy-weight-bold, 600);
 				min-width: 2rem;
 				font-variant-numeric: tabular-nums;
+				color: var(--roxy-fg, currentColor);
 			}
 
-			.heat-1 { background: var(--roxy-heat-1, #f0fdf4); color: var(--roxy-fg, #0a0a0a); }
-			.heat-2 { background: var(--roxy-heat-2, #d1fae5); color: var(--roxy-fg, #0a0a0a); }
-			.heat-3 { background: var(--roxy-heat-3, #a7f3d0); color: var(--roxy-fg, #0a0a0a); }
-			.heat-4 { background: var(--roxy-heat-4, #fde68a); color: var(--roxy-fg, #0a0a0a); }
-			.heat-5 { background: var(--roxy-heat-5, #fdba74); color: var(--roxy-fg, #0a0a0a); }
-			.heat-6 { background: var(--roxy-heat-6, #fb923c); color: var(--roxy-fg, #0a0a0a); }
-			.heat-7 { background: var(--roxy-heat-7, #ef4444); color: var(--roxy-fg, #0a0a0a); }
+			.heat-1 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 6%, transparent); }
+			.heat-2 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 14%, transparent); }
+			.heat-3 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 26%, transparent); }
+			.heat-4 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 40%, transparent); }
+			.heat-5 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 55%, transparent); }
+			.heat-6 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 72%, transparent); }
+			.heat-7 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 90%, transparent); }
 
 			/* Bhinna grid: planet header column narrower */
 			.bhinna-table th:first-child,
 			.bhinna-table td:first-child {
 				min-width: 5rem;
+			}
+
+			/* Tight cells below 480px so the 14-column bhinna grid stops
+			 * overflowing the viewport. The wrapper keeps overflow-x:auto as
+			 * a fallback for very long content. */
+			@container (max-width: 480px) {
+				.bhinna-table th,
+				.bhinna-table td {
+					padding: 0.3rem 0.35rem;
+					font-size: var(--roxy-text-xs, 0.75rem);
+				}
+				.bhinna-table th:first-child,
+				.bhinna-table td:first-child {
+					min-width: 3.5rem;
+				}
+				.heat-cell {
+					min-width: 1.5rem;
+				}
+			}
+			/* Visual cue that the bhinna table is scrollable below the breakpoint:
+			 * a soft gradient at the right edge so users see there is more to scroll. */
+			.overflow-scroll {
+				mask-image: linear-gradient(
+					to right,
+					transparent 0,
+					black 0.5rem,
+					black calc(100% - 1rem),
+					transparent 100%
+				);
+				-webkit-mask-image: linear-gradient(
+					to right,
+					transparent 0,
+					black 0.5rem,
+					black calc(100% - 1rem),
+					transparent 100%
+				);
 			}
 		`,
 	];
@@ -237,13 +278,34 @@ export class RoxyAshtakavargaGrid extends LitElement {
 		});
 	}
 
-	private heatClass(count: number): string {
+	/**
+	 * Bhinna bindus per planet per sign run 0..8 (sum of 0/1 contributions
+	 * from each of the 8 reference points). Bucket directly by raw count.
+	 */
+	private bhinnaHeat(count: number): string {
 		if (count <= 1) return 'heat-1';
 		if (count <= 2) return 'heat-2';
 		if (count <= 3) return 'heat-3';
 		if (count <= 4) return 'heat-4';
 		if (count <= 5) return 'heat-5';
 		if (count <= 6) return 'heat-6';
+		return 'heat-7';
+	}
+
+	/**
+	 * Sarva bindus per sign are the column total across all 7 planets, range
+	 * roughly 0..56 with typical values 20..40. Bucketed per classical
+	 * interpretation: 25 below par, 25..30 average, 30..40 strong, 40+ very
+	 * strong. Bucket spans intentionally widen at the extremes so a single
+	 * outlier sign reads as exceptional.
+	 */
+	private sarvaHeat(count: number): string {
+		if (count <= 18) return 'heat-1';
+		if (count <= 23) return 'heat-2';
+		if (count <= 28) return 'heat-3';
+		if (count <= 32) return 'heat-4';
+		if (count <= 37) return 'heat-5';
+		if (count <= 42) return 'heat-6';
 		return 'heat-7';
 	}
 
@@ -262,7 +324,7 @@ export class RoxyAshtakavargaGrid extends LitElement {
 				<tbody>
 					${signs.map((sign, i) => {
 						const count = sav.bindus[i] ?? 0;
-						const hc = this.heatClass(count);
+						const hc = this.sarvaHeat(count);
 						return html`<tr>
 							<td>
 								<div class="planet-cell">
@@ -306,7 +368,7 @@ export class RoxyAshtakavargaGrid extends LitElement {
 						(row) => html`<tr>
 						<td>${row.planet}</td>
 						${row.bindus.map((count) => {
-							const hc = this.heatClass(count);
+							const hc = this.bhinnaHeat(count);
 							return html`<td class="${`heat-cell ${hc}`}">${count}</td>`;
 						})}
 						<td>${row.total}</td>

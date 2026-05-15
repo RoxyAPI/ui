@@ -17,7 +17,7 @@ import {
 	oppositePoint,
 	polarToCartesian,
 } from '../src/utils/degree.js';
-import { buildHousesFromMeta } from '../src/utils/kundli-render.js';
+import { toKundliViewModel } from '../src/utils/kundli-render.js';
 
 describe('utils/degree', () => {
 	test('normalizes negative longitude into [0, 360)', () => {
@@ -77,8 +77,8 @@ describe('utils/degree', () => {
 });
 
 describe('utils/kundli-render', () => {
-	test('buildHousesFromMeta buckets each graha into its rashi cell', () => {
-		const houses = buildHousesFromMeta({
+	test('toKundliViewModel buckets each graha into its rashi cell', () => {
+		const vm = toKundliViewModel({
 			Lagna: { graha: 'Lagna', rashi: 'Libra' },
 			Sun: {
 				graha: 'Sun',
@@ -94,27 +94,82 @@ describe('utils/kundli-render', () => {
 			},
 			Moon: { graha: 'Moon', rashi: 'Cancer', longitude: 100 },
 		});
-		expect(houses).toHaveLength(12);
-		const aries = houses[0];
-		expect(aries?.sign).toBe('Aries');
-		expect(aries?.planets.map((p) => p.graha).sort()).toEqual(['Mars', 'Sun']);
-		// Lagna flags the Libra cell (7th) and is not rendered as a planet.
-		const libra = houses.find((h) => h.sign === 'Libra');
-		expect(libra?.isLagna).toBe(true);
-		expect(libra?.planets).toHaveLength(0);
-		const cancer = houses.find((h) => h.sign === 'Cancer');
-		expect(cancer?.planets[0]?.graha).toBe('Moon');
+		expect(vm.lagnaSign).toBe('Libra');
+		expect(Object.keys(vm.placements)).toHaveLength(12);
+		const aries = vm.placements.aries ?? [];
+		expect(aries.map((p) => p.graha).sort()).toEqual(['Mars', 'Sun']);
+		// Lagna flags the sign and is not bucketed as a planet.
+		expect(vm.placements.libra).toHaveLength(0);
+		expect(vm.placements.cancer?.[0]?.graha).toBe('Moon');
 		// retrograde and longitude carried through for the rich label/tooltip.
-		const mars = aries?.planets.find((p) => p.graha === 'Mars');
+		const mars = aries.find((p) => p.graha === 'Mars');
 		expect(mars?.isRetrograde).toBe(true);
 		expect(mars?.longitude).toBe(12.1);
 	});
 
-	test('buildHousesFromMeta tolerates an empty meta map', () => {
-		const houses = buildHousesFromMeta({});
-		expect(houses).toHaveLength(12);
-		expect(houses.every((h) => h.planets.length === 0)).toBe(true);
-		expect(houses.every((h) => !h.isLagna)).toBe(true);
+	test('toKundliViewModel tolerates an empty meta map', () => {
+		const vm = toKundliViewModel({});
+		expect(vm.lagnaSign).toBe('');
+		expect(Object.keys(vm.placements)).toHaveLength(12);
+		for (const sign of SIGNS_ORDER) {
+			expect(vm.placements[sign.toLowerCase()]).toHaveLength(0);
+		}
+	});
+
+	test('toKundliViewModel propagates the division label', () => {
+		const vm = toKundliViewModel({}, 'D9 Navamsa');
+		expect(vm.divisionLabel).toBe('D9 Navamsa');
+	});
+
+	test('toKundliViewModel detects Lagna via graha field even when the key is not "Lagna"', () => {
+		const vm = toKundliViewModel({
+			asc: { graha: 'Lagna', rashi: 'Capricorn' },
+			Sun: { graha: 'Sun', rashi: 'Aries' },
+		});
+		expect(vm.lagnaSign).toBe('Capricorn');
+		expect(vm.placements.capricorn).toHaveLength(0);
+		expect(vm.placements.aries?.[0]?.graha).toBe('Sun');
+	});
+
+	test('toKundliViewModel tolerates null and undefined meta', () => {
+		const a = toKundliViewModel(undefined as unknown as Record<string, never>);
+		const b = toKundliViewModel(null as unknown as Record<string, never>);
+		expect(a.lagnaSign).toBe('');
+		expect(b.lagnaSign).toBe('');
+		expect(Object.keys(a.placements)).toHaveLength(12);
+		expect(Object.keys(b.placements)).toHaveLength(12);
+	});
+
+	test('toKundliViewModel ignores unrecognised rashi names without throwing', () => {
+		const vm = toKundliViewModel({
+			Sun: { graha: 'Sun', rashi: 'Atlantis' },
+			Moon: { graha: 'Moon', rashi: 'Pisces' },
+		});
+		expect(vm.placements.pisces?.[0]?.graha).toBe('Moon');
+		for (const sign of SIGNS_ORDER) {
+			if (sign !== 'Pisces') {
+				expect(vm.placements[sign.toLowerCase()]).toHaveLength(0);
+			}
+		}
+	});
+
+	test('PlacedGraha carries nakshatra and awastha into the view model', () => {
+		const vm = toKundliViewModel({
+			Lagna: { graha: 'Lagna', rashi: 'Taurus' },
+			Sun: {
+				graha: 'Sun',
+				rashi: 'Capricorn',
+				longitude: 280.5,
+				nakshatra: { name: 'Uttara Ashadha', pada: 2, lord: 'Sun' },
+				awastha: 'Yuva',
+				isRetrograde: false,
+			},
+		});
+		const sun = vm.placements.capricorn?.[0];
+		expect(sun?.nakshatra?.name).toBe('Uttara Ashadha');
+		expect(sun?.nakshatra?.pada).toBe(2);
+		expect(sun?.awastha).toBe('Yuva');
+		expect(sun?.longitude).toBeCloseTo(280.5);
 	});
 });
 

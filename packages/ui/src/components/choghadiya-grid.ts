@@ -92,6 +92,21 @@ export class RoxyChoghadiyaGrid extends LitElement {
 				background: transparent;
 				color: var(--roxy-fg, #0a0a0a);
 			}
+			.cho-tile.now {
+				outline: 2px solid var(--roxy-accent, #f59e0b);
+				outline-offset: 1px;
+				box-shadow: 0 0 0 4px
+					color-mix(in srgb, var(--roxy-accent, #f59e0b) 18%, transparent);
+			}
+			.now-badge {
+				display: inline-block;
+				margin-left: 0.4em;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-accent-fg, #b45309);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
 			.tile-name {
 				font-size: var(--roxy-text-base, 1rem);
 				font-weight: var(--roxy-weight-bold, 600);
@@ -120,6 +135,19 @@ export class RoxyChoghadiyaGrid extends LitElement {
 	@property({ attribute: false })
 	data: GetChoghadiyaResponse | null = null;
 
+	/**
+	 * True when the current wall-clock time falls inside this period. Both
+	 * `start` and `end` are ISO 8601 with timezone, so the comparison is
+	 * timezone-aware via the host's `Date` parsing.
+	 */
+	private isCurrent(period: ChoghadiyaPeriod): boolean {
+		const now = Date.now();
+		const start = Date.parse(period.start);
+		const end = Date.parse(period.end);
+		if (Number.isNaN(start) || Number.isNaN(end)) return false;
+		return now >= start && now < end;
+	}
+
 	private renderTile(period: ChoghadiyaPeriod) {
 		const effectClass =
 			period.effect === 'Good'
@@ -127,10 +155,17 @@ export class RoxyChoghadiyaGrid extends LitElement {
 				: period.effect === 'Bad'
 					? 'bad'
 					: 'neutral';
+		const current = this.isCurrent(period);
 		const lordGlyph = PLANET_GLYPH[capitalize(period.lord)] ?? '';
 		const timeRange = `${fmtTime(period.start)} - ${fmtTime(period.end)}`;
-		return html`<div class="cho-tile ${effectClass}" role="listitem">
-			<span class="tile-name">${period.name}</span>
+		return html`<div
+			class="cho-tile ${effectClass}${current ? ' now' : ''}"
+			role="listitem"
+			aria-current=${current ? 'time' : 'false'}
+		>
+			<span class="tile-name">
+				${period.name}${current ? html`<span class="now-badge">Now</span>` : nothing}
+			</span>
 			<span class="tile-time" aria-label="Time range">${timeRange}</span>
 			<span class="tile-lord">
 				${lordGlyph ? html`<span aria-hidden="true">${lordGlyph}</span>` : nothing}

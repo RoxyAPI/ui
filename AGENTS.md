@@ -319,12 +319,38 @@ export default function BirthChartView({ data }: { data: unknown }) {
 }
 ```
 
+## Theming and dark mode
+
+Components react to three signals in priority order. No events to dispatch. No JS bridge to write.
+
+| Signal | Where | Effect |
+|---|---|---|
+| `prefers-color-scheme: dark` | OS | Default. Follows user system setting. |
+| `data-theme="light"` or `data-theme="dark"` | `<html>` / `<body>` / any ancestor / the component itself | Wins over OS. Per-element override scope works. |
+| `.dark` class | Any ancestor | Equivalent to `data-theme="dark"`. Use when the host stack already ships a `.dark` toggle (Tailwind, shadcn). |
+
+To toggle at runtime:
+
+```ts
+document.documentElement.dataset.theme = 'dark'; // or 'light'
+```
+
+That single line re-themes every Roxy UI component on the page. Persist user choice in `localStorage` from your own code; the library does not own preferences.
+
+Per-element scope is supported:
+
+```html
+<roxy-natal-chart data-theme="dark" .data=${chart}></roxy-natal-chart>
+```
+
+Every visible aspect of the chart is driven by `--roxy-*` CSS custom properties on `:host`. Override any token on `:root`, on `:host`, or per element. Do not write Tailwind utility classes inside the components; the Shadow DOM boundary stops them at the door.
+
 ## Rules every agent must follow
 
 - Always call `/location/search` first before any chart endpoint that takes latitude, longitude, or timezone. Use `<roxy-location-search>` for the input UI.
 - Pass the response object directly. Components are stateless; they do not fetch internally except for `<roxy-location-search>`, `<roxy-endpoint-form>`, and the widgets auto-mount script.
 - Use the typed SDK from `@roxyapi/sdk` so prop shapes match the spec automatically.
-- Theming is CSS custom properties on `:root` or per element. Do not write Tailwind classes inside the components; the shadow DOM ignores them.
+- Theming is CSS custom properties on `:root` or per element. Switch light and dark via `data-theme` on any ancestor (see the table above). Do not write Tailwind classes inside the components; the shadow DOM ignores them.
 - Honor reduced motion. The library already respects `prefers-reduced-motion: reduce` and the `--roxy-motion-duration` variable.
 - A11y violations are CI failures. Do not paste over `role` or `aria-*` attributes; the components emit them correctly already.
 - Component types come from the OpenAPI spec via `@hey-api/openapi-ts`. Do not redefine response shapes locally; if a field is missing, fix the spec, regenerate, propagate.

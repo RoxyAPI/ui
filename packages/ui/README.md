@@ -76,16 +76,39 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
 }
 ```
 
-Pick a tone, set the vars, every chart and card follows. Full token reference at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). Live tweaker on the [demo site](https://roxyapi.github.io/ui/).
+Pick a tone, set the vars, every chart and card follows. Full token reference at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). Live tweaker on the [demo site](https://roxyapi.github.io/ui/). See the [FAQ](#faq) for switching between light and dark at runtime.
 
-## Gallery (chart-heavy components)
+## Gallery
+
+Every chart, table, and card adapts to light and dark automatically. Hover any image on GitHub to inspect tooltips.
+
+### Western astrology
 
 <table>
 <tr>
+<td width="50%"><strong>Natal chart</strong> · <code>&lt;roxy-natal-chart&gt;</code><br><sub>POST /astrology/natal-chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-light.png" alt="Natal chart wheel with 14 planets, real house cusps, IC DC Part of Fortune Vertex, aspect lines">
+</picture>
+</td>
 <td width="50%"><strong>Synastry</strong> · <code>&lt;roxy-synastry-chart&gt;</code><br><sub>POST /astrology/synastry</sub><br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-light.png" alt="Synastry dual-wheel with inter-aspects">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-light.png" alt="Synastry dual-wheel with inter-aspects table">
+</picture>
+</td>
+</tr>
+</table>
+
+### Vedic astrology
+
+<table>
+<tr>
+<td width="50%"><strong>Vedic kundli</strong> · <code>&lt;roxy-vedic-kundli&gt;</code><br><sub>POST /vedic-astrology/birth-chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-light.png" alt="Vedic kundli D1 rashi chart, South Indian style with Lagna marker">
 </picture>
 </td>
 <td width="50%"><strong>KP chart</strong> · <code>&lt;roxy-kp-chart&gt;</code><br><sub>POST /vedic-astrology/kp/chart</sub><br>
@@ -99,27 +122,60 @@ Pick a tone, set the vars, every chart and card follows. Full token reference at
 <td width="50%"><strong>Divisional chart</strong> · <code>&lt;roxy-divisional-chart&gt;</code><br><sub>POST /vedic-astrology/divisional-chart</sub><br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/divisional-chart-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/divisional-chart-light.png" alt="Vedic divisional chart D9 navamsa wheel">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/divisional-chart-light.png" alt="D2 to D60 varga chart, D9 navamsa shown">
 </picture>
 </td>
-<td width="50%"><strong>Dasha timeline</strong> · <code>&lt;roxy-dasha-timeline&gt;</code><br><sub>POST /vedic-astrology/dasha/&lbrace;current,major,sub&rbrace;</sub><br>
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-light.png" alt="Vimshottari dasha mahadasha and antardasha timeline">
-</picture>
-</td>
-</tr>
-<tr>
 <td width="50%"><strong>Ashtakavarga grid</strong> · <code>&lt;roxy-ashtakavarga-grid&gt;</code><br><sub>POST /vedic-astrology/ashtakavarga</sub><br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/ashtakavarga-grid-dark.png">
   <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/ashtakavarga-grid-light.png" alt="Ashtakavarga sarva and bhinna bindu heatmap">
 </picture>
 </td>
+</tr>
+<tr>
+<td width="50%"><strong>Dasha timeline</strong> · <code>&lt;roxy-dasha-timeline&gt;</code><br><sub>POST /vedic-astrology/dasha/&lbrace;current,major,sub&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-light.png" alt="Vimshottari mahadasha and antardasha timeline with progress bars">
+</picture>
+</td>
+<td width="50%"><strong>Shadbala table</strong> · <code>&lt;roxy-shadbala-table&gt;</code><br><sub>POST /vedic-astrology/shadbala</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/shadbala-table-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/shadbala-table-light.png" alt="Six-fold planetary strength bars with rupas and adequacy badges">
+</picture>
+</td>
+</tr>
+</table>
+
+### Other domains
+
+<table>
+<tr>
 <td width="50%"><strong>Tarot spread</strong> · <code>&lt;roxy-tarot-spread&gt;</code><br><sub>POST /tarot/spreads/&lbrace;three-card,celtic-cross,love&rbrace;</sub><br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/tarot-spread-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/tarot-spread-light.png" alt="Tarot spread with three-card layout and reading">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/tarot-spread-light.png" alt="Three-card tarot spread with position labels and reading">
+</picture>
+</td>
+<td width="50%"><strong>Biorhythm</strong> · <code>&lt;roxy-biorhythm-chart&gt;</code><br><sub>POST /biorhythm/&lbrace;daily,forecast,critical-days&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-light.png" alt="Physical, emotional, intellectual cycle bars">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>I Ching hexagram</strong> · <code>&lt;roxy-hexagram&gt;</code><br><sub>GET /iching/hexagrams/&lbrace;number&rbrace;, /iching/cast</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-light.png" alt="Hexagram with trigrams, judgment, image, changing lines">
+</picture>
+</td>
+<td width="50%"><strong>Numerology</strong> · <code>&lt;roxy-numerology-card&gt;</code><br><sub>POST /numerology/&lbrace;life-path,expression,personal-year,chart&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/numerology-card-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/numerology-card-light.png" alt="Life path number card with archetype, keywords, and interpretation">
 </picture>
 </td>
 </tr>
@@ -138,7 +194,7 @@ Tables, cards, forms, and helper components in the [live demo](https://roxyapi.g
 
 ## Start with one component
 
-Vanilla HTML. Three lines. No build step.
+Vanilla HTML. No build step. Replace `YOUR_API_KEY` with a publishable key from <https://roxyapi.com/account>.
 
 ```html
 <script
@@ -149,7 +205,7 @@ Vanilla HTML. Three lines. No build step.
 <roxy-natal-chart id="chart"></roxy-natal-chart>
 <script type="module">
 	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-	const roxy = createRoxy(import.meta.env?.ROXY_API_KEY);
+	const roxy = createRoxy('YOUR_API_KEY');
 	const { data } = await roxy.astrology.generateNatalChart({
 		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
 	});
@@ -157,7 +213,23 @@ Vanilla HTML. Three lines. No build step.
 </script>
 ```
 
-Then add the kundli, the panchang, the dasha timeline, the tarot spread.
+> **Unwrap `data` before passing to the component.** The SDK returns `{ data, error, request, response }`. Pass the envelope and the chart renders `[object Object]`. This is the most common integration bug.
+
+Want a Vedic kundli instead? Same shape, different SDK method:
+
+```html
+<roxy-vedic-kundli id="kundli" chart-style="south"></roxy-vedic-kundli>
+<script type="module">
+	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
+	const roxy = createRoxy('YOUR_API_KEY');
+	const { data } = await roxy.vedicAstrology.generateBirthChart({
+		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+	});
+	document.getElementById('kundli').data = data;
+</script>
+```
+
+In production, geocode the user's city with `<roxy-location-search>` (see [Quick start](#quick-start)) instead of hardcoding coordinates.
 
 ## Install
 
@@ -499,6 +571,35 @@ Local preview serves `apps/docs/` on port 3001. Same directory and same paths th
 Roxy UI runs in any framework that supports the DOM: **React, Next.js, Vue, Svelte, Angular, Solid, Astro, Qwik, Hono, Remix, Nuxt, SvelteKit, Lit, plain HTML, WordPress, Shopify themes that allow custom code, and any MCP-compatible AI agent**. Distribution paths: npm, jsDelivr CDN, shadcn registry. Use cases: astrology widgets, kundli matching, daily horoscope, tarot reader, numerology calculator, biorhythm dashboard, I Ching cast, panchang almanac, dasha timeline, moon phase tracker, synastry compatibility, dosha checker.
 
 ## FAQ
+
+<details>
+<summary><strong>How do I switch between light and dark mode?</strong></summary>
+
+No events. No JavaScript bridge. Components read three CSS signals in priority order:
+
+1. **`prefers-color-scheme`**: follows the operating system by default. Ship nothing, get correct behaviour.
+2. **`data-theme="dark"` or `data-theme="light"`** on any ancestor (typically `<html>` or `<body>`). Wins over system preference.
+3. **`.dark` class** on any ancestor. Equivalent to `data-theme="dark"`. Useful when the host stack already toggles a `.dark` class (Tailwind, shadcn).
+
+```ts
+// Toggle on click. No imports from this library needed.
+document.documentElement.dataset.theme =
+  document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+```
+
+```ts
+// React: bind theme to component state.
+useEffect(() => {
+  document.documentElement.dataset.theme = theme;
+}, [theme]);
+```
+
+Persist the choice in `localStorage` from your own code; the components do not own user preferences. Per-element overrides also work, so one chart can run in dark on an otherwise light page:
+
+```html
+<roxy-natal-chart data-theme="dark" .data=${chart}></roxy-natal-chart>
+```
+</details>
 
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
