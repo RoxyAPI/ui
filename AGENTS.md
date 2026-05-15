@@ -4,7 +4,7 @@ This file teaches AI coding agents (Claude Code, Cursor, Copilot, Codex, Gemini 
 
 This file ships inside both `@roxyapi/ui` and `@roxyapi/ui-react` on npm. After install, read it at `node_modules/@roxyapi/ui/AGENTS.md`.
 
-Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component types: the OpenAPI spec at `roxyapi.com/openapi.json`, regenerated into `packages/ui/src/types/types.gen.ts`.
+Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component types: the combined OpenAPI spec at `https://roxyapi.com/api/v2/openapi.json`, regenerated into `packages/ui/src/types/types.gen.ts`. Per-product specs live at `https://roxyapi.com/api/v2/{slug}/openapi.json`.
 
 ## Identity
 
