@@ -207,7 +207,7 @@ Vanilla HTML. No build step. Replace `YOUR_API_KEY` with a publishable key from 
 	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
 	const roxy = createRoxy('YOUR_API_KEY');
 	const { data } = await roxy.astrology.generateNatalChart({
-		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 	});
 	document.getElementById('chart').data = data;
 </script>
@@ -291,7 +291,7 @@ const roxy = createRoxy(process.env.ROXY_API_KEY!);
 
 // 1. Natal chart. The #1 Western query, called on every onboarding.
 const { data: natal } = await roxy.astrology.generateNatalChart({
-  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 });
 <RoxyNatalChart data={natal} />
 
@@ -302,59 +302,67 @@ const { data: horoscope } = await roxy.astrology.getDailyHoroscope({ path: { sig
 // 3. Synastry. The dating-app pro-tier feature, full inter-aspect analysis between two charts.
 const { data: synastry } = await roxy.astrology.calculateSynastry({
   body: {
-    person1: { date: '1990-01-15', time: '14:30:00', latitude: 28.61, longitude: 77.20, timezone: 5.5 },
+    person1: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
     person2: { date: '1992-07-22', time: '09:00:00', latitude: 19.07, longitude: 72.87, timezone: 5.5 },
   },
 });
 <RoxySynastryChart data={synastry} />
 ```
 
-### 2. Vedic astrology (kundli, panchang, dasha, dosha, KP, ashtakavarga)
+### 2. Vedic astrology (kundli, panchang, dasha, dosha, KP, ashtakavarga, divisional)
 
-The depth moat. India astrology market: $163M in 2024, projected $1.8B by 2030 (49% CAGR). Kundli, panchang, dasha, dosha, and KP horary are the five Google-dominant queries for every matrimonial platform, kundli generator, and muhurat app.
+The depth moat. India astrology market: $163M in 2024, projected $1.8B by 2030 (49% CAGR). Kundli, panchang, dasha, dosha, KP horary, and divisional charts (D9 Navamsa, D10 Dasamsa) are the highest-traffic Vedic queries for every matrimonial platform, kundli generator, muhurat app, and professional reader.
 
 ```tsx
 import {
   RoxyVedicKundli, RoxyVedicPlanetsTable, RoxyPanchangTable,
   RoxyDashaTimeline, RoxyDoshaCard, RoxyKpChart, RoxyAshtakavargaGrid,
+  RoxyDivisionalChart,
 } from '@roxyapi/ui-react';
 
 // Kundli + positions table share a single API call (the same response renders both).
 const { data: kundli } = await roxy.vedicAstrology.generateBirthChart({
-  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 });
 <RoxyVedicKundli data={kundli} chart-style="south" />
 <RoxyVedicPlanetsTable data={kundli} />
 
 // Panchang. Tithi, nakshatra, yoga, karana, rahu kaal, abhijit muhurta in one call.
 const { data: panchang } = await roxy.vedicAstrology.getDetailedPanchang({
-  body: { date: '2026-04-22', latitude: 28.6139, longitude: 77.209 },
+  body: { date: '2026-04-22', latitude: 19.07, longitude: 72.88 },
 });
 <RoxyPanchangTable data={panchang} />
 
 // Vimshottari dasha. The 120-year planetary period timeline.
 const { data: dasha } = await roxy.vedicAstrology.getMajorDashas({
-  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 });
 <RoxyDashaTimeline data={dasha} period="major" />
 
 // Mangal Dosha. Most-asked matrimonial question in India.
 const { data: dosha } = await roxy.vedicAstrology.checkManglikDosha({
-  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 });
 <RoxyDoshaCard data={dosha} />
 
 // KP chart. The horary timing tool, sub-lord stellar hierarchy on every cusp.
 const { data: kp } = await roxy.vedicAstrology.generateKpChart({
-  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 });
 <RoxyKpChart data={kp} />
 
 // Ashtakavarga. Bindu strength heatmap with Sarva, Bhinna, Shodhya Pinda views.
 const { data: ashtaka } = await roxy.vedicAstrology.calculateAshtakavarga({
-  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 });
 <RoxyAshtakavargaGrid data={ashtaka} />
+
+// Divisional chart (D9 Navamsa shown). `division` is the integer 9 — not "D9".
+// Supported: 2, 3, 4, 7, 9, 10, 12, 16, 20, 24, 27, 30, 40, 45, 60.
+const { data: d9 } = await roxy.vedicAstrology.generateDivisionalChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5, division: 9 },
+});
+<RoxyDivisionalChart data={d9} />
 ```
 
 ### 3. Numerology (life path, full chart, personal year)
@@ -602,6 +610,16 @@ Per-component bundles run 8-10 KB gzipped, capped at 30 KB by CI. The full bundl
 </details>
 
 <details>
+<summary><strong>How tall does each component render on mobile?</strong></summary>
+
+Charts stay square: every wheel and grid component honours `aspect-ratio: 1 / 1` capped at `max-width: 560px`, so at a 390px phone width the chart itself is around 390px tall.
+
+What can grow vertically is the data card around it. `<roxy-natal-chart>` stacks the wheel above the aspect-grid tab, the dignity table, and the planet-reading accordion; the host article on the demo page measures roughly 2100px tall at 390px width because the accordion is fully expanded server-side. Production embeds usually drop the accordion or wrap the chart in a sized container, and the wheel alone fits the fold. Same applies to the synastry chart and the dasha timeline.
+
+Rule of thumb: chart-only components (`<roxy-vedic-kundli>`, `<roxy-divisional-chart>`, `<roxy-ashtakavarga-grid>`, `<roxy-tarot-card>`) stay within their aspect ratio. Components that bundle a wheel plus interpretation copy (`<roxy-natal-chart>`, `<roxy-synastry-chart>`, `<roxy-dasha-timeline>`) grow tall to fit their content. Pick the level of detail by component choice.
+</details>
+
+<details>
 <summary><strong>Does this work with Next.js App Router, Remix, Nuxt, SvelteKit, and Astro?</strong></summary>
 
 Yes. The components are standard custom elements; any framework that touches the DOM can mount them. For SSR/RSC frameworks, fetch on the server, pass the response to a client island. Next.js App Router pattern:
@@ -615,7 +633,7 @@ const roxy = createRoxy(process.env.ROXY_API_KEY!);
 
 export default async function Page() {
   const { data } = await roxy.astrology.generateNatalChart({
-    body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+    body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
   });
   return <ChartView data={data} />;
 }

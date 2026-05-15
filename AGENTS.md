@@ -22,6 +22,7 @@ Map the natural-language request to a component first; fall back to the table be
 | "birth chart", "natal chart", "Western chart", "show me my planets" | `<roxy-natal-chart>` |
 | "match two birth charts", "compare us in Western astrology", "synastry" | `<roxy-synastry-chart>` |
 | "kundli", "Vedic chart", "rashi chart", "South/North Indian chart" | `<roxy-vedic-kundli>` |
+| "D9", "navamsa", "varga chart", "divisional chart", "D10 dasamsa", "D60 shashtiamsa" | `<roxy-divisional-chart>` (request body needs `division: integer`, supported 2,3,4,7,9,10,12,16,20,24,27,30,40,45,60) |
 | "kundli matching", "Guna Milan", "match for marriage", "36-point compatibility" | `<roxy-guna-milan>` |
 | "are we compatible", "compatibility score", "love score" (cross-domain) | `<roxy-compatibility-card>` |
 | "panchang for today", "tithi", "nakshatra", "muhurta", "auspicious times" | `<roxy-panchang-table>` |
@@ -188,7 +189,7 @@ import type { NatalChartResponse } from '@roxyapi/sdk';
 	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
 	const roxy = createRoxy('pk_live_xxx');
 	const { data } = await roxy.astrology.generateNatalChart({
-		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 	});
 	document.getElementById('chart').data = data;
 </script>
@@ -268,8 +269,8 @@ Use a publishable key (`pk_live_*` or `pk_test_*`) for client-side embeds. Get o
 	data-publishable-key="pk_live_xxx"
 	data-date="1990-01-15"
 	data-time="14:30:00"
-	data-latitude="28.6139"
-	data-longitude="77.209"
+	data-latitude="19.07"
+	data-longitude="72.88"
 	data-timezone="5.5"
 ></div>
 ```
@@ -283,7 +284,7 @@ A remote MCP server at `roxyapi.com/mcp/{domain}` exposes each RoxyAPI endpoint 
 ```ts
 // Pseudocode for any MCP-aware agent
 const result = await mcp.call('roxyapi.astrology.generate_natal_chart', {
-	date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5,
+	date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5,
 });
 document.querySelector('roxy-natal-chart').data = result;
 ```
@@ -303,7 +304,7 @@ const roxy = createRoxy(process.env.ROXY_API_KEY!);
 
 export default async function Page() {
 	const { data } = await roxy.vedicAstrology.generateBirthChart({
-		body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 	});
 	return <BirthChartView data={data} />;
 }
