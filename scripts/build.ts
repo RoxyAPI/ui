@@ -131,12 +131,13 @@ async function copyDir(from: string, to: string) {
 
 // Each workspace publishes from its own package directory. npm auto-includes
 // README.md, LICENSE, and AGENTS.md from that directory only, so the root
-// files do not land in the tarball. Mirror the root README into both
-// packages, then patch the Install section so each package renders its own
-// primary install path first (jsDelivr UMD + Lit for `@roxyapi/ui`,
-// `npm install @roxyapi/ui-react` + JSX for `@roxyapi/ui-react`). The body of
-// every other section is shared. AGENTS.md and LICENSE mirror verbatim so AI
-// agents installing either package read the same canonical guidance.
+// files do not land in the tarball. Mirror all three into both packages on
+// every build; the per-package copies are gitignored build artifacts and the
+// root files are the single source of truth. AGENTS.md and LICENSE mirror
+// verbatim. README is patched so each package renders its own primary
+// install path first (jsDelivr UMD + Lit for `@roxyapi/ui`, `npm install
+// @roxyapi/ui-react` + JSX for `@roxyapi/ui-react`); the body of every
+// other section is shared.
 async function copyRootDocsToWorkspaces() {
 	const root = await Bun.file('README.md').text();
 	const license = await Bun.file('LICENSE').text();
