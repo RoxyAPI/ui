@@ -39,7 +39,10 @@ async function syncFile(path: string) {
 }
 
 async function main() {
-	for (const path of ['README.md', 'AGENTS.md', 'packages/ui/AGENTS.md']) {
+	// Root README.md and AGENTS.md are the single source of truth. `bun run build`
+	// mirrors them into packages/ui and packages/ui-react via
+	// `copyRootDocsToWorkspaces`, so we do not patch the per-package copies here.
+	for (const path of ['README.md', 'AGENTS.md']) {
 		await syncFile(path);
 	}
 }

@@ -88,32 +88,32 @@ Pick a tone, set the vars, every chart and card follows. Full token reference at
   <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-light.png" alt="Synastry dual-wheel with inter-aspects">
 </picture>
 </td>
-<td width="50%"><strong>Moon phase</strong> · <code>&lt;roxy-moon-phase&gt;</code><br><sub>GET /astrology/moon-phase/&lbrace;current,upcoming,calendar&rbrace;</sub><br>
+<td width="50%"><strong>KP chart</strong> · <code>&lt;roxy-kp-chart&gt;</code><br><sub>POST /vedic-astrology/kp/chart</sub><br>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/moon-phase-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/moon-phase-light.png" alt="Moon phase card with illumination and age">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kp-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kp-chart-light.png" alt="KP chart with cusps and sub-lord stellar hierarchy">
 </picture>
 </td>
 </tr>
 <tr>
-<td width="50%"><strong>Biorhythm</strong> · <code>&lt;roxy-biorhythm-chart&gt;</code><br><sub>POST /biorhythm/&lbrace;daily,forecast,critical-days&rbrace;</sub><br>
+<td width="50%"><strong>Divisional chart</strong> · <code>&lt;roxy-divisional-chart&gt;</code><br><sub>POST /vedic-astrology/divisional-chart</sub><br>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-light.png" alt="Biorhythm physical, emotional, intellectual cycle bars">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/divisional-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/divisional-chart-light.png" alt="Vedic divisional chart D9 navamsa wheel">
 </picture>
 </td>
-<td width="50%"><strong>I Ching hexagram</strong> · <code>&lt;roxy-hexagram&gt;</code><br><sub>GET /iching/hexagrams/&lbrace;number&rbrace;, /iching/cast</sub><br>
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-light.png" alt="I Ching hexagram with trigrams and judgment">
-</picture>
-</td>
-</tr>
-<tr>
 <td width="50%"><strong>Dasha timeline</strong> · <code>&lt;roxy-dasha-timeline&gt;</code><br><sub>POST /vedic-astrology/dasha/&lbrace;current,major,sub&rbrace;</sub><br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-dark.png">
   <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-light.png" alt="Vimshottari dasha mahadasha and antardasha timeline">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Ashtakavarga grid</strong> · <code>&lt;roxy-ashtakavarga-grid&gt;</code><br><sub>POST /vedic-astrology/ashtakavarga</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/ashtakavarga-grid-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/ashtakavarga-grid-light.png" alt="Ashtakavarga sarva and bhinna bindu heatmap">
 </picture>
 </td>
 <td width="50%"><strong>Tarot spread</strong> · <code>&lt;roxy-tarot-spread&gt;</code><br><sub>POST /tarot/spreads/&lbrace;three-card,celtic-cross,love&rbrace;</sub><br>
@@ -209,14 +209,185 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 
 > **Timezone format.** RoxyAPI accepts both forms: a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). Pick one and stay consistent. The decimal form is shorter and what `/location/search` returns; examples on this page use it. The IANA form is correct over DST boundaries when historical accuracy matters.
 
+## Most-used components per domain
+
+The highest-demand components by domain, in the order you are most likely to ship them. Each pairing shows the SDK call that returns the response shape the component renders. Spec change in the API translates to typed change at the component boundary; the pairing below is derived from the live OpenAPI spec, not invented. Full catalog in the [Components](#components) table.
+
+### 1. Western astrology (natal chart, daily horoscope, synastry)
+
+The global astrology app market is $6.27B and almost entirely Western. Zodiac dating apps, Co-Star-style natal chart products, daily horoscope features, and lunar-cycle wellness apps all ship these first.
+
+```tsx
+import { createRoxy } from '@roxyapi/sdk';
+import { RoxyNatalChart, RoxyHoroscopeCard, RoxySynastryChart } from '@roxyapi/ui-react';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+// 1. Natal chart. The #1 Western query, called on every onboarding.
+const { data: natal } = await roxy.astrology.generateNatalChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+});
+<RoxyNatalChart data={natal} />
+
+// 2. Daily horoscope. Highest per-user call frequency in the catalog, drives DAUs and push.
+const { data: horoscope } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });
+<RoxyHoroscopeCard data={horoscope} />
+
+// 3. Synastry. The dating-app pro-tier feature, full inter-aspect analysis between two charts.
+const { data: synastry } = await roxy.astrology.calculateSynastry({
+  body: {
+    person1: { date: '1990-01-15', time: '14:30:00', latitude: 28.61, longitude: 77.20, timezone: 5.5 },
+    person2: { date: '1992-07-22', time: '09:00:00', latitude: 19.07, longitude: 72.87, timezone: 5.5 },
+  },
+});
+<RoxySynastryChart data={synastry} />
+```
+
+### 2. Vedic astrology (kundli, panchang, dasha, dosha, KP, ashtakavarga)
+
+The depth moat. India astrology market: $163M in 2024, projected $1.8B by 2030 (49% CAGR). Kundli, panchang, dasha, dosha, and KP horary are the five Google-dominant queries for every matrimonial platform, kundli generator, and muhurat app.
+
+```tsx
+import {
+  RoxyVedicKundli, RoxyVedicPlanetsTable, RoxyPanchangTable,
+  RoxyDashaTimeline, RoxyDoshaCard, RoxyKpChart, RoxyAshtakavargaGrid,
+} from '@roxyapi/ui-react';
+
+// Kundli + positions table share a single API call (the same response renders both).
+const { data: kundli } = await roxy.vedicAstrology.generateBirthChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+});
+<RoxyVedicKundli data={kundli} chart-style="south" />
+<RoxyVedicPlanetsTable data={kundli} />
+
+// Panchang. Tithi, nakshatra, yoga, karana, rahu kaal, abhijit muhurta in one call.
+const { data: panchang } = await roxy.vedicAstrology.getDetailedPanchang({
+  body: { date: '2026-04-22', latitude: 28.6139, longitude: 77.209 },
+});
+<RoxyPanchangTable data={panchang} />
+
+// Vimshottari dasha. The 120-year planetary period timeline.
+const { data: dasha } = await roxy.vedicAstrology.getMajorDashas({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+});
+<RoxyDashaTimeline data={dasha} period="major" />
+
+// Mangal Dosha. Most-asked matrimonial question in India.
+const { data: dosha } = await roxy.vedicAstrology.checkManglikDosha({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+});
+<RoxyDoshaCard data={dosha} />
+
+// KP chart. The horary timing tool, sub-lord stellar hierarchy on every cusp.
+const { data: kp } = await roxy.vedicAstrology.generateKpChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+});
+<RoxyKpChart data={kp} />
+
+// Ashtakavarga. Bindu strength heatmap with Sarva, Bhinna, Shodhya Pinda views.
+const { data: ashtaka } = await roxy.vedicAstrology.calculateAshtakavarga({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 28.6139, longitude: 77.209, timezone: 5.5 },
+});
+<RoxyAshtakavargaGrid data={ashtaka} />
+```
+
+### 3. Numerology (life path, full chart, personal year)
+
+Commodity content with durable demand. `life path number calculator` is among the highest-volume spiritual searches globally. Works without birth time. Easiest domain to integrate.
+
+```tsx
+import { RoxyNumerologyCard } from '@roxyapi/ui-react';
+
+// Life Path. The #1 numerology keyword, every calculator page starts here.
+const { data: lp } = await roxy.numerology.calculateLifePath({
+  body: { year: 1990, month: 1, day: 15 },
+});
+<RoxyNumerologyCard data={lp} type="life-path" />
+
+// Full numerology chart. Premium one-shot: all six core numbers plus karmic, personal year.
+const { data: chart } = await roxy.numerology.generateNumerologyChart({
+  body: { fullName: 'Jane Smith', year: 1990, month: 1, day: 15 },
+});
+<RoxyNumerologyCard data={chart} type="chart" />
+
+// Personal Year. Annual forecast, drives January traffic spikes.
+const { data: pyear } = await roxy.numerology.calculatePersonalYear({
+  body: { month: 1, day: 15, year: 2026 },
+});
+<RoxyNumerologyCard data={pyear} type="personal-year" />
+```
+
+### 4. Tarot (daily card, three-card, Celtic Cross)
+
+High search volume, evergreen. The tarot card database is the highest per-endpoint call count in the catalog because apps fetch once and cache.
+
+```tsx
+import { RoxyTarotCard, RoxyTarotSpread } from '@roxyapi/ui-react';
+
+// Daily card. Stickiest tarot feature. Seed per user for deterministic once-per-day behavior.
+const { data: daily } = await roxy.tarot.getDailyCard({ body: { seed: 'user-42' } });
+<RoxyTarotCard data={daily} />
+
+// Three-card past-present-future. Most-drawn spread on every tarot platform.
+const { data: three } = await roxy.tarot.castThreeCard({
+  body: { question: 'My next quarter', seed: 'user-42' },
+});
+<RoxyTarotSpread data={three} />
+
+// Celtic Cross. Professional-reader spread. Premium-tier, ten positions.
+const { data: cc } = await roxy.tarot.castCelticCross({
+  body: { question: 'What should I focus on?', seed: 'user-42' },
+});
+<RoxyTarotSpread data={cc} />
+```
+
+### 5. Biorhythm (daily, forecast)
+
+Zero competition domain. Steady search volume with the top Google result being a static calculator page. Pure land-grab for wellness, productivity, sports, and couples apps.
+
+```tsx
+import { RoxyBiorhythmChart } from '@roxyapi/ui-react';
+
+// Daily biorhythm. Physical, emotional, intellectual, intuitive, plus seven extended cycles.
+// Seeded for stable "biorhythm of the day" features; pass a userId for per-user determinism.
+const { data: bio } = await roxy.biorhythm.getDailyBiorhythm({
+  body: { seed: 'user-42', date: '2026-04-23' },
+});
+<RoxyBiorhythmChart data={bio} />
+
+// Multi-day forecast. Best-day / worst-day planner for calendar and coaching products.
+const { data: forecast } = await roxy.biorhythm.getForecast({
+  body: { birthDate: '1990-01-15', startDate: '2026-04-01', endDate: '2026-04-30' },
+});
+<RoxyBiorhythmChart data={forecast} mode="forecast" />
+```
+
+### 6. I Ching (cast a reading, hexagram lookup)
+
+Meditation apps, decision-making tools, and wisdom chatbots. `i ching API` and `hexagram API` are the keywords.
+
+```tsx
+import { RoxyHexagram } from '@roxyapi/ui-react';
+
+// Cast a reading. Active divination, primary hexagram plus changing lines and transformed hexagram.
+const { data: reading } = await roxy.iching.castReading({ query: { seed: 'user-42' } });
+<RoxyHexagram data={reading} />
+
+// Random hexagram. One-shot daily-hexagram surface for ambient apps.
+const { data: random } = await roxy.iching.getRandomHexagram();
+<RoxyHexagram data={random} />
+```
+
+> **Pairing rule.** The SDK return value already matches the `data` prop on every component. No field renames, no glue code. When a new endpoint ships in the spec, the SDK and the component types regenerate together; the same pattern keeps working.
+
 ## API keys
 
 Get keys at <https://roxyapi.com/account>.
 
 - **Secret key** (server-side only). Use in Node, Bun, Hono, Next.js route handlers, Workers. Never commit, never ship in client bundles.
-- **Publishable key** (`pk_live_*` / `pk_test_*`). Safe in browsers, locked to the origins you register on the key. Use with the widgets auto-mount script for WordPress, Shopify, static HTML, embed scenarios. The API gateway rejects requests from any origin not on the key's allowlist.
+- **Publishable key** (`pk_live_*` / `pk_test_*`). Safe in browsers, locked to the origins you register on the key. Use with the widgets auto-mount script for WordPress, Shopify, static HTML, embed scenarios. The API gateway rejects requests from any origin not on the allowlist.
 
-For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your server env. For the widgets auto-mount path (`data-publishable-key="pk_live_xxx"`), use a publishable key with your site's domain registered.
+For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your server env. For the widgets auto-mount path (`data-publishable-key="pk_live_xxx"`), use a publishable key with your domain registered on it.
 
 ## Distribution
 

@@ -14,7 +14,7 @@ Roxy UI is the official web component library for the RoxyAPI catalog. Component
 
 ### Pick by user phrase
 
-Map the user's natural-language request to a component first; fall back to the table below if the request names a specific endpoint.
+Map the natural-language request to a component first; fall back to the table below if the request names a specific endpoint.
 
 | If the user says... | Render |
 |---|---|
@@ -78,9 +78,13 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-data>` | Helper | Any response shape | Generic fallback renderer for unknown shapes |
 <!-- END:COMPONENTS -->
 
-## SDK response envelope (read this first)
+## Common integration bugs (read this first)
 
-The `@roxyapi/sdk` returns `{ data, error, request, response }`. **Always destructure `data` before passing to a component.** Passing the full envelope produces `[object Object]` in the rendered chart. This is the single most common integration bug.
+These are the bugs that come up over and over. Read this section before writing the first line of integration code.
+
+### 1. Envelope not unwrapped
+
+The `@roxyapi/sdk` returns `{ data, error, request, response }`. **Always destructure `data` before passing to a component.** Passing the full envelope renders `[object Object]`. This is the single most common integration bug.
 
 ```ts
 // Wrong: passes the envelope
@@ -94,9 +98,79 @@ element.data = data;
 
 Every snippet below follows this rule.
 
-## Timezone format
+### 2. Hardcoded coordinates
 
-Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). The decimal form is what `/location/search` returns; pick one and stay consistent within a single integration.
+Every chart endpoint (Western, Vedic, KP, synastry, transits, dasha, dosha, panchang) needs `latitude`, `longitude`, and `timezone`. Never ask the user to type coordinates. Call `/location/search` first, then feed the result into the chart endpoint.
+
+```ts
+// Right
+const { data: cities } = await roxy.location.searchCities({ query: { q: 'Mumbai' } });
+const { latitude, longitude, timezone } = cities.cities[0];
+const { data: chart } = await roxy.astrology.generateNatalChart({
+  body: { date, time, latitude, longitude, timezone },
+});
+```
+
+### 3. Timezone format inconsistency
+
+Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). The decimal form is what `/location/search` returns; the IANA form is correct over DST boundaries. Pick one and stay consistent in a single integration. Mixing them does not break the API but makes the bug surface area larger.
+
+### 4. Secret key in the browser
+
+There are two key classes. **Secret keys are unprefixed** and grant full access; they belong server-side only (Node, Bun, Hono, Next.js route handlers, Workers, Edge functions). **Publishable keys** are prefixed `pk_live_*` or `pk_test_*` and are safe in the browser; they are locked to an origin allowlist at the API gateway. For widgets, embeds, vanilla HTML, and `data-publishable-key` use the publishable key. For the typed SDK on a server, use the secret key.
+
+```ts
+// Server (Next.js route handler, Workers, Bun): secret key
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+// Browser (widgets auto-mount): publishable key
+<div data-roxy-widget="natal-chart" data-publishable-key="pk_live_xxx" ...></div>
+```
+
+### 5. Missing `'use client'` in Next.js App Router
+
+The React components in `@roxyapi/ui-react` mount Custom Elements, which need the DOM. In the App Router, files that import them must declare `'use client'` at the top. Server Components can fetch with the SDK; the client component renders.
+
+```tsx
+// app/chart-view.tsx
+'use client';
+import { RoxyNatalChart } from '@roxyapi/ui-react';
+
+export default function ChartView({ data }) {
+  return <RoxyNatalChart data={data} />;
+}
+```
+
+### 6. React 17 or 18 swallowing custom events
+
+React 19 routes hyphenated DOM events through camelCase props correctly. React 17 and 18 do not. On 17/18, attach the listener with a ref:
+
+```tsx
+const ref = useRef<HTMLElement>(null);
+useEffect(() => {
+  const el = ref.current;
+  if (!el) return;
+  const handler = (e: Event) => setData((e as CustomEvent).detail);
+  el.addEventListener('roxy-location-select', handler);
+  return () => el.removeEventListener('roxy-location-select', handler);
+}, []);
+
+return <roxy-location-search ref={ref} />;
+```
+
+The React 19 path is `<RoxyLocationSearch onRoxyLocationSelect={handler} />`.
+
+### 7. Local response interface drift
+
+Do not declare `interface XyzData { ... }` for a RoxyAPI response. Import the spec-derived type from `@roxyapi/sdk` (or let the SDK return type flow through inference). Local interfaces drift the moment the spec changes; the component will keep compiling while rendering nothing.
+
+```ts
+// Wrong
+interface NatalChart { planets: ...; houses: ...; }
+
+// Right
+import type { NatalChartResponse } from '@roxyapi/sdk';
+```
 
 ## Integration patterns
 
@@ -173,7 +247,7 @@ export function BirthChartView() {
 	const form = document.querySelector('roxy-endpoint-form');
 	form.addEventListener('roxy-submit', async (e) => {
 		const { values } = e.detail;
-		const { data: kundli } = await roxy.vedic.generateBirthChart({ body: values });
+		const { data: kundli } = await roxy.vedicAstrology.generateBirthChart({ body: values });
 		document.querySelector('roxy-vedic-kundli').data = kundli;
 	});
 </script>
@@ -181,7 +255,7 @@ export function BirthChartView() {
 
 ### Pattern 4: widgets auto-mount (no JavaScript wiring)
 
-Use a publishable key (`pk_live_*` or `pk_test_*`) for client-side embeds. Get one at <https://roxyapi.com/account>. Publishable keys are origin-restricted at the API gateway. Register the customer's domain (e.g. `https://customer.com`) when creating the key, and the gateway will reject requests from any other origin. Never use a secret key in client-side code (secret keys are unprefixed and live server-side only).
+Use a publishable key (`pk_live_*` or `pk_test_*`) for client-side embeds. Get one at <https://roxyapi.com/account>. Publishable keys are origin-restricted at the API gateway. Register the customer domain (e.g. `https://customer.com`) when creating the key, and the gateway will reject requests from any other origin. Never use a secret key in client-side code (secret keys are unprefixed and live server-side only).
 
 ```html
 <script
@@ -265,7 +339,7 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 - Use `@roxyapi/ui-react` for React projects. Use `@roxyapi/ui` directly elsewhere.
 - Do not write your own kundli component. The lifted layout in `<roxy-vedic-kundli>` is the canonical RoxyAPI render path.
 - Do not call astrology endpoints with hardcoded coordinates. Always geocode first via `<roxy-location-search>` or `roxy.location.searchCities()`.
-- Do not declare a local `interface XyzData` to describe a RoxyAPI response. Import the type from the spec-derived bundle: `import type { XyzResponse } from '@roxyapi/ui'` (or the SDK's typed methods). Local interfaces drift the moment the spec changes.
+- Do not declare a local `interface XyzData` to describe a RoxyAPI response. Import the type from the spec-derived bundle: `import type { XyzResponse } from '@roxyapi/sdk'`. Local interfaces drift the moment the spec changes.
 - Do not write Tailwind utility classes inside a component. The Shadow DOM boundary stops them at the door. Theme through `--roxy-*` CSS custom properties on `:root` or per element instead.
 - Do not fetch inside chart, table, or card components. They are stateless: pass `data` as a prop. Documented exceptions are `<roxy-location-search>`, `<roxy-endpoint-form>`, and the widgets auto-mount script.
 - Do not redefine theme tokens or invent your own naming. Override the existing `--roxy-*` custom properties; the full list is in `THEMING.md`.

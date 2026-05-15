@@ -130,14 +130,17 @@ async function copyDir(from: string, to: string) {
 }
 
 // Each workspace publishes from its own package directory. npm auto-includes
-// README.md and LICENSE from that directory only, so the root files do not
-// land in the tarball. Mirror the root README into both packages, then patch
-// the Install section so each package renders its own primary install path
-// first (jsDelivr UMD + Lit for `@roxyapi/ui`, `npm install @roxyapi/ui-react`
-// + JSX for `@roxyapi/ui-react`). The body of every other section is shared.
+// README.md, LICENSE, and AGENTS.md from that directory only, so the root
+// files do not land in the tarball. Mirror the root README into both
+// packages, then patch the Install section so each package renders its own
+// primary install path first (jsDelivr UMD + Lit for `@roxyapi/ui`,
+// `npm install @roxyapi/ui-react` + JSX for `@roxyapi/ui-react`). The body of
+// every other section is shared. AGENTS.md and LICENSE mirror verbatim so AI
+// agents installing either package read the same canonical guidance.
 async function copyRootDocsToWorkspaces() {
 	const root = await Bun.file('README.md').text();
 	const license = await Bun.file('LICENSE').text();
+	const agents = await Bun.file('AGENTS.md').text();
 
 	const uiInstall = `## Install
 
@@ -200,8 +203,10 @@ npm install @roxyapi/ui
 
 	await writeFile('packages/ui/README.md', uiReadme);
 	await writeFile('packages/ui/LICENSE', license);
+	await writeFile('packages/ui/AGENTS.md', agents);
 	await writeFile('packages/ui-react/README.md', reactReadme);
 	await writeFile('packages/ui-react/LICENSE', license);
+	await writeFile('packages/ui-react/AGENTS.md', agents);
 }
 
 async function buildReactBundles() {
