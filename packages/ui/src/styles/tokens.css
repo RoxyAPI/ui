@@ -156,9 +156,13 @@
 	--roxy-accent-fg: #b45309;
 
 	--roxy-success: #16a34a;
+	--roxy-success-fg: #166534;
 	--roxy-warning: #ea580c;
+	--roxy-warning-fg: #9a3412;
 	--roxy-danger: #dc2626;
+	--roxy-danger-fg: #991b1b;
 	--roxy-info: #0284c7;
+	--roxy-info-fg: #075985;
 
 	--roxy-bg: #ffffff;
 	--roxy-fg: #0a0a0a;

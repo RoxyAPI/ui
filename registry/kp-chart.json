@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-kp-chart",
+  "type": "registry:ui",
+  "title": "RoxyKpChart",
+  "description": "Full KP chart with Ascendant, Placidus cusps, and planets in tabbed stellar-hierarchy tables",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.2.3/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-kp-chart.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyKpChart data={...} />: Full KP chart with Ascendant, Placidus cusps, and planets in tabbed stellar-hierarchy tables.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/kp-chart/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.vedicAstrology.generateKpChart({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyKpChart as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyKpChartProps = ComponentProps<typeof Element>;\n\nexport function RoxyKpChart(props: RoxyKpChartProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyKpChart;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/kp-chart.tsx"
+    }
+  ]
+}

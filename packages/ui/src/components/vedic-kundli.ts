@@ -1,27 +1,25 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { RASHI_KEYS } from '../tokens/index.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import type { HouseDef } from '../utils/kundli-render.js';
 import {
-	RASHI_TO_SIGN,
+	buildHousesFromMeta,
+	type HouseDef,
+	renderEastFrame,
+	renderEastHouseGroup,
 	renderNorthFrame,
 	renderNorthHouseGroup,
 	renderSouthFrame,
 	renderSouthHouseGroup,
 } from '../utils/kundli-render.js';
 
-type RashiBucket = BirthChartResponse['aries'];
-
-// The /vedic-astrology/birth-chart response carries all 12 rashi keys
-// (aries, taurus, ..., pisces), each shaped like the spec-typed `aries`
-// bucket. This local alias indexes by rashi name without per-call casts.
-type BirthChartByRashi = BirthChartResponse & Record<string, RashiBucket>;
-
 /**
- * Vedic kundli (D1 Rashi chart). South Indian style by default. Pass `data`
- * from /vedic-astrology/birth-chart. North Indian style via chartStyle="north".
+ * Vedic kundli (D1 Rashi chart). Pass `data` from /vedic-astrology/birth-chart.
+ * Three render styles via the `chart-style` attribute: south (default),
+ * north, and east. All three draw the identical planet-in-sign data, so the
+ * style is purely a layout choice. Each planet shows its abbreviation and
+ * whole-degree, with an SVG tooltip carrying exact position, nakshatra, pada,
+ * and avastha.
  *
  * Theming flows through CSS custom properties on :host, so the chart adopts
  * the host page palette without runtime color probing.
@@ -58,7 +56,7 @@ export class RoxyVedicKundli extends LitElement {
 			}
 			.planet-text {
 				fill: var(--roxy-fg, #0a0a0a);
-				font-size: 11px;
+				font-size: 10px;
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
 			}
@@ -87,35 +85,31 @@ export class RoxyVedicKundli extends LitElement {
 	data: BirthChartResponse | null = null;
 
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
-	chartStyle: 'south' | 'north' = 'south';
+	chartStyle: 'south' | 'north' | 'east' = 'south';
 
 	private buildHouses(): HouseDef[] {
-		if (!this.data) return [];
-		const data = this.data as BirthChartByRashi;
-		const lagnaSign = this.data?.meta?.Lagna?.rashi ?? '';
-		const houses: HouseDef[] = [];
-		for (let i = 0; i < 12; i++) {
-			const key = RASHI_KEYS[i];
-			const bucket = data[key];
-			const planets = (bucket?.signs ?? []).map((p) => p.graha).filter(Boolean);
-			const sign = RASHI_TO_SIGN[key] ?? '';
-			houses.push({
-				number: i + 1,
-				sign,
-				planets,
-				isLagna: lagnaSign
-					? lagnaSign.toLowerCase() === sign.toLowerCase()
-					: false,
-			});
-		}
-		return houses;
+		if (!this.data?.meta) return [];
+		return buildHousesFromMeta(this.data.meta);
 	}
 
 	render() {
 		if (!this.data)
 			return html`<div class="roxy-empty" role="status">No kundli data</div>`;
 		const houses = this.buildHouses();
-		const isNorth = this.chartStyle === 'north';
+		const style = this.chartStyle;
+
+		const frame =
+			style === 'north'
+				? renderNorthFrame()
+				: style === 'east'
+					? renderEastFrame()
+					: renderSouthFrame();
+		const houseGroup =
+			style === 'north'
+				? renderNorthHouseGroup
+				: style === 'east'
+					? renderEastHouseGroup
+					: renderSouthHouseGroup;
 
 		return html`<div class="wrap">
 			<h2 class="title">Vedic kundli</h2>
@@ -125,12 +119,8 @@ export class RoxyVedicKundli extends LitElement {
 				aria-label="Vedic birth chart with twelve sign houses"
 			>
 				<title>Vedic kundli</title>
-				${isNorth ? renderNorthFrame() : renderSouthFrame()}
-				${
-					isNorth
-						? houses.map((h) => renderNorthHouseGroup(h))
-						: houses.map((h) => renderSouthHouseGroup(h))
-				}
+				${frame}
+				${houses.map((h) => houseGroup(h))}
 			</svg>
 		</div>`;
 	}

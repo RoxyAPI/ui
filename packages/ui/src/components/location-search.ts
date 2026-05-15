@@ -224,8 +224,16 @@ export class RoxyLocationSearch extends LitElement {
 			const headers: Record<string, string> = {
 				Accept: 'application/json',
 			};
-			if (this.apiKey) headers['X-API-Key'] = this.apiKey;
-			if (this.publishableKey) headers['X-API-Key'] = this.publishableKey;
+			// publishable-key wins when both are set. Surfacing the conflict at the
+			// console (not as a thrown error) avoids breaking widgets that legitimately
+			// have a stale secret key around while migrating to publishable.
+			if (this.apiKey && this.publishableKey) {
+				console.warn(
+					'[roxy-location-search] both api-key and publishable-key set; using publishable-key. Remove api-key from your widget markup.',
+				);
+			}
+			const key = this.publishableKey ?? this.apiKey;
+			if (key) headers['X-API-Key'] = key;
 			const res = await fetch(url, { headers, signal: controller.signal });
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			const json = (await res.json()) as SearchCitiesResponse;
@@ -301,6 +309,11 @@ export class RoxyLocationSearch extends LitElement {
 				role="combobox"
 				aria-expanded=${this.isOpen ? 'true' : 'false'}
 				aria-controls="roxy-location-listbox"
+				aria-activedescendant=${
+					this.isOpen && this.highlight >= 0
+						? `roxy-location-option-${this.highlight}`
+						: ''
+				}
 				aria-autocomplete="list"
 				autocomplete="off"
 				placeholder=${this.placeholder}
@@ -328,6 +341,7 @@ export class RoxyLocationSearch extends LitElement {
 											type="button"
 											class="option"
 											role="option"
+											id=${`roxy-location-option-${idx}`}
 											aria-selected=${this.highlight === idx ? 'true' : 'false'}
 											@click=${() => this.select(city)}
 											@mouseenter=${() => {

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-nakshatra-card",
+  "type": "registry:ui",
+  "title": "RoxyNakshatraCard",
+  "description": "Nakshatra reference card with lord, deity, symbol, characteristics, and remedies",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.2.3/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-nakshatra-card.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyNakshatraCard data={...} />: Nakshatra reference card with lord, deity, symbol, characteristics, and remedies.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/nakshatra-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { id } = await req.json();\n *   const { data } = await roxy.vedicAstrology.getNakshatra({ path: { id } });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyNakshatraCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyNakshatraCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyNakshatraCard(props: RoxyNakshatraCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyNakshatraCard;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/nakshatra-card.tsx"
+    }
+  ]
+}

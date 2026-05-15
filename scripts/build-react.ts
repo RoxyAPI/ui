@@ -40,6 +40,7 @@ const CDN_BASE_SUFFIX = '/dist/cdn';
  */
 const DATA_TYPES: Record<string, string> = {
 	'natal-chart': 'NatalChartResponse',
+	'western-planets-table': 'NatalChartResponse',
 	'horoscope-card':
 		'GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse',
 	'synastry-chart':
@@ -49,12 +50,16 @@ const DATA_TYPES: Record<string, string> = {
 	'moon-phase':
 		'GetCurrentMoonPhaseResponse | GetUpcomingMoonPhasesResponse | GetMoonCalendarResponse',
 	'vedic-kundli': 'BirthChartResponse',
+	'vedic-planets-table': 'BirthChartResponse',
 	'panchang-table': 'GetBasicPanchangResponse | GetDetailedPanchangResponse',
 	'dasha-timeline':
 		'GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse',
 	'dosha-card': 'ManglikResponse | KalsarpaResponse | SadhesatiResponse',
 	'guna-milan': 'CompatibilityResponse',
 	'kp-planets-table': 'KpPlanetsResponse',
+	'kp-chart': 'KpChartResponse',
+	'kp-ruling-planets': 'KpRulingPlanetsResponse',
+	'nakshatra-card': 'NakshatraResponse',
 	'numerology-card':
 		'CalculateLifePathResponse | CalculateExpressionResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
 	'tarot-card': 'GetCardResponse | GetDailyCardResponse',

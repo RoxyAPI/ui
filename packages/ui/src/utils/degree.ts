@@ -49,6 +49,27 @@ export function formatSignPosition(longitude: number): string {
 	return `${degree}° ${sign} ${String(minute).padStart(2, '0')}'`;
 }
 
+/**
+ * The point diametrically opposite a longitude (e.g. Descendant from
+ * Ascendant, IC from MC). Exact derivation, always 180 degrees away.
+ */
+export function oppositePoint(longitude: number): number {
+	return normalizeLongitude(longitude + 180);
+}
+
+/**
+ * Midpoint of the forward arc from `start` to `end` (both ecliptic
+ * longitudes). Handles the 360/0 wrap, so a house spanning 350 to 20 degrees
+ * yields a midpoint of 5, not 185. Used to place house numbers between two
+ * cusps regardless of how unequal the house is.
+ */
+export function arcMidpoint(start: number, end: number): number {
+	const s = normalizeLongitude(start);
+	let span = normalizeLongitude(end) - s;
+	if (span < 0) span += 360;
+	return normalizeLongitude(s + span / 2);
+}
+
 /** Polar to cartesian for SVG wheel positioning. Angle in degrees, 0 at 3 o'clock. */
 export function polarToCartesian(
 	cx: number,

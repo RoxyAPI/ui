@@ -40,10 +40,15 @@ export {
 	RoxyHoroscopeCard,
 	type RoxyHoroscopeCardProps,
 } from './components/horoscope-card.js';
+export { RoxyKpChart, type RoxyKpChartProps } from './components/kp-chart.js';
 export {
 	RoxyKpPlanetsTable,
 	type RoxyKpPlanetsTableProps,
 } from './components/kp-planets-table.js';
+export {
+	RoxyKpRulingPlanets,
+	type RoxyKpRulingPlanetsProps,
+} from './components/kp-ruling-planets.js';
 export {
 	RoxyLocationSearch,
 	type RoxyLocationSearchProps,
@@ -52,6 +57,10 @@ export {
 	RoxyMoonPhase,
 	type RoxyMoonPhaseProps,
 } from './components/moon-phase.js';
+export {
+	RoxyNakshatraCard,
+	type RoxyNakshatraCardProps,
+} from './components/nakshatra-card.js';
 export {
 	RoxyNatalChart,
 	type RoxyNatalChartProps,
@@ -88,6 +97,14 @@ export {
 	RoxyVedicKundli,
 	type RoxyVedicKundliProps,
 } from './components/vedic-kundli.js';
+export {
+	RoxyVedicPlanetsTable,
+	type RoxyVedicPlanetsTableProps,
+} from './components/vedic-planets-table.js';
+export {
+	RoxyWesternPlanetsTable,
+	type RoxyWesternPlanetsTableProps,
+} from './components/western-planets-table.js';
 export {
 	RoxyYogaList,
 	type RoxyYogaListProps,

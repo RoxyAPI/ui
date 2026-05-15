@@ -66,7 +66,7 @@ export const ASPECT_CLASS: Record<string, string> = {
 };
 
 /**
- * Normalize an aspect entry's `type` field to a lowercase, hyphen-separated
+ * Normalize the `type` field on an aspect entry to a lowercase, hyphen-separated
  * canonical name (`SEMI_SEXTILE` → `semi-sextile`). Accepts any aspect-shaped
  * object so both natal and synastry inter-aspect entries can share this.
  */

@@ -12,52 +12,52 @@
       "description": "Western natal chart wheel for /astrology/natal-chart responses"
     },
     {
-      "name": "roxy-horoscope-card",
-      "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/..."
-    },
-    {
       "name": "roxy-synastry-chart",
       "description": "Dual-wheel synastry chart with inter-aspects table"
     },
     {
-      "name": "roxy-compatibility-card",
-      "description": "Cross-domain compatibility score card"
-    },
-    {
-      "name": "roxy-moon-phase",
-      "description": "Moon phase card and calendar"
-    },
-    {
-      "name": "roxy-vedic-kundli",
-      "description": "South or North Indian Vedic kundli for /vedic-astrology/birth-chart"
-    },
-    {
-      "name": "roxy-panchang-table",
-      "description": "Panchang muhurta table with auspicious and inauspicious periods"
-    },
-    {
-      "name": "roxy-dasha-timeline",
-      "description": "Vimshottari dasha timeline with active mahadasha highlighted"
-    },
-    {
-      "name": "roxy-dosha-card",
-      "description": "Manglik, Kaal Sarp, or Sade Sati presence card"
-    },
-    {
-      "name": "roxy-guna-milan",
-      "description": "36-point Ashtakoota matrimonial compatibility breakdown"
-    },
-    {
-      "name": "roxy-kp-planets-table",
-      "description": "KP planets table with sub-lord and sub-sub-lord columns"
+      "name": "roxy-western-planets-table",
+      "description": "Western planetary positions table with sign, degree, house, and motion plus the chart angles"
     },
     {
       "name": "roxy-transits-table",
       "description": "Live planet positions plus aspects to a natal chart"
     },
     {
+      "name": "roxy-moon-phase",
+      "description": "Moon phase card and calendar"
+    },
+    {
+      "name": "roxy-horoscope-card",
+      "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/..."
+    },
+    {
+      "name": "roxy-compatibility-card",
+      "description": "Cross-domain compatibility score card"
+    },
+    {
+      "name": "roxy-vedic-kundli",
+      "description": "South, North, or East Indian Vedic kundli for /vedic-astrology/birth-chart with per-planet degree and nakshatra detail"
+    },
+    {
       "name": "roxy-divisional-chart",
       "description": "D2 to D60 varga chart wheel with Vargottama markers"
+    },
+    {
+      "name": "roxy-kp-chart",
+      "description": "Full KP chart with Ascendant, Placidus cusps, and planets in tabbed stellar-hierarchy tables"
+    },
+    {
+      "name": "roxy-vedic-planets-table",
+      "description": "Vedic planetary positions table with degree, nakshatra, pada, nakshatra lord, bhava, and avastha"
+    },
+    {
+      "name": "roxy-kp-planets-table",
+      "description": "KP planets table with sub-lord and sub-sub-lord columns"
+    },
+    {
+      "name": "roxy-kp-ruling-planets",
+      "description": "KP ruling planets with day lord, Moon and Lagna stellar hierarchies, and house significators"
     },
     {
       "name": "roxy-ashtakavarga-grid",
@@ -68,12 +68,32 @@
       "description": "Six-fold planetary strength with adequacy badge per planet"
     },
     {
-      "name": "roxy-yoga-list",
-      "description": "Yoga reference cards from the catalog with optional detail mode"
+      "name": "roxy-dasha-timeline",
+      "description": "Vimshottari dasha timeline with active mahadasha highlighted"
+    },
+    {
+      "name": "roxy-guna-milan",
+      "description": "36-point Ashtakoota matrimonial compatibility breakdown"
+    },
+    {
+      "name": "roxy-panchang-table",
+      "description": "Panchang muhurta table with auspicious and inauspicious periods"
     },
     {
       "name": "roxy-choghadiya-grid",
       "description": "Day and night Choghadiya muhurta tiles for activity timing"
+    },
+    {
+      "name": "roxy-yoga-list",
+      "description": "Yoga reference cards from the catalog with optional detail mode"
+    },
+    {
+      "name": "roxy-nakshatra-card",
+      "description": "Nakshatra reference card with lord, deity, symbol, characteristics, and remedies"
+    },
+    {
+      "name": "roxy-dosha-card",
+      "description": "Manglik, Kaal Sarp, or Sade Sati presence card"
     },
     {
       "name": "roxy-numerology-card",

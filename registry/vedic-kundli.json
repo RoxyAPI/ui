@@ -3,7 +3,7 @@
   "name": "roxy-vedic-kundli",
   "type": "registry:ui",
   "title": "RoxyVedicKundli",
-  "description": "South or North Indian Vedic kundli for /vedic-astrology/birth-chart",
+  "description": "South, North, or East Indian Vedic kundli for /vedic-astrology/birth-chart with per-planet degree and nakshatra detail",
   "dependencies": [
     "@roxyapi/ui-react"
   ],
@@ -13,7 +13,7 @@
   "files": [
     {
       "path": "components/roxy-vedic-kundli.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyVedicKundli data={...} />: South or North Indian Vedic kundli for /vedic-astrology/birth-chart.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/vedic-kundli/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.vedicAstrology.generateBirthChart({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyVedicKundli as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyVedicKundliProps = ComponentProps<typeof Element>;\n\nexport function RoxyVedicKundli(props: RoxyVedicKundliProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyVedicKundli;\n",
+      "content": "'use client';\n\n/**\n * <RoxyVedicKundli data={...} />: South, North, or East Indian Vedic kundli for /vedic-astrology/birth-chart with per-planet degree and nakshatra detail.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/vedic-kundli/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.vedicAstrology.generateBirthChart({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyVedicKundli as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyVedicKundliProps = ComponentProps<typeof Element>;\n\nexport function RoxyVedicKundli(props: RoxyVedicKundliProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyVedicKundli;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/vedic-kundli.tsx"
     }

@@ -159,6 +159,8 @@ const GENERIC_SDK_HINT =
 const SDK_USAGE_HINT: Record<string, string> = {
 	'natal-chart':
 		'const { data } = await roxy.astrology.generateNatalChart({ body: await req.json() });',
+	'western-planets-table':
+		'const { data } = await roxy.astrology.generateNatalChart({ body: await req.json() });',
 	'horoscope-card':
 		'const { sign } = await req.json();\n  const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign } });',
 	'synastry-chart':
@@ -166,8 +168,14 @@ const SDK_USAGE_HINT: Record<string, string> = {
 	'compatibility-card':
 		'const { data } = await roxy.astrology.calculateCompatibility({ body: await req.json() });',
 	'moon-phase': 'const { data } = await roxy.astrology.getCurrentMoonPhase();',
+	'transits-table':
+		'const { data } = await roxy.astrology.calculateTransits({ body: await req.json() });',
 	'vedic-kundli':
 		'const { data } = await roxy.vedicAstrology.generateBirthChart({ body: await req.json() });',
+	'vedic-planets-table':
+		'const { data } = await roxy.vedicAstrology.generateBirthChart({ body: await req.json() });',
+	'divisional-chart':
+		'const { data } = await roxy.vedicAstrology.generateDivisionalChart({ body: await req.json() });',
 	'panchang-table':
 		'const { data } = await roxy.vedicAstrology.getDetailedPanchang({ body: await req.json() });',
 	'dasha-timeline':
@@ -178,6 +186,19 @@ const SDK_USAGE_HINT: Record<string, string> = {
 		'const { data } = await roxy.vedicAstrology.calculateGunMilan({ body: await req.json() });',
 	'kp-planets-table':
 		'const { data } = await roxy.vedicAstrology.getKpPlanets({ body: await req.json() });',
+	'kp-chart':
+		'const { data } = await roxy.vedicAstrology.generateKpChart({ body: await req.json() });',
+	'kp-ruling-planets':
+		'const { data } = await roxy.vedicAstrology.getKpRulingPlanets({ body: await req.json() });',
+	'nakshatra-card':
+		'const { id } = await req.json();\n  const { data } = await roxy.vedicAstrology.getNakshatra({ path: { id } });',
+	'ashtakavarga-grid':
+		'const { data } = await roxy.vedicAstrology.calculateAshtakavarga({ body: await req.json() });',
+	'shadbala-table':
+		'const { data } = await roxy.vedicAstrology.calculateShadbala({ body: await req.json() });',
+	'yoga-list': 'const { data } = await roxy.vedicAstrology.listYogas();',
+	'choghadiya-grid':
+		'const { data } = await roxy.vedicAstrology.getChoghadiya({ body: await req.json() });',
 	'numerology-card':
 		'const { data } = await roxy.numerology.calculateLifePath({ body: await req.json() });',
 	'tarot-card': 'const { data } = await roxy.tarot.getDailyCard();',

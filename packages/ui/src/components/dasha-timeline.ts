@@ -13,13 +13,7 @@ type DashaData =
 	| GetMajorDashasResponse
 	| GetSubDashasResponse;
 
-type DashaPeriod = {
-	planet: string;
-	startDate: string;
-	endDate: string;
-	durationYears: number;
-	interpretation?: string;
-};
+type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
 
 /**
  * Dasha timeline. Renders /vedic-astrology/dasha/{current,major,sub/{...}}.

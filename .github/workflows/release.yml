@@ -139,7 +139,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           VERSION=$(node -p "require('./packages/ui/package.json').version")
-          git add packages/ packages/ui/dist packages/ui-react/dist registry/ apps/docs/manifest.js README.md AGENTS.md
+          # dist/ is gitignored: npm publish (above) already shipped it via the
+          # package.json `files` allowlist. Commit only source, version bumps,
+          # and the committed codegen (registry, manifest, docs tables).
+          git add packages/ registry/ apps/docs/manifest.js README.md AGENTS.md
           git commit -m "release: v$VERSION"
           git tag "v$VERSION"
           git push --follow-tags

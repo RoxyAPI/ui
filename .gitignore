@@ -9,6 +9,15 @@ node_modules/
 # the live one before a release goes out.
 packages/ui/src/types/
 
+# packages/ui/dist and packages/ui-react/dist are pure build output. The
+# Release workflow runs `bun run build` then `npm publish`, which includes
+# dist via each package.json `files` allowlist; the Pages workflow rebuilds
+# before deploy. Nothing serves dist from the git repo (the shadcn registry
+# is served from `@main`, dist is served from npm via jsDelivr), so dist
+# never needs to be git-tracked.
+packages/ui/dist/
+packages/ui-react/dist/
+
 # apps/docs/dist is mirrored from packages/ui/dist on each `bun run build`
 # so local preview at apps/docs/ matches the GitHub Pages layout exactly.
 apps/docs/dist/

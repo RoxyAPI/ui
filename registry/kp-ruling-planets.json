@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-kp-ruling-planets",
+  "type": "registry:ui",
+  "title": "RoxyKpRulingPlanets",
+  "description": "KP ruling planets with day lord, Moon and Lagna stellar hierarchies, and house significators",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.2.3/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-kp-ruling-planets.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyKpRulingPlanets data={...} />: KP ruling planets with day lord, Moon and Lagna stellar hierarchies, and house significators.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/kp-ruling-planets/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.vedicAstrology.getKpRulingPlanets({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyKpRulingPlanets as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyKpRulingPlanetsProps = ComponentProps<typeof Element>;\n\nexport function RoxyKpRulingPlanets(props: RoxyKpRulingPlanetsProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyKpRulingPlanets;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/kp-ruling-planets.tsx"
+    }
+  ]
+}

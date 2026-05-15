@@ -6,12 +6,13 @@ name: Deploy demo to GitHub Pages
 on:
   push:
     branches: [main]
+    # dist is gitignored and rebuilt inside this workflow, so trigger on the
+    # source that feeds the build, not on build output.
     paths:
       - 'apps/docs/**'
       - 'packages/ui/src/**'
-      - 'packages/ui/dist/**'
       - 'specs/openapi.json'
-      - 'scripts/build.ts'
+      - 'scripts/**'
       - '.github/workflows/pages.yml'
   release:
     types: [published]

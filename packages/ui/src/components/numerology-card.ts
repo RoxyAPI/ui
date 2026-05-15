@@ -225,11 +225,7 @@ const LABELS: Record<string, string> = {
 	chart: 'Numerology chart',
 };
 
-type KarmicDebtMeaning = {
-	description: string;
-	challenge: string;
-	resolution: string;
-};
+type KarmicDebtMeaning = CalculateLifePathResponse['karmicDebtMeaning'];
 
 function karmicDebtText(value: KarmicDebtMeaning | undefined): string {
 	if (!value) return '';

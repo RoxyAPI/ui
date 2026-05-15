@@ -21,9 +21,12 @@ export { RoxyGunaMilan } from './components/guna-milan.js';
 // I Ching
 export { RoxyHexagram } from './components/hexagram.js';
 export { RoxyHoroscopeCard } from './components/horoscope-card.js';
+export { RoxyKpChart } from './components/kp-chart.js';
 export { RoxyKpPlanetsTable } from './components/kp-planets-table.js';
+export { RoxyKpRulingPlanets } from './components/kp-ruling-planets.js';
 export { RoxyLocationSearch } from './components/location-search.js';
 export { RoxyMoonPhase } from './components/moon-phase.js';
+export { RoxyNakshatraCard } from './components/nakshatra-card.js';
 // Western astrology
 export { RoxyNatalChart } from './components/natal-chart.js';
 // Numerology
@@ -37,6 +40,8 @@ export { RoxyTarotSpread } from './components/tarot-spread.js';
 export { RoxyTransitsTable } from './components/transits-table.js';
 // Vedic astrology
 export { RoxyVedicKundli } from './components/vedic-kundli.js';
+export { RoxyVedicPlanetsTable } from './components/vedic-planets-table.js';
+export { RoxyWesternPlanetsTable } from './components/western-planets-table.js';
 export { RoxyYogaList } from './components/yoga-list.js';
 
 import { ROXY_COMPONENTS, type RoxyComponentSlug } from './manifest.js';

@@ -83,13 +83,6 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
-		id: 'horoscope',
-		tag: 'roxy-horoscope-card',
-		seoLine: 'Daily horoscope card for any zodiac sign',
-		attrs: ' period="daily"',
-		sdkCall: `  const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });`,
-	}),
-	entry({
 		id: 'synastry',
 		tag: 'roxy-synastry-chart',
 		seoLine: 'Synastry compatibility wheel and aspect table',
@@ -98,73 +91,11 @@ window.ROXY_UI_DEMOS = [
   const { data } = await roxy.astrology.calculateSynastry({ body: { person1, person2 } });`,
 	}),
 	entry({
-		id: 'compat',
-		tag: 'roxy-compatibility-card',
-		seoLine: 'Astrology, numerology, biorhythm compatibility breakdown',
-		attrs: ' mode="astrology"',
-		sdkCall: `  const { data } = await roxy.astrology.calculateCompatibility({
-    body: {
-      person1: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n      ')},
-      person2: ${JSON.stringify(PERSON2, null, 2).replace(/\n/g, '\n      ')},
-    },
-  });`,
-	}),
-	entry({
-		id: 'moon',
-		tag: 'roxy-moon-phase',
-		seoLine: 'Current moon phase, illumination, and meaning',
-		attrs: ' mode="current"',
-		sdkCall: `  const { data } = await roxy.astrology.getCurrentMoonPhase();`,
-	}),
-	entry({
-		id: 'kundli',
-		tag: 'roxy-vedic-kundli',
-		seoLine: 'Vedic kundli (D1) chart for matchmaking and natal',
-		sdkCall: `  const { data } = await roxy.vedicAstrology.generateBirthChart({
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
-  });`,
-	}),
-	entry({
-		id: 'panchang',
-		tag: 'roxy-panchang-table',
-		seoLine: 'Detailed panchang with tithi, nakshatra, and muhurtas',
-		attrs: ' detail="detailed"',
-		sdkCall: `  const { data } = await roxy.vedicAstrology.getDetailedPanchang({
-    body: { date: '2026-05-09', latitude: 19.076, longitude: 72.877 },
-  });`,
-	}),
-	entry({
-		id: 'dasha',
-		tag: 'roxy-dasha-timeline',
-		seoLine: 'Mahadasha and antardasha timeline visualizer',
-		attrs: ' period="major"',
-		sdkCall: `  const { data } = await roxy.vedicAstrology.getMajorDashas({
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
-  });`,
-	}),
-	entry({
-		id: 'dosha',
-		tag: 'roxy-dosha-card',
-		seoLine: 'Manglik dosha analysis with severity and remedies',
-		attrs: ' type="manglik"',
-		sdkCall: `  const { data } = await roxy.vedicAstrology.checkManglikDosha({
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
-  });`,
-	}),
-	entry({
-		id: 'guna',
-		tag: 'roxy-guna-milan',
-		seoLine: 'Ashtakoota guna milan score for kundli matching',
-		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateGunMilan({
-    body: { person1: ${JSON.stringify(PERSON1)}, person2: ${JSON.stringify(PERSON2)} },
-  });`,
-	}),
-	entry({
-		id: 'kp',
-		tag: 'roxy-kp-planets-table',
-		seoLine: 'KP system sub-lord planet table for horary',
-		sdkCall: `  const { data } = await roxy.vedicAstrology.getKpPlanets({
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+		id: 'western-planets',
+		tag: 'roxy-western-planets-table',
+		seoLine: 'Western planetary positions table: sign, degree, house, motion',
+		sdkCall: `  const { data } = await roxy.astrology.generateNatalChart({
+    body: ${JSON.stringify({ ...PERSON1, houseSystem: 'placidus' }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
@@ -180,11 +111,77 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'moon',
+		tag: 'roxy-moon-phase',
+		seoLine: 'Current moon phase, illumination, and meaning',
+		attrs: ' mode="current"',
+		sdkCall: `  const { data } = await roxy.astrology.getCurrentMoonPhase();`,
+	}),
+	entry({
+		id: 'horoscope',
+		tag: 'roxy-horoscope-card',
+		seoLine: 'Daily horoscope card for any zodiac sign',
+		attrs: ' period="daily"',
+		sdkCall: `  const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });`,
+	}),
+	entry({
+		id: 'compat',
+		tag: 'roxy-compatibility-card',
+		seoLine: 'Astrology, numerology, biorhythm compatibility breakdown',
+		attrs: ' mode="astrology"',
+		sdkCall: `  const { data } = await roxy.astrology.calculateCompatibility({
+    body: {
+      person1: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n      ')},
+      person2: ${JSON.stringify(PERSON2, null, 2).replace(/\n/g, '\n      ')},
+    },
+  });`,
+	}),
+	entry({
+		id: 'kundli',
+		tag: 'roxy-vedic-kundli',
+		seoLine: 'Vedic kundli (D1) chart for matchmaking and natal',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.generateBirthChart({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
 		id: 'divisional',
 		tag: 'roxy-divisional-chart',
 		seoLine: 'Vedic D2 to D60 divisional varga chart wheel',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.generateDivisionalChart({
     body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude, division: 9 }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'kp-chart',
+		tag: 'roxy-kp-chart',
+		seoLine: 'Full KP chart with Ascendant, Placidus cusps, and planets',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.generateKpChart({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'vedic-planets',
+		tag: 'roxy-vedic-planets-table',
+		seoLine: 'Vedic planetary positions: degree, nakshatra, pada, bhava, avastha',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.generateBirthChart({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'kp',
+		tag: 'roxy-kp-planets-table',
+		seoLine: 'KP system sub-lord planet table for horary',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getKpPlanets({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'kp-ruling',
+		tag: 'roxy-kp-ruling-planets',
+		seoLine: 'KP ruling planets for horary timing',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getKpRulingPlanets({
+    body: ${JSON.stringify({ latitude: PERSON1.latitude, longitude: PERSON1.longitude, datetime: `${PERSON1.date}T${PERSON1.time}`, birthDate: PERSON1.date, birthTime: PERSON1.time }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
@@ -204,10 +201,30 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
-		id: 'yoga',
-		tag: 'roxy-yoga-list',
-		seoLine: 'Filterable yoga catalog with detail cards',
-		sdkCall: `  const { data } = await roxy.vedicAstrology.listYogas();`,
+		id: 'dasha',
+		tag: 'roxy-dasha-timeline',
+		seoLine: 'Mahadasha and antardasha timeline visualizer',
+		attrs: ' period="major"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getMajorDashas({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'guna',
+		tag: 'roxy-guna-milan',
+		seoLine: 'Ashtakoota guna milan score for kundli matching',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateGunMilan({
+    body: { person1: ${JSON.stringify(PERSON1)}, person2: ${JSON.stringify(PERSON2)} },
+  });`,
+	}),
+	entry({
+		id: 'panchang',
+		tag: 'roxy-panchang-table',
+		seoLine: 'Detailed panchang with tithi, nakshatra, and muhurtas',
+		attrs: ' detail="detailed"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getDetailedPanchang({
+    body: { date: '2026-05-09', latitude: 19.076, longitude: 72.877 },
+  });`,
 	}),
 	entry({
 		id: 'choghadiya',
@@ -215,6 +232,29 @@ window.ROXY_UI_DEMOS = [
 		seoLine: 'Day and night Choghadiya muhurta tiles for activity timing',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getChoghadiya({
     body: { date: '2026-05-11', latitude: 19.076, longitude: 72.877 },
+  });`,
+	}),
+	entry({
+		id: 'yoga',
+		tag: 'roxy-yoga-list',
+		seoLine: 'Filterable yoga catalog with detail cards',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.listYogas();`,
+	}),
+	entry({
+		id: 'nakshatra',
+		tag: 'roxy-nakshatra-card',
+		seoLine: 'Nakshatra reference: lord, deity, symbol, remedies',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getNakshatra({
+    path: { id: 'ashwini' },
+  });`,
+	}),
+	entry({
+		id: 'dosha',
+		tag: 'roxy-dosha-card',
+		seoLine: 'Manglik dosha analysis with severity and remedies',
+		attrs: ' type="manglik"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.checkManglikDosha({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
@@ -253,34 +293,6 @@ window.ROXY_UI_DEMOS = [
 		tag: 'roxy-hexagram',
 		seoLine: 'I Ching hexagram with judgment, image, and trigrams',
 		sdkCall: `  const { data } = await roxy.iching.getRandomHexagram();`,
-	}),
-	entry({
-		id: 'data',
-		tag: 'roxy-data',
-		seoLine: 'Generic fallback renderer for any RoxyAPI response',
-		code: `<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer></script>
-<roxy-data id="el"></roxy-data>
-<script>
-  // Hand any unknown response shape to <roxy-data>. It picks heuristics
-  // (title-key, image-key, primitive lists, object arrays) automatically.
-  document.getElementById('el').data = {
-    title: 'Compatibility breakdown',
-    score: 87,
-    breakdown: [
-      { name: 'Communication', score: 88 },
-      { name: 'Trust', score: 84 },
-    ],
-  };
-</script>`,
-		shadcn: `# Install via shadcn
-npx shadcn@latest add ${REGISTRY_BASE}/data.json
-
-# Use in your Next.js / React app
-import { RoxyData } from '@/components/ui/data';
-
-export default function Page({ data }) {
-  return <RoxyData data={data} />;
-}`,
 	}),
 	entry({
 		id: 'form',
@@ -341,6 +353,34 @@ export default function CityPicker() {
       onRoxyLocationSelect={(e) => console.log(e.detail)}
     />
   );
+}`,
+	}),
+	entry({
+		id: 'data',
+		tag: 'roxy-data',
+		seoLine: 'Generic fallback renderer for any RoxyAPI response',
+		code: `<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer></script>
+<roxy-data id="el"></roxy-data>
+<script>
+  // Hand any unknown response shape to <roxy-data>. It picks heuristics
+  // (title-key, image-key, primitive lists, object arrays) automatically.
+  document.getElementById('el').data = {
+    title: 'Compatibility breakdown',
+    score: 87,
+    breakdown: [
+      { name: 'Communication', score: 88 },
+      { name: 'Trust', score: 84 },
+    ],
+  };
+</script>`,
+		shadcn: `# Install via shadcn
+npx shadcn@latest add ${REGISTRY_BASE}/data.json
+
+# Use in your Next.js / React app
+import { RoxyData } from '@/components/ui/data';
+
+export default function Page({ data }) {
+  return <RoxyData data={data} />;
 }`,
 	}),
 ];

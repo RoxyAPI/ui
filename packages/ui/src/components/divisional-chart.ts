@@ -1,27 +1,25 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH, RASHI_KEYS } from '../tokens/index.js';
+import { PLANET_GLYPH } from '../tokens/index.js';
 import type { DivisionalChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import type { HouseDef } from '../utils/kundli-render.js';
 import {
-	RASHI_TO_SIGN,
+	buildHousesFromMeta,
+	type HouseDef,
+	renderEastFrame,
+	renderEastHouseGroup,
 	renderNorthFrame,
 	renderNorthHouseGroup,
 	renderSouthFrame,
 	renderSouthHouseGroup,
 } from '../utils/kundli-render.js';
 
-type RashiBucket = {
-	rashi?: string;
-	signs?: Array<{ graha: string; isRetrograde?: boolean }>;
-};
-type ChartByRashi = { [key: string]: RashiBucket | unknown };
-
 /**
  * Divisional chart renderer (D2-D60). Accepts a DivisionalChartResponse and
- * renders the same south/north kundli wheel as the birth chart, plus division
- * metadata and Vargottama planet pills.
+ * renders the same south/north/east kundli wheel as the birth chart, plus
+ * division metadata and Vargottama planet pills. The varga response carries a
+ * graha-keyed `chart.meta` map (no per-rashi buckets), so houses are bucketed
+ * from that map.
  */
 @customElement('roxy-divisional-chart')
 export class RoxyDivisionalChart extends LitElement {
@@ -124,31 +122,11 @@ export class RoxyDivisionalChart extends LitElement {
 	data: DivisionalChartResponse | null = null;
 
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
-	chartStyle: 'south' | 'north' = 'south';
+	chartStyle: 'south' | 'north' | 'east' = 'south';
 
 	private buildHouses(): HouseDef[] {
-		if (!this.data) return [];
-		const chart = this.data.chart as ChartByRashi;
-		const meta =
-			(this.data.chart as { meta?: Record<string, { rashi?: string }> }).meta ??
-			{};
-		const lagnaSign = meta.Lagna?.rashi ?? '';
-		const houses: HouseDef[] = [];
-		for (let i = 0; i < 12; i++) {
-			const key = RASHI_KEYS[i];
-			const bucket = chart[key] as RashiBucket | undefined;
-			const planets = (bucket?.signs ?? []).map((p) => p.graha).filter(Boolean);
-			const sign = RASHI_TO_SIGN[key] ?? '';
-			houses.push({
-				number: i + 1,
-				sign,
-				planets,
-				isLagna: lagnaSign
-					? lagnaSign.toLowerCase() === sign.toLowerCase()
-					: false,
-			});
-		}
-		return houses;
+		if (!this.data?.chart?.meta) return [];
+		return buildHousesFromMeta(this.data.chart.meta);
 	}
 
 	render() {
@@ -157,7 +135,19 @@ export class RoxyDivisionalChart extends LitElement {
 
 		const { division, vargottama } = this.data;
 		const houses = this.buildHouses();
-		const isNorth = this.chartStyle === 'north';
+		const style = this.chartStyle;
+		const frame =
+			style === 'north'
+				? renderNorthFrame()
+				: style === 'east'
+					? renderEastFrame()
+					: renderSouthFrame();
+		const houseGroup =
+			style === 'north'
+				? renderNorthHouseGroup
+				: style === 'east'
+					? renderEastHouseGroup
+					: renderSouthHouseGroup;
 
 		return html`<div class="wrap">
 			<div class="header">
@@ -182,12 +172,8 @@ export class RoxyDivisionalChart extends LitElement {
 				aria-label="D${division.number} ${division.name} divisional chart with twelve sign houses"
 			>
 				<title>D${division.number} ${division.name}</title>
-				${isNorth ? renderNorthFrame() : renderSouthFrame()}
-				${
-					isNorth
-						? houses.map((h) => renderNorthHouseGroup(h))
-						: houses.map((h) => renderSouthHouseGroup(h))
-				}
+				${frame}
+				${houses.map((h) => houseGroup(h))}
 			</svg>
 
 			${

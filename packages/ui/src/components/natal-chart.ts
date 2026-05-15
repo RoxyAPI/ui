@@ -1,9 +1,20 @@
 import { css, html, LitElement, nothing, svg } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
+import { customElement, property, state } from 'lit/decorators.js';
+import {
+	ASPECT_SYMBOL,
+	PLANET_GLYPH,
+	SIGN_GLYPH,
+	SIGNS_ORDER,
+} from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { polarToCartesian } from '../utils/degree.js';
+import {
+	arcMidpoint,
+	longitudeToSignPosition,
+	normalizeLongitude,
+	oppositePoint,
+	polarToCartesian,
+} from '../utils/degree.js';
 import {
 	ASPECT_CLASS,
 	formatNumber,
@@ -76,10 +87,33 @@ export class RoxyNatalChart extends LitElement {
 				font-family: var(--roxy-font-sans);
 			}
 
+			.planet-deg {
+				fill: var(--roxy-fg, #0a0a0a);
+				font-size: 7px;
+				font-family: var(--roxy-font-sans);
+			}
+
+			.planet-deg .retro {
+				fill: var(--roxy-danger, #dc2626);
+			}
+
 			.house-num {
 				fill: var(--roxy-muted, #71717a);
 				font-size: 9px;
 				font-family: var(--roxy-font-sans);
+			}
+
+			.cusp-deg {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 6px;
+				font-family: var(--roxy-font-sans);
+			}
+
+			.tick {
+				stroke: var(--roxy-border, #e4e4e7);
+			}
+			.tick-major {
+				stroke: var(--roxy-secondary, #475569);
 			}
 
 			.aspect {
@@ -131,6 +165,78 @@ export class RoxyNatalChart extends LitElement {
 				vertical-align: middle;
 			}
 
+			.tablist {
+				display: flex;
+				gap: 2px;
+				border-bottom: 2px solid var(--roxy-border, #e4e4e7);
+			}
+			.tab {
+				padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				background: none;
+				border: none;
+				border-bottom: 2px solid transparent;
+				margin-bottom: -2px;
+				cursor: pointer;
+				color: var(--roxy-muted, #71717a);
+				font-family: inherit;
+				transition: color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
+			}
+			.tab[aria-selected='true'] {
+				color: var(--roxy-accent-fg, #b45309);
+				border-bottom-color: var(--roxy-accent, #f59e0b);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.tab:hover:not([aria-selected='true']) {
+				color: var(--roxy-fg, #0a0a0a);
+			}
+
+			.grid-scroll {
+				overflow-x: auto;
+				-webkit-overflow-scrolling: touch;
+			}
+			table.aspect-grid {
+				border-collapse: collapse;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				margin: 0 auto;
+			}
+			table.aspect-grid th,
+			table.aspect-grid td {
+				width: 1.6rem;
+				height: 1.6rem;
+				text-align: center;
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				padding: 0;
+			}
+			table.aspect-grid th {
+				color: var(--roxy-secondary, #475569);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			table.aspect-grid td.cell {
+				cursor: default;
+			}
+			table.aspect-grid td.empty {
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 18%, transparent);
+			}
+			table.aspect-grid td .asp {
+				font-size: 0.95em;
+				line-height: 1;
+			}
+			table.aspect-grid td.aspect-trine .asp,
+			table.aspect-grid td.aspect-sextile .asp {
+				color: var(--roxy-success, #16a34a);
+			}
+			table.aspect-grid td.aspect-square .asp,
+			table.aspect-grid td.aspect-opposition .asp {
+				color: var(--roxy-danger, #dc2626);
+			}
+			table.aspect-grid td.aspect-conjunction .asp {
+				color: var(--roxy-accent-fg, #b45309);
+			}
+			table.aspect-grid td.aspect-other .asp {
+				color: var(--roxy-muted, #71717a);
+			}
+
 			.details {
 				margin-top: var(--roxy-space-md, 1rem);
 			}
@@ -171,48 +277,37 @@ export class RoxyNatalChart extends LitElement {
 				margin: var(--roxy-space-md, 1rem) 0;
 			}
 
-			.dist-grid {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: var(--roxy-space-md, 1rem);
-			}
-
-			@container (max-width: 639px) {
-				.dist-grid {
-					grid-template-columns: 1fr;
-				}
-			}
-
-			.dist-section h3 {
+			.em-grid {
+				border-collapse: collapse;
 				font-size: var(--roxy-text-xs, 0.75rem);
-				font-weight: var(--roxy-weight-bold, 600);
+				width: 100%;
+			}
+			.em-grid th,
+			.em-grid td {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				padding: 3px 5px;
+				text-align: center;
+				vertical-align: middle;
+			}
+			.em-grid th {
 				color: var(--roxy-muted, #71717a);
-				margin: 0 0 var(--roxy-space-xs, 0.25rem);
+				font-weight: var(--roxy-weight-bold, 600);
 				text-transform: uppercase;
-				letter-spacing: 0.05em;
+				letter-spacing: 0.04em;
 			}
-
-			.dist-row {
-				display: grid;
-				grid-template-columns: 4rem 1fr 1.5rem;
-				align-items: center;
-				gap: var(--roxy-space-xs, 0.25rem);
-				font-size: var(--roxy-text-xs, 0.75rem);
-				color: var(--roxy-fg, #0f172a);
-				margin-bottom: 4px;
+			.em-grid th[scope='row'] {
+				text-align: left;
 			}
-
-			.dist-bar {
-				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 20%, transparent);
-				height: 6px;
-				border-radius: 3px;
+			.em-grid td {
+				color: var(--roxy-accent, #f59e0b);
+				font-size: 0.95em;
+				line-height: 1.4;
+				min-width: 1.4rem;
 			}
-
-			.dist-bar > span {
-				display: block;
-				height: 100%;
-				background: var(--roxy-accent, #f59e0b);
-				border-radius: 3px;
+			.em-grid .em-total {
+				color: var(--roxy-fg, #0a0a0a);
+				font-weight: var(--roxy-weight-bold, 600);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 25%, transparent);
 			}
 
 			.interpretations {
@@ -269,6 +364,10 @@ export class RoxyNatalChart extends LitElement {
 	@property({ type: String, attribute: 'house-system', reflect: true })
 	houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch' = 'placidus';
 
+	/** Which view is showing: the wheel or the planet-by-planet aspect grid. */
+	@state()
+	private view: 'wheel' | 'grid' = 'wheel';
+
 	private getPlanets(): PlanetEntry[] {
 		return this.data?.planets ?? [];
 	}
@@ -291,6 +390,7 @@ export class RoxyNatalChart extends LitElement {
 			return html`<div class="roxy-empty" role="status">No chart data</div>`;
 		const planets = this.getPlanets();
 		const aspects = this.data.aspects ?? [];
+		const view = this.view;
 
 		return html`<div class="wrap">
 			<header>
@@ -305,44 +405,39 @@ export class RoxyNatalChart extends LitElement {
 						: nothing
 				}
 			</header>
-			<svg
-				viewBox="0 0 ${SIZE} ${SIZE}"
-				role="img"
-				aria-label="Natal chart wheel with twelve houses, planets, and aspects"
+			<div
+				class="tablist"
+				role="tablist"
+				aria-label="Natal chart views"
+				@keydown=${this.onTabKeyDown}
 			>
-				<title>Natal chart wheel</title>
-				<desc>
-					Twelve zodiac sign segments around a circular wheel. Planet glyphs are
-					placed at their ecliptic longitudes. Aspect lines connect related planets.
-				</desc>
-				<circle
-					class="wheel-line"
-					cx=${CENTER}
-					cy=${CENTER}
-					r=${OUTER_R}
-					stroke-width="1.5"
-				/>
-				<circle
-					class="wheel-line"
-					cx=${CENTER}
-					cy=${CENTER}
-					r=${HOUSE_R}
-					stroke-width="1"
-				/>
-				<circle
-					class="wheel-line"
-					cx=${CENTER}
-					cy=${CENTER}
-					r=${PLANET_R - 16}
-					stroke-width="0.5"
-				/>
-				${this.renderSpokes()} ${this.renderSigns()} ${this.renderHouseNumbers()}
-				${this.renderAspects(planets, aspects)} ${this.renderPlanets(planets)}
-				${this.renderAngles()}
-			</svg>
+				${(['wheel', 'grid'] as const).map(
+					(t) => html`<button
+						class="tab"
+						role="tab"
+						id="tab-${t}"
+						aria-selected=${view === t ? 'true' : 'false'}
+						aria-controls="panel-${t}"
+						tabindex=${view === t ? '0' : '-1'}
+						@click=${() => {
+							this.view = t;
+						}}
+					>
+						${t === 'wheel' ? 'Wheel' : 'Aspect grid'}
+					</button>`,
+				)}
+			</div>
+			<div id="panel-${view}" role="tabpanel" aria-labelledby="tab-${view}">
+				${view === 'wheel' ? this.renderWheel(planets, aspects) : this.renderAspectGrid(planets, aspects)}
+			</div>
 			<div class="legend">
 				<span>${planets.length} planets</span>
 				<span>${aspects.length} aspects</span>
+				${
+					this.data.houseSystem
+						? html`<span>${this.data.houseSystem} houses</span>`
+						: nothing
+				}
 				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
 				<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 			</div>
@@ -351,11 +446,115 @@ export class RoxyNatalChart extends LitElement {
 		</div>`;
 	}
 
+	private onTabKeyDown(e: KeyboardEvent) {
+		if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+		e.preventDefault();
+		this.view = this.view === 'wheel' ? 'grid' : 'wheel';
+		const next = this.view;
+		requestAnimationFrame(() => {
+			this.shadowRoot
+				?.querySelector<HTMLButtonElement>(`#tab-${next}`)
+				?.focus();
+		});
+	}
+
+	private renderWheel(planets: PlanetEntry[], aspects: AspectEntry[]) {
+		return html`<svg
+			viewBox="0 0 ${SIZE} ${SIZE}"
+			role="img"
+			aria-label="Natal chart wheel with twelve houses, planets, and aspects"
+		>
+			<title>Natal chart wheel</title>
+			<desc>
+				Twelve zodiac sign segments around a circular wheel. Planet glyphs are
+				placed at their ecliptic longitudes. Aspect lines connect related planets.
+			</desc>
+			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${OUTER_R} stroke-width="1.5" />
+			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${SIGN_R - 14} stroke-width="0.8" />
+			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${HOUSE_R} stroke-width="1" />
+			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${PLANET_R - 16} stroke-width="0.5" />
+			${this.renderTicks()} ${this.renderSpokes()} ${this.renderSigns()}
+			${this.renderHouseNumbers()} ${this.renderCuspDegrees()}
+			${this.renderAspects(planets, aspects)} ${this.renderPlanets(planets)}
+			${this.renderAngles()}
+		</svg>`;
+	}
+
+	/**
+	 * Planet-by-planet aspect grid: the lower-triangular matrix astrologers read
+	 * alongside the wheel. Each filled cell shows the aspect glyph colored by
+	 * nature, with the exact orb in the SVG-free `<title>` tooltip.
+	 */
+	private renderAspectGrid(planets: PlanetEntry[], aspects: AspectEntry[]) {
+		const names = planets.map((p) => capitalize(p.name));
+		// Lookup aspects by unordered planet pair.
+		const byPair = new Map<string, AspectEntry>();
+		for (const a of aspects) {
+			const k = [capitalize(a.planet1), capitalize(a.planet2)].sort().join('|');
+			byPair.set(k, a);
+		}
+		if (names.length === 0)
+			return html`<p class="roxy-empty" role="status">No planets to grid</p>`;
+
+		return html`<div class="grid-scroll">
+			<table class="aspect-grid" aria-label="Planet by planet aspect grid">
+				<thead>
+					<tr>
+						<th></th>
+						${names.slice(0, -1).map((n) => {
+							const g = PLANET_GLYPH[n] ?? n.slice(0, 2);
+							return html`<th scope="col" title=${n}>${g}</th>`;
+						})}
+					</tr>
+				</thead>
+				<tbody>
+					${names.slice(1).map((rowName, ri) => {
+						const rowGlyph = PLANET_GLYPH[rowName] ?? rowName.slice(0, 2);
+						// Row i (1-based) pairs with columns 0..i-1.
+						return html`<tr>
+							<th scope="row" title=${rowName}>${rowGlyph}</th>
+							${names.slice(0, ri + 1).map((colName) => {
+								const a = byPair.get([rowName, colName].sort().join('|'));
+								if (!a) return html`<td class="empty"></td>`;
+								const name = normalizeAspect(a);
+								const sym =
+									ASPECT_SYMBOL[name] ??
+									ASPECT_SYMBOL[name.replace(/-/g, '')] ??
+									name.slice(0, 3);
+								const cls = ASPECT_CLASS[name] ?? 'aspect-other';
+								const orb = formatNumber(a.orb, 1);
+								return html`<td class=${`cell ${cls}`} title=${`${rowName} ${name} ${colName}${orb ? ` (orb ${orb}°)` : ''}`}>
+									<span class="asp">${sym}</span>
+								</td>`;
+							})}
+							${names.slice(ri + 1, -1).map(() => html`<td class="empty"></td>`)}
+						</tr>`;
+					})}
+				</tbody>
+			</table>
+		</div>`;
+	}
+
 	private renderAngles() {
 		const asc = this.getAscendant();
 		const mc = this.getMidheaven();
-		const items = [this.renderAngleMark(asc, 'ASC')];
-		if (mc !== null) items.push(this.renderAngleMark(mc, 'MC'));
+		// ASC/DESC and MC/IC are exact axes; DESC and IC are the opposite points.
+		const items = [
+			this.renderAngleMark(asc, 'ASC'),
+			this.renderAngleMark(oppositePoint(asc), 'DSC'),
+		];
+		if (mc !== null) {
+			items.push(this.renderAngleMark(mc, 'MC'));
+			items.push(this.renderAngleMark(oppositePoint(mc), 'IC'));
+		}
+		const pof = this.data?.partOfFortune?.longitude;
+		if (typeof pof === 'number') {
+			items.push(this.renderAngleMark(normalizeLongitude(pof), 'PoF'));
+		}
+		const vertex = this.data?.vertex?.longitude;
+		if (typeof vertex === 'number') {
+			items.push(this.renderAngleMark(normalizeLongitude(vertex), 'Vtx'));
+		}
 		return items;
 	}
 
@@ -373,8 +572,16 @@ export class RoxyNatalChart extends LitElement {
 	}
 
 	private renderSpokes() {
-		return Array.from({ length: 12 }, (_, i) => {
-			const angle = this.toAngle(i * 30);
+		// Draw a spoke at each real house cusp longitude so Placidus / Koch
+		// unequal houses render correctly. Fall back to 12 equal spokes from the
+		// Ascendant only when the response carries no houses array.
+		const houses = this.data?.houses ?? [];
+		const cuspLongitudes =
+			houses.length === 12
+				? houses.map((h) => h.longitude)
+				: Array.from({ length: 12 }, (_, i) => this.getAscendant() + i * 30);
+		return cuspLongitudes.map((lon) => {
+			const angle = this.toAngle(lon);
 			const start = polarToCartesian(CENTER, CENTER, HOUSE_R, angle);
 			const end = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
 			return svg`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.8" />`;
@@ -390,6 +597,26 @@ export class RoxyNatalChart extends LitElement {
 	}
 
 	private renderHouseNumbers() {
+		const houses = this.data?.houses ?? [];
+		// Place each house number at the angular midpoint between its cusp and
+		// the next, so the label sits inside the house even when houses are
+		// unequal. Fall back to equal 30-degree sectors when houses are absent.
+		if (houses.length === 12) {
+			return houses.map((house, i) => {
+				const next = houses[(i + 1) % 12];
+				const mid = arcMidpoint(
+					house.longitude,
+					next ? next.longitude : house.longitude + 30,
+				);
+				const pos = polarToCartesian(
+					CENTER,
+					CENTER,
+					HOUSE_R - 12,
+					this.toAngle(mid),
+				);
+				return svg`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${house.number}</text>`;
+			});
+		}
 		const ascSignIndex = Math.floor(this.getAscendant() / 30);
 		return Array.from({ length: 12 }, (_, i) => {
 			const angle = this.toAngle(i * 30 + 15);
@@ -399,15 +626,55 @@ export class RoxyNatalChart extends LitElement {
 		});
 	}
 
+	/**
+	 * Degree ticks on the outer zodiac band: a short mark every 5 degrees and a
+	 * longer one on each 30-degree sign cusp, so the wheel reads like a
+	 * reference-grade chart rather than a bare ring of glyphs.
+	 */
+	private renderTicks() {
+		const ticks = [];
+		for (let deg = 0; deg < 360; deg += 5) {
+			const angle = this.toAngle(deg);
+			const isMajor = deg % 30 === 0;
+			const inner = isMajor ? SIGN_R - 14 : OUTER_R - 5;
+			const a = polarToCartesian(CENTER, CENTER, inner, angle);
+			const b = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
+			ticks.push(
+				svg`<line class=${isMajor ? 'tick tick-major' : 'tick'} x1=${a.x} y1=${a.y} x2=${b.x} y2=${b.y} stroke-width=${isMajor ? 1 : 0.5} />`,
+			);
+		}
+		return ticks;
+	}
+
+	/**
+	 * Degree-and-minute label printed next to each house cusp on the wheel, so
+	 * the exact cusp position is readable without leaving the chart.
+	 */
+	private renderCuspDegrees() {
+		const houses = this.data?.houses ?? [];
+		if (houses.length !== 12) return nothing;
+		return houses.map((house) => {
+			const angle = this.toAngle(house.longitude);
+			const pos = polarToCartesian(CENTER, CENTER, HOUSE_R + 9, angle);
+			const sp = longitudeToSignPosition(house.longitude);
+			return svg`<text class="cusp-deg" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${sp.degree}°${String(sp.minute).padStart(2, '0')}'</text>`;
+		});
+	}
+
 	private renderPlanets(planets: PlanetEntry[]) {
 		return planets.map((p) => {
 			if (!Number.isFinite(p.longitude)) return nothing;
 			const angle = this.toAngle(p.longitude);
-			const pos = polarToCartesian(CENTER, CENTER, PLANET_R, angle);
+			const glyphPos = polarToCartesian(CENTER, CENTER, PLANET_R, angle);
+			const degPos = polarToCartesian(CENTER, CENTER, PLANET_R - 13, angle);
 			const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
-			const retro = p.isRetrograde ? ' R' : '';
-			const display = retro ? `${glyph}ᴿ` : glyph;
-			return svg`<text class="planet-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro}</title>${display}</text>`;
+			const sp = longitudeToSignPosition(p.longitude);
+			const retro = p.isRetrograde === true;
+			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
+			return svg`<g>
+				<text class="planet-glyph" x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro ? ' retrograde' : ''} - ${degLabel} ${p.sign ?? ''}</title>${glyph}</text>
+				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${degLabel}${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
+			</g>`;
 		});
 	}
 
@@ -417,10 +684,6 @@ export class RoxyNatalChart extends LitElement {
 		if (!summary && !ai) return nothing;
 
 		const retrogrades = summary?.retrogradePlanets ?? [];
-		const elementDist = summary?.elementDistribution ?? {};
-		const modalityDist = summary?.modalityDistribution ?? {};
-		const elementMax = Math.max(1, ...Object.values(elementDist));
-		const modalityMax = Math.max(1, ...Object.values(modalityDist));
 
 		return html`<div class="details">
 			${
@@ -451,42 +714,68 @@ export class RoxyNatalChart extends LitElement {
 					: nothing
 			}
 			${ai?.summary ? html`<p class="summary">${ai.summary}</p>` : nothing}
-			${
-				Object.keys(elementDist).length > 0 ||
-				Object.keys(modalityDist).length > 0
-					? html`<div class="dist-grid">
-						${
-							Object.keys(elementDist).length > 0
-								? html`<div class="dist-section">
-									<h3>Elements</h3>
-									${Object.entries(elementDist).map(
-										([label, count]) => html`<div class="dist-row">
-											<span>${label}</span>
-											<div class="dist-bar"><span style="width: ${Math.round((count / elementMax) * 100)}%"></span></div>
-											<span>${count}</span>
-										</div>`,
-									)}
-								</div>`
-								: nothing
-						}
-						${
-							Object.keys(modalityDist).length > 0
-								? html`<div class="dist-section">
-									<h3>Modalities</h3>
-									${Object.entries(modalityDist).map(
-										([label, count]) => html`<div class="dist-row">
-											<span>${label}</span>
-											<div class="dist-bar"><span style="width: ${Math.round((count / modalityMax) * 100)}%"></span></div>
-											<span>${count}</span>
-										</div>`,
-									)}
-								</div>`
-								: nothing
-						}
-					</div>`
-					: nothing
-			}
+			${this.renderElementModalityGrid()}
 		</div>`;
+	}
+
+	/**
+	 * Element by modality grid: the 4x3 cross-tab astrologers read for chart
+	 * balance. Each planet is placed by its sign into one cell (Fire/Earth/Air/
+	 * Water row, Cardinal/Fixed/Mutable column). Derived purely from the planet
+	 * signs, with row, column, and grand totals.
+	 */
+	private renderElementModalityGrid() {
+		const planets = this.getPlanets();
+		if (planets.length === 0) return nothing;
+		const ELEMENTS = ['Fire', 'Earth', 'Air', 'Water'] as const;
+		const MODALITIES = ['Cardinal', 'Fixed', 'Mutable'] as const;
+		const order = SIGNS_ORDER as readonly string[];
+
+		const cells: Record<string, Record<string, string[]>> = {};
+		for (const el of ELEMENTS)
+			cells[el] = { Cardinal: [], Fixed: [], Mutable: [] };
+		for (const p of planets) {
+			const idx = order.indexOf(capitalize(p.sign ?? ''));
+			if (idx < 0) continue;
+			const el = ELEMENTS[idx % 4];
+			const mod = MODALITIES[idx % 3];
+			const glyph =
+				PLANET_GLYPH[capitalize(p.name)] ?? capitalize(p.name).slice(0, 2);
+			cells[el]?.[mod]?.push(glyph);
+		}
+
+		return html`<table class="em-grid" aria-label="Element and modality distribution">
+			<thead>
+				<tr>
+					<th></th>
+					${MODALITIES.map((m) => html`<th scope="col">${m.slice(0, 3)}</th>`)}
+					<th scope="col">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				${ELEMENTS.map((el) => {
+					const rowTotal = MODALITIES.reduce(
+						(s, m) => s + (cells[el]?.[m]?.length ?? 0),
+						0,
+					);
+					return html`<tr>
+						<th scope="row">${el}</th>
+						${MODALITIES.map(
+							(m) => html`<td>${(cells[el]?.[m] ?? []).join(' ')}</td>`,
+						)}
+						<td class="em-total">${rowTotal}</td>
+					</tr>`;
+				})}
+				<tr>
+					<th scope="row">Total</th>
+					${MODALITIES.map(
+						(m) =>
+							html`<td class="em-total">${ELEMENTS.reduce((s, el) => s + (cells[el]?.[m]?.length ?? 0), 0)}</td>`,
+					)}
+					<td class="em-total">${planets.length}</td>
+				</tr>
+			</tbody>
+		</table>`;
 	}
 
 	private renderInterpretations() {

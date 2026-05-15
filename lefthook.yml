@@ -12,13 +12,13 @@ pre-commit:
       stage_fixed: true
     typecheck:
       run: bun run typecheck
-    build-and-stage-dist:
+    build-and-stage-codegen:
       glob: "packages/ui/src/**/*.{ts,css}"
-      # The build emits codegen to dist, packages/ui-react/src (wrappers +
+      # The build emits committed codegen: packages/ui-react/src (wrappers +
       # load-ui), registry, apps/docs/manifest.js. Stage every diff so the
-      # commit captures the full regenerated tree without leaving artifacts
-      # behind on disk. Per .gitignore, generated paths (apps/docs/dist,
-      # packages/ui/src/types) are skipped automatically.
+      # commit captures the full regenerated tree. Per .gitignore, build
+      # output (packages/ui/dist, packages/ui-react/dist, apps/docs/dist) and
+      # generated types (packages/ui/src/types) are skipped automatically.
       run: bun run build && git add -A
 
 pre-push:

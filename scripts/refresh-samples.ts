@@ -79,6 +79,11 @@ async function main() {
 				body: { ...PERSON1, houseSystem: 'placidus' },
 			}),
 		),
+		run('western-planets', () =>
+			roxy.astrology.generateNatalChart({
+				body: { ...PERSON1, houseSystem: 'placidus' },
+			}),
+		),
 		run('horoscope', () =>
 			roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } }),
 		),
@@ -94,6 +99,16 @@ async function main() {
 		),
 		run('moon', () => roxy.astrology.getCurrentMoonPhase()),
 		run('kundli', () =>
+			roxy.vedicAstrology.generateBirthChart({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
+		run('vedic-planets', () =>
 			roxy.vedicAstrology.generateBirthChart({
 				body: {
 					date: PERSON1.date,
@@ -146,6 +161,31 @@ async function main() {
 					longitude: PERSON1.longitude,
 				},
 			}),
+		),
+		run('kp-chart', () =>
+			roxy.vedicAstrology.generateKpChart({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
+		run('kp-ruling', () =>
+			roxy.vedicAstrology.getKpRulingPlanets({
+				body: {
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+					datetime: `${PERSON1.date}T${PERSON1.time}`,
+					birthDate: PERSON1.date,
+					birthTime: PERSON1.time,
+				},
+			}),
+		),
+		run('nakshatra', () =>
+			roxy.vedicAstrology.getNakshatra({ path: { id: 'ashwini' } }),
 		),
 		run('num', () =>
 			roxy.numerology.calculateLifePath({
