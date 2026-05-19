@@ -700,6 +700,26 @@
 			</div>
 		</section>
 
+		<section aria-labelledby="ssr-title" style="border-top: 1px solid var(--roxy-border); padding-block: 1.5rem;">
+			<h2 id="ssr-title" style="margin: 0 0 0.75rem; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em;">Server-rendered, no JavaScript wiring</h2>
+			<p style="color: var(--roxy-muted); margin: 0 0 1rem; font-size: 0.9375rem;">Render the response into a child <code>&lt;script type="application/json" class="roxy-data"&gt;</code> on the server. The component reads it on load. No per-element script, no API key in the browser. The same pattern powers the WordPress plugin and any JSX SSR page.</p>
+			<roxy-numerology-card id="ssr-markup" type="life-path">
+				<noscript>Life Path 8: The Powerhouse. Success, power, authority, abundance.</noscript>
+				<script type="application/json" class="roxy-data">
+					{
+						"number": 8,
+						"type": "single",
+						"hasKarmicDebt": false,
+						"meaning": {
+							"title": "The Powerhouse",
+							"keywords": ["success", "power", "authority", "abundance", "achievement"],
+							"description": "The number 8 is the achiever and measures life by the goals it reaches. It has good business sense, a powerful presence, and a strong drive for success."
+						}
+					}
+				</script>
+			</roxy-numerology-card>
+		</section>
+
 		<section class="faq" aria-labelledby="faq-title">
 			<h2 id="faq-title">Frequently asked</h2>
 			<details>

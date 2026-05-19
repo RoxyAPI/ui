@@ -7,6 +7,7 @@ import type {
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 
 type DashaData =
 	| GetCurrentDashaResponse
@@ -151,6 +152,14 @@ export class RoxyDashaTimeline extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: DashaData | null = null;

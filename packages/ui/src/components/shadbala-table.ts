@@ -4,6 +4,7 @@ import { PLANET_GLYPH } from '../tokens/index.js';
 import type { ShadbalaResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type Planet = ShadbalaResponse['planets'][number];
@@ -190,6 +191,14 @@ export class RoxyShadbalaTable extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: ShadbalaResponse | null = null;

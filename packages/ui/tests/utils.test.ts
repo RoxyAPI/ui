@@ -18,6 +18,7 @@ import {
 	polarToCartesian,
 } from '../src/utils/degree.js';
 import { toKundliViewModel } from '../src/utils/kundli-render.js';
+import { MarkupDataController } from '../src/utils/markup-data.js';
 
 describe('utils/degree', () => {
 	test('normalizes negative longitude into [0, 360)', () => {
@@ -238,5 +239,122 @@ describe('tokens', () => {
 		expect(Object.keys(MOON_PHASE_EMOJI)).toHaveLength(8);
 		expect(MOON_PHASE_EMOJI['new moon']).toBe('🌑');
 		expect(MOON_PHASE_EMOJI['full moon']).toBe('🌕');
+	});
+});
+
+/**
+ * MarkupDataController is exercised against a stub host so the assertions stay
+ * focused on the source-resolution logic. End-to-end hydration through a real
+ * connected custom element is covered by the headless-Chromium audit, which
+ * renders the markup-driven section in apps/docs/index.html.
+ */
+describe('utils/markup-data', () => {
+	function jsonScript(json: string, opts: { cls?: string } = {}) {
+		const s = document.createElement('script');
+		s.setAttribute('type', 'application/json');
+		if (opts.cls) s.className = opts.cls;
+		s.textContent = json;
+		return s;
+	}
+
+	/** Minimal host the controller can drive without connecting a custom element. */
+	function makeHost(
+		children: Element[] = [],
+		attrs: Record<string, string> = {},
+	) {
+		const root = document.createElement('div');
+		for (const c of children) root.appendChild(c);
+		let updates = 0;
+		const host = {
+			data: undefined as unknown,
+			children: root.children,
+			getAttribute: (name: string) => attrs[name] ?? null,
+			ownerDocument: document,
+			addController() {},
+			requestUpdate() {
+				updates += 1;
+			},
+		};
+		return {
+			host,
+			get updates() {
+				return updates;
+			},
+		};
+	}
+
+	test('hydrates from a direct-child roxy-data script', () => {
+		const { host } = makeHost([
+			jsonScript('{"lifePathNumber":7}', { cls: 'roxy-data' }),
+		]);
+		new MarkupDataController(host as never).hostConnected();
+		expect((host.data as { lifePathNumber: number }).lifePathNumber).toBe(7);
+	});
+
+	test('requests an update after hydrating', () => {
+		const ctx = makeHost([jsonScript('{"n":1}', { cls: 'roxy-data' })]);
+		new MarkupDataController(ctx.host as never).hostConnected();
+		expect(ctx.updates).toBe(1);
+	});
+
+	test('property already set wins over markup', () => {
+		const { host } = makeHost([
+			jsonScript('{"lifePathNumber":1}', { cls: 'roxy-data' }),
+		]);
+		host.data = { lifePathNumber: 9 };
+		new MarkupDataController(host as never).hostConnected();
+		expect((host.data as { lifePathNumber: number }).lifePathNumber).toBe(9);
+	});
+
+	test('ignores a script that lacks the roxy-data marker class', () => {
+		const { host } = makeHost([jsonScript('{"lifePathNumber":7}')]);
+		new MarkupDataController(host as never).hostConnected();
+		expect(host.data).toBeUndefined();
+	});
+
+	test('leaves sibling fallback markup in place', () => {
+		const fallback = document.createElement('div');
+		fallback.textContent = 'Life Path 7';
+		const { host } = makeHost([
+			fallback,
+			jsonScript('{"lifePathNumber":7}', { cls: 'roxy-data' }),
+		]);
+		new MarkupDataController(host as never).hostConnected();
+		expect((host.data as { lifePathNumber: number }).lifePathNumber).toBe(7);
+		expect(host.children).toContain(fallback);
+		expect(fallback.textContent).toBe('Life Path 7');
+	});
+
+	test('malformed JSON fails safe and leaves data unset', () => {
+		const ctx = makeHost([jsonScript('{bad json', { cls: 'roxy-data' })]);
+		new MarkupDataController(ctx.host as never).hostConnected();
+		expect(ctx.host.data).toBeUndefined();
+		expect(ctx.updates).toBe(0);
+	});
+
+	test('empty script body fails safe', () => {
+		const { host } = makeHost([jsonScript('   ', { cls: 'roxy-data' })]);
+		new MarkupDataController(host as never).hostConnected();
+		expect(host.data).toBeUndefined();
+	});
+
+	test('no children leaves the property path untouched', () => {
+		const { host } = makeHost([]);
+		new MarkupDataController(host as never).hostConnected();
+		expect(host.data).toBeUndefined();
+	});
+
+	// Guards the != null check against a future refactor to a truthiness test:
+	// a legitimately falsy property value (false, 0, empty array) must never be
+	// clobbered by markup.
+	test('a falsy-but-present property value is preserved over markup', () => {
+		for (const present of [false, 0, '', [] as unknown[]]) {
+			const { host } = makeHost([
+				jsonScript('{"clobbered":true}', { cls: 'roxy-data' }),
+			]);
+			host.data = present;
+			new MarkupDataController(host as never).hostConnected();
+			expect(host.data).toBe(present);
+		}
 	});
 });

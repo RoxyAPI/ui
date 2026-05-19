@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 10 domains (astrology, tarot, numerology, crystals, dreams, I-Ching, angel numbers, Vedic astrology, location, biorhythm), 130+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (MCP)\n\nRoxyAPI has native Model Context Protocol support. Your AI agent auto-discovers all 130+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include `suggestion`, `hint`, or `availableEndpoints` for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
+    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 10 domains (astrology, tarot, numerology, crystals, dreams, I-Ching, angel numbers, Vedic astrology, location, biorhythm), 131+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (MCP)\n\nRoxyAPI has native Model Context Protocol support. Your AI agent auto-discovers all 131+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include `suggestion`, `hint`, or `availableEndpoints` for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
     "contact": {
       "name": "RoxyAPI Support",
       "url": "https://roxyapi.com/contact"
@@ -321,6 +321,116 @@
               ]
             },
             "description": "All planetary aspects found in this chart with orbs, strength, and interpretation."
+          },
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "GRAND_TRINE",
+                    "KITE",
+                    "T_SQUARE",
+                    "GRAND_CROSS",
+                    "YOD",
+                    "MYSTIC_RECTANGLE",
+                    "STELLIUM"
+                  ],
+                  "example": "GRAND_TRINE",
+                  "description": "Pattern kind identifier. GRAND_TRINE (3 trines, harmonious flow), KITE (Grand Trine with a focal outlet planet), T_SQUARE (opposition with squared apex, growth engine), GRAND_CROSS (4 planets in 2 oppositions and 4 squares, peak tension), YOD (Finger of Fate, fated adjustment), MYSTIC_RECTANGLE (oppositions softened by trines and sextiles), STELLIUM (3+ planets clustered in a sign or 10-degree arc)."
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Grand Trine",
+                  "description": "Human-readable name of the configuration as used in astrological literature."
+                },
+                "planets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "Sun",
+                    "Moon",
+                    "Mars"
+                  ],
+                  "description": "Participating bodies in canonical order. For Kite, T-Square, and Yod the apex planet appears first."
+                },
+                "apex": {
+                  "type": "string",
+                  "example": "Mars",
+                  "description": "Focal planet for Kite, T-Square, and Yod patterns. Receives the released energy of the configuration and is the recommended integration point."
+                },
+                "element": {
+                  "type": "string",
+                  "enum": [
+                    "fire",
+                    "earth",
+                    "air",
+                    "water"
+                  ],
+                  "example": "water",
+                  "description": "Dominant element when the pattern is element-coherent (Grand Trine, Kite). Reported lowercase. Absent for patterns whose meaning does not pivot on element."
+                },
+                "modality": {
+                  "type": "string",
+                  "enum": [
+                    "cardinal",
+                    "fixed",
+                    "mutable"
+                  ],
+                  "example": "cardinal",
+                  "description": "Dominant modality for tension-based patterns (T-Square, Grand Cross). Cardinal initiates, Fixed sustains, Mutable adapts."
+                },
+                "dissociate": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "True if the pattern is out-of-sign (one or more planets in a neighboring element or modality). Dissociate patterns are still valid but operate with weakened thematic coherence."
+                },
+                "tightness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "example": 78,
+                  "description": "Tightness score (0-100) derived from the average orb tightness across all defining aspects. Higher means closer to exact and stronger thematic expression."
+                },
+                "interpretation": {
+                  "type": "string",
+                  "example": "Grand Trine in Water signs binds Sun, Moon, and Mars in flowing harmony, gifts that come easily but ask to be activated.",
+                  "description": "Concise one-line interpretation naming the participating planets and theme. Localized to the requested language via the lang query parameter (defaults to English)."
+                },
+                "interpretationKey": {
+                  "type": "string",
+                  "example": "aspectPattern.grandTrine",
+                  "description": "Stable template identifier used to render the interpretation. Useful for clients that wish to swap in a custom narrative template while preserving the structured variables."
+                },
+                "interpretationVars": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "example": {
+                    "element": "Water",
+                    "planet1": "Sun",
+                    "planet2": "Moon",
+                    "planet3": "Mars"
+                  },
+                  "description": "Variables that were interpolated into the interpretation template. Names already resolved to the requested language where appropriate."
+                }
+              },
+              "required": [
+                "kind",
+                "name",
+                "planets",
+                "tightness",
+                "interpretation",
+                "interpretationKey",
+                "interpretationVars"
+              ]
+            },
+            "description": "Detected multi-planet aspect configurations (Grand Trine, Kite, T-Square, Grand Cross, Yod, Mystic Rectangle, Stellium). Grand Cross suppresses contained T-Squares, Kite suppresses underlying Grand Trine."
           },
           "aspectsInterpretation": {
             "type": "object",
@@ -921,6 +1031,116 @@
             },
             "description": "All aspects found between the specified planets, with strength, orb, and interpretation."
           },
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "GRAND_TRINE",
+                    "KITE",
+                    "T_SQUARE",
+                    "GRAND_CROSS",
+                    "YOD",
+                    "MYSTIC_RECTANGLE",
+                    "STELLIUM"
+                  ],
+                  "example": "GRAND_TRINE",
+                  "description": "Pattern kind identifier. GRAND_TRINE (3 trines, harmonious flow), KITE (Grand Trine with a focal outlet planet), T_SQUARE (opposition with squared apex, growth engine), GRAND_CROSS (4 planets in 2 oppositions and 4 squares, peak tension), YOD (Finger of Fate, fated adjustment), MYSTIC_RECTANGLE (oppositions softened by trines and sextiles), STELLIUM (3+ planets clustered in a sign or 10-degree arc)."
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Grand Trine",
+                  "description": "Human-readable name of the configuration as used in astrological literature."
+                },
+                "planets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "Sun",
+                    "Moon",
+                    "Mars"
+                  ],
+                  "description": "Participating bodies in canonical order. For Kite, T-Square, and Yod the apex planet appears first."
+                },
+                "apex": {
+                  "type": "string",
+                  "example": "Mars",
+                  "description": "Focal planet for Kite, T-Square, and Yod patterns. Receives the released energy of the configuration and is the recommended integration point."
+                },
+                "element": {
+                  "type": "string",
+                  "enum": [
+                    "fire",
+                    "earth",
+                    "air",
+                    "water"
+                  ],
+                  "example": "water",
+                  "description": "Dominant element when the pattern is element-coherent (Grand Trine, Kite). Reported lowercase. Absent for patterns whose meaning does not pivot on element."
+                },
+                "modality": {
+                  "type": "string",
+                  "enum": [
+                    "cardinal",
+                    "fixed",
+                    "mutable"
+                  ],
+                  "example": "cardinal",
+                  "description": "Dominant modality for tension-based patterns (T-Square, Grand Cross). Cardinal initiates, Fixed sustains, Mutable adapts."
+                },
+                "dissociate": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "True if the pattern is out-of-sign (one or more planets in a neighboring element or modality). Dissociate patterns are still valid but operate with weakened thematic coherence."
+                },
+                "tightness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "example": 78,
+                  "description": "Tightness score (0-100) derived from the average orb tightness across all defining aspects. Higher means closer to exact and stronger thematic expression."
+                },
+                "interpretation": {
+                  "type": "string",
+                  "example": "Grand Trine in Water signs binds Sun, Moon, and Mars in flowing harmony, gifts that come easily but ask to be activated.",
+                  "description": "Concise one-line interpretation naming the participating planets and theme. Localized to the requested language via the lang query parameter (defaults to English)."
+                },
+                "interpretationKey": {
+                  "type": "string",
+                  "example": "aspectPattern.grandTrine",
+                  "description": "Stable template identifier used to render the interpretation. Useful for clients that wish to swap in a custom narrative template while preserving the structured variables."
+                },
+                "interpretationVars": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "example": {
+                    "element": "Water",
+                    "planet1": "Sun",
+                    "planet2": "Moon",
+                    "planet3": "Mars"
+                  },
+                  "description": "Variables that were interpolated into the interpretation template. Names already resolved to the requested language where appropriate."
+                }
+              },
+              "required": [
+                "kind",
+                "name",
+                "planets",
+                "tightness",
+                "interpretation",
+                "interpretationKey",
+                "interpretationVars"
+              ]
+            },
+            "description": "Detected multi-planet aspect configurations (Grand Trine, Kite, T-Square, Grand Cross, Yod, Mystic Rectangle, Stellium)."
+          },
           "summary": {
             "type": "object",
             "properties": {
@@ -1041,6 +1261,218 @@
           "time",
           "timezone"
         ]
+      },
+      "AspectPatternsResponse": {
+        "type": "object",
+        "properties": {
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "GRAND_TRINE",
+                    "KITE",
+                    "T_SQUARE",
+                    "GRAND_CROSS",
+                    "YOD",
+                    "MYSTIC_RECTANGLE",
+                    "STELLIUM"
+                  ],
+                  "example": "GRAND_TRINE",
+                  "description": "Pattern kind identifier. GRAND_TRINE (3 trines, harmonious flow), KITE (Grand Trine with a focal outlet planet), T_SQUARE (opposition with squared apex, growth engine), GRAND_CROSS (4 planets in 2 oppositions and 4 squares, peak tension), YOD (Finger of Fate, fated adjustment), MYSTIC_RECTANGLE (oppositions softened by trines and sextiles), STELLIUM (3+ planets clustered in a sign or 10-degree arc)."
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Grand Trine",
+                  "description": "Human-readable name of the configuration as used in astrological literature."
+                },
+                "planets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "Sun",
+                    "Moon",
+                    "Mars"
+                  ],
+                  "description": "Participating bodies in canonical order. For Kite, T-Square, and Yod the apex planet appears first."
+                },
+                "apex": {
+                  "type": "string",
+                  "example": "Mars",
+                  "description": "Focal planet for Kite, T-Square, and Yod patterns. Receives the released energy of the configuration and is the recommended integration point."
+                },
+                "element": {
+                  "type": "string",
+                  "enum": [
+                    "fire",
+                    "earth",
+                    "air",
+                    "water"
+                  ],
+                  "example": "water",
+                  "description": "Dominant element when the pattern is element-coherent (Grand Trine, Kite). Reported lowercase. Absent for patterns whose meaning does not pivot on element."
+                },
+                "modality": {
+                  "type": "string",
+                  "enum": [
+                    "cardinal",
+                    "fixed",
+                    "mutable"
+                  ],
+                  "example": "cardinal",
+                  "description": "Dominant modality for tension-based patterns (T-Square, Grand Cross). Cardinal initiates, Fixed sustains, Mutable adapts."
+                },
+                "dissociate": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "True if the pattern is out-of-sign (one or more planets in a neighboring element or modality). Dissociate patterns are still valid but operate with weakened thematic coherence."
+                },
+                "tightness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "example": 78,
+                  "description": "Tightness score (0-100) derived from the average orb tightness across all defining aspects. Higher means closer to exact and stronger thematic expression."
+                },
+                "interpretation": {
+                  "type": "string",
+                  "example": "Grand Trine in Water signs binds Sun, Moon, and Mars in flowing harmony, gifts that come easily but ask to be activated.",
+                  "description": "Concise one-line interpretation naming the participating planets and theme. Localized to the requested language via the lang query parameter (defaults to English)."
+                },
+                "interpretationKey": {
+                  "type": "string",
+                  "example": "aspectPattern.grandTrine",
+                  "description": "Stable template identifier used to render the interpretation. Useful for clients that wish to swap in a custom narrative template while preserving the structured variables."
+                },
+                "interpretationVars": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "example": {
+                    "element": "Water",
+                    "planet1": "Sun",
+                    "planet2": "Moon",
+                    "planet3": "Mars"
+                  },
+                  "description": "Variables that were interpolated into the interpretation template. Names already resolved to the requested language where appropriate."
+                }
+              },
+              "required": [
+                "kind",
+                "name",
+                "planets",
+                "tightness",
+                "interpretation",
+                "interpretationKey",
+                "interpretationVars"
+              ]
+            },
+            "description": "All aspect patterns detected in the chart, in detection order: Grand Cross first, then Kite, Grand Trine, T-Square, Yod, Mystic Rectangle, Stellium. Patterns absorbed by a higher-priority detection (T-Squares inside a Grand Cross, Grand Trines absorbed by a Kite) are not reported separately."
+          },
+          "total": {
+            "type": "number",
+            "example": 3,
+            "description": "Total number of detected aspect patterns in this chart."
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "strictOrbs": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether the strict (Pontopia-style) orb budget was used. False uses industry-standard orbs (8 for major aspects, 9 for square, 6 for sextile, 3 for quincunx)."
+              },
+              "include": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "chiron",
+                    "northNode"
+                  ]
+                },
+                "example": [],
+                "description": "Optional bodies included beyond the default Sun-Pluto set. Empty means classical 10-planet detection only."
+              }
+            },
+            "required": [
+              "strictOrbs",
+              "include"
+            ],
+            "description": "Echo of the options used for this detection run. Useful for reproducibility and for downstream UI display."
+          }
+        },
+        "required": [
+          "patterns",
+          "total",
+          "options"
+        ]
+      },
+      "AspectPatternsRequest": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "1990-07-15",
+            "description": "Birth date in YYYY-MM-DD format. Determines planetary positions for the specific calendar day."
+          },
+          "time": {
+            "type": "string",
+            "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+            "example": "14:30:00",
+            "description": "Birth time in 24-hour HH:MM:SS format. Determines the Ascendant (rising sign) and house cusps. Use 12:00:00 if unknown."
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "example": 40.7128,
+            "description": "Birth location latitude in decimal degrees (-90 to 90). Positive = North, negative = South."
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "example": -74.006,
+            "description": "Birth location longitude in decimal degrees (-180 to 180). Positive = East, negative = West."
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": -14,
+                "maximum": 14
+              },
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z_]+(?:\\/[A-Za-z0-9_+-]+){0,2}$"
+              }
+            ],
+            "description": "Timezone: decimal hours from UTC (e.g. -5 for EST, 5.5 for IST) OR IANA name (e.g. \"America/New_York\", \"Asia/Kolkata\"). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "example": -5
+          }
+        },
+        "required": [
+          "date",
+          "time",
+          "latitude",
+          "longitude",
+          "timezone"
+        ],
+        "example": {
+          "date": "1955-02-24",
+          "time": "19:15:00",
+          "latitude": 37.77,
+          "longitude": -122.42,
+          "timezone": -8
+        }
       },
       "TransitsResponse": {
         "type": "object",
@@ -1438,6 +1870,63 @@
               "rashi",
               "signs"
             ]
+          },
+          "yogas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "gajakesari",
+                  "description": "Glossary id (lowercase, kebab-case) matching an entry in the 300-entry planetary-yoga catalog. Use with GET /yoga/{id} to retrieve the full glossary text."
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Gajakesari Yoga",
+                  "description": "Classical Sanskrit name of the yoga as referenced in BPHS (Brihat Parashara Hora Shastra), Phaladeepika, and B.V. Raman *Three Hundred Important Combinations*."
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Jupiter in kendra from Moon",
+                  "description": "Brief classical formation rule. Identifies the planetary placement, lordship, dignity, or aspect pattern required for the yoga to form."
+                },
+                "result": {
+                  "type": "string",
+                  "example": "Gajakesari Yoga is one of the most powerful yogas...",
+                  "description": "Classical phala (life-effect) description of the yoga when present, sourced from the parashari and phaladeepika tradition."
+                },
+                "quality": {
+                  "type": "string",
+                  "enum": [
+                    "Positive",
+                    "Negative",
+                    "Both"
+                  ],
+                  "example": "Positive",
+                  "description": "Overall nature. Auspicious yogas (Pancha Mahapurusha, Gajakesari) bestow benefits; inauspicious yogas (Kemadruma) indicate challenges; Both denotes context-dependent effects."
+                },
+                "present": {
+                  "type": "boolean",
+                  "example": true,
+                  "description": "True if every classical condition for the yoga is satisfied by the given chart. False if any rule fails, including \"almost-present\" cases where dignity is met but kendra/aspect is not."
+                },
+                "evidence": {
+                  "type": "string",
+                  "example": "Jupiter in kendra from Moon, not retrograde, no malefic drishti. Strengtheners: Moon out of 6/8/12 (house 4); Moon 5 houses from Sun; Moon not in Scorpio.",
+                  "description": "Human-readable rationale naming the specific rule that triggered or failed the detection, including planetary positions, dignity, kendrādhipati status, lordship, or malefic drishti."
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "description",
+                "result",
+                "quality",
+                "present"
+              ]
+            },
+            "description": "Twelve classical yogas detected against this chart: Gajakesari (three-rule parashara definition), Sunapha, Anapha, Dhurdhura, Kemadruma, Chandra Mangala, Budha-Aditya, and the five Pancha Mahapurusha (Ruchaka, Bhadra, Hamsa, Malavya, Sasa). Each entry carries an `id` (matches `GET /yoga/{id}` for full glossary lookup), a `present` boolean, and classical-text `evidence` for the rule that triggered or failed."
           },
           "meta": {
             "type": "object",
@@ -3013,6 +3502,159 @@
         ]
       },
       "SadhesatiRequest": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "1990-07-04",
+            "description": "Birth date in YYYY-MM-DD format. Date determines planetary positions and nakshatra calculations for Vedic kundli (janam patri). Accurate birth date is essential for dashas, yoga calculations, and divisional charts (vargas)."
+          },
+          "time": {
+            "type": "string",
+            "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+            "example": "10:12:00",
+            "description": "Birth time in 24-hour HH:MM:SS format. Time is CRITICAL for Lagna (Ascendant) calculation and house divisions - changes every ~2 hours. Even minutes matter for accurate nakshatra pada and divisional chart (D9, D10) calculations. Without exact time, Lagna and house-based predictions will be incorrect."
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "example": 28.6139,
+            "description": "Birth location latitude in decimal degrees. Location determines local sidereal time for Lagna calculation and affects bhava (house) cusps. Example: Delhi 28.6139, Mumbai 19.0760, Kathmandu 27.7172."
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "example": 77.209,
+            "description": "Birth location longitude in decimal degrees. Affects local time calculations and ayanamsha adjustments. Example: Delhi 77.2090, Mumbai 72.8777, Kathmandu 85.3240."
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": -14,
+                "maximum": 14
+              },
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z_]+(?:\\/[A-Za-z0-9_+-]+){0,2}$"
+              }
+            ],
+            "default": 5.5,
+            "description": "Timezone: decimal hours from UTC (e.g. 5.5 for IST, -5 for EST) OR IANA name (e.g. \"Asia/Kolkata\", \"America/New_York\"). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5 (IST).",
+            "example": 5.5
+          }
+        },
+        "required": [
+          "date",
+          "time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "YogaDetectResponse": {
+        "type": "object",
+        "properties": {
+          "yogas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "gajakesari",
+                  "description": "Glossary id (lowercase, kebab-case) matching an entry in the 300-entry planetary-yoga catalog. Use with GET /yoga/{id} to retrieve the full glossary text."
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Gajakesari Yoga",
+                  "description": "Classical Sanskrit name of the yoga as referenced in BPHS (Brihat Parashara Hora Shastra), Phaladeepika, and B.V. Raman *Three Hundred Important Combinations*."
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Jupiter in kendra from Moon",
+                  "description": "Brief classical formation rule. Identifies the planetary placement, lordship, dignity, or aspect pattern required for the yoga to form."
+                },
+                "result": {
+                  "type": "string",
+                  "example": "Gajakesari Yoga is one of the most powerful yogas...",
+                  "description": "Classical phala (life-effect) description of the yoga when present, sourced from the parashari and phaladeepika tradition."
+                },
+                "quality": {
+                  "type": "string",
+                  "enum": [
+                    "Positive",
+                    "Negative",
+                    "Both"
+                  ],
+                  "example": "Positive",
+                  "description": "Overall nature. Auspicious yogas (Pancha Mahapurusha, Gajakesari) bestow benefits; inauspicious yogas (Kemadruma) indicate challenges; Both denotes context-dependent effects."
+                },
+                "present": {
+                  "type": "boolean",
+                  "example": true,
+                  "description": "True if every classical condition for the yoga is satisfied by the given chart. False if any rule fails, including \"almost-present\" cases where dignity is met but kendra/aspect is not."
+                },
+                "evidence": {
+                  "type": "string",
+                  "example": "Jupiter in kendra from Moon, not retrograde, no malefic drishti. Strengtheners: Moon out of 6/8/12 (house 4); Moon 5 houses from Sun; Moon not in Scorpio.",
+                  "description": "Human-readable rationale naming the specific rule that triggered or failed the detection, including planetary positions, dignity, kendrādhipati status, lordship, or malefic drishti."
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "description",
+                "result",
+                "quality",
+                "present"
+              ]
+            },
+            "description": "Array of 12 detected yogas. Every entry carries a present boolean; filter on present === true for active yogas. Evidence text names the rule that triggered or failed."
+          },
+          "total": {
+            "type": "number",
+            "example": 4,
+            "description": "Count of yogas where present === true in this chart. Range 0-12."
+          },
+          "birthDetails": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "time": {
+                "type": "string"
+              },
+              "latitude": {
+                "type": "number"
+              },
+              "longitude": {
+                "type": "number"
+              },
+              "timezone": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "date",
+              "time",
+              "latitude",
+              "longitude",
+              "timezone"
+            ],
+            "description": "Echo of the resolved birth data used for detection. Timezone is the numeric offset that the chart engine consumed (IANA names are resolved upstream)."
+          }
+        },
+        "required": [
+          "yogas",
+          "total",
+          "birthDetails"
+        ]
+      },
+      "YogaDetectRequest": {
         "type": "object",
         "properties": {
           "date": {
@@ -6245,11 +6887,11 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups, queen-of-swords)."
+            "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups)."
           },
           "name": {
             "type": "string",
-            "description": "Display name of the tarot card as it appears in the Rider-Waite-Smith tradition."
+            "description": "Display name of the tarot card."
           },
           "arcana": {
             "type": "string",
@@ -6291,6 +6933,26 @@
           "meaning": {
             "type": "string",
             "description": "Full interpretation of this card in its current orientation, providing detailed divination guidance."
+          },
+          "love": {
+            "type": "string",
+            "description": "Love and relationship interpretation for the drawn orientation. Covers romantic partnerships, dating, emotional connections, and matters of the heart."
+          },
+          "career": {
+            "type": "string",
+            "description": "Career and professional interpretation for the drawn orientation. Covers workplace dynamics, job transitions, ambition, and vocational purpose."
+          },
+          "finances": {
+            "type": "string",
+            "description": "Financial interpretation for the drawn orientation. Covers money management, investments, material prosperity, and abundance mindset."
+          },
+          "health": {
+            "type": "string",
+            "description": "Health and wellbeing interpretation for the drawn orientation. Covers physical vitality, mental health, energy levels, and self-care guidance."
+          },
+          "spirituality": {
+            "type": "string",
+            "description": "Spiritual interpretation for the drawn orientation. Covers personal growth, inner wisdom, soul purpose, and metaphysical development."
           },
           "imageUrl": {
             "type": "string",
@@ -10999,6 +11661,293 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AspectsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 7231).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/astrology/aspect-patterns": {
+      "post": {
+        "operationId": "detectAspectPatterns",
+        "tags": [
+          "Western Astrology"
+        ],
+        "summary": "Detect aspect patterns - Grand Trine, Kite, T-Square, Grand Cross, Yod, Mystic Rectangle, Stellium",
+        "description": "Identify classical Western astrology multi-planet configurations in a birth chart. Returns Grand Trines (with element), Kites (with apex), T-Squares (with apex and modality), Grand Crosses (with modality), Yods (Finger of Fate, with apex), Mystic Rectangles, and Stelliums. Each pattern carries a tightness score (0-100), dissociate flag for out-of-sign configurations, and a one-line interpretation suitable for chart reports. Disambiguation is built in: a Grand Cross suppresses its contained T-Squares, a Kite suppresses its underlying Grand Trine. Useful for personalized natal report engines, astrology chatbots, AI agents that interpret chart geometry, and editorial chart-pattern callouts.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "false",
+              "description": "Use tighter orbs (Pontopia \"optimal\" recommendations). Truthy values (true, 1, yes, on; case-insensitive) narrow trine to 5, square to 5, sextile to 4, quincunx to 2. Defaults to false (industry-standard orbs)."
+            },
+            "required": false,
+            "description": "Use tighter orbs (Pontopia \"optimal\" recommendations). Truthy values (true, 1, yes, on; case-insensitive) narrow trine to 5, square to 5, sextile to 4, quincunx to 2. Defaults to false (industry-standard orbs).",
+            "name": "strictOrbs",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "",
+              "description": "Comma-separated list of optional bodies to include beyond the classical 10 planets. Valid tokens (case-insensitive): chiron, northNode (also accepts north_node, north-node, northnode). Empty by default."
+            },
+            "required": false,
+            "description": "Comma-separated list of optional bodies to include beyond the classical 10 planets. Valid tokens (case-insensitive): chiron, northNode (also accepts north_node, north-node, northnode). Empty by default.",
+            "name": "include",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AspectPatternsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aspect patterns detected successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AspectPatternsResponse"
                 }
               }
             }
@@ -24151,8 +25100,8 @@
         "tags": [
           "Vedic Astrology"
         ],
-        "summary": "List all planetary yogas - 300+ Vedic Yoga Combinations",
-        "description": "Returns list of all 300+ planetary yogas (astrological combinations) with basic information (id and name only). Use this to discover available yogas, then call GET /yogas/:id for detailed information. Perfect for building yoga browser interfaces, search functionality, and progressive data loading in astrology apps.",
+        "summary": "List all planetary yogas - 300+ Vedic Yoga Glossary",
+        "description": "Browse the 300+ entry Vedic planetary-yoga glossary. Returns id and name for every cataloged yoga (Raja, Dhana, Pancha Mahapurusha, Nabhasa, Chandra-Mangala, and more). This is a dictionary lookup, not chart-driven detection: it does not inspect a birth chart. Use GET /yoga/{id} for the full glossary entry, or POST /yoga/detect to run the 12 classical detection rules against a specific kundli. Ideal for yoga-browser UIs, search, and progressive data loading.",
         "security": [
           {
             "apiKey": []
@@ -24441,8 +25390,8 @@
         "tags": [
           "Vedic Astrology"
         ],
-        "summary": "Get yoga details by ID - Detailed Yoga Information API",
-        "description": "Returns complete details for a specific yoga including formation conditions, results/effects, and quality (Positive/Negative/Both). Use GET /yogas first to get the list of IDs. Provides in-depth information about each planetary combination. Perfect for yoga detail pages, educational content, and astrological interpretation in horoscope apps.",
+        "summary": "Get yoga details by ID - Vedic Yoga Glossary Entry",
+        "description": "Look up the dictionary entry for a specific named yoga from the 300-entry Vedic planetary-yoga glossary. Returns formation conditions, life results, and quality classification (Positive/Negative/Both). This is a glossary lookup against the static catalog; it does NOT analyze a birth chart. For chart-driven present/absent verdicts on the 12 classical detection-grade yogas (Gajakesari, Pancha Mahapurusha, etc.) call POST /yoga/detect with birth data.",
         "security": [
           {
             "apiKey": []
@@ -24661,6 +25610,271 @@
                       "type": "string",
                       "example": "not_found",
                       "description": "Machine-readable error code. Stable identifier for programmatic error handling."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 7231).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vedic-astrology/yoga/detect": {
+      "post": {
+        "operationId": "detectYogas",
+        "tags": [
+          "Vedic Astrology"
+        ],
+        "summary": "Detect classical Vedic yogas in a birth chart",
+        "description": "Chart-driven detection of 12 classical Vedic yogas: Gajakesari (parashara three-rule definition), Sunapha, Anapha, Dhurdhura, Kemadruma, Chandra Mangala, Budha-Aditya, and the five Pancha Mahapurusha yogas (Ruchaka, Bhadra, Hamsa, Malavya, Sasa). Each yoga is returned with a present boolean and a classical-text evidence string naming the rule that triggered or failed (kendra position, dignity, malefic drishti, lordship, retrograde state). Unlike GET /yoga and GET /yoga/{id} which are dictionary lookups, this endpoint computes the kundli from birth data and runs the detection rules. Sources: BPHS ch. 75, Mantreswara Phaladeepika ch. 6, B.V. Raman Three Hundred Important Combinations.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/YogaDetectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of 12 classical yogas with present/absent verdicts and classical-text evidence.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/YogaDetectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
                     }
                   },
                   "required": [
@@ -40679,58 +41893,7 @@
                       "description": "Seed used for this daily reading. Same seed on the same date always produces the identical card for reproducible daily divination."
                     },
                     "card": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups)."
-                        },
-                        "name": {
-                          "type": "string",
-                          "description": "Display name of the tarot card."
-                        },
-                        "arcana": {
-                          "type": "string",
-                          "enum": [
-                            "major",
-                            "minor"
-                          ],
-                          "description": "Whether this card belongs to the Major Arcana (22 trump cards, major life themes) or Minor Arcana (56 suit cards, daily situations)."
-                        },
-                        "position": {
-                          "type": "number",
-                          "description": "Position index of the card in the draw sequence (1-based)."
-                        },
-                        "reversed": {
-                          "type": "boolean",
-                          "description": "True if the card was drawn reversed (upside down). Reversed cards carry modified or blocked energy compared to upright position."
-                        },
-                        "keywords": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "description": "Key themes and concepts associated with this card in its current orientation (upright or reversed)."
-                        },
-                        "meaning": {
-                          "type": "string",
-                          "description": "Full interpretation of this card in its current orientation, providing daily guidance and reflection."
-                        },
-                        "imageUrl": {
-                          "type": "string",
-                          "description": "URL to the tarot card artwork image."
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "name",
-                        "arcana",
-                        "position",
-                        "reversed",
-                        "keywords",
-                        "meaning",
-                        "imageUrl"
-                      ]
+                      "$ref": "#/components/schemas/DrawnCard"
                     },
                     "dailyMessage": {
                       "type": "string",
@@ -41411,53 +42574,7 @@
                             "description": "Position-specific interpretation of the drawn card, explaining how this card meaning applies to this particular spread position."
                           },
                           "card": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups)."
-                              },
-                              "name": {
-                                "type": "string",
-                                "description": "Display name of the tarot card."
-                              },
-                              "arcana": {
-                                "type": "string",
-                                "enum": [
-                                  "major",
-                                  "minor"
-                                ],
-                                "description": "Whether this card belongs to the Major Arcana (22 trump cards, major life themes) or Minor Arcana (56 suit cards, daily situations)."
-                              },
-                              "reversed": {
-                                "type": "boolean",
-                                "description": "True if the card was drawn reversed (upside down). Reversed cards carry modified or blocked energy compared to upright position."
-                              },
-                              "keywords": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Key themes and concepts associated with this card in its current orientation (upright or reversed)."
-                              },
-                              "meaning": {
-                                "type": "string",
-                                "description": "Full interpretation of this card in its current orientation."
-                              },
-                              "imageUrl": {
-                                "type": "string",
-                                "description": "URL to the tarot card artwork image."
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "name",
-                              "arcana",
-                              "reversed",
-                              "keywords",
-                              "meaning",
-                              "imageUrl"
-                            ]
+                            "$ref": "#/components/schemas/DrawnCard"
                           }
                         },
                         "required": [
@@ -41785,53 +42902,7 @@
                             "description": "Position-specific interpretation of the drawn card, explaining how this card meaning applies to this particular spread position."
                           },
                           "card": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups)."
-                              },
-                              "name": {
-                                "type": "string",
-                                "description": "Display name of the tarot card."
-                              },
-                              "arcana": {
-                                "type": "string",
-                                "enum": [
-                                  "major",
-                                  "minor"
-                                ],
-                                "description": "Whether this card belongs to the Major Arcana (22 trump cards, major life themes) or Minor Arcana (56 suit cards, daily situations)."
-                              },
-                              "reversed": {
-                                "type": "boolean",
-                                "description": "True if the card was drawn reversed (upside down). Reversed cards carry modified or blocked energy compared to upright position."
-                              },
-                              "keywords": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Key themes and concepts associated with this card in its current orientation (upright or reversed)."
-                              },
-                              "meaning": {
-                                "type": "string",
-                                "description": "Full interpretation of this card in its current orientation."
-                              },
-                              "imageUrl": {
-                                "type": "string",
-                                "description": "URL to the tarot card artwork image."
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "name",
-                              "arcana",
-                              "reversed",
-                              "keywords",
-                              "meaning",
-                              "imageUrl"
-                            ]
+                            "$ref": "#/components/schemas/DrawnCard"
                           }
                         },
                         "required": [
@@ -42159,53 +43230,7 @@
                             "description": "Position-specific interpretation of the drawn card, explaining how this card meaning applies to this particular spread position."
                           },
                           "card": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups)."
-                              },
-                              "name": {
-                                "type": "string",
-                                "description": "Display name of the tarot card."
-                              },
-                              "arcana": {
-                                "type": "string",
-                                "enum": [
-                                  "major",
-                                  "minor"
-                                ],
-                                "description": "Whether this card belongs to the Major Arcana (22 trump cards, major life themes) or Minor Arcana (56 suit cards, daily situations)."
-                              },
-                              "reversed": {
-                                "type": "boolean",
-                                "description": "True if the card was drawn reversed (upside down). Reversed cards carry modified or blocked energy compared to upright position."
-                              },
-                              "keywords": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Key themes and concepts associated with this card in its current orientation (upright or reversed)."
-                              },
-                              "meaning": {
-                                "type": "string",
-                                "description": "Full interpretation of this card in its current orientation."
-                              },
-                              "imageUrl": {
-                                "type": "string",
-                                "description": "URL to the tarot card artwork image."
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "name",
-                              "arcana",
-                              "reversed",
-                              "keywords",
-                              "meaning",
-                              "imageUrl"
-                            ]
+                            "$ref": "#/components/schemas/DrawnCard"
                           }
                         },
                         "required": [
@@ -42533,53 +43558,7 @@
                             "description": "Position-specific interpretation of the drawn card, explaining how this card meaning applies to this particular spread position."
                           },
                           "card": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups)."
-                              },
-                              "name": {
-                                "type": "string",
-                                "description": "Display name of the tarot card."
-                              },
-                              "arcana": {
-                                "type": "string",
-                                "enum": [
-                                  "major",
-                                  "minor"
-                                ],
-                                "description": "Whether this card belongs to the Major Arcana (22 trump cards, major life themes) or Minor Arcana (56 suit cards, daily situations)."
-                              },
-                              "reversed": {
-                                "type": "boolean",
-                                "description": "True if the card was drawn reversed (upside down). Reversed cards carry modified or blocked energy compared to upright position."
-                              },
-                              "keywords": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Key themes and concepts associated with this card in its current orientation (upright or reversed)."
-                              },
-                              "meaning": {
-                                "type": "string",
-                                "description": "Full interpretation of this card in its current orientation."
-                              },
-                              "imageUrl": {
-                                "type": "string",
-                                "description": "URL to the tarot card artwork image."
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "name",
-                              "arcana",
-                              "reversed",
-                              "keywords",
-                              "meaning",
-                              "imageUrl"
-                            ]
+                            "$ref": "#/components/schemas/DrawnCard"
                           }
                         },
                         "required": [
@@ -42956,53 +43935,7 @@
                             "description": "Position-specific interpretation of the drawn card, explaining how this card meaning applies to this particular spread position."
                           },
                           "card": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "description": "Unique card identifier in kebab-case (e.g. the-fool, ace-of-cups)."
-                              },
-                              "name": {
-                                "type": "string",
-                                "description": "Display name of the tarot card."
-                              },
-                              "arcana": {
-                                "type": "string",
-                                "enum": [
-                                  "major",
-                                  "minor"
-                                ],
-                                "description": "Whether this card belongs to the Major Arcana (22 trump cards, major life themes) or Minor Arcana (56 suit cards, daily situations)."
-                              },
-                              "reversed": {
-                                "type": "boolean",
-                                "description": "True if the card was drawn reversed (upside down). Reversed cards carry modified or blocked energy compared to upright position."
-                              },
-                              "keywords": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Key themes and concepts associated with this card in its current orientation (upright or reversed)."
-                              },
-                              "meaning": {
-                                "type": "string",
-                                "description": "Full interpretation of this card in its current orientation."
-                              },
-                              "imageUrl": {
-                                "type": "string",
-                                "description": "URL to the tarot card artwork image."
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "name",
-                              "arcana",
-                              "reversed",
-                              "keywords",
-                              "meaning",
-                              "imageUrl"
-                            ]
+                            "$ref": "#/components/schemas/DrawnCard"
                           }
                         },
                         "required": [

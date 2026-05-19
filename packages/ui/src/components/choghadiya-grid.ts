@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GetChoghadiyaResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type ChoghadiyaPeriod = GetChoghadiyaResponse['dayChoghadiya'][number];
@@ -131,6 +132,14 @@ export class RoxyChoghadiyaGrid extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: GetChoghadiyaResponse | null = null;

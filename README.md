@@ -281,6 +281,22 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 
 > **Timezone format.** RoxyAPI accepts both forms: a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). Pick one and stay consistent. The decimal form is shorter and what `/location/search` returns; examples on this page use it. The IANA form is correct over DST boundaries when historical accuracy matters.
 
+## Server-rendered, no JavaScript wiring
+
+Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
+
+```html
+<roxy-natal-chart>
+	<script type="application/json" class="roxy-data">
+		{ "planets": [ ... ], "houses": [ ... ], "aspects": [ ... ] }
+	</script>
+</roxy-natal-chart>
+```
+
+The component picks up the embedded JSON when no `data` property has been set. The JavaScript property always wins: assign `element.data` and the markup is ignored, so dynamic pages and server-rendered pages share one component with no branching. You can nest a server-rendered HTML fallback inside the same element for no-JavaScript and crawler views; the component leaves it untouched and reads only the marked script.
+
+This is how the WordPress plugin renders: PHP fetches the response server-side, caches it, and embeds it in the page. The same shape works in any framework that emits HTML.
+
 ## Most-used components per domain
 
 The highest-demand components by domain, in the order you are most likely to ship them. Each pairing shows the SDK call that returns the response shape the component renders. Spec change in the API translates to typed change at the component boundary; the pairing below is derived from the live OpenAPI spec, not invented. Full catalog in the [Components](#components) table.

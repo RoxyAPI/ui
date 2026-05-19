@@ -2,6 +2,7 @@ import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { KpRulingPlanetsResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * KP ruling planets card. Renders /vedic-astrology/kp/ruling-planets: the day
@@ -112,6 +113,14 @@ export class RoxyKpRulingPlanets extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: KpRulingPlanetsResponse | null = null;

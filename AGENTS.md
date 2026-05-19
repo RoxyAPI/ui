@@ -320,6 +320,27 @@ export default function BirthChartView({ data }: { data: unknown }) {
 }
 ```
 
+### Pattern 7: server-rendered markup (WordPress, JSX SSR, static HTML)
+
+When the page is rendered on the server or served from cache, there may be no JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` instead. The component reads the embedded JSON on load. No per-element script, no API key in the browser.
+
+```html
+<roxy-natal-chart>
+	<script type="application/json" class="roxy-data">
+		{ "planets": [ ], "houses": [ ], "aspects": [ ] }
+	</script>
+</roxy-natal-chart>
+```
+
+Rules for this pattern:
+
+- The JSON must be the unwrapped RoxyAPI response, the same shape you would assign to `element.data`. Do not embed the SDK envelope (`{ data, error, request, response }`); embed `data`.
+- The script must be a direct child of the component and carry both `type="application/json"` and `class="roxy-data"`.
+- The JavaScript property always wins. If you assign `element.data` in script, the markup is ignored. One component covers both server-rendered and dynamic pages with no branching.
+- You can nest a server-rendered HTML fallback inside the same element for no-JavaScript and crawler views. The component reads only the marked script and leaves the fallback in place.
+
+This is how the WordPress plugin renders: PHP fetches the response server-side, caches it, and writes the script into the page. The same shape works in any framework that emits HTML.
+
 ## Theming and dark mode
 
 Components react to three signals in priority order. No events to dispatch. No JS bridge to write.

@@ -10,6 +10,7 @@ import {
 	toKundliViewModel,
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * Vedic kundli (D1 Rashi chart). Pass `data` from /vedic-astrology/birth-chart.
@@ -28,6 +29,14 @@ import { kundliStyles } from '../utils/kundli-styles.js';
 @customElement('roxy-vedic-kundli')
 export class RoxyVedicKundli extends LitElement {
 	static styles = [baseStyles, kundliStyles];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: BirthChartResponse | null = null;

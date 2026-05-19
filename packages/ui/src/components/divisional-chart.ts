@@ -11,6 +11,7 @@ import {
 	toKundliViewModel,
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * Divisional chart renderer (D2-D60). Accepts a DivisionalChartResponse and
@@ -64,6 +65,14 @@ export class RoxyDivisionalChart extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: DivisionalChartResponse | null = null;

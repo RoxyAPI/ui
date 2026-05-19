@@ -7,6 +7,7 @@ import type {
 	GenerateNumerologyChartResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 import { humanize } from '../utils/string.js';
 
 type NumerologyData =
@@ -121,6 +122,14 @@ export class RoxyNumerologyCard extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: NumerologyData | null = null;

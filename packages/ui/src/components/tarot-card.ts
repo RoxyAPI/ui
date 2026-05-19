@@ -2,6 +2,7 @@ import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { GetCardResponse, GetDailyCardResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 
 type TarotData = GetCardResponse | GetDailyCardResponse;
 
@@ -105,6 +106,14 @@ export class RoxyTarotCard extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: TarotData | null = null;

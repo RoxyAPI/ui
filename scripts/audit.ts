@@ -45,6 +45,8 @@ const SECTIONS: Section[] = [
 	{ id: 'form', tag: 'roxy-endpoint-form' },
 	{ id: 'loc', tag: 'roxy-location-search' },
 	{ id: 'data', tag: 'roxy-data' },
+	// Markup-based hydration: data comes from a child JSON script, not a property.
+	{ id: 'ssr-markup', tag: 'roxy-numerology-card' },
 ];
 
 const FORBIDDEN: Array<{ pattern: RegExp; label: string }> = [

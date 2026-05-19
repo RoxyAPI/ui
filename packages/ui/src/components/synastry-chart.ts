@@ -12,6 +12,7 @@ import {
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
+import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
@@ -223,6 +224,14 @@ export class RoxySynastryChart extends LitElement {
 			}
 		`,
 	];
+
+	constructor() {
+		super();
+		// Enables hydrating `data` from a direct-child
+		// <script type="application/json" class="roxy-data"> for server-rendered
+		// and cached consumers. The JavaScript `data` property still wins.
+		new MarkupDataController(this);
+	}
 
 	@property({ attribute: false })
 	data: SynastryWithPlanets | null = null;
