@@ -1,6 +1,17 @@
 pre-commit:
   parallel: true
   commands:
+    lockfile-guard:
+      glob: "{package.json,packages/*/package.json}"
+      # When a manifest changes, fail fast if bun.lock would change so a frozen
+      # install in CI (and any AI-agent automation) never breaks on drift.
+      # --ignore-scripts skips the generate postinstall to stay fast and
+      # offline. This is a guard, not an auto-fixer, so it never touches the git
+      # index in parallel with build-and-stage-codegen. To fix: run
+      # `bun install` then stage bun.lock.
+      run: |
+        bun install --frozen-lockfile --ignore-scripts 2>/dev/null \
+          || { echo "bun.lock is out of sync with package.json. Run 'bun install' then stage bun.lock."; exit 1; }
     biome-check:
       glob: "*.{ts,tsx,js,jsx,json}"
       # Skip when only deletions or `.d.ts` files are staged. biome refuses an
