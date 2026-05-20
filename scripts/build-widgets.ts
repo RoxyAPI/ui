@@ -14,6 +14,7 @@
  * Linktree, etc.) where a full SDK install is not practical.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { transform } from 'esbuild';
 
 const ROXY_UI_VERSION = (
 	JSON.parse(await readFile('packages/ui/package.json', 'utf8')) as {
@@ -140,7 +141,12 @@ const SCRIPT = `(function () {
 async function main() {
 	const outDir = 'packages/ui/dist/cdn';
 	await mkdir(outDir, { recursive: true });
-	await writeFile(`${outDir}/widgets.js`, SCRIPT.trim() + '\n');
+	const { code } = await transform(SCRIPT, {
+		minify: true,
+		target: 'es2017',
+		loader: 'js',
+	});
+	await writeFile(`${outDir}/widgets.js`, code.trim() + '\n');
 	console.log(`Wrote ${outDir}/widgets.js`);
 }
 

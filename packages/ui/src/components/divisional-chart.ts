@@ -12,6 +12,7 @@ import {
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
 import { MarkupDataController } from '../utils/markup-data.js';
+import { tablistStyles } from '../utils/tablist.js';
 
 /**
  * Divisional chart renderer (D2-D60). Accepts a DivisionalChartResponse and
@@ -26,6 +27,7 @@ export class RoxyDivisionalChart extends LitElement {
 	static styles = [
 		baseStyles,
 		kundliStyles,
+		tablistStyles,
 		css`
 			.division-meta {
 				font-size: var(--roxy-text-sm, 0.875rem);

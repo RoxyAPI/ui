@@ -34,6 +34,7 @@
 		"@biomejs/biome": "^2.4.9",
 		"@hey-api/client-fetch": "0.13.1",
 		"@hey-api/openapi-ts": "0.97.2",
+		"@lit-labs/rollup-plugin-minify-html-literals": "^0.2.0",
 		"@playwright/test": "^1.49.0",
 		"@roxyapi/sdk": "^1.2.23",
 		"@types/bun": "^1.2.0",

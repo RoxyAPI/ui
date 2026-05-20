@@ -1,8 +1,9 @@
 import type { TemplateResult } from 'lit';
-import { html, nothing, svg } from 'lit';
+import { nothing, svg } from 'lit';
 import { PLANET_ABBR, SIGN_ABBR, SIGNS_ORDER } from '../tokens/index.js';
 import { longitudeToSignPosition } from './degree.js';
 import { capitalize } from './string.js';
+import { renderTablist } from './tablist.js';
 
 /**
  * Canonical viewBox geometry for every kundli style. The chart is drawn into a
@@ -320,6 +321,11 @@ function renderSouthCell(
 					? svg`<text class="house-num" x=${r.x + r.w - 6} y=${r.y + 12} text-anchor="end" dominant-baseline="central">${houseNum}</text>`
 					: nothing
 			}
+			${
+				isLagna
+					? svg`<text class="lagna-marker" x=${cx} y=${r.y + 26} text-anchor="middle" dominant-baseline="central">Asc</text>`
+					: nothing
+			}
 			${planets.length ? renderPlanetStack(planets, sign, cx, cy + 4, 14) : nothing}
 		</g>
 	`;
@@ -453,9 +459,15 @@ function renderNorthCell(
 	// always stays comfortably inside its triangle or diamond.
 	const rashiOffsetY = Math.min(14, Math.abs(c.y - CENTRE) * 0.45 + 6);
 	const ascOffsetY = rashiOffsetY + 12;
+	// North cells carry only a rasi number by convention. The ascendant also
+	// names its sign so the reader can see which sign rises without translating
+	// the number; other cells stay number-only.
+	const rashiLabel = isLagna
+		? `${rashiNum} · ${SIGN_ABBR[sign] ?? sign.slice(0, 2)}`
+		: `${rashiNum}`;
 	return svg`
 		<g class=${isLagna ? 'cell lagna' : 'cell'}>
-			<text class="rashi-num" x=${c.x} y=${c.y - rashiOffsetY} text-anchor="middle" dominant-baseline="central">${rashiNum}</text>
+			<text class="rashi-num" x=${c.x} y=${c.y - rashiOffsetY} text-anchor="middle" dominant-baseline="central">${rashiLabel}</text>
 			${
 				isLagna
 					? svg`<text class="lagna-marker" x=${c.x} y=${c.y - ascOffsetY} text-anchor="middle" dominant-baseline="central">Asc</text>`
@@ -705,37 +717,11 @@ export function renderKundliStyleTablist(
 	active: ChartStyle,
 	setStyle: (next: ChartStyle) => void,
 ): TemplateResult {
-	const onKeyDown = (e: KeyboardEvent) => {
-		const idx = CHART_STYLES.findIndex((s) => s.id === active);
-		if (e.key === 'ArrowRight') {
-			e.preventDefault();
-			const next = CHART_STYLES[(idx + 1) % CHART_STYLES.length];
-			if (next) setStyle(next.id);
-		} else if (e.key === 'ArrowLeft') {
-			e.preventDefault();
-			const next =
-				CHART_STYLES[(idx - 1 + CHART_STYLES.length) % CHART_STYLES.length];
-			if (next) setStyle(next.id);
-		}
-	};
-	return html`<div
-		class="kundli-tablist"
-		role="tablist"
-		aria-label="Kundli style"
-		@keydown=${onKeyDown}
-	>
-		${CHART_STYLES.map(
-			(s) => html`<button
-				type="button"
-				class="kundli-tab"
-				role="tab"
-				id="kundli-tab-${s.id}"
-				aria-selected=${active === s.id ? 'true' : 'false'}
-				tabindex=${active === s.id ? '0' : '-1'}
-				@click=${() => setStyle(s.id)}
-			>
-				${s.label}
-			</button>`,
-		)}
-	</div>`;
+	return renderTablist({
+		items: CHART_STYLES,
+		active,
+		onSelect: setStyle,
+		label: 'Kundli style',
+		idPrefix: 'kundli',
+	});
 }

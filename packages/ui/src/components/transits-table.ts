@@ -1,11 +1,13 @@
 import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
 import type { TransitsResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDate, formatNumber, formatTime } from '../utils/format.js';
 import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
+import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 /**
  * Transit positions and aspect table. Pass `data` from /astrology/transits.
@@ -16,6 +18,8 @@ import { capitalize } from '../utils/string.js';
 export class RoxyTransitsTable extends LitElement {
 	static styles = [
 		baseStyles,
+		tablistStyles,
+		disclosureStyles,
 		css`
 			.wrap {
 				display: grid;
@@ -226,6 +230,10 @@ export class RoxyTransitsTable extends LitElement {
 	@property({ attribute: false })
 	data: TransitsResponse | null = null;
 
+	/** Which panel is showing: planet positions or the transit-to-natal aspects. */
+	@state()
+	private tab: 'positions' | 'aspects' = 'positions';
+
 	render() {
 		if (!this.data?.transitPlanets?.length) {
 			return html`<div class="roxy-empty" role="status">No transits data</div>`;
@@ -242,31 +250,49 @@ export class RoxyTransitsTable extends LitElement {
 		const dateStr = [formatDate(transitDate), formatTime(transitTime)]
 			.filter(Boolean)
 			.join(' ');
+		const aspectCount = transitAspects?.length ?? 0;
+		const tab = this.tab;
 
-		return html`<div class="wrap" aria-label="Transit positions table">
+		return html`<div class="wrap" aria-label="Transits">
 			<div class="head">
 				<h2 class="title">Transits</h2>
 				${dateStr ? html`<p class="subtitle">${dateStr}</p>` : nothing}
 			</div>
 
-			${summary ? this.renderSummaryPills(summary) : nothing}
-
-			<div>
-				<p class="section-label">Planet positions</p>
-				<div class="overflow-scroll">
-					${this.renderPlanetsTable(transitPlanets)}
-				</div>
-			</div>
-
 			${
-				transitAspects?.length
-					? html`<div>
-						<p class="section-label">Transit aspects</p>
-						<div class="overflow-scroll">
-							${this.renderAspectsList(transitAspects)}
-						</div>
+				aspectCount > 0
+					? html`${renderTablist({
+							items: [
+								{ id: 'positions', label: 'Positions' },
+								{ id: 'aspects', label: `Aspects (${aspectCount})` },
+							],
+							active: tab,
+							onSelect: (v) => {
+								this.tab = v;
+							},
+							label: 'Transit views',
+							idPrefix: 'transits',
+							controls: true,
+						})}
+						<div
+							id="transits-panel-${tab}"
+							role="tabpanel"
+							aria-labelledby="transits-tab-${tab}"
+						>
+							${
+								tab === 'positions'
+									? html`<div class="overflow-scroll">
+										${this.renderPlanetsTable(transitPlanets)}
+									</div>`
+									: html`${summary ? this.renderSummaryPills(summary) : nothing}
+										<div class="overflow-scroll">
+											${this.renderAspectsList(transitAspects ?? [])}
+										</div>`
+							}
+						</div>`
+					: html`<div class="overflow-scroll">
+						${this.renderPlanetsTable(transitPlanets)}
 					</div>`
-					: nothing
 			}
 		</div>`;
 	}
@@ -355,6 +381,7 @@ export class RoxyTransitsTable extends LitElement {
 						<span class="meta">
 							${status} · orb ${formatNumber(a.orb, 2)}° · strength ${formatNumber(a.strength, 1)}
 						</span>
+						${chevron()}
 					</summary>
 					<div class="interp-body">
 						${interp?.summary ? html`<p>${interp.summary}</p>` : nothing}

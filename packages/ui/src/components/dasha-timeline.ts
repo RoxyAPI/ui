@@ -6,6 +6,7 @@ import type {
 	GetSubDashasResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber } from '../utils/format.js';
 import { MarkupDataController } from '../utils/markup-data.js';
 
@@ -25,6 +26,7 @@ type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
 export class RoxyDashaTimeline extends LitElement {
 	static styles = [
 		baseStyles,
+		disclosureStyles,
 		css`
 			.wrap {
 				display: grid;
@@ -144,6 +146,10 @@ export class RoxyDashaTimeline extends LitElement {
 				cursor: pointer;
 				font-size: var(--roxy-text-sm, 0.875rem);
 				font-weight: var(--roxy-weight-bold, 600);
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: var(--roxy-space-md, 1rem);
 			}
 			details.interp p {
 				margin: var(--roxy-space-sm, 0.5rem) 0 0;
@@ -233,7 +239,10 @@ export class RoxyDashaTimeline extends LitElement {
 		const active = periods.find((p) => this.isCurrent(p));
 		if (!active?.interpretation) return nothing;
 		return html`<details class="interp">
-			<summary>${active.planet} mahadasha interpretation</summary>
+			<summary>
+				<span>${active.planet} mahadasha interpretation</span>
+				${chevron()}
+			</summary>
 			<p>${active.interpretation}</p>
 		</details>`;
 	}

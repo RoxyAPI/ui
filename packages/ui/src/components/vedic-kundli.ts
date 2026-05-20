@@ -11,6 +11,7 @@ import {
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
 import { MarkupDataController } from '../utils/markup-data.js';
+import { tablistStyles } from '../utils/tablist.js';
 
 /**
  * Vedic kundli (D1 Rashi chart). Pass `data` from /vedic-astrology/birth-chart.
@@ -28,7 +29,7 @@ import { MarkupDataController } from '../utils/markup-data.js';
  */
 @customElement('roxy-vedic-kundli')
 export class RoxyVedicKundli extends LitElement {
-	static styles = [baseStyles, kundliStyles];
+	static styles = [baseStyles, kundliStyles, tablistStyles];
 
 	constructor() {
 		super();

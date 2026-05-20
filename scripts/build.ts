@@ -14,12 +14,55 @@
  * manifest in src/index.ts.
  */
 import { execSync } from 'node:child_process';
-import { copyFile, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import {
+	copyFile,
+	mkdir,
+	readdir,
+	readFile,
+	rm,
+	writeFile,
+} from 'node:fs/promises';
+import { minifyHTMLLiterals } from '@lit-labs/rollup-plugin-minify-html-literals/lib/minify-html-literals.js';
 import * as esbuild from 'esbuild';
 
 const UI_DIR = 'packages/ui';
 const SRC_COMPONENTS = `${UI_DIR}/src/components`;
 const DIST = `${UI_DIR}/dist`;
+
+// esbuild's minifier only rewrites JavaScript. Everything inside Lit's css``,
+// html``, and svg`` tagged templates is an opaque string to it, so on its own
+// those templates ship with every newline and indent they were authored with,
+// which is most of the bundle. Run each source file through the Lit team's
+// template-literal minifier first. caseSensitive stays on so SVG attributes
+// like viewBox keep their casing. The call is async and returns null when a file
+// has nothing to minify; cache by path so a file is only processed once across
+// the ESM, CJS, and CDN passes.
+const litMinifyCache = new Map<string, string>();
+function litTemplateMinify(): esbuild.Plugin {
+	return {
+		name: 'lit-template-minify',
+		setup(build) {
+			build.onLoad({ filter: /\.ts$/ }, async (args) => {
+				const cached = litMinifyCache.get(args.path);
+				if (cached !== undefined) return { contents: cached, loader: 'ts' };
+				const source = await readFile(args.path, 'utf8');
+				let out = source;
+				try {
+					const result = await minifyHTMLLiterals(source, {
+						fileName: args.path,
+					});
+					if (result) out = result.code;
+				} catch (err) {
+					console.warn(
+						`! lit-template-minify skipped ${args.path} (${err instanceof Error ? err.message : String(err)})`,
+					);
+				}
+				litMinifyCache.set(args.path, out);
+				return { contents: out, loader: 'ts' };
+			});
+		},
+	};
+}
 
 async function listComponents(): Promise<string[]> {
 	const entries = await readdir(SRC_COMPONENTS, { withFileTypes: true });
@@ -54,11 +97,12 @@ async function buildEsm(components: string[]) {
 		platform: 'browser',
 		target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
 		bundle: true,
-		minify: false,
+		minify: true,
 		sourcemap: true,
 		external: ['lit', 'lit/*', '@lit/*'],
 		splitting: false,
 		treeShaking: true,
+		plugins: [litTemplateMinify()],
 	});
 
 	await esbuild.build({
@@ -68,10 +112,11 @@ async function buildEsm(components: string[]) {
 		platform: 'neutral',
 		target: ['es2022'],
 		bundle: true,
-		minify: false,
+		minify: true,
 		sourcemap: true,
 		external: ['lit', 'lit/*', '@lit/*'],
 		outExtension: { '.js': '.cjs' },
+		plugins: [litTemplateMinify()],
 	});
 }
 
@@ -86,6 +131,7 @@ async function buildCdn(components: string[]) {
 		bundle: true,
 		minify: true,
 		sourcemap: true,
+		plugins: [litTemplateMinify()],
 	});
 
 	for (const c of components) {
@@ -99,6 +145,7 @@ async function buildCdn(components: string[]) {
 			bundle: true,
 			minify: true,
 			sourcemap: true,
+			plugins: [litTemplateMinify()],
 		});
 	}
 }
@@ -234,7 +281,7 @@ async function buildReactBundles() {
 		platform: 'browser',
 		target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
 		bundle: true,
-		minify: false,
+		minify: true,
 		sourcemap: true,
 		external: ['react', 'react-dom', 'react/jsx-runtime'],
 		jsx: 'automatic',
@@ -246,7 +293,7 @@ async function buildReactBundles() {
 		platform: 'neutral',
 		target: ['es2022'],
 		bundle: true,
-		minify: false,
+		minify: true,
 		sourcemap: true,
 		external: ['react', 'react-dom', 'react/jsx-runtime'],
 		jsx: 'automatic',

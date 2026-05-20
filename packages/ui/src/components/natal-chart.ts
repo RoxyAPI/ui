@@ -15,6 +15,7 @@ import {
 	oppositePoint,
 	polarToCartesian,
 } from '../utils/degree.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	ASPECT_CLASS,
 	formatNumber,
@@ -22,6 +23,7 @@ import {
 } from '../utils/format.js';
 import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
+import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
 type AspectEntry = NatalChartResponse['aspects'][number];
@@ -43,6 +45,8 @@ const ANGLE_LABEL_R = 196;
 export class RoxyNatalChart extends LitElement {
 	static styles = [
 		baseStyles,
+		tablistStyles,
+		disclosureStyles,
 		css`
 			.wrap {
 				width: 100%;
@@ -190,32 +194,6 @@ export class RoxyNatalChart extends LitElement {
 				vertical-align: middle;
 			}
 
-			.tablist {
-				display: flex;
-				gap: 2px;
-				border-bottom: 2px solid var(--roxy-border, #e4e4e7);
-			}
-			.tab {
-				padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				background: none;
-				border: none;
-				border-bottom: 2px solid transparent;
-				margin-bottom: -2px;
-				cursor: pointer;
-				color: var(--roxy-muted, #71717a);
-				font-family: inherit;
-				transition: color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
-			}
-			.tab[aria-selected='true'] {
-				color: var(--roxy-accent-fg, #b45309);
-				border-bottom-color: var(--roxy-accent, #f59e0b);
-				font-weight: var(--roxy-weight-bold, 600);
-			}
-			.tab:hover:not([aria-selected='true']) {
-				color: var(--roxy-fg, #0a0a0a);
-			}
-
 			.grid-scroll {
 				overflow-x: auto;
 				-webkit-overflow-scrolling: touch;
@@ -356,10 +334,18 @@ export class RoxyNatalChart extends LitElement {
 				cursor: pointer;
 				font-weight: 500;
 				color: var(--roxy-fg, #0f172a);
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: var(--roxy-space-md, 1rem);
 			}
-			.interp-card summary small {
+			.interp-aside {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.6em;
+			}
+			.interp-aside small {
 				color: var(--roxy-muted, #71717a);
-				margin-left: 0.5em;
 				font-weight: 400;
 			}
 			.interp-body {
@@ -438,29 +424,24 @@ export class RoxyNatalChart extends LitElement {
 						: nothing
 				}
 			</header>
+			${renderTablist({
+				items: [
+					{ id: 'wheel', label: 'Wheel' },
+					{ id: 'grid', label: 'Aspect grid' },
+				],
+				active: view,
+				onSelect: (v) => {
+					this.view = v;
+				},
+				label: 'Natal chart views',
+				idPrefix: 'natal',
+				controls: true,
+			})}
 			<div
-				class="tablist"
-				role="tablist"
-				aria-label="Natal chart views"
-				@keydown=${this.onTabKeyDown}
+				id="natal-panel-${view}"
+				role="tabpanel"
+				aria-labelledby="natal-tab-${view}"
 			>
-				${(['wheel', 'grid'] as const).map(
-					(t) => html`<button
-						class="tab"
-						role="tab"
-						id="tab-${t}"
-						aria-selected=${view === t ? 'true' : 'false'}
-						aria-controls="panel-${t}"
-						tabindex=${view === t ? '0' : '-1'}
-						@click=${() => {
-							this.view = t;
-						}}
-					>
-						${t === 'wheel' ? 'Wheel' : 'Aspect grid'}
-					</button>`,
-				)}
-			</div>
-			<div id="panel-${view}" role="tabpanel" aria-labelledby="tab-${view}">
 				${view === 'wheel' ? this.renderWheel(planets, aspects) : this.renderAspectGrid(planets, aspects)}
 			</div>
 			<div class="legend">
@@ -477,18 +458,6 @@ export class RoxyNatalChart extends LitElement {
 			${this.renderDetails()}
 			${this.renderInterpretations()}
 		</div>`;
-	}
-
-	private onTabKeyDown(e: KeyboardEvent) {
-		if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-		e.preventDefault();
-		this.view = this.view === 'wheel' ? 'grid' : 'wheel';
-		const next = this.view;
-		requestAnimationFrame(() => {
-			this.shadowRoot
-				?.querySelector<HTMLButtonElement>(`#tab-${next}`)
-				?.focus();
-		});
 	}
 
 	private renderWheel(planets: PlanetEntry[], aspects: AspectEntry[]) {
@@ -880,7 +849,13 @@ export class RoxyNatalChart extends LitElement {
 				const glyph = PLANET_GLYPH[capitalize(p.name)] ?? '';
 				const deg = formatNumber(p.degree ?? 0, 1);
 				return html`<details class="interp-card" name="natal-planet-readings" ?open=${idx === 0}>
-					<summary>${glyph} ${p.name} <small>${p.sign ?? ''} ${deg}</small></summary>
+					<summary>
+						<span>${glyph} ${p.name}</span>
+						<span class="interp-aside">
+							<small>${p.sign ?? ''} ${deg}</small>
+							${chevron()}
+						</span>
+					</summary>
 					<div class="interp-body">
 						${interp.summary ? html`<p class="interp-summary">${interp.summary}</p>` : nothing}
 						${interp.detailed ? html`<p class="interp-detail">${interp.detailed}</p>` : nothing}
