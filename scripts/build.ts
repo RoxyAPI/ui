@@ -29,12 +29,18 @@ const UI_DIR = 'packages/ui';
 const SRC_COMPONENTS = `${UI_DIR}/src/components`;
 const DIST = `${UI_DIR}/dist`;
 
-// esbuild's minifier only rewrites JavaScript. Everything inside Lit's css``,
-// html``, and svg`` tagged templates is an opaque string to it, so on its own
-// those templates ship with every newline and indent they were authored with,
-// which is most of the bundle. Run each source file through the Lit team's
-// template-literal minifier first. caseSensitive stays on so SVG attributes
-// like viewBox keep their casing. The call is async and returns null when a file
+// esbuild's minifier only rewrites JavaScript. Everything inside Lit's css`` and
+// html`` tagged templates is an opaque string to it, so on its own those
+// templates ship with every newline and indent they were authored with, which is
+// most of the bundle. Run each source file through the Lit team's template-literal
+// minifier first.
+//
+// We minify css`` and html`` only and leave svg`` fragments verbatim. An svg``
+// fragment has no enclosing <svg> tag, so html-minifier does not see SVG context
+// and strips the self-closing slash from sibling void-style elements (<line/>,
+// <rect/>); the siblings then nest and the chart geometry disappears. SVG inside
+// an html`` <svg> still minifies safely (it keeps its slashes), so the chart
+// components lose almost nothing. The call is async and returns null when a file
 // has nothing to minify; cache by path so a file is only processed once across
 // the ESM, CJS, and CDN passes.
 const litMinifyCache = new Map<string, string>();
@@ -50,6 +56,8 @@ function litTemplateMinify(): esbuild.Plugin {
 				try {
 					const result = await minifyHTMLLiterals(source, {
 						fileName: args.path,
+						shouldMinify: (template) =>
+							!!template.tag && template.tag.toLowerCase().includes('html'),
 					});
 					if (result) out = result.code;
 				} catch (err) {

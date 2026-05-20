@@ -6,7 +6,6 @@ import type {
 	GetSubDashasResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber } from '../utils/format.js';
 import { MarkupDataController } from '../utils/markup-data.js';
 
@@ -26,7 +25,6 @@ type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
 export class RoxyDashaTimeline extends LitElement {
 	static styles = [
 		baseStyles,
-		disclosureStyles,
 		css`
 			.wrap {
 				display: grid;
@@ -136,22 +134,18 @@ export class RoxyDashaTimeline extends LitElement {
 				font-variant-numeric: tabular-nums;
 				text-align: right;
 			}
-			details.interp {
+			.interp {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
 				background: var(--roxy-bg, #fff);
 			}
-			details.interp summary {
-				cursor: pointer;
+			.interp h3 {
+				margin: 0;
 				font-size: var(--roxy-text-sm, 0.875rem);
 				font-weight: var(--roxy-weight-bold, 600);
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: var(--roxy-space-md, 1rem);
 			}
-			details.interp p {
+			.interp p {
 				margin: var(--roxy-space-sm, 0.5rem) 0 0;
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-muted, #71717a);
@@ -238,13 +232,10 @@ export class RoxyDashaTimeline extends LitElement {
 	private renderActiveInterpretation(periods: DashaPeriod[]) {
 		const active = periods.find((p) => this.isCurrent(p));
 		if (!active?.interpretation) return nothing;
-		return html`<details class="interp">
-			<summary>
-				<span>${active.planet} mahadasha interpretation</span>
-				${chevron()}
-			</summary>
+		return html`<div class="interp">
+			<h3>${active.planet} mahadasha</h3>
 			<p>${active.interpretation}</p>
-		</details>`;
+		</div>`;
 	}
 
 	private renderCurrent(d: DashaData) {
