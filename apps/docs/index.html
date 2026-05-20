@@ -622,15 +622,11 @@
 				<div class="code-block">
 					<button type="button" class="copy-btn" data-copy-target="hero-snippet">Copy</button>
 					<pre><code id="hero-snippet">&lt;script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer&gt;&lt;/script&gt;
-&lt;roxy-natal-chart id="chart"&gt;&lt;/roxy-natal-chart&gt;
-&lt;script type="module"&gt;
-  import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-  const roxy = createRoxy('YOUR_PUBLISHABLE_KEY');
-  const { data } = await roxy.astrology.generateNatalChart({
-    body: { date: '1990-01-15', time: '14:30:00', latitude: 19.076, longitude: 72.877, timezone: 5.5 },
-  });
-  document.getElementById('chart').data = data;
-&lt;/script&gt;</code></pre>
+
+&lt;!-- Fetch /astrology/natal-chart on your server with your key, then inline the JSON. --&gt;
+&lt;roxy-natal-chart&gt;
+  &lt;script type="application/json" class="roxy-data"&gt;{ "planets": [ ... ], "aspects": [ ... ], "ascendant": { ... } }&lt;/script&gt;
+&lt;/roxy-natal-chart&gt;</code></pre>
 				</div>
 			</details>
 		</section>

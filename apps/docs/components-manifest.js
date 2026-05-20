@@ -1,6 +1,6 @@
 /**
  * One entry per demo card. The SDK call is the source of truth — both the
- * vanilla HTML snippet (Code tab) and the shadcn registry snippet (shadcn tab)
+ * server-render snippet (Code tab) and the shadcn registry snippet (shadcn tab)
  * are derived from it. (tag, slug, pascal, heading, topic, description) come
  * from window.ROXY_COMPONENTS (see scripts/sync-manifest.ts).
  */
@@ -21,6 +21,7 @@ const PERSON2 = {
 };
 
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
+const UI_CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
 
 const MANIFEST_BY_TAG = Object.fromEntries(
 	(window.ROXY_COMPONENTS || []).map((c) => [c.tag, c]),
@@ -32,15 +33,25 @@ function lookup(tag) {
 	return meta;
 }
 
-function vanilla(tag, body) {
-	return `<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer></script>
-<${tag} id="el"></${tag}>
-<script type="module">
-  import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-  const roxy = createRoxy('YOUR_PUBLISHABLE_KEY'); // browser-safe pk_*
-${body}
-  document.getElementById('el').data = data;
-</script>`;
+function serverRender(tag, body) {
+	// body is indented one level for the shadcn RSC block; dedent it to sit at
+	// the top level of this standalone server snippet.
+	const fetchCode = body.replace(/^ {2}/gm, '');
+	return `// server.ts (Node, Bun, Hono, or a Next.js route handler)
+import { createRoxy } from '@roxyapi/sdk';
+
+// Secret key, used server-side only. It never reaches the browser.
+const roxy = createRoxy(process.env.ROXY_API_KEY);
+${fetchCode}
+
+// Inline the response; the element hydrates from the child JSON. Any backend
+// can emit this markup (PHP, Python, Go). Load roxy-ui.js once per page.
+const html = \`
+  <script src="${UI_CDN}/roxy-ui.js" defer></script>
+  <${tag}>
+    <script type="application/json" class="roxy-data">\${JSON.stringify(data)}</script>
+  </${tag}>
+\`;`;
 }
 
 function shadcn(tag, body) {
@@ -68,7 +79,7 @@ function entry({ id, tag, seoLine, heading, topic, attrs = '', sdkCall, code, sh
 		topic: topic ?? meta.topic,
 		seoLine,
 		attrs,
-		code: code ?? vanilla(tag, sdkCall),
+		code: code ?? serverRender(tag, sdkCall),
 		shadcn: shadcnOverride ?? shadcn(tag, sdkCall),
 	};
 }
