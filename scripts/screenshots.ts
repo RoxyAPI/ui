@@ -50,6 +50,8 @@ const TARGETS: Target[] = [
 	{ id: 'num', label: 'numerology-card' },
 	{ id: 'tarot', label: 'tarot-card' },
 	{ id: 'spread', label: 'tarot-spread' },
+	{ id: 'bodygraph', label: 'bodygraph' },
+	{ id: 'forecast-timeline', label: 'forecast-timeline' },
 	{ id: 'bio', label: 'biorhythm-chart' },
 	{ id: 'hex', label: 'hexagram' },
 	{ id: 'form', label: 'endpoint-form' },

@@ -8,7 +8,7 @@ Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component typ
 
 ## Identity
 
-Roxy UI is the official web component library for the RoxyAPI catalog. Components and helpers cover Western astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers, with the location helper for geocoding. New endpoints regenerate component types automatically.
+Roxy UI is the official web component library for the RoxyAPI catalog. Components and helpers cover Western astrology, Vedic astrology, numerology, tarot, Human Design, forecast, biorhythm, I Ching, crystals, dreams, angel numbers, with the location helper for geocoding. New endpoints regenerate component types automatically.
 
 ## Decision tree for picking a component
 
@@ -32,6 +32,8 @@ Map the natural-language request to a component first; fall back to the table be
 | "life path number", "expression number", "personal year", "numerology chart" | `<roxy-numerology-card>` |
 | "draw a tarot card", "card of the day", "card meaning" | `<roxy-tarot-card>` |
 | "tarot reading", "three-card spread", "Celtic Cross", "yes or no tarot" | `<roxy-tarot-spread>` |
+| "Human Design chart", "bodygraph", "my type and authority", "defined centers", "channels and gates" | `<roxy-bodygraph>` |
+| "forecast", "what is coming up", "upcoming transits and events", "timeline of my year" | `<roxy-forecast-timeline>` |
 | "biorhythm", "physical/emotional/intellectual cycle", "critical days" | `<roxy-biorhythm-chart>` |
 | "I Ching", "hexagram", "cast the coins", "Book of Changes" | `<roxy-hexagram>` |
 | "moon phase", "moon calendar", "next full moon", "current moon" | `<roxy-moon-phase>` |
@@ -72,6 +74,8 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,personal-year,chart} | Life path, expression, personal year, full chart |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
+| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary |
+| `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram with trigrams, judgment, image, changing lines |
 | `<roxy-endpoint-form>` | Helper | Any endpoint via x-roxy-ui hints | Schema-driven form, emits roxy-submit |

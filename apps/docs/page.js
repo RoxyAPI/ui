@@ -15,6 +15,8 @@
 		'Vedic',
 		'Numerology',
 		'Tarot',
+		'Human Design',
+		'Forecast',
 		'Biorhythm',
 		'I Ching',
 		'Helpers',

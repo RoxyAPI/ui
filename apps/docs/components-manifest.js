@@ -293,6 +293,26 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'bodygraph',
+		tag: 'roxy-bodygraph',
+		seoLine: 'Human Design bodygraph chart with nine centers and channels',
+		sdkCall: `  const { data } = await roxy.humanDesign.generateBodygraph({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'forecast-timeline',
+		tag: 'roxy-forecast-timeline',
+		seoLine: 'Cross-domain forecast timeline of upcoming astrological events',
+		sdkCall: `  const { data } = await roxy.forecast.generateTimeline({
+    body: {
+      birthData: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n      ')},
+      startDate: '2026-06-01',
+      endDate: '2026-07-15',
+    },
+  });`,
+	}),
+	entry({
 		id: 'bio',
 		tag: 'roxy-biorhythm-chart',
 		seoLine: 'Daily biorhythm cycle bars and energy rating',

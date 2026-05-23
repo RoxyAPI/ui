@@ -21,6 +21,35 @@ if (!API_KEY) {
 
 const roxy = createRoxy(API_KEY);
 
+const API_BASE = 'https://roxyapi.com/api/v2';
+
+/**
+ * Raw POST against prod for endpoints the pinned @roxyapi/sdk does not yet
+ * expose (Human Design, Forecast). Mirrors the SDK envelope so {@link run} can
+ * consume it identically. Drop this in favor of the typed SDK method once the
+ * SDK version that ships those namespaces clears the install age window.
+ */
+async function rawPost<T>(
+	path: string,
+	body: unknown,
+): Promise<{ data?: T; error?: { code?: string; error?: string } }> {
+	const res = await fetch(`${API_BASE}/${path}`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY! },
+		body: JSON.stringify(body),
+	});
+	const json = (await res.json()) as Record<string, unknown>;
+	if (!res.ok) {
+		return {
+			error: {
+				code: String(json.code ?? res.status),
+				error: String(json.error ?? res.statusText),
+			},
+		};
+	}
+	return { data: json as T };
+}
+
 async function geocode(query: string) {
 	const { data, error } = await roxy.location.searchCities({
 		query: { q: query },
@@ -198,6 +227,28 @@ async function main() {
 		run('spread', () =>
 			roxy.tarot.castThreeCard({
 				body: { question: 'What does my next chapter look like?' },
+			}),
+		),
+		run('bodygraph', () =>
+			rawPost('human-design/bodygraph', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				timezone: PERSON1.timezone,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+			}),
+		),
+		run('forecast-timeline', () =>
+			rawPost('forecast/timeline', {
+				birthData: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					timezone: PERSON1.timezone,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+				startDate: '2026-06-01',
+				endDate: '2026-06-21',
 			}),
 		),
 		run('bio', () =>

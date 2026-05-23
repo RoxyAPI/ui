@@ -40,6 +40,8 @@ const SECTIONS: Section[] = [
 	{ id: 'num', tag: 'roxy-numerology-card' },
 	{ id: 'tarot', tag: 'roxy-tarot-card' },
 	{ id: 'spread', tag: 'roxy-tarot-spread' },
+	{ id: 'bodygraph', tag: 'roxy-bodygraph' },
+	{ id: 'forecast-timeline', tag: 'roxy-forecast-timeline' },
 	{ id: 'bio', tag: 'roxy-biorhythm-chart' },
 	{ id: 'hex', tag: 'roxy-hexagram' },
 	{ id: 'form', tag: 'roxy-endpoint-form' },

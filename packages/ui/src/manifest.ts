@@ -337,6 +337,32 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Tarot',
 	},
 	{
+		pascal: 'RoxyBodygraph',
+		tag: 'roxy-bodygraph',
+		slug: 'bodygraph',
+		heading: 'Bodygraph',
+		description:
+			'Human Design bodygraph with nine centers, channels, and activated gates plus a type, authority, and profile summary',
+		docsLabel: 'Human Design',
+		endpointLabel: 'POST /human-design/bodygraph',
+		docsSummary:
+			'Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary',
+		topic: 'Human Design',
+	},
+	{
+		pascal: 'RoxyForecastTimeline',
+		tag: 'roxy-forecast-timeline',
+		slug: 'forecast-timeline',
+		heading: 'Forecast timeline',
+		description:
+			'Cross-domain forecast event strip colored by domain and weighted by significance',
+		docsLabel: 'Forecast',
+		endpointLabel: 'POST /forecast/timeline',
+		docsSummary:
+			'Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance',
+		topic: 'Forecast',
+	},
+	{
 		pascal: 'RoxyBiorhythmChart',
 		tag: 'roxy-biorhythm-chart',
 		slug: 'biorhythm-chart',

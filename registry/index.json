@@ -108,6 +108,14 @@
       "description": "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no"
     },
     {
+      "name": "roxy-bodygraph",
+      "description": "Human Design bodygraph with nine centers, channels, and activated gates plus a type, authority, and profile summary"
+    },
+    {
+      "name": "roxy-forecast-timeline",
+      "description": "Cross-domain forecast event strip colored by domain and weighted by significance"
+    },
+    {
       "name": "roxy-biorhythm-chart",
       "description": "Daily biorhythm bars or multi-day forecast cycle lines"
     },

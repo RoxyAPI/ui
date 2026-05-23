@@ -8,6 +8,8 @@
 export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
 // Biorhythm
 export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
+// Human Design
+export { RoxyBodygraph } from './components/bodygraph.js';
 export { RoxyChoghadiyaGrid } from './components/choghadiya-grid.js';
 export { RoxyCompatibilityCard } from './components/compatibility-card.js';
 export { RoxyDashaTimeline } from './components/dasha-timeline.js';
@@ -17,6 +19,8 @@ export { RoxyDivisionalChart } from './components/divisional-chart.js';
 export { RoxyDoshaCard } from './components/dosha-card.js';
 // Helpers
 export { RoxyEndpointForm } from './components/endpoint-form.js';
+// Forecast
+export { RoxyForecastTimeline } from './components/forecast-timeline.js';
 export { RoxyGunaMilan } from './components/guna-milan.js';
 // I Ching
 export { RoxyHexagram } from './components/hexagram.js';

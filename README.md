@@ -42,6 +42,14 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
 <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-dark.png" alt="Vedic kundli, dark mode">
 </td>
 </tr>
+<tr>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-light.png" alt="Human Design bodygraph, light mode">
+</td>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-dark.png" alt="Human Design bodygraph, dark mode">
+</td>
+</tr>
 </table>
 
 ```css
@@ -143,6 +151,25 @@ Every chart, table, and card adapts to light and dark automatically. Hover any i
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/shadbala-table-dark.png">
   <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/shadbala-table-light.png" alt="Six-fold planetary strength bars with rupas and adequacy badges">
+</picture>
+</td>
+</tr>
+</table>
+
+### Human Design and forecast
+
+<table>
+<tr>
+<td width="50%"><strong>Bodygraph</strong> · <code>&lt;roxy-bodygraph&gt;</code><br><sub>POST /human-design/bodygraph</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-light.png" alt="Human Design bodygraph with nine centers defined and open, channels between activated gates, plus type, authority, and profile summary">
+</picture>
+</td>
+<td width="50%"><strong>Forecast timeline</strong> · <code>&lt;roxy-forecast-timeline&gt;</code><br><sub>POST /forecast/timeline</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/forecast-timeline-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/forecast-timeline-light.png" alt="Cross-domain forecast timeline of transits, ingresses, retrograde stations, and biorhythm critical days grouped by date and weighted by significance">
 </picture>
 </td>
 </tr>
@@ -526,6 +553,8 @@ For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your se
 | `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,personal-year,chart} | Life path, expression, personal year, full chart |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
+| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary |
+| `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram with trigrams, judgment, image, changing lines |
 | `<roxy-endpoint-form>` | Helper | Any endpoint via x-roxy-ui hints | Schema-driven form, emits roxy-submit |
@@ -565,7 +594,7 @@ roxy-natal-chart {
 - Consistent response formats across every domain in the catalog.
 - A11y zero violations enforced in CI.
 - Tight per-component bundle budget enforced in CI.
-- Coverage of the highest-demand endpoints across Western astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching, plus helpers for location search and schema-driven forms.
+- Coverage of the highest-demand endpoints across Western astrology, Vedic astrology, numerology, tarot, Human Design, forecast, biorhythm, I Ching, plus helpers for location search and schema-driven forms.
 
 ## Built for AI agents
 
