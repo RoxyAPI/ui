@@ -61,4 +61,4 @@ export function ensureScriptLoaded(version: string = 'latest'): Promise<void> {
 export default ensureScriptLoaded;
 // Surfaces the embedded @roxyapi/ui version this build of @roxyapi/ui-react
 // was generated against. Useful for diagnostics; not load-bearing.
-export const ROXY_UI_VERSION = '0.8.0';
+export const ROXY_UI_VERSION = '0.8.1';
