@@ -33,12 +33,19 @@
 			padding-inline: clamp(1rem, 4vw, 2rem);
 		}
 
-		/* When this page is iframed (e.g. embedded in roxyapi.com/ui), drop the
-		 * outer max-width so the host page's chrome owns the layout. Keep a
-		 * comfortable horizontal pad so charts do not crash into the iframe edge. */
-		body.is-iframed .container {
+		/* When this page is iframed (e.g. embedded in roxyapi.com/ui) or opened
+		 * with ?embed, the host page owns the marketing chrome: hide the hero so the
+		 * embed starts at the theme + Customize controls, and drop the outer
+		 * max-width so the host layout owns the width. The .is-iframed class is set
+		 * on <html> in the head script below so the hero never paints first. The
+		 * toolbar already carries padding-block: 1rem, so the controls keep their
+		 * top spacing without any extra padding. */
+		.is-iframed .container {
 			max-width: none;
 			padding-inline: clamp(1rem, 2vw, 1.5rem);
+		}
+		.is-iframed .hero {
+			display: none;
 		}
 
 		.stack > * + * { margin-top: var(--gap, 1rem); }
@@ -589,6 +596,26 @@
 			}
 		]
 	}
+	</script>
+	<script>
+		// Embed mode. When this page is loaded in an iframe (it is embedded in
+		// roxyapi.com/ui) or opened with ?embed, mark <html> so the CSS above hides
+		// the marketing hero and the embed starts at the theme + Customize controls.
+		// Set here in the head, before the body paints, so the hero never flashes.
+		// Comparing window.self to window.top is safe across origins; it reads no
+		// cross-origin property. A standalone tab has self === top and keeps the hero.
+		(function () {
+			try {
+				if (
+					window.self !== window.top ||
+					/[?&]embed(?:ded)?\b/.test(window.location.search)
+				) {
+					document.documentElement.classList.add('is-iframed');
+				}
+			} catch (_) {
+				document.documentElement.classList.add('is-iframed');
+			}
+		})();
 	</script>
 </head>
 <body>
