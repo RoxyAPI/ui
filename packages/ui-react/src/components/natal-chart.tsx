@@ -12,11 +12,13 @@ export interface RoxyNatalChartProps extends ElementAttrs {
 	data?: NatalChartResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** House system the chart was cast with. Labels the house cusps; does not recompute positions. */
+	houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
 
 }
 
 export const RoxyNatalChart = React.forwardRef<HTMLElement | null, RoxyNatalChartProps>(
-	function RoxyNatalChart({ data, className, style, ...rest }, ref) {
+	function RoxyNatalChart({ data, className, style, houseSystem, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyNatalChart = React.forwardRef<HTMLElement | null, RoxyNatalChar
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && houseSystem !== undefined) {
+				(el as unknown as { houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch' }).houseSystem = houseSystem;
+			}
+		}, [houseSystem, loaded]);
 
 		if (error) {
 			return React.createElement(

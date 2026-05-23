@@ -12,11 +12,13 @@ export interface RoxyDoshaCardProps extends ElementAttrs {
 	data?: ManglikResponse | KalsarpaResponse | SadhesatiResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which dosha to title and theme. The three dosha responses share a shape, so the card cannot infer this. Defaults to manglik, so set it explicitly per card. */
+	type?: 'manglik' | 'kalsarpa' | 'sadhesati';
 
 }
 
 export const RoxyDoshaCard = React.forwardRef<HTMLElement | null, RoxyDoshaCardProps>(
-	function RoxyDoshaCard({ data, className, style, ...rest }, ref) {
+	function RoxyDoshaCard({ data, className, style, type, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyDoshaCard = React.forwardRef<HTMLElement | null, RoxyDoshaCardP
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && type !== undefined) {
+				(el as unknown as { type: 'manglik' | 'kalsarpa' | 'sadhesati' }).type = type;
+			}
+		}, [type, loaded]);
 
 		if (error) {
 			return React.createElement(

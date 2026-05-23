@@ -237,18 +237,18 @@
 	// edits preview live by writing to either documentElement.style (current
 	// data-theme) or a data-theme="dark" rule injected at runtime.
 	const TOKENS = [
-		'primary', 'secondary', 'accent', 'accent-fg',
+		'primary', 'secondary', 'accent', 'accent-ink',
 		'success', 'warning', 'danger', 'info',
 		'bg', 'fg', 'muted', 'border',
 	];
 	const DEFAULTS = {
 		light: {
-			primary: '#0f172a', secondary: '#475569', accent: '#f59e0b', 'accent-fg': '#b45309',
+			primary: '#0f172a', secondary: '#475569', accent: '#f59e0b', 'accent-ink': '#b45309',
 			success: '#16a34a', warning: '#ea580c', danger: '#dc2626', info: '#0284c7',
 			bg: '#ffffff', fg: '#0a0a0a', muted: '#71717a', border: '#e4e4e7',
 		},
 		dark: {
-			primary: '#f8fafc', secondary: '#94a3b8', accent: '#fbbf24', 'accent-fg': '#fbbf24',
+			primary: '#f8fafc', secondary: '#94a3b8', accent: '#fbbf24', 'accent-ink': '#fbbf24',
 			success: '#22c55e', warning: '#fb923c', danger: '#ef4444', info: '#38bdf8',
 			bg: '#0a0a0a', fg: '#fafafa', muted: '#a1a1aa', border: '#27272a',
 		},

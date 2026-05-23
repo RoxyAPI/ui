@@ -88,14 +88,14 @@ export class RoxyDashaTimeline extends LitElement {
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 			.bar.now strong {
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 			}
 			.now-badge {
 				display: inline-block;
 				margin-left: 0.4em;
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				text-transform: uppercase;
 				letter-spacing: 0.06em;
 			}
@@ -123,7 +123,7 @@ export class RoxyDashaTimeline extends LitElement {
 				top: -2px;
 				bottom: -2px;
 				width: 2px;
-				background: var(--roxy-accent-fg, #b45309);
+				background: var(--roxy-accent-ink, #b45309);
 				border-radius: 2px;
 				box-shadow: 0 0 0 2px
 					color-mix(in srgb, var(--roxy-accent, #f59e0b) 35%, transparent);

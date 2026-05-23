@@ -12,11 +12,13 @@ export interface RoxyHexagramProps extends ElementAttrs {
 	data?: GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which I Ching response shape to render: a static hexagram lookup, a cast with changing lines, or the daily hexagram. */
+	mode?: 'lookup' | 'cast' | 'daily';
 
 }
 
 export const RoxyHexagram = React.forwardRef<HTMLElement | null, RoxyHexagramProps>(
-	function RoxyHexagram({ data, className, style, ...rest }, ref) {
+	function RoxyHexagram({ data, className, style, mode, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyHexagram = React.forwardRef<HTMLElement | null, RoxyHexagramPro
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && mode !== undefined) {
+				(el as unknown as { mode: 'lookup' | 'cast' | 'daily' }).mode = mode;
+			}
+		}, [mode, loaded]);
 
 		if (error) {
 			return React.createElement(

@@ -53,7 +53,7 @@ export class RoxyHexagram extends LitElement {
 			.symbol {
 				font-size: 3rem;
 				line-height: 1;
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 			}
 			.lines {
 				display: grid;
@@ -105,7 +105,7 @@ export class RoxyHexagram extends LitElement {
 			}
 			.tri-glyph {
 				font-size: var(--roxy-text-xl, 1.5rem);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				margin-right: 4px;
 				vertical-align: middle;
 			}
@@ -131,7 +131,7 @@ export class RoxyHexagram extends LitElement {
 				margin-top: var(--roxy-space-md, 1rem);
 				padding-top: var(--roxy-space-md, 1rem);
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 		`,

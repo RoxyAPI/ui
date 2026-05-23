@@ -54,7 +54,7 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
 
   /* Brand */
   --roxy-accent: #f59e0b;
-  --roxy-accent-fg: #b45309;
+  --roxy-accent-ink: #b45309;
 
   /* Status (each has a -fg variant for WCAG-AA text contrast) */
   --roxy-success: #16a34a;

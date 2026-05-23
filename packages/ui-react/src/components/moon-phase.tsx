@@ -12,11 +12,13 @@ export interface RoxyMoonPhaseProps extends ElementAttrs {
 	data?: GetCurrentMoonPhaseResponse | GetUpcomingMoonPhasesResponse | GetMoonCalendarResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which moon-phase response shape to render: a single current phase, an upcoming list, or a calendar. */
+	mode?: 'current' | 'upcoming' | 'calendar';
 
 }
 
 export const RoxyMoonPhase = React.forwardRef<HTMLElement | null, RoxyMoonPhaseProps>(
-	function RoxyMoonPhase({ data, className, style, ...rest }, ref) {
+	function RoxyMoonPhase({ data, className, style, mode, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyMoonPhase = React.forwardRef<HTMLElement | null, RoxyMoonPhaseP
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && mode !== undefined) {
+				(el as unknown as { mode: 'current' | 'upcoming' | 'calendar' }).mode = mode;
+			}
+		}, [mode, loaded]);
 
 		if (error) {
 			return React.createElement(

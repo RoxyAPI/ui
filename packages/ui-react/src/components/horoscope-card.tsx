@@ -12,11 +12,13 @@ export interface RoxyHoroscopeCardProps extends ElementAttrs {
 	data?: GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which horoscope cadence the response is for. Selects the heading and date framing. */
+	period?: 'daily' | 'weekly' | 'monthly';
 
 }
 
 export const RoxyHoroscopeCard = React.forwardRef<HTMLElement | null, RoxyHoroscopeCardProps>(
-	function RoxyHoroscopeCard({ data, className, style, ...rest }, ref) {
+	function RoxyHoroscopeCard({ data, className, style, period, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyHoroscopeCard = React.forwardRef<HTMLElement | null, RoxyHorosc
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && period !== undefined) {
+				(el as unknown as { period: 'daily' | 'weekly' | 'monthly' }).period = period;
+			}
+		}, [period, loaded]);
 
 		if (error) {
 			return React.createElement(

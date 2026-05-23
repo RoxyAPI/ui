@@ -159,7 +159,7 @@ export class RoxyNatalChart extends LitElement {
 				stroke: var(--roxy-danger, #dc2626);
 			}
 			.aspect-conjunction {
-				stroke: var(--roxy-accent-fg, #b45309);
+				stroke: var(--roxy-accent-ink, #b45309);
 			}
 			.aspect-other {
 				stroke: var(--roxy-muted, #71717a);
@@ -167,14 +167,14 @@ export class RoxyNatalChart extends LitElement {
 			}
 
 			.angle-marker {
-				fill: var(--roxy-accent-fg, #b45309);
+				fill: var(--roxy-accent-ink, #b45309);
 				font-size: 10px;
 				font-weight: 700;
 				font-family: var(--roxy-font-sans);
 				letter-spacing: 0.04em;
 			}
 			.angle-tick {
-				stroke: var(--roxy-accent-fg, #b45309);
+				stroke: var(--roxy-accent-ink, #b45309);
 				stroke-width: 1.5;
 			}
 
@@ -234,7 +234,7 @@ export class RoxyNatalChart extends LitElement {
 				color: var(--roxy-danger, #dc2626);
 			}
 			table.aspect-grid td.aspect-conjunction .asp {
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 			}
 			table.aspect-grid td.aspect-other .asp {
 				color: var(--roxy-muted, #71717a);
@@ -363,7 +363,7 @@ export class RoxyNatalChart extends LitElement {
 				padding: 1px 8px;
 				border-radius: 9999px;
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 		`,

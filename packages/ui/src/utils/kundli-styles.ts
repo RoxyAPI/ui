@@ -55,7 +55,7 @@ export const kundliStyles = css`
 		font-family: var(--roxy-font-sans);
 	}
 	.house-num {
-		fill: var(--roxy-accent-fg, #b45309);
+		fill: var(--roxy-accent-ink, #b45309);
 		font-size: 11px;
 		font-weight: 600;
 		font-family: var(--roxy-font-sans);
@@ -75,7 +75,7 @@ export const kundliStyles = css`
 		letter-spacing: 0.02em;
 	}
 	.lagna-marker {
-		fill: var(--roxy-accent-fg, #b45309);
+		fill: var(--roxy-accent-ink, #b45309);
 		font-size: 10px;
 		font-weight: 700;
 		font-family: var(--roxy-font-sans);

@@ -12,11 +12,13 @@ export interface RoxyVedicKundliProps extends ElementAttrs {
 	data?: BirthChartResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Initial regional kundli layout. The end user can switch styles at runtime via the visible tablist. */
+	chartStyle?: 'south' | 'north' | 'east';
 
 }
 
 export const RoxyVedicKundli = React.forwardRef<HTMLElement | null, RoxyVedicKundliProps>(
-	function RoxyVedicKundli({ data, className, style, ...rest }, ref) {
+	function RoxyVedicKundli({ data, className, style, chartStyle, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyVedicKundli = React.forwardRef<HTMLElement | null, RoxyVedicKun
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && chartStyle !== undefined) {
+				(el as unknown as { chartStyle: 'south' | 'north' | 'east' }).chartStyle = chartStyle;
+			}
+		}, [chartStyle, loaded]);
 
 		if (error) {
 			return React.createElement(

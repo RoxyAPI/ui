@@ -44,7 +44,7 @@ export class RoxyNumerologyCard extends LitElement {
 				font-size: 4rem;
 				line-height: 1;
 				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-variant-numeric: tabular-nums;
 			}
 			.label {
@@ -106,7 +106,7 @@ export class RoxyNumerologyCard extends LitElement {
 				text-transform: capitalize;
 			}
 			.cores .item strong {
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-variant-numeric: tabular-nums;
 				font-size: var(--roxy-text-base, 1rem);
 				font-weight: var(--roxy-weight-bold, 600);

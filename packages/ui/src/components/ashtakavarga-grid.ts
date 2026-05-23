@@ -70,7 +70,7 @@ export class RoxyAshtakavargaGrid extends LitElement {
 			}
 
 			.tab[aria-selected='true'] {
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				border-bottom-color: var(--roxy-accent, #f59e0b);
 				font-weight: var(--roxy-weight-bold, 600);
 			}

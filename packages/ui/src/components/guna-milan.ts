@@ -51,7 +51,7 @@ export class RoxyGunaMilan extends LitElement {
 			.total {
 				font-size: 2.25rem;
 				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-variant-numeric: tabular-nums;
 				line-height: 1;
 			}

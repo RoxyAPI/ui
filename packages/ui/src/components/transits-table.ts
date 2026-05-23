@@ -194,7 +194,7 @@ export class RoxyTransitsTable extends LitElement {
 				padding: 1px 8px;
 				border-radius: 9999px;
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 			.nature-badge {

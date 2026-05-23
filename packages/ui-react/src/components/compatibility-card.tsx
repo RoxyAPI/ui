@@ -12,11 +12,13 @@ export interface RoxyCompatibilityCardProps extends ElementAttrs {
 	data?: CalculateCompatibilityResponse | CalculateNumCompatibilityResponse | CalculateBioCompatibilityResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which compatibility domain the response is from. Themes the card and labels the category breakdown. */
+	mode?: 'astrology' | 'numerology' | 'biorhythm';
 
 }
 
 export const RoxyCompatibilityCard = React.forwardRef<HTMLElement | null, RoxyCompatibilityCardProps>(
-	function RoxyCompatibilityCard({ data, className, style, ...rest }, ref) {
+	function RoxyCompatibilityCard({ data, className, style, mode, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyCompatibilityCard = React.forwardRef<HTMLElement | null, RoxyCo
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && mode !== undefined) {
+				(el as unknown as { mode: 'astrology' | 'numerology' | 'biorhythm' }).mode = mode;
+			}
+		}, [mode, loaded]);
 
 		if (error) {
 			return React.createElement(

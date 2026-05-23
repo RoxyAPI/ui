@@ -11,7 +11,18 @@ import { MarkupDataController } from '../utils/markup-data.js';
 type PanchangData = GetBasicPanchangResponse | GetDetailedPanchangResponse;
 type PanchangTime = GetDetailedPanchangResponse['rahuKaal'];
 
-/** Panchang table for /vedic-astrology/panchang/{basic,detailed}. */
+/**
+ * Panchang table for /vedic-astrology/panchang/{basic,detailed}.
+ *
+ * @remarks
+ * The main grid lists the five limbs (tithi, nakshatra, yoga, karana, vara),
+ * sun and moon timings, and, in detailed mode, the sunrise placements a reader
+ * scans first: Moon rashi, Sun rashi, Sun nakshatra, and the current hora. The
+ * detailed mode then groups every timed window into two sections, auspicious
+ * (the fixed muhurtas plus each Amrit Kalam) and inauspicious (Rahu Kaal,
+ * Yamaganda, Gulika, plus each Dur Muhurta and Varjyam), so a consumer can act
+ * on timing without parsing the raw response.
+ */
 @customElement('roxy-panchang-table')
 export class RoxyPanchangTable extends LitElement {
 	static styles = [
@@ -105,6 +116,15 @@ export class RoxyPanchangTable extends LitElement {
 		];
 		if (detailed) fivefold.push(['Vara', this.formatPart(detailed.vara)]);
 
+		const placements: Array<[string, string]> = detailed
+			? [
+					['Moon sign', this.formatRashi(detailed.moonSign)],
+					['Sun sign', this.formatRashi(detailed.sunSign)],
+					['Sun nakshatra', this.formatSunNakshatra(detailed.sunNakshatra)],
+					['Hora', this.formatHora(detailed.hora)],
+				].filter((row): row is [string, string] => Boolean(row[1]))
+			: [];
+
 		const muhurtas: Array<[string, PanchangTime | undefined]> = detailed
 			? [
 					['Brahma Muhurta', detailed.brahmaMuhurta],
@@ -117,11 +137,22 @@ export class RoxyPanchangTable extends LitElement {
 				]
 			: [];
 
+		const auspiciousWindows: Array<[string, PanchangTime]> = detailed
+			? this.expandWindows('Amrit Kalam', detailed.amritKalam)
+			: [];
+
 		const inauspicious: Array<[string, PanchangTime | undefined]> = detailed
 			? [
 					['Rahu Kaal', detailed.rahuKaal],
 					['Yamaganda', detailed.yamaganda],
 					['Gulika', detailed.gulika],
+				]
+			: [];
+
+		const inauspiciousWindows: Array<[string, PanchangTime]> = detailed
+			? [
+					...this.expandWindows('Dur Muhurta', detailed.durMuhurta),
+					...this.expandWindows('Varjyam', detailed.varjyam),
 				]
 			: [];
 
@@ -173,6 +204,12 @@ export class RoxyPanchangTable extends LitElement {
 							</tr>`
 							: nothing
 					}
+					${placements.map(
+						([k, v]) => html`<tr>
+							<th>${k}</th>
+							<td>${v}</td>
+						</tr>`,
+					)}
 				</tbody>
 			</table>
 			${
@@ -192,38 +229,64 @@ export class RoxyPanchangTable extends LitElement {
 			}
 			${
 				this.detail === 'detailed' &&
-				(muhurtas.some((m) => !!m[1]) || inauspicious.some((m) => !!m[1]))
+				(
+					muhurtas.some((m) => !!m[1]) ||
+						auspiciousWindows.length > 0 ||
+						inauspicious.some((m) => !!m[1]) ||
+						inauspiciousWindows.length > 0
+				)
 					? html`
 						<div class="section">Auspicious muhurtas</div>
 						<table>
 							<tbody>
-								${muhurtas
-									.filter(([, v]) => !!v)
-									.map(
-										([k, v]) => html`<tr>
-											<th>${k}</th>
-											<td>${formatTimeRange(v)}</td>
-										</tr>`,
-									)}
+								${this.renderPeriodRows([
+									...muhurtas.filter(
+										(m): m is [string, PanchangTime] => !!m[1],
+									),
+									...auspiciousWindows,
+								])}
 							</tbody>
 						</table>
 						<div class="section">Inauspicious periods</div>
 						<table>
 							<tbody>
-								${inauspicious
-									.filter(([, v]) => !!v)
-									.map(
-										([k, v]) => html`<tr>
-											<th>${k}</th>
-											<td>${formatTimeRange(v)}</td>
-										</tr>`,
-									)}
+								${this.renderPeriodRows([
+									...inauspicious.filter(
+										(m): m is [string, PanchangTime] => !!m[1],
+									),
+									...inauspiciousWindows,
+								])}
 							</tbody>
 						</table>
 					`
 					: nothing
 			}
 		</div>`;
+	}
+
+	/** Renders one row per [label, period] pair, dropping any with no range. */
+	private renderPeriodRows(rows: Array<[string, PanchangTime]>) {
+		return rows.map(([k, v]) => {
+			const range = formatTimeRange(v);
+			return range
+				? html`<tr>
+						<th>${k}</th>
+						<td>${range}</td>
+					</tr>`
+				: nothing;
+		});
+	}
+
+	/** Expands an array of periods into labeled rows, numbering when more than one. */
+	private expandWindows(
+		label: string,
+		windows: PanchangTime[] | undefined,
+	): Array<[string, PanchangTime]> {
+		if (!windows || windows.length === 0) return [];
+		return windows.map((w, i) => [
+			windows.length > 1 ? `${label} ${i + 1}` : label,
+			w,
+		]);
 	}
 
 	private renderTransitionRow(
@@ -260,7 +323,38 @@ export class RoxyPanchangTable extends LitElement {
 		}
 		return String(v);
 	}
+
+	/** "English (Sanskrit)" label for the Moon or Sun rashi at sunrise. */
+	private formatRashi(r: RashiPlacement | undefined): string {
+		if (!r?.name) return '';
+		return r.sanskritName && r.sanskritName !== r.name
+			? `${r.name} (${r.sanskritName})`
+			: r.name;
+	}
+
+	/** Sun nakshatra with pada and lord, the form a panchang reader expects. */
+	private formatSunNakshatra(n: SunNakshatra | undefined): string {
+		if (!n?.name) return '';
+		const parts = [
+			n.name,
+			typeof n.pada === 'number' ? `pada ${n.pada}` : '',
+			n.lord ? `· ${n.lord}` : '',
+		].filter(Boolean);
+		return parts.join(' ');
+	}
+
+	/** Current planetary hora with its active window. */
+	private formatHora(h: Hora | undefined): string {
+		if (!h?.current) return '';
+		const range = formatTimeRange(h);
+		return range ? `${h.current} (${range})` : h.current;
+	}
 }
+
+type PanchangPlacements = GetDetailedPanchangResponse;
+type RashiPlacement = PanchangPlacements['moonSign'];
+type SunNakshatra = PanchangPlacements['sunNakshatra'];
+type Hora = PanchangPlacements['hora'];
 
 declare global {
 	interface HTMLElementTagNameMap {

@@ -66,7 +66,7 @@ export class RoxySynastryChart extends LitElement {
 			.score {
 				font-variant-numeric: tabular-nums;
 				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-size: var(--roxy-text-xl, 1.5rem);
 			}
 
@@ -111,12 +111,12 @@ export class RoxySynastryChart extends LitElement {
 				fill: var(--roxy-danger, #dc2626);
 			}
 			.asc-tick {
-				stroke: var(--roxy-accent-fg, #b45309);
+				stroke: var(--roxy-accent-ink, #b45309);
 				stroke-width: 1;
 				opacity: 0.75;
 			}
 			.asc-label {
-				fill: var(--roxy-accent-fg, #b45309);
+				fill: var(--roxy-accent-ink, #b45309);
 				font-size: 9px;
 				font-weight: 700;
 				font-family: var(--roxy-font-sans);
@@ -136,7 +136,7 @@ export class RoxySynastryChart extends LitElement {
 				stroke: var(--roxy-danger, #dc2626);
 			}
 			.aspect-conjunction {
-				stroke: var(--roxy-accent-fg, #b45309);
+				stroke: var(--roxy-accent-ink, #b45309);
 			}
 			.aspect-other {
 				stroke: var(--roxy-muted, #71717a);

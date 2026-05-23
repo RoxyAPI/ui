@@ -52,7 +52,7 @@ export class RoxyBiorhythmChart extends LitElement {
 			}
 			.energy {
 				font-variant-numeric: tabular-nums;
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 			.bars {

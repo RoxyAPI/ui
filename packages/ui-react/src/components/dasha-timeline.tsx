@@ -12,11 +12,13 @@ export interface RoxyDashaTimelineProps extends ElementAttrs {
 	data?: GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which dasha response shape to render: the current running periods, the major mahadashas, or the sub-period breakdown. */
+	period?: 'current' | 'major' | 'sub';
 
 }
 
 export const RoxyDashaTimeline = React.forwardRef<HTMLElement | null, RoxyDashaTimelineProps>(
-	function RoxyDashaTimeline({ data, className, style, ...rest }, ref) {
+	function RoxyDashaTimeline({ data, className, style, period, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyDashaTimeline = React.forwardRef<HTMLElement | null, RoxyDashaT
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && period !== undefined) {
+				(el as unknown as { period: 'current' | 'major' | 'sub' }).period = period;
+			}
+		}, [period, loaded]);
 
 		if (error) {
 			return React.createElement(

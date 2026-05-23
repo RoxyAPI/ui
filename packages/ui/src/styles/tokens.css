@@ -23,7 +23,7 @@
 	 * WCAG AA for body text. amber-700 hits 4.5:1, used wherever the accent
 	 * tone is applied to text. Fills (planet glyphs, chart accents, badges
 	 * with non-text use) keep --roxy-accent. */
-	--roxy-accent-fg: #b45309;
+	--roxy-accent-ink: #b45309;
 
 	/* Color: status. The base value (success, warning, danger, info) is for
 	 * fills and tints. The -fg variant is darker so text on a light tint passes
@@ -105,7 +105,7 @@
 		--roxy-primary: #f8fafc;
 		--roxy-secondary: #94a3b8;
 		--roxy-accent: #fbbf24;
-		--roxy-accent-fg: #fbbf24;
+		--roxy-accent-ink: #fbbf24;
 
 		/* Status -fg overrides must mirror the explicit [data-theme="dark"] block
 		 * below. Without these, a user on system dark with no data-theme attribute
@@ -144,7 +144,7 @@
 	--roxy-primary: #0f172a;
 	--roxy-secondary: #475569;
 	--roxy-accent: #f59e0b;
-	--roxy-accent-fg: #b45309;
+	--roxy-accent-ink: #b45309;
 
 	--roxy-success: #16a34a;
 	--roxy-success-fg: #166534;
@@ -174,7 +174,7 @@
 	--roxy-primary: #f8fafc;
 	--roxy-secondary: #94a3b8;
 	--roxy-accent: #fbbf24;
-	--roxy-accent-fg: #fbbf24;
+	--roxy-accent-ink: #fbbf24;
 
 	--roxy-success: #22c55e;
 	--roxy-success-fg: #86efac;

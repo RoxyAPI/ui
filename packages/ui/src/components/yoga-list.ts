@@ -138,7 +138,7 @@ export class RoxyYogaList extends LitElement {
 			}
 			details summary {
 				cursor: pointer;
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-weight: 500;
 				padding: 0.25em 0;
 				list-style: none;

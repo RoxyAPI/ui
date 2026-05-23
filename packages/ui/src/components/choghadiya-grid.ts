@@ -104,7 +104,7 @@ export class RoxyChoghadiyaGrid extends LitElement {
 				margin-left: 0.4em;
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				text-transform: uppercase;
 				letter-spacing: 0.06em;
 			}

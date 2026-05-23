@@ -13,7 +13,7 @@ Every Roxy UI component reads its colors, fonts, spacing, and motion from a sing
 | `--roxy-muted` | `#71717a` | `#a1a1aa` | Secondary text, subheadings |
 | `--roxy-border` | `#e4e4e7` | `#27272a` | Wheel lines, table borders |
 | `--roxy-accent` | `#f59e0b` | `#fbbf24` | Planet glyphs, hexagram lines, focused state |
-| `--roxy-accent-fg` | `#b45309` | `#fcd34d` | Accent-on-accent text (WCAG-AA contrast) |
+| `--roxy-accent-ink` | `#b45309` | `#fbbf24` | Accent-colored text and marks ON THE PAGE (a strong accent shade, "Now"/active labels, chart strokes). Map to a page-legible accent shade, NOT an on-accent foreground. |
 | `--roxy-success` | `#16a34a` | `#22c55e` | Positive doshas, biorhythm peaks |
 | `--roxy-warning` | `#ea580c` | `#fb923c` | Caution states, mid severity |
 | `--roxy-danger` | `#dc2626` | `#ef4444` | Manglik present, critical days |

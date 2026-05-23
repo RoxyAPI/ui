@@ -42,7 +42,7 @@ export class RoxyHoroscopeCard extends LitElement {
 
 			.glyph {
 				font-size: 2.25rem;
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				line-height: 1;
 			}
 

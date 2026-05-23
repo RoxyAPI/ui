@@ -12,11 +12,13 @@ export interface RoxyBiorhythmChartProps extends ElementAttrs {
 	data?: GetDailyBiorhythmResponse | GetForecastResponse | GetCriticalDaysResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which biorhythm response shape to render: a single day, a multi-day forecast, or the critical days list. */
+	mode?: 'daily' | 'forecast' | 'critical-days';
 
 }
 
 export const RoxyBiorhythmChart = React.forwardRef<HTMLElement | null, RoxyBiorhythmChartProps>(
-	function RoxyBiorhythmChart({ data, className, style, ...rest }, ref) {
+	function RoxyBiorhythmChart({ data, className, style, mode, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyBiorhythmChart = React.forwardRef<HTMLElement | null, RoxyBiorh
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && mode !== undefined) {
+				(el as unknown as { mode: 'daily' | 'forecast' | 'critical-days' }).mode = mode;
+			}
+		}, [mode, loaded]);
 
 		if (error) {
 			return React.createElement(

@@ -50,7 +50,7 @@ export class RoxyLocationSearch extends LitElement {
 			input:focus {
 				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 				outline-offset: 2px;
-				border-color: var(--roxy-accent-fg, #b45309);
+				border-color: var(--roxy-accent-ink, #b45309);
 			}
 			.spinner {
 				position: absolute;

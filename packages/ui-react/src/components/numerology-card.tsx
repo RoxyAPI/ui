@@ -12,11 +12,13 @@ export interface RoxyNumerologyCardProps extends ElementAttrs {
 	data?: CalculateLifePathResponse | CalculateExpressionResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which numerology response the card is showing. Selects the heading and which fields are surfaced. */
+	type?: 'life-path' | 'expression' | 'personal-year' | 'chart';
 
 }
 
 export const RoxyNumerologyCard = React.forwardRef<HTMLElement | null, RoxyNumerologyCardProps>(
-	function RoxyNumerologyCard({ data, className, style, ...rest }, ref) {
+	function RoxyNumerologyCard({ data, className, style, type, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyNumerologyCard = React.forwardRef<HTMLElement | null, RoxyNumer
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && type !== undefined) {
+				(el as unknown as { type: 'life-path' | 'expression' | 'personal-year' | 'chart' }).type = type;
+			}
+		}, [type, loaded]);
 
 		if (error) {
 			return React.createElement(

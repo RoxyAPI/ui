@@ -25,17 +25,17 @@ const samples = {
 				isRetrograde: false,
 				house: 9,
 				interpretation: {
-					summary: "Your Sun in Capricorn in The Ninth House reveals how you express Self-awareness & ego with detail-oriented and intelligent energy in the realm of our personal belief system.",
-					detailed: "Sun represents Self-awareness & ego. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Ninth House, you direct this Capricorn Sun energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Self-awareness & ego naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to ninth house.",
+					summary: "Your Sun in Capricorn in The Ninth House reveals how you express self-awareness and ego with ambitious and disciplined energy in the realm of exploration.",
+					detailed: "Sun represents self-awareness and ego. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Ninth House, you direct this Capricorn Sun energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your self-awareness and ego naturally manifests through ambitious, disciplined, patient approaches in matters related to the ninth house.",
 					keywords: [
 						"active",
 						"awareness",
 						"bright",
 						"confidence",
 						"consciousness",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -49,8 +49,8 @@ const samples = {
 				isRetrograde: false,
 				house: 4,
 				interpretation: {
-					summary: "Your Moon in Virgo in The Fourth House reveals how you express Inner emotional life with graceful and organized energy in the realm of our psychological foundations and roots.",
-					detailed: "Moon represents Inner emotional life. In Virgo (The Virgin), this energy becomes graceful, organized, kind. Located in The Fourth House, you direct this Virgo Moon energy toward our psychological foundations and roots and family. This creates a unique expression where your Inner emotional life naturally manifests through graceful, organized, kind approaches in matters related to fourth house.",
+					summary: "Your Moon in Virgo in The Fourth House reveals how you express inner emotional life with graceful and organized energy in the realm of family.",
+					detailed: "Moon represents inner emotional life. In Virgo (Virgin), this energy becomes graceful, organized, kind. Located in The Fourth House, you direct this Virgo Moon energy toward family and home life. This creates a unique expression where your inner emotional life naturally manifests through graceful, organized, kind approaches in matters related to the fourth house.",
 					keywords: [
 						"caretaker",
 						"comfort",
@@ -73,17 +73,17 @@ const samples = {
 				isRetrograde: true,
 				house: 8,
 				interpretation: {
-					summary: "Your Mercury in Capricorn in The Eighth House reveals how you express Communication with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Mercury represents Communication. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Mercury energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Communication naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Mercury in Capricorn in The Eighth House reveals how you express communication with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Mercury represents communication. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Mercury energy toward transformation and crisis and sexuality. This creates a unique expression where your communication naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"analysis",
 						"childhood",
 						"communication",
 						"curiosity",
 						"education",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -97,8 +97,8 @@ const samples = {
 				isRetrograde: true,
 				house: 9,
 				interpretation: {
-					summary: "Your Venus in Aquarius in The Ninth House reveals how you express Love, beauty, & money with imaginative and idealistic energy in the realm of our personal belief system.",
-					detailed: "Venus represents Love, beauty, & money. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius Venus energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Love, beauty, & money naturally manifests through imaginative, idealistic, intuitive approaches in matters related to ninth house.",
+					summary: "Your Venus in Aquarius in The Ninth House reveals how you express love, beauty, and money with imaginative and idealistic energy in the realm of exploration.",
+					detailed: "Venus represents love, beauty, and money. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius Venus energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your love, beauty, and money naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the ninth house.",
 					keywords: [
 						"attractiveness",
 						"beauty",
@@ -121,8 +121,8 @@ const samples = {
 				isRetrograde: false,
 				house: 7,
 				interpretation: {
-					summary: "Your Mars in Sagittarius in The Seventh House reveals how you express Assertiveness & aggression with adventurous and creative energy in the realm of companionship.",
-					detailed: "Mars represents Assertiveness & aggression. In Sagittarius (The Archer), this energy becomes adventurous, optimistic, independent. Located in The Seventh House, you direct this Sagittarius Mars energy toward companionship and the alter ego. This creates a unique expression where your Assertiveness & aggression naturally manifests through adventurous, creative, strong willed approaches in matters related to seventh house.",
+					summary: "Your Mars in Sagittarius in The Seventh House reveals how you express assertiveness and aggression with adventurous and optimistic energy in the realm of companionship.",
+					detailed: "Mars represents assertiveness and aggression. In Sagittarius (Archer), this energy becomes adventurous, optimistic, independent. Located in The Seventh House, you direct this Sagittarius Mars energy toward companionship and the alter ego. This creates a unique expression where your assertiveness and aggression naturally manifests through adventurous, optimistic, independent approaches in matters related to the seventh house.",
 					keywords: [
 						"action",
 						"adventurous",
@@ -130,8 +130,8 @@ const samples = {
 						"brave",
 						"courage",
 						"adventurous",
-						"creative",
-						"strong willed",
+						"optimistic",
+						"independent",
 					],
 				},
 			},
@@ -145,8 +145,8 @@ const samples = {
 				isRetrograde: true,
 				house: 2,
 				interpretation: {
-					summary: "Your Jupiter in Cancer in The Second House reveals how you express Luck & opportunity with intuitive and emotional energy in the realm of i have.",
-					detailed: "Jupiter represents Luck & opportunity. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Jupiter energy toward i have and money and personal finances. This creates a unique expression where your Luck & opportunity naturally manifests through intuitive, emotional, intelligent approaches in matters related to second house.",
+					summary: "Your Jupiter in Cancer in The Second House reveals how you express luck and opportunity with intuitive and nurturing energy in the realm of money and personal finances.",
+					detailed: "Jupiter represents luck and opportunity. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Jupiter energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your luck and opportunity naturally manifests through intuitive, nurturing, protective approaches in matters related to the second house.",
 					keywords: [
 						"abundance",
 						"college",
@@ -154,9 +154,8 @@ const samples = {
 						"curiosity",
 						"diversity",
 						"intuitive",
-						"emotional",
-						"intelligent",
-						"passionate",
+						"nurturing",
+						"protective",
 					],
 				},
 			},
@@ -170,17 +169,17 @@ const samples = {
 				isRetrograde: false,
 				house: 8,
 				interpretation: {
-					summary: "Your Saturn in Capricorn in The Eighth House reveals how you express Responsibility, time, & routine with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Saturn represents Responsibility, time, & routine. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Saturn energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Responsibility, time, & routine naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Saturn in Capricorn in The Eighth House reveals how you express responsibility, time, and routine with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Saturn represents responsibility, time, and routine. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Saturn energy toward transformation and crisis and sexuality. This creates a unique expression where your responsibility, time, and routine naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"ambition",
 						"boundaries",
 						"determination",
 						"discipline",
 						"experience",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -194,17 +193,17 @@ const samples = {
 				isRetrograde: false,
 				house: 8,
 				interpretation: {
-					summary: "Your Uranus in Capricorn in The Eighth House reveals how you express Individuality & revolution with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Uranus represents Individuality & revolution. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Uranus energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Individuality & revolution naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Uranus in Capricorn in The Eighth House reveals how you express individuality and revolution with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Uranus represents individuality and revolution. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Uranus energy toward transformation and crisis and sexuality. This creates a unique expression where your individuality and revolution naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"avant-garde",
 						"change",
 						"comic",
 						"determined",
 						"experimental",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -218,17 +217,17 @@ const samples = {
 				isRetrograde: false,
 				house: 8,
 				interpretation: {
-					summary: "Your Neptune in Capricorn in The Eighth House reveals how you express Dreams, healing, & intuition with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Neptune represents Dreams, healing, & intuition. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Neptune energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Dreams, healing, & intuition naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Neptune in Capricorn in The Eighth House reveals how you express dreams, healing, and intuition with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Neptune represents dreams, healing, and intuition. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Neptune energy toward transformation and crisis and sexuality. This creates a unique expression where your dreams, healing, and intuition naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"artistic",
 						"calm",
 						"compassionate",
 						"deep",
 						"dreams",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -242,8 +241,8 @@ const samples = {
 				isRetrograde: false,
 				house: 6,
 				interpretation: {
-					summary: "Your Pluto in Scorpio in The Sixth House reveals how you express Sex, death, & transformation with seductive and passionate energy in the realm of i work.",
-					detailed: "Pluto represents Sex, death, & transformation. In Scorpio (The Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Pluto energy toward i work and work and job (as opposed to career). This creates a unique expression where your Sex, death, & transformation naturally manifests through seductive, passionate, independent approaches in matters related to sixth house.",
+					summary: "Your Pluto in Scorpio in The Sixth House reveals how you express sex, death, and transformation with seductive and passionate energy in the realm of work and job.",
+					detailed: "Pluto represents sex, death, and transformation. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Pluto energy toward work and job and techniques and methods. This creates a unique expression where your sex, death, and transformation naturally manifests through seductive, passionate, independent approaches in matters related to the sixth house.",
 					keywords: [
 						"alchemy",
 						"bold",
@@ -266,8 +265,8 @@ const samples = {
 				isRetrograde: true,
 				house: 9,
 				interpretation: {
-					summary: "Your North Node in Aquarius in The Ninth House reveals how you express Life purpose & destiny with imaginative and idealistic energy in the realm of our personal belief system.",
-					detailed: "North Node represents Life purpose & destiny. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius North Node energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Life purpose & destiny naturally manifests through imaginative, idealistic, intuitive approaches in matters related to ninth house.",
+					summary: "Your North Node in Aquarius in The Ninth House reveals how you express life purpose and destiny with imaginative and idealistic energy in the realm of exploration.",
+					detailed: "North Node represents life purpose and destiny. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius North Node energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your life purpose and destiny naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the ninth house.",
 					keywords: [
 						"destiny",
 						"life purpose",
@@ -290,8 +289,8 @@ const samples = {
 				isRetrograde: true,
 				house: 3,
 				interpretation: {
-					summary: "Your South Node in Leo in The Third House reveals how you express Past life gifts & comfort zone with proud and bold energy in the realm of the lower mind.",
-					detailed: "South Node represents Past life gifts & comfort zone. In Leo (The Lion), this energy becomes proud, bold, ambitious. Located in The Third House, you direct this Leo South Node energy toward the lower mind and communication. This creates a unique expression where your Past life gifts & comfort zone naturally manifests through proud, bold, ambitious approaches in matters related to third house.",
+					summary: "Your South Node in Leo in The Third House reveals how you express past life gifts and comfort zone with proud and bold energy in the realm of the lower mind.",
+					detailed: "South Node represents past life gifts and comfort zone. In Leo (Lion), this energy becomes proud, bold, ambitious. Located in The Third House, you direct this Leo South Node energy toward the lower mind and communication. This creates a unique expression where your past life gifts and comfort zone naturally manifests through proud, bold, ambitious approaches in matters related to the third house.",
 					keywords: [
 						"innate talents",
 						"past life wisdom",
@@ -314,8 +313,8 @@ const samples = {
 				isRetrograde: true,
 				house: 2,
 				interpretation: {
-					summary: "Your Chiron in Cancer in The Second House reveals how you express Healing & inner wounds with intuitive and emotional energy in the realm of i have.",
-					detailed: "Chiron represents Healing & inner wounds. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Chiron energy toward i have and money and personal finances. This creates a unique expression where your Healing & inner wounds naturally manifests through intuitive, emotional, intelligent approaches in matters related to second house.",
+					summary: "Your Chiron in Cancer in The Second House reveals how you express healing and inner wounds with intuitive and nurturing energy in the realm of money and personal finances.",
+					detailed: "Chiron represents healing and inner wounds. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Chiron energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your healing and inner wounds naturally manifests through intuitive, nurturing, protective approaches in matters related to the second house.",
 					keywords: [
 						"healing",
 						"wisdom",
@@ -323,9 +322,8 @@ const samples = {
 						"teaching",
 						"empathy",
 						"intuitive",
-						"emotional",
-						"intelligent",
-						"passionate",
+						"nurturing",
+						"protective",
 					],
 				},
 			},
@@ -339,9 +337,18 @@ const samples = {
 				isRetrograde: false,
 				house: 6,
 				interpretation: {
-					summary: "Black Moon Lilith in scorpio in 6th house",
-					detailed: "",
-					keywords: [],
+					summary: "Your Black Moon Lilith in Scorpio in The Sixth House reveals how you express primal instinct and the reclaimed self with seductive and passionate energy in the realm of work and job.",
+					detailed: "Black Moon Lilith represents primal instinct and the reclaimed self. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Black Moon Lilith energy toward work and job and techniques and methods. This creates a unique expression where your primal instinct and the reclaimed self naturally manifests through seductive, passionate, independent approaches in matters related to the sixth house.",
+					keywords: [
+						"authenticity",
+						"autonomy",
+						"instinct",
+						"raw power",
+						"self-possession",
+						"seductive",
+						"passionate",
+						"independent",
+					],
 				},
 			},
 		],
@@ -873,6 +880,101 @@ const samples = {
 			sign: "Libra",
 			degree: 24.87179403709274,
 		},
+		patterns: [
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Uranus",
+					"Mercury",
+					"Neptune",
+					"Saturn",
+					"Sun",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSameSign",
+				interpretationVars: {
+					count: "5",
+					sign: "Capricorn",
+					planets: "Uranus, Mercury, Neptune, Saturn, and Sun",
+				},
+				interpretation: "Stellium of 5 planets in Capricorn, concentrated energy demanding mastery of Capricorn themes through Uranus, Mercury, Neptune, Saturn, and Sun.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Uranus",
+					"Mercury",
+					"Neptune",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "3",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Uranus, Mercury, and Neptune",
+				},
+				interpretation: "Stellium of 3 planets within 10 degrees near Capricorn, concentrated energy through Uranus, Mercury, and Neptune amplifies that zodiacal sector.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Mercury",
+					"Uranus",
+					"Neptune",
+					"Saturn",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "4",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Mercury, Uranus, Neptune, and Saturn",
+				},
+				interpretation: "Stellium of 4 planets within 10 degrees near Capricorn, concentrated energy through Mercury, Uranus, Neptune, and Saturn amplifies that zodiacal sector.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Saturn",
+					"Mercury",
+					"Neptune",
+					"Sun",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "4",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Saturn, Mercury, Neptune, and Sun",
+				},
+				interpretation: "Stellium of 4 planets within 10 degrees near Capricorn, concentrated energy through Saturn, Mercury, Neptune, and Sun amplifies that zodiacal sector.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Sun",
+					"Saturn",
+					"Venus",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "3",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Sun, Saturn, and Venus",
+				},
+				interpretation: "Stellium of 3 planets within 10 degrees near Capricorn, concentrated energy through Sun, Saturn, and Venus amplifies that zodiacal sector.",
+			},
+		],
 		aspectsInterpretation: {
 			summary: "Your chart contains 43 aspects: 16 harmonious, 13 challenging, and 14 neutral. This creates a balanced overall pattern. The balanced mix of aspects suggests a well-rounded chart with both natural talents and growth opportunities.",
 			dominant: "balanced",
@@ -923,17 +1025,17 @@ const samples = {
 				isRetrograde: false,
 				house: 9,
 				interpretation: {
-					summary: "Your Sun in Capricorn in The Ninth House reveals how you express Self-awareness & ego with detail-oriented and intelligent energy in the realm of our personal belief system.",
-					detailed: "Sun represents Self-awareness & ego. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Ninth House, you direct this Capricorn Sun energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Self-awareness & ego naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to ninth house.",
+					summary: "Your Sun in Capricorn in The Ninth House reveals how you express self-awareness and ego with ambitious and disciplined energy in the realm of exploration.",
+					detailed: "Sun represents self-awareness and ego. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Ninth House, you direct this Capricorn Sun energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your self-awareness and ego naturally manifests through ambitious, disciplined, patient approaches in matters related to the ninth house.",
 					keywords: [
 						"active",
 						"awareness",
 						"bright",
 						"confidence",
 						"consciousness",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -947,8 +1049,8 @@ const samples = {
 				isRetrograde: false,
 				house: 4,
 				interpretation: {
-					summary: "Your Moon in Virgo in The Fourth House reveals how you express Inner emotional life with graceful and organized energy in the realm of our psychological foundations and roots.",
-					detailed: "Moon represents Inner emotional life. In Virgo (The Virgin), this energy becomes graceful, organized, kind. Located in The Fourth House, you direct this Virgo Moon energy toward our psychological foundations and roots and family. This creates a unique expression where your Inner emotional life naturally manifests through graceful, organized, kind approaches in matters related to fourth house.",
+					summary: "Your Moon in Virgo in The Fourth House reveals how you express inner emotional life with graceful and organized energy in the realm of family.",
+					detailed: "Moon represents inner emotional life. In Virgo (Virgin), this energy becomes graceful, organized, kind. Located in The Fourth House, you direct this Virgo Moon energy toward family and home life. This creates a unique expression where your inner emotional life naturally manifests through graceful, organized, kind approaches in matters related to the fourth house.",
 					keywords: [
 						"caretaker",
 						"comfort",
@@ -971,17 +1073,17 @@ const samples = {
 				isRetrograde: true,
 				house: 8,
 				interpretation: {
-					summary: "Your Mercury in Capricorn in The Eighth House reveals how you express Communication with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Mercury represents Communication. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Mercury energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Communication naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Mercury in Capricorn in The Eighth House reveals how you express communication with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Mercury represents communication. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Mercury energy toward transformation and crisis and sexuality. This creates a unique expression where your communication naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"analysis",
 						"childhood",
 						"communication",
 						"curiosity",
 						"education",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -995,8 +1097,8 @@ const samples = {
 				isRetrograde: true,
 				house: 9,
 				interpretation: {
-					summary: "Your Venus in Aquarius in The Ninth House reveals how you express Love, beauty, & money with imaginative and idealistic energy in the realm of our personal belief system.",
-					detailed: "Venus represents Love, beauty, & money. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius Venus energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Love, beauty, & money naturally manifests through imaginative, idealistic, intuitive approaches in matters related to ninth house.",
+					summary: "Your Venus in Aquarius in The Ninth House reveals how you express love, beauty, and money with imaginative and idealistic energy in the realm of exploration.",
+					detailed: "Venus represents love, beauty, and money. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius Venus energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your love, beauty, and money naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the ninth house.",
 					keywords: [
 						"attractiveness",
 						"beauty",
@@ -1019,8 +1121,8 @@ const samples = {
 				isRetrograde: false,
 				house: 7,
 				interpretation: {
-					summary: "Your Mars in Sagittarius in The Seventh House reveals how you express Assertiveness & aggression with adventurous and creative energy in the realm of companionship.",
-					detailed: "Mars represents Assertiveness & aggression. In Sagittarius (The Archer), this energy becomes adventurous, optimistic, independent. Located in The Seventh House, you direct this Sagittarius Mars energy toward companionship and the alter ego. This creates a unique expression where your Assertiveness & aggression naturally manifests through adventurous, creative, strong willed approaches in matters related to seventh house.",
+					summary: "Your Mars in Sagittarius in The Seventh House reveals how you express assertiveness and aggression with adventurous and optimistic energy in the realm of companionship.",
+					detailed: "Mars represents assertiveness and aggression. In Sagittarius (Archer), this energy becomes adventurous, optimistic, independent. Located in The Seventh House, you direct this Sagittarius Mars energy toward companionship and the alter ego. This creates a unique expression where your assertiveness and aggression naturally manifests through adventurous, optimistic, independent approaches in matters related to the seventh house.",
 					keywords: [
 						"action",
 						"adventurous",
@@ -1028,8 +1130,8 @@ const samples = {
 						"brave",
 						"courage",
 						"adventurous",
-						"creative",
-						"strong willed",
+						"optimistic",
+						"independent",
 					],
 				},
 			},
@@ -1043,8 +1145,8 @@ const samples = {
 				isRetrograde: true,
 				house: 2,
 				interpretation: {
-					summary: "Your Jupiter in Cancer in The Second House reveals how you express Luck & opportunity with intuitive and emotional energy in the realm of i have.",
-					detailed: "Jupiter represents Luck & opportunity. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Jupiter energy toward i have and money and personal finances. This creates a unique expression where your Luck & opportunity naturally manifests through intuitive, emotional, intelligent approaches in matters related to second house.",
+					summary: "Your Jupiter in Cancer in The Second House reveals how you express luck and opportunity with intuitive and nurturing energy in the realm of money and personal finances.",
+					detailed: "Jupiter represents luck and opportunity. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Jupiter energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your luck and opportunity naturally manifests through intuitive, nurturing, protective approaches in matters related to the second house.",
 					keywords: [
 						"abundance",
 						"college",
@@ -1052,9 +1154,8 @@ const samples = {
 						"curiosity",
 						"diversity",
 						"intuitive",
-						"emotional",
-						"intelligent",
-						"passionate",
+						"nurturing",
+						"protective",
 					],
 				},
 			},
@@ -1068,17 +1169,17 @@ const samples = {
 				isRetrograde: false,
 				house: 8,
 				interpretation: {
-					summary: "Your Saturn in Capricorn in The Eighth House reveals how you express Responsibility, time, & routine with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Saturn represents Responsibility, time, & routine. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Saturn energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Responsibility, time, & routine naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Saturn in Capricorn in The Eighth House reveals how you express responsibility, time, and routine with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Saturn represents responsibility, time, and routine. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Saturn energy toward transformation and crisis and sexuality. This creates a unique expression where your responsibility, time, and routine naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"ambition",
 						"boundaries",
 						"determination",
 						"discipline",
 						"experience",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -1092,17 +1193,17 @@ const samples = {
 				isRetrograde: false,
 				house: 8,
 				interpretation: {
-					summary: "Your Uranus in Capricorn in The Eighth House reveals how you express Individuality & revolution with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Uranus represents Individuality & revolution. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Uranus energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Individuality & revolution naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Uranus in Capricorn in The Eighth House reveals how you express individuality and revolution with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Uranus represents individuality and revolution. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Uranus energy toward transformation and crisis and sexuality. This creates a unique expression where your individuality and revolution naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"avant-garde",
 						"change",
 						"comic",
 						"determined",
 						"experimental",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -1116,17 +1217,17 @@ const samples = {
 				isRetrograde: false,
 				house: 8,
 				interpretation: {
-					summary: "Your Neptune in Capricorn in The Eighth House reveals how you express Dreams, healing, & intuition with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-					detailed: "Neptune represents Dreams, healing, & intuition. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Neptune energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Dreams, healing, & intuition naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+					summary: "Your Neptune in Capricorn in The Eighth House reveals how you express dreams, healing, and intuition with ambitious and disciplined energy in the realm of transformation and crisis.",
+					detailed: "Neptune represents dreams, healing, and intuition. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Neptune energy toward transformation and crisis and sexuality. This creates a unique expression where your dreams, healing, and intuition naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 					keywords: [
 						"artistic",
 						"calm",
 						"compassionate",
 						"deep",
 						"dreams",
-						"detail-oriented",
-						"intelligent",
-						"hardworking",
+						"ambitious",
+						"disciplined",
+						"patient",
 					],
 				},
 			},
@@ -1140,8 +1241,8 @@ const samples = {
 				isRetrograde: false,
 				house: 6,
 				interpretation: {
-					summary: "Your Pluto in Scorpio in The Sixth House reveals how you express Sex, death, & transformation with seductive and passionate energy in the realm of i work.",
-					detailed: "Pluto represents Sex, death, & transformation. In Scorpio (The Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Pluto energy toward i work and work and job (as opposed to career). This creates a unique expression where your Sex, death, & transformation naturally manifests through seductive, passionate, independent approaches in matters related to sixth house.",
+					summary: "Your Pluto in Scorpio in The Sixth House reveals how you express sex, death, and transformation with seductive and passionate energy in the realm of work and job.",
+					detailed: "Pluto represents sex, death, and transformation. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Pluto energy toward work and job and techniques and methods. This creates a unique expression where your sex, death, and transformation naturally manifests through seductive, passionate, independent approaches in matters related to the sixth house.",
 					keywords: [
 						"alchemy",
 						"bold",
@@ -1164,8 +1265,8 @@ const samples = {
 				isRetrograde: true,
 				house: 9,
 				interpretation: {
-					summary: "Your North Node in Aquarius in The Ninth House reveals how you express Life purpose & destiny with imaginative and idealistic energy in the realm of our personal belief system.",
-					detailed: "North Node represents Life purpose & destiny. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius North Node energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Life purpose & destiny naturally manifests through imaginative, idealistic, intuitive approaches in matters related to ninth house.",
+					summary: "Your North Node in Aquarius in The Ninth House reveals how you express life purpose and destiny with imaginative and idealistic energy in the realm of exploration.",
+					detailed: "North Node represents life purpose and destiny. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius North Node energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your life purpose and destiny naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the ninth house.",
 					keywords: [
 						"destiny",
 						"life purpose",
@@ -1188,8 +1289,8 @@ const samples = {
 				isRetrograde: true,
 				house: 3,
 				interpretation: {
-					summary: "Your South Node in Leo in The Third House reveals how you express Past life gifts & comfort zone with proud and bold energy in the realm of the lower mind.",
-					detailed: "South Node represents Past life gifts & comfort zone. In Leo (The Lion), this energy becomes proud, bold, ambitious. Located in The Third House, you direct this Leo South Node energy toward the lower mind and communication. This creates a unique expression where your Past life gifts & comfort zone naturally manifests through proud, bold, ambitious approaches in matters related to third house.",
+					summary: "Your South Node in Leo in The Third House reveals how you express past life gifts and comfort zone with proud and bold energy in the realm of the lower mind.",
+					detailed: "South Node represents past life gifts and comfort zone. In Leo (Lion), this energy becomes proud, bold, ambitious. Located in The Third House, you direct this Leo South Node energy toward the lower mind and communication. This creates a unique expression where your past life gifts and comfort zone naturally manifests through proud, bold, ambitious approaches in matters related to the third house.",
 					keywords: [
 						"innate talents",
 						"past life wisdom",
@@ -1212,8 +1313,8 @@ const samples = {
 				isRetrograde: true,
 				house: 2,
 				interpretation: {
-					summary: "Your Chiron in Cancer in The Second House reveals how you express Healing & inner wounds with intuitive and emotional energy in the realm of i have.",
-					detailed: "Chiron represents Healing & inner wounds. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Chiron energy toward i have and money and personal finances. This creates a unique expression where your Healing & inner wounds naturally manifests through intuitive, emotional, intelligent approaches in matters related to second house.",
+					summary: "Your Chiron in Cancer in The Second House reveals how you express healing and inner wounds with intuitive and nurturing energy in the realm of money and personal finances.",
+					detailed: "Chiron represents healing and inner wounds. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Chiron energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your healing and inner wounds naturally manifests through intuitive, nurturing, protective approaches in matters related to the second house.",
 					keywords: [
 						"healing",
 						"wisdom",
@@ -1221,9 +1322,8 @@ const samples = {
 						"teaching",
 						"empathy",
 						"intuitive",
-						"emotional",
-						"intelligent",
-						"passionate",
+						"nurturing",
+						"protective",
 					],
 				},
 			},
@@ -1237,9 +1337,18 @@ const samples = {
 				isRetrograde: false,
 				house: 6,
 				interpretation: {
-					summary: "Black Moon Lilith in scorpio in 6th house",
-					detailed: "",
-					keywords: [],
+					summary: "Your Black Moon Lilith in Scorpio in The Sixth House reveals how you express primal instinct and the reclaimed self with seductive and passionate energy in the realm of work and job.",
+					detailed: "Black Moon Lilith represents primal instinct and the reclaimed self. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Black Moon Lilith energy toward work and job and techniques and methods. This creates a unique expression where your primal instinct and the reclaimed self naturally manifests through seductive, passionate, independent approaches in matters related to the sixth house.",
+					keywords: [
+						"authenticity",
+						"autonomy",
+						"instinct",
+						"raw power",
+						"self-possession",
+						"seductive",
+						"passionate",
+						"independent",
+					],
 				},
 			},
 		],
@@ -1771,6 +1880,101 @@ const samples = {
 			sign: "Libra",
 			degree: 24.87179403709274,
 		},
+		patterns: [
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Uranus",
+					"Mercury",
+					"Neptune",
+					"Saturn",
+					"Sun",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSameSign",
+				interpretationVars: {
+					count: "5",
+					sign: "Capricorn",
+					planets: "Uranus, Mercury, Neptune, Saturn, and Sun",
+				},
+				interpretation: "Stellium of 5 planets in Capricorn, concentrated energy demanding mastery of Capricorn themes through Uranus, Mercury, Neptune, Saturn, and Sun.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Uranus",
+					"Mercury",
+					"Neptune",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "3",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Uranus, Mercury, and Neptune",
+				},
+				interpretation: "Stellium of 3 planets within 10 degrees near Capricorn, concentrated energy through Uranus, Mercury, and Neptune amplifies that zodiacal sector.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Mercury",
+					"Uranus",
+					"Neptune",
+					"Saturn",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "4",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Mercury, Uranus, Neptune, and Saturn",
+				},
+				interpretation: "Stellium of 4 planets within 10 degrees near Capricorn, concentrated energy through Mercury, Uranus, Neptune, and Saturn amplifies that zodiacal sector.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Saturn",
+					"Mercury",
+					"Neptune",
+					"Sun",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "4",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Saturn, Mercury, Neptune, and Sun",
+				},
+				interpretation: "Stellium of 4 planets within 10 degrees near Capricorn, concentrated energy through Saturn, Mercury, Neptune, and Sun amplifies that zodiacal sector.",
+			},
+			{
+				kind: "STELLIUM",
+				name: "Stellium",
+				planets: [
+					"Sun",
+					"Saturn",
+					"Venus",
+				],
+				tightness: 100,
+				interpretationKey: "aspectPattern.stelliumSpan",
+				interpretationVars: {
+					count: "3",
+					spanDeg: "10",
+					sign: "Capricorn",
+					planets: "Sun, Saturn, and Venus",
+				},
+				interpretation: "Stellium of 3 planets within 10 degrees near Capricorn, concentrated energy through Sun, Saturn, and Venus amplifies that zodiacal sector.",
+			},
+		],
 		aspectsInterpretation: {
 			summary: "Your chart contains 43 aspects: 16 harmonious, 13 challenging, and 14 neutral. This creates a balanced overall pattern. The balanced mix of aspects suggests a well-rounded chart with both natural talents and growth opportunities.",
 			dominant: "balanced",
@@ -1804,15 +2008,15 @@ const samples = {
 	},
 	horoscope: {
 		sign: "Aries",
-		date: "2026-05-15",
-		overview: "Saturn in Aries rewards patience above all else. The progress you make today is the kind that lasts. Trust the slow, steady climb. Rest and reflect. The next cycle begins soon.",
-		love: "Venus in your third house makes your words sweet and persuasive. Flirtatious conversations and heartfelt messages hit their mark. Express affection through thoughtful communication. The Moon lights up your second house of finances and personal values.",
+		date: "2026-05-23",
+		overview: "Saturn grounds Aries in practical reality today. Slow, deliberate progress builds something that lasts. Honor your commitments and they will honor you in return. Push through resistance. The effort you put in now is worth it.",
+		love: "Venus warms your fourth house, bringing love into your home life. Domestic harmony and family connections feel nurturing. Cozy evenings and heartfelt conversations deepen bonds. The Moon moves through your sixth house of health and daily routines.",
 		career: "Take responsibility seriously at work. Hard work brings lasting results, even when progress feels invisible. Your reliability earns respect.",
-		health: "Energy levels peak today. Great for physical activities, bold action, and breaking through inertia. Your body wants to move and your mind is ready to match.",
+		health: "The Sun in your third house energizes your mind and nervous system. Mental stimulation is essential but avoid overthinking. Short walks, puzzles, and learning keep you sharp and balanced.",
 		finance: "Jupiter in your fourth house favors real estate, home investments, and family-related finances. Property matters carry extra luck. Spending on your living space pays dividends in comfort.",
-		advice: "Mercury in your second house sharpens financial thinking. Review budgets, negotiate deals, and research purchases. Your mind is tuned to value and practical matters today.",
-		luckyNumber: 29,
-		luckyColor: "Red",
+		advice: "Mercury in your third house is at home, supercharging communication. Write, call, text, and learn. Information flows freely and your curiosity leads to useful discoveries.",
+		luckyNumber: 37,
+		luckyColor: "Gold",
 		compatibleSigns: [
 			"Leo",
 			"Sagittarius",
@@ -1820,11 +2024,10 @@ const samples = {
 		],
 		activeTransits: [
 			"Saturn in Aries (1st house of identity and self-expression)",
-			"Mars in Aries (1st house of identity and self-expression)",
-			"Venus in Gemini (3rd house of communication and learning)",
+			"Venus in Cancer (4th house of home and emotional foundations)",
 		],
-		moonSign: "Taurus",
-		moonPhase: "Waning Crescent Moon",
+		moonSign: "Virgo",
+		moonPhase: "First Quarter Moon",
 		energyRating: 8,
 	},
 	synastry: {
@@ -1846,17 +2049,17 @@ const samples = {
 					isRetrograde: false,
 					house: 9,
 					interpretation: {
-						summary: "Your Sun in Capricorn in The Ninth House reveals how you express Self-awareness & ego with detail-oriented and intelligent energy in the realm of our personal belief system.",
-						detailed: "Sun represents Self-awareness & ego. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Ninth House, you direct this Capricorn Sun energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Self-awareness & ego naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to ninth house.",
+						summary: "Your Sun in Capricorn in The Ninth House reveals how you express self-awareness and ego with ambitious and disciplined energy in the realm of exploration.",
+						detailed: "Sun represents self-awareness and ego. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Ninth House, you direct this Capricorn Sun energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your self-awareness and ego naturally manifests through ambitious, disciplined, patient approaches in matters related to the ninth house.",
 						keywords: [
 							"active",
 							"awareness",
 							"bright",
 							"confidence",
 							"consciousness",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -1870,8 +2073,8 @@ const samples = {
 					isRetrograde: false,
 					house: 4,
 					interpretation: {
-						summary: "Your Moon in Virgo in The Fourth House reveals how you express Inner emotional life with graceful and organized energy in the realm of our psychological foundations and roots.",
-						detailed: "Moon represents Inner emotional life. In Virgo (The Virgin), this energy becomes graceful, organized, kind. Located in The Fourth House, you direct this Virgo Moon energy toward our psychological foundations and roots and family. This creates a unique expression where your Inner emotional life naturally manifests through graceful, organized, kind approaches in matters related to fourth house.",
+						summary: "Your Moon in Virgo in The Fourth House reveals how you express inner emotional life with graceful and organized energy in the realm of family.",
+						detailed: "Moon represents inner emotional life. In Virgo (Virgin), this energy becomes graceful, organized, kind. Located in The Fourth House, you direct this Virgo Moon energy toward family and home life. This creates a unique expression where your inner emotional life naturally manifests through graceful, organized, kind approaches in matters related to the fourth house.",
 						keywords: [
 							"caretaker",
 							"comfort",
@@ -1894,17 +2097,17 @@ const samples = {
 					isRetrograde: true,
 					house: 8,
 					interpretation: {
-						summary: "Your Mercury in Capricorn in The Eighth House reveals how you express Communication with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-						detailed: "Mercury represents Communication. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Mercury energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Communication naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+						summary: "Your Mercury in Capricorn in The Eighth House reveals how you express communication with ambitious and disciplined energy in the realm of transformation and crisis.",
+						detailed: "Mercury represents communication. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Mercury energy toward transformation and crisis and sexuality. This creates a unique expression where your communication naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 						keywords: [
 							"analysis",
 							"childhood",
 							"communication",
 							"curiosity",
 							"education",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -1918,8 +2121,8 @@ const samples = {
 					isRetrograde: true,
 					house: 9,
 					interpretation: {
-						summary: "Your Venus in Aquarius in The Ninth House reveals how you express Love, beauty, & money with imaginative and idealistic energy in the realm of our personal belief system.",
-						detailed: "Venus represents Love, beauty, & money. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius Venus energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Love, beauty, & money naturally manifests through imaginative, idealistic, intuitive approaches in matters related to ninth house.",
+						summary: "Your Venus in Aquarius in The Ninth House reveals how you express love, beauty, and money with imaginative and idealistic energy in the realm of exploration.",
+						detailed: "Venus represents love, beauty, and money. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius Venus energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your love, beauty, and money naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the ninth house.",
 						keywords: [
 							"attractiveness",
 							"beauty",
@@ -1942,8 +2145,8 @@ const samples = {
 					isRetrograde: false,
 					house: 7,
 					interpretation: {
-						summary: "Your Mars in Sagittarius in The Seventh House reveals how you express Assertiveness & aggression with adventurous and creative energy in the realm of companionship.",
-						detailed: "Mars represents Assertiveness & aggression. In Sagittarius (The Archer), this energy becomes adventurous, optimistic, independent. Located in The Seventh House, you direct this Sagittarius Mars energy toward companionship and the alter ego. This creates a unique expression where your Assertiveness & aggression naturally manifests through adventurous, creative, strong willed approaches in matters related to seventh house.",
+						summary: "Your Mars in Sagittarius in The Seventh House reveals how you express assertiveness and aggression with adventurous and optimistic energy in the realm of companionship.",
+						detailed: "Mars represents assertiveness and aggression. In Sagittarius (Archer), this energy becomes adventurous, optimistic, independent. Located in The Seventh House, you direct this Sagittarius Mars energy toward companionship and the alter ego. This creates a unique expression where your assertiveness and aggression naturally manifests through adventurous, optimistic, independent approaches in matters related to the seventh house.",
 						keywords: [
 							"action",
 							"adventurous",
@@ -1951,8 +2154,8 @@ const samples = {
 							"brave",
 							"courage",
 							"adventurous",
-							"creative",
-							"strong willed",
+							"optimistic",
+							"independent",
 						],
 					},
 				},
@@ -1966,8 +2169,8 @@ const samples = {
 					isRetrograde: true,
 					house: 2,
 					interpretation: {
-						summary: "Your Jupiter in Cancer in The Second House reveals how you express Luck & opportunity with intuitive and emotional energy in the realm of i have.",
-						detailed: "Jupiter represents Luck & opportunity. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Jupiter energy toward i have and money and personal finances. This creates a unique expression where your Luck & opportunity naturally manifests through intuitive, emotional, intelligent approaches in matters related to second house.",
+						summary: "Your Jupiter in Cancer in The Second House reveals how you express luck and opportunity with intuitive and nurturing energy in the realm of money and personal finances.",
+						detailed: "Jupiter represents luck and opportunity. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Jupiter energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your luck and opportunity naturally manifests through intuitive, nurturing, protective approaches in matters related to the second house.",
 						keywords: [
 							"abundance",
 							"college",
@@ -1975,9 +2178,8 @@ const samples = {
 							"curiosity",
 							"diversity",
 							"intuitive",
-							"emotional",
-							"intelligent",
-							"passionate",
+							"nurturing",
+							"protective",
 						],
 					},
 				},
@@ -1991,17 +2193,17 @@ const samples = {
 					isRetrograde: false,
 					house: 8,
 					interpretation: {
-						summary: "Your Saturn in Capricorn in The Eighth House reveals how you express Responsibility, time, & routine with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-						detailed: "Saturn represents Responsibility, time, & routine. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Saturn energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Responsibility, time, & routine naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+						summary: "Your Saturn in Capricorn in The Eighth House reveals how you express responsibility, time, and routine with ambitious and disciplined energy in the realm of transformation and crisis.",
+						detailed: "Saturn represents responsibility, time, and routine. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Saturn energy toward transformation and crisis and sexuality. This creates a unique expression where your responsibility, time, and routine naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 						keywords: [
 							"ambition",
 							"boundaries",
 							"determination",
 							"discipline",
 							"experience",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -2015,17 +2217,17 @@ const samples = {
 					isRetrograde: false,
 					house: 8,
 					interpretation: {
-						summary: "Your Uranus in Capricorn in The Eighth House reveals how you express Individuality & revolution with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-						detailed: "Uranus represents Individuality & revolution. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Uranus energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Individuality & revolution naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+						summary: "Your Uranus in Capricorn in The Eighth House reveals how you express individuality and revolution with ambitious and disciplined energy in the realm of transformation and crisis.",
+						detailed: "Uranus represents individuality and revolution. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Uranus energy toward transformation and crisis and sexuality. This creates a unique expression where your individuality and revolution naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 						keywords: [
 							"avant-garde",
 							"change",
 							"comic",
 							"determined",
 							"experimental",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -2039,17 +2241,17 @@ const samples = {
 					isRetrograde: false,
 					house: 8,
 					interpretation: {
-						summary: "Your Neptune in Capricorn in The Eighth House reveals how you express Dreams, healing, & intuition with detail-oriented and intelligent energy in the realm of transformation and crisis.",
-						detailed: "Neptune represents Dreams, healing, & intuition. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Neptune energy toward transformation and crisis and our attitude towards crisis and change. This creates a unique expression where your Dreams, healing, & intuition naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to eighth house.",
+						summary: "Your Neptune in Capricorn in The Eighth House reveals how you express dreams, healing, and intuition with ambitious and disciplined energy in the realm of transformation and crisis.",
+						detailed: "Neptune represents dreams, healing, and intuition. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Eighth House, you direct this Capricorn Neptune energy toward transformation and crisis and sexuality. This creates a unique expression where your dreams, healing, and intuition naturally manifests through ambitious, disciplined, patient approaches in matters related to the eighth house.",
 						keywords: [
 							"artistic",
 							"calm",
 							"compassionate",
 							"deep",
 							"dreams",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -2063,8 +2265,8 @@ const samples = {
 					isRetrograde: false,
 					house: 6,
 					interpretation: {
-						summary: "Your Pluto in Scorpio in The Sixth House reveals how you express Sex, death, & transformation with seductive and passionate energy in the realm of i work.",
-						detailed: "Pluto represents Sex, death, & transformation. In Scorpio (The Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Pluto energy toward i work and work and job (as opposed to career). This creates a unique expression where your Sex, death, & transformation naturally manifests through seductive, passionate, independent approaches in matters related to sixth house.",
+						summary: "Your Pluto in Scorpio in The Sixth House reveals how you express sex, death, and transformation with seductive and passionate energy in the realm of work and job.",
+						detailed: "Pluto represents sex, death, and transformation. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Pluto energy toward work and job and techniques and methods. This creates a unique expression where your sex, death, and transformation naturally manifests through seductive, passionate, independent approaches in matters related to the sixth house.",
 						keywords: [
 							"alchemy",
 							"bold",
@@ -2087,8 +2289,8 @@ const samples = {
 					isRetrograde: true,
 					house: 9,
 					interpretation: {
-						summary: "Your North Node in Aquarius in The Ninth House reveals how you express Life purpose & destiny with imaginative and idealistic energy in the realm of our personal belief system.",
-						detailed: "North Node represents Life purpose & destiny. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius North Node energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Life purpose & destiny naturally manifests through imaginative, idealistic, intuitive approaches in matters related to ninth house.",
+						summary: "Your North Node in Aquarius in The Ninth House reveals how you express life purpose and destiny with imaginative and idealistic energy in the realm of exploration.",
+						detailed: "North Node represents life purpose and destiny. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Ninth House, you direct this Aquarius North Node energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your life purpose and destiny naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the ninth house.",
 						keywords: [
 							"destiny",
 							"life purpose",
@@ -2111,8 +2313,8 @@ const samples = {
 					isRetrograde: true,
 					house: 3,
 					interpretation: {
-						summary: "Your South Node in Leo in The Third House reveals how you express Past life gifts & comfort zone with proud and bold energy in the realm of the lower mind.",
-						detailed: "South Node represents Past life gifts & comfort zone. In Leo (The Lion), this energy becomes proud, bold, ambitious. Located in The Third House, you direct this Leo South Node energy toward the lower mind and communication. This creates a unique expression where your Past life gifts & comfort zone naturally manifests through proud, bold, ambitious approaches in matters related to third house.",
+						summary: "Your South Node in Leo in The Third House reveals how you express past life gifts and comfort zone with proud and bold energy in the realm of the lower mind.",
+						detailed: "South Node represents past life gifts and comfort zone. In Leo (Lion), this energy becomes proud, bold, ambitious. Located in The Third House, you direct this Leo South Node energy toward the lower mind and communication. This creates a unique expression where your past life gifts and comfort zone naturally manifests through proud, bold, ambitious approaches in matters related to the third house.",
 						keywords: [
 							"innate talents",
 							"past life wisdom",
@@ -2135,8 +2337,8 @@ const samples = {
 					isRetrograde: true,
 					house: 2,
 					interpretation: {
-						summary: "Your Chiron in Cancer in The Second House reveals how you express Healing & inner wounds with intuitive and emotional energy in the realm of i have.",
-						detailed: "Chiron represents Healing & inner wounds. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Chiron energy toward i have and money and personal finances. This creates a unique expression where your Healing & inner wounds naturally manifests through intuitive, emotional, intelligent approaches in matters related to second house.",
+						summary: "Your Chiron in Cancer in The Second House reveals how you express healing and inner wounds with intuitive and nurturing energy in the realm of money and personal finances.",
+						detailed: "Chiron represents healing and inner wounds. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Second House, you direct this Cancer Chiron energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your healing and inner wounds naturally manifests through intuitive, nurturing, protective approaches in matters related to the second house.",
 						keywords: [
 							"healing",
 							"wisdom",
@@ -2144,9 +2346,8 @@ const samples = {
 							"teaching",
 							"empathy",
 							"intuitive",
-							"emotional",
-							"intelligent",
-							"passionate",
+							"nurturing",
+							"protective",
 						],
 					},
 				},
@@ -2160,9 +2361,18 @@ const samples = {
 					isRetrograde: false,
 					house: 6,
 					interpretation: {
-						summary: "Black Moon Lilith in scorpio in 6th house",
-						detailed: "",
-						keywords: [],
+						summary: "Your Black Moon Lilith in Scorpio in The Sixth House reveals how you express primal instinct and the reclaimed self with seductive and passionate energy in the realm of work and job.",
+						detailed: "Black Moon Lilith represents primal instinct and the reclaimed self. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Sixth House, you direct this Scorpio Black Moon Lilith energy toward work and job and techniques and methods. This creates a unique expression where your primal instinct and the reclaimed self naturally manifests through seductive, passionate, independent approaches in matters related to the sixth house.",
+						keywords: [
+							"authenticity",
+							"autonomy",
+							"instinct",
+							"raw power",
+							"self-possession",
+							"seductive",
+							"passionate",
+							"independent",
+						],
 					},
 				},
 			],
@@ -2185,8 +2395,8 @@ const samples = {
 					isRetrograde: false,
 					house: 11,
 					interpretation: {
-						summary: "Your Sun in Gemini in The Eleventh House reveals how you express Self-awareness & ego with curious and affectionate energy in the realm of acquaintances and friends.",
-						detailed: "Sun represents Self-awareness & ego. In Gemini (Twins), this energy becomes curious, affectionate, kind. Located in The Eleventh House, you direct this Gemini Sun energy toward acquaintances and friends and groups. This creates a unique expression where your Self-awareness & ego naturally manifests through curious, affectionate, kind approaches in matters related to eleventh house.",
+						summary: "Your Sun in Gemini in The Eleventh House reveals how you express self-awareness and ego with curious and affectionate energy in the realm of acquaintances and friends.",
+						detailed: "Sun represents self-awareness and ego. In Gemini (Twins), this energy becomes curious, affectionate, kind. Located in The Eleventh House, you direct this Gemini Sun energy toward acquaintances and friends and groups. This creates a unique expression where your self-awareness and ego naturally manifests through curious, affectionate, kind approaches in matters related to the eleventh house.",
 						keywords: [
 							"active",
 							"awareness",
@@ -2209,8 +2419,8 @@ const samples = {
 					isRetrograde: false,
 					house: 7,
 					interpretation: {
-						summary: "Your Moon in Aquarius in The Seventh House reveals how you express Inner emotional life with imaginative and idealistic energy in the realm of companionship.",
-						detailed: "Moon represents Inner emotional life. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Seventh House, you direct this Aquarius Moon energy toward companionship and the alter ego. This creates a unique expression where your Inner emotional life naturally manifests through imaginative, idealistic, intuitive approaches in matters related to seventh house.",
+						summary: "Your Moon in Aquarius in The Seventh House reveals how you express inner emotional life with imaginative and idealistic energy in the realm of companionship.",
+						detailed: "Moon represents inner emotional life. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Seventh House, you direct this Aquarius Moon energy toward companionship and the alter ego. This creates a unique expression where your inner emotional life naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the seventh house.",
 						keywords: [
 							"caretaker",
 							"comfort",
@@ -2233,8 +2443,8 @@ const samples = {
 					isRetrograde: false,
 					house: 12,
 					interpretation: {
-						summary: "Your Mercury in Cancer in The Twelfth House reveals how you express Communication with intuitive and emotional energy in the realm of that which is hidden or below the surface.",
-						detailed: "Mercury represents Communication. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Twelfth House, you direct this Cancer Mercury energy toward that which is hidden or below the surface and karma. This creates a unique expression where your Communication naturally manifests through intuitive, emotional, intelligent approaches in matters related to twelfth house.",
+						summary: "Your Mercury in Cancer in The Twelfth House reveals how you express communication with intuitive and nurturing energy in the realm of karma.",
+						detailed: "Mercury represents communication. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Twelfth House, you direct this Cancer Mercury energy toward karma and self-undoing. This creates a unique expression where your communication naturally manifests through intuitive, nurturing, protective approaches in matters related to the twelfth house.",
 						keywords: [
 							"analysis",
 							"childhood",
@@ -2242,9 +2452,8 @@ const samples = {
 							"curiosity",
 							"education",
 							"intuitive",
-							"emotional",
-							"intelligent",
-							"passionate",
+							"nurturing",
+							"protective",
 						],
 					},
 				},
@@ -2258,8 +2467,8 @@ const samples = {
 					isRetrograde: false,
 					house: 11,
 					interpretation: {
-						summary: "Your Venus in Cancer in The Eleventh House reveals how you express Love, beauty, & money with intuitive and emotional energy in the realm of acquaintances and friends.",
-						detailed: "Venus represents Love, beauty, & money. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Eleventh House, you direct this Cancer Venus energy toward acquaintances and friends and groups. This creates a unique expression where your Love, beauty, & money naturally manifests through intuitive, emotional, intelligent approaches in matters related to eleventh house.",
+						summary: "Your Venus in Cancer in The Eleventh House reveals how you express love, beauty, and money with intuitive and nurturing energy in the realm of acquaintances and friends.",
+						detailed: "Venus represents love, beauty, and money. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Eleventh House, you direct this Cancer Venus energy toward acquaintances and friends and groups. This creates a unique expression where your love, beauty, and money naturally manifests through intuitive, nurturing, protective approaches in matters related to the eleventh house.",
 						keywords: [
 							"attractiveness",
 							"beauty",
@@ -2267,9 +2476,8 @@ const samples = {
 							"eros",
 							"fantasy",
 							"intuitive",
-							"emotional",
-							"intelligent",
-							"passionate",
+							"nurturing",
+							"protective",
 						],
 					},
 				},
@@ -2283,8 +2491,8 @@ const samples = {
 					isRetrograde: false,
 					house: 9,
 					interpretation: {
-						summary: "Your Mars in Taurus in The Ninth House reveals how you express Assertiveness & aggression with dependable and musical energy in the realm of our personal belief system.",
-						detailed: "Mars represents Assertiveness & aggression. In Taurus (Bull), this energy becomes dependable, musical, practical. Located in The Ninth House, you direct this Taurus Mars energy toward our personal belief system and our sense of adventure. This creates a unique expression where your Assertiveness & aggression naturally manifests through dependable, musical, practical approaches in matters related to ninth house.",
+						summary: "Your Mars in Taurus in The Ninth House reveals how you express assertiveness and aggression with dependable and musical energy in the realm of exploration.",
+						detailed: "Mars represents assertiveness and aggression. In Taurus (Bull), this energy becomes dependable, musical, practical. Located in The Ninth House, you direct this Taurus Mars energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your assertiveness and aggression naturally manifests through dependable, musical, practical approaches in matters related to the ninth house.",
 						keywords: [
 							"action",
 							"adventurous",
@@ -2307,8 +2515,8 @@ const samples = {
 					isRetrograde: false,
 					house: 1,
 					interpretation: {
-						summary: "Your Jupiter in Virgo in The First House reveals how you express Luck & opportunity with graceful and organized energy in the realm of self-image.",
-						detailed: "Jupiter represents Luck & opportunity. In Virgo (The Virgin), this energy becomes graceful, organized, kind. Located in The First House, you direct this Virgo Jupiter energy toward self-image and the image we project to others. This creates a unique expression where your Luck & opportunity naturally manifests through graceful, organized, kind approaches in matters related to first house.",
+						summary: "Your Jupiter in Virgo in The First House reveals how you express luck and opportunity with graceful and organized energy in the realm of self-image.",
+						detailed: "Jupiter represents luck and opportunity. In Virgo (Virgin), this energy becomes graceful, organized, kind. Located in The First House, you direct this Virgo Jupiter energy toward self-image and physical appearance. This creates a unique expression where your luck and opportunity naturally manifests through graceful, organized, kind approaches in matters related to the first house.",
 						keywords: [
 							"abundance",
 							"college",
@@ -2331,8 +2539,8 @@ const samples = {
 					isRetrograde: true,
 					house: 6,
 					interpretation: {
-						summary: "Your Saturn in Aquarius in The Sixth House reveals how you express Responsibility, time, & routine with imaginative and idealistic energy in the realm of i work.",
-						detailed: "Saturn represents Responsibility, time, & routine. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Sixth House, you direct this Aquarius Saturn energy toward i work and work and job (as opposed to career). This creates a unique expression where your Responsibility, time, & routine naturally manifests through imaginative, idealistic, intuitive approaches in matters related to sixth house.",
+						summary: "Your Saturn in Aquarius in The Sixth House reveals how you express responsibility, time, and routine with imaginative and idealistic energy in the realm of work and job.",
+						detailed: "Saturn represents responsibility, time, and routine. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Sixth House, you direct this Aquarius Saturn energy toward work and job and techniques and methods. This creates a unique expression where your responsibility, time, and routine naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the sixth house.",
 						keywords: [
 							"ambition",
 							"boundaries",
@@ -2355,17 +2563,17 @@ const samples = {
 					isRetrograde: true,
 					house: 5,
 					interpretation: {
-						summary: "Your Uranus in Capricorn in The Fifth House reveals how you express Individuality & revolution with detail-oriented and intelligent energy in the realm of creative self-expression.",
-						detailed: "Uranus represents Individuality & revolution. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Fifth House, you direct this Capricorn Uranus energy toward creative self-expression and pleasure and entertainment. This creates a unique expression where your Individuality & revolution naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to fifth house.",
+						summary: "Your Uranus in Capricorn in The Fifth House reveals how you express individuality and revolution with ambitious and disciplined energy in the realm of creative self-expression.",
+						detailed: "Uranus represents individuality and revolution. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Fifth House, you direct this Capricorn Uranus energy toward creative self-expression and pleasure and entertainment. This creates a unique expression where your individuality and revolution naturally manifests through ambitious, disciplined, patient approaches in matters related to the fifth house.",
 						keywords: [
 							"avant-garde",
 							"change",
 							"comic",
 							"determined",
 							"experimental",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -2379,17 +2587,17 @@ const samples = {
 					isRetrograde: true,
 					house: 5,
 					interpretation: {
-						summary: "Your Neptune in Capricorn in The Fifth House reveals how you express Dreams, healing, & intuition with detail-oriented and intelligent energy in the realm of creative self-expression.",
-						detailed: "Neptune represents Dreams, healing, & intuition. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Fifth House, you direct this Capricorn Neptune energy toward creative self-expression and pleasure and entertainment. This creates a unique expression where your Dreams, healing, & intuition naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to fifth house.",
+						summary: "Your Neptune in Capricorn in The Fifth House reveals how you express dreams, healing, and intuition with ambitious and disciplined energy in the realm of creative self-expression.",
+						detailed: "Neptune represents dreams, healing, and intuition. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Fifth House, you direct this Capricorn Neptune energy toward creative self-expression and pleasure and entertainment. This creates a unique expression where your dreams, healing, and intuition naturally manifests through ambitious, disciplined, patient approaches in matters related to the fifth house.",
 						keywords: [
 							"artistic",
 							"calm",
 							"compassionate",
 							"deep",
 							"dreams",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -2403,8 +2611,8 @@ const samples = {
 					isRetrograde: true,
 					house: 4,
 					interpretation: {
-						summary: "Your Pluto in Scorpio in The Fourth House reveals how you express Sex, death, & transformation with seductive and passionate energy in the realm of our psychological foundations and roots.",
-						detailed: "Pluto represents Sex, death, & transformation. In Scorpio (The Scorpion), this energy becomes seductive, passionate, independent. Located in The Fourth House, you direct this Scorpio Pluto energy toward our psychological foundations and roots and family. This creates a unique expression where your Sex, death, & transformation naturally manifests through seductive, passionate, independent approaches in matters related to fourth house.",
+						summary: "Your Pluto in Scorpio in The Fourth House reveals how you express sex, death, and transformation with seductive and passionate energy in the realm of family.",
+						detailed: "Pluto represents sex, death, and transformation. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Fourth House, you direct this Scorpio Pluto energy toward family and home life. This creates a unique expression where your sex, death, and transformation naturally manifests through seductive, passionate, independent approaches in matters related to the fourth house.",
 						keywords: [
 							"alchemy",
 							"bold",
@@ -2427,17 +2635,17 @@ const samples = {
 					isRetrograde: true,
 					house: 5,
 					interpretation: {
-						summary: "Your North Node in Capricorn in The Fifth House reveals how you express Life purpose & destiny with detail-oriented and intelligent energy in the realm of creative self-expression.",
-						detailed: "North Node represents Life purpose & destiny. In Capricorn (The Goat), this energy becomes ambitious, disciplined, patient. Located in The Fifth House, you direct this Capricorn North Node energy toward creative self-expression and pleasure and entertainment. This creates a unique expression where your Life purpose & destiny naturally manifests through detail-oriented, intelligent, hardworking approaches in matters related to fifth house.",
+						summary: "Your North Node in Capricorn in The Fifth House reveals how you express life purpose and destiny with ambitious and disciplined energy in the realm of creative self-expression.",
+						detailed: "North Node represents life purpose and destiny. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Fifth House, you direct this Capricorn North Node energy toward creative self-expression and pleasure and entertainment. This creates a unique expression where your life purpose and destiny naturally manifests through ambitious, disciplined, patient approaches in matters related to the fifth house.",
 						keywords: [
 							"destiny",
 							"life purpose",
 							"soul growth",
 							"future direction",
 							"karmic reward",
-							"detail-oriented",
-							"intelligent",
-							"hardworking",
+							"ambitious",
+							"disciplined",
+							"patient",
 						],
 					},
 				},
@@ -2451,8 +2659,8 @@ const samples = {
 					isRetrograde: true,
 					house: 11,
 					interpretation: {
-						summary: "Your South Node in Cancer in The Eleventh House reveals how you express Past life gifts & comfort zone with intuitive and emotional energy in the realm of acquaintances and friends.",
-						detailed: "South Node represents Past life gifts & comfort zone. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Eleventh House, you direct this Cancer South Node energy toward acquaintances and friends and groups. This creates a unique expression where your Past life gifts & comfort zone naturally manifests through intuitive, emotional, intelligent approaches in matters related to eleventh house.",
+						summary: "Your South Node in Cancer in The Eleventh House reveals how you express past life gifts and comfort zone with intuitive and nurturing energy in the realm of acquaintances and friends.",
+						detailed: "South Node represents past life gifts and comfort zone. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Eleventh House, you direct this Cancer South Node energy toward acquaintances and friends and groups. This creates a unique expression where your past life gifts and comfort zone naturally manifests through intuitive, nurturing, protective approaches in matters related to the eleventh house.",
 						keywords: [
 							"innate talents",
 							"past life wisdom",
@@ -2460,9 +2668,8 @@ const samples = {
 							"comfort zone",
 							"mastered skills",
 							"intuitive",
-							"emotional",
-							"intelligent",
-							"passionate",
+							"nurturing",
+							"protective",
 						],
 					},
 				},
@@ -2476,8 +2683,8 @@ const samples = {
 					isRetrograde: false,
 					house: 12,
 					interpretation: {
-						summary: "Your Chiron in Leo in The Twelfth House reveals how you express Healing & inner wounds with proud and bold energy in the realm of that which is hidden or below the surface.",
-						detailed: "Chiron represents Healing & inner wounds. In Leo (The Lion), this energy becomes proud, bold, ambitious. Located in The Twelfth House, you direct this Leo Chiron energy toward that which is hidden or below the surface and karma. This creates a unique expression where your Healing & inner wounds naturally manifests through proud, bold, ambitious approaches in matters related to twelfth house.",
+						summary: "Your Chiron in Leo in The Twelfth House reveals how you express healing and inner wounds with proud and bold energy in the realm of karma.",
+						detailed: "Chiron represents healing and inner wounds. In Leo (Lion), this energy becomes proud, bold, ambitious. Located in The Twelfth House, you direct this Leo Chiron energy toward karma and self-undoing. This creates a unique expression where your healing and inner wounds naturally manifests through proud, bold, ambitious approaches in matters related to the twelfth house.",
 						keywords: [
 							"healing",
 							"wisdom",
@@ -2500,9 +2707,18 @@ const samples = {
 					isRetrograde: false,
 					house: 6,
 					interpretation: {
-						summary: "Black Moon Lilith in aquarius in 6th house",
-						detailed: "",
-						keywords: [],
+						summary: "Your Black Moon Lilith in Aquarius in The Sixth House reveals how you express primal instinct and the reclaimed self with imaginative and idealistic energy in the realm of work and job.",
+						detailed: "Black Moon Lilith represents primal instinct and the reclaimed self. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Sixth House, you direct this Aquarius Black Moon Lilith energy toward work and job and techniques and methods. This creates a unique expression where your primal instinct and the reclaimed self naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the sixth house.",
+						keywords: [
+							"authenticity",
+							"autonomy",
+							"instinct",
+							"raw power",
+							"self-possession",
+							"imaginative",
+							"idealistic",
+							"intuitive",
+						],
 					},
 				},
 			],
@@ -2531,7 +2747,7 @@ const samples = {
 						"awareness",
 					],
 					nature: "neutral",
-					relationshipContext: "Venus and North Node create dynamic tension between love, beauty, & money and life purpose & destiny. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Venus and North Node create dynamic tension between love, beauty, and money and life purpose and destiny. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2556,7 +2772,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Venus and South Node create dynamic tension between love, beauty, & money and past life gifts & comfort zone. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Venus and South Node create dynamic tension between love, beauty, and money and past life gifts and comfort zone. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2606,7 +2822,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Black Moon Lilith and Jupiter connect harmoniously, creating natural ease in how primal instinct & the reclaimed self blends with luck & opportunity.",
+					relationshipContext: "Black Moon Lilith and Jupiter connect harmoniously, creating natural ease in how primal instinct and the reclaimed self blends with luck and opportunity.",
 				},
 			},
 			{
@@ -2631,7 +2847,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "North Node and Saturn create dynamic tension between life purpose & destiny and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Saturn create dynamic tension between life purpose and destiny and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2664,7 +2880,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and Saturn create dynamic tension between past life gifts & comfort zone and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Saturn create dynamic tension between past life gifts and comfort zone and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2689,7 +2905,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Saturn and Uranus create dynamic tension between responsibility, time, & routine and individuality & revolution. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Saturn and Uranus create dynamic tension between responsibility, time, and routine and individuality and revolution. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2714,7 +2930,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Pluto and Saturn create dynamic tension between sex, death, & transformation and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Pluto and Saturn create dynamic tension between sex, death, and transformation and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2739,7 +2955,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Saturn and Neptune create dynamic tension between responsibility, time, & routine and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Saturn and Neptune create dynamic tension between responsibility, time, and routine and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2766,7 +2982,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Moon and Uranus connect harmoniously, creating natural ease in how inner emotional life blends with individuality & revolution.",
+					relationshipContext: "Moon and Uranus connect harmoniously, creating natural ease in how inner emotional life blends with individuality and revolution.",
 				},
 			},
 			{
@@ -2791,7 +3007,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Pluto and Black Moon Lilith create dynamic tension between sex, death, & transformation and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Pluto and Black Moon Lilith create dynamic tension between sex, death, and transformation and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2816,7 +3032,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Pluto and Neptune connect harmoniously, creating natural ease in how sex, death, & transformation blends with dreams, healing, & intuition.",
+					relationshipContext: "Pluto and Neptune connect harmoniously, creating natural ease in how sex, death, and transformation blends with dreams, healing, and intuition.",
 				},
 			},
 			{
@@ -2841,7 +3057,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Jupiter and Mars connect harmoniously, creating natural ease in how luck & opportunity blends with assertiveness & aggression.",
+					relationshipContext: "Jupiter and Mars connect harmoniously, creating natural ease in how luck and opportunity blends with assertiveness and aggression.",
 				},
 			},
 			{
@@ -2866,7 +3082,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Pluto and Uranus connect harmoniously, creating natural ease in how sex, death, & transformation blends with individuality & revolution.",
+					relationshipContext: "Pluto and Uranus connect harmoniously, creating natural ease in how sex, death, and transformation blends with individuality and revolution.",
 				},
 			},
 			{
@@ -2891,7 +3107,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "North Node and Black Moon Lilith create dynamic tension between life purpose & destiny and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Black Moon Lilith create dynamic tension between life purpose and destiny and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2924,7 +3140,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and Black Moon Lilith create dynamic tension between past life gifts & comfort zone and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Black Moon Lilith create dynamic tension between past life gifts and comfort zone and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2949,7 +3165,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Black Moon Lilith and Chiron create dynamic tension between primal instinct & the reclaimed self and healing & inner wounds. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Black Moon Lilith and Chiron create dynamic tension between primal instinct and the reclaimed self and healing and inner wounds. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2974,7 +3190,7 @@ const samples = {
 						"awareness",
 					],
 					nature: "neutral",
-					relationshipContext: "North Node and Neptune create dynamic tension between life purpose & destiny and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Neptune create dynamic tension between life purpose and destiny and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -2999,7 +3215,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and Neptune create dynamic tension between past life gifts & comfort zone and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Neptune create dynamic tension between past life gifts and comfort zone and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3024,7 +3240,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Jupiter and Saturn create dynamic tension between luck & opportunity and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Jupiter and Saturn create dynamic tension between luck and opportunity and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3049,7 +3265,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Mars and Mercury create dynamic tension between assertiveness & aggression and communication. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Mars and Mercury create dynamic tension between assertiveness and aggression and communication. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3074,7 +3290,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Uranus and Chiron create dynamic tension between individuality & revolution and healing & inner wounds. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Uranus and Chiron create dynamic tension between individuality and revolution and healing and inner wounds. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3099,7 +3315,7 @@ const samples = {
 						"awareness",
 					],
 					nature: "neutral",
-					relationshipContext: "Saturn and Black Moon Lilith create dynamic tension between responsibility, time, & routine and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Saturn and Black Moon Lilith create dynamic tension between responsibility, time, and routine and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3126,7 +3342,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Uranus and Jupiter connect harmoniously, creating natural ease in how individuality & revolution blends with luck & opportunity.",
+					relationshipContext: "Uranus and Jupiter connect harmoniously, creating natural ease in how individuality and revolution blends with luck and opportunity.",
 				},
 			},
 			{
@@ -3153,7 +3369,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Pluto and Mercury connect harmoniously, creating natural ease in how sex, death, & transformation blends with communication.",
+					relationshipContext: "Pluto and Mercury connect harmoniously, creating natural ease in how sex, death, and transformation blends with communication.",
 				},
 			},
 			{
@@ -3178,7 +3394,7 @@ const samples = {
 						"awareness",
 					],
 					nature: "neutral",
-					relationshipContext: "Mars and Pluto create dynamic tension between assertiveness & aggression and sex, death, & transformation. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Mars and Pluto create dynamic tension between assertiveness and aggression and sex, death, and transformation. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3211,7 +3427,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Saturn and Mercury create dynamic tension between responsibility, time, & routine and communication. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Saturn and Mercury create dynamic tension between responsibility, time, and routine and communication. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3261,7 +3477,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Moon and Black Moon Lilith create dynamic tension between inner emotional life and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Moon and Black Moon Lilith create dynamic tension between inner emotional life and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3288,7 +3504,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Moon and Neptune connect harmoniously, creating natural ease in how inner emotional life blends with dreams, healing, & intuition.",
+					relationshipContext: "Moon and Neptune connect harmoniously, creating natural ease in how inner emotional life blends with dreams, healing, and intuition.",
 				},
 			},
 			{
@@ -3313,7 +3529,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Mars and Saturn connect harmoniously, creating natural ease in how assertiveness & aggression blends with responsibility, time, & routine.",
+					relationshipContext: "Mars and Saturn connect harmoniously, creating natural ease in how assertiveness and aggression blends with responsibility, time, and routine.",
 				},
 			},
 			{
@@ -3338,7 +3554,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Jupiter and Venus create dynamic tension between luck & opportunity and love, beauty, & money. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Jupiter and Venus create dynamic tension between luck and opportunity and love, beauty, and money. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3365,7 +3581,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Uranus and Mars connect harmoniously, creating natural ease in how individuality & revolution blends with assertiveness & aggression.",
+					relationshipContext: "Uranus and Mars connect harmoniously, creating natural ease in how individuality and revolution blends with assertiveness and aggression.",
 				},
 			},
 			{
@@ -3390,7 +3606,7 @@ const samples = {
 						"awareness",
 					],
 					nature: "neutral",
-					relationshipContext: "North Node and Uranus create dynamic tension between life purpose & destiny and individuality & revolution. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Uranus create dynamic tension between life purpose and destiny and individuality and revolution. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3415,7 +3631,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and Uranus create dynamic tension between past life gifts & comfort zone and individuality & revolution. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Uranus create dynamic tension between past life gifts and comfort zone and individuality and revolution. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3448,7 +3664,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Jupiter and North Node create dynamic tension between luck & opportunity and life purpose & destiny. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Jupiter and North Node create dynamic tension between luck and opportunity and life purpose and destiny. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3473,7 +3689,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Jupiter and South Node create dynamic tension between luck & opportunity and past life gifts & comfort zone. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Jupiter and South Node create dynamic tension between luck and opportunity and past life gifts and comfort zone. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3523,7 +3739,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Mars and Mars create dynamic tension between assertiveness & aggression and assertiveness & aggression. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Mars and Mars create dynamic tension between assertiveness and aggression and assertiveness and aggression. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3548,7 +3764,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Pluto and Pluto create dynamic tension between sex, death, & transformation and sex, death, & transformation. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Pluto and Pluto create dynamic tension between sex, death, and transformation and sex, death, and transformation. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3575,7 +3791,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Mercury and Jupiter connect harmoniously, creating natural ease in how communication blends with luck & opportunity.",
+					relationshipContext: "Mercury and Jupiter connect harmoniously, creating natural ease in how communication blends with luck and opportunity.",
 				},
 			},
 			{
@@ -3600,7 +3816,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "North Node and Pluto create dynamic tension between life purpose & destiny and sex, death, & transformation. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Pluto create dynamic tension between life purpose and destiny and sex, death, and transformation. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3625,7 +3841,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and Pluto create dynamic tension between past life gifts & comfort zone and sex, death, & transformation. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Pluto create dynamic tension between past life gifts and comfort zone and sex, death, and transformation. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3683,7 +3899,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Black Moon Lilith and Mars create dynamic tension between primal instinct & the reclaimed self and assertiveness & aggression. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Black Moon Lilith and Mars create dynamic tension between primal instinct and the reclaimed self and assertiveness and aggression. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3708,7 +3924,7 @@ const samples = {
 						"minor tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Uranus and Pluto create dynamic tension between individuality & revolution and sex, death, & transformation. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Uranus and Pluto create dynamic tension between individuality and revolution and sex, death, and transformation. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3733,7 +3949,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Mars and Black Moon Lilith connect harmoniously, creating natural ease in how assertiveness & aggression blends with primal instinct & the reclaimed self.",
+					relationshipContext: "Mars and Black Moon Lilith connect harmoniously, creating natural ease in how assertiveness and aggression blends with primal instinct and the reclaimed self.",
 				},
 			},
 			{
@@ -3758,7 +3974,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Neptune and Uranus create dynamic tension between dreams, healing, & intuition and individuality & revolution. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Neptune and Uranus create dynamic tension between dreams, healing, and intuition and individuality and revolution. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3808,7 +4024,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "North Node and Mercury create dynamic tension between life purpose & destiny and communication. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Mercury create dynamic tension between life purpose and destiny and communication. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3833,7 +4049,7 @@ const samples = {
 						"awareness",
 					],
 					nature: "neutral",
-					relationshipContext: "South Node and Mercury create dynamic tension between past life gifts & comfort zone and communication. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Mercury create dynamic tension between past life gifts and comfort zone and communication. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3858,7 +4074,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Saturn and Pluto connect harmoniously, creating natural ease in how responsibility, time, & routine blends with sex, death, & transformation.",
+					relationshipContext: "Saturn and Pluto connect harmoniously, creating natural ease in how responsibility, time, and routine blends with sex, death, and transformation.",
 				},
 			},
 			{
@@ -3885,7 +4101,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Neptune and Jupiter connect harmoniously, creating natural ease in how dreams, healing, & intuition blends with luck & opportunity.",
+					relationshipContext: "Neptune and Jupiter connect harmoniously, creating natural ease in how dreams, healing, and intuition blends with luck and opportunity.",
 				},
 			},
 			{
@@ -3935,7 +4151,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Venus and Sun create dynamic tension between love, beauty, & money and self-awareness & ego. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Venus and Sun create dynamic tension between love, beauty, and money and self-awareness and ego. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3968,7 +4184,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Chiron and Uranus create dynamic tension between healing & inner wounds and individuality & revolution. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Chiron and Uranus create dynamic tension between healing and inner wounds and individuality and revolution. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -3993,7 +4209,7 @@ const samples = {
 						"awareness",
 					],
 					nature: "neutral",
-					relationshipContext: "Mars and Neptune create dynamic tension between assertiveness & aggression and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Mars and Neptune create dynamic tension between assertiveness and aggression and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4018,7 +4234,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Mercury and Uranus create dynamic tension between communication and individuality & revolution. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Mercury and Uranus create dynamic tension between communication and individuality and revolution. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4043,7 +4259,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Chiron and Jupiter connect harmoniously, creating natural ease in how healing & inner wounds blends with luck & opportunity.",
+					relationshipContext: "Chiron and Jupiter connect harmoniously, creating natural ease in how healing and inner wounds blends with luck and opportunity.",
 				},
 			},
 			{
@@ -4068,7 +4284,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Mars and Moon connect harmoniously, creating natural ease in how assertiveness & aggression blends with inner emotional life.",
+					relationshipContext: "Mars and Moon connect harmoniously, creating natural ease in how assertiveness and aggression blends with inner emotional life.",
 				},
 			},
 			{
@@ -4093,7 +4309,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Neptune and Neptune create dynamic tension between dreams, healing, & intuition and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Neptune and Neptune create dynamic tension between dreams, healing, and intuition and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4151,7 +4367,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Moon and Saturn create dynamic tension between inner emotional life and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Moon and Saturn create dynamic tension between inner emotional life and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4184,7 +4400,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Uranus and Venus create dynamic tension between individuality & revolution and love, beauty, & money. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Uranus and Venus create dynamic tension between individuality and revolution and love, beauty, and money. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4209,7 +4425,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Sun and Pluto connect harmoniously, creating natural ease in how self-awareness & ego blends with sex, death, & transformation.",
+					relationshipContext: "Sun and Pluto connect harmoniously, creating natural ease in how self-awareness and ego blends with sex, death, and transformation.",
 				},
 			},
 			{
@@ -4234,7 +4450,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Uranus and North Node create dynamic tension between individuality & revolution and life purpose & destiny. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Uranus and North Node create dynamic tension between individuality and revolution and life purpose and destiny. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4267,7 +4483,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Uranus and South Node create dynamic tension between individuality & revolution and past life gifts & comfort zone. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Uranus and South Node create dynamic tension between individuality and revolution and past life gifts and comfort zone. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4300,7 +4516,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Chiron and Neptune create dynamic tension between healing & inner wounds and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Chiron and Neptune create dynamic tension between healing and inner wounds and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4325,7 +4541,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Moon and Pluto connect harmoniously, creating natural ease in how inner emotional life blends with sex, death, & transformation.",
+					relationshipContext: "Moon and Pluto connect harmoniously, creating natural ease in how inner emotional life blends with sex, death, and transformation.",
 				},
 			},
 			{
@@ -4350,7 +4566,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "North Node and Moon create dynamic tension between life purpose & destiny and inner emotional life. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Moon create dynamic tension between life purpose and destiny and inner emotional life. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4383,7 +4599,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and Moon create dynamic tension between past life gifts & comfort zone and inner emotional life. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Moon create dynamic tension between past life gifts and comfort zone and inner emotional life. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4408,7 +4624,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Pluto and Venus create dynamic tension between sex, death, & transformation and love, beauty, & money. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Pluto and Venus create dynamic tension between sex, death, and transformation and love, beauty, and money. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4441,7 +4657,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Venus and Chiron create dynamic tension between love, beauty, & money and healing & inner wounds. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Venus and Chiron create dynamic tension between love, beauty, and money and healing and inner wounds. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4491,7 +4707,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Jupiter and Black Moon Lilith create dynamic tension between luck & opportunity and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Jupiter and Black Moon Lilith create dynamic tension between luck and opportunity and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4516,7 +4732,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Mercury and Neptune create dynamic tension between communication and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Mercury and Neptune create dynamic tension between communication and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4549,7 +4765,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Neptune and Mercury create dynamic tension between dreams, healing, & intuition and communication. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Neptune and Mercury create dynamic tension between dreams, healing, and intuition and communication. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4574,7 +4790,7 @@ const samples = {
 						"minor tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Pluto and North Node create dynamic tension between sex, death, & transformation and life purpose & destiny. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Pluto and North Node create dynamic tension between sex, death, and transformation and life purpose and destiny. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4599,7 +4815,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "Pluto and South Node create dynamic tension between sex, death, & transformation and past life gifts & comfort zone. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Pluto and South Node create dynamic tension between sex, death, and transformation and past life gifts and comfort zone. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4624,7 +4840,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Sun and Neptune create dynamic tension between self-awareness & ego and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Sun and Neptune create dynamic tension between self-awareness and ego and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4674,7 +4890,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Chiron and Mercury create dynamic tension between healing & inner wounds and communication. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Chiron and Mercury create dynamic tension between healing and inner wounds and communication. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4701,7 +4917,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Black Moon Lilith and Venus connect harmoniously, creating natural ease in how primal instinct & the reclaimed self blends with love, beauty, & money.",
+					relationshipContext: "Black Moon Lilith and Venus connect harmoniously, creating natural ease in how primal instinct and the reclaimed self blends with love, beauty, and money.",
 				},
 			},
 			{
@@ -4728,7 +4944,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Black Moon Lilith and South Node connect harmoniously, creating natural ease in how primal instinct & the reclaimed self blends with past life gifts & comfort zone.",
+					relationshipContext: "Black Moon Lilith and South Node connect harmoniously, creating natural ease in how primal instinct and the reclaimed self blends with past life gifts and comfort zone.",
 				},
 			},
 			{
@@ -4755,7 +4971,7 @@ const samples = {
 						"talent",
 					],
 					nature: "harmonious",
-					relationshipContext: "Mercury and Mars connect harmoniously, creating natural ease in how communication blends with assertiveness & aggression.",
+					relationshipContext: "Mercury and Mars connect harmoniously, creating natural ease in how communication blends with assertiveness and aggression.",
 				},
 			},
 			{
@@ -4780,7 +4996,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "North Node and Venus create dynamic tension between life purpose & destiny and love, beauty, & money. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and Venus create dynamic tension between life purpose and destiny and love, beauty, and money. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4805,7 +5021,7 @@ const samples = {
 						"minor tension",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and Venus create dynamic tension between past life gifts & comfort zone and love, beauty, & money. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and Venus create dynamic tension between past life gifts and comfort zone and love, beauty, and money. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4830,7 +5046,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Pluto and Moon create dynamic tension between sex, death, & transformation and inner emotional life. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Pluto and Moon create dynamic tension between sex, death, and transformation and inner emotional life. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4863,7 +5079,7 @@ const samples = {
 						"tension",
 					],
 					nature: "challenging",
-					relationshipContext: "Uranus and Sun create dynamic tension between individuality & revolution and self-awareness & ego. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Uranus and Sun create dynamic tension between individuality and revolution and self-awareness and ego. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4888,7 +5104,7 @@ const samples = {
 						"united",
 					],
 					nature: "neutral",
-					relationshipContext: "Moon and Jupiter create dynamic tension between inner emotional life and luck & opportunity. Conscious effort transforms this friction into growth.",
+					relationshipContext: "Moon and Jupiter create dynamic tension between inner emotional life and luck and opportunity. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4913,7 +5129,7 @@ const samples = {
 						"minor tension",
 					],
 					nature: "challenging",
-					relationshipContext: "North Node and North Node create dynamic tension between life purpose & destiny and life purpose & destiny. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and North Node create dynamic tension between life purpose and destiny and life purpose and destiny. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4938,7 +5154,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "North Node and South Node create dynamic tension between life purpose & destiny and past life gifts & comfort zone. Conscious effort transforms this friction into growth.",
+					relationshipContext: "North Node and South Node create dynamic tension between life purpose and destiny and past life gifts and comfort zone. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4963,7 +5179,7 @@ const samples = {
 						"redirection",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and North Node create dynamic tension between past life gifts & comfort zone and life purpose & destiny. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and North Node create dynamic tension between past life gifts and comfort zone and life purpose and destiny. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -4988,7 +5204,7 @@ const samples = {
 						"minor tension",
 					],
 					nature: "challenging",
-					relationshipContext: "South Node and South Node create dynamic tension between past life gifts & comfort zone and past life gifts & comfort zone. Conscious effort transforms this friction into growth.",
+					relationshipContext: "South Node and South Node create dynamic tension between past life gifts and comfort zone and past life gifts and comfort zone. Conscious effort transforms this friction into growth.",
 				},
 			},
 			{
@@ -5147,18 +5363,18 @@ const samples = {
 			description: "This relationship is a catalyst for transformation. Challenge and friction drive both partners to evolve beyond their comfort zones into something stronger.",
 		},
 		strengths: [
-			"Black Moon Lilith-Jupiter Sextile: Black Moon Lilith and Jupiter connect harmoniously, creating natural ease in how primal instinct & the reclaimed self blends with luck & opportunity.",
-			"Moon-Uranus Trine: Moon and Uranus connect harmoniously, creating natural ease in how inner emotional life blends with individuality & revolution.",
-			"Pluto-Neptune Sextile: Pluto and Neptune connect harmoniously, creating natural ease in how sex, death, & transformation blends with dreams, healing, & intuition.",
-			"Jupiter-Mars Sextile: Jupiter and Mars connect harmoniously, creating natural ease in how luck & opportunity blends with assertiveness & aggression.",
-			"Pluto-Uranus Sextile: Pluto and Uranus connect harmoniously, creating natural ease in how sex, death, & transformation blends with individuality & revolution.",
+			"Black Moon Lilith-Jupiter Sextile: Black Moon Lilith and Jupiter connect harmoniously, creating natural ease in how primal instinct and the reclaimed self blends with luck and opportunity.",
+			"Moon-Uranus Trine: Moon and Uranus connect harmoniously, creating natural ease in how inner emotional life blends with individuality and revolution.",
+			"Pluto-Neptune Sextile: Pluto and Neptune connect harmoniously, creating natural ease in how sex, death, and transformation blends with dreams, healing, and intuition.",
+			"Jupiter-Mars Sextile: Jupiter and Mars connect harmoniously, creating natural ease in how luck and opportunity blends with assertiveness and aggression.",
+			"Pluto-Uranus Sextile: Pluto and Uranus connect harmoniously, creating natural ease in how sex, death, and transformation blends with individuality and revolution.",
 		],
 		challenges: [
-			"South Node-Saturn Opposition: South Node and Saturn create dynamic tension between past life gifts & comfort zone and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
-			"Pluto-Saturn Square: Pluto and Saturn create dynamic tension between sex, death, & transformation and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
-			"Pluto-Black Moon Lilith Square: Pluto and Black Moon Lilith create dynamic tension between sex, death, & transformation and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
-			"South Node-Black Moon Lilith Opposition: South Node and Black Moon Lilith create dynamic tension between past life gifts & comfort zone and primal instinct & the reclaimed self. Conscious effort transforms this friction into growth.",
-			"Black Moon Lilith-Chiron Square: Black Moon Lilith and Chiron create dynamic tension between primal instinct & the reclaimed self and healing & inner wounds. Conscious effort transforms this friction into growth.",
+			"South Node-Saturn Opposition: South Node and Saturn create dynamic tension between past life gifts and comfort zone and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
+			"Pluto-Saturn Square: Pluto and Saturn create dynamic tension between sex, death, and transformation and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
+			"Pluto-Black Moon Lilith Square: Pluto and Black Moon Lilith create dynamic tension between sex, death, and transformation and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
+			"South Node-Black Moon Lilith Opposition: South Node and Black Moon Lilith create dynamic tension between past life gifts and comfort zone and primal instinct and the reclaimed self. Conscious effort transforms this friction into growth.",
+			"Black Moon Lilith-Chiron Square: Black Moon Lilith and Chiron create dynamic tension between primal instinct and the reclaimed self and healing and inner wounds. Conscious effort transforms this friction into growth.",
 		],
 		summary: "Compatibility score: 27/100 (challenging). The 95 aspects between your charts reveal 23 harmonious connections and 36 challenging dynamics.",
 		interpretation: "This pairing faces significant challenges that demand considerable effort and mutual compromise. The dynamic tension between your charts creates friction that can either push both partners to grow or create persistent frustration. Success requires honest communication, patience, and a shared commitment to working through differences.",
@@ -5175,7 +5391,7 @@ const samples = {
 				type: "SEMI_SEXTILE",
 				orb: 0.03,
 				interpretation: "neutral",
-				description: "Venus and North Node create dynamic tension between love, beauty, & money and life purpose & destiny. Conscious effort transforms this friction into growth.",
+				description: "Venus and North Node create dynamic tension between love, beauty, and money and life purpose and destiny. Conscious effort transforms this friction into growth.",
 			},
 			{
 				planet1: "Venus",
@@ -5183,7 +5399,7 @@ const samples = {
 				type: "QUINCUNX",
 				orb: 0.03,
 				interpretation: "neutral",
-				description: "Venus and South Node create dynamic tension between love, beauty, & money and past life gifts & comfort zone. Conscious effort transforms this friction into growth.",
+				description: "Venus and South Node create dynamic tension between love, beauty, and money and past life gifts and comfort zone. Conscious effort transforms this friction into growth.",
 			},
 			{
 				planet1: "Venus",
@@ -5199,7 +5415,7 @@ const samples = {
 				type: "SEXTILE",
 				orb: 0.18,
 				interpretation: "harmonious",
-				description: "Black Moon Lilith and Jupiter connect harmoniously, creating natural ease in how primal instinct & the reclaimed self blends with luck & opportunity.",
+				description: "Black Moon Lilith and Jupiter connect harmoniously, creating natural ease in how primal instinct and the reclaimed self blends with luck and opportunity.",
 			},
 			{
 				planet1: "North Node",
@@ -5207,7 +5423,7 @@ const samples = {
 				type: "CONJUNCTION",
 				orb: 0.38,
 				interpretation: "neutral",
-				description: "North Node and Saturn create dynamic tension between life purpose & destiny and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+				description: "North Node and Saturn create dynamic tension between life purpose and destiny and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 			},
 			{
 				planet1: "South Node",
@@ -5215,7 +5431,7 @@ const samples = {
 				type: "OPPOSITION",
 				orb: 0.38,
 				interpretation: "challenging",
-				description: "South Node and Saturn create dynamic tension between past life gifts & comfort zone and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+				description: "South Node and Saturn create dynamic tension between past life gifts and comfort zone and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 			},
 			{
 				planet1: "Saturn",
@@ -5223,7 +5439,7 @@ const samples = {
 				type: "CONJUNCTION",
 				orb: 0.58,
 				interpretation: "neutral",
-				description: "Saturn and Uranus create dynamic tension between responsibility, time, & routine and individuality & revolution. Conscious effort transforms this friction into growth.",
+				description: "Saturn and Uranus create dynamic tension between responsibility, time, and routine and individuality and revolution. Conscious effort transforms this friction into growth.",
 			},
 			{
 				planet1: "Pluto",
@@ -5231,7 +5447,7 @@ const samples = {
 				type: "SQUARE",
 				orb: 0.65,
 				interpretation: "challenging",
-				description: "Pluto and Saturn create dynamic tension between sex, death, & transformation and responsibility, time, & routine. Conscious effort transforms this friction into growth.",
+				description: "Pluto and Saturn create dynamic tension between sex, death, and transformation and responsibility, time, and routine. Conscious effort transforms this friction into growth.",
 			},
 			{
 				planet1: "Saturn",
@@ -5239,7 +5455,7 @@ const samples = {
 				type: "CONJUNCTION",
 				orb: 0.77,
 				interpretation: "neutral",
-				description: "Saturn and Neptune create dynamic tension between responsibility, time, & routine and dreams, healing, & intuition. Conscious effort transforms this friction into growth.",
+				description: "Saturn and Neptune create dynamic tension between responsibility, time, and routine and dreams, healing, and intuition. Conscious effort transforms this friction into growth.",
 			},
 			{
 				planet1: "Moon",
@@ -5247,31 +5463,31 @@ const samples = {
 				type: "TRINE",
 				orb: 0.79,
 				interpretation: "harmonious",
-				description: "Moon and Uranus connect harmoniously, creating natural ease in how inner emotional life blends with individuality & revolution.",
+				description: "Moon and Uranus connect harmoniously, creating natural ease in how inner emotional life blends with individuality and revolution.",
 			},
 		],
 	},
 	moon: {
-		date: "2026-05-15",
-		phase: "Waning Crescent Moon",
-		illumination: 2.82,
-		age: 27.99,
-		sign: "Taurus",
-		degree: 5.85,
-		distance: 362033,
+		date: "2026-05-23",
+		phase: "First Quarter Moon",
+		illumination: 50.49,
+		age: 7.42,
+		sign: "Virgo",
+		degree: 2.8,
+		distance: 381180,
 		meaning: {
-			name: "Waning Crescent Moon",
-			symbol: "🌘",
-			description: "This is a time for recuperation. To be fully open to the next cycle, one must completely be relieved from this one.",
+			name: "First Quarter Moon",
+			symbol: "🌓",
+			description: "When the moon looks as if it is cut in half, it signals that action is ready to be taken. If obstacles block your path, you must be steadfast and overcome them.",
 			keywords: [
-				"surrender",
-				"rest",
-				"recuperation",
-				"reflection",
-				"closure",
+				"action",
+				"determination",
+				"commitment",
+				"decision",
+				"perseverance",
 			],
-			energy: "waning",
-			illumination: "0-50% (Waning)",
+			energy: "waxing",
+			illumination: "50% (Half Moon - Waxing)",
 		},
 	},
 	kundli: {
@@ -5717,12 +5933,12 @@ const samples = {
 			{
 				number: 9,
 				name: "Dharma Bhava",
-				description: "The ninth is the house of grace and good fortune. It is considered to be the most auspicious house and can bring sudden prosperity to a person. It is a house of good ethics and a beneficial ninth house reveals positive karma. It governs higher knowledge and dharma (right action). It represents the father. The ninth house can expand our knowledge and wisdom; through a teacher, through books, higher studies and through travel. Often it will bring a desire fo philosophy and opportunities for higher knowledge. The ninth house also represents law. A well placed ninth house indicates a person that is rightly guided and receives good advice.",
+				description: "The ninth is the house of grace and good fortune. It is considered to be the most auspicious house and can bring sudden prosperity to a person. It is a house of good ethics and a beneficial ninth house reveals positive karma. It governs higher knowledge and dharma (right action). It represents the father. The ninth house can expand our knowledge and wisdom; through a teacher, through books, higher studies and through travel. Often it will bring a desire for philosophy and opportunities for higher knowledge. The ninth house also represents law. A well placed ninth house indicates a person that is rightly guided and receives good advice.",
 			},
 			{
 				number: 10,
 				name: "Karma Bhava",
-				description: "The tenth house represents the action we take in this life in order to fulfill our life direction. Planets get very energized here. The Sun is very strong when placed in the tenth house and will express its natural authority and leadership. Saturn placed in the tenth house can handle responsibility and works will within an organization or structure. Some see the tenth house as the father. The tenth house can also represent government work, administration and business. This is the house where we reach the pinnacle of life, it is the culmination of life's ambition. An auspicious tenth house will give a strong career, success, honor and recognition.",
+				description: "The tenth house represents the action we take in this life in order to fulfill our life direction. Planets get very energized here. The Sun is very strong when placed in the tenth house and will express its natural authority and leadership. Saturn placed in the tenth house can handle responsibility and works well within an organization or structure. Some see the tenth house as the father. The tenth house can also represent government work, administration and business. This is the house where we reach the pinnacle of life, it is the culmination of life's ambition. An auspicious tenth house will give a strong career, success, honor and recognition.",
 			},
 			{
 				number: 11,
@@ -5750,46 +5966,156 @@ const samples = {
 		planetaryWar: [],
 		interpretations: {
 			Sun: {
-				rashi: "Sun in Capricorn (Makar) expresses through Sea Monster energy. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
+				rashi: "Sun in Capricorn (Makar) expresses through the energy of the Sea Monster. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
 				nakshatra: "Sun in Uttara Ashadha nakshatra combines planetary energy with Vishvadevas (universal gods) deity influence. Uttara Ashadha individuals are practical, reliable, and determined. They are known for their ability to achieve long-term goals through patience.",
 			},
 			Moon: {
-				rashi: "Moon in Leo (Simha) expresses through Lion energy. Intellectual, able to show restraint, comfortable with power, indulge in political games, manipulative",
+				rashi: "Moon in Leo (Simha) expresses through the energy of the Lion. Intellectual, able to show restraint, comfortable with power, indulge in political games, manipulative",
 				nakshatra: "Moon in Purva Phalguni nakshatra combines planetary energy with Bhaga (god of prosperity) deity influence. Purva Phalguni individuals are sociable, indulgent, and creative. They value enjoyment and have a charismatic personality.",
 			},
 			Mars: {
-				rashi: "Mars in Scorpio (Vrischika) expresses through Scorpion energy. Knowledgeable, skilled, able to take huge challenges, good at research work, healers, love to help others",
+				rashi: "Mars in Scorpio (Vrischika) expresses through the energy of the Scorpion. Knowledgeable, skilled, able to take huge challenges, good at research work, healers, love to help others",
 				nakshatra: "Mars in Jyeshtha nakshatra combines planetary energy with Indra deity influence. These individuals are protective, powerful, and assertive. They often rise to leadership positions and defend their loved ones fiercely.",
 			},
 			Mercury: {
-				rashi: "Mercury in Sagittarius (Dhanu) expresses through Bow & Arrow energy. Respectful towards religion and spiritual matters, intelligent, xcel in chosen subject, liberal attitude, fair",
+				rashi: "Mercury in Sagittarius (Dhanu) expresses through the energy of the Bow and Arrow. Respectful towards religion and spiritual matters, intelligent, excel in chosen subject, liberal attitude, fair",
 				nakshatra: "Mercury in Purva Ashadha nakshatra combines planetary energy with Apas (water deity) deity influence. These natives are confident, persuasive, and enthusiastic. They naturally inspire those around them.",
 			},
 			Jupiter: {
-				rashi: "Jupiter in Gemini (Mithun) expresses through Twins energy. Compassionate, value friendship and agreements, inclined towards working in groups, liberal, possess an inclusive view of world, intelligent",
+				rashi: "Jupiter in Gemini (Mithun) expresses through the energy of the Twins. Compassionate, value friendship and agreements, inclined towards working in groups, liberal, possess an inclusive view of world, intelligent",
 				nakshatra: "Jupiter in Ardra nakshatra combines planetary energy with Rudra (a fierce form of Shiva) deity influence. Ardra natives are known for their intensity and resilience. They often go through transformative life experiences that bring growth and new perspectives.",
 			},
 			Venus: {
-				rashi: "Venus in Capricorn (Makar) expresses through Sea Monster energy. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
+				rashi: "Venus in Capricorn (Makar) expresses through the energy of the Sea Monster. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
 				nakshatra: "Venus in Uttara Ashadha nakshatra combines planetary energy with Vishvadevas (universal gods) deity influence. Uttara Ashadha individuals are practical, reliable, and determined. They are known for their ability to achieve long-term goals through patience.",
 			},
 			Saturn: {
-				rashi: "Saturn in Sagittarius (Dhanu) expresses through Bow & Arrow energy. Respectful towards religion and spiritual matters, intelligent, xcel in chosen subject, liberal attitude, fair",
+				rashi: "Saturn in Sagittarius (Dhanu) expresses through the energy of the Bow and Arrow. Respectful towards religion and spiritual matters, intelligent, excel in chosen subject, liberal attitude, fair",
 				nakshatra: "Saturn in Purva Ashadha nakshatra combines planetary energy with Apas (water deity) deity influence. These natives are confident, persuasive, and enthusiastic. They naturally inspire those around them.",
 			},
 			Rahu: {
-				rashi: "Rahu in Capricorn (Makar) expresses through Sea Monster energy. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
+				rashi: "Rahu in Capricorn (Makar) expresses through the energy of the Sea Monster. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
 				nakshatra: "Rahu in Dhanishta nakshatra combines planetary energy with Eight Vasus deity influence. Dhanishta individuals are ambitious, rhythmic, and excel in group activities. They have strong leadership skills and a natural sense of rhythm.",
 			},
 			Ketu: {
-				rashi: "Ketu in Cancer (Karka) expresses through Crab energy. Work ethic, goal oriented, authoritative, can fight to uphold their values",
+				rashi: "Ketu in Cancer (Karka) expresses through the energy of the Crab. Work ethic, goal oriented, authoritative, can fight to uphold their values",
 				nakshatra: "Ketu in Ashlesha nakshatra combines planetary energy with Nagas (serpent deities) deity influence. Ashlesha individuals have a strategic, analytical mind and can be persuasive. They often have a magnetic personality but may be prone to introspection and secrecy.",
 			},
 			Lagna: {
-				rashi: "Lagna in Taurus (Vrishabha) expresses through Bull energy. Value family, traditions, distinguished in nature",
+				rashi: "Lagna in Taurus (Vrishabha) expresses through the energy of the Bull. Value family, traditions, distinguished in nature",
 				nakshatra: "Lagna in Krittika nakshatra combines planetary energy with Agni (fire god) deity influence. Krittika natives are known for their sharp intellect, courage, and independent nature. They possess a fiery determination and often stand out as leaders in their field.",
 			},
 		},
+		yogas: [
+			{
+				id: "gajakesari",
+				name: "Gajakesari Yoga",
+				description: "Jupiter in kendra from Moon",
+				result: "Gajakesari Yoga hints that you may have a number of relatives in your life span. In terms of personality, you would be someone who is generous and cares about people in his/her vicinity. You are destined to accomplish development work as a higher authority like a magistrate. This Yoga ensures you a lasting reputation even long after death.",
+				quality: "Positive",
+				present: false,
+				evidence: "Jupiter is not in a kendra (1/4/7/10) from the Moon.",
+			},
+			{
+				id: "sunapha",
+				name: "Sunapha Yoga",
+				description: "Any planets, except Sun, in the second house from the Moon.",
+				result: "Sunapha Yoga indicates that you will be the proud owner of several properties which will be earned by you through your perseverance and good decisions. You will be extremely rich and have the luxury of living the life of a king. When it comes to your personality, you are intelligent and rarely make bad decisions. Your reputation will be on par with that of a reputed ruler.",
+				quality: "Positive",
+				present: false,
+				evidence: "No qualifying planet in the 2nd house from Moon.",
+			},
+			{
+				id: "anapha",
+				name: "Anapha Yoga",
+				description: "Any planets in the twelfth house from the Moon.",
+				result: "Anapha Yoga suggests that you will enjoy a healthy life with well-formed and properly functioning organs. In terms of your appearance and physique, you will be majestic. By nature, you are polite and generous due to which, you are highly revered. You also have a good reputation which is bolstered through your self-respect and your astute sense of fashion. However, you will experience renunciation and be noted for your austerity in the twilight of your life.",
+				quality: "Positive",
+				present: false,
+				evidence: "No qualifying planet in the 12th house from Moon.",
+			},
+			{
+				id: "dhurdhura",
+				name: "Dhurdhura Yoga",
+				description: "Planets on either side of the Moon.",
+				result: "Dhurdhura Yoga indicates that you will live a life that is filled with generosity and warmth. You will be blessed with a substantial amount of wealth which will allow you to donate or help others when required. In terms of your personality, you will be known for your kindness and charitable nature. You will also acquire fame, power and reputation in your life. Further, your life will be characterized by the conveyances of kindness and wealth.",
+				quality: "Positive",
+				present: false,
+				evidence: "Moon is not flanked by qualifying planets in both 2nd and 12th.",
+			},
+			{
+				id: "kemadruma",
+				name: "Kemadruma Yoga",
+				description: "No planets on either side of the Moon.",
+				result: "Kemadruma Yoga indicates that you might be an individual who is associated with sorrow and unrighteous deeds. You will likely be considered dirty in a practical sense and people might try to stay away from you in the fear of being scammed or hurt in some way. Your indulgence in unfair deeds will push you towards poverty which will also lead to your dependency on others to make a living. In terms of your personality, you are likely to be considered a rogue and a swindler.",
+				quality: "Negative",
+				present: true,
+				evidence: "Moon is isolated: no qualifying planet in the 2nd OR 12th house from Moon.",
+			},
+			{
+				id: "chandramangala",
+				name: "Chandra Mangala Yoga",
+				description: "Mars conjoins the Moon.",
+				result: "Chandra Mangala Yoga indicates that you might be an apathetic person who indulges in unscrupulous works. It is possible that you might sink to a degree where you won't think twice before using women to your profit. This might even include human trafficking. Your lack of respect for yourself and others will make you violent which makes it likely for you to mistreat your mother. You might even cause trouble to her and your relatives.",
+				quality: "Negative",
+				present: false,
+				evidence: "Moon and Mars are neither conjunct nor opposed within 10 degree orb.",
+			},
+			{
+				id: "budhaaditya",
+				name: "Budha-Aditya Yoga",
+				description: "Mercury combines with the Sun.",
+				result: "Budha-Aditya Yoga suggests that you will be highly intelligent. You will persevere to hone your skills and you will have an extremely good reputation for your skilful work. You will also have a healthy notion of yourself and have self-respect. Your peers and the people around you revere you. When it comes to your lifestyle, you will be surrounded by all the comforts you can imagine. Your life will be comfortable for the most part and you will experience happiness throughout your life.",
+				quality: "Positive",
+				present: false,
+				evidence: "Mercury and Sun not within 10 degree orb.",
+			},
+			{
+				id: "ruchaka",
+				name: "Ruchaka Yoga",
+				description: "Mars exalted in a Kendra or occupy a Kendra of his own sign.",
+				result: "The Ruchaka Yoga overpowers many majestic and distinguished characteristics. You will have a very strong physique, just like a great leader. You will be very much famous over a long period of time. You also tend to be naturally fluent with some ancient lores. Regardless of whether or not you are a King, you make sure to attempt to conform to all the traditions and customs. You will have a ruddy complexion matched with an excellent physique, and charitable disposition. You will be gaining loads of wealth and will have a long and healthy life.",
+				quality: "Positive",
+				present: true,
+				evidence: "Mars in own sign Scorpio, placed in kendra (house 7) from Lagna.",
+			},
+			{
+				id: "bhadra",
+				name: "Bhadra Yoga",
+				description: "Disposition of Mercury in a Kendra which is identical to the native's own exaltation sign.",
+				result: "Bhadra Yoga indicates that the native will have a strong physique. In terms of your appearance, your face will have the intricacies of a lion which will make you appear strong as well. You will have a well-developed chest along with well-proportioned limbs. When it comes to your personality, you are reserved and mostly taciturn. However, you are extremely helpful to your relatives. Further, you will also live a long life.",
+				quality: "Positive",
+				present: false,
+				evidence: "Mercury in Sagittarius (neither own sign Gemini/Virgo nor exaltation Virgo); placed in house 8 (not a kendra).",
+			},
+			{
+				id: "hamsa",
+				name: "Hamsa Yoga",
+				description: "Jupiter occupies a Kendra of his own house or exaltation sign.",
+				result: "The person having the Hamsa Yoga denotes that they will be having a lot of fascinating physical attributes. Your legs will be indicating four different styles such as the conch, lotus, fish and ankusa. You will be having a handsome body. As mentioned earlier, you will be slightly more attractive than the rest of the people. Everyone around you will absolutely love you and your personality. Your morals will be strictly ethical and decent. Also, your mind will be pure and you are quite innocent when compared to others.",
+				quality: "Positive",
+				present: false,
+				evidence: "Jupiter in Gemini (neither own sign Sagittarius/Pisces nor exaltation Cancer); placed in house 2 (not a kendra).",
+			},
+			{
+				id: "malavya",
+				name: "Malavya Yoga",
+				description: "Venus occupies a quadrant of his own house or exaltation sign.",
+				result: "The Malavya Yoga points out at your dignified version of life and happiness. Your body would be a well-maintained and have a proportioned physique. Your mind is very strong and you do not get easily distracted if you are determined to concentrate at something. You will have a simple yet elegant life who will be extremely wealthy along with a wife and children. Your organs will be favored by sterility and purity. Your life morals are very much renowned and you are well developed.",
+				quality: "Positive",
+				present: false,
+				evidence: "Venus in Capricorn (neither own sign Taurus/Libra nor exaltation Pisces); placed in house 9 (not a kendra).",
+			},
+			{
+				id: "sasa",
+				name: "Sasa Yoga",
+				description: "Saturn occupies a Kendra of his own house or exaltation sign.",
+				result: "The Sasa Yoga indicates absolute superiority over others. If you are born with the Sasa Yoga, you will have a strict command over your servant. Yet, you will have a questionable character and people might frown upon that. You are most likely to rule over a village or a town. Or you can even be a King. But you will be the sort of King who desires and fancies for other's wealth and money. You have an extreme temperament which leads you to rage upon the first person you see.",
+				quality: "Both",
+				present: false,
+				evidence: "Saturn in Sagittarius (neither own sign Capricorn/Aquarius nor exaltation Libra); placed in house 8 (not a kendra).",
+			},
+		],
 	},
 	"vedic-planets": {
 		aries: {
@@ -6234,12 +6560,12 @@ const samples = {
 			{
 				number: 9,
 				name: "Dharma Bhava",
-				description: "The ninth is the house of grace and good fortune. It is considered to be the most auspicious house and can bring sudden prosperity to a person. It is a house of good ethics and a beneficial ninth house reveals positive karma. It governs higher knowledge and dharma (right action). It represents the father. The ninth house can expand our knowledge and wisdom; through a teacher, through books, higher studies and through travel. Often it will bring a desire fo philosophy and opportunities for higher knowledge. The ninth house also represents law. A well placed ninth house indicates a person that is rightly guided and receives good advice.",
+				description: "The ninth is the house of grace and good fortune. It is considered to be the most auspicious house and can bring sudden prosperity to a person. It is a house of good ethics and a beneficial ninth house reveals positive karma. It governs higher knowledge and dharma (right action). It represents the father. The ninth house can expand our knowledge and wisdom; through a teacher, through books, higher studies and through travel. Often it will bring a desire for philosophy and opportunities for higher knowledge. The ninth house also represents law. A well placed ninth house indicates a person that is rightly guided and receives good advice.",
 			},
 			{
 				number: 10,
 				name: "Karma Bhava",
-				description: "The tenth house represents the action we take in this life in order to fulfill our life direction. Planets get very energized here. The Sun is very strong when placed in the tenth house and will express its natural authority and leadership. Saturn placed in the tenth house can handle responsibility and works will within an organization or structure. Some see the tenth house as the father. The tenth house can also represent government work, administration and business. This is the house where we reach the pinnacle of life, it is the culmination of life's ambition. An auspicious tenth house will give a strong career, success, honor and recognition.",
+				description: "The tenth house represents the action we take in this life in order to fulfill our life direction. Planets get very energized here. The Sun is very strong when placed in the tenth house and will express its natural authority and leadership. Saturn placed in the tenth house can handle responsibility and works well within an organization or structure. Some see the tenth house as the father. The tenth house can also represent government work, administration and business. This is the house where we reach the pinnacle of life, it is the culmination of life's ambition. An auspicious tenth house will give a strong career, success, honor and recognition.",
 			},
 			{
 				number: 11,
@@ -6267,46 +6593,156 @@ const samples = {
 		planetaryWar: [],
 		interpretations: {
 			Sun: {
-				rashi: "Sun in Capricorn (Makar) expresses through Sea Monster energy. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
+				rashi: "Sun in Capricorn (Makar) expresses through the energy of the Sea Monster. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
 				nakshatra: "Sun in Uttara Ashadha nakshatra combines planetary energy with Vishvadevas (universal gods) deity influence. Uttara Ashadha individuals are practical, reliable, and determined. They are known for their ability to achieve long-term goals through patience.",
 			},
 			Moon: {
-				rashi: "Moon in Leo (Simha) expresses through Lion energy. Intellectual, able to show restraint, comfortable with power, indulge in political games, manipulative",
+				rashi: "Moon in Leo (Simha) expresses through the energy of the Lion. Intellectual, able to show restraint, comfortable with power, indulge in political games, manipulative",
 				nakshatra: "Moon in Purva Phalguni nakshatra combines planetary energy with Bhaga (god of prosperity) deity influence. Purva Phalguni individuals are sociable, indulgent, and creative. They value enjoyment and have a charismatic personality.",
 			},
 			Mars: {
-				rashi: "Mars in Scorpio (Vrischika) expresses through Scorpion energy. Knowledgeable, skilled, able to take huge challenges, good at research work, healers, love to help others",
+				rashi: "Mars in Scorpio (Vrischika) expresses through the energy of the Scorpion. Knowledgeable, skilled, able to take huge challenges, good at research work, healers, love to help others",
 				nakshatra: "Mars in Jyeshtha nakshatra combines planetary energy with Indra deity influence. These individuals are protective, powerful, and assertive. They often rise to leadership positions and defend their loved ones fiercely.",
 			},
 			Mercury: {
-				rashi: "Mercury in Sagittarius (Dhanu) expresses through Bow & Arrow energy. Respectful towards religion and spiritual matters, intelligent, xcel in chosen subject, liberal attitude, fair",
+				rashi: "Mercury in Sagittarius (Dhanu) expresses through the energy of the Bow and Arrow. Respectful towards religion and spiritual matters, intelligent, excel in chosen subject, liberal attitude, fair",
 				nakshatra: "Mercury in Purva Ashadha nakshatra combines planetary energy with Apas (water deity) deity influence. These natives are confident, persuasive, and enthusiastic. They naturally inspire those around them.",
 			},
 			Jupiter: {
-				rashi: "Jupiter in Gemini (Mithun) expresses through Twins energy. Compassionate, value friendship and agreements, inclined towards working in groups, liberal, possess an inclusive view of world, intelligent",
+				rashi: "Jupiter in Gemini (Mithun) expresses through the energy of the Twins. Compassionate, value friendship and agreements, inclined towards working in groups, liberal, possess an inclusive view of world, intelligent",
 				nakshatra: "Jupiter in Ardra nakshatra combines planetary energy with Rudra (a fierce form of Shiva) deity influence. Ardra natives are known for their intensity and resilience. They often go through transformative life experiences that bring growth and new perspectives.",
 			},
 			Venus: {
-				rashi: "Venus in Capricorn (Makar) expresses through Sea Monster energy. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
+				rashi: "Venus in Capricorn (Makar) expresses through the energy of the Sea Monster. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
 				nakshatra: "Venus in Uttara Ashadha nakshatra combines planetary energy with Vishvadevas (universal gods) deity influence. Uttara Ashadha individuals are practical, reliable, and determined. They are known for their ability to achieve long-term goals through patience.",
 			},
 			Saturn: {
-				rashi: "Saturn in Sagittarius (Dhanu) expresses through Bow & Arrow energy. Respectful towards religion and spiritual matters, intelligent, xcel in chosen subject, liberal attitude, fair",
+				rashi: "Saturn in Sagittarius (Dhanu) expresses through the energy of the Bow and Arrow. Respectful towards religion and spiritual matters, intelligent, excel in chosen subject, liberal attitude, fair",
 				nakshatra: "Saturn in Purva Ashadha nakshatra combines planetary energy with Apas (water deity) deity influence. These natives are confident, persuasive, and enthusiastic. They naturally inspire those around them.",
 			},
 			Rahu: {
-				rashi: "Rahu in Capricorn (Makar) expresses through Sea Monster energy. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
+				rashi: "Rahu in Capricorn (Makar) expresses through the energy of the Sea Monster. Industrious in their goals, love to live good and comfortable life, perfect karma yogis, sometimes overly concerned about inheritance",
 				nakshatra: "Rahu in Dhanishta nakshatra combines planetary energy with Eight Vasus deity influence. Dhanishta individuals are ambitious, rhythmic, and excel in group activities. They have strong leadership skills and a natural sense of rhythm.",
 			},
 			Ketu: {
-				rashi: "Ketu in Cancer (Karka) expresses through Crab energy. Work ethic, goal oriented, authoritative, can fight to uphold their values",
+				rashi: "Ketu in Cancer (Karka) expresses through the energy of the Crab. Work ethic, goal oriented, authoritative, can fight to uphold their values",
 				nakshatra: "Ketu in Ashlesha nakshatra combines planetary energy with Nagas (serpent deities) deity influence. Ashlesha individuals have a strategic, analytical mind and can be persuasive. They often have a magnetic personality but may be prone to introspection and secrecy.",
 			},
 			Lagna: {
-				rashi: "Lagna in Taurus (Vrishabha) expresses through Bull energy. Value family, traditions, distinguished in nature",
+				rashi: "Lagna in Taurus (Vrishabha) expresses through the energy of the Bull. Value family, traditions, distinguished in nature",
 				nakshatra: "Lagna in Krittika nakshatra combines planetary energy with Agni (fire god) deity influence. Krittika natives are known for their sharp intellect, courage, and independent nature. They possess a fiery determination and often stand out as leaders in their field.",
 			},
 		},
+		yogas: [
+			{
+				id: "gajakesari",
+				name: "Gajakesari Yoga",
+				description: "Jupiter in kendra from Moon",
+				result: "Gajakesari Yoga hints that you may have a number of relatives in your life span. In terms of personality, you would be someone who is generous and cares about people in his/her vicinity. You are destined to accomplish development work as a higher authority like a magistrate. This Yoga ensures you a lasting reputation even long after death.",
+				quality: "Positive",
+				present: false,
+				evidence: "Jupiter is not in a kendra (1/4/7/10) from the Moon.",
+			},
+			{
+				id: "sunapha",
+				name: "Sunapha Yoga",
+				description: "Any planets, except Sun, in the second house from the Moon.",
+				result: "Sunapha Yoga indicates that you will be the proud owner of several properties which will be earned by you through your perseverance and good decisions. You will be extremely rich and have the luxury of living the life of a king. When it comes to your personality, you are intelligent and rarely make bad decisions. Your reputation will be on par with that of a reputed ruler.",
+				quality: "Positive",
+				present: false,
+				evidence: "No qualifying planet in the 2nd house from Moon.",
+			},
+			{
+				id: "anapha",
+				name: "Anapha Yoga",
+				description: "Any planets in the twelfth house from the Moon.",
+				result: "Anapha Yoga suggests that you will enjoy a healthy life with well-formed and properly functioning organs. In terms of your appearance and physique, you will be majestic. By nature, you are polite and generous due to which, you are highly revered. You also have a good reputation which is bolstered through your self-respect and your astute sense of fashion. However, you will experience renunciation and be noted for your austerity in the twilight of your life.",
+				quality: "Positive",
+				present: false,
+				evidence: "No qualifying planet in the 12th house from Moon.",
+			},
+			{
+				id: "dhurdhura",
+				name: "Dhurdhura Yoga",
+				description: "Planets on either side of the Moon.",
+				result: "Dhurdhura Yoga indicates that you will live a life that is filled with generosity and warmth. You will be blessed with a substantial amount of wealth which will allow you to donate or help others when required. In terms of your personality, you will be known for your kindness and charitable nature. You will also acquire fame, power and reputation in your life. Further, your life will be characterized by the conveyances of kindness and wealth.",
+				quality: "Positive",
+				present: false,
+				evidence: "Moon is not flanked by qualifying planets in both 2nd and 12th.",
+			},
+			{
+				id: "kemadruma",
+				name: "Kemadruma Yoga",
+				description: "No planets on either side of the Moon.",
+				result: "Kemadruma Yoga indicates that you might be an individual who is associated with sorrow and unrighteous deeds. You will likely be considered dirty in a practical sense and people might try to stay away from you in the fear of being scammed or hurt in some way. Your indulgence in unfair deeds will push you towards poverty which will also lead to your dependency on others to make a living. In terms of your personality, you are likely to be considered a rogue and a swindler.",
+				quality: "Negative",
+				present: true,
+				evidence: "Moon is isolated: no qualifying planet in the 2nd OR 12th house from Moon.",
+			},
+			{
+				id: "chandramangala",
+				name: "Chandra Mangala Yoga",
+				description: "Mars conjoins the Moon.",
+				result: "Chandra Mangala Yoga indicates that you might be an apathetic person who indulges in unscrupulous works. It is possible that you might sink to a degree where you won't think twice before using women to your profit. This might even include human trafficking. Your lack of respect for yourself and others will make you violent which makes it likely for you to mistreat your mother. You might even cause trouble to her and your relatives.",
+				quality: "Negative",
+				present: false,
+				evidence: "Moon and Mars are neither conjunct nor opposed within 10 degree orb.",
+			},
+			{
+				id: "budhaaditya",
+				name: "Budha-Aditya Yoga",
+				description: "Mercury combines with the Sun.",
+				result: "Budha-Aditya Yoga suggests that you will be highly intelligent. You will persevere to hone your skills and you will have an extremely good reputation for your skilful work. You will also have a healthy notion of yourself and have self-respect. Your peers and the people around you revere you. When it comes to your lifestyle, you will be surrounded by all the comforts you can imagine. Your life will be comfortable for the most part and you will experience happiness throughout your life.",
+				quality: "Positive",
+				present: false,
+				evidence: "Mercury and Sun not within 10 degree orb.",
+			},
+			{
+				id: "ruchaka",
+				name: "Ruchaka Yoga",
+				description: "Mars exalted in a Kendra or occupy a Kendra of his own sign.",
+				result: "The Ruchaka Yoga overpowers many majestic and distinguished characteristics. You will have a very strong physique, just like a great leader. You will be very much famous over a long period of time. You also tend to be naturally fluent with some ancient lores. Regardless of whether or not you are a King, you make sure to attempt to conform to all the traditions and customs. You will have a ruddy complexion matched with an excellent physique, and charitable disposition. You will be gaining loads of wealth and will have a long and healthy life.",
+				quality: "Positive",
+				present: true,
+				evidence: "Mars in own sign Scorpio, placed in kendra (house 7) from Lagna.",
+			},
+			{
+				id: "bhadra",
+				name: "Bhadra Yoga",
+				description: "Disposition of Mercury in a Kendra which is identical to the native's own exaltation sign.",
+				result: "Bhadra Yoga indicates that the native will have a strong physique. In terms of your appearance, your face will have the intricacies of a lion which will make you appear strong as well. You will have a well-developed chest along with well-proportioned limbs. When it comes to your personality, you are reserved and mostly taciturn. However, you are extremely helpful to your relatives. Further, you will also live a long life.",
+				quality: "Positive",
+				present: false,
+				evidence: "Mercury in Sagittarius (neither own sign Gemini/Virgo nor exaltation Virgo); placed in house 8 (not a kendra).",
+			},
+			{
+				id: "hamsa",
+				name: "Hamsa Yoga",
+				description: "Jupiter occupies a Kendra of his own house or exaltation sign.",
+				result: "The person having the Hamsa Yoga denotes that they will be having a lot of fascinating physical attributes. Your legs will be indicating four different styles such as the conch, lotus, fish and ankusa. You will be having a handsome body. As mentioned earlier, you will be slightly more attractive than the rest of the people. Everyone around you will absolutely love you and your personality. Your morals will be strictly ethical and decent. Also, your mind will be pure and you are quite innocent when compared to others.",
+				quality: "Positive",
+				present: false,
+				evidence: "Jupiter in Gemini (neither own sign Sagittarius/Pisces nor exaltation Cancer); placed in house 2 (not a kendra).",
+			},
+			{
+				id: "malavya",
+				name: "Malavya Yoga",
+				description: "Venus occupies a quadrant of his own house or exaltation sign.",
+				result: "The Malavya Yoga points out at your dignified version of life and happiness. Your body would be a well-maintained and have a proportioned physique. Your mind is very strong and you do not get easily distracted if you are determined to concentrate at something. You will have a simple yet elegant life who will be extremely wealthy along with a wife and children. Your organs will be favored by sterility and purity. Your life morals are very much renowned and you are well developed.",
+				quality: "Positive",
+				present: false,
+				evidence: "Venus in Capricorn (neither own sign Taurus/Libra nor exaltation Pisces); placed in house 9 (not a kendra).",
+			},
+			{
+				id: "sasa",
+				name: "Sasa Yoga",
+				description: "Saturn occupies a Kendra of his own house or exaltation sign.",
+				result: "The Sasa Yoga indicates absolute superiority over others. If you are born with the Sasa Yoga, you will have a strict command over your servant. Yet, you will have a questionable character and people might frown upon that. You are most likely to rule over a village or a town. Or you can even be a King. But you will be the sort of King who desires and fancies for other's wealth and money. You have an extreme temperament which leads you to rage upon the first person you see.",
+				quality: "Both",
+				present: false,
+				evidence: "Saturn in Sagittarius (neither own sign Capricorn/Aquarius nor exaltation Libra); placed in house 8 (not a kendra).",
+			},
+		],
 	},
 	panchang: {
 		date: "2026-05-09",
@@ -6366,7 +6802,7 @@ const samples = {
 			name: "Bav",
 			percent: 37.575304376736085,
 			type: "char",
-			characteristics: "Individuals born in Bav Karana in Astrology are spiritual and like to be involved in holy activities. They are divuthful and have faith in giving their best to any work that's given to them.",
+			characteristics: "Individuals born in Bav Karana in Astrology are spiritual and like to be involved in holy activities. They are truthful and have faith in giving their best to any work that's given to them.",
 		},
 		hora: {
 			current: "Saturn",
@@ -7894,26 +8330,29 @@ const samples = {
 		},
 	},
 	tarot: {
-		date: "2026-05-15",
-		seed: "roxy-ui-demo-2026-05-15",
+		date: "2026-05-23",
+		seed: "roxy-ui-demo-2026-05-23",
 		card: {
-			id: "seven-of-swords",
-			name: "Seven of Swords",
-			arcana: "minor",
-			suit: "swords",
-			number: 7,
+			id: "sun",
+			name: "The Sun",
+			arcana: "major",
+			number: 19,
 			position: 1,
-			reversed: false,
+			reversed: true,
 			keywords: [
-				"Betrayal",
-				"deception",
-				"getting away with something",
-				"acting strategically",
+				"Inner child",
+				"feeling down",
+				"overly optimistic",
 			],
-			meaning: "Traditionally, the Seven of Swords indicates theft, betrayal, deception and trickery. You may be trying to get away with something and are sneaking around behind other people’s backs, hoping to go undetected. If you are lucky, you might get away with your secret intact. But if you are unlucky, others will soon find out what you have done, causing you shame and embarrassment. Be aware that any time you use cunning or deception to gain an advantage over someone or something else, you are at risk of being found out. And even if you are not, the cover-up will require a tremendous amount of effort, and it may not be worth it.\n\nAlternatively, you may be the victim of someone else’s betrayal. Others are not being candid with you, and you may be unaware of their lies and deception. You may trust someone who then turns out to be running their own agenda, leaving you high and dry. Look out for any sneaky behaviour and listen to your intuition when something does not feel right or seems too good to be true.\n\nOn a more positive note, the Seven of Swords points out that you need to be strategic in what you do. You know you cannot do everything at once – nor should you. Instead, you must prioritise what’s important to you and direct your focus and attention on the few tasks that will move you closer to your goals. It’s the 80-20 rule: 20% of your work will account for 80% of your results, so focus on the 20%. You may be able to accept some responsibilities or duties, but not all of them. Or you may say ‘yes’ to some projects at the expense of others.\n\nThe Seven of Swords also suggests that you may need to use shortcuts or the ‘backdoor’ to get what you want. Rather than dutifully following the process, you may need to find ways to resolve your problem quickly so you can move towards your goals. For example, if you missed out getting into your preferred course, you might write a letter to the Dean or draw on your networks to get a mid-year entry. You may need to think on your feet and act in a way that isn’t exactly all ‘above board. ’\n\nAt times the Seven of Swords suggests that you may need to put yourself first to get what you want, even if it means letting others down or putting others off-side. For example, you may be asked to travel for work to attend a high-profile event, but it would mean missing your child’s birthday, so you decline the travel opportunity, even though you know it will upset your boss. Here’s the thing: you can’t be everything to everyone, and sometimes you need to put your own needs and priorities first, even if others may not agree with you or understand where you are coming from.\n\nThe Seven of Swords could also imply that you are trying to escape from a situation that is not working for you anymore rather than dealing with it head-on. You may attempt to run away from commitment, responsibility, hard work or love. You may procrastinate, letting problems slip and become worse because you do not want to deal with them. Sometimes you just have to face what has to be faced.",
-			imageUrl: "./img/tarot/minor/seven-of-swords.jpg",
+			meaning: "The Sun Reversed is calling to your inner child to come out and play! As adults, we get so lost in the hustle and bustle of everyday life that we forget how to have fun. But spend just a few minutes watching a kid play, and you realize how wonderful and carefree life can be when you learn to let go of your worries and concerns. When you see The Sun Reversed in your Tarot reading, see it as your permission slip to leave behind your work and responsibilities, even just for a moment, and play. Dance like no-one is watching, sing like no-one is listening, and let your heart and soul fly free.\n\nThe Sun Reversed can mean you are struggling to see the bright side of life. You may have experienced setbacks that damaged your enthusiasm and optimism and perhaps led you to question whether you can achieve what you set out to do. You may feel depressed or left out and are no longer enjoying what you are doing. Your direction and path ahead may appear clouded or distorted.\n\nNonetheless, The Sun is never a negative card, so this is only temporary. The obstacles you see can be easily removed if you put your mind to it. It may just take a bit more effort than usual.\n\nOn the other hand, you may be too confident or overly optimistic. While you are confident, you may have become egotistical and out of touch with what you can achieve. Are you truthful to yourself and others? Or, are you trying to talk yourself up when you know you cannot deliver? If this resonates with you, then ask others for feedback and a reality check. Are you unrealistic? Is what you have set out to achieve achievable? Are you really as good as you think you are?",
+			love: "The joy in your relationship may be dimmed by unrealistic expectations, sadness, or temporary setbacks. The love is still there but may need conscious effort to reignite. Focus on gratitude and shared happiness.",
+			career: "Professional setbacks, lack of recognition, or temporary failure may be dampening your enthusiasm. Success is delayed but not denied. Reconnect with the passion that drives you and keep going.",
+			finances: "Financial success may be delayed or falling short of expectations. Overspending during good times may create problems. Maintain optimism but be realistic about your financial situation.",
+			health: "Vitality may be lower than usual or recovery may be slower than hoped. Seasonal affective issues, vitamin D deficiency, or simply needing more rest could be factors. Seek sunshine and joyful activities.",
+			spirituality: "Spiritual joy may feel dimmed or you may be struggling to feel connected to the divine. Inner light is still present even when clouded. Seek simple pleasures and gratitude to reconnect with your spiritual center.",
+			imageUrl: "./img/tarot/major/sun.jpg",
 		},
-		dailyMessage: "Your card for 2026-05-15: Seven of Swords. Betrayal, deception, getting away with something, acting strategically. Traditionally, the Seven of Swords indicates theft, betrayal, deception and trickery. You may be trying to get away with something and are sneaking around behind other people’s backs, hoping to go und...",
+		dailyMessage: "Your card for 2026-05-23: The Sun (reversed). Inner child, feeling down, overly optimistic. The Sun Reversed is calling to your inner child to come out and play! As adults, we get so lost in the hustle and bustle of everyday life that we forget how to have fun. But spend just a few minutes w...",
 	},
 	spread: {
 		spread: "Three-Card",
@@ -7924,20 +8363,26 @@ const samples = {
 				name: "Past",
 				interpretation: "What has led to this situation and the foundational influences at play. Shows the events, decisions, and energies that have brought you to where you are now. Understanding the past provides context for the present.",
 				card: {
-					id: "six-of-cups",
-					name: "Six of Cups",
+					id: "nine-of-cups",
+					name: "Nine of Cups",
 					arcana: "minor",
 					suit: "cups",
-					number: 6,
+					number: 9,
 					position: 1,
 					reversed: true,
 					keywords: [
-						"Living in the past",
-						"forgiveness",
-						"lacking playfulness",
+						"Inner happiness",
+						"materialism",
+						"dissatisfaction",
+						"indulgence",
 					],
-					meaning: "When the reversed Six of Cups appears in a reading, ask whether you're clinging to the past and losing touch with the present. Reflection and nostalgia may bring up positive or negative feelings, but either way, when you find yourself wishing for ‘how things used to be’ and not living in the present, you miss out on the opportunities right in front of you. It's OK to indulge a little in reminiscing about the past, as long as you understand that true and lasting change can only happen in the present moment. See the Six of Cups as an opportunity to make peace with the past so you can focus on the now. Learn from your mistakes, forgive others and yourself, and acknowledge that life is continually evolving. Let go of the past and bring your attention firmly into the present.\n\nThe reversed Six of Cups may also be a sign you have lost touch with your inner child and life has become boring, repetitive, and ‘stale’ . You might be closed off from new opportunities and gifts from the Universe, simply because you are taking on too much of the responsibility and heaviness that come with 'adulting'. Open yourself to a curious mind and to have fun as though you were a child again. If you find yourself saying, “ Oh but I don’t have time!” then make time!! Play! Have some time out. Go jump in puddles or build sand castles.\n\nThe Six of Cups reversed might be a sign that you are taking a private walk down memory lane. Perhaps you are thinking about an ex, or you’ve even started seeing each other again, but you want to keep this information quiet. You may be reluctant to let others know that you are revisiting these old memories or relationships, in fear that they may judge you.",
-					imageUrl: "./img/tarot/minor/six-of-cups.jpg",
+					meaning: "Even when it appears that you have everything you ever dreamed of, it can still feel like something is missing deep down. Have you pursued material gain at the expense of your spiritual growth or emotional fulfilment? For example, you might own the most expensive home or car on the block, but you never see your friends and family and are pretty miserable. This is the essence of the reversed Nine of Cups, and when it emerges in a Tarot reading, it asks you to reconsider what you’re wishing for and align it with your Highest Good. You may have lost touch with what’s important to you, instead favouring the ego and chasing what will impress others.\n\nThe reversed Nine of Cups is a sign that instead of looking outside yourself for your happiness, you should search within. Success and happiness mean different things to different people. So, instead of doing what you think will make other people happy, do what will make you happy. Ask yourself, 'What does success look like to me? And how will I know when I am successful?' If your outside world is not bringing contentment, change your definition of success.\n\nSometimes, the reversed Nine of Cups suggests that you are frustrated that your wishes have not yet come true. Your expectations may be unrealistic, or you may not be actively pursuing your dreams, hoping that they will manifest with little input or action from you. You may have chosen goals that are not satisfying to you, and if so, it’s best to let them fall by the wayside. Now is the time to reconnect with your goals and dreams and recommit to bringing them to fruition. You may need to tweak your goals to keep them in full alignment with your personal values. And you may need to be more proactive in creating an action plan to see your goals come to fruition.\n\nThe Nine of Cups reversed serves as a reminder not to over-indulge at the expense of your health and well-being. You may be prone to overdoing it on food, alcohol, drugs, partying or spending. Keep everything in moderation and focus on the long-term consequences of your actions, even if they bring short-term pleasure.",
+					love: "Dissatisfaction despite having a good relationship, or superficial pleasures masking deeper emotional needs. Material comforts cannot substitute for genuine emotional connection. Examine what your heart truly needs.",
+					career: "Professional success that feels empty, or dissatisfaction despite external achievements. The goal you reached may not be as fulfilling as expected. Reassess what truly brings you professional satisfaction.",
+					finances: "Material abundance that does not bring happiness, or overspending to fill an emotional void. Money and possessions are not solving the underlying issue. Address the emptiness within rather than buying more.",
+					health: "Overindulgence, excess, or using physical pleasures to avoid emotional issues. Your body may be paying the price for too much of a good thing. Practice moderation and address the emotional roots of overindulgence.",
+					spirituality: "Spiritual materialism or seeking fulfillment through external spiritual experiences rather than genuine inner work. True spiritual satisfaction comes from within, not from accumulating spiritual achievements.",
+					imageUrl: "./img/tarot/minor/nine-of-cups.jpg",
 				},
 			},
 			{
@@ -7945,22 +8390,26 @@ const samples = {
 				name: "Present",
 				interpretation: "The current energy, circumstances, and challenges you are experiencing right now. This card shows what is happening in this moment and what you need to be aware of. It represents your current state of being.",
 				card: {
-					id: "ten-of-pentacles",
-					name: "Ten of Pentacles",
+					id: "eight-of-wands",
+					name: "Eight of Wands",
 					arcana: "minor",
-					suit: "pentacles",
-					number: 10,
+					suit: "wands",
+					number: 8,
 					position: 2,
-					reversed: false,
+					reversed: true,
 					keywords: [
-						"Wealth",
-						"financial security",
-						"family",
-						"long-term success",
-						"contribution",
+						"Delays",
+						"frustration",
+						"resisting change",
+						"internal alignment",
 					],
-					meaning: "The Ten of Pentacles is a positive sign that you have reached a point of completion and accomplishment in your journey. As a Pentacles card, this sense of accomplishment is likely to be the result of a successful career path, smart financial investments, a stable home environment and a possible committed and long-term relationship. You have accumulated wealth and abundance through your hard work and dedication and can now relish sharing this wealth with others. This is one of those cards that promise everything will eventually come together and you will be proud of everything you achieved.\n\nWhen the Ten of Pentacles appears in a Tarot reading, you are surrounded by wealth and blessed with financial abundance. There is no ‘wanting’ for any more; you have everything you need, especially within the material realm. You are financially secure and trust that, because of your personal successes and accomplishments, you will always have what you need and desire. You express sincere gratitude for fulfilling your material goals and dreams.\n\nThis card reflects permanence and creating a lasting foundation for future success. It is a card of commitment to a sustainable future, taking into consideration not just the short-term gains of a particular venture but also the long-term benefits. A consistent approach will achieve success that will last the test of time.\n\nThe Ten of Pentacles indicates that you feel compelled to share your success with others to make sure they are well cared for, too. You worked hard to get here, and now you can see the bigger impact your accomplishments have on others. You are the ‘provider’ or the breadwinner, bringing financial security and stability to your family, ensuring they have everything they need to live a happy and comfortable life. And it brings you deep joy and satisfaction to see your loved ones enjoying your wealth and abundance.\n\nThe Ten of Pentacles is also a sign that family is very important to you. Being surrounded by the people you love and who share your DNA and ancestry brings you great joy and happiness. You know you can trust your family whole-heartedly and they will be there for you, no matter what. Your home life is happy, and you can provide your family with the security they need. You are also strongly connected to your family history and heritage, a part of the long lineage that goes before you. It represents tradition, being a part of something bigger and realising that the blood of your ancestors flows through your veins.",
-					imageUrl: "./img/tarot/minor/ten-of-pentacles.jpg",
+					meaning: "The Eight of Wands reversed suggests that you are charging ahead with an idea or plan, but you need to slow down and consider your next steps before continuing. You may miss something in your haste and be prone to making mistakes or poor decisions. Or, you may rush into things without a clear plan of where you are heading, instead of investing time into trivial tasks. Be careful of the ‘bright shiny object syndrome’ where, just as you get started on implementing one idea, another one comes to mind, and you switch your focus. The trouble is that with this approach, you never accomplish anything because you are jumping from one idea to the next and finishing none of them.\n\nThe Eight of Wands reversed can warn that you are resisting change, trying to stop the flow of energy and movement. It will only make things harder, so let go and be in the flow. If you have been feeling stuck, do things differently (new routines, locations, activities) and get the energy moving once again.\n\nThe reversed Eight of Wands can mark significant delays, particularly concerning travel or fast-moving plans. Despite having a lot of energy and enthusiasm to progress things forward, you now face multiple obstacles in your course. This is incredibly frustrating, and you may be growing increasingly impatient by the day. Keep looking for alternative ways around the challenges presented so you can carry out your plans. If it’s Mercury Retrograde, expect your plans to be doubly delayed!\n\nSimilarly, this card can be a sign to hold off your activities for a short amount of time until the situation becomes more stable and predictable.\n\nOn the other hand, the reversed Eight of Wands may be a sign that you are aligning your resources so you can actively pursue your goal. You are getting your life in order – physical health, emotional well-being, energy levels or spirituality – so that you are in an excellent position to move forward with your plans.",
+					love: "Delays in romantic communication, a long-distance relationship struggling with timing, or love that was moving too fast and hits the brakes. Patience is needed as the pace of romance slows unexpectedly.",
+					career: "Project delays, miscommunication, or professional momentum suddenly stalling. Travel plans may be disrupted. Frustration with the pace of work requires patience. Use the slowdown to improve your plans.",
+					finances: "Financial transactions delayed, money expected but not arriving, or investments not moving as quickly as anticipated. Patience with financial timing is necessary. Do not make hasty moves out of frustration.",
+					health: "Delayed recovery, stalled health progress, or treatments not working as quickly as hoped. Healing takes its own time. Frustration with the pace of recovery is natural but resist rushing the process.",
+					spirituality: "Spiritual messages delayed or misunderstood, or rapid spiritual downloads needing time to integrate. Slow down and process the spiritual information you have already received before seeking more.",
+					imageUrl: "./img/tarot/minor/eight-of-wands.jpg",
 				},
 			},
 			{
@@ -7968,86 +8417,91 @@ const samples = {
 				name: "Future",
 				interpretation: "The likely outcome or energy that lies ahead if you continue on your current path. This is not set in stone, your free will and actions can shape this future. Shows potential developments and where things are heading.",
 				card: {
-					id: "king-of-cups",
-					name: "King of Cups",
+					id: "page-of-pentacles",
+					name: "Page of Pentacles",
 					arcana: "minor",
-					suit: "cups",
-					number: 14,
+					suit: "pentacles",
+					number: 11,
 					position: 3,
 					reversed: false,
 					keywords: [
-						"Emotionally balanced",
-						"compassionate",
-						"diplomatic",
+						"Manifestation",
+						"financial opportunity",
+						"skill development",
 					],
-					meaning: "The King of Cups represents mastery over the realms of emotion, creativity and the unconscious. When this card turns up in a Tarot reading, you have gained control of your feelings and can accept them without allowing them to get the better of you. Even when life throws you a curve ball, you can draw on your emotional maturity and stability to help you navigate these challenges. You don’t let things get to you, and you steer clear of the drama, instead choosing an emotionally balanced and calm approach.\n\nIf you are being challenged personally, the King of Cups suggests you need to remain emotionally mature when faced with negative energy from others. Be firm on your personal boundaries, stating what is and is not acceptable on an emotional level. This King is level-headed and in control of his emotions. He uses his intellect to make smart decisions and does not let other circumstances or whims sway him from his central beliefs and morals. Stay true to your emotions and feelings and do not allow others to steer you off course.\n\nThe King of Cups embodies the perfect balance between the executive and the heart. Not only are you able to assess and manage a situation logically, but you can also draw upon your intuition and understanding of human interactions. As a leader, you care as much about achieving your goals and objectives as you do about making sure everyone is happy and engaged along the way. If you sense that logic and emotion are out of balance, draw on the energy of this King to realign yourself.\n\nAs a King, he has a masculine, fatherly energy, and as a Cups card, he brings his emotional self to the forefront. He offers wise advice when it comes to feelings, emotions, creativity and relationships and can see the human dynamic in its entirety. The King of Cups is compassionate towards others, creating strong bonds and relationships based on patience and understanding. As you interact with others, you may need to navigate their strong feelings and emotional triggers so you can create a sense of peace in your interactions. He may appear in your life as a mentor, coach or spiritual guide; or you may step into this role yourself.",
-					imageUrl: "./img/tarot/minor/king-of-cups.jpg",
+					meaning: "The Page of Pentacles, like the Pages of all four Tarot suits, brings a welcome message of new beginnings, inspiration and the initial stages of a creative project or venture. Since Pentacles rule the material realm and correspond to the element of earth, this Page symbolises a burgeoning awareness of the value of money, wealth, possessions, career, and physical health, and how to manifest more of these material blessings. You welcome new opportunities to your material life – a new job, a new business, or a financial windfall – and wish to discover how to turn your dreams into reality.\n\nWhen the Page of Pentacles appears in a Tarot reading, you are tapping into your ability to manifest a personal goal or dream and may be in the midst of a new project such as a hobby, business venture, or the start of a new educational experience. You are excited about the possibilities and potential of what you put your mind to, knowing you can create whatever you want with focused intention and action.\n\nThat said, this Page does not specify the fulfilment of dreams as much as the initial motivation and energy to begin the process of turning those dreams to reality. You need to put in place clear plans for achieving your dreams and goals. Stay focused on the practical and tangible elements, keeping your feet planted on the ground and not getting carried away, always looking for the next realistic and achievable step forward. Your common sense and a pragmatic approach will lead you to a solution that works.\n\nIn the quest to materialise his dreams, the Page of Pentacles is an avid student and seeks to learn the skills that will ensure his success in the long-term. The Page of Pentacles often appears when you are ready to up-level your skills and learn something new so you can manifest your dreams. See this card as an invitation to take a class, continue your education or start an apprenticeship. Even if you are already prosperous in your current field, the Page of Pentacles encourages you to try something new and discover another aspect of yourself. The more skills you bring to your portfolio, the more goals and dreams you can achieve.\n\nThe Page of Pentacles may show that you are considering a new business or entrepreneurial venture, or you are in the initial stages of setting up the company to be financially successful and abundant in the long-term. You might be new to this, but you have the enthusiasm, commitment, and devotedness to see the project through.",
+					love: "A new relationship with practical, grounded energy or a message about commitment and stability in love. This connection may start slowly but has real, tangible potential. Be patient and let things develop naturally.",
+					career: "A new career opportunity, educational pursuit, or apprenticeship that promises practical skill development. Your eagerness to learn and willingness to start at the bottom will pay off. Embrace the student mindset.",
+					finances: "A new financial opportunity, scholarship, or the beginning stages of building wealth. Start small and be diligent. This seed of prosperity needs careful nurturing through disciplined saving and smart decisions.",
+					health: "Starting a new health or fitness routine with genuine enthusiasm and practical commitment. Beginners mind helps you approach wellness without preconceived limitations. Small consistent steps yield big results.",
+					spirituality: "Beginning a new spiritual study or practice with grounded, practical dedication. Approach spiritual development as a student eager to learn. Grounded practices like walking meditation or gardening connect you to earth wisdom.",
+					imageUrl: "./img/tarot/minor/page-of-pentacles.jpg",
 				},
 			},
 		],
-		summary: "Your past (Six of Cups reversed) has shaped your present situation (Ten of Pentacles). The future (King of Cups) suggests positive developments if you continue on this path.",
+		summary: "Your past (Nine of Cups reversed) has shaped your present situation (Eight of Wands reversed). The future (Page of Pentacles) suggests positive developments if you continue on this path.",
 	},
 	bio: {
-		date: "2026-05-15",
-		seed: "roxy-ui-demo-2026-05-15",
-		energyRating: 3,
-		overallPhase: "recovery",
+		date: "2026-05-23",
+		seed: "roxy-ui-demo-2026-05-23",
+		energyRating: 9,
+		overallPhase: "high_energy",
 		spotlight: {
 			cycle: "intellectual",
-			value: 37,
-			phase: "rising",
-			message: "Your intellectual energy is building. Mental fog is clearing and the ability to concentrate is improving. Good conditions for reviewing material and organizing thoughts.",
+			value: 95,
+			phase: "peak",
+			message: "Your intellectual cycle is at its peak. Mental clarity, analytical thinking, and problem-solving ability are at maximum. Memory retention is sharp and complex ideas feel manageable.",
 		},
 		quickRead: {
-			physical: -89,
-			emotional: -97,
-			intellectual: 37,
+			physical: 89,
+			emotional: 43,
+			intellectual: 95,
 		},
-		dailyMessage: "Your biorhythm for 2026-05-15: Energy rating 3/10 (Low Energy). Intellectual cycle is rising at 37%.",
-		advice: "Start engaging with complex material as your focus sharpens.",
+		dailyMessage: "Your biorhythm for 2026-05-23: Energy rating 9/10 (Peak Performance). Intellectual cycle is peak performance at 95%.",
+		advice: "Tackle your most complex challenges now. Your mind is at its sharpest.",
 	},
 	hex: {
-		number: 20,
-		symbol: "䷓",
-		chinese: "觀",
-		english: "Contemplation (View)",
-		pinyin: "Kuan",
-		binary: "110000",
-		upperTrigram: "Earth",
-		lowerTrigram: "Wind",
-		judgment: "Contemplation. The ablution has been made, But not yet the offering. Full of trust they look up to him.",
-		image: "The wind blows over the earth: The image of Contemplation. Thus the kings of old visited the regions of the world, Contemplated the people, And gave them instruction.",
+		number: 58,
+		symbol: "䷹",
+		chinese: "兌",
+		english: "The Joyous, Lake",
+		pinyin: "Tui",
+		binary: "011011",
+		upperTrigram: "Lake",
+		lowerTrigram: "Lake",
+		judgment: "The Joyous. Success. Perseverance is favorable.",
+		image: "Lakes resting on one another: The image of the Joyous. Thus the superior man joins with his friends For discussion and practice.",
 		interpretation: {
-			general: "Step back from active involvement and observe the larger pattern. Like viewing the land from a high tower, perspective and contemplation reveal what action alone cannot. Your example and insight may influence others more than direct intervention.",
-			love: "Step back and observe the relationship with clear eyes. Understanding comes through contemplation, not action. Reflect on your patterns and what you truly want.",
-			career: "This is a time for observation and reflection, not action. Study the situation carefully. Your insight and example influence others more than your words.",
-			decision: "Pause and contemplate before deciding. Look at the situation from a higher perspective. Clarity comes through stillness, not through rushing.",
-			advice: "Like wind moving over the earth, let your awareness extend in all directions. The example you set influences others. Contemplation prepares the way for wise action.",
+			general: "Joy, openness, and positive exchange bring success. When people come together in genuine gladness, difficulties dissolve and cooperation flows naturally. Cultivate an atmosphere of encouragement and shared pleasure. True joy strengthens resolve for difficult tasks ahead.",
+			love: "Joy shared multiplies. This is a time for mutual delight and encouragement in relationships. True joy comes from connection, not from isolation.",
+			career: "Success comes through creating joy and encouragement. Lead by inspiring others rather than driving them. Joyfulness in work spreads and multiplies.",
+			decision: "Approach your situation with joyfulness and the desire to encourage others. Genuine joy, not forced happiness, creates success. Share gladness freely.",
+			advice: "Two lakes connected sustain each other. True joy that endures comes from inner correctness. Practice and discuss with friends who encourage growth.",
 		},
 		changingLines: [
 			{
 				position: 1,
-				text: "Boylike contemplation. For an inferior man, no blame. For a superior man, humiliation.",
+				text: "Contented joyousness. Good fortune.",
 			},
 			{
 				position: 2,
-				text: "Contemplation through the crack of the door. Furthering for the perseverance of a woman.",
+				text: "Sincere joyousness. Good fortune. Remorse disappears.",
 			},
 			{
 				position: 3,
-				text: "Contemplation of my life Decides the choice Between advance and retreat.",
+				text: "Coming joyousness. Misfortune.",
 			},
 			{
 				position: 4,
-				text: "Contemplation of the light of the kingdom. It furthers one to exert influence as the guest of a king.",
+				text: "Joyousness that is weighed is not at peace. After ridding himself of mistakes a man has joy.",
 			},
 			{
 				position: 5,
-				text: "Contemplation of my life. The superior man is without blame.",
+				text: "Sincerity toward disintegrating influences is dangerous.",
 			},
 			{
 				position: 6,
-				text: "Contemplation of his life. The superior man is without blame.",
+				text: "Seductive joyousness.",
 			},
 		],
 	},
@@ -8196,7 +8650,7 @@ const samples = {
 				interpretation: {
 					summary: "Black Moon Lilith challenges your natal Moon dynamically",
 					timing: "Active for extended period",
-					impact: "Primal instinct & the reclaimed self creates tension with Inner emotional life. Growth through friction.",
+					impact: "Primal instinct and the reclaimed self creates tension with Inner emotional life. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8218,7 +8672,7 @@ const samples = {
 				interpretation: {
 					summary: "Uranus supports your natal Venus harmoniously",
 					timing: "Active for extended period",
-					impact: "Individuality & revolution flows easily with Love, beauty, & money. Opportunities arise naturally in this area.",
+					impact: "Individuality and revolution flows easily with Love, beauty, and money. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8242,7 +8696,7 @@ const samples = {
 				interpretation: {
 					summary: "Mercury supports your natal Saturn harmoniously",
 					timing: "Active for a few days",
-					impact: "Communication flows easily with Responsibility, time, & routine. Opportunities arise naturally in this area.",
+					impact: "Communication flows easily with Responsibility, time, and routine. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8266,7 +8720,7 @@ const samples = {
 				interpretation: {
 					summary: "Neptune challenges your natal Jupiter dynamically",
 					timing: "Active for extended period",
-					impact: "Dreams, healing, & intuition creates tension with Luck & opportunity. Growth through friction.",
+					impact: "Dreams, healing, and intuition creates tension with Luck and opportunity. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8288,7 +8742,7 @@ const samples = {
 				interpretation: {
 					summary: "Mercury challenges your natal Pluto dynamically",
 					timing: "Active for a few days",
-					impact: "Communication creates tension with Sex, death, & transformation. Growth through friction.",
+					impact: "Communication creates tension with Sex, death, and transformation. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"accept",
@@ -8314,7 +8768,7 @@ const samples = {
 				interpretation: {
 					summary: "Moon challenges your natal Sun dynamically",
 					timing: "Active for a few hours",
-					impact: "Inner emotional life creates tension with Self-awareness & ego. Growth through friction.",
+					impact: "Inner emotional life creates tension with Self-awareness and ego. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"friction",
@@ -8336,7 +8790,7 @@ const samples = {
 				interpretation: {
 					summary: "Black Moon Lilith challenges your natal Venus dynamically",
 					timing: "Active for extended period",
-					impact: "Primal instinct & the reclaimed self creates tension with Love, beauty, & money. Growth through friction.",
+					impact: "Primal instinct and the reclaimed self creates tension with Love, beauty, and money. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"friction",
@@ -8358,7 +8812,7 @@ const samples = {
 				interpretation: {
 					summary: "Mars challenges your natal Sun dynamically",
 					timing: "Active for a few days",
-					impact: "Assertiveness & aggression creates tension with Self-awareness & ego. Growth through friction.",
+					impact: "Assertiveness and aggression creates tension with Self-awareness and ego. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8380,7 +8834,7 @@ const samples = {
 				interpretation: {
 					summary: "Mercury challenges your natal North Node dynamically",
 					timing: "Active for a few days",
-					impact: "Communication creates tension with Life purpose & destiny. Growth through friction.",
+					impact: "Communication creates tension with Life purpose and destiny. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8402,7 +8856,7 @@ const samples = {
 				interpretation: {
 					summary: "Mercury challenges your natal South Node dynamically",
 					timing: "Active for a few days",
-					impact: "Communication creates tension with Past life gifts & comfort zone. Growth through friction.",
+					impact: "Communication creates tension with Past life gifts and comfort zone. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8424,7 +8878,7 @@ const samples = {
 				interpretation: {
 					summary: "Venus challenges your natal Mars dynamically",
 					timing: "Active for a few days",
-					impact: "Love, beauty, & money creates tension with Assertiveness & aggression. Growth through friction.",
+					impact: "Love, beauty, and money creates tension with Assertiveness and aggression. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"accept",
@@ -8474,7 +8928,7 @@ const samples = {
 				interpretation: {
 					summary: "Saturn challenges your natal Mercury dynamically",
 					timing: "Active for several weeks",
-					impact: "Responsibility, time, & routine creates tension with Communication. Growth through friction.",
+					impact: "Responsibility, time, and routine creates tension with Communication. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8496,7 +8950,7 @@ const samples = {
 				interpretation: {
 					summary: "South Node supports your natal Uranus harmoniously",
 					timing: "Active for extended period",
-					impact: "Past life gifts & comfort zone flows easily with Individuality & revolution. Opportunities arise naturally in this area.",
+					impact: "Past life gifts and comfort zone flows easily with Individuality and revolution. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8520,7 +8974,7 @@ const samples = {
 				interpretation: {
 					summary: "Jupiter activates your natal Mars neutrally",
 					timing: "Active for 1-2 weeks",
-					impact: "Luck & opportunity merges with Assertiveness & aggression. Intensifies this energy.",
+					impact: "Luck and opportunity merges with Assertiveness and aggression. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"adjustment",
@@ -8542,7 +8996,7 @@ const samples = {
 				interpretation: {
 					summary: "North Node supports your natal Uranus harmoniously",
 					timing: "Active for extended period",
-					impact: "Life purpose & destiny flows easily with Individuality & revolution. Opportunities arise naturally in this area.",
+					impact: "Life purpose and destiny flows easily with Individuality and revolution. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -8564,7 +9018,7 @@ const samples = {
 				interpretation: {
 					summary: "Black Moon Lilith supports your natal South Node harmoniously",
 					timing: "Active for extended period",
-					impact: "Primal instinct & the reclaimed self flows easily with Past life gifts & comfort zone. Opportunities arise naturally in this area.",
+					impact: "Primal instinct and the reclaimed self flows easily with Past life gifts and comfort zone. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8588,7 +9042,7 @@ const samples = {
 				interpretation: {
 					summary: "Moon supports your natal Black Moon Lilith harmoniously",
 					timing: "Active for a few hours",
-					impact: "Inner emotional life flows easily with Primal instinct & the reclaimed self. Opportunities arise naturally in this area.",
+					impact: "Inner emotional life flows easily with Primal instinct and the reclaimed self. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8612,7 +9066,7 @@ const samples = {
 				interpretation: {
 					summary: "North Node supports your natal Jupiter harmoniously",
 					timing: "Active for extended period",
-					impact: "Life purpose & destiny flows easily with Luck & opportunity. Opportunities arise naturally in this area.",
+					impact: "Life purpose and destiny flows easily with Luck and opportunity. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8658,7 +9112,7 @@ const samples = {
 				interpretation: {
 					summary: "Saturn challenges your natal Chiron dynamically",
 					timing: "Active for several weeks",
-					impact: "Responsibility, time, & routine creates tension with Healing & inner wounds. Growth through friction.",
+					impact: "Responsibility, time, and routine creates tension with Healing and inner wounds. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8680,7 +9134,7 @@ const samples = {
 				interpretation: {
 					summary: "Moon supports your natal Chiron harmoniously",
 					timing: "Active for a few hours",
-					impact: "Inner emotional life flows easily with Healing & inner wounds. Opportunities arise naturally in this area.",
+					impact: "Inner emotional life flows easily with Healing and inner wounds. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8704,7 +9158,7 @@ const samples = {
 				interpretation: {
 					summary: "Black Moon Lilith supports your natal North Node harmoniously",
 					timing: "Active for extended period",
-					impact: "Primal instinct & the reclaimed self flows easily with Life purpose & destiny. Opportunities arise naturally in this area.",
+					impact: "Primal instinct and the reclaimed self flows easily with Life purpose and destiny. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -8726,7 +9180,7 @@ const samples = {
 				interpretation: {
 					summary: "South Node supports your natal Jupiter harmoniously",
 					timing: "Active for extended period",
-					impact: "Past life gifts & comfort zone flows easily with Luck & opportunity. Opportunities arise naturally in this area.",
+					impact: "Past life gifts and comfort zone flows easily with Luck and opportunity. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -8748,7 +9202,7 @@ const samples = {
 				interpretation: {
 					summary: "Saturn challenges your natal Neptune dynamically",
 					timing: "Active for several weeks",
-					impact: "Responsibility, time, & routine creates tension with Dreams, healing, & intuition. Growth through friction.",
+					impact: "Responsibility, time, and routine creates tension with Dreams, healing, and intuition. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8770,7 +9224,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun activates your natal Mars neutrally",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego merges with Assertiveness & aggression. Intensifies this energy.",
+					impact: "Self-awareness and ego merges with Assertiveness and aggression. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"adjustment",
@@ -8792,7 +9246,7 @@ const samples = {
 				interpretation: {
 					summary: "Pluto challenges your natal Mars dynamically",
 					timing: "Active for extended period",
-					impact: "Sex, death, & transformation creates tension with Assertiveness & aggression. Growth through friction.",
+					impact: "Sex, death, and transformation creates tension with Assertiveness and aggression. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"friction",
@@ -8814,7 +9268,7 @@ const samples = {
 				interpretation: {
 					summary: "North Node supports your natal Black Moon Lilith harmoniously",
 					timing: "Active for extended period",
-					impact: "Life purpose & destiny flows easily with Primal instinct & the reclaimed self. Opportunities arise naturally in this area.",
+					impact: "Life purpose and destiny flows easily with Primal instinct and the reclaimed self. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8838,7 +9292,7 @@ const samples = {
 				interpretation: {
 					summary: "Pluto challenges your natal Black Moon Lilith dynamically",
 					timing: "Active for extended period",
-					impact: "Sex, death, & transformation creates tension with Primal instinct & the reclaimed self. Growth through friction.",
+					impact: "Sex, death, and transformation creates tension with Primal instinct and the reclaimed self. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8860,7 +9314,7 @@ const samples = {
 				interpretation: {
 					summary: "Pluto activates your natal Uranus neutrally",
 					timing: "Active for extended period",
-					impact: "Sex, death, & transformation merges with Individuality & revolution. Intensifies this energy.",
+					impact: "Sex, death, and transformation merges with Individuality and revolution. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"growth",
@@ -8882,7 +9336,7 @@ const samples = {
 				interpretation: {
 					summary: "Jupiter supports your natal Pluto harmoniously",
 					timing: "Active for 1-2 weeks",
-					impact: "Luck & opportunity flows easily with Sex, death, & transformation. Opportunities arise naturally in this area.",
+					impact: "Luck and opportunity flows easily with Sex, death, and transformation. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -8906,7 +9360,7 @@ const samples = {
 				interpretation: {
 					summary: "Chiron challenges your natal Sun dynamically",
 					timing: "Active for extended period",
-					impact: "Healing & inner wounds creates tension with Self-awareness & ego. Growth through friction.",
+					impact: "Healing and inner wounds creates tension with Self-awareness and ego. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -8928,7 +9382,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun challenges your natal Uranus dynamically",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego creates tension with Individuality & revolution. Growth through friction.",
+					impact: "Self-awareness and ego creates tension with Individuality and revolution. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"frustration",
@@ -8950,7 +9404,7 @@ const samples = {
 				interpretation: {
 					summary: "Jupiter challenges your natal Saturn dynamically",
 					timing: "Active for 1-2 weeks",
-					impact: "Luck & opportunity creates tension with Responsibility, time, & routine. Growth through friction.",
+					impact: "Luck and opportunity creates tension with Responsibility, time, and routine. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"accept",
@@ -8976,7 +9430,7 @@ const samples = {
 				interpretation: {
 					summary: "Venus supports your natal North Node harmoniously",
 					timing: "Active for a few days",
-					impact: "Love, beauty, & money flows easily with Life purpose & destiny. Opportunities arise naturally in this area.",
+					impact: "Love, beauty, and money flows easily with Life purpose and destiny. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9000,7 +9454,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun challenges your natal Pluto dynamically",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego creates tension with Sex, death, & transformation. Growth through friction.",
+					impact: "Self-awareness and ego creates tension with Sex, death, and transformation. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"accept",
@@ -9026,7 +9480,7 @@ const samples = {
 				interpretation: {
 					summary: "Neptune challenges your natal Uranus dynamically",
 					timing: "Active for extended period",
-					impact: "Dreams, healing, & intuition creates tension with Individuality & revolution. Growth through friction.",
+					impact: "Dreams, healing, and intuition creates tension with Individuality and revolution. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -9048,7 +9502,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun supports your natal Saturn harmoniously",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego flows easily with Responsibility, time, & routine. Opportunities arise naturally in this area.",
+					impact: "Self-awareness and ego flows easily with Responsibility, time, and routine. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9072,7 +9526,7 @@ const samples = {
 				interpretation: {
 					summary: "Neptune challenges your natal North Node dynamically",
 					timing: "Active for extended period",
-					impact: "Dreams, healing, & intuition creates tension with Life purpose & destiny. Growth through friction.",
+					impact: "Dreams, healing, and intuition creates tension with Life purpose and destiny. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"friction",
@@ -9094,7 +9548,7 @@ const samples = {
 				interpretation: {
 					summary: "Neptune challenges your natal South Node dynamically",
 					timing: "Active for extended period",
-					impact: "Dreams, healing, & intuition creates tension with Past life gifts & comfort zone. Growth through friction.",
+					impact: "Dreams, healing, and intuition creates tension with Past life gifts and comfort zone. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"frustration",
@@ -9116,7 +9570,7 @@ const samples = {
 				interpretation: {
 					summary: "Chiron challenges your natal Venus dynamically",
 					timing: "Active for extended period",
-					impact: "Healing & inner wounds creates tension with Love, beauty, & money. Growth through friction.",
+					impact: "Healing and inner wounds creates tension with Love, beauty, and money. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -9138,7 +9592,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun challenges your natal North Node dynamically",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego creates tension with Life purpose & destiny. Growth through friction.",
+					impact: "Self-awareness and ego creates tension with Life purpose and destiny. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -9160,7 +9614,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun challenges your natal South Node dynamically",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego creates tension with Past life gifts & comfort zone. Growth through friction.",
+					impact: "Self-awareness and ego creates tension with Past life gifts and comfort zone. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -9182,7 +9636,7 @@ const samples = {
 				interpretation: {
 					summary: "Moon supports your natal Neptune harmoniously",
 					timing: "Active for a few hours",
-					impact: "Inner emotional life flows easily with Dreams, healing, & intuition. Opportunities arise naturally in this area.",
+					impact: "Inner emotional life flows easily with Dreams, healing, and intuition. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -9204,7 +9658,7 @@ const samples = {
 				interpretation: {
 					summary: "South Node supports your natal Black Moon Lilith harmoniously",
 					timing: "Active for extended period",
-					impact: "Past life gifts & comfort zone flows easily with Primal instinct & the reclaimed self. Opportunities arise naturally in this area.",
+					impact: "Past life gifts and comfort zone flows easily with Primal instinct and the reclaimed self. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -9226,7 +9680,7 @@ const samples = {
 				interpretation: {
 					summary: "Neptune supports your natal Venus harmoniously",
 					timing: "Active for extended period",
-					impact: "Dreams, healing, & intuition flows easily with Love, beauty, & money. Opportunities arise naturally in this area.",
+					impact: "Dreams, healing, and intuition flows easily with Love, beauty, and money. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -9248,7 +9702,7 @@ const samples = {
 				interpretation: {
 					summary: "Black Moon Lilith activates your natal Saturn neutrally",
 					timing: "Active for extended period",
-					impact: "Primal instinct & the reclaimed self merges with Responsibility, time, & routine. Intensifies this energy.",
+					impact: "Primal instinct and the reclaimed self merges with Responsibility, time, and routine. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"growth",
@@ -9270,7 +9724,7 @@ const samples = {
 				interpretation: {
 					summary: "Black Moon Lilith activates your natal Mars neutrally",
 					timing: "Active for extended period",
-					impact: "Primal instinct & the reclaimed self merges with Assertiveness & aggression. Intensifies this energy.",
+					impact: "Primal instinct and the reclaimed self merges with Assertiveness and aggression. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"blend",
@@ -9292,7 +9746,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun supports your natal Sun harmoniously",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego flows easily with Self-awareness & ego. Opportunities arise naturally in this area.",
+					impact: "Self-awareness and ego flows easily with Self-awareness and ego. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9316,7 +9770,7 @@ const samples = {
 				interpretation: {
 					summary: "Black Moon Lilith activates your natal Pluto neutrally",
 					timing: "Active for extended period",
-					impact: "Primal instinct & the reclaimed self merges with Sex, death, & transformation. Intensifies this energy.",
+					impact: "Primal instinct and the reclaimed self merges with Sex, death, and transformation. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"growth",
@@ -9338,7 +9792,7 @@ const samples = {
 				interpretation: {
 					summary: "Saturn challenges your natal Uranus dynamically",
 					timing: "Active for several weeks",
-					impact: "Responsibility, time, & routine creates tension with Individuality & revolution. Growth through friction.",
+					impact: "Responsibility, time, and routine creates tension with Individuality and revolution. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -9360,7 +9814,7 @@ const samples = {
 				interpretation: {
 					summary: "Moon supports your natal Uranus harmoniously",
 					timing: "Active for a few hours",
-					impact: "Inner emotional life flows easily with Individuality & revolution. Opportunities arise naturally in this area.",
+					impact: "Inner emotional life flows easily with Individuality and revolution. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -9382,7 +9836,7 @@ const samples = {
 				interpretation: {
 					summary: "Venus supports your natal South Node harmoniously",
 					timing: "Active for a few days",
-					impact: "Love, beauty, & money flows easily with Past life gifts & comfort zone. Opportunities arise naturally in this area.",
+					impact: "Love, beauty, and money flows easily with Past life gifts and comfort zone. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -9404,7 +9858,7 @@ const samples = {
 				interpretation: {
 					summary: "Jupiter challenges your natal Sun dynamically",
 					timing: "Active for 1-2 weeks",
-					impact: "Luck & opportunity creates tension with Self-awareness & ego. Growth through friction.",
+					impact: "Luck and opportunity creates tension with Self-awareness and ego. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"accept",
@@ -9430,7 +9884,7 @@ const samples = {
 				interpretation: {
 					summary: "Mercury supports your natal Neptune harmoniously",
 					timing: "Active for a few days",
-					impact: "Communication flows easily with Dreams, healing, & intuition. Opportunities arise naturally in this area.",
+					impact: "Communication flows easily with Dreams, healing, and intuition. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9454,7 +9908,7 @@ const samples = {
 				interpretation: {
 					summary: "Mars supports your natal Mars harmoniously",
 					timing: "Active for a few days",
-					impact: "Assertiveness & aggression flows easily with Assertiveness & aggression. Opportunities arise naturally in this area.",
+					impact: "Assertiveness and aggression flows easily with Assertiveness and aggression. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9478,7 +9932,7 @@ const samples = {
 				interpretation: {
 					summary: "Neptune challenges your natal Pluto dynamically",
 					timing: "Active for extended period",
-					impact: "Dreams, healing, & intuition creates tension with Sex, death, & transformation. Growth through friction.",
+					impact: "Dreams, healing, and intuition creates tension with Sex, death, and transformation. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"frustration",
@@ -9500,7 +9954,7 @@ const samples = {
 				interpretation: {
 					summary: "Pluto activates your natal Venus neutrally",
 					timing: "Active for extended period",
-					impact: "Sex, death, & transformation merges with Love, beauty, & money. Intensifies this energy.",
+					impact: "Sex, death, and transformation merges with Love, beauty, and money. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"blend",
@@ -9522,7 +9976,7 @@ const samples = {
 				interpretation: {
 					summary: "Sun supports your natal Moon harmoniously",
 					timing: "Active for extended period",
-					impact: "Self-awareness & ego flows easily with Inner emotional life. Opportunities arise naturally in this area.",
+					impact: "Self-awareness and ego flows easily with Inner emotional life. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9546,7 +10000,7 @@ const samples = {
 				interpretation: {
 					summary: "Mercury challenges your natal Jupiter dynamically",
 					timing: "Active for a few days",
-					impact: "Communication creates tension with Luck & opportunity. Growth through friction.",
+					impact: "Communication creates tension with Luck and opportunity. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"friction",
@@ -9592,7 +10046,7 @@ const samples = {
 				interpretation: {
 					summary: "Pluto activates your natal Jupiter neutrally",
 					timing: "Active for extended period",
-					impact: "Sex, death, & transformation merges with Luck & opportunity. Intensifies this energy.",
+					impact: "Sex, death, and transformation merges with Luck and opportunity. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"adjustment",
@@ -9614,7 +10068,7 @@ const samples = {
 				interpretation: {
 					summary: "Uranus challenges your natal Saturn dynamically",
 					timing: "Active for extended period",
-					impact: "Individuality & revolution creates tension with Responsibility, time, & routine. Growth through friction.",
+					impact: "Individuality and revolution creates tension with Responsibility, time, and routine. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"frustration",
@@ -9636,7 +10090,7 @@ const samples = {
 				interpretation: {
 					summary: "Venus challenges your natal Moon dynamically",
 					timing: "Active for a few days",
-					impact: "Love, beauty, & money creates tension with Inner emotional life. Growth through friction.",
+					impact: "Love, beauty, and money creates tension with Inner emotional life. Growth through friction.",
 					guidance: "Work consciously with this tension. Challenges bring growth if handled with awareness.",
 					keywords: [
 						"difficult",
@@ -9658,7 +10112,7 @@ const samples = {
 				interpretation: {
 					summary: "Uranus supports your natal Sun harmoniously",
 					timing: "Active for extended period",
-					impact: "Individuality & revolution flows easily with Self-awareness & ego. Opportunities arise naturally in this area.",
+					impact: "Individuality and revolution flows easily with Self-awareness and ego. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9682,7 +10136,7 @@ const samples = {
 				interpretation: {
 					summary: "Jupiter supports your natal Moon harmoniously",
 					timing: "Active for 1-2 weeks",
-					impact: "Luck & opportunity flows easily with Inner emotional life. Opportunities arise naturally in this area.",
+					impact: "Luck and opportunity flows easily with Inner emotional life. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -9704,7 +10158,7 @@ const samples = {
 				interpretation: {
 					summary: "Saturn activates your natal Black Moon Lilith neutrally",
 					timing: "Active for several weeks",
-					impact: "Responsibility, time, & routine merges with Primal instinct & the reclaimed self. Intensifies this energy.",
+					impact: "Responsibility, time, and routine merges with Primal instinct and the reclaimed self. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"adjustment",
@@ -9752,7 +10206,7 @@ const samples = {
 				interpretation: {
 					summary: "South Node supports your natal Mercury harmoniously",
 					timing: "Active for extended period",
-					impact: "Past life gifts & comfort zone flows easily with Communication. Opportunities arise naturally in this area.",
+					impact: "Past life gifts and comfort zone flows easily with Communication. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9776,7 +10230,7 @@ const samples = {
 				interpretation: {
 					summary: "Moon supports your natal Jupiter harmoniously",
 					timing: "Active for a few hours",
-					impact: "Inner emotional life flows easily with Luck & opportunity. Opportunities arise naturally in this area.",
+					impact: "Inner emotional life flows easily with Luck and opportunity. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -9800,7 +10254,7 @@ const samples = {
 				interpretation: {
 					summary: "Mercury supports your natal Chiron harmoniously",
 					timing: "Active for a few days",
-					impact: "Communication flows easily with Healing & inner wounds. Opportunities arise naturally in this area.",
+					impact: "Communication flows easily with Healing and inner wounds. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"ease",
@@ -9822,7 +10276,7 @@ const samples = {
 				interpretation: {
 					summary: "Uranus activates your natal Jupiter neutrally",
 					timing: "Active for extended period",
-					impact: "Individuality & revolution merges with Luck & opportunity. Intensifies this energy.",
+					impact: "Individuality and revolution merges with Luck and opportunity. Intensifies this energy.",
 					guidance: "Pay attention to how this combination manifests. Strong energy requires conscious direction.",
 					keywords: [
 						"growth",
@@ -9844,7 +10298,7 @@ const samples = {
 				interpretation: {
 					summary: "Mars supports your natal South Node harmoniously",
 					timing: "Active for a few days",
-					impact: "Assertiveness & aggression flows easily with Past life gifts & comfort zone. Opportunities arise naturally in this area.",
+					impact: "Assertiveness and aggression flows easily with Past life gifts and comfort zone. Opportunities arise naturally in this area.",
 					guidance: "Take advantage of this supportive energy. Things flow easily - act on opportunities.",
 					keywords: [
 						"accept",
@@ -10798,8 +11252,8 @@ const samples = {
 				name: "Anapha Yoga",
 			},
 			{
-				id: "dhurdhua",
-				name: "Dhurdhua Yoga",
+				id: "dhurdhura",
+				name: "Dhurdhura Yoga",
 			},
 			{
 				id: "kemadruma",

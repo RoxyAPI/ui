@@ -50,7 +50,7 @@ const SHADCN_THEME_CSS = {
 			'--roxy-muted': 'var(--muted-foreground, #71717a)',
 			'--roxy-border': 'var(--border, #e4e4e7)',
 			'--roxy-accent': 'var(--primary, #f59e0b)',
-			'--roxy-accent-fg': 'var(--primary-foreground, #b45309)',
+			'--roxy-accent-ink': 'var(--primary, #b45309)',
 			'--roxy-success': 'var(--chart-2, #16a34a)',
 			'--roxy-success-fg': '#166534',
 			'--roxy-warning': 'var(--chart-3, #f59e0b)',

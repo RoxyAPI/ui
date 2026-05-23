@@ -161,6 +161,19 @@ return <roxy-location-search ref={ref} />;
 
 The React 19 path is `<RoxyLocationSearch onRoxyLocationSelect={handler} />`.
 
+### 6b. Configuration props on the React components
+
+Several components select a view, mode, or chart layout in addition to `data`. The React components type these as literal-union props alongside `data`, so editors autocomplete the allowed values and the build flags a typo. Set them as camelCase props.
+
+```tsx
+<RoxyVedicKundli data={chart} chartStyle="south" />
+<RoxyDoshaCard data={kalsarpa} type="kalsarpa" />
+<RoxyHoroscopeCard data={weekly} period="weekly" />
+<RoxyPanchangTable data={panchang} detail="detailed" />
+```
+
+The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period`, `RoxyMoonPhase` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` and `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`, `RoxyHexagram` `mode`. Outside React, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
+
 ### 7. Local response interface drift
 
 Do not declare `interface XyzData { ... }` for a RoxyAPI response. Import the spec-derived type from `@roxyapi/sdk` (or let the SDK return type flow through inference). Local interfaces drift the moment the spec changes; the component will keep compiling while rendering nothing.

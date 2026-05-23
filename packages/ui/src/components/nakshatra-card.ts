@@ -35,7 +35,7 @@ export class RoxyNakshatraCard extends LitElement {
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 			.number {
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-size: var(--roxy-text-sm, 0.875rem);
 				font-weight: var(--roxy-weight-bold, 600);
 			}

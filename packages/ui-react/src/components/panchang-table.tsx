@@ -12,11 +12,13 @@ export interface RoxyPanchangTableProps extends ElementAttrs {
 	data?: GetBasicPanchangResponse | GetDetailedPanchangResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Whether the response is the basic five-limb panchang or the detailed muhurta set. Detailed mode shows the auspicious and inauspicious period sections. */
+	detail?: 'basic' | 'detailed';
 
 }
 
 export const RoxyPanchangTable = React.forwardRef<HTMLElement | null, RoxyPanchangTableProps>(
-	function RoxyPanchangTable({ data, className, style, ...rest }, ref) {
+	function RoxyPanchangTable({ data, className, style, detail, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyPanchangTable = React.forwardRef<HTMLElement | null, RoxyPancha
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && detail !== undefined) {
+				(el as unknown as { detail: 'basic' | 'detailed' }).detail = detail;
+			}
+		}, [detail, loaded]);
 
 		if (error) {
 			return React.createElement(

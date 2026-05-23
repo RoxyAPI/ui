@@ -83,6 +83,131 @@ const DATA_TYPES: Record<string, string> = {
 };
 
 /**
+ * Slug → typed configuration props. Each entry mirrors a reactive `@property`
+ * on the matching Lit element that selects a view, mode, or chart layout (the
+ * `data` payload is handled separately). Without these the consumer can still
+ * pass the attribute through `...rest`, but loses the literal-union type and
+ * the camelCase ergonomics. The wrapper sets each as a JS property on the
+ * element after load, so Lit reflects it to its attribute and the value
+ * survives the lazy bundle boundary the same way `data` does.
+ *
+ * `prop` is the Lit accessor name (camelCase). Keep these literal unions in
+ * sync with the matching component's `@property` declaration.
+ */
+interface ConfigPropDef {
+	prop: string;
+	type: string;
+	comment: string;
+}
+
+const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
+	'natal-chart': [
+		{
+			prop: 'houseSystem',
+			type: "'placidus' | 'whole-sign' | 'equal' | 'koch'",
+			comment:
+				'House system the chart was cast with. Labels the house cusps; does not recompute positions.',
+		},
+	],
+	'horoscope-card': [
+		{
+			prop: 'period',
+			type: "'daily' | 'weekly' | 'monthly'",
+			comment:
+				'Which horoscope cadence the response is for. Selects the heading and date framing.',
+		},
+	],
+	'moon-phase': [
+		{
+			prop: 'mode',
+			type: "'current' | 'upcoming' | 'calendar'",
+			comment:
+				'Which moon-phase response shape to render: a single current phase, an upcoming list, or a calendar.',
+		},
+	],
+	'compatibility-card': [
+		{
+			prop: 'mode',
+			type: "'astrology' | 'numerology' | 'biorhythm'",
+			comment:
+				'Which compatibility domain the response is from. Themes the card and labels the category breakdown.',
+		},
+	],
+	'vedic-kundli': [
+		{
+			prop: 'chartStyle',
+			type: "'south' | 'north' | 'east'",
+			comment:
+				'Initial regional kundli layout. The end user can switch styles at runtime via the visible tablist.',
+		},
+	],
+	'divisional-chart': [
+		{
+			prop: 'chartStyle',
+			type: "'south' | 'north' | 'east'",
+			comment:
+				'Initial regional varga layout. The end user can switch styles at runtime via the visible tablist.',
+		},
+	],
+	'panchang-table': [
+		{
+			prop: 'detail',
+			type: "'basic' | 'detailed'",
+			comment:
+				'Whether the response is the basic five-limb panchang or the detailed muhurta set. Detailed mode shows the auspicious and inauspicious period sections.',
+		},
+	],
+	'dasha-timeline': [
+		{
+			prop: 'period',
+			type: "'current' | 'major' | 'sub'",
+			comment:
+				'Which dasha response shape to render: the current running periods, the major mahadashas, or the sub-period breakdown.',
+		},
+	],
+	'dosha-card': [
+		{
+			prop: 'type',
+			type: "'manglik' | 'kalsarpa' | 'sadhesati'",
+			comment:
+				'Which dosha to title and theme. The three dosha responses share a shape, so the card cannot infer this. Defaults to manglik, so set it explicitly per card.',
+		},
+	],
+	'numerology-card': [
+		{
+			prop: 'type',
+			type: "'life-path' | 'expression' | 'personal-year' | 'chart'",
+			comment:
+				'Which numerology response the card is showing. Selects the heading and which fields are surfaced.',
+		},
+	],
+	'tarot-spread': [
+		{
+			prop: 'spread',
+			type: "'three-card' | 'celtic-cross' | 'love' | 'yes-no' | 'draw'",
+			comment:
+				'Which spread layout the response is for. Positions the cards and selects the reading template.',
+		},
+	],
+	'biorhythm-chart': [
+		{
+			prop: 'mode',
+			type: "'daily' | 'forecast' | 'critical-days'",
+			comment:
+				'Which biorhythm response shape to render: a single day, a multi-day forecast, or the critical days list.',
+		},
+	],
+	hexagram: [
+		{
+			prop: 'mode',
+			type: "'lookup' | 'cast' | 'daily'",
+			comment:
+				'Which I Ching response shape to render: a static hexagram lookup, a cast with changing lines, or the daily hexagram.',
+		},
+	],
+};
+
+/**
  * Slug → CustomEvent name → React handler prop name.
  * Only the documented widget events are exposed. Pure renderers fire no
  * events and therefore declare no handler props.
@@ -211,12 +336,28 @@ function buildComponent(slug: string, pascal: string, tag: string): string {
 	const dataType = DATA_TYPES[slug] ?? 'unknown';
 	const hasData = dataType !== 'unknown';
 	const events = EVENTS[slug] ?? [];
+	const config = CONFIG_PROPS[slug] ?? [];
 	const typeRefs = collectTypeRefs(slug);
 
 	const importLine =
 		typeRefs.length > 0
 			? `import type { ${typeRefs.join(', ')} } from '@roxyapi/ui/types';`
 			: '';
+
+	const configPropsBlock = config
+		.map((c) => `\t/** ${c.comment} */\n\t${c.prop}?: ${c.type};`)
+		.join('\n');
+
+	const configEffectBlocks = config
+		.map(
+			(c) => `\t\tReact.useEffect(() => {
+\t\t\tconst el = internal.current;
+\t\t\tif (el && ${c.prop} !== undefined) {
+\t\t\t\t(el as unknown as { ${c.prop}: ${c.type} }).${c.prop} = ${c.prop};
+\t\t\t}
+\t\t}, [${c.prop}, loaded]);`,
+		)
+		.join('\n\n');
 
 	const eventPropsBlock = events
 		.map(
@@ -240,6 +381,9 @@ function buildComponent(slug: string, pascal: string, tag: string): string {
 
 	const handlerDestructure =
 		events.length > 0 ? `, ${events.map((e) => e.prop).join(', ')}` : '';
+
+	const configDestructure =
+		config.length > 0 ? `, ${config.map((c) => c.prop).join(', ')}` : '';
 
 	const dataDestructure = hasData ? 'data, ' : '';
 	const dataPropDecl = hasData
@@ -270,11 +414,11 @@ type ElementAttrs = Omit<
 export interface ${pascal}Props extends ElementAttrs {
 ${dataPropDecl}className?: string;
 \tstyle?: React.CSSProperties;
-${eventPropsBlock}
+${configPropsBlock ? `${configPropsBlock}\n` : ''}${eventPropsBlock}
 }
 
 export const ${pascal} = React.forwardRef<HTMLElement | null, ${pascal}Props>(
-\tfunction ${pascal}({ ${dataDestructure}className, style${handlerDestructure}, ...rest }, ref) {
+\tfunction ${pascal}({ ${dataDestructure}className, style${configDestructure}${handlerDestructure}, ...rest }, ref) {
 \t\tconst internal = React.useRef<HTMLElement | null>(null);
 \t\tReact.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 \t\t\tref,
@@ -299,7 +443,7 @@ export const ${pascal} = React.forwardRef<HTMLElement | null, ${pascal}Props>(
 \t\t\t};
 \t\t}, []);
 
-${dataEffectBlock}${eventEffectBlocks ? `${eventEffectBlocks}\n\n` : ''}\t\tif (error) {
+${dataEffectBlock}${configEffectBlocks ? `${configEffectBlocks}\n\n` : ''}${eventEffectBlocks ? `${eventEffectBlocks}\n\n` : ''}\t\tif (error) {
 \t\t\treturn React.createElement(
 \t\t\t\t'div',
 \t\t\t\t{ role: 'alert', className, style },

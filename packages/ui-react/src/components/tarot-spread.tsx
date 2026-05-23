@@ -12,11 +12,13 @@ export interface RoxyTarotSpreadProps extends ElementAttrs {
 	data?: CastThreeCardResponse | CastCelticCrossResponse | CastLoveSpreadResponse | CastYesNoResponse | CastReadingResponse | DrawCardsResponse;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Which spread layout the response is for. Positions the cards and selects the reading template. */
+	spread?: 'three-card' | 'celtic-cross' | 'love' | 'yes-no' | 'draw';
 
 }
 
 export const RoxyTarotSpread = React.forwardRef<HTMLElement | null, RoxyTarotSpreadProps>(
-	function RoxyTarotSpread({ data, className, style, ...rest }, ref) {
+	function RoxyTarotSpread({ data, className, style, spread, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -47,6 +49,13 @@ export const RoxyTarotSpread = React.forwardRef<HTMLElement | null, RoxyTarotSpr
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && spread !== undefined) {
+				(el as unknown as { spread: 'three-card' | 'celtic-cross' | 'love' | 'yes-no' | 'draw' }).spread = spread;
+			}
+		}, [spread, loaded]);
 
 		if (error) {
 			return React.createElement(

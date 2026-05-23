@@ -91,7 +91,7 @@ export class RoxyKpRulingPlanets extends LitElement {
 			}
 			.rp .rank {
 				font-size: var(--roxy-text-xs, 0.75rem);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 			}
 			table {
 				width: 100%;

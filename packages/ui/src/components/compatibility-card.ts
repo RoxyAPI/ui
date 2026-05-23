@@ -50,7 +50,7 @@ export class RoxyCompatibilityCard extends LitElement {
 				font-variant-numeric: tabular-nums;
 				font-size: 2rem;
 				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				line-height: 1;
 			}
 			.rating {
@@ -86,7 +86,7 @@ export class RoxyCompatibilityCard extends LitElement {
 			}
 
 			.archetype {
-				color: var(--roxy-accent-fg, #b45309);
+				color: var(--roxy-accent-ink, #b45309);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 
