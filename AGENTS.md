@@ -120,16 +120,13 @@ const { data: chart } = await roxy.astrology.generateNatalChart({
 
 Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). The decimal form is what `/location/search` returns; the IANA form is correct over DST boundaries. Pick one and stay consistent in a single integration. Mixing them does not break the API but makes the bug surface area larger.
 
-### 4. Secret key in the browser
+### 4. API key in the browser
 
-There are two key classes. **Secret keys are unprefixed** and grant full access; they belong server-side only (Node, Bun, Hono, Next.js route handlers, Workers, Edge functions). **Publishable keys** are prefixed `pk_live_*` or `pk_test_*` and are safe in the browser; they are locked to an origin allowlist at the API gateway. For widgets, embeds, vanilla HTML, and `data-publishable-key` use the publishable key. For the typed SDK on a server, use the secret key.
+Keys are server side only. Call `createRoxy(process.env.ROXY_API_KEY!)` on your server (Node, Bun, Hono, Next.js route handlers, Workers, Edge functions), then send the response, not the key, to the component. Never ship the key in a client bundle. Browser-safe keys for direct client-side embedding are on the roadmap, not yet available.
 
 ```ts
-// Server (Next.js route handler, Workers, Bun): secret key
+// Server side only
 const roxy = createRoxy(process.env.ROXY_API_KEY!);
-
-// Browser (widgets auto-mount): publishable key
-<div data-roxy-widget="natal-chart" data-publishable-key="pk_live_xxx" ...></div>
 ```
 
 ### 5. Missing `'use client'` in Next.js App Router
@@ -194,30 +191,30 @@ import type { NatalChartResponse } from '@roxyapi/sdk';
 
 ### Pattern 1: vanilla HTML, no build step
 
+Fetch on your server with the secret key, then inline the response into the component as a child `<script type="application/json" class="roxy-data">`. The component reads it on load. No key in the browser.
+
 ```html
 <script
 	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"
 	crossorigin="anonymous"
 ></script>
 
-<roxy-natal-chart id="chart"></roxy-natal-chart>
-
-<script type="module">
-	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-	const roxy = createRoxy('pk_live_xxx');
-	const { data } = await roxy.astrology.generateNatalChart({
-		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
-	});
-	document.getElementById('chart').data = data;
-</script>
+<roxy-natal-chart>
+	<script type="application/json" class="roxy-data">
+		{ "planets": [ ... ], "houses": [ ... ], "aspects": [ ... ] }
+	</script>
+</roxy-natal-chart>
 ```
 
-### Pattern 2: React, with the typed SDK
+Setting the JavaScript `data` property always wins over the inlined JSON, so the same element also drives dynamic pages.
+
+### Pattern 2: React, interactive
+
+`<RoxyLocationSearch>` runs in the browser. On select, call your own route, which holds the secret key, and set the returned data on the chart. The key never reaches the client.
 
 ```tsx
 'use client';
 
-import { createRoxy } from '@roxyapi/sdk';
 import {
 	RoxyNatalChart,
 	RoxyLocationSearch,
@@ -225,18 +222,18 @@ import {
 } from '@roxyapi/ui-react';
 import { useState } from 'react';
 
-const roxy = createRoxy(process.env.NEXT_PUBLIC_ROXY_API_KEY!);
-
 export function BirthChartView() {
 	const [chart, setChart] = useState<RoxyNatalChartProps['data']>(undefined);
 
 	const onLocationSelect = async (e: CustomEvent<{ latitude?: number; longitude?: number; timezone?: number | string }>) => {
 		const { latitude, longitude, timezone } = e.detail;
 		if (latitude == null || longitude == null) return;
-		const { data } = await roxy.astrology.generateNatalChart({
-			body: { date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone },
+		// Your route calls roxy.astrology.generateNatalChart with the secret key.
+		const res = await fetch('/api/natal-chart', {
+			method: 'POST',
+			body: JSON.stringify({ date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone }),
 		});
-		setChart(data);
+		setChart(await res.json());
 	};
 
 	return (
@@ -248,9 +245,11 @@ export function BirthChartView() {
 }
 ```
 
+For a static chart with no picker, fetch in a Server Component and pass `data` to a client component (Pattern 6).
+
 ### Pattern 3: schema-driven form
 
-`<roxy-endpoint-form>` reads the OpenAPI spec and renders the inputs for any endpoint. Listen for the `roxy-submit` event with the validated payload.
+`<roxy-endpoint-form>` reads the OpenAPI spec and renders the inputs for any endpoint. On `roxy-submit`, POST the validated values to your own route, which calls the SDK with the secret key, then set the returned data on the target component.
 
 ```html
 <roxy-endpoint-form
@@ -258,41 +257,21 @@ export function BirthChartView() {
 	method="POST"
 	submit-label="Generate kundli"
 ></roxy-endpoint-form>
+<roxy-vedic-kundli chart-style="south"></roxy-vedic-kundli>
 
 <script type="module">
-	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-	const roxy = createRoxy('pk_live_xxx');
 	const form = document.querySelector('roxy-endpoint-form');
 	form.addEventListener('roxy-submit', async (e) => {
-		const { values } = e.detail;
-		const { data: kundli } = await roxy.vedicAstrology.generateBirthChart({ body: values });
-		document.querySelector('roxy-vedic-kundli').data = kundli;
+		// Your route calls roxy.vedicAstrology.generateBirthChart with the secret key.
+		const res = await fetch('/api/kundli', { method: 'POST', body: JSON.stringify(e.detail.values) });
+		document.querySelector('roxy-vedic-kundli').data = await res.json();
 	});
 </script>
 ```
 
-### Pattern 4: widgets auto-mount (no JavaScript wiring)
+### Pattern 4: widgets auto-mount (coming soon)
 
-Use a publishable key (`pk_live_*` or `pk_test_*`) for client-side embeds. Get one at <https://roxyapi.com/account>. Publishable keys are origin-restricted at the API gateway. Register the customer domain (e.g. `https://customer.com`) when creating the key, and the gateway will reject requests from any other origin. Never use a secret key in client-side code (secret keys are unprefixed and live server-side only).
-
-```html
-<script
-	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js"
-	defer
-></script>
-
-<div
-	data-roxy-widget="natal-chart"
-	data-publishable-key="pk_live_xxx"
-	data-date="1990-01-15"
-	data-time="14:30:00"
-	data-latitude="19.07"
-	data-longitude="72.88"
-	data-timezone="5.5"
-></div>
-```
-
-The auto-mount script reads `data-*` attributes, calls the matching endpoint, and renders the matching component.
+A zero-wiring embed that reads `data-*` attributes and renders the matching component is on the roadmap. It needs browser-safe keys, which are not yet available. Until then, use Pattern 1 (inline JSON) for no-build pages.
 
 ### Pattern 5: MCP tool-call response
 
@@ -396,7 +375,7 @@ Every visible aspect of the chart is driven by `--roxy-*` CSS custom properties 
 
 ## Domain ordering
 
-When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers. Location is utility, not a selling domain.
+When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, numerology, tarot, human design, forecast, biorhythm, I Ching, crystals, dreams, angel numbers. Location is utility, not a selling domain.
 
 ## What not to ship
 

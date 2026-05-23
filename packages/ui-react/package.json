@@ -1,74 +1,74 @@
 {
-  "name": "@roxyapi/ui-react",
-  "version": "0.8.0",
-  "description": "React components for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, biorhythm, I Ching, and more. One key, beautiful in 30 minutes.",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "sideEffects": false,
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./components/*": {
-      "types": "./dist/components/*.d.ts",
-      "import": "./dist/components/*.js"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE",
-    "AGENTS.md"
-  ],
-  "keywords": [
-    "astrology",
-    "vedic",
-    "tarot",
-    "numerology",
-    "biorhythm",
-    "iching",
-    "kundli",
-    "natal-chart",
-    "birth-chart",
-    "horoscope",
-    "panchang",
-    "react",
-    "react-components",
-    "web-components",
-    "shadow-dom",
-    "lit",
-    "shadcn",
-    "jsdelivr",
-    "roxyapi"
-  ],
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RoxyAPI/ui.git",
-    "directory": "packages/ui-react"
-  },
-  "homepage": "https://roxyapi.com/ui",
-  "bugs": {
-    "url": "https://github.com/RoxyAPI/ui/issues"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "peerDependencies": {
-    "react": ">=18 <20",
-    "react-dom": ">=18 <20"
-  },
-  "peerDependenciesMeta": {
-    "react-dom": {
-      "optional": true
-    }
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  }
+	"name": "@roxyapi/ui-react",
+	"version": "0.8.0",
+	"description": "React components for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, biorhythm, I Ching, and more. One key, beautiful in 30 minutes.",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./components/*": {
+			"types": "./dist/components/*.d.ts",
+			"import": "./dist/components/*.js"
+		}
+	},
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE",
+		"AGENTS.md"
+	],
+	"keywords": [
+		"astrology",
+		"vedic",
+		"tarot",
+		"numerology",
+		"biorhythm",
+		"iching",
+		"kundli",
+		"natal-chart",
+		"birth-chart",
+		"horoscope",
+		"panchang",
+		"react",
+		"react-components",
+		"web-components",
+		"shadow-dom",
+		"lit",
+		"shadcn",
+		"jsdelivr",
+		"roxyapi"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/RoxyAPI/ui.git",
+		"directory": "packages/ui-react"
+	},
+	"homepage": "https://roxyapi.com/ui",
+	"bugs": {
+		"url": "https://github.com/RoxyAPI/ui/issues"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"peerDependencies": {
+		"react": ">=18 <20",
+		"react-dom": ">=18 <20"
+	},
+	"peerDependenciesMeta": {
+		"react-dom": {
+			"optional": true
+		}
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
 }

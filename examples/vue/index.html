@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Roxy UI - Vue / vanilla example</title>
+	<title>Roxy UI - Vue example</title>
 	<script type="importmap">
 		{
 			"imports": {
-				"vue": "https://esm.sh/vue@3",
-				"@roxyapi/sdk": "https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js"
+				"vue": "https://esm.sh/vue@3"
 			}
 		}
 	</script>
+	<!-- One script tag defines every roxy-* element. -->
 	<script
 		src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"
 		crossorigin="anonymous"
@@ -20,46 +20,25 @@
 	<div id="app"></div>
 
 	<script type="module">
-		import { createRoxy } from '@roxyapi/sdk';
 		import { createApp, onMounted, ref } from 'vue';
-
-		const roxy = createRoxy(window.ROXY_API_KEY ?? 'pk_live_YOUR_PUBLISHABLE_KEY');
 
 		const App = {
 			setup() {
 				const horoscope = ref(null);
-				const kundli = ref(null);
 
 				onMounted(async () => {
-					const { data } = await roxy.astrology.getDailyHoroscope({
-						path: { sign: 'aries' },
-					});
-					horoscope.value = data;
+					// Your backend route holds the secret key, calls RoxyAPI, and
+					// returns the response. The key never reaches the browser.
+					horoscope.value = await fetch('/api/horoscope?sign=aries').then((r) => r.json());
 				});
 
-				const onLocation = async (event) => {
-					const { latitude, longitude, timezone } = event.detail;
-					const { data } = await roxy.vedicAstrology.generateBirthChart({
-						body: { date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone },
-					});
-					kundli.value = data;
-				};
-
-				return { horoscope, kundli, onLocation };
+				return { horoscope };
 			},
 			template: `
 				<main style="max-width: 720px; margin: 0 auto; padding: 32px">
 					<h1>Roxy UI in Vue</h1>
+					<p>Fetch on your server, pass the response as <code>:data</code>. The key stays server side.</p>
 					<roxy-horoscope-card :data="horoscope" period="daily"></roxy-horoscope-card>
-
-					<h2>Pick a city</h2>
-					<roxy-location-search
-						placeholder="Search city"
-						@roxy-location-select="onLocation"
-					></roxy-location-search>
-
-					<h2>Then render the kundli</h2>
-					<roxy-vedic-kundli :data="kundli"></roxy-vedic-kundli>
 				</main>
 			`,
 		};

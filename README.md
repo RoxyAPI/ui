@@ -221,42 +221,24 @@ Tables, cards, forms, and helper components in the [live demo](https://roxyapi.g
 
 ## Start with one component
 
-Vanilla HTML. No build step. Replace `YOUR_API_KEY` with a publishable key from <https://roxyapi.com/account>.
+Fetch with the typed SDK, pass `data` to the component. No glue code.
 
-```html
-<script
-	src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"
-	crossorigin="anonymous"
-	defer
-></script>
-<roxy-natal-chart id="chart"></roxy-natal-chart>
-<script type="module">
-	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-	const roxy = createRoxy('YOUR_API_KEY');
-	const { data } = await roxy.astrology.generateNatalChart({
-		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
-	});
-	document.getElementById('chart').data = data;
-</script>
+```tsx
+import { createRoxy } from '@roxyapi/sdk';
+import { RoxyHoroscopeCard } from '@roxyapi/ui-react';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });
+
+return <RoxyHoroscopeCard data={data} />;
 ```
 
-> **Unwrap `data` before passing to the component.** The SDK returns `{ data, error, request, response }`. Pass the envelope and the chart renders `[object Object]`. This is the most common integration bug.
+Then expand into natal charts, kundli, dasha, tarot, and every other domain. The SDK returns `data`, the component renders it; the same pairing holds for all 32 components.
 
-Want a Vedic kundli instead? Same shape, different SDK method:
+> **Pass `data`, not the envelope.** The SDK returns `{ data, error, request, response }`. Pass `data`, or the component renders `[object Object]`. This is the most common integration bug.
 
-```html
-<roxy-vedic-kundli id="kundli" chart-style="south"></roxy-vedic-kundli>
-<script type="module">
-	import { createRoxy } from 'https://cdn.jsdelivr.net/npm/@roxyapi/sdk@latest/dist/factory.js';
-	const roxy = createRoxy('YOUR_API_KEY');
-	const { data } = await roxy.vedicAstrology.generateBirthChart({
-		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
-	});
-	document.getElementById('kundli').data = data;
-</script>
-```
-
-In production, geocode the user's city with `<roxy-location-search>` (see [Quick start](#quick-start)) instead of hardcoding coordinates.
+The key stays on your server. Vanilla HTML or a server-rendered page fetches the same way, then [inlines the JSON into the component](#server-rendered-no-javascript-wiring): no build step, no key in the browser. Try every component in the [live demo](https://roxyapi.github.io/ui/), each with Preview, Code, and shadcn tabs and a live color customizer.
 
 ## Install
 
@@ -312,7 +294,12 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 
 Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
 
+Load the bundle once anywhere on the page. It registers every `roxy-*` element, so every component on the page renders from that single tag.
+
 ```html
+<!-- Once per page: defines every roxy-* element -->
+<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" crossorigin="anonymous" defer></script>
+
 <roxy-natal-chart>
 	<script type="application/json" class="roxy-data">
 		{ "planets": [ ... ], "houses": [ ... ], "aspects": [ ... ] }
@@ -464,7 +451,48 @@ const { data: cc } = await roxy.tarot.castCelticCross({
 <RoxyTarotSpread data={cc} />
 ```
 
-### 5. Biorhythm (daily, forecast)
+### 5. Human Design (bodygraph)
+
+The breakout 2026 self-knowledge category, computed from the same ephemeris as Western astrology plus the I Ching gate wheel and chakra-style centers. Self-discovery apps, dating and compatibility products, and AI coaching bots ship the full bodygraph first. No coordinates needed; Human Design uses the birth instant, not the observer location.
+
+```tsx
+import { RoxyBodygraph } from '@roxyapi/ui-react';
+
+// Full bodygraph. The head term every Human Design app leads with ("human design chart").
+// Type, strategy, authority, profile, the nine centers, channels, and every gate
+// activation in one call. Pass the birth instant only, no latitude or longitude.
+const { data: bodygraph } = await roxy.humanDesign.generateBodygraph({
+  body: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+});
+<RoxyBodygraph data={bodygraph} />
+```
+
+### 6. Forecast (transits, cross-domain timeline)
+
+The first cross-domain, stateless forecast in the catalog: one call merges Western transits, Vedic Vimshottari dasha boundaries, and biorhythm critical days into a single significance-scored, time-ordered timeline. Forecast feeds, transit alerts, and timing tools are the buyers. Acquire on the high-volume `astrology transits` search, convert on the cross-domain timeline no competitor ships. No coordinates needed.
+
+```tsx
+import { RoxyForecastTimeline } from '@roxyapi/ui-react';
+
+// Transit forecast. The demand leader. Western transit-to-natal aspects, sign
+// ingresses, and retrograde stations over the window.
+const { data: transits } = await roxy.forecast.forecastTransits({
+  body: { birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 } },
+});
+<RoxyForecastTimeline data={transits} />
+
+// Cross-domain timeline. The same window merged with Vedic dasha boundaries and
+// biorhythm critical days into one significance-scored timeline.
+const { data: timeline } = await roxy.forecast.generateTimeline({
+  body: {
+    birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+    domains: ['western', 'vedic', 'biorhythm'],
+  },
+});
+<RoxyForecastTimeline data={timeline} />
+```
+
+### 7. Biorhythm (daily, forecast)
 
 Zero competition domain. Steady search volume with the top Google result being a static calculator page. Pure land-grab for wellness, productivity, sports, and couples apps.
 
@@ -485,7 +513,7 @@ const { data: forecast } = await roxy.biorhythm.getForecast({
 <RoxyBiorhythmChart data={forecast} mode="forecast" />
 ```
 
-### 6. I Ching (cast a reading, hexagram lookup)
+### 8. I Ching (cast a reading, hexagram lookup)
 
 Meditation apps, decision-making tools, and wisdom chatbots. `i ching API` and `hexagram API` are the keywords.
 
@@ -505,12 +533,13 @@ const { data: random } = await roxy.iching.getRandomHexagram();
 
 ## API keys
 
-Get keys at <https://roxyapi.com/account>.
+Get a key at <https://roxyapi.com/account>.
 
-- **Secret key** (server-side only). Use in Node, Bun, Hono, Next.js route handlers, Workers. Never commit, never ship in client bundles.
-- **Publishable key** (`pk_live_*` / `pk_test_*`). Safe in browsers, locked to the origins you register on the key. Use with the widgets auto-mount script for WordPress, Shopify, static HTML, embed scenarios. The API gateway rejects requests from any origin not on the allowlist.
+Today every key is a **secret key**: use it server side only (Node, Bun, Hono, Next.js route handlers, Workers). Never commit it, never ship it in a client bundle. Fetch on your server and send the rendered response, not the key, to the browser. The [Start with one component](#start-with-one-component) section and the [framework recipes](#most-used-components-per-domain) show the pattern.
 
-For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your server env. For the widgets auto-mount path (`data-publishable-key="pk_live_xxx"`), use a publishable key with your domain registered on it.
+Set `ROXY_API_KEY` to your secret key in your server env for every SDK example on this page.
+
+Browser-safe keys for direct client-side embedding are on the roadmap, not yet available. Until they ship, keep the fetch on your server.
 
 ## Distribution
 
@@ -520,7 +549,7 @@ For the SDK examples on this page, set `ROXY_API_KEY` to a secret key in your se
 | npm `@roxyapi/ui-react` | `npmjs.com/package/@roxyapi/ui-react` |
 | jsDelivr CDN (full bundle) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
 | jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
-| Widgets auto-mount | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
+| Widgets auto-mount (with browser keys, coming soon) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
 | shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
 
 ## Components
@@ -770,7 +799,7 @@ Components ship in Shadow DOM for style isolation; Tailwind utilities are scoped
 <details>
 <summary><strong>What is the security model for API keys?</strong></summary>
 
-Two key classes. Secret keys (unprefixed) live server-side only and grant full access. Publishable keys (`pk_live_*` / `pk_test_*`) are browser-safe and locked to an origin allowlist registered on the key. The API gateway rejects requests from any other origin and counts the failed attempt against the rate limit, so a stolen key cannot be brute-fired from elsewhere.
+Today keys are secret keys: they live server side only and grant full access, so never ship one in a client bundle. Fetch on your server and pass the rendered response, not the key, to the browser. Browser-safe keys with an origin allowlist for direct client-side embedding are on the roadmap and not yet available.
 
 For CSP, allow `script-src https://cdn.jsdelivr.net` if loading the bundle from the CDN. Subresource Integrity hashes are available via the jsDelivr SRI API for any pinned version.
 </details>
@@ -781,11 +810,11 @@ For CSP, allow `script-src https://cdn.jsdelivr.net` if loading the bundle from 
 Semver. Pre-1.0, minor bumps may include breaking changes (we will note them in the changelog). Patch bumps are always backwards-compatible. Pin a concrete version in production code:
 
 ```bash
-npm install @roxyapi/ui@0.1.x
+npm install @roxyapi/ui@0.8.x
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@0.1.5/dist/cdn/roxy-ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@0.8.0/dist/cdn/roxy-ui.js"></script>
 ```
 
 The `@latest` URL on this page is for paste-friendly marketing; production code should pin.

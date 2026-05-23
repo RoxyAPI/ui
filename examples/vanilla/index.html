@@ -15,9 +15,9 @@
 		}
 		h1 { letter-spacing: -0.02em; }
 		.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff; }
-		input { padding: 8px 12px; border-radius: 8px; border: 1px solid #e4e4e7; font-size: 14px; }
-		button { background: #f59e0b; color: white; border: 0; padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+		code { background: #f4f4f5; padding: 1px 5px; border-radius: 4px; }
 	</style>
+	<!-- One script tag defines every roxy-* element on the page. -->
 	<script
 		src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"
 		crossorigin="anonymous"
@@ -26,72 +26,53 @@
 </head>
 <body>
 	<h1>Vanilla HTML, no build step</h1>
-	<p>One script tag, then drop the elements directly. Set <code>window.ROXY_API_KEY</code> in your environment, or replace the placeholder in the snippet below.</p>
+	<p>
+		Fetch on your server with your secret key, then inline the response into the
+		component as a child <code>&lt;script type="application/json" class="roxy-data"&gt;</code>.
+		The component reads it on load. This page ships no API key.
+	</p>
 
 	<div class="card">
-		<h2>Step 1. Pick a city</h2>
-		<roxy-location-search id="loc" placeholder="Type Mumbai, Tokyo, New York"></roxy-location-search>
-	</div>
-
-	<div class="card">
-		<h2>Step 2. Generate the kundli</h2>
-		<form id="form" style="display: flex; gap: 8px; flex-wrap: wrap;">
-			<input id="date" type="date" value="1990-01-15" required>
-			<input id="time" type="time" value="14:30" required>
-			<button type="submit">Generate</button>
-		</form>
-		<div style="margin-top: 16px;">
-			<roxy-vedic-kundli id="kundli"></roxy-vedic-kundli>
-		</div>
-	</div>
-
-	<div class="card">
-		<h2>Step 3. Daily horoscope</h2>
-		<roxy-horoscope-card id="horoscope" period="daily"></roxy-horoscope-card>
-	</div>
-
-	<script type="module">
-		const API = 'https://roxyapi.com/api/v2';
-		const KEY = window.ROXY_API_KEY ?? 'pk_live_YOUR_PUBLISHABLE_KEY';
-
-		const loc = document.getElementById('loc');
-		const kundliEl = document.getElementById('kundli');
-		const horoscopeEl = document.getElementById('horoscope');
-		let location = null;
-
-		loc.addEventListener('roxy-location-select', (e) => {
-			location = e.detail;
-			console.log('Selected', location);
-		});
-
-		document.getElementById('form').addEventListener('submit', async (e) => {
-			e.preventDefault();
-			if (!location) {
-				alert('Pick a city first');
-				return;
+		<h2>Daily horoscope</h2>
+		<roxy-horoscope-card period="daily">
+			<script type="application/json" class="roxy-data">
+			{
+				"sign": "Aries",
+				"date": "2026-05-23",
+				"overview": "Saturn grounds Aries in practical reality today. Slow, deliberate progress builds something that lasts. Honor your commitments and they will honor you in return. Push through resistance. The effort you put in now is worth it.",
+				"love": "Venus warms your fourth house, bringing love into your home life. Domestic harmony and family connections feel nurturing. Cozy evenings and heartfelt conversations deepen bonds.",
+				"career": "Take responsibility seriously at work. Hard work brings lasting results, even when progress feels invisible. Your reliability earns respect.",
+				"health": "The Sun in your third house energizes your mind and nervous system. Short walks, puzzles, and learning keep you sharp and balanced.",
+				"finance": "Jupiter in your fourth house favors real estate, home investments, and family-related finances. Property matters carry extra luck.",
+				"advice": "Mercury in your third house is at home, supercharging communication. Write, call, text, and learn. Information flows freely.",
+				"luckyNumber": 37,
+				"luckyColor": "Gold",
+				"compatibleSigns": ["Leo", "Sagittarius", "Gemini"],
+				"activeTransits": [
+					"Saturn in Aries (1st house of identity and self-expression)",
+					"Venus in Cancer (4th house of home and emotional foundations)"
+				],
+				"moonSign": "Virgo",
+				"moonPhase": "First Quarter Moon",
+				"energyRating": 8
 			}
-			const date = document.getElementById('date').value;
-			const time = document.getElementById('time').value + ':00';
-			const res = await fetch(`${API}/vedic-astrology/birth-chart`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json', 'X-API-Key': KEY },
-				body: JSON.stringify({
-					date,
-					time,
-					latitude: location.latitude,
-					longitude: location.longitude,
-					timezone: location.timezone,
-				}),
-			});
-			kundliEl.data = await res.json();
-		});
+			</script>
+		</roxy-horoscope-card>
+	</div>
 
-		(async () => {
-			const res = await fetch(`${API}/astrology/horoscope/aries/daily`, {
-				headers: { 'X-API-Key': KEY },
-			});
-			horoscopeEl.data = await res.json();
-		})();
-	</script>
+	<p>
+		For dynamic pages, set the <code>data</code> property in JavaScript instead of
+		inlining JSON, where <code>response</code> is what your server route returned:
+	</p>
+	<div class="card">
+		<roxy-horoscope-card id="dynamic" period="daily"></roxy-horoscope-card>
+		<script type="module">
+			// Your backend route holds the secret key, calls RoxyAPI, and returns the
+			// response. The key never reaches the browser. Geocode the birth city
+			// server side too (GET /location/search) for chart endpoints.
+			const response = await fetch('/api/horoscope?sign=aries').then((r) => r.json());
+			document.getElementById('dynamic').data = response;
+		</script>
+	</div>
 </body>
 </html>
