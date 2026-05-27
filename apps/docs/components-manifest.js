@@ -60,7 +60,7 @@ function shadcn(tag, body) {
 npx shadcn@latest add ${REGISTRY_BASE}/${slug}.json
 
 # Use in your Next.js / React app (server component)
-import { ${pascal} } from '@/components/ui/${slug}';
+import { ${pascal} } from '@/components/roxy-ui/${slug}';
 import { createRoxy } from '@roxyapi/sdk';
 
 export default async function Page() {
@@ -344,7 +344,7 @@ npx shadcn@latest add ${REGISTRY_BASE}/endpoint-form.json
 
 # Use in your Next.js / React app
 'use client';
-import { RoxyEndpointForm } from '@/components/ui/endpoint-form';
+import { RoxyEndpointForm } from '@/components/roxy-ui/endpoint-form';
 
 export default function NumerologyForm() {
   return (
@@ -375,7 +375,7 @@ npx shadcn@latest add ${REGISTRY_BASE}/location-search.json
 
 # Use in your Next.js / React app
 'use client';
-import { RoxyLocationSearch } from '@/components/ui/location-search';
+import { RoxyLocationSearch } from '@/components/roxy-ui/location-search';
 
 export default function CityPicker() {
   return (
@@ -408,7 +408,7 @@ export default function CityPicker() {
 npx shadcn@latest add ${REGISTRY_BASE}/data.json
 
 # Use in your Next.js / React app
-import { RoxyData } from '@/components/ui/data';
+import { RoxyData } from '@/components/roxy-ui/data';
 
 export default function Page({ data }) {
   return <RoxyData data={data} />;
