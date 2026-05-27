@@ -53376,7 +53376,7 @@
     },
     "/forecast/solar-return": {
       "post": {
-        "operationId": "generateSolarReturn",
+        "operationId": "forecastSolarReturn",
         "tags": [
           "Forecast"
         ],
