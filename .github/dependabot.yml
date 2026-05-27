@@ -6,6 +6,11 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 10
+    # Match bunfig.toml minimumReleaseAge (259200s = 3 days). Without this,
+    # Dependabot opens PRs for packages younger than bun will install, and CI
+    # fails with "blocked by minimum-release-age" until the package ripens.
+    cooldown:
+      default-days: 3
     groups:
       dev-minor-and-patch:
         dependency-type: development
