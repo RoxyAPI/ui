@@ -27,16 +27,19 @@ jobs:
       - run: bun run typecheck
       - run: bun run build
       - run: bun run test
-      - name: Install Playwright browsers
-        # cdn.playwright.dev browser-binary downloads occasionally stall with no
-        # built-in timeout, hanging the job. Cap each attempt and retry.
+      - name: Provision Playwright browsers from MCR image (bypass cdn.playwright.dev)
+        # cdn.playwright.dev browser-binary downloads stall from GitHub runners.
+        # Pull the exact matching browsers from the official Playwright image on
+        # Microsoft Container Registry, then copy them into the default browser
+        # cache. install-deps is apt-only (no CDN download). Keep the image tag
+        # in lockstep with @playwright/test in package.json (currently 1.59.1).
         run: |
-          for i in 1 2 3; do
-            timeout 480 bunx playwright install --with-deps chromium && exit 0
-            echo "::warning::Playwright install attempt $i stalled or failed; retrying"
-            sleep 10
-          done
-          echo "::error::Playwright browser download failed after 3 attempts"; exit 1
+          bunx playwright install-deps chromium
+          docker create --name pwbrowsers mcr.microsoft.com/playwright:v1.59.1-noble
+          mkdir -p "$HOME/.cache/ms-playwright"
+          docker cp pwbrowsers:/ms-playwright/. "$HOME/.cache/ms-playwright/"
+          docker rm pwbrowsers
+          ls -1 "$HOME/.cache/ms-playwright"
       - run: bun run test:e2e
         env:
           PLAYWRIGHT_PROJECTS: chromium
