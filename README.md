@@ -55,7 +55,7 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
 ```css
 :root {
   /* Surface */
-  --roxy-bg: #fafafa;
+  --roxy-bg: #ffffff;
   --roxy-fg: #0a0a0a;
   --roxy-muted: #71717a;
   --roxy-border: #e4e4e7;
@@ -66,13 +66,13 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
 
   /* Status (each has a -fg variant for WCAG-AA text contrast) */
   --roxy-success: #16a34a;
-  --roxy-warning: #f59e0b;
+  --roxy-warning: #ea580c;
   --roxy-danger: #dc2626;
-  --roxy-info: #2563eb;
+  --roxy-info: #0284c7;
 
   /* Shape + motion */
-  --roxy-radius-md: 12px;
-  --roxy-shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --roxy-radius-md: 8px;
+  --roxy-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.06);
   --roxy-motion-duration: 200ms; /* 0ms when prefers-reduced-motion */
 }
 
@@ -684,7 +684,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Per-component bundles run 6-10 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles) stays well under the 150 KB CI cap, around 45 KB gzipped today. The React package loads the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Per-component bundles run 6-10 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 54 KB gzipped today. The React package loads the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>
