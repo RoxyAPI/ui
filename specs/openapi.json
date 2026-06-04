@@ -51,7 +51,7 @@
     },
     {
       "name": "Forecast",
-      "description": "Merge upcoming transit aspects, sign ingresses, retrograde stations, Vimshottari dasha changes, and biorhythm critical days into one time-ordered forecast for a single subject. The only cross-domain forecast timeline behind one key, positions verified against NASA JPL Horizons, available over remote MCP with typed SDKs. Horizon capped at 90 days."
+      "description": "Merge upcoming transit aspects, sign ingresses, retrograde stations, new and full moons, biorhythm critical days, and Vimshottari dasha changes into one time-ordered forecast for a single subject. The only cross-domain forecast timeline behind one key, positions verified against NASA JPL Horizons, available over remote MCP with typed SDKs. Horizon capped at 90 days."
     },
     {
       "name": "Biorhythm",
@@ -51049,7 +51049,7 @@
           "Forecast"
         ],
         "summary": "Cross-domain forecast timeline - Transits, ingresses, stations, dasha changes, critical days",
-        "description": "Build one time-ordered forecast for a single birth subject by merging upcoming events across three domains: western transit-to-natal aspects, sign ingresses, and retrograde stations; vedic Vimshottari mahadasha and antardasha boundaries; and biorhythm critical days. The window is clamped to 90 days and events are capped and scored by significance. Built for what-is-coming dashboards, daily and weekly forecast feeds, and timing tools.",
+        "description": "Build one time-ordered forecast for a single birth subject by merging upcoming events across three domains: western transit-to-natal aspects, sign ingresses, retrograde stations, eclipses, and new and full moons; biorhythm critical days; and vedic Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. The window is clamped to 90 days and events are capped and scored by significance. Built for what-is-coming dashboards, daily and weekly forecast feeds, and timing tools.",
         "security": [
           {
             "apiKey": []
@@ -51160,7 +51160,7 @@
                         "biorhythm"
                       ],
                       "example": "western",
-                      "description": "Forecast domain. western covers transit aspects, sign ingresses, and retrograde stations. vedic covers Vimshottari mahadasha and antardasha boundaries. biorhythm covers critical days."
+                      "description": "Forecast domain. western covers transit aspects, sign ingresses, retrograde stations, eclipses, and new and full moons. vedic covers Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. biorhythm covers critical days."
                     },
                     "example": [
                       "western",
@@ -51314,7 +51314,7 @@
                               "biorhythm"
                             ],
                             "example": "western",
-                            "description": "Forecast domain. western covers transit aspects, sign ingresses, and retrograde stations. vedic covers Vimshottari mahadasha and antardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
+                            "description": "Forecast domain. western covers transit aspects, sign ingresses, retrograde stations, eclipses, and new and full moons. vedic covers Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
                           },
                           "type": {
                             "type": "string",
@@ -51323,21 +51323,22 @@
                               "sign-ingress",
                               "retrograde-station",
                               "eclipse",
+                              "lunar-phase",
                               "dasha-change",
                               "critical-day"
                             ],
                             "example": "transit-aspect",
-                            "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, and eclipse are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
+                            "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, eclipse, and lunar-phase are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
                           },
                           "body": {
                             "type": "string",
                             "example": "Saturn",
-                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse or Moon for a lunar eclipse, a mahadasha or antardasha label for dasha changes, or the critical cycle for biorhythm days."
+                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
                           },
                           "target": {
                             "type": "string",
                             "example": "Moon",
-                            "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered. Absent for other event types."
+                            "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered, and for a lunar-phase, the zodiac sign of the New or Full Moon. Absent for other event types."
                           },
                           "aspect": {
                             "type": "string",
@@ -51373,6 +51374,15 @@
                             "type": "number",
                             "example": 0.966,
                             "description": "For a lunar eclipse, the peak fraction from 0 to 1 of the Moon disc covered by Earth umbra. 1 for a total lunar eclipse, between 0 and 1 for a partial, 0 for a penumbral. Absent for solar eclipses and other event types."
+                          },
+                          "phase": {
+                            "type": "string",
+                            "enum": [
+                              "new-moon",
+                              "full-moon"
+                            ],
+                            "example": "full-moon",
+                            "description": "For a lunar-phase event, which syzygy it is: new-moon (Sun-Moon conjunction) or full-moon (Sun-Moon opposition). The intermediate quarters are not emitted. A stable machine value, never localized. Absent for other event types."
                           },
                           "description": {
                             "type": "string",
@@ -51623,8 +51633,8 @@
         "tags": [
           "Forecast"
         ],
-        "summary": "Western transit forecast - Transit aspects, sign ingresses, retrograde stations",
-        "description": "Forecast the western astrology events for a single birth chart over a window up to 90 days: every transit-to-natal major aspect refined to its exact instant, every transiting planet sign ingress, and every retrograde or direct station. Returns a time-ordered, significance-scored timeline. Built for astrology forecast feeds, transit alerts, and timing tools.",
+        "summary": "Western astrology forecast - aspects, ingresses, stations, eclipses, moon phases",
+        "description": "Forecast the western astrology events for a single birth chart over a window up to 90 days: every transit-to-natal major aspect refined to its exact instant, every transiting planet sign ingress, every retrograde or direct station, every solar and lunar eclipse, and every New and Full Moon. Returns a time-ordered, significance-scored timeline. Built for astrology forecast feeds, transit alerts, and timing tools.",
         "security": [
           {
             "apiKey": []
@@ -51742,7 +51752,7 @@
         },
         "responses": {
           "200": {
-            "description": "Time-ordered western transit events: aspects, ingresses, and stations",
+            "description": "Time-ordered western forecast events: aspects, ingresses, stations, eclipses, and moon phases",
             "content": {
               "application/json": {
                 "schema": {
@@ -51839,7 +51849,7 @@
                               "biorhythm"
                             ],
                             "example": "western",
-                            "description": "Forecast domain. western covers transit aspects, sign ingresses, and retrograde stations. vedic covers Vimshottari mahadasha and antardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
+                            "description": "Forecast domain. western covers transit aspects, sign ingresses, retrograde stations, eclipses, and new and full moons. vedic covers Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
                           },
                           "type": {
                             "type": "string",
@@ -51848,21 +51858,22 @@
                               "sign-ingress",
                               "retrograde-station",
                               "eclipse",
+                              "lunar-phase",
                               "dasha-change",
                               "critical-day"
                             ],
                             "example": "transit-aspect",
-                            "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, and eclipse are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
+                            "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, eclipse, and lunar-phase are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
                           },
                           "body": {
                             "type": "string",
                             "example": "Saturn",
-                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse or Moon for a lunar eclipse, a mahadasha or antardasha label for dasha changes, or the critical cycle for biorhythm days."
+                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
                           },
                           "target": {
                             "type": "string",
                             "example": "Moon",
-                            "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered. Absent for other event types."
+                            "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered, and for a lunar-phase, the zodiac sign of the New or Full Moon. Absent for other event types."
                           },
                           "aspect": {
                             "type": "string",
@@ -51898,6 +51909,15 @@
                             "type": "number",
                             "example": 0.966,
                             "description": "For a lunar eclipse, the peak fraction from 0 to 1 of the Moon disc covered by Earth umbra. 1 for a total lunar eclipse, between 0 and 1 for a partial, 0 for a penumbral. Absent for solar eclipses and other event types."
+                          },
+                          "phase": {
+                            "type": "string",
+                            "enum": [
+                              "new-moon",
+                              "full-moon"
+                            ],
+                            "example": "full-moon",
+                            "description": "For a lunar-phase event, which syzygy it is: new-moon (Sun-Moon conjunction) or full-moon (Sun-Moon opposition). The intermediate quarters are not emitted. A stable machine value, never localized. Absent for other event types."
                           },
                           "description": {
                             "type": "string",
@@ -52260,7 +52280,7 @@
                         "biorhythm"
                       ],
                       "example": "western",
-                      "description": "Forecast domain. western covers transit aspects, sign ingresses, and retrograde stations. vedic covers Vimshottari mahadasha and antardasha boundaries. biorhythm covers critical days."
+                      "description": "Forecast domain. western covers transit aspects, sign ingresses, retrograde stations, eclipses, and new and full moons. vedic covers Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. biorhythm covers critical days."
                     },
                     "example": [
                       "western",
@@ -52414,7 +52434,7 @@
                               "biorhythm"
                             ],
                             "example": "western",
-                            "description": "Forecast domain. western covers transit aspects, sign ingresses, and retrograde stations. vedic covers Vimshottari mahadasha and antardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
+                            "description": "Forecast domain. western covers transit aspects, sign ingresses, retrograde stations, eclipses, and new and full moons. vedic covers Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
                           },
                           "type": {
                             "type": "string",
@@ -52423,21 +52443,22 @@
                               "sign-ingress",
                               "retrograde-station",
                               "eclipse",
+                              "lunar-phase",
                               "dasha-change",
                               "critical-day"
                             ],
                             "example": "transit-aspect",
-                            "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, and eclipse are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
+                            "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, eclipse, and lunar-phase are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
                           },
                           "body": {
                             "type": "string",
                             "example": "Saturn",
-                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse or Moon for a lunar eclipse, a mahadasha or antardasha label for dasha changes, or the critical cycle for biorhythm days."
+                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
                           },
                           "target": {
                             "type": "string",
                             "example": "Moon",
-                            "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered. Absent for other event types."
+                            "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered, and for a lunar-phase, the zodiac sign of the New or Full Moon. Absent for other event types."
                           },
                           "aspect": {
                             "type": "string",
@@ -52473,6 +52494,15 @@
                             "type": "number",
                             "example": 0.966,
                             "description": "For a lunar eclipse, the peak fraction from 0 to 1 of the Moon disc covered by Earth umbra. 1 for a total lunar eclipse, between 0 and 1 for a partial, 0 for a penumbral. Absent for solar eclipses and other event types."
+                          },
+                          "phase": {
+                            "type": "string",
+                            "enum": [
+                              "new-moon",
+                              "full-moon"
+                            ],
+                            "example": "full-moon",
+                            "description": "For a lunar-phase event, which syzygy it is: new-moon (Sun-Moon conjunction) or full-moon (Sun-Moon opposition). The intermediate quarters are not emitted. A stable machine value, never localized. Absent for other event types."
                           },
                           "description": {
                             "type": "string",
@@ -52829,7 +52859,7 @@
                         "biorhythm"
                       ],
                       "example": "western",
-                      "description": "Forecast domain. western covers transit aspects, sign ingresses, and retrograde stations. vedic covers Vimshottari mahadasha and antardasha boundaries. biorhythm covers critical days."
+                      "description": "Forecast domain. western covers transit aspects, sign ingresses, retrograde stations, eclipses, and new and full moons. vedic covers Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. biorhythm covers critical days."
                     },
                     "example": [
                       "western",
@@ -53022,6 +53052,9 @@
                               "eclipse": {
                                 "type": "number"
                               },
+                              "lunar-phase": {
+                                "type": "number"
+                              },
                               "dasha-change": {
                                 "type": "number"
                               },
@@ -53059,7 +53092,7 @@
                                     "biorhythm"
                                   ],
                                   "example": "western",
-                                  "description": "Forecast domain. western covers transit aspects, sign ingresses, and retrograde stations. vedic covers Vimshottari mahadasha and antardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
+                                  "description": "Forecast domain. western covers transit aspects, sign ingresses, retrograde stations, eclipses, and new and full moons. vedic covers Vimshottari mahadasha, antardasha, and pratyantardasha boundaries. biorhythm covers critical days. A stable machine value, never localized, so consumers can branch on it under any language."
                                 },
                                 "type": {
                                   "type": "string",
@@ -53068,21 +53101,22 @@
                                     "sign-ingress",
                                     "retrograde-station",
                                     "eclipse",
+                                    "lunar-phase",
                                     "dasha-change",
                                     "critical-day"
                                   ],
                                   "example": "transit-aspect",
-                                  "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, and eclipse are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
+                                  "description": "Event kind. transit-aspect, sign-ingress, retrograde-station, eclipse, and lunar-phase are western, dasha-change is vedic Vimshottari, critical-day is biorhythm. A stable machine value, never localized, so consumers can branch on it under any language."
                                 },
                                 "body": {
                                   "type": "string",
                                   "example": "Saturn",
-                                  "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse or Moon for a lunar eclipse, a mahadasha or antardasha label for dasha changes, or the critical cycle for biorhythm days."
+                                  "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
                                 },
                                 "target": {
                                   "type": "string",
                                   "example": "Moon",
-                                  "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered. Absent for other event types."
+                                  "description": "For a transit-aspect, the natal body the transit aspects. For a sign-ingress, the zodiac sign entered, and for a lunar-phase, the zodiac sign of the New or Full Moon. Absent for other event types."
                                 },
                                 "aspect": {
                                   "type": "string",
@@ -53118,6 +53152,15 @@
                                   "type": "number",
                                   "example": 0.966,
                                   "description": "For a lunar eclipse, the peak fraction from 0 to 1 of the Moon disc covered by Earth umbra. 1 for a total lunar eclipse, between 0 and 1 for a partial, 0 for a penumbral. Absent for solar eclipses and other event types."
+                                },
+                                "phase": {
+                                  "type": "string",
+                                  "enum": [
+                                    "new-moon",
+                                    "full-moon"
+                                  ],
+                                  "example": "full-moon",
+                                  "description": "For a lunar-phase event, which syzygy it is: new-moon (Sun-Moon conjunction) or full-moon (Sun-Moon opposition). The intermediate quarters are not emitted. A stable machine value, never localized. Absent for other event types."
                                 },
                                 "description": {
                                   "type": "string",
