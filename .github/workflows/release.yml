@@ -77,7 +77,16 @@ jobs:
 
       - name: Install Playwright browsers
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
-        run: bunx playwright install --with-deps chromium firefox webkit
+        # cdn.playwright.dev browser-binary downloads occasionally stall with no
+        # built-in timeout, hanging the job for its full duration. Cap each
+        # attempt and retry so a stalled download fails fast and re-fetches.
+        run: |
+          for i in 1 2 3; do
+            timeout 540 bunx playwright install --with-deps chromium firefox webkit && exit 0
+            echo "::warning::Playwright install attempt $i stalled or failed; retrying"
+            sleep 10
+          done
+          echo "::error::Playwright browser download failed after 3 attempts (cdn.playwright.dev stall)"; exit 1
 
       - name: E2E tests
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'

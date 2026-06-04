@@ -28,7 +28,15 @@ jobs:
       - run: bun run build
       - run: bun run test
       - name: Install Playwright browsers
-        run: bunx playwright install --with-deps chromium
+        # cdn.playwright.dev browser-binary downloads occasionally stall with no
+        # built-in timeout, hanging the job. Cap each attempt and retry.
+        run: |
+          for i in 1 2 3; do
+            timeout 480 bunx playwright install --with-deps chromium && exit 0
+            echo "::warning::Playwright install attempt $i stalled or failed; retrying"
+            sleep 10
+          done
+          echo "::error::Playwright browser download failed after 3 attempts"; exit 1
       - run: bun run test:e2e
         env:
           PLAYWRIGHT_PROJECTS: chromium
