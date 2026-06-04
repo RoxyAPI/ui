@@ -129,8 +129,15 @@ async function buildEsm(components: string[]) {
 }
 
 async function buildCdn(components: string[]) {
+	// Full CDN bundle entry is src/cdn.ts (not src/index.ts): it registers every
+	// element AND injects tokens.css so a single drop-in script tag yields full
+	// theming + dark mode. Per-component CDN files below stay on the pure
+	// component entry: a consumer reaching for one surgical component owns its
+	// own token delivery (linked tokens.css or :root overrides), and forcing a
+	// global stylesheet from each per-component file would fight that. Wiring
+	// per-component auto-inject is tracked as a follow-up in docs/todo.md.
 	await esbuild.build({
-		entryPoints: { 'cdn/roxy-ui': `${UI_DIR}/src/index.ts` },
+		entryPoints: { 'cdn/roxy-ui': `${UI_DIR}/src/cdn.ts` },
 		outdir: DIST,
 		format: 'iife',
 		globalName: 'RoxyUI',
@@ -345,6 +352,9 @@ async function emitMetadata(components: string[]) {
 async function main() {
 	console.log('Syncing version...');
 	execSync('bun run scripts/sync-version.ts', { stdio: 'inherit' });
+
+	console.log('Syncing token CSS string for CDN injection...');
+	execSync('bun run scripts/sync-tokens.ts', { stdio: 'inherit' });
 
 	console.log('Syncing docs manifest mirror...');
 	execSync('bun run scripts/sync-manifest.ts', { stdio: 'inherit' });

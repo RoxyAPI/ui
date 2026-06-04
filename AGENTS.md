@@ -120,14 +120,16 @@ const { data: chart } = await roxy.astrology.generateNatalChart({
 
 Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). The decimal form is what `/location/search` returns; the IANA form is correct over DST boundaries. Pick one and stay consistent in a single integration. Mixing them does not break the API but makes the bug surface area larger.
 
-### 4. API key in the browser
+### 4. Secret key in the browser
 
-Keys are server side only. Call `createRoxy(process.env.ROXY_API_KEY!)` on your server (Node, Bun, Hono, Next.js route handlers, Workers, Edge functions), then send the response, not the key, to the component. Never ship the key in a client bundle. Browser-safe keys for direct client-side embedding are on the roadmap, not yet available.
+Secret keys (`sk_*`) grant full account access and are server side only. Call `createRoxy(process.env.ROXY_API_KEY!)` on your server (Node, Bun, Hono, Next.js route handlers, Workers, Edge functions), then send the response, not the key, to the component. Never ship a secret key in a client bundle.
 
 ```ts
-// Server side only
+// Secret key: server side only
 const roxy = createRoxy(process.env.ROXY_API_KEY!);
 ```
+
+For direct client-side calls, use a **publishable key** (`pk_live_*` / `pk_test_*`) instead. Publishable keys are browser-safe: mint one at `roxyapi.com/account`, register the origins you embed on, and the API gateway returns 403 for any other origin. See the client-side pattern below.
 
 ### 5. Missing `'use client'` in Next.js App Router
 
@@ -269,9 +271,30 @@ For a static chart with no picker, fetch in a Server Component and pass `data` t
 </script>
 ```
 
-### Pattern 4: widgets auto-mount (coming soon)
+### Pattern 4: fully client-side with a publishable key (no server)
 
-A zero-wiring embed that reads `data-*` attributes and renders the matching component is on the roadmap. It needs browser-safe keys, which are not yet available. Until then, use Pattern 1 (inline JSON) for no-build pages.
+When you do not want a backend at all, mint a **publishable key** (`pk_live_*`) at `roxyapi.com/account`, register the origins you embed on, and call RoxyAPI directly from the browser. The publishable key is safe to ship in client code: it is origin-restricted (any other origin gets 403) and cannot read your account. `<roxy-location-search>` accepts the key via its `publishable-key` attribute and fetches geocoding itself; for the data endpoints you make a normal browser `fetch` with the key in the `X-API-Key` header, then assign the response to the rendering component.
+
+```html
+<roxy-location-search publishable-key="pk_live_..."></roxy-location-search>
+<roxy-natal-chart></roxy-natal-chart>
+
+<script type="module">
+	const chart = document.querySelector('roxy-natal-chart');
+	document.querySelector('roxy-location-search').addEventListener('roxy-location-select', async (e) => {
+		const { latitude, longitude, timezone } = e.detail;
+		if (latitude == null || longitude == null) return;
+		const res = await fetch('https://roxyapi.com/api/v2/astrology/natal-chart', {
+			method: 'POST',
+			headers: { 'X-API-Key': 'pk_live_...', 'Content-Type': 'application/json' },
+			body: JSON.stringify({ date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone }),
+		});
+		chart.data = await res.json(); // pass the unwrapped response, not an envelope
+	});
+</script>
+```
+
+Rendering components do not fetch on their own; you set `data`. Only `<roxy-location-search>` (and `<roxy-endpoint-form>` for the spec) fetch internally. A zero-wiring `data-*` auto-mount that fetches and renders with no script is still on the roadmap.
 
 ### Pattern 5: MCP tool-call response
 
@@ -339,13 +362,13 @@ This is how the WordPress plugin renders: PHP fetches the response server-side, 
 
 ## Theming and dark mode
 
-Components react to three signals in priority order. No events to dispatch. No JS bridge to write.
+Components react to three signals in priority order. No events to dispatch. No JS bridge to write. The CDN bundle (`dist/cdn/roxy-ui.js`) auto-loads the design tokens, so a single script tag yields full theming and dark mode with nothing else to add. The npm and React paths inherit the same tokens through the components; only set up `tokens.css` yourself if you import per component without the full bundle.
 
 | Signal | Where | Effect |
 |---|---|---|
 | `prefers-color-scheme: dark` | OS | Default. Follows user system setting. |
 | `data-theme="light"` or `data-theme="dark"` | `<html>` / `<body>` / any ancestor / the component itself | Wins over OS. Per-element override scope works. |
-| `.dark` class | Any ancestor | Equivalent to `data-theme="dark"`. Use when the host stack already ships a `.dark` toggle (Tailwind, shadcn). |
+| `.dark` class | The component itself or any ancestor (typically `<html>`) | Same effect as `data-theme="dark"`. Use when the host stack already ships a `.dark` toggle (Tailwind, shadcn). |
 
 To toggle at runtime:
 

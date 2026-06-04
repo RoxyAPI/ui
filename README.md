@@ -294,7 +294,7 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 
 Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
 
-Load the bundle once anywhere on the page. It registers every `roxy-*` element, so every component on the page renders from that single tag.
+Load the bundle once anywhere on the page. It registers every `roxy-*` element and loads the design tokens, so every component on the page renders themed, in light or dark, from that single tag. Nothing else to add.
 
 ```html
 <!-- Once per page: defines every roxy-* element -->
@@ -535,11 +535,9 @@ const { data: random } = await roxy.iching.getRandomHexagram();
 
 Get a key at <https://roxyapi.com/account>.
 
-Today every key is a **secret key**: use it server side only (Node, Bun, Hono, Next.js route handlers, Workers). Never commit it, never ship it in a client bundle. Fetch on your server and send the rendered response, not the key, to the browser. The [Start with one component](#start-with-one-component) section and the [framework recipes](#most-used-components-per-domain) show the pattern.
+Two key types. **Secret keys** (`sk_*`) grant full account access: use them server side only (Node, Bun, Hono, Next.js route handlers, Workers). Never commit one, never ship one in a client bundle. **Publishable keys** (`pk_live_*` / `pk_test_*`) are browser-safe: mint one, register the origins you embed on, and any other origin gets a 403 at the gateway. Use a publishable key when you call RoxyAPI directly from the browser with no backend.
 
-Set `ROXY_API_KEY` to your secret key in your server env for every SDK example on this page.
-
-Browser-safe keys for direct client-side embedding are on the roadmap, not yet available. Until they ship, keep the fetch on your server.
+Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For direct client-side embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
 
 ## Distribution
 
@@ -603,7 +601,7 @@ Browser-safe keys for direct client-side embedding are on the roadmap, not yet a
 
 ## Theming
 
-Every component reads from `--roxy-*` CSS custom properties. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference.
+Every component reads from `--roxy-*` CSS custom properties. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. The CDN bundle auto-loads these tokens; your `:root { --roxy-* }` overrides always win over the defaults. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference.
 
 ```css
 :root {
@@ -799,7 +797,7 @@ Components ship in Shadow DOM for style isolation; Tailwind utilities are scoped
 <details>
 <summary><strong>What is the security model for API keys?</strong></summary>
 
-Today keys are secret keys: they live server side only and grant full access, so never ship one in a client bundle. Fetch on your server and pass the rendered response, not the key, to the browser. Browser-safe keys with an origin allowlist for direct client-side embedding are on the roadmap and not yet available.
+Two key types. Secret keys (`sk_*`) live server side only and grant full access, so never ship one in a client bundle: fetch on your server and pass the rendered response, not the key, to the browser. Publishable keys (`pk_live_*` / `pk_test_*`) are browser-safe for direct client-side embedding: they carry an origin allowlist, so a key leaked to any other origin returns 403 instead of working. Mint either at `roxyapi.com/account`.
 
 For CSP, allow `script-src https://cdn.jsdelivr.net` if loading the bundle from the CDN. Subresource Integrity hashes are available via the jsDelivr SRI API for any pinned version.
 </details>

@@ -1,6 +1,6 @@
 # Theming Roxy UI
 
-Every Roxy UI component reads its colors, fonts, spacing, and motion from a single set of CSS custom properties on `:host`. Override them at `:root` to brand the whole library, or scope to one element to skin a single component.
+Every Roxy UI component reads its colors, fonts, spacing, and motion from a single set of `--roxy-*` CSS custom properties. Override them at `:root` to brand the whole library, or scope to one element to skin a single component. Custom properties inherit through the Shadow DOM boundary, so a value set on `:root` or any light-DOM ancestor reaches every component. The CDN bundle auto-loads the token defaults; your `:root` overrides always win over them.
 
 ## Token reference
 
@@ -99,17 +99,19 @@ roxy-natal-chart {
 
 ### Dark mode
 
-Three opt-in mechanisms work out of the box.
+Three opt-in mechanisms work out of the box. The CDN bundle auto-loads the tokens, so all three work from one script tag; on the npm path the full `@roxyapi/ui` import pulls the same tokens in.
 
 ```css
 /* System preference: nothing to do */
 
-/* data-theme on the document */
+/* data-theme on the document, an ancestor, or the element itself */
 :root[data-theme='dark'] { /* automatic */ }
 
-/* Tailwind dark class on an ancestor */
-.dark roxy-natal-chart { /* automatic */ }
+/* Tailwind dark class on the document, an ancestor, or the element itself */
+.dark { /* automatic */ }
 ```
+
+Tokens set on the `:root` / `.dark` / `[data-theme]` light-DOM element inherit through the shadow boundary into every component, so a `.dark` class anywhere above a component themes it. Per-element scope works too: `<roxy-natal-chart data-theme="dark">` runs one chart in dark on an otherwise light page.
 
 ### Map Tailwind tokens
 

@@ -63,6 +63,117 @@ test.describe('Roxy UI preview', () => {
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 	});
 
+	test('CDN bundle auto-injects the token stylesheet exactly once, prepended', async ({
+		page,
+	}) => {
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+		const result = await page.evaluate(() => {
+			const styles = [...document.head.children].filter(
+				(el) => el.id === 'roxy-ui-tokens',
+			);
+			return {
+				count: styles.length,
+				hasDark: (styles[0]?.textContent ?? '').includes('.dark'),
+				// Prepend = earliest source order = loses ties, so a later linked
+				// tokens.css or consumer :root override wins. Assert it sits before
+				// the demo's own linked tokens.css <link>.
+				beforeLinkedTokens: (() => {
+					const kids = [...document.head.children];
+					const injected = kids.findIndex((el) => el.id === 'roxy-ui-tokens');
+					const linked = kids.findIndex(
+						(el) =>
+							el.tagName === 'LINK' &&
+							(el as HTMLLinkElement).href.includes('tokens.css'),
+					);
+					return injected >= 0 && linked >= 0 && injected < linked;
+				})(),
+			};
+		});
+		expect(result.count).toBe(1);
+		expect(result.hasDark).toBe(true);
+		expect(result.beforeLinkedTokens).toBe(true);
+	});
+
+	test('dark mode flips component tokens via .dark class, data-theme, and per-element', async ({
+		page,
+	}) => {
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+
+		// Read the computed --roxy-bg / --roxy-fg from inside a real component
+		// host so we prove the cascade reaches the shadow tree, not just :root.
+		const read = (tag: string) =>
+			page.locator(tag).evaluate((el) => {
+				const cs = getComputedStyle(el);
+				return {
+					bg: cs.getPropertyValue('--roxy-bg').trim(),
+					fg: cs.getPropertyValue('--roxy-fg').trim(),
+				};
+			});
+
+		const setHtml = (apply: 'clear' | 'class' | 'attr') =>
+			page.evaluate((mode) => {
+				const html = document.documentElement;
+				html.classList.remove('dark', 'light');
+				html.removeAttribute('data-theme');
+				document.body.classList.remove('dark', 'light');
+				document.body.removeAttribute('data-theme');
+				if (mode === 'class') html.classList.add('dark');
+				if (mode === 'attr') html.setAttribute('data-theme', 'dark');
+			}, apply);
+
+		const LIGHT_BG = '#ffffff';
+		const LIGHT_FG = '#0a0a0a';
+		const DARK_BG = '#0a0a0a';
+		const DARK_FG = '#fafafa';
+
+		// Baseline: explicit light so the OS preference cannot taint the run.
+		await page.evaluate(() => {
+			document.documentElement.setAttribute('data-theme', 'light');
+		});
+		const lightStart = await read('roxy-panchang-table');
+		expect(lightStart.bg).toBe(LIGHT_BG);
+		expect(lightStart.fg).toBe(LIGHT_FG);
+
+		// 1. data-theme="dark" on <html>
+		await setHtml('attr');
+		let dark = await read('roxy-panchang-table');
+		expect(dark.bg).toBe(DARK_BG);
+		expect(dark.fg).toBe(DARK_FG);
+
+		// 2. .dark class on <html> (Tailwind / shadcn path)
+		await setHtml('class');
+		dark = await read('roxy-choghadiya-grid');
+		expect(dark.bg).toBe(DARK_BG);
+		expect(dark.fg).toBe(DARK_FG);
+
+		// Light restores when the trigger is removed.
+		await page.evaluate(() => {
+			document.documentElement.setAttribute('data-theme', 'light');
+			document.documentElement.classList.remove('dark');
+		});
+		const lightAgain = await read('roxy-choghadiya-grid');
+		expect(lightAgain.bg).toBe(LIGHT_BG);
+		expect(lightAgain.fg).toBe(LIGHT_FG);
+
+		// 3. Per-element data-theme="dark" themes just that element, not a light
+		// sibling. Clear document-level triggers first.
+		await setHtml('clear');
+		await page.evaluate(() => {
+			document.documentElement.setAttribute('data-theme', 'light');
+			document
+				.querySelector('roxy-panchang-table')
+				?.setAttribute('data-theme', 'dark');
+		});
+		const perEl = await read('roxy-panchang-table');
+		const sibling = await read('roxy-choghadiya-grid');
+		expect(perEl.bg).toBe(DARK_BG);
+		expect(perEl.fg).toBe(DARK_FG);
+		expect(sibling.bg).toBe(LIGHT_BG);
+		expect(sibling.fg).toBe(LIGHT_FG);
+	});
+
 	test('passes axe-core a11y on light theme', async ({ page }) => {
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
