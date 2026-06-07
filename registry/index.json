@@ -37,7 +37,7 @@
     },
     {
       "name": "roxy-vedic-kundli",
-      "description": "South, North, or East Indian Vedic kundli for /vedic-astrology/birth-chart with per-planet degree and nakshatra detail"
+      "description": "South, North, or East Indian Vedic kundli for /vedic-astrology/birth-chart with per-planet degree and nakshatra detail, plus an optional Chandra Lagna (Moon-as-ascendant) reference view"
     },
     {
       "name": "roxy-divisional-chart",
@@ -97,7 +97,7 @@
     },
     {
       "name": "roxy-numerology-card",
-      "description": "Numerology card for life path, expression, personal year, or full chart"
+      "description": "Numerology card for life path, expression, soul urge, personality, personal year, or full chart"
     },
     {
       "name": "roxy-tarot-card",
@@ -122,6 +122,22 @@
     {
       "name": "roxy-hexagram",
       "description": "I Ching hexagram with trigram glyphs, judgment, image, and changing lines"
+    },
+    {
+      "name": "roxy-crystal-grid",
+      "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response"
+    },
+    {
+      "name": "roxy-dream-card",
+      "description": "Dream symbol card with the symbol name, full interpretation, and dictionary letter"
+    },
+    {
+      "name": "roxy-angel-number-card",
+      "description": "Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps"
+    },
+    {
+      "name": "roxy-angel-number-lookup",
+      "description": "Angel number sequence analysis with pattern classification, the known meaning when present, and a digit-root fallback for any number"
     },
     {
       "name": "roxy-endpoint-form",

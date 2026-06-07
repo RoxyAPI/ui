@@ -102,8 +102,13 @@ add_shortcode('roxy', function ($atts) {
 		set_transient($cache_key, $data, HOUR_IN_SECONDS);
 	}
 
-	// Escape a closing script tag so a string field cannot break out of the block.
-	$json = '<script type="application/json" class="roxy-data">' . str_replace('</', '<\/', $data) . '</script>';
+	// Escape the script-unsafe characters so no string field can break out of the
+	// inline <script> block. Same rule as serializeRoxyData() in @roxyapi/ui: map
+	// <, >, and & to their \uXXXX JSON escapes, which parse back to the identical
+	// characters. The API body is already JSON, so this only touches string
+	// values, never JSON structure.
+	$escaped = str_replace(['<', '>', '&'], ['\u003c', '\u003e', '\u0026'], $data);
+	$json = '<script type="application/json" class="roxy-data">' . $escaped . '</script>';
 
 	// Display attributes the component reads alongside data.
 	$display = [];

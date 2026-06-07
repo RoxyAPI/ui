@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-angel-number-card",
+  "type": "registry:ui",
+  "title": "RoxyAngelNumberCard",
+  "description": "Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.9.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-angel-number-card.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyAngelNumberCard data={...} />: Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/angel-number-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyAngelNumberCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyAngelNumberCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyAngelNumberCard(props: RoxyAngelNumberCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyAngelNumberCard;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/angel-number-card.tsx"
+    }
+  ]
+}

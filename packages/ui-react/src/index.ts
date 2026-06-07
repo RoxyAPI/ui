@@ -1,4 +1,12 @@
 export {
+	RoxyAngelNumberCard,
+	type RoxyAngelNumberCardProps,
+} from './components/angel-number-card.js';
+export {
+	RoxyAngelNumberLookup,
+	type RoxyAngelNumberLookupProps,
+} from './components/angel-number-lookup.js';
+export {
 	RoxyAshtakavargaGrid,
 	type RoxyAshtakavargaGridProps,
 } from './components/ashtakavarga-grid.js';
@@ -19,6 +27,10 @@ export {
 	type RoxyCompatibilityCardProps,
 } from './components/compatibility-card.js';
 export {
+	RoxyCrystalGrid,
+	type RoxyCrystalGridProps,
+} from './components/crystal-grid.js';
+export {
 	RoxyDashaTimeline,
 	type RoxyDashaTimelineProps,
 } from './components/dasha-timeline.js';
@@ -31,6 +43,10 @@ export {
 	RoxyDoshaCard,
 	type RoxyDoshaCardProps,
 } from './components/dosha-card.js';
+export {
+	RoxyDreamCard,
+	type RoxyDreamCardProps,
+} from './components/dream-card.js';
 export {
 	RoxyEndpointForm,
 	type RoxyEndpointFormProps,

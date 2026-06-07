@@ -296,6 +296,19 @@ async function main() {
 			}),
 		),
 		run('yoga', () => roxy.vedicAstrology.listYogas()),
+		run('dream', () => roxy.dreams.getDreamSymbol({ path: { id: 'water' } })),
+		run('angel-card', () =>
+			roxy.angelNumbers.getAngelNumber({ path: { number: '111' } }),
+		),
+		run('angel-lookup', () =>
+			roxy.angelNumbers.analyzeNumberSequence({ query: { number: '1212' } }),
+		),
+		run('crystals', () =>
+			roxy.crystals.getCrystalsByChakra({
+				path: { chakra: 'Heart' },
+				query: { limit: 8 },
+			}),
+		),
 		run('choghadiya', () =>
 			roxy.vedicAstrology.getChoghadiya({
 				body: {

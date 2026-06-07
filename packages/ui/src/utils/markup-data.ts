@@ -13,6 +13,51 @@ import type { ReactiveController, ReactiveControllerHost } from 'lit';
 const ROXY_DATA_CLASS = 'roxy-data';
 
 /**
+ * Serialize a RoxyAPI response for embedding inside an inline `<script type="application/json" class="roxy-data">`. This is the safe writer counterpart to {@link MarkupDataController}, the reader: server-rendered and cached consumers (WordPress, JSX SSR, static HTML) emit the script with this, and the component hydrates `data` from it on connect.
+ *
+ * @remarks
+ * Use this instead of a bare `JSON.stringify`. A raw stringify of a response that contains the literal text `</script>` (common in long interpretation prose) closes the script element early, corrupting the page and creating an HTML-injection vector. This escapes the script-unsafe characters to their `\uXXXX` JSON escapes, which `JSON.parse` restores to the original characters, so the value the component receives is identical to the response you passed.
+ *
+ * `<` is the load-bearing escape (it defeats `</script>` and `<!--`). `>` and `&` are escaped for defence in depth, and U+2028 / U+2029 because they are valid in JSON yet are line terminators in a `<script>` context and break some parsers. The escapes introduce only `\uXXXX` sequences, so the replacements never feed each other and order is irrelevant.
+ *
+ * Pass the unwrapped RoxyAPI response, the same shape you would assign to `element.data`. Do not pass the SDK envelope (`{ data, error, request, response }`).
+ *
+ * @example
+ * ```ts
+ * import { serializeRoxyData } from '@roxyapi/ui';
+ *
+ * const { data } = await roxy.dreams.getDreamSymbol({ path: { id: 'water' } });
+ * const html = `<roxy-dream-card><script type="application/json" class="roxy-data">${serializeRoxyData(data)}</script></roxy-dream-card>`;
+ * ```
+ */
+export function serializeRoxyData(data: unknown): string {
+	return JSON.stringify(data)
+		.replace(/</g, '\\u003c')
+		.replace(/>/g, '\\u003e')
+		.replace(/&/g, '\\u0026')
+		.replace(/\u2028/g, '\\u2028')
+		.replace(/\u2029/g, '\\u2029');
+}
+
+/**
+ * Build the complete `<script type="application/json" class="roxy-data">…</script>` element a server nests inside a `roxy-*` component for the no-JavaScript hydration path. The payload is escaped via {@link serializeRoxyData}, so it is safe to drop straight into HTML output.
+ *
+ * @remarks
+ * The element carries both `type="application/json"` and `class="roxy-data"` because {@link MarkupDataController} reads only a direct-child script that has both. Emit one of these inside the target component; the JavaScript `data` property still wins if it is later assigned.
+ *
+ * @example
+ * ```ts
+ * import { roxyDataScript } from '@roxyapi/ui';
+ *
+ * const { data } = await roxy.crystals.getCrystal({ path: { id: 'amethyst' } });
+ * const html = `<roxy-crystal-grid>${roxyDataScript(data)}</roxy-crystal-grid>`;
+ * ```
+ */
+export function roxyDataScript(data: unknown): string {
+	return `<script type="application/json" class="${ROXY_DATA_CLASS}">${serializeRoxyData(data)}</script>`;
+}
+
+/**
  * True when the element is a `<script type="application/json">`. Uses tag name and attribute rather than `instanceof HTMLScriptElement` so the check holds in every DOM implementation, including server-rendered and hydration runtimes where the constructor global may be absent.
  */
 function isJsonScript(el: Element): boolean {

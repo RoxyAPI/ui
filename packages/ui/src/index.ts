@@ -5,6 +5,9 @@
  *   import '@roxyapi/ui/components/natal-chart';
  */
 
+// Angel numbers
+export { RoxyAngelNumberCard } from './components/angel-number-card.js';
+export { RoxyAngelNumberLookup } from './components/angel-number-lookup.js';
 export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
 // Biorhythm
 export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
@@ -12,11 +15,15 @@ export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
 export { RoxyBodygraph } from './components/bodygraph.js';
 export { RoxyChoghadiyaGrid } from './components/choghadiya-grid.js';
 export { RoxyCompatibilityCard } from './components/compatibility-card.js';
+// Crystals
+export { RoxyCrystalGrid } from './components/crystal-grid.js';
 export { RoxyDashaTimeline } from './components/dasha-timeline.js';
 // Generic fallback first so it is always available for nested rendering
 export { RoxyData } from './components/data.js';
 export { RoxyDivisionalChart } from './components/divisional-chart.js';
 export { RoxyDoshaCard } from './components/dosha-card.js';
+// Dreams
+export { RoxyDreamCard } from './components/dream-card.js';
 // Helpers
 export { RoxyEndpointForm } from './components/endpoint-form.js';
 // Forecast
@@ -47,6 +54,13 @@ export { RoxyVedicKundli } from './components/vedic-kundli.js';
 export { RoxyVedicPlanetsTable } from './components/vedic-planets-table.js';
 export { RoxyWesternPlanetsTable } from './components/western-planets-table.js';
 export { RoxyYogaList } from './components/yoga-list.js';
+
+// SSR helpers for the server-rendered hydration path (Pattern 7). Safe writers
+// for the inline <script class="roxy-data"> the MarkupDataController reads.
+export {
+	roxyDataScript,
+	serializeRoxyData,
+} from './utils/markup-data.js';
 
 import { ROXY_COMPONENTS, type RoxyComponentSlug } from './manifest.js';
 

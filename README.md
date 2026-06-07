@@ -234,7 +234,7 @@ const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' 
 return <RoxyHoroscopeCard data={data} />;
 ```
 
-Then expand into natal charts, kundli, dasha, tarot, and every other domain. The SDK returns `data`, the component renders it; the same pairing holds for all 32 components.
+Then expand into natal charts, kundli, dasha, tarot, and every other domain. The SDK returns `data`, the component renders it; the same pairing holds for all 36 components.
 
 > **Pass `data`, not the envelope.** The SDK returns `{ data, error, request, response }`. Pass `data`, or the component renders `[object Object]`. This is the most common integration bug.
 
@@ -294,16 +294,25 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 
 Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
 
+Serialize with the shipped helper, never a bare `JSON.stringify`. `@roxyapi/ui` exports `roxyDataScript(data)` (the full `<script class="roxy-data">…</script>` element) and `serializeRoxyData(data)` (just the escaped JSON). They escape `<`, `>`, and `&` so a string field containing `</script>` cannot break out of the block and corrupt the page.
+
 Load the bundle once anywhere on the page. It registers every `roxy-*` element and loads the design tokens, so every component on the page renders themed, in light or dark, from that single tag. Nothing else to add.
 
-```html
-<!-- Once per page: defines every roxy-* element -->
-<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" crossorigin="anonymous" defer></script>
+```ts
+import { roxyDataScript } from '@roxyapi/ui';
 
+const { data } = await roxy.astrology.generateNatalChart({ body });
+const html = `
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" crossorigin="anonymous" defer></script>
+  <roxy-natal-chart>${roxyDataScript(data)}</roxy-natal-chart>
+`;
+```
+
+The emitted markup:
+
+```html
 <roxy-natal-chart>
-	<script type="application/json" class="roxy-data">
-		{ "planets": [ ... ], "houses": [ ... ], "aspects": [ ... ] }
-	</script>
+	<script type="application/json" class="roxy-data">{ "planets": [ ... ], "houses": [ ... ], "aspects": [ ... ] }</script>
 </roxy-natal-chart>
 ```
 
@@ -562,7 +571,7 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | `<roxy-moon-phase>` | Western | GET /astrology/moon-phase/{current,upcoming,calendar/...} | Moon phase card and calendar |
 | `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly} | Daily, weekly, or monthly horoscope card |
 | `<roxy-compatibility-card>` | Cross | POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility | Score card with category breakdown |
-| `<roxy-vedic-kundli>` | Vedic | POST /vedic-astrology/birth-chart | South, North, or East Indian kundli with degree detail |
+| `<roxy-vedic-kundli>` | Vedic | POST /vedic-astrology/birth-chart | South, North, or East Indian kundli with degree detail and optional Chandra Lagna view |
 | `<roxy-divisional-chart>` | Vedic | POST /vedic-astrology/divisional-chart | Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa |
 | `<roxy-kp-chart>` | Vedic (KP) | POST /vedic-astrology/kp/chart | Ascendant, cusps, and planets with KP stellar hierarchy |
 | `<roxy-vedic-planets-table>` | Vedic | POST /vedic-astrology/birth-chart | Degree, nakshatra, pada, lord, bhava, avastha columns |
@@ -577,13 +586,17 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | `<roxy-yoga-list>` | Vedic | GET /vedic-astrology/yoga, /yoga/{id} | Filterable yoga cards from the 300 plus yoga catalog |
 | `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
 | `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |
-| `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,personal-year,chart} | Life path, expression, personal year, full chart |
+| `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
 | `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary |
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram with trigrams, judgment, image, changing lines |
+| `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |
+| `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
+| `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number} | Number meaning with spiritual, love, career, and twin flame sections |
+| `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
 | `<roxy-endpoint-form>` | Helper | Any endpoint via x-roxy-ui hints | Schema-driven form, emits roxy-submit |
 | `<roxy-location-search>` | Helper | GET /location/search | Debounced city search input, emits roxy-location-select |
 | `<roxy-data>` | Helper | Any response shape | Generic fallback renderer for unknown shapes |

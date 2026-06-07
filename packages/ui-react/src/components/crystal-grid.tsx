@@ -1,4 +1,4 @@
-import type { CalculateExpressionResponse, CalculateLifePathResponse, CalculatePersonalityResponse, CalculatePersonalYearResponse, CalculateSoulUrgeResponse, GenerateNumerologyChartResponse } from '@roxyapi/ui/types';
+import type { GetBirthstonesResponse, GetCrystalsByChakraResponse, GetCrystalsByElementResponse, GetCrystalsByZodiacResponse, ListCrystalsResponse, SearchCrystalsResponse } from '@roxyapi/ui/types';
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
 
@@ -7,18 +7,18 @@ type ElementAttrs = Omit<
 	'children' | 'data'
 >;
 
-export interface RoxyNumerologyCardProps extends ElementAttrs {
+export interface RoxyCrystalGridProps extends ElementAttrs {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: CalculateLifePathResponse | CalculateExpressionResponse | CalculateSoulUrgeResponse | CalculatePersonalityResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse;
+	data?: ListCrystalsResponse | GetCrystalsByChakraResponse | GetCrystalsByElementResponse | GetCrystalsByZodiacResponse | GetBirthstonesResponse | SearchCrystalsResponse;
 	className?: string;
 	style?: React.CSSProperties;
-	/** Which numerology response the card is showing. Selects the heading and which fields are surfaced. */
-	type?: 'life-path' | 'expression' | 'soul-urge' | 'personality' | 'personal-year' | 'chart';
+	/** Override the auto-derived grid heading. Empty by default, in which case the heading is derived from the response filter (chakra, element, zodiac sign, or birth month). */
+	heading?: string;
 
 }
 
-export const RoxyNumerologyCard = React.forwardRef<HTMLElement | null, RoxyNumerologyCardProps>(
-	function RoxyNumerologyCard({ data, className, style, type, ...rest }, ref) {
+export const RoxyCrystalGrid = React.forwardRef<HTMLElement | null, RoxyCrystalGridProps>(
+	function RoxyCrystalGrid({ data, className, style, heading, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -52,10 +52,10 @@ export const RoxyNumerologyCard = React.forwardRef<HTMLElement | null, RoxyNumer
 
 		React.useEffect(() => {
 			const el = internal.current;
-			if (el && type !== undefined) {
-				(el as unknown as { type: 'life-path' | 'expression' | 'soul-urge' | 'personality' | 'personal-year' | 'chart' }).type = type;
+			if (el && heading !== undefined) {
+				(el as unknown as { heading: string }).heading = heading;
 			}
-		}, [type, loaded]);
+		}, [heading, loaded]);
 
 		if (error) {
 			return React.createElement(
@@ -65,7 +65,7 @@ export const RoxyNumerologyCard = React.forwardRef<HTMLElement | null, RoxyNumer
 			);
 		}
 
-		return React.createElement('roxy-numerology-card', {
+		return React.createElement('roxy-crystal-grid', {
 			ref: internal,
 			className,
 			style,

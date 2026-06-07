@@ -3,16 +3,26 @@ import { customElement, property } from 'lit/decorators.js';
 import type {
 	CalculateExpressionResponse,
 	CalculateLifePathResponse,
+	CalculatePersonalityResponse,
 	CalculatePersonalYearResponse,
+	CalculateSoulUrgeResponse,
 	GenerateNumerologyChartResponse,
 } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { MarkupDataController } from '../utils/markup-data.js';
 import { humanize } from '../utils/string.js';
 
-type NumerologyData =
+/**
+ * Single-number numerology responses that share the number + meaning + calculation + karmic-debt shape. {@link RoxyNumerologyCard.renderNumberCard} renders any of them; the `type` attribute selects only the heading label.
+ */
+type NumberCardData =
 	| CalculateLifePathResponse
 	| CalculateExpressionResponse
+	| CalculateSoulUrgeResponse
+	| CalculatePersonalityResponse;
+
+type NumerologyData =
+	| NumberCardData
 	| CalculatePersonalYearResponse
 	| GenerateNumerologyChartResponse;
 
@@ -135,7 +145,13 @@ export class RoxyNumerologyCard extends LitElement {
 	data: NumerologyData | null = null;
 
 	@property({ type: String, reflect: true })
-	type: 'life-path' | 'expression' | 'personal-year' | 'chart' = 'life-path';
+	type:
+		| 'life-path'
+		| 'expression'
+		| 'soul-urge'
+		| 'personality'
+		| 'personal-year'
+		| 'chart' = 'life-path';
 
 	render() {
 		const d = this.data;
@@ -146,16 +162,10 @@ export class RoxyNumerologyCard extends LitElement {
 
 		if ('coreNumbers' in d) return this.renderChart(d, headerLabel);
 		if ('personalYear' in d) return this.renderPersonalYear(d, headerLabel);
-		return this.renderNumberCard(
-			d as CalculateLifePathResponse | CalculateExpressionResponse,
-			headerLabel,
-		);
+		return this.renderNumberCard(d as NumberCardData, headerLabel);
 	}
 
-	private renderNumberCard(
-		d: CalculateLifePathResponse | CalculateExpressionResponse,
-		headerLabel: string,
-	) {
+	private renderNumberCard(d: NumberCardData, headerLabel: string) {
 		const keywords = d.meaning?.keywords ?? [];
 		return html`<article class="card" aria-label=${headerLabel}>
 			<div class="hero">
@@ -230,6 +240,8 @@ export class RoxyNumerologyCard extends LitElement {
 const LABELS: Record<string, string> = {
 	'life-path': 'Life Path',
 	expression: 'Expression',
+	'soul-urge': 'Soul Urge',
+	personality: 'Personality',
 	'personal-year': 'Personal Year',
 	chart: 'Numerology chart',
 };

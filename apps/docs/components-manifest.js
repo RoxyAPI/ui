@@ -326,6 +326,39 @@ window.ROXY_UI_DEMOS = [
 		sdkCall: `  const { data } = await roxy.iching.getRandomHexagram();`,
 	}),
 	entry({
+		id: 'dream',
+		tag: 'roxy-dream-card',
+		seoLine: 'Dream dictionary symbol with full interpretation',
+		sdkCall: `  const { data } = await roxy.dreams.getDreamSymbol({
+    path: { id: 'water' },
+  });`,
+	}),
+	entry({
+		id: 'angel-card',
+		tag: 'roxy-angel-number-card',
+		seoLine: 'Angel number meaning with spiritual, love, and career guidance',
+		sdkCall: `  const { data } = await roxy.angelNumbers.getAngelNumber({
+    path: { number: '111' },
+  });`,
+	}),
+	entry({
+		id: 'angel-lookup',
+		tag: 'roxy-angel-number-lookup',
+		seoLine: 'Analyze any number sequence for angel number meaning',
+		sdkCall: `  const { data } = await roxy.angelNumbers.analyzeNumberSequence({
+    query: { number: '1212' },
+  });`,
+	}),
+	entry({
+		id: 'crystals',
+		tag: 'roxy-crystal-grid',
+		seoLine: 'Crystal gallery filtered by chakra, element, or zodiac sign',
+		sdkCall: `  const { data } = await roxy.crystals.getCrystalsByChakra({
+    path: { chakra: 'heart' },
+    query: { limit: 8 },
+  });`,
+	}),
+	entry({
 		id: 'form',
 		tag: 'roxy-endpoint-form',
 		seoLine: 'Auto-generated input form from any RoxyAPI endpoint schema',

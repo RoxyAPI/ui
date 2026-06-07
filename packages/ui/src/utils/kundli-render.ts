@@ -173,6 +173,7 @@ function renderPlanetStack(
  *
  * @param meta - Graha-keyed map; missing rashi entries are skipped.
  * @param divisionLabel - Optional title written inside the chart centre.
+ * @param lagnaOverride - Optional rashi/sign name (case-insensitive, e.g. `"cancer"`) that replaces the `meta.Lagna`-derived ascendant. Drives the Chandra Lagna (Moon-as-ascendant) and other reference-point views: the `meta` of a `/birth-chart` response always carries the Janma Lagna as its `Lagna` key, so this is the only way to pivot the houses without a second request. Ignored when it does not resolve to a known sign.
  */
 export function toKundliViewModel(
 	meta: Record<
@@ -187,14 +188,20 @@ export function toKundliViewModel(
 		}
 	>,
 	divisionLabel?: string,
+	lagnaOverride?: string,
 ): KundliViewModel {
 	const placements: Record<string, PlacedGraha[]> = {};
 	for (const sign of SIGNS_ORDER) placements[sign.toLowerCase()] = [];
-	let lagnaSign = '';
+	const override = lagnaOverride
+		? (RASHI_TO_SIGN[lagnaOverride.toLowerCase()] ?? '')
+		: '';
+	let lagnaSign = override;
 	for (const [name, pos] of Object.entries(meta ?? {})) {
 		const rashiKey = (pos?.rashi ?? '').toLowerCase();
 		if (name === 'Lagna' || pos?.graha === 'Lagna') {
-			lagnaSign = RASHI_TO_SIGN[rashiKey] ?? '';
+			// An explicit override pins the ascendant; otherwise the Janma Lagna
+			// from meta is the reference point.
+			if (!override) lagnaSign = RASHI_TO_SIGN[rashiKey] ?? '';
 			continue;
 		}
 		if (!rashiKey || !(rashiKey in placements)) continue;

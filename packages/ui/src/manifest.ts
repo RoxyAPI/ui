@@ -130,10 +130,11 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'vedic-kundli',
 		heading: 'Vedic kundli',
 		description:
-			'South, North, or East Indian Vedic kundli for /vedic-astrology/birth-chart with per-planet degree and nakshatra detail',
+			'South, North, or East Indian Vedic kundli for /vedic-astrology/birth-chart with per-planet degree and nakshatra detail, plus an optional Chandra Lagna (Moon-as-ascendant) reference view',
 		docsLabel: 'Vedic',
 		endpointLabel: 'POST /vedic-astrology/birth-chart',
-		docsSummary: 'South, North, or East Indian kundli with degree detail',
+		docsSummary:
+			'South, North, or East Indian kundli with degree detail and optional Chandra Lagna view',
 		topic: 'Vedic',
 	},
 	{
@@ -305,11 +306,12 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'numerology-card',
 		heading: 'Life path number',
 		description:
-			'Numerology card for life path, expression, personal year, or full chart',
+			'Numerology card for life path, expression, soul urge, personality, personal year, or full chart',
 		docsLabel: 'Numerology',
 		endpointLabel:
-			'POST /numerology/{life-path,expression,personal-year,chart}',
-		docsSummary: 'Life path, expression, personal year, full chart',
+			'POST /numerology/{life-path,expression,soul-urge,personality,personal-year,chart}',
+		docsSummary:
+			'Life path, expression, soul urge, personality, personal year, full chart',
 		topic: 'Numerology',
 	},
 	{
@@ -385,6 +387,56 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 			'GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast',
 		docsSummary: 'Hexagram with trigrams, judgment, image, changing lines',
 		topic: 'I Ching',
+	},
+	{
+		pascal: 'RoxyCrystalGrid',
+		tag: 'roxy-crystal-grid',
+		slug: 'crystal-grid',
+		heading: 'Crystal grid',
+		description:
+			'Responsive crystal gallery with photo, name, and colour swatches from any crystals list response',
+		docsLabel: 'Crystals',
+		endpointLabel:
+			'GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search',
+		docsSummary: 'Crystal gallery tiles with photo, name, and colour swatches',
+		topic: 'Crystals',
+	},
+	{
+		pascal: 'RoxyDreamCard',
+		tag: 'roxy-dream-card',
+		slug: 'dream-card',
+		heading: 'Dream symbol',
+		description:
+			'Dream symbol card with the symbol name, full interpretation, and dictionary letter',
+		docsLabel: 'Dreams',
+		endpointLabel: 'GET /dreams/symbols/{id}',
+		docsSummary: 'Symbol name, interpretation body, and letter chip',
+		topic: 'Dreams',
+	},
+	{
+		pascal: 'RoxyAngelNumberCard',
+		tag: 'roxy-angel-number-card',
+		slug: 'angel-number-card',
+		heading: 'Angel number',
+		description:
+			'Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps',
+		docsLabel: 'Angel Numbers',
+		endpointLabel: 'GET /angel-numbers/numbers/{number}',
+		docsSummary:
+			'Number meaning with spiritual, love, career, and twin flame sections',
+		topic: 'Angel Numbers',
+	},
+	{
+		pascal: 'RoxyAngelNumberLookup',
+		tag: 'roxy-angel-number-lookup',
+		slug: 'angel-number-lookup',
+		heading: 'Angel number lookup',
+		description:
+			'Angel number sequence analysis with pattern classification, the known meaning when present, and a digit-root fallback for any number',
+		docsLabel: 'Angel Numbers',
+		endpointLabel: 'GET /angel-numbers/lookup',
+		docsSummary: 'Pattern analysis plus known meaning and digit-root fallback',
+		topic: 'Angel Numbers',
 	},
 	{
 		pascal: 'RoxyEndpointForm',

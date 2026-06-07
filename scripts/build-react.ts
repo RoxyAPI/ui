@@ -61,7 +61,7 @@ const DATA_TYPES: Record<string, string> = {
 	'kp-ruling-planets': 'KpRulingPlanetsResponse',
 	'nakshatra-card': 'NakshatraResponse',
 	'numerology-card':
-		'CalculateLifePathResponse | CalculateExpressionResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
+		'CalculateLifePathResponse | CalculateExpressionResponse | CalculateSoulUrgeResponse | CalculatePersonalityResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
 	'tarot-card': 'GetCardResponse | GetDailyCardResponse',
 	'tarot-spread':
 		'CastThreeCardResponse | CastCelticCrossResponse | CastLoveSpreadResponse | CastYesNoResponse | CastReadingResponse | DrawCardsResponse',
@@ -76,6 +76,11 @@ const DATA_TYPES: Record<string, string> = {
 	'yoga-list':
 		'ListYogasResponse | GetYogaResponse | { yogas: GetYogaResponse[] }',
 	'choghadiya-grid': 'GetChoghadiyaResponse',
+	'dream-card': 'GetDreamSymbolResponse',
+	'angel-number-card': 'GetAngelNumberResponse',
+	'angel-number-lookup': 'AnalyzeNumberSequenceResponse',
+	'crystal-grid':
+		'ListCrystalsResponse | GetCrystalsByChakraResponse | GetCrystalsByElementResponse | GetCrystalsByZodiacResponse | GetBirthstonesResponse | SearchCrystalsResponse',
 	// helpers and the generic fallback have no fixed shape
 	'endpoint-form': 'unknown',
 	'location-search': 'unknown',
@@ -140,6 +145,18 @@ const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 			comment:
 				'Initial regional kundli layout. The end user can switch styles at runtime via the visible tablist.',
 		},
+		{
+			prop: 'chartReference',
+			type: "'lagna' | 'moon'",
+			comment:
+				'Ascendant reference point. "lagna" (default) uses the Janma Lagna; "moon" renders the Chandra Lagna (Moon as house 1) from the same response.',
+		},
+		{
+			prop: 'lagnaOverride',
+			type: 'string',
+			comment:
+				'Explicit rashi/sign name to pin as the ascendant, overriding both the Janma Lagna and chartReference. Empty by default. Use for Surya Lagna, Arudha Lagna, or any custom reference chart.',
+		},
 	],
 	'divisional-chart': [
 		{
@@ -176,7 +193,7 @@ const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 	'numerology-card': [
 		{
 			prop: 'type',
-			type: "'life-path' | 'expression' | 'personal-year' | 'chart'",
+			type: "'life-path' | 'expression' | 'soul-urge' | 'personality' | 'personal-year' | 'chart'",
 			comment:
 				'Which numerology response the card is showing. Selects the heading and which fields are surfaced.',
 		},
@@ -203,6 +220,14 @@ const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 			type: "'lookup' | 'cast' | 'daily'",
 			comment:
 				'Which I Ching response shape to render: a static hexagram lookup, a cast with changing lines, or the daily hexagram.',
+		},
+	],
+	'crystal-grid': [
+		{
+			prop: 'heading',
+			type: 'string',
+			comment:
+				'Override the auto-derived grid heading. Empty by default, in which case the heading is derived from the response filter (chakra, element, zodiac sign, or birth month).',
 		},
 	],
 };
