@@ -265,6 +265,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Tarot"
   },
   {
+    "pascal": "RoxyTarotCatalog",
+    "tag": "roxy-tarot-catalog",
+    "slug": "tarot-catalog",
+    "heading": "Tarot deck",
+    "description": "Responsive tarot deck gallery with card art, name, and an arcana and suit caption from the tarot catalog response",
+    "docsLabel": "Tarot",
+    "endpointLabel": "GET /tarot/cards",
+    "docsSummary": "Deck gallery tiles with card art, name, and arcana and suit",
+    "topic": "Tarot"
+  },
+  {
     "pascal": "RoxyTarotSpread",
     "tag": "roxy-tarot-spread",
     "slug": "tarot-spread",
@@ -349,7 +360,7 @@ window.ROXY_COMPONENTS = [
     "description": "Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps",
     "docsLabel": "Angel Numbers",
     "endpointLabel": "GET /angel-numbers/numbers/{number}",
-    "docsSummary": "Number meaning with spiritual, love, career, and twin flame sections",
+    "docsSummary": "Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections",
     "topic": "Angel Numbers"
   },
   {

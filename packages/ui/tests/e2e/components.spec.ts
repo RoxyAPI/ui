@@ -15,6 +15,7 @@ const COMPONENT_TAGS = [
 	'roxy-kp-planets-table',
 	'roxy-numerology-card',
 	'roxy-tarot-card',
+	'roxy-tarot-catalog',
 	'roxy-tarot-spread',
 	'roxy-biorhythm-chart',
 	'roxy-hexagram',
@@ -24,7 +25,7 @@ const COMPONENT_TAGS = [
 ];
 
 test.describe('Roxy UI preview', () => {
-	test('renders 19 components with no console errors', async ({ page }) => {
+	test('renders 20 components with no console errors', async ({ page }) => {
 		const errors: string[] = [];
 		page.on('pageerror', (e) => errors.push(e.message));
 		page.on('console', (m) => {

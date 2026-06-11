@@ -229,6 +229,7 @@ async function main() {
 				body: { question: 'What does my next chapter look like?' },
 			}),
 		),
+		run('tarot-catalog', () => roxy.tarot.listCards({ query: { limit: 12 } })),
 		run('bodygraph', () =>
 			rawPost('human-design/bodygraph', {
 				date: PERSON1.date,
@@ -302,6 +303,9 @@ async function main() {
 		),
 		run('angel-lookup', () =>
 			roxy.angelNumbers.analyzeNumberSequence({ query: { number: '1212' } }),
+		),
+		run('angel-lookup-unknown', () =>
+			roxy.angelNumbers.analyzeNumberSequence({ query: { number: '7841' } }),
 		),
 		run('crystals', () =>
 			roxy.crystals.getCrystalsByChakra({

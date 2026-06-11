@@ -104,6 +104,10 @@
       "description": "Single tarot card with upright/reversed flip animation"
     },
     {
+      "name": "roxy-tarot-catalog",
+      "description": "Responsive tarot deck gallery with card art, name, and an arcana and suit caption from the tarot catalog response"
+    },
+    {
       "name": "roxy-tarot-spread",
       "description": "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no"
     },

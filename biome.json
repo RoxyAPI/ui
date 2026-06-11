@@ -12,7 +12,8 @@
 			"!!**/specs",
 			"!!**/node_modules",
 			"!!**/playwright-report",
-			"!!**/test-results"
+			"!!**/test-results",
+			"!!**/package.json"
 		]
 	},
 	"formatter": {

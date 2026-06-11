@@ -71,7 +71,7 @@
     },
     {
       "name": "Angel Numbers",
-      "description": "Production-ready angel numbers API + hosted MCP for AI agents and developers. Connect Claude Code, Cursor, VS Code in seconds, no local setup. Look up meanings for 111, 222, 333, 444, 555, 666, 777, 888, 999, 1111, and 40+ angel number sequences. Includes love, career, spiritual, and twin flame interpretations per number. Smart lookup analyzes any number sequence with pattern detection, digit root calculation, and classification. Daily angel number endpoint, filter by type (repeating, sequential, mirror, master). Built for synchronicity apps, spiritual journals, daily guidance features, AI chatbots, and wellness platforms."
+      "description": "Production-ready angel numbers API + hosted MCP for AI agents and developers. Connect Claude Code, Cursor, VS Code in seconds, no local setup. Look up meanings for 111, 222, 333, 444, 555, 666, 777, 888, 999, 1111, and 75+ angel number sequences covering every common family. Each reading breaks down into spiritual, love, career, money, and twin flame guidance, plus a biblical perspective and an honest shadow reading. Smart lookup analyzes any number sequence with pattern detection, digit root calculation, classification, and an optional sighting-context note. Daily angel number endpoint, filter by type (repeating, sequential, mirror, master, compound). Built for synchronicity apps, spiritual journals, daily guidance features, AI chatbots, and wellness platforms."
     },
     {
       "name": "Location and Timezone",
@@ -65178,7 +65178,7 @@
           "Angel Numbers"
         ],
         "summary": "List All Angel Numbers",
-        "description": "Retrieve the complete database of angel numbers with summary information. Returns all 43 angel numbers covering root digits (0-9), master numbers (11, 22, 33), double digits (44-99), triple repeating (111-999), quad repeating (1111-9999), mirror patterns (1212), and sequential numbers (1234). Supports optional type filtering. Perfect for building angel number explorer apps, reference guides, and spiritual databases.",
+        "description": "Retrieve the complete database of angel numbers with summary information. Returns 75+ angel numbers covering root digits (0-9), master numbers (11, 22, 33), double digits (44-99), triple repeating (111-999), quad repeating (1111-9999), the mirror families (X0X like 101-909, X1X, four-digit mirrors like 1212-2121), palindromes (1221, 1331), compound sequences (911, 1122), and sequential numbers (123, 1234). Supports optional type filtering. Perfect for building angel number explorer apps, reference guides, and spiritual databases.",
         "security": [
           {
             "apiKey": []
@@ -65243,13 +65243,14 @@
                 "sequential",
                 "mirror",
                 "master",
-                "root"
+                "root",
+                "compound"
               ],
               "example": "repeating",
-              "description": "Filter results by angel number pattern type. \"repeating\" returns numbers like 111, 444, 7777. \"sequential\" returns patterns like 1234. \"mirror\" returns palindrome patterns like 1212. \"master\" returns 11, 22, 33. \"root\" returns single digits 0-9."
+              "description": "Filter results by angel number pattern type. \"repeating\" returns numbers like 111, 444, 7777. \"sequential\" returns patterns like 1234. \"mirror\" returns palindrome or alternating patterns like 1212, 717. \"master\" returns 11, 22, 33. \"root\" returns single digits 0-9. \"compound\" returns mixed sequences with no pure pattern like 911, 1122."
             },
             "required": false,
-            "description": "Filter results by angel number pattern type. \"repeating\" returns numbers like 111, 444, 7777. \"sequential\" returns patterns like 1234. \"mirror\" returns palindrome patterns like 1212. \"master\" returns 11, 22, 33. \"root\" returns single digits 0-9.",
+            "description": "Filter results by angel number pattern type. \"repeating\" returns numbers like 111, 444, 7777. \"sequential\" returns patterns like 1234. \"mirror\" returns palindrome or alternating patterns like 1212, 717. \"master\" returns 11, 22, 33. \"root\" returns single digits 0-9. \"compound\" returns mixed sequences with no pure pattern like 911, 1122.",
             "name": "type",
             "in": "query"
           }
@@ -65264,7 +65265,7 @@
                   "properties": {
                     "total": {
                       "type": "number",
-                      "description": "Total number of angel numbers matching the applied filters. 43 for the full set, fewer when filtered by type."
+                      "description": "Total number of angel numbers matching the applied filters. The full catalog size when unfiltered, fewer when filtered by type."
                     },
                     "limit": {
                       "type": "number",
@@ -65297,7 +65298,7 @@
                           "type": {
                             "type": "string",
                             "example": "repeating",
-                            "description": "Pattern classification of the angel number. \"repeating\" means all digits are the same (111, 4444). \"sequential\" means consecutive digits (1234). \"mirror\" means palindrome or alternating pattern (1212, 1221). \"master\" means numerology master number (11, 22, 33). \"root\" means single digit (0-9)."
+                            "description": "Pattern classification of the angel number. \"repeating\" means all digits are the same (111, 4444). \"sequential\" means consecutive digits (1234). \"mirror\" means palindrome or alternating pattern (1212, 1221). \"master\" means numerology master number (11, 22, 33). \"root\" means single digit (0-9). \"compound\" means a mixed sequence with no pure pattern (911, 1122)."
                           },
                           "digitRoot": {
                             "type": "number",
@@ -65562,7 +65563,7 @@
           "Angel Numbers"
         ],
         "summary": "Get Angel Number Meaning",
-        "description": "Get the complete, authoritative meaning and interpretation for a specific angel number. Returns detailed spiritual, love, career, and twin flame interpretations along with keywords, affirmation, and actionable steps. Covers 43 angel numbers including 111, 222, 333, 444, 555, 666, 777, 888, 999, 1111, 1212, 1234, and more. Authoritative interpretations covering all major angel number patterns.",
+        "description": "Get the complete, authoritative meaning and interpretation for a specific angel number. Returns detailed spiritual, love, career, money, and twin flame interpretations, plus a biblical perspective and a shadow reading, along with keywords, affirmation, and actionable steps. Covers 75+ angel numbers including 111, 222, 333, 444, 555, 666, 777, 888, 999, 1111, 1212, 1234, and more. Authoritative interpretations covering all major angel number patterns.",
         "security": [
           {
             "apiKey": []
@@ -65629,7 +65630,7 @@
                     "type": {
                       "type": "string",
                       "example": "repeating",
-                      "description": "Pattern classification of the angel number. \"repeating\" means all digits are the same (111, 4444). \"sequential\" means consecutive digits (1234). \"mirror\" means palindrome or alternating pattern (1212, 1221). \"master\" means numerology master number (11, 22, 33). \"root\" means single digit (0-9)."
+                      "description": "Pattern classification of the angel number. \"repeating\" means all digits are the same (111, 4444). \"sequential\" means consecutive digits (1234). \"mirror\" means palindrome or alternating pattern (1212, 1221). \"master\" means numerology master number (11, 22, 33). \"root\" means single digit (0-9). \"compound\" means a mixed sequence with no pure pattern (911, 1122)."
                     },
                     "digitRoot": {
                       "type": "number",
@@ -65668,7 +65669,11 @@
                         },
                         "career": {
                           "type": "string",
-                          "description": "Career and financial guidance including professional opportunities, money mindset, and practical advice for work life aligned with this angel number energy."
+                          "description": "Career and vocation guidance: professional opportunities, calling, and practical work advice aligned with this angel number energy. Money and finances are returned separately in the money field."
+                        },
+                        "money": {
+                          "type": "string",
+                          "description": "Money, finances, and material abundance guidance, kept distinct from career and vocation. Covers income, spending, debt, and prosperity mindset for this angel number."
                         },
                         "twinFlame": {
                           "type": "string",
@@ -65679,8 +65684,17 @@
                         "spiritual",
                         "love",
                         "career",
+                        "money",
                         "twinFlame"
                       ]
+                    },
+                    "biblical": {
+                      "type": "string",
+                      "description": "Biblical and religious perspective on the sequence, framed honestly. States plainly when a number is not a scriptural concept rather than inventing scripture."
+                    },
+                    "shadow": {
+                      "type": "string",
+                      "description": "Shadow or cautionary reading: the misuse, over-reliance, or imbalance this sequence can signal. Complements the energy classification."
                     },
                     "affirmation": {
                       "type": "string",
@@ -65709,6 +65723,8 @@
                     "keywords",
                     "energy",
                     "meaning",
+                    "biblical",
+                    "shadow",
                     "affirmation",
                     "actionSteps"
                   ]
@@ -65957,7 +65973,7 @@
           "Angel Numbers"
         ],
         "summary": "Analyze Any Number Sequence",
-        "description": "Smart angel number analysis that works for ANY number sequence, not just known angel numbers. Automatically classifies the pattern type (repeating, sequential, mirror, master, root), calculates the numerology digit root, checks the database for a known meaning, and provides the foundational digit root interpretation as a fallback. Perfect for synchronicity tracking apps where users enter arbitrary number sequences they encounter.",
+        "description": "Smart angel number analysis that works for ANY number sequence, not just known angel numbers. Automatically classifies the pattern type (repeating, sequential, mirror, master, root, compound), calculates the numerology digit root, checks the database for a known meaning, and provides the foundational digit root interpretation (with full spiritual, love, career, money, and twin flame guidance) as a fallback. An optional context parameter adds a note tailored to where the number was seen. Perfect for synchronicity tracking apps where users enter arbitrary number sequences they encounter.",
         "security": [
           {
             "apiKey": []
@@ -65997,6 +66013,25 @@
             "description": "Number sequence to analyze (1-8 digits). Can be any number the user has encountered: clock times (1111), addresses (717), receipts (888), license plates (4444), or any repeating pattern.",
             "name": "number",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "clock",
+                "receipt",
+                "license-plate",
+                "phone",
+                "address",
+                "price"
+              ],
+              "example": "clock",
+              "description": "Where the number was seen. When supplied, the response adds a contextNote tailoring the reading to the sighting: clock (a glanced time), receipt (a purchase), license-plate (in transit), phone (a call or notification), address (a home or place), price (a total or amount)."
+            },
+            "required": false,
+            "description": "Where the number was seen. When supplied, the response adds a contextNote tailoring the reading to the sighting: clock (a glanced time), receipt (a purchase), license-plate (in transit), phone (a call or notification), address (a home or place), price (a total or amount).",
+            "name": "context",
+            "in": "query"
           }
         ],
         "responses": {
@@ -66015,7 +66050,7 @@
                     "type": {
                       "type": "string",
                       "example": "sequential",
-                      "description": "Pattern classification detected for this number. \"repeating\" means all same digits. \"sequential\" means consecutive ascending or descending. \"mirror\" means palindrome or alternating pattern. \"master\" means numerology master number. \"root\" means single digit."
+                      "description": "Pattern classification detected for this number. \"repeating\" means all same digits. \"sequential\" means consecutive ascending or descending. \"mirror\" means palindrome or alternating pattern. \"master\" means numerology master number. \"root\" means single digit. \"compound\" means a multi-digit sequence with no pure pattern (e.g. 911, 1122)."
                     },
                     "digitRoot": {
                       "type": "number",
@@ -66078,7 +66113,11 @@
                             },
                             "career": {
                               "type": "string",
-                              "description": "Career and financial guidance including professional opportunities and money mindset."
+                              "description": "Career and vocation guidance. Money and finances are returned separately in the money field."
+                            },
+                            "money": {
+                              "type": "string",
+                              "description": "Money, finances, and material abundance guidance, distinct from career."
                             },
                             "twinFlame": {
                               "type": "string",
@@ -66089,9 +66128,18 @@
                             "spiritual",
                             "love",
                             "career",
+                            "money",
                             "twinFlame"
                           ],
-                          "description": "Detailed interpretations across four life areas: spiritual, love, career, and twin flame."
+                          "description": "Detailed interpretations across life areas."
+                        },
+                        "biblical": {
+                          "type": "string",
+                          "description": "Biblical and religious perspective, framed honestly."
+                        },
+                        "shadow": {
+                          "type": "string",
+                          "description": "Shadow or cautionary reading for this number."
                         },
                         "affirmation": {
                           "type": "string",
@@ -66111,10 +66159,12 @@
                         "energy",
                         "keywords",
                         "meaning",
+                        "biblical",
+                        "shadow",
                         "affirmation",
                         "actionSteps"
                       ],
-                      "description": "Full angel number meaning if this number exists in the database (43 known numbers). Null if the number is not in the database, in which case use the analysis fields (type, digitRoot) for interpretation."
+                      "description": "Full angel number meaning if this number exists in the curated database (75+ known sequences). Null if the number is not in the database, in which case use the analysis fields (type, digitRoot) and the digitRootMeaning fallback for interpretation."
                     },
                     "digitRootMeaning": {
                       "type": "object",
@@ -66132,14 +66182,60 @@
                         "coreMessage": {
                           "type": "string",
                           "description": "Core message of the foundational root digit."
+                        },
+                        "meaning": {
+                          "type": "object",
+                          "properties": {
+                            "spiritual": {
+                              "type": "string"
+                            },
+                            "love": {
+                              "type": "string"
+                            },
+                            "career": {
+                              "type": "string"
+                            },
+                            "money": {
+                              "type": "string"
+                            },
+                            "twinFlame": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "spiritual",
+                            "love",
+                            "career",
+                            "money",
+                            "twinFlame"
+                          ],
+                          "description": "Full life-area interpretation of the underlying root digit. For an unknown sequence this is the substantive reading to display, so a synchronicity app never dead-ends on an arbitrary number."
+                        },
+                        "keywords": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Keywords for the root digit."
+                        },
+                        "affirmation": {
+                          "type": "string",
+                          "description": "Affirmation for the root digit."
                         }
                       },
                       "required": [
                         "number",
                         "title",
-                        "coreMessage"
+                        "coreMessage",
+                        "meaning",
+                        "keywords",
+                        "affirmation"
                       ],
                       "description": "The foundational meaning of this number based on its digit root. Every number reduces to a root digit (0-9) or master number (11, 22, 33), which provides the base interpretation even for unknown sequences."
+                    },
+                    "contextNote": {
+                      "type": "string",
+                      "description": "Present only when the context query parameter is supplied. A short reading layered on top of the meaning that accounts for WHERE the number was seen (clock, receipt, license plate, phone, address, price), since the place of a sighting shifts its emphasis."
                     }
                   },
                   "required": [
@@ -66372,7 +66468,7 @@
           "Angel Numbers"
         ],
         "summary": "Daily Angel Number",
-        "description": "Get the angel number of the day with full meaning and interpretation. Returns a deterministic angel number based on the current date (or a provided seed date), ensuring all users see the same number for any given day. Includes complete spiritual, love, career, and twin flame interpretations. Perfect for daily guidance features, push notifications, content generation, and angel number widget integrations.",
+        "description": "Get the angel number of the day with full meaning and interpretation. Returns a deterministic angel number based on the current date (or a provided seed date), ensuring all users see the same number for any given day. Includes complete spiritual, love, career, money, and twin flame interpretations plus a biblical perspective and a shadow reading. Perfect for daily guidance features, push notifications, content generation, and angel number widget integrations.",
         "security": [
           {
             "apiKey": []
@@ -66481,7 +66577,11 @@
                         },
                         "career": {
                           "type": "string",
-                          "description": "Career and financial guidance including professional opportunities, money mindset, and practical advice for work life."
+                          "description": "Career and vocation guidance: professional opportunities, calling, and practical work advice. Money and finances are returned separately in the money field."
+                        },
+                        "money": {
+                          "type": "string",
+                          "description": "Money, finances, and material abundance guidance, kept distinct from career and vocation."
                         },
                         "twinFlame": {
                           "type": "string",
@@ -66492,9 +66592,18 @@
                         "spiritual",
                         "love",
                         "career",
+                        "money",
                         "twinFlame"
                       ],
-                      "description": "Detailed interpretations across four life areas for the daily angel number."
+                      "description": "Detailed interpretations across life areas for the daily angel number."
+                    },
+                    "biblical": {
+                      "type": "string",
+                      "description": "Biblical and religious perspective on the daily sequence, framed honestly."
+                    },
+                    "shadow": {
+                      "type": "string",
+                      "description": "Shadow or cautionary reading for the daily sequence. Complements the energy classification."
                     },
                     "keywords": {
                       "type": "array",
@@ -66525,6 +66634,8 @@
                     "digitRoot",
                     "energy",
                     "meaning",
+                    "biblical",
+                    "shadow",
                     "keywords",
                     "affirmation",
                     "actionSteps"

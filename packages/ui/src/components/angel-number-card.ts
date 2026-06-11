@@ -1,24 +1,12 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { GetAngelNumberResponse } from '../types/index.js';
+import { buildMeaningSections } from '../utils/angel-sections.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
- * Life-area sections of an angel-number meaning, in display order. Keyed to the response `meaning` object so an absent area is simply skipped.
- */
-const MEANING_SECTIONS: ReadonlyArray<{
-	key: 'spiritual' | 'love' | 'career' | 'twinFlame';
-	label: string;
-}> = [
-	{ key: 'spiritual', label: 'Spiritual' },
-	{ key: 'love', label: 'Love' },
-	{ key: 'career', label: 'Career' },
-	{ key: 'twinFlame', label: 'Twin flame' },
-];
-
-/**
- * Angel number card. Renders /angel-numbers/numbers/{number}: the number as a hero numeral, its title and core message, the pattern type / digit root / energy badges, keyword chips, the four life-area interpretations as an exclusive accordion, the affirmation, and the action steps.
+ * Angel number card. Renders /angel-numbers/numbers/{number}: the number as a hero numeral, its title and core message, the pattern type / digit root / energy badges, keyword chips, the life-area interpretations (spiritual, love, career, money, twin flame) plus the biblical and shadow readings as an exclusive accordion, the affirmation, and the action steps.
  */
 @customElement('roxy-angel-number-card')
 export class RoxyAngelNumberCard extends LitElement {
@@ -212,15 +200,13 @@ export class RoxyAngelNumberCard extends LitElement {
 	}
 
 	private renderSections(d: NonNullable<GetAngelNumberResponse>) {
-		const meaning = d.meaning;
-		if (!meaning) return nothing;
-		const present = MEANING_SECTIONS.filter((s) => meaning[s.key]);
-		if (present.length === 0) return nothing;
+		const sections = buildMeaningSections(d.meaning, d.biblical, d.shadow);
+		if (sections.length === 0) return nothing;
 		return html`<div class="sections">
-			${present.map(
+			${sections.map(
 				(s, i) => html`<details name="angel-meaning" ?open=${i === 0}>
 					<summary>${s.label}</summary>
-					<p>${meaning[s.key]}</p>
+					<p>${s.body}</p>
 				</details>`,
 			)}
 		</div>`;

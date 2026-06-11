@@ -1,18 +1,9 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { AnalyzeNumberSequenceResponse } from '../types/index.js';
+import { buildMeaningSections } from '../utils/angel-sections.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { MarkupDataController } from '../utils/markup-data.js';
-
-const MEANING_SECTIONS: ReadonlyArray<{
-	key: 'spiritual' | 'love' | 'career' | 'twinFlame';
-	label: string;
-}> = [
-	{ key: 'spiritual', label: 'Spiritual' },
-	{ key: 'love', label: 'Love' },
-	{ key: 'career', label: 'Career' },
-	{ key: 'twinFlame', label: 'Twin flame' },
-];
 
 /**
  * Angel number lookup card. Renders /angel-numbers/lookup: the analysed sequence with its pattern classification (type, digit count, unique digits, palindrome, repeating), the known angel-number meaning when the sequence is in the database, and the foundational digit-root meaning that interprets any sequence. Built for synchronicity trackers where users enter arbitrary numbers.
@@ -171,7 +162,7 @@ export class RoxyAngelNumberLookup extends LitElement {
 								? html`<div class="chips">${known.keywords.map((k) => html`<span>${k}</span>`)}</div>`
 								: nothing
 						}
-						${this.renderMeaning(known.meaning)}
+						${this.renderMeaning(known.meaning, known.biblical, known.shadow)}
 						${known.affirmation ? html`<p><em>${known.affirmation}</em></p>` : nothing}
 					</div>`
 					: nothing
@@ -182,22 +173,41 @@ export class RoxyAngelNumberLookup extends LitElement {
 						<p class="label">Foundational digit root${root.number ? ` (${root.number})` : ''}</p>
 						${root.title ? html`<h3>${root.title}</h3>` : nothing}
 						${root.coreMessage ? html`<p>${root.coreMessage}</p>` : nothing}
+						${!known ? this.renderRootMeaning(root) : nothing}
 					</div>`
 					: nothing
 			}
 		</article>`;
 	}
 
-	private renderMeaning(meaning: Record<string, string> | undefined) {
-		if (!meaning) return nothing;
-		const present = MEANING_SECTIONS.filter((s) => meaning[s.key]);
-		if (present.length === 0) return nothing;
-		return html`${present.map(
+	private renderMeaning(
+		meaning: Record<string, string> | undefined,
+		biblical?: string,
+		shadow?: string,
+	) {
+		const sections = buildMeaningSections(meaning, biblical, shadow);
+		if (sections.length === 0) return nothing;
+		return html`${sections.map(
 			(s, i) => html`<details name="lookup-meaning" ?open=${i === 0}>
 				<summary>${s.label}</summary>
-				<p>${meaning[s.key]}</p>
+				<p>${s.body}</p>
 			</details>`,
 		)}`;
+	}
+
+	/**
+	 * Render the foundational digit-root reading for an unknown sequence: keyword chips, the full life-area accordion (including money), and the affirmation. The digit-root meaning carries no biblical or shadow field, so only the life areas are passed through.
+	 */
+	private renderRootMeaning(
+		root: NonNullable<AnalyzeNumberSequenceResponse['digitRootMeaning']>,
+	) {
+		return html`${
+			root.keywords && root.keywords.length > 0
+				? html`<div class="chips">${root.keywords.map((k) => html`<span>${k}</span>`)}</div>`
+				: nothing
+		}${this.renderMeaning(root.meaning)}${
+			root.affirmation ? html`<p><em>${root.affirmation}</em></p>` : nothing
+		}`;
 	}
 }
 

@@ -36,6 +36,7 @@ import {
 	RoxyShadbalaTable,
 	RoxySynastryChart,
 	RoxyTarotCard,
+	RoxyTarotCatalog,
 	RoxyTarotSpread,
 	RoxyTransitsTable,
 	RoxyVedicKundli,
@@ -527,8 +528,11 @@ const specs: ComponentSpec<HTMLElement>[] = [
 				spiritual: 'A powerful manifestation gateway is opening.',
 				love: 'Fresh starts and new romantic possibilities.',
 				career: 'New professional opportunities are emerging.',
+				money: 'Fresh income streams align with your intentions.',
 				twinFlame: 'Union or a major step forward approaches.',
 			},
+			biblical: 'The Trinity and divine completeness in scripture.',
+			shadow: 'Watch for scattered focus and over-idealism.',
 			affirmation: 'My thoughts are powerful.',
 			actionSteps: ['Monitor your thoughts', 'Set clear intentions'],
 		},
@@ -553,8 +557,11 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					spiritual: 'You are on the right path.',
 					love: 'Your relationship is progressing in divine order.',
 					career: 'Career advancement through steady steps.',
+					money: 'Steady financial growth follows steady effort.',
 					twinFlame: 'Progress toward union.',
 				},
+				biblical: 'Order and faithfulness echoed in scripture.',
+				shadow: 'Avoid impatience when progress feels slow.',
 				affirmation: 'I am making divine progress.',
 				actionSteps: ['Take the next step'],
 			},
@@ -585,6 +592,32 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					id: 'aventurine',
 					imageUrl: 'https://roxyapi.com/img/crystals/aventurine.jpg',
 					colors: ['green'],
+				},
+			],
+		},
+	},
+	{
+		tag: 'roxy-tarot-catalog',
+		ctor: RoxyTarotCatalog as unknown as new () => HTMLElement,
+		sample: {
+			total: 78,
+			limit: 2,
+			offset: 0,
+			cards: [
+				{
+					id: 'fool',
+					name: 'The Fool',
+					arcana: 'major',
+					number: 0,
+					imageUrl: 'https://roxyapi.com/img/tarot/major/fool.jpg',
+				},
+				{
+					id: 'three-of-cups',
+					name: 'Three of Cups',
+					arcana: 'minor',
+					suit: 'cups',
+					number: 3,
+					imageUrl: 'https://roxyapi.com/img/tarot/cups/three.jpg',
 				},
 			],
 		},
@@ -683,6 +716,128 @@ describe.each(specs)('%s component', (spec: ComponentSpec<HTMLElement>) => {
 				expect(el.getAttribute(k)).toBe(v);
 			}
 		}
+		el.remove();
+	});
+});
+
+describe('angel-number new interpretation sections', () => {
+	const cardSample = specs.find(
+		(s) => s.tag === 'roxy-angel-number-card',
+	)?.sample;
+	const lookupSample = specs.find(
+		(s) => s.tag === 'roxy-angel-number-lookup',
+	)?.sample;
+
+	test('roxy-angel-number-card renders money, biblical, and shadow sections', async () => {
+		const el = document.createElement(
+			'roxy-angel-number-card',
+		) as unknown as HTMLElement & {
+			data?: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		document.body.appendChild(el);
+		el.data = cardSample;
+		await el.updateComplete;
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Money');
+		expect(text).toContain('Fresh income streams align with your intentions.');
+		expect(text).toContain('Biblical');
+		expect(text).toContain('The Trinity and divine completeness in scripture.');
+		expect(text).toContain('Shadow');
+		expect(text).toContain('Watch for scattered focus and over-idealism.');
+		el.remove();
+	});
+
+	test('roxy-angel-number-lookup renders money, biblical, and shadow in the known meaning', async () => {
+		const el = document.createElement(
+			'roxy-angel-number-lookup',
+		) as unknown as HTMLElement & {
+			data?: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		document.body.appendChild(el);
+		el.data = lookupSample;
+		await el.updateComplete;
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Money');
+		expect(text).toContain('Steady financial growth follows steady effort.');
+		expect(text).toContain('Biblical');
+		expect(text).toContain('Order and faithfulness echoed in scripture.');
+		expect(text).toContain('Shadow');
+		expect(text).toContain('Avoid impatience when progress feels slow.');
+		el.remove();
+	});
+
+	test('roxy-angel-number-lookup renders the digit-root meaning (incl. money) for an unknown number', async () => {
+		const el = document.createElement(
+			'roxy-angel-number-lookup',
+		) as unknown as HTMLElement & {
+			data?: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		document.body.appendChild(el);
+		el.data = {
+			number: '4567',
+			type: 'compound',
+			digitRoot: 4,
+			digits: 4,
+			uniqueDigits: 4,
+			isPalindrome: false,
+			isRepeating: false,
+			knownMeaning: null,
+			digitRootMeaning: {
+				number: '4',
+				title: 'Foundation and discipline',
+				coreMessage: 'Build steady structure.',
+				meaning: {
+					spiritual: 'Ground your practice in routine.',
+					love: 'Reliability deepens connection.',
+					career: 'Methodical effort compounds.',
+					money: 'Budgets and discipline grow your reserves.',
+					twinFlame: 'Stable foundations support union.',
+				},
+				keywords: ['foundation', 'discipline'],
+				affirmation: 'I build on solid ground.',
+			},
+		};
+		await el.updateComplete;
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Money');
+		expect(text).toContain('Budgets and discipline grow your reserves.');
+		expect(text).toContain('Foundation and discipline');
+		expect(text).toContain('I build on solid ground.');
+		el.remove();
+	});
+});
+
+describe('roxy-tarot-catalog rendering', () => {
+	const sample = specs.find((s) => s.tag === 'roxy-tarot-catalog')?.sample;
+
+	test('renders deck tiles with names, count, and arcana/suit captions', async () => {
+		const el = document.createElement(
+			'roxy-tarot-catalog',
+		) as unknown as HTMLElement & {
+			data?: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		document.body.appendChild(el);
+		el.data = sample;
+		await el.updateComplete;
+		const root = el.shadowRoot;
+		const text = root?.textContent ?? '';
+		// Names from the sample render.
+		expect(text).toContain('The Fool');
+		expect(text).toContain('Three of Cups');
+		// Total count drives the header, not the page length.
+		expect(text).toContain('78 cards');
+		// Major Arcana caption and Minor Arcana suit caption both derive from spec fields.
+		expect(text).toContain('Major Arcana');
+		expect(text).toContain('Minor · Cups');
+		// One tile per card (counted via markup to avoid the happy-dom
+		// shadow-root querySelectorAll quirk; other component tests assert via
+		// textContent for the same reason).
+		const tiles = (root?.innerHTML ?? '').match(/class="tile"/g) ?? [];
+		expect(tiles.length).toBe(2);
 		el.remove();
 	});
 });

@@ -110,6 +110,10 @@ export {
 	type RoxyTarotCardProps,
 } from './components/tarot-card.js';
 export {
+	RoxyTarotCatalog,
+	type RoxyTarotCatalogProps,
+} from './components/tarot-catalog.js';
+export {
 	RoxyTarotSpread,
 	type RoxyTarotSpreadProps,
 } from './components/tarot-spread.js';

@@ -293,6 +293,12 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'tarot-catalog',
+		tag: 'roxy-tarot-catalog',
+		seoLine: 'Browse the full tarot deck with card art and arcana captions',
+		sdkCall: `  const { data } = await roxy.tarot.listCards({ query: { limit: 12 } });`,
+	}),
+	entry({
 		id: 'bodygraph',
 		tag: 'roxy-bodygraph',
 		seoLine: 'Human Design bodygraph chart with nine centers and channels',
@@ -347,6 +353,14 @@ window.ROXY_UI_DEMOS = [
 		seoLine: 'Analyze any number sequence for angel number meaning',
 		sdkCall: `  const { data } = await roxy.angelNumbers.analyzeNumberSequence({
     query: { number: '1212' },
+  });`,
+	}),
+	entry({
+		id: 'angel-lookup-unknown',
+		tag: 'roxy-angel-number-lookup',
+		seoLine: 'Digit-root fallback reading for a number with no catalog entry',
+		sdkCall: `  const { data } = await roxy.angelNumbers.analyzeNumberSequence({
+    query: { number: '7841' },
   });`,
 	}),
 	entry({

@@ -47,6 +47,7 @@ export { RoxyShadbalaTable } from './components/shadbala-table.js';
 export { RoxySynastryChart } from './components/synastry-chart.js';
 // Tarot
 export { RoxyTarotCard } from './components/tarot-card.js';
+export { RoxyTarotCatalog } from './components/tarot-catalog.js';
 export { RoxyTarotSpread } from './components/tarot-spread.js';
 export { RoxyTransitsTable } from './components/transits-table.js';
 // Vedic astrology
