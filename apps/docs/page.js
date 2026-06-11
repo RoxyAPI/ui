@@ -19,6 +19,9 @@
 		'Forecast',
 		'Biorhythm',
 		'I Ching',
+		'Crystals',
+		'Dreams',
+		'Angel Numbers',
 		'Helpers',
 	];
 

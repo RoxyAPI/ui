@@ -234,7 +234,7 @@ const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' 
 return <RoxyHoroscopeCard data={data} />;
 ```
 
-Then expand into natal charts, kundli, dasha, tarot, and every other domain. The SDK returns `data`, the component renders it; the same pairing holds for all 36 components.
+Then expand into natal charts, kundli, dasha, tarot, and every other domain. The SDK returns `data`, the component renders it; the same pairing holds for every component in the catalog.
 
 > **Pass `data`, not the envelope.** The SDK returns `{ data, error, request, response }`. Pass `data`, or the component renders `[object Object]`. This is the most common integration bug.
 

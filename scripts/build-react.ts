@@ -63,6 +63,7 @@ const DATA_TYPES: Record<string, string> = {
 	'numerology-card':
 		'CalculateLifePathResponse | CalculateExpressionResponse | CalculateSoulUrgeResponse | CalculatePersonalityResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
 	'tarot-card': 'GetCardResponse | GetDailyCardResponse',
+	'tarot-catalog': 'ListCardsResponse',
 	'tarot-spread':
 		'CastThreeCardResponse | CastCelticCrossResponse | CastLoveSpreadResponse | CastYesNoResponse | CastReadingResponse | DrawCardsResponse',
 	'biorhythm-chart':
@@ -106,6 +107,14 @@ interface ConfigPropDef {
 }
 
 const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
+	'tarot-catalog': [
+		{
+			prop: 'heading',
+			type: 'string',
+			comment:
+				'Override the auto-derived gallery heading. Empty by default, in which case the heading is "Tarot deck".',
+		},
+	],
 	'natal-chart': [
 		{
 			prop: 'houseSystem',
