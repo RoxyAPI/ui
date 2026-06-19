@@ -1,11 +1,21 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { ASPECT_SYMBOL } from '../tokens/index.js';
-import type { GenerateTimelineResponse } from '../types/index.js';
+import type {
+	FindSignificantDatesResponse,
+	ForecastTransitsResponse,
+	GenerateTimelineResponse,
+} from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { ASPECT_CLASS, formatDate, formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize, humanize } from '../utils/string.js';
+
+/** Timeline, significant-dates, and forecast-transits all return the same `{ events, startDate, endDate, birthData, count }` shape. */
+type ForecastTimelineData =
+	| GenerateTimelineResponse
+	| FindSignificantDatesResponse
+	| ForecastTransitsResponse;
 
 type ForecastEvent = GenerateTimelineResponse['events'][number];
 type ForecastDomain = ForecastEvent['domain'];
@@ -38,11 +48,17 @@ const DOMAIN_ORDER: readonly ForecastDomain[] = [
  * Theming flows through `--roxy-*` custom properties on `:host`.
  */
 @customElement('roxy-forecast-timeline')
-export class RoxyForecastTimeline extends LitElement {
+export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -195,22 +211,11 @@ export class RoxyForecastTimeline extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No forecast data</div>`;
 	}
 
-	@property({ attribute: false })
-	data: GenerateTimelineResponse | null = null;
-
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No forecast data</div>`;
-
+	protected renderData(d: ForecastTimelineData) {
 		const events = d.events ?? [];
 		const grouped = this.groupByDate(events);
 		const present = DOMAIN_ORDER.filter((dom) =>

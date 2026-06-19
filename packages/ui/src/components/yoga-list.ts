@@ -1,12 +1,17 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import type { GetYogaResponse, ListYogasResponse } from '../types/index.js';
+import { css, html, nothing } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
+import type {
+	DetectYogasResponse,
+	GetYogaResponse,
+	ListYogasResponse,
+} from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type YogaListData =
 	| ListYogasResponse
 	| GetYogaResponse
+	| DetectYogasResponse
 	| { yogas: Array<GetYogaResponse> };
 
 /**
@@ -18,7 +23,7 @@ type YogaListData =
  * Catalog and detail-array modes include a live search filter.
  */
 @customElement('roxy-yoga-list')
-export class RoxyYogaList extends LitElement {
+export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 	static styles = [
 		baseStyles,
 		css`
@@ -55,7 +60,7 @@ export class RoxyYogaList extends LitElement {
 				font-family: var(--roxy-font-sans);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				color: var(--roxy-fg, #0a0a0a);
 				outline: none;
 			}
@@ -77,7 +82,7 @@ export class RoxyYogaList extends LitElement {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				font-size: var(--roxy-text-sm, 0.875rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				color: var(--roxy-fg, #0a0a0a);
 				word-break: break-word;
 			}
@@ -92,7 +97,7 @@ export class RoxyYogaList extends LitElement {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-md, 1rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				display: grid;
 				gap: var(--roxy-space-sm, 0.5rem);
 			}
@@ -172,17 +177,6 @@ export class RoxyYogaList extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: YogaListData | null = null;
-
 	@state()
 	private filter = '';
 
@@ -217,11 +211,11 @@ export class RoxyYogaList extends LitElement {
 		</div>`;
 	}
 
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No yoga data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No yoga data</div>`;
+	}
 
-		const d = this.data;
+	protected renderData(d: YogaListData) {
 		const lc = this.filter.toLowerCase();
 
 		// Detail mode: single GetYogaResponse

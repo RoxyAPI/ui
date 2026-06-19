@@ -1,15 +1,17 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
+	CastCareerSpreadResponse,
 	CastCelticCrossResponse,
+	CastCustomSpreadResponse,
 	CastLoveSpreadResponse,
 	CastReadingResponse,
 	CastThreeCardResponse,
 	CastYesNoResponse,
 	DrawCardsResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type TarotSpreadData =
 	| CastThreeCardResponse
@@ -17,6 +19,8 @@ type TarotSpreadData =
 	| CastLoveSpreadResponse
 	| CastYesNoResponse
 	| CastReadingResponse
+	| CastCareerSpreadResponse
+	| CastCustomSpreadResponse
 	| DrawCardsResponse;
 
 /**
@@ -24,7 +28,7 @@ type TarotSpreadData =
  * /tarot/yes-no, /tarot/draw responses.
  */
 @customElement('roxy-tarot-spread')
-export class RoxyTarotSpread extends LitElement {
+export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 	static styles = [
 		baseStyles,
 		css`
@@ -84,7 +88,7 @@ export class RoxyTarotSpread extends LitElement {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
 			}
@@ -136,26 +140,21 @@ export class RoxyTarotSpread extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	@property({ type: String, reflect: true })
+	spread:
+		| 'three-card'
+		| 'celtic-cross'
+		| 'love'
+		| 'career'
+		| 'custom'
+		| 'yes-no'
+		| 'draw' = 'three-card';
+
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No tarot spread</div>`;
 	}
 
-	@property({ attribute: false })
-	data: TarotSpreadData | null = null;
-
-	@property({ type: String, reflect: true })
-	spread: 'three-card' | 'celtic-cross' | 'love' | 'yes-no' | 'draw' =
-		'three-card';
-
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No tarot spread</div>`;
-
+	protected renderData(d: TarotSpreadData) {
 		const isYesNo = 'answer' in d;
 		const isDrawn = 'cards' in d && !('spread' in d);
 		const positions = isDrawn

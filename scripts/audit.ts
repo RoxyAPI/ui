@@ -9,54 +9,6 @@ import { chromium, type Page } from '@playwright/test';
 
 const BASE = 'http://localhost:3001';
 
-interface Section {
-	id: string;
-	tag: string;
-}
-
-const SECTIONS: Section[] = [
-	{ id: 'natal', tag: 'roxy-natal-chart' },
-	{ id: 'synastry', tag: 'roxy-synastry-chart' },
-	{ id: 'western-planets', tag: 'roxy-western-planets-table' },
-	{ id: 'transits', tag: 'roxy-transits-table' },
-	{ id: 'moon', tag: 'roxy-moon-phase' },
-	{ id: 'horoscope', tag: 'roxy-horoscope-card' },
-	{ id: 'compat', tag: 'roxy-compatibility-card' },
-	{ id: 'kundli', tag: 'roxy-vedic-kundli' },
-	{ id: 'divisional', tag: 'roxy-divisional-chart' },
-	{ id: 'kp-chart', tag: 'roxy-kp-chart' },
-	{ id: 'vedic-planets', tag: 'roxy-vedic-planets-table' },
-	{ id: 'kp', tag: 'roxy-kp-planets-table' },
-	{ id: 'kp-ruling', tag: 'roxy-kp-ruling-planets' },
-	{ id: 'ashtakavarga', tag: 'roxy-ashtakavarga-grid' },
-	{ id: 'shadbala', tag: 'roxy-shadbala-table' },
-	{ id: 'dasha', tag: 'roxy-dasha-timeline' },
-	{ id: 'guna', tag: 'roxy-guna-milan' },
-	{ id: 'panchang', tag: 'roxy-panchang-table' },
-	{ id: 'choghadiya', tag: 'roxy-choghadiya-grid' },
-	{ id: 'yoga', tag: 'roxy-yoga-list' },
-	{ id: 'nakshatra', tag: 'roxy-nakshatra-card' },
-	{ id: 'dosha', tag: 'roxy-dosha-card' },
-	{ id: 'num', tag: 'roxy-numerology-card' },
-	{ id: 'tarot', tag: 'roxy-tarot-card' },
-	{ id: 'spread', tag: 'roxy-tarot-spread' },
-	{ id: 'tarot-catalog', tag: 'roxy-tarot-catalog' },
-	{ id: 'bodygraph', tag: 'roxy-bodygraph' },
-	{ id: 'forecast-timeline', tag: 'roxy-forecast-timeline' },
-	{ id: 'bio', tag: 'roxy-biorhythm-chart' },
-	{ id: 'hex', tag: 'roxy-hexagram' },
-	{ id: 'dream', tag: 'roxy-dream-card' },
-	{ id: 'angel-card', tag: 'roxy-angel-number-card' },
-	{ id: 'angel-lookup', tag: 'roxy-angel-number-lookup' },
-	{ id: 'angel-lookup-unknown', tag: 'roxy-angel-number-lookup' },
-	{ id: 'crystals', tag: 'roxy-crystal-grid' },
-	{ id: 'form', tag: 'roxy-endpoint-form' },
-	{ id: 'loc', tag: 'roxy-location-search' },
-	{ id: 'data', tag: 'roxy-data' },
-	// Markup-based hydration: data comes from a child JSON script, not a property.
-	{ id: 'ssr-markup', tag: 'roxy-numerology-card' },
-];
-
 const FORBIDDEN: Array<{ pattern: RegExp; label: string }> = [
 	{
 		pattern: /\[object Object\]/,
@@ -78,7 +30,17 @@ const FORBIDDEN: Array<{ pattern: RegExp; label: string }> = [
 async function audit(
 	page: Page,
 ): Promise<{ section: string; issues: string[] }[]> {
-	return page.evaluate((sections) => {
+	return page.evaluate(() => {
+		// Sections are derived from the SAME demo manifest the page renders from
+		// (window.ROXY_UI_DEMOS), so the audit can never silently drift behind a
+		// newly added component. Plus ssr-markup, the one markup-hydration demo
+		// hardcoded in index.html (data from a child JSON script, not a card).
+		const demos = (window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
+			.ROXY_UI_DEMOS;
+		const sections = [
+			...(demos ?? []).map((d) => ({ id: d.id })),
+			{ id: 'ssr-markup' },
+		];
 		const findings: { section: string; issues: string[] }[] = [];
 		for (const sec of sections) {
 			const issues: string[] = [];
@@ -107,7 +69,7 @@ async function audit(
 			findings.push({ section: sec.id, issues, text } as never);
 		}
 		return findings as never;
-	}, SECTIONS);
+	});
 }
 
 async function main() {

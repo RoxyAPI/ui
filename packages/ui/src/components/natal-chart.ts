@@ -1,4 +1,4 @@
-import { css, html, LitElement, nothing, svg } from 'lit';
+import { css, html, nothing, svg } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import {
 	ASPECT_SYMBOL,
@@ -7,6 +7,7 @@ import {
 	SIGNS_ORDER,
 } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
 	arcMidpoint,
@@ -21,7 +22,6 @@ import {
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
@@ -42,7 +42,7 @@ const ANGLE_LABEL_R = 196;
  * markers, and aspect lines from a /astrology/natal-chart response.
  */
 @customElement('roxy-natal-chart')
-export class RoxyNatalChart extends LitElement {
+export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 	static styles = [
 		baseStyles,
 		tablistStyles,
@@ -50,6 +50,12 @@ export class RoxyNatalChart extends LitElement {
 		css`
 			.wrap {
 				width: 100%;
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -69,7 +75,7 @@ export class RoxyNatalChart extends LitElement {
 			svg {
 				display: block;
 				width: 100%;
-				max-width: 560px;
+				max-width: var(--roxy-chart-max-width, 560px);
 				aspect-ratio: 1 / 1;
 				height: auto;
 				margin: 0 auto;
@@ -369,17 +375,6 @@ export class RoxyNatalChart extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: NatalChartResponse | null = null;
-
 	@property({ type: String, attribute: 'house-system', reflect: true })
 	houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch' = 'placidus';
 
@@ -404,20 +399,22 @@ export class RoxyNatalChart extends LitElement {
 		return 180 + this.getAscendant() - lon;
 	}
 
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No chart data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No chart data</div>`;
+	}
+
+	protected renderData(data: NatalChartResponse) {
 		const planets = this.getPlanets();
-		const aspects = this.data.aspects ?? [];
+		const aspects = data.aspects ?? [];
 		const view = this.view;
 
 		return html`<div class="wrap">
 			<header>
 				<h2 class="title">Natal chart</h2>
 				${
-					this.data.birthDetails
+					data.birthDetails
 						? html`<div class="meta">
-							${[this.data.birthDetails.date, this.data.birthDetails.time]
+							${[data.birthDetails.date, data.birthDetails.time]
 								.filter(Boolean)
 								.join(' · ')}
 						</div>`
@@ -448,8 +445,8 @@ export class RoxyNatalChart extends LitElement {
 				<span>${planets.length} planets</span>
 				<span>${aspects.length} aspects</span>
 				${
-					this.data.houseSystem
-						? html`<span>${this.data.houseSystem} houses</span>`
+					data.houseSystem
+						? html`<span>${data.houseSystem} houses</span>`
 						: nothing
 				}
 				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>

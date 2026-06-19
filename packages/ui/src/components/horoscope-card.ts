@@ -1,4 +1,4 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { SIGN_GLYPH } from '../tokens/index.js';
 import type {
@@ -6,8 +6,8 @@ import type {
 	GetMonthlyHoroscopeResponse,
 	GetWeeklyHoroscopeResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type HoroscopeData =
@@ -20,12 +20,13 @@ type HoroscopeData =
  * /astrology/horoscope/{sign}/{daily|weekly|monthly}.
  */
 @customElement('roxy-horoscope-card')
-export class RoxyHoroscopeCard extends LitElement {
+export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -148,25 +149,14 @@ export class RoxyHoroscopeCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: HoroscopeData | null = null;
-
 	@property({ type: String, reflect: true })
 	period: 'daily' | 'weekly' | 'monthly' = 'daily';
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No horoscope data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No horoscope data</div>`;
+	}
 
+	protected renderData(d: HoroscopeData) {
 		const sign = d.sign ?? '';
 		const glyph = sign ? (SIGN_GLYPH[capitalize(sign)] ?? '') : '';
 		const energy =

@@ -41,6 +41,12 @@ await mkdir('specs', { recursive: true });
 await writeFile(SPEC_PATH, JSON.stringify(obj, null, 2));
 console.log(`Spec saved to ${SPEC_PATH}`);
 
+// Regenerate the component endpoint map (and the catalog that rides on it) from
+// the freshly fetched spec, so a renamed or removed endpoint reflows immediately.
+console.log('Syncing endpoint bindings + catalog...');
+execSync('bun run scripts/sync-bindings.ts', { stdio: 'inherit' });
+execSync('bun run scripts/sync-catalog.ts', { stdio: 'inherit' });
+
 // Generate just response types via hey-api. Skip if module unavailable
 // (allows offline scaffolding before the install completes).
 try {

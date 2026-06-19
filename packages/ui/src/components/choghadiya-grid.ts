@@ -1,9 +1,9 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GetChoghadiyaResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type ChoghadiyaPeriod = GetChoghadiyaResponse['dayChoghadiya'][number];
@@ -28,11 +28,17 @@ function fmtTime(iso: string): string {
  * Good periods are highlighted in green, Bad periods in red.
  */
 @customElement('roxy-choghadiya-grid')
-export class RoxyChoghadiyaGrid extends LitElement {
+export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -133,17 +139,6 @@ export class RoxyChoghadiyaGrid extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: GetChoghadiyaResponse | null = null;
-
 	/**
 	 * True when the current wall-clock time falls inside this period. Both
 	 * `start` and `end` are ISO 8601 with timezone, so the comparison is
@@ -183,11 +178,12 @@ export class RoxyChoghadiyaGrid extends LitElement {
 		</div>`;
 	}
 
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No choghadiya data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No choghadiya data</div>`;
+	}
 
-		const { date, dayChoghadiya, nightChoghadiya } = this.data;
+	protected renderData(d: GetChoghadiyaResponse) {
+		const { date, dayChoghadiya, nightChoghadiya } = d;
 
 		return html`<div class="wrap">
 			<div class="header">

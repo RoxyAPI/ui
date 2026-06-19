@@ -1,7 +1,7 @@
-import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
+import { css, html, nothing, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { humanize } from '../utils/string.js';
 
 /**
@@ -35,12 +35,12 @@ const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body row
 const MAX_DEPTH = 6;
 
 @customElement('roxy-data')
-export class RoxyData extends LitElement {
+export class RoxyData extends RoxyDataElement<Json> {
 	static styles = [
 		baseStyles,
 		css`
 			.roxy-card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-md, 1rem);
@@ -135,37 +135,18 @@ export class RoxyData extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: Json = null;
-
 	/**
-	 * Internal recursion depth. Nested <roxy-data> instances inherit this from
-	 * the parent and increment to guard against circular references in the
-	 * input. Not part of the public API; do not set from consumer code.
+	 * Internal recursion depth. Nested <roxy-data> instances inherit this from the parent and increment to guard against circular references in the input. Not part of the public API; do not set from consumer code.
 	 */
 	@property({ attribute: false })
 	depth = 0;
 
-	render() {
-		if (this.data == null) {
-			return html`<div class="roxy-empty" role="status">No data</div>`;
-		}
+	protected renderData(data: Json) {
 		if (this.depth >= MAX_DEPTH) {
 			return html`<div class="roxy-empty" role="status">…</div>`;
 		}
-		return html`<div
-			class="roxy-card"
-			aria-label="Generic data display"
-		>
-			${this.renderValue(this.data)}
+		return html`<div class="roxy-card" aria-label="Generic data display">
+			${this.renderValue(data)}
 		</div>`;
 	}
 

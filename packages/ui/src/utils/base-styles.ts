@@ -25,6 +25,18 @@ export const baseStyles = css`
 			var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1)) both;
 	}
 
+	/**
+	 * Opt out of the component's own card surface. When the embedder already
+	 * wraps the component in their own card, set the \`bare\` attribute to drop
+	 * the painted background + shadow so there is no nested card chrome. The
+	 * inner border stays a hairline; override --roxy-border to remove it too.
+	 */
+	:host([bare]) {
+		--roxy-surface: transparent;
+		--roxy-shadow-sm: none;
+		--roxy-shadow-md: none;
+	}
+
 	*,
 	*::before,
 	*::after {
@@ -80,6 +92,27 @@ export const baseStyles = css`
 		color: var(--roxy-muted, #71717a);
 		text-align: center;
 		font-size: var(--roxy-text-sm, 0.875rem);
+	}
+
+	.roxy-error {
+		display: grid;
+		gap: var(--roxy-space-sm, 0.5rem);
+		justify-items: start;
+		padding: var(--roxy-space-lg, 1.5rem);
+		background: var(--roxy-surface, #fff);
+		border: 1px solid var(--roxy-danger, #dc2626);
+		border-radius: var(--roxy-radius-md, 8px);
+		color: var(--roxy-danger-fg, #991b1b);
+		font-size: var(--roxy-text-sm, 0.875rem);
+	}
+
+	/* Opt-in component backdrop. A component that paints content directly (table,
+	 * grid, prose) adds this to its root so it sits on an owned, theme-aware
+	 * surface rather than inheriting the page background, which may not match the
+	 * resolved token theme and would render text on a same-tone background. */
+	.roxy-surface {
+		background: var(--roxy-surface, #fff);
+		color: var(--roxy-fg, #0a0a0a);
 	}
 
 	:host(:focus-within) .roxy-card {

@@ -544,9 +544,14 @@ const { data: random } = await roxy.iching.getRandomHexagram();
 
 Get a key at <https://roxyapi.com/account>.
 
-Two key types. **Secret keys** (`sk_*`) grant full account access: use them server side only (Node, Bun, Hono, Next.js route handlers, Workers). Never commit one, never ship one in a client bundle. **Publishable keys** (`pk_live_*` / `pk_test_*`) are browser-safe: mint one, register the origins you embed on, and any other origin gets a 403 at the gateway. Use a publishable key when you call RoxyAPI directly from the browser with no backend.
+Two key types. **Secret keys** (`sk_*`) grant full account access: use them server side only (Node, Bun, Hono, Next.js route handlers, Workers). Never commit one, never ship one in a client bundle. **Publishable keys** (`pk_live_*` / `pk_test_*`) are browser-safe: mint one, register the origins you embed on, and any other origin gets a 403 at the gateway.
 
-Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For direct client-side embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
+Two ways to feed a component, and the key rule for each:
+
+- **Controlled (recommended for production).** Your server fetches with the secret key and passes the response in via the `data` property or a `roxy-data` JSON island. No key of any kind reaches the browser. This is what the WordPress plugin and the server-rendered patterns do.
+- **Self-fetch (no backend).** Give the component a `data-endpoint` and a `publishable-key` and it renders its own form and fetches in the browser. Only publishable keys work here: a secret key is refused client-side, so the component sends nothing and raises a validation error. A secret key cannot leak through self-fetch.
+
+Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For self-fetch embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
 
 ## Distribution
 
@@ -558,6 +563,7 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
 | Widgets auto-mount (with browser keys, coming soon) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
 | shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
+| Components catalog (JSON: every component, domain, and endpoint) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json` |
 
 ## Components
 
@@ -568,6 +574,7 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | `<roxy-synastry-chart>` | Western | POST /astrology/synastry | Dual-wheel synastry with inter-aspects table |
 | `<roxy-western-planets-table>` | Western | POST /astrology/natal-chart | Sign, degree, house, motion columns plus ASC, MC, PoF, Vertex |
 | `<roxy-transits-table>` | Western | POST /astrology/transits | Transit planet positions plus optional aspects to a natal chart |
+| `<roxy-aspects-table>` | Western | POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns | Aspect rows coloured by nature with orb and strength, plus detected chart patterns |
 | `<roxy-moon-phase>` | Western | GET /astrology/moon-phase/{current,upcoming,calendar/...} | Moon phase card and calendar |
 | `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly} | Daily, weekly, or monthly horoscope card |
 | `<roxy-compatibility-card>` | Cross | POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility | Score card with category breakdown |
@@ -582,23 +589,32 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | `<roxy-dasha-timeline>` | Vedic | POST /vedic-astrology/dasha/{current,major,sub/...} | Vimshottari mahadasha + antardasha + pratyantardasha |
 | `<roxy-guna-milan>` | Vedic | POST /vedic-astrology/compatibility | 36-point Ashtakoota with eight sub-scores |
 | `<roxy-panchang-table>` | Vedic | POST /vedic-astrology/panchang/{basic,detailed} | 15+ muhurtas in detailed mode |
+| `<roxy-vedic-aspects>` | Vedic | POST /vedic-astrology/aspects | Graha drishti rows with aspect type, strength, and orb, plus mutual aspects |
+| `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
 | `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
 | `<roxy-yoga-list>` | Vedic | GET /vedic-astrology/yoga, /yoga/{id} | Filterable yoga cards from the 300 plus yoga catalog |
 | `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
 | `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |
-| `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
+| `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
 | `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary |
+| `<roxy-hd-connection>` | Human Design | POST /human-design/connection | Electromagnetic, compromise, and dominance channels between two charts |
+| `<roxy-hd-penta>` | Human Design | POST /human-design/penta | Group penta channels split into upper and lower triangles |
+| `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction and PHS labels |
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
+| `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram with trigrams, judgment, image, changing lines |
+| `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
 | `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |
 | `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
+| `<roxy-dream-search>` | Dreams | GET /dreams/symbols | Matched dream symbols as selectable tiles with a letter chip |
 | `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number} | Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections |
 | `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
-| `<roxy-endpoint-form>` | Helper | Any endpoint via x-roxy-ui hints | Schema-driven form, emits roxy-submit |
+| `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/rashis/{id}, /iching/trigrams/{id}, /human-design/{gates,centers}/{id}, /numerology/{meanings,compound-number}/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
+| `<roxy-endpoint-form>` | Helper | Any endpoint, from the spec | Schema-driven form, emits roxy-submit |
 | `<roxy-location-search>` | Helper | GET /location/search | Debounced city search input, emits roxy-location-select |
 | `<roxy-data>` | Helper | Any response shape | Generic fallback renderer for unknown shapes |
 <!-- END:COMPONENTS -->

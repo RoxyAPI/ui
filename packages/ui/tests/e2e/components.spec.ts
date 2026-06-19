@@ -104,14 +104,19 @@ test.describe('Roxy UI preview', () => {
 
 		// Read the computed --roxy-bg / --roxy-fg from inside a real component
 		// host so we prove the cascade reaches the shadow tree, not just :root.
+		// .first() targets the Preview-tab instance (with data); the Empty-tab
+		// instance of the same tag renders second in DOM with no data.
 		const read = (tag: string) =>
-			page.locator(tag).evaluate((el) => {
-				const cs = getComputedStyle(el);
-				return {
-					bg: cs.getPropertyValue('--roxy-bg').trim(),
-					fg: cs.getPropertyValue('--roxy-fg').trim(),
-				};
-			});
+			page
+				.locator(tag)
+				.first()
+				.evaluate((el) => {
+					const cs = getComputedStyle(el);
+					return {
+						bg: cs.getPropertyValue('--roxy-bg').trim(),
+						fg: cs.getPropertyValue('--roxy-fg').trim(),
+					};
+				});
 
 		const setHtml = (apply: 'clear' | 'class' | 'attr') =>
 			page.evaluate((mode) => {
@@ -209,10 +214,13 @@ test.describe('Roxy UI preview', () => {
 
 	test('natal chart renders an SVG with 12 sign segments', async ({ page }) => {
 		await page.goto('/');
-		const segments = await page.locator('roxy-natal-chart').evaluate((el) => {
-			const svg = el.shadowRoot?.querySelector('svg');
-			return svg?.querySelectorAll('text.sign-glyph').length ?? 0;
-		});
+		const segments = await page
+			.locator('roxy-natal-chart')
+			.first()
+			.evaluate((el) => {
+				const svg = el.shadowRoot?.querySelector('svg');
+				return svg?.querySelectorAll('text.sign-glyph').length ?? 0;
+			});
 		expect(segments).toBe(12);
 	});
 
@@ -221,16 +229,19 @@ test.describe('Roxy UI preview', () => {
 	}) => {
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
-		const result = await page.locator('roxy-moon-phase').evaluate((el) => {
-			const root = el.shadowRoot;
-			return {
-				hasLabel: !!root?.querySelector('.label'),
-				hasIllumination: (root?.textContent ?? '')
-					.toLowerCase()
-					.includes('illumination'),
-				hasEmoji: !!root?.querySelector('.emoji'),
-			};
-		});
+		const result = await page
+			.locator('roxy-moon-phase')
+			.first()
+			.evaluate((el) => {
+				const root = el.shadowRoot;
+				return {
+					hasLabel: !!root?.querySelector('.label'),
+					hasIllumination: (root?.textContent ?? '')
+						.toLowerCase()
+						.includes('illumination'),
+					hasEmoji: !!root?.querySelector('.emoji'),
+				};
+			});
 		expect(result.hasLabel).toBe(true);
 		expect(result.hasIllumination).toBe(true);
 		expect(result.hasEmoji).toBe(true);
@@ -239,17 +250,23 @@ test.describe('Roxy UI preview', () => {
 	test('biorhythm chart renders cycle bars', async ({ page }) => {
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
-		const count = await page.locator('roxy-biorhythm-chart').evaluate((el) => {
-			return el.shadowRoot?.querySelectorAll('.bar').length ?? 0;
-		});
+		const count = await page
+			.locator('roxy-biorhythm-chart')
+			.first()
+			.evaluate((el) => {
+				return el.shadowRoot?.querySelectorAll('.bar').length ?? 0;
+			});
 		expect(count).toBeGreaterThan(0);
 	});
 
 	test('panchang table renders sunrise and rahu kaal', async ({ page }) => {
 		await page.goto('/');
-		const text = await page.locator('roxy-panchang-table').evaluate((el) => {
-			return el.shadowRoot?.textContent?.toLowerCase() ?? '';
-		});
+		const text = await page
+			.locator('roxy-panchang-table')
+			.first()
+			.evaluate((el) => {
+				return el.shadowRoot?.textContent?.toLowerCase() ?? '';
+			});
 		expect(text).toContain('sunrise');
 		expect(text).toContain('rahu');
 	});
@@ -261,17 +278,20 @@ test.describe('Roxy UI preview', () => {
 			return el && (el as HTMLElement & { data?: unknown }).data;
 		});
 		await page.waitForTimeout(150);
-		const result = await page.locator('roxy-hexagram').evaluate((el) => {
-			const root = el.shadowRoot;
-			return {
-				hasSymbol:
-					(root?.querySelector('.symbol')?.textContent ?? '').length > 0,
-				hasTrigrams: !!root?.querySelector(
-					'.trigram, .trigrams, [class*="trigram"]',
-				),
-				textLength: (root?.textContent ?? '').length,
-			};
-		});
+		const result = await page
+			.locator('roxy-hexagram')
+			.first()
+			.evaluate((el) => {
+				const root = el.shadowRoot;
+				return {
+					hasSymbol:
+						(root?.querySelector('.symbol')?.textContent ?? '').length > 0,
+					hasTrigrams: !!root?.querySelector(
+						'.trigram, .trigrams, [class*="trigram"]',
+					),
+					textLength: (root?.textContent ?? '').length,
+				};
+			});
 		expect(result.hasSymbol).toBe(true);
 		expect(result.textLength).toBeGreaterThan(50);
 	});
@@ -283,7 +303,7 @@ test.describe('Roxy UI preview', () => {
 			return el && (el as HTMLElement & { data?: unknown }).data;
 		});
 		await page.waitForTimeout(150);
-		const tarot = page.locator('roxy-tarot-card');
+		const tarot = page.locator('roxy-tarot-card').first();
 		const initialReversed = await tarot.evaluate((el) => {
 			return Boolean(el.shadowRoot?.querySelector('.image.reversed'));
 		});
@@ -305,6 +325,7 @@ test.describe('Roxy UI preview', () => {
 		await page.waitForTimeout(2000); // allow network to settle
 		const hasFields = await page
 			.locator('roxy-endpoint-form')
+			.first()
 			.evaluate((el) => {
 				return el.shadowRoot?.querySelectorAll('input, select').length ?? 0;
 			});

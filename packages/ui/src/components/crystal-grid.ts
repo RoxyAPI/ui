@@ -1,4 +1,4 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
 	GetBirthstonesResponse,
@@ -8,8 +8,8 @@ import type {
 	ListCrystalsResponse,
 	SearchCrystalsResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * Any crystal list response that carries a `crystals` summary array. Every crystals endpoint that returns more than one stone shares the `{ name, id, imageUrl, colors }` item shape, so one grid renders them all.
@@ -44,7 +44,7 @@ const MONTHS = [
  * Crystal grid. Renders any crystals list response (/crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search) as a responsive gallery of crystal tiles with photo, name, and colour swatches. The heading is derived from the response filter (chakra, element, zodiac sign, or birth month) or set explicitly via the `heading` attribute.
  */
 @customElement('roxy-crystal-grid')
-export class RoxyCrystalGrid extends LitElement {
+export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 	static styles = [
 		baseStyles,
 		css`
@@ -80,7 +80,7 @@ export class RoxyCrystalGrid extends LitElement {
 			.tile {
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem);
@@ -113,28 +113,19 @@ export class RoxyCrystalGrid extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: CrystalGridData | null = null;
-
 	/**
 	 * Override the auto-derived grid heading. Empty by default, in which case the heading comes from the response filter (chakra, element, zodiac, or birth month) or falls back to "Crystals".
 	 */
 	@property({ type: String, reflect: true })
 	heading = '';
 
-	render() {
-		const d = this.data;
-		const crystals = d?.crystals ?? [];
-		if (!d || crystals.length === 0)
-			return html`<div class="roxy-empty" role="status">No crystals</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No crystals</div>`;
+	}
+
+	protected renderData(d: CrystalGridData) {
+		const crystals = d.crystals ?? [];
+		if (crystals.length === 0) return this.renderEmpty();
 
 		const title = this.heading || this.deriveHeading(d);
 		const total =

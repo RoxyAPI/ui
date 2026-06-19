@@ -1,9 +1,9 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { CompatibilityResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber, formatPercent } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 const STANDARD_CATEGORIES = [
 	'Varna',
@@ -20,12 +20,12 @@ const STANDARD_CATEGORIES = [
  * 36-point Ashtakoota score card. Renders /vedic-astrology/compatibility.
  */
 @customElement('roxy-guna-milan')
-export class RoxyGunaMilan extends LitElement {
+export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -147,22 +147,11 @@ export class RoxyGunaMilan extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
 	}
 
-	@property({ attribute: false })
-	data: CompatibilityResponse | null = null;
-
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
-
+	protected renderData(d: CompatibilityResponse) {
 		const breakdown = (d.breakdown ?? []).filter(
 			(b) => b?.category !== undefined,
 		);

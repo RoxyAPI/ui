@@ -1,12 +1,12 @@
-import { css, html, LitElement, nothing, svg } from 'lit';
+import { css, html, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
 	GetCriticalDaysResponse,
 	GetDailyBiorhythmResponse,
 	GetForecastResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type BiorhythmData =
 	| GetDailyBiorhythmResponse
@@ -30,11 +30,17 @@ const CYCLE_COLOR: Record<string, string> = {
  * Biorhythm chart. Renders /biorhythm/{daily,forecast,critical-days}.
  */
 @customElement('roxy-biorhythm-chart')
-export class RoxyBiorhythmChart extends LitElement {
+export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -99,6 +105,7 @@ export class RoxyBiorhythmChart extends LitElement {
 			svg {
 				display: block;
 				width: 100%;
+				max-width: var(--roxy-chart-max-width, 600px);
 				height: auto;
 			}
 			.crit {
@@ -112,25 +119,14 @@ export class RoxyBiorhythmChart extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: BiorhythmData | null = null;
-
 	@property({ type: String, reflect: true })
 	mode: 'daily' | 'forecast' | 'critical-days' = 'daily';
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No biorhythm data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No biorhythm data</div>`;
+	}
 
+	protected renderData(d: BiorhythmData) {
 		if (this.mode === 'critical-days' && 'criticalDays' in d) {
 			return this.renderCritical(d as GetCriticalDaysResponse);
 		}

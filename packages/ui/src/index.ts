@@ -9,6 +9,8 @@
 export { RoxyAngelNumberCard } from './components/angel-number-card.js';
 export { RoxyAngelNumberLookup } from './components/angel-number-lookup.js';
 export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
+// Western astrology
+export { RoxyAspectsTable } from './components/aspects-table.js';
 // Biorhythm
 export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
 // Human Design
@@ -16,6 +18,7 @@ export { RoxyBodygraph } from './components/bodygraph.js';
 export { RoxyChoghadiyaGrid } from './components/choghadiya-grid.js';
 export { RoxyCompatibilityCard } from './components/compatibility-card.js';
 // Crystals
+export { RoxyCrystalCard } from './components/crystal-card.js';
 export { RoxyCrystalGrid } from './components/crystal-grid.js';
 export { RoxyDashaTimeline } from './components/dasha-timeline.js';
 // Generic fallback first so it is always available for nested rendering
@@ -24,13 +27,20 @@ export { RoxyDivisionalChart } from './components/divisional-chart.js';
 export { RoxyDoshaCard } from './components/dosha-card.js';
 // Dreams
 export { RoxyDreamCard } from './components/dream-card.js';
+export { RoxyDreamSearch } from './components/dream-search.js';
 // Helpers
 export { RoxyEndpointForm } from './components/endpoint-form.js';
 // Forecast
+export { RoxyForecastDigest } from './components/forecast-digest.js';
 export { RoxyForecastTimeline } from './components/forecast-timeline.js';
 export { RoxyGunaMilan } from './components/guna-milan.js';
+// Human Design
+export { RoxyHdConnection } from './components/hd-connection.js';
+export { RoxyHdPenta } from './components/hd-penta.js';
+export { RoxyHdVariables } from './components/hd-variables.js';
 // I Ching
 export { RoxyHexagram } from './components/hexagram.js';
+export { RoxyHoraTable } from './components/hora-table.js';
 export { RoxyHoroscopeCard } from './components/horoscope-card.js';
 export { RoxyKpChart } from './components/kp-chart.js';
 export { RoxyKpPlanetsTable } from './components/kp-planets-table.js';
@@ -43,6 +53,7 @@ export { RoxyNatalChart } from './components/natal-chart.js';
 // Numerology
 export { RoxyNumerologyCard } from './components/numerology-card.js';
 export { RoxyPanchangTable } from './components/panchang-table.js';
+export { RoxyReferenceCard } from './components/reference-card.js';
 export { RoxyShadbalaTable } from './components/shadbala-table.js';
 export { RoxySynastryChart } from './components/synastry-chart.js';
 // Tarot
@@ -51,6 +62,7 @@ export { RoxyTarotCatalog } from './components/tarot-catalog.js';
 export { RoxyTarotSpread } from './components/tarot-spread.js';
 export { RoxyTransitsTable } from './components/transits-table.js';
 // Vedic astrology
+export { RoxyVedicAspects } from './components/vedic-aspects.js';
 export { RoxyVedicKundli } from './components/vedic-kundli.js';
 export { RoxyVedicPlanetsTable } from './components/vedic-planets-table.js';
 export { RoxyWesternPlanetsTable } from './components/western-planets-table.js';

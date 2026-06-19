@@ -1,8 +1,8 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { KpRulingPlanetsResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * KP ruling planets card. Renders /vedic-astrology/kp/ruling-planets: the day
@@ -12,14 +12,14 @@ import { MarkupDataController } from '../utils/markup-data.js';
  * planet. The primary horary timing tool in KP astrology.
  */
 @customElement('roxy-kp-ruling-planets')
-export class RoxyKpRulingPlanets extends LitElement {
+export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				padding: var(--roxy-space-md, 1rem);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -114,21 +114,11 @@ export class RoxyKpRulingPlanets extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No ruling planets data</div>`;
 	}
 
-	@property({ attribute: false })
-	data: KpRulingPlanetsResponse | null = null;
-
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No ruling planets data</div>`;
-		const d = this.data;
+	protected renderData(d: KpRulingPlanetsResponse) {
 		const significators = d.significators ?? [];
 
 		return html`<div class="wrap" aria-label="KP ruling planets">

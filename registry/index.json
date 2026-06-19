@@ -24,6 +24,10 @@
       "description": "Live planet positions plus aspects to a natal chart"
     },
     {
+      "name": "roxy-aspects-table",
+      "description": "Natal and transit aspect grid with chart-pattern detection (grand trines, t-squares, stelliums, yods)"
+    },
+    {
       "name": "roxy-moon-phase",
       "description": "Moon phase card and calendar"
     },
@@ -80,6 +84,14 @@
       "description": "Panchang muhurta table with auspicious and inauspicious periods"
     },
     {
+      "name": "roxy-vedic-aspects",
+      "description": "Vedic graha drishti table: which planet aspects which, with mutual aspects surfaced first"
+    },
+    {
+      "name": "roxy-hora-table",
+      "description": "Vedic Hora (planetary hours) table: 12 day and 12 night horas by ruling planet for electional timing"
+    },
+    {
       "name": "roxy-choghadiya-grid",
       "description": "Day and night Choghadiya muhurta tiles for activity timing"
     },
@@ -116,8 +128,24 @@
       "description": "Human Design bodygraph with nine centers, channels, and activated gates plus a type, authority, and profile summary"
     },
     {
+      "name": "roxy-hd-connection",
+      "description": "Human Design connection chart: the composite channels two people form, with circuit, dynamic, and which person holds each gate"
+    },
+    {
+      "name": "roxy-hd-penta",
+      "description": "Human Design penta for a 3 to 5 person group: upper and lower triangle channels, defined or open, with core channels and member coverage"
+    },
+    {
+      "name": "roxy-hd-variables",
+      "description": "Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction and color, tone, and base"
+    },
+    {
       "name": "roxy-forecast-timeline",
       "description": "Cross-domain forecast event strip colored by domain and weighted by significance"
+    },
+    {
+      "name": "roxy-forecast-digest",
+      "description": "Rolled-up forecast across the next 24 hours, 7, 30, and 90 days with per-domain breakdown and top events"
     },
     {
       "name": "roxy-biorhythm-chart",
@@ -128,6 +156,10 @@
       "description": "I Ching hexagram with trigram glyphs, judgment, image, and changing lines"
     },
     {
+      "name": "roxy-crystal-card",
+      "description": "Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings"
+    },
+    {
       "name": "roxy-crystal-grid",
       "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response"
     },
@@ -136,12 +168,20 @@
       "description": "Dream symbol card with the symbol name, full interpretation, and dictionary letter"
     },
     {
+      "name": "roxy-dream-search",
+      "description": "Dream-symbol search results as selectable tiles; emits roxy-symbol-select to pair with roxy-dream-card"
+    },
+    {
       "name": "roxy-angel-number-card",
       "description": "Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps"
     },
     {
       "name": "roxy-angel-number-lookup",
       "description": "Angel number sequence analysis with pattern classification, the known meaning when present, and a digit-root fallback for any number"
+    },
+    {
+      "name": "roxy-reference-card",
+      "description": "Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, numerology number or compound number"
     },
     {
       "name": "roxy-endpoint-form",

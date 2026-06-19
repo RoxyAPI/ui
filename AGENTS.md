@@ -57,6 +57,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-synastry-chart>` | Western | POST /astrology/synastry | Dual-wheel synastry with inter-aspects table |
 | `<roxy-western-planets-table>` | Western | POST /astrology/natal-chart | Sign, degree, house, motion columns plus ASC, MC, PoF, Vertex |
 | `<roxy-transits-table>` | Western | POST /astrology/transits | Transit planet positions plus optional aspects to a natal chart |
+| `<roxy-aspects-table>` | Western | POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns | Aspect rows coloured by nature with orb and strength, plus detected chart patterns |
 | `<roxy-moon-phase>` | Western | GET /astrology/moon-phase/{current,upcoming,calendar/...} | Moon phase card and calendar |
 | `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly} | Daily, weekly, or monthly horoscope card |
 | `<roxy-compatibility-card>` | Cross | POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility | Score card with category breakdown |
@@ -71,23 +72,32 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-dasha-timeline>` | Vedic | POST /vedic-astrology/dasha/{current,major,sub/...} | Vimshottari mahadasha + antardasha + pratyantardasha |
 | `<roxy-guna-milan>` | Vedic | POST /vedic-astrology/compatibility | 36-point Ashtakoota with eight sub-scores |
 | `<roxy-panchang-table>` | Vedic | POST /vedic-astrology/panchang/{basic,detailed} | 15+ muhurtas in detailed mode |
+| `<roxy-vedic-aspects>` | Vedic | POST /vedic-astrology/aspects | Graha drishti rows with aspect type, strength, and orb, plus mutual aspects |
+| `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
 | `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
 | `<roxy-yoga-list>` | Vedic | GET /vedic-astrology/yoga, /yoga/{id} | Filterable yoga cards from the 300 plus yoga catalog |
 | `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
 | `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |
-| `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
+| `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
 | `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary |
+| `<roxy-hd-connection>` | Human Design | POST /human-design/connection | Electromagnetic, compromise, and dominance channels between two charts |
+| `<roxy-hd-penta>` | Human Design | POST /human-design/penta | Group penta channels split into upper and lower triangles |
+| `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction and PHS labels |
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
+| `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram with trigrams, judgment, image, changing lines |
+| `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
 | `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |
 | `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
+| `<roxy-dream-search>` | Dreams | GET /dreams/symbols | Matched dream symbols as selectable tiles with a letter chip |
 | `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number} | Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections |
 | `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
-| `<roxy-endpoint-form>` | Helper | Any endpoint via x-roxy-ui hints | Schema-driven form, emits roxy-submit |
+| `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/rashis/{id}, /iching/trigrams/{id}, /human-design/{gates,centers}/{id}, /numerology/{meanings,compound-number}/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
+| `<roxy-endpoint-form>` | Helper | Any endpoint, from the spec | Schema-driven form, emits roxy-submit |
 | `<roxy-location-search>` | Helper | GET /location/search | Debounced city search input, emits roxy-location-select |
 | `<roxy-data>` | Helper | Any response shape | Generic fallback renderer for unknown shapes |
 <!-- END:COMPONENTS -->
@@ -280,30 +290,26 @@ For a static chart with no picker, fetch in a Server Component and pass `data` t
 </script>
 ```
 
-### Pattern 4: fully client-side with a publishable key (no server)
+### Pattern 4: fully client-side with a publishable key (no server, no script)
 
-When you do not want a backend at all, mint a **publishable key** (`pk_live_*`) at `roxyapi.com/account`, register the origins you embed on, and call RoxyAPI directly from the browser. The publishable key is safe to ship in client code: it is origin-restricted (any other origin gets 403) and cannot read your account. `<roxy-location-search>` accepts the key via its `publishable-key` attribute and fetches geocoding itself; for the data endpoints you make a normal browser `fetch` with the key in the `X-API-Key` header, then assign the response to the rendering component.
+When you do not want a backend at all, mint a **publishable key** (`pk_live_*` / `pk_test_*`) at `roxyapi.com/account`, register the origins you embed on, and let the component fetch itself. Every rendering component is self-fetching: give it a `data-endpoint` and a `publishable-key` and it renders its own input form, calls RoxyAPI on submit, and displays the result. No script, no separate location wiring, no envelope handling.
 
 ```html
-<roxy-location-search publishable-key="pk_live_..."></roxy-location-search>
-<roxy-natal-chart></roxy-natal-chart>
-
-<script type="module">
-	const chart = document.querySelector('roxy-natal-chart');
-	document.querySelector('roxy-location-search').addEventListener('roxy-location-select', async (e) => {
-		const { latitude, longitude, timezone } = e.detail;
-		if (latitude == null || longitude == null) return;
-		const res = await fetch('https://roxyapi.com/api/v2/astrology/natal-chart', {
-			method: 'POST',
-			headers: { 'X-API-Key': 'pk_live_...', 'Content-Type': 'application/json' },
-			body: JSON.stringify({ date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone }),
-		});
-		chart.data = await res.json(); // pass the unwrapped response, not an envelope
-	});
-</script>
+<roxy-natal-chart
+	data-endpoint="astrology/natal-chart"
+	publishable-key="pk_live_..."
+></roxy-natal-chart>
 ```
 
-Rendering components do not fetch on their own; you set `data`. Only `<roxy-location-search>` (and `<roxy-endpoint-form>` for the spec) fetch internally. A zero-wiring `data-*` auto-mount that fetches and renders with no script is still on the roadmap.
+That single element shows a schema-driven form (city search included for endpoints that need coordinates), fetches on submit, shows a loading then error-or-result state, and re-shows the form so the user can try another query. `method` defaults to `POST`; set `method="GET"` for GET endpoints. Set `data-endpoint` to the spec path without the leading slash (`dreams/symbols/{id}`, `astrology/horoscope/{sign}/daily`).
+
+**Key handling is the contract. The component enforces it, not you:**
+
+- The publishable key is safe in client code: it is origin-restricted (any other origin gets 403) and cannot read your account.
+- A **secret key never works here.** If `publishable-key` is not a `pk_` key the component refuses to fetch, sends nothing, and emits a `roxy-validation-error` event. A secret key cannot leak through self-fetch even by mistake.
+- For production with a backend, prefer controlled mode (Patterns 1, 6, 7): the server fetches with the `sk_` key and injects the response, so no key of any kind reaches the browser.
+
+In React, the same props are typed: `<RoxyNatalChart endpoint="astrology/natal-chart" publishableKey={process.env.NEXT_PUBLIC_ROXY_PK} />`.
 
 ### Pattern 5: MCP tool-call response
 
@@ -427,7 +433,7 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 - Do not call astrology endpoints with hardcoded coordinates. Always geocode first via `<roxy-location-search>` or `roxy.location.searchCities()`.
 - Do not declare a local `interface XyzData` to describe a RoxyAPI response. Import the type from the spec-derived bundle: `import type { XyzResponse } from '@roxyapi/sdk'`. Local interfaces drift the moment the spec changes.
 - Do not write Tailwind utility classes inside a component. The Shadow DOM boundary stops them at the door. Theme through `--roxy-*` CSS custom properties on `:root` or per element instead.
-- Do not fetch inside chart, table, or card components. They are stateless: pass `data` as a prop. Documented exceptions are `<roxy-location-search>`, `<roxy-endpoint-form>`, and the widgets auto-mount script.
+- Two ways to feed a component, no third. Controlled (default, recommended for production): pass `data` as a prop or hydrate from a child `roxy-data` JSON island; your server holds the secret key. Self-fetch (no backend): set `data-endpoint` + a `pk_` `publishable-key` and the component renders its own form and fetches in the browser (a secret key is refused client-side). Do not wrap a component in your own fetch loop or call a chart/table/card's internals.
 - Do not redefine theme tokens or invent your own naming. Override the existing `--roxy-*` custom properties; the full list is in `THEMING.md`.
 
 ## Where to look next
@@ -437,3 +443,4 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 - Token reference: `packages/ui/THEMING.md`
 - Live preview: `bun run preview` then open `http://localhost:3001`
 - Endpoint reference: <https://roxyapi.com/api-reference>
+- Machine-readable component catalog (every component, its domain, what it renders, and the endpoint(s) it consumes): <https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json>. Fetch it to discover or map components programmatically instead of scraping this table.

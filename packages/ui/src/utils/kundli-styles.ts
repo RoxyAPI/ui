@@ -13,6 +13,12 @@ import { css } from 'lit';
  */
 export const kundliStyles = css`
 	.wrap {
+		background: var(--roxy-surface, #fff);
+		color: var(--roxy-fg, #0a0a0a);
+		border: 1px solid var(--roxy-border, #e4e4e7);
+		border-radius: var(--roxy-radius-md, 8px);
+		padding: var(--roxy-space-lg, 1.5rem);
+		box-shadow: var(--roxy-shadow-sm);
 		display: grid;
 		gap: var(--roxy-space-md, 1rem);
 	}
@@ -31,7 +37,7 @@ export const kundliStyles = css`
 	svg {
 		display: block;
 		width: 100%;
-		max-width: 560px;
+		max-width: var(--roxy-chart-max-width, 560px);
 		aspect-ratio: 1 / 1;
 		height: auto;
 		margin: 0 auto;

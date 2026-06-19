@@ -1,10 +1,10 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { PLANET_GLYPH } from '../tokens/index.js';
 import type { ShadbalaResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type Planet = ShadbalaResponse['planets'][number];
@@ -40,11 +40,17 @@ const BALA_COMPONENTS: Array<{
  * Pass `data` from /vedic-astrology/shadbala.
  */
 @customElement('roxy-shadbala-table')
-export class RoxyShadbalaTable extends LitElement {
+export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -192,23 +198,14 @@ export class RoxyShadbalaTable extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No shadbala data</div>`;
 	}
 
-	@property({ attribute: false })
-	data: ShadbalaResponse | null = null;
+	protected renderData(d: ShadbalaResponse) {
+		if (!d.planets?.length) return this.renderEmpty();
 
-	render() {
-		if (!this.data?.planets?.length) {
-			return html`<div class="roxy-empty" role="status">No shadbala data</div>`;
-		}
-
-		const sorted = [...this.data.planets].sort(
+		const sorted = [...d.planets].sort(
 			(a, b) => a.relativeRank - b.relativeRank,
 		);
 

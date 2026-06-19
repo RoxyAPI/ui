@@ -1,7 +1,8 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GenerateBodygraphResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
 	BODYGRAPH_VIEWBOX,
@@ -9,7 +10,6 @@ import {
 	channelKey,
 	renderBodygraphSvg,
 } from '../utils/bodygraph-render.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type GateActivation = GenerateBodygraphResponse['gates'][number];
@@ -26,7 +26,7 @@ type GateActivation = GenerateBodygraphResponse['gates'][number];
  * it adopts the host palette in light and dark without runtime color probing.
  */
 @customElement('roxy-bodygraph')
-export class RoxyBodygraph extends LitElement {
+export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 	static styles = [
 		baseStyles,
 		css`
@@ -65,7 +65,7 @@ export class RoxyBodygraph extends LitElement {
 			svg {
 				display: block;
 				width: 100%;
-				max-width: 340px;
+				max-width: var(--roxy-chart-max-width, 340px);
 				height: auto;
 				margin: 0 auto;
 			}
@@ -165,7 +165,7 @@ export class RoxyBodygraph extends LitElement {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 			}
 			.fact span {
 				display: block;
@@ -251,22 +251,11 @@ export class RoxyBodygraph extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No bodygraph data</div>`;
 	}
 
-	@property({ attribute: false })
-	data: GenerateBodygraphResponse | null = null;
-
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No bodygraph data</div>`;
-
+	protected renderData(d: GenerateBodygraphResponse) {
 		const definedCenters = new Set<BodygraphCenterId>(
 			(d.centers ?? [])
 				.filter((c) => c.defined)

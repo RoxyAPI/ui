@@ -45,6 +45,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Astrology"
   },
   {
+    "pascal": "RoxyAspectsTable",
+    "tag": "roxy-aspects-table",
+    "slug": "aspects-table",
+    "heading": "Aspects",
+    "description": "Natal and transit aspect grid with chart-pattern detection (grand trines, t-squares, stelliums, yods)",
+    "docsLabel": "Western",
+    "endpointLabel": "POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns",
+    "docsSummary": "Aspect rows coloured by nature with orb and strength, plus detected chart patterns",
+    "topic": "Astrology"
+  },
+  {
     "pascal": "RoxyMoonPhase",
     "tag": "roxy-moon-phase",
     "slug": "moon-phase",
@@ -199,6 +210,28 @@ window.ROXY_COMPONENTS = [
     "topic": "Vedic"
   },
   {
+    "pascal": "RoxyVedicAspects",
+    "tag": "roxy-vedic-aspects",
+    "slug": "vedic-aspects",
+    "heading": "Vedic aspects",
+    "description": "Vedic graha drishti table: which planet aspects which, with mutual aspects surfaced first",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/aspects",
+    "docsSummary": "Graha drishti rows with aspect type, strength, and orb, plus mutual aspects",
+    "topic": "Vedic"
+  },
+  {
+    "pascal": "RoxyHoraTable",
+    "tag": "roxy-hora-table",
+    "slug": "hora-table",
+    "heading": "Hora",
+    "description": "Vedic Hora (planetary hours) table: 12 day and 12 night horas by ruling planet for electional timing",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/panchang/hora",
+    "docsSummary": "Day and night planetary hours with ruling planet and window",
+    "topic": "Vedic"
+  },
+  {
     "pascal": "RoxyChoghadiyaGrid",
     "tag": "roxy-choghadiya-grid",
     "slug": "choghadiya-grid",
@@ -249,7 +282,7 @@ window.ROXY_COMPONENTS = [
     "heading": "Life path number",
     "description": "Numerology card for life path, expression, soul urge, personality, personal year, or full chart",
     "docsLabel": "Numerology",
-    "endpointLabel": "POST /numerology/{life-path,expression,soul-urge,personality,personal-year,chart}",
+    "endpointLabel": "POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart}",
     "docsSummary": "Life path, expression, soul urge, personality, personal year, full chart",
     "topic": "Numerology"
   },
@@ -298,6 +331,39 @@ window.ROXY_COMPONENTS = [
     "topic": "Human Design"
   },
   {
+    "pascal": "RoxyHdConnection",
+    "tag": "roxy-hd-connection",
+    "slug": "hd-connection",
+    "heading": "HD connection",
+    "description": "Human Design connection chart: the composite channels two people form, with circuit, dynamic, and which person holds each gate",
+    "docsLabel": "Human Design",
+    "endpointLabel": "POST /human-design/connection",
+    "docsSummary": "Electromagnetic, compromise, and dominance channels between two charts",
+    "topic": "Human Design"
+  },
+  {
+    "pascal": "RoxyHdPenta",
+    "tag": "roxy-hd-penta",
+    "slug": "hd-penta",
+    "heading": "HD penta",
+    "description": "Human Design penta for a 3 to 5 person group: upper and lower triangle channels, defined or open, with core channels and member coverage",
+    "docsLabel": "Human Design",
+    "endpointLabel": "POST /human-design/penta",
+    "docsSummary": "Group penta channels split into upper and lower triangles",
+    "topic": "Human Design"
+  },
+  {
+    "pascal": "RoxyHdVariables",
+    "tag": "roxy-hd-variables",
+    "slug": "hd-variables",
+    "heading": "HD variables",
+    "description": "Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction and color, tone, and base",
+    "docsLabel": "Human Design",
+    "endpointLabel": "POST /human-design/variables",
+    "docsSummary": "The four transformation arrows with direction and PHS labels",
+    "topic": "Human Design"
+  },
+  {
     "pascal": "RoxyForecastTimeline",
     "tag": "roxy-forecast-timeline",
     "slug": "forecast-timeline",
@@ -306,6 +372,17 @@ window.ROXY_COMPONENTS = [
     "docsLabel": "Forecast",
     "endpointLabel": "POST /forecast/timeline",
     "docsSummary": "Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance",
+    "topic": "Forecast"
+  },
+  {
+    "pascal": "RoxyForecastDigest",
+    "tag": "roxy-forecast-digest",
+    "slug": "forecast-digest",
+    "heading": "Forecast digest",
+    "description": "Rolled-up forecast across the next 24 hours, 7, 30, and 90 days with per-domain breakdown and top events",
+    "docsLabel": "Forecast",
+    "endpointLabel": "POST /forecast/digest",
+    "docsSummary": "Per-window event counts, domain breakdown, and the highest-significance events",
     "topic": "Forecast"
   },
   {
@@ -331,6 +408,17 @@ window.ROXY_COMPONENTS = [
     "topic": "I Ching"
   },
   {
+    "pascal": "RoxyCrystalCard",
+    "tag": "roxy-crystal-card",
+    "slug": "crystal-card",
+    "heading": "Crystal detail",
+    "description": "Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings",
+    "docsLabel": "Crystals",
+    "endpointLabel": "GET /crystals/{id}",
+    "docsSummary": "Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings",
+    "topic": "Crystals"
+  },
+  {
     "pascal": "RoxyCrystalGrid",
     "tag": "roxy-crystal-grid",
     "slug": "crystal-grid",
@@ -350,6 +438,17 @@ window.ROXY_COMPONENTS = [
     "docsLabel": "Dreams",
     "endpointLabel": "GET /dreams/symbols/{id}",
     "docsSummary": "Symbol name, interpretation body, and letter chip",
+    "topic": "Dreams"
+  },
+  {
+    "pascal": "RoxyDreamSearch",
+    "tag": "roxy-dream-search",
+    "slug": "dream-search",
+    "heading": "Dream search",
+    "description": "Dream-symbol search results as selectable tiles; emits roxy-symbol-select to pair with roxy-dream-card",
+    "docsLabel": "Dreams",
+    "endpointLabel": "GET /dreams/symbols",
+    "docsSummary": "Matched dream symbols as selectable tiles with a letter chip",
     "topic": "Dreams"
   },
   {
@@ -375,13 +474,24 @@ window.ROXY_COMPONENTS = [
     "topic": "Angel Numbers"
   },
   {
+    "pascal": "RoxyReferenceCard",
+    "tag": "roxy-reference-card",
+    "slug": "reference-card",
+    "heading": "Reference card",
+    "description": "Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, numerology number or compound number",
+    "docsLabel": "Reference",
+    "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/rashis/{id}, /iching/trigrams/{id}, /human-design/{gates,centers}/{id}, /numerology/{meanings,compound-number}/{number}",
+    "docsSummary": "Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup",
+    "topic": "Helpers"
+  },
+  {
     "pascal": "RoxyEndpointForm",
     "tag": "roxy-endpoint-form",
     "slug": "endpoint-form",
     "heading": "Schema-driven form",
     "description": "Schema-driven form that emits roxy-submit with a validated payload",
     "docsLabel": "Helper",
-    "endpointLabel": "Any endpoint via x-roxy-ui hints",
+    "endpointLabel": "Any endpoint, from the spec",
     "docsSummary": "Schema-driven form, emits roxy-submit",
     "topic": "Helpers",
     "selfFetching": true

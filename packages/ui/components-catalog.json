@@ -1,0 +1,1022 @@
+{
+  "version": "0.10.0",
+  "generated": "scripts/sync-catalog.ts",
+  "components": [
+    {
+      "tag": "roxy-natal-chart",
+      "pascal": "RoxyNatalChart",
+      "slug": "natal-chart",
+      "domain": "Western",
+      "renders": "Natal chart wheel with planet glyphs and aspect lines",
+      "endpointLabel": "POST /astrology/natal-chart",
+      "endpoints": [
+        {
+          "operationId": "generateNatalChart",
+          "method": "POST",
+          "path": "/astrology/natal-chart"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-synastry-chart",
+      "pascal": "RoxySynastryChart",
+      "slug": "synastry-chart",
+      "domain": "Western",
+      "renders": "Dual-wheel synastry with inter-aspects table",
+      "endpointLabel": "POST /astrology/synastry",
+      "endpoints": [
+        {
+          "operationId": "calculateSynastry",
+          "method": "POST",
+          "path": "/astrology/synastry"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-western-planets-table",
+      "pascal": "RoxyWesternPlanetsTable",
+      "slug": "western-planets-table",
+      "domain": "Western",
+      "renders": "Sign, degree, house, motion columns plus ASC, MC, PoF, Vertex",
+      "endpointLabel": "POST /astrology/natal-chart",
+      "endpoints": [
+        {
+          "operationId": "generateNatalChart",
+          "method": "POST",
+          "path": "/astrology/natal-chart"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-transits-table",
+      "pascal": "RoxyTransitsTable",
+      "slug": "transits-table",
+      "domain": "Western",
+      "renders": "Transit planet positions plus optional aspects to a natal chart",
+      "endpointLabel": "POST /astrology/transits",
+      "endpoints": [
+        {
+          "operationId": "calculateTransits",
+          "method": "POST",
+          "path": "/astrology/transits"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-aspects-table",
+      "pascal": "RoxyAspectsTable",
+      "slug": "aspects-table",
+      "domain": "Western",
+      "renders": "Aspect rows coloured by nature with orb and strength, plus detected chart patterns",
+      "endpointLabel": "POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns",
+      "endpoints": [
+        {
+          "operationId": "detectAspectPatterns",
+          "method": "POST",
+          "path": "/astrology/aspect-patterns"
+        },
+        {
+          "operationId": "calculateAspects",
+          "method": "POST",
+          "path": "/astrology/aspects"
+        },
+        {
+          "operationId": "calculateTransitAspects",
+          "method": "POST",
+          "path": "/astrology/transit-aspects"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-moon-phase",
+      "pascal": "RoxyMoonPhase",
+      "slug": "moon-phase",
+      "domain": "Western",
+      "renders": "Moon phase card and calendar",
+      "endpointLabel": "GET /astrology/moon-phase/{current,upcoming,calendar/...}",
+      "endpoints": [
+        {
+          "operationId": "getMoonCalendar",
+          "method": "GET",
+          "path": "/astrology/moon-phase/calendar/{year}/{month}",
+          "attrs": {
+            "mode": "calendar"
+          }
+        },
+        {
+          "operationId": "getCurrentMoonPhase",
+          "method": "GET",
+          "path": "/astrology/moon-phase/current",
+          "attrs": {
+            "mode": "current"
+          }
+        },
+        {
+          "operationId": "getUpcomingMoonPhases",
+          "method": "GET",
+          "path": "/astrology/moon-phase/upcoming",
+          "attrs": {
+            "mode": "upcoming"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-horoscope-card",
+      "pascal": "RoxyHoroscopeCard",
+      "slug": "horoscope-card",
+      "domain": "Western",
+      "renders": "Daily, weekly, or monthly horoscope card",
+      "endpointLabel": "GET /astrology/horoscope/{sign}/{daily,weekly,monthly}",
+      "endpoints": [
+        {
+          "operationId": "getDailyHoroscope",
+          "method": "GET",
+          "path": "/astrology/horoscope/{sign}/daily",
+          "attrs": {
+            "period": "daily"
+          }
+        },
+        {
+          "operationId": "getMonthlyHoroscope",
+          "method": "GET",
+          "path": "/astrology/horoscope/{sign}/monthly",
+          "attrs": {
+            "period": "monthly"
+          }
+        },
+        {
+          "operationId": "getWeeklyHoroscope",
+          "method": "GET",
+          "path": "/astrology/horoscope/{sign}/weekly",
+          "attrs": {
+            "period": "weekly"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-compatibility-card",
+      "pascal": "RoxyCompatibilityCard",
+      "slug": "compatibility-card",
+      "domain": "Cross",
+      "renders": "Score card with category breakdown",
+      "endpointLabel": "POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility",
+      "endpoints": [
+        {
+          "operationId": "calculateCompatibility",
+          "method": "POST",
+          "path": "/astrology/compatibility-score",
+          "attrs": {
+            "mode": "astrology"
+          }
+        },
+        {
+          "operationId": "calculateBioCompatibility",
+          "method": "POST",
+          "path": "/biorhythm/compatibility",
+          "attrs": {
+            "mode": "biorhythm"
+          }
+        },
+        {
+          "operationId": "calculateNumCompatibility",
+          "method": "POST",
+          "path": "/numerology/compatibility",
+          "attrs": {
+            "mode": "numerology"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-vedic-kundli",
+      "pascal": "RoxyVedicKundli",
+      "slug": "vedic-kundli",
+      "domain": "Vedic",
+      "renders": "South, North, or East Indian kundli with degree detail and optional Chandra Lagna view",
+      "endpointLabel": "POST /vedic-astrology/birth-chart",
+      "endpoints": [
+        {
+          "operationId": "generateBirthChart",
+          "method": "POST",
+          "path": "/vedic-astrology/birth-chart"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-divisional-chart",
+      "pascal": "RoxyDivisionalChart",
+      "slug": "divisional-chart",
+      "domain": "Vedic",
+      "renders": "Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa",
+      "endpointLabel": "POST /vedic-astrology/divisional-chart",
+      "endpoints": [
+        {
+          "operationId": "generateDivisionalChart",
+          "method": "POST",
+          "path": "/vedic-astrology/divisional-chart"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-kp-chart",
+      "pascal": "RoxyKpChart",
+      "slug": "kp-chart",
+      "domain": "Vedic (KP)",
+      "renders": "Ascendant, cusps, and planets with KP stellar hierarchy",
+      "endpointLabel": "POST /vedic-astrology/kp/chart",
+      "endpoints": [
+        {
+          "operationId": "generateKpChart",
+          "method": "POST",
+          "path": "/vedic-astrology/kp/chart"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-vedic-planets-table",
+      "pascal": "RoxyVedicPlanetsTable",
+      "slug": "vedic-planets-table",
+      "domain": "Vedic",
+      "renders": "Degree, nakshatra, pada, lord, bhava, avastha columns",
+      "endpointLabel": "POST /vedic-astrology/birth-chart",
+      "endpoints": [
+        {
+          "operationId": "generateBirthChart",
+          "method": "POST",
+          "path": "/vedic-astrology/birth-chart"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-kp-planets-table",
+      "pascal": "RoxyKpPlanetsTable",
+      "slug": "kp-planets-table",
+      "domain": "Vedic (KP)",
+      "renders": "Sub-lord and sub-sub-lord columns",
+      "endpointLabel": "POST /vedic-astrology/kp/planets",
+      "endpoints": [
+        {
+          "operationId": "getKpPlanets",
+          "method": "POST",
+          "path": "/vedic-astrology/kp/planets"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-kp-ruling-planets",
+      "pascal": "RoxyKpRulingPlanets",
+      "slug": "kp-ruling-planets",
+      "domain": "Vedic (KP)",
+      "renders": "Day lord, Moon/Lagna hierarchies, ruling planets, significators",
+      "endpointLabel": "POST /vedic-astrology/kp/ruling-planets",
+      "endpoints": [
+        {
+          "operationId": "getKpRulingPlanets",
+          "method": "POST",
+          "path": "/vedic-astrology/kp/ruling-planets"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-ashtakavarga-grid",
+      "pascal": "RoxyAshtakavargaGrid",
+      "slug": "ashtakavarga-grid",
+      "domain": "Vedic",
+      "renders": "Sarva, Bhinna, and Shodhya Pinda views in a tabbed heatmap",
+      "endpointLabel": "POST /vedic-astrology/ashtakavarga",
+      "endpoints": [
+        {
+          "operationId": "calculateAshtakavarga",
+          "method": "POST",
+          "path": "/vedic-astrology/ashtakavarga"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-shadbala-table",
+      "pascal": "RoxyShadbalaTable",
+      "slug": "shadbala-table",
+      "domain": "Vedic",
+      "renders": "Six-fold planetary strength bar plus rupas and adequacy badge",
+      "endpointLabel": "POST /vedic-astrology/shadbala",
+      "endpoints": [
+        {
+          "operationId": "calculateShadbala",
+          "method": "POST",
+          "path": "/vedic-astrology/shadbala"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-dasha-timeline",
+      "pascal": "RoxyDashaTimeline",
+      "slug": "dasha-timeline",
+      "domain": "Vedic",
+      "renders": "Vimshottari mahadasha + antardasha + pratyantardasha",
+      "endpointLabel": "POST /vedic-astrology/dasha/{current,major,sub/...}",
+      "endpoints": [
+        {
+          "operationId": "getCurrentDasha",
+          "method": "POST",
+          "path": "/vedic-astrology/dasha/current",
+          "attrs": {
+            "period": "current"
+          }
+        },
+        {
+          "operationId": "getMajorDashas",
+          "method": "POST",
+          "path": "/vedic-astrology/dasha/major",
+          "attrs": {
+            "period": "major"
+          }
+        },
+        {
+          "operationId": "getSubDashas",
+          "method": "POST",
+          "path": "/vedic-astrology/dasha/sub/{mahadasha}",
+          "attrs": {
+            "period": "sub"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-guna-milan",
+      "pascal": "RoxyGunaMilan",
+      "slug": "guna-milan",
+      "domain": "Vedic",
+      "renders": "36-point Ashtakoota with eight sub-scores",
+      "endpointLabel": "POST /vedic-astrology/compatibility",
+      "endpoints": [
+        {
+          "operationId": "calculateGunMilan",
+          "method": "POST",
+          "path": "/vedic-astrology/compatibility"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-panchang-table",
+      "pascal": "RoxyPanchangTable",
+      "slug": "panchang-table",
+      "domain": "Vedic",
+      "renders": "15+ muhurtas in detailed mode",
+      "endpointLabel": "POST /vedic-astrology/panchang/{basic,detailed}",
+      "endpoints": [
+        {
+          "operationId": "getBasicPanchang",
+          "method": "POST",
+          "path": "/vedic-astrology/panchang/basic",
+          "attrs": {
+            "detail": "basic"
+          }
+        },
+        {
+          "operationId": "getDetailedPanchang",
+          "method": "POST",
+          "path": "/vedic-astrology/panchang/detailed",
+          "attrs": {
+            "detail": "detailed"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-vedic-aspects",
+      "pascal": "RoxyVedicAspects",
+      "slug": "vedic-aspects",
+      "domain": "Vedic",
+      "renders": "Graha drishti rows with aspect type, strength, and orb, plus mutual aspects",
+      "endpointLabel": "POST /vedic-astrology/aspects",
+      "endpoints": [
+        {
+          "operationId": "calculateDrishti",
+          "method": "POST",
+          "path": "/vedic-astrology/aspects"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-hora-table",
+      "pascal": "RoxyHoraTable",
+      "slug": "hora-table",
+      "domain": "Vedic",
+      "renders": "Day and night planetary hours with ruling planet and window",
+      "endpointLabel": "POST /vedic-astrology/panchang/hora",
+      "endpoints": [
+        {
+          "operationId": "getHora",
+          "method": "POST",
+          "path": "/vedic-astrology/panchang/hora"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-choghadiya-grid",
+      "pascal": "RoxyChoghadiyaGrid",
+      "slug": "choghadiya-grid",
+      "domain": "Vedic",
+      "renders": "Day and night Choghadiya muhurta tiles colored by effect",
+      "endpointLabel": "POST /vedic-astrology/panchang/choghadiya",
+      "endpoints": [
+        {
+          "operationId": "getChoghadiya",
+          "method": "POST",
+          "path": "/vedic-astrology/panchang/choghadiya"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-yoga-list",
+      "pascal": "RoxyYogaList",
+      "slug": "yoga-list",
+      "domain": "Vedic",
+      "renders": "Filterable yoga cards from the 300 plus yoga catalog",
+      "endpointLabel": "GET /vedic-astrology/yoga, /yoga/{id}",
+      "endpoints": [
+        {
+          "operationId": "listYogas",
+          "method": "GET",
+          "path": "/vedic-astrology/yoga"
+        },
+        {
+          "operationId": "detectYogas",
+          "method": "POST",
+          "path": "/vedic-astrology/yoga/detect"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-nakshatra-card",
+      "pascal": "RoxyNakshatraCard",
+      "slug": "nakshatra-card",
+      "domain": "Vedic",
+      "renders": "Lord, deity, symbol, characteristics, remedies",
+      "endpointLabel": "GET /vedic-astrology/nakshatras/{id}",
+      "endpoints": [
+        {
+          "operationId": "getNakshatra",
+          "method": "GET",
+          "path": "/vedic-astrology/nakshatras/{id}"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-dosha-card",
+      "pascal": "RoxyDoshaCard",
+      "slug": "dosha-card",
+      "domain": "Vedic",
+      "renders": "Presence, severity, remedies, scoped effects",
+      "endpointLabel": "POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}",
+      "endpoints": [
+        {
+          "operationId": "checkKalsarpaDosha",
+          "method": "POST",
+          "path": "/vedic-astrology/dosha/kalsarpa",
+          "attrs": {
+            "type": "kalsarpa"
+          }
+        },
+        {
+          "operationId": "checkManglikDosha",
+          "method": "POST",
+          "path": "/vedic-astrology/dosha/manglik",
+          "attrs": {
+            "type": "manglik"
+          }
+        },
+        {
+          "operationId": "checkSadhesati",
+          "method": "POST",
+          "path": "/vedic-astrology/dosha/sadhesati",
+          "attrs": {
+            "type": "sadhesati"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-numerology-card",
+      "pascal": "RoxyNumerologyCard",
+      "slug": "numerology-card",
+      "domain": "Numerology",
+      "renders": "Life path, expression, soul urge, personality, personal year, full chart",
+      "endpointLabel": "POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart}",
+      "endpoints": [
+        {
+          "operationId": "calculateBirthDay",
+          "method": "POST",
+          "path": "/numerology/birth-day",
+          "attrs": {
+            "type": "birth-day"
+          }
+        },
+        {
+          "operationId": "generateNumerologyChart",
+          "method": "POST",
+          "path": "/numerology/chart",
+          "attrs": {
+            "type": "chart"
+          }
+        },
+        {
+          "operationId": "getDailyNumber",
+          "method": "POST",
+          "path": "/numerology/daily",
+          "attrs": {
+            "type": "daily"
+          }
+        },
+        {
+          "operationId": "calculateExpression",
+          "method": "POST",
+          "path": "/numerology/expression",
+          "attrs": {
+            "type": "expression"
+          }
+        },
+        {
+          "operationId": "calculateLifePath",
+          "method": "POST",
+          "path": "/numerology/life-path",
+          "attrs": {
+            "type": "life-path"
+          }
+        },
+        {
+          "operationId": "calculateMaturity",
+          "method": "POST",
+          "path": "/numerology/maturity",
+          "attrs": {
+            "type": "maturity"
+          }
+        },
+        {
+          "operationId": "calculatePersonalDay",
+          "method": "POST",
+          "path": "/numerology/personal-day",
+          "attrs": {
+            "type": "personal-day"
+          }
+        },
+        {
+          "operationId": "calculatePersonalMonth",
+          "method": "POST",
+          "path": "/numerology/personal-month",
+          "attrs": {
+            "type": "personal-month"
+          }
+        },
+        {
+          "operationId": "calculatePersonalYear",
+          "method": "POST",
+          "path": "/numerology/personal-year",
+          "attrs": {
+            "type": "personal-year"
+          }
+        },
+        {
+          "operationId": "calculatePersonality",
+          "method": "POST",
+          "path": "/numerology/personality",
+          "attrs": {
+            "type": "personality"
+          }
+        },
+        {
+          "operationId": "calculateSoulUrge",
+          "method": "POST",
+          "path": "/numerology/soul-urge",
+          "attrs": {
+            "type": "soul-urge"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-tarot-card",
+      "pascal": "RoxyTarotCard",
+      "slug": "tarot-card",
+      "domain": "Tarot",
+      "renders": "Single card with upright and reversed flip",
+      "endpointLabel": "GET /tarot/cards/{id}, POST /tarot/daily",
+      "endpoints": [
+        {
+          "operationId": "getDailyCard",
+          "method": "POST",
+          "path": "/tarot/daily"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-tarot-catalog",
+      "pascal": "RoxyTarotCatalog",
+      "slug": "tarot-catalog",
+      "domain": "Tarot",
+      "renders": "Deck gallery tiles with card art, name, and arcana and suit",
+      "endpointLabel": "GET /tarot/cards",
+      "endpoints": [
+        {
+          "operationId": "listCards",
+          "method": "GET",
+          "path": "/tarot/cards"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-tarot-spread",
+      "pascal": "RoxyTarotSpread",
+      "slug": "tarot-spread",
+      "domain": "Tarot",
+      "renders": "Spreads with positions and reading",
+      "endpointLabel": "POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw",
+      "endpoints": [
+        {
+          "operationId": "drawCards",
+          "method": "POST",
+          "path": "/tarot/draw",
+          "attrs": {
+            "spread": "draw"
+          }
+        },
+        {
+          "operationId": "castCareerSpread",
+          "method": "POST",
+          "path": "/tarot/spreads/career",
+          "attrs": {
+            "spread": "career"
+          }
+        },
+        {
+          "operationId": "castCelticCross",
+          "method": "POST",
+          "path": "/tarot/spreads/celtic-cross",
+          "attrs": {
+            "spread": "celtic-cross"
+          }
+        },
+        {
+          "operationId": "castCustomSpread",
+          "method": "POST",
+          "path": "/tarot/spreads/custom",
+          "attrs": {
+            "spread": "custom"
+          }
+        },
+        {
+          "operationId": "castLoveSpread",
+          "method": "POST",
+          "path": "/tarot/spreads/love",
+          "attrs": {
+            "spread": "love"
+          }
+        },
+        {
+          "operationId": "castThreeCard",
+          "method": "POST",
+          "path": "/tarot/spreads/three-card",
+          "attrs": {
+            "spread": "three-card"
+          }
+        },
+        {
+          "operationId": "castYesNo",
+          "method": "POST",
+          "path": "/tarot/yes-no",
+          "attrs": {
+            "spread": "yes-no"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-bodygraph",
+      "pascal": "RoxyBodygraph",
+      "slug": "bodygraph",
+      "domain": "Human Design",
+      "renders": "Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary",
+      "endpointLabel": "POST /human-design/bodygraph",
+      "endpoints": [
+        {
+          "operationId": "generateBodygraph",
+          "method": "POST",
+          "path": "/human-design/bodygraph"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-hd-connection",
+      "pascal": "RoxyHdConnection",
+      "slug": "hd-connection",
+      "domain": "Human Design",
+      "renders": "Electromagnetic, compromise, and dominance channels between two charts",
+      "endpointLabel": "POST /human-design/connection",
+      "endpoints": [
+        {
+          "operationId": "calculateConnection",
+          "method": "POST",
+          "path": "/human-design/connection"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-hd-penta",
+      "pascal": "RoxyHdPenta",
+      "slug": "hd-penta",
+      "domain": "Human Design",
+      "renders": "Group penta channels split into upper and lower triangles",
+      "endpointLabel": "POST /human-design/penta",
+      "endpoints": [
+        {
+          "operationId": "calculatePenta",
+          "method": "POST",
+          "path": "/human-design/penta"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-hd-variables",
+      "pascal": "RoxyHdVariables",
+      "slug": "hd-variables",
+      "domain": "Human Design",
+      "renders": "The four transformation arrows with direction and PHS labels",
+      "endpointLabel": "POST /human-design/variables",
+      "endpoints": [
+        {
+          "operationId": "calculateVariables",
+          "method": "POST",
+          "path": "/human-design/variables"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-forecast-timeline",
+      "pascal": "RoxyForecastTimeline",
+      "slug": "forecast-timeline",
+      "domain": "Forecast",
+      "renders": "Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance",
+      "endpointLabel": "POST /forecast/timeline",
+      "endpoints": [
+        {
+          "operationId": "findSignificantDates",
+          "method": "POST",
+          "path": "/forecast/significant-dates"
+        },
+        {
+          "operationId": "generateTimeline",
+          "method": "POST",
+          "path": "/forecast/timeline"
+        },
+        {
+          "operationId": "forecastTransits",
+          "method": "POST",
+          "path": "/forecast/transits"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-forecast-digest",
+      "pascal": "RoxyForecastDigest",
+      "slug": "forecast-digest",
+      "domain": "Forecast",
+      "renders": "Per-window event counts, domain breakdown, and the highest-significance events",
+      "endpointLabel": "POST /forecast/digest",
+      "endpoints": [
+        {
+          "operationId": "generateDigest",
+          "method": "POST",
+          "path": "/forecast/digest"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-biorhythm-chart",
+      "pascal": "RoxyBiorhythmChart",
+      "slug": "biorhythm-chart",
+      "domain": "Biorhythm",
+      "renders": "Daily bars, forecast cycle lines, critical days",
+      "endpointLabel": "POST /biorhythm/{daily,forecast,critical-days}",
+      "endpoints": [
+        {
+          "operationId": "getCriticalDays",
+          "method": "POST",
+          "path": "/biorhythm/critical-days",
+          "attrs": {
+            "mode": "critical-days"
+          }
+        },
+        {
+          "operationId": "getDailyBiorhythm",
+          "method": "POST",
+          "path": "/biorhythm/daily",
+          "attrs": {
+            "mode": "daily"
+          }
+        },
+        {
+          "operationId": "getForecast",
+          "method": "POST",
+          "path": "/biorhythm/forecast",
+          "attrs": {
+            "mode": "forecast"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "roxy-hexagram",
+      "pascal": "RoxyHexagram",
+      "slug": "hexagram",
+      "domain": "I Ching",
+      "renders": "Hexagram with trigrams, judgment, image, changing lines",
+      "endpointLabel": "GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",
+      "endpoints": [
+        {
+          "operationId": "getRandomHexagram",
+          "method": "GET",
+          "path": "/iching/hexagrams/random"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-crystal-card",
+      "pascal": "RoxyCrystalCard",
+      "slug": "crystal-card",
+      "domain": "Crystals",
+      "renders": "Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings",
+      "endpointLabel": "GET /crystals/{id}",
+      "endpoints": [
+        {
+          "operationId": "getCrystal",
+          "method": "GET",
+          "path": "/crystals/{id}"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-crystal-grid",
+      "pascal": "RoxyCrystalGrid",
+      "slug": "crystal-grid",
+      "domain": "Crystals",
+      "renders": "Crystal gallery tiles with photo, name, and colour swatches",
+      "endpointLabel": "GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search",
+      "endpoints": [
+        {
+          "operationId": "getCrystalsByChakra",
+          "method": "GET",
+          "path": "/crystals/chakra/{chakra}"
+        },
+        {
+          "operationId": "getCrystalsByElement",
+          "method": "GET",
+          "path": "/crystals/element/{element}"
+        },
+        {
+          "operationId": "getCrystalsByZodiac",
+          "method": "GET",
+          "path": "/crystals/zodiac/{sign}"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-dream-card",
+      "pascal": "RoxyDreamCard",
+      "slug": "dream-card",
+      "domain": "Dreams",
+      "renders": "Symbol name, interpretation body, and letter chip",
+      "endpointLabel": "GET /dreams/symbols/{id}",
+      "endpoints": [
+        {
+          "operationId": "getDreamSymbol",
+          "method": "GET",
+          "path": "/dreams/symbols/{id}"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-dream-search",
+      "pascal": "RoxyDreamSearch",
+      "slug": "dream-search",
+      "domain": "Dreams",
+      "renders": "Matched dream symbols as selectable tiles with a letter chip",
+      "endpointLabel": "GET /dreams/symbols",
+      "endpoints": [
+        {
+          "operationId": "searchDreamSymbols",
+          "method": "GET",
+          "path": "/dreams/symbols"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-angel-number-card",
+      "pascal": "RoxyAngelNumberCard",
+      "slug": "angel-number-card",
+      "domain": "Angel Numbers",
+      "renders": "Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections",
+      "endpointLabel": "GET /angel-numbers/numbers/{number}",
+      "endpoints": [
+        {
+          "operationId": "getAngelNumber",
+          "method": "GET",
+          "path": "/angel-numbers/numbers/{number}"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-angel-number-lookup",
+      "pascal": "RoxyAngelNumberLookup",
+      "slug": "angel-number-lookup",
+      "domain": "Angel Numbers",
+      "renders": "Pattern analysis plus known meaning and digit-root fallback",
+      "endpointLabel": "GET /angel-numbers/lookup",
+      "endpoints": [
+        {
+          "operationId": "analyzeNumberSequence",
+          "method": "GET",
+          "path": "/angel-numbers/lookup"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-reference-card",
+      "pascal": "RoxyReferenceCard",
+      "slug": "reference-card",
+      "domain": "Reference",
+      "renders": "Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup",
+      "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/rashis/{id}, /iching/trigrams/{id}, /human-design/{gates,centers}/{id}, /numerology/{meanings,compound-number}/{number}",
+      "endpoints": [
+        {
+          "operationId": "getPlanetMeaning",
+          "method": "GET",
+          "path": "/astrology/planet-meanings/{id}"
+        },
+        {
+          "operationId": "getZodiacSign",
+          "method": "GET",
+          "path": "/astrology/signs/{id}"
+        },
+        {
+          "operationId": "getCenter",
+          "method": "GET",
+          "path": "/human-design/centers/{id}"
+        },
+        {
+          "operationId": "getGate",
+          "method": "GET",
+          "path": "/human-design/gates/{number}"
+        },
+        {
+          "operationId": "getTrigram",
+          "method": "GET",
+          "path": "/iching/trigrams/{id}"
+        },
+        {
+          "operationId": "getCompoundNumber",
+          "method": "GET",
+          "path": "/numerology/compound-number/{number}"
+        },
+        {
+          "operationId": "getNumberMeaning",
+          "method": "GET",
+          "path": "/numerology/meanings/{number}"
+        },
+        {
+          "operationId": "getRashi",
+          "method": "GET",
+          "path": "/vedic-astrology/rashis/{id}"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-endpoint-form",
+      "pascal": "RoxyEndpointForm",
+      "slug": "endpoint-form",
+      "domain": "Helper",
+      "renders": "Schema-driven form, emits roxy-submit",
+      "endpointLabel": "Any endpoint, from the spec",
+      "endpoints": []
+    },
+    {
+      "tag": "roxy-location-search",
+      "pascal": "RoxyLocationSearch",
+      "slug": "location-search",
+      "domain": "Helper",
+      "renders": "Debounced city search input, emits roxy-location-select",
+      "endpointLabel": "GET /location/search",
+      "endpoints": []
+    },
+    {
+      "tag": "roxy-data",
+      "pascal": "RoxyData",
+      "slug": "data",
+      "domain": "Helper",
+      "renders": "Generic fallback renderer for unknown shapes",
+      "endpointLabel": "Any response shape",
+      "endpoints": []
+    }
+  ]
+}

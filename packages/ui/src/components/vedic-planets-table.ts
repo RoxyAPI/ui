@@ -1,12 +1,12 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
 import type { BirthChartResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 /**
@@ -44,7 +44,7 @@ type MetaEntry = BirthChartResponse['meta'][string];
  * non-empty.
  */
 @customElement('roxy-vedic-planets-table')
-export class RoxyVedicPlanetsTable extends LitElement {
+export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
@@ -52,7 +52,7 @@ export class RoxyVedicPlanetsTable extends LitElement {
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				box-shadow: var(--roxy-shadow-sm);
 				overflow: hidden;
 			}
@@ -214,17 +214,6 @@ export class RoxyVedicPlanetsTable extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: BirthChartResponse | null = null;
-
 	/** Ordered [name, entry] pairs: GRAHA_ORDER first, then any extras. */
 	private orderedRows(): Array<[string, MetaEntry]> {
 		const meta = this.data?.meta ?? {};
@@ -243,9 +232,12 @@ export class RoxyVedicPlanetsTable extends LitElement {
 		return rows;
 	}
 
-	render() {
-		if (!this.data?.meta)
-			return html`<div class="roxy-empty" role="status">No chart data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No chart data</div>`;
+	}
+
+	protected renderData(d: BirthChartResponse) {
+		if (!d.meta) return this.renderEmpty();
 		const rows = this.orderedRows();
 
 		return html`<div class="wrap" aria-label="Vedic planetary positions">

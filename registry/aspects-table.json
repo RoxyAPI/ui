@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-aspects-table",
+  "type": "registry:ui",
+  "title": "RoxyAspectsTable",
+  "description": "Natal and transit aspect grid with chart-pattern detection (grand trines, t-squares, stelliums, yods)",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.10.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-aspects-table.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyAspectsTable data={...} />: Natal and transit aspect grid with chart-pattern detection (grand trines, t-squares, stelliums, yods).\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/aspects-table/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyAspectsTable as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyAspectsTableProps = ComponentProps<typeof Element>;\n\nexport function RoxyAspectsTable(props: RoxyAspectsTableProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyAspectsTable;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/aspects-table.tsx"
+    }
+  ]
+}

@@ -1,11 +1,11 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
 import type { TransitsResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDate, formatNumber, formatTime } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
@@ -15,13 +15,19 @@ import { renderTablist, tablistStyles } from '../utils/tablist.js';
  * `data.summary` are present and rendered automatically.
  */
 @customElement('roxy-transits-table')
-export class RoxyTransitsTable extends LitElement {
+export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	static styles = [
 		baseStyles,
 		tablistStyles,
 		disclosureStyles,
 		css`
 			.wrap {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -219,25 +225,16 @@ export class RoxyTransitsTable extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: TransitsResponse | null = null;
-
 	/** Which panel is showing: planet positions or the transit-to-natal aspects. */
 	@state()
 	private tab: 'positions' | 'aspects' = 'positions';
 
-	render() {
-		if (!this.data?.transitPlanets?.length) {
-			return html`<div class="roxy-empty" role="status">No transits data</div>`;
-		}
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No transits data</div>`;
+	}
+
+	protected renderData(d: TransitsResponse) {
+		if (!d.transitPlanets?.length) return this.renderEmpty();
 
 		const {
 			transitDate,
@@ -245,7 +242,7 @@ export class RoxyTransitsTable extends LitElement {
 			transitPlanets,
 			transitAspects,
 			summary,
-		} = this.data;
+		} = d;
 
 		const dateStr = [formatDate(transitDate), formatTime(transitTime)]
 			.filter(Boolean)

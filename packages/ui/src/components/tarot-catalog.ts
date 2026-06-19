@@ -1,8 +1,8 @@
-import { css, html, LitElement } from 'lit';
+import { css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { ListCardsResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 /** A single card row from the catalog response. Kept spec-derived so the tile never reads a field the API does not return. */
@@ -12,7 +12,7 @@ type CatalogCard = ListCardsResponse['cards'][number];
  * Tarot catalog. Renders GET /tarot/cards as a responsive gallery of the deck: each tile carries the Rider-Waite-Smith artwork, the card name, and an arcana/suit caption. Filter the deck server-side (arcana, suit, number, paging) and pass the page response; the component renders whatever cards it carries. Pairs with `<roxy-tarot-card>` for a single-card detail view and `<roxy-tarot-spread>` for readings.
  */
 @customElement('roxy-tarot-catalog')
-export class RoxyTarotCatalog extends LitElement {
+export class RoxyTarotCatalog extends RoxyDataElement<ListCardsResponse> {
 	static styles = [
 		baseStyles,
 		css`
@@ -48,7 +48,7 @@ export class RoxyTarotCatalog extends LitElement {
 			.tile {
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem);
@@ -75,28 +75,19 @@ export class RoxyTarotCatalog extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: ListCardsResponse | null = null;
-
 	/**
 	 * Override the auto-derived gallery heading. Empty by default, in which case the heading is "Tarot deck".
 	 */
 	@property({ type: String, reflect: true })
 	heading = '';
 
-	render() {
-		const d = this.data;
-		const cards = d?.cards ?? [];
-		if (!d || cards.length === 0)
-			return html`<div class="roxy-empty" role="status">No cards</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No cards</div>`;
+	}
+
+	protected renderData(d: ListCardsResponse) {
+		const cards = d.cards ?? [];
+		if (cards.length === 0) return this.renderEmpty();
 
 		const title = this.heading || 'Tarot deck';
 		const total = typeof d.total === 'number' ? d.total : cards.length;

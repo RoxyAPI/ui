@@ -1,13 +1,13 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
 	GetCurrentDashaResponse,
 	GetMajorDashasResponse,
 	GetSubDashasResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type DashaData =
 	| GetCurrentDashaResponse
@@ -22,7 +22,7 @@ type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
  * Switch to period="major" for the full 120-year Vimshottari timeline.
  */
 @customElement('roxy-dasha-timeline')
-export class RoxyDashaTimeline extends LitElement {
+export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	static styles = [
 		baseStyles,
 		css`
@@ -51,7 +51,7 @@ export class RoxyDashaTimeline extends LitElement {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
 				gap: var(--roxy-space-md, 1rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-md, 1rem);
@@ -138,7 +138,7 @@ export class RoxyDashaTimeline extends LitElement {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 			}
 			.interp h3 {
 				margin: 0;
@@ -153,25 +153,14 @@ export class RoxyDashaTimeline extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: DashaData | null = null;
-
 	@property({ type: String, reflect: true })
 	period: 'current' | 'major' | 'sub' = 'current';
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No dasha data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No dasha data</div>`;
+	}
 
+	protected renderData(d: DashaData) {
 		const periods = this.collectPeriods(d);
 		const maxYears = periods.length
 			? Math.max(...periods.map((p) => p.durationYears))

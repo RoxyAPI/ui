@@ -1,20 +1,20 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { AnalyzeNumberSequenceResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * Angel number lookup card. Renders /angel-numbers/lookup: the analysed sequence with its pattern classification (type, digit count, unique digits, palindrome, repeating), the known angel-number meaning when the sequence is in the database, and the foundational digit-root meaning that interprets any sequence. Built for synchronicity trackers where users enter arbitrary numbers.
  */
 @customElement('roxy-angel-number-lookup')
-export class RoxyAngelNumberLookup extends LitElement {
+export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequenceResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -116,22 +116,11 @@ export class RoxyAngelNumberLookup extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No number analysis</div>`;
 	}
 
-	@property({ attribute: false })
-	data: AnalyzeNumberSequenceResponse | null = null;
-
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No number analysis</div>`;
-
+	protected renderData(d: AnalyzeNumberSequenceResponse) {
 		const known = d.knownMeaning;
 		const root = d.digitRootMeaning;
 		const heading = known?.title ?? 'Number analysis';

@@ -27,6 +27,7 @@
   "files": [
     "dist",
     "src",
+    "components-catalog.json",
     "README.md",
     "LICENSE",
     "AGENTS.md",

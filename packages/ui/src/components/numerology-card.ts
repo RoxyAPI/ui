@@ -1,15 +1,20 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
+	CalculateBirthDayResponse,
 	CalculateExpressionResponse,
 	CalculateLifePathResponse,
+	CalculateMaturityResponse,
+	CalculatePersonalDayResponse,
 	CalculatePersonalityResponse,
+	CalculatePersonalMonthResponse,
 	CalculatePersonalYearResponse,
 	CalculateSoulUrgeResponse,
 	GenerateNumerologyChartResponse,
+	GetDailyNumberResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { humanize } from '../utils/string.js';
 
 /**
@@ -19,24 +24,30 @@ type NumberCardData =
 	| CalculateLifePathResponse
 	| CalculateExpressionResponse
 	| CalculateSoulUrgeResponse
-	| CalculatePersonalityResponse;
+	| CalculatePersonalityResponse
+	| CalculateBirthDayResponse
+	| CalculateMaturityResponse;
 
 type NumerologyData =
 	| NumberCardData
 	| CalculatePersonalYearResponse
+	| CalculatePersonalDayResponse
+	| CalculatePersonalMonthResponse
+	| GetDailyNumberResponse
 	| GenerateNumerologyChartResponse;
 
 /**
- * Numerology card. Renders /numerology/{life-path,expression,personal-year,chart}.
- * Use the `type` attribute to switch the layout.
+ * Numerology card. Renders /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,personal-year,chart}.
+ * Use the `type` attribute to switch the heading; the single-number types all share one layout.
  */
 @customElement('roxy-numerology-card')
-export class RoxyNumerologyCard extends LitElement {
+export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -133,36 +144,67 @@ export class RoxyNumerologyCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: NumerologyData | null = null;
-
 	@property({ type: String, reflect: true })
 	type:
 		| 'life-path'
 		| 'expression'
 		| 'soul-urge'
 		| 'personality'
+		| 'birth-day'
+		| 'maturity'
+		| 'daily'
+		| 'personal-day'
+		| 'personal-month'
 		| 'personal-year'
 		| 'chart' = 'life-path';
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No numerology data</div>`;
-
+	protected renderData(d: NumerologyData) {
 		const headerLabel = LABELS[this.type] ?? this.type;
-
 		if ('coreNumbers' in d) return this.renderChart(d, headerLabel);
+		// Period reads share a number+theme+body shape but differ in field names;
+		// check the most specific key first (a personal-day response also carries
+		// personalMonth/personalYear), so the order is day -> month -> year.
+		if ('personalDay' in d) {
+			return this.renderPeriod(headerLabel, d.personalDay, d.theme, d.guidance);
+		}
+		if ('personalMonth' in d) {
+			return this.renderPeriod(headerLabel, d.personalMonth, d.theme, d.focus);
+		}
 		if ('personalYear' in d) return this.renderPersonalYear(d, headerLabel);
+		// Daily number: number + meaning, no calculation/karmic-debt; show the
+		// meaning title as the heading and the daily message as the body.
+		if ('dailyMessage' in d) {
+			return this.renderPeriod(
+				headerLabel,
+				d.number,
+				d.meaning?.title,
+				d.dailyMessage,
+			);
+		}
 		return this.renderNumberCard(d as NumberCardData, headerLabel);
+	}
+
+	/** Shared layout for a single period number (day/month): a hero numeral, theme heading, and guidance/focus body. */
+	private renderPeriod(
+		headerLabel: string,
+		num: number | undefined,
+		theme: string | undefined,
+		body: string | undefined,
+	) {
+		return html`<article class="card" aria-label=${headerLabel}>
+			<div class="hero">
+				${typeof num === 'number' ? html`<div class="numeral">${num}</div>` : nothing}
+				<div>
+					<p class="label">${headerLabel}</p>
+					${theme ? html`<h2 class="title">${theme}</h2>` : nothing}
+				</div>
+			</div>
+			${body ? html`<p class="meaning">${body}</p>` : nothing}
+		</article>`;
+	}
+
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No numerology data</div>`;
 	}
 
 	private renderNumberCard(d: NumberCardData, headerLabel: string) {
@@ -242,6 +284,11 @@ const LABELS: Record<string, string> = {
 	expression: 'Expression',
 	'soul-urge': 'Soul Urge',
 	personality: 'Personality',
+	'birth-day': 'Birth Day',
+	maturity: 'Maturity',
+	daily: 'Daily Number',
+	'personal-day': 'Personal Day',
+	'personal-month': 'Personal Month',
 	'personal-year': 'Personal Year',
 	chart: 'Numerology chart',
 };

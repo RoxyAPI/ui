@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, human design, forecast, biorhythm, tarot, numerology, crystals, dreams, I-Ching, angel numbers, location), 148+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (MCP)\n\nRoxyAPI has native Model Context Protocol support. Your AI agent auto-discovers all 148+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
+    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, human design, forecast, biorhythm, tarot, numerology, crystals, dreams, I-Ching, angel numbers, location), 152+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (MCP)\n\nRoxyAPI has native Model Context Protocol support. Your AI agent auto-discovers all 152+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
     "contact": {
       "name": "RoxyAPI Support",
       "url": "https://roxyapi.com/contact"
@@ -39,7 +39,7 @@
     },
     {
       "name": "Numerology",
-      "description": "Production-ready Pythagorean numerology API + hosted MCP for AI agents and developers. Connect Claude Code, Cursor, VS Code in seconds, no local setup. Calculate life path, expression, soul urge, personality, and maturity numbers. Pinnacle and Challenge life phase timing with meanings. Hidden Passion, Subconscious Self, and Cornerstone/Capstone name analysis. Birth day 1-31 profiles, lucky associations (colors, gemstones, planets), personal year and month forecasts, relationship compatibility, karmic debt and lessons. Unicode-aware multilingual name handling: Spanish, French, German, Italian, Portuguese, Russian, Ukrainian, Belarusian, Hindi, Bengali, Tamil, Japanese, Chinese, Korean, Arabic, Greek, and Hebrew names produce correct Pythagorean numbers via automatic transliteration so accented and non-Latin scripts no longer silently drop letters. 16 endpoints with detailed interpretations optimized for numerology apps, editorial platforms, AI chatbots, wellness platforms, and spiritual services."
+      "description": "Production-ready Pythagorean numerology API + hosted MCP for AI agents and developers. Connect Claude Code, Cursor, VS Code in seconds, no local setup. Calculate life path, expression, soul urge, personality, and maturity numbers. Pinnacle and Challenge life phase timing with meanings. Hidden Passion, Subconscious Self, and Cornerstone/Capstone name analysis. Birth day 1-31 profiles, lucky associations (colors, gemstones, planets), personal year and month forecasts, relationship compatibility, karmic debt and lessons. Unicode-aware multilingual name handling: Spanish, French, German, Italian, Portuguese, Russian, Ukrainian, Belarusian, Hindi, Bengali, Tamil, Japanese, Chinese, Korean, Arabic, Greek, and Hebrew names produce correct Pythagorean numbers via automatic transliteration so accented and non-Latin scripts no longer silently drop letters. Now with both Pythagorean and Chaldean systems in a single call, Cheiro compound numbers (10 to 52) with planetary rulers, and business and brand name analysis. 20 endpoints with detailed interpretations optimized for numerology apps, editorial platforms, AI chatbots, wellness platforms, and spiritual services."
     },
     {
       "name": "Tarot",
@@ -20278,6 +20278,30 @@
             "apiKey": []
           }
         ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -20517,6 +20541,30 @@
         "security": [
           {
             "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "requestBody": {
@@ -24465,25 +24513,25 @@
                         "active": {
                           "type": "boolean",
                           "example": false,
-                          "description": "Whether Panchaka is currently active. Panchaka occurs when Moon transits through the last 5 nakshatras (Dhanishta to Revati)."
+                          "description": "Whether Panchaka is in force at sunrise, the panchang day reference. Can be false while startsAt and endsAt are populated when Panchaka begins later in the day."
                         },
                         "type": {
                           "type": "string",
                           "nullable": true,
-                          "example": null,
-                          "description": "Panchaka type when active: Mrityu (death-related), Agni (fire-related), Raja (government-related), Chora (theft-related), or Roga (disease-related). Null when Panchaka is not active."
+                          "example": "Mrityu",
+                          "description": "Panchaka dosha, set by the weekday the period BEGINS (not the nakshatra): Roga (Sunday, disease), Raja (Monday, government), Agni (Tuesday, fire), Chora (Friday, theft), Mrityu (Saturday, death). Null when Panchaka begins on Wednesday or Thursday (no dosha) or when no Panchaka touches this date."
                         },
                         "startsAt": {
                           "type": "string",
                           "nullable": true,
-                          "example": null,
-                          "description": "When the current Panchaka period started (Moon entered Dhanishta nakshatra). Null when not active. In requested timezone."
+                          "example": "2026-06-06T19:03:00",
+                          "description": "When the Panchaka period starts (Moon enters 300 degrees, Dhanishta 3rd pada). May predate this date when Panchaka is already running. Null when no Panchaka is in force or begins on this date. In requested timezone."
                         },
                         "endsAt": {
                           "type": "string",
                           "nullable": true,
-                          "example": null,
-                          "description": "When the current Panchaka period ends (Moon exits Revati nakshatra). Null when not active. In requested timezone."
+                          "example": "2026-06-11T08:15:00",
+                          "description": "When the Panchaka period ends (Moon exits Revati at 360 degrees), about five days after it starts. Null when no Panchaka. In requested timezone."
                         }
                       },
                       "required": [
@@ -24492,7 +24540,7 @@
                         "startsAt",
                         "endsAt"
                       ],
-                      "description": "Panchaka, inauspicious period when Moon transits nakshatras 23-27. Five types based on the specific nakshatra. Includes timing when active. Avoid major activities during Panchaka."
+                      "description": "Panchaka, the inauspicious ~5-day window while the Moon transits the last five nakshatras (Dhanishta 3rd pada through Revati, 300 to 360 degrees sidereal). The dosha type depends on the weekday it begins; startsAt and endsAt report the period in force at sunrise or beginning later this day. Avoid major activities during Panchaka."
                     },
                     "bhadra": {
                       "type": "object",
@@ -24500,19 +24548,19 @@
                         "active": {
                           "type": "boolean",
                           "example": false,
-                          "description": "Whether Bhadra (Vishti Karana) is currently active. Bhadra is considered inauspicious for starting new ventures."
+                          "description": "Whether Bhadra (Vishti Karana) is in force at sunrise, the panchang day reference moment. Can be false while startsAt and endsAt are populated when Bhadra begins later in the day."
                         },
                         "startsAt": {
                           "type": "string",
                           "nullable": true,
-                          "example": null,
-                          "description": "When the current Bhadra (Vishti) period started. Null when not active. In requested timezone."
+                          "example": "2026-06-10T13:53:00",
+                          "description": "When the Bhadra (Vishti) period that begins on this date starts. Null when no Bhadra begins on this date. In requested timezone."
                         },
                         "endsAt": {
                           "type": "string",
                           "nullable": true,
-                          "example": null,
-                          "description": "When the current Bhadra (Vishti) period ends. Null when not active. In requested timezone."
+                          "example": "2026-06-11T00:58:00",
+                          "description": "When the Bhadra (Vishti) period that begins on this date ends. May fall on the next calendar day. Null when no Bhadra begins on this date. In requested timezone."
                         }
                       },
                       "required": [
@@ -24520,7 +24568,7 @@
                         "startsAt",
                         "endsAt"
                       ],
-                      "description": "Bhadra, occurs during Vishti Karana period. One of the 7 movable karanas, Vishti (also called Bhadra) is avoided for all auspicious activities. Includes timing when active."
+                      "description": "Bhadra (Vishti Karana), the 7th movable karana, avoided for all auspicious activities. Bhadra recurs roughly every 3 to 5 days and lasts about half a tithi, so most occurrences begin after sunrise rather than at it. startsAt and endsAt report the Bhadra beginning on this date regardless of whether it is active at sunrise."
                     },
                     "transitions": {
                       "type": "object",
@@ -28315,6 +28363,30 @@
         "security": [
           {
             "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "requestBody": {
@@ -42355,6 +42427,1761 @@
                     "type",
                     "dailyMessage",
                     "meaning"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/numerology/chaldean": {
+      "post": {
+        "operationId": "calculateChaldean",
+        "tags": [
+          "Numerology"
+        ],
+        "summary": "Chaldean numerology name reading - Destiny, compound number, planetary ruler",
+        "description": "Calculate a complete Chaldean numerology reading for a name. The older Chaldean system maps letters to values 1 to 8 by vibration (the number 9 is sacred and never assigned to a letter) and reads the unreduced two-digit compound number (10 to 52, also called a fadic number, defined by Cheiro) in addition to the single-digit root. Returns the Destiny or name number from all letters, the Soul Urge from vowels, and the Personality from consonants, each with its compound number, root, and Cheiro compound interpretation, plus the planetary ruler of the Destiny root and a caution flag for the karmic numbers 4 and 8. Perfect for Chaldean numerology calculators, name analysis tools, and AI numerology assistants that need both the compound and root layers in one call.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "example": "Helen",
+                    "description": "The name to analyze. Chaldean tradition uses the name a person is most known by, not necessarily the full legal birth name."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully calculated the Chaldean name reading",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Helen",
+                      "description": "The name analyzed."
+                    },
+                    "destiny": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "example": 23,
+                          "description": "Raw sum of the Chaldean letter values before any reduction."
+                        },
+                        "compound": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 23,
+                          "description": "The interpretable compound number (10 to 52), the hidden influence behind the name, or null when the total resolves below 10."
+                        },
+                        "root": {
+                          "type": "number",
+                          "example": 5,
+                          "description": "The single-digit root (1 to 9), the outward expression. Chaldean does not preserve master numbers."
+                        },
+                        "calculation": {
+                          "type": "string",
+                          "example": "H=5, E=5, L=3, E=5, N=5 = 23 → 5",
+                          "description": "Letter-by-letter Chaldean breakdown summed to the total, then to compound and root."
+                        },
+                        "compoundMeaning": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "number": {
+                              "type": "number",
+                              "example": 23,
+                              "description": "The compound number (10 to 52)."
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "The Royal Star of the Lion",
+                              "description": "Classical symbolic title from Cheiro, or null when the number has no named symbol."
+                            },
+                            "nature": {
+                              "type": "string",
+                              "enum": [
+                                "fortunate",
+                                "unfortunate",
+                                "mixed"
+                              ],
+                              "example": "fortunate",
+                              "description": "Overall tenor of the compound. \"mixed\" covers conditional numbers that are fortunate only alongside a favorable single number or in a specific domain."
+                            },
+                            "meaning": {
+                              "type": "string",
+                              "example": "A promise of success, help from superiors and protection from those in high places.",
+                              "description": "Cheiro interpretation of the hidden influence carried by this compound number."
+                            },
+                            "sameAs": {
+                              "type": "number",
+                              "example": 24,
+                              "description": "For numbers 33 to 52, the lower compound in the same series whose meaning this number shares."
+                            }
+                          },
+                          "required": [
+                            "number",
+                            "name",
+                            "nature",
+                            "meaning"
+                          ],
+                          "description": "Cheiro compound-number interpretation when the aspect carries a compound layer."
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "compound",
+                        "root",
+                        "calculation",
+                        "compoundMeaning"
+                      ],
+                      "description": "The Destiny or name number from all letters. The primary Chaldean number, revealing the overall direction encoded in the name."
+                    },
+                    "soulUrge": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "example": 23,
+                          "description": "Raw sum of the Chaldean letter values before any reduction."
+                        },
+                        "compound": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 23,
+                          "description": "The interpretable compound number (10 to 52), the hidden influence behind the name, or null when the total resolves below 10."
+                        },
+                        "root": {
+                          "type": "number",
+                          "example": 5,
+                          "description": "The single-digit root (1 to 9), the outward expression. Chaldean does not preserve master numbers."
+                        },
+                        "calculation": {
+                          "type": "string",
+                          "example": "H=5, E=5, L=3, E=5, N=5 = 23 → 5",
+                          "description": "Letter-by-letter Chaldean breakdown summed to the total, then to compound and root."
+                        },
+                        "compoundMeaning": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "number": {
+                              "type": "number",
+                              "example": 23,
+                              "description": "The compound number (10 to 52)."
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "The Royal Star of the Lion",
+                              "description": "Classical symbolic title from Cheiro, or null when the number has no named symbol."
+                            },
+                            "nature": {
+                              "type": "string",
+                              "enum": [
+                                "fortunate",
+                                "unfortunate",
+                                "mixed"
+                              ],
+                              "example": "fortunate",
+                              "description": "Overall tenor of the compound. \"mixed\" covers conditional numbers that are fortunate only alongside a favorable single number or in a specific domain."
+                            },
+                            "meaning": {
+                              "type": "string",
+                              "example": "A promise of success, help from superiors and protection from those in high places.",
+                              "description": "Cheiro interpretation of the hidden influence carried by this compound number."
+                            },
+                            "sameAs": {
+                              "type": "number",
+                              "example": 24,
+                              "description": "For numbers 33 to 52, the lower compound in the same series whose meaning this number shares."
+                            }
+                          },
+                          "required": [
+                            "number",
+                            "name",
+                            "nature",
+                            "meaning"
+                          ],
+                          "description": "Cheiro compound-number interpretation when the aspect carries a compound layer."
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "compound",
+                        "root",
+                        "calculation",
+                        "compoundMeaning"
+                      ],
+                      "description": "The Soul Urge number from the vowels, revealing inner desire. Root may be 0 when the name has no vowels."
+                    },
+                    "personality": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "example": 23,
+                          "description": "Raw sum of the Chaldean letter values before any reduction."
+                        },
+                        "compound": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 23,
+                          "description": "The interpretable compound number (10 to 52), the hidden influence behind the name, or null when the total resolves below 10."
+                        },
+                        "root": {
+                          "type": "number",
+                          "example": 5,
+                          "description": "The single-digit root (1 to 9), the outward expression. Chaldean does not preserve master numbers."
+                        },
+                        "calculation": {
+                          "type": "string",
+                          "example": "H=5, E=5, L=3, E=5, N=5 = 23 → 5",
+                          "description": "Letter-by-letter Chaldean breakdown summed to the total, then to compound and root."
+                        },
+                        "compoundMeaning": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "number": {
+                              "type": "number",
+                              "example": 23,
+                              "description": "The compound number (10 to 52)."
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "The Royal Star of the Lion",
+                              "description": "Classical symbolic title from Cheiro, or null when the number has no named symbol."
+                            },
+                            "nature": {
+                              "type": "string",
+                              "enum": [
+                                "fortunate",
+                                "unfortunate",
+                                "mixed"
+                              ],
+                              "example": "fortunate",
+                              "description": "Overall tenor of the compound. \"mixed\" covers conditional numbers that are fortunate only alongside a favorable single number or in a specific domain."
+                            },
+                            "meaning": {
+                              "type": "string",
+                              "example": "A promise of success, help from superiors and protection from those in high places.",
+                              "description": "Cheiro interpretation of the hidden influence carried by this compound number."
+                            },
+                            "sameAs": {
+                              "type": "number",
+                              "example": 24,
+                              "description": "For numbers 33 to 52, the lower compound in the same series whose meaning this number shares."
+                            }
+                          },
+                          "required": [
+                            "number",
+                            "name",
+                            "nature",
+                            "meaning"
+                          ],
+                          "description": "Cheiro compound-number interpretation when the aspect carries a compound layer."
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "compound",
+                        "root",
+                        "calculation",
+                        "compoundMeaning"
+                      ],
+                      "description": "The Personality number from the consonants, revealing the outer impression. Root may be 0 when the name has no consonants."
+                    },
+                    "numberMeaning": {
+                      "type": "object",
+                      "properties": {
+                        "number": {
+                          "type": "number",
+                          "example": 5,
+                          "description": "The Destiny root (1 to 9)."
+                        },
+                        "planet": {
+                          "type": "string",
+                          "example": "Mercury",
+                          "description": "Ruling planet."
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "The Communicator",
+                          "description": "Archetype of the root number."
+                        },
+                        "keywords": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": [
+                            "versatility",
+                            "communication",
+                            "commerce",
+                            "quick thinking",
+                            "adaptability"
+                          ],
+                          "description": "Core themes of the Destiny root."
+                        },
+                        "caution": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "True for roots 4 and 8, the two numbers Cheiro counsels caution with."
+                        },
+                        "meaning": {
+                          "type": "string",
+                          "example": "Ruled by Mercury. Mercurial, adaptable and clever, the 5 thrives on trade, travel and communication.",
+                          "description": "Planetary interpretation of the Destiny root number."
+                        }
+                      },
+                      "required": [
+                        "number",
+                        "planet",
+                        "title",
+                        "keywords",
+                        "caution",
+                        "meaning"
+                      ]
+                    },
+                    "caution": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "True when the Destiny root is 4 or 8, the karmic numbers Cheiro advises adjusting a name away from for material success."
+                    },
+                    "summary": {
+                      "type": "string",
+                      "example": "The name Helen carries a Chaldean Destiny root of 5 (The Communicator), ruled by Mercury, with a compound number of 23.",
+                      "description": "One-line plain-language summary of the Chaldean reading."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "destiny",
+                    "soulUrge",
+                    "personality",
+                    "numberMeaning",
+                    "caution",
+                    "summary"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/numerology/compound-number/{number}": {
+      "get": {
+        "operationId": "getCompoundNumber",
+        "tags": [
+          "Numerology"
+        ],
+        "summary": "Compound number meaning - Cheiro Chaldean interpretation 10 to 52",
+        "description": "Get the classical Chaldean interpretation of a compound number (also called a fadic number) from 10 to 52, as defined by Cheiro in the Book of Numbers. Compound numbers are the unreduced two-digit numbers that reveal the hidden influence behind a name or date, beyond the single-digit root. Each returns its symbolic title (such as The Wheel of Fortune for 10, The Star of the Magi for 17, or The Crown of the Magi for 21), its nature (fortunate, unfortunate, or mixed), and a full interpretation. Numbers 33 to 52 share the meaning of a lower number in their series, returned with a sameAs pointer. Perfect for Chaldean numerology references, compound number lookups, and AI numerology tools.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^(1\\d|2\\d|3\\d|4\\d|5[0-2])$",
+              "example": "23",
+              "description": "Compound number from 10 to 52."
+            },
+            "required": true,
+            "description": "Compound number from 10 to 52.",
+            "name": "number",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the compound number meaning",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "type": "number",
+                      "example": 23,
+                      "description": "The compound number (10 to 52)."
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "The Royal Star of the Lion",
+                      "description": "Classical symbolic title from Cheiro, or null when none is given."
+                    },
+                    "nature": {
+                      "type": "string",
+                      "enum": [
+                        "fortunate",
+                        "unfortunate",
+                        "mixed"
+                      ],
+                      "example": "fortunate",
+                      "description": "Overall tenor of the number. \"mixed\" marks conditional numbers, fortunate only with a favorable single number or in one domain."
+                    },
+                    "meaning": {
+                      "type": "string",
+                      "example": "A promise of success, help from superiors and protection from those in high places.",
+                      "description": "Cheiro interpretation of the hidden influence carried by this compound number."
+                    },
+                    "root": {
+                      "type": "number",
+                      "example": 5,
+                      "description": "The single-digit root the compound reduces to (1 to 9)."
+                    },
+                    "sameAs": {
+                      "type": "number",
+                      "example": 24,
+                      "description": "For numbers 33 to 52, the lower compound in the same series whose meaning this number shares."
+                    }
+                  },
+                  "required": [
+                    "number",
+                    "name",
+                    "nature",
+                    "meaning",
+                    "root"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/numerology/dual": {
+      "post": {
+        "operationId": "calculateDual",
+        "tags": [
+          "Numerology"
+        ],
+        "summary": "Dual numerology - Pythagorean and Chaldean name numbers in one call",
+        "description": "Calculate a name number in both major numerology systems at once and compare them. The Pythagorean system maps letters 1 to 9 in alphabetical order and preserves master numbers (11, 22, 33), giving the Expression or Destiny number used in modern Western numerology. The Chaldean system maps letters 1 to 8 by vibration, reads the compound number (10 to 52), and reduces to a root 1 to 9. Returns both results with their interpretations, plus an agreement flag showing whether the two systems point to the same single-digit energy. The only numerology API that returns Pythagorean and Chaldean for a name in a single request, ideal for comparison tools and AI numerology assistants.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "example": "David",
+                    "description": "The name to analyze in both systems."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully calculated the name in both numerology systems",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "David",
+                      "description": "The name analyzed."
+                    },
+                    "pythagorean": {
+                      "type": "object",
+                      "properties": {
+                        "number": {
+                          "type": "number",
+                          "example": 22,
+                          "description": "Pythagorean Expression number (1 to 9, 11, 22, 33)."
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "single",
+                            "master"
+                          ],
+                          "example": "master",
+                          "description": "Single digit or preserved master number."
+                        },
+                        "calculation": {
+                          "type": "string",
+                          "example": "D=4, A=1, V=4, I=9, D=4 → 4+1+4+9+4 = 22",
+                          "description": "Pythagorean letter breakdown and reduction."
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "The Master Builder",
+                          "description": "Archetype of the number."
+                        },
+                        "keywords": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": [
+                            "master builder",
+                            "manifestation",
+                            "visionary thinking",
+                            "practicality",
+                            "determination"
+                          ],
+                          "description": "Core themes in the Pythagorean reading."
+                        }
+                      },
+                      "required": [
+                        "number",
+                        "type",
+                        "calculation",
+                        "title",
+                        "keywords"
+                      ]
+                    },
+                    "chaldean": {
+                      "type": "object",
+                      "properties": {
+                        "compound": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 16,
+                          "description": "Chaldean compound number (10 to 52), the hidden influence, or null."
+                        },
+                        "root": {
+                          "type": "number",
+                          "example": 7,
+                          "description": "Chaldean root (1 to 9)."
+                        },
+                        "total": {
+                          "type": "number",
+                          "example": 16,
+                          "description": "Raw Chaldean letter total."
+                        },
+                        "calculation": {
+                          "type": "string",
+                          "example": "D=4, A=1, V=6, I=1, D=4 = 16 → 7",
+                          "description": "Chaldean letter breakdown to compound and root."
+                        },
+                        "planet": {
+                          "type": "string",
+                          "example": "Neptune",
+                          "description": "Planetary ruler of the Chaldean root."
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "The Seeker",
+                          "description": "Archetype of the Chaldean root."
+                        },
+                        "caution": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "True when the Chaldean root is 4 or 8, the numbers of caution."
+                        },
+                        "compoundMeaning": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "number": {
+                              "type": "number",
+                              "example": 16,
+                              "description": "The compound number."
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "The Shattered Citadel",
+                              "description": "Symbolic title."
+                            },
+                            "nature": {
+                              "type": "string",
+                              "enum": [
+                                "fortunate",
+                                "unfortunate",
+                                "mixed"
+                              ],
+                              "example": "unfortunate",
+                              "description": "Tenor of the compound."
+                            },
+                            "meaning": {
+                              "type": "string",
+                              "example": "Pictured as a tower struck by lightning from which a man falls with a crown on his head. It warns of a strange fatality, accidents and the defeat of plans.",
+                              "description": "Cheiro interpretation."
+                            },
+                            "sameAs": {
+                              "type": "number",
+                              "example": 24,
+                              "description": "Series equivalent for 33 to 52."
+                            }
+                          },
+                          "required": [
+                            "number",
+                            "name",
+                            "nature",
+                            "meaning"
+                          ],
+                          "description": "Cheiro compound interpretation when present."
+                        }
+                      },
+                      "required": [
+                        "compound",
+                        "root",
+                        "total",
+                        "calculation",
+                        "planet",
+                        "title",
+                        "caution",
+                        "compoundMeaning"
+                      ]
+                    },
+                    "agreement": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "True when both systems reduce to the same single-digit energy (Pythagorean number reduced to one digit equals the Chaldean root). Agreement is read as a name whose vibrations are in harmony."
+                    },
+                    "note": {
+                      "type": "string",
+                      "example": "The two systems diverge for this name: Pythagorean points to 22 while Chaldean points to 7.",
+                      "description": "Plain-language comparison of the two systems for this name."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "pythagorean",
+                    "chaldean",
+                    "agreement",
+                    "note"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/numerology/business-name": {
+      "post": {
+        "operationId": "calculateBusinessName",
+        "tags": [
+          "Numerology"
+        ],
+        "summary": "Business name numerology - Chaldean brand name analysis and lucky numbers",
+        "description": "Analyze a business or brand name with Chaldean numerology, the system practitioners use for trade names. Returns the name number (compound and root), its planetary ruler, an overall business rating, the industries the number favors, and whether the compound is one of Cheiro fortunate compounds. The most favorable business roots are 1 (leadership), 3 (expansion), 5 (commerce) and 6 (beauty and hospitality); the numbers 4 and 8 carry caution as the karmic numbers of instability and heavy demand. Use it to vet a company name, compare brand options, or guide a naming decision. This is positioning guidance layered over the fundamentals of a memorable, available name, not a guarantee.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "example": "Ford",
+                    "description": "The business or brand name to evaluate."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully analyzed the business name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Ford",
+                      "description": "The business name analyzed."
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 21,
+                      "description": "Raw Chaldean letter total of the name."
+                    },
+                    "compound": {
+                      "type": "number",
+                      "nullable": true,
+                      "example": 21,
+                      "description": "Chaldean compound number (10 to 52), the hidden influence, or null."
+                    },
+                    "root": {
+                      "type": "number",
+                      "example": 3,
+                      "description": "Single-digit business root (1 to 9), the outward commercial expression."
+                    },
+                    "planet": {
+                      "type": "string",
+                      "example": "Jupiter",
+                      "description": "Planetary ruler of the business root."
+                    },
+                    "rating": {
+                      "type": "string",
+                      "enum": [
+                        "excellent",
+                        "good",
+                        "caution",
+                        "avoid"
+                      ],
+                      "example": "excellent",
+                      "description": "Overall favorability of the root for business. excellent and good are growth-friendly; caution (7, 8) and avoid (4) flag the demanding and unstable roots."
+                    },
+                    "favorableCompound": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "True when the compound number is one of Cheiro fortunate compounds, an extra positive signal layered over the root rating."
+                    },
+                    "industries": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "Media and content",
+                        "Education and training",
+                        "Finance and advisory",
+                        "Creative services"
+                      ],
+                      "description": "Industries the business root favors."
+                    },
+                    "guidance": {
+                      "type": "string",
+                      "example": "An expansive vibration ruled by Jupiter. Excellent for growth, communication and creativity, favoring brands built on expertise, advice and reputation.",
+                      "description": "Plain-language guidance for using this number as a brand."
+                    },
+                    "calculation": {
+                      "type": "string",
+                      "example": "F=8, O=7, R=2, D=4 = 21 → 3",
+                      "description": "Chaldean letter breakdown of the business name."
+                    },
+                    "compoundMeaning": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "number": {
+                          "type": "number",
+                          "example": 21,
+                          "description": "The compound number."
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "The Crown of the Magi",
+                          "description": "Symbolic title, if any."
+                        },
+                        "nature": {
+                          "type": "string",
+                          "enum": [
+                            "fortunate",
+                            "unfortunate",
+                            "mixed"
+                          ],
+                          "example": "fortunate",
+                          "description": "Tenor of the compound."
+                        },
+                        "meaning": {
+                          "type": "string",
+                          "example": "Symbolized by the Universe. A number of advancement, honors, elevation and general success, meaning victory after long initiation and tests of determination.",
+                          "description": "Cheiro interpretation."
+                        },
+                        "sameAs": {
+                          "type": "number",
+                          "example": 24,
+                          "description": "Series equivalent for 33 to 52."
+                        }
+                      },
+                      "required": [
+                        "number",
+                        "name",
+                        "nature",
+                        "meaning"
+                      ],
+                      "description": "Cheiro compound interpretation when present."
+                    },
+                    "summary": {
+                      "type": "string",
+                      "example": "Ford has a Chaldean business root of 3 (excellent). An expansive vibration ruled by Jupiter. Excellent for growth, communication and creativity, favoring brands built on expertise, advice and reputation.",
+                      "description": "One-line plain-language verdict for the business name."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "total",
+                    "compound",
+                    "root",
+                    "planet",
+                    "rating",
+                    "favorableCompound",
+                    "industries",
+                    "guidance",
+                    "calculation",
+                    "compoundMeaning",
+                    "summary"
                   ]
                 }
               }

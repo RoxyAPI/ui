@@ -1,11 +1,11 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 /** A body or point row, normalized so planets and the four angles share a table. */
@@ -27,14 +27,14 @@ interface BodyRow {
  * the four chart points (Ascendant, Midheaven, Part of Fortune, Vertex).
  */
 @customElement('roxy-western-planets-table')
-export class RoxyWesternPlanetsTable extends LitElement {
+export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				overflow: auto;
 				box-shadow: var(--roxy-shadow-sm);
 			}
@@ -93,17 +93,6 @@ export class RoxyWesternPlanetsTable extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: NatalChartResponse | null = null;
-
 	/** Build the ordered row list: the planets array, then the four chart points. */
 	private rows(): BodyRow[] {
 		const d = this.data;
@@ -134,9 +123,12 @@ export class RoxyWesternPlanetsTable extends LitElement {
 		return rows;
 	}
 
-	render() {
-		if (!this.data?.planets)
-			return html`<div class="roxy-empty" role="status">No chart data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No chart data</div>`;
+	}
+
+	protected renderData(d: NatalChartResponse) {
+		if (!d.planets) return this.renderEmpty();
 		const rows = this.rows();
 
 		return html`<div class="wrap" aria-label="Western planetary positions" tabindex="0">

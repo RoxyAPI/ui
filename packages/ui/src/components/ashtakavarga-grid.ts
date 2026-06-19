@@ -1,9 +1,9 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
 import { SIGN_GLYPH } from '../tokens/index.js';
 import type { AshtakavargaResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type Tab = 'sarva' | 'bhinna' | 'pinda';
 
@@ -20,11 +20,17 @@ const TABS: Tab[] = ['sarva', 'bhinna', 'pinda'];
  * and Shodhya Pinda. Pass `data` from /vedic-astrology/ashtakavarga.
  */
 @customElement('roxy-ashtakavarga-grid')
-export class RoxyAshtakavargaGrid extends LitElement {
+export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -195,26 +201,15 @@ export class RoxyAshtakavargaGrid extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: AshtakavargaResponse | null = null;
-
 	@state()
 	activeTab: Tab = 'sarva';
 
-	render() {
-		if (!this.data) {
-			return html`<div class="roxy-empty" role="status">No ashtakavarga data</div>`;
-		}
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No ashtakavarga data</div>`;
+	}
 
-		const signs = this.data.signs ?? [];
+	protected renderData(d: AshtakavargaResponse) {
+		const signs = d.signs ?? [];
 
 		return html`<div class="wrap" aria-label="Ashtakavarga grid">
 			<div class="head">

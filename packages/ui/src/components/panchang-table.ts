@@ -1,12 +1,12 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
 	GetBasicPanchangResponse,
 	GetDetailedPanchangResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatTime, formatTimeRange } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type PanchangData = GetBasicPanchangResponse | GetDetailedPanchangResponse;
 type PanchangTime = GetDetailedPanchangResponse['rahuKaal'];
@@ -24,14 +24,14 @@ type PanchangTime = GetDetailedPanchangResponse['rahuKaal'];
  * on timing without parsing the raw response.
  */
 @customElement('roxy-panchang-table')
-export class RoxyPanchangTable extends LitElement {
+export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				overflow: hidden;
 				box-shadow: var(--roxy-shadow-sm);
 			}
@@ -88,24 +88,14 @@ export class RoxyPanchangTable extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: PanchangData | null = null;
-
 	@property({ type: String, reflect: true })
 	detail: 'basic' | 'detailed' = 'detailed';
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No panchang data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No panchang data</div>`;
+	}
+
+	protected renderData(d: PanchangData) {
 		const detailed = 'sunrise' in d ? d : null;
 
 		const fivefold: Array<[string, string]> = [

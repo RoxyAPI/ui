@@ -1,20 +1,21 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { GetAngelNumberResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * Angel number card. Renders /angel-numbers/numbers/{number}: the number as a hero numeral, its title and core message, the pattern type / digit root / energy badges, keyword chips, the life-area interpretations (spiritual, love, career, money, twin flame) plus the biblical and shadow readings as an exclusive accordion, the affirmation, and the action steps.
  */
 @customElement('roxy-angel-number-card')
-export class RoxyAngelNumberCard extends LitElement {
+export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -143,22 +144,7 @@ export class RoxyAngelNumberCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: GetAngelNumberResponse | null = null;
-
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No angel number</div>`;
-
+	protected renderData(d: GetAngelNumberResponse) {
 		const energy = (d.energy ?? '').toLowerCase();
 		const energyClass =
 			energy === 'positive' || energy === 'cautionary' || energy === 'neutral'
@@ -197,6 +183,10 @@ export class RoxyAngelNumberCard extends LitElement {
 					: nothing
 			}
 		</article>`;
+	}
+
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No angel number</div>`;
 	}
 
 	private renderSections(d: NonNullable<GetAngelNumberResponse>) {

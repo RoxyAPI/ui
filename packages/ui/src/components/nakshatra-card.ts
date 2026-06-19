@@ -1,8 +1,8 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { NakshatraResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * Nakshatra reference card. Renders /vedic-astrology/nakshatras/{id}: the
@@ -10,14 +10,15 @@ import { MarkupDataController } from '../utils/markup-data.js';
  * symbol, native characteristics, and traditional remedies.
  */
 @customElement('roxy-nakshatra-card')
-export class RoxyNakshatraCard extends LitElement {
+export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				padding: var(--roxy-space-md, 1rem);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
@@ -92,21 +93,7 @@ export class RoxyNakshatraCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: NakshatraResponse | null = null;
-
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No nakshatra data</div>`;
-		const n = this.data;
+	protected renderData(n: NakshatraResponse) {
 		const remedies = n.remedies;
 
 		return html`<article class="wrap" aria-label=${`Nakshatra ${n.name}`}>
@@ -148,6 +135,10 @@ export class RoxyNakshatraCard extends LitElement {
 					: nothing
 			}
 		</article>`;
+	}
+
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No nakshatra data</div>`;
 	}
 }
 

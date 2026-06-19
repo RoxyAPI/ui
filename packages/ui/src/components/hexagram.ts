@@ -1,4 +1,4 @@
-import { css, html, LitElement, nothing, svg } from 'lit';
+import { css, html, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { TRIGRAM_GLYPH } from '../tokens/index.js';
 import type {
@@ -9,8 +9,8 @@ import type {
 	Hexagram,
 	LookupHexagramResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type HexagramData =
 	| GetHexagramResponse
@@ -24,12 +24,12 @@ type HexagramData =
  * /iching/daily, /iching/daily/cast.
  */
 @customElement('roxy-hexagram')
-export class RoxyHexagram extends LitElement {
+export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -137,17 +137,6 @@ export class RoxyHexagram extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: HexagramData | null = null;
-
 	@property({ type: String, reflect: true })
 	mode: 'lookup' | 'cast' | 'daily' = 'lookup';
 
@@ -179,10 +168,13 @@ export class RoxyHexagram extends LitElement {
 		return { hex: d as Hexagram };
 	}
 
-	render() {
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No hexagram data</div>`;
+	}
+
+	protected renderData() {
 		const resolved = this.resolveHexagram();
-		if (!resolved)
-			return html`<div class="roxy-empty" role="status">No hexagram data</div>`;
+		if (!resolved) return this.renderEmpty();
 
 		const {
 			hex: h,

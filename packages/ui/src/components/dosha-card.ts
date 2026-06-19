@@ -1,12 +1,12 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
 	KalsarpaResponse,
 	ManglikResponse,
 	SadhesatiResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type DoshaData = ManglikResponse | KalsarpaResponse | SadhesatiResponse;
 
@@ -21,12 +21,12 @@ const DOSHA_LABELS: Record<string, string> = {
  * Visual severity indicator + remedies + scoped effects.
  */
 @customElement('roxy-dosha-card')
-export class RoxyDoshaCard extends LitElement {
+export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -115,25 +115,14 @@ export class RoxyDoshaCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: DoshaData | null = null;
-
 	@property({ type: String, reflect: true })
 	type: 'manglik' | 'kalsarpa' | 'sadhesati' | string = 'manglik';
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No dosha data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No dosha data</div>`;
+	}
 
+	protected renderData(d: DoshaData) {
 		const present = !!d.present;
 		const label = DOSHA_LABELS[this.type] ?? this.type;
 		const sevLower = (d.severity ?? '').toLowerCase();

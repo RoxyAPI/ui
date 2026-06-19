@@ -1,7 +1,8 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { PLANET_GLYPH } from '../tokens/index.js';
 import type { DivisionalChartResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
 	type ChartStyle,
@@ -11,7 +12,6 @@ import {
 	toKundliViewModel,
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { tablistStyles } from '../utils/tablist.js';
 
 /**
@@ -23,7 +23,7 @@ import { tablistStyles } from '../utils/tablist.js';
  * map.
  */
 @customElement('roxy-divisional-chart')
-export class RoxyDivisionalChart extends LitElement {
+export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse> {
 	static styles = [
 		baseStyles,
 		kundliStyles,
@@ -68,17 +68,6 @@ export class RoxyDivisionalChart extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: DivisionalChartResponse | null = null;
-
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
 	chartStyle: ChartStyle = 'north';
 
@@ -93,12 +82,15 @@ export class RoxyDivisionalChart extends LitElement {
 		return toKundliViewModel(this.data.chart.meta, label);
 	}
 
-	render() {
-		const vm = this.viewModel();
-		if (!this.data || !vm)
-			return html`<div class="roxy-empty" role="status">No divisional chart data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No divisional chart data</div>`;
+	}
 
-		const { division, vargottama } = this.data;
+	protected renderData(d: DivisionalChartResponse) {
+		const vm = this.viewModel();
+		if (!vm) return this.renderEmpty();
+
+		const { division, vargottama } = d;
 
 		return html`<div class="wrap">
 			<div class="header">

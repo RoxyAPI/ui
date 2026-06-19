@@ -1,9 +1,9 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
 import type { KpChartResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type Tab = 'planets' | 'cusps';
 
@@ -28,16 +28,17 @@ interface KpBody {
  * sub-sub lord, and KP number (1-249).
  */
 @customElement('roxy-kp-chart')
-export class RoxyKpChart extends LitElement {
+export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				overflow: auto;
 				box-shadow: var(--roxy-shadow-sm);
+				width: 100%;
 			}
 			.head {
 				padding: var(--roxy-space-md, 1rem);
@@ -124,17 +125,6 @@ export class RoxyKpChart extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: KpChartResponse | null = null;
-
 	@state()
 	private activeTab: Tab = 'planets';
 
@@ -186,10 +176,11 @@ export class RoxyKpChart extends LitElement {
 		});
 	}
 
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No KP chart data</div>`;
-		const d = this.data;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No KP chart data</div>`;
+	}
+
+	protected renderData(d: KpChartResponse) {
 		const asc = d.ascendant;
 
 		return html`<div class="wrap" aria-label="KP chart" tabindex="0">

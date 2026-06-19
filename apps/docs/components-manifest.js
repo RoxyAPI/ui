@@ -122,6 +122,14 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'aspects-table',
+		tag: 'roxy-aspects-table',
+		seoLine: 'Natal and transit aspects with chart-pattern detection',
+		sdkCall: `  const { data } = await roxy.astrology.calculateAspects({
+    body: { date: '${PERSON1.date}', time: '${PERSON1.time}', timezone: ${PERSON1.timezone} },
+  });`,
+	}),
+	entry({
 		id: 'moon',
 		tag: 'roxy-moon-phase',
 		seoLine: 'Current moon phase, illumination, and meaning',
@@ -246,6 +254,22 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'vedic-aspects',
+		tag: 'roxy-vedic-aspects',
+		seoLine: 'Vedic graha drishti table with mutual aspects',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateDrishti({
+    body: { date: '${PERSON1.date}', time: '${PERSON1.time}', timezone: ${PERSON1.timezone}, latitude: ${PERSON1.latitude}, longitude: ${PERSON1.longitude} },
+  });`,
+	}),
+	entry({
+		id: 'hora-table',
+		tag: 'roxy-hora-table',
+		seoLine: 'Vedic Hora planetary hours for electional timing',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getHora({
+    body: { date: '2026-06-19', timezone: ${PERSON1.timezone}, latitude: ${PERSON1.latitude}, longitude: ${PERSON1.longitude} },
+  });`,
+	}),
+	entry({
 		id: 'yoga',
 		tag: 'roxy-yoga-list',
 		seoLine: 'Filterable yoga catalog with detail cards',
@@ -307,6 +331,33 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'hd-connection',
+		tag: 'roxy-hd-connection',
+		seoLine: 'Human Design connection chart for two-person compatibility',
+		sdkCall: `  const { data } = await roxy.humanDesign.calculateConnection({
+    body: {
+      personA: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n      ')},
+      personB: ${JSON.stringify(PERSON2, null, 2).replace(/\n/g, '\n      ')},
+    },
+  });`,
+	}),
+	entry({
+		id: 'hd-penta',
+		tag: 'roxy-hd-penta',
+		seoLine: 'Human Design penta chart for a 3 to 5 person team or family',
+		sdkCall: `  const { data } = await roxy.humanDesign.calculatePenta({
+    body: { members: [person1, person2, person3] },
+  });`,
+	}),
+	entry({
+		id: 'hd-variables',
+		tag: 'roxy-hd-variables',
+		seoLine: 'Human Design variables: the four PHS transformation arrows',
+		sdkCall: `  const { data } = await roxy.humanDesign.calculateVariables({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
 		id: 'forecast-timeline',
 		tag: 'roxy-forecast-timeline',
 		seoLine: 'Cross-domain forecast timeline of upcoming astrological events',
@@ -315,6 +366,17 @@ window.ROXY_UI_DEMOS = [
       birthData: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n      ')},
       startDate: '2026-06-01',
       endDate: '2026-07-15',
+    },
+  });`,
+	}),
+	entry({
+		id: 'forecast-digest',
+		tag: 'roxy-forecast-digest',
+		seoLine: 'Rolled-up forecast across the next 24 hours, 7, 30, and 90 days',
+		sdkCall: `  const { data } = await roxy.forecast.generateDigest({
+    body: {
+      birthData: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n      ')},
+      startDate: '2026-06-19',
     },
   });`,
 	}),
@@ -337,6 +399,14 @@ window.ROXY_UI_DEMOS = [
 		seoLine: 'Dream dictionary symbol with full interpretation',
 		sdkCall: `  const { data } = await roxy.dreams.getDreamSymbol({
     path: { id: 'water' },
+  });`,
+	}),
+	entry({
+		id: 'dream-search',
+		tag: 'roxy-dream-search',
+		seoLine: 'Search the dream dictionary; selecting a symbol opens its meaning',
+		sdkCall: `  const { data } = await roxy.dreams.searchDreamSymbols({
+    query: { q: 'water', limit: 12 },
   });`,
 	}),
 	entry({
@@ -370,6 +440,22 @@ window.ROXY_UI_DEMOS = [
 		sdkCall: `  const { data } = await roxy.crystals.getCrystalsByChakra({
     path: { chakra: 'heart' },
     query: { limit: 8 },
+  });`,
+	}),
+	entry({
+		id: 'reference-card',
+		tag: 'roxy-reference-card',
+		seoLine: 'Glossary card for any reference lookup: sign, planet, rashi, gate, number',
+		sdkCall: `  const { data } = await roxy.astrology.getZodiacSign({
+    path: { id: 'aries' },
+  });`,
+	}),
+	entry({
+		id: 'crystal-card',
+		tag: 'roxy-crystal-card',
+		seoLine: 'Single-crystal detail with meaning, attributes, and pairings',
+		sdkCall: `  const { data } = await roxy.crystals.getCrystal({
+    path: { id: 'amethyst' },
   });`,
 	}),
 	entry({

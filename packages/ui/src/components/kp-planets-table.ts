@@ -1,23 +1,23 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { KpPlanetsResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * KP planets table with sub-lord and sub-sub-lord columns. Renders
  * /vedic-astrology/kp/planets.
  */
 @customElement('roxy-kp-planets-table')
-export class RoxyKpPlanetsTable extends LitElement {
+export class RoxyKpPlanetsTable extends RoxyDataElement<KpPlanetsResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				overflow: auto;
 				box-shadow: var(--roxy-shadow-sm);
 			}
@@ -75,21 +75,12 @@ export class RoxyKpPlanetsTable extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No KP data</div>`;
 	}
 
-	@property({ attribute: false })
-	data: KpPlanetsResponse | null = null;
-
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No KP data</div>`;
-		const planets = this.data.planets ?? [];
+	protected renderData(d: KpPlanetsResponse) {
+		const planets = d.planets ?? [];
 
 		return html`<div
 			class="wrap"
@@ -99,8 +90,8 @@ export class RoxyKpPlanetsTable extends LitElement {
 			<header class="head">
 				<h2 class="title">KP planets</h2>
 				${
-					typeof this.data.ayanamsa === 'number'
-						? html`<span class="ayanamsa">Ayanamsa: ${formatNumber(this.data.ayanamsa, 2)}°</span>`
+					typeof d.ayanamsa === 'number'
+						? html`<span class="ayanamsa">Ayanamsa: ${formatNumber(d.ayanamsa, 2)}°</span>`
 						: nothing
 				}
 			</header>

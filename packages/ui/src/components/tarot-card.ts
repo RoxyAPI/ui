@@ -1,8 +1,8 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
 import type { GetCardResponse, GetDailyCardResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type TarotData = GetCardResponse | GetDailyCardResponse;
 
@@ -11,12 +11,12 @@ type TarotData = GetCardResponse | GetDailyCardResponse;
  * between upright and reversed where the data shape supports it.
  */
 @customElement('roxy-tarot-card')
-export class RoxyTarotCard extends LitElement {
+export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -107,17 +107,6 @@ export class RoxyTarotCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: TarotData | null = null;
-
 	@state()
 	private flipped = false;
 
@@ -125,11 +114,11 @@ export class RoxyTarotCard extends LitElement {
 		this.flipped = !this.flipped;
 	};
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No tarot data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No tarot data</div>`;
+	}
 
+	protected renderData(d: TarotData) {
 		if ('card' in d) return this.renderDailyCard(d);
 		return this.renderFullCard(d);
 	}

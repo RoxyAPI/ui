@@ -1,6 +1,7 @@
-import { html, LitElement } from 'lit';
+import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { BirthChartResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
 	type ChartStyle,
@@ -10,7 +11,6 @@ import {
 	toKundliViewModel,
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { tablistStyles } from '../utils/tablist.js';
 
 /**
@@ -34,19 +34,8 @@ import { tablistStyles } from '../utils/tablist.js';
  * adopts the host page palette without runtime color probing.
  */
 @customElement('roxy-vedic-kundli')
-export class RoxyVedicKundli extends LitElement {
+export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 	static styles = [baseStyles, kundliStyles, tablistStyles];
-
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: BirthChartResponse | null = null;
 
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
 	chartStyle: ChartStyle = 'north';
@@ -85,10 +74,13 @@ export class RoxyVedicKundli extends LitElement {
 		this.chartStyle = next;
 	};
 
-	render() {
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No kundli data</div>`;
+	}
+
+	protected renderData(_d: BirthChartResponse) {
 		const vm = this.viewModel();
-		if (!vm)
-			return html`<div class="roxy-empty" role="status">No kundli data</div>`;
+		if (!vm) return this.renderEmpty();
 		const title =
 			this.chartReference === 'moon' && !this.lagnaOverride
 				? 'Chandra lagna'

@@ -1,19 +1,20 @@
-import { css, html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { GetDreamSymbolResponse } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 /**
  * Dream symbol card. Renders /dreams/symbols/{id}: the symbol name as a heading, the full psychological interpretation as the body, and the dictionary letter as a chip for alphabetical context.
  */
 @customElement('roxy-dream-card')
-export class RoxyDreamCard extends LitElement {
+export class RoxyDreamCard extends RoxyDataElement<GetDreamSymbolResponse> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -62,22 +63,7 @@ export class RoxyDreamCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: GetDreamSymbolResponse | null = null;
-
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No dream symbol</div>`;
-
+	protected renderData(d: GetDreamSymbolResponse) {
 		return html`<article class="card" aria-label=${d.name ?? 'Dream symbol'}>
 			<header class="head">
 				${d.letter ? html`<span class="letter" aria-hidden="true">${d.letter}</span>` : nothing}
@@ -88,6 +74,10 @@ export class RoxyDreamCard extends LitElement {
 			</header>
 			${d.meaning ? html`<p class="meaning">${d.meaning}</p>` : nothing}
 		</article>`;
+	}
+
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No dream symbol</div>`;
 	}
 }
 

@@ -1,13 +1,13 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
 	CalculateBioCompatibilityResponse,
 	CalculateCompatibilityResponse,
 	CalculateNumCompatibilityResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type CompatibilityData =
 	| CalculateCompatibilityResponse
@@ -19,12 +19,13 @@ type CompatibilityData =
  * /numerology/compatibility, or /biorhythm/compatibility responses.
  */
 @customElement('roxy-compatibility-card')
-export class RoxyCompatibilityCard extends LitElement {
+export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -109,17 +110,6 @@ export class RoxyCompatibilityCard extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: CompatibilityData | null = null;
-
 	@property({ type: String, reflect: true })
 	mode: 'astrology' | 'numerology' | 'biorhythm' = 'astrology';
 
@@ -136,11 +126,11 @@ export class RoxyCompatibilityCard extends LitElement {
 		return {};
 	}
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No compatibility data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No compatibility data</div>`;
+	}
 
+	protected renderData(d: CompatibilityData) {
 		const score = d.overallScore;
 		const breakdown = this.getBreakdown();
 		const rating =

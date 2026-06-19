@@ -14,11 +14,21 @@ export interface RoxyDivisionalChartProps extends ElementAttrs {
 	style?: React.CSSProperties;
 	/** Initial regional varga layout. The end user can switch styles at runtime via the visible tablist. */
 	chartStyle?: 'south' | 'north' | 'east';
+	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
+	endpoint?: string;
+	/** HTTP method for the self-fetch request. Defaults to POST. */
+	method?: 'GET' | 'POST';
+	/** Browser-safe publishable key (pk_) for self-fetch. A secret key is refused client-side and never sent. */
+	publishableKey?: string;
+	/** Override the API origin for self-hosted or proxied deployments. */
+	baseUrl?: string;
+	/** Override the OpenAPI spec URL the self-fetch form introspects. */
+	specUrl?: string;
 
 }
 
 export const RoxyDivisionalChart = React.forwardRef<HTMLElement | null, RoxyDivisionalChartProps>(
-	function RoxyDivisionalChart({ data, className, style, chartStyle, ...rest }, ref) {
+	function RoxyDivisionalChart({ data, className, style, chartStyle, endpoint, method, publishableKey, baseUrl, specUrl, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -56,6 +66,41 @@ export const RoxyDivisionalChart = React.forwardRef<HTMLElement | null, RoxyDivi
 				(el as unknown as { chartStyle: 'south' | 'north' | 'east' }).chartStyle = chartStyle;
 			}
 		}, [chartStyle, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && endpoint !== undefined) {
+				(el as unknown as { endpoint: string }).endpoint = endpoint;
+			}
+		}, [endpoint, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && method !== undefined) {
+				(el as unknown as { method: 'GET' | 'POST' }).method = method;
+			}
+		}, [method, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && publishableKey !== undefined) {
+				(el as unknown as { publishableKey: string }).publishableKey = publishableKey;
+			}
+		}, [publishableKey, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && baseUrl !== undefined) {
+				(el as unknown as { baseUrl: string }).baseUrl = baseUrl;
+			}
+		}, [baseUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && specUrl !== undefined) {
+				(el as unknown as { specUrl: string }).specUrl = specUrl;
+			}
+		}, [specUrl, loaded]);
 
 		if (error) {
 			return React.createElement(

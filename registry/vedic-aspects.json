@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-vedic-aspects",
+  "type": "registry:ui",
+  "title": "RoxyVedicAspects",
+  "description": "Vedic graha drishti table: which planet aspects which, with mutual aspects surfaced first",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.10.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-vedic-aspects.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyVedicAspects data={...} />: Vedic graha drishti table: which planet aspects which, with mutual aspects surfaced first.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/vedic-aspects/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyVedicAspects as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyVedicAspectsProps = ComponentProps<typeof Element>;\n\nexport function RoxyVedicAspects(props: RoxyVedicAspectsProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyVedicAspects;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/vedic-aspects.tsx"
+    }
+  ]
+}

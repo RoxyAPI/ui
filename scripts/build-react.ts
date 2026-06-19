@@ -61,21 +61,35 @@ const DATA_TYPES: Record<string, string> = {
 	'kp-ruling-planets': 'KpRulingPlanetsResponse',
 	'nakshatra-card': 'NakshatraResponse',
 	'numerology-card':
-		'CalculateLifePathResponse | CalculateExpressionResponse | CalculateSoulUrgeResponse | CalculatePersonalityResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
+		'CalculateLifePathResponse | CalculateExpressionResponse | CalculateSoulUrgeResponse | CalculatePersonalityResponse | CalculateBirthDayResponse | CalculateMaturityResponse | GetDailyNumberResponse | CalculatePersonalDayResponse | CalculatePersonalMonthResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
+	'reference-card':
+		'GetZodiacSignResponse | GetPlanetMeaningResponse | GetRashiResponse | GetTrigramResponse | GetGateResponse | GetCenterResponse | GetNumberMeaningResponse | GetCompoundNumberResponse',
 	'tarot-card': 'GetCardResponse | GetDailyCardResponse',
 	'tarot-catalog': 'ListCardsResponse',
 	'tarot-spread':
-		'CastThreeCardResponse | CastCelticCrossResponse | CastLoveSpreadResponse | CastYesNoResponse | CastReadingResponse | DrawCardsResponse',
+		'CastThreeCardResponse | CastCelticCrossResponse | CastLoveSpreadResponse | CastYesNoResponse | CastReadingResponse | CastCareerSpreadResponse | CastCustomSpreadResponse | DrawCardsResponse',
+	'forecast-timeline':
+		'GenerateTimelineResponse | FindSignificantDatesResponse | ForecastTransitsResponse',
 	'biorhythm-chart':
 		'GetDailyBiorhythmResponse | GetForecastResponse | GetCriticalDaysResponse',
+	'hd-connection': 'CalculateConnectionResponse',
+	'hd-penta': 'CalculatePentaResponse',
+	'hd-variables': 'CalculateVariablesResponse',
 	hexagram:
 		'GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse',
 	'transits-table': 'TransitsResponse',
+	'aspects-table':
+		'CalculateAspectsResponse | CalculateTransitAspectsResponse | DetectAspectPatternsResponse',
+	'vedic-aspects': 'CalculateDrishtiResponse',
+	'hora-table': 'GetHoraResponse',
+	'forecast-digest': 'GenerateDigestResponse',
+	'crystal-card': 'GetCrystalResponse',
+	'dream-search': 'SearchDreamSymbolsResponse',
 	'divisional-chart': 'DivisionalChartResponse',
 	'ashtakavarga-grid': 'AshtakavargaResponse',
 	'shadbala-table': 'ShadbalaResponse',
 	'yoga-list':
-		'ListYogasResponse | GetYogaResponse | { yogas: GetYogaResponse[] }',
+		'ListYogasResponse | GetYogaResponse | DetectYogasResponse | { yogas: GetYogaResponse[] }',
 	'choghadiya-grid': 'GetChoghadiyaResponse',
 	'dream-card': 'GetDreamSymbolResponse',
 	'angel-number-card': 'GetAngelNumberResponse',
@@ -105,6 +119,39 @@ interface ConfigPropDef {
 	type: string;
 	comment: string;
 }
+
+/**
+ * Universal self-fetch props, present on every data-bound component because they live on the shared {@link RoxyDataElement} base. They are wired identically to {@link CONFIG_PROPS} (a useEffect sets the matching Lit accessor), so adding them here is enough to make uncontrolled mode a typed, first-class part of every React wrapper. Set `endpoint` + `publishableKey` to let the component render its own input form and fetch live; leave them unset for controlled mode (pass `data`).
+ */
+const SELF_FETCH_PROPS: ConfigPropDef[] = [
+	{
+		prop: 'endpoint',
+		type: 'string',
+		comment:
+			'Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`).',
+	},
+	{
+		prop: 'method',
+		type: "'GET' | 'POST'",
+		comment: 'HTTP method for the self-fetch request. Defaults to POST.',
+	},
+	{
+		prop: 'publishableKey',
+		type: 'string',
+		comment:
+			'Browser-safe publishable key (pk_) for self-fetch. A secret key is refused client-side and never sent.',
+	},
+	{
+		prop: 'baseUrl',
+		type: 'string',
+		comment: 'Override the API origin for self-hosted or proxied deployments.',
+	},
+	{
+		prop: 'specUrl',
+		type: 'string',
+		comment: 'Override the OpenAPI spec URL the self-fetch form introspects.',
+	},
+];
 
 const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 	'tarot-catalog': [
@@ -202,7 +249,7 @@ const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 	'numerology-card': [
 		{
 			prop: 'type',
-			type: "'life-path' | 'expression' | 'soul-urge' | 'personality' | 'personal-year' | 'chart'",
+			type: "'life-path' | 'expression' | 'soul-urge' | 'personality' | 'birth-day' | 'maturity' | 'daily' | 'personal-day' | 'personal-month' | 'personal-year' | 'chart'",
 			comment:
 				'Which numerology response the card is showing. Selects the heading and which fields are surfaced.',
 		},
@@ -210,7 +257,7 @@ const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 	'tarot-spread': [
 		{
 			prop: 'spread',
-			type: "'three-card' | 'celtic-cross' | 'love' | 'yes-no' | 'draw'",
+			type: "'three-card' | 'celtic-cross' | 'love' | 'career' | 'custom' | 'yes-no' | 'draw'",
 			comment:
 				'Which spread layout the response is for. Positions the cards and selects the reading template.',
 		},
@@ -370,7 +417,12 @@ function buildComponent(slug: string, pascal: string, tag: string): string {
 	const dataType = DATA_TYPES[slug] ?? 'unknown';
 	const hasData = dataType !== 'unknown';
 	const events = EVENTS[slug] ?? [];
-	const config = CONFIG_PROPS[slug] ?? [];
+	// Data-bound components extend RoxyDataElement, so they all carry the self-fetch
+	// props in addition to their own config. The generic renderer, location search,
+	// and endpoint form (hasData === false) are not RoxyDataElement subclasses.
+	const config = hasData
+		? [...(CONFIG_PROPS[slug] ?? []), ...SELF_FETCH_PROPS]
+		: (CONFIG_PROPS[slug] ?? []);
 	const typeRefs = collectTypeRefs(slug);
 
 	const importLine =

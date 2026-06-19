@@ -1,10 +1,11 @@
-import { css, html, LitElement, nothing, svg } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing, svg } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
 import type {
 	CalculateSynastryResponse,
 	NatalChartResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
 import {
@@ -12,7 +13,6 @@ import {
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 import { capitalize } from '../utils/string.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
@@ -40,11 +40,17 @@ const P2_R = 96;
  * /astrology/synastry.
  */
 @customElement('roxy-synastry-chart')
-export class RoxySynastryChart extends LitElement {
+export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 	static styles = [
 		baseStyles,
 		css`
 			.wrap {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -73,7 +79,7 @@ export class RoxySynastryChart extends LitElement {
 			svg {
 				display: block;
 				width: 100%;
-				max-width: 560px;
+				max-width: var(--roxy-chart-max-width, 560px);
 				aspect-ratio: 1 / 1;
 				height: auto;
 				margin: 0 auto;
@@ -225,22 +231,13 @@ export class RoxySynastryChart extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No synastry data</div>`;
 	}
 
-	@property({ attribute: false })
-	data: SynastryWithPlanets | null = null;
-
-	render() {
-		if (!this.data)
-			return html`<div class="roxy-empty" role="status">No synastry data</div>`;
-		const { person1, person2, compatibilityScore, analysis } = this.data;
-		const interAspects = this.data.interAspects ?? [];
+	protected renderData(d: SynastryWithPlanets) {
+		const { person1, person2, compatibilityScore, analysis } = d;
+		const interAspects = d.interAspects ?? [];
 		const p1Planets = person1?.planets ?? [];
 		const p2Planets = person2?.planets ?? [];
 
@@ -353,7 +350,7 @@ export class RoxySynastryChart extends LitElement {
 				${this.renderSpokes()} ${this.renderSigns()}
 				${this.renderInterAspectLines(p1Planets, p2Planets, interAspects)}
 				${this.renderRing(p1Planets, P1_R, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, 'p2', 2)}
-				${this.renderAscendants(this.data)}
+				${this.renderAscendants(d)}
 			</svg>
 			<div class="legend-row">
 				<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>

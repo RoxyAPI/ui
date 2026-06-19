@@ -1,4 +1,4 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { MOON_PHASE_EMOJI } from '../tokens/index.js';
 import type {
@@ -6,9 +6,9 @@ import type {
 	GetMoonCalendarResponse,
 	GetUpcomingMoonPhasesResponse,
 } from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
-import { MarkupDataController } from '../utils/markup-data.js';
 
 type MoonPhaseData =
 	| GetCurrentMoonPhaseResponse
@@ -22,12 +22,13 @@ type MoonListEntry =
  * Moon phase card. Renders /astrology/moon-phase/{current,upcoming,calendar/...}.
  */
 @customElement('roxy-moon-phase')
-export class RoxyMoonPhase extends LitElement {
+export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 	static styles = [
 		baseStyles,
 		css`
 			.card {
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -110,24 +111,14 @@ export class RoxyMoonPhase extends LitElement {
 		`,
 	];
 
-	constructor() {
-		super();
-		// Enables hydrating `data` from a direct-child
-		// <script type="application/json" class="roxy-data"> for server-rendered
-		// and cached consumers. The JavaScript `data` property still wins.
-		new MarkupDataController(this);
-	}
-
-	@property({ attribute: false })
-	data: MoonPhaseData | null = null;
-
 	@property({ type: String, reflect: true })
 	mode: 'current' | 'upcoming' | 'calendar' = 'current';
 
-	render() {
-		const d = this.data;
-		if (!d)
-			return html`<div class="roxy-empty" role="status">No moon phase data</div>`;
+	protected renderEmpty() {
+		return html`<div class="roxy-empty" role="status">No moon phase data</div>`;
+	}
+
+	protected renderData(d: MoonPhaseData) {
 		const list: MoonListEntry[] =
 			'phases' in d ? d.phases : 'calendar' in d ? d.calendar : [];
 		if (this.mode !== 'current' && list.length > 0) {

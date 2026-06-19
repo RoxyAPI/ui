@@ -11,6 +11,10 @@ export {
 	type RoxyAshtakavargaGridProps,
 } from './components/ashtakavarga-grid.js';
 export {
+	RoxyAspectsTable,
+	type RoxyAspectsTableProps,
+} from './components/aspects-table.js';
+export {
 	RoxyBiorhythmChart,
 	type RoxyBiorhythmChartProps,
 } from './components/biorhythm-chart.js';
@@ -26,6 +30,10 @@ export {
 	RoxyCompatibilityCard,
 	type RoxyCompatibilityCardProps,
 } from './components/compatibility-card.js';
+export {
+	RoxyCrystalCard,
+	type RoxyCrystalCardProps,
+} from './components/crystal-card.js';
 export {
 	RoxyCrystalGrid,
 	type RoxyCrystalGridProps,
@@ -48,9 +56,17 @@ export {
 	type RoxyDreamCardProps,
 } from './components/dream-card.js';
 export {
+	RoxyDreamSearch,
+	type RoxyDreamSearchProps,
+} from './components/dream-search.js';
+export {
 	RoxyEndpointForm,
 	type RoxyEndpointFormProps,
 } from './components/endpoint-form.js';
+export {
+	RoxyForecastDigest,
+	type RoxyForecastDigestProps,
+} from './components/forecast-digest.js';
 export {
 	RoxyForecastTimeline,
 	type RoxyForecastTimelineProps,
@@ -59,7 +75,20 @@ export {
 	RoxyGunaMilan,
 	type RoxyGunaMilanProps,
 } from './components/guna-milan.js';
+export {
+	RoxyHdConnection,
+	type RoxyHdConnectionProps,
+} from './components/hd-connection.js';
+export { RoxyHdPenta, type RoxyHdPentaProps } from './components/hd-penta.js';
+export {
+	RoxyHdVariables,
+	type RoxyHdVariablesProps,
+} from './components/hd-variables.js';
 export { RoxyHexagram, type RoxyHexagramProps } from './components/hexagram.js';
+export {
+	RoxyHoraTable,
+	type RoxyHoraTableProps,
+} from './components/hora-table.js';
 export {
 	RoxyHoroscopeCard,
 	type RoxyHoroscopeCardProps,
@@ -98,6 +127,10 @@ export {
 	type RoxyPanchangTableProps,
 } from './components/panchang-table.js';
 export {
+	RoxyReferenceCard,
+	type RoxyReferenceCardProps,
+} from './components/reference-card.js';
+export {
 	RoxyShadbalaTable,
 	type RoxyShadbalaTableProps,
 } from './components/shadbala-table.js';
@@ -121,6 +154,10 @@ export {
 	RoxyTransitsTable,
 	type RoxyTransitsTableProps,
 } from './components/transits-table.js';
+export {
+	RoxyVedicAspects,
+	type RoxyVedicAspectsProps,
+} from './components/vedic-aspects.js';
 export {
 	RoxyVedicKundli,
 	type RoxyVedicKundliProps,

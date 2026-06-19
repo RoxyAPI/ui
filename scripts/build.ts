@@ -359,6 +359,12 @@ async function main() {
 	console.log('Syncing docs manifest mirror...');
 	execSync('bun run scripts/sync-manifest.ts', { stdio: 'inherit' });
 
+	console.log('Generating spec-derived endpoint bindings...');
+	execSync('bun run scripts/sync-bindings.ts', { stdio: 'inherit' });
+
+	console.log('Generating components catalog (for jsDelivr + the /ui page)...');
+	execSync('bun run scripts/sync-catalog.ts', { stdio: 'inherit' });
+
 	console.log('Cleaning dist...');
 	await clean();
 
@@ -405,7 +411,7 @@ async function main() {
 	console.log('Formatting codegen output...');
 	try {
 		execSync(
-			'bunx biome check --write packages/ui-react/src registry apps/docs/manifest.js',
+			'bunx biome check --write packages/ui-react/src packages/ui/src/generated registry apps/docs/manifest.js',
 			{ stdio: 'inherit' },
 		);
 	} catch (err) {

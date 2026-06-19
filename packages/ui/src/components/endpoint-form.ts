@@ -22,7 +22,12 @@ interface OpenApiSchema extends OpenApiSchemaRef {
 }
 
 interface FieldDef {
+	/** Unique storage + input key: the property name, or "group.name" for a nested object field. */
+	key: string;
+	/** Schema property name (the label source), e.g. "date". */
 	name: string;
+	/** Parent object key for a nested schema (person1/person2); undefined for a flat field. */
+	group?: string;
 	type: string;
 	required: boolean;
 	description?: string;
@@ -66,9 +71,10 @@ async function loadSpec(url: string): Promise<OpenApiDoc> {
  * `roxy-submit` CustomEvent with the validated payload on submit. The caller
  * decides what to do (call the SDK, render a chart, navigate).
  *
- * Build-time hints (x-roxy-ui formGroups) are read by scripts/build.ts and
- * baked into a static map. At runtime the component falls back to runtime
- * fetch of /api/v2/openapi.json when no map is provided.
+ * At runtime the component fetches the OpenAPI spec (its `spec-url`, default
+ * /api/v2/openapi.json) and builds the fields from the operation's request
+ * schema: types, enums, required flags, and property order all come from the
+ * spec, so a new endpoint gets a working form with no per-endpoint code.
  */
 @customElement('roxy-endpoint-form')
 export class RoxyEndpointForm extends LitElement {
@@ -94,6 +100,20 @@ export class RoxyEndpointForm extends LitElement {
 				grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
 				align-items: start;
 				gap: var(--roxy-space-md, 1rem);
+			}
+			.person-group {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-md, 1rem);
+				margin: 0 0 var(--roxy-space-md, 1rem);
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+				min-inline-size: 0;
+			}
+			.person-group legend {
+				padding: 0 var(--roxy-space-xs, 0.25rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: capitalize;
 			}
 			.field {
 				display: flex;
@@ -191,14 +211,15 @@ export class RoxyEndpointForm extends LitElement {
 	@property({ type: String, attribute: 'submit-label' })
 	submitLabel = 'Submit';
 
+	/** Prefill values, keyed by field name. Used by `remember` mode to restore the last submission. JS property only. */
+	@property({ attribute: false })
+	initialValues?: Record<string, unknown>;
+
 	@state()
 	private fields: FieldDef[] = [];
 
 	@state()
 	private values: Record<string, unknown> = {};
-
-	@state()
-	private hasLocation = false;
 
 	@state()
 	private loaded = false;
@@ -251,16 +272,40 @@ export class RoxyEndpointForm extends LitElement {
 				const required = new Set(bodySchema.required ?? []);
 				for (const [name, sub] of Object.entries(bodySchema.properties)) {
 					const resolved = this.resolve(sub, schemas) ?? {};
-					fields.push({
-						name,
-						type: this.fieldType(resolved),
-						required: required.has(name),
-						description: resolved.description,
-						enum: resolved.enum,
-						min: resolved.minimum,
-						max: resolved.maximum,
-						default: resolved.default,
-					});
+					// Nested object (e.g. person1/person2 on synastry / guna-milan):
+					// expand into a labelled group of sub-fields keyed "group.sub".
+					if (resolved.type === 'object' && resolved.properties) {
+						const subRequired = new Set(resolved.required ?? []);
+						for (const [subName, subSchema] of Object.entries(
+							resolved.properties,
+						)) {
+							const r = this.resolve(subSchema, schemas) ?? {};
+							fields.push({
+								key: `${name}.${subName}`,
+								name: subName,
+								group: name,
+								type: this.fieldType(r),
+								required: required.has(name) && subRequired.has(subName),
+								description: r.description,
+								enum: r.enum,
+								min: r.minimum,
+								max: r.maximum,
+								default: r.default,
+							});
+						}
+					} else {
+						fields.push({
+							key: name,
+							name,
+							type: this.fieldType(resolved),
+							required: required.has(name),
+							description: resolved.description,
+							enum: resolved.enum,
+							min: resolved.minimum,
+							max: resolved.maximum,
+							default: resolved.default,
+						});
+					}
 				}
 			}
 
@@ -268,6 +313,7 @@ export class RoxyEndpointForm extends LitElement {
 				if (param.in === 'path' || param.in === 'query') {
 					const resolved = this.resolve(param.schema, schemas) ?? {};
 					fields.push({
+						key: param.name,
 						name: param.name,
 						type: this.fieldType(resolved),
 						required: !!param.required,
@@ -279,15 +325,22 @@ export class RoxyEndpointForm extends LitElement {
 			}
 
 			this.fields = fields;
-			this.hasLocation =
-				fields.some((f) => f.name === 'latitude') &&
-				fields.some((f) => f.name === 'longitude') &&
-				fields.some((f) => f.name === 'timezone');
 
-			// Pre-fill defaults
+			// Pre-fill: schema defaults first, then any remembered/initial values
+			// (only for fields this endpoint has) so a stale stored payload from
+			// another endpoint cannot inject unknown keys. Remembered values are the
+			// previously-submitted shape (nested per group), so read them by group.
 			const init: Record<string, unknown> = {};
 			for (const f of fields) {
-				if (f.default !== undefined) init[f.name] = f.default;
+				if (f.default !== undefined) init[f.key] = f.default;
+				const remembered = f.group
+					? (
+							this.initialValues?.[f.group] as
+								| Record<string, unknown>
+								| undefined
+						)?.[f.name]
+					: this.initialValues?.[f.name];
+				if (remembered !== undefined) init[f.key] = remembered;
 			}
 			this.values = init;
 			this.loaded = true;
@@ -336,43 +389,67 @@ export class RoxyEndpointForm extends LitElement {
 		this.values = { ...this.values, [name]: value };
 	}
 
-	private onLocation = (e: Event) => {
-		const detail = (e as CustomEvent).detail as {
-			latitude?: number;
-			longitude?: number;
-			timezone?: string;
-			utcOffset?: number;
-		};
-		if (detail) {
+	/** True when the fields in `group` (or the flat top level) carry latitude+longitude+timezone, so a location-search can autofill them. */
+	private groupHasLocation(group?: string): boolean {
+		const inGroup = this.fields.filter((f) => f.group === group);
+		return (['latitude', 'longitude', 'timezone'] as const).every((n) =>
+			inGroup.some((f) => f.name === n),
+		);
+	}
+
+	/** Location-select handler bound to a group: fills that group's lat/lng/timezone keys (flat top level when group is undefined). */
+	private onLocationFor(group?: string) {
+		const prefix = group ? `${group}.` : '';
+		return (e: Event) => {
+			const detail = (e as CustomEvent).detail as {
+				latitude?: number;
+				longitude?: number;
+				timezone?: string;
+				utcOffset?: number;
+			};
+			if (!detail) return;
 			this.values = {
 				...this.values,
-				latitude: detail.latitude,
-				longitude: detail.longitude,
-				timezone: detail.timezone ?? detail.utcOffset,
+				[`${prefix}latitude`]: detail.latitude,
+				[`${prefix}longitude`]: detail.longitude,
+				[`${prefix}timezone`]: detail.timezone ?? detail.utcOffset,
 			};
-		}
-	};
+		};
+	}
 
 	private onSubmit = (e: Event) => {
 		e.preventDefault();
 		const missing = this.fields
 			.filter((f) => f.required)
 			.filter(
-				(f) => this.values[f.name] === undefined || this.values[f.name] === '',
+				(f) => this.values[f.key] === undefined || this.values[f.key] === '',
 			);
 		if (missing.length > 0) {
 			this.dispatchEvent(
 				new CustomEvent('roxy-validation-error', {
-					detail: { missing: missing.map((m) => m.name) },
+					detail: { missing: missing.map((m) => m.key) },
 					bubbles: true,
 					composed: true,
 				}),
 			);
 			return;
 		}
+		// Reconstruct the request shape: grouped fields nest as { group: { name: value } }.
+		const out: Record<string, unknown> = {};
+		for (const f of this.fields) {
+			const v = this.values[f.key];
+			if (v === undefined || v === '') continue;
+			if (f.group) {
+				const g = (out[f.group] as Record<string, unknown> | undefined) ?? {};
+				g[f.name] = v;
+				out[f.group] = g;
+			} else {
+				out[f.name] = v;
+			}
+		}
 		this.dispatchEvent(
 			new CustomEvent('roxy-submit', {
-				detail: { endpoint: this.endpoint, values: this.values },
+				detail: { endpoint: this.endpoint, values: out },
 				bubbles: true,
 				composed: true,
 			}),
@@ -393,14 +470,14 @@ export class RoxyEndpointForm extends LitElement {
 
 		const renderField = (f: FieldDef) => {
 			if (
-				this.hasLocation &&
+				this.groupHasLocation(f.group) &&
 				(f.name === 'latitude' ||
 					f.name === 'longitude' ||
 					f.name === 'timezone')
 			) {
 				return nothing;
 			}
-			const inputId = `roxy-form-${f.name}`;
+			const inputId = `roxy-form-${f.key}`;
 			return html`<div class="field">
 				<label for=${inputId}>
 					${humanize(f.name)}${f.required ? html`<span class="req" aria-hidden="true">*</span>` : nothing}
@@ -410,13 +487,13 @@ export class RoxyEndpointForm extends LitElement {
 						? html`<select
 							id=${inputId}
 							?required=${f.required}
-							@change=${(e: Event) => this.setValue(f.name, (e.target as HTMLSelectElement).value)}
+							@change=${(e: Event) => this.setValue(f.key, (e.target as HTMLSelectElement).value)}
 						>
 							<option value="">Choose</option>
 							${f.enum.map(
 								(
 									opt,
-								) => html`<option value=${opt} ?selected=${this.values[f.name] === opt}>
+								) => html`<option value=${opt} ?selected=${this.values[f.key] === opt}>
 									${opt}
 								</option>`,
 							)}
@@ -428,10 +505,10 @@ export class RoxyEndpointForm extends LitElement {
 							min=${f.min ?? ''}
 							max=${f.max ?? ''}
 							step=${f.type === 'number' ? 'any' : ''}
-							.value=${(this.values[f.name] ?? '') as string}
+							.value=${(this.values[f.key] ?? '') as string}
 							@input=${(e: Event) =>
 								this.setValue(
-									f.name,
+									f.key,
 									this.coerce(f.type, (e.target as HTMLInputElement).value),
 								)}
 						/>`
@@ -440,25 +517,42 @@ export class RoxyEndpointForm extends LitElement {
 			</div>`;
 		};
 
-		return html`<form @submit=${this.onSubmit}>
-			<h2 class="title">${humanize(this.endpoint.split('/').pop() ?? '')}</h2>
-			${
-				this.hasLocation
-					? html`<div class="location-block">
-						<label>Birth location</label>
+		// Ordered list of field groups: the flat top level (undefined) plus each
+		// nested object (person1/person2). Order follows first appearance.
+		const groups: (string | undefined)[] = [];
+		for (const f of this.fields) {
+			if (!groups.includes(f.group)) groups.push(f.group);
+		}
+
+		const locationBlock = (group?: string) =>
+			this.groupHasLocation(group)
+				? html`<div class="location-block">
+						<label>${group ? `${humanize(group)} location` : 'Birth location'}</label>
 						<roxy-location-search
-							@roxy-location-select=${this.onLocation}
+							@roxy-location-select=${this.onLocationFor(group)}
 							placeholder="City of birth"
 						></roxy-location-search>
 						<small class="help">
 							Required: latitude, longitude, timezone. Pick a city to autofill.
 						</small>
 					</div>`
-					: nothing
-			}
+				: nothing;
+
+		const groupBody = (group?: string) => html`${locationBlock(group)}
 			<div class="fields">
-				${this.fields.map((f) => renderField(f))}
-			</div>
+				${this.fields.filter((f) => f.group === group).map((f) => renderField(f))}
+			</div>`;
+
+		return html`<form @submit=${this.onSubmit}>
+			<h2 class="title">${humanize(this.endpoint.split('/').pop() ?? '')}</h2>
+			${groups.map((g) =>
+				g === undefined
+					? groupBody(undefined)
+					: html`<fieldset class="person-group">
+							<legend>${humanize(g)}</legend>
+							${groupBody(g)}
+						</fieldset>`,
+			)}
 			<button class="submit" type="submit">${this.submitLabel}</button>
 		</form>`;
 	}

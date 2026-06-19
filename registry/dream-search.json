@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-dream-search",
+  "type": "registry:ui",
+  "title": "RoxyDreamSearch",
+  "description": "Dream-symbol search results as selectable tiles; emits roxy-symbol-select to pair with roxy-dream-card",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.10.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-dream-search.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyDreamSearch data={...} />: Dream-symbol search results as selectable tiles; emits roxy-symbol-select to pair with roxy-dream-card.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/dream-search/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyDreamSearch as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyDreamSearchProps = ComponentProps<typeof Element>;\n\nexport function RoxyDreamSearch(props: RoxyDreamSearchProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyDreamSearch;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/dream-search.tsx"
+    }
+  ]
+}

@@ -239,6 +239,75 @@ async function main() {
 				longitude: PERSON1.longitude,
 			}),
 		),
+		run('hd-connection', () =>
+			rawPost('human-design/connection', {
+				personA: PERSON1,
+				personB: PERSON2,
+			}),
+		),
+		run('hd-penta', () =>
+			rawPost('human-design/penta', {
+				members: [
+					PERSON1,
+					PERSON2,
+					{ date: '1985-11-02', time: '06:45:00', ...mumbai },
+				],
+			}),
+		),
+		run('hd-variables', () =>
+			rawPost('human-design/variables', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				timezone: PERSON1.timezone,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+			}),
+		),
+		run('aspects-table', () =>
+			rawPost('astrology/aspects', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				timezone: PERSON1.timezone,
+			}),
+		),
+		run('vedic-aspects', () =>
+			rawPost('vedic-astrology/aspects', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				timezone: PERSON1.timezone,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+			}),
+		),
+		run('hora-table', () =>
+			rawPost('vedic-astrology/panchang/hora', {
+				date: '2026-06-19',
+				timezone: PERSON1.timezone,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+			}),
+		),
+		run('forecast-digest', () =>
+			rawPost('forecast/digest', {
+				birthData: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					timezone: PERSON1.timezone,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+				startDate: '2026-06-19',
+			}),
+		),
+		run('crystal-card', () =>
+			roxy.crystals.getCrystal({ path: { id: 'amethyst' } }),
+		),
+		run('reference-card', () =>
+			roxy.astrology.getZodiacSign({ path: { id: 'aries' } }),
+		),
+		run('dream-search', () =>
+			roxy.dreams.searchDreamSymbols({ query: { q: 'water', limit: 12 } }),
+		),
 		run('forecast-timeline', () =>
 			rawPost('forecast/timeline', {
 				birthData: {

@@ -42,6 +42,7 @@ export const ROXY_UI_TOKENS_CSS = `/**
 
 	/* Color: surface */
 	--roxy-bg: #ffffff;
+	--roxy-surface: #ffffff;
 	--roxy-fg: #0a0a0a;
 	--roxy-muted: #71717a;
 	--roxy-border: #e4e4e7;
@@ -124,6 +125,7 @@ export const ROXY_UI_TOKENS_CSS = `/**
 		--roxy-info-fg: #7dd3fc;
 
 		--roxy-bg: #0a0a0a;
+		--roxy-surface: #18181b;
 		--roxy-fg: #fafafa;
 		--roxy-muted: #a1a1aa;
 		--roxy-border: #27272a;
@@ -165,6 +167,7 @@ export const ROXY_UI_TOKENS_CSS = `/**
 	--roxy-info-fg: #075985;
 
 	--roxy-bg: #ffffff;
+	--roxy-surface: #ffffff;
 	--roxy-fg: #0a0a0a;
 	--roxy-muted: #71717a;
 	--roxy-border: #e4e4e7;
@@ -202,6 +205,7 @@ export const ROXY_UI_TOKENS_CSS = `/**
 	--roxy-info-fg: #7dd3fc;
 
 	--roxy-bg: #0a0a0a;
+	--roxy-surface: #18181b;
 	--roxy-fg: #fafafa;
 	--roxy-muted: #a1a1aa;
 	--roxy-border: #27272a;
