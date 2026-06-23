@@ -1,8 +1,11 @@
 name: Release
 
-# Manual-only release for v0.x. Pick patch / minor / major from the Actions UI.
-# Auto-triggers (cron + repository_dispatch) are commented out until the
-# pipeline is proven across a few manual releases.
+# Manual-only: pick the bump from the Actions UI, or
+#   gh workflow run release.yml -f version_bump=patch|minor|major
+# No daily schedule on purpose. A timed cron auto-published unwanted releases on
+# the WordPress plugin, so a spec change here never publishes without review.
+# repository_dispatch (openapi-updated) is reserved for the planned main-app
+# integration; keep it off until the manual pipeline is proven.
 on:
   workflow_dispatch:
     inputs:
@@ -12,8 +15,6 @@ on:
         default: 'patch'
   # repository_dispatch:
   #   types: [openapi-updated]
-  # schedule:
-  #   - cron: '0 6 * * *'
 
 jobs:
   release:

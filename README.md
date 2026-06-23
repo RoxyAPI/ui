@@ -720,7 +720,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Per-component bundles run 6-10 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 54 KB gzipped today. The React package loads the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Per-component bundles run 9-21 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 85 KB gzipped today. The React package loads the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>

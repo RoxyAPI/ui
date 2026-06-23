@@ -5,6 +5,7 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { planetColor } from '../utils/planet-color.js';
+import { WORLD_LAND_PATH } from '../utils/world-map.js';
 
 type LineSet = AstrocartographyResponse['lines'][number];
 type GeoPoint = LineSet['ascendant']['points'][number];
@@ -100,6 +101,10 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 				fill: color-mix(in srgb, var(--roxy-border, #e4e4e7) 12%, transparent);
 				stroke: var(--roxy-border, #e4e4e7);
 				stroke-width: 0.8;
+			}
+			.land {
+				fill: var(--roxy-secondary, #475569);
+				opacity: 0.13;
 			}
 			.grat {
 				stroke: var(--roxy-border, #e4e4e7);
@@ -258,6 +263,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 				meridian and a curved Ascendant and Descendant line, colored per body.
 			</desc>
 			<rect class="map-frame" x="0" y="0" width=${W} height=${H} />
+			<path class="land" d=${WORLD_LAND_PATH} fill-rule="evenodd" />
 			${this.renderGraticule()}
 			${lines.map((l, i) => this.renderBodyLines(l, i))}
 			${

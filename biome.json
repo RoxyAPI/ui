@@ -58,6 +58,7 @@
 				"packages/ui/src/client/**",
 				"packages/ui/src/types/**",
 				"packages/ui-react/src/components/**",
+				"packages/ui/components-catalog.json",
 				"apps/docs/**",
 				"examples/**",
 				"registry/**"
