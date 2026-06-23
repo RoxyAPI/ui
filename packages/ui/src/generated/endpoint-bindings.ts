@@ -53,6 +53,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/astrology/transit-aspects',
 		},
 	],
+	'roxy-astrocartography-map': [
+		{
+			operationId: 'generateAstrocartography',
+			method: 'POST',
+			path: '/astrology/astrocartography',
+		},
+	],
 	'roxy-biorhythm-chart': [
 		{
 			operationId: 'getCriticalDays',
@@ -216,6 +223,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/dreams/symbols',
 		},
 	],
+	'roxy-fixed-stars': [
+		{
+			operationId: 'generateFixedStars',
+			method: 'POST',
+			path: '/astrology/fixed-stars',
+		},
+	],
 	'roxy-forecast-digest': [
 		{
 			operationId: 'generateDigest',
@@ -327,6 +341,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'getKpRulingPlanets',
 			method: 'POST',
 			path: '/vedic-astrology/kp/ruling-planets',
+		},
+	],
+	'roxy-local-space-compass': [
+		{
+			operationId: 'generateLocalSpace',
+			method: 'POST',
+			path: '/astrology/local-space',
 		},
 	],
 	'roxy-moon-phase': [
@@ -477,6 +498,40 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 	],
+	'roxy-positions-table': [
+		{
+			operationId: 'calculateArabicLots',
+			method: 'POST',
+			path: '/astrology/arabic-lots',
+		},
+		{
+			operationId: 'generateAsteroids',
+			method: 'POST',
+			path: '/astrology/asteroids',
+		},
+		{
+			operationId: 'generateLilith',
+			method: 'POST',
+			path: '/astrology/lilith',
+		},
+		{
+			operationId: 'generateProgressions',
+			method: 'POST',
+			path: '/astrology/progressions',
+		},
+		{
+			operationId: 'generateSolarArc',
+			method: 'POST',
+			path: '/astrology/solar-arc',
+		},
+	],
+	'roxy-profection-card': [
+		{
+			operationId: 'generateProfections',
+			method: 'POST',
+			path: '/astrology/profections',
+		},
+	],
 	'roxy-reference-card': [
 		{
 			operationId: 'getPlanetMeaning',
@@ -517,6 +572,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'getRashi',
 			method: 'GET',
 			path: '/vedic-astrology/rashis/{id}',
+		},
+	],
+	'roxy-relocation-wheel': [
+		{
+			operationId: 'generateRelocationChart',
+			method: 'POST',
+			path: '/astrology/relocation-chart',
 		},
 	],
 	'roxy-shadbala-table': [

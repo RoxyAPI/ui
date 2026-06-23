@@ -49,6 +49,17 @@ export function formatSignPosition(longitude: number): string {
 	return `${degree}° ${sign} ${String(minute).padStart(2, '0')}'`;
 }
 
+/** Format a within-sign decimal degree (0-30) as degree-and-minute, e.g. 17.99 to "17°59'". The reference-grade form astrologers read when the sign is already known (asteroids, lots, directed points, fixed stars). */
+export function formatDegreeInSign(deg: number): string {
+	let d = Math.floor(deg);
+	let m = Math.round((deg - d) * 60);
+	if (m === 60) {
+		m = 0;
+		d += 1;
+	}
+	return `${d}°${String(m).padStart(2, '0')}'`;
+}
+
 /**
  * The point diametrically opposite a longitude (e.g. Descendant from
  * Ascendant, IC from MC). Exact derivation, always 180 degrees away.

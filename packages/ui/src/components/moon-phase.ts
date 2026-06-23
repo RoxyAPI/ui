@@ -139,7 +139,9 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 	}
 
 	private renderSingle(d: GetCurrentMoonPhaseResponse) {
-		const emoji = phaseEmoji(d.phase);
+		// The API ships the exact phase emoji in meaning.symbol; prefer it and fall
+		// back to the name-derived glyph for the list endpoints that omit meaning.
+		const emoji = d.meaning?.symbol || phaseEmoji(d.phase);
 		return html`<article class="card" aria-label="Current moon phase">
 			<div class="hero">
 				<span class="emoji" aria-hidden="true">${emoji}</span>
@@ -207,9 +209,26 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 	}
 }
 
+/**
+ * Map a phase name to its emoji, tolerant of the live API naming. The API sends
+ * suffixed names ("Waxing Gibbous Moon") and "Third Quarter Moon" where the map
+ * keys are unsuffixed and use "last quarter"; only "new moon"/"full moon" keep
+ * the suffix. Try the raw lowercase, then the suffix stripped, then the
+ * third->last quarter alias, then the alias re-suffixed, so every one of the
+ * eight phases resolves in both the suffixed and unsuffixed forms.
+ */
 function phaseEmoji(phase: string | undefined): string {
 	if (!phase) return '🌙';
-	return MOON_PHASE_EMOJI[phase.toLowerCase()] ?? '🌙';
+	const lc = phase.toLowerCase().trim();
+	const noMoon = lc.replace(/\s*moon$/, '').trim();
+	const alias = noMoon === 'third quarter' ? 'last quarter' : noMoon;
+	return (
+		MOON_PHASE_EMOJI[lc] ??
+		MOON_PHASE_EMOJI[noMoon] ??
+		MOON_PHASE_EMOJI[alias] ??
+		MOON_PHASE_EMOJI[`${alias} moon`] ??
+		'🌙'
+	);
 }
 
 function formatIllumination(v: number): string {

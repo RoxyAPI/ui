@@ -15,6 +15,10 @@ export {
 	type RoxyAspectsTableProps,
 } from './components/aspects-table.js';
 export {
+	RoxyAstrocartographyMap,
+	type RoxyAstrocartographyMapProps,
+} from './components/astrocartography-map.js';
+export {
 	RoxyBiorhythmChart,
 	type RoxyBiorhythmChartProps,
 } from './components/biorhythm-chart.js';
@@ -64,6 +68,10 @@ export {
 	type RoxyEndpointFormProps,
 } from './components/endpoint-form.js';
 export {
+	RoxyFixedStars,
+	type RoxyFixedStarsProps,
+} from './components/fixed-stars.js';
+export {
 	RoxyForecastDigest,
 	type RoxyForecastDigestProps,
 } from './components/forecast-digest.js';
@@ -103,6 +111,10 @@ export {
 	type RoxyKpRulingPlanetsProps,
 } from './components/kp-ruling-planets.js';
 export {
+	RoxyLocalSpaceCompass,
+	type RoxyLocalSpaceCompassProps,
+} from './components/local-space-compass.js';
+export {
 	RoxyLocationSearch,
 	type RoxyLocationSearchProps,
 } from './components/location-search.js';
@@ -127,9 +139,21 @@ export {
 	type RoxyPanchangTableProps,
 } from './components/panchang-table.js';
 export {
+	RoxyPositionsTable,
+	type RoxyPositionsTableProps,
+} from './components/positions-table.js';
+export {
+	RoxyProfectionCard,
+	type RoxyProfectionCardProps,
+} from './components/profection-card.js';
+export {
 	RoxyReferenceCard,
 	type RoxyReferenceCardProps,
 } from './components/reference-card.js';
+export {
+	RoxyRelocationWheel,
+	type RoxyRelocationWheelProps,
+} from './components/relocation-wheel.js';
 export {
 	RoxyShadbalaTable,
 	type RoxyShadbalaTableProps,

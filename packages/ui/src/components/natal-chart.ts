@@ -378,6 +378,10 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 	@property({ type: String, attribute: 'house-system', reflect: true })
 	houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch' = 'placidus';
 
+	/** Heading above the wheel. Defaults to "Natal chart"; reuse (e.g. the relocation wheel) sets its own. */
+	@property({ type: String })
+	heading = 'Natal chart';
+
 	/** Which view is showing: the wheel or the planet-by-planet aspect grid. */
 	@state()
 	private view: 'wheel' | 'grid' = 'wheel';
@@ -410,7 +414,7 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 
 		return html`<div class="wrap">
 			<header>
-				<h2 class="title">Natal chart</h2>
+				<h2 class="title">${this.heading}</h2>
 				${
 					data.birthDetails
 						? html`<div class="meta">
@@ -421,36 +425,44 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 						: nothing
 				}
 			</header>
-			${renderTablist({
-				items: [
-					{ id: 'wheel', label: 'Wheel' },
-					{ id: 'grid', label: 'Aspect grid' },
-				],
-				active: view,
-				onSelect: (v) => {
-					this.view = v;
-				},
-				label: 'Natal chart views',
-				idPrefix: 'natal',
-				controls: true,
-			})}
-			<div
-				id="natal-panel-${view}"
-				role="tabpanel"
-				aria-labelledby="natal-tab-${view}"
-			>
-				${view === 'wheel' ? this.renderWheel(planets, aspects) : this.renderAspectGrid(planets, aspects)}
-			</div>
+			${
+				aspects.length > 0
+					? html`${renderTablist({
+							items: [
+								{ id: 'wheel', label: 'Wheel' },
+								{ id: 'grid', label: 'Aspect grid' },
+							],
+							active: view,
+							onSelect: (v) => {
+								this.view = v;
+							},
+							label: 'Natal chart views',
+							idPrefix: 'natal',
+							controls: true,
+						})}
+						<div
+							id="natal-panel-${view}"
+							role="tabpanel"
+							aria-labelledby="natal-tab-${view}"
+						>
+							${view === 'wheel' ? this.renderWheel(planets, aspects) : this.renderAspectGrid(planets, aspects)}
+						</div>`
+					: this.renderWheel(planets, aspects)
+			}
 			<div class="legend">
 				<span>${planets.length} planets</span>
-				<span>${aspects.length} aspects</span>
+				${aspects.length > 0 ? html`<span>${aspects.length} aspects</span>` : nothing}
 				${
 					data.houseSystem
 						? html`<span>${data.houseSystem} houses</span>`
 						: nothing
 				}
-				<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
-				<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>
+				${
+					aspects.length > 0
+						? html`<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
+							<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>`
+						: nothing
+				}
 			</div>
 			${this.renderDetails()}
 			${this.renderInterpretations()}

@@ -36,6 +36,30 @@
       "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/..."
     },
     {
+      "name": "roxy-astrocartography-map",
+      "description": "Astrocartography world map plotting each body Midheaven, IC, Ascendant, and Descendant relocation lines"
+    },
+    {
+      "name": "roxy-local-space-compass",
+      "description": "Local space compass plotting each body direction from the birthplace by azimuth and altitude"
+    },
+    {
+      "name": "roxy-relocation-wheel",
+      "description": "Relocation chart wheel recomputing houses and angles for a new place, with the planets that change house"
+    },
+    {
+      "name": "roxy-positions-table",
+      "description": "Editorial positions table for asteroids, Black Moon Lilith, secondary progressions, solar arc directions, and the Arabic lots"
+    },
+    {
+      "name": "roxy-fixed-stars",
+      "description": "Fixed star conjunctions to the natal chart, tightest first, with the precessed star catalog"
+    },
+    {
+      "name": "roxy-profection-card",
+      "description": "Annual profection card with the profected house and sign, the lord of the year, and its natal placement"
+    },
+    {
       "name": "roxy-compatibility-card",
       "description": "Cross-domain compatibility score card"
     },

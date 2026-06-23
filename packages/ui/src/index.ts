@@ -11,6 +11,7 @@ export { RoxyAngelNumberLookup } from './components/angel-number-lookup.js';
 export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
 // Western astrology
 export { RoxyAspectsTable } from './components/aspects-table.js';
+export { RoxyAstrocartographyMap } from './components/astrocartography-map.js';
 // Biorhythm
 export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
 // Human Design
@@ -30,6 +31,7 @@ export { RoxyDreamCard } from './components/dream-card.js';
 export { RoxyDreamSearch } from './components/dream-search.js';
 // Helpers
 export { RoxyEndpointForm } from './components/endpoint-form.js';
+export { RoxyFixedStars } from './components/fixed-stars.js';
 // Forecast
 export { RoxyForecastDigest } from './components/forecast-digest.js';
 export { RoxyForecastTimeline } from './components/forecast-timeline.js';
@@ -45,6 +47,7 @@ export { RoxyHoroscopeCard } from './components/horoscope-card.js';
 export { RoxyKpChart } from './components/kp-chart.js';
 export { RoxyKpPlanetsTable } from './components/kp-planets-table.js';
 export { RoxyKpRulingPlanets } from './components/kp-ruling-planets.js';
+export { RoxyLocalSpaceCompass } from './components/local-space-compass.js';
 export { RoxyLocationSearch } from './components/location-search.js';
 export { RoxyMoonPhase } from './components/moon-phase.js';
 export { RoxyNakshatraCard } from './components/nakshatra-card.js';
@@ -53,7 +56,10 @@ export { RoxyNatalChart } from './components/natal-chart.js';
 // Numerology
 export { RoxyNumerologyCard } from './components/numerology-card.js';
 export { RoxyPanchangTable } from './components/panchang-table.js';
+export { RoxyPositionsTable } from './components/positions-table.js';
+export { RoxyProfectionCard } from './components/profection-card.js';
 export { RoxyReferenceCard } from './components/reference-card.js';
+export { RoxyRelocationWheel } from './components/relocation-wheel.js';
 export { RoxyShadbalaTable } from './components/shadbala-table.js';
 export { RoxySynastryChart } from './components/synastry-chart.js';
 // Tarot

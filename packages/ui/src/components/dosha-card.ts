@@ -47,6 +47,18 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 				font-weight: var(--roxy-weight-bold, 600);
 				text-transform: capitalize;
 			}
+			.subtype {
+				margin: 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.subtype .subtype-label {
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				margin-right: 0.4rem;
+			}
 			.badge {
 				display: inline-flex;
 				align-items: center;
@@ -135,14 +147,15 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 						? 1
 						: 0;
 		const pct = tier * 33;
+		// A present dosha is never "good news": keep the ramp in the warning/danger
+		// family so a Mild severity does not paint green and read as benign. The bar
+		// width already conveys the tier.
 		const barColor =
 			tier === 3
 				? 'var(--roxy-danger)'
-				: tier === 2
+				: tier >= 1
 					? 'var(--roxy-warning)'
-					: tier === 1
-						? 'var(--roxy-success)'
-						: 'transparent';
+					: 'transparent';
 
 		return html`<article
 			class="card"
@@ -154,6 +167,13 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 					${present ? 'Present' : 'Absent'}
 				</span>
 			</header>
+			${
+				'type' in d && d.type
+					? html`<p class="subtype">
+						<span class="subtype-label">${this.type === 'sadhesati' ? 'Current phase' : 'Type'}</span>${d.type}
+					</p>`
+					: nothing
+			}
 			${
 				d.severity
 					? html`<div
@@ -195,18 +215,30 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 
 	private renderEffects(d: DoshaData) {
 		if (!d.effects) return nothing;
-		const entries = Object.entries(d.effects).filter(
-			([, v]) => typeof v === 'string' && v.length > 0,
-		);
-		if (entries.length === 0) return nothing;
-		return html`<div class="effects">
-			${entries.map(
-				([k, v]) => html`<div>
-					<h3>${k}</h3>
-					<p>${v}</p>
-				</div>`,
-			)}
-		</div>`;
+		// Effects mix flat string fields (marriage, career...) with a nested map
+		// (Sadhesati effects.phases: { Rising, Peak, Setting }). Render both; the
+		// old string-only filter silently dropped the phase-specific effects, which
+		// are the substance of a Sade Sati reading.
+		const sections: unknown[] = [];
+		for (const [key, value] of Object.entries(
+			d.effects as Record<string, unknown>,
+		)) {
+			if (typeof value === 'string' && value.length > 0) {
+				sections.push(html`<div><h3>${key}</h3><p>${value}</p></div>`);
+			} else if (value && typeof value === 'object') {
+				for (const [nestedKey, nestedValue] of Object.entries(
+					value as Record<string, unknown>,
+				)) {
+					if (typeof nestedValue === 'string' && nestedValue.length > 0) {
+						sections.push(
+							html`<div><h3>${nestedKey}</h3><p>${nestedValue}</p></div>`,
+						);
+					}
+				}
+			}
+		}
+		if (sections.length === 0) return nothing;
+		return html`<div class="effects">${sections}</div>`;
 	}
 }
 

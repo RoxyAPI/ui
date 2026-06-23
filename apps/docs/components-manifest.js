@@ -130,6 +130,96 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'astrocartography',
+		tag: 'roxy-astrocartography-map',
+		seoLine: 'Astrocartography world map of planetary relocation lines',
+		sdkCall: `  const { data } = await roxy.astrology.generateAstrocartography({
+    body: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'local-space',
+		tag: 'roxy-local-space-compass',
+		seoLine: 'Local space compass of planetary directions from a birthplace',
+		sdkCall: `  const { data } = await roxy.astrology.generateLocalSpace({
+    body: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'relocation',
+		tag: 'roxy-relocation-wheel',
+		seoLine: 'Relocation chart wheel with recomputed houses and angles for a new city',
+		sdkCall: `  const { data } = await roxy.astrology.generateRelocationChart({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, birthLatitude: PERSON1.latitude, birthLongitude: PERSON1.longitude, relocationLatitude: 40.7128, relocationLongitude: -74.006 }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'asteroids',
+		tag: 'roxy-positions-table',
+		heading: 'Asteroids',
+		topic: 'Astrology',
+		seoLine: 'Ceres, Pallas, Juno, and Vesta positions with house and motion',
+		sdkCall: `  const { data } = await roxy.astrology.generateAsteroids({
+    body: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'lilith',
+		tag: 'roxy-positions-table',
+		heading: 'Black Moon Lilith',
+		topic: 'Astrology',
+		seoLine: 'Mean and true Black Moon Lilith apogee positions',
+		sdkCall: `  const { data } = await roxy.astrology.generateLilith({
+    body: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'arabic-lots',
+		tag: 'roxy-positions-table',
+		heading: 'Arabic lots',
+		topic: 'Astrology',
+		seoLine: 'The seven Hermetic lots with their sect-aware formulas',
+		sdkCall: `  const { data } = await roxy.astrology.calculateArabicLots({
+    body: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'fixed-stars',
+		tag: 'roxy-fixed-stars',
+		seoLine: 'Fixed star conjunctions to the natal chart with the star catalog',
+		sdkCall: `  const { data } = await roxy.astrology.generateFixedStars({
+    body: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'progressions',
+		tag: 'roxy-positions-table',
+		heading: 'Secondary progressions',
+		topic: 'Astrology',
+		seoLine: 'Secondary progressed planets and angles for a target date',
+		sdkCall: `  const { data } = await roxy.astrology.generateProgressions({
+    body: ${JSON.stringify({ ...PERSON1, targetDate: '2025-07-15' }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'solar-arc',
+		tag: 'roxy-positions-table',
+		heading: 'Solar arc directions',
+		topic: 'Astrology',
+		seoLine: 'Solar arc directed positions versus their natal degrees',
+		sdkCall: `  const { data } = await roxy.astrology.generateSolarArc({
+    body: ${JSON.stringify({ ...PERSON1, targetDate: '2025-07-15' }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'profections',
+		tag: 'roxy-profection-card',
+		seoLine: 'Annual profection year: profected house, sign, and lord of the year',
+		sdkCall: `  const { data } = await roxy.astrology.generateProfections({
+    body: ${JSON.stringify({ ...PERSON1, targetDate: '2025-07-15' }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
 		id: 'moon',
 		tag: 'roxy-moon-phase',
 		seoLine: 'Current moon phase, illumination, and meaning',

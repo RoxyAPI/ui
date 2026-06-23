@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-profection-card",
+  "type": "registry:ui",
+  "title": "RoxyProfectionCard",
+  "description": "Annual profection card with the profected house and sign, the lord of the year, and its natal placement",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.11.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-profection-card.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyProfectionCard data={...} />: Annual profection card with the profected house and sign, the lord of the year, and its natal placement.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/profection-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyProfectionCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyProfectionCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyProfectionCard(props: RoxyProfectionCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyProfectionCard;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/profection-card.tsx"
+    }
+  ]
+}

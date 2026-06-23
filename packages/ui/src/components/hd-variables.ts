@@ -80,7 +80,14 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 	];
 
 	protected renderData(d: CalculateVariablesResponse) {
-		const arrows = d.arrows ?? [];
+		// Place the arrows by their bodygraph `position`, not response order: the
+		// 2-col grid fills row-major, so sorting to Top left, Top right, Bottom left,
+		// Bottom right keeps the design column (Determination + Environment) on the
+		// left and the personality column (Motivation + Perspective) on the right,
+		// which is the whole point of the four-arrow layout.
+		const arrows = [...(d.arrows ?? [])].sort(
+			(a, b) => quadrantOrder(a.position) - quadrantOrder(b.position),
+		);
 		return html`<div class="wrap" aria-label="Human Design variables">
 			<h2 class="title">Variables</h2>
 			<div class="grid">${arrows.map((a) => this.renderArrow(a))}</div>
@@ -110,7 +117,12 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 			</span>
 			${
 				typeof a.color === 'number'
-					? html`<span class="ctb">Color ${a.color} · Tone ${a.tone} · Base ${a.base}</span>`
+					? html`<span class="ctb">Color ${a.color} · Tone ${a.tone} · Base ${a.base}${a.activation?.planet ? ` · ${a.activation.planet}${a.activation.side ? ` (${a.activation.side})` : ''}` : ''}</span>`
+					: nothing
+			}
+			${
+				a.confident === false
+					? html`<span class="note" role="note">Knife-edge: could flip with a more precise birth time.</span>`
 					: nothing
 			}
 		</div>`;
@@ -118,6 +130,22 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 
 	protected renderEmpty() {
 		return html`<div class="roxy-empty" role="status">No variables data</div>`;
+	}
+}
+
+/** Canonical bodygraph reading order for the four arrows, so the 2-col grid lays them out by quadrant. Unknown positions sort last. */
+function quadrantOrder(position: string | undefined): number {
+	switch (position) {
+		case 'Top left':
+			return 0;
+		case 'Top right':
+			return 1;
+		case 'Bottom left':
+			return 2;
+		case 'Bottom right':
+			return 3;
+		default:
+			return 99;
 	}
 }
 

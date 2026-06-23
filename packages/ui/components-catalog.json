@@ -156,6 +156,116 @@
       ]
     },
     {
+      "tag": "roxy-astrocartography-map",
+      "pascal": "RoxyAstrocartographyMap",
+      "slug": "astrocartography-map",
+      "domain": "Western",
+      "renders": "World map of planetary MC, IC, Ascendant, and Descendant lines with per-line interpretations",
+      "endpointLabel": "POST /astrology/astrocartography",
+      "endpoints": [
+        {
+          "operationId": "generateAstrocartography",
+          "method": "POST",
+          "path": "/astrology/astrocartography"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-local-space-compass",
+      "pascal": "RoxyLocalSpaceCompass",
+      "slug": "local-space-compass",
+      "domain": "Western",
+      "renders": "Compass dial of planetary azimuth lines from the birthplace, dimmed below the horizon",
+      "endpointLabel": "POST /astrology/local-space",
+      "endpoints": [
+        {
+          "operationId": "generateLocalSpace",
+          "method": "POST",
+          "path": "/astrology/local-space"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-relocation-wheel",
+      "pascal": "RoxyRelocationWheel",
+      "slug": "relocation-wheel",
+      "domain": "Western",
+      "renders": "Relocated chart wheel plus the move geometry, angular planets, and planets that change house",
+      "endpointLabel": "POST /astrology/relocation-chart",
+      "endpoints": [
+        {
+          "operationId": "generateRelocationChart",
+          "method": "POST",
+          "path": "/astrology/relocation-chart"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-positions-table",
+      "pascal": "RoxyPositionsTable",
+      "slug": "positions-table",
+      "domain": "Western",
+      "renders": "Body, sign, degree, and per-shape columns (house, motion, formula, or natal arc) plus each reading",
+      "endpointLabel": "POST /astrology/asteroids, /astrology/lilith, /astrology/progressions, /astrology/solar-arc, /astrology/arabic-lots",
+      "endpoints": [
+        {
+          "operationId": "calculateArabicLots",
+          "method": "POST",
+          "path": "/astrology/arabic-lots"
+        },
+        {
+          "operationId": "generateAsteroids",
+          "method": "POST",
+          "path": "/astrology/asteroids"
+        },
+        {
+          "operationId": "generateLilith",
+          "method": "POST",
+          "path": "/astrology/lilith"
+        },
+        {
+          "operationId": "generateProgressions",
+          "method": "POST",
+          "path": "/astrology/progressions"
+        },
+        {
+          "operationId": "generateSolarArc",
+          "method": "POST",
+          "path": "/astrology/solar-arc"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-fixed-stars",
+      "pascal": "RoxyFixedStars",
+      "slug": "fixed-stars",
+      "domain": "Western",
+      "renders": "Star to natal point conjunctions with readings, plus a catalog of position, magnitude, nature, and keywords",
+      "endpointLabel": "POST /astrology/fixed-stars",
+      "endpoints": [
+        {
+          "operationId": "generateFixedStars",
+          "method": "POST",
+          "path": "/astrology/fixed-stars"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-profection-card",
+      "pascal": "RoxyProfectionCard",
+      "slug": "profection-card",
+      "domain": "Western",
+      "renders": "Profected house and sign for the year, the lord of the year, its natal placement, and the reading",
+      "endpointLabel": "POST /astrology/profections",
+      "endpoints": [
+        {
+          "operationId": "generateProfections",
+          "method": "POST",
+          "path": "/astrology/profections"
+        }
+      ]
+    },
+    {
       "tag": "roxy-compatibility-card",
       "pascal": "RoxyCompatibilityCard",
       "slug": "compatibility-card",

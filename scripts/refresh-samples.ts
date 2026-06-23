@@ -270,6 +270,101 @@ async function main() {
 				timezone: PERSON1.timezone,
 			}),
 		),
+		run('astrocartography', () =>
+			rawPost('astrology/astrocartography', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+			}),
+		),
+		run('local-space', () =>
+			rawPost('astrology/local-space', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+			}),
+		),
+		run('relocation', () =>
+			rawPost('astrology/relocation-chart', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				timezone: PERSON1.timezone,
+				birthLatitude: PERSON1.latitude,
+				birthLongitude: PERSON1.longitude,
+				relocationLatitude: 40.7128,
+				relocationLongitude: -74.006,
+			}),
+		),
+		run('asteroids', () =>
+			rawPost('astrology/asteroids', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+			}),
+		),
+		run('lilith', () =>
+			rawPost('astrology/lilith', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+			}),
+		),
+		run('arabic-lots', () =>
+			rawPost('astrology/arabic-lots', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+			}),
+		),
+		run('fixed-stars', () =>
+			rawPost('astrology/fixed-stars', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+			}),
+		),
+		run('progressions', () =>
+			rawPost('astrology/progressions', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+				targetDate: '2025-07-15',
+			}),
+		),
+		run('solar-arc', () =>
+			rawPost('astrology/solar-arc', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+				targetDate: '2025-07-15',
+			}),
+		),
+		run('profections', () =>
+			rawPost('astrology/profections', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+				targetDate: '2025-07-15',
+			}),
+		),
 		run('vedic-aspects', () =>
 			rawPost('vedic-astrology/aspects', {
 				date: PERSON1.date,

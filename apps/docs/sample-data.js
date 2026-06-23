@@ -2008,15 +2008,15 @@ const samples = {
 	},
 	horoscope: {
 		sign: "Aries",
-		date: "2026-06-19",
-		overview: "Saturn in Aries rewards patience above all else. The progress you make today is the kind that lasts. Trust the slow, steady climb. Plans set in motion recently are gaining momentum. Keep moving forward.",
-		love: "Venus lights up your fifth house of romance and pleasure. This is the most romantic placement for love and creative self-expression. Playful flirting and joyful experiences attract admirers. The Moon brightens your fifth house of romance, creativity, and joy.",
+		date: "2026-06-23",
+		overview: "Saturn presence in Aries demands integrity and follow-through. The boundaries you set today protect what matters most. Structure is your ally, not your enemy. Refine your approach as the Full Moon approaches. Adjust before the peak.",
+		love: "Venus lights up your fifth house of romance and pleasure. This is the most romantic placement for love and creative self-expression. Playful flirting and joyful experiences attract admirers. The Moon illuminates your seventh house of partnerships and relationships.",
 		career: "Take responsibility seriously at work. Hard work brings lasting results, even when progress feels invisible. Your reliability earns respect.",
-		health: "The Sun in your third house energizes your mind and nervous system. Mental stimulation is essential but avoid overthinking. Short walks, puzzles, and learning keep you sharp and balanced.",
+		health: "The Sun in your fourth house links health to emotional security and home environment. Rest well, cook nourishing meals, and create a healing space at home. Your foundations need tending.",
 		finance: "Jupiter in your fourth house favors real estate, home investments, and family-related finances. Property matters carry extra luck. Spending on your living space pays dividends in comfort.",
 		advice: "Mercury in your fourth house turns attention to family conversations and household planning. Important discussions about home life go well. Journal or reflect on your roots.",
-		luckyNumber: 36,
-		luckyColor: "Orange",
+		luckyNumber: 40,
+		luckyColor: "Gold",
 		compatibleSigns: [
 			"Leo",
 			"Sagittarius",
@@ -2026,8 +2026,8 @@ const samples = {
 			"Saturn in Aries (1st house of identity and self-expression)",
 			"Venus in Leo (5th house of romance, creativity, and joy)",
 		],
-		moonSign: "Leo",
-		moonPhase: "Waxing Crescent Moon",
+		moonSign: "Libra",
+		moonPhase: "Waxing Gibbous Moon",
 		energyRating: 7,
 	},
 	synastry: {
@@ -5468,26 +5468,26 @@ const samples = {
 		],
 	},
 	moon: {
-		date: "2026-06-19",
-		phase: "Waxing Crescent Moon",
-		illumination: 25.29,
-		age: 4.94,
-		sign: "Leo",
-		degree: 28.5,
-		distance: 373917,
+		date: "2026-06-23",
+		phase: "Waxing Gibbous Moon",
+		illumination: 65.86,
+		age: 8.89,
+		sign: "Libra",
+		degree: 20.45,
+		distance: 396307,
 		meaning: {
-			name: "Waxing Crescent Moon",
-			symbol: "🌒",
-			description: "Think about this time as planting a seed. The new moon gave you a chance to think about what it is that you want to accomplish, but the waxing crescent asks us to make it known, and develop our willpower to push it into fruition.",
+			name: "Waxing Gibbous Moon",
+			symbol: "🌔",
+			description: "The waxing gibbous moon is there when we are close to our goals, but we need to assess their viability. Perhaps your original desire is not possible at this time, but a different version of it is.",
 			keywords: [
-				"seed",
-				"willpower",
-				"develop",
-				"courage",
-				"momentum",
+				"assess",
+				"refine",
+				"patience",
+				"adjust",
+				"anticipation",
 			],
 			energy: "waxing",
-			illumination: "0-50% (Growing)",
+			illumination: "50-100% (Nearly Full)",
 		},
 	},
 	kundli: {
@@ -8330,31 +8330,32 @@ const samples = {
 		},
 	},
 	tarot: {
-		date: "2026-06-19",
-		seed: "roxy-ui-demo-2026-06-19",
+		date: "2026-06-23",
+		seed: "roxy-ui-demo-2026-06-23",
 		card: {
-			id: "temperance",
-			name: "Temperance",
-			arcana: "major",
-			number: 14,
+			id: "ace-of-swords",
+			name: "Ace of Swords",
+			arcana: "minor",
+			suit: "swords",
+			number: 1,
 			position: 1,
 			reversed: false,
 			keywords: [
-				"balance",
-				"moderation",
-				"patience",
-				"synthesis",
-				"purpose",
+				"breakthrough",
+				"mental clarity",
+				"new ideas",
+				"truth",
+				"decisive insight",
 			],
-			meaning: "Temperance is the third of the cardinal virtues in the Major Arcana, after Justice and Strength. In the Rider-Waite-Smith image, a winged angel stands with one foot on dry land and one in a stream, pouring liquid endlessly between two cups in a flow that defies ordinary motion. The sign of the sun shines on the forehead and the square and triangle of the seven mark the breast. A path runs from the water toward distant hills, where a crown shows faintly within a great light, the goal toward which the figure moves. Waite read the card as the tempering, combining, and harmonising of the psychic and material natures, some part of the secret of life as it is possible to a person in this world.\n\nIn a reading, Temperance counsels balance, patience, and moderation. The invitation is to steady the energy and let life flow through without force or strain, recovering an even temperament after a period of stress or extremes. Small disturbances lose their power; composure is held; the middle path is chosen over reaction. This is the calm that makes lasting fulfilment possible.\n\nThe deeper theme of the card is synthesis. The two cups and the unbroken stream describe the art of blending distinct elements into something finer than either alone, whether that is reconciling two viewpoints, combining different skills, or merging separate parts of a life into one coherent whole. With one foot on land and one in water, the figure unites the conscious and the unconscious, holding opposites in a working harmony rather than choosing between them.\n\nTemperance also carries a clear, long-range vision. Nothing is rushed; the work is done carefully and in its own time, guided toward a goal that is held steadily in view. The card reflects a season of patient learning and inner guidance, in which trust in right timing matters as much as effort, and the reward comes to those who hold the centre and let the elements combine.",
-			love: "Balance, patience, and moderation bring the relationship into harmony. The card describes the blending of two distinct temperaments into a steady union, each tempering the other rather than overpowering it. This is a time for compromise, healing, and meeting in the middle. Let the bond develop at its own pace, and a calm, well-matched partnership takes shape.",
-			career: "A measured, balanced approach yields the best results at work. Patience and the ability to combine different skills, roles, or perspectives create real and distinctive value. Avoid extremes of pace or position and seek the sustainable middle path. Steady cooperation and the willingness to blend talents move the work forward more surely than force or haste.",
-			finances: "Balanced, moderate management is the route to lasting prosperity. The card favours a healthy equilibrium between saving and spending and warns against financial extremes in either direction. Patient, steady wealth-building is rewarded over the dramatic gamble. Temper enthusiasm with restraint, and let resources grow at a measured, sustainable pace.",
-			health: "Moderation and balance are the keys to wellbeing now. The card counsels against extremes of diet, exercise, or routine and favours a holistic approach that brings body, mind, and emotion into harmony. Steady, sustainable habits restore the system better than any severe regime. Find the even rhythm that the body can hold, and healing follows.",
-			spirituality: "The focus is on inner balance and the integration of opposing forces within. Temperance describes the work of walking the middle path, holding conscious and unconscious in harmony rather than at war. Patience, moderation, and trust in right timing deepen the practice. Blending what is divided in you produces a steadier and more complete spiritual life.",
-			imageUrl: "./img/tarot/major/temperance.jpg",
+			meaning: "As the first card of the suit of Swords, the Ace holds the pure essence of air: intellect, truth, and the clean stroke of clarity that cuts confusion away. In the Rider-Waite-Smith image, a hand emerges from a cloud and grips a single upright sword, its point encircled by a crown from which hang a branch of olive and a branch of palm, the emblems of mercy and severity. Barren mountains rise below, the cold facts of the matter, while the cloud carries the deeper values that temper a purely intellectual force. Waite read the card as triumph, conquest, and great force, the root of the powers of the air, and noted that this force runs equally through love and through conflict.\n\nIn a reading, the Ace of Swords marks a breakthrough: a sudden clarity, a decisive idea, or a truth that finally names what has been clouded. A long confusion lifts and the path ahead becomes visible. The card favours the new project that draws on reason, communication, and disciplined thought, and it rewards the mind that is ready to see plainly and argue with conviction.\n\nThe sword is double-edged, and this is the heart of the card. The same clarity that creates can also wound, and the same truth that liberates can be wielded to cut. Power of this kind carries responsibility. The instruction is to use the blade in service of justice and honest understanding rather than to dominate, and to remember that a mind sharpened to a point demands care in how it is aimed.\n\nWhen the Ace of Swords appears, it favours clear thinking, plain speech, and the courage to stand for what is true. Cut through the noise, name the situation as it is, and act on the clarity while it is sharp. The breakthrough is genuine, and it asks to be met with integrity as much as intelligence.",
+			love: "A breakthrough of honesty clears the air between two people. The Ace of Swords favours plain conversation over games, naming what has gone unspoken, and the kind of intellectual connection that grows from mutual candour. A new bond founded on truth has strong footing. Speak with clarity, and let the blade open understanding rather than inflict a wound.",
+			career: "A sharp idea or sudden insight cuts through a professional impasse. The Ace of Swords is among the strongest cards for a venture built on intellect, communication, or strategy, and it rewards the clear plan stated plainly. Mental focus is at its peak now. Use it to define the problem precisely and argue the case with conviction rather than force.",
+			finances: "Clear, analytical thinking leads to a sound financial decision. The Ace of Swords favours cutting through confusion with logic: examining the numbers honestly, naming the real position, and choosing a strategy on evidence rather than impulse. A new plan founded on reason takes shape. Aim the clarity at the facts and decide while the picture is sharp.",
+			health: "Mental clarity supports a decisive step in wellbeing. The Ace of Swords can mark a clear diagnosis, a plain understanding of what is wrong, or the resolve to face a health matter directly. The mind is the instrument here. Seek the truth of the situation, name it without flinching, and let clear thinking guide a deliberate course of action.",
+			spirituality: "A moment of piercing truth cuts through illusion. The Ace of Swords is the sword of discernment that separates what is real from what is merely comfortable. Mental clarity becomes an instrument of awakening rather than an obstacle to it. Meet the insight honestly, hold it without distortion, and let a single clear perception reorder the larger view.",
+			imageUrl: "./img/tarot/minor/ace-of-swords.jpg",
 		},
-		dailyMessage: "Your card for 2026-06-19: Temperance. balance, moderation, patience, synthesis, purpose. Temperance is the third of the cardinal virtues in the Major Arcana, after Justice and Strength. In the Rider-Waite-Smith image, a winged angel stands with one foot on dry land and one in a stream, po...",
+		dailyMessage: "Your card for 2026-06-23: Ace of Swords. breakthrough, mental clarity, new ideas, truth, decisive insight. As the first card of the suit of Swords, the Ace holds the pure essence of air: intellect, truth, and the clean stroke of clarity that cuts confusion away. In the Rider-Waite-Smith image, a hand emerg...",
 	},
 	spread: {
 		spread: "Three-Card",
@@ -8365,27 +8366,26 @@ const samples = {
 				name: "Past",
 				interpretation: "What has led to this situation and the foundational influences at play. Shows the events, decisions, and energies that have brought you to where you are now. Understanding the past provides context for the present.",
 				card: {
-					id: "knight-of-swords",
-					name: "Knight of Swords",
+					id: "king-of-pentacles",
+					name: "King of Pentacles",
 					arcana: "minor",
-					suit: "swords",
-					number: 12,
+					suit: "pentacles",
+					number: 14,
 					position: 1,
-					reversed: false,
+					reversed: true,
 					keywords: [
-						"ambition",
-						"decisive action",
-						"drive",
-						"fast thinking",
-						"directness",
+						"greed",
+						"materialism",
+						"mismanagement",
+						"stubbornness",
 					],
-					meaning: "In the Rider-Waite-Smith image, the Knight charges at full gallop, sword raised, cloak and the horse mane streaming behind in a driving wind. Waite called him a prototypical hero of romantic chivalry, almost a Galahad, his blade swift and sure because his heart is clean. The whole card is forward motion: nothing in the picture is still. This is the suit of air at its most kinetic, intellect converted directly into speed.\n\nIn a reading, the Knight of Swords describes someone highly driven, ambitious, and oriented entirely toward action. Once the mind is set, the charge begins, and obstacles that would stall others barely register because the destination is fixed and the will to reach it is total. The card carries the energy of decisive movement: assertive, forward-leaning, unwilling to wait for conditions to be perfect before making the first move. Harnessed well, this is the force that drives a goal from idea to reality on sheer momentum.\n\nThe Knight thinks fast and acts faster, which is both the gift and the hazard. Speed at this pitch tends to skip planning. Potential complications go unseen, consequences go unweighed, corners get cut in the rush to be done, and a goal pursued at full tilt sometimes turns out, on arrival, to have been the wrong one. A measure of forethought goes a long way against that risk without dulling the drive.\n\nThe card also marks a strong intellectual streak and real skill with words: the ability to build an argument, hold a position, and engage others in the contest of ideas. This Knight is energised by sharp minds and spirited debate, sharpening his own thinking against theirs. The instruction of the card is to keep the boldness and aim it well, pairing the charge with just enough direction that the speed serves the goal rather than scattering past it.",
-					love: "A whirlwind romance, fast and intense, or the arrival of someone direct, assertive, and mentally stimulating. The pace is exciting and the energy magnetic. The caution is to confirm that real depth sits beneath the speed, since a connection built on momentum alone can outrun the substance needed to sustain it once the rush settles.",
-					career: "Ambitious, fast-moving professional drive, charging toward goals with determination and intellectual force. Assertiveness and quick thinking push progress along rapidly. The single caution is to let thoroughness keep pace with speed, since the Knight tendency to skip planning is where momentum turns into avoidable error rather than achievement.",
-					finances: "Bold, decisive financial action and the appetite to pursue money goals with intensity. Quick, confident decisions can produce real results when the ground beneath them is sound. The discipline this Knight needs is to pair velocity with analysis, checking the consequences before the charge, so that speed yields gains rather than costly haste.",
-					health: "High energy and mental intensity in need of a productive channel. The drive is a genuine strength, but left unchecked it tips into burnout, the body unable to sustain the pace the mind demands. Direct the charge into vigorous physical activity, and build in the recovery that keeps the intensity from consuming its own source.",
-					spirituality: "A passionate, fast-moving pursuit of truth and a fierce intellectual engagement with spiritual questions. The mental intensity drives a determined search for answers. The balance to find is contemplative stillness, since insight at this depth often arrives in quiet rather than in the charge, and the racing mind needs pauses to actually receive it.",
-					imageUrl: "./img/tarot/minor/knight-of-swords.jpg",
+					meaning: "Reversed, the King of Pentacles asks for an honest look at the relationship with money and power. Waite gave the reversal as vice, weakness, corruption, and peril, and the surrounding cards reveal which form it takes. In one, the discipline that built the wealth has failed: large sums come in and flow straight out again on extravagance or high-risk gambles, money treated without respect. The remedy is to recover the self-control that earned the success and to save and invest soundly while still enjoying the fruits.\n\nIn another, money has been put before all else, at the cost of relationships and wellbeing. The card can show a workaholic over-invested in accumulation, or someone who measures people by status, deferring to those above and dismissing those below. Here the instruction is to weigh the true cost of the obsession and ask whether it serves anything that matters.\n\nThe reversal can also describe sheer stubbornness and rigidity: a life grown so predictable and controlled that it has gone dull and lifeless. Being grounded is a strength, but held too tightly it becomes a cage. The card invites the occasional break from the routine, a loosening of the relentless seriousness, and a willingness to value what wealth and status cannot buy. Return the discipline to the service of a fuller life rather than letting it harden into greed, control, or stagnation.",
+					love: "Materialism overshadowing emotional connection, wealth used to control a partner, or overwork eroding the relationship. The card notes that money cannot substitute for presence. Reconnect with the emotional foundation of the partnership, and let provision serve affection rather than stand in for it or become a means of control.",
+					career: "Greed, corruption, or the misuse of power and wealth in business, with a success-at-any-cost mentality that cannot hold. The card can also show instability shaking professional confidence. Either way, return to ethical, values-based footing. Lead with integrity rather than ambition alone, and rebuild standing on sound, principled ground.",
+					finances: "Loss through greed, poor management, or reckless pursuit of gain. The discipline that built the wealth has lapsed, and money is being mishandled or chased unethically. The card counsels a return to conservative, values-based management before the losses deepen. Recover self-control, respect the resources, and steward them soundly again.",
+					health: "Problems arising from excess, overwork, or stubborn refusal to seek help. The card observes that material success means little without the health to enjoy it. Prioritise physical wellbeing over the pursuit of wealth, ease the relentless drive, and attend to the body before its neglect undoes everything that has been built.",
+					spirituality: "Material obsession blocking inner awareness, with identity entangled in wealth and status. The card asks for reconnection with what genuinely matters beyond possession and standing. Loosen the grip on accumulation, recover a sense of meaning that money cannot supply, and let success serve principle rather than replace it.",
+					imageUrl: "./img/tarot/minor/king-of-pentacles.jpg",
 				},
 			},
 			{
@@ -8393,27 +8393,26 @@ const samples = {
 				name: "Present",
 				interpretation: "The current energy, circumstances, and challenges you are experiencing right now. This card shows what is happening in this moment and what you need to be aware of. It represents your current state of being.",
 				card: {
-					id: "ten-of-cups",
-					name: "Ten of Cups",
-					arcana: "minor",
-					suit: "cups",
+					id: "wheel-of-fortune",
+					name: "Wheel of Fortune",
+					arcana: "major",
 					number: 10,
 					position: 2,
-					reversed: true,
+					reversed: false,
 					keywords: [
-						"disharmony",
-						"broken bonds",
-						"misaligned values",
-						"unrealistic ideals",
-						"disconnection",
+						"cycles",
+						"fate",
+						"turning point",
+						"good fortune",
+						"change",
 					],
-					meaning: "Reversed, the Ten of Cups shows the rainbow strained or out of reach. The longing for harmony remains, but the lived reality falls short of the picture, and there is a gap between the relationship imagined and the one experienced. Waite linked the reversal to repose of the false heart and to indignation and violence, the bright promise turned uneasy. Connection feels frayed, communication stalls, and each attempt to draw closer seems to widen the distance.\n\nOften the trouble is an unrealistic ideal. The expectation that a relationship or family should be perfect at every moment sets up a disappointment that ordinary friction cannot meet. The remedy is to accept that every bond has its weather, and to rebuild from common ground, meeting one another with patience and honest attention rather than measuring the present against a fantasy.\n\nThe reversal can also turn the focus inward, a season for clarifying what a loving relationship means to you before building outward again. From this vantage some ties may be seen to fall short of your genuine good and need releasing, while truer ones can be welcomed.\n\nA further reading is misaligned values: living by what others expect rather than what you believe, or neglecting home in pursuit of work until the most important bonds quietly suffer. The card asks you to return your attention to what truly brings contentment before the imbalance costs what cannot easily be replaced.",
-					love: "The picture of domestic bliss is not matching reality, whether through disharmony, distance, or expectations set too high. The card asks for honesty about the friction rather than pretending all is well. Rebuild from shared ground with patience, and release the fantasy of constant perfection that ordinary love can never satisfy.",
-					career: "A work-life imbalance is straining the relationships that matter most, as professional demands crowd out home and connection. The card warns that the cost accrues quietly. Reprioritise before the imbalance erodes bonds that cannot be easily rebuilt, and weigh what the pursuit is actually trading away.",
-					finances: "Financial stress is unsettling the harmony of the household, or expectations about what security should provide are breeding disappointment. The card counsels facing money matters together rather than letting them divide the home, and aligning financial hopes with what genuinely sustains the relationships involved.",
-					health: "Tension at home or strained family bonds are taking a toll on physical wellbeing, the emotional atmosphere registering directly in the body. The card connects domestic disharmony to health, and asks you to address the relationship strain itself as a real and necessary part of restoring balance.",
-					spirituality: "Fulfilment is being sought far afield when the deeper lessons sit within home and close relationships. The card points to domestic life and family dynamics as the present spiritual teachers, and invites you to find the sacred in the ordinary rather than seeking it elsewhere.",
-					imageUrl: "./img/tarot/minor/ten-of-cups.jpg",
+					meaning: "The Wheel of Fortune is the card of cycles, the turning that lifts and lowers in its own time regardless of will. In the Rider-Waite-Smith image a great wheel hangs in the heavens, inscribed with the letters of the word ROTA and the Hebrew name of the divine, a sphinx couched at its summit, a serpent descending on one side and the jackal-headed Anubis rising on the other. At the four corners the living creatures of the vision of Ezekiel, the angel, eagle, bull, and lion, study open books. Waite read the design as the perpetual motion of a fluidic universe and the flux of human life, the sphinx its point of balance, and behind it all the denial of mere chance and the working of providence within.\n\nIn a reading, The Wheel of Fortune marks a turning point and a reminder that nothing stays fixed. A difficult season will pass, as a fortunate one will in time, and the card counsels making the most of the high points while they last and holding faith through the low ones. Fate and timing are in play, and circumstance is shifting toward something new whether or not it was sought.\n\nIt also speaks of the law of cycles in a moral sense, the long return by which what is sent out comes back around. Actions ripen into consequences, and the card invites awareness that the present moment sits within a larger pattern of cause and effect that the wheel keeps turning.\n\nThe deeper instruction is acceptance of what lies outside control. Much of what the wheel brings cannot be commanded, only met, and the card favours adaptability over the futile effort to hold the turning still. To take the opening a turn of fortune offers, to ride change rather than resist it, and to trust that the motion serves a pattern larger than the moment, is the lesson this card carries.",
+					love: "A turning point approaches in matters of the heart, and fate may bring developments that were not foreseen. A relationship may shift into a new phase, or an unexpected meeting may change the course of things. The card favours meeting the change with an open heart and trusting the turn rather than gripping what was.",
+					career: "A significant shift or fortunate opening is on the way, as a cycle turns toward something new. Opportunities may arrive through timing and circumstance more than through effort alone. The card counsels readiness to seize the moment when it comes, and adaptability as the professional landscape moves into a fresh phase.",
+					finances: "A favourable turn in the financial picture is indicated, perhaps an unexpected gain or a shift toward better fortune. The card encourages making the most of the upswing while remembering that cycles are temporary. What rises by the wheel can fall by it too, so the wise course is to build a cushion for the turn.",
+					health: "A positive turning point in wellbeing is suggested, with conditions easing, a new approach becoming available, or a change in habit beginning to show. The card invites trust in the natural cycles of healing and recovery, and patience with the rhythm by which difficult phases give way to better ones.",
+					spirituality: "A meaningful turn in the larger pattern is underway, as past actions come full circle and a new phase of the path opens. The card invites trust in timing beyond the personal and in the wider cycles that shape spiritual growth, meeting what unfolds as part of a design rather than as random chance.",
+					imageUrl: "./img/tarot/major/wheel-of-fortune.jpg",
 				},
 			},
 			{
@@ -8421,30 +8420,30 @@ const samples = {
 				name: "Future",
 				interpretation: "The likely outcome or energy that lies ahead if you continue on your current path. This is not set in stone, your free will and actions can shape this future. Shows potential developments and where things are heading.",
 				card: {
-					id: "six-of-cups",
-					name: "Six of Cups",
+					id: "knight-of-pentacles",
+					name: "Knight of Pentacles",
 					arcana: "minor",
-					suit: "cups",
-					number: 6,
+					suit: "pentacles",
+					number: 12,
 					position: 3,
 					reversed: true,
 					keywords: [
-						"living in the past",
-						"stuck memories",
-						"forgiveness",
-						"moving forward",
+						"stagnation",
+						"stubbornness",
+						"boredom",
+						"overcaution",
 					],
-					meaning: "Reversed, the Six of Cups warns when memory becomes a place to hide. The gentle looking-back of the upright card hardens into living in the past, a longing for how things used to be that pulls attention away from the life actually in front of you. Waite read the reversal toward the future and renewal, that which is yet to come, and the lesson is exactly that turn: away from what has vanished and toward what waits ahead.\n\nMost often the card describes nostalgia that has overstayed its use. Wishing for an earlier time, idealising a former relationship, or replaying old comforts can quietly cost the opportunities of the present. Reminiscing is harmless until it becomes avoidance, and the reversed Six of Cups marks the point where it has. The remedy is to make peace with the past rather than dwell in it: learn from what happened, forgive others and yourself, and return attention to the now.\n\nThe card can also describe a loss of the very innocence the upright card celebrates. Life may have grown flat and overserious, the playfulness of the inner child buried under responsibility, leaving things stale and joyless. Here the instruction reverses again, toward lightness: a deliberate return to curiosity, play, and spontaneity. Whether the work is to release a backward-looking attachment or to recover a forgotten capacity for delight, the reversed Six of Cups points the same way, into the present, where renewal happens.",
-					love: "A backward gaze is holding the heart in place, whether an inability to move on from an ex or a tendency to idealise the past over the present relationship. The reversed Six of Cups asks you to release the nostalgic attachment and be fully present where you actually are. Forgive what needs forgiving, and let the current bond, not the remembered one, have your attention.",
-					career: "Outdated patterns or an attachment to how things used to be are holding the work back. The reversed Six of Cups warns that nostalgia for a former role or way of doing things is blocking new opportunity. Let go of the familiar and adapt to present conditions. What worked before is not a reason to refuse what works now.",
-					finances: "Old financial habits or inherited beliefs about money no longer serve and are quietly limiting you. The reversed Six of Cups points to strategies kept out of familiarity rather than fit, or patterns absorbed in childhood. Update the approach to present circumstances, and release the inherited assumptions about wealth that have outlived their usefulness.",
-					health: "Unresolved patterns from the past are surfacing in present wellbeing, whether old emotional wounds or habits formed long ago. The reversed Six of Cups asks you to address the root rather than the symptom. Inner-child work may be especially useful here. Tend what was carried forward from earlier life so it stops shaping the body and mood now.",
-					spirituality: "You may be bound to spiritual patterns from your upbringing that no longer fit who you have become. The reversed Six of Cups counsels releasing outdated beliefs and practices while honouring where they came from. Let your understanding evolve rather than freezing it in the past. Renewal asks that the path move forward with you.",
-					imageUrl: "./img/tarot/minor/six-of-cups.jpg",
+					meaning: "Reversed, the Knight of Pentacles shows his steady virtues tipping into excess, and the surrounding cards reveal which way. Waite gave the reversal as inertia, idleness, stagnation, and discouragement, and at its heart the card warns that dependability has hardened into being stuck. The reliable routine has become a rut, life has gone dull and lifeless, and the very consistency that once produced results now stifles creativity and movement. The remedy is a deliberate change of pace, a willingness to do something different rather than repeat the familiar by reflex.\n\nThe card can also point the other way, to a needed discipline that is missing. Practical matters left neglected, upkeep ignored, goals undermined by a lack of routine. Here the instruction is to build the schedule the situation requires and hold to it until the task is done, rather than drifting toward whatever feels more exciting.\n\nIn its harder expressions the reversal shows stubbornness and overcaution: an approach so conservative and risk-averse that growth stalls, or rigidity that resists every new method. It can also curdle into perfectionism, a sharp impatience with others who do not share the same exacting standard. The card asks for the standard to be kept without losing the people around it. Soften the rigidity, allow a measured risk, and let the dependable strength of this Knight serve progress again rather than block it.",
+					love: "Stubbornness or unbroken routine has drained the spark, and reliability has slid into monotony. Steadiness without any warmth or spontaneity leaves the bond flat. The card asks for some flexibility and freshness to be brought back in. Keep the dependability, but let a little adventure return to the relationship before it stales.",
+					career: "Workaholism, rigidity, or resistance to change is holding progress back, with reliability hardened into inflexibility. The card asks for openness to new methods even when they feel uncomfortable. Loosen the insistence on the familiar way, ease any perfectionism toward colleagues, and let the work adapt rather than stall in routine.",
+					finances: "Excessive caution is preventing growth, or a failing strategy is being clung to out of habit. Being too conservative can cost as much as being too rash. The card counsels allowing some measured, calculated risk into the plan and revisiting approaches that no longer serve, rather than defending them by reflex.",
+					health: "Unhealthy routines maintained by stubbornness, or an approach kept long after it stopped working. What once helped the body may no longer fit. The card asks for willingness to update the wellness strategy as circumstances change, trading rigid repetition for honest reassessment and a method suited to the present.",
+					spirituality: "Practice has stiffened into rote routine without genuine engagement, the discipline present but the spirit gone. The card invites variety and spontaneity back into the path. Loosen the rigidity, try a fresh approach, and reconnect with the meaning the routine was meant to serve rather than performing it by habit.",
+					imageUrl: "./img/tarot/minor/knight-of-pentacles.jpg",
 				},
 			},
 		],
-		summary: "Your past (Knight of Swords) has shaped your present situation (Ten of Cups reversed). The future (Six of Cups reversed) suggests challenges to overcome if you continue on this path.",
+		summary: "Your past (King of Pentacles reversed) has shaped your present situation (Wheel of Fortune). The future (Knight of Pentacles reversed) suggests challenges to overcome if you continue on this path.",
 	},
 	"tarot-catalog": {
 		total: 78,
@@ -10666,6 +10665,4919 @@ const samples = {
 			},
 		},
 	},
+	astrocartography: {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		lines: [
+			{
+				planet: "Sun",
+				symbol: "☉",
+				rightAscension: 296.8969,
+				declination: -21.142,
+				mc: {
+					longitude: 47.3414,
+					interpretation: "Your Sun Midheaven line runs through places where Self-awareness and ego comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: -132.6586,
+					interpretation: "Your Sun Imum Coeli line runs through places where Self-awareness and ego settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -98.6857,
+						},
+						{
+							latitude: -60,
+							longitude: -84.7104,
+						},
+						{
+							latitude: -55,
+							longitude: -76.1821,
+						},
+						{
+							latitude: -50,
+							longitude: -70.1014,
+						},
+						{
+							latitude: -45,
+							longitude: -65.4086,
+						},
+						{
+							latitude: -40,
+							longitude: -61.5932,
+						},
+						{
+							latitude: -35,
+							longitude: -58.3692,
+						},
+						{
+							latitude: -30,
+							longitude: -55.5596,
+						},
+						{
+							latitude: -25,
+							longitude: -53.0474,
+						},
+						{
+							latitude: -20,
+							longitude: -50.7499,
+						},
+						{
+							latitude: -15,
+							longitude: -48.6062,
+						},
+						{
+							latitude: -10,
+							longitude: -46.5685,
+						},
+						{
+							latitude: -5,
+							longitude: -44.5975,
+						},
+						{
+							latitude: 0,
+							longitude: -42.6586,
+						},
+						{
+							latitude: 5,
+							longitude: -40.7198,
+						},
+						{
+							latitude: 10,
+							longitude: -38.7488,
+						},
+						{
+							latitude: 15,
+							longitude: -36.7111,
+						},
+						{
+							latitude: 20,
+							longitude: -34.5674,
+						},
+						{
+							latitude: 25,
+							longitude: -32.2699,
+						},
+						{
+							latitude: 30,
+							longitude: -29.7577,
+						},
+						{
+							latitude: 35,
+							longitude: -26.9481,
+						},
+						{
+							latitude: 40,
+							longitude: -23.7241,
+						},
+						{
+							latitude: 45,
+							longitude: -19.9087,
+						},
+						{
+							latitude: 50,
+							longitude: -15.2159,
+						},
+						{
+							latitude: 55,
+							longitude: -9.1352,
+						},
+						{
+							latitude: 60,
+							longitude: -0.6069,
+						},
+						{
+							latitude: 65,
+							longitude: 13.3684,
+						},
+					],
+					circumpolarBeyond: 68.858,
+					interpretation: "Your Sun Ascendant line runs through places where Self-awareness and ego colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -166.6316,
+						},
+						{
+							latitude: -60,
+							longitude: 179.3931,
+						},
+						{
+							latitude: -55,
+							longitude: 170.8648,
+						},
+						{
+							latitude: -50,
+							longitude: 164.7841,
+						},
+						{
+							latitude: -45,
+							longitude: 160.0913,
+						},
+						{
+							latitude: -40,
+							longitude: 156.2759,
+						},
+						{
+							latitude: -35,
+							longitude: 153.0519,
+						},
+						{
+							latitude: -30,
+							longitude: 150.2423,
+						},
+						{
+							latitude: -25,
+							longitude: 147.7301,
+						},
+						{
+							latitude: -20,
+							longitude: 145.4326,
+						},
+						{
+							latitude: -15,
+							longitude: 143.2889,
+						},
+						{
+							latitude: -10,
+							longitude: 141.2512,
+						},
+						{
+							latitude: -5,
+							longitude: 139.2802,
+						},
+						{
+							latitude: 0,
+							longitude: 137.3414,
+						},
+						{
+							latitude: 5,
+							longitude: 135.4025,
+						},
+						{
+							latitude: 10,
+							longitude: 133.4315,
+						},
+						{
+							latitude: 15,
+							longitude: 131.3938,
+						},
+						{
+							latitude: 20,
+							longitude: 129.2501,
+						},
+						{
+							latitude: 25,
+							longitude: 126.9526,
+						},
+						{
+							latitude: 30,
+							longitude: 124.4404,
+						},
+						{
+							latitude: 35,
+							longitude: 121.6308,
+						},
+						{
+							latitude: 40,
+							longitude: 118.4068,
+						},
+						{
+							latitude: 45,
+							longitude: 114.5914,
+						},
+						{
+							latitude: 50,
+							longitude: 109.8986,
+						},
+						{
+							latitude: 55,
+							longitude: 103.8179,
+						},
+						{
+							latitude: 60,
+							longitude: 95.2896,
+						},
+						{
+							latitude: 65,
+							longitude: 81.3143,
+						},
+					],
+					circumpolarBeyond: 68.858,
+					interpretation: "Your Sun Descendant line runs through places where Self-awareness and ego shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Moon",
+				symbol: "☽",
+				rightAscension: 166.0556,
+				declination: 3.1672,
+				mc: {
+					longitude: -83.4999,
+					interpretation: "Your Moon Midheaven line runs through places where Inner emotional life comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: 96.5001,
+					interpretation: "Your Moon Imum Coeli line runs through places where Inner emotional life settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: -164.7554,
+						},
+						{
+							latitude: -65,
+							longitude: -166.6849,
+						},
+						{
+							latitude: -60,
+							longitude: -168.0002,
+						},
+						{
+							latitude: -55,
+							longitude: -168.9674,
+						},
+						{
+							latitude: -50,
+							longitude: -169.7189,
+						},
+						{
+							latitude: -45,
+							longitude: -170.3279,
+						},
+						{
+							latitude: -40,
+							longitude: -170.8387,
+						},
+						{
+							latitude: -35,
+							longitude: -171.2794,
+						},
+						{
+							latitude: -30,
+							longitude: -171.6692,
+						},
+						{
+							latitude: -25,
+							longitude: -172.0214,
+						},
+						{
+							latitude: -20,
+							longitude: -172.3459,
+						},
+						{
+							latitude: -15,
+							longitude: -172.6504,
+						},
+						{
+							latitude: -10,
+							longitude: -172.9409,
+						},
+						{
+							latitude: -5,
+							longitude: -173.2226,
+						},
+						{
+							latitude: 0,
+							longitude: -173.4999,
+						},
+						{
+							latitude: 5,
+							longitude: -173.7773,
+						},
+						{
+							latitude: 10,
+							longitude: -174.059,
+						},
+						{
+							latitude: 15,
+							longitude: -174.3495,
+						},
+						{
+							latitude: 20,
+							longitude: -174.6539,
+						},
+						{
+							latitude: 25,
+							longitude: -174.9785,
+						},
+						{
+							latitude: 30,
+							longitude: -175.3307,
+						},
+						{
+							latitude: 35,
+							longitude: -175.7204,
+						},
+						{
+							latitude: 40,
+							longitude: -176.1612,
+						},
+						{
+							latitude: 45,
+							longitude: -176.672,
+						},
+						{
+							latitude: 50,
+							longitude: -177.281,
+						},
+						{
+							latitude: 55,
+							longitude: -178.0325,
+						},
+						{
+							latitude: 60,
+							longitude: -178.9997,
+						},
+						{
+							latitude: 65,
+							longitude: 179.6851,
+						},
+						{
+							latitude: 70,
+							longitude: 177.7556,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Moon Ascendant line runs through places where Inner emotional life colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: -2.2444,
+						},
+						{
+							latitude: -65,
+							longitude: -0.3149,
+						},
+						{
+							latitude: -60,
+							longitude: 1.0003,
+						},
+						{
+							latitude: -55,
+							longitude: 1.9675,
+						},
+						{
+							latitude: -50,
+							longitude: 2.719,
+						},
+						{
+							latitude: -45,
+							longitude: 3.328,
+						},
+						{
+							latitude: -40,
+							longitude: 3.8388,
+						},
+						{
+							latitude: -35,
+							longitude: 4.2796,
+						},
+						{
+							latitude: -30,
+							longitude: 4.6693,
+						},
+						{
+							latitude: -25,
+							longitude: 5.0215,
+						},
+						{
+							latitude: -20,
+							longitude: 5.3461,
+						},
+						{
+							latitude: -15,
+							longitude: 5.6505,
+						},
+						{
+							latitude: -10,
+							longitude: 5.941,
+						},
+						{
+							latitude: -5,
+							longitude: 6.2227,
+						},
+						{
+							latitude: 0,
+							longitude: 6.5001,
+						},
+						{
+							latitude: 5,
+							longitude: 6.7774,
+						},
+						{
+							latitude: 10,
+							longitude: 7.0591,
+						},
+						{
+							latitude: 15,
+							longitude: 7.3496,
+						},
+						{
+							latitude: 20,
+							longitude: 7.6541,
+						},
+						{
+							latitude: 25,
+							longitude: 7.9786,
+						},
+						{
+							latitude: 30,
+							longitude: 8.3308,
+						},
+						{
+							latitude: 35,
+							longitude: 8.7206,
+						},
+						{
+							latitude: 40,
+							longitude: 9.1613,
+						},
+						{
+							latitude: 45,
+							longitude: 9.6721,
+						},
+						{
+							latitude: 50,
+							longitude: 10.2811,
+						},
+						{
+							latitude: 55,
+							longitude: 11.0326,
+						},
+						{
+							latitude: 60,
+							longitude: 11.9998,
+						},
+						{
+							latitude: 65,
+							longitude: 13.3151,
+						},
+						{
+							latitude: 70,
+							longitude: 15.2446,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Moon Descendant line runs through places where Inner emotional life shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Mercury",
+				symbol: "☿",
+				rightAscension: 282.1311,
+				declination: -19.5885,
+				mc: {
+					longitude: 32.5756,
+					interpretation: "Your Mercury Midheaven line runs through places where Communication comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: -147.4244,
+					interpretation: "Your Mercury Imum Coeli line runs through places where Communication settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: -135.3053,
+						},
+						{
+							latitude: -65,
+							longitude: -107.1663,
+						},
+						{
+							latitude: -60,
+							longitude: -95.4756,
+						},
+						{
+							latitude: -55,
+							longitude: -87.9697,
+						},
+						{
+							latitude: -50,
+							longitude: -82.5179,
+						},
+						{
+							latitude: -45,
+							longitude: -78.2705,
+						},
+						{
+							latitude: -40,
+							longitude: -74.798,
+						},
+						{
+							latitude: -35,
+							longitude: -71.8531,
+						},
+						{
+							latitude: -30,
+							longitude: -69.2806,
+						},
+						{
+							latitude: -25,
+							longitude: -66.9763,
+						},
+						{
+							latitude: -20,
+							longitude: -64.8664,
+						},
+						{
+							latitude: -15,
+							longitude: -62.896,
+						},
+						{
+							latitude: -10,
+							longitude: -61.022,
+						},
+						{
+							latitude: -5,
+							longitude: -59.2086,
+						},
+						{
+							latitude: 0,
+							longitude: -57.4244,
+						},
+						{
+							latitude: 5,
+							longitude: -55.6403,
+						},
+						{
+							latitude: 10,
+							longitude: -53.8269,
+						},
+						{
+							latitude: 15,
+							longitude: -51.9529,
+						},
+						{
+							latitude: 20,
+							longitude: -49.9825,
+						},
+						{
+							latitude: 25,
+							longitude: -47.8726,
+						},
+						{
+							latitude: 30,
+							longitude: -45.5683,
+						},
+						{
+							latitude: 35,
+							longitude: -42.9958,
+						},
+						{
+							latitude: 40,
+							longitude: -40.0509,
+						},
+						{
+							latitude: 45,
+							longitude: -36.5784,
+						},
+						{
+							latitude: 50,
+							longitude: -32.331,
+						},
+						{
+							latitude: 55,
+							longitude: -26.8792,
+						},
+						{
+							latitude: 60,
+							longitude: -19.3733,
+						},
+						{
+							latitude: 65,
+							longitude: -7.6826,
+						},
+						{
+							latitude: 70,
+							longitude: 20.4564,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Mercury Ascendant line runs through places where Communication colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: -159.5436,
+						},
+						{
+							latitude: -65,
+							longitude: 172.3174,
+						},
+						{
+							latitude: -60,
+							longitude: 160.6267,
+						},
+						{
+							latitude: -55,
+							longitude: 153.1208,
+						},
+						{
+							latitude: -50,
+							longitude: 147.669,
+						},
+						{
+							latitude: -45,
+							longitude: 143.4216,
+						},
+						{
+							latitude: -40,
+							longitude: 139.9491,
+						},
+						{
+							latitude: -35,
+							longitude: 137.0042,
+						},
+						{
+							latitude: -30,
+							longitude: 134.4317,
+						},
+						{
+							latitude: -25,
+							longitude: 132.1274,
+						},
+						{
+							latitude: -20,
+							longitude: 130.0175,
+						},
+						{
+							latitude: -15,
+							longitude: 128.0471,
+						},
+						{
+							latitude: -10,
+							longitude: 126.1731,
+						},
+						{
+							latitude: -5,
+							longitude: 124.3597,
+						},
+						{
+							latitude: 0,
+							longitude: 122.5756,
+						},
+						{
+							latitude: 5,
+							longitude: 120.7914,
+						},
+						{
+							latitude: 10,
+							longitude: 118.978,
+						},
+						{
+							latitude: 15,
+							longitude: 117.104,
+						},
+						{
+							latitude: 20,
+							longitude: 115.1336,
+						},
+						{
+							latitude: 25,
+							longitude: 113.0237,
+						},
+						{
+							latitude: 30,
+							longitude: 110.7194,
+						},
+						{
+							latitude: 35,
+							longitude: 108.1469,
+						},
+						{
+							latitude: 40,
+							longitude: 105.202,
+						},
+						{
+							latitude: 45,
+							longitude: 101.7295,
+						},
+						{
+							latitude: 50,
+							longitude: 97.4821,
+						},
+						{
+							latitude: 55,
+							longitude: 92.0303,
+						},
+						{
+							latitude: 60,
+							longitude: 84.5244,
+						},
+						{
+							latitude: 65,
+							longitude: 72.8337,
+						},
+						{
+							latitude: 70,
+							longitude: 44.6947,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Mercury Descendant line runs through places where Communication shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Venus",
+				symbol: "♀",
+				rightAscension: 301.7767,
+				declination: -14.733,
+				mc: {
+					longitude: 52.2212,
+					interpretation: "Your Venus Midheaven line runs through places where Love, beauty, and money comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: -127.7788,
+					interpretation: "Your Venus Imum Coeli line runs through places where Love, beauty, and money settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: -84.0384,
+						},
+						{
+							latitude: -65,
+							longitude: -72.1063,
+						},
+						{
+							latitude: -60,
+							longitude: -64.8735,
+						},
+						{
+							latitude: -55,
+							longitude: -59.837,
+						},
+						{
+							latitude: -50,
+							longitude: -56.0421,
+						},
+						{
+							latitude: -45,
+							longitude: -53.0246,
+						},
+						{
+							latitude: -40,
+							longitude: -50.5261,
+						},
+						{
+							latitude: -35,
+							longitude: -48.3891,
+						},
+						{
+							latitude: -30,
+							longitude: -46.5113,
+						},
+						{
+							latitude: -25,
+							longitude: -44.8222,
+						},
+						{
+							latitude: -20,
+							longitude: -43.271,
+						},
+						{
+							latitude: -15,
+							longitude: -41.8192,
+						},
+						{
+							latitude: -10,
+							longitude: -40.4364,
+						},
+						{
+							latitude: -5,
+							longitude: -39.0971,
+						},
+						{
+							latitude: 0,
+							longitude: -37.7788,
+						},
+						{
+							latitude: 5,
+							longitude: -36.4605,
+						},
+						{
+							latitude: 10,
+							longitude: -35.1212,
+						},
+						{
+							latitude: 15,
+							longitude: -33.7384,
+						},
+						{
+							latitude: 20,
+							longitude: -32.2866,
+						},
+						{
+							latitude: 25,
+							longitude: -30.7354,
+						},
+						{
+							latitude: 30,
+							longitude: -29.0463,
+						},
+						{
+							latitude: 35,
+							longitude: -27.1685,
+						},
+						{
+							latitude: 40,
+							longitude: -25.0315,
+						},
+						{
+							latitude: 45,
+							longitude: -22.533,
+						},
+						{
+							latitude: 50,
+							longitude: -19.5155,
+						},
+						{
+							latitude: 55,
+							longitude: -15.7206,
+						},
+						{
+							latitude: 60,
+							longitude: -10.6841,
+						},
+						{
+							latitude: 65,
+							longitude: -3.4513,
+						},
+						{
+							latitude: 70,
+							longitude: 8.4808,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Venus Ascendant line runs through places where Love, beauty, and money colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: -171.5192,
+						},
+						{
+							latitude: -65,
+							longitude: 176.5487,
+						},
+						{
+							latitude: -60,
+							longitude: 169.3159,
+						},
+						{
+							latitude: -55,
+							longitude: 164.2794,
+						},
+						{
+							latitude: -50,
+							longitude: 160.4845,
+						},
+						{
+							latitude: -45,
+							longitude: 157.467,
+						},
+						{
+							latitude: -40,
+							longitude: 154.9685,
+						},
+						{
+							latitude: -35,
+							longitude: 152.8315,
+						},
+						{
+							latitude: -30,
+							longitude: 150.9537,
+						},
+						{
+							latitude: -25,
+							longitude: 149.2646,
+						},
+						{
+							latitude: -20,
+							longitude: 147.7134,
+						},
+						{
+							latitude: -15,
+							longitude: 146.2616,
+						},
+						{
+							latitude: -10,
+							longitude: 144.8788,
+						},
+						{
+							latitude: -5,
+							longitude: 143.5395,
+						},
+						{
+							latitude: 0,
+							longitude: 142.2212,
+						},
+						{
+							latitude: 5,
+							longitude: 140.9029,
+						},
+						{
+							latitude: 10,
+							longitude: 139.5636,
+						},
+						{
+							latitude: 15,
+							longitude: 138.1808,
+						},
+						{
+							latitude: 20,
+							longitude: 136.729,
+						},
+						{
+							latitude: 25,
+							longitude: 135.1778,
+						},
+						{
+							latitude: 30,
+							longitude: 133.4887,
+						},
+						{
+							latitude: 35,
+							longitude: 131.6109,
+						},
+						{
+							latitude: 40,
+							longitude: 129.4739,
+						},
+						{
+							latitude: 45,
+							longitude: 126.9754,
+						},
+						{
+							latitude: 50,
+							longitude: 123.9579,
+						},
+						{
+							latitude: 55,
+							longitude: 120.163,
+						},
+						{
+							latitude: 60,
+							longitude: 115.1265,
+						},
+						{
+							latitude: 65,
+							longitude: 107.8937,
+						},
+						{
+							latitude: 70,
+							longitude: 95.9616,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Venus Descendant line runs through places where Love, beauty, and money shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Mars",
+				symbol: "♂",
+				rightAscension: 258.9155,
+				declination: -23.2421,
+				mc: {
+					longitude: 9.3599,
+					interpretation: "Your Mars Midheaven line runs through places where Assertiveness and aggression comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: -170.6401,
+					interpretation: "Your Mars Imum Coeli line runs through places where Assertiveness and aggression settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -147.7133,
+						},
+						{
+							latitude: -60,
+							longitude: -128.7018,
+						},
+						{
+							latitude: -55,
+							longitude: -118.4721,
+						},
+						{
+							latitude: -50,
+							longitude: -111.4254,
+						},
+						{
+							latitude: -45,
+							longitude: -106.0741,
+						},
+						{
+							latitude: -40,
+							longitude: -101.7629,
+						},
+						{
+							latitude: -35,
+							longitude: -98.1408,
+						},
+						{
+							latitude: -30,
+							longitude: -94.9966,
+						},
+						{
+							latitude: -25,
+							longitude: -92.1925,
+						},
+						{
+							latitude: -20,
+							longitude: -89.6331,
+						},
+						{
+							latitude: -15,
+							longitude: -87.2481,
+						},
+						{
+							latitude: -10,
+							longitude: -84.9831,
+						},
+						{
+							latitude: -5,
+							longitude: -82.7934,
+						},
+						{
+							latitude: 0,
+							longitude: -80.6401,
+						},
+						{
+							latitude: 5,
+							longitude: -78.4867,
+						},
+						{
+							latitude: 10,
+							longitude: -76.297,
+						},
+						{
+							latitude: 15,
+							longitude: -74.032,
+						},
+						{
+							latitude: 20,
+							longitude: -71.647,
+						},
+						{
+							latitude: 25,
+							longitude: -69.0876,
+						},
+						{
+							latitude: 30,
+							longitude: -66.2835,
+						},
+						{
+							latitude: 35,
+							longitude: -63.1393,
+						},
+						{
+							latitude: 40,
+							longitude: -59.5172,
+						},
+						{
+							latitude: 45,
+							longitude: -55.2061,
+						},
+						{
+							latitude: 50,
+							longitude: -49.8547,
+						},
+						{
+							latitude: 55,
+							longitude: -42.8081,
+						},
+						{
+							latitude: 60,
+							longitude: -32.5783,
+						},
+						{
+							latitude: 65,
+							longitude: -13.5668,
+						},
+					],
+					circumpolarBeyond: 66.7579,
+					interpretation: "Your Mars Ascendant line runs through places where Assertiveness and aggression colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: 166.4332,
+						},
+						{
+							latitude: -60,
+							longitude: 147.4217,
+						},
+						{
+							latitude: -55,
+							longitude: 137.1919,
+						},
+						{
+							latitude: -50,
+							longitude: 130.1453,
+						},
+						{
+							latitude: -45,
+							longitude: 124.7939,
+						},
+						{
+							latitude: -40,
+							longitude: 120.4828,
+						},
+						{
+							latitude: -35,
+							longitude: 116.8607,
+						},
+						{
+							latitude: -30,
+							longitude: 113.7165,
+						},
+						{
+							latitude: -25,
+							longitude: 110.9124,
+						},
+						{
+							latitude: -20,
+							longitude: 108.353,
+						},
+						{
+							latitude: -15,
+							longitude: 105.968,
+						},
+						{
+							latitude: -10,
+							longitude: 103.703,
+						},
+						{
+							latitude: -5,
+							longitude: 101.5133,
+						},
+						{
+							latitude: 0,
+							longitude: 99.3599,
+						},
+						{
+							latitude: 5,
+							longitude: 97.2066,
+						},
+						{
+							latitude: 10,
+							longitude: 95.0169,
+						},
+						{
+							latitude: 15,
+							longitude: 92.7519,
+						},
+						{
+							latitude: 20,
+							longitude: 90.3669,
+						},
+						{
+							latitude: 25,
+							longitude: 87.8075,
+						},
+						{
+							latitude: 30,
+							longitude: 85.0034,
+						},
+						{
+							latitude: 35,
+							longitude: 81.8592,
+						},
+						{
+							latitude: 40,
+							longitude: 78.2371,
+						},
+						{
+							latitude: 45,
+							longitude: 73.9259,
+						},
+						{
+							latitude: 50,
+							longitude: 68.5746,
+						},
+						{
+							latitude: 55,
+							longitude: 61.5279,
+						},
+						{
+							latitude: 60,
+							longitude: 51.2982,
+						},
+						{
+							latitude: 65,
+							longitude: 32.2867,
+						},
+					],
+					circumpolarBeyond: 66.7579,
+					interpretation: "Your Mars Descendant line runs through places where Assertiveness and aggression shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Jupiter",
+				symbol: "♃",
+				rightAscension: 93.6759,
+				declination: 23.3188,
+				mc: {
+					longitude: -155.8796,
+					interpretation: "Your Jupiter Midheaven line runs through places where Luck and opportunity comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: 24.1204,
+					interpretation: "Your Jupiter Imum Coeli line runs through places where Luck and opportunity settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -178.3008,
+						},
+						{
+							latitude: -60,
+							longitude: 162.4182,
+						},
+						{
+							latitude: -55,
+							longitude: 152.1169,
+						},
+						{
+							latitude: -50,
+							longitude: 145.0319,
+						},
+						{
+							latitude: -45,
+							longitude: 139.6551,
+						},
+						{
+							latitude: -40,
+							longitude: 135.325,
+						},
+						{
+							latitude: -35,
+							longitude: 131.6879,
+						},
+						{
+							latitude: -30,
+							longitude: 128.5311,
+						},
+						{
+							latitude: -25,
+							longitude: 125.7162,
+						},
+						{
+							latitude: -20,
+							longitude: 123.147,
+						},
+						{
+							latitude: -15,
+							longitude: 120.753,
+						},
+						{
+							latitude: -10,
+							longitude: 118.4795,
+						},
+						{
+							latitude: -5,
+							longitude: 116.2817,
+						},
+						{
+							latitude: 0,
+							longitude: 114.1204,
+						},
+						{
+							latitude: 5,
+							longitude: 111.9591,
+						},
+						{
+							latitude: 10,
+							longitude: 109.7614,
+						},
+						{
+							latitude: 15,
+							longitude: 107.4879,
+						},
+						{
+							latitude: 20,
+							longitude: 105.0939,
+						},
+						{
+							latitude: 25,
+							longitude: 102.5247,
+						},
+						{
+							latitude: 30,
+							longitude: 99.7097,
+						},
+						{
+							latitude: 35,
+							longitude: 96.5529,
+						},
+						{
+							latitude: 40,
+							longitude: 92.9158,
+						},
+						{
+							latitude: 45,
+							longitude: 88.5858,
+						},
+						{
+							latitude: 50,
+							longitude: 83.2089,
+						},
+						{
+							latitude: 55,
+							longitude: 76.124,
+						},
+						{
+							latitude: 60,
+							longitude: 65.8227,
+						},
+						{
+							latitude: 65,
+							longitude: 46.5417,
+						},
+					],
+					circumpolarBeyond: 66.6812,
+					interpretation: "Your Jupiter Ascendant line runs through places where Luck and opportunity colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -133.4583,
+						},
+						{
+							latitude: -60,
+							longitude: -114.1773,
+						},
+						{
+							latitude: -55,
+							longitude: -103.876,
+						},
+						{
+							latitude: -50,
+							longitude: -96.7911,
+						},
+						{
+							latitude: -45,
+							longitude: -91.4142,
+						},
+						{
+							latitude: -40,
+							longitude: -87.0842,
+						},
+						{
+							latitude: -35,
+							longitude: -83.4471,
+						},
+						{
+							latitude: -30,
+							longitude: -80.2903,
+						},
+						{
+							latitude: -25,
+							longitude: -77.4753,
+						},
+						{
+							latitude: -20,
+							longitude: -74.9061,
+						},
+						{
+							latitude: -15,
+							longitude: -72.5121,
+						},
+						{
+							latitude: -10,
+							longitude: -70.2386,
+						},
+						{
+							latitude: -5,
+							longitude: -68.0409,
+						},
+						{
+							latitude: 0,
+							longitude: -65.8796,
+						},
+						{
+							latitude: 5,
+							longitude: -63.7183,
+						},
+						{
+							latitude: 10,
+							longitude: -61.5205,
+						},
+						{
+							latitude: 15,
+							longitude: -59.247,
+						},
+						{
+							latitude: 20,
+							longitude: -56.853,
+						},
+						{
+							latitude: 25,
+							longitude: -54.2838,
+						},
+						{
+							latitude: 30,
+							longitude: -51.4689,
+						},
+						{
+							latitude: 35,
+							longitude: -48.3121,
+						},
+						{
+							latitude: 40,
+							longitude: -44.675,
+						},
+						{
+							latitude: 45,
+							longitude: -40.3449,
+						},
+						{
+							latitude: 50,
+							longitude: -34.9681,
+						},
+						{
+							latitude: 55,
+							longitude: -27.8831,
+						},
+						{
+							latitude: 60,
+							longitude: -17.5818,
+						},
+						{
+							latitude: 65,
+							longitude: 1.6992,
+						},
+					],
+					circumpolarBeyond: 66.6812,
+					interpretation: "Your Jupiter Descendant line runs through places where Luck and opportunity shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Saturn",
+				symbol: "♄",
+				rightAscension: 288.7191,
+				declination: -22.0466,
+				mc: {
+					longitude: 39.1636,
+					interpretation: "Your Saturn Midheaven line runs through places where Responsibility, time, and routine comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: -140.8364,
+					interpretation: "Your Saturn Imum Coeli line runs through places where Responsibility, time, and routine settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -111.1175,
+						},
+						{
+							latitude: -60,
+							longitude: -95.3786,
+						},
+						{
+							latitude: -55,
+							longitude: -86.1718,
+						},
+						{
+							latitude: -50,
+							longitude: -79.6936,
+						},
+						{
+							latitude: -45,
+							longitude: -74.7259,
+						},
+						{
+							latitude: -40,
+							longitude: -70.7019,
+						},
+						{
+							latitude: -35,
+							longitude: -67.3095,
+						},
+						{
+							latitude: -30,
+							longitude: -64.358,
+						},
+						{
+							latitude: -25,
+							longitude: -61.7217,
+						},
+						{
+							latitude: -20,
+							longitude: -59.3126,
+						},
+						{
+							latitude: -15,
+							longitude: -57.066,
+						},
+						{
+							latitude: -10,
+							longitude: -54.9313,
+						},
+						{
+							latitude: -5,
+							longitude: -52.8669,
+						},
+						{
+							latitude: 0,
+							longitude: -50.8364,
+						},
+						{
+							latitude: 5,
+							longitude: -48.806,
+						},
+						{
+							latitude: 10,
+							longitude: -46.7416,
+						},
+						{
+							latitude: 15,
+							longitude: -44.6069,
+						},
+						{
+							latitude: 20,
+							longitude: -42.3603,
+						},
+						{
+							latitude: 25,
+							longitude: -39.9512,
+						},
+						{
+							latitude: 30,
+							longitude: -37.3149,
+						},
+						{
+							latitude: 35,
+							longitude: -34.3633,
+						},
+						{
+							latitude: 40,
+							longitude: -30.971,
+						},
+						{
+							latitude: 45,
+							longitude: -26.947,
+						},
+						{
+							latitude: 50,
+							longitude: -21.9793,
+						},
+						{
+							latitude: 55,
+							longitude: -15.5011,
+						},
+						{
+							latitude: 60,
+							longitude: -6.2943,
+						},
+						{
+							latitude: 65,
+							longitude: 9.4446,
+						},
+					],
+					circumpolarBeyond: 67.9534,
+					interpretation: "Your Saturn Ascendant line runs through places where Responsibility, time, and routine colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -170.5554,
+						},
+						{
+							latitude: -60,
+							longitude: 173.7057,
+						},
+						{
+							latitude: -55,
+							longitude: 164.4989,
+						},
+						{
+							latitude: -50,
+							longitude: 158.0207,
+						},
+						{
+							latitude: -45,
+							longitude: 153.053,
+						},
+						{
+							latitude: -40,
+							longitude: 149.029,
+						},
+						{
+							latitude: -35,
+							longitude: 145.6367,
+						},
+						{
+							latitude: -30,
+							longitude: 142.6851,
+						},
+						{
+							latitude: -25,
+							longitude: 140.0488,
+						},
+						{
+							latitude: -20,
+							longitude: 137.6397,
+						},
+						{
+							latitude: -15,
+							longitude: 135.3931,
+						},
+						{
+							latitude: -10,
+							longitude: 133.2584,
+						},
+						{
+							latitude: -5,
+							longitude: 131.194,
+						},
+						{
+							latitude: 0,
+							longitude: 129.1636,
+						},
+						{
+							latitude: 5,
+							longitude: 127.1331,
+						},
+						{
+							latitude: 10,
+							longitude: 125.0687,
+						},
+						{
+							latitude: 15,
+							longitude: 122.934,
+						},
+						{
+							latitude: 20,
+							longitude: 120.6874,
+						},
+						{
+							latitude: 25,
+							longitude: 118.2783,
+						},
+						{
+							latitude: 30,
+							longitude: 115.642,
+						},
+						{
+							latitude: 35,
+							longitude: 112.6905,
+						},
+						{
+							latitude: 40,
+							longitude: 109.2981,
+						},
+						{
+							latitude: 45,
+							longitude: 105.2741,
+						},
+						{
+							latitude: 50,
+							longitude: 100.3064,
+						},
+						{
+							latitude: 55,
+							longitude: 93.8282,
+						},
+						{
+							latitude: 60,
+							longitude: 84.6214,
+						},
+						{
+							latitude: 65,
+							longitude: 68.8825,
+						},
+					],
+					circumpolarBeyond: 67.9534,
+					interpretation: "Your Saturn Descendant line runs through places where Responsibility, time, and routine shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Uranus",
+				symbol: "♅",
+				rightAscension: 277.2139,
+				declination: -23.551,
+				mc: {
+					longitude: 27.6584,
+					interpretation: "Your Uranus Midheaven line runs through places where Individuality and revolution comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: -152.3416,
+					interpretation: "Your Uranus Imum Coeli line runs through places where Individuality and revolution settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -131.526,
+						},
+						{
+							latitude: -60,
+							longitude: -111.3627,
+						},
+						{
+							latitude: -55,
+							longitude: -100.8397,
+						},
+						{
+							latitude: -50,
+							longitude: -93.637,
+						},
+						{
+							latitude: -45,
+							longitude: -88.1823,
+						},
+						{
+							latitude: -40,
+							longitude: -83.7947,
+						},
+						{
+							latitude: -35,
+							longitude: -80.1118,
+						},
+						{
+							latitude: -30,
+							longitude: -76.9168,
+						},
+						{
+							latitude: -25,
+							longitude: -74.0686,
+						},
+						{
+							latitude: -20,
+							longitude: -71.4698,
+						},
+						{
+							latitude: -15,
+							longitude: -69.0485,
+						},
+						{
+							latitude: -10,
+							longitude: -66.7494,
+						},
+						{
+							latitude: -5,
+							longitude: -64.527,
+						},
+						{
+							latitude: 0,
+							longitude: -62.3416,
+						},
+						{
+							latitude: 5,
+							longitude: -60.1561,
+						},
+						{
+							latitude: 10,
+							longitude: -57.9337,
+						},
+						{
+							latitude: 15,
+							longitude: -55.6346,
+						},
+						{
+							latitude: 20,
+							longitude: -53.2134,
+						},
+						{
+							latitude: 25,
+							longitude: -50.6145,
+						},
+						{
+							latitude: 30,
+							longitude: -47.7664,
+						},
+						{
+							latitude: 35,
+							longitude: -44.5713,
+						},
+						{
+							latitude: 40,
+							longitude: -40.8885,
+						},
+						{
+							latitude: 45,
+							longitude: -36.5008,
+						},
+						{
+							latitude: 50,
+							longitude: -31.0461,
+						},
+						{
+							latitude: 55,
+							longitude: -23.8434,
+						},
+						{
+							latitude: 60,
+							longitude: -13.3204,
+						},
+						{
+							latitude: 65,
+							longitude: 6.8429,
+						},
+					],
+					circumpolarBeyond: 66.449,
+					interpretation: "Your Uranus Ascendant line runs through places where Individuality and revolution colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -173.1571,
+						},
+						{
+							latitude: -60,
+							longitude: 166.6796,
+						},
+						{
+							latitude: -55,
+							longitude: 156.1566,
+						},
+						{
+							latitude: -50,
+							longitude: 148.9539,
+						},
+						{
+							latitude: -45,
+							longitude: 143.4992,
+						},
+						{
+							latitude: -40,
+							longitude: 139.1115,
+						},
+						{
+							latitude: -35,
+							longitude: 135.4287,
+						},
+						{
+							latitude: -30,
+							longitude: 132.2336,
+						},
+						{
+							latitude: -25,
+							longitude: 129.3855,
+						},
+						{
+							latitude: -20,
+							longitude: 126.7866,
+						},
+						{
+							latitude: -15,
+							longitude: 124.3654,
+						},
+						{
+							latitude: -10,
+							longitude: 122.0663,
+						},
+						{
+							latitude: -5,
+							longitude: 119.8439,
+						},
+						{
+							latitude: 0,
+							longitude: 117.6584,
+						},
+						{
+							latitude: 5,
+							longitude: 115.473,
+						},
+						{
+							latitude: 10,
+							longitude: 113.2506,
+						},
+						{
+							latitude: 15,
+							longitude: 110.9515,
+						},
+						{
+							latitude: 20,
+							longitude: 108.5302,
+						},
+						{
+							latitude: 25,
+							longitude: 105.9314,
+						},
+						{
+							latitude: 30,
+							longitude: 103.0832,
+						},
+						{
+							latitude: 35,
+							longitude: 99.8882,
+						},
+						{
+							latitude: 40,
+							longitude: 96.2053,
+						},
+						{
+							latitude: 45,
+							longitude: 91.8177,
+						},
+						{
+							latitude: 50,
+							longitude: 86.363,
+						},
+						{
+							latitude: 55,
+							longitude: 79.1603,
+						},
+						{
+							latitude: 60,
+							longitude: 68.6373,
+						},
+						{
+							latitude: 65,
+							longitude: 48.474,
+						},
+					],
+					circumpolarBeyond: 66.449,
+					interpretation: "Your Uranus Descendant line runs through places where Individuality and revolution shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Neptune",
+				symbol: "♆",
+				rightAscension: 283.5705,
+				declination: -22.0057,
+				mc: {
+					longitude: 34.015,
+					interpretation: "Your Neptune Midheaven line runs through places where Dreams, healing, and intuition comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: -145.985,
+					interpretation: "Your Neptune Imum Coeli line runs through places where Dreams, healing, and intuition settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -116.0609,
+						},
+						{
+							latitude: -60,
+							longitude: -100.4117,
+						},
+						{
+							latitude: -55,
+							longitude: -91.2372,
+						},
+						{
+							latitude: -50,
+							longitude: -84.7775,
+						},
+						{
+							latitude: -45,
+							longitude: -79.8225,
+						},
+						{
+							latitude: -40,
+							longitude: -75.8081,
+						},
+						{
+							latitude: -35,
+							longitude: -72.4234,
+						},
+						{
+							latitude: -30,
+							longitude: -69.4784,
+						},
+						{
+							latitude: -25,
+							longitude: -66.8477,
+						},
+						{
+							latitude: -20,
+							longitude: -64.4437,
+						},
+						{
+							latitude: -15,
+							longitude: -62.2018,
+						},
+						{
+							latitude: -10,
+							longitude: -60.0715,
+						},
+						{
+							latitude: -5,
+							longitude: -58.0113,
+						},
+						{
+							latitude: 0,
+							longitude: -55.985,
+						},
+						{
+							latitude: 5,
+							longitude: -53.9588,
+						},
+						{
+							latitude: 10,
+							longitude: -51.8986,
+						},
+						{
+							latitude: 15,
+							longitude: -49.7683,
+						},
+						{
+							latitude: 20,
+							longitude: -47.5264,
+						},
+						{
+							latitude: 25,
+							longitude: -45.1224,
+						},
+						{
+							latitude: 30,
+							longitude: -42.4917,
+						},
+						{
+							latitude: 35,
+							longitude: -39.5467,
+						},
+						{
+							latitude: 40,
+							longitude: -36.162,
+						},
+						{
+							latitude: 45,
+							longitude: -32.1476,
+						},
+						{
+							latitude: 50,
+							longitude: -27.1926,
+						},
+						{
+							latitude: 55,
+							longitude: -20.7329,
+						},
+						{
+							latitude: 60,
+							longitude: -11.5584,
+						},
+						{
+							latitude: 65,
+							longitude: 4.0908,
+						},
+					],
+					circumpolarBeyond: 67.9943,
+					interpretation: "Your Neptune Ascendant line runs through places where Dreams, healing, and intuition colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -65,
+							longitude: -175.9092,
+						},
+						{
+							latitude: -60,
+							longitude: 168.4416,
+						},
+						{
+							latitude: -55,
+							longitude: 159.2671,
+						},
+						{
+							latitude: -50,
+							longitude: 152.8074,
+						},
+						{
+							latitude: -45,
+							longitude: 147.8524,
+						},
+						{
+							latitude: -40,
+							longitude: 143.838,
+						},
+						{
+							latitude: -35,
+							longitude: 140.4533,
+						},
+						{
+							latitude: -30,
+							longitude: 137.5083,
+						},
+						{
+							latitude: -25,
+							longitude: 134.8776,
+						},
+						{
+							latitude: -20,
+							longitude: 132.4736,
+						},
+						{
+							latitude: -15,
+							longitude: 130.2317,
+						},
+						{
+							latitude: -10,
+							longitude: 128.1014,
+						},
+						{
+							latitude: -5,
+							longitude: 126.0412,
+						},
+						{
+							latitude: 0,
+							longitude: 124.015,
+						},
+						{
+							latitude: 5,
+							longitude: 121.9887,
+						},
+						{
+							latitude: 10,
+							longitude: 119.9285,
+						},
+						{
+							latitude: 15,
+							longitude: 117.7982,
+						},
+						{
+							latitude: 20,
+							longitude: 115.5563,
+						},
+						{
+							latitude: 25,
+							longitude: 113.1523,
+						},
+						{
+							latitude: 30,
+							longitude: 110.5216,
+						},
+						{
+							latitude: 35,
+							longitude: 107.5766,
+						},
+						{
+							latitude: 40,
+							longitude: 104.1919,
+						},
+						{
+							latitude: 45,
+							longitude: 100.1775,
+						},
+						{
+							latitude: 50,
+							longitude: 95.2225,
+						},
+						{
+							latitude: 55,
+							longitude: 88.7628,
+						},
+						{
+							latitude: 60,
+							longitude: 79.5883,
+						},
+						{
+							latitude: 65,
+							longitude: 63.9391,
+						},
+					],
+					circumpolarBeyond: 67.9943,
+					interpretation: "Your Neptune Descendant line runs through places where Dreams, healing, and intuition shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+			{
+				planet: "Pluto",
+				symbol: "♇",
+				rightAscension: 229.2481,
+				declination: -2.2447,
+				mc: {
+					longitude: -20.3074,
+					interpretation: "Your Pluto Midheaven line runs through places where Sex, death, and transformation comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
+				},
+				ic: {
+					longitude: 159.6926,
+					interpretation: "Your Pluto Imum Coeli line runs through places where Sex, death, and transformation settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+				},
+				ascendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: -116.4899,
+						},
+						{
+							latitude: -65,
+							longitude: -115.1294,
+						},
+						{
+							latitude: -60,
+							longitude: -114.2004,
+						},
+						{
+							latitude: -55,
+							longitude: -113.5165,
+						},
+						{
+							latitude: -50,
+							longitude: -112.9849,
+						},
+						{
+							latitude: -45,
+							longitude: -112.5538,
+						},
+						{
+							latitude: -40,
+							longitude: -112.1922,
+						},
+						{
+							latitude: -35,
+							longitude: -111.8802,
+						},
+						{
+							latitude: -30,
+							longitude: -111.6042,
+						},
+						{
+							latitude: -25,
+							longitude: -111.3547,
+						},
+						{
+							latitude: -20,
+							longitude: -111.1249,
+						},
+						{
+							latitude: -15,
+							longitude: -110.9092,
+						},
+						{
+							latitude: -10,
+							longitude: -110.7034,
+						},
+						{
+							latitude: -5,
+							longitude: -110.5039,
+						},
+						{
+							latitude: 0,
+							longitude: -110.3074,
+						},
+						{
+							latitude: 5,
+							longitude: -110.1109,
+						},
+						{
+							latitude: 10,
+							longitude: -109.9114,
+						},
+						{
+							latitude: 15,
+							longitude: -109.7056,
+						},
+						{
+							latitude: 20,
+							longitude: -109.4899,
+						},
+						{
+							latitude: 25,
+							longitude: -109.2601,
+						},
+						{
+							latitude: 30,
+							longitude: -109.0106,
+						},
+						{
+							latitude: 35,
+							longitude: -108.7346,
+						},
+						{
+							latitude: 40,
+							longitude: -108.4225,
+						},
+						{
+							latitude: 45,
+							longitude: -108.0609,
+						},
+						{
+							latitude: 50,
+							longitude: -107.6299,
+						},
+						{
+							latitude: 55,
+							longitude: -107.0983,
+						},
+						{
+							latitude: 60,
+							longitude: -106.4144,
+						},
+						{
+							latitude: 65,
+							longitude: -105.4854,
+						},
+						{
+							latitude: 70,
+							longitude: -104.1249,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Pluto Ascendant line runs through places where Sex, death, and transformation colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
+				},
+				descendant: {
+					points: [
+						{
+							latitude: -70,
+							longitude: 75.8751,
+						},
+						{
+							latitude: -65,
+							longitude: 74.5146,
+						},
+						{
+							latitude: -60,
+							longitude: 73.5856,
+						},
+						{
+							latitude: -55,
+							longitude: 72.9017,
+						},
+						{
+							latitude: -50,
+							longitude: 72.3701,
+						},
+						{
+							latitude: -45,
+							longitude: 71.9391,
+						},
+						{
+							latitude: -40,
+							longitude: 71.5775,
+						},
+						{
+							latitude: -35,
+							longitude: 71.2654,
+						},
+						{
+							latitude: -30,
+							longitude: 70.9894,
+						},
+						{
+							latitude: -25,
+							longitude: 70.7399,
+						},
+						{
+							latitude: -20,
+							longitude: 70.5101,
+						},
+						{
+							latitude: -15,
+							longitude: 70.2944,
+						},
+						{
+							latitude: -10,
+							longitude: 70.0886,
+						},
+						{
+							latitude: -5,
+							longitude: 69.8891,
+						},
+						{
+							latitude: 0,
+							longitude: 69.6926,
+						},
+						{
+							latitude: 5,
+							longitude: 69.4961,
+						},
+						{
+							latitude: 10,
+							longitude: 69.2966,
+						},
+						{
+							latitude: 15,
+							longitude: 69.0908,
+						},
+						{
+							latitude: 20,
+							longitude: 68.8751,
+						},
+						{
+							latitude: 25,
+							longitude: 68.6453,
+						},
+						{
+							latitude: 30,
+							longitude: 68.3958,
+						},
+						{
+							latitude: 35,
+							longitude: 68.1198,
+						},
+						{
+							latitude: 40,
+							longitude: 67.8078,
+						},
+						{
+							latitude: 45,
+							longitude: 67.4462,
+						},
+						{
+							latitude: 50,
+							longitude: 67.0151,
+						},
+						{
+							latitude: 55,
+							longitude: 66.4835,
+						},
+						{
+							latitude: 60,
+							longitude: 65.7996,
+						},
+						{
+							latitude: 65,
+							longitude: 64.8706,
+						},
+						{
+							latitude: 70,
+							longitude: 63.5101,
+						},
+					],
+					circumpolarBeyond: null,
+					interpretation: "Your Pluto Descendant line runs through places where Sex, death, and transformation shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+				},
+			},
+		],
+		summary: "Astrocartography lines for 1990-01-15 14:30:00. 10 bodies, each with Midheaven, Imum Coeli, Ascendant, and Descendant lines mapping where their themes turn angular worldwide for relocation planning.",
+	},
+	"local-space": {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		bodies: [
+			{
+				planet: "Sun",
+				symbol: "☉",
+				azimuth: 213.14294303303498,
+				altitude: 42.6474845334841,
+				compassDirection: "SSW",
+				aboveHorizon: true,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 6.362609798281181,
+							longitude: 64.69695880352981,
+						},
+						{
+							latitude: -6.469898313152553,
+							longitude: 56.91362298473621,
+						},
+						{
+							latitude: -19.177984909384104,
+							longitude: 48.72098781588511,
+						},
+						{
+							latitude: -31.46242793977123,
+							longitude: 39.165722706293536,
+						},
+						{
+							latitude: -42.828453404883355,
+							longitude: 26.82162068528669,
+						},
+						{
+							latitude: -52.311310226964345,
+							longitude: 9.467986846344957,
+						},
+						{
+							latitude: -58.09808989276067,
+							longitude: -14.983920795443169,
+						},
+						{
+							latitude: -58.071539299465044,
+							longitude: -43.57199393693588,
+						},
+						{
+							latitude: -52.24404959394988,
+							longitude: -67.96505781812914,
+						},
+						{
+							latitude: -42.739255753001295,
+							longitude: -85.26580808008538,
+						},
+						{
+							latitude: -31.36246231795996,
+							longitude: -97.57852557323082,
+						},
+						{
+							latitude: -19.072830000000007,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Sun line points southwest from your birthplace. Travelling or facing this direction tends to emphasize Self-awareness and ego in your daily experience.",
+			},
+			{
+				planet: "Moon",
+				symbol: "☽",
+				azimuth: 311.2786505458125,
+				altitude: -57.84013487445256,
+				compassDirection: "NW",
+				aboveHorizon: false,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 28.49033265583154,
+							longitude: 60.09687188463977,
+						},
+						{
+							latitude: 36.49436387673665,
+							longitude: 45.01655315955179,
+						},
+						{
+							latitude: 42.21744743816639,
+							longitude: 27.0322271846768,
+						},
+						{
+							latitude: 44.69692550690674,
+							longitude: 6.594697088163343,
+						},
+						{
+							latitude: 43.380042751475045,
+							longitude: -14.248349567023638,
+						},
+						{
+							latitude: 38.572585518191694,
+							longitude: -33.123382930723835,
+						},
+						{
+							latitude: 31.177154762758462,
+							longitude: -49.0746769331231,
+						},
+						{
+							latitude: 22.122420673312053,
+							longitude: -62.485652271937965,
+						},
+						{
+							latitude: 12.11203344942754,
+							longitude: -74.1954107879069,
+						},
+						{
+							latitude: 1.6481616006350388,
+							longitude: -85.03679014188748,
+						},
+						{
+							latitude: -8.873894610416315,
+							longitude: -95.76390305696714,
+						},
+						{
+							latitude: -19.072829999999996,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Moon line points northwest from your birthplace. Travelling or facing this direction tends to emphasize Inner emotional life in your daily experience.",
+			},
+			{
+				planet: "Mercury",
+				symbol: "☿",
+				azimuth: 227.8507930554443,
+				altitude: 34.71253982502308,
+				compassDirection: "SW",
+				aboveHorizon: true,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 8.713045071300735,
+							longitude: 61.688778291011204,
+						},
+						{
+							latitude: -1.95539875202933,
+							longitude: 51.11049679728569,
+						},
+						{
+							latitude: -12.556579215568766,
+							longitude: 40.396497493816014,
+						},
+						{
+							latitude: -22.697759758075357,
+							longitude: 28.777897333385454,
+						},
+						{
+							latitude: -31.873117367041136,
+							longitude: 15.393568735447616,
+						},
+						{
+							latitude: -39.36251845526132,
+							longitude: -0.6407907086137357,
+						},
+						{
+							latitude: -44.20186375223528,
+							longitude: -19.739738442406974,
+						},
+						{
+							latitude: -45.45009915344959,
+							longitude: -40.87703808952688,
+						},
+						{
+							latitude: -42.80660030115349,
+							longitude: -61.50904003093183,
+						},
+						{
+							latitude: -36.877300017593114,
+							longitude: -79.50938946785305,
+						},
+						{
+							latitude: -28.671349754871805,
+							longitude: -94.48443129997975,
+						},
+						{
+							latitude: -19.072830000000003,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Mercury line points southwest from your birthplace. Travelling or facing this direction tends to emphasize Communication in your daily experience.",
+			},
+			{
+				planet: "Venus",
+				symbol: "♀",
+				azimuth: 212.48017901132567,
+				altitude: 50.546351367976065,
+				compassDirection: "SSW",
+				aboveHorizon: true,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 6.274224538880711,
+							longitude: 64.84486857780541,
+						},
+						{
+							latitude: -6.640725234797167,
+							longitude: 57.1994482707172,
+						},
+						{
+							latitude: -19.432290580354316,
+							longitude: 49.138085025947134,
+						},
+						{
+							latitude: -31.807676544030752,
+							longitude: 39.704274466120864,
+						},
+						{
+							latitude: -43.27712477456565,
+							longitude: 27.446549238756802,
+						},
+						{
+							latitude: -52.87002371136706,
+							longitude: 10.054836184570036,
+						},
+						{
+							latitude: -58.72398246023285,
+							longitude: -14.72714606479019,
+						},
+						{
+							latitude: -58.63175467422475,
+							longitude: -43.81004060313836,
+						},
+						{
+							latitude: -52.63777471281597,
+							longitude: -68.38203920307024,
+						},
+						{
+							latitude: -42.97075950468726,
+							longitude: -85.58924803535456,
+						},
+						{
+							latitude: -31.465398687000484,
+							longitude: -97.73930917111647,
+						},
+						{
+							latitude: -19.072830000000007,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Venus line points southwest from your birthplace. Travelling or facing this direction tends to emphasize Love, beauty, and money in your daily experience.",
+			},
+			{
+				planet: "Mars",
+				symbol: "♂",
+				azimuth: 238.3578893456022,
+				altitude: 14.9646856927029,
+				compassDirection: "WSW",
+				aboveHorizon: true,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 10.795816622061528,
+							longitude: 59.920093743927964,
+						},
+						{
+							latitude: 2.010611346590143,
+							longitude: 47.67287501092551,
+						},
+						{
+							latitude: -6.8650578404072435,
+							longitude: 35.557526785267896,
+						},
+						{
+							latitude: -15.426469146449335,
+							longitude: 22.989977065429343,
+						},
+						{
+							latitude: -23.225068116765623,
+							longitude: 9.393596600536853,
+						},
+						{
+							latitude: -29.723352170302363,
+							longitude: -5.732479697836993,
+						},
+						{
+							latitude: -34.2976723764728,
+							longitude: -22.606568341782804,
+						},
+						{
+							latitude: -36.35391124614562,
+							longitude: -40.84649689712114,
+						},
+						{
+							latitude: -35.5669327665314,
+							longitude: -59.38112170543832,
+						},
+						{
+							latitude: -32.06609802745416,
+							longitude: -76.9648254328066,
+						},
+						{
+							latitude: -26.356890069896725,
+							longitude: -92.8819873060632,
+						},
+						{
+							latitude: -19.072830000000003,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Mars line points southwest from your birthplace. Travelling or facing this direction tends to emphasize Assertiveness and aggression in your daily experience.",
+			},
+			{
+				planet: "Jupiter",
+				symbol: "♃",
+				azimuth: 50.36818111724443,
+				altitude: -26.280106633735983,
+				compassDirection: "NE",
+				aboveHorizon: false,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 28.14216054847671,
+							longitude: 85.94760476389342,
+						},
+						{
+							latitude: 35.76125282774255,
+							longitude: 101.21279249099007,
+						},
+						{
+							latitude: 41.0966149744488,
+							longitude: 119.15566557836678,
+						},
+						{
+							latitude: 43.27151094553908,
+							longitude: 139.23570474429835,
+						},
+						{
+							latitude: 41.825897403490885,
+							longitude: 159.55279794062278,
+						},
+						{
+							latitude: 37.07330126063974,
+							longitude: 178.02599759093482,
+						},
+						{
+							latitude: 29.84932871516131,
+							longitude: -166.17688506102843,
+						},
+						{
+							latitude: 21.01955982784655,
+							longitude: -152.72152339950867,
+						},
+						{
+							latitude: 11.256903563263068,
+							longitude: -140.84650423870244,
+						},
+						{
+							latitude: 1.0558615108081921,
+							longitude: -129.7701300377504,
+						},
+						{
+							latitude: -9.184251029048406,
+							longitude: -118.76667344081261,
+						},
+						{
+							latitude: -19.072829999999996,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Jupiter line points northeast from your birthplace. Travelling or facing this direction tends to emphasize Luck and opportunity in your daily experience.",
+			},
+			{
+				planet: "Saturn",
+				symbol: "♄",
+				azimuth: 220.30162653261473,
+				altitude: 37.298739335821836,
+				compassDirection: "SW",
+				aboveHorizon: true,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 7.416596999361662,
+							longitude: 63.16342105774493,
+						},
+						{
+							latitude: -4.439181630487504,
+							longitude: 53.95466392420974,
+						},
+						{
+							latitude: -16.17725059549284,
+							longitude: 44.4437301432946,
+						},
+						{
+							latitude: -27.440805053703727,
+							longitude: 33.746139191643806,
+						},
+						{
+							latitude: -37.70884486054625,
+							longitude: 20.723094831320054,
+						},
+						{
+							latitude: -46.119206915168014,
+							longitude: 3.9538600297254334,
+						},
+						{
+							latitude: -51.33366570459387,
+							longitude: -17.47427281767898,
+						},
+						{
+							latitude: -51.96194962691095,
+							longitude: -41.74021153518851,
+						},
+						{
+							latitude: -47.793810374614715,
+							longitude: -64.21086391367527,
+						},
+						{
+							latitude: -40.04452187538181,
+							longitude: -82.12791595037527,
+						},
+						{
+							latitude: -30.14485309481106,
+							longitude: -95.9551236880231,
+						},
+						{
+							latitude: -19.072830000000007,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Saturn line points southwest from your birthplace. Travelling or facing this direction tends to emphasize Responsibility, time, and routine in your daily experience.",
+			},
+			{
+				planet: "Uranus",
+				symbol: "♅",
+				azimuth: 227.8696124254053,
+				altitude: 28.662975986180435,
+				compassDirection: "SW",
+				aboveHorizon: true,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 8.71649842501682,
+							longitude: 61.685303181104246,
+						},
+						{
+							latitude: -1.9488005776117572,
+							longitude: 51.10378423077748,
+						},
+						{
+							latitude: -12.547025058033997,
+							longitude: 40.3870077283126,
+						},
+						{
+							latitude: -22.68537974011377,
+							longitude: 28.766407914553497,
+						},
+						{
+							latitude: -31.858117405878573,
+							longitude: 15.381477859141228,
+						},
+						{
+							latitude: -39.34546212240519,
+							longitude: -0.6510759604138912,
+						},
+						{
+							latitude: -44.184096154736956,
+							longitude: -19.74509607467735,
+						},
+						{
+							latitude: -45.4338203201708,
+							longitude: -40.87591033884638,
+						},
+						{
+							latitude: -42.79389010652403,
+							longitude: -61.50366816365374,
+						},
+						{
+							latitude: -36.86905673207706,
+							longitude: -79.50371714145712,
+						},
+						{
+							latitude: -28.66745931194112,
+							longitude: -94.48109105021047,
+						},
+						{
+							latitude: -19.072830000000003,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Uranus line points southwest from your birthplace. Travelling or facing this direction tends to emphasize Individuality and revolution in your daily experience.",
+			},
+			{
+				planet: "Neptune",
+				symbol: "♆",
+				azimuth: 224.59857086498752,
+				altitude: 34.042344939348965,
+				compassDirection: "SW",
+				aboveHorizon: true,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 8.132439112903214,
+							longitude: 62.30471958649173,
+						},
+						{
+							latitude: -3.0660243473691895,
+							longitude: 52.299181610211576,
+						},
+						{
+							latitude: -14.16942784408257,
+							longitude: 42.081227131526816,
+						},
+						{
+							latitude: -24.79743332858903,
+							longitude: 30.828849292662312,
+						},
+						{
+							latitude: -34.43358542426554,
+							longitude: 17.567859856075643,
+						},
+						{
+							latitude: -42.29556021410598,
+							longitude: 1.2168261726321816,
+						},
+						{
+							latitude: -47.27334667323998,
+							longitude: -18.79510369082766,
+						},
+						{
+							latitude: -48.26065375267606,
+							longitude: -41.1426480533363,
+						},
+						{
+							latitude: -44.984243541074584,
+							longitude: -62.534347856936165,
+						},
+						{
+							latitude: -38.27733293466803,
+							longitude: -80.55271766050339,
+						},
+						{
+							latitude: -29.328026764559528,
+							longitude: -95.08632206554233,
+						},
+						{
+							latitude: -19.072830000000003,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Neptune line points southwest from your birthplace. Travelling or facing this direction tends to emphasize Dreams, healing, and intuition in your daily experience.",
+			},
+			{
+				planet: "Pluto",
+				symbol: "♇",
+				azimuth: 268.91772855222666,
+				altitude: -3.7470065857177417,
+				compassDirection: "W",
+				aboveHorizon: false,
+				line: {
+					points: [
+						{
+							latitude: 19.07283,
+							longitude: 72.88261,
+						},
+						{
+							latitude: 18.120417130979423,
+							longitude: 57.082837127573725,
+						},
+						{
+							latitude: 15.906320888658223,
+							longitude: 41.562839862339956,
+						},
+						{
+							latitude: 12.61732998238747,
+							longitude: 26.457318465265757,
+						},
+						{
+							latitude: 8.506713236192855,
+							longitude: 11.778081864611067,
+						},
+						{
+							latitude: 3.8607205143091745,
+							longitude: -2.5722556554881066,
+						},
+						{
+							latitude: -1.0228525511086775,
+							longitude: -16.763698842136478,
+						},
+						{
+							latitude: -5.843820801436772,
+							longitude: -30.997784697821942,
+						},
+						{
+							latitude: -10.302460724890317,
+							longitude: -45.46781236334755,
+						},
+						{
+							latitude: -14.10406472185622,
+							longitude: -60.318514912602325,
+						},
+						{
+							latitude: -16.972729762687,
+							longitude: -75.60542512391157,
+						},
+						{
+							latitude: -18.678382089691286,
+							longitude: -91.26500489342709,
+						},
+						{
+							latitude: -19.07283,
+							longitude: -107.11739,
+						},
+					],
+				},
+				interpretation: "Your Pluto line points west from your birthplace. Travelling or facing this direction tends to emphasize Sex, death, and transformation in your daily experience.",
+			},
+		],
+		summary: "Local space directional map of 10 celestial bodies seen from latitude 19.07283, longitude 72.88261. 7 of them sit above the horizon at the birth moment.",
+	},
+	relocation: {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		relocation: {
+			latitude: 40.7128,
+			longitude: -74.006,
+		},
+		planets: [
+			{
+				name: "Sun",
+				longitude: 294.95684546890925,
+				latitude: -0.00001609419971328026,
+				sign: "Capricorn",
+				degree: 24.95684546890925,
+				speed: 1.0182073077793916,
+				isRetrograde: false,
+				house: 2,
+				interpretation: {
+					summary: "Your Sun in Capricorn in The Second House reveals how you express self-awareness and ego with ambitious and disciplined energy in the realm of money and personal finances.",
+					detailed: "Sun represents self-awareness and ego. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Second House, you direct this Capricorn Sun energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your self-awareness and ego naturally manifests through ambitious, disciplined, patient approaches in matters related to the second house.",
+					keywords: [
+						"active",
+						"awareness",
+						"bright",
+						"confidence",
+						"consciousness",
+						"ambitious",
+						"disciplined",
+						"patient",
+					],
+				},
+			},
+			{
+				name: "Moon",
+				longitude: 165.9375850033092,
+				latitude: -2.581069164318472,
+				sign: "Virgo",
+				degree: 15.93758500330921,
+				speed: 12.384729853885688,
+				isRetrograde: false,
+				house: 9,
+				interpretation: {
+					summary: "Your Moon in Virgo in The Ninth House reveals how you express inner emotional life with graceful and organized energy in the realm of exploration.",
+					detailed: "Moon represents inner emotional life. In Virgo (Virgin), this energy becomes graceful, organized, kind. Located in The Ninth House, you direct this Virgo Moon energy toward exploration and religious beliefs and personal philosophy. This creates a unique expression where your inner emotional life naturally manifests through graceful, organized, kind approaches in matters related to the ninth house.",
+					keywords: [
+						"caretaker",
+						"comfort",
+						"emotion",
+						"feeling",
+						"femininity",
+						"graceful",
+						"organized",
+						"kind",
+					],
+				},
+			},
+			{
+				name: "Mercury",
+				longitude: 281.43930639579776,
+				latitude: 3.3733532683445993,
+				sign: "Capricorn",
+				degree: 11.439306395797757,
+				speed: -0.6605982698368962,
+				isRetrograde: true,
+				house: 2,
+				interpretation: {
+					summary: "Your Mercury in Capricorn in The Second House reveals how you express communication with ambitious and disciplined energy in the realm of money and personal finances.",
+					detailed: "Mercury represents communication. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Second House, you direct this Capricorn Mercury energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your communication naturally manifests through ambitious, disciplined, patient approaches in matters related to the second house.",
+					keywords: [
+						"analysis",
+						"childhood",
+						"communication",
+						"curiosity",
+						"education",
+						"ambitious",
+						"disciplined",
+						"patient",
+					],
+				},
+			},
+			{
+				name: "Venus",
+				longitude: 300.76706495948747,
+				latitude: 5.3794566955506875,
+				sign: "Aquarius",
+				degree: 0.7670649594874703,
+				speed: -0.5986578106935099,
+				isRetrograde: true,
+				house: 2,
+				interpretation: {
+					summary: "Your Venus in Aquarius in The Second House reveals how you express love, beauty, and money with imaginative and idealistic energy in the realm of money and personal finances.",
+					detailed: "Venus represents love, beauty, and money. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Second House, you direct this Aquarius Venus energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your love, beauty, and money naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the second house.",
+					keywords: [
+						"attractiveness",
+						"beauty",
+						"culture",
+						"eros",
+						"fantasy",
+						"imaginative",
+						"idealistic",
+						"intuitive",
+					],
+				},
+			},
+			{
+				name: "Mars",
+				longitude: 259.8249740398571,
+				latitude: -0.19046196578611255,
+				sign: "Sagittarius",
+				degree: 19.824974039857125,
+				speed: 0.7121730424668158,
+				isRetrograde: false,
+				house: 1,
+				interpretation: {
+					summary: "Your Mars in Sagittarius in The First House reveals how you express assertiveness and aggression with adventurous and optimistic energy in the realm of self-image.",
+					detailed: "Mars represents assertiveness and aggression. In Sagittarius (Archer), this energy becomes adventurous, optimistic, independent. Located in The First House, you direct this Sagittarius Mars energy toward self-image and physical appearance. This creates a unique expression where your assertiveness and aggression naturally manifests through adventurous, optimistic, independent approaches in matters related to the first house.",
+					keywords: [
+						"action",
+						"adventurous",
+						"athletic",
+						"brave",
+						"courage",
+						"adventurous",
+						"optimistic",
+						"independent",
+					],
+				},
+			},
+			{
+				name: "Jupiter",
+				longitude: 93.37531635798774,
+				latitude: -0.0805281412991281,
+				sign: "Cancer",
+				degree: 3.3753163579877423,
+				speed: -0.11650958165415659,
+				isRetrograde: true,
+				house: 7,
+				interpretation: {
+					summary: "Your Jupiter in Cancer in The Seventh House reveals how you express luck and opportunity with intuitive and nurturing energy in the realm of companionship.",
+					detailed: "Jupiter represents luck and opportunity. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Seventh House, you direct this Cancer Jupiter energy toward companionship and the alter ego. This creates a unique expression where your luck and opportunity naturally manifests through intuitive, nurturing, protective approaches in matters related to the seventh house.",
+					keywords: [
+						"abundance",
+						"college",
+						"culture",
+						"curiosity",
+						"diversity",
+						"intuitive",
+						"nurturing",
+						"protective",
+					],
+				},
+			},
+			{
+				name: "Saturn",
+				longitude: 287.3054038450688,
+				latitude: 0.2780839274458505,
+				sign: "Capricorn",
+				degree: 17.30540384506878,
+				speed: 0.11773776405158287,
+				isRetrograde: false,
+				house: 2,
+				interpretation: {
+					summary: "Your Saturn in Capricorn in The Second House reveals how you express responsibility, time, and routine with ambitious and disciplined energy in the realm of money and personal finances.",
+					detailed: "Saturn represents responsibility, time, and routine. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Second House, you direct this Capricorn Saturn energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your responsibility, time, and routine naturally manifests through ambitious, disciplined, patient approaches in matters related to the second house.",
+					keywords: [
+						"ambition",
+						"boundaries",
+						"determination",
+						"discipline",
+						"experience",
+						"ambitious",
+						"disciplined",
+						"patient",
+					],
+				},
+			},
+			{
+				name: "Uranus",
+				longitude: 276.6103288296621,
+				latitude: -0.2740302484058677,
+				sign: "Capricorn",
+				degree: 6.61032882966208,
+				speed: 0.05769462308182938,
+				isRetrograde: false,
+				house: 1,
+				interpretation: {
+					summary: "Your Uranus in Capricorn in The First House reveals how you express individuality and revolution with ambitious and disciplined energy in the realm of self-image.",
+					detailed: "Uranus represents individuality and revolution. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The First House, you direct this Capricorn Uranus energy toward self-image and physical appearance. This creates a unique expression where your individuality and revolution naturally manifests through ambitious, disciplined, patient approaches in matters related to the first house.",
+					keywords: [
+						"avant-garde",
+						"change",
+						"comic",
+						"determined",
+						"experimental",
+						"ambitious",
+						"disciplined",
+						"patient",
+					],
+				},
+			},
+			{
+				name: "Neptune",
+				longitude: 282.5663668734097,
+				latitude: 0.8465353921582731,
+				sign: "Capricorn",
+				degree: 12.56636687340972,
+				speed: 0.03711493143794087,
+				isRetrograde: false,
+				house: 2,
+				interpretation: {
+					summary: "Your Neptune in Capricorn in The Second House reveals how you express dreams, healing, and intuition with ambitious and disciplined energy in the realm of money and personal finances.",
+					detailed: "Neptune represents dreams, healing, and intuition. In Capricorn (Goat), this energy becomes ambitious, disciplined, patient. Located in The Second House, you direct this Capricorn Neptune energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your dreams, healing, and intuition naturally manifests through ambitious, disciplined, patient approaches in matters related to the second house.",
+					keywords: [
+						"artistic",
+						"calm",
+						"compassionate",
+						"deep",
+						"dreams",
+						"ambitious",
+						"disciplined",
+						"patient",
+					],
+				},
+			},
+			{
+				name: "Pluto",
+				longitude: 227.42862343429965,
+				latitude: 15.379125707871637,
+				sign: "Scorpio",
+				degree: 17.428623434299652,
+				speed: 0.02002977922202831,
+				isRetrograde: false,
+				house: 11,
+				interpretation: {
+					summary: "Your Pluto in Scorpio in The Eleventh House reveals how you express sex, death, and transformation with seductive and passionate energy in the realm of acquaintances and friends.",
+					detailed: "Pluto represents sex, death, and transformation. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Eleventh House, you direct this Scorpio Pluto energy toward acquaintances and friends and groups. This creates a unique expression where your sex, death, and transformation naturally manifests through seductive, passionate, independent approaches in matters related to the eleventh house.",
+					keywords: [
+						"alchemy",
+						"bold",
+						"charismatic",
+						"complex",
+						"courageous",
+						"seductive",
+						"passionate",
+						"independent",
+					],
+				},
+			},
+			{
+				name: "North Node",
+				longitude: 317.69695214759554,
+				latitude: 0,
+				sign: "Aquarius",
+				degree: 17.69695214759554,
+				speed: -0.052953778005530694,
+				isRetrograde: true,
+				house: 2,
+				interpretation: {
+					summary: "Your North Node in Aquarius in The Second House reveals how you express life purpose and destiny with imaginative and idealistic energy in the realm of money and personal finances.",
+					detailed: "North Node represents life purpose and destiny. In Aquarius (Water Bearer), this energy becomes imaginative, idealistic, intuitive. Located in The Second House, you direct this Aquarius North Node energy toward money and personal finances and sense of self-worth and basic values. This creates a unique expression where your life purpose and destiny naturally manifests through imaginative, idealistic, intuitive approaches in matters related to the second house.",
+					keywords: [
+						"destiny",
+						"life purpose",
+						"soul growth",
+						"future direction",
+						"karmic reward",
+						"imaginative",
+						"idealistic",
+						"intuitive",
+					],
+				},
+			},
+			{
+				name: "South Node",
+				longitude: 137.69695214759554,
+				latitude: 0,
+				sign: "Leo",
+				degree: 17.69695214759554,
+				speed: -0.052953778005530694,
+				isRetrograde: true,
+				house: 8,
+				interpretation: {
+					summary: "Your South Node in Leo in The Eighth House reveals how you express past life gifts and comfort zone with proud and bold energy in the realm of transformation and crisis.",
+					detailed: "South Node represents past life gifts and comfort zone. In Leo (Lion), this energy becomes proud, bold, ambitious. Located in The Eighth House, you direct this Leo South Node energy toward transformation and crisis and sexuality. This creates a unique expression where your past life gifts and comfort zone naturally manifests through proud, bold, ambitious approaches in matters related to the eighth house.",
+					keywords: [
+						"innate talents",
+						"past life wisdom",
+						"natural abilities",
+						"comfort zone",
+						"mastered skills",
+						"proud",
+						"bold",
+						"ambitious",
+					],
+				},
+			},
+			{
+				name: "Chiron",
+				longitude: 102.19435972330552,
+				latitude: -7.305918189697491,
+				sign: "Cancer",
+				degree: 12.194359723305524,
+				speed: -0.06628974198332571,
+				isRetrograde: true,
+				house: 8,
+				interpretation: {
+					summary: "Your Chiron in Cancer in The Eighth House reveals how you express healing and inner wounds with intuitive and nurturing energy in the realm of transformation and crisis.",
+					detailed: "Chiron represents healing and inner wounds. In Cancer (Crab), this energy becomes intuitive, nurturing, protective. Located in The Eighth House, you direct this Cancer Chiron energy toward transformation and crisis and sexuality. This creates a unique expression where your healing and inner wounds naturally manifests through intuitive, nurturing, protective approaches in matters related to the eighth house.",
+					keywords: [
+						"healing",
+						"wisdom",
+						"mentorship",
+						"teaching",
+						"empathy",
+						"intuitive",
+						"nurturing",
+						"protective",
+					],
+				},
+			},
+			{
+				name: "Black Moon Lilith",
+				longitude: 218.01479325319542,
+				latitude: -5.072489895140858,
+				sign: "Scorpio",
+				degree: 8.014793253195421,
+				speed: 0.11203165732797515,
+				isRetrograde: false,
+				house: 11,
+				interpretation: {
+					summary: "Your Black Moon Lilith in Scorpio in The Eleventh House reveals how you express primal instinct and the reclaimed self with seductive and passionate energy in the realm of acquaintances and friends.",
+					detailed: "Black Moon Lilith represents primal instinct and the reclaimed self. In Scorpio (Scorpion), this energy becomes seductive, passionate, independent. Located in The Eleventh House, you direct this Scorpio Black Moon Lilith energy toward acquaintances and friends and groups. This creates a unique expression where your primal instinct and the reclaimed self naturally manifests through seductive, passionate, independent approaches in matters related to the eleventh house.",
+					keywords: [
+						"authenticity",
+						"autonomy",
+						"instinct",
+						"raw power",
+						"self-possession",
+						"seductive",
+						"passionate",
+						"independent",
+					],
+				},
+			},
+		],
+		houses: [
+			{
+				number: 1,
+				longitude: 247.47215409169016,
+				sign: "Sagittarius",
+				degree: 7.472154091690186,
+			},
+			{
+				number: 2,
+				longitude: 280.33086088520537,
+				sign: "Capricorn",
+				degree: 10.330860885205311,
+			},
+			{
+				number: 3,
+				longitude: 318.59294244588347,
+				sign: "Aquarius",
+				degree: 18.59294244588341,
+			},
+			{
+				number: 4,
+				longitude: 355.1509482685909,
+				sign: "Pisces",
+				degree: 25.150948268590923,
+			},
+			{
+				number: 5,
+				longitude: 24.59607347487281,
+				sign: "Aries",
+				degree: 24.59607347487281,
+			},
+			{
+				number: 6,
+				longitude: 47.76048293405228,
+				sign: "Taurus",
+				degree: 17.760482934052277,
+			},
+			{
+				number: 7,
+				longitude: 67.47215409169019,
+				sign: "Gemini",
+				degree: 7.472154091690186,
+			},
+			{
+				number: 8,
+				longitude: 100.33086088520537,
+				sign: "Cancer",
+				degree: 10.330860885205368,
+			},
+			{
+				number: 9,
+				longitude: 138.59294244588347,
+				sign: "Leo",
+				degree: 18.592942445883466,
+			},
+			{
+				number: 10,
+				longitude: 175.15094826859095,
+				sign: "Virgo",
+				degree: 25.150948268590923,
+			},
+			{
+				number: 11,
+				longitude: 204.59607347487278,
+				sign: "Libra",
+				degree: 24.59607347487281,
+			},
+			{
+				number: 12,
+				longitude: 227.76048293405228,
+				sign: "Scorpio",
+				degree: 17.760482934052334,
+			},
+		],
+		houseSystem: "placidus",
+		ascendant: {
+			sign: "Sagittarius",
+			degree: 7.472154091690186,
+			longitude: 247.47215409169016,
+		},
+		midheaven: {
+			sign: "Virgo",
+			degree: 25.150948268590923,
+			longitude: 175.15094826859095,
+		},
+		vertex: {
+			sign: "Cancer",
+			degree: 21.419942159244613,
+			longitude: 111.41994215924461,
+		},
+		changes: {
+			ascendantSignChanged: true,
+			planetsChangedHouse: [
+				{
+					planet: "Sun",
+					natalHouse: 9,
+					relocatedHouse: 2,
+				},
+				{
+					planet: "Moon",
+					natalHouse: 4,
+					relocatedHouse: 9,
+				},
+				{
+					planet: "Mercury",
+					natalHouse: 8,
+					relocatedHouse: 2,
+				},
+				{
+					planet: "Venus",
+					natalHouse: 9,
+					relocatedHouse: 2,
+				},
+				{
+					planet: "Mars",
+					natalHouse: 7,
+					relocatedHouse: 1,
+				},
+				{
+					planet: "Jupiter",
+					natalHouse: 2,
+					relocatedHouse: 7,
+				},
+				{
+					planet: "Saturn",
+					natalHouse: 8,
+					relocatedHouse: 2,
+				},
+				{
+					planet: "Uranus",
+					natalHouse: 8,
+					relocatedHouse: 1,
+				},
+				{
+					planet: "Neptune",
+					natalHouse: 8,
+					relocatedHouse: 2,
+				},
+				{
+					planet: "Pluto",
+					natalHouse: 6,
+					relocatedHouse: 11,
+				},
+				{
+					planet: "North Node",
+					natalHouse: 9,
+					relocatedHouse: 2,
+				},
+				{
+					planet: "South Node",
+					natalHouse: 3,
+					relocatedHouse: 8,
+				},
+				{
+					planet: "Chiron",
+					natalHouse: 2,
+					relocatedHouse: 8,
+				},
+				{
+					planet: "Black Moon Lilith",
+					natalHouse: 6,
+					relocatedHouse: 11,
+				},
+			],
+			angularPlanets: [],
+			distanceKm: 12538.562731622831,
+			direction: "north-northwest",
+		},
+		interpretation: {
+			summary: "Relocated to this place, your chart angles shift while the planets keep their birth positions. The Ascendant moves to Sagittarius and the Midheaven to Virgo. No planets fall close to the angles here, so the relocation mainly rebalances your houses rather than spotlighting a single planet.",
+		},
+	},
+	asteroids: {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		houseSystem: "placidus",
+		asteroids: [
+			{
+				name: "Ceres",
+				longitude: 77.99447276122726,
+				latitude: 2.952045593881606,
+				sign: "Gemini",
+				degree: 17.994472761227257,
+				house: 1,
+				speed: -0.12015316521342356,
+				isRetrograde: true,
+				interpretation: "Your Ceres in Gemini speaks to how you nurture and are nurtured, the cycles of nourishment, loss, and return, and the bond between caretaker and cared-for.",
+			},
+			{
+				name: "Pallas",
+				longitude: 2.409523985441524,
+				latitude: -18.28303538936394,
+				sign: "Aries",
+				degree: 2.409523985441524,
+				house: 11,
+				speed: 0.2886059069135172,
+				isRetrograde: false,
+				interpretation: "Your Pallas in Aries speaks to creative intelligence and strategy, the pattern-seeing, problem-solving wisdom you wield and the causes you defend.",
+			},
+			{
+				name: "Juno",
+				longitude: 228.82084834841805,
+				latitude: 8.242722457854851,
+				sign: "Scorpio",
+				degree: 18.820848348418053,
+				house: 6,
+				speed: 0.2416832906972104,
+				isRetrograde: false,
+				interpretation: "Your Juno in Scorpio speaks to commitment and partnership, what you need from a lasting bond and how you seek equality within it.",
+			},
+			{
+				name: "Vesta",
+				longitude: 323.4804919120962,
+				latitude: -4.151928493431099,
+				sign: "Aquarius",
+				degree: 23.480491912096227,
+				house: 10,
+				speed: 0.4907334055604906,
+				isRetrograde: false,
+				interpretation: "Your Vesta in Aquarius speaks to devotion and focus, the sacred flame you tend and the work or calling that claims your undivided attention.",
+			},
+		],
+		summary: "Asteroid goddess positions for 1990-01-15: Ceres, Pallas, Juno, and Vesta placed by sign, house, and retrograde motion.",
+	},
+	lilith: {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		houseSystem: "placidus",
+		lilith: [
+			{
+				variant: "mean",
+				longitude: 218.01479325319542,
+				latitude: -5.072489895140858,
+				sign: "Scorpio",
+				degree: 8.014793253195421,
+				house: 6,
+				speed: 0.11203165732797515,
+				isRetrograde: false,
+				interpretation: "Your mean Black Moon Lilith in Scorpio marks where you meet the wild, untamed, and unapologetic in yourself, the instincts you were taught to suppress and the line past which you refuse to be tamed or shamed.",
+				note: "The mean apogee is the smoothed average position, steadier and the most widely used for psychological reading.",
+			},
+			{
+				variant: "true",
+				longitude: 225.95427194450508,
+				latitude: -5.252175798172009,
+				sign: "Scorpio",
+				degree: 15.95427194450508,
+				house: 6,
+				speed: -2.886057857197329,
+				isRetrograde: true,
+				interpretation: "Your true Black Moon Lilith in Scorpio marks where you meet the wild, untamed, and unapologetic in yourself, the instincts you were taught to suppress and the line past which you refuse to be tamed or shamed.",
+				note: "The true or osculating apogee is the exact position at this moment, which oscillates around the mean by up to 30 degrees because the Sun perturbs the lunar orbit.",
+			},
+		],
+		summary: "Black Moon Lilith for 1990-01-15: the mean apogee in Scorpio and the true osculating apogee in Scorpio, each with sign, degree, house, and interpretation.",
+	},
+	"arabic-lots": {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		sect: "day",
+		lots: [
+			{
+				id: "fortune",
+				name: "Part of Fortune",
+				longitude: 292.9656261859516,
+				sign: "Capricorn",
+				degree: 22.965626185951578,
+				formula: "Ascendant + Moon - Sun",
+				interpretation: "Your Part of Fortune falls in Capricorn, marking the body, health, material wellbeing, and the flow of fortune through your life. Lots are sensitive points derived by arc from the Ascendant, Sun, Moon, and planets, with the formula reversed between day and night charts.",
+			},
+			{
+				id: "spirit",
+				name: "Part of Spirit",
+				longitude: 191.00414711715166,
+				sign: "Libra",
+				degree: 11.00414711715166,
+				formula: "Ascendant + Sun - Moon",
+				interpretation: "Your Part of Spirit falls in Libra, marking the mind, will, and deliberate action, what you set out to do and how you make your way. Lots are sensitive points derived by arc from the Ascendant, Sun, Moon, and planets, with the formula reversed between day and night charts.",
+			},
+			{
+				id: "eros",
+				name: "Part of Eros",
+				longitude: 171.74780449388743,
+				sign: "Virgo",
+				degree: 21.74780449388743,
+				formula: "Ascendant + Venus - Part of Spirit",
+				interpretation: "Your Part of Eros falls in Virgo, marking desire, love, longing, and what you are drawn toward. Lots are sensitive points derived by arc from the Ascendant, Sun, Moon, and planets, with the formula reversed between day and night charts.",
+			},
+			{
+				id: "necessity",
+				name: "Part of Necessity",
+				longitude: 73.51120644170544,
+				sign: "Gemini",
+				degree: 13.51120644170544,
+				formula: "Ascendant + Part of Fortune - Mercury",
+				interpretation: "Your Part of Necessity falls in Gemini, marking constraint, obligation, and the circumstances you cannot easily change. Lots are sensitive points derived by arc from the Ascendant, Sun, Moon, and planets, with the formula reversed between day and night charts.",
+			},
+			{
+				id: "courage",
+				name: "Part of Courage",
+				longitude: 95.12553879764607,
+				sign: "Cancer",
+				degree: 5.1255387976460725,
+				formula: "Ascendant + Part of Fortune - Mars",
+				interpretation: "Your Part of Courage falls in Cancer, marking boldness, daring, and decisive action under pressure. Lots are sensitive points derived by arc from the Ascendant, Sun, Moon, and planets, with the formula reversed between day and night charts.",
+			},
+			{
+				id: "victory",
+				name: "Part of Victory",
+				longitude: 159.61371741071548,
+				sign: "Virgo",
+				degree: 9.61371741071548,
+				formula: "Ascendant + Part of Spirit - Jupiter",
+				interpretation: "Your Part of Victory falls in Virgo, marking success, faith, ambition, and where you press toward winning. Lots are sensitive points derived by arc from the Ascendant, Sun, Moon, and planets, with the formula reversed between day and night charts.",
+			},
+			{
+				id: "nemesis",
+				name: "Part of Nemesis",
+				longitude: 67.64510899243442,
+				sign: "Gemini",
+				degree: 7.645108992434416,
+				formula: "Ascendant + Part of Fortune - Saturn",
+				interpretation: "Your Part of Nemesis falls in Gemini, marking limitation, hidden weakness, endings, and the karmic account. Lots are sensitive points derived by arc from the Ascendant, Sun, Moon, and planets, with the formula reversed between day and night charts.",
+			},
+		],
+		summary: "Seven Hermetic lots for 1990-01-15: Fortune, Spirit, Eros, Necessity, Courage, Victory, and Nemesis, each projected by arc from the Ascendant, Sun, and Moon, with the formula reversed between day and night charts.",
+	},
+	"fixed-stars": {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		orb: 1,
+		stars: [
+			{
+				id: "algenib",
+				name: "Algenib",
+				longitude: 9.0207,
+				sign: "Aries",
+				degree: 9.0207,
+				magnitude: 2.84,
+				nature: "Mars and Mercury",
+				keywords: [
+					"ambition",
+					"notoriety",
+					"misfortune",
+					"determination",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "alpheratz",
+				name: "Alpheratz",
+				longitude: 14.1734,
+				sign: "Aries",
+				degree: 14.1734,
+				magnitude: 2.06,
+				nature: "Jupiter and Venus",
+				keywords: [
+					"independence",
+					"honor",
+					"riches",
+					"intellect",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "mirach",
+				name: "Mirach",
+				longitude: 30.2701,
+				sign: "Taurus",
+				degree: 0.2701,
+				magnitude: 2.05,
+				nature: "Venus",
+				keywords: [
+					"beauty",
+					"devotion",
+					"love",
+					"kindness",
+					"brilliance",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "achernar",
+				name: "Achernar",
+				longitude: 345.1735,
+				sign: "Pisces",
+				degree: 15.1735,
+				magnitude: 0.46,
+				nature: "Jupiter",
+				keywords: [
+					"beneficence",
+					"religion",
+					"public office",
+					"success",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "hamal",
+				name: "Hamal",
+				longitude: 37.527,
+				sign: "Taurus",
+				degree: 7.527,
+				magnitude: 2.01,
+				nature: "Mars and Saturn",
+				keywords: [
+					"independence",
+					"force",
+					"leadership",
+					"defiance",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "polaris",
+				name: "Polaris",
+				longitude: 88.4318,
+				sign: "Gemini",
+				degree: 28.4318,
+				magnitude: 2.02,
+				nature: "Saturn and Venus",
+				keywords: [
+					"guidance",
+					"direction",
+					"inheritance",
+					"caution",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "menkar",
+				name: "Menkar",
+				longitude: 44.1843,
+				sign: "Taurus",
+				degree: 14.1843,
+				magnitude: 2.53,
+				nature: "Saturn",
+				keywords: [
+					"disgrace",
+					"loss",
+					"endurance",
+					"adversity",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "algol",
+				name: "Algol",
+				longitude: 56.0322,
+				sign: "Taurus",
+				degree: 26.0322,
+				magnitude: 2.12,
+				nature: "Saturn and Jupiter",
+				keywords: [
+					"intensity",
+					"misfortune",
+					"crisis",
+					"transformation",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "mirfak",
+				name: "Mirfak",
+				longitude: 61.9456,
+				sign: "Gemini",
+				degree: 1.9456,
+				magnitude: 1.79,
+				nature: "Jupiter and Saturn",
+				keywords: [
+					"boldness",
+					"strength",
+					"adventure",
+					"intelligence",
+				],
+				conjunctions: [
+					{
+						point: "ASC",
+						pointLongitude: 61.9849,
+						orb: 0.0393,
+					},
+				],
+			},
+			{
+				id: "alcyone",
+				name: "Alcyone",
+				longitude: 59.8568,
+				sign: "Taurus",
+				degree: 29.8568,
+				magnitude: 2.87,
+				nature: "Moon and Mars",
+				keywords: [
+					"ambition",
+					"vision",
+					"eminence",
+					"sorrow",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "aldebaran",
+				name: "Aldebaran",
+				longitude: 69.6535,
+				sign: "Gemini",
+				degree: 9.6535,
+				magnitude: 0.86,
+				nature: "Mars",
+				keywords: [
+					"honor",
+					"courage",
+					"eloquence",
+					"integrity",
+					"riches",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "rigel",
+				name: "Rigel",
+				longitude: 76.6938,
+				sign: "Gemini",
+				degree: 16.6938,
+				magnitude: 0.13,
+				nature: "Jupiter and Saturn",
+				keywords: [
+					"honor",
+					"riches",
+					"ambition",
+					"knowledge",
+					"success",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "capella",
+				name: "Capella",
+				longitude: 81.7223,
+				sign: "Gemini",
+				degree: 21.7223,
+				magnitude: 0.08,
+				nature: "Mars and Mercury",
+				keywords: [
+					"curiosity",
+					"learning",
+					"honor",
+					"renown",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "bellatrix",
+				name: "Bellatrix",
+				longitude: 80.8108,
+				sign: "Gemini",
+				degree: 20.8108,
+				magnitude: 1.64,
+				nature: "Mars and Mercury",
+				keywords: [
+					"honor",
+					"eloquence",
+					"strategy",
+					"ambition",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "betelgeuse",
+				name: "Betelgeuse",
+				longitude: 88.619,
+				sign: "Gemini",
+				degree: 28.619,
+				magnitude: 0.42,
+				nature: "Mars and Mercury",
+				keywords: [
+					"honor",
+					"success",
+					"wealth",
+					"fame",
+					"preferment",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "canopus",
+				name: "Canopus",
+				longitude: 104.8266,
+				sign: "Cancer",
+				degree: 14.8266,
+				magnitude: -0.74,
+				nature: "Saturn and Jupiter",
+				keywords: [
+					"piety",
+					"knowledge",
+					"voyages",
+					"transformation",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "sirius",
+				name: "Sirius",
+				longitude: 103.9464,
+				sign: "Cancer",
+				degree: 13.9464,
+				magnitude: -1.46,
+				nature: "Jupiter and Mars",
+				keywords: [
+					"honor",
+					"renown",
+					"fame",
+					"ambition",
+					"devotion",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "castor",
+				name: "Castor",
+				longitude: 110.1045,
+				sign: "Cancer",
+				degree: 20.1045,
+				magnitude: 1.58,
+				nature: "Mercury",
+				keywords: [
+					"intellect",
+					"distinction",
+					"writing",
+					"travel",
+					"fame",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "procyon",
+				name: "Procyon",
+				longitude: 115.6501,
+				sign: "Cancer",
+				degree: 25.6501,
+				magnitude: 0.37,
+				nature: "Mercury and Mars",
+				keywords: [
+					"activity",
+					"sudden success",
+					"pride",
+					"fortune",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "pollux",
+				name: "Pollux",
+				longitude: 113.0799,
+				sign: "Cancer",
+				degree: 23.0799,
+				magnitude: 1.14,
+				nature: "Mars",
+				keywords: [
+					"courage",
+					"audacity",
+					"competition",
+					"forcefulness",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "alphard",
+				name: "Alphard",
+				longitude: 147.144,
+				sign: "Leo",
+				degree: 27.144,
+				magnitude: 1.97,
+				nature: "Saturn and Venus",
+				keywords: [
+					"wisdom",
+					"passion",
+					"artistry",
+					"intensity",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "regulus",
+				name: "Regulus",
+				longitude: 149.6935,
+				sign: "Leo",
+				degree: 29.6935,
+				magnitude: 1.4,
+				nature: "Mars and Jupiter",
+				keywords: [
+					"royalty",
+					"honor",
+					"power",
+					"ambition",
+					"downfall",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "denebola",
+				name: "Denebola",
+				longitude: 171.4816,
+				sign: "Virgo",
+				degree: 21.4816,
+				magnitude: 2.13,
+				nature: "Saturn and Venus",
+				keywords: [
+					"judgment",
+					"nobility",
+					"self-control",
+					"misfortune",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "acrux",
+				name: "Acrux",
+				longitude: 221.7354,
+				sign: "Scorpio",
+				degree: 11.7354,
+				magnitude: 0.76,
+				nature: "Jupiter",
+				keywords: [
+					"religion",
+					"justice",
+					"ceremony",
+					"mysticism",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "algorab",
+				name: "Algorab",
+				longitude: 193.3163,
+				sign: "Libra",
+				degree: 13.3163,
+				magnitude: 2.94,
+				nature: "Mars and Saturn",
+				keywords: [
+					"deceit",
+					"malevolence",
+					"cunning",
+					"adversity",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "vindemiatrix",
+				name: "Vindemiatrix",
+				longitude: 189.8042,
+				sign: "Libra",
+				degree: 9.8042,
+				magnitude: 2.79,
+				nature: "Saturn and Mercury",
+				keywords: [
+					"disgrace",
+					"folly",
+					"melancholy",
+					"falsity",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "spica",
+				name: "Spica",
+				longitude: 203.7057,
+				sign: "Libra",
+				degree: 23.7057,
+				magnitude: 0.97,
+				nature: "Venus and Mars",
+				keywords: [
+					"success",
+					"riches",
+					"art",
+					"talent",
+					"renown",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "arcturus",
+				name: "Arcturus",
+				longitude: 204.0973,
+				sign: "Libra",
+				degree: 24.0973,
+				magnitude: -0.05,
+				nature: "Mars and Jupiter",
+				keywords: [
+					"prosperity",
+					"honors",
+					"voyages",
+					"success",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "hadar",
+				name: "Hadar",
+				longitude: 233.6572,
+				sign: "Scorpio",
+				degree: 23.6572,
+				magnitude: 0.58,
+				nature: "Venus and Jupiter",
+				keywords: [
+					"honor",
+					"friendship",
+					"refinement",
+					"success",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "toliman",
+				name: "Toliman",
+				longitude: 239.3442,
+				sign: "Scorpio",
+				degree: 29.3442,
+				magnitude: 0.01,
+				nature: "Venus and Jupiter",
+				keywords: [
+					"beneficence",
+					"refinement",
+					"honor",
+					"friendship",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "zuben-elgenubi",
+				name: "Zuben Elgenubi",
+				longitude: 224.947,
+				sign: "Scorpio",
+				degree: 14.947,
+				magnitude: 2.75,
+				nature: "Saturn and Mars",
+				keywords: [
+					"obstruction",
+					"loss",
+					"caution",
+					"adversity",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "zuben-eschamali",
+				name: "Zuben Eschamali",
+				longitude: 229.2359,
+				sign: "Scorpio",
+				degree: 19.2359,
+				magnitude: 2.62,
+				nature: "Jupiter and Mercury",
+				keywords: [
+					"good fortune",
+					"honor",
+					"ambition",
+					"riches",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "alphecca",
+				name: "Alphecca",
+				longitude: 222.1593,
+				sign: "Scorpio",
+				degree: 12.1593,
+				magnitude: 2.24,
+				nature: "Venus and Mercury",
+				keywords: [
+					"honor",
+					"dignity",
+					"artistry",
+					"poetry",
+					"beauty",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "antares",
+				name: "Antares",
+				longitude: 249.6267,
+				sign: "Sagittarius",
+				degree: 9.6267,
+				magnitude: 0.91,
+				nature: "Mars and Jupiter",
+				keywords: [
+					"courage",
+					"intensity",
+					"rashness",
+					"obstinacy",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "sabik",
+				name: "Sabik",
+				longitude: 257.8339,
+				sign: "Sagittarius",
+				degree: 17.8339,
+				magnitude: 2.42,
+				nature: "Saturn and Venus",
+				keywords: [
+					"recovery",
+					"excess",
+					"wastefulness",
+					"caution",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "rasalhague",
+				name: "Rasalhague",
+				longitude: 262.3129,
+				sign: "Sagittarius",
+				degree: 22.3129,
+				magnitude: 2.07,
+				nature: "Saturn and Venus",
+				keywords: [
+					"philosophy",
+					"humanitarianism",
+					"healing",
+					"caution",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "vega",
+				name: "Vega",
+				longitude: 285.1816,
+				sign: "Capricorn",
+				degree: 15.1816,
+				magnitude: 0.03,
+				nature: "Venus and Mercury",
+				keywords: [
+					"refinement",
+					"idealism",
+					"artistry",
+					"charisma",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "altair",
+				name: "Altair",
+				longitude: 301.6412,
+				sign: "Aquarius",
+				degree: 1.6412,
+				magnitude: 0.76,
+				nature: "Mars and Jupiter",
+				keywords: [
+					"boldness",
+					"ambition",
+					"command",
+					"courage",
+				],
+				conjunctions: [
+					{
+						point: "Venus",
+						pointLongitude: 300.7671,
+						orb: 0.8741,
+					},
+				],
+			},
+			{
+				id: "deneb",
+				name: "Deneb",
+				longitude: 335.1957,
+				sign: "Pisces",
+				degree: 5.1957,
+				magnitude: 1.25,
+				nature: "Venus and Mercury",
+				keywords: [
+					"ingenuity",
+					"intellect",
+					"learning",
+					"leadership",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "deneb-algedi",
+				name: "Deneb Algedi",
+				longitude: 323.4069,
+				sign: "Aquarius",
+				degree: 23.4069,
+				magnitude: 2.83,
+				nature: "Saturn and Jupiter",
+				keywords: [
+					"justice",
+					"law",
+					"beneficence",
+					"wisdom",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "fomalhaut",
+				name: "Fomalhaut",
+				longitude: 333.7241,
+				sign: "Pisces",
+				degree: 3.7241,
+				magnitude: 1.16,
+				nature: "Venus and Mercury",
+				keywords: [
+					"idealism",
+					"fame",
+					"fortune",
+					"spirituality",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "scheat",
+				name: "Scheat",
+				longitude: 359.2393,
+				sign: "Pisces",
+				degree: 29.2393,
+				magnitude: 2.42,
+				nature: "Mars and Mercury",
+				keywords: [
+					"misfortune",
+					"ruin",
+					"adversity",
+					"caution",
+				],
+				conjunctions: [],
+			},
+			{
+				id: "markab",
+				name: "Markab",
+				longitude: 353.3504,
+				sign: "Pisces",
+				degree: 23.3504,
+				magnitude: 2.48,
+				nature: "Mars and Mercury",
+				keywords: [
+					"honor",
+					"riches",
+					"fortune",
+					"danger",
+				],
+				conjunctions: [],
+			},
+		],
+		conjunctions: [
+			{
+				star: "Mirfak",
+				point: "ASC",
+				orb: 0.0393,
+				interpretation: "The fixed star Mirfak sits within 0 degrees of your ASC, a star of Jupiter and Saturn nature in classical astrology. A star this close to a chart point colors how that point expresses itself with its traditional meaning.",
+			},
+			{
+				star: "Altair",
+				point: "Venus",
+				orb: 0.8741,
+				interpretation: "The fixed star Altair sits within 0.9 degrees of your Venus, a star of Mars and Jupiter nature in classical astrology. A star this close to a chart point colors how that point expresses itself with its traditional meaning.",
+			},
+		],
+		summary: "Fixed star positions for 1990-01-15 14:30:00 with 2 conjunctions within 1 degrees across the major named stars including Regulus, Spica, and Algol.",
+	},
+	progressions: {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		targetDate: "2025-07-15",
+		progressedDate: "1990-02-19",
+		elapsedYears: 35.49699406822234,
+		planets: [
+			{
+				name: "Sun",
+				longitude: 330.9596421281934,
+				sign: "Pisces",
+				degree: 0.9596421281934226,
+				house: 9,
+				speed: 1.0081611093189622,
+				isRetrograde: false,
+				interpretation: "Your progressed Sun in Pisces reflects how self-awareness and ego has matured and shifted since birth.",
+			},
+			{
+				name: "Moon",
+				longitude: 264.05322241323415,
+				sign: "Sagittarius",
+				degree: 24.053222413234153,
+				house: 6,
+				speed: 12.404342898621167,
+				isRetrograde: false,
+				interpretation: "Your progressed Moon in Sagittarius reflects how inner emotional life has matured and shifted since birth.",
+			},
+			{
+				name: "Mercury",
+				longitude: 311.14228702519085,
+				sign: "Aquarius",
+				degree: 11.142287025190853,
+				house: 8,
+				speed: 1.5021349968548634,
+				isRetrograde: false,
+				interpretation: "Your progressed Mercury in Aquarius reflects how communication has matured and shifted since birth.",
+			},
+			{
+				name: "Venus",
+				longitude: 293.3937609079418,
+				sign: "Capricorn",
+				degree: 23.393760907941783,
+				house: 7,
+				speed: 0.42175147571873595,
+				isRetrograde: false,
+				interpretation: "Your progressed Venus in Capricorn reflects how love, beauty, and money has matured and shifted since birth.",
+			},
+			{
+				name: "Mars",
+				longitude: 285.4470467922679,
+				sign: "Capricorn",
+				degree: 15.447046792267884,
+				house: 7,
+				speed: 0.7315740802737878,
+				isRetrograde: false,
+				interpretation: "Your progressed Mars in Capricorn reflects how assertiveness and aggression has matured and shifted since birth.",
+			},
+			{
+				name: "Jupiter",
+				longitude: 90.84580887744085,
+				sign: "Cancer",
+				degree: 0.8458088774408452,
+				house: 1,
+				speed: -0.014705211402969098,
+				isRetrograde: true,
+				interpretation: "Your progressed Jupiter in Cancer reflects how luck and opportunity has matured and shifted since birth.",
+			},
+			{
+				name: "Saturn",
+				longitude: 291.2437968417273,
+				sign: "Capricorn",
+				degree: 21.243796841727317,
+				house: 7,
+				speed: 0.0997269552347575,
+				isRetrograde: false,
+				interpretation: "Your progressed Saturn in Capricorn reflects how responsibility, time, and routine has matured and shifted since birth.",
+			},
+			{
+				name: "Uranus",
+				longitude: 278.4233272804845,
+				sign: "Capricorn",
+				degree: 8.4233272804845,
+				house: 7,
+				speed: 0.04170156622973309,
+				isRetrograde: false,
+				interpretation: "Your progressed Uranus in Capricorn reflects how individuality and revolution has matured and shifted since birth.",
+			},
+			{
+				name: "Neptune",
+				longitude: 283.7538592906769,
+				sign: "Capricorn",
+				degree: 13.753859290676928,
+				house: 7,
+				speed: 0.02789656970588794,
+				isRetrograde: false,
+				interpretation: "Your progressed Neptune in Capricorn reflects how dreams, healing, and intuition has matured and shifted since birth.",
+			},
+			{
+				name: "Pluto",
+				longitude: 227.78684509612526,
+				sign: "Scorpio",
+				degree: 17.786845096125262,
+				house: 5,
+				speed: -0.0007560066876521887,
+				isRetrograde: true,
+				interpretation: "Your progressed Pluto in Scorpio reflects how sex, death, and transformation has matured and shifted since birth.",
+			},
+			{
+				name: "North Node",
+				longitude: 315.8172523817202,
+				sign: "Aquarius",
+				degree: 15.817252381720209,
+				house: 8,
+				speed: -0.052953777908442135,
+				isRetrograde: true,
+				interpretation: "Your progressed North Node in Aquarius reflects how life purpose and destiny has matured and shifted since birth.",
+			},
+			{
+				name: "South Node",
+				longitude: 135.8172523817202,
+				sign: "Leo",
+				degree: 15.817252381720209,
+				house: 2,
+				speed: -0.052953777908442135,
+				isRetrograde: true,
+				interpretation: "Your progressed South Node in Leo reflects how past life gifts and comfort zone has matured and shifted since birth.",
+			},
+			{
+				name: "Chiron",
+				longitude: 100.32095864052332,
+				sign: "Cancer",
+				degree: 10.320958640523315,
+				house: 1,
+				speed: -0.032744958123544166,
+				isRetrograde: true,
+				interpretation: "Your progressed Chiron in Cancer reflects how healing and inner wounds has matured and shifted since birth.",
+			},
+			{
+				name: "Black Moon Lilith",
+				longitude: 221.99219876047164,
+				sign: "Scorpio",
+				degree: 11.992198760471638,
+				house: 5,
+				speed: 0.11206291361725107,
+				isRetrograde: false,
+				interpretation: "Your progressed Black Moon Lilith in Scorpio reflects how primal instinct and the reclaimed self has matured and shifted since birth.",
+			},
+		],
+		ascendant: {
+			longitude: 95.50843270504663,
+			sign: "Cancer",
+			degree: 5.50843270504663,
+		},
+		midheaven: {
+			longitude: 357.194384184346,
+			sign: "Pisces",
+			degree: 27.194384184346063,
+		},
+		summary: "Your secondary progressed chart advances the birth chart by one day for each year of life, showing how your inner world has unfolded. Right now your progressed Sun is in Pisces and your progressed Moon in Sagittarius, the current chapter of identity and feeling.",
+	},
+	"solar-arc": {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		targetDate: "2025-07-15",
+		solarArc: 36.00279665928417,
+		summary: "Solar arc directions move every point in your chart forward by the same arc the Sun has travelled by progression, about one degree per year, 36 degrees at this date. Where a directed point meets a natal planet or angle, that theme comes due.",
+		directed: [
+			{
+				name: "Sun",
+				natalLongitude: 294.95684546890925,
+				directedLongitude: 330.9596421281934,
+				sign: "Pisces",
+				degree: 0.9596421281934226,
+				interpretation: "Your solar arc directed Sun has moved to Pisces, carrying self-awareness and ego forward by the 36 degree arc.",
+			},
+			{
+				name: "Moon",
+				natalLongitude: 165.9375850033092,
+				directedLongitude: 201.94038166259338,
+				sign: "Libra",
+				degree: 21.94038166259338,
+				interpretation: "Your solar arc directed Moon has moved to Libra, carrying inner emotional life forward by the 36 degree arc.",
+			},
+			{
+				name: "Mercury",
+				natalLongitude: 281.43930639579776,
+				directedLongitude: 317.44210305508193,
+				sign: "Aquarius",
+				degree: 17.44210305508193,
+				interpretation: "Your solar arc directed Mercury has moved to Aquarius, carrying communication forward by the 36 degree arc.",
+			},
+			{
+				name: "Venus",
+				natalLongitude: 300.76706495948747,
+				directedLongitude: 336.76986161877164,
+				sign: "Pisces",
+				degree: 6.7698616187716425,
+				interpretation: "Your solar arc directed Venus has moved to Pisces, carrying love, beauty, and money forward by the 36 degree arc.",
+			},
+			{
+				name: "Mars",
+				natalLongitude: 259.8249740398571,
+				directedLongitude: 295.8277706991413,
+				sign: "Capricorn",
+				degree: 25.827770699141297,
+				interpretation: "Your solar arc directed Mars has moved to Capricorn, carrying assertiveness and aggression forward by the 36 degree arc.",
+			},
+			{
+				name: "Jupiter",
+				natalLongitude: 93.37531635798774,
+				directedLongitude: 129.37811301727191,
+				sign: "Leo",
+				degree: 9.378113017271914,
+				interpretation: "Your solar arc directed Jupiter has moved to Leo, carrying luck and opportunity forward by the 36 degree arc.",
+			},
+			{
+				name: "Saturn",
+				natalLongitude: 287.3054038450688,
+				directedLongitude: 323.30820050435295,
+				sign: "Aquarius",
+				degree: 23.308200504352953,
+				interpretation: "Your solar arc directed Saturn has moved to Aquarius, carrying responsibility, time, and routine forward by the 36 degree arc.",
+			},
+			{
+				name: "Uranus",
+				natalLongitude: 276.6103288296621,
+				directedLongitude: 312.61312548894625,
+				sign: "Aquarius",
+				degree: 12.613125488946253,
+				interpretation: "Your solar arc directed Uranus has moved to Aquarius, carrying individuality and revolution forward by the 36 degree arc.",
+			},
+			{
+				name: "Neptune",
+				natalLongitude: 282.5663668734097,
+				directedLongitude: 318.5691635326939,
+				sign: "Aquarius",
+				degree: 18.569163532693892,
+				interpretation: "Your solar arc directed Neptune has moved to Aquarius, carrying dreams, healing, and intuition forward by the 36 degree arc.",
+			},
+			{
+				name: "Pluto",
+				natalLongitude: 227.42862343429965,
+				directedLongitude: 263.4314200935838,
+				sign: "Sagittarius",
+				degree: 23.431420093583824,
+				interpretation: "Your solar arc directed Pluto has moved to Sagittarius, carrying sex, death, and transformation forward by the 36 degree arc.",
+			},
+			{
+				name: "North Node",
+				natalLongitude: 317.69695214759554,
+				directedLongitude: 353.6997488068797,
+				sign: "Pisces",
+				degree: 23.69974880687971,
+				interpretation: "Your solar arc directed North Node has moved to Pisces, carrying life purpose and destiny forward by the 36 degree arc.",
+			},
+			{
+				name: "South Node",
+				natalLongitude: 137.69695214759554,
+				directedLongitude: 173.6997488068797,
+				sign: "Virgo",
+				degree: 23.69974880687971,
+				interpretation: "Your solar arc directed South Node has moved to Virgo, carrying past life gifts and comfort zone forward by the 36 degree arc.",
+			},
+			{
+				name: "Chiron",
+				natalLongitude: 102.19435972330552,
+				directedLongitude: 138.1971563825897,
+				sign: "Leo",
+				degree: 18.197156382589696,
+				interpretation: "Your solar arc directed Chiron has moved to Leo, carrying healing and inner wounds forward by the 36 degree arc.",
+			},
+			{
+				name: "Black Moon Lilith",
+				natalLongitude: 218.01479325319542,
+				directedLongitude: 254.0175899124796,
+				sign: "Sagittarius",
+				degree: 14.017589912479593,
+				interpretation: "Your solar arc directed Black Moon Lilith has moved to Sagittarius, carrying primal instinct and the reclaimed self forward by the 36 degree arc.",
+			},
+			{
+				name: "Ascendant",
+				natalLongitude: 61.98488665155162,
+				directedLongitude: 97.98768331083579,
+				sign: "Cancer",
+				degree: 7.987683310835791,
+				interpretation: "Your solar arc directed Ascendant has moved to Cancer, carrying identity and self-expression forward by the 36 degree arc.",
+			},
+			{
+				name: "Midheaven",
+				natalLongitude: 320.0291993031632,
+				directedLongitude: 356.03199596244735,
+				sign: "Pisces",
+				degree: 26.031995962447354,
+				interpretation: "Your solar arc directed Midheaven has moved to Pisces, carrying career and public image forward by the 36 degree arc.",
+			},
+		],
+	},
+	profections: {
+		birthDetails: {
+			date: "1990-01-15",
+			time: "14:30:00",
+			latitude: 19.07283,
+			longitude: 72.88261,
+			timezone: 5.5,
+		},
+		targetDate: "2025-07-15",
+		age: 35,
+		profectedHouse: 12,
+		profectedSign: "Taurus",
+		lordOfYear: "Venus",
+		lordNatalPosition: {
+			sign: "Aquarius",
+			house: 9,
+		},
+		interpretation: "This profection year activates The Twelfth House in Taurus, making Venus your lord of the year. The year takes its tone from solitude and inner reflection and from how Venus sits in your birth chart.",
+		summary: "At age 35, the annual profection activates house 12 in Taurus, making Venus the lord of the year for 2025-07-15.",
+	},
 	"vedic-aspects": {
 		datetime: "1990-01-15T14:30:00",
 		planets: [
@@ -11717,66 +16629,66 @@ const samples = {
 		],
 	},
 	bio: {
-		date: "2026-06-19",
-		seed: "roxy-ui-demo-2026-06-19",
+		date: "2026-06-23",
+		seed: "roxy-ui-demo-2026-06-23",
 		energyRating: 8,
 		overallPhase: "high_energy",
 		spotlight: {
 			cycle: "intellectual",
-			value: 69,
-			phase: "high",
-			message: "Your mental faculties are operating at a high level. Focus comes easily and you can sustain concentration for extended periods. Learning new material and strategic planning are well supported.",
+			value: 100,
+			phase: "peak",
+			message: "Your intellectual cycle is at its peak. Mental clarity, analytical thinking, and problem-solving ability are at maximum. Memory retention is sharp and complex ideas feel manageable.",
 		},
 		quickRead: {
-			physical: 82,
-			emotional: 22,
-			intellectual: 69,
+			physical: -14,
+			emotional: 90,
+			intellectual: 100,
 		},
-		dailyMessage: "Your biorhythm for 2026-06-19: Energy rating 8/10 (High Energy). Intellectual cycle is high energy at 69%.",
-		advice: "Take on intellectually demanding projects and study new material.",
+		dailyMessage: "Your biorhythm for 2026-06-23: Energy rating 8/10 (High Energy). Intellectual cycle is peak performance at 100%.",
+		advice: "Tackle your most complex challenges now. Your mind is at its sharpest.",
 	},
 	hex: {
-		number: 18,
-		symbol: "䷑",
-		chinese: "蠱",
-		english: "Work on What Has Been Spoiled (Decay)",
-		pinyin: "Ku",
-		binary: "100110",
+		number: 46,
+		symbol: "䷭",
+		chinese: "升",
+		english: "Pushing Upward",
+		pinyin: "Shêng",
+		binary: "000110",
 		upperTrigram: "Wind",
-		lowerTrigram: "Mountain",
-		judgment: "Work on What Has Been Spoiled Has supreme success. It furthers one to cross the great water. Before the starting point, three days. After the starting point, three days.",
-		image: "The wind blows low on the mountain: The image of Decay. Thus the superior man stirs up the people And strengthens their spirit.",
+		lowerTrigram: "Earth",
+		judgment: "Pushing upward has supreme success. One must see the great man. Fear not. Departure toward the south Brings good fortune.",
+		image: "Within the earth, wood grows: The image of Pushing Upward. Thus the superior man of devoted character Heaps up small things In order to achieve something high and great.",
 		interpretation: {
-			general: "Something has fallen into decay or corruption through neglect. The situation requires deliberate work to repair what has been damaged. This is demanding but ultimately rewarding. Three days of careful thought before and after acting will ensure the remedy takes hold.",
-			love: "Old patterns and inherited wounds may need attention in your relationship. Work together to heal past damage. Corruption can be corrected with conscious effort.",
-			career: "Problems left by predecessors or past decisions require repair. Take responsibility for fixing what is broken. This is a time for renovation and reform.",
-			decision: "Address the decay before it spreads further. Consider carefully before acting, then proceed with determination. What has been spoiled can be made right.",
-			advice: "Work on what has been spoiled requires careful analysis of the cause. Allow time for deliberation, then act decisively. Success comes three days after beginning.",
+			general: "Steady, determined upward movement brings success. Like a tree growing from the earth, progress is natural and supported by circumstances. Effort and dedication are rewarded. Do not hesitate to seek out those in positions of authority who can help your ascent.",
+			love: "Gradual growth in love is favored. Relationships advance step by step through consistent effort. Progress may seem slow but is substantial.",
+			career: "Advancement is possible through steady, determined effort. Like a plant growing toward light, push upward with patience. Success comes to those who persevere.",
+			decision: "Seek guidance from those who have advanced before you. The path upward requires humility and persistent effort. Step by step, rise to your goal.",
+			advice: "Wood grows slowly from the earth, pushing upward inevitably. Seek the wise and accumulate small efforts into great achievement. Do not fear advancement.",
 		},
 		changingLines: [
 			{
 				position: 1,
-				text: "Setting right what has been spoiled by the father. If there is a son, No blame rests upon the departed father. Danger. In the end good fortune.",
+				text: "Pushing upward that meets with confidence Brings great good fortune.",
 			},
 			{
 				position: 2,
-				text: "Setting right what has been spoiled by the mother. One must not be too persevering.",
+				text: "If one is sincere, It furthers one to bring even a small offering. No blame.",
 			},
 			{
 				position: 3,
-				text: "Setting right what has been spoiled by the father. There will be little remorse. No great blame.",
+				text: "One pushes upward into an empty city.",
 			},
 			{
 				position: 4,
-				text: "Tolerating what has been spoiled by the father. In continuing one sees humiliation.",
+				text: "The king offers him Mount Ch'i. Good fortune. No blame.",
 			},
 			{
 				position: 5,
-				text: "Setting right what has been spoiled by the father. One meets with praise.",
+				text: "Perseverance brings good fortune. One pushes upward by steps.",
 			},
 			{
 				position: 6,
-				text: "He does not serve kings and princes, Sets himself higher goals.",
+				text: "Pushing upward in darkness. It furthers one to be unremittingly persevering.",
 			},
 		],
 	},

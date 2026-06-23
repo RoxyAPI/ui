@@ -29,6 +29,18 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 		{ component: 'roxy-western-planets-table' },
 	],
 	calculateSynastry: [{ component: 'roxy-synastry-chart' }],
+	generateAstrocartography: [{ component: 'roxy-astrocartography-map' }],
+	generateLocalSpace: [{ component: 'roxy-local-space-compass' }],
+	generateRelocationChart: [{ component: 'roxy-relocation-wheel' }],
+	// Point-list Western endpoints share one editorial positions table; it
+	// detects the response shape and shows the columns that shape carries.
+	generateAsteroids: [{ component: 'roxy-positions-table' }],
+	generateLilith: [{ component: 'roxy-positions-table' }],
+	generateProgressions: [{ component: 'roxy-positions-table' }],
+	generateSolarArc: [{ component: 'roxy-positions-table' }],
+	calculateArabicLots: [{ component: 'roxy-positions-table' }],
+	generateFixedStars: [{ component: 'roxy-fixed-stars' }],
+	generateProfections: [{ component: 'roxy-profection-card' }],
 	calculateCompatibility: [
 		{ component: 'roxy-compatibility-card', attrs: { mode: 'astrology' } },
 	],

@@ -45,10 +45,6 @@
 	function renderCard(demo) {
 		const tabs = [
 			{ key: 'preview', label: 'Preview', body: `<${demo.tag} id="${demo.id}"${demo.attrs}></${demo.tag}>` },
-			// Empty state: the same element with NO id, so sample-data.js never sets
-			// its `data` and the component renders its own renderEmpty() placeholder.
-			// Shows builders the no-data / loading-stand-in look without any wiring.
-			{ key: 'empty', label: 'Empty', body: `<${demo.tag}${demo.attrs}></${demo.tag}>` },
 			{ key: 'code', label: 'Code', body: codeBlock(`code-${demo.id}`, demo.code) },
 			{ key: 'shadcn', label: 'shadcn', body: codeBlock(`shadcn-${demo.id}`, demo.shadcn) },
 		];

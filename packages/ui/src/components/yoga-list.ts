@@ -15,12 +15,13 @@ type YogaListData =
 	| { yogas: Array<GetYogaResponse> };
 
 /**
- * Yoga catalog and detail renderer. Accepts three data modes:
+ * Yoga catalog and detail renderer. Accepts four data modes:
  *   - Catalog: ListYogasResponse (yogas array of {id, name} + total)
  *   - Detail: GetYogaResponse (single yoga with description, result, quality)
  *   - Detail array: { yogas: Array<GetYogaResponse> } for pre-filtered sets
+ *   - Detect: DetectYogasResponse (each yoga carries a present verdict + evidence); present yogas render first, each badged present/absent with its classical evidence
  *
- * Catalog and detail-array modes include a live search filter.
+ * All multi-item modes include a live search filter.
  */
 @customElement('roxy-yoga-list')
 export class RoxyYogaList extends RoxyDataElement<YogaListData> {
@@ -132,6 +133,30 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				color: var(--roxy-warning-fg, #b45309);
 				border: 1px solid color-mix(in srgb, var(--roxy-warning, #f59e0b) 40%, transparent);
 			}
+			.present-badge {
+				display: inline-block;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: 600;
+				padding: 0.15em 0.6em;
+				border-radius: 999px;
+			}
+			.present-badge.is-present {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
+				color: var(--roxy-success-fg, #166534);
+			}
+			.present-badge.is-absent {
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 55%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.detail-card.absent {
+				opacity: 0.72;
+			}
+			.evidence {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				margin: 0;
+				line-height: var(--roxy-leading-normal, 1.5);
+			}
 			.description {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-muted, #71717a);
@@ -211,6 +236,27 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		</div>`;
 	}
 
+	/** Detect-mode card: shows the present/absent verdict and the classical evidence that triggered or failed it. */
+	private renderDetectCard(y: DetectYogasResponse['yogas'][number]) {
+		return html`<div class="detail-card ${y.present ? '' : 'absent'}">
+			<p class="detail-name">
+				${y.name}
+				${y.quality ? this.renderQualityChip(y.quality) : nothing}
+				<span class="present-badge ${y.present ? 'is-present' : 'is-absent'}">${y.present ? 'Present' : 'Not present'}</span>
+			</p>
+			${y.description ? html`<p class="description">${y.description}</p>` : nothing}
+			${
+				y.present && y.result
+					? html`<details>
+						<summary>Effects</summary>
+						<div class="result-body">${y.result}</div>
+					</details>`
+					: nothing
+			}
+			${y.evidence ? html`<p class="evidence">${y.evidence}</p>` : nothing}
+		</div>`;
+	}
+
 	protected renderEmpty() {
 		return html`<div class="roxy-empty" role="status">No yoga data</div>`;
 	}
@@ -232,6 +278,53 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 			const allYogas = (
 				d as { yogas: Array<GetYogaResponse | { id: string; name: string }> }
 			).yogas;
+
+			// Detect mode: every entry carries a `present` verdict. Render present
+			// yogas first, mark each present/absent, and surface the classical
+			// evidence. Must precede the detail-array check because detect entries
+			// also carry `description`.
+			if (allYogas.length > 0 && 'present' in allYogas[0]) {
+				const detected = allYogas as DetectYogasResponse['yogas'];
+				const filtered = lc
+					? detected.filter((y) => y.name.toLowerCase().includes(lc))
+					: detected;
+				const ordered = [
+					...filtered.filter((y) => y.present),
+					...filtered.filter((y) => !y.present),
+				];
+				const presentCount =
+					(d as DetectYogasResponse).total ??
+					detected.filter((y) => y.present).length;
+				return html`<div class="wrap">
+					<div class="head">
+						<h2 class="title">Detected yogas</h2>
+						<span class="count">${presentCount} of ${detected.length} present</span>
+					</div>
+					<div class="search-wrap">
+						<input
+							class="search"
+							type="search"
+							placeholder="Filter yogas..."
+							aria-label="Filter detected yogas by name"
+							.value=${this.filter}
+							@input=${this.handleInput}
+						/>
+					</div>
+					<div
+						class="detail-grid"
+						role="region"
+						aria-live="polite"
+						aria-label="Detected yogas"
+					>
+						${
+							ordered.length > 0
+								? ordered.map((y) => this.renderDetectCard(y))
+								: html`<p class="no-results">No yogas match your search.</p>`
+						}
+					</div>
+				</div>`;
+			}
+
 			const isDetailArray = allYogas.length > 0 && 'description' in allYogas[0];
 
 			if (isDetailArray) {

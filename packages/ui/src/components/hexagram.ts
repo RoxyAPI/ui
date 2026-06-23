@@ -266,18 +266,18 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		</article>`;
 	}
 
-	/** When the API only ships symbol+number with no line array, render six solid yang. */
+	/**
+	 * Lines for a static hexagram (lookup/random/daily, which carry no cast `lines` array): read the `binary` pattern. Per the spec it is 6 digits bottom to top, 1 = yang (solid), 0 = yin (broken), so index 0 is line 1 (bottom). Mapped to the same 7 = solid / 8 = broken code the renderer uses for cast lines. Falls back to all-yang only if `binary` is malformed. The Unicode `symbol` block (U+4DC0) is in King Wen order, NOT line order, so it must never be used to derive the lines.
+	 */
 	private derivedLines(h: Hexagram): number[] {
-		// Map each character of the unicode hexagram block (U+4DC0..) to broken/solid
-		const cp = h.symbol.codePointAt(0) ?? 0;
-		if (cp >= 0x4dc0 && cp <= 0x4dff) {
-			const offset = cp - 0x4dc0;
-			const lines: number[] = [];
-			for (let i = 0; i < 6; i++) {
-				const broken = (offset >> i) & 1;
-				lines.push(broken ? 8 : 7);
-			}
-			return lines;
+		const binary = h.binary ?? '';
+		if (/^[01]{6}$/.test(binary)) {
+			// `binary` is top to bottom (index 0 = line 6), verified against the
+			// canonical encoding: hexagram 46 (Earth over Wind) is "000110", which is
+			// Earth/Wind only when read top down. The renderer expects bottom to top
+			// (line 1 first, like the cast `lines` array), so reverse. 1 = yang
+			// (solid, 7), 0 = yin (broken, 8).
+			return Array.from(binary, (c) => (c === '1' ? 7 : 8)).reverse();
 		}
 		return Array.from({ length: 6 }, () => 7);
 	}

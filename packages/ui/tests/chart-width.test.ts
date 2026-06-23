@@ -16,6 +16,7 @@ const ALLOWED = new Set([
 	'components/synastry-chart.ts',
 	'components/bodygraph.ts',
 	'components/biorhythm-chart.ts',
+	'components/local-space-compass.ts',
 	'utils/kundli-styles.ts',
 ]);
 

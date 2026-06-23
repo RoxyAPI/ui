@@ -40,7 +40,15 @@ const PROSE_KEYS = new Set([
 	'motto',
 ]);
 /** Keys never shown as their own row/section (rendered elsewhere or noise). */
-const SKIP_KEYS = new Set(['id', 'symbol', 'keywords', ...TITLE_KEYS]);
+const SKIP_KEYS = new Set(['id', 'symbol', ...TITLE_KEYS]);
+
+/** Best-effort one-line label for an object inside an array (e.g. a gate channel partner), joining its primitive values so it never renders as [object Object]. */
+function objectLabel(obj: Record<string, unknown>): string {
+	return Object.values(obj)
+		.filter((v) => typeof v === 'string' || typeof v === 'number')
+		.map(String)
+		.join(' · ');
+}
 
 @customElement('roxy-reference-card')
 export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
@@ -140,17 +148,41 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 		const prose: Array<[string, string]> = [];
 		const lists: Array<[string, string[]]> = [];
 		const facts: Array<[string, string]> = [];
-		for (const [key, value] of Object.entries(rec)) {
-			if (SKIP_KEYS.has(key) || value == null) continue;
+		// Bucket each field into prose / chip-list / fact. Recurses one level into
+		// nested objects (description {short,long}, keywords {positive,negative},
+		// meaning {...}, ichingHexagram {number,english}) and labels object-array
+		// items by their primitives, so nested content is never dropped and an array
+		// of objects never stringifies to [object Object].
+		const collect = (label: string, value: unknown, depth: number): void => {
+			if (value == null) return;
 			if (Array.isArray(value)) {
-				const items = value.filter((v) => v != null).map(String);
-				if (items.length > 0) lists.push([key, items]);
+				const items = value
+					.filter((v) => v != null)
+					.map((v) =>
+						typeof v === 'object'
+							? objectLabel(v as Record<string, unknown>)
+							: String(v),
+					)
+					.filter((s) => s.length > 0);
+				if (items.length > 0) lists.push([label, items]);
 			} else if (typeof value === 'string') {
-				if (PROSE_KEYS.has(key) || value.length > 48) prose.push([key, value]);
-				else facts.push([key, value]);
+				if (PROSE_KEYS.has(label) || value.length > 48)
+					prose.push([label, value]);
+				else facts.push([label, value]);
 			} else if (typeof value === 'number' || typeof value === 'boolean') {
-				facts.push([key, String(value)]);
+				facts.push([label, String(value)]);
+			} else if (typeof value === 'object' && depth < 2) {
+				for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+					collect(`${label} ${k}`, v, depth + 1);
+				}
 			}
+		};
+		for (const [key, value] of Object.entries(rec)) {
+			if (SKIP_KEYS.has(key)) continue;
+			// The hero chip row already shows a top-level keywords ARRAY; an object
+			// keywords ({positive,negative}) falls through to collect() instead.
+			if (key === 'keywords' && Array.isArray(value)) continue;
+			collect(key, value, 0);
 		}
 
 		return html`<article class="card" aria-label=${title}>

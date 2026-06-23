@@ -40,6 +40,13 @@ const CDN_BASE_SUFFIX = '/dist/cdn';
  */
 const DATA_TYPES: Record<string, string> = {
 	'natal-chart': 'NatalChartResponse',
+	'astrocartography-map': 'AstrocartographyResponse',
+	'local-space-compass': 'LocalSpaceResponse',
+	'relocation-wheel': 'RelocationChartResponse',
+	'positions-table':
+		'AsteroidsResponse | LilithResponse | ProgressionsResponse | SolarArcResponse | ArabicLotsResponse',
+	'fixed-stars': 'FixedStarsResponse',
+	'profection-card': 'ProfectionsResponse',
 	'western-planets-table': 'NatalChartResponse',
 	'horoscope-card':
 		'GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse',
@@ -154,6 +161,14 @@ const SELF_FETCH_PROPS: ConfigPropDef[] = [
 ];
 
 const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
+	'positions-table': [
+		{
+			prop: 'heading',
+			type: 'string',
+			comment:
+				'Override the auto-derived heading. Empty by default, in which case it is derived from the response shape (Asteroids, Black Moon Lilith, Secondary progressions, Solar arc directions, or Arabic lots).',
+		},
+	],
 	'tarot-catalog': [
 		{
 			prop: 'heading',

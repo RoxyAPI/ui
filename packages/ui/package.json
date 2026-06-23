@@ -66,6 +66,7 @@
     "url": "https://github.com/RoxyAPI/ui/issues"
   },
   "sideEffects": [
+    "./src/components/*.ts",
     "./dist/components/*.js",
     "./dist/cdn/*.js"
   ],

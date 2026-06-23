@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-fixed-stars",
+  "type": "registry:ui",
+  "title": "RoxyFixedStars",
+  "description": "Fixed star conjunctions to the natal chart, tightest first, with the precessed star catalog",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.11.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-fixed-stars.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyFixedStars data={...} />: Fixed star conjunctions to the natal chart, tightest first, with the precessed star catalog.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/fixed-stars/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyFixedStars as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyFixedStarsProps = ComponentProps<typeof Element>;\n\nexport function RoxyFixedStars(props: RoxyFixedStarsProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyFixedStars;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/fixed-stars.tsx"
+    }
+  ]
+}

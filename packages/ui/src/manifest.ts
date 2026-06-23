@@ -127,6 +127,85 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Astrology',
 	},
 	{
+		pascal: 'RoxyAstrocartographyMap',
+		tag: 'roxy-astrocartography-map',
+		slug: 'astrocartography-map',
+		heading: 'Astrocartography',
+		description:
+			'Astrocartography world map plotting each body Midheaven, IC, Ascendant, and Descendant relocation lines',
+		docsLabel: 'Western',
+		endpointLabel: 'POST /astrology/astrocartography',
+		docsSummary:
+			'World map of planetary MC, IC, Ascendant, and Descendant lines with per-line interpretations',
+		topic: 'Astrology',
+	},
+	{
+		pascal: 'RoxyLocalSpaceCompass',
+		tag: 'roxy-local-space-compass',
+		slug: 'local-space-compass',
+		heading: 'Local space',
+		description:
+			'Local space compass plotting each body direction from the birthplace by azimuth and altitude',
+		docsLabel: 'Western',
+		endpointLabel: 'POST /astrology/local-space',
+		docsSummary:
+			'Compass dial of planetary azimuth lines from the birthplace, dimmed below the horizon',
+		topic: 'Astrology',
+	},
+	{
+		pascal: 'RoxyRelocationWheel',
+		tag: 'roxy-relocation-wheel',
+		slug: 'relocation-wheel',
+		heading: 'Relocation chart',
+		description:
+			'Relocation chart wheel recomputing houses and angles for a new place, with the planets that change house',
+		docsLabel: 'Western',
+		endpointLabel: 'POST /astrology/relocation-chart',
+		docsSummary:
+			'Relocated chart wheel plus the move geometry, angular planets, and planets that change house',
+		topic: 'Astrology',
+	},
+	{
+		pascal: 'RoxyPositionsTable',
+		tag: 'roxy-positions-table',
+		slug: 'positions-table',
+		heading: 'Positions table',
+		description:
+			'Editorial positions table for asteroids, Black Moon Lilith, secondary progressions, solar arc directions, and the Arabic lots',
+		docsLabel: 'Western',
+		endpointLabel:
+			'POST /astrology/asteroids, /astrology/lilith, /astrology/progressions, /astrology/solar-arc, /astrology/arabic-lots',
+		docsSummary:
+			'Body, sign, degree, and per-shape columns (house, motion, formula, or natal arc) plus each reading',
+		topic: 'Astrology',
+	},
+	{
+		pascal: 'RoxyFixedStars',
+		tag: 'roxy-fixed-stars',
+		slug: 'fixed-stars',
+		heading: 'Fixed stars',
+		description:
+			'Fixed star conjunctions to the natal chart, tightest first, with the precessed star catalog',
+		docsLabel: 'Western',
+		endpointLabel: 'POST /astrology/fixed-stars',
+		docsSummary:
+			'Star to natal point conjunctions with readings, plus a catalog of position, magnitude, nature, and keywords',
+		topic: 'Astrology',
+	},
+	{
+		pascal: 'RoxyProfectionCard',
+		tag: 'roxy-profection-card',
+		slug: 'profection-card',
+		heading: 'Annual profection',
+		description:
+			'Annual profection card with the profected house and sign, the lord of the year, and its natal placement',
+		docsLabel: 'Western',
+		endpointLabel: 'POST /astrology/profections',
+		docsSummary:
+			'Profected house and sign for the year, the lord of the year, its natal placement, and the reading',
+		topic: 'Astrology',
+	},
+	{
 		pascal: 'RoxyCompatibilityCard',
 		tag: 'roxy-compatibility-card',
 		slug: 'compatibility-card',

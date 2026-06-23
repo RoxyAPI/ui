@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-local-space-compass",
+  "type": "registry:ui",
+  "title": "RoxyLocalSpaceCompass",
+  "description": "Local space compass plotting each body direction from the birthplace by azimuth and altitude",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.11.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-local-space-compass.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyLocalSpaceCompass data={...} />: Local space compass plotting each body direction from the birthplace by azimuth and altitude.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/local-space-compass/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyLocalSpaceCompass as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyLocalSpaceCompassProps = ComponentProps<typeof Element>;\n\nexport function RoxyLocalSpaceCompass(props: RoxyLocalSpaceCompassProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyLocalSpaceCompass;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/local-space-compass.tsx"
+    }
+  ]
+}
