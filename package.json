@@ -36,7 +36,7 @@
 		"@axe-core/playwright": "^4.10.0",
 		"@biomejs/biome": "^2.4.9",
 		"@hey-api/client-fetch": "0.13.1",
-		"@hey-api/openapi-ts": "0.97.3",
+		"@hey-api/openapi-ts": "0.99.0",
 		"@lit-labs/rollup-plugin-minify-html-literals": "^0.2.0",
 		"@playwright/test": "^1.49.0",
 		"@roxyapi/sdk": "^1.2.29",
@@ -48,7 +48,7 @@
 		"lefthook": "^2.1.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-		"sharp": "^0.34.5",
+		"sharp": "^0.35.2",
 		"typescript": "^5.7.0"
 	},
 	"dependencies": {
