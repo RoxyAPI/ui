@@ -41,7 +41,7 @@
 		"@playwright/test": "^1.49.0",
 		"@roxyapi/sdk": "^1.2.29",
 		"@types/bun": "^1.2.0",
-		"@types/node": "^24.0.0",
+		"@types/node": "^26.1.0",
 		"@types/react": "^19.0.0",
 		"esbuild": "^0.28.0",
 		"happy-dom": "^20.8.9",
