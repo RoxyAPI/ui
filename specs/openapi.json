@@ -145,7 +145,7 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Planet or point name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith)."
+                  "description": "Planet or point name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). The lunar nodes are the mean node; software using the true node may show node positions up to 1.75 degrees different."
                 },
                 "longitude": {
                   "type": "number",
@@ -1508,7 +1508,7 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith)."
+                  "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). The lunar nodes are the mean node; software using the true node may show node positions up to 1.75 degrees different."
                 },
                 "longitude": {
                   "type": "number",
@@ -12841,7 +12841,7 @@
                           "name": {
                             "type": "string",
                             "example": "Sun",
-                            "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith)."
+                            "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). The lunar nodes are the mean node; software using the true node may show node positions up to 1.75 degrees different."
                           },
                           "longitude": {
                             "type": "number",
@@ -22388,10 +22388,10 @@
             "schema": {
               "type": "string",
               "example": "chiron",
-              "description": "Optional comma separated list of extra bodies to plot beyond the ten classical planets. Allowed values: north-node, chiron, lilith. Unknown values are ignored. Defaults to none."
+              "description": "Optional comma separated list of extra bodies to plot beyond the ten classical planets. Allowed values: north-node, chiron, lilith. north-node is the mean lunar node. Unknown values are ignored. Defaults to none."
             },
             "required": false,
-            "description": "Optional comma separated list of extra bodies to plot beyond the ten classical planets. Allowed values: north-node, chiron, lilith. Unknown values are ignored. Defaults to none.",
+            "description": "Optional comma separated list of extra bodies to plot beyond the ten classical planets. Allowed values: north-node, chiron, lilith. north-node is the mean lunar node. Unknown values are ignored. Defaults to none.",
             "name": "include",
             "in": "query"
           }
@@ -22979,10 +22979,10 @@
             "schema": {
               "type": "string",
               "example": "chiron,lilith",
-              "description": "Optional comma-separated extra bodies to add beyond the 10 classical planets. Allowed values: north-node, chiron, lilith. Omit to return the 10 classical planets only."
+              "description": "Optional comma-separated extra bodies to add beyond the 10 classical planets. Allowed values: north-node, chiron, lilith. north-node is the mean lunar node. Omit to return the 10 classical planets only."
             },
             "required": false,
-            "description": "Optional comma-separated extra bodies to add beyond the 10 classical planets. Allowed values: north-node, chiron, lilith. Omit to return the 10 classical planets only.",
+            "description": "Optional comma-separated extra bodies to add beyond the 10 classical planets. Allowed values: north-node, chiron, lilith. north-node is the mean lunar node. Omit to return the 10 classical planets only.",
             "name": "include",
             "in": "query"
           }
