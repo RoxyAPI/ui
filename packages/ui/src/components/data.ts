@@ -34,7 +34,8 @@ const TITLE_KEYS = ['title', 'name', 'label', 'heading', 'overview', 'summary'];
 const IMAGE_KEYS = ['imageUrl', 'image', 'icon', 'symbol'];
 const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body rows
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$/;
+const ISO_DATE =
+	/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?$/;
 const ENUM_STRING = /^[A-Z0-9]+(_[A-Z0-9]+)+$/;
 const LINK_STRING = /^https?:\/\//;
 

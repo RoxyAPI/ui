@@ -1017,6 +1017,14 @@ describe('roxy-data scalar formatting and structure', () => {
 		el.remove();
 	});
 
+	test('formats UTC-suffixed ISO datetimes', async () => {
+		const el = await mount({ datetime: '2026-07-10T01:09:25Z' });
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Jul');
+		expect(text).not.toContain('2026-07-10T01:09:25Z');
+		el.remove();
+	});
+
 	test('promotes object values to full-width sections, not dl cells', async () => {
 		const el = await mount({
 			score: 87,
