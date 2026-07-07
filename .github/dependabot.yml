@@ -1,6 +1,9 @@
 version: 2
 updates:
-  - package-ecosystem: npm
+  # bun ecosystem (not npm): the repo lockfile is bun.lock, and npm-ecosystem
+  # bumps touch only package.json, so CI's frozen-lockfile install rejects
+  # every dependabot PR.
+  - package-ecosystem: bun
     directory: /
     schedule:
       interval: weekly
@@ -11,15 +14,18 @@ updates:
     # fails with "blocked by minimum-release-age" until the package ripens.
     cooldown:
       default-days: 3
+    # bun does not support dependency-type grouping, so the prod group names
+    # its members (lit is the only runtime dep) and the dev group excludes them.
     groups:
+      prod-patch:
+        patterns: ["lit"]
+        update-types:
+          - patch
       dev-minor-and-patch:
-        dependency-type: development
+        patterns: ["*"]
+        exclude-patterns: ["lit"]
         update-types:
           - minor
-          - patch
-      prod-patch:
-        dependency-type: production
-        update-types:
           - patch
     commit-message:
       prefix: deps
