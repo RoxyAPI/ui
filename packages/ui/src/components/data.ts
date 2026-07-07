@@ -2,6 +2,7 @@ import { css, html, nothing, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatDate, formatNumber, formatTime } from '../utils/format.js';
 import { humanize } from '../utils/string.js';
 
 /**
@@ -13,18 +14,29 @@ import { humanize } from '../utils/string.js';
  *   1. Primitive (string, number, boolean) -> single line.
  *   2. Array of primitives -> chip list.
  *   3. Array of objects with shared keys -> table.
- *   4. Object with title-like field -> card with key/value rows.
+ *   4. Object with title-like field -> card with key/value rows; object and
+ *      object-array values promote to full-width sections below the rows so
+ *      nested tables keep the whole container width.
  *   5. Otherwise -> definition list of all keys.
+ *
+ * Scalar display rules (shared by rows, chips, and table cells): numbers
+ * round to 2 decimals, booleans read Yes/No, ISO dates and datetimes format
+ * for the locale, SCREAMING_SNAKE enums humanize, http(s) strings link out.
  *
  * When a schema declares an `x-roxy-ui` hint, a future dispatcher can opt
  * into a hand-tuned component instead of this fallback.
  */
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+type Scalar = string | number | boolean;
 
 const TITLE_KEYS = ['title', 'name', 'label', 'heading', 'overview', 'summary'];
 const IMAGE_KEYS = ['imageUrl', 'image', 'icon', 'symbol'];
 const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body rows
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$/;
+const ENUM_STRING = /^[A-Z0-9]+(_[A-Z0-9]+)+$/;
+const LINK_STRING = /^https?:\/\//;
 
 // Hard cap on recursion. Real RoxyAPI responses nest at most 5-6 deep; anything
 // deeper is either a circular reference (which would otherwise infinite-loop)
@@ -33,6 +45,21 @@ const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body row
 // `@customElement` decorator on import, so the nested template resolves to
 // this same class without a separate import.
 const MAX_DEPTH = 6;
+
+function isPrimitive(value: Json | undefined): value is Scalar | null {
+	return (
+		value === null || ['string', 'number', 'boolean'].includes(typeof value)
+	);
+}
+
+/** Object or object-bearing array: needs full width, never fits a dl value cell. */
+function isComplex(value: Json): boolean {
+	return (
+		value !== null &&
+		typeof value === 'object' &&
+		!(Array.isArray(value) && value.every(isPrimitive))
+	);
+}
 
 @customElement('roxy-data')
 export class RoxyData extends RoxyDataElement<Json> {
@@ -45,6 +72,10 @@ export class RoxyData extends RoxyDataElement<Json> {
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-md, 1rem);
 				box-shadow: var(--roxy-shadow-sm);
+			}
+
+			.roxy-card a {
+				color: var(--roxy-accent-ink, #b45309);
 			}
 
 			.roxy-title {
@@ -95,6 +126,9 @@ export class RoxyData extends RoxyDataElement<Json> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 
+			.roxy-table-wrap {
+				overflow-x: auto;
+			}
 			table.roxy-table {
 				width: 100%;
 				border-collapse: collapse;
@@ -106,6 +140,8 @@ export class RoxyData extends RoxyDataElement<Json> {
 				padding: var(--roxy-space-sm, 0.5rem);
 				text-align: left;
 				text-transform: none;
+				word-break: normal;
+				overflow-wrap: normal;
 			}
 			table.roxy-table th {
 				color: var(--roxy-muted, #71717a);
@@ -113,6 +149,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 				text-transform: capitalize;
 				font-size: var(--roxy-text-xs, 0.75rem);
 				letter-spacing: 0.04em;
+				white-space: nowrap;
 			}
 
 			.roxy-image {
@@ -123,7 +160,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 			}
 
 			.roxy-section {
-				margin-bottom: var(--roxy-space-md, 1rem);
+				margin-top: var(--roxy-space-md, 1rem);
 			}
 			.roxy-section h4 {
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -143,7 +180,9 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 	protected renderData(data: Json) {
 		if (this.depth >= MAX_DEPTH) {
-			return html`<div class="roxy-empty" role="status">…</div>`;
+			return html`<div class="roxy-empty" role="status">
+				Nested data omitted
+			</div>`;
 		}
 		return html`<div class="roxy-card" aria-label="Generic data display">
 			${this.renderValue(data)}
@@ -152,10 +191,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 	private renderValue(value: Json): TemplateResult | typeof nothing {
 		if (value === null || value === undefined) return nothing;
-		if (typeof value === 'string') return html`<p>${value}</p>`;
-		if (typeof value === 'number' || typeof value === 'boolean') {
-			return html`<p>${String(value)}</p>`;
-		}
+		if (isPrimitive(value)) return html`<p>${this.scalarTemplate(value)}</p>`;
 		if (Array.isArray(value)) return this.renderArray(value);
 		return this.renderObject(value as Record<string, Json>);
 	}
@@ -164,13 +200,8 @@ export class RoxyData extends RoxyDataElement<Json> {
 		if (arr.length === 0) {
 			return html`<div class="roxy-empty" role="status">Empty list</div>`;
 		}
-		const allPrimitive = arr.every(
-			(v) => v === null || ['string', 'number', 'boolean'].includes(typeof v),
-		);
-		if (allPrimitive) {
-			return html`<ul class="roxy-chips">
-				${arr.map((v) => html`<li>${String(v)}</li>`)}
-			</ul>`;
+		if (arr.every(isPrimitive)) {
+			return this.renderChips(arr as (Scalar | null)[]);
 		}
 		const allObjects = arr.every(
 			(v) => v !== null && typeof v === 'object' && !Array.isArray(v),
@@ -181,22 +212,37 @@ export class RoxyData extends RoxyDataElement<Json> {
 		</ol>`;
 	}
 
+	private renderChips(arr: (Scalar | null)[]): TemplateResult {
+		return html`<ul class="roxy-chips">
+			${arr
+				.filter((v): v is Scalar => v !== null)
+				.map((v) => html`<li>${this.formatScalar(v)}</li>`)}
+		</ul>`;
+	}
+
 	private renderTable(rows: Record<string, Json>[]): TemplateResult {
 		const keys = this.collectKeys(rows);
-		return html`<table class="roxy-table" role="table">
-			<thead>
-				<tr>
-					${keys.map((k) => html`<th>${humanize(k)}</th>`)}
-				</tr>
-			</thead>
-			<tbody>
-				${rows.map(
-					(row) => html`<tr>
-						${keys.map((k) => html`<td>${this.formatPrimitive(row[k])}</td>`)}
-					</tr>`,
-				)}
-			</tbody>
-		</table>`;
+		return html`<div
+			class="roxy-table-wrap"
+			role="group"
+			aria-label="Data table"
+			tabindex="0"
+		>
+			<table class="roxy-table" role="table">
+				<thead>
+					<tr>
+						${keys.map((k) => html`<th>${humanize(k)}</th>`)}
+					</tr>
+				</thead>
+				<tbody>
+					${rows.map(
+						(row) => html`<tr>
+							${keys.map((k) => html`<td>${this.renderCell(row[k])}</td>`)}
+						</tr>`,
+					)}
+				</tbody>
+			</table>
+		</div>`;
 	}
 
 	private renderObject(obj: Record<string, Json>): TemplateResult {
@@ -209,7 +255,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 			titleKey !== 'summary' && typeof obj.summary === 'string'
 				? 'summary'
 				: null;
-		const rows = Object.entries(obj).filter(
+		const entries = Object.entries(obj).filter(
 			([k, v]) =>
 				k !== titleKey &&
 				k !== summaryKey &&
@@ -217,6 +263,11 @@ export class RoxyData extends RoxyDataElement<Json> {
 				v !== null &&
 				v !== undefined,
 		);
+		// Scalars and primitive arrays fit the two-column rows; objects and
+		// object arrays promote to full-width sections so nested tables are
+		// not squeezed into the value column.
+		const rows = entries.filter(([, v]) => !isComplex(v));
+		const sections = entries.filter(([, v]) => isComplex(v));
 
 		return html`
 			${
@@ -243,34 +294,64 @@ export class RoxyData extends RoxyDataElement<Json> {
 					</dl>`
 					: nothing
 			}
+			${sections.map(
+				([k, v]) => html`<div class="roxy-section">
+					<h4>${humanize(k)}</h4>
+					${this.renderField(v)}
+				</div>`,
+			)}
 		`;
 	}
 
 	private renderField(value: Json): TemplateResult | string {
 		if (value === null || value === undefined) return '';
-		if (typeof value === 'string') return value;
-		if (typeof value === 'number' || typeof value === 'boolean')
-			return String(value);
-		if (Array.isArray(value)) {
-			const allPrimitive = value.every((v) =>
-				['string', 'number', 'boolean'].includes(typeof v),
-			);
-			if (allPrimitive) {
-				return html`<ul class="roxy-chips">
-					${value.map((v) => html`<li>${String(v)}</li>`)}
-				</ul>`;
-			}
+		if (isPrimitive(value)) return html`${this.scalarTemplate(value)}`;
+		if (Array.isArray(value) && value.every(isPrimitive)) {
+			return this.renderChips(value as (Scalar | null)[]);
 		}
 		return html`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
 	}
 
-	private formatPrimitive(value: Json | undefined): string {
+	private renderCell(value: Json | undefined): TemplateResult | string {
 		if (value === null || value === undefined) return '';
-		if (typeof value === 'string') return value;
-		if (typeof value === 'number' || typeof value === 'boolean')
-			return String(value);
-		if (Array.isArray(value)) return value.map(String).join(', ');
-		return JSON.stringify(value);
+		if (isPrimitive(value)) return this.scalarTemplate(value);
+		if (Array.isArray(value) && value.every(isPrimitive)) {
+			return (value as (Scalar | null)[])
+				.filter((v): v is Scalar => v !== null)
+				.map((v) => this.formatScalar(v))
+				.join(', ');
+		}
+		// Nested object or object array inside a row: recurse instead of
+		// stringifying to [object Object]. `bare` drops the card surface so
+		// the cell does not paint a card inside a cell.
+		return html`<roxy-data
+			bare
+			.data=${value}
+			.depth=${this.depth + 1}
+		></roxy-data>`;
+	}
+
+	private scalarTemplate(value: Scalar): TemplateResult | string {
+		if (typeof value === 'string' && LINK_STRING.test(value)) {
+			return html`<a href=${value} target="_blank" rel="noopener noreferrer"
+				>${value}</a
+			>`;
+		}
+		return this.formatScalar(value);
+	}
+
+	private formatScalar(value: Scalar): string {
+		if (typeof value === 'number') {
+			return formatNumber(value, 2) || String(value);
+		}
+		if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+		if (ISO_DATE.test(value)) {
+			const time = formatTime(value);
+			const date = formatDate(value);
+			return time ? `${date}, ${time}` : date;
+		}
+		if (ENUM_STRING.test(value)) return humanize(value.toLowerCase());
+		return value;
 	}
 
 	private collectKeys(rows: Record<string, Json>[]): string[] {

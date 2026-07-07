@@ -952,3 +952,94 @@ describe('roxy-data heuristic', () => {
 		el.remove();
 	});
 });
+
+describe('roxy-data scalar formatting and structure', () => {
+	async function mount(data: unknown) {
+		const el = document.createElement('roxy-data') as HTMLElement & {
+			data?: unknown;
+			depth?: number;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		return el;
+	}
+
+	test('rounds long floats in table cells to 2 decimals', async () => {
+		const el = await mount([
+			{ name: 'Sun', longitude: 113.01012227704928 },
+			{ name: 'Moon', longitude: 127.87157410804679 },
+		]);
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('113.01');
+		expect(text).not.toContain('113.01012227704928');
+		el.remove();
+	});
+
+	test('wraps tables in a horizontal-scroll container', async () => {
+		const el = await mount([{ a: 1 }, { a: 2 }]);
+		expect(el.shadowRoot?.innerHTML ?? '').toContain('roxy-table-wrap');
+		el.remove();
+	});
+
+	test('recurses into object arrays inside table cells', async () => {
+		const el = await mount([
+			{
+				date: '2026-07-01',
+				positions: [{ planet: 'Sun', sign: 'Gemini' }],
+			},
+		]);
+		const html = el.shadowRoot?.innerHTML ?? '';
+		expect(html).toContain('<roxy-data');
+		expect(el.shadowRoot?.textContent ?? '').not.toContain('[object Object]');
+		el.remove();
+	});
+
+	test('formats booleans as Yes and No', async () => {
+		const el = await mount({ isRetrograde: false, exact: true });
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('No');
+		expect(text).toContain('Yes');
+		el.remove();
+	});
+
+	test('renders http strings as external links', async () => {
+		const el = await mount({ docsUrl: 'https://roxyapi.com/docs' });
+		const html = el.shadowRoot?.innerHTML ?? '';
+		expect(html).toContain('href="https://roxyapi.com/docs"');
+		expect(html).toContain('rel="noopener noreferrer"');
+		el.remove();
+	});
+
+	test('humanizes SCREAMING_SNAKE enum strings', async () => {
+		const el = await mount({ aspectType: 'SEMI_SQUARE' });
+		expect(el.shadowRoot?.textContent ?? '').toContain('Semi square');
+		el.remove();
+	});
+
+	test('promotes object values to full-width sections, not dl cells', async () => {
+		const el = await mount({
+			score: 87,
+			chart: { houseSystem: 'placidus' },
+		});
+		const html = el.shadowRoot?.innerHTML ?? '';
+		expect(html).toContain('roxy-section');
+		expect(html).toContain('Chart</h4>');
+		const ddBlocks = html.match(/<dd[\s\S]*?<\/dd>/g) ?? [];
+		expect(ddBlocks.some((dd) => dd.includes('<roxy-data'))).toBe(false);
+		el.remove();
+	});
+
+	test('labels the depth cap instead of a bare ellipsis', async () => {
+		const el = document.createElement('roxy-data') as HTMLElement & {
+			data?: unknown;
+			depth?: number;
+		};
+		el.depth = 6;
+		document.body.appendChild(el);
+		el.data = { any: 'thing' };
+		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		expect(el.shadowRoot?.textContent ?? '').toContain('Nested data omitted');
+		el.remove();
+	});
+});

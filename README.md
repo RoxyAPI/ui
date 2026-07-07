@@ -873,7 +873,7 @@ npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/nat
 <details>
 <summary><strong>What if I need an endpoint that has no dedicated component?</strong></summary>
 
-Use `<roxy-data>`. It is the generic fallback renderer; pass any RoxyAPI response and it produces a structured layout (tables, lists, badges) without bespoke logic. New endpoints render automatically; bespoke components ship only when a novel pattern emerges.
+Use `<roxy-data>`. It is the generic fallback renderer; pass any RoxyAPI response and it produces a structured layout (scrollable tables, chip lists, nested sections, formatted numbers and dates, links) without bespoke logic. New endpoints render automatically; bespoke components ship only when a novel pattern emerges.
 </details>
 
 <details>

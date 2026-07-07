@@ -540,16 +540,40 @@ async function main() {
 		samples[key] = await mirrorImages(samples[key]);
 	}
 
+	// Static sample, not fetched: shaped to exercise every generic-renderer
+	// path the audit must guard (float rounding, Yes/No booleans, ISO datetime,
+	// enum humanizing, links, full-width nested sections, and object arrays
+	// inside table cells).
 	samples.data = {
 		title: 'Compatibility breakdown',
 		summary:
 			'A typical RoxyAPI response shaped for the generic fallback renderer.',
-		score: 87,
+		score: 87.4638,
+		isRetrograde: false,
+		computedAt: '2026-07-15T07:20:22',
+		aspectType: 'SEMI_SQUARE',
+		docsUrl: 'https://roxyapi.com/docs',
 		ranges: ['low', 'medium', 'high'],
 		breakdown: [
-			{ name: 'Communication', score: 88 },
-			{ name: 'Trust', score: 84 },
-			{ name: 'Shared values', score: 92 },
+			{ name: 'Communication', score: 88.912834501, exact: true },
+			{ name: 'Trust', score: 84, exact: false },
+			{ name: 'Shared values', score: 92.05, exact: true },
+		],
+		chart: {
+			houseSystem: 'placidus',
+			planets: [
+				{ name: 'Sun', longitude: 113.01012227704928, sign: 'Cancer' },
+				{ name: 'Moon', longitude: 127.87157410804679, sign: 'Leo' },
+			],
+		},
+		days: [
+			{
+				date: '2026-07-01',
+				positions: [
+					{ planet: 'Sun', sign: 'Gemini', degreeInSign: 15.4638 },
+					{ planet: 'Moon', sign: 'Capricorn', degreeInSign: 1.9954 },
+				],
+			},
 		],
 	};
 
