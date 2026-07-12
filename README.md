@@ -464,6 +464,8 @@ const { data: cc } = await roxy.tarot.castCelticCross({
 
 The breakout 2026 self-knowledge category, computed from the same ephemeris as Western astrology plus the I Ching gate wheel and chakra-style centers. Self-discovery apps, dating and compatibility products, and AI coaching bots ship the full bodygraph first. No coordinates needed; Human Design uses the birth instant, not the observer location.
 
+The response is a reading, not a set of labels: the type, strategy, authority, profile, and definition each arrive with the text that explains them, every defined channel and every center carry their own interpretation, and each of the activations carries a gate meaning and the meaning of its line. `<RoxyBodygraph>` lays that out for you. The chart and the identity read at a glance, and every body of prose sits behind a disclosure, so one component renders a complete reading without becoming a wall of text.
+
 ```tsx
 import { RoxyBodygraph } from '@roxyapi/ui-react';
 
@@ -474,6 +476,15 @@ const { data: bodygraph } = await roxy.humanDesign.generateBodygraph({
   body: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
 });
 <RoxyBodygraph data={bodygraph} />
+```
+
+Every interpretation is localized. Ask for the language on the request and the component renders it, because the component prints the prose the API returned and holds no copy of its own.
+
+```tsx
+const { data: bodygraph } = await roxy.humanDesign.generateBodygraph({
+  body: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+  query: { lang: 'de' },
+});
 ```
 
 ### 6. Forecast (transits, cross-domain timeline)
@@ -605,10 +616,11 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
-| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary |
+| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, and gates, plus the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning |
+| `<roxy-hd-type-card>` | Human Design | POST /human-design/type, /human-design/profile | Type, strategy, authority, and profile tiles with the aura, signature, and not-self themes, plus the reading behind each label and the profile line keynotes |
 | `<roxy-hd-connection>` | Human Design | POST /human-design/connection | Electromagnetic, compromise, and dominance channels between two charts |
 | `<roxy-hd-penta>` | Human Design | POST /human-design/penta | Group penta channels split into upper and lower triangles |
-| `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction and PHS labels |
+| `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction, color, tone, and base, plus a reading per arrow grouped by layer and the cognition |
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |

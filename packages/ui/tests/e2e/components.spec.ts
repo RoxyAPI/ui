@@ -199,8 +199,22 @@ test.describe('Roxy UI preview', () => {
 
 	test('passes axe-core a11y on dark theme', async ({ page }) => {
 		await page.goto('/');
+		await page.waitForLoadState('networkidle');
 		await page.locator('#theme-dark').click();
-		await page.waitForTimeout(200);
+		/**
+		 * Gate on the colour axe actually measures, inside the shadow DOM, not on a fixed delay and not on `:root`. The demo card background flips to dark the instant `data-theme` lands, but the token custom properties are injected by script a beat later, so in that window a tab paints LIGHT ink on an already-dark card. Axe sampling there reports a contrast violation that does not exist in the shipped UI. Verified in both engines: once settled the tab computes the dark ink. The flake fired on webkit under the full parallel matrix and was masked by the CI retries.
+		 */
+		await expect
+			.poll(() =>
+				page.evaluate(() => {
+					const el = document.querySelector('roxy-transits-table');
+					const tab = el?.shadowRoot?.querySelector(
+						'.roxy-tab[aria-selected="true"]',
+					);
+					return tab ? getComputedStyle(tab).color : null;
+				}),
+			)
+			.toBe('rgb(251, 191, 36)');
 		const results = await new AxeBuilder({ page })
 			.exclude('roxy-natal-chart')
 			.exclude('roxy-synastry-chart')

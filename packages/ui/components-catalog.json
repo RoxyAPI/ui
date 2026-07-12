@@ -807,13 +807,33 @@
       "pascal": "RoxyBodygraph",
       "slug": "bodygraph",
       "domain": "Human Design",
-      "renders": "Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary",
+      "renders": "Nine-center chart with defined and open centers, active channels, and gates, plus the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning",
       "endpointLabel": "POST /human-design/bodygraph",
       "endpoints": [
         {
           "operationId": "generateBodygraph",
           "method": "POST",
           "path": "/human-design/bodygraph"
+        }
+      ]
+    },
+    {
+      "tag": "roxy-hd-type-card",
+      "pascal": "RoxyHdTypeCard",
+      "slug": "hd-type-card",
+      "domain": "Human Design",
+      "renders": "Type, strategy, authority, and profile tiles with the aura, signature, and not-self themes, plus the reading behind each label and the profile line keynotes",
+      "endpointLabel": "POST /human-design/type, /human-design/profile",
+      "endpoints": [
+        {
+          "operationId": "calculateProfile",
+          "method": "POST",
+          "path": "/human-design/profile"
+        },
+        {
+          "operationId": "calculateType",
+          "method": "POST",
+          "path": "/human-design/type"
         }
       ]
     },
@@ -852,7 +872,7 @@
       "pascal": "RoxyHdVariables",
       "slug": "hd-variables",
       "domain": "Human Design",
-      "renders": "The four transformation arrows with direction and PHS labels",
+      "renders": "The four transformation arrows with direction, color, tone, and base, plus a reading per arrow grouped by layer and the cognition",
       "endpointLabel": "POST /human-design/variables",
       "endpoints": [
         {

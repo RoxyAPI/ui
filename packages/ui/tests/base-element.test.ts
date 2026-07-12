@@ -40,6 +40,19 @@ describe('buildRequest', () => {
 		const req = buildRequest('x', 'POST', { a: '', b: undefined, c: 'keep' });
 		expect(req.body).toEqual({ c: 'keep' });
 	});
+
+	test('POST routes a spec-declared query parameter to the query string', () => {
+		// Every localized endpoint takes ?lang= as a query parameter even on POST.
+		// Sending it in the body silently returns English.
+		const req = buildRequest(
+			'human-design/bodygraph',
+			'POST',
+			{ date: '1990-01-15', lang: 'de' },
+			['lang'],
+		);
+		expect(req.query).toEqual({ lang: 'de' });
+		expect(req.body).toEqual({ date: '1990-01-15' });
+	});
 });
 
 /** Minimal ReactiveControllerHost the controller can drive, plus an event sink. */

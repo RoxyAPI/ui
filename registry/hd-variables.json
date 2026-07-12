@@ -3,7 +3,7 @@
   "name": "roxy-hd-variables",
   "type": "registry:ui",
   "title": "RoxyHdVariables",
-  "description": "Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction and color, tone, and base",
+  "description": "Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction, color, tone, and base, plus the reading for each arrow and the cognition",
   "dependencies": [
     "@roxyapi/ui-react"
   ],
@@ -13,7 +13,7 @@
   "files": [
     {
       "path": "components/roxy-hd-variables.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyHdVariables data={...} />: Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction and color, tone, and base.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/hd-variables/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyHdVariables as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyHdVariablesProps = ComponentProps<typeof Element>;\n\nexport function RoxyHdVariables(props: RoxyHdVariablesProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyHdVariables;\n",
+      "content": "'use client';\n\n/**\n * <RoxyHdVariables data={...} />: Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction, color, tone, and base, plus the reading for each arrow and the cognition.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/hd-variables/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyHdVariables as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyHdVariablesProps = ComponentProps<typeof Element>;\n\nexport function RoxyHdVariables(props: RoxyHdVariablesProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyHdVariables;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/hd-variables.tsx"
     }

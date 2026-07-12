@@ -171,6 +171,10 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 
 	// Human design
 	generateBodygraph: [{ component: 'roxy-bodygraph' }],
+	// The type and profile reads are the identity half of the bodygraph response,
+	// so one shape-detecting card renders both without the chart.
+	calculateType: [{ component: 'roxy-hd-type-card' }],
+	calculateProfile: [{ component: 'roxy-hd-type-card' }],
 	calculateConnection: [{ component: 'roxy-hd-connection' }],
 	calculatePenta: [{ component: 'roxy-hd-penta' }],
 	calculateVariables: [{ component: 'roxy-hd-variables' }],

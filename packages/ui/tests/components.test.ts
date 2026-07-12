@@ -1051,3 +1051,355 @@ describe('roxy-data scalar formatting and structure', () => {
 		el.remove();
 	});
 });
+
+/**
+ * Human Design interpretation rendering. The response went from labels to a full
+ * reading, so these lock the parts the runtime audit cannot see: that every new
+ * body of prose reaches the shadow tree, that the not-self question is shown for
+ * an OPEN center only (it is written for the open state, so printing it on a
+ * defined center would contradict the chart), that a text shared by a group is
+ * lifted to the group and not repeated per row, and that a response predating the
+ * interpretation still renders.
+ */
+describe('human design interpretations', () => {
+	const bodygraph = {
+		type: 'Generator',
+		typeDescription: 'A sustainable, enveloping life-force aura.',
+		aura: 'Open and enveloping.',
+		strategy: 'Wait to respond',
+		strategyDescription: 'Let life present something first.',
+		authority: 'Sacral',
+		authorityDescription: 'Decisions are made by the gut response.',
+		signature: 'Satisfaction',
+		notSelf: 'Frustration',
+		profile: '5/1',
+		profileDescription: 'Heretic over Investigator.',
+		profileKeynotes: {
+			personalityLine: 5,
+			designLine: 1,
+			personality: 'Heretic keynote.',
+			design: 'Investigator keynote.',
+		},
+		definition: 'Single',
+		definitionDescription: 'Every defined center belongs to one flow.',
+		sides: {
+			personality: 'The conscious side, printed in black.',
+			design: 'The unconscious side, printed in red.',
+		},
+		incarnationCross: {
+			gates: [61, 62, 50, 3],
+			angle: 'Left Angle',
+			angleCode: 'LAX',
+			name: 'Left Angle Cross of Obscuration 2',
+			description: 'The unknown made discussable by naming it.',
+		},
+		centers: [
+			{
+				id: 'head',
+				name: 'Head',
+				defined: false,
+				motor: false,
+				awareness: false,
+				theme: 'Amplifies the questions of others.',
+				notSelfQuestion: 'Is this question even mine?',
+				biology: 'The pineal gland.',
+				gates: [61, 64],
+			},
+			{
+				id: 'sacral',
+				name: 'Sacral',
+				defined: true,
+				motor: true,
+				awareness: false,
+				theme: 'Sustainable life force.',
+				notSelfQuestion: 'Is enough ever enough?',
+				biology: 'The ovaries and the testes.',
+				gates: [5],
+			},
+		],
+		channels: [
+			{
+				gateA: 15,
+				gateB: 5,
+				name: 'Rhythm',
+				circuit: 'Collective',
+				centers: ['g', 'sacral'],
+				description: 'Sacral timing meets the tolerance for extremes.',
+				circuitDescription: 'Sharing for the species.',
+			},
+			{
+				gateA: 10,
+				gateB: 57,
+				name: 'Perfected Form',
+				circuit: 'Collective',
+				centers: ['g', 'spleen'],
+				description: 'Survival through intuition.',
+				circuitDescription: 'Sharing for the species.',
+			},
+		],
+		gates: [
+			{
+				planet: 'Sun',
+				side: 'personality',
+				gate: 61,
+				line: 5,
+				gateName: 'Mystery',
+				gateDescription: 'Head pressure to know the unknowable.',
+				lineMeaning: 'Others project revelation onto this line.',
+				planetDescription: 'The dominant activation.',
+				ichingHexagram: { number: 61, english: 'Inner Truth' },
+			},
+			{
+				planet: 'Sun',
+				side: 'design',
+				gate: 50,
+				line: 1,
+				gateName: 'Values',
+				gateDescription: 'The spleen gate of responsibility.',
+				lineMeaning: 'A foundation of values held for the tribe.',
+				planetDescription: 'The dominant activation.',
+				ichingHexagram: { number: 50, english: 'The Cauldron' },
+			},
+		],
+	};
+
+	async function mount(tag: string, data: unknown) {
+		const el = document.createElement(tag) as HTMLElement & {
+			data?: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await el.updateComplete;
+		return el;
+	}
+
+	test('roxy-bodygraph renders every interpretation the response carries', async () => {
+		const el = await mount('roxy-bodygraph', bodygraph);
+		const text = el.shadowRoot?.textContent ?? '';
+		for (const prose of [
+			bodygraph.typeDescription,
+			bodygraph.strategyDescription,
+			bodygraph.authorityDescription,
+			bodygraph.profileDescription,
+			bodygraph.definitionDescription,
+			bodygraph.aura,
+			bodygraph.incarnationCross.description,
+			bodygraph.profileKeynotes.personality,
+			bodygraph.profileKeynotes.design,
+			bodygraph.channels[0]?.description,
+			bodygraph.channels[0]?.circuitDescription,
+			bodygraph.centers[0]?.theme,
+			bodygraph.centers[0]?.biology,
+			bodygraph.gates[0]?.gateDescription,
+			bodygraph.gates[0]?.lineMeaning,
+			bodygraph.gates[0]?.planetDescription,
+			bodygraph.sides.personality,
+		]) {
+			expect(text).toContain(prose as string);
+		}
+		expect(text).not.toContain('undefined');
+		el.remove();
+	});
+
+	test('the not-self question is shown for an open center only', async () => {
+		const el = await mount('roxy-bodygraph', bodygraph);
+		const text = el.shadowRoot?.textContent ?? '';
+		// Head is open: its conditioning question is the reading.
+		expect(text).toContain('Is this question even mine?');
+		// Sacral is defined: the same field describes the OPEN state and would
+		// contradict the chart, so it must not be rendered.
+		expect(text).not.toContain('Is enough ever enough?');
+		el.remove();
+	});
+
+	test('a circuit description is lifted to its group, never repeated per channel', async () => {
+		const el = await mount('roxy-bodygraph', bodygraph);
+		const text = el.shadowRoot?.textContent ?? '';
+		const occurrences = text.split('Sharing for the species.').length - 1;
+		expect(occurrences).toBe(1);
+		el.remove();
+	});
+
+	test('activations split by chart side, personality first', async () => {
+		const el = await mount('roxy-bodygraph', bodygraph);
+		// Asserted through the markup, not querySelectorAll: happy-dom cannot run a
+		// selector against a shadow root (see the tarot-catalog test above).
+		const markup = el.shadowRoot?.innerHTML ?? '';
+		expect((markup.match(/role="tab"/g) ?? []).length).toBe(2);
+		expect(markup).toContain('Personality (1)');
+		expect(markup).toContain('Design (1)');
+		expect(markup).toContain('id="hd-panel-personality"');
+		// Only the selected side's activations render, so one gate row, and the
+		// design gate's reading is absent. (The chart tooltips name every gate on
+		// both sides, so this is asserted on the reading text, not the whole tree.)
+		expect((markup.match(/name="hd-gate"/g) ?? []).length).toBe(1);
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Head pressure to know the unknowable.');
+		expect(text).not.toContain('The spleen gate of responsibility.');
+		el.remove();
+	});
+
+	test('roxy-bodygraph still renders a label-only response', async () => {
+		const el = await mount('roxy-bodygraph', {
+			type: 'Projector',
+			strategy: 'Wait for the invitation',
+			authority: 'Splenic',
+			centers: [{ id: 'head', name: 'Head', defined: false, gates: [] }],
+			channels: [],
+			gates: [],
+		});
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Projector');
+		expect(text).not.toContain('undefined');
+		expect(text).not.toContain('No bodygraph data');
+		el.remove();
+	});
+
+	/** The /human-design/type response: the identity read without the chart. */
+	const hdType = {
+		type: 'Manifestor',
+		typeDescription: 'An initiating, impactful aura built to start things.',
+		aura: 'Closed and repelling.',
+		strategy: 'Inform',
+		strategyDescription:
+			'Inform everyone an action will affect, before taking it.',
+		authority: 'Emotional',
+		authorityDescription: 'Decisions are made across an emotional wave.',
+		signature: 'Peace',
+		notSelf: 'Anger',
+		profile: '2/5',
+	};
+
+	/** The /human-design/profile response. Shares only `profile` with {@link hdType}, which is what the card detects on. */
+	const hdProfile = {
+		profile: '2/5',
+		personalityLine: 2,
+		designLine: 5,
+		personalityKeynote: 'Hermit: a talent that emerges when called out.',
+		designKeynote: 'Heretic: a universalizing, practical force.',
+	};
+
+	test('roxy-hd-type-card renders every interpretation the type response carries', async () => {
+		const el = await mount('roxy-hd-type-card', hdType);
+		const text = el.shadowRoot?.textContent ?? '';
+		for (const prose of [
+			hdType.typeDescription,
+			hdType.strategyDescription,
+			hdType.authorityDescription,
+			hdType.aura,
+			hdType.type,
+			hdType.strategy,
+			hdType.authority,
+			hdType.profile,
+			hdType.signature,
+			hdType.notSelf,
+		]) {
+			expect(text).toContain(prose);
+		}
+		expect(text).not.toContain('undefined');
+		expect(text).not.toContain('No Human Design data');
+		el.remove();
+	});
+
+	test('roxy-hd-type-card detects the profile response and renders both line keynotes', async () => {
+		const el = await mount('roxy-hd-type-card', hdProfile);
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain(hdProfile.personalityKeynote);
+		expect(text).toContain(hdProfile.designKeynote);
+		expect(text).toContain('Profile');
+		// The type branch must not leak into the profile read: there is no type
+		// in this response, so the card cannot claim one.
+		expect(text).not.toContain('Strategy');
+		expect(text).not.toContain('undefined');
+		expect(text).not.toContain('No Human Design data');
+		el.remove();
+	});
+
+	/**
+	 * The reading surface is shared with the bodygraph through `utils/hd-reading.ts`. If someone re-forks it into one of the two components, the same response field would drift apart between them; this pins that they render the same prose from the same data.
+	 */
+	test('the type card and the bodygraph render the same reading from the same fields', async () => {
+		const card = await mount('roxy-hd-type-card', hdType);
+		const graph = await mount('roxy-bodygraph', { ...bodygraph, ...hdType });
+		const cardText = card.shadowRoot?.textContent ?? '';
+		const graphText = graph.shadowRoot?.textContent ?? '';
+		for (const prose of [
+			hdType.typeDescription,
+			hdType.strategyDescription,
+			hdType.authorityDescription,
+			hdType.aura,
+		]) {
+			expect(cardText).toContain(prose);
+			expect(graphText).toContain(prose);
+		}
+		card.remove();
+		graph.remove();
+	});
+
+	test('roxy-hd-variables renders the arrow readings, cognition, and base note', async () => {
+		const el = await mount('roxy-hd-variables', {
+			arrows: [
+				{
+					key: 'determination',
+					name: 'Determination',
+					layer: 'Primary Health System',
+					position: 'Top left',
+					activation: { planet: 'Sun', side: 'design' },
+					color: 4,
+					tone: 5,
+					base: 2,
+					direction: 'right',
+					colorLabel: 'Touch',
+					directionLabel: 'Passive',
+					description: 'The top left arrow, fed by the design Sun.',
+					layerDescription: 'The body-side half of Variable.',
+					colorMeaning: 'Touch. Intake governed by contact.',
+					toneMeaning: 'Judgment. A conclusion is reached first.',
+					directionMeaning: 'Passive. Intake is stored rather than filtered.',
+					baseName: 'Integrative',
+					cognition: {
+						label: 'Feeling',
+						description: 'Feeling. Recognition through frequency.',
+					},
+					confident: true,
+				},
+				{
+					key: 'environment',
+					name: 'Environment',
+					layer: 'Primary Health System',
+					position: 'Bottom left',
+					activation: { planet: 'North Node', side: 'design' },
+					color: 1,
+					tone: 5,
+					base: 4,
+					direction: 'right',
+					colorLabel: 'Caves',
+					directionLabel: 'Observer',
+					description: 'The bottom left arrow, fed by the design Nodes.',
+					layerDescription: 'The body-side half of Variable.',
+					colorMeaning: 'Caves. Enclosure and controlled access.',
+					toneMeaning: 'Judgment. A conclusion is reached first.',
+					directionMeaning: 'Observer. Nourished by surveying the setting.',
+					baseName: 'Progressive',
+					confident: true,
+				},
+			],
+			confident: true,
+			confidenceMarginDeg: 0.002,
+			baseDescription: 'The finest substructure layer.',
+		});
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('The top left arrow, fed by the design Sun.');
+		expect(text).toContain('Caves. Enclosure and controlled access.');
+		expect(text).toContain('Integrative');
+		// Cognition rides on the determination arrow alone.
+		expect(text).toContain('Cognition · Feeling');
+		expect(text).toContain('Feeling. Recognition through frequency.');
+		// The layer text is shared by both arrows, so it is printed once.
+		expect(text.split('The body-side half of Variable.').length - 1).toBe(1);
+		expect(text).toContain('The finest substructure layer.');
+		expect(text).not.toContain('undefined');
+		el.remove();
+	});
+});

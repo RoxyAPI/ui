@@ -3,14 +3,25 @@ import { customElement } from 'lit/decorators.js';
 import type { CalculateVariablesResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { capitalize } from '../utils/string.js';
+
+type Variables = CalculateVariablesResponse;
+type Arrow = Variables['arrows'][number];
 
 /**
- * Human Design variables (the four arrows / PHS). Renders /human-design/variables: the four transformation arrows laid out as they sit on the bodygraph head (top-left/right Determination + Motivation, bottom-left/right Environment + Perspective), each showing its left/right direction, the digestion/environment/awareness/perspective labels, and its color/tone/base. A low-confidence calculation (near a color/tone boundary) is flagged.
+ * Human Design variables (the four arrows / PHS). Renders /human-design/variables: the four transformation arrows laid out as they sit on the bodygraph head (top-left/right Determination + Motivation, bottom-left/right Environment + Perspective), each showing its left/right direction, the digestion/environment/awareness/perspective labels, and its color/tone/base.
+ *
+ * @remarks
+ * The quadrant grid stays the primary read: it is the arrow map as it appears on the chart, and it is what a reader scans first. The interpretation sits below it in an exclusive accordion, grouped by the two layers the arrows belong to (the body-side Primary Health System, the mind-side Rave Psychology), because the layer description is one text shared by the two arrows in it and belongs to the group rather than to each arrow. Only one arrow reading is ever open, so the card grows by one paragraph at most.
+ *
+ * `cognition` rides only on the determination arrow and is rendered when present. A low-confidence calculation (a birth time near a color or tone boundary) is flagged per arrow and for the chart as a whole.
  */
 @customElement('roxy-hd-variables')
-export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse> {
+export class RoxyHdVariables extends RoxyDataElement<Variables> {
 	static styles = [
 		baseStyles,
+		disclosureStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -29,7 +40,7 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 			}
 			.grid {
 				display: grid;
-				grid-template-columns: repeat(2, 1fr);
+				grid-template-columns: repeat(2, minmax(0, 1fr));
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.arrow {
@@ -38,6 +49,7 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 				padding: var(--roxy-space-md, 1rem);
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
+				align-content: start;
 			}
 			.arrow-head {
 				display: flex;
@@ -73,13 +85,141 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 			}
 			@container (max-width: 28rem) {
 				.grid {
-					grid-template-columns: 1fr;
+					grid-template-columns: minmax(0, 1fr);
 				}
+			}
+
+			/* Interpretation. Every body of prose sits in one exclusive accordion, so
+			 * the card grows by a single open reading at most. */
+			.block {
+				border-top: 1px solid var(--roxy-border, #e4e4e7);
+				padding-top: var(--roxy-space-md, 1rem);
+			}
+			.block h3 {
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+			.group {
+				margin-bottom: var(--roxy-space-md, 1rem);
+			}
+			.group:last-of-type {
+				margin-bottom: 0;
+			}
+			.group-head {
+				margin: 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.group-note {
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				line-height: 1.6;
+			}
+			.interp-card {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				margin-bottom: var(--roxy-space-xs, 0.25rem);
+			}
+			.interp-card summary {
+				cursor: pointer;
+				font-weight: 500;
+				color: var(--roxy-fg, #0a0a0a);
+				display: flex;
+				align-items: center;
+				gap: var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.interp-card summary:focus-visible {
+				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+				outline-offset: 2px;
+				border-radius: var(--roxy-radius-sm, 4px);
+			}
+			.interp-lead {
+				display: inline-flex;
+				align-items: baseline;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+				min-width: 0;
+				flex: 1 1 auto;
+				order: 1;
+			}
+			/* The chevron is authored before the aside so it can stay on the label line
+			 * when the aside wraps below it on a narrow card; order restores the read
+			 * sequence (label, aside, chevron) on a wide one. */
+			.interp-aside {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				flex-shrink: 0;
+				order: 2;
+			}
+			.roxy-chevron {
+				order: 3;
+			}
+			.interp-aside small {
+				color: var(--roxy-muted, #71717a);
+				font-weight: 400;
+				white-space: nowrap;
+			}
+			/* Narrow card: the position label drops to its own right-aligned line
+			 * rather than squeezing the arrow name mid-word. The chevron stays on the
+			 * name line so the row still reads as one clickable header. */
+			@container (max-width: 26rem) {
+				.interp-card summary {
+					flex-wrap: wrap;
+				}
+				.roxy-chevron {
+					order: 2;
+				}
+				.interp-aside {
+					order: 3;
+					flex-basis: 100%;
+					justify-content: flex-end;
+				}
+			}
+			.interp-body {
+				margin-top: var(--roxy-space-sm, 0.5rem);
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				line-height: 1.6;
+				overflow-wrap: anywhere;
+			}
+			.interp-body p {
+				margin: 0;
+			}
+			.facets {
+				margin: 0;
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.facets dt {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+			.facets dd {
+				margin: 0;
+			}
+			.footnote {
+				margin: 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				line-height: 1.6;
 			}
 		`,
 	];
 
-	protected renderData(d: CalculateVariablesResponse) {
+	protected renderData(d: Variables) {
 		// Place the arrows by their bodygraph `position`, not response order: the
 		// 2-col grid fills row-major, so sorting to Top left, Top right, Bottom left,
 		// Bottom right keeps the design column (Determination + Environment) on the
@@ -98,12 +238,11 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 					</p>`
 					: nothing
 			}
+			${this.renderReading(arrows, d.baseDescription)}
 		</div>`;
 	}
 
-	private renderArrow(
-		a: NonNullable<CalculateVariablesResponse['arrows']>[number],
-	) {
+	private renderArrow(a: Arrow) {
 		// A left arrow is strategic/active, a right arrow receptive/passive in HD.
 		const glyph = a.direction === 'left' ? '←' : '→';
 		return html`<div class="arrow">
@@ -117,7 +256,12 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 			</span>
 			${
 				typeof a.color === 'number'
-					? html`<span class="ctb">Color ${a.color} · Tone ${a.tone} · Base ${a.base}${a.activation?.planet ? ` · ${a.activation.planet}${a.activation.side ? ` (${a.activation.side})` : ''}` : ''}</span>`
+					? html`<span class="ctb">Color ${a.color} · Tone ${a.tone} · Base ${a.base}${a.baseName ? `, ${a.baseName}` : ''}</span>`
+					: nothing
+			}
+			${
+				a.activation?.planet
+					? html`<span class="ctb">${[a.activation.planet, capitalize(a.activation.side ?? '')].filter(Boolean).join(' · ')}</span>`
 					: nothing
 			}
 			${
@@ -126,6 +270,80 @@ export class RoxyHdVariables extends RoxyDataElement<CalculateVariablesResponse>
 					: nothing
 			}
 		</div>`;
+	}
+
+	/**
+	 * The four readings, grouped by the layer each arrow belongs to. The layer
+	 * description is one text shared by both arrows of a layer, so it is lifted to
+	 * the group intro rather than repeated in each body. Group order follows the
+	 * already quadrant-sorted arrows, which puts the body layer before the mind
+	 * layer without naming either.
+	 */
+	private renderReading(arrows: Arrow[], baseDescription: string | undefined) {
+		const readable = arrows.filter((a) => a.description || a.colorMeaning);
+		if (readable.length === 0) return nothing;
+
+		const groups = new Map<string, Arrow[]>();
+		for (const a of readable) {
+			const key = a.layer ?? '';
+			const bucket = groups.get(key);
+			if (bucket) bucket.push(a);
+			else groups.set(key, [a]);
+		}
+		let index = 0;
+
+		return html`<section class="block">
+			<h3>Reading</h3>
+			${[...groups].map(
+				([layer, list]) => html`<div class="group">
+					${layer ? html`<p class="group-head">${layer}</p>` : nothing}
+					${
+						list[0]?.layerDescription
+							? html`<p class="group-note">${list[0].layerDescription}</p>`
+							: nothing
+					}
+					${list.map((a) => this.renderArrowReading(a, index++ === 0))}
+				</div>`,
+			)}
+			${baseDescription ? html`<p class="footnote">Base. ${baseDescription}</p>` : nothing}
+		</section>`;
+	}
+
+	private renderArrowReading(a: Arrow, open: boolean) {
+		// Cognition rides only on the determination arrow, so its row appears on that
+		// arrow alone. Its label joins the term because, unlike color and direction,
+		// the tile above carries no cognition label to read it against.
+		const cog = a.cognition;
+		const facets: Array<{ label: string; body: string | undefined }> = [
+			{ label: 'Color', body: a.colorMeaning },
+			{ label: 'Tone', body: a.toneMeaning },
+			{ label: 'Direction', body: a.directionMeaning },
+			{
+				label: cog?.label ? `Cognition · ${cog.label}` : 'Cognition',
+				body: cog?.description,
+			},
+		].filter((f) => Boolean(f.body));
+
+		return html`<details class="interp-card" name="hd-variable" ?open=${open}>
+			<summary>
+				<span class="interp-lead">${a.name ?? ''}</span>
+				${chevron()}
+				${a.position ? html`<span class="interp-aside"><small>${a.position}</small></span>` : nothing}
+			</summary>
+			<div class="interp-body">
+				${a.description ? html`<p>${a.description}</p>` : nothing}
+				${
+					facets.length > 0
+						? html`<dl class="facets">
+							${facets.map(
+								(f) => html`<dt>${f.label}</dt>
+									<dd>${f.body}</dd>`,
+							)}
+						</dl>`
+						: nothing
+				}
+			</div>
+		</details>`;
 	}
 
 	protected renderEmpty() {

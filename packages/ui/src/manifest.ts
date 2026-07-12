@@ -474,11 +474,24 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'bodygraph',
 		heading: 'Bodygraph',
 		description:
-			'Human Design bodygraph with nine centers, channels, and activated gates plus a type, authority, and profile summary',
+			'Human Design bodygraph with nine centers, channels, and activated gates, plus the full reading: type, strategy, authority, profile, definition, incarnation cross, and a gate and line meaning for every activation',
 		docsLabel: 'Human Design',
 		endpointLabel: 'POST /human-design/bodygraph',
 		docsSummary:
-			'Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary',
+			'Nine-center chart with defined and open centers, active channels, and gates, plus the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning',
+		topic: 'Human Design',
+	},
+	{
+		pascal: 'RoxyHdTypeCard',
+		tag: 'roxy-hd-type-card',
+		slug: 'hd-type-card',
+		heading: 'HD type',
+		description:
+			'Human Design type reading without the chart: type, strategy, authority, and profile, with the aura mechanic, the signature and not-self themes, and the interpretation behind each label. Also renders the profile response with its two line keynotes',
+		docsLabel: 'Human Design',
+		endpointLabel: 'POST /human-design/type, /human-design/profile',
+		docsSummary:
+			'Type, strategy, authority, and profile tiles with the aura, signature, and not-self themes, plus the reading behind each label and the profile line keynotes',
 		topic: 'Human Design',
 	},
 	{
@@ -512,10 +525,11 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'hd-variables',
 		heading: 'HD variables',
 		description:
-			'Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction and color, tone, and base',
+			'Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction, color, tone, and base, plus the reading for each arrow and the cognition',
 		docsLabel: 'Human Design',
 		endpointLabel: 'POST /human-design/variables',
-		docsSummary: 'The four transformation arrows with direction and PHS labels',
+		docsSummary:
+			'The four transformation arrows with direction, color, tone, and base, plus a reading per arrow grouped by layer and the cognition',
 		topic: 'Human Design',
 	},
 	{

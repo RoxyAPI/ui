@@ -140,11 +140,14 @@ export class FetchController<T = unknown> implements ReactiveController {
 
 /**
  * Translate flat form values into a {@link RoxyRequest} for an endpoint. The `{name}` segments in the endpoint template are substituted from the values and removed; the rest become the JSON body for POST or query parameters for GET. This is the spec-light request builder the base element uses to turn a `<roxy-endpoint-form>` submission into a self-fetch, so a component needs no per-endpoint glue.
+ *
+ * @param queryKeys - Names the spec declares as `in: query` for this operation, which `<roxy-endpoint-form>` reports on its `roxy-submit` event. A POST operation can still take query parameters (every localized endpoint takes `?lang=`), and sending one in the JSON body silently drops it, so those names are routed to the query string on POST as well as GET.
  */
 export function buildRequest(
 	endpoint: string,
 	method: 'GET' | 'POST',
 	values: Record<string, unknown>,
+	queryKeys: readonly string[] = [],
 ): RoxyRequest {
 	const rest: Record<string, unknown> = { ...values };
 	const path = `/${endpoint.replace(/^\//, '')}`.replace(
@@ -155,11 +158,12 @@ export function buildRequest(
 			return encodeURIComponent(String(v ?? ''));
 		},
 	);
+	const inQuery = new Set(queryKeys);
 	const query: Record<string, string | number | undefined> = {};
 	const body: Record<string, unknown> = {};
 	for (const [k, v] of Object.entries(rest)) {
 		if (v === undefined || v === '') continue;
-		if (method === 'GET') query[k] = v as string | number;
+		if (method === 'GET' || inQuery.has(k)) query[k] = v as string | number;
 		else body[k] = v;
 	}
 	return { path, method, query, body: method === 'POST' ? body : undefined };

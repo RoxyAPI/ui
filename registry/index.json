@@ -149,7 +149,11 @@
     },
     {
       "name": "roxy-bodygraph",
-      "description": "Human Design bodygraph with nine centers, channels, and activated gates plus a type, authority, and profile summary"
+      "description": "Human Design bodygraph with nine centers, channels, and activated gates, plus the full reading: type, strategy, authority, profile, definition, incarnation cross, and a gate and line meaning for every activation"
+    },
+    {
+      "name": "roxy-hd-type-card",
+      "description": "Human Design type reading without the chart: type, strategy, authority, and profile, with the aura mechanic, the signature and not-self themes, and the interpretation behind each label. Also renders the profile response with its two line keynotes"
     },
     {
       "name": "roxy-hd-connection",
@@ -161,7 +165,7 @@
     },
     {
       "name": "roxy-hd-variables",
-      "description": "Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction and color, tone, and base"
+      "description": "Human Design variables: the four PHS arrows (determination, environment, perspective, motivation) with left/right direction, color, tone, and base, plus the reading for each arrow and the cognition"
     },
     {
       "name": "roxy-forecast-timeline",

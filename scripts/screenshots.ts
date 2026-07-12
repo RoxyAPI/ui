@@ -61,6 +61,7 @@ const TARGETS: Target[] = [
 	{ id: 'spread', label: 'tarot-spread' },
 	{ id: 'tarot-catalog', label: 'tarot-catalog' },
 	{ id: 'bodygraph', label: 'bodygraph' },
+	{ id: 'hd-type-card', label: 'hd-type-card' },
 	{ id: 'hd-connection', label: 'hd-connection' },
 	{ id: 'hd-penta', label: 'hd-penta' },
 	{ id: 'hd-variables', label: 'hd-variables' },
@@ -127,11 +128,28 @@ async function shoot(page: Page, target: Target, theme: 'light' | 'dark') {
 	);
 }
 
+/**
+ * Optional CLI filter: `bun run screenshots bodygraph hd-variables` reshoots only
+ * those targets (by label or section id) and leaves every other committed asset
+ * byte-identical, so a change to one component does not churn 128 binaries. With
+ * no argument every target is reshot and the directory is wiped first, so a
+ * removed component cannot linger.
+ */
+const ONLY = new Set(process.argv.slice(2));
+const SELECTED = ONLY.size
+	? TARGETS.filter((t) => ONLY.has(t.label) || ONLY.has(t.id))
+	: TARGETS;
+
 async function main() {
 	if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
-	// Wipe stale screenshots so removed components don't linger.
-	for (const f of readdirSync(OUT_DIR)) {
-		if (/\.(png|webp)$/.test(f)) unlinkSync(resolve(OUT_DIR, f));
+	if (SELECTED.length === 0) {
+		throw new Error(`No screenshot target matches: ${[...ONLY].join(', ')}`);
+	}
+	if (ONLY.size === 0) {
+		// Wipe stale screenshots so removed components don't linger.
+		for (const f of readdirSync(OUT_DIR)) {
+			if (/\.(png|webp)$/.test(f)) unlinkSync(resolve(OUT_DIR, f));
+		}
 	}
 
 	const server = await ensureServer();
@@ -149,7 +167,7 @@ async function main() {
 		for (const theme of ['light', 'dark'] as const) {
 			console.log(`Theme: ${theme}`);
 			await setTheme(page, theme);
-			for (const target of TARGETS) {
+			for (const target of SELECTED) {
 				await shoot(page, target, theme);
 			}
 		}
@@ -159,7 +177,7 @@ async function main() {
 		await server.stop();
 	}
 	console.log(
-		`\nDone. ${TARGETS.length * 2} screenshots written to ${OUT_DIR}`,
+		`\nDone. ${SELECTED.length * 2} screenshots written to ${OUT_DIR}`,
 	);
 }
 

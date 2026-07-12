@@ -275,6 +275,18 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/human-design/penta',
 		},
 	],
+	'roxy-hd-type-card': [
+		{
+			operationId: 'calculateProfile',
+			method: 'POST',
+			path: '/human-design/profile',
+		},
+		{
+			operationId: 'calculateType',
+			method: 'POST',
+			path: '/human-design/type',
+		},
+	],
 	'roxy-hd-variables': [
 		{
 			operationId: 'calculateVariables',

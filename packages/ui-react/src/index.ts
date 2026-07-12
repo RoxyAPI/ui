@@ -89,6 +89,10 @@ export {
 } from './components/hd-connection.js';
 export { RoxyHdPenta, type RoxyHdPentaProps } from './components/hd-penta.js';
 export {
+	RoxyHdTypeCard,
+	type RoxyHdTypeCardProps,
+} from './components/hd-type-card.js';
+export {
 	RoxyHdVariables,
 	type RoxyHdVariablesProps,
 } from './components/hd-variables.js';

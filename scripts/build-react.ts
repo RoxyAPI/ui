@@ -79,6 +79,8 @@ const DATA_TYPES: Record<string, string> = {
 		'GenerateTimelineResponse | FindSignificantDatesResponse | ForecastTransitsResponse',
 	'biorhythm-chart':
 		'GetDailyBiorhythmResponse | GetForecastResponse | GetCriticalDaysResponse',
+	bodygraph: 'GenerateBodygraphResponse',
+	'hd-type-card': 'CalculateTypeResponse | CalculateProfileResponse',
 	'hd-connection': 'CalculateConnectionResponse',
 	'hd-penta': 'CalculatePentaResponse',
 	'hd-variables': 'CalculateVariablesResponse',

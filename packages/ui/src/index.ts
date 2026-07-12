@@ -39,6 +39,7 @@ export { RoxyGunaMilan } from './components/guna-milan.js';
 // Human Design
 export { RoxyHdConnection } from './components/hd-connection.js';
 export { RoxyHdPenta } from './components/hd-penta.js';
+export { RoxyHdTypeCard } from './components/hd-type-card.js';
 export { RoxyHdVariables } from './components/hd-variables.js';
 // I Ching
 export { RoxyHexagram } from './components/hexagram.js';

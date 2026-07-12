@@ -1,5 +1,5 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GenerateBodygraphResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -10,27 +10,53 @@ import {
 	channelKey,
 	renderBodygraphSvg,
 } from '../utils/bodygraph-render.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import {
+	hdReadingStyles,
+	type ReadingSection,
+	renderHdFacts,
+	renderHdKeynotes,
+	renderHdReading,
+	renderHdThemes,
+} from '../utils/hd-reading.js';
 import { capitalize } from '../utils/string.js';
+import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
-type GateActivation = GenerateBodygraphResponse['gates'][number];
+type Bodygraph = GenerateBodygraphResponse;
+type GateActivation = Bodygraph['gates'][number];
+type CenterEntry = Bodygraph['centers'][number];
+type ChannelEntry = Bodygraph['channels'][number];
 
 /**
- * Human Design bodygraph. Pass `data` from /human-design/bodygraph. Renders the
- * nine centers in their canonical positions and shapes, filled when defined and
- * outlined when open, the 36 channels as wiring between gates with active
- * channels emphasized, and the activated gate numbers. A summary block lists
- * type, strategy, authority, profile, definition, incarnation cross, signature,
- * and not-self theme.
+ * Human Design bodygraph. Pass `data` from /human-design/bodygraph. Renders the nine centers in their canonical positions and shapes, filled when defined and outlined when open, the 36 channels as wiring between gates with active channels emphasized, and the activated gate numbers.
  *
- * The chart is theme-driven through `--roxy-*` custom properties on `:host`, so
- * it adopts the host palette in light and dark without runtime color probing.
+ * @remarks
+ * The response carries a full interpretation, not just labels, so the card is laid out in four passes from identity down to detail. Identity sits beside the chart and is always visible: the type, strategy, authority, profile, and definition tiles, the type description as the lead paragraph, the incarnation cross, and the signature and not-self themes. Everything below is progressive disclosure through the shared exclusive-accordion pattern, so only one body of prose is ever open at a time and the card never becomes a wall of text: the reading (strategy, authority, profile, definition, aura, cross), the defined channels grouped by circuit, the nine centers, and the 26 gate activations split by chart side.
+ *
+ * A center returns `notSelfQuestion` whatever its state, but the question describes the conditioning of an OPEN center, so it is rendered only when the center is open. `theme` already tracks the defined or open state and is always shown.
+ *
+ * The chart is theme-driven through `--roxy-*` custom properties on `:host`, so it adopts the host palette in light and dark without runtime color probing.
  */
 @customElement('roxy-bodygraph')
-export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
+export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
+	/** Which chart side the activations panel is showing. View state, not configuration: the response always carries both sides. */
+	@state()
+	private side: 'personality' | 'design' = 'personality';
+
 	static styles = [
 		baseStyles,
+		tablistStyles,
+		disclosureStyles,
+		hdReadingStyles,
 		css`
 			.wrap {
+				width: 100%;
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
@@ -56,13 +82,16 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 				grid-template-columns: minmax(0, 1fr);
 				align-items: start;
 			}
-			@container (min-width: 520px) {
+			/* The identity column holds prose, so it only splits off once it has room
+			 * to set a readable measure next to the 340px chart. Below that the chart
+			 * and the identity block stack full width. */
+			@container (min-width: 40rem) {
 				.layout {
 					grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
 				}
 			}
 
-			svg {
+			.chart {
 				display: block;
 				width: 100%;
 				max-width: var(--roxy-chart-max-width, 340px);
@@ -156,28 +185,6 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
-			.facts {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-				gap: var(--roxy-space-sm, 0.5rem);
-			}
-			.fact {
-				border: 1px solid var(--roxy-border, #e4e4e7);
-				border-radius: var(--roxy-radius-md, 8px);
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				background: var(--roxy-surface, #fff);
-			}
-			.fact span {
-				display: block;
-				color: var(--roxy-muted, #71717a);
-				font-size: var(--roxy-text-xs, 0.75rem);
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-			}
-			.fact strong {
-				font-size: var(--roxy-text-base, 1rem);
-				color: var(--roxy-fg, #0a0a0a);
-			}
 			.cross {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-fg, #0a0a0a);
@@ -188,24 +195,6 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 			.cross .gates {
 				color: var(--roxy-muted, #71717a);
 				font-variant-numeric: tabular-nums;
-			}
-			.themes {
-				display: flex;
-				flex-wrap: wrap;
-				gap: var(--roxy-space-sm, 0.5rem);
-			}
-			.pill {
-				padding: 2px 10px;
-				border-radius: var(--roxy-radius-full, 9999px);
-				font-size: var(--roxy-text-xs, 0.75rem);
-			}
-			.pill--good {
-				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
-			}
-			.pill--shadow {
-				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
 			}
 			.legend {
 				display: flex;
@@ -248,6 +237,63 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 			.legend .swatch.bg-brown {
 				background: #76502f;
 			}
+
+			.group {
+				margin-bottom: var(--roxy-space-md, 1rem);
+			}
+			.group:last-child {
+				margin-bottom: 0;
+			}
+			.group-head {
+				margin: 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.group-note {
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				line-height: 1.6;
+			}
+			.footnote {
+				margin: 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				line-height: 1.6;
+			}
+			.chip {
+				display: inline-block;
+				padding: 1px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 45%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.chip--on {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 18%, transparent);
+			}
+			.chips {
+				display: inline-flex;
+				flex-wrap: wrap;
+				gap: 0.25rem;
+			}
+			.gate-id,
+			.chan-gates {
+				font-variant-numeric: tabular-nums;
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-accent-ink, #b45309);
+			}
+			.glyph {
+				color: var(--roxy-accent-ink, #b45309);
+			}
+			.side-note {
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+				padding-top: var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				line-height: 1.6;
+			}
 		`,
 	];
 
@@ -255,7 +301,7 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 		return html`<div class="roxy-empty" role="status">No bodygraph data</div>`;
 	}
 
-	protected renderData(d: GenerateBodygraphResponse) {
+	protected renderData(d: Bodygraph) {
 		const definedCenters = new Set<BodygraphCenterId>(
 			(d.centers ?? [])
 				.filter((c) => c.defined)
@@ -273,15 +319,18 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 			<header class="head">
 				<h2 class="title">Bodygraph</h2>
 				${
-					d.type
+					// One text node, not two: the markup minifier collapses the leading
+					// space of an adjacent template and the separator would lose it.
+					d.type || d.profile
 						? html`<div class="type-line">
-							${d.type}${d.profile ? html` · Profile ${d.profile}` : nothing}
+							${[d.type, d.profile ? `Profile ${d.profile}` : ''].filter(Boolean).join(' · ')}
 						</div>`
 						: nothing
 				}
 			</header>
 			<div class="layout">
 				<svg
+					class="chart"
 					viewBox=${BODYGRAPH_VIEWBOX}
 					preserveAspectRatio="xMidYMid meet"
 					role="img"
@@ -302,6 +351,10 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 				</svg>
 				${this.renderSummary(d)}
 			</div>
+			${this.renderReading(d)}
+			${this.renderChannels(d.channels ?? [])}
+			${this.renderCenters(d.centers ?? [])}
+			${this.renderActivations(d)}
 		</div>`;
 	}
 
@@ -312,34 +365,31 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 			const parts: string[] = [`Gate ${g.gate}`];
 			if (g.line != null) parts[0] += `.${g.line}`;
 			if (g.gateName) parts.push(g.gateName);
-			const planet = g.planet ? capitalize(g.planet) : '';
-			const glyph = planet ? (PLANET_GLYPH[planet] ?? planet) : '';
+			const glyph = this.planetGlyph(g.planet);
 			if (glyph) parts.push(`${glyph} ${g.side ?? ''}`.trim());
 			titles.set(g.gate, parts.join(' · '));
 		}
 		return titles;
 	}
 
-	private renderSummary(d: GenerateBodygraphResponse) {
-		const facts: Array<{ label: string; value?: string }> = [
-			{ label: 'Type', value: d.type },
-			{ label: 'Strategy', value: d.strategy },
-			{ label: 'Authority', value: d.authority },
-			{ label: 'Profile', value: d.profile },
-			{ label: 'Definition', value: d.definition },
-		];
+	/** Monochrome planet glyph for an API planet name, or the name itself when the wheel has no glyph for it. */
+	private planetGlyph(planet: string | undefined): string {
+		if (!planet) return '';
+		const name = capitalize(planet);
+		return PLANET_GLYPH[name] ?? planet;
+	}
+
+	private renderSummary(d: Bodygraph) {
 		const ic = d.incarnationCross;
 		return html`<div class="summary">
-			<div class="facts">
-				${facts.map((f) =>
-					f.value
-						? html`<div class="fact">
-							<span>${f.label}</span>
-							<strong>${f.value}</strong>
-						</div>`
-						: nothing,
-				)}
-			</div>
+			${renderHdFacts([
+				{ label: 'Type', value: d.type },
+				{ label: 'Strategy', value: d.strategy },
+				{ label: 'Authority', value: d.authority },
+				{ label: 'Profile', value: d.profile },
+				{ label: 'Definition', value: d.definition },
+			])}
+			${d.typeDescription ? html`<p class="lead">${d.typeDescription}</p>` : nothing}
 			${
 				ic?.name
 					? html`<p class="cross">
@@ -352,14 +402,7 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 					</p>`
 					: nothing
 			}
-			${
-				d.signature || d.notSelf
-					? html`<div class="themes">
-						${d.signature ? html`<span class="pill pill--good">Signature: ${d.signature}</span>` : nothing}
-						${d.notSelf ? html`<span class="pill pill--shadow">Not-self: ${d.notSelf}</span>` : nothing}
-					</div>`
-					: nothing
-			}
+			${renderHdThemes(d.signature, d.notSelf)}
 			<div class="legend">
 				<span class="legend-caption">Center colors when defined. Open centers are outlined.</span>
 				<span><span class="swatch bg-gold defined"></span>Head, G</span>
@@ -369,6 +412,226 @@ export class RoxyBodygraph extends RoxyDataElement<GenerateBodygraphResponse> {
 				<span><span class="swatch"></span>Open center</span>
 			</div>
 		</div>`;
+	}
+
+	/**
+	 * The mechanics of the design, in the order a reader needs them: how to engage (strategy), how to decide (authority), the role played (profile), how the definition hangs together, the aura, and the life theme of the incarnation cross. The cross name and gates already sit beside the chart, so only its description is repeated here.
+	 */
+	private renderReading(d: Bodygraph) {
+		const ic = d.incarnationCross;
+		const sections: ReadingSection[] = [
+			{ label: 'Strategy', aside: d.strategy, body: d.strategyDescription },
+			{ label: 'Authority', aside: d.authority, body: d.authorityDescription },
+			{
+				label: 'Profile',
+				aside: d.profile,
+				body: d.profileDescription,
+				extra: renderHdKeynotes(d.profileKeynotes),
+			},
+			{
+				label: 'Definition',
+				aside: d.definition,
+				body: d.definitionDescription,
+			},
+			{ label: 'Aura', body: d.aura },
+			{
+				label: 'Incarnation cross',
+				aside: ic?.angle,
+				body: ic?.description ?? '',
+			},
+		];
+		return renderHdReading(sections, 'hd-reading');
+	}
+
+	/**
+	 * Defined channels, grouped by circuit. The circuit description is the same
+	 * text for every channel that belongs to it, so it is lifted to the group
+	 * intro instead of repeating inside each row. Groups keep response order, which
+	 * is gate order; no circuit ranking is invented.
+	 */
+	private renderChannels(channels: ChannelEntry[]) {
+		if (channels.length === 0) return nothing;
+		const groups = new Map<string, ChannelEntry[]>();
+		for (const c of channels) {
+			const key = c.circuit ?? '';
+			const bucket = groups.get(key);
+			if (bucket) bucket.push(c);
+			else groups.set(key, [c]);
+		}
+		// One accordion group spans every circuit, so the open row is the first
+		// channel overall, not the first of each circuit.
+		let index = 0;
+
+		return html`<section class="block">
+			<h3>Defined channels (${channels.length})</h3>
+			${[...groups].map(
+				([circuit, list]) => html`<div class="group">
+					${circuit ? html`<p class="group-head">${circuit} circuit</p>` : nothing}
+					${
+						list[0]?.circuitDescription
+							? html`<p class="group-note">${list[0].circuitDescription}</p>`
+							: nothing
+					}
+					${list.map(
+						(
+							c,
+						) => html`<details class="interp-card" name="hd-channel" ?open=${index++ === 0}>
+							<summary>
+								<span class="interp-lead">
+									<span class="chan-gates">${c.gateA}-${c.gateB}</span>
+									<span>${c.name ?? ''}</span>
+								</span>
+								${chevron()}
+							</summary>
+							<div class="interp-body">
+								${c.description ? html`<p>${c.description}</p>` : nothing}
+							</div>
+						</details>`,
+					)}
+				</div>`,
+			)}
+		</section>`;
+	}
+
+	/**
+	 * The nine centers. `theme` already reflects whether the center came back
+	 * defined or open, so it always shows. `notSelfQuestion` is written for the
+	 * OPEN state ("the open Spleen clings to..."), so showing it on a defined
+	 * center would state the opposite of the chart; it is rendered for open
+	 * centers only.
+	 */
+	private renderCenters(centers: CenterEntry[]) {
+		if (centers.length === 0) return nothing;
+		const definedCount = centers.filter((c) => c.defined).length;
+		return html`<section class="block">
+			<h3>Centers (${definedCount} defined, ${centers.length - definedCount} open)</h3>
+			${centers.map(
+				(
+					c,
+					i,
+				) => html`<details class="interp-card" name="hd-center" ?open=${i === 0}>
+					<summary>
+						<span class="interp-lead">${c.name ?? ''}</span>
+						${chevron()}
+						<span class="interp-aside">
+							<span class="chips">
+								<span class="chip ${c.defined ? 'chip--on' : ''}">${c.defined ? 'Defined' : 'Open'}</span>
+								${c.motor ? html`<span class="chip">Motor</span>` : nothing}
+								${c.awareness ? html`<span class="chip">Awareness</span>` : nothing}
+							</span>
+						</span>
+					</summary>
+					<div class="interp-body">
+						${c.theme ? html`<p>${c.theme}</p>` : nothing}
+						${
+							!c.defined && c.notSelfQuestion
+								? html`<dl class="keynotes">
+									<dt>Not-self question</dt>
+									<dd>${c.notSelfQuestion}</dd>
+								</dl>`
+								: nothing
+						}
+						${c.biology ? html`<p class="footnote">Biology. ${c.biology}</p>` : nothing}
+						${
+							c.gates?.length
+								? html`<p class="footnote">Gates ${c.gates.join(', ')}</p>`
+								: nothing
+						}
+					</div>
+				</details>`,
+			)}
+		</section>`;
+	}
+
+	/**
+	 * The 26 activations, split by chart side. Personality is the conscious side
+	 * printed in black, design the unconscious side printed in red, and the
+	 * response describes each once at the top level, so the side description
+	 * becomes the panel intro rather than an orphan glossary entry. Splitting the
+	 * list in two also halves what a reader scans: 13 rows per side, in the
+	 * canonical planet order the response returns.
+	 */
+	private renderActivations(d: Bodygraph) {
+		const gates = d.gates ?? [];
+		if (gates.length === 0) return nothing;
+
+		const personality = gates.filter((g) => g.side === 'personality');
+		const design = gates.filter((g) => g.side === 'design');
+		// A response with only one side (or an unrecognized side value) still
+		// renders: fall back to the flat list and drop the tabs.
+		const split = personality.length > 0 && design.length > 0;
+		const side = this.side;
+		const shown = split ? (side === 'design' ? design : personality) : gates;
+		const sideNote = split ? d.sides?.[side] : undefined;
+
+		return html`<section class="block">
+			<h3>Activations (${gates.length})</h3>
+			${
+				split
+					? renderTablist({
+							items: [
+								{
+									id: 'personality' as const,
+									label: `Personality (${personality.length})`,
+								},
+								{ id: 'design' as const, label: `Design (${design.length})` },
+							],
+							active: side,
+							onSelect: (v) => {
+								this.side = v;
+							},
+							label: 'Chart sides',
+							idPrefix: 'hd',
+							controls: true,
+						})
+					: nothing
+			}
+			<div
+				id=${split ? `hd-panel-${side}` : nothing}
+				role=${split ? 'tabpanel' : nothing}
+				aria-labelledby=${split ? `hd-tab-${side}` : nothing}
+			>
+				${sideNote ? html`<p class="side-note">${sideNote}</p>` : nothing}
+				${shown.map((g, i) => this.renderGate(g, i === 0))}
+			</div>
+		</section>`;
+	}
+
+	private renderGate(g: GateActivation, open: boolean) {
+		const glyph = this.planetGlyph(g.planet);
+		const hex = g.ichingHexagram;
+		return html`<details class="interp-card" name="hd-gate" ?open=${open}>
+			<summary>
+				<span class="interp-lead">
+					${glyph ? html`<span class="glyph" aria-hidden="true">${glyph}</span>` : nothing}
+					<span class="gate-id">${g.gate}${g.line != null ? `.${g.line}` : ''}</span>
+					<span>${g.gateName ?? ''}</span>
+				</span>
+				${chevron()}
+				${g.planet ? html`<span class="interp-aside"><small>${g.planet}</small></span>` : nothing}
+			</summary>
+			<div class="interp-body">
+				${g.gateDescription ? html`<p>${g.gateDescription}</p>` : nothing}
+				${
+					g.lineMeaning
+						? html`<dl class="keynotes">
+							<dt>Line ${g.line ?? ''}</dt>
+							<dd>${g.lineMeaning}</dd>
+						</dl>`
+						: nothing
+				}
+				${
+					g.planetDescription
+						? html`<p class="footnote">${g.planet}. ${g.planetDescription}</p>`
+						: nothing
+				}
+				${
+					hex?.number
+						? html`<p class="footnote">I Ching hexagram ${hex.number}${hex.english ? `, ${hex.english}` : ''}</p>`
+						: nothing
+				}
+			</div>
+		</details>`;
 	}
 }
 

@@ -131,10 +131,16 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 	private onFormSubmit = (e: Event) => {
 		const detail = (e as CustomEvent).detail as {
 			values: Record<string, unknown>;
+			queryKeys?: string[];
 		};
 		if (this.remember) this.writeRemembered(detail.values);
 		void this.fetcher.run(
-			buildRequest(this.endpoint, this.method, detail.values),
+			buildRequest(
+				this.endpoint,
+				this.method,
+				detail.values,
+				detail.queryKeys ?? [],
+			),
 		);
 	};
 

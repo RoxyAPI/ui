@@ -1,4 +1,4 @@
-import type { GenerateBodygraphResponse } from '@roxyapi/ui/types';
+import type { CalculateProfileResponse, CalculateTypeResponse } from '@roxyapi/ui/types';
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
 
@@ -7,9 +7,9 @@ type ElementAttrs = Omit<
 	'children' | 'data'
 >;
 
-export interface RoxyBodygraphProps extends ElementAttrs {
+export interface RoxyHdTypeCardProps extends ElementAttrs {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GenerateBodygraphResponse;
+	data?: CalculateTypeResponse | CalculateProfileResponse;
 	className?: string;
 	style?: React.CSSProperties;
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
@@ -25,8 +25,8 @@ export interface RoxyBodygraphProps extends ElementAttrs {
 
 }
 
-export const RoxyBodygraph = React.forwardRef<HTMLElement | null, RoxyBodygraphProps>(
-	function RoxyBodygraph({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, ...rest }, ref) {
+export const RoxyHdTypeCard = React.forwardRef<HTMLElement | null, RoxyHdTypeCardProps>(
+	function RoxyHdTypeCard({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -101,7 +101,7 @@ export const RoxyBodygraph = React.forwardRef<HTMLElement | null, RoxyBodygraphP
 			);
 		}
 
-		return React.createElement('roxy-bodygraph', {
+		return React.createElement('roxy-hd-type-card', {
 			ref: internal,
 			className,
 			style,

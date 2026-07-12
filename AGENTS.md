@@ -32,7 +32,7 @@ Map the natural-language request to a component first; fall back to the table be
 | "life path number", "expression number", "personal year", "numerology chart" | `<roxy-numerology-card>` |
 | "draw a tarot card", "card of the day", "card meaning" | `<roxy-tarot-card>` |
 | "tarot reading", "three-card spread", "Celtic Cross", "yes or no tarot" | `<roxy-tarot-spread>` |
-| "Human Design chart", "bodygraph", "my type and authority", "defined centers", "channels and gates" | `<roxy-bodygraph>` |
+| "Human Design chart", "bodygraph", "my type and authority", "defined centers", "channels and gates", "what does my profile mean", "what does gate 61 line 5 mean" | `<roxy-bodygraph>` |
 | "forecast", "what is coming up", "upcoming transits and events", "timeline of my year" | `<roxy-forecast-timeline>` |
 | "biorhythm", "physical/emotional/intellectual cycle", "critical days" | `<roxy-biorhythm-chart>` |
 | "I Ching", "hexagram", "cast the coins", "Book of Changes" | `<roxy-hexagram>` |
@@ -88,10 +88,11 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
-| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, gates, and a type and authority summary |
+| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, and gates, plus the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning |
+| `<roxy-hd-type-card>` | Human Design | POST /human-design/type, /human-design/profile | Type, strategy, authority, and profile tiles with the aura, signature, and not-self themes, plus the reading behind each label and the profile line keynotes |
 | `<roxy-hd-connection>` | Human Design | POST /human-design/connection | Electromagnetic, compromise, and dominance channels between two charts |
 | `<roxy-hd-penta>` | Human Design | POST /human-design/penta | Group penta channels split into upper and lower triangles |
-| `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction and PHS labels |
+| `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction, color, tone, and base, plus a reading per arrow grouped by layer and the cognition |
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
@@ -390,6 +391,23 @@ Rules for this pattern:
 - In a language that cannot call the TS helper (PHP, Python, Go), mirror its rule exactly: escape `<`, `>`, and `&` to their `\u003c`, `\u003e`, `\u0026` JSON escapes. The WordPress example does this in PHP.
 
 This is how the WordPress plugin renders: PHP fetches the response server-side, caches it, and writes the script into the page. The same shape works in any framework that emits HTML.
+
+## Localized responses
+
+Most RoxyAPI endpoints return their interpretation text in eight languages, selected with the `lang` query parameter (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`). Human Design, for example, returns the type, strategy, authority, profile, channel, center, gate, and line readings in the requested language.
+
+The components hold no copy of their own; they print the prose the response carries. So the language of the response is the language of the render, and there is no locale prop to set.
+
+```ts
+const { data } = await roxy.humanDesign.generateBodygraph({
+	body: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+	query: { lang: 'de' },
+});
+```
+
+`lang` is a query parameter even on a POST endpoint. Put it in `query`, never in `body`; a `lang` key in the body is ignored and you get English back. In the self-fetch pattern the component reads the parameter from the spec and sends it correctly, so the generated form simply offers the language as a field.
+
+The structural labels the components draw (section headings such as Reading or Centers, and column headers) are English.
 
 ## Theming and dark mode
 

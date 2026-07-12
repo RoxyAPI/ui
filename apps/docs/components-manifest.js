@@ -415,8 +415,28 @@ window.ROXY_UI_DEMOS = [
 	entry({
 		id: 'bodygraph',
 		tag: 'roxy-bodygraph',
-		seoLine: 'Human Design bodygraph chart with nine centers and channels',
+		seoLine:
+			'Human Design bodygraph chart with nine centers and channels, plus the type, strategy, authority, profile, and gate readings',
 		sdkCall: `  const { data } = await roxy.humanDesign.generateBodygraph({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'hd-type-card',
+		tag: 'roxy-hd-type-card',
+		seoLine:
+			'Human Design type, strategy, and authority reading with the aura, signature, and not-self themes',
+		sdkCall: `  const { data } = await roxy.humanDesign.calculateType({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'hd-type-card-profile',
+		tag: 'roxy-hd-type-card',
+		heading: 'HD profile',
+		seoLine:
+			'Human Design profile with the conscious and unconscious line keynotes',
+		sdkCall: `  const { data } = await roxy.humanDesign.calculateProfile({
     body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
@@ -442,7 +462,8 @@ window.ROXY_UI_DEMOS = [
 	entry({
 		id: 'hd-variables',
 		tag: 'roxy-hd-variables',
-		seoLine: 'Human Design variables: the four PHS transformation arrows',
+		seoLine:
+			'Human Design variables: the four PHS transformation arrows with a reading for each',
 		sdkCall: `  const { data } = await roxy.humanDesign.calculateVariables({
     body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
   });`,

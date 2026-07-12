@@ -3,7 +3,7 @@
   "name": "roxy-bodygraph",
   "type": "registry:ui",
   "title": "RoxyBodygraph",
-  "description": "Human Design bodygraph with nine centers, channels, and activated gates plus a type, authority, and profile summary",
+  "description": "Human Design bodygraph with nine centers, channels, and activated gates, plus the full reading: type, strategy, authority, profile, definition, incarnation cross, and a gate and line meaning for every activation",
   "dependencies": [
     "@roxyapi/ui-react"
   ],
@@ -13,7 +13,7 @@
   "files": [
     {
       "path": "components/roxy-bodygraph.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyBodygraph data={...} />: Human Design bodygraph with nine centers, channels, and activated gates plus a type, authority, and profile summary.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/bodygraph/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyBodygraph as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyBodygraphProps = ComponentProps<typeof Element>;\n\nexport function RoxyBodygraph(props: RoxyBodygraphProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyBodygraph;\n",
+      "content": "'use client';\n\n/**\n * <RoxyBodygraph data={...} />: Human Design bodygraph with nine centers, channels, and activated gates, plus the full reading: type, strategy, authority, profile, definition, incarnation cross, and a gate and line meaning for every activation.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/bodygraph/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyBodygraph as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyBodygraphProps = ComponentProps<typeof Element>;\n\nexport function RoxyBodygraph(props: RoxyBodygraphProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyBodygraph;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/bodygraph.tsx"
     }

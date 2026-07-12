@@ -239,6 +239,26 @@ async function main() {
 				longitude: PERSON1.longitude,
 			}),
 		),
+		run('hd-type-card', () =>
+			rawPost('human-design/type', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				timezone: PERSON1.timezone,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+			}),
+		),
+		// The same card renders the profile response; a second sample so the
+		// showcase and the audit walk that branch too, not just the type branch.
+		run('hd-type-card-profile', () =>
+			rawPost('human-design/profile', {
+				date: PERSON1.date,
+				time: PERSON1.time,
+				timezone: PERSON1.timezone,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+			}),
+		),
 		run('hd-connection', () =>
 			rawPost('human-design/connection', {
 				personA: PERSON1,

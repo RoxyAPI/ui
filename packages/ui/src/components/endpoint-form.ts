@@ -28,6 +28,8 @@ interface FieldDef {
 	name: string;
 	/** Parent object key for a nested schema (person1/person2); undefined for a flat field. */
 	group?: string;
+	/** True when the spec declares the field as `in: query`, so it belongs in the query string even on a POST (`?lang=` is the one every localized endpoint carries). */
+	inQuery?: boolean;
 	type: string;
 	required: boolean;
 	description?: string;
@@ -315,6 +317,9 @@ export class RoxyEndpointForm extends LitElement {
 					fields.push({
 						key: param.name,
 						name: param.name,
+						// A path param is substituted into the URL template by name, so only
+						// a true query param needs the query-string routing flag.
+						inQuery: param.in === 'query',
 						type: this.fieldType(resolved),
 						required: !!param.required,
 						description: resolved.description,
@@ -449,7 +454,14 @@ export class RoxyEndpointForm extends LitElement {
 		}
 		this.dispatchEvent(
 			new CustomEvent('roxy-submit', {
-				detail: { endpoint: this.endpoint, values: out },
+				detail: {
+					endpoint: this.endpoint,
+					values: out,
+					// The spec knows which of these belong in the query string; the
+					// listener does not. Report them so a POST with `?lang=` reaches the
+					// API as a query parameter instead of an ignored body key.
+					queryKeys: this.fields.filter((f) => f.inQuery).map((f) => f.name),
+				},
 				bubbles: true,
 				composed: true,
 			}),
