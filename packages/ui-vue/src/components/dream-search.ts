@@ -1,6 +1,6 @@
-import type { SearchDreamSymbolsResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { SearchDreamSymbolsResponse } from '../types/index.js';
 
 export interface RoxyDreamSearchProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

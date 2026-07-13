@@ -1,6 +1,6 @@
-import type { GenerateBodygraphResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { GenerateBodygraphResponse } from '../types/index.js';
 
 export interface RoxyBodygraphProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

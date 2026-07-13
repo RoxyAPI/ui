@@ -237,7 +237,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		heading: 'Divisional chart',
 		description: 'D2 to D60 varga chart wheel with Vargottama markers',
 		docsLabel: 'Vedic',
-		endpointLabel: 'POST /vedic-astrology/divisional-chart',
+		endpointLabel: 'POST /vedic-astrology/{divisional-chart,navamsa}',
 		docsSummary:
 			'Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa',
 		topic: 'Vedic',
@@ -391,7 +391,8 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		description:
 			'Yoga reference cards from the catalog with optional detail mode',
 		docsLabel: 'Vedic',
-		endpointLabel: 'GET /vedic-astrology/yoga, /yoga/{id}',
+		endpointLabel:
+			'GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect',
 		docsSummary: 'Filterable yoga cards from the 300 plus yoga catalog',
 		topic: 'Vedic',
 	},
@@ -540,7 +541,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		description:
 			'Cross-domain forecast event strip colored by domain and weighted by significance',
 		docsLabel: 'Forecast',
-		endpointLabel: 'POST /forecast/timeline',
+		endpointLabel: 'POST /forecast/{timeline,significant-dates,transits}',
 		docsSummary:
 			'Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance',
 		topic: 'Forecast',

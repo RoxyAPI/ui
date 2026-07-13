@@ -198,8 +198,11 @@
 	const lightBtn = document.getElementById('theme-light');
 	const darkBtn = document.getElementById('theme-dark');
 	function applyTheme(theme) {
+		// :root ONLY. Setting it on <body> too made the token block re-declare every
+		// var directly ON body, and a direct declaration beats a value inherited from
+		// <html>, so a visitor's own `:root { --roxy-accent }` was silently shadowed.
+		// It is also just how a consumer app does it.
 		document.documentElement.dataset.theme = theme;
-		document.body.dataset.theme = theme;
 		lightBtn?.setAttribute('aria-pressed', theme === 'light');
 		darkBtn?.setAttribute('aria-pressed', theme === 'dark');
 		try {
@@ -242,18 +245,20 @@
 	// edits preview live by writing to either documentElement.style (current
 	// data-theme) or a data-theme="dark" rule injected at runtime.
 	const TOKENS = [
-		'primary', 'secondary', 'accent', 'accent-ink',
+		// No accent-ink: it derives from accent (color-mix), so emitting it here would
+		// override the derivation and hand the visitor a snippet that pins it to one hue.
+		'primary', 'secondary', 'accent',
 		'success', 'warning', 'danger', 'info',
 		'bg', 'fg', 'muted', 'border',
 	];
 	const DEFAULTS = {
 		light: {
-			primary: '#0f172a', secondary: '#475569', accent: '#f59e0b', 'accent-ink': '#b45309',
+			primary: '#0f172a', secondary: '#475569', accent: '#f59e0b',
 			success: '#16a34a', warning: '#ea580c', danger: '#dc2626', info: '#0284c7',
 			bg: '#ffffff', fg: '#0a0a0a', muted: '#71717a', border: '#e4e4e7',
 		},
 		dark: {
-			primary: '#f8fafc', secondary: '#94a3b8', accent: '#fbbf24', 'accent-ink': '#fbbf24',
+			primary: '#f8fafc', secondary: '#94a3b8', accent: '#fbbf24',
 			success: '#22c55e', warning: '#fb923c', danger: '#ef4444', info: '#38bdf8',
 			bg: '#0a0a0a', fg: '#fafafa', muted: '#a1a1aa', border: '#27272a',
 		},
@@ -272,13 +277,31 @@
 	customStyle.id = 'roxy-ui-customizer';
 	document.head.appendChild(customStyle);
 
+	function isDefault() {
+		return TOKENS.every(
+			(t) => state.light[t] === DEFAULTS.light[t] && state.dark[t] === DEFAULTS.dark[t],
+		);
+	}
+
 	function applyState() {
 		const lightLines = TOKENS.map((t) => `\t--roxy-${t}: ${state.light[t]};`).join('\n');
 		const darkLines = TOKENS.map((t) => `\t--roxy-${t}: ${state.dark[t]};`).join('\n');
+		// Inject NOTHING while the swatches are untouched. The library's own token
+		// selectors carry zero specificity (:where) so that a consumer's declaration
+		// always wins; emitting the defaults back at real specificity would beat the
+		// library's own dark block and pin the page to light. Only a real edit should
+		// outrank the library, which is exactly what a consumer stylesheet does.
+		if (isDefault()) {
+			customStyle.textContent = '';
+			if (snippetEl) {
+				snippetEl.textContent = `:root {\n${lightLines}\n}\n:root[data-theme="dark"] {\n${darkLines}\n}`;
+			}
+			return;
+		}
 		// Internal style (covers both :root and :host so the live preview repaints
 		// inside the component shadow DOMs too).
 		customStyle.textContent =
-			`:root,:host {\n${lightLines}\n}\n:root[data-theme="dark"],:host([data-theme="dark"]) {\n${darkLines}\n}`;
+			`:root,:host {\n${lightLines}\n}\n:root[data-theme="dark"],:root.dark,.dark,:host([data-theme="dark"]) {\n${darkLines}\n}`;
 		// Copyable output — :root is enough; consumers paste this into their
 		// own stylesheet and tokens cascade into every roxy component.
 		if (snippetEl) {

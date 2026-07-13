@@ -19,7 +19,7 @@ UI component library for the RoxyAPI catalog. Drop astrology, tarot, numerology,
 
 ## Theme-agnostic, every component
 
-Light, dark, your brand. Override one CSS variable and every component updates. No class overrides, no rebuild, no Tailwind required. Customize live at <https://roxyapi.github.io/ui/> using the **Customize** dialog (every token, color picker, copy-paste snippet) or write your own variables on `:root`.
+Light, dark, your brand. Set `--roxy-accent` on `:root` and every component follows: the text-safe accent and the focus ring are derived from it, so one line rebrands the whole library. If you theme dark differently, set it in your dark block too, exactly as you would for any design-token system. No class overrides, no rebuild, no Tailwind required. Customize live at <https://roxyapi.github.io/ui/> using the **Customize** dialog (every token, colour picker, copy-paste snippet).
 
 <table>
 <tr>
@@ -60,9 +60,9 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
   --roxy-muted: #71717a;
   --roxy-border: #e4e4e7;
 
-  /* Brand */
+  /* Brand. Set the accent; the text-safe shade (--roxy-accent-ink) and the focus
+     ring (--roxy-ring) are derived from it, so one line rebrands everything. */
   --roxy-accent: #f59e0b;
-  --roxy-accent-ink: #b45309;
 
   /* Status (each has a -fg variant for WCAG-AA text contrast) */
   --roxy-success: #16a34a;
@@ -81,6 +81,8 @@ Light, dark, your brand. Override one CSS variable and every component updates. 
   --roxy-fg: #fafafa;
   --roxy-muted: #a1a1aa;
   --roxy-border: #27272a;
+  /* Only if you want a different accent in dark. Omit it to keep the default. */
+  --roxy-accent: #fbbf24;
 }
 ```
 

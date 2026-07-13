@@ -1,6 +1,6 @@
-import type { CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '../types/index.js';
 
 export interface RoxyHexagramProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

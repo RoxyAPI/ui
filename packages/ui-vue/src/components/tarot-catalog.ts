@@ -1,6 +1,6 @@
-import type { ListCardsResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { ListCardsResponse } from '../types/index.js';
 
 export interface RoxyTarotCatalogProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

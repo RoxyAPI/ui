@@ -15,17 +15,43 @@
  *   - prefers-reduced-motion: reduce forces 0ms regardless of host overrides.
  */
 
-:root,
-:host {
+/*
+ * Every selector below is wrapped in :where(), which has ZERO specificity.
+ *
+ * Source order still decides among these rules, so the explicit dark block still beats the
+ * light defaults when it matches. But ANY declaration you write outranks all of them, whatever
+ * selector you use. That is what makes a plain `:root { --roxy-accent: #8b5cf6 }` actually
+ * rebrand the library.
+ *
+ * Without it, `:root.dark` and `[data-theme="dark"]` carry class/attribute specificity (0,1,1)
+ * and outrank a plain `:root` (0,1,0), so a consumer's accent survived under
+ * prefers-color-scheme and was silently reverted to amber under the other two dark signals.
+ * One brand override, three different results.
+ *
+ * A cascade layer was tried first and reverted: layers mean UNLAYERED rules win, so every theme
+ * block became weaker than ANY unlayered rule on the page (a consumer's Tailwind reset, the demo
+ * page's own CSS) and dark mode broke outright. :where() lowers only OUR specificity, which is
+ * exactly the intent, and leaves the cascade otherwise untouched.
+ */
+:where(:root, :host) {
 	/* Color: brand */
 	--roxy-primary: #0f172a;
 	--roxy-secondary: #475569;
 	--roxy-accent: #f59e0b;
-	/* Text-safe accent variant. amber-500 hits 2.14:1 on white which fails
-	 * WCAG AA for body text. amber-700 hits 4.5:1, used wherever the accent
-	 * tone is applied to text. Fills (planet glyphs, chart accents, badges
-	 * with non-text use) keep --roxy-accent. */
-	--roxy-accent-ink: #b45309;
+	/* Text-safe accent variant, DERIVED from --roxy-accent so overriding the accent
+	 * alone rebrands the whole library. It used to be a hardcoded amber, so a
+	 * consumer following the theming recipe and setting only --roxy-accent was left
+	 * with the active tab label, the conjunction aspect lines and the focus ring
+	 * still painting amber: a two-tone palette from a one-line override.
+	 *
+	 * The raw accent is too light for text (amber-500 is 2.14:1 on white, far under
+	 * WCAG AA). Mixing 70% of it into black is measured, not guessed: rasterised to
+	 * real pixels, the darkest of the twelve shipped domain accents still lands at
+	 * 5.24:1 on white, above AA and above the 5.02:1 the old hardcoded value gave.
+	 * At 75% amber falls to 4.46 and fails, so 70 is a ceiling, not a round number.
+	 *
+	 * Fills (planet glyphs, chart accents, non-text badges) keep --roxy-accent. */
+	--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
 
 	/* Color: status. The base value (success, warning, danger, info) is for
 	 * fills and tints. The -fg variant is darker so text on a light tint passes
@@ -45,7 +71,7 @@
 	--roxy-fg: #0a0a0a;
 	--roxy-muted: #71717a;
 	--roxy-border: #e4e4e7;
-	--roxy-ring: rgba(245, 158, 11, 0.4);
+	--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent);
 
 	/* Typography */
 	--roxy-font-sans:
@@ -103,12 +129,11 @@
 
 /* Dark theme via system preference */
 @media (prefers-color-scheme: dark) {
-	:root,
-	:host {
+	:where(:root, :host) {
 		--roxy-primary: #f8fafc;
 		--roxy-secondary: #94a3b8;
 		--roxy-accent: #fbbf24;
-		--roxy-accent-ink: #fbbf24;
+		--roxy-accent-ink: var(--roxy-accent);
 
 		/* Status -fg overrides must mirror the explicit [data-theme="dark"] block
 		 * below. Without these, a user on system dark with no data-theme attribute
@@ -128,7 +153,7 @@
 		--roxy-fg: #fafafa;
 		--roxy-muted: #a1a1aa;
 		--roxy-border: #27272a;
-		--roxy-ring: rgba(251, 191, 36, 0.45);
+		--roxy-ring: color-mix(in srgb, var(--roxy-accent) 45%, transparent);
 
 		--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
 		--roxy-shadow-md:
@@ -146,15 +171,17 @@
  * ancestor or the element itself so they inherit into every component shadow;
  * :host([data-theme="light"]) is inert in global delivery and kept only for
  * shadow-adopted use. */
-:root[data-theme="light"],
-[data-theme="light"],
-:root.light,
-.light,
-:host([data-theme="light"]) {
+:where(
+	:root[data-theme="light"],
+	[data-theme="light"],
+	:root.light,
+	.light,
+	:host([data-theme="light"])
+) {
 	--roxy-primary: #0f172a;
 	--roxy-secondary: #475569;
 	--roxy-accent: #f59e0b;
-	--roxy-accent-ink: #b45309;
+	--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
 
 	--roxy-success: #16a34a;
 	--roxy-success-fg: #166534;
@@ -170,7 +197,7 @@
 	--roxy-fg: #0a0a0a;
 	--roxy-muted: #71717a;
 	--roxy-border: #e4e4e7;
-	--roxy-ring: rgba(245, 158, 11, 0.4);
+	--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent);
 
 	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
 	--roxy-shadow-md:
@@ -184,15 +211,17 @@
  * any ancestor (Tailwind, shadcn) actually theme the components in global
  * delivery. :host([data-theme="dark"]) is inert in global delivery and kept
  * only for shadow-adopted use. */
-:root[data-theme="dark"],
-[data-theme="dark"],
-:root.dark,
-.dark,
-:host([data-theme="dark"]) {
+:where(
+	:root[data-theme="dark"],
+	[data-theme="dark"],
+	:root.dark,
+	.dark,
+	:host([data-theme="dark"])
+) {
 	--roxy-primary: #f8fafc;
 	--roxy-secondary: #94a3b8;
 	--roxy-accent: #fbbf24;
-	--roxy-accent-ink: #fbbf24;
+	--roxy-accent-ink: var(--roxy-accent);
 
 	--roxy-success: #22c55e;
 	--roxy-success-fg: #86efac;
@@ -208,7 +237,7 @@
 	--roxy-fg: #fafafa;
 	--roxy-muted: #a1a1aa;
 	--roxy-border: #27272a;
-	--roxy-ring: rgba(251, 191, 36, 0.45);
+	--roxy-ring: color-mix(in srgb, var(--roxy-accent) 45%, transparent);
 
 	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
 	--roxy-shadow-md:
@@ -220,8 +249,7 @@
 
 /* Reduced motion override */
 @media (prefers-reduced-motion: reduce) {
-	:root,
-	:host {
+	:where(:root, :host) {
 		--roxy-motion-duration: 0ms;
 	}
 }

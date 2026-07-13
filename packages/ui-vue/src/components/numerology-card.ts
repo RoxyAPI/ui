@@ -1,6 +1,6 @@
-import type { CalculateBirthDayResponse, CalculateExpressionResponse, CalculateLifePathResponse, CalculateMaturityResponse, CalculatePersonalDayResponse, CalculatePersonalityResponse, CalculatePersonalMonthResponse, CalculatePersonalYearResponse, CalculateSoulUrgeResponse, GenerateNumerologyChartResponse, GetDailyNumberResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculateBirthDayResponse, CalculateExpressionResponse, CalculateLifePathResponse, CalculateMaturityResponse, CalculatePersonalDayResponse, CalculatePersonalityResponse, CalculatePersonalMonthResponse, CalculatePersonalYearResponse, CalculateSoulUrgeResponse, GenerateNumerologyChartResponse, GetDailyNumberResponse } from '../types/index.js';
 
 export interface RoxyNumerologyCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

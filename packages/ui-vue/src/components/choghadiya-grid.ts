@@ -1,6 +1,6 @@
-import type { GetChoghadiyaResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { GetChoghadiyaResponse } from '../types/index.js';
 
 export interface RoxyChoghadiyaGridProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

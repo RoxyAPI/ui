@@ -1,6 +1,6 @@
-import type { GetCenterResponse, GetCompoundNumberResponse, GetGateResponse, GetNumberMeaningResponse, GetPlanetMeaningResponse, GetRashiResponse, GetTrigramResponse, GetZodiacSignResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { GetCenterResponse, GetCompoundNumberResponse, GetGateResponse, GetNumberMeaningResponse, GetPlanetMeaningResponse, GetRashiResponse, GetTrigramResponse, GetZodiacSignResponse } from '../types/index.js';
 
 export interface RoxyReferenceCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

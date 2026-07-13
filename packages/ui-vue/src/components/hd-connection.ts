@@ -1,6 +1,6 @@
-import type { CalculateConnectionResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculateConnectionResponse } from '../types/index.js';
 
 export interface RoxyHdConnectionProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

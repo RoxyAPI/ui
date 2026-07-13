@@ -1,6 +1,6 @@
-import type { SearchCitiesResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { SearchCitiesResponse } from '../types/index.js';
 
 export interface RoxyLocationSearchProps {
 	/** Fires when the underlying <roxy-location-search> dispatches `roxy-location-select`. */

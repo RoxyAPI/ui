@@ -1,6 +1,6 @@
-import type { KalsarpaResponse, ManglikResponse, SadhesatiResponse } from '@roxyapi/ui/types';
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { KalsarpaResponse, ManglikResponse, SadhesatiResponse } from '../types/index.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,

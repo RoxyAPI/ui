@@ -1,6 +1,6 @@
-import type { ArabicLotsResponse, AsteroidsResponse, LilithResponse, ProgressionsResponse, SolarArcResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { ArabicLotsResponse, AsteroidsResponse, LilithResponse, ProgressionsResponse, SolarArcResponse } from '../types/index.js';
 
 export interface RoxyPositionsTableProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

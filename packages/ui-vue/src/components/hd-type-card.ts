@@ -1,6 +1,6 @@
-import type { CalculateProfileResponse, CalculateTypeResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculateProfileResponse, CalculateTypeResponse } from '../types/index.js';
 
 export interface RoxyHdTypeCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

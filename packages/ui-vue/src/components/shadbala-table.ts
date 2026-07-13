@@ -1,6 +1,6 @@
-import type { ShadbalaResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { ShadbalaResponse } from '../types/index.js';
 
 export interface RoxyShadbalaTableProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

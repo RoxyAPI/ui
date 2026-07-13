@@ -1,6 +1,6 @@
-import type { GetDreamSymbolResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { GetDreamSymbolResponse } from '../types/index.js';
 
 export interface RoxyDreamCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

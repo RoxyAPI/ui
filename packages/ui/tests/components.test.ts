@@ -5,6 +5,10 @@ import { describe, expect, test } from 'bun:test';
 // so the order matters: setup -> import.
 import '../src/index.js';
 
+/** `updateComplete` lives on LitElement, not on the `HTMLElement` that `createElement` returns, and every call site was reaching it through the same double cast. One helper, one place to change. */
+const settled = (el: Element): Promise<void> =>
+	(el as unknown as { updateComplete: Promise<void> }).updateComplete;
+
 import {
 	ROXY_UI_COMPONENTS,
 	ROXY_UI_VERSION,
@@ -906,7 +910,7 @@ describe('roxy-data heuristic', () => {
 		};
 		document.body.appendChild(el);
 		el.data = null;
-		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		await settled(el);
 		const text = el.shadowRoot?.textContent ?? '';
 		expect(text).toContain('No data');
 		el.remove();
@@ -918,7 +922,7 @@ describe('roxy-data heuristic', () => {
 		};
 		document.body.appendChild(el);
 		el.data = 'hello world';
-		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		await settled(el);
 		const text = el.shadowRoot?.textContent ?? '';
 		expect(text).toContain('hello world');
 		el.remove();
@@ -930,7 +934,7 @@ describe('roxy-data heuristic', () => {
 		};
 		document.body.appendChild(el);
 		el.data = ['one', 'two', 'three'];
-		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		await settled(el);
 		const html = el.shadowRoot?.innerHTML ?? '';
 		expect(html).toContain('roxy-chips');
 		expect(el.shadowRoot?.textContent).toContain('one');
@@ -946,7 +950,7 @@ describe('roxy-data heuristic', () => {
 			{ name: 'Sun', sign: 'Aries' },
 			{ name: 'Moon', sign: 'Cancer' },
 		];
-		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		await settled(el);
 		const html = el.shadowRoot?.innerHTML ?? '';
 		expect(html).toContain('roxy-table');
 		el.remove();
@@ -971,7 +975,7 @@ describe('roxy-data hides what the PHP renderer hides', () => {
 		};
 		document.body.appendChild(el);
 		el.data = data;
-		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		await settled(el);
 		const html = (el.shadowRoot?.innerHTML ?? '').replace(
 			/<style[\s\S]*?<\/style>/g,
 			'',
@@ -1042,6 +1046,29 @@ describe('roxy-data hides what the PHP renderer hides', () => {
 		el.remove();
 	});
 
+	test('a nested column takes the width, a scalar column gives it back', async () => {
+		// `days: [{ date, positions: [...] }]` renders as a table whose `positions`
+		// cell holds a whole nested table. Laid out by content alone the ten-character
+		// date column took HALF the width and the nested one was cramped into the rest.
+		const { el, html } = await mount([
+			{ date: '2026-07-01', positions: [{ planet: 'Sun', sign: 'Gemini' }] },
+			{ date: '2026-07-02', positions: [{ planet: 'Moon', sign: 'Cancer' }] },
+		]);
+		expect(html).toContain('col-tight'); // date
+		expect(html).toContain('col-wide'); // positions
+		el.remove();
+	});
+
+	test('an all-scalar table is left alone: there is nothing to bias toward', async () => {
+		const { el, html } = await mount([
+			{ planet: 'Sun', sign: 'Gemini' },
+			{ planet: 'Moon', sign: 'Cancer' },
+		]);
+		expect(html).not.toContain('col-tight');
+		expect(html).not.toContain('col-wide');
+		el.remove();
+	});
+
 	test('an oversized table folds away behind its row count', async () => {
 		const rows = Array.from({ length: 27 }, (_, i) => ({
 			name: `Nakshatra ${i + 1}`,
@@ -1081,7 +1108,7 @@ describe('roxy-data scalar formatting and structure', () => {
 		};
 		document.body.appendChild(el);
 		el.data = data;
-		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		await settled(el);
 		return el;
 	}
 
@@ -1166,7 +1193,7 @@ describe('roxy-data scalar formatting and structure', () => {
 		el.depth = 6;
 		document.body.appendChild(el);
 		el.data = { any: 'thing' };
-		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		await settled(el);
 		expect(el.shadowRoot?.textContent ?? '').toContain('Nested data omitted');
 		el.remove();
 	});

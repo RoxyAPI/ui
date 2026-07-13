@@ -1,6 +1,6 @@
-import type { AstrocartographyResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { AstrocartographyResponse } from '../types/index.js';
 
 export interface RoxyAstrocartographyMapProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

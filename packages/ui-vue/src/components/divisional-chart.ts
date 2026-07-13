@@ -1,6 +1,6 @@
-import type { DivisionalChartResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { DivisionalChartResponse } from '../types/index.js';
 
 export interface RoxyDivisionalChartProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

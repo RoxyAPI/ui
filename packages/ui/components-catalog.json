@@ -320,7 +320,7 @@
       "slug": "divisional-chart",
       "domain": "Vedic",
       "renders": "Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa",
-      "endpointLabel": "POST /vedic-astrology/divisional-chart",
+      "endpointLabel": "POST /vedic-astrology/{divisional-chart,navamsa}",
       "endpoints": [
         {
           "operationId": "generateDivisionalChart",
@@ -550,7 +550,7 @@
       "slug": "yoga-list",
       "domain": "Vedic",
       "renders": "Filterable yoga cards from the 300 plus yoga catalog",
-      "endpointLabel": "GET /vedic-astrology/yoga, /yoga/{id}",
+      "endpointLabel": "GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect",
       "endpoints": [
         {
           "operationId": "listYogas",
@@ -893,7 +893,7 @@
       "slug": "forecast-timeline",
       "domain": "Forecast",
       "renders": "Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance",
-      "endpointLabel": "POST /forecast/timeline",
+      "endpointLabel": "POST /forecast/{timeline,significant-dates,transits}",
       "endpoints": [
         {
           "operationId": "findSignificantDates",

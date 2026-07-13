@@ -5,10 +5,7 @@ import { customElement } from 'lit/decorators.js';
 // angles), so the wheel is shared rather than duplicated.
 import './natal-chart.js';
 import { PLANET_GLYPH } from '../tokens/index.js';
-import type {
-	NatalChartResponse,
-	RelocationChartResponse,
-} from '../types/index.js';
+import type { RelocationChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { capitalize } from '../utils/string.js';
@@ -114,7 +111,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 		return html`<div class="stack">
 			<roxy-natal-chart
 				heading="Relocation chart"
-				.data=${data as unknown as NatalChartResponse}
+				.data=${data}
 			></roxy-natal-chart>
 			<section class="changes">
 				<h3 class="title">What changes at this location</h3>

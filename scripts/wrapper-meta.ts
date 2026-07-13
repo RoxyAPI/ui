@@ -373,14 +373,22 @@ export interface WrapperMeta {
 }
 
 /**
+ * Components that take no response at all. They are plain `LitElement`s driven by configuration (`RoxyLocationSearch`, `RoxyEndpointForm`), NOT `RoxyDataElement` subclasses, so they get no `data` prop and must not advertise {@link SELF_FETCH_PROPS}.
+ *
+ * @remarks
+ * This list exists because `'unknown'` cannot carry that meaning. `hasData` used to be derived as `DATA_TYPES[slug] !== 'unknown'`, which conflated "not a data component" with "a data component whose response type genuinely IS `unknown`". `roxy-data` is the second: it is a `RoxyDataElement<Json>` and renders ANY response, which is the whole point of the generic fallback. So it was silently stripped of its `data` prop in BOTH published wrapper packages, and `<RoxyData :data="..."/>` could only ever render its empty state. Membership here, not the shape of the type, is what decides.
+ */
+const NO_DATA_SLUGS = new Set(['location-search', 'endpoint-form']);
+
+/**
  * Resolve the full wrapper surface for one component. Every generator goes through this so the React and Vue packages cannot disagree about the same element.
  *
  * @remarks
- * The self-fetch rule is the one derivation worth centralising: data-bound components extend `RoxyDataElement` and therefore ALL carry {@link SELF_FETCH_PROPS} on top of their own config. The generic renderer, location search, and endpoint form (`hasData === false`) are not `RoxyDataElement` subclasses and must not advertise them.
+ * The self-fetch rule is the one derivation worth centralising: data-bound components extend `RoxyDataElement` and therefore ALL carry {@link SELF_FETCH_PROPS} on top of their own config. See {@link NO_DATA_SLUGS} for the two that do not.
  */
 export function wrapperMeta(slug: string): WrapperMeta {
 	const dataType = DATA_TYPES[slug] ?? 'unknown';
-	const hasData = dataType !== 'unknown';
+	const hasData = !NO_DATA_SLUGS.has(slug);
 	const own = CONFIG_PROPS[slug] ?? [];
 	return {
 		dataType,
@@ -394,6 +402,22 @@ export function wrapperMeta(slug: string): WrapperMeta {
 /**
  * The lazy CDN loader, shared by every wrapper package. Its body touches no framework API, so each package emits the identical implementation rather than carrying a near-copy that can drift. Only the two prose lines that name the host framework are parameterised.
  */
+
+/**
+ * Response types are copied INTO each wrapper package rather than imported from `@roxyapi/ui`, so a wrapper is self-contained: installing `@roxyapi/ui-react` or `@roxyapi/ui-vue` alone gives you fully typed props with no second install.
+ *
+ * @remarks
+ * They used to be emitted as `import type { ... } from '@roxyapi/ui/types'` while neither wrapper declared `@roxyapi/ui` as a dependency. Inside this repo a `paths` mapping in `tsconfig.build.json` resolved it, so the build was green and the published `.d.ts` shipped an import of a package the consumer never installs. With the TypeScript default `skipLibCheck: true` the unresolved import is swallowed and every `data` prop silently degrades to `any`; with `skipLibCheck: false` it is a hard `TS2307`. Either way the typed wrapper was not actually typed. Vendoring the types is what makes the guarantee real.
+ */
+export const TYPES_IMPORT = '../types/index.js';
+
+/** Copy the generated response types into a wrapper package so it needs no dependency on `@roxyapi/ui`. See {@link TYPES_IMPORT}. */
+export async function emitTypes(outDir: string): Promise<void> {
+	const { cp, mkdir } = await import('node:fs/promises');
+	await mkdir(`${outDir}/types`, { recursive: true });
+	await cp('packages/ui/src/types', `${outDir}/types`, { recursive: true });
+}
+
 export function loadUiSource(opts: {
 	/** Completes "Skips on the server (no document) so ..." in the file header. */
 	ssrNote: string;
@@ -405,10 +429,23 @@ export function loadUiSource(opts: {
  * many components on the same page. Skips on the server (no document) so
  * ${opts.ssrNote}
  *
- * Pass an explicit \`version\` (e.g. \`'0.1.5'\`) to pin the loaded bundle to a
- * specific @roxyapi/ui release; the default ('latest') resolves to whatever
- * the CDN currently serves for @latest.
+ * Defaults to the EXACT @roxyapi/ui release this wrapper was built against, so
+ * \`@roxyapi/ui-vue@x.y.z\` always runs \`@roxyapi/ui@x.y.z\` and a lockfile actually
+ * pins the runtime. It used to default to '@latest', which meant a pinned wrapper
+ * silently picked up whatever the CDN was serving, and a new @roxyapi/ui release
+ * changed the elements under every existing install with no lockfile change.
+ *
+ * Pass an explicit \`version\` to override, or 'latest' to opt back into floating.
+ *
+ * Pass \`baseUrl\` to serve the bundle from your own origin instead of the CDN, which is
+ * what an air-gapped install or a strict Content-Security-Policy needs: copy
+ * \`node_modules/@roxyapi/ui/dist/cdn/\` onto your host and call this once at app entry,
+ * before any component mounts. The loader keeps a single shared promise, so the first
+ * call wins and every component reuses it.
  */
+/** The @roxyapi/ui release this wrapper was generated against. The loader defaults to it, so the wrapper version in your lockfile is the runtime you actually get. */
+export const ROXY_UI_VERSION = ${JSON.stringify(ROXY_UI_VERSION)};
+
 const SCRIPT_ID = 'roxyapi-ui-loader';
 const CDN_BASE_LATEST = ${JSON.stringify(CDN_BASE_LATEST)};
 const CDN_BASE_PREFIX = ${JSON.stringify(CDN_BASE_PREFIX)};
@@ -421,12 +458,15 @@ function buildBase(version: string): string {
 	return \`\${CDN_BASE_PREFIX}\${version}\${CDN_BASE_SUFFIX}\`;
 }
 
-export function ensureScriptLoaded(version: string = 'latest'): Promise<void> {
+export function ensureScriptLoaded(
+	version: string = ROXY_UI_VERSION,
+	baseUrl?: string,
+): Promise<void> {
 	if (typeof document === 'undefined') return Promise.resolve();
 	if (loaded) return loaded;
 
 	loaded = new Promise<void>((resolve, reject) => {
-		const url = \`\${buildBase(version)}/roxy-ui.js\`;
+		const url = \`\${baseUrl ?? buildBase(version)}/roxy-ui.js\`;
 		let existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
 		if (existing) {
 			if (existing.dataset.loaded === 'true') {
@@ -456,6 +496,5 @@ export function ensureScriptLoaded(version: string = 'latest'): Promise<void> {
 export default ensureScriptLoaded;
 // Surfaces the embedded @roxyapi/ui version this build of ${opts.packageName}
 // was generated against. Useful for diagnostics; not load-bearing.
-export const ROXY_UI_VERSION = ${JSON.stringify(ROXY_UI_VERSION)};
 `;
 }

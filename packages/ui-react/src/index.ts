@@ -203,3 +203,9 @@ export {
 	type RoxyYogaListProps,
 } from './components/yoga-list.js';
 export { ensureScriptLoaded, ROXY_UI_VERSION } from './load-ui.js';
+/**
+ * Every response type these components accept, re-exported so you can type your own
+ * fetch helper without installing a second package. For example:
+ * import type { NatalChartResponse } from '@roxyapi/ui-react';
+ */
+export type * from './types/index.js';

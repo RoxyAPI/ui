@@ -12,6 +12,12 @@ pre-commit:
       run: |
         bun install --frozen-lockfile --ignore-scripts 2>/dev/null \
           || { echo "bun.lock is out of sync with package.json. Run 'bun install' then stage bun.lock."; exit 1; }
+    css-backticks:
+      # A backtick inside a css`` template ENDS the template. Cheap grep, four
+      # debugging detours saved.
+      run: bun run scripts/check-css-backticks.ts
+      glob: "packages/ui/src/**/*.ts"
+
     biome-check:
       glob: "*.{ts,tsx,js,jsx,json}"
       # Skip when only deletions or `.d.ts` files are staged. biome refuses an
@@ -75,6 +81,18 @@ pre-push:
         kill $PREVIEW_PID 2>/dev/null || true
         exit $AUDIT_EXIT
       priority: 7
+    wrapper-drift:
+      # packages/ui-{react,vue}/src is 100% generated from packages/ui: the
+      # component manifest plus the shared prop/type maps in
+      # scripts/wrapper-meta.ts. Nothing there is hand-authored, so a diff after
+      # regenerating means someone edited generated output, and the next build
+      # would silently revert it.
+      run: |
+        bun run build
+        git diff --exit-code -- packages/ui-react/src packages/ui-vue/src \
+          || { echo "packages/ui-{react,vue}/src is GENERATED from packages/ui. Do not hand-edit: change manifest.ts or scripts/wrapper-meta.ts, then 'bun run build'."; exit 1; }
+      priority: 9
+
     docs-drift:
       run: bun run docs:sync && git diff --exit-code -- README.md AGENTS.md || { echo "README.md or AGENTS.md drifted from spec, commit the sync output"; exit 1; }
       priority: 8

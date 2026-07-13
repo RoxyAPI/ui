@@ -20,7 +20,7 @@
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
-import { loadUiSource, wrapperMeta } from './wrapper-meta.js';
+import { emitTypes, loadUiSource, wrapperMeta } from './wrapper-meta.js';
 
 const OUT_DIR = 'packages/ui-react/src';
 
@@ -34,7 +34,7 @@ function buildComponent(slug: string, pascal: string, tag: string): string {
 
 	const importLine =
 		typeRefs.length > 0
-			? `import type { ${typeRefs.join(', ')} } from '@roxyapi/ui/types';`
+			? `import type { ${typeRefs.join(', ')} } from '../types/index.js';`
 			: '';
 
 	const configPropsBlock = config
@@ -158,11 +158,12 @@ ${dataEffectBlock}${configEffectBlocks ? `${configEffectBlocks}\n\n` : ''}${even
 async function main() {
 	await mkdir(OUT_DIR, { recursive: true });
 	await mkdir(`${OUT_DIR}/components`, { recursive: true });
+	await emitTypes(OUT_DIR);
 
 	await writeFile(`${OUT_DIR}/load-ui.ts`, LOAD_UI_TS);
 
 	const exportLines: string[] = [
-		`export { ensureScriptLoaded, ROXY_UI_VERSION } from './load-ui.js';`,
+		`export { ensureScriptLoaded, ROXY_UI_VERSION } from './load-ui.js';\n\n/**\n * Every response type these components accept, re-exported so you can type your own\n * fetch helper without installing a second package. For example:\n * import type { NatalChartResponse } from '@roxyapi/ui-react';\n */\nexport type * from './types/index.js';\n`,
 	];
 	for (const { slug, pascal, tag } of ROXY_COMPONENTS) {
 		await writeFile(

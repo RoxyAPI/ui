@@ -1,6 +1,6 @@
-import type { CastCareerSpreadResponse, CastCelticCrossResponse, CastCustomSpreadResponse, CastLoveSpreadResponse, CastReadingResponse, CastThreeCardResponse, CastYesNoResponse, DrawCardsResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CastCareerSpreadResponse, CastCelticCrossResponse, CastCustomSpreadResponse, CastLoveSpreadResponse, CastReadingResponse, CastThreeCardResponse, CastYesNoResponse, DrawCardsResponse } from '../types/index.js';
 
 export interface RoxyTarotSpreadProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

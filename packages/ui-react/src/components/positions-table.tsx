@@ -1,6 +1,6 @@
-import type { ArabicLotsResponse, AsteroidsResponse, LilithResponse, ProgressionsResponse, SolarArcResponse } from '@roxyapi/ui/types';
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { ArabicLotsResponse, AsteroidsResponse, LilithResponse, ProgressionsResponse, SolarArcResponse } from '../types/index.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,

@@ -1,6 +1,6 @@
-import type { CompatibilityResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CompatibilityResponse } from '../types/index.js';
 
 export interface RoxyGunaMilanProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

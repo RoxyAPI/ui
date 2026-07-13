@@ -390,7 +390,7 @@ Category A (Sev-1 — build fails):
   - double-hyphen dash (--): rewrite; never use -- as a dash in prose.
   - contractions (don't, it's, you're …): expand to "do not", "it is", "you are" etc.
   - internal lore (jsdelivr UMD, lazy load, thin wrapper, decoupled release, forwardRef …):
-    remove entirely from public copy; these belong in CLAUDE.md only.
+    remove entirely from public copy; implementation lore stays in the maintainer notes.
   - brand words (toolkit, collection of components, astronomy-engine, Swiss Ephemeris …):
     replace with "web components", "every domain in the catalog", or remove.
 

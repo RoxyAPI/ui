@@ -222,15 +222,83 @@ In Nuxt, render these in a client context (`<ClientOnly>` or a `.client.vue` com
 
 ### 7. Local response interface drift
 
-Do not declare `interface XyzData { ... }` for a RoxyAPI response. Import the spec-derived type from `@roxyapi/sdk` (or let the SDK return type flow through inference). Local interfaces drift the moment the spec changes; the component will keep compiling while rendering nothing.
+Do not declare `interface XyzData { ... }` for a RoxyAPI response. Every response type is exported from the component package you already installed. Local interfaces drift the moment the spec changes, and the component keeps compiling while rendering nothing.
 
 ```ts
 // Wrong
 interface NatalChart { planets: ...; houses: ...; }
 
-// Right
-import type { NatalChartResponse } from '@roxyapi/sdk';
+// Right, and no extra install
+import type { NatalChartResponse } from '@roxyapi/ui-react';  // or '@roxyapi/ui-vue', or '@roxyapi/ui'
 ```
+
+You do NOT need `@roxyapi/sdk` to render. The SDK is a convenience for CALLING the API; the component packages are self-contained and fully typed on their own.
+
+### 8. Install exactly ONE package
+
+`@roxyapi/ui-react` and `@roxyapi/ui-vue` have no dependency on `@roxyapi/ui` and no dependency on `@roxyapi/sdk`. They carry their own response types.
+
+| You are building | Install | Import |
+|---|---|---|
+| React (Vite, Next.js, Remix) | `@roxyapi/ui-react` | `import { RoxyNatalChart } from '@roxyapi/ui-react'` |
+| Vue, Nuxt | `@roxyapi/ui-vue` | `import { RoxyNatalChart } from '@roxyapi/ui-vue'` |
+| Svelte, Angular, Solid, Qwik, Astro, vanilla HTML, WordPress | `@roxyapi/ui` | `<roxy-natal-chart>` directly |
+
+No stylesheet to import, no Tailwind, no `components.json`, no path aliases, no Vue `compilerOptions.isCustomElement`. Adding any of those is a sign you are working around something that is not broken.
+
+### 9. `tsc --noEmit` in a Vite scaffold checks NOTHING
+
+The stock Vite React and Vue templates ship a root `tsconfig.json` of `{"files": [], "references": [...]}`. A bare `tsc --noEmit` (or `vue-tsc --noEmit`) against it exits 0 having checked zero files. If you validate an integration that way you will report success on code that does not compile.
+
+Point at the real config:
+
+```bash
+tsc --noEmit -p tsconfig.app.json        # React
+vue-tsc --noEmit -p tsconfig.app.json    # Vue
+```
+
+Sanity-check your own harness first: plant a deliberate type error and confirm it is reported. If it is not, you are checking nothing.
+
+### 10. Importing a saved JSON fixture needs one cast
+
+Response types use literal unions (`kind: 'T_SQUARE' | 'STELLIUM' | ...`). TypeScript widens an imported JSON literal to `string`, so a frozen fixture will not assign. This is TypeScript's behaviour, not a library defect. A runtime `await res.json()` is `any` and assigns fine.
+
+```ts
+import natal from './fixtures/natal.json';
+import type { NatalChartResponse } from '@roxyapi/ui-react';
+
+const data = natal as unknown as NatalChartResponse;
+```
+
+### 11. The components load from a CDN. Self-host if your CSP forbids that.
+
+On first mount the components fetch their rendering bundle from the CDN, pinned to the exact `@roxyapi/ui` release the wrapper was built against, so a lockfile pins your runtime too. Behind a strict Content-Security-Policy, an air-gapped network, or offline development nothing will render, and every component shows a visible `Roxy UI script load failed` error rather than failing quietly.
+
+Either allowlist `cdn.jsdelivr.net` in `script-src`, or serve the bundle yourself. Copy `node_modules/@roxyapi/ui/dist/cdn/` onto your own origin and call the loader ONCE at app entry, before any component mounts:
+
+```ts
+import { ensureScriptLoaded, ROXY_UI_VERSION } from '@roxyapi/ui-react';
+
+ensureScriptLoaded(ROXY_UI_VERSION, '/assets/roxy-ui');  // your origin
+```
+
+The loader keeps a single shared promise, so the first call wins and every component reuses it.
+
+### 12. Theming: set the accent, not the shades
+
+Set `--roxy-accent` and you are done. The text-safe accent (`--roxy-accent-ink`) and the focus ring (`--roxy-ring`) are DERIVED from it, so one declaration rebrands every chart, table and card.
+
+```css
+:root { --roxy-accent: #8b5cf6; }
+```
+
+If you theme dark differently, set it in your dark block too, exactly as you would for any design-token system:
+
+```css
+[data-theme='dark'] { --roxy-accent: #a78bfa; }
+```
+
+Do not hardcode `--roxy-accent-ink`: you will pin it to one hue and it will stop tracking your brand. Dark mode already works with no wiring, via `prefers-color-scheme`, a `.dark` class, or `[data-theme='dark']` on any ancestor.
 
 ## Integration patterns
 
@@ -472,7 +540,7 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 - Use `@roxyapi/ui-react` for React projects and `@roxyapi/ui-vue` for Vue and Nuxt projects. Use `@roxyapi/ui` directly elsewhere.
 - Do not write your own kundli component. The lifted layout in `<roxy-vedic-kundli>` is the canonical RoxyAPI render path.
 - Do not call astrology endpoints with hardcoded coordinates. Always geocode first via `<roxy-location-search>` or `roxy.location.searchCities()`.
-- Do not declare a local `interface XyzData` to describe a RoxyAPI response. Import the type from the spec-derived bundle: `import type { XyzResponse } from '@roxyapi/sdk'`. Local interfaces drift the moment the spec changes.
+- Do not declare a local `interface XyzData` to describe a RoxyAPI response. Import the type from the component package you already installed: `import type { XyzResponse } from '@roxyapi/ui-react'` (or `@roxyapi/ui-vue`, or `@roxyapi/ui`). Local interfaces drift the moment the spec changes. You do not need `@roxyapi/sdk` for types.
 - Do not write Tailwind utility classes inside a component. The Shadow DOM boundary stops them at the door. Theme through `--roxy-*` CSS custom properties on `:root` or per element instead.
 - Two ways to feed a component, no third. Controlled (default, recommended for production): pass `data` as a prop or hydrate from a child `roxy-data` JSON island; your server holds the secret key. Self-fetch (no backend): set `data-endpoint` + a `pk_` `publishable-key` and the component renders its own form and fetches in the browser (a secret key is refused client-side). Do not wrap a component in your own fetch loop or call a chart/table/card's internals.
 - Do not redefine theme tokens or invent your own naming. Override the existing `--roxy-*` custom properties; the full list is in `THEMING.md`.

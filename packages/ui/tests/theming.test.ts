@@ -18,14 +18,15 @@ describe('tokens.css theme selectors', () => {
 		// triggered by light-DOM selectors whose vars inherit through the shadow
 		// boundary. `.dark :host` matched nothing in global delivery.
 		expect(TOKENS_CSS).toContain(':root.dark');
-		expect(TOKENS_CSS).toContain('\n.dark,');
+		// Whitespace-agnostic: the rules are indented inside the @layer block.
+		expect(TOKENS_CSS).toMatch(/^\s*\.dark,$/m);
 		expect(TOKENS_CSS).toContain('[data-theme="dark"]');
 		expect(TOKENS_CSS).not.toContain('.dark :host');
 	});
 
 	test('light opt-out block targets light-DOM ancestor selectors, not the dead `.light :host`', () => {
 		expect(TOKENS_CSS).toContain(':root.light');
-		expect(TOKENS_CSS).toContain('\n.light,');
+		expect(TOKENS_CSS).toMatch(/^\s*\.light,$/m);
 		expect(TOKENS_CSS).toContain('[data-theme="light"]');
 		expect(TOKENS_CSS).not.toContain('.light :host');
 	});
@@ -91,5 +92,37 @@ describe('injectRoxyTokens', () => {
 		const style = injectRoxyTokens();
 		expect(style?.textContent).toContain('--roxy-bg: #0a0a0a');
 		expect(style?.textContent).toContain('.dark');
+	});
+});
+
+/**
+ * `--roxy-accent-ink` and `--roxy-ring` DERIVE from `--roxy-accent`, so overriding the accent alone rebrands the library instead of leaving the active tab, the conjunction aspect lines and the focus ring painting the old amber.
+ *
+ * @remarks
+ * A cascade layer was tried here so that a consumer's `:root` override would also beat the `[data-theme]` blocks, which carry a higher specificity. It was reverted: layers mean UNLAYERED declarations win, so every theme block became weaker than any unlayered rule on the page, and dark mode broke the moment anything else declared a token. The theme blocks must stay authoritative. A consumer who themes dark differently sets the accent in their dark block too, exactly as shadcn requires.
+ */
+describe('theming contract', () => {
+	test('every library selector has ZERO specificity via :where()', () => {
+		// Without this, `:root.dark` and `[data-theme="dark"]` (0,1,1) outrank a
+		// consumer's plain `:root` (0,1,0), so their brand accent survived under
+		// prefers-color-scheme and was silently reverted to amber under the other two
+		// dark signals: one override, three different results.
+		expect(TOKENS_CSS).toContain(':where(:root, :host)');
+		expect(TOKENS_CSS).toMatch(/:where\(\s*:root\[data-theme="dark"\]/);
+		expect(TOKENS_CSS).toMatch(/:where\(\s*:root\[data-theme="light"\]/);
+		// No bare high-specificity theme selector may remain.
+		expect(TOKENS_CSS).not.toMatch(/^:root\[data-theme="dark"\],$/m);
+		expect(TOKENS_CSS).not.toMatch(/^\.dark,$/m);
+	});
+
+	test('accent-ink and ring derive from --roxy-accent, never hardcoded', () => {
+		expect(TOKENS_CSS).not.toMatch(/--roxy-accent-ink:\s*#/);
+		expect(TOKENS_CSS).not.toMatch(/--roxy-ring:\s*rgba\(/);
+		expect(TOKENS_CSS).toContain(
+			'--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black)',
+		);
+		expect(TOKENS_CSS).toContain(
+			'--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent)',
+		);
 	});
 });

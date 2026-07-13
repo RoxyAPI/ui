@@ -1,6 +1,6 @@
-import type { CalculateBioCompatibilityResponse, CalculateCompatibilityResponse, CalculateNumCompatibilityResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculateBioCompatibilityResponse, CalculateCompatibilityResponse, CalculateNumCompatibilityResponse } from '../types/index.js';
 
 export interface RoxyCompatibilityCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

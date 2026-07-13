@@ -1,6 +1,6 @@
-import type { NatalChartResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { NatalChartResponse } from '../types/index.js';
 
 export interface RoxyNatalChartProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

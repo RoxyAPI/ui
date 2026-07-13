@@ -3,17 +3,29 @@ import { ensureScriptLoaded } from '../load-ui.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
-	'children'
+	'children' | 'data'
 >;
 
 export interface RoxyDataProps extends ElementAttrs {
+	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
+	data?: unknown;
 	className?: string;
 	style?: React.CSSProperties;
+	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
+	endpoint?: string;
+	/** HTTP method for the self-fetch request. Defaults to POST. */
+	method?: 'GET' | 'POST';
+	/** Browser-safe publishable key (pk_) for self-fetch. A secret key is refused client-side and never sent. */
+	publishableKey?: string;
+	/** Override the API origin for self-hosted or proxied deployments. */
+	baseUrl?: string;
+	/** Override the OpenAPI spec URL the self-fetch form introspects. */
+	specUrl?: string;
 
 }
 
 export const RoxyData = React.forwardRef<HTMLElement | null, RoxyDataProps>(
-	function RoxyData({ className, style, ...rest }, ref) {
+	function RoxyData({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -37,6 +49,48 @@ export const RoxyData = React.forwardRef<HTMLElement | null, RoxyDataProps>(
 				active = false;
 			};
 		}, []);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && data !== undefined) {
+				(el as unknown as { data: unknown }).data = data;
+			}
+		}, [data, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && endpoint !== undefined) {
+				(el as unknown as { endpoint: string }).endpoint = endpoint;
+			}
+		}, [endpoint, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && method !== undefined) {
+				(el as unknown as { method: 'GET' | 'POST' }).method = method;
+			}
+		}, [method, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && publishableKey !== undefined) {
+				(el as unknown as { publishableKey: string }).publishableKey = publishableKey;
+			}
+		}, [publishableKey, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && baseUrl !== undefined) {
+				(el as unknown as { baseUrl: string }).baseUrl = baseUrl;
+			}
+		}, [baseUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && specUrl !== undefined) {
+				(el as unknown as { specUrl: string }).specUrl = specUrl;
+			}
+		}, [specUrl, loaded]);
 
 		if (error) {
 			return React.createElement(

@@ -1,6 +1,6 @@
-import type { CalculateAspectsResponse, CalculateTransitAspectsResponse, DetectAspectPatternsResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculateAspectsResponse, CalculateTransitAspectsResponse, DetectAspectPatternsResponse } from '../types/index.js';
 
 export interface RoxyAspectsTableProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

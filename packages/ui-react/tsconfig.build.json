@@ -9,18 +9,13 @@
 		"jsx": "react-jsx",
 		"strict": true,
 		"esModuleInterop": true,
-		"skipLibCheck": true,
+		"skipLibCheck": false,
 		"isolatedModules": true,
 		"verbatimModuleSyntax": false,
 		"outDir": "dist",
 		"rootDir": "src",
 		"types": ["node"],
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
-		"baseUrl": ".",
-		"paths": {
-			"@roxyapi/ui": ["../ui/dist/index.d.ts"],
-			"@roxyapi/ui/types": ["../ui/dist/types/index.d.ts"]
-		}
+		"lib": ["ES2022", "DOM", "DOM.Iterable"]
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx"],
 	"exclude": ["node_modules", "dist"]

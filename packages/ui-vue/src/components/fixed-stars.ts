@@ -1,6 +1,6 @@
-import type { FixedStarsResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { FixedStarsResponse } from '../types/index.js';
 
 export interface RoxyFixedStarsProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

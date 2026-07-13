@@ -198,7 +198,6 @@ export class RoxyLocationSearch extends LitElement {
 		this.secretKeyWarned = true;
 		const message =
 			'Possible secret key in client-side <roxy-location-search>; use a `pk_` publishable key with origin allowlist instead.';
-		// eslint-disable-next-line no-console
 		console.warn(message);
 		this.dispatchEvent(
 			new CustomEvent('roxy-validation-error', {

@@ -260,18 +260,22 @@ export function Chart({ data }: { data: NatalChart }) {
 	const reactInstall = `## Install
 
 \`\`\`bash
-npm install @roxyapi/ui-react @roxyapi/sdk
+npm install @roxyapi/ui-react
 \`\`\`
+
+One package. No peer install, no stylesheet to link, no Tailwind, no config change. Every response type is exported from the package, so nothing else is needed to be fully typed.
 
 \`\`\`tsx
 'use client';
 
-import { RoxyNatalChart } from '@roxyapi/ui-react';
+import { RoxyNatalChart, type NatalChartResponse } from '@roxyapi/ui-react';
 
-export function Chart({ data }: { data: NatalChart }) {
+export function Chart({ data }: { data: NatalChartResponse }) {
 \treturn <RoxyNatalChart data={data} />;
 }
 \`\`\`
+
+Fetch the response however you like (server component, route handler, your own client) and pass it as \`data\`. \`@roxyapi/sdk\` is a convenience for calling the API, never a requirement for rendering.
 
 For frameworks that consume custom elements directly (Svelte, Angular, Solid, vanilla HTML, WordPress) install \`@roxyapi/ui\` instead.
 
@@ -282,14 +286,16 @@ npm install @roxyapi/ui
 	const vueInstall = `## Install
 
 \`\`\`bash
-npm install @roxyapi/ui-vue @roxyapi/sdk
+npm install @roxyapi/ui-vue
 \`\`\`
+
+One package. No peer install, no stylesheet to link, no \`compilerOptions.isCustomElement\`, no config change. Every response type is exported from the package, so nothing else is needed to be fully typed.
 
 \`\`\`vue
 <script setup lang="ts">
-import { RoxyNatalChart } from '@roxyapi/ui-vue';
+import { RoxyNatalChart, type NatalChartResponse } from '@roxyapi/ui-vue';
 
-defineProps<{ data: NatalChart }>();
+defineProps<{ data: NatalChartResponse }>();
 </script>
 
 <template>
@@ -315,12 +321,30 @@ npm install @roxyapi/ui
 		'packages/ui-react': reactInstall,
 		'packages/ui-vue': vueInstall,
 	};
+	// The README a package SHIPS must name that package. Every wrapper used to ship
+	// the umbrella README, titled "# @roxyapi/ui" with an npm badge pointing at the
+	// wrong package, so a customer who opened @roxyapi/ui-vue on npm read the docs
+	// for a package they had not installed.
+	const pkgName: Record<string, string> = {
+		'packages/ui': '@roxyapi/ui',
+		'packages/ui-react': '@roxyapi/ui-react',
+		'packages/ui-vue': '@roxyapi/ui-vue',
+	};
 	for (const [dir, install] of Object.entries(perPackage)) {
 		await mkdir(dir, { recursive: true });
-		await writeFile(
-			`${dir}/README.md`,
-			root.replace(installPattern, `${install}\n\n`),
-		);
+		const name = pkgName[dir] as string;
+		const readme = root
+			.replace(installPattern, `${install}\n\n`)
+			.replace(/^# @roxyapi\/ui$/m, `# ${name}`)
+			.replaceAll(
+				'https://img.shields.io/npm/v/@roxyapi/ui)',
+				`https://img.shields.io/npm/v/${name})`,
+			)
+			.replaceAll(
+				'https://www.npmjs.com/package/@roxyapi/ui)',
+				`https://www.npmjs.com/package/${name})`,
+			);
+		await writeFile(`${dir}/README.md`, readme);
 		await writeFile(`${dir}/LICENSE`, license);
 		await writeFile(`${dir}/AGENTS.md`, agents);
 	}

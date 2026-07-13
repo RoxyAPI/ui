@@ -63,3 +63,5 @@ refs/
 # new emit drift never gets committed.
 packages/*/src/**/*.d.ts
 packages/*/src/**/*.d.ts.map
+packages/ui-react/src/types/
+packages/ui-vue/src/types/

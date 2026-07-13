@@ -57,11 +57,28 @@ const ANGLE_TICK_R = 178;
 const ANGLE_LABEL_R = 196;
 
 /**
+ * The chart shape the wheel actually renders.
+ *
+ * @remarks
+ * `RelocationChartResponse` carries the same planets, houses, angles and birth details as `NatalChartResponse` (`RelocationPlanet` is field-for-field identical to the natal planet item), and differs only by having no `aspects`, `aspectsInterpretation`, `patterns`, `partOfFortune` or `summary`. The wheel already renders without them, so those five are simply optional here.
+ *
+ * Typing that contract is what lets {@link RoxyRelocationWheel} compose this component honestly. It used to pass its response through a `data as unknown as NatalChartResponse` double cast, which silently asserted five required fields that were not there.
+ */
+type ChartExtras =
+	| 'aspects'
+	| 'aspectsInterpretation'
+	| 'patterns'
+	| 'partOfFortune'
+	| 'summary';
+export type WheelChart = Omit<NatalChartResponse, ChartExtras> &
+	Partial<Pick<NatalChartResponse, ChartExtras>>;
+
+/**
  * Western natal chart wheel. Renders the 12 zodiac signs, 12 houses, planet
  * markers, and aspect lines from a /astrology/natal-chart response.
  */
 @customElement('roxy-natal-chart')
-export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
+export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	static styles = [
 		baseStyles,
 		tablistStyles,
@@ -475,7 +492,7 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 		return html`<div class="roxy-empty" role="status">No chart data</div>`;
 	}
 
-	protected renderData(data: NatalChartResponse) {
+	protected renderData(data: WheelChart) {
 		const planets = this.getPlanets();
 		const aspects = data.aspects ?? [];
 		const view = this.view;

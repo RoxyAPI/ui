@@ -31,6 +31,8 @@ type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 type Scalar = string | number | boolean;
 
 const TITLE_KEYS = ['title', 'name', 'label', 'heading', 'overview', 'summary'];
+/** A title is a label, not a paragraph. `overview`/`summary` are only title candidates when a response carries no real name, and a whole paragraph promoted to an <h3> is worse than no title at all. */
+const MAX_TITLE_LEN = 80;
 const IMAGE_KEYS = ['imageUrl', 'image', 'icon', 'symbol'];
 const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body rows
 const QUOTE_KEYS = ['affirmation', 'mantra', 'motto', 'quote'];
@@ -63,6 +65,8 @@ const SUPPRESS_NOISE = new Set([
 
 /** Sections with more keys than this, and tables with more rows than this, collapse into `<details>`. */
 const DETAILS_KEYS = 8;
+/** Depth at which a section folds shut by default rather than rendering open. */
+const DEEP_DEPTH = 1;
 const DETAILS_ROWS = 12;
 
 const normKey = (k: string): string => k.toLowerCase().replace(/[_-]/g, '');
@@ -139,7 +143,10 @@ export class RoxyData extends RoxyDataElement<Json> {
 			dl.roxy-rows {
 				margin: 0;
 				display: grid;
-				grid-template-columns: minmax(8ch, max-content) 1fr;
+				/* The label column is capped at 30%. A bare max-content lets ONE long key
+				 * ("Additional Insights") set the width for every row and starve the values,
+				 * and a bare 1fr floors at min-content so a long value cannot shrink. */
+				grid-template-columns: minmax(8ch, min(30%, max-content)) minmax(0, 1fr);
 				gap: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
 			}
 			dl.roxy-rows dt {
@@ -195,6 +202,19 @@ export class RoxyData extends RoxyDataElement<Json> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				letter-spacing: 0.04em;
 				white-space: nowrap;
+			}
+			/* Scalar column: as narrow as its content allows. A 1% width on an auto
+			 * table is the standard way to say that, and the remaining auto column
+			 * absorbs everything left. See renderTable for why. */
+			table.roxy-table th.col-tight,
+			table.roxy-table td.col-tight {
+				width: 1%;
+				white-space: nowrap;
+			}
+			/* Column holding nested data: take the width the scalars gave back. */
+			table.roxy-table th.col-wide,
+			table.roxy-table td.col-wide {
+				width: auto;
 			}
 
 			.roxy-image {
@@ -310,6 +330,22 @@ export class RoxyData extends RoxyDataElement<Json> {
 	private renderTable(rows: Record<string, Json>[]): TemplateResult {
 		const clean = rows.map((r) => this.suppress(r));
 		const keys = this.collectKeys(clean);
+
+		/**
+		 * A column holding nested data needs the width; a column holding a short scalar does not.
+		 *
+		 * @remarks
+		 * Browsers lay an auto table out by content, so a `date` column of ten characters and a `positions` column holding a whole nested table settle at roughly half the width each, and the nested one is the one that ends up cramped. Marking each column by what it actually CONTAINS lets the scalar columns collapse to their content (`width: 1%` is the standard way to say "as narrow as your content allows") and the nested column absorb everything left over. No fixed percentage: the split follows the data.
+		 *
+		 * Only worth doing when the row is mixed. If every column is scalar, or every column is nested, there is nothing to bias toward and the browser's own distribution is already right.
+		 */
+		const complex = new Set(
+			keys.filter((k) => clean.some((r) => isComplex(r[k] ?? null))),
+		);
+		const mixed = complex.size > 0 && complex.size < keys.length;
+		const colClass = (k: string) =>
+			mixed ? (complex.has(k) ? 'col-wide' : 'col-tight') : '';
+
 		const table = html`<div
 			class="roxy-table-wrap"
 			role="group"
@@ -319,13 +355,20 @@ export class RoxyData extends RoxyDataElement<Json> {
 			<table class="roxy-table" role="table">
 				<thead>
 					<tr>
-						${keys.map((k) => html`<th>${humanize(k)}</th>`)}
+						${keys.map(
+							(k) => html`<th class=${colClass(k)}>${humanize(k)}</th>`,
+						)}
 					</tr>
 				</thead>
 				<tbody>
 					${clean.map(
 						(row) => html`<tr>
-							${keys.map((k) => html`<td>${this.renderCell(row[k], k)}</td>`)}
+							${keys.map(
+								(k) =>
+									html`<td class=${colClass(k)}>
+										${this.renderCell(row[k], k)}
+									</td>`,
+							)}
 						</tr>`,
 					)}
 				</tbody>
@@ -357,7 +400,11 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 	private renderObject(input: Record<string, Json>): TemplateResult {
 		const obj = this.suppress(input);
-		const titleKey = TITLE_KEYS.find((k) => typeof obj[k] === 'string');
+		const titleKey = TITLE_KEYS.find(
+			(k) =>
+				typeof obj[k] === 'string' &&
+				(obj[k] as string).length <= MAX_TITLE_LEN,
+		);
 		const imageKey = IMAGE_KEYS.find(
 			(k) =>
 				typeof obj[k] === 'string' && (obj[k] as string).startsWith('http'),
@@ -424,8 +471,11 @@ export class RoxyData extends RoxyDataElement<Json> {
 				: 0;
 		const body = this.renderField(value, key);
 		const heading = humanize(key);
-		if (size > DETAILS_KEYS) {
-			return html`<details class="roxy-section">
+		// Past depth 1 a section folds shut by default. A real /numerology/chart response
+		// rendered every level open and grew to a 29,933px-tall element, about thirty
+		// screens of correct but unusable output. The reader opens what they want.
+		if (size > DETAILS_KEYS || this.depth >= DEEP_DEPTH) {
+			return html`<details class="roxy-section" ?open=${this.depth < DEEP_DEPTH}>
 				<summary>${heading}</summary>
 				${body}
 			</details>`;
@@ -445,7 +495,14 @@ export class RoxyData extends RoxyDataElement<Json> {
 		if (Array.isArray(value) && value.every(isPrimitive)) {
 			return this.renderChips(value as (Scalar | null)[]);
 		}
-		return html`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
+		// `bare`: a nested card inside a card compounds padding and border at every
+		// level, and by depth 3 the innermost object was rendering into a fraction of the
+		// width with prose wrapping to two words a line.
+		return html`<roxy-data
+			bare
+			.data=${value}
+			.depth=${this.depth + 1}
+		></roxy-data>`;
 	}
 
 	private renderCell(

@@ -1,6 +1,6 @@
-import type { CalculateSynastryResponse, NatalChartResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculateSynastryResponse, NatalChartResponse } from '../types/index.js';
 
 export interface RoxySynastryChartProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

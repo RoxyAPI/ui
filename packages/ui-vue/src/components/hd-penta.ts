@@ -1,6 +1,6 @@
-import type { CalculatePentaResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculatePentaResponse } from '../types/index.js';
 
 export interface RoxyHdPentaProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

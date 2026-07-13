@@ -1,6 +1,6 @@
-import type { CalculateVariablesResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { CalculateVariablesResponse } from '../types/index.js';
 
 export interface RoxyHdVariablesProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

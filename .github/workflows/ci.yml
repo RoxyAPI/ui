@@ -22,11 +22,20 @@ jobs:
             || { echo "::error::OpenAPI spec or generated types are stale. Run 'bun run generate' locally and commit."; exit 1; }
 
       - run: bun run check
+      - name: No stray backticks inside css`` templates
+        run: bun run scripts/check-css-backticks.ts
       - name: Brand-rule grep
         run: bun run scripts/brand-grep.ts
       - run: bun run typecheck
       - run: bun run build
       - run: bun run test
+
+      # packages/ui-{react,vue}/src is GENERATED from packages/ui. A diff here
+      # means generated output was hand-edited; the next build would revert it.
+      - name: Wrapper drift (React and Vue wrappers must regenerate identically)
+        run: |
+          git diff --exit-code -- packages/ui-react/src packages/ui-vue/src \
+            || { echo "::error::packages/ui-{react,vue}/src is generated from packages/ui. Change manifest.ts or scripts/wrapper-meta.ts and rerun 'bun run build'."; exit 1; }
       - name: Provision Playwright browsers from MCR image (bypass cdn.playwright.dev)
         # cdn.playwright.dev browser-binary downloads stall from GitHub runners.
         # Pull the exact matching browsers from the official Playwright image on

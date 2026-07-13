@@ -1,6 +1,6 @@
-import type { GetCrystalResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { GetCrystalResponse } from '../types/index.js';
 
 export interface RoxyCrystalCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

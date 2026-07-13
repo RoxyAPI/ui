@@ -1,6 +1,6 @@
-import type { FindSignificantDatesResponse, ForecastTransitsResponse, GenerateTimelineResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { FindSignificantDatesResponse, ForecastTransitsResponse, GenerateTimelineResponse } from '../types/index.js';
 
 export interface RoxyForecastTimelineProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

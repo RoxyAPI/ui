@@ -1,6 +1,6 @@
-import type { GetHoraResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { GetHoraResponse } from '../types/index.js';
 
 export interface RoxyHoraTableProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */

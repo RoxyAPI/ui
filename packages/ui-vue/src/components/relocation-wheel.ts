@@ -1,6 +1,6 @@
-import type { RelocationChartResponse } from '@roxyapi/ui/types';
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
+import type { RelocationChartResponse } from '../types/index.js';
 
 export interface RoxyRelocationWheelProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
