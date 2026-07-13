@@ -339,7 +339,7 @@
       "pascal": "RoxyKpChart",
       "slug": "kp-chart",
       "domain": "Vedic (KP)",
-      "renders": "Ascendant, cusps, and planets with KP stellar hierarchy",
+      "renders": "Ascendant, cusps, planets and nodes with KP stellar hierarchy",
       "endpointLabel": "POST /vedic-astrology/kp/chart",
       "endpoints": [
         {

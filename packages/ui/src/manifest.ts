@@ -248,10 +248,11 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'kp-chart',
 		heading: 'KP chart',
 		description:
-			'Full KP chart with Ascendant, Placidus cusps, and planets in tabbed stellar-hierarchy tables',
+			'Full KP chart with Ascendant, Placidus cusps, and planets and nodes in tabbed stellar-hierarchy tables',
 		docsLabel: 'Vedic (KP)',
 		endpointLabel: 'POST /vedic-astrology/kp/chart',
-		docsSummary: 'Ascendant, cusps, and planets with KP stellar hierarchy',
+		docsSummary:
+			'Ascendant, cusps, planets and nodes with KP stellar hierarchy',
 		topic: 'Vedic',
 	},
 	{
