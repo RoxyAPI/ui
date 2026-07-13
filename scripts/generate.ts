@@ -58,3 +58,22 @@ try {
 		`! Type generation skipped (${err instanceof Error ? err.message : String(err)}).`,
 	);
 }
+
+/**
+ * Vendor the freshly generated response types into each wrapper package.
+ *
+ * @remarks
+ * The wrappers are self-contained: they carry their own copy of the types rather than depending on `@roxyapi/ui`, so a consumer installs exactly one package and is still fully typed. The copies live in gitignored `src/types/` directories, which means they must exist before ANYTHING typechecks.
+ *
+ * They used to be emitted only by `build`, while `typecheck` runs BEFORE `build` in CI. On a clean checkout that produced 106 TS2307 errors: locally it passed only because a previous build had left the directories behind. Emitting them here, from `generate` (which `postinstall` runs), is what makes a clean clone typecheck.
+ */
+try {
+	const { emitTypes } = await import('./wrapper-meta.js');
+	await emitTypes('packages/ui-react/src');
+	await emitTypes('packages/ui-vue/src');
+	console.log('Wrapper types vendored (ui-react, ui-vue).');
+} catch (err) {
+	console.warn(
+		`! Wrapper type vendoring skipped (${err instanceof Error ? err.message : String(err)}).`,
+	);
+}
