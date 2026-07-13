@@ -27,6 +27,13 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # A TypeScript major is gated on hey-api (the type generator), whose peer
+      # range is currently >=5.5.3 || >=6.0.0. On TS 7 the generator dies inside
+      # the compiler API, so `bun run generate` cannot run. Adopt a TS major by
+      # hand once hey-api declares support; a bot cannot land it.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: deps
       include: scope
