@@ -478,10 +478,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-hexagram",
     "slug": "hexagram",
     "heading": "I Ching hexagram",
-    "description": "I Ching hexagram with trigram glyphs, judgment, image, and changing lines",
+    "description": "I Ching hexagram drawn line by line with trigram glyphs, judgment, image, and a reading for every line: the oracle statement and what it asks of the querent. A cast highlights the moving lines and shows only their readings, plus the hexagram it transforms into",
     "docsLabel": "I Ching",
     "endpointLabel": "GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",
-    "docsSummary": "Hexagram with trigrams, judgment, image, changing lines",
+    "docsSummary": "Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram",
     "topic": "I Ching"
   },
   {

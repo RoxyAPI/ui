@@ -1,4 +1,4 @@
-import { css, html, nothing } from 'lit';
+import { css, html, nothing, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type {
 	GetBasicPanchangResponse,
@@ -6,22 +6,53 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatSignPosition } from '../utils/degree.js';
 import { formatDate, formatTime, formatTimeRange } from '../utils/format.js';
 
 type PanchangData = GetBasicPanchangResponse | GetDetailedPanchangResponse;
-type PanchangTime = GetDetailedPanchangResponse['rahuKaal'];
+type Detailed = GetDetailedPanchangResponse;
+type PanchangTime = Detailed['rahuKaal'];
+type RashiPlacement = Detailed['moonSign'];
+type SunNakshatra = Detailed['sunNakshatra'];
+type Hora = Detailed['hora'];
+type Panchaka = Detailed['panchaka'];
+type Bhadra = Detailed['bhadra'];
+type Chandrabalam = Detailed['chandrabalam'];
+type Tarabalam = Detailed['tarabalam'];
+type MoonSignTransition = Detailed['transitions']['moonSign'];
+
+/** One limb of the panchang: the headline value plus the muted detail line under it. */
+interface Limb {
+	label: string;
+	value: string;
+	meta: string;
+}
+
+/** Joins the parts of a detail line, dropping anything the response omitted. */
+function meta(...parts: Array<string | number | undefined | null>): string {
+	return parts.filter(Boolean).join(' · ');
+}
+
+/** The headline value of a limb: its name plus the one qualifier that belongs on the same line. */
+function name(...parts: Array<string | undefined>): string {
+	return parts.filter(Boolean).join(', ');
+}
 
 /**
  * Panchang table for /vedic-astrology/panchang/{basic,detailed}.
  *
  * @remarks
  * The main grid lists the five limbs (tithi, nakshatra, yoga, karana, vara),
- * sun and moon timings, and, in detailed mode, the sunrise placements a reader
- * scans first: Moon rashi, Sun rashi, Sun nakshatra, and the current hora. The
- * detailed mode then groups every timed window into two sections, auspicious
- * (the fixed muhurtas plus each Amrit Kalam) and inauspicious (Rahu Kaal,
- * Yamaganda, Gulika, plus each Dur Muhurta and Varjyam), so a consumer can act
- * on timing without parsing the raw response.
+ * each with the reading that comes with it: the tithi ruling planet, deity,
+ * element and how far it has elapsed; the nakshatra lord, deity and symbol; the
+ * yoga and karana characteristics. Detailed mode adds the sunrise placements a
+ * reader scans first (Moon rashi, Sun rashi, Sun nakshatra, current hora), the
+ * exact transition times including the Moon sign change, and groups every timed
+ * window into auspicious (fixed muhurtas plus each Amrit Kalam) and
+ * inauspicious (Rahu Kaal, Yamaganda, Gulika, each Dur Muhurta and Varjyam,
+ * plus Bhadra and Panchaka). Chandrabalam and Tarabalam close the card: which
+ * birth rashis and birth nakshatras this day favors, the surface a muhurta is
+ * actually chosen on.
  */
 @customElement('roxy-panchang-table')
 export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
@@ -76,6 +107,14 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 				color: var(--roxy-fg, #0a0a0a);
 				font-variant-numeric: tabular-nums;
 			}
+			td small {
+				display: block;
+				margin-top: 2px;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-variant-numeric: normal;
+				line-height: 1.5;
+			}
 			.section {
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
@@ -84,6 +123,29 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 				font-weight: var(--roxy-weight-bold, 600);
 				text-transform: uppercase;
 				letter-spacing: 0.06em;
+			}
+			.quiet {
+				color: var(--roxy-muted, #71717a);
+			}
+			.chips {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+				margin-top: 4px;
+			}
+			.chip {
+				padding: 1px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 55%, transparent);
+			}
+			.chip.good {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 14%, transparent);
+				color: var(--roxy-success-fg, #166534);
+			}
+			.chip.bad {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 14%, transparent);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 		`,
 	];
@@ -97,23 +159,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 
 	protected renderData(d: PanchangData) {
 		const detailed = 'sunrise' in d ? d : null;
-
-		const fivefold: Array<[string, string]> = [
-			['Tithi', this.formatPart(d.tithi)],
-			['Nakshatra', this.formatPart(d.nakshatra)],
-			['Yoga', this.formatPart(d.yoga)],
-			['Karana', this.formatPart(d.karana)],
-		];
-		if (detailed) fivefold.push(['Vara', this.formatPart(detailed.vara)]);
-
-		const placements: Array<[string, string]> = detailed
-			? [
-					['Moon sign', this.formatRashi(detailed.moonSign)],
-					['Sun sign', this.formatRashi(detailed.sunSign)],
-					['Sun nakshatra', this.formatSunNakshatra(detailed.sunNakshatra)],
-					['Hora', this.formatHora(detailed.hora)],
-				].filter((row): row is [string, string] => Boolean(row[1]))
-			: [];
+		const basic = 'sunLongitude' in d ? d : null;
 
 		const muhurtas: Array<[string, PanchangTime | undefined]> = detailed
 			? [
@@ -146,8 +192,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 				]
 			: [];
 
-		const transitions =
-			detailed && 'transitions' in detailed ? detailed.transitions : undefined;
+		const showTimings = this.detail === 'detailed' && detailed !== null;
 
 		return html`<div class="wrap" aria-label="Panchang">
 			<header class="head">
@@ -156,75 +201,31 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 			</header>
 			<table>
 				<tbody>
-					${fivefold.map(
-						([k, v]) => html`<tr>
-							<th>${k}</th>
-							<td>${v}</td>
-						</tr>`,
-					)}
+					${this.limbs(d, detailed).map((l) => this.renderLimbRow(l))}
 					${
-						detailed?.sunrise
-							? html`<tr>
-								<th>Sunrise</th>
-								<td>${formatTime(detailed.sunrise)}</td>
-							</tr>`
-							: nothing
+						detailed
+							? html`
+								${this.renderRow('Sunrise', formatTime(detailed.sunrise))}
+								${this.renderRow('Sunset', formatTime(detailed.sunset))}
+								${this.renderRow('Moonrise', formatTime(detailed.moonrise))}
+								${this.renderRow('Moonset', formatTime(detailed.moonset))}
+								${this.renderRow('Moon sign', this.formatRashi(detailed.moonSign))}
+								${this.renderRow('Sun sign', this.formatRashi(detailed.sunSign))}
+								${this.renderRow('Sun nakshatra', this.formatSunNakshatra(detailed.sunNakshatra))}
+								${this.renderRow('Hora', this.formatHora(detailed.hora))}
+							`
+							: basic
+								? html`
+									${this.renderRow('Sun', this.formatLongitude(basic.sunLongitude))}
+									${this.renderRow('Moon', this.formatLongitude(basic.moonLongitude))}
+								`
+								: nothing
 					}
-					${
-						detailed?.sunset
-							? html`<tr>
-								<th>Sunset</th>
-								<td>${formatTime(detailed.sunset)}</td>
-							</tr>`
-							: nothing
-					}
-					${
-						detailed?.moonrise
-							? html`<tr>
-								<th>Moonrise</th>
-								<td>${formatTime(detailed.moonrise)}</td>
-							</tr>`
-							: nothing
-					}
-					${
-						detailed?.moonset
-							? html`<tr>
-								<th>Moonset</th>
-								<td>${formatTime(detailed.moonset)}</td>
-							</tr>`
-							: nothing
-					}
-					${placements.map(
-						([k, v]) => html`<tr>
-							<th>${k}</th>
-							<td>${v}</td>
-						</tr>`,
-					)}
 				</tbody>
 			</table>
+			${detailed ? this.renderTransitions(detailed.transitions) : nothing}
 			${
-				transitions
-					? html`
-						<div class="section">Next transitions</div>
-						<table>
-							<tbody>
-								${this.renderTransitionRow('Tithi', transitions.tithi)}
-								${this.renderTransitionRow('Nakshatra', transitions.nakshatra)}
-								${this.renderTransitionRow('Yoga', transitions.yoga)}
-								${this.renderTransitionRow('Karana', transitions.karana)}
-							</tbody>
-						</table>
-					`
-					: nothing
-			}
-			${
-				this.detail === 'detailed' &&
-				(
-					muhurtas.some((m) => !!m[1]) ||
-						auspiciousWindows.length > 0 ||
-						inauspicious.some((m) => !!m[1]) ||
-						inauspiciousWindows.length > 0
-				)
+				showTimings
 					? html`
 						<div class="section">Auspicious muhurtas</div>
 						<table>
@@ -246,12 +247,106 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 									),
 									...inauspiciousWindows,
 								])}
+								${this.renderBhadraRow(detailed.bhadra)}
+								${this.renderPanchakaRow(detailed.panchaka)}
 							</tbody>
 						</table>
+						${this.renderBalams(detailed.chandrabalam, detailed.tarabalam)}
 					`
 					: nothing
 			}
 		</div>`;
+	}
+
+	/**
+	 * The five limbs, each with its own reading. Basic and detailed carry the
+	 * same limb shapes; only detailed carries the vara.
+	 */
+	private limbs(d: PanchangData, detailed: Detailed | null): Limb[] {
+		const t = d.tithi;
+		const n = d.nakshatra;
+		const y = d.yoga;
+		const k = d.karana;
+		const rows: Limb[] = [
+			{
+				label: 'Tithi',
+				value: name(t?.name, t?.paksha ? `${t.paksha} paksha` : undefined),
+				meta: meta(
+					t?.rulingPlanet ? `Ruled by ${t.rulingPlanet}` : undefined,
+					t?.deity ? `Deity ${t.deity}` : undefined,
+					t?.element,
+					typeof t?.percent === 'number'
+						? `${Math.round(t.percent)}% elapsed`
+						: undefined,
+				),
+			},
+			{
+				label: 'Nakshatra',
+				value: name(
+					n?.name,
+					typeof n?.pada === 'number' ? `pada ${n.pada}` : undefined,
+				),
+				meta: meta(
+					n?.lord ? `Lord ${n.lord}` : undefined,
+					n?.deity ? `Deity ${n.deity}` : undefined,
+					n?.symbol ? `Symbol ${n.symbol}` : undefined,
+					n?.characteristics,
+				),
+			},
+			{
+				label: 'Yoga',
+				value: y?.name ?? '',
+				meta: y?.characteristics ?? '',
+			},
+			{
+				label: 'Karana',
+				value: name(k?.name, k?.type),
+				meta: k?.characteristics ?? '',
+			},
+		];
+		if (detailed?.vara) {
+			rows.push({
+				label: 'Vara',
+				value: detailed.vara.name ?? '',
+				meta: detailed.vara.lord ? `Lord ${detailed.vara.lord}` : '',
+			});
+		}
+		return rows.filter((l) => Boolean(l.value));
+	}
+
+	private renderLimbRow(l: Limb) {
+		return html`<tr>
+			<th>${l.label}</th>
+			<td>${l.value}${l.meta ? html`<small>${l.meta}</small>` : nothing}</td>
+		</tr>`;
+	}
+
+	/** One label/value row, skipped when the value is empty. */
+	private renderRow(
+		label: string,
+		value: string,
+	): TemplateResult | typeof nothing {
+		if (!value) return nothing;
+		return html`<tr>
+			<th>${label}</th>
+			<td>${value}</td>
+		</tr>`;
+	}
+
+	private renderTransitions(t: Detailed['transitions'] | undefined) {
+		if (!t) return nothing;
+		return html`
+			<div class="section">Next transitions</div>
+			<table>
+				<tbody>
+					${this.renderTransitionRow('Tithi', t.tithi)}
+					${this.renderTransitionRow('Nakshatra', t.nakshatra)}
+					${this.renderTransitionRow('Yoga', t.yoga)}
+					${this.renderTransitionRow('Karana', t.karana)}
+					${this.renderMoonSignRow(t.moonSign)}
+				</tbody>
+			</table>
+		`;
 	}
 
 	/** Renders one row per [label, period] pair, dropping any with no range. */
@@ -279,39 +374,122 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		]);
 	}
 
-	private renderTransitionRow(
-		label: string,
-		t: { endsAt?: string; next?: string } | undefined,
-	) {
-		if (!t?.endsAt) return nothing;
-		const when = formatTime(t.endsAt);
-		const next = t.next ? ` → ${t.next}` : '';
+	/**
+	 * Bhadra (Vishti karana) is avoided for every auspicious act, so "none today"
+	 * is as much of an answer as a window and is stated rather than left blank.
+	 */
+	private renderBhadraRow(b: Bhadra | undefined) {
+		if (!b) return nothing;
+		const span = this.formatSpan(b.startsAt, b.endsAt);
 		return html`<tr>
-			<th>${label}</th>
-			<td>ends ${when}${next}</td>
+			<th>Bhadra (Vishti)</th>
+			<td>
+				${b.active && span ? span : html`<span class="quiet">None today</span>`}
+			</td>
 		</tr>`;
 	}
 
-	private formatPart(v: unknown): string {
-		if (!v) return '';
-		if (typeof v === 'string') return v;
-		if (typeof v === 'object') {
-			const obj = v as {
-				name?: string;
-				lord?: string;
-				phase?: string;
-				paksha?: string;
-				end?: string;
-			};
-			const parts = [
-				obj.name,
-				obj.paksha ? `(${obj.paksha} paksha)` : '',
-				obj.lord ? `· ${obj.lord}` : '',
-				obj.phase,
-			].filter(Boolean);
-			return parts.join(' ');
-		}
-		return String(v);
+	/**
+	 * Panchaka runs about five days, so the window commonly starts before or ends
+	 * after this date; the dosha type names which of the five it is.
+	 */
+	private renderPanchakaRow(p: Panchaka | undefined) {
+		if (!p) return nothing;
+		const span = this.formatSpan(p.startsAt, p.endsAt);
+		return html`<tr>
+			<th>Panchaka</th>
+			<td>
+				${
+					p.active
+						? html`${p.type ? `${p.type} Panchaka` : 'Panchaka'}${
+								span ? html`<small>${span}</small>` : nothing
+							}`
+						: html`<span class="quiet">None today</span>`
+				}
+			</td>
+		</tr>`;
+	}
+
+	/**
+	 * Chandrabalam and Tarabalam are read against the querent's own birth rashi
+	 * and birth nakshatra, so both lists are shown in full rather than summarized.
+	 */
+	private renderBalams(c: Chandrabalam | undefined, t: Tarabalam | undefined) {
+		if (!c && !t) return nothing;
+		return html`
+			<div class="section">Chandrabalam and Tarabalam</div>
+			<table>
+				<tbody>
+					${
+						c
+							? html`<tr>
+									<th>Favorable Moon signs</th>
+									<td>${this.renderChips(c.favorableRashis, 'good')}</td>
+								</tr>
+								${this.renderRow('Ashtama Chandra rashi', c.ashtamaChandraRashi ?? '')}`
+							: nothing
+					}
+					${
+						t
+							? html`<tr>
+									<th>Favorable birth nakshatras</th>
+									<td>${this.renderChips(t.favorableNakshatras, 'good')}</td>
+								</tr>
+								<tr>
+									<th>Unfavorable birth nakshatras</th>
+									<td>${this.renderChips(t.unfavorableNakshatras, 'bad')}</td>
+								</tr>`
+							: nothing
+					}
+				</tbody>
+			</table>
+		`;
+	}
+
+	private renderChips(items: string[] | undefined, tone: 'good' | 'bad') {
+		if (!items?.length) return html`<span class="quiet">None</span>`;
+		return html`<div class="chips">
+			${items.map((i) => html`<span class="chip ${tone}">${i}</span>`)}
+		</div>`;
+	}
+
+	private renderTransitionRow(
+		label: string,
+		t: { endsAt?: string; next?: string; nextPada?: number } | undefined,
+	) {
+		if (!t?.endsAt) return nothing;
+		const next = t.next
+			? ` to ${t.next}${typeof t.nextPada === 'number' ? ` pada ${t.nextPada}` : ''}`
+			: '';
+		return html`<tr>
+			<th>${label}</th>
+			<td>ends ${formatTime(t.endsAt)}${next}</td>
+		</tr>`;
+	}
+
+	private renderMoonSignRow(m: MoonSignTransition | undefined) {
+		if (!m?.changesAt) return nothing;
+		return html`<tr>
+			<th>Moon sign</th>
+			<td>
+				${m.current ?? ''} until ${formatTime(m.changesAt)}${m.next ? `, then ${m.next}` : ''}
+			</td>
+		</tr>`;
+	}
+
+	/** A window that may end on the following day carries that date so it cannot be misread. */
+	private formatSpan(
+		start: string | null | undefined,
+		end: string | null | undefined,
+	): string {
+		const range = formatTimeRange({
+			start: start ?? undefined,
+			end: end ?? undefined,
+		});
+		if (!range || !start || !end) return range;
+		return start.slice(0, 10) === end.slice(0, 10)
+			? range
+			: `${range} (ends ${formatDate(end)})`;
 	}
 
 	/** "English (Sanskrit)" label for the Moon or Sun rashi at sunrise. */
@@ -325,12 +503,11 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	/** Sun nakshatra with pada and lord, the form a panchang reader expects. */
 	private formatSunNakshatra(n: SunNakshatra | undefined): string {
 		if (!n?.name) return '';
-		const parts = [
+		return meta(
 			n.name,
-			typeof n.pada === 'number' ? `pada ${n.pada}` : '',
-			n.lord ? `· ${n.lord}` : '',
-		].filter(Boolean);
-		return parts.join(' ');
+			typeof n.pada === 'number' ? `pada ${n.pada}` : undefined,
+			n.lord ? `lord ${n.lord}` : undefined,
+		);
 	}
 
 	/** Current planetary hora with its active window. */
@@ -339,12 +516,12 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		const range = formatTimeRange(h);
 		return range ? `${h.current} (${range})` : h.current;
 	}
-}
 
-type PanchangPlacements = GetDetailedPanchangResponse;
-type RashiPlacement = PanchangPlacements['moonSign'];
-type SunNakshatra = PanchangPlacements['sunNakshatra'];
-type Hora = PanchangPlacements['hora'];
+	/** Basic mode returns raw sidereal longitudes rather than named placements. */
+	private formatLongitude(lon: number | undefined): string {
+		return typeof lon === 'number' ? formatSignPosition(lon) : '';
+	}
+}
 
 declare global {
 	interface HTMLElementTagNameMap {

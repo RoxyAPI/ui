@@ -953,6 +953,126 @@ describe('roxy-data heuristic', () => {
 	});
 });
 
+/**
+ * `roxy-data` and the WordPress plugin's `GenericRenderer.php` render the SAME responses for the same visitor: this component when JavaScript runs, the PHP renderer when it does not. `roxy-data` used to print everything the API returned, so a WordPress reading card showed the derivation math, the schema discriminator and the pagination counters whenever JS was ON, and hid them when JS was OFF. The JS path, which is the path almost every visitor takes, was the worse one.
+ *
+ * The payload below is the real shape of `/numerology/life-path`, verified live.
+ */
+describe('roxy-data hides what the PHP renderer hides', () => {
+	/**
+	 * The RENDERED markup only, with the component's own stylesheet stripped out.
+	 *
+	 * @remarks
+	 * `shadowRoot.innerHTML` and `.textContent` both carry the `<style>` block, so a naive `expect(html).not.toContain('roxy-badge')` matches the `.roxy-badge { }` CSS RULE and passes no matter what was actually drawn. Every negative assertion below would be vacuous. Scoping with `querySelector('.roxy-card')` is the obvious fix and happy-dom does not implement it on a ShadowRoot, so strip the style block instead.
+	 */
+	const mount = async (data: unknown) => {
+		const el = document.createElement('roxy-data') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		const html = (el.shadowRoot?.innerHTML ?? '').replace(
+			/<style[\s\S]*?<\/style>/g,
+			'',
+		);
+		return { el, html, text: html.replace(/<[^>]+>/g, ' ') };
+	};
+
+	test('derivation math, discriminators, seeds and pagination never reach the card', async () => {
+		const { el, text } = await mount({
+			number: 4,
+			calculation: 'Month: 6, Day: 15 → 1+5 = 6, Year: 1990 → 1+9+9+0 = 19',
+			type: 'single',
+			seed: 'abc123',
+			total: 78,
+			limit: 3,
+			offset: 0,
+			meaning: 'The Builder',
+		});
+		expect(text).not.toContain('1+5');
+		expect(text).not.toContain('single');
+		expect(text).not.toContain('abc123');
+		expect(text).not.toContain('78');
+		// ...and the actual reading survives.
+		expect(text).toContain('The Builder');
+		expect(text).toContain('4');
+		el.remove();
+	});
+
+	test('a has*/is* true reads as a badge', async () => {
+		const { el, html, text } = await mount({
+			name: 'Life Path 4',
+			hasKarmicDebt: true,
+			karmicDebtNumber: 13,
+		});
+		expect(html).toContain('roxy-badge');
+		expect(text).toContain('13');
+		el.remove();
+	});
+
+	test('a false is still data, not silence: a direct planet is a reading', async () => {
+		const { el, html, text } = await mount({
+			name: 'Mars',
+			isRetrograde: false,
+		});
+		expect(html).not.toContain('roxy-badge');
+		expect(text).toContain('No');
+		el.remove();
+	});
+
+	test('a key that merely starts with the letters is/has is not a badge', async () => {
+		const { el, html, text } = await mount({
+			island: 'Bali',
+			issue: 'none',
+			history: 'long',
+		});
+		expect(html).not.toContain('roxy-badge');
+		expect(text).toContain('Bali');
+		el.remove();
+	});
+
+	test('an affirmation renders as a blockquote', async () => {
+		const { el, html, text } = await mount({
+			name: 'Angel Number 111',
+			affirmation: 'I trust the path unfolding before me.',
+		});
+		expect(html).toContain('roxy-quote');
+		expect(text).toContain('I trust the path');
+		el.remove();
+	});
+
+	test('an oversized table folds away behind its row count', async () => {
+		const rows = Array.from({ length: 27 }, (_, i) => ({
+			name: `Nakshatra ${i + 1}`,
+			lord: 'Ketu',
+		}));
+		const { el, html, text } = await mount(rows);
+		expect(html).toContain('roxy-table-details');
+		expect(text).toContain('27 rows');
+		el.remove();
+	});
+
+	test('a table under the threshold stays open', async () => {
+		const rows = Array.from({ length: 3 }, (_, i) => ({ name: `Row ${i}` }));
+		const { el, html } = await mount(rows);
+		expect(html).not.toContain('roxy-table-details');
+		expect(html).toContain('roxy-table');
+		el.remove();
+	});
+
+	test('an id survives on an untitled record but is dropped once it has a title', async () => {
+		const bare = await mount({ id: 'xyz-1', value: 7 });
+		expect(bare.text).toContain('xyz-1');
+		bare.el.remove();
+
+		const titled = await mount({ id: 'xyz-1', name: 'The Builder', value: 7 });
+		expect(titled.text).not.toContain('xyz-1');
+		expect(titled.text).toContain('The Builder');
+		titled.el.remove();
+	});
+});
+
 describe('roxy-data scalar formatting and structure', () => {
 	async function mount(data: unknown) {
 		const el = document.createElement('roxy-data') as HTMLElement & {

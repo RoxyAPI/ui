@@ -143,6 +143,77 @@ Tailwind users can map our tokens to theirs in five lines of `globals.css`. Pick
 
 If you used the shadcn registry path, this bridge installs automatically and reads from your existing shadcn tokens.
 
+### Per-domain accent presets
+
+One accent per domain, so a multi-domain page reads as twelve related products rather than twelve identical amber cards. Scope a preset to a wrapper and every component inside it picks it up.
+
+Every ink value below is measured against the page background: all twelve pass WCAG AA (4.5:1) in **both** light and dark. Set `--roxy-accent` for fills and glyphs, `--roxy-accent-ink` for accent-coloured *text*, and `--roxy-ring` for focus outlines.
+
+| Domain | `--roxy-accent` | `--roxy-accent-ink` | Dark accent | Dark ink |
+|---|---|---|---|---|
+| Western astrology (default) | `#f59e0b` | `#b45309` | `#fbbf24` | `#fbbf24` |
+| Vedic astrology | `#f97316` | `#c2410c` | `#fb923c` | `#fdba74` |
+| Numerology | `#6366f1` | `#4338ca` | `#818cf8` | `#a5b4fc` |
+| Tarot | `#8b5cf6` | `#6d28d9` | `#a78bfa` | `#c4b5fd` |
+| Human design | `#06b6d4` | `#0e7490` | `#22d3ee` | `#67e8f9` |
+| Forecast | `#0ea5e9` | `#0369a1` | `#38bdf8` | `#7dd3fc` |
+| Biorhythm | `#10b981` | `#047857` | `#34d399` | `#6ee7b7` |
+| I Ching | `#78716c` | `#57534e` | `#a8a29e` | `#d6d3d1` |
+| Crystals | `#d946ef` | `#a21caf` | `#e879f9` | `#f0abfc` |
+| Dreams | `#3b82f6` | `#1d4ed8` | `#60a5fa` | `#93c5fd` |
+| Angel numbers | `#f43f5e` | `#be123c` | `#fb7185` | `#fda4af` |
+| Location | `#14b8a6` | `#0f766e` | `#2dd4bf` | `#5eead4` |
+
+```css
+/* Scope a preset to a section; components inside inherit it through the shadow boundary. */
+.tarot-section {
+	--roxy-accent: #8b5cf6;
+	--roxy-accent-ink: #6d28d9;
+	--roxy-ring: rgba(139, 92, 246, 0.4);
+}
+:root[data-theme='dark'] .tarot-section,
+.dark .tarot-section {
+	--roxy-accent: #a78bfa;
+	--roxy-accent-ink: #c4b5fd;
+}
+```
+
+### High-contrast preset
+
+For a low-vision or high-contrast mode. Body text hits WCAG **AAA** (7:1); every status colour clears AA against its background. Gate it behind `prefers-contrast: more`, a `data-contrast` attribute, or both.
+
+```css
+@media (prefers-contrast: more) {
+	:root {
+		--roxy-bg: #ffffff;
+		--roxy-fg: #000000;       /* 21:1  */
+		--roxy-muted: #474747;    /* 9.3:1 */
+		--roxy-border: #000000;
+		--roxy-accent: #8a4b00;
+		--roxy-accent-ink: #8a4b00; /* 6.8:1 */
+		--roxy-success: #006b2d;
+		--roxy-warning: #8a3a00;
+		--roxy-danger: #a30000;
+		--roxy-info: #00548a;
+	}
+	:root[data-theme='dark'],
+	.dark {
+		--roxy-bg: #000000;
+		--roxy-fg: #ffffff;        /* 21:1   */
+		--roxy-muted: #c9c9c9;     /* 12.7:1 */
+		--roxy-border: #ffffff;
+		--roxy-accent: #ffc340;
+		--roxy-accent-ink: #ffc340; /* 13.1:1 */
+		--roxy-success: #4ade80;
+		--roxy-warning: #fdba74;
+		--roxy-danger: #ff8a8a;
+		--roxy-info: #7dd3fc;
+	}
+}
+```
+
 ## A11y
 
 Color contrast must stay at 4.5:1 minimum against `--roxy-bg` for body text and 3:1 for large text. The defaults pass WCAG AA. Verify any custom palette with the axe Chrome extension or any contrast checker before shipping.
+
+**One trap worth naming.** Accent-coloured text on a *tinted* background (a `color-mix` chip, a pill, a badge) is a different measurement from accent text on the plain page. `--roxy-accent-ink` and `--roxy-muted` on a tinted chip land around 4.2-4.5:1 and fail AA. On a tinted chip use `--roxy-fg` for the text and let the tint carry the accent. The tokens above are measured against `--roxy-bg`, not against a tint.

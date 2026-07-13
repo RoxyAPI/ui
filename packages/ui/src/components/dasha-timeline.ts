@@ -7,7 +7,13 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatNumber } from '../utils/format.js';
+import { disclosureStyles } from '../utils/disclosure.js';
+import { formatDate, formatNumber } from '../utils/format.js';
+import {
+	type InterpSection,
+	interpAccordionStyles,
+	renderInterpAccordion,
+} from '../utils/interp-accordion.js';
 
 type DashaData =
 	| GetCurrentDashaResponse
@@ -15,16 +21,49 @@ type DashaData =
 	| GetSubDashasResponse;
 
 type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
+type Remaining = GetCurrentDashaResponse['remainingInMahadasha'];
+
+/** The level a period sits at, so no view ever labels an antardasha a mahadasha. */
+const LEVEL_LABEL = {
+	current: 'Mahadasha',
+	major: 'Mahadasha',
+	sub: 'Antardasha',
+} as const;
+
+/** "8y 11m 5d", the form a dasha reader expects for a remaining balance. */
+function formatBalance(b: Remaining | undefined): string {
+	if (!b) return '';
+	const parts: string[] = [];
+	if (b.years) parts.push(`${b.years}y`);
+	if (b.months) parts.push(`${b.months}m`);
+	if (b.days) parts.push(`${b.days}d`);
+	return parts.length ? parts.join(' ') : '0d';
+}
+
+/** "Jun 17, 2018 to Jun 17, 2035" for the accordion aside. */
+function formatSpan(p: { startDate?: string; endDate?: string }): string {
+	const start = p.startDate ? formatDate(p.startDate) : '';
+	const end = p.endDate ? formatDate(p.endDate) : '';
+	if (start && end) return `${start} to ${end}`;
+	return start || end;
+}
 
 /**
  * Dasha timeline. Renders /vedic-astrology/dasha/{current,major,sub/{...}}.
- * Default mode shows the active mahadasha + antardasha + pratyantardasha.
- * Switch to period="major" for the full 120-year Vimshottari timeline.
+ *
+ * @remarks
+ * Default mode shows the active mahadasha, antardasha and pratyantardasha with
+ * the reading each one carries. `period="major"` draws the full 120-year
+ * Vimshottari timeline; `period="sub"` draws the antardashas inside one
+ * mahadasha and states which mahadasha they sit in, since an antardasha means
+ * nothing without its parent lord.
  */
 @customElement('roxy-dasha-timeline')
 export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	static styles = [
 		baseStyles,
+		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.wrap {
 				display: grid;
@@ -68,8 +107,14 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				font-size: var(--roxy-text-base, 1rem);
 				color: var(--roxy-fg, #0a0a0a);
 			}
+			.current div small {
+				display: block;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
 
-			.balance {
+			.balance,
+			.parent {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-muted, #71717a);
 				border-left: 2px solid var(--roxy-border, #e4e4e7);
@@ -134,21 +179,11 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				font-variant-numeric: tabular-nums;
 				text-align: right;
 			}
-			.interp {
+			.block {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
 				background: var(--roxy-surface, #fff);
-			}
-			.interp h3 {
-				margin: 0;
-				font-size: var(--roxy-text-sm, 0.875rem);
-				font-weight: var(--roxy-weight-bold, 600);
-			}
-			.interp p {
-				margin: var(--roxy-space-sm, 0.5rem) 0 0;
-				font-size: var(--roxy-text-sm, 0.875rem);
-				color: var(--roxy-muted, #71717a);
+				padding: var(--roxy-space-md, 1rem);
 			}
 		`,
 	];
@@ -168,15 +203,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 
 		return html`<div class="wrap" aria-label="Dasha timeline">
 			<header class="head">
-				<h2 class="title">
-					${
-						this.period === 'major'
-							? 'Vimshottari Mahadasha'
-							: this.period === 'sub'
-								? 'Antardasha'
-								: 'Active dashas'
-					}
-				</h2>
+				<h2 class="title">${this.heading(d)}</h2>
 				${
 					'nakshatraName' in d && d.nakshatraName
 						? html`<div class="nakshatra">
@@ -188,6 +215,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			</header>
 
 			${this.renderBirthBalance(d)}
+			${this.renderParentMahadasha(d)}
 			${this.period === 'current' ? this.renderCurrent(d) : nothing}
 			${
 				periods.length > 0
@@ -196,79 +224,103 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 					</div>`
 					: nothing
 			}
-			${this.renderActiveInterpretation(periods)}
+			${renderInterpAccordion(this.readings(d, periods), 'roxy-dasha', 'Reading')}
 		</div>`;
+	}
+
+	private heading(d: DashaData): string {
+		if (this.period === 'major') return 'Vimshottari Mahadasha';
+		if (this.period === 'sub') {
+			const lord = 'mahadashaLord' in d ? d.mahadashaLord : '';
+			return lord ? `Antardashas in ${lord} Mahadasha` : 'Antardashas';
+		}
+		return 'Active dashas';
 	}
 
 	private renderBirthBalance(d: DashaData) {
 		if (!('birthDashaBalance' in d) || !d.birthDashaBalance) return nothing;
-		const b = d.birthDashaBalance;
 		const lord = 'nakshatraLord' in d && d.nakshatraLord ? d.nakshatraLord : '';
-		const yrs = b.years ?? 0;
-		const mo = b.months ?? 0;
-		const da = b.days ?? 0;
-		const parts: string[] = [];
-		if (yrs) parts.push(`${yrs}y`);
-		if (mo) parts.push(`${mo}m`);
-		if (da) parts.push(`${da}d`);
-		const remaining = parts.length ? parts.join(' ') : '0d';
+		const remaining = formatBalance(d.birthDashaBalance);
 		return html`<p class="balance">
 			Birth dasha balance: ${remaining} of
 			${lord ? html`<strong>${lord}</strong>` : 'the opening mahadasha'} remained at birth.
 		</p>`;
 	}
 
-	private renderActiveInterpretation(periods: DashaPeriod[]) {
+	/** Sub mode lists antardashas inside one mahadasha, so name the parent and its span. */
+	private renderParentMahadasha(d: DashaData) {
+		if (!('mahadashaPeriod' in d) || !d.mahadashaPeriod) return nothing;
+		const p = d.mahadashaPeriod;
+		const span = formatSpan(p);
+		return html`<p class="parent">
+			Inside the <strong>${p.planet}</strong> Mahadasha${span ? `, ${span}` : ''}
+			${typeof p.durationYears === 'number' ? `(${formatNumber(p.durationYears, 1)} years)` : ''}.
+		</p>`;
+	}
+
+	/**
+	 * Every reading the response carries, behind one exclusive accordion. Current
+	 * mode has three (mahadasha, antardasha, pratyantardasha); sub mode leads with
+	 * the parent mahadasha reading, then the antardasha running now; major mode
+	 * shows the mahadasha running now.
+	 */
+	private readings(d: DashaData, periods: DashaPeriod[]): InterpSection[] {
+		const sections: InterpSection[] = [];
+
+		if ('mahadashaPeriod' in d && d.mahadashaPeriod?.interpretation) {
+			sections.push({
+				label: `${d.mahadashaPeriod.planet} Mahadasha`,
+				aside: formatSpan(d.mahadashaPeriod),
+				body: d.mahadashaPeriod.interpretation,
+			});
+		}
+
+		if ('mahadasha' in d) {
+			const levels = [
+				['Mahadasha', d.mahadasha, d.remainingInMahadasha],
+				['Antardasha', d.antardasha, d.remainingInAntardasha],
+				['Pratyantardasha', d.pratyantardasha, d.remainingInPratyantardasha],
+			] as const;
+			for (const [label, period, remaining] of levels) {
+				if (!period?.interpretation) continue;
+				const left = formatBalance(remaining);
+				sections.push({
+					label: `${period.planet} ${label}`,
+					aside: left ? `${left} left` : formatSpan(period),
+					body: period.interpretation,
+				});
+			}
+		}
+
 		const active = periods.find((p) => this.isCurrent(p));
-		if (!active?.interpretation) return nothing;
-		return html`<div class="interp">
-			<h3>${active.planet} mahadasha</h3>
-			<p>${active.interpretation}</p>
-		</div>`;
+		if (active?.interpretation) {
+			sections.push({
+				label: `${active.planet} ${LEVEL_LABEL[this.period]}`,
+				aside: formatSpan(active),
+				body: active.interpretation,
+			});
+		}
+
+		return sections;
 	}
 
 	private renderCurrent(d: DashaData) {
 		if (!('mahadasha' in d)) return nothing;
+		const levels = [
+			['Mahadasha', d.mahadasha, d.remainingInMahadasha],
+			['Antardasha', d.antardasha, d.remainingInAntardasha],
+			['Pratyantardasha', d.pratyantardasha, d.remainingInPratyantardasha],
+		] as const;
 		return html`<div class="current">
-			${
-				'mahadasha' in d && d.mahadasha
-					? html`<div>
-					<span>Mahadasha</span>
-					<strong>${d.mahadasha.planet}</strong>
-					${
-						'remainingInMahadasha' in d && d.remainingInMahadasha
-							? html`<small>${formatNumber(d.remainingInMahadasha.years + d.remainingInMahadasha.months / 12, 1)} years left</small>`
-							: nothing
-					}
-				</div>`
-					: nothing
-			}
-			${
-				'antardasha' in d && d.antardasha
-					? html`<div>
-					<span>Antardasha</span>
-					<strong>${d.antardasha.planet}</strong>
-					${
-						'remainingInAntardasha' in d && d.remainingInAntardasha
-							? html`<small>${formatNumber(d.remainingInAntardasha.years + d.remainingInAntardasha.months / 12, 1)} years left</small>`
-							: nothing
-					}
-				</div>`
-					: nothing
-			}
-			${
-				'pratyantardasha' in d && d.pratyantardasha
-					? html`<div>
-					<span>Pratyantardasha</span>
-					<strong>${d.pratyantardasha.planet}</strong>
-					${
-						'remainingInPratyantardasha' in d && d.remainingInPratyantardasha
-							? html`<small>${formatNumber(d.remainingInPratyantardasha.years + d.remainingInPratyantardasha.months / 12, 1)} years left</small>`
-							: nothing
-					}
-				</div>`
-					: nothing
-			}
+			${levels.map(([label, period, remaining]) => {
+				if (!period) return nothing;
+				const left = formatBalance(remaining);
+				return html`<div>
+					<span>${label}</span>
+					<strong>${period.planet}</strong>
+					${left ? html`<small>${left} left</small>` : nothing}
+				</div>`;
+			})}
 		</div>`;
 	}
 

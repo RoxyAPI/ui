@@ -14,8 +14,13 @@ import {
 	formatDegreeInSign,
 	longitudeToSignPosition,
 } from '../utils/degree.js';
-import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber } from '../utils/format.js';
+import {
+	type InterpSection,
+	interpAccordionStyles,
+	renderInterpAccordion,
+} from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 
 /**
@@ -63,6 +68,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.wrap {
 				width: 100%;
@@ -73,6 +79,11 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 			header {
@@ -110,6 +121,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 			}
 			.scroll {
 				overflow-x: auto;
+				min-width: 0;
 				-webkit-overflow-scrolling: touch;
 			}
 			table {
@@ -169,43 +181,6 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				font-variant-numeric: tabular-nums;
 				white-space: normal;
 			}
-			.readings h3 {
-				font-size: var(--roxy-text-sm, 0.875rem);
-				font-weight: 600;
-				color: var(--roxy-muted, #71717a);
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-				margin: 0 0 var(--roxy-space-sm, 0.5rem);
-			}
-			.interp-card {
-				border: 1px solid var(--roxy-border, #e4e4e7);
-				border-radius: var(--roxy-radius-md, 8px);
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				margin-bottom: var(--roxy-space-xs, 0.25rem);
-			}
-			.interp-card summary {
-				cursor: pointer;
-				font-weight: 500;
-				color: var(--roxy-fg, #0a0a0a);
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: var(--roxy-space-md, 1rem);
-			}
-			.interp-aside {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.5rem;
-			}
-			.interp-aside small {
-				color: var(--roxy-muted, #71717a);
-				font-weight: 400;
-			}
-			.interp-body {
-				margin-top: var(--roxy-space-xs, 0.25rem);
-				color: var(--roxy-fg, #0a0a0a);
-				font-size: var(--roxy-text-sm, 0.875rem);
-			}
 		`,
 	];
 
@@ -220,7 +195,6 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	protected renderData(data: PositionsResponse) {
 		const vm = this.toViewModel(data);
 		const cols = vm.cols;
-		const readings = vm.rows.filter((r) => r.interpretation);
 		return html`<div class="wrap">
 			<header>
 				<h2 class="title">${this.heading || vm.title}</h2>
@@ -253,14 +227,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 					</tbody>
 				</table>
 			</div>
-			${
-				readings.length
-					? html`<section class="readings">
-						<h3>Readings</h3>
-						${readings.map((r, i) => this.renderReading(r, i === 0))}
-					</section>`
-					: nothing
-			}
+			${this.renderReadings(vm.rows)}
 		</div>`;
 	}
 
@@ -302,18 +269,18 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		return this.signCell(p.sign, p.degree + p.minute / 60);
 	}
 
-	private renderReading(r: Row, open: boolean) {
-		const glyph = PLANET_GLYPH[capitalize(r.label)] ?? '';
-		return html`<details class="interp-card" name="positions-readings" ?open=${open}>
-			<summary>
-				<span>${glyph ? html`${glyph} ` : nothing}${r.label}</span>
-				<span class="interp-aside">
-					<small>${r.sign} ${formatDegreeInSign(r.degree)}</small>
-					${chevron()}
-				</span>
-			</summary>
-			<div class="interp-body">${r.interpretation}</div>
-		</details>`;
+	private renderReadings(rows: Row[]) {
+		const sections: InterpSection[] = rows
+			.filter((r) => r.interpretation)
+			.map((r) => {
+				const glyph = PLANET_GLYPH[capitalize(r.label)] ?? '';
+				return {
+					label: `${glyph} ${r.label}`.trim(),
+					aside: `${r.sign} ${formatDegreeInSign(r.degree)}`.trim(),
+					body: r.interpretation ?? '',
+				};
+			});
+		return renderInterpAccordion(sections, 'positions-readings', 'Readings');
 	}
 
 	private toViewModel(data: PositionsResponse): ViewModel {

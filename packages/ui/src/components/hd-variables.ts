@@ -4,6 +4,7 @@ import type { CalculateVariablesResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 
 type Variables = CalculateVariablesResponse;
@@ -22,6 +23,7 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -89,20 +91,8 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 				}
 			}
 
-			/* Interpretation. Every body of prose sits in one exclusive accordion, so
-			 * the card grows by a single open reading at most. */
-			.block {
-				border-top: 1px solid var(--roxy-border, #e4e4e7);
-				padding-top: var(--roxy-space-md, 1rem);
-			}
-			.block h3 {
-				margin: 0 0 var(--roxy-space-sm, 0.5rem);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-muted, #71717a);
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-			}
+			/* Interpretation. The accordion itself (.block, .interp-*) comes from
+			 * interpAccordionStyles; only the layer grouping around it is local. */
 			.group {
 				margin-bottom: var(--roxy-space-md, 1rem);
 			}
@@ -120,81 +110,6 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				color: var(--roxy-muted, #71717a);
 				line-height: 1.6;
-			}
-			.interp-card {
-				border: 1px solid var(--roxy-border, #e4e4e7);
-				border-radius: var(--roxy-radius-md, 8px);
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				margin-bottom: var(--roxy-space-xs, 0.25rem);
-			}
-			.interp-card summary {
-				cursor: pointer;
-				font-weight: 500;
-				color: var(--roxy-fg, #0a0a0a);
-				display: flex;
-				align-items: center;
-				gap: var(--roxy-space-sm, 0.5rem);
-				font-size: var(--roxy-text-sm, 0.875rem);
-			}
-			.interp-card summary:focus-visible {
-				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
-				outline-offset: 2px;
-				border-radius: var(--roxy-radius-sm, 4px);
-			}
-			.interp-lead {
-				display: inline-flex;
-				align-items: baseline;
-				flex-wrap: wrap;
-				gap: 0.4rem;
-				min-width: 0;
-				flex: 1 1 auto;
-				order: 1;
-			}
-			/* The chevron is authored before the aside so it can stay on the label line
-			 * when the aside wraps below it on a narrow card; order restores the read
-			 * sequence (label, aside, chevron) on a wide one. */
-			.interp-aside {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.5rem;
-				flex-shrink: 0;
-				order: 2;
-			}
-			.roxy-chevron {
-				order: 3;
-			}
-			.interp-aside small {
-				color: var(--roxy-muted, #71717a);
-				font-weight: 400;
-				white-space: nowrap;
-			}
-			/* Narrow card: the position label drops to its own right-aligned line
-			 * rather than squeezing the arrow name mid-word. The chevron stays on the
-			 * name line so the row still reads as one clickable header. */
-			@container (max-width: 26rem) {
-				.interp-card summary {
-					flex-wrap: wrap;
-				}
-				.roxy-chevron {
-					order: 2;
-				}
-				.interp-aside {
-					order: 3;
-					flex-basis: 100%;
-					justify-content: flex-end;
-				}
-			}
-			.interp-body {
-				margin-top: var(--roxy-space-sm, 0.5rem);
-				display: grid;
-				gap: var(--roxy-space-sm, 0.5rem);
-				color: var(--roxy-fg, #0a0a0a);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				line-height: 1.6;
-				overflow-wrap: anywhere;
-			}
-			.interp-body p {
-				margin: 0;
 			}
 			.facets {
 				margin: 0;

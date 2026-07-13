@@ -17,6 +17,12 @@ import {
 	oppositePoint,
 	polarToCartesian,
 } from '../src/utils/degree.js';
+import {
+	formatDate,
+	formatNumber,
+	formatPercent,
+	formatTime,
+} from '../src/utils/format.js';
 import { toKundliViewModel } from '../src/utils/kundli-render.js';
 import { MarkupDataController } from '../src/utils/markup-data.js';
 
@@ -356,5 +362,97 @@ describe('utils/markup-data', () => {
 			new MarkupDataController(host as never).hostConnected();
 			expect(host.data).toBe(present);
 		}
+	});
+});
+
+/**
+ * `formatNumber` used to strip trailing zeros from the WHOLE string, so with `dp = 0` it ate them off the integer: 100 rendered as "1", 90 as "9", and 0 as the empty string. It shipped, visibly, as "1% tight" on a 100-percent-tight stellium. Zeros may only be dropped after a decimal point.
+ */
+describe('formatNumber does not eat integer zeros', () => {
+	test('integers survive at dp 0', () => {
+		expect(formatNumber(100, 0)).toBe('100');
+		expect(formatNumber(90, 0)).toBe('90');
+		expect(formatNumber(20, 0)).toBe('20');
+		expect(formatNumber(10, 0)).toBe('10');
+	});
+
+	test('zero renders as zero, not as an empty string', () => {
+		expect(formatNumber(0, 0)).toBe('0');
+		expect(formatNumber(0, 2)).toBe('0');
+	});
+
+	test('trailing zeros still go, but only after the decimal point', () => {
+		expect(formatNumber(2.5, 1)).toBe('2.5');
+		expect(formatNumber(2.0, 1)).toBe('2');
+		expect(formatNumber(2.5, 2)).toBe('2.5');
+		expect(formatNumber(10.0, 1)).toBe('10');
+		expect(formatNumber(100.5, 1)).toBe('100.5');
+	});
+
+	test('percent inherits the fix', () => {
+		expect(formatPercent(100, 0)).toBe('100%');
+	});
+
+	test('non-numbers stay empty', () => {
+		expect(formatNumber(undefined, 0)).toBe('');
+		expect(formatNumber(Number.NaN, 0)).toBe('');
+	});
+});
+
+/**
+ * A naive API timestamp is a WALL CLOCK, not an instant: `2026-07-13T04:36:00` means 04:36 in the chart's own timezone, so sunrise must read 04:36 for a viewer in Tokyo and a viewer in Chicago alike.
+ *
+ * @remarks
+ * The old formatters handed the naive string straight to `new Date()`, which makes the runtime read it in the VIEWER's zone. That is a silent one-hour corruption whenever the wall clock lands in the viewer's DST gap: in America/New_York the clock jumps 02:00 to 03:00 on 2026-03-08, so `02:30` rendered as `3:30 AM` there and `2:30 AM` everywhere else. Same chart, two different times, and nothing failed.
+ *
+ * `hora-table` had independently dodged this by slicing the string, and `choghadiya-grid` had its own third formatter that was locale-dependent on top (a US viewer saw `04:36 AM`, everyone else `04:36`). All three now share one helper that pins a naive wall clock to UTC, which has no DST and therefore no gap.
+ */
+describe('naive timestamps render as wall clocks, not instants', () => {
+	const withTz = <T>(tz: string, fn: () => T): T => {
+		const prev = process.env.TZ;
+		process.env.TZ = tz;
+		try {
+			return fn();
+		} finally {
+			process.env.TZ = prev;
+		}
+	};
+	const ZONES = ['America/New_York', 'Asia/Kolkata', 'Europe/London', 'UTC'];
+
+	test('a wall clock is identical for every viewer on earth', () => {
+		const seen = ZONES.map((tz) =>
+			withTz(tz, () => formatTime('2026-07-13T04:36:00')),
+		);
+		expect(new Set(seen).size).toBe(1);
+		expect(seen[0]).toBe('4:36 AM');
+	});
+
+	test('a wall clock inside the viewer DST gap does not shift an hour', () => {
+		// 2026-03-08 02:30 does not exist in New York: the clock jumps 02:00 -> 03:00.
+		expect(
+			withTz('America/New_York', () => formatTime('2026-03-08T02:30:00')),
+		).toBe('2:30 AM');
+		expect(
+			withTz('Asia/Kolkata', () => formatTime('2026-03-08T02:30:00')),
+		).toBe('2:30 AM');
+	});
+
+	test('the calendar day never rolls under the viewer timezone', () => {
+		const seen = ZONES.map((tz) =>
+			withTz(tz, () => formatDate('1990-06-15T00:30:00')),
+		);
+		expect(new Set(seen).size).toBe(1);
+		expect(seen[0]).toBe('Jun 15, 1990');
+	});
+
+	test('an offset-bearing timestamp IS an instant and still converts to viewer local', () => {
+		const ny = withTz('America/New_York', () =>
+			formatTime('2026-07-13T12:00:00Z'),
+		);
+		const kolkata = withTz('Asia/Kolkata', () =>
+			formatTime('2026-07-13T12:00:00Z'),
+		);
+		expect(ny).toBe('8:00 AM');
+		expect(kolkata).toBe('5:30 PM');
 	});
 });

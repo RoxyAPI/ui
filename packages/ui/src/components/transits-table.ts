@@ -29,6 +29,11 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 
@@ -156,6 +161,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 
 			.overflow-scroll {
 				overflow-x: auto;
+				min-width: 0;
 				-webkit-overflow-scrolling: touch;
 			}
 
@@ -315,6 +321,9 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 
 	private renderPlanetsTable(planets: TransitsResponse['transitPlanets']) {
 		return html`<table class="planets-table">
+			<caption class="roxy-sr-only">
+				Transiting planets: each planet with its current sign, degree and daily speed.
+			</caption>
 			<thead>
 				<tr>
 					<th scope="col">Planet</th>

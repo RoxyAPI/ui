@@ -28,6 +28,7 @@ const STATIC_PATHS = [
 	'packages/ui/README.md',
 	'packages/ui/THEMING.md',
 	'packages/ui-react/README.md',
+	'packages/ui-vue/README.md',
 	'apps/docs/index.html',
 ];
 

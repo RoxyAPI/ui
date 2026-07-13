@@ -8,7 +8,8 @@
 	"include": [
 		"packages/ui/src/**/*.ts",
 		"packages/ui-react/src/**/*.ts",
-		"packages/ui-react/src/**/*.tsx"
+		"packages/ui-react/src/**/*.tsx",
+		"packages/ui-vue/src/**/*.ts"
 	],
 	"exclude": [
 		"node_modules",

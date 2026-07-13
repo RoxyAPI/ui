@@ -7,8 +7,11 @@
  *   components/{name}.js                              per-component ESM
  *   styles/tokens.css                                 token contract
  *   cdn/roxy-ui.js                                    UMD with Lit bundled, all elements registered
- *   cdn/components/{name}.js                          UMD per-component
+ *   cdn/components/{name}.js                          UMD per-component, tokens injected
  *   cdn/widgets.js                                    auto-mount script for [data-roxy-widget]
+ *
+ * Also codegens and bundles the typed framework wrappers (packages/ui-react,
+ * packages/ui-vue) from the shared metadata in scripts/wrapper-meta.ts.
  *
  * All bundles use esbuild. Per-component is tree-shake friendly via the
  * manifest in src/index.ts.
@@ -128,14 +131,29 @@ async function buildEsm(components: string[]) {
 	});
 }
 
+/**
+ * Synthetic entry for one per-component CDN file. Mirrors `src/cdn.ts` (register the element, then inject the token stylesheet) but scoped to a single element, so a surgical `<script src=".../cdn/components/hexagram.js">` embed is themed and dark-mode-correct without the host also linking `tokens.css`.
+ *
+ * @remarks
+ * Synthesized here rather than committed under `src/` on purpose. The CDN entry is the ONLY surface allowed to touch `document`: the ESM/npm build of the same component must stay side-effect free, or every bundler consumer gets a global stylesheet forced into their page. Keeping the injection in the build, not the component source, preserves that split with no per-component files to maintain.
+ *
+ * {@link injectRoxyTokens} is idempotent (it returns the existing `#roxy-ui-tokens` style if one is present), so a page that loads several per-component files, or one alongside the full bundle, injects exactly once.
+ */
+function cdnComponentEntry(component: string): string {
+	return [
+		`import { injectRoxyTokens } from './utils/inject-tokens.js';`,
+		`export * from './components/${component}.js';`,
+		`export { injectRoxyTokens, ROXY_UI_TOKENS_STYLE_ID } from './utils/inject-tokens.js';`,
+		`injectRoxyTokens();`,
+		'',
+	].join('\n');
+}
+
 async function buildCdn(components: string[]) {
 	// Full CDN bundle entry is src/cdn.ts (not src/index.ts): it registers every
 	// element AND injects tokens.css so a single drop-in script tag yields full
-	// theming + dark mode. Per-component CDN files below stay on the pure
-	// component entry: a consumer reaching for one surgical component owns its
-	// own token delivery (linked tokens.css or :root overrides), and forcing a
-	// global stylesheet from each per-component file would fight that. Wiring
-	// per-component auto-inject is tracked as a follow-up in docs/todo.md.
+	// theming + dark mode. Per-component files get the same treatment via
+	// cdnComponentEntry below.
 	await esbuild.build({
 		entryPoints: { 'cdn/roxy-ui': `${UI_DIR}/src/cdn.ts` },
 		outdir: DIST,
@@ -151,8 +169,13 @@ async function buildCdn(components: string[]) {
 
 	for (const c of components) {
 		await esbuild.build({
-			entryPoints: { [`cdn/components/${c}`]: `${SRC_COMPONENTS}/${c}.ts` },
-			outdir: DIST,
+			stdin: {
+				contents: cdnComponentEntry(c),
+				resolveDir: `${UI_DIR}/src`,
+				sourcefile: `cdn-${c}.ts`,
+				loader: 'ts',
+			},
+			outfile: `${DIST}/cdn/components/${c}.js`,
 			format: 'iife',
 			globalName: `RoxyUI_${c.replace(/-/g, '_')}`,
 			platform: 'browser',
@@ -193,12 +216,13 @@ async function copyDir(from: string, to: string) {
 
 // Each workspace publishes from its own package directory. npm auto-includes
 // README.md, LICENSE, and AGENTS.md from that directory only, so the root
-// files do not land in the tarball. Mirror all three into both packages on
+// files do not land in the tarball. Mirror all three into every package on
 // every build; the per-package copies are gitignored build artifacts and the
 // root files are the single source of truth. AGENTS.md and LICENSE mirror
 // verbatim. README is patched so each package renders its own primary
 // install path first (jsDelivr UMD + Lit for `@roxyapi/ui`, `npm install
-// @roxyapi/ui-react` + JSX for `@roxyapi/ui-react`); the body of every
+// @roxyapi/ui-react` + JSX for `@roxyapi/ui-react`, `npm install
+// @roxyapi/ui-vue` + SFC for `@roxyapi/ui-vue`); the body of every
 // other section is shared.
 async function copyRootDocsToWorkspaces() {
 	const root = await Bun.file('README.md').text();
@@ -249,7 +273,31 @@ export function Chart({ data }: { data: NatalChart }) {
 }
 \`\`\`
 
-For frameworks that consume custom elements directly (Vue, Svelte, Angular, Solid, vanilla HTML, WordPress) install \`@roxyapi/ui\` instead.
+For frameworks that consume custom elements directly (Svelte, Angular, Solid, vanilla HTML, WordPress) install \`@roxyapi/ui\` instead.
+
+\`\`\`bash
+npm install @roxyapi/ui
+\`\`\``;
+
+	const vueInstall = `## Install
+
+\`\`\`bash
+npm install @roxyapi/ui-vue @roxyapi/sdk
+\`\`\`
+
+\`\`\`vue
+<script setup lang="ts">
+import { RoxyNatalChart } from '@roxyapi/ui-vue';
+
+defineProps<{ data: NatalChart }>();
+</script>
+
+<template>
+\t<RoxyNatalChart :data="data" />
+</template>
+\`\`\`
+
+For frameworks that consume custom elements directly (Svelte, Angular, Solid, vanilla HTML, WordPress) install \`@roxyapi/ui\` instead.
 
 \`\`\`bash
 npm install @roxyapi/ui
@@ -261,81 +309,88 @@ npm install @roxyapi/ui
 			"copyRootDocsToWorkspaces: '## Install' section not found in README.md",
 		);
 	}
-	const uiReadme = root.replace(installPattern, `${uiInstall}\n\n`);
-	const reactReadme = root.replace(installPattern, `${reactInstall}\n\n`);
 
-	await writeFile('packages/ui/README.md', uiReadme);
-	await writeFile('packages/ui/LICENSE', license);
-	await writeFile('packages/ui/AGENTS.md', agents);
-	await writeFile('packages/ui-react/README.md', reactReadme);
-	await writeFile('packages/ui-react/LICENSE', license);
-	await writeFile('packages/ui-react/AGENTS.md', agents);
+	const perPackage: Record<string, string> = {
+		'packages/ui': uiInstall,
+		'packages/ui-react': reactInstall,
+		'packages/ui-vue': vueInstall,
+	};
+	for (const [dir, install] of Object.entries(perPackage)) {
+		await mkdir(dir, { recursive: true });
+		await writeFile(
+			`${dir}/README.md`,
+			root.replace(installPattern, `${install}\n\n`),
+		);
+		await writeFile(`${dir}/LICENSE`, license);
+		await writeFile(`${dir}/AGENTS.md`, agents);
+	}
 }
 
-async function buildReactBundles() {
-	const reactDist = 'packages/ui-react/dist';
-	await mkdir(reactDist, { recursive: true });
-	await mkdir(`${reactDist}/components`, { recursive: true });
-	const components: Record<string, string> = {
-		index: 'packages/ui-react/src/index.ts',
-		'load-ui': 'packages/ui-react/src/load-ui.ts',
+/**
+ * Bundle one framework wrapper package (ESM per entry + a CJS index). React and
+ * Vue differ only in file extension and which peer stays external, so they share
+ * one builder rather than a copy each.
+ */
+async function buildWrapperBundles(opts: {
+	pkg: string;
+	ext: '.ts' | '.tsx';
+	external: string[];
+}) {
+	const dist = `packages/${opts.pkg}/dist`;
+	const src = `packages/${opts.pkg}/src`;
+	await mkdir(`${dist}/components`, { recursive: true });
+
+	const entries: Record<string, string> = {
+		index: `${src}/index.ts`,
+		'load-ui': `${src}/load-ui.ts`,
 	};
-	const reactComponents = (
-		await readdir('packages/ui-react/src/components', {
-			withFileTypes: true,
-		})
-	).filter((e) => e.isFile() && e.name.endsWith('.tsx'));
-	for (const e of reactComponents) {
-		components[`components/${e.name.replace(/\.tsx$/, '')}`] =
-			`packages/ui-react/src/components/${e.name}`;
+	const files = (
+		await readdir(`${src}/components`, { withFileTypes: true })
+	).filter((e) => e.isFile() && e.name.endsWith(opts.ext));
+	for (const e of files) {
+		entries[`components/${e.name.replace(/\.tsx?$/, '')}`] =
+			`${src}/components/${e.name}`;
 	}
+
+	const shared = {
+		bundle: true,
+		minify: true,
+		sourcemap: true,
+		external: opts.external,
+		jsx: 'automatic',
+	} as const;
+
 	await esbuild.build({
-		entryPoints: components,
-		outdir: reactDist,
+		...shared,
+		entryPoints: entries,
+		outdir: dist,
 		format: 'esm',
 		platform: 'browser',
 		target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
-		bundle: true,
-		minify: true,
-		sourcemap: true,
-		external: ['react', 'react-dom', 'react/jsx-runtime'],
-		jsx: 'automatic',
 	});
 	await esbuild.build({
-		entryPoints: { index: 'packages/ui-react/src/index.ts' },
-		outdir: reactDist,
+		...shared,
+		entryPoints: { index: `${src}/index.ts` },
+		outdir: dist,
 		format: 'cjs',
 		platform: 'neutral',
 		target: ['es2022'],
-		bundle: true,
-		minify: true,
-		sourcemap: true,
-		external: ['react', 'react-dom', 'react/jsx-runtime'],
-		jsx: 'automatic',
 		outExtension: { '.js': '.cjs' },
 	});
 }
 
 async function buildTypes() {
-	console.log('Building declaration files (ui)...');
-	try {
-		execSync('bunx tsc -p packages/ui/tsconfig.build.json', {
-			stdio: 'inherit',
-		});
-	} catch (err) {
-		console.warn(
-			`! Type emit had issues for ui, continuing anyway (${err instanceof Error ? err.message : String(err)})`,
-		);
-	}
-	console.log('Building declaration files (ui-react)...');
-	try {
-		execSync('bunx tsc -p packages/ui-react/tsconfig.build.json', {
-			stdio: 'inherit',
-		});
-	} catch (err) {
-		console.warn(
-			`! Type emit had issues for ui-react, continuing anyway (${err instanceof Error ? err.message : String(err)})`,
-		);
+	for (const pkg of ['ui', 'ui-react', 'ui-vue']) {
+		console.log(`Building declaration files (${pkg})...`);
+		try {
+			execSync(`bunx tsc -p packages/${pkg}/tsconfig.build.json`, {
+				stdio: 'inherit',
+			});
+		} catch (err) {
+			console.warn(
+				`! Type emit had issues for ${pkg}, continuing anyway (${err instanceof Error ? err.message : String(err)})`,
+			);
+		}
 	}
 }
 
@@ -389,8 +444,18 @@ async function main() {
 	console.log('Generating React component wrappers...');
 	execSync('bun run scripts/build-react.ts', { stdio: 'inherit' });
 
+	console.log('Generating Vue component wrappers...');
+	execSync('bun run scripts/build-vue.ts', { stdio: 'inherit' });
+
 	console.log('Building React wrapper bundles...');
-	await buildReactBundles();
+	await buildWrapperBundles({
+		pkg: 'ui-react',
+		ext: '.tsx',
+		external: ['react', 'react-dom', 'react/jsx-runtime'],
+	});
+
+	console.log('Building Vue wrapper bundles...');
+	await buildWrapperBundles({ pkg: 'ui-vue', ext: '.ts', external: ['vue'] });
 
 	console.log('Generating shadcn registry...');
 	execSync('bun run scripts/build-registry.ts', { stdio: 'inherit' });
@@ -411,7 +476,7 @@ async function main() {
 	console.log('Formatting codegen output...');
 	try {
 		execSync(
-			'bunx biome check --write packages/ui-react/src packages/ui/src/generated registry apps/docs/manifest.js',
+			'bunx biome check --write packages/ui-react/src packages/ui-vue/src packages/ui/src/generated registry apps/docs/manifest.js',
 			{ stdio: 'inherit' },
 		);
 	} catch (err) {

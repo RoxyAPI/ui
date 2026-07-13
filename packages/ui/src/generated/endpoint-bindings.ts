@@ -182,6 +182,11 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'POST',
 			path: '/vedic-astrology/divisional-chart',
 		},
+		{
+			operationId: 'generateNavamsa',
+			method: 'POST',
+			path: '/vedic-astrology/navamsa',
+		},
 	],
 	'roxy-dosha-card': [
 		{

@@ -166,7 +166,10 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 
 			${
 				significators.length
-					? html`<table aria-label="House significators">
+					? html`<table>
+						<caption class="roxy-sr-only">
+							House significators: each ruling planet and the houses it signifies.
+						</caption>
 						<thead>
 							<tr>
 								<th scope="col">Planet</th>

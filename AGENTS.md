@@ -2,7 +2,7 @@
 
 This file teaches AI coding agents (Claude Code, Cursor, Copilot, Codex, Gemini CLI, and any MCP-compatible client) how to use Roxy UI when integrating RoxyAPI into a project.
 
-This file ships inside both `@roxyapi/ui` and `@roxyapi/ui-react` on npm. After install, read it at `node_modules/@roxyapi/ui/AGENTS.md`.
+This file ships inside `@roxyapi/ui`, `@roxyapi/ui-react`, and `@roxyapi/ui-vue` on npm. After install, read it at `node_modules/@roxyapi/ui/AGENTS.md`.
 
 Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component types: the combined OpenAPI spec at `https://roxyapi.com/api/v2/openapi.json`, regenerated into `packages/ui/src/types/types.gen.ts`. Per-product specs live at `https://roxyapi.com/api/v2/{slug}/openapi.json`.
 
@@ -96,7 +96,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
-| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram with trigrams, judgment, image, changing lines |
+| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
 | `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |
 | `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
@@ -201,7 +201,24 @@ Several components select a view, mode, or chart layout in addition to `data`. T
 <RoxyPanchangTable data={panchang} detail="detailed" />
 ```
 
-The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period`, `RoxyMoonPhase` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` and `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`, `RoxyHexagram` `mode`. Outside React, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
+The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period`, `RoxyMoonPhase` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` and `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`, `RoxyHexagram` `mode`. Outside React and Vue, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
+
+### 6c. Vue and Nuxt
+
+`@roxyapi/ui-vue` exposes the same components with the same prop names. Bind `data` and the config props normally; the package sets them as DOM properties for you, so an object payload never gets stringified into an attribute. Listen to widget events with the usual `@` syntax.
+
+```vue
+<script setup lang="ts">
+import { RoxyVedicKundli, RoxyLocationSearch } from '@roxyapi/ui-vue';
+</script>
+
+<template>
+	<RoxyVedicKundli :data="chart" chart-style="south" />
+	<RoxyLocationSearch @roxy-location-select="onCity" />
+</template>
+```
+
+In Nuxt, render these in a client context (`<ClientOnly>` or a `.client.vue` component): they mount Custom Elements and need the DOM, the same constraint as `'use client'` in the Next.js App Router.
 
 ### 7. Local response interface drift
 
@@ -451,8 +468,8 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 
 ## What not to ship
 
-- Do not bundle `@roxyapi/ui` and `@roxyapi/ui-react` together; they ship independently.
-- Use `@roxyapi/ui-react` for React projects. Use `@roxyapi/ui` directly elsewhere.
+- Do not bundle `@roxyapi/ui` with `@roxyapi/ui-react` or `@roxyapi/ui-vue`; they ship independently.
+- Use `@roxyapi/ui-react` for React projects and `@roxyapi/ui-vue` for Vue and Nuxt projects. Use `@roxyapi/ui` directly elsewhere.
 - Do not write your own kundli component. The lifted layout in `<roxy-vedic-kundli>` is the canonical RoxyAPI render path.
 - Do not call astrology endpoints with hardcoded coordinates. Always geocode first via `<roxy-location-search>` or `roxy.location.searchCities()`.
 - Do not declare a local `interface XyzData` to describe a RoxyAPI response. Import the type from the spec-derived bundle: `import type { XyzResponse } from '@roxyapi/sdk'`. Local interfaces drift the moment the spec changes.

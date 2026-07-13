@@ -87,6 +87,22 @@ export const baseStyles = css`
 		}
 	}
 
+	/* Removed from the visual layout but kept in the accessibility tree. The data
+	 * tables use it on their <caption> so a screen-reader user hears what the
+	 * table holds before the first cell, while the rendered card is unchanged.
+	 * Out of flow, 1px and clipped, so it can never shift or widen its parent. */
+	.roxy-sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
 	.roxy-empty {
 		padding: var(--roxy-space-lg, 1.5rem);
 		color: var(--roxy-muted, #71717a);

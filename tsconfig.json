@@ -29,6 +29,7 @@
 		"packages/ui/tests/**/*.ts",
 		"packages/ui-react/src/**/*.tsx",
 		"packages/ui-react/src/**/*.ts",
+		"packages/ui-vue/src/**/*.ts",
 		"scripts/**/*.ts",
 		"apps/docs/**/*.ts",
 		"playwright.config.ts"

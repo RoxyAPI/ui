@@ -33,6 +33,49 @@ type Scalar = string | number | boolean;
 const TITLE_KEYS = ['title', 'name', 'label', 'heading', 'overview', 'summary'];
 const IMAGE_KEYS = ['imageUrl', 'image', 'icon', 'symbol'];
 const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body rows
+const QUOTE_KEYS = ['affirmation', 'mantra', 'motto', 'quote'];
+
+/**
+ * Response fields that are engineer-facing noise on a reading card, and the rules for hiding them.
+ *
+ * @remarks
+ * This mirrors `SUPPRESS_*` in the WordPress plugin's `src/Support/GenericRenderer.php`. Both render the SAME API responses for the same visitor: `roxy-data` when JavaScript runs, the PHP renderer when it does not. If the two disagree the page visibly changes content on hydration, so they must be kept in sync.
+ *
+ * Without this, a real `/numerology/life-path` card printed "Calculation: Month: 6, Day: 15 -> 1+5 = 6, Year: 1990 -> ...", "Type: Single", and a list endpoint printed "Total: 78, Limit: 3, Offset: 0". That is how the number was derived and how the API paginates: it is not the reading the visitor asked for.
+ */
+const SUPPRESS_ALWAYS = new Set(['seed']);
+/** Suppressed only when the object carries a title: an untitled record still needs its identifier. */
+const SUPPRESS_NAMED = new Set(['id', 'slug', 'key']);
+const SUPPRESS_NOISE = new Set([
+	'calculation',
+	'calculations',
+	'type', // schema discriminator ("single", "general"): indexes a polymorphic shape, means nothing on a card
+	'position', // pinnacle/challenge index: already carried by the row order
+	'count',
+	'totalcount',
+	'total',
+	'limit',
+	'offset',
+	'page',
+	'pagesize',
+	'perpage',
+]);
+
+/** Sections with more keys than this, and tables with more rows than this, collapse into `<details>`. */
+const DETAILS_KEYS = 8;
+const DETAILS_ROWS = 12;
+
+const normKey = (k: string): string => k.toLowerCase().replace(/[_-]/g, '');
+
+/**
+ * `hasKarmicDebt` / `is_master`: a true reads better as a badge than as the row "Has karmic debt: Yes".
+ *
+ * @remarks
+ * Presentation only. The PHP twin also DROPS the false case as "silence, not data", and this deliberately does not follow it there: a generic renderer must never lose a fact the response carries, and `isRetrograde: false` (a planet in direct motion) is a real reading, not an absence. Suppression is reserved for fields that are provably not part of the reading at all, which is what {@link SUPPRESS_NOISE} enumerates.
+ *
+ * Matching on the camel boundary rejects `island` / `issue` / `history`, which a bare `startsWith('is')` would swallow. The PHP twin tests `strpos($key, 'has_')` against a camelCase key, so its badge branch never actually fires; it hard-suppresses the three keys it knew about instead.
+ */
+const isBadgeKey = (k: string): boolean => /^(has|is)([A-Z_]|$)/.test(k);
 
 const ISO_DATE =
 	/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?$/;
@@ -129,6 +172,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 			.roxy-table-wrap {
 				overflow-x: auto;
+				min-width: 0;
 			}
 			table.roxy-table {
 				width: 100%;
@@ -169,6 +213,48 @@ export class RoxyData extends RoxyDataElement<Json> {
 				color: var(--roxy-secondary, #475569);
 				margin: 0 0 var(--roxy-space-xs, 0.25rem) 0;
 				text-transform: capitalize;
+			}
+
+			blockquote.roxy-quote {
+				margin: var(--roxy-space-md, 1rem) 0;
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				border-left: 3px solid var(--roxy-accent, #f59e0b);
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 8%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-style: italic;
+			}
+
+			/* --roxy-fg on the tint, never --roxy-muted: muted on a tinted
+			 * color-mix measures 4.24:1 and fails WCAG AA. The tint carries the
+			 * accent, the text stays high-contrast. */
+			.roxy-badge {
+				display: inline-block;
+				padding: 1px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 18%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+
+			details.roxy-section,
+			details.roxy-table-details {
+				margin-top: var(--roxy-space-md, 1rem);
+			}
+			details.roxy-section > summary,
+			details.roxy-table-details > summary {
+				cursor: pointer;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-secondary, #475569);
+				text-transform: capitalize;
+			}
+			details.roxy-section > summary:focus-visible,
+			details.roxy-table-details > summary:focus-visible {
+				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+				outline-offset: 2px;
+				border-radius: 4px;
 			}
 		`,
 	];
@@ -222,8 +308,9 @@ export class RoxyData extends RoxyDataElement<Json> {
 	}
 
 	private renderTable(rows: Record<string, Json>[]): TemplateResult {
-		const keys = this.collectKeys(rows);
-		return html`<div
+		const clean = rows.map((r) => this.suppress(r));
+		const keys = this.collectKeys(clean);
+		const table = html`<div
 			class="roxy-table-wrap"
 			role="group"
 			aria-label="Data table"
@@ -236,17 +323,40 @@ export class RoxyData extends RoxyDataElement<Json> {
 					</tr>
 				</thead>
 				<tbody>
-					${rows.map(
+					${clean.map(
 						(row) => html`<tr>
-							${keys.map((k) => html`<td>${this.renderCell(row[k])}</td>`)}
+							${keys.map((k) => html`<td>${this.renderCell(row[k], k)}</td>`)}
 						</tr>`,
 					)}
 				</tbody>
 			</table>
 		</div>`;
+		// A 78-row angel-number list or a 27-row nakshatra table is a scroll trap
+		// inline. Past the threshold it folds away behind its own row count.
+		if (clean.length > DETAILS_ROWS) {
+			return html`<details class="roxy-table-details">
+				<summary>${clean.length} rows</summary>
+				${table}
+			</details>`;
+		}
+		return table;
 	}
 
-	private renderObject(obj: Record<string, Json>): TemplateResult {
+	/** Drop the fields that are noise on a reading card. See {@link SUPPRESS_NOISE}. */
+	private suppress(obj: Record<string, Json>): Record<string, Json> {
+		const titled = TITLE_KEYS.some((k) => typeof obj[k] === 'string');
+		return Object.fromEntries(
+			Object.entries(obj).filter(([k]) => {
+				const n = normKey(k);
+				if (SUPPRESS_ALWAYS.has(n)) return false;
+				if (titled && SUPPRESS_NAMED.has(n)) return false;
+				return !SUPPRESS_NOISE.has(n);
+			}),
+		);
+	}
+
+	private renderObject(input: Record<string, Json>): TemplateResult {
+		const obj = this.suppress(input);
 		const titleKey = TITLE_KEYS.find((k) => typeof obj[k] === 'string');
 		const imageKey = IMAGE_KEYS.find(
 			(k) =>
@@ -256,10 +366,12 @@ export class RoxyData extends RoxyDataElement<Json> {
 			titleKey !== 'summary' && typeof obj.summary === 'string'
 				? 'summary'
 				: null;
+		const quoteKey = QUOTE_KEYS.find((k) => typeof obj[k] === 'string');
 		const entries = Object.entries(obj).filter(
 			([k, v]) =>
 				k !== titleKey &&
 				k !== summaryKey &&
+				k !== quoteKey &&
 				!SKIP_KEYS.includes(k) &&
 				v !== null &&
 				v !== undefined,
@@ -283,29 +395,52 @@ export class RoxyData extends RoxyDataElement<Json> {
 			}
 			${titleKey ? html`<h3 class="roxy-title">${obj[titleKey]}</h3>` : nothing}
 			${summaryKey ? html`<p class="roxy-summary">${obj[summaryKey]}</p>` : nothing}
+			${quoteKey ? html`<blockquote class="roxy-quote">${obj[quoteKey]}</blockquote>` : nothing}
 			${
 				rows.length > 0
 					? html`<dl class="roxy-rows">
 						${rows.map(
 							([k, v]) => html`
 								<dt>${humanize(k)}</dt>
-								<dd>${this.renderField(v)}</dd>
+								<dd>${this.renderField(v, k)}</dd>
 							`,
 						)}
 					</dl>`
 					: nothing
 			}
-			${sections.map(
-				([k, v]) => html`<div class="roxy-section">
-					<h4>${humanize(k)}</h4>
-					${this.renderField(v)}
-				</div>`,
-			)}
+			${sections.map(([k, v]) => this.renderSection(k, v))}
 		`;
 	}
 
-	private renderField(value: Json): TemplateResult | string {
+	/**
+	 * A named block of nested data. Collapses into `<details>` once it carries more than {@link DETAILS_KEYS} keys, so one fat object (a 27-nakshatra map, a 12-house table) cannot bury the rest of the card under a wall of rows.
+	 */
+	private renderSection(key: string, value: Json): TemplateResult {
+		const size =
+			value !== null && typeof value === 'object'
+				? Array.isArray(value)
+					? value.length
+					: Object.keys(value).length
+				: 0;
+		const body = this.renderField(value, key);
+		const heading = humanize(key);
+		if (size > DETAILS_KEYS) {
+			return html`<details class="roxy-section">
+				<summary>${heading}</summary>
+				${body}
+			</details>`;
+		}
+		return html`<div class="roxy-section">
+			<h4>${heading}</h4>
+			${body}
+		</div>`;
+	}
+
+	private renderField(value: Json, key?: string): TemplateResult | string {
 		if (value === null || value === undefined) return '';
+		if (value === true && key !== undefined && isBadgeKey(key)) {
+			return html`<span class="roxy-badge">Yes</span>`;
+		}
 		if (isPrimitive(value)) return html`${this.scalarTemplate(value)}`;
 		if (Array.isArray(value) && value.every(isPrimitive)) {
 			return this.renderChips(value as (Scalar | null)[]);
@@ -313,8 +448,14 @@ export class RoxyData extends RoxyDataElement<Json> {
 		return html`<roxy-data .data=${value} .depth=${this.depth + 1}></roxy-data>`;
 	}
 
-	private renderCell(value: Json | undefined): TemplateResult | string {
+	private renderCell(
+		value: Json | undefined,
+		key?: string,
+	): TemplateResult | string {
 		if (value === null || value === undefined) return '';
+		if (value === true && key !== undefined && isBadgeKey(key)) {
+			return html`<span class="roxy-badge">Yes</span>`;
+		}
 		if (isPrimitive(value)) return this.scalarTemplate(value);
 		if (Array.isArray(value) && value.every(isPrimitive)) {
 			return (value as (Scalar | null)[])

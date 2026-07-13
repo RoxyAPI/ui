@@ -4,14 +4,21 @@ import type { AnalyzeNumberSequenceResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { disclosureStyles } from '../utils/disclosure.js';
+import {
+	interpAccordionStyles,
+	renderInterpAccordion,
+} from '../utils/interp-accordion.js';
 
 /**
- * Angel number lookup card. Renders /angel-numbers/lookup: the analysed sequence with its pattern classification (type, digit count, unique digits, palindrome, repeating), the known angel-number meaning when the sequence is in the database, and the foundational digit-root meaning that interprets any sequence. Built for synchronicity trackers where users enter arbitrary numbers.
+ * Angel number lookup card. Renders /angel-numbers/lookup: the analysed sequence with its pattern classification (type, digit count, unique digits, palindrome, repeating), the context note when the caller said where the number was seen, the known angel-number meaning when the sequence is in the database, and the foundational digit-root meaning that interprets any sequence. Built for synchronicity trackers where users enter arbitrary numbers.
  */
 @customElement('roxy-angel-number-lookup')
 export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequenceResponse> {
 	static styles = [
 		baseStyles,
+		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -66,6 +73,31 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 				background: color-mix(in srgb, var(--roxy-info, #0284c7) 16%, transparent);
 				color: var(--roxy-info-fg, #075985);
 			}
+			/* The tint carries the energy classification; the text stays --roxy-fg,
+			 * because accent ink on a tinted chip misses WCAG AA. */
+			.badge.energy-positive {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 18%, transparent);
+			}
+			.badge.energy-cautionary {
+				background: color-mix(in srgb, var(--roxy-warning, #ea580c) 18%, transparent);
+			}
+			.context {
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				border-left: 3px solid var(--roxy-accent, #f59e0b);
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 8%, transparent);
+				border-radius: 0 var(--roxy-radius-sm, 4px) var(--roxy-radius-sm, 4px) 0;
+			}
+			.steps {
+				margin: 0;
+				padding-left: 1.1rem;
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				line-height: 1.6;
+			}
 			.section {
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
 				padding-top: var(--roxy-space-md, 1rem);
@@ -75,7 +107,9 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 			.section > .label {
 				margin: 0;
 			}
-			.section h3 {
+			/* Direct child only: the accordion block renders its own muted h3 heading
+			 * one level down, and this rule would otherwise repaint it. */
+			.section > h3 {
 				margin: 0;
 				font-size: var(--roxy-text-base, 1rem);
 				font-weight: var(--roxy-weight-bold, 600);
@@ -98,21 +132,6 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 				border-radius: var(--roxy-radius-full, 9999px);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
-			details {
-				border: 1px solid var(--roxy-border, #e4e4e7);
-				border-radius: var(--roxy-radius-sm, 4px);
-				overflow: hidden;
-			}
-			summary {
-				cursor: pointer;
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				font-weight: var(--roxy-weight-bold, 600);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				list-style-position: inside;
-			}
-			details p {
-				padding: 0 var(--roxy-space-md, 1rem) var(--roxy-space-md, 1rem);
-			}
 		`,
 	];
 
@@ -124,6 +143,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 		const known = d.knownMeaning;
 		const root = d.digitRootMeaning;
 		const heading = known?.title ?? 'Number analysis';
+		const steps = known?.actionSteps ?? [];
 
 		return html`<article class="card" aria-label=${`Number ${d.number ?? ''}`}>
 			<div class="hero">
@@ -140,7 +160,16 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 				${typeof d.digitRoot === 'number' ? html`<span class="badge">Digit root ${d.digitRoot}</span>` : nothing}
 				${d.isPalindrome ? html`<span class="badge flag">Palindrome</span>` : nothing}
 				${d.isRepeating ? html`<span class="badge flag">Repeating</span>` : nothing}
+				${known?.energy ? html`<span class=${`badge energy-${known.energy}`}>${known.energy} energy</span>` : nothing}
 			</div>
+			${
+				d.contextNote
+					? html`<div class="context">
+						<p class="label">Where you saw it</p>
+						<p>${d.contextNote}</p>
+					</div>`
+					: nothing
+			}
 			${
 				known
 					? html`<div class="section">
@@ -151,8 +180,14 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 								? html`<div class="chips">${known.keywords.map((k) => html`<span>${k}</span>`)}</div>`
 								: nothing
 						}
-						${this.renderMeaning(known.meaning, known.biblical, known.shadow)}
+						${this.renderMeaning(known.meaning, 'lookup-known', known.biblical, known.shadow)}
 						${known.affirmation ? html`<p><em>${known.affirmation}</em></p>` : nothing}
+						${
+							steps.length > 0
+								? html`<p class="label">What to do next</p>
+									<ol class="steps">${steps.map((s) => html`<li>${s}</li>`)}</ol>`
+								: nothing
+						}
 					</div>`
 					: nothing
 			}
@@ -171,17 +206,15 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 
 	private renderMeaning(
 		meaning: Record<string, string> | undefined,
+		name: string,
 		biblical?: string,
 		shadow?: string,
 	) {
-		const sections = buildMeaningSections(meaning, biblical, shadow);
-		if (sections.length === 0) return nothing;
-		return html`${sections.map(
-			(s, i) => html`<details name="lookup-meaning" ?open=${i === 0}>
-				<summary>${s.label}</summary>
-				<p>${s.body}</p>
-			</details>`,
-		)}`;
+		return renderInterpAccordion(
+			buildMeaningSections(meaning, biblical, shadow),
+			name,
+			'Reading',
+		);
 	}
 
 	/**
@@ -194,7 +227,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 			root.keywords && root.keywords.length > 0
 				? html`<div class="chips">${root.keywords.map((k) => html`<span>${k}</span>`)}</div>`
 				: nothing
-		}${this.renderMeaning(root.meaning)}${
+		}${this.renderMeaning(root.meaning, 'lookup-root')}${
 			root.affirmation ? html`<p><em>${root.affirmation}</em></p>` : nothing
 		}`;
 	}

@@ -10,6 +10,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { cssColor } from '../utils/css-color.js';
 
 /**
  * Any crystal list response that carries a `crystals` summary array. Every crystals endpoint that returns more than one stone shares the `{ name, id, imageUrl, colors }` item shape, so one grid renders them all.
@@ -166,13 +167,6 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 			return `${MONTHS[d.month - 1] ?? ''} birthstones`.trim();
 		return 'Crystals';
 	}
-}
-
-/**
- * Map an API colour keyword to a CSS colour. Most crystal colours (violet, purple, green, blue) are valid CSS named colours; multi-word or non-standard values (blue-green, lavender) fall back to the keyword and, if the browser cannot resolve it, the swatch border still renders. Lower-cased and space-stripped so "Blue Green" resolves to the CSS hyphen form where it exists.
- */
-function cssColor(name: string): string {
-	return name.trim().toLowerCase().replace(/\s+/g, '');
 }
 
 declare global {

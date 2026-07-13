@@ -257,13 +257,17 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 	private renderList(bodies: Body[]) {
 		if (bodies.length === 0) return nothing;
 		return html`<table class="list">
+			<caption class="roxy-sr-only">
+				Local space directions: each body with its compass direction, azimuth,
+				altitude and whether it sits above or below the horizon.
+			</caption>
 			<thead>
 				<tr>
-					<th>Body</th>
-					<th>Direction</th>
-					<th class="num">Azimuth</th>
-					<th class="num">Altitude</th>
-					<th>Horizon</th>
+					<th scope="col">Body</th>
+					<th scope="col">Direction</th>
+					<th scope="col" class="num">Azimuth</th>
+					<th scope="col" class="num">Altitude</th>
+					<th scope="col">Horizon</th>
 				</tr>
 			</thead>
 			<tbody>

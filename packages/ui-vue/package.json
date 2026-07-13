@@ -1,0 +1,69 @@
+{
+  "name": "@roxyapi/ui-vue",
+  "version": "0.13.0",
+  "description": "Vue components for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, biorhythm, I Ching, and more. One key, beautiful in 30 minutes.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "AGENTS.md"
+  ],
+  "keywords": [
+    "astrology",
+    "vedic",
+    "tarot",
+    "numerology",
+    "biorhythm",
+    "iching",
+    "kundli",
+    "natal-chart",
+    "birth-chart",
+    "horoscope",
+    "panchang",
+    "vue",
+    "vue3",
+    "vue-components",
+    "nuxt",
+    "web-components",
+    "shadow-dom",
+    "lit",
+    "jsdelivr",
+    "roxyapi"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoxyAPI/ui.git",
+    "directory": "packages/ui-vue"
+  },
+  "homepage": "https://roxyapi.com/ui",
+  "bugs": {
+    "url": "https://github.com/RoxyAPI/ui/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "vue": ">=3.3 <4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

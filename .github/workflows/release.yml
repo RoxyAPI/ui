@@ -36,6 +36,34 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      # Trusted publishing (OIDC) CANNOT create a package. npmjs.com requires the
+      # package to already exist before a Trusted Publisher can be configured on it,
+      # so the first version of any new package must be pushed by a human once
+      # (npm/cli#8544, still open).
+      #
+      # Without this gate the run would publish @roxyapi/ui and @roxyapi/ui-react,
+      # THEN die on the first-ever @roxyapi/ui-vue publish. The job aborts before
+      # "Commit, tag, push", so npm ends up bumped while the repo has no version
+      # commit, no tag and no GitHub release, and the re-run is then rejected for
+      # republishing an existing version. Fail BEFORE anything is published instead.
+      - name: Preflight — every package must already exist on npm
+        run: |
+          MISSING=""
+          for pkg in packages/ui packages/ui-react packages/ui-vue; do
+            NAME=$(jq -r '.name' "$pkg/package.json")
+            npm view "$NAME" version >/dev/null 2>&1 || MISSING="$MISSING $NAME"
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::error::Never published, so OIDC cannot publish it either:$MISSING"
+            echo "Bootstrap each package ONCE from a logged-in machine:"
+            echo "    (cd packages/<name> && npm publish --access public)"
+            echo "then on npmjs.com open the package and set"
+            echo "    Trusted Publisher -> GitHub Actions -> RoxyAPI/ui -> release.yml"
+            echo "Re-run this workflow afterwards. See npm/cli#8544."
+            exit 1
+          fi
+          echo "All packages exist on npm. Trusted publishing can proceed."
+
       - name: Regenerate types from spec
         run: bun run generate
 
@@ -131,6 +159,7 @@ jobs:
           }
           bump packages/ui
           bump packages/ui-react
+          bump packages/ui-vue
           VERSION=$(jq -r '.version' packages/ui/package.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           bun run build
@@ -145,6 +174,11 @@ jobs:
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           (cd packages/ui-react && npm publish --access public --provenance)
+
+      - name: Publish @roxyapi/ui-vue
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          (cd packages/ui-vue && npm publish --access public --provenance)
 
       - name: Commit, tag, push
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
@@ -166,6 +200,7 @@ jobs:
           mkdir -p .release-assets
           (cd packages/ui && npm pack --pack-destination ../../.release-assets)
           (cd packages/ui-react && npm pack --pack-destination ../../.release-assets)
+          (cd packages/ui-vue && npm pack --pack-destination ../../.release-assets)
           ls -la .release-assets/
 
       - name: Create GitHub release

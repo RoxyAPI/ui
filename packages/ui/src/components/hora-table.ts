@@ -4,14 +4,8 @@ import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GetHoraResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatTimeRange } from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
-
-/** HH:MM from a tz-naive ISO local datetime, without reparsing (the times are already wall-clock in the requested timezone). */
-function clockTime(iso: string | undefined): string {
-	if (!iso) return '';
-	const t = String(iso).slice(11, 16);
-	return t || String(iso);
-}
 
 type HoraPeriod = NonNullable<GetHoraResponse['dayHoras']>[number];
 
@@ -31,6 +25,10 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so the widest unbreakable tile below blows
+				 * the column out and drags the card past its own host, clipped on the right. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.head {
@@ -52,7 +50,9 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 			}
 			.cols {
 				display: grid;
-				grid-template-columns: repeat(2, 1fr);
+				/* A bare 1fr is minmax(auto, 1fr), so each column still floors at min-content
+				 * and the day/night pair cannot shrink to fit a narrow card. */
+				grid-template-columns: repeat(2, minmax(0, 1fr));
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.section-label {
@@ -134,7 +134,7 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 				(h) => html`<div class="row">
 					<span class="glyph" aria-hidden="true">${PLANET_GLYPH[capitalize(h.planet ?? '')] ?? '·'}</span>
 					<span class="planet">${h.planet}</span>
-					<span class="time">${clockTime(h.start)}-${clockTime(h.end)}</span>
+					<span class="time">${formatTimeRange(h)}</span>
 					${typeof h.number === 'number' ? html`<span class="num">${h.number}</span>` : nothing}
 				</div>`,
 			)}

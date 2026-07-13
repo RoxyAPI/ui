@@ -8,15 +8,22 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	ASPECT_CLASS,
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
 type InterAspect = CalculateSynastryResponse['interAspects'][number];
+type SynastrySummary = CalculateSynastryResponse['summary'];
+type SynastryPerson = CalculateSynastryResponse['person1'];
+
+/** How many inter-aspects get a full reading before the rest fall back to the catalog table. A synastry can return 90+ contacts; a practitioner works the tightest ones. */
+const READING_COUNT = 12;
 
 // Drawing the dual wheel requires per-person planet longitudes alongside
 // the synastry response. Callers can merge planet arrays from
@@ -43,6 +50,8 @@ const P2_R = 96;
 export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 	static styles = [
 		baseStyles,
+		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -52,6 +61,11 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 
@@ -171,6 +185,134 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 				font-size: var(--roxy-text-base, 1rem);
 			}
 
+			.people {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.person {
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+				display: grid;
+				gap: 0.3rem;
+			}
+			.person-name {
+				display: flex;
+				align-items: center;
+				gap: 0.4rem;
+				font-weight: var(--roxy-weight-bold, 600);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.person-dot {
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				flex-shrink: 0;
+			}
+			.person-dot.p1 {
+				background: var(--roxy-accent, #f59e0b);
+			}
+			.person-dot.p2 {
+				background: var(--roxy-info, #0284c7);
+			}
+			.big-three {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.25rem 0.75rem;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.big-three span {
+				display: inline-flex;
+				align-items: baseline;
+				gap: 0.25rem;
+			}
+			.big-three .lbl {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+
+			.summary-pills {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.pill {
+				padding: 2px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.pill--success {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
+				color: var(--roxy-success-fg, #166534);
+			}
+			.pill--danger {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
+				color: var(--roxy-danger-fg, #991b1b);
+			}
+
+			.glyph {
+				font-size: 1.1em;
+				line-height: 1;
+			}
+			/* An aspect with no meaning block has nothing to disclose, so it renders
+			 * as a flat row rather than an empty accordion. Same header, no chevron. */
+			.static-head {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: 500;
+			}
+			.asp-name {
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: capitalize;
+			}
+			.asp-name.harmonious {
+				color: var(--roxy-success-fg, #166534);
+			}
+			.asp-name.challenging {
+				color: var(--roxy-danger-fg, #991b1b);
+			}
+			.interp-keywords {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.25rem;
+			}
+			.interp-keywords .kw {
+				padding: 1px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.context {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.catalog > summary {
+				cursor: pointer;
+				font-weight: var(--roxy-weight-bold, 600);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+			.scroll {
+				overflow-x: auto;
+				min-width: 0;
+				margin-top: var(--roxy-space-sm, 0.5rem);
+			}
+
 			table {
 				width: 100%;
 				border-collapse: collapse;
@@ -249,67 +391,20 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 		const strengths = analysis?.strengths ?? [];
 		const challenges = analysis?.challenges ?? [];
 
-		// /astrology/synastry does not return per-person planet positions, so the
-		// dual-wheel cannot be drawn from a bare synastry response. Surface this
-		// explicitly instead of rendering a blank wheel; keep the inter-aspects
-		// table when it is present so callers still get useful output.
+		// /astrology/synastry returns chart highlights (Sun, Moon, Ascendant) but
+		// not full planet positions, so the dual wheel cannot be drawn from a bare
+		// synastry response. Say so instead of rendering a blank wheel; every other
+		// block still renders, so a caller who passes the bare response gets the
+		// full reading minus the drawing.
 		const hasPlanets = p1Planets.length > 0 && p2Planets.length > 0;
-		if (!hasPlanets) {
-			return html`<div
-				class="wrap"
-				aria-label="Synastry compatibility chart"
-			>
-				<div class="head">
-					<h2 class="title">Synastry</h2>
-					${
-						typeof score === 'number'
-							? html`<span class="score" aria-label=${`Score ${score} of 100`}
-								>${score} / 100</span
-							>`
-							: nothing
-					}
-				</div>
-				<div class="missing-planets" role="status">
-					Synastry response missing planet positions. Pass
-					<code>data</code> with <code>person1.planets</code> and
-					<code>person2.planets</code> arrays from the natal-chart endpoint, or
-					use the <code>&lt;roxy-data&gt;</code> fallback.
-				</div>
-				${summaryText ? html`<p class="summary">${summaryText}</p>` : nothing}
-				${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing}
-				${
-					strengths.length > 0 || challenges.length > 0
-						? html`<div class="lists">
-							${
-								strengths.length
-									? html`<div>
-										<h3>Strengths</h3>
-										<ul>
-											${strengths.map((s) => html`<li>${s}</li>`)}
-										</ul>
-									</div>`
-									: nothing
-							}
-							${
-								challenges.length
-									? html`<div>
-										<h3>Challenges</h3>
-										<ul>
-											${challenges.map((s) => html`<li>${s}</li>`)}
-										</ul>
-									</div>`
-									: nothing
-							}
-						</div>`
-						: nothing
-				}
-			</div>`;
-		}
+		// The tightest contacts carry the reading. Sort a copy: `data` is the
+		// caller's object.
+		const ranked = [...interAspects].sort(
+			(a, b) => (b.strength ?? 0) - (a.strength ?? 0),
+		);
+		const lead = ranked.slice(0, READING_COUNT);
 
-		return html`<div
-			class="wrap"
-			aria-label="Synastry compatibility chart"
-		>
+		return html`<div class="wrap" aria-label="Synastry compatibility chart">
 			<div class="head">
 				<h2 class="title">Synastry</h2>
 				${
@@ -320,46 +415,65 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 						: nothing
 				}
 			</div>
-			<svg
-				viewBox="0 0 ${SIZE} ${SIZE}"
-				role="img"
-				aria-label="Dual chart wheel comparing two natal charts"
-			>
-				<title>Synastry dual wheel</title>
-				<circle
-					class="wheel-line"
-					cx=${CENTER}
-					cy=${CENTER}
-					r=${OUTER_R}
-					stroke-width="1.5"
-				/>
-				<circle
-					class="wheel-line"
-					cx=${CENTER}
-					cy=${CENTER}
-					r=${P2_R + 14}
-					stroke-width="0.8"
-				/>
-				<circle
-					class="wheel-line"
-					cx=${CENTER}
-					cy=${CENTER}
-					r=${P2_R - 14}
-					stroke-width="0.6"
-				/>
-				${this.renderSpokes()} ${this.renderSigns()}
-				${this.renderInterAspectLines(p1Planets, p2Planets, interAspects)}
-				${this.renderRing(p1Planets, P1_R, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, 'p2', 2)}
-				${this.renderAscendants(d)}
-			</svg>
-			<div class="legend-row">
-				<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>
-				<span><span class="swatch" style="background: var(--roxy-info)"></span>Person 2</span>
-				<span><span class="swatch" style="background: var(--roxy-success)"></span>harmonious</span>
-				<span><span class="swatch" style="background: var(--roxy-danger)"></span>challenging</span>
-			</div>
+			${this.renderPeople(person1, person2)}
+			${
+				hasPlanets
+					? html`<svg
+							viewBox="0 0 ${SIZE} ${SIZE}"
+							role="img"
+							aria-label="Dual chart wheel comparing two natal charts"
+						>
+							<title>Synastry dual wheel</title>
+							<circle
+								class="wheel-line"
+								cx=${CENTER}
+								cy=${CENTER}
+								r=${OUTER_R}
+								stroke-width="1.5"
+							/>
+							<circle
+								class="wheel-line"
+								cx=${CENTER}
+								cy=${CENTER}
+								r=${P2_R + 14}
+								stroke-width="0.8"
+							/>
+							<circle
+								class="wheel-line"
+								cx=${CENTER}
+								cy=${CENTER}
+								r=${P2_R - 14}
+								stroke-width="0.6"
+							/>
+							${this.renderSpokes()} ${this.renderSigns()}
+							${this.renderInterAspectLines(p1Planets, p2Planets, interAspects)}
+							${this.renderRing(p1Planets, P1_R, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, 'p2', 2)}
+							${this.renderAscendants(d)}
+						</svg>
+						<div class="legend-row">
+							<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>
+							<span><span class="swatch" style="background: var(--roxy-info)"></span>Person 2</span>
+							<span><span class="swatch" style="background: var(--roxy-success)"></span>harmonious</span>
+							<span><span class="swatch" style="background: var(--roxy-danger)"></span>challenging</span>
+						</div>`
+					: html`<div class="missing-planets" role="status">
+						Synastry response missing planet positions. Pass
+						<code>data</code> with <code>person1.planets</code> and
+						<code>person2.planets</code> arrays from the natal-chart endpoint, or
+						use the <code>&lt;roxy-data&gt;</code> fallback.
+					</div>`
+			}
+			${this.renderSummaryPills(d.summary)}
 			${summaryText ? html`<p class="summary">${summaryText}</p>` : nothing}
-			${interAspects.length > 0 ? this.renderAspects(interAspects) : nothing}
+			${
+				lead.length > 0
+					? html`<section class="block">
+						<h3>Inter-aspects</h3>
+						${lead.map((a, i) => this.renderAspectCard(a, i))}
+					</section>`
+					: nothing
+			}
+			${ranked.length > lead.length ? this.renderCatalog(ranked) : nothing}
 			${
 				strengths.length > 0 || challenges.length > 0
 					? html`<div class="lists">
@@ -387,6 +501,110 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 					: nothing
 			}
 		</div>`;
+	}
+
+	/** Chart highlights for both people: the Sun, Moon, and Ascendant a reader checks before any aspect. Colour-dotted to match each person ring on the wheel. */
+	private renderPeople(
+		p1: SynastryPerson | undefined,
+		p2: SynastryPerson | undefined,
+	) {
+		const card = (p: SynastryPerson | undefined, index: 1 | 2) => {
+			if (!p) return nothing;
+			const big: Array<[string, string]> = [
+				['Sun', p.sunSign ?? ''],
+				['Moon', p.moonSign ?? ''],
+				[
+					'Asc',
+					p.ascendant
+						? `${p.ascendant.sign} ${formatNumber(p.ascendant.degree, 0)}°`
+						: '',
+				],
+			];
+			const shown = big.filter(([, value]) => value);
+			if (shown.length === 0) return nothing;
+			return html`<div class="person">
+				<span class="person-name">
+					<span class="person-dot p${index}" aria-hidden="true"></span>
+					${p.name || `Person ${index}`}
+				</span>
+				<div class="big-three">
+					${shown.map(
+						([label, value]) => html`<span>
+							<span class="lbl">${label}</span>
+							<span aria-hidden="true">${SIGN_GLYPH[capitalize(value.split(' ')[0] ?? '')] ?? ''}</span>
+							${value}
+						</span>`,
+					)}
+				</div>
+			</div>`;
+		};
+		const cards = [card(p1, 1), card(p2, 2)].filter((c) => c !== nothing);
+		if (cards.length === 0) return nothing;
+		return html`<div class="people">${cards}</div>`;
+	}
+
+	/** Contact balance for the pair. `byType` is a map, so its pairs are rendered, never the object. */
+	private renderSummaryPills(s: SynastrySummary | undefined) {
+		if (!s || typeof s !== 'object') return nothing;
+		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
+		if (typeof s.total !== 'number' && byType.length === 0) return nothing;
+		return html`<div class="summary-pills" role="region" aria-label="Inter-aspect summary">
+			${typeof s.total === 'number' ? html`<span class="pill">Total: ${s.total}</span>` : nothing}
+			<span class="pill pill--success">Harmonious: ${s.harmonious}</span>
+			<span class="pill pill--danger">Challenging: ${s.challenging}</span>
+			<span class="pill">Neutral: ${s.neutral}</span>
+			${byType.map(
+				([type, count]) =>
+					html`<span class="pill">${capitalize(type.replace(/_/g, ' '))}: ${count}</span>`,
+			)}
+		</div>`;
+	}
+
+	/**
+	 * One inter-chart contact as a reading. The header is the scannable line (both bodies, the aspect coloured by nature, orb and strength); the body leads with `meaning.relationshipContext`, which is the whole point of a synastry aspect: not what a trine means, but what THIS trine does to THESE two people.
+	 */
+	private renderAspectCard(a: InterAspect, index: number) {
+		const g1 = PLANET_GLYPH[capitalize(a.planet1)] ?? '';
+		const g2 = PLANET_GLYPH[capitalize(a.planet2)] ?? '';
+		const nature = (a.interpretation ?? 'neutral').toLowerCase();
+		const meaning = a.meaning;
+		const lead = html`<span class="interp-lead">
+			<span aria-hidden="true" class="glyph">${g1}</span>${a.planet1}
+			<span class="asp-name ${nature}">${normalizeAspect(a)}</span>
+			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
+		</span>`;
+		const aside = html`<span class="interp-aside">
+			<small>orb ${formatNumber(a.orb, 2)}° · str ${formatNumber(a.strength, 0)}</small>
+		</span>`;
+		if (!meaning?.relationshipContext && !meaning?.description?.short) {
+			return html`<div class="interp-card">
+				<div class="static-head">${lead}${aside}</div>
+			</div>`;
+		}
+		return html`<details class="interp-card" name="synastry-aspects" ?open=${index === 0}>
+			<summary>${lead}${chevron()}${aside}</summary>
+			<div class="interp-body">
+				${
+					meaning.relationshipContext
+						? html`<p><span class="context">In this pairing</span> ${meaning.relationshipContext}</p>`
+						: nothing
+				}
+				${meaning.description?.short ? html`<p>${meaning.description.short}</p>` : nothing}
+				${
+					meaning.keywords?.length
+						? html`<div class="interp-keywords">${meaning.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
+						: nothing
+				}
+			</div>
+		</details>`;
+	}
+
+	/** Every remaining contact, so nothing the endpoint returned is dropped. */
+	private renderCatalog(ranked: InterAspect[]) {
+		return html`<details class="catalog">
+			<summary>${chevron()} All ${ranked.length} inter-aspects</summary>
+			<div class="scroll">${this.renderAspects(ranked)}</div>
+		</details>`;
 	}
 
 	private toAngle(longitude: number): number {
@@ -503,33 +721,32 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 
 	private renderAspects(aspects: InterAspect[]) {
 		return html`<table>
+			<caption class="roxy-sr-only">
+				Inter-chart aspects: the planet from chart 1, the planet from chart 2, the
+				aspect between them, the orb in degrees and the strength.
+			</caption>
 			<thead>
 				<tr>
-					<th>Planet 1</th>
-					<th>Planet 2</th>
-					<th>Aspect</th>
-					<th>Orb</th>
-					<th>Strength</th>
+					<th scope="col">Planet 1</th>
+					<th scope="col">Planet 2</th>
+					<th scope="col">Aspect</th>
+					<th scope="col">Orb</th>
+					<th scope="col">Strength</th>
 				</tr>
 			</thead>
 			<tbody>
-				${aspects.slice(0, 12).map(
+				${aspects.map(
 					(a) => html`<tr>
 						<td>${a.planet1}</td>
 						<td>${a.planet2}</td>
 						<td>${normalizeAspect(a) || ''}</td>
 						<td class="orb">${formatNumber(a.orb, 1)}</td>
-						<td>${formatStrength(a.strength)}</td>
+						<td>${formatNumber(a.strength, 0)}</td>
 					</tr>`,
 				)}
 			</tbody>
 		</table>`;
 	}
-}
-
-function formatStrength(s: number | undefined): string {
-	if (typeof s === 'number') return Math.round(s).toString();
-	return '';
 }
 
 declare global {

@@ -181,6 +181,11 @@ test.describe('Roxy UI preview', () => {
 	});
 
 	test('passes axe-core a11y on light theme', async ({ page }) => {
+		// The showcase renders every component with a live sample, so a full axe scan
+		// is genuinely slow, and webkit is the slowest of the three under a parallel
+		// matrix. This is scan cost, not a hang: give it room rather than narrowing
+		// what is scanned.
+		test.setTimeout(90_000);
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
 		// color-contrast runs against the showcase chrome; component shadow DOM
@@ -198,6 +203,7 @@ test.describe('Roxy UI preview', () => {
 	});
 
 	test('passes axe-core a11y on dark theme', async ({ page }) => {
+		test.setTimeout(90_000);
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
 		await page.locator('#theme-dark').click();
@@ -310,26 +316,44 @@ test.describe('Roxy UI preview', () => {
 		expect(result.textLength).toBeGreaterThan(50);
 	});
 
-	test('tarot card flip toggles via keyboard', async ({ page }) => {
+	/**
+	 * The two tarot shapes are not the same card. The REFERENCE card ships both orientations, so the reader picks one and the whole reading follows. The DAILY card is drawn: the API ships exactly one orientation and one set of meanings for it. The daily card used to offer the same flip, which rotated the art and relabelled it "reversed" while the text stayed the upright reading, so it showed the wrong meaning. It no longer flips, and this pins both halves of that.
+	 */
+	test('the reference card switches orientation; the drawn daily card does not', async ({
+		page,
+	}) => {
 		await page.goto('/');
-		await page.waitForFunction(() => {
-			const el = document.querySelector('roxy-tarot-card');
-			return el && (el as HTMLElement & { data?: unknown }).data;
+		await page.waitForLoadState('networkidle');
+
+		// The reference card is the demo that carries both orientations.
+		// The demo id is set ON the component element itself, not on a wrapper.
+		const reference = page.locator('roxy-tarot-card#tarot-reference');
+		const before = await reference.evaluate((el) =>
+			Boolean(el.shadowRoot?.querySelector('.image.reversed')),
+		);
+		await reference.evaluate((el) => {
+			const tabs = el.shadowRoot?.querySelectorAll('[role="tab"]');
+			const target = [...(tabs ?? [])].find(
+				(t) => t.getAttribute('aria-selected') !== 'true',
+			);
+			(target as HTMLButtonElement | undefined)?.click();
 		});
 		await page.waitForTimeout(150);
-		const tarot = page.locator('roxy-tarot-card').first();
-		const initialReversed = await tarot.evaluate((el) => {
-			return Boolean(el.shadowRoot?.querySelector('.image.reversed'));
-		});
-		await tarot.evaluate((el) => {
-			const b = el.shadowRoot?.querySelector('button.flip');
-			(b as HTMLButtonElement)?.click();
-		});
-		await page.waitForTimeout(150);
-		const afterClick = await tarot.evaluate((el) => {
-			return Boolean(el.shadowRoot?.querySelector('.image.reversed'));
-		});
-		expect(afterClick).not.toBe(initialReversed);
+		const after = await reference.evaluate((el) =>
+			Boolean(el.shadowRoot?.querySelector('.image.reversed')),
+		);
+		expect(after).not.toBe(before);
+
+		// The daily draw must offer no way to flip: its meaning is fixed to the
+		// orientation the API drew, so a toggle could only ever show the wrong text.
+		const daily = page.locator('roxy-tarot-card#tarot');
+		const hasFlip = await daily.evaluate((el) =>
+			Boolean(
+				el.shadowRoot?.querySelector('button.flip') ??
+					el.shadowRoot?.querySelector('[role="tab"]'),
+			),
+		);
+		expect(hasFlip).toBe(false);
 	});
 
 	test('endpoint form loads schema for life-path endpoint', async ({

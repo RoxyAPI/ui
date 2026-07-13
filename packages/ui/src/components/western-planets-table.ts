@@ -136,6 +136,9 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 				<h2 class="title">Planetary positions</h2>
 			</header>
 			<table role="table">
+				<caption class="roxy-sr-only">
+					Western planetary positions: each body with its sign, degree, house and motion.
+				</caption>
 				<thead>
 					<tr>
 						<th scope="col">Body</th>

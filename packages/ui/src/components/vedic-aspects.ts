@@ -3,10 +3,14 @@ import { customElement } from 'lit/decorators.js';
 import type { CalculateDrishtiResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatNumber } from '../utils/format.js';
+import { formatSignPosition } from '../utils/degree.js';
+import { formatDate, formatNumber, formatTime } from '../utils/format.js';
 
 /**
  * Vedic graha drishti (planetary aspects) table. Renders /vedic-astrology/aspects: which planet casts an aspect on which, by special Vedic rules (every graha aspects the 7th; Mars the 4th and 8th, Jupiter the 5th and 9th, Saturn the 3rd and 10th). Mutual aspects (two planets aspecting each other) are surfaced first as they are the strongest sambandha. Each row shows the aspecting planet, the aspect kind, the aspected planet, its strength and orb.
+ *
+ * @remarks
+ * `datetime` is the chart time, the wall clock of the request, NOT UTC: hold the date and time fixed and vary `timezone` and every longitude in the response moves, while `datetime` does not. It is labelled "Chart time" for that reason. The spec description calling it UTC is wrong and is tracked upstream. The sidereal positions the aspects were derived from are shown above the table so a reader can check the drishti against the actual placements.
  */
 @customElement('roxy-vedic-aspects')
 export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> {
@@ -21,6 +25,11 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.head {
@@ -68,8 +77,28 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-weight: 400;
 			}
+			/* --roxy-fg on the tint, never --roxy-muted. Muted text on a tinted
+			 * color-mix chip measures 4.24:1 and fails WCAG AA; the tint carries the
+			 * accent and the text stays high-contrast. This is the standing contrast
+			 * rule and it is relearned every time someone reaches for muted here. */
+			.position {
+				display: inline-flex;
+				align-items: baseline;
+				gap: 0.35rem;
+				padding: 2px 10px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 55%, transparent);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-fg, #0a0a0a);
+				font-variant-numeric: tabular-nums;
+			}
+			.position strong {
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
 			.overflow-scroll {
 				overflow-x: auto;
+				min-width: 0;
 				-webkit-overflow-scrolling: touch;
 			}
 			table {
@@ -124,14 +153,32 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 	protected renderData(d: CalculateDrishtiResponse) {
 		const aspects = d.aspects ?? [];
 		const mutual = d.mutualAspects ?? [];
+		const planets = d.planets ?? [];
 		if (aspects.length === 0 && mutual.length === 0) return this.renderEmpty();
-		const date = d.datetime ? String(d.datetime).replace('T', ' ') : '';
+		const when = d.datetime
+			? `${formatDate(d.datetime)}, ${formatTime(d.datetime)}`
+			: '';
 
 		return html`<div class="wrap" aria-label="Vedic aspects">
 			<div class="head">
 				<h2 class="title">Vedic Aspects</h2>
-				${date ? html`<p class="subtitle">${date}</p>` : nothing}
+				${when ? html`<p class="subtitle">Chart time ${when}</p>` : nothing}
 			</div>
+			${
+				planets.length > 0
+					? html`<div>
+						<p class="section-label">Sidereal positions</p>
+						<div class="mutual">
+							${planets.map(
+								(p) => html`<span class="position">
+									<strong>${p.name}</strong>
+									${typeof p.longitude === 'number' ? formatSignPosition(p.longitude) : (p.sign ?? '')}
+								</span>`,
+							)}
+						</div>
+					</div>`
+					: nothing
+			}
 			${
 				mutual.length > 0
 					? html`<div>
@@ -151,6 +198,10 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 				aspects.length > 0
 					? html`<div class="overflow-scroll">
 						<table>
+							<caption class="roxy-sr-only">
+								Vedic planetary aspects: aspecting planet, aspect type, aspected planet,
+								strength and orb.
+							</caption>
 							<thead>
 								<tr>
 									<th scope="col">From</th>

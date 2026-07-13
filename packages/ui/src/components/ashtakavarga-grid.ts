@@ -4,25 +4,42 @@ import { SIGN_GLYPH } from '../tokens/index.js';
 import type { AshtakavargaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import {
+	renderTablist,
+	type TablistItem,
+	tablistStyles,
+} from '../utils/tablist.js';
 
-type Tab = 'sarva' | 'bhinna' | 'pinda';
+type Tab = 'sarva' | 'bhinna' | 'reduced' | 'pinda';
 
-const TAB_LABELS: Record<Tab, string> = {
-	sarva: 'Sarvashtakavarga',
-	bhinna: 'Bhinnashtakavarga',
-	pinda: 'Shodhya Pinda',
-};
+const TABS: ReadonlyArray<TablistItem<Tab>> = [
+	{ id: 'sarva', label: 'Sarvashtakavarga' },
+	{ id: 'bhinna', label: 'Bhinnashtakavarga' },
+	{ id: 'reduced', label: 'Reduced' },
+	{ id: 'pinda', label: 'Shodhya Pinda' },
+];
 
-const TABS: Tab[] = ['sarva', 'bhinna', 'pinda'];
+type Signs = AshtakavargaResponse['signs'];
+type BhinnaRow = AshtakavargaResponse['bhinnashtakavarga'][number];
+type SarvaRow = AshtakavargaResponse['sarvashtakavarga'];
 
 /**
- * Ashtakavarga grid with three tabbed views: Sarvashtakavarga, Bhinnashtakavarga,
- * and Shodhya Pinda. Pass `data` from /vedic-astrology/ashtakavarga.
+ * Ashtakavarga grid: Sarvashtakavarga, Bhinnashtakavarga, the Shodhana-reduced
+ * grid, and Shodhya Pinda. Pass `data` from /vedic-astrology/ashtakavarga.
+ *
+ * @remarks
+ * Bindus are benefic points, so MORE is better in every view here. The colour
+ * ramp is therefore diverging, not a single hot hue: a weak count tints toward
+ * --roxy-heat (which resolves to the danger token), the classical average stays
+ * neutral, a strong count tints toward --roxy-success, and each tab states its
+ * own scale in a legend. The previous single-hue ramp painted the best signs the
+ * most alarming shade, the exact opposite of what the numbers mean.
  */
 @customElement('roxy-ashtakavarga-grid')
 export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> {
 	static styles = [
 		baseStyles,
+		tablistStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -32,6 +49,11 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 
@@ -55,39 +77,12 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 				margin: 0;
 			}
 
-			/* Tabs */
-			.tablist {
-				display: flex;
-				gap: 2px;
-				border-bottom: 2px solid var(--roxy-border, #e4e4e7);
-			}
-
-			.tab {
-				padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				background: none;
-				border: none;
-				border-bottom: 2px solid transparent;
-				margin-bottom: -2px;
-				cursor: pointer;
-				color: var(--roxy-muted, #71717a);
-				font-family: inherit;
-				transition: color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
-			}
-
-			.tab[aria-selected='true'] {
-				color: var(--roxy-accent-ink, #b45309);
-				border-bottom-color: var(--roxy-accent, #f59e0b);
-				font-weight: var(--roxy-weight-bold, 600);
-			}
-
-			.tab:hover:not([aria-selected='true']) {
-				color: var(--roxy-fg, #0a0a0a);
-			}
-
 			/* Tables */
+			/* min-width: 0, or a grid/flex item with overflow still grows to fit its
+			 * content instead of scrolling. Same trap as hd-connection. */
 			.overflow-scroll {
 				overflow-x: auto;
+				min-width: 0;
 				-webkit-overflow-scrolling: touch;
 			}
 
@@ -136,12 +131,12 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 				border-bottom: none;
 			}
 
-			/* Heat cells. Single base hue (var --roxy-heat) mixed with
-			 * transparent at increasing percentages produces seven readable
-			 * tiers in both light and dark themes. Text colour stays
-			 * var(--roxy-fg) so it inverts with the host theme without
-			 * per-tier overrides. */
-			.heat-cell {
+			/* Diverging bindu scale. Tiers 1-3 tint toward the danger token (fewer
+			 * bindus than the classical average), tier 4 is the neutral mid, tiers
+			 * 5-7 tint toward success (more bindus, more benefic support). Text stays
+			 * var(--roxy-fg) so it inverts with the host theme without per-tier
+			 * overrides. */
+			.bindu-cell {
 				border-radius: var(--roxy-radius-sm, 4px);
 				font-weight: var(--roxy-weight-bold, 600);
 				min-width: 2rem;
@@ -149,13 +144,35 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 				color: var(--roxy-fg, currentColor);
 			}
 
-			.heat-1 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 6%, transparent); }
-			.heat-2 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 14%, transparent); }
-			.heat-3 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 26%, transparent); }
-			.heat-4 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 40%, transparent); }
-			.heat-5 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 55%, transparent); }
-			.heat-6 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 72%, transparent); }
-			.heat-7 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 90%, transparent); }
+			.tier-1 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 30%, transparent); }
+			.tier-2 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 17%, transparent); }
+			.tier-3 { background: color-mix(in srgb, var(--roxy-heat, #ef4444) 7%, transparent); }
+			.tier-4 { background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 45%, transparent); }
+			.tier-5 { background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent); }
+			.tier-6 { background: color-mix(in srgb, var(--roxy-success, #16a34a) 32%, transparent); }
+			.tier-7 { background: color-mix(in srgb, var(--roxy-success, #16a34a) 50%, transparent); }
+
+			/* Legend */
+			.legend {
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem) var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+			}
+			.legend-scale {
+				display: flex;
+				gap: 2px;
+			}
+			.legend-swatch {
+				width: 16px;
+				height: 10px;
+				border-radius: 2px;
+			}
+			.legend-note {
+				flex: 1 1 12rem;
+			}
 
 			/* Bhinna grid: planet header column narrower */
 			.bhinna-table th:first-child,
@@ -176,7 +193,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 				.bhinna-table td:first-child {
 					min-width: 3.5rem;
 				}
-				.heat-cell {
+				.bindu-cell {
 					min-width: 1.5rem;
 				}
 			}
@@ -221,142 +238,181 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 				}
 			</div>
 
-			<div
-				class="tablist"
-				role="tablist"
-				aria-label="Ashtakavarga views"
-				@keydown=${this.onTabKeyDown}
-			>
-				${TABS.map(
-					(tab) => html`<button
-						class="tab"
-						role="tab"
-						id="tab-${tab}"
-						aria-selected=${this.activeTab === tab ? 'true' : 'false'}
-						aria-controls="panel-${tab}"
-						tabindex=${this.activeTab === tab ? '0' : '-1'}
-						@click=${() => {
-							this.activeTab = tab;
-						}}
-					>
-						${TAB_LABELS[tab]}
-					</button>`,
-				)}
-			</div>
+			${renderTablist({
+				items: TABS,
+				active: this.activeTab,
+				onSelect: (id) => {
+					this.activeTab = id;
+				},
+				label: 'Ashtakavarga views',
+				idPrefix: 'ashtakavarga',
+				controls: true,
+			})}
 
 			<div
-				id="panel-${this.activeTab}"
+				id="ashtakavarga-panel-${this.activeTab}"
 				role="tabpanel"
-				aria-labelledby="tab-${this.activeTab}"
+				aria-labelledby="ashtakavarga-tab-${this.activeTab}"
 			>
 				${
 					this.activeTab === 'sarva'
 						? this.renderSarva(signs)
 						: this.activeTab === 'bhinna'
 							? this.renderBhinna(signs)
-							: this.renderPinda()
+							: this.activeTab === 'reduced'
+								? this.renderReduced(signs)
+								: this.renderPinda()
 				}
 			</div>
 		</div>`;
 	}
 
-	private onTabKeyDown(e: KeyboardEvent) {
-		const idx = TABS.indexOf(this.activeTab);
-		if (e.key === 'ArrowRight') {
-			e.preventDefault();
-			this.activeTab = TABS[(idx + 1) % TABS.length];
-			this.focusActiveTab();
-		} else if (e.key === 'ArrowLeft') {
-			e.preventDefault();
-			this.activeTab = TABS[(idx - 1 + TABS.length) % TABS.length];
-			this.focusActiveTab();
-		}
-	}
-
-	private focusActiveTab() {
-		requestAnimationFrame(() => {
-			const btn = this.shadowRoot?.querySelector<HTMLButtonElement>(
-				`#tab-${this.activeTab}`,
-			);
-			btn?.focus();
-		});
+	/**
+	 * Bhinna bindus per planet per sign run 0..8 (one 0/1 contribution from each
+	 * of the 8 reference points). 4 is the mid, so it holds the neutral tier and
+	 * anything above it reads as support. The reduced grid uses the same 0..8
+	 * units, so it shares this scale.
+	 */
+	private bhinnaTier(count: number): string {
+		if (count <= 1) return 'tier-1';
+		if (count <= 2) return 'tier-2';
+		if (count <= 3) return 'tier-3';
+		if (count <= 4) return 'tier-4';
+		if (count <= 5) return 'tier-5';
+		if (count <= 6) return 'tier-6';
+		return 'tier-7';
 	}
 
 	/**
-	 * Bhinna bindus per planet per sign run 0..8 (sum of 0/1 contributions
-	 * from each of the 8 reference points). Bucket directly by raw count.
+	 * Sarva bindus per sign are the column total across the 7 planets. The grand
+	 * total is always 337, so the classical average is 337/12 = 28.08 and the
+	 * bands used by readers are: under 25 weak, 25 to 29 average, 30 and above
+	 * strong, with the highest signs carrying transits best. The tiers follow
+	 * those bands rather than an even split, so 28 sits on the neutral tier.
 	 */
-	private bhinnaHeat(count: number): string {
-		if (count <= 1) return 'heat-1';
-		if (count <= 2) return 'heat-2';
-		if (count <= 3) return 'heat-3';
-		if (count <= 4) return 'heat-4';
-		if (count <= 5) return 'heat-5';
-		if (count <= 6) return 'heat-6';
-		return 'heat-7';
+	private sarvaTier(count: number): string {
+		if (count <= 20) return 'tier-1';
+		if (count <= 24) return 'tier-2';
+		if (count <= 27) return 'tier-3';
+		if (count <= 29) return 'tier-4';
+		if (count <= 32) return 'tier-5';
+		if (count <= 36) return 'tier-6';
+		return 'tier-7';
 	}
 
 	/**
-	 * Sarva bindus per sign are the column total across all 7 planets, range
-	 * roughly 0..56 with typical values 20..40. Bucketed per classical
-	 * interpretation: 25 below par, 25..30 average, 30..40 strong, 40+ very
-	 * strong. Bucket spans intentionally widen at the extremes so a single
-	 * outlier sign reads as exceptional.
+	 * The scale, stated. Without this a reader has to guess whether a saturated
+	 * cell is good or bad, and in a bindu grid the answer is always "good".
 	 */
-	private sarvaHeat(count: number): string {
-		if (count <= 18) return 'heat-1';
-		if (count <= 23) return 'heat-2';
-		if (count <= 28) return 'heat-3';
-		if (count <= 32) return 'heat-4';
-		if (count <= 37) return 'heat-5';
-		if (count <= 42) return 'heat-6';
-		return 'heat-7';
-	}
-
-	private renderSarva(signs: AshtakavargaResponse['signs']) {
-		const sav = this.data!.sarvashtakavarga;
-		if (!sav) return html`<p class="roxy-empty">No sarvashtakavarga data</p>`;
-
-		return html`<div class="overflow-scroll">
-			<table aria-label="Sarvashtakavarga bindu counts per sign">
-				<thead>
-					<tr>
-						<th scope="col">Sign</th>
-						<th scope="col">Bindus</th>
-					</tr>
-				</thead>
-				<tbody>
-					${signs.map((sign, i) => {
-						const count = sav.bindus[i] ?? 0;
-						const hc = this.sarvaHeat(count);
-						return html`<tr>
-							<td>
-								<div class="planet-cell">
-									<span class="glyph" aria-hidden="true">${SIGN_GLYPH[sign] ?? ''}</span>
-									${sign}
-								</div>
-							</td>
-							<td class="${`heat-cell ${hc}`}">${count}</td>
-						</tr>`;
-					})}
-				</tbody>
-				<tfoot>
-					<tr class="total-row">
-						<td>Total</td>
-						<td>${sav.total}</td>
-					</tr>
-				</tfoot>
-			</table>
+	private renderLegend(note: string) {
+		return html`<div class="legend">
+			<span>Fewer bindus</span>
+			<span class="legend-scale" aria-hidden="true">
+				${[1, 2, 3, 4, 5, 6, 7].map(
+					(t) => html`<span class="legend-swatch tier-${t}"></span>`,
+				)}
+			</span>
+			<span>More bindus</span>
+			<span class="legend-note">${note}</span>
 		</div>`;
 	}
 
-	private renderBhinna(signs: AshtakavargaResponse['signs']) {
-		const bhinna = this.data!.bhinnashtakavarga;
+	private renderSarva(signs: Signs) {
+		const sav = this.data?.sarvashtakavarga;
+		if (!sav) return html`<p class="roxy-empty">No sarvashtakavarga data</p>`;
+
+		return html`<div class="overflow-scroll">
+				<table>
+					<caption class="roxy-sr-only">
+						Sarvashtakavarga: each of the twelve signs and the bindus all planets
+						contribute to it, with a grand total.
+					</caption>
+					<thead>
+						<tr>
+							<th scope="col">Sign</th>
+							<th scope="col">Bindus</th>
+						</tr>
+					</thead>
+					<tbody>
+						${signs.map((sign, i) => {
+							const count = sav.bindus[i] ?? 0;
+							return html`<tr>
+								<td>
+									<div class="planet-cell">
+										<span class="glyph" aria-hidden="true">${SIGN_GLYPH[sign] ?? ''}</span>
+										${sign}
+									</div>
+								</td>
+								<td class="${`bindu-cell ${this.sarvaTier(count)}`}">${count}</td>
+							</tr>`;
+						})}
+					</tbody>
+					<tfoot>
+						<tr class="total-row">
+							<td>Total</td>
+							<td>${sav.total}</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			${this.renderLegend(
+				'Under 25 is a weak sign, 25 to 29 average, 30 and above strong. The 12 signs always total 337.',
+			)}`;
+	}
+
+	private renderBhinna(signs: Signs) {
+		const bhinna = this.data?.bhinnashtakavarga;
 		if (!bhinna?.length)
 			return html`<p class="roxy-empty">No bhinnashtakavarga data</p>`;
 
+		return html`${this.renderBinduGrid(
+			signs,
+			bhinna,
+			'Bhinnashtakavarga: the bindus each planet scores in every one of the twelve signs, with a row total.',
+		)}
+		${this.renderLegend(
+			'Each planet scores 0 to 8 bindus per sign. 4 is the mid, 5 and above is strong support for that planet in that sign.',
+		)}`;
+	}
+
+	/**
+	 * The Shodhana-purified grid (Trikona then Ekadipati), which is what Shodhya
+	 * Pinda is computed from. The column totals are the Reduced Sarvashtakavarga,
+	 * so they are shown as the total row rather than as a second table.
+	 */
+	private renderReduced(signs: Signs) {
+		const reduced = this.data?.reducedBhinnashtakavarga;
+		const rsav = this.data?.reducedSarvashtakavarga;
+		if (!reduced?.length && !rsav)
+			return html`<p class="roxy-empty">No reduced ashtakavarga data</p>`;
+
+		return html`${this.renderBinduGrid(
+			signs,
+			reduced ?? [],
+			'Reduced Bhinnashtakavarga after Shodhana: the bindus each planet keeps in every one of the twelve signs, with a row total and a Reduced Sarvashtakavarga totals row.',
+			rsav,
+		)}
+		${this.renderLegend(
+			'Bindus left after Trikona and Ekadipati Shodhana, the input to Shodhya Pinda. The Reduced SAV row totals the seven planets only, so it does not include the Lagna row above it.',
+		)}`;
+	}
+
+	/**
+	 * The planet-by-sign grid both the bhinna and the reduced tabs draw. The rows
+	 * are the 7 planets plus Lagna, but a Sarva total counts the 7 planets only
+	 * (which is why the classical SAV grand total is 337), so the totals row is
+	 * named for what it is rather than left to read as a column sum.
+	 */
+	private renderBinduGrid(
+		signs: Signs,
+		rows: BhinnaRow[],
+		caption: string,
+		totals?: SarvaRow,
+	) {
+		if (!rows.length) return html`<p class="roxy-empty">No bindu data</p>`;
 		return html`<div class="overflow-scroll">
-			<table class="bhinna-table" aria-label="Bhinnashtakavarga planet-by-sign grid">
+			<table class="bhinna-table">
+				<caption class="roxy-sr-only">${caption}</caption>
 				<thead>
 					<tr>
 						<th scope="col">Planet</th>
@@ -368,28 +424,43 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 					</tr>
 				</thead>
 				<tbody>
-					${bhinna.map(
+					${rows.map(
 						(row) => html`<tr>
 						<td>${row.planet}</td>
-						${row.bindus.map((count) => {
-							const hc = this.bhinnaHeat(count);
-							return html`<td class="${`heat-cell ${hc}`}">${count}</td>`;
-						})}
+						${row.bindus.map(
+							(count) =>
+								html`<td class="${`bindu-cell ${this.bhinnaTier(count)}`}">${count}</td>`,
+						)}
 						<td>${row.total}</td>
 					</tr>`,
 					)}
 				</tbody>
+				${
+					totals
+						? html`<tfoot>
+							<tr class="total-row">
+								<td>Reduced SAV</td>
+								${signs.map((_, i) => html`<td>${totals.bindus[i] ?? 0}</td>`)}
+								<td>${totals.total}</td>
+							</tr>
+						</tfoot>`
+						: nothing
+				}
 			</table>
 		</div>`;
 	}
 
 	private renderPinda() {
-		const pinda = this.data!.shodhyaPinda;
+		const pinda = this.data?.shodhyaPinda;
 		if (!pinda?.length)
 			return html`<p class="roxy-empty">No shodhya pinda data</p>`;
 
 		return html`<div class="overflow-scroll">
-			<table aria-label="Shodhya Pinda planet strength scores">
+			<table>
+				<caption class="roxy-sr-only">
+					Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya
+					Pinda strength scores.
+				</caption>
 				<thead>
 					<tr>
 						<th scope="col">Planet</th>

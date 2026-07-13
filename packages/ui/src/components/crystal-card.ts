@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import type { GetCrystalResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { cssColor } from '../utils/css-color.js';
 
 const MONTHS = [
 	'January',
@@ -178,7 +179,7 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 							<dt>Colors</dt>
 							<dd>
 								<div class="colors">
-									${colors.map((c) => html`<span class="color"><span class="dot" style="background:${c}"></span>${c}</span>`)}
+									${colors.map((c) => html`<span class="color"><span class="dot" style=${`background:${cssColor(c)}`}></span>${c}</span>`)}
 								</div>
 							</dd>
 						</div>`

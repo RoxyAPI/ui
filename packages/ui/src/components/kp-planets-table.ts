@@ -96,6 +96,10 @@ export class RoxyKpPlanetsTable extends RoxyDataElement<KpPlanetsResponse> {
 				}
 			</header>
 			<table role="table">
+				<caption class="roxy-sr-only">
+					KP planets: each planet with its sign, sign lord, nakshatra, star lord, sub
+					lord, sub sub lord and KP number.
+				</caption>
 				<thead>
 					<tr>
 						<th scope="col">Planet</th>

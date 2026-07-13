@@ -27,10 +27,11 @@ pre-commit:
       run: bun run typecheck
     build-and-stage-codegen:
       glob: "packages/ui/src/**/*.{ts,css}"
-      # The build emits committed codegen: packages/ui-react/src (wrappers +
-      # load-ui), registry, apps/docs/manifest.js. Stage every diff so the
-      # commit captures the full regenerated tree. Per .gitignore, build
-      # output (packages/ui/dist, packages/ui-react/dist, apps/docs/dist) and
+      # The build emits committed codegen: packages/ui-react/src and
+      # packages/ui-vue/src (wrappers + load-ui), registry,
+      # apps/docs/manifest.js. Stage every diff so the commit captures the full
+      # regenerated tree. Per .gitignore, build output (packages/ui/dist,
+      # packages/ui-react/dist, packages/ui-vue/dist, apps/docs/dist) and
       # generated types (packages/ui/src/types) are skipped automatically.
       run: bun run build && git add -A
 

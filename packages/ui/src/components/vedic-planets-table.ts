@@ -67,6 +67,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			}
 			.scroll {
 				overflow-x: auto;
+				min-width: 0;
 			}
 			table {
 				width: 100%;
@@ -145,6 +146,11 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			.panel-body {
 				padding: 0 var(--roxy-space-md, 1rem) var(--roxy-space-md, 1rem);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-sm, 0.5rem);
 			}
 			.condition {
@@ -246,6 +252,10 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			</header>
 			<div class="scroll" tabindex="0">
 			<table role="table">
+				<caption class="roxy-sr-only">
+					Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada,
+					nakshatra lord, house, avastha and retrograde state.
+				</caption>
 				<thead>
 					<tr>
 						<th scope="col">Graha</th>

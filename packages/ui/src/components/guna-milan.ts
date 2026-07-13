@@ -5,19 +5,31 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber, formatPercent } from '../utils/format.js';
 
-const STANDARD_CATEGORIES = [
-	'Varna',
-	'Vasya',
-	'Tara',
-	'Yoni',
-	'Maitri',
-	'Gana',
-	'Bhakoot',
-	'Nadi',
-];
+/**
+ * The eight kootas and the points each carries, in the classical order the API
+ * returns them. Used only as a fallback when a payload omits `maxScore`; the
+ * spec marks it required. The names are the canonical ones (Vashya, Graha
+ * Maitri), not the shortened forms.
+ */
+const KOOTA_MAX: Record<string, number> = {
+	varna: 1,
+	vashya: 2,
+	tara: 3,
+	yoni: 4,
+	'graha maitri': 5,
+	gana: 6,
+	bhakoot: 7,
+	nadi: 8,
+};
 
 /**
  * 36-point Ashtakoota score card. Renders /vedic-astrology/compatibility.
+ *
+ * @remarks
+ * Each koota row carries what it actually evaluates and how each person
+ * classifies under it (Varna: Shudra against Shudra, Yoni: Sheep against Horse),
+ * because the point total alone tells a couple nothing about WHY a koota scored
+ * as it did.
  */
 @customElement('roxy-guna-milan')
 export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
@@ -58,6 +70,26 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 			.over {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-base, 1rem);
+			}
+			.verdict-wrap {
+				display: grid;
+				justify-items: end;
+				gap: var(--roxy-space-xs, 0.25rem);
+				text-align: right;
+			}
+			.verdict {
+				padding: 1px 10px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.verdict.yes {
+				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
+				color: var(--roxy-success-fg, #166534);
+			}
+			.verdict.no {
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 			.recommendation {
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -102,6 +134,20 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				letter-spacing: 0.06em;
 			}
+			td small {
+				display: block;
+				margin-top: 2px;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				line-height: 1.5;
+			}
+			td.classification {
+				color: var(--roxy-secondary, #475569);
+				white-space: nowrap;
+			}
+			th.score {
+				text-align: right;
+			}
 			td.score {
 				text-align: right;
 				font-variant-numeric: tabular-nums;
@@ -109,7 +155,15 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 			td.bar-cell {
-				width: 30%;
+				width: 22%;
+			}
+			/* The progress bar is the first thing to go on a narrow card: the score
+			 * column already carries the number, and the two classification columns
+			 * are the reason this table exists. */
+			@container (max-width: 32rem) {
+				.bar-col {
+					display: none;
+				}
 			}
 			.mini-bar {
 				height: 8px;
@@ -187,11 +241,20 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 									: nothing
 							}
 						</div>
-						${
-							d.recommendation
-								? html`<span class="recommendation">${d.recommendation}</span>`
-								: nothing
-						}
+						<div class="verdict-wrap">
+							${
+								typeof d.isCompatible === 'boolean'
+									? html`<span class="verdict ${d.isCompatible ? 'yes' : 'no'}">
+										${d.isCompatible ? 'Compatible' : 'Not compatible'}
+									</span>`
+									: nothing
+							}
+							${
+								d.recommendation
+									? html`<span class="recommendation">${d.recommendation}</span>`
+									: nothing
+							}
+						</div>
 					</div>
 				</div>
 				<div class="score-ring" role="meter" aria-label="Guna milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
@@ -209,11 +272,17 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 			${
 				breakdown.length > 0
 					? html`<table>
+						<caption class="roxy-sr-only">
+							Guna Milan breakdown: each koota with the classification of person 1 and
+							person 2, and the score it earned out of its maximum.
+						</caption>
 						<thead>
 							<tr>
-								<th>Category</th>
-								<th>Progress</th>
-								<th class="score">Score</th>
+								<th scope="col">Koota</th>
+								<th scope="col">Person 1</th>
+								<th scope="col">Person 2</th>
+								<th scope="col" class="bar-col">Progress</th>
+								<th scope="col" class="score">Score</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -222,8 +291,13 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 								const maxScore = b.maxScore ?? defaultMax(b.category);
 								const pct = maxScore ? (score / maxScore) * 100 : 0;
 								return html`<tr>
-									<td>${b.category}</td>
-									<td class="bar-cell">
+									<td>
+										${b.category}
+										${b.description ? html`<small>${b.description}</small>` : nothing}
+									</td>
+									<td class="classification">${b.person1 ?? ''}</td>
+									<td class="classification">${b.person2 ?? ''}</td>
+									<td class="bar-cell bar-col">
 										<div class="mini-bar">
 											<span style="width: ${pct}%"></span>
 										</div>
@@ -251,30 +325,8 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 }
 
 function defaultMax(name?: string): number {
-	if (!name) return 1;
-	switch (name.toLowerCase()) {
-		case 'varna':
-			return 1;
-		case 'vasya':
-			return 2;
-		case 'tara':
-			return 3;
-		case 'yoni':
-			return 4;
-		case 'maitri':
-			return 5;
-		case 'gana':
-			return 6;
-		case 'bhakoot':
-			return 7;
-		case 'nadi':
-			return 8;
-		default:
-			return 1;
-	}
+	return (name && KOOTA_MAX[name.toLowerCase()]) || 1;
 }
-
-export const GUNA_CATEGORIES = STANDARD_CATEGORIES;
 
 declare global {
 	interface HTMLElementTagNameMap {

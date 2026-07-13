@@ -174,6 +174,30 @@ async function main() {
 				},
 			}),
 		),
+		// Current and sub are separate render branches. Without their own samples the
+		// showcase and the audit never walk them, and sub is where the parent-mahadasha
+		// context and the level label live.
+		run('dasha-current', () =>
+			roxy.vedicAstrology.getCurrentDasha({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
+		run('dasha-sub', () =>
+			roxy.vedicAstrology.getSubDashas({
+				path: { mahadasha: 'Venus' },
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
 		run('dosha', () =>
 			roxy.vedicAstrology.checkManglikDosha({
 				body: {
@@ -229,8 +253,21 @@ async function main() {
 				body: { year: 1990, month: 1, day: 15 },
 			}),
 		),
+		// Chart mode is a different render branch from the single-number card, so it
+		// needs its own sample or the audit never walks it.
+		run('num-chart', () =>
+			roxy.numerology.generateNumerologyChart({
+				body: { fullName: 'Ada Lovelace', year: 1990, month: 1, day: 15 },
+			}),
+		),
 		run('tarot', () =>
 			roxy.tarot.getDailyCard({ body: { seed: 'roxy-ui-demo' } }),
+		),
+		// The reference card ships BOTH orientations (the daily draw ships only the
+		// drawn one), so it exercises the upright/reversed tablist.
+		run('tarot-reference', () => roxy.tarot.getCard({ path: { id: 'fool' } })),
+		run('spread-yesno', () =>
+			roxy.tarot.castYesNo({ body: { question: 'Should I take the offer?' } }),
 		),
 		run('spread', () =>
 			roxy.tarot.castThreeCard({
@@ -447,6 +484,24 @@ async function main() {
 		run('bio', () =>
 			roxy.biorhythm.getDailyBiorhythm({ body: { seed: 'roxy-ui-demo' } }),
 		),
+		run('bio-forecast', () =>
+			roxy.biorhythm.getForecast({
+				body: {
+					birthDate: '1990-01-15',
+					startDate: '2026-07-01',
+					endDate: '2026-07-30',
+				},
+			}),
+		),
+		run('bio-critical', () =>
+			roxy.biorhythm.getCriticalDays({
+				body: {
+					birthDate: '1990-01-15',
+					startDate: '2026-07-01',
+					endDate: '2026-08-30',
+				},
+			}),
+		),
 		run('hex', () => roxy.iching.getRandomHexagram()),
 		run('transits', () =>
 			roxy.astrology.calculateTransits({
@@ -493,8 +548,18 @@ async function main() {
 		run('angel-card', () =>
 			roxy.angelNumbers.getAngelNumber({ path: { number: '111' } }),
 		),
+		// `context` must be supplied or the response carries no `contextNote`, and the
+		// component branch that renders it would never be audited.
+		// `context` is honoured by the live API (it is what produces `contextNote`) but
+		// the OpenAPI spec does not declare it, so the generated query type rejects it.
+		// Cast until the spec is fixed upstream; without it the component branch that
+		// renders `contextNote` would never be audited.
 		run('angel-lookup', () =>
-			roxy.angelNumbers.analyzeNumberSequence({ query: { number: '1212' } }),
+			roxy.angelNumbers.analyzeNumberSequence({
+				query: { number: '1212', context: 'clock' } as unknown as {
+					number: string;
+				},
+			}),
 		),
 		run('angel-lookup-unknown', () =>
 			roxy.angelNumbers.analyzeNumberSequence({ query: { number: '7841' } }),

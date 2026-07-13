@@ -3,16 +3,36 @@ import { customElement, state } from 'lit/decorators.js';
 import type { KpChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
+import {
+	renderTablist,
+	type TablistItem,
+	tablistStyles,
+} from '../utils/tablist.js';
 
-type Tab = 'planets' | 'cusps';
+type Tab = 'planets' | 'cusps' | 'significators';
+
+const TABS: ReadonlyArray<TablistItem<Tab>> = [
+	{ id: 'planets', label: 'Planets' },
+	{ id: 'cusps', label: 'Cusps' },
+	{ id: 'significators', label: 'Significators' },
+];
+
+/** The four KP significator strength levels, strongest (1) to weakest (4). */
+const LEVELS = [1, 2, 3, 4] as const;
+
+type Significators = KpChartResponse['significators'];
+type HouseSignificator = Significators['houseWise'][number];
+type PlanetSignificator = Significators['planetWise'][number];
 
 /** A planet or node row, normalized so planets and Rahu/Ketu share a table. */
 interface KpBody {
 	name: string;
-	sign?: string;
+	longitude?: number;
 	house?: number;
 	nakshatra?: string;
+	pada?: number;
 	starLord?: string;
 	subLord?: string;
 	subSubLord?: string;
@@ -20,17 +40,40 @@ interface KpBody {
 	retrograde?: boolean;
 }
 
+/** "Chitra 3" when the pada is known, otherwise the bare nakshatra. */
+function nakshatraPada(nakshatra?: string, pada?: number): string {
+	if (!nakshatra) return '';
+	return typeof pada === 'number' ? `${nakshatra} ${pada}` : nakshatra;
+}
+
+/**
+ * A strength-ordered chain, "Venus > Mars > Jupiter". The API repeats a body in
+ * `all` / `allHouses` when it signifies at more than one level (Venus as both
+ * star-of-owner and owner), which reads as a stutter, so the first occurrence
+ * wins and the rest are folded away. The grouped level columns still show every
+ * level that body appears at.
+ */
+function chain(values: ReadonlyArray<string | number>): string {
+	return [...new Set(values.map(String))].join(' > ');
+}
+
 /**
  * KP (Krishnamurti Paddhati) chart. Renders /vedic-astrology/kp/chart: the
- * Ascendant with its full stellar hierarchy, a planets-and-nodes table, and a
- * Placidus cusps table. The cusp and planet sub lords are the primary
- * predictive surface in KP astrology, so each row carries star lord, sub lord,
- * sub-sub lord, and KP number (1-249).
+ * Ascendant with its full stellar hierarchy, a planets-and-nodes table, a
+ * Placidus cusps table, and the significator tables.
+ *
+ * @remarks
+ * The cusp and planet sub lords are the primary predictive surface in KP, so
+ * every row carries star lord, sub lord, sub-sub lord, and KP number (1-249).
+ * The significators tab is the event-timing surface: house-wise (which planets
+ * signify each house) and planet-wise (which houses each planet signifies),
+ * both graded L1 to L4 with the API's own level labels shown as the legend.
  */
 @customElement('roxy-kp-chart')
 export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 	static styles = [
 		baseStyles,
+		tablistStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -59,30 +102,10 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			.asc strong {
 				color: var(--roxy-fg, #0a0a0a);
 			}
-			.tablist {
-				display: flex;
-				gap: 2px;
+			/* The tab strip is inset to the header gutter so it lines up with the
+			 * card title rather than the table cells beneath it. */
+			.roxy-tablist {
 				padding: 0 var(--roxy-space-md, 1rem);
-				border-bottom: 2px solid var(--roxy-border, #e4e4e7);
-			}
-			.tab {
-				padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				background: none;
-				border: none;
-				border-bottom: 2px solid transparent;
-				margin-bottom: -2px;
-				cursor: pointer;
-				color: var(--roxy-muted, #71717a);
-				font-family: inherit;
-			}
-			.tab[aria-selected='true'] {
-				color: var(--roxy-accent-ink, #b45309);
-				border-bottom-color: var(--roxy-accent, #f59e0b);
-				font-weight: var(--roxy-weight-bold, 600);
-			}
-			.tab:hover:not([aria-selected='true']) {
-				color: var(--roxy-fg, #0a0a0a);
 			}
 			table {
 				width: 100%;
@@ -122,6 +145,41 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			.num {
 				font-variant-numeric: tabular-nums;
 			}
+			.sig-head {
+				padding: var(--roxy-space-md, 1rem) var(--roxy-space-md, 1rem) 0;
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.sig-title {
+				margin: 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.sig-note {
+				margin: 0;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.legend {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
+				padding: var(--roxy-space-md, 1rem) var(--roxy-space-md, 1rem) 0;
+				margin: 0;
+				list-style: none;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.legend b {
+				color: var(--roxy-accent-ink, #b45309);
+				margin-right: 4px;
+			}
+			.chain {
+				color: var(--roxy-muted, #71717a);
+			}
+			.empty-cell {
+				color: var(--roxy-muted, #71717a);
+			}
 		`,
 	];
 
@@ -134,9 +192,10 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 		if (!d) return [];
 		const rows: KpBody[] = (d.planets ?? []).map((p) => ({
 			name: p.planet,
-			sign: p.sign,
+			longitude: p.longitude,
 			house: p.house,
 			nakshatra: p.nakshatra,
+			pada: p.pada,
 			starLord: p.starLord,
 			subLord: p.subLord,
 			subSubLord: p.subSubLord,
@@ -151,7 +210,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			if (node) {
 				rows.push({
 					name,
-					sign: node.sign,
+					longitude: node.longitude,
 					house: node.house,
 					nakshatra: node.nakshatra,
 					starLord: node.starLord,
@@ -162,18 +221,6 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			}
 		}
 		return rows;
-	}
-
-	private onTabKeyDown(e: KeyboardEvent) {
-		if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-		e.preventDefault();
-		this.activeTab = this.activeTab === 'planets' ? 'cusps' : 'planets';
-		const next = this.activeTab;
-		requestAnimationFrame(() => {
-			this.shadowRoot
-				?.querySelector<HTMLButtonElement>(`#tab-${next}`)
-				?.focus();
-		});
 	}
 
 	protected renderEmpty() {
@@ -189,8 +236,11 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 				${
 					asc
 						? html`<div class="asc">
-							Ascendant: <strong>${asc.sign ?? ''}</strong>
-							${asc.nakshatra ? html`· ${asc.nakshatra}` : nothing}
+							Ascendant:
+							<strong>
+								${typeof asc.longitude === 'number' ? formatSignPosition(asc.longitude) : (asc.sign ?? '')}
+							</strong>
+							${asc.nakshatra ? html`· ${nakshatraPada(asc.nakshatra, asc.pada)}` : nothing}
 							${asc.subLord ? html`· sub lord ${asc.subLord}` : nothing}
 							${typeof asc.kpNumber === 'number' ? html`· KP ${asc.kpNumber}` : nothing}
 						</div>`
@@ -206,31 +256,25 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 				}
 			</header>
 
-			<div
-				class="tablist"
-				role="tablist"
-				aria-label="KP chart views"
-				@keydown=${this.onTabKeyDown}
-			>
-				${(['planets', 'cusps'] as const).map(
-					(t) => html`<button
-						class="tab"
-						role="tab"
-						id="tab-${t}"
-						aria-selected=${this.activeTab === t ? 'true' : 'false'}
-						aria-controls="panel-${t}"
-						tabindex=${this.activeTab === t ? '0' : '-1'}
-						@click=${() => {
-							this.activeTab = t;
-						}}
-					>
-						${t === 'planets' ? 'Planets' : 'Cusps'}
-					</button>`,
-				)}
-			</div>
+			${renderTablist({
+				items: TABS,
+				active: this.activeTab,
+				onSelect: (id) => {
+					this.activeTab = id;
+				},
+				label: 'KP chart views',
+				idPrefix: 'kp',
+				controls: true,
+			})}
 
-			<div id="panel-${this.activeTab}" role="tabpanel" aria-labelledby="tab-${this.activeTab}">
-				${this.activeTab === 'planets' ? this.renderPlanets() : this.renderCusps()}
+			<div id="kp-panel-${this.activeTab}" role="tabpanel" aria-labelledby="kp-tab-${this.activeTab}">
+				${
+					this.activeTab === 'planets'
+						? this.renderPlanets()
+						: this.activeTab === 'cusps'
+							? this.renderCusps()
+							: this.renderSignificators()
+				}
 			</div>
 		</div>`;
 	}
@@ -239,13 +283,17 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 		const bodies = this.bodies();
 		if (!bodies.length)
 			return html`<p class="roxy-empty" role="status">No planets</p>`;
-		return html`<table role="table" aria-label="KP planets and nodes">
+		return html`<table role="table">
+			<caption class="roxy-sr-only">
+				KP planets and nodes: each body with its position, house, nakshatra and pada,
+				star lord, sub lord, sub sub lord and KP number.
+			</caption>
 			<thead>
 				<tr>
 					<th scope="col">Body</th>
-					<th scope="col">Sign</th>
+					<th scope="col">Position</th>
 					<th scope="col">House</th>
-					<th scope="col">Nakshatra</th>
+					<th scope="col">Nakshatra, pada</th>
 					<th scope="col">Star lord</th>
 					<th scope="col">Sub lord</th>
 					<th scope="col">Sub sub lord</th>
@@ -258,9 +306,11 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 						<td class="body">
 							${b.name}${b.retrograde ? html`<span class="retro">R</span>` : nothing}
 						</td>
-						<td>${b.sign ?? ''}</td>
+						<td class="num">
+							${typeof b.longitude === 'number' ? formatSignPosition(b.longitude) : ''}
+						</td>
 						<td class="num">${typeof b.house === 'number' ? b.house : ''}</td>
-						<td>${b.nakshatra ?? ''}</td>
+						<td>${nakshatraPada(b.nakshatra, b.pada)}</td>
 						<td>${b.starLord ?? ''}</td>
 						<td>${b.subLord ?? ''}</td>
 						<td>${b.subSubLord ?? ''}</td>
@@ -275,13 +325,17 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 		const cusps = this.data?.cusps ?? [];
 		if (!cusps.length)
 			return html`<p class="roxy-empty" role="status">No cusps</p>`;
-		return html`<table role="table" aria-label="KP Placidus cusps">
+		return html`<table role="table">
+			<caption class="roxy-sr-only">
+				KP Placidus cusps: each house cusp with its position, sign lord, nakshatra and
+				pada, star lord, sub lord, sub sub lord and KP number.
+			</caption>
 			<thead>
 				<tr>
 					<th scope="col">House</th>
-					<th scope="col">Sign</th>
+					<th scope="col">Position</th>
 					<th scope="col">Sign lord</th>
-					<th scope="col">Nakshatra</th>
+					<th scope="col">Nakshatra, pada</th>
 					<th scope="col">Star lord</th>
 					<th scope="col">Sub lord</th>
 					<th scope="col">Sub sub lord</th>
@@ -292,9 +346,11 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 				${cusps.map(
 					(c) => html`<tr>
 						<td class="body num">${c.house}</td>
-						<td>${c.sign ?? ''}</td>
+						<td class="num">
+							${typeof c.longitude === 'number' ? formatSignPosition(c.longitude) : (c.sign ?? '')}
+						</td>
 						<td>${c.signLord ?? ''}</td>
-						<td>${c.nakshatra ?? ''}</td>
+						<td>${nakshatraPada(c.nakshatra, c.pada)}</td>
 						<td>${c.starLord ?? ''}</td>
 						<td>${c.subLord ?? ''}</td>
 						<td>${c.subSubLord ?? ''}</td>
@@ -303,6 +359,120 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 				)}
 			</tbody>
 		</table>`;
+	}
+
+	/**
+	 * The KP event-timing surface. House-wise answers "which planets can deliver
+	 * this house", planet-wise answers "what will this planet deliver in its
+	 * dasha". The L1-L4 legend text is the API's own level description, so the
+	 * grading a reader sees is the grading the engine applied.
+	 */
+	private renderSignificators() {
+		const sig = this.data?.significators;
+		const houseWise = sig?.houseWise ?? [];
+		const planetWise = sig?.planetWise ?? [];
+		if (!houseWise.length && !planetWise.length)
+			return html`<p class="roxy-empty" role="status">No significators</p>`;
+
+		return html`
+			${this.renderLevelLegend(houseWise)}
+			${
+				houseWise.length
+					? html`<div class="sig-head">
+							<h3 class="sig-title">House-wise significators</h3>
+							<p class="sig-note">Planets that signify each house, strongest level first.</p>
+						</div>
+						<table role="table">
+							<caption class="roxy-sr-only">
+								KP house-wise significators: each house, the planets that signify it at
+								levels 1 to 4, and the full strength order.
+							</caption>
+							<thead>
+								<tr>
+									<th scope="col">House</th>
+									${LEVELS.map((l) => html`<th scope="col">L${l}</th>`)}
+									<th scope="col">Strength order</th>
+								</tr>
+							</thead>
+							<tbody>
+								${houseWise.map(
+									(h) => html`<tr>
+										<td class="body num">${h.house}</td>
+										${LEVELS.map((l) => this.renderCell(this.planetsAtLevel(h, l).join(', ')))}
+										<td class="chain">${chain(h.all ?? [])}</td>
+									</tr>`,
+								)}
+							</tbody>
+						</table>`
+					: nothing
+			}
+			${
+				planetWise.length
+					? html`<div class="sig-head">
+							<h3 class="sig-title">Planet-wise significators</h3>
+							<p class="sig-note">Houses each planet signifies, strongest level first.</p>
+						</div>
+						<table role="table">
+							<caption class="roxy-sr-only">
+								KP planet-wise significators: each planet, the houses it signifies at
+								levels 1 to 4, and the full strength order.
+							</caption>
+							<thead>
+								<tr>
+									<th scope="col">Planet</th>
+									${LEVELS.map((l) => html`<th scope="col">L${l}</th>`)}
+									<th scope="col">Strength order</th>
+								</tr>
+							</thead>
+							<tbody>
+								${planetWise.map(
+									(p) => html`<tr>
+										<td class="body">${p.planet}</td>
+										${LEVELS.map((l) => this.renderCell(this.housesAtLevel(p, l).join(', ')))}
+										<td class="chain">${chain(p.allHouses ?? [])}</td>
+									</tr>`,
+								)}
+							</tbody>
+						</table>`
+					: nothing
+			}
+		`;
+	}
+
+	/** An em-dash-free placeholder keeps an empty level cell from reading as missing data. */
+	private renderCell(value: string) {
+		return value
+			? html`<td>${value}</td>`
+			: html`<td class="empty-cell">none</td>`;
+	}
+
+	private planetsAtLevel(h: HouseSignificator, level: number): string[] {
+		return (h.significators ?? [])
+			.filter((s) => s.level === level)
+			.flatMap((s) => s.planets ?? []);
+	}
+
+	private housesAtLevel(p: PlanetSignificator, level: number): number[] {
+		return (p.signifies ?? [])
+			.filter((s) => s.level === level)
+			.flatMap((s) => s.houses ?? []);
+	}
+
+	/** Level to the API's own label, taken from the first house that carries it. */
+	private renderLevelLegend(houseWise: HouseSignificator[]) {
+		const labels = new Map<number, string>();
+		for (const h of houseWise) {
+			for (const s of h.significators ?? []) {
+				if (s.description && !labels.has(s.level))
+					labels.set(s.level, s.description);
+			}
+		}
+		if (labels.size === 0) return nothing;
+		return html`<ul class="legend" aria-label="Significator levels">
+			${[...labels.entries()]
+				.sort((a, b) => a[0] - b[0])
+				.map(([level, label]) => html`<li><b>L${level}</b>${label}</li>`)}
+		</ul>`;
 	}
 }
 

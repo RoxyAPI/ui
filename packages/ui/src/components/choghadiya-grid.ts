@@ -4,23 +4,10 @@ import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GetChoghadiyaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatTimeRange } from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
 
 type ChoghadiyaPeriod = GetChoghadiyaResponse['dayChoghadiya'][number];
-
-/**
- * Format an ISO 8601 datetime string to a short local time (HH:MM).
- * Falls back to the raw string when parsing fails.
- */
-function fmtTime(iso: string): string {
-	try {
-		const d = new Date(iso);
-		if (Number.isNaN(d.getTime())) return iso;
-		return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-	} catch {
-		return iso;
-	}
-}
 
 /**
  * Choghadiya muhurta grid. Accepts a GetChoghadiyaResponse and renders
@@ -161,7 +148,7 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 					: 'neutral';
 		const current = this.isCurrent(period);
 		const lordGlyph = PLANET_GLYPH[capitalize(period.lord)] ?? '';
-		const timeRange = `${fmtTime(period.start)} - ${fmtTime(period.end)}`;
+		const timeRange = formatTimeRange(period);
 		return html`<div
 			class="cho-tile ${effectClass}${current ? ' now' : ''}"
 			role="listitem"

@@ -7,6 +7,7 @@ import { baseStyles } from '../utils/base-styles.js';
 import { formatDegreeInSign } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber } from '../utils/format.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 
 type Star = FixedStarsResponse['stars'][number];
@@ -23,6 +24,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.wrap {
 				width: 100%;
@@ -33,6 +35,11 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 			header {
@@ -76,44 +83,15 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 				letter-spacing: 0.06em;
 				margin: 0 0 var(--roxy-space-sm, 0.5rem);
 			}
-			.interp-card {
-				border: 1px solid var(--roxy-border, #e4e4e7);
-				border-radius: var(--roxy-radius-md, 8px);
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				margin-bottom: var(--roxy-space-xs, 0.25rem);
-			}
-			.interp-card summary {
-				cursor: pointer;
-				font-weight: 500;
-				color: var(--roxy-fg, #0a0a0a);
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: var(--roxy-space-md, 1rem);
-			}
-			.contact {
-				display: inline-flex;
-				align-items: baseline;
-				gap: 0.4rem;
-			}
-			.contact .point {
+			/* The natal point a star touches is the subject of the line, so it leads
+			 * in the accent ink. Plain surface, not a tinted chip, so accent-ink
+			 * still clears AA here. */
+			.interp-lead .point {
 				color: var(--roxy-accent-ink, #b45309);
-				font-weight: 600;
-			}
-			.interp-aside {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.5rem;
+				font-weight: var(--roxy-weight-bold, 600);
 			}
 			.interp-aside small {
-				color: var(--roxy-muted, #71717a);
-				font-weight: 400;
 				font-variant-numeric: tabular-nums;
-			}
-			.interp-body {
-				margin-top: var(--roxy-space-xs, 0.25rem);
-				color: var(--roxy-fg, #0a0a0a);
-				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 			.catalog summary {
 				cursor: pointer;
@@ -125,6 +103,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 			}
 			.scroll {
 				overflow-x: auto;
+				min-width: 0;
 				margin-top: var(--roxy-space-sm, 0.5rem);
 			}
 			table {
@@ -193,18 +172,21 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 				conjunctions.length
 					? html`<section>
 						<p class="subhead">Conjunctions to the chart</p>
-						${conjunctions.map((c, i) => {
-							return html`<details class="interp-card" name="fixed-star-contacts" ?open=${i === 0}>
+						${conjunctions.map(
+							(
+								c,
+								i,
+							) => html`<details class="interp-card" name="fixed-star-contacts" ?open=${i === 0}>
 								<summary>
-									<span class="contact"><span class="point">${c.point}</span> conjunct ${c.star}</span>
+									<span class="interp-lead"><span class="point">${c.point}</span> conjunct ${c.star}</span>
+									${chevron()}
 									<span class="interp-aside">
 										<small>orb ${formatNumber(c.orb, 2)}°</small>
-										${chevron()}
 									</span>
 								</summary>
-								${c.interpretation ? html`<div class="interp-body">${c.interpretation}</div>` : nothing}
-							</details>`;
-						})}
+								${c.interpretation ? html`<div class="interp-body"><p>${c.interpretation}</p></div>` : nothing}
+							</details>`,
+						)}
 					</section>`
 					: html`<p class="empty-note">No star sits within the orb of a natal point.</p>`
 			}

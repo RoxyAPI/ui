@@ -16,17 +16,36 @@ import {
 	oppositePoint,
 	polarToCartesian,
 } from '../utils/degree.js';
-import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	ASPECT_CLASS,
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
+import {
+	type InterpSection,
+	interpAccordionStyles,
+	renderInterpAccordion,
+} from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
 type AspectEntry = NatalChartResponse['aspects'][number];
+type PatternEntry = NonNullable<NatalChartResponse['patterns']>[number];
+
+/**
+ * Reading order for detected configurations. A practitioner reads the rare, chart-defining figures first (a Grand Cross reframes the whole chart) and the common ones last, so the response order is re-sorted rather than dumped. Ties break on tightness, the closest to exact first.
+ */
+const PATTERN_ORDER: Record<string, number> = {
+	GRAND_CROSS: 0,
+	GRAND_TRINE: 1,
+	KITE: 2,
+	T_SQUARE: 3,
+	YOD: 4,
+	MYSTIC_RECTANGLE: 5,
+	STELLIUM: 6,
+};
 
 const SIZE = 420;
 const CENTER = SIZE / 2;
@@ -47,6 +66,7 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 		baseStyles,
 		tablistStyles,
 		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.wrap {
 				width: 100%;
@@ -57,6 +77,11 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* minmax(0, 1fr), not the implicit auto column. An auto grid column takes
+				 * its MINIMUM from min-content, so a nowrap table wider than the card blows
+				 * the column out and drags every sibling with it, clipped on the right. This
+				 * is what lets the scroll container inside actually scroll. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 
@@ -202,6 +227,7 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 
 			.grid-scroll {
 				overflow-x: auto;
+				min-width: 0;
 				-webkit-overflow-scrolling: touch;
 			}
 			table.aspect-grid {
@@ -291,6 +317,13 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				width: 100%;
 			}
+			.em-grid caption {
+				caption-side: top;
+				text-align: left;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				padding-bottom: var(--roxy-space-xs, 0.25rem);
+			}
 			.em-grid th,
 			.em-grid td {
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -318,58 +351,93 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 				font-weight: var(--roxy-weight-bold, 600);
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 25%, transparent);
 			}
+			/* The dominant element row and modality column carry the same claim as
+			 * the summary pills above the grid, so tint them: the pill and the cell
+			 * a reader lands on must agree. */
+			.em-grid .dominant {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 10%, transparent);
+			}
+			.em-grid th.dominant,
+			.em-grid td.em-total.dominant {
+				color: var(--roxy-fg, #0a0a0a);
+			}
 
-			.interpretations {
-				margin-top: var(--roxy-space-md, 1rem);
-			}
-			.interpretations h3 {
-				font-size: var(--roxy-text-sm, 0.875rem);
-				font-weight: 600;
-				color: var(--roxy-muted, #71717a);
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-				margin: 0 0 var(--roxy-space-sm, 0.5rem);
-			}
-			.interp-card {
+			.pattern {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
 				margin-bottom: var(--roxy-space-xs, 0.25rem);
+				display: grid;
+				gap: 0.35rem;
 			}
-			.interp-card summary {
-				cursor: pointer;
-				font-weight: 500;
-				color: var(--roxy-fg, #0f172a);
+			.pattern-head {
 				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: var(--roxy-space-md, 1rem);
+				align-items: baseline;
+				gap: 0.5rem;
+				flex-wrap: wrap;
 			}
-			.interp-aside {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.6em;
+			.pattern-name {
+				font-weight: var(--roxy-weight-bold, 600);
 			}
-			.interp-aside small {
+			.pattern-tag {
+				padding: 1px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 55%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+				text-transform: capitalize;
+			}
+			.pattern-tight {
+				margin-left: auto;
 				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-variant-numeric: tabular-nums;
+			}
+			.pattern-planets {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.25rem;
+			}
+			.planet-chip {
+				display: inline-flex;
+				align-items: baseline;
+				gap: 0.3rem;
+				padding: 1px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 45%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			/* The apex is where the configuration discharges, so it leads the chip
+			 * row and carries the accent tint. Text stays --roxy-fg: accent-ink on a
+			 * tinted chip fails AA. */
+			.planet-chip.apex {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 20%, transparent);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.planet-chip .apex-tag {
+				font-size: 0.85em;
 				font-weight: 400;
+				text-transform: uppercase;
+				letter-spacing: 0.04em;
 			}
-			.interp-body {
-				margin-top: var(--roxy-space-xs, 0.25rem);
-				color: var(--roxy-fg, #0f172a);
+			.pattern-interp {
+				color: var(--roxy-fg, #0a0a0a);
 				font-size: var(--roxy-text-sm, 0.875rem);
+				line-height: 1.45;
+				margin: 0;
 			}
+
 			.interp-keywords {
 				display: flex;
 				flex-wrap: wrap;
 				gap: 0.25rem;
-				margin-top: 0.5rem;
 			}
 			.interp-keywords .kw {
 				padding: 1px 8px;
 				border-radius: 9999px;
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-				color: var(--roxy-accent-ink, #b45309);
+				color: var(--roxy-fg, #0a0a0a);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 		`,
@@ -465,6 +533,7 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 				}
 			</div>
 			${this.renderDetails()}
+			${this.renderPatterns()}
 			${this.renderInterpretations()}
 		</div>`;
 	}
@@ -508,7 +577,11 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 			return html`<p class="roxy-empty" role="status">No planets to grid</p>`;
 
 		return html`<div class="grid-scroll">
-			<table class="aspect-grid" aria-label="Planet by planet aspect grid">
+			<table class="aspect-grid">
+				<caption class="roxy-sr-only">
+					Planet by planet aspect grid: the aspect each pair of planets forms, read from
+					the planet naming the row across to the planet naming the column.
+				</caption>
 				<thead>
 					<tr>
 						<th></th>
@@ -789,10 +862,10 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 	}
 
 	/**
-	 * Element by modality grid: the 4x3 cross-tab astrologers read for chart
-	 * balance. Each planet is placed by its sign into one cell (Fire/Earth/Air/
-	 * Water row, Cardinal/Fixed/Mutable column). Derived purely from the planet
-	 * signs, with row, column, and grand totals.
+	 * Element by modality grid: the 4x3 cross-tab astrologers read for chart balance. Each body is placed by its sign into one cell (Fire/Earth/Air/Water row, Cardinal/Fixed/Mutable column).
+	 *
+	 * @remarks
+	 * The cells are derived from the planet signs, not read from `summary.elementDistribution`, because a 1D distribution cannot fill a cross-tab. That makes the body set the reconciliation risk: the API counts every body it returns (nodes, Chiron, and Black Moon Lilith included), so the grid must too, or the totals here would contradict the dominant-element pill rendered right above it. Hence the totals count placed bodies rather than `planets.length` (an unrecognized sign would otherwise inflate the grand total past the sum of its rows), the caption names the body set, and the dominant row and column are tinted from `summary` so the pill and the grid land on the same cell.
 	 */
 	private renderElementModalityGrid() {
 		const planets = this.getPlanets();
@@ -800,10 +873,14 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 		const ELEMENTS = ['Fire', 'Earth', 'Air', 'Water'] as const;
 		const MODALITIES = ['Cardinal', 'Fixed', 'Mutable'] as const;
 		const order = SIGNS_ORDER as readonly string[];
+		const summary = this.data?.summary;
+		const dominantEl = capitalize(summary?.dominantElement ?? '');
+		const dominantMod = capitalize(summary?.dominantModality ?? '');
 
 		const cells: Record<string, Record<string, string[]>> = {};
 		for (const el of ELEMENTS)
 			cells[el] = { Cardinal: [], Fixed: [], Mutable: [] };
+		let placed = 0;
 		for (const p of planets) {
 			const idx = order.indexOf(capitalize(p.sign ?? ''));
 			if (idx < 0) continue;
@@ -812,71 +889,139 @@ export class RoxyNatalChart extends RoxyDataElement<NatalChartResponse> {
 			const glyph =
 				PLANET_GLYPH[capitalize(p.name)] ?? capitalize(p.name).slice(0, 2);
 			cells[el]?.[mod]?.push(glyph);
+			placed++;
 		}
+		if (placed === 0) return nothing;
+
+		const colTotal = (m: string) =>
+			ELEMENTS.reduce((s, el) => s + (cells[el]?.[m]?.length ?? 0), 0);
 
 		return html`<table class="em-grid" aria-label="Element and modality distribution">
+			<caption>
+				All ${placed} bodies in the chart, placed by sign
+			</caption>
 			<thead>
 				<tr>
 					<th></th>
-					${MODALITIES.map((m) => html`<th scope="col">${m.slice(0, 3)}</th>`)}
+					${MODALITIES.map(
+						(m) =>
+							html`<th scope="col" class=${m === dominantMod ? 'dominant' : ''}>${m.slice(0, 3)}</th>`,
+					)}
 					<th scope="col">Total</th>
 				</tr>
 			</thead>
 			<tbody>
 				${ELEMENTS.map((el) => {
+					const isDomRow = el === dominantEl;
 					const rowTotal = MODALITIES.reduce(
 						(s, m) => s + (cells[el]?.[m]?.length ?? 0),
 						0,
 					);
 					return html`<tr>
-						<th scope="row">${el}</th>
+						<th scope="row" class=${isDomRow ? 'dominant' : ''}>${el}</th>
 						${MODALITIES.map(
-							(m) => html`<td>${(cells[el]?.[m] ?? []).join(' ')}</td>`,
+							(m) =>
+								html`<td class=${isDomRow || m === dominantMod ? 'dominant' : ''}>${(cells[el]?.[m] ?? []).join(' ')}</td>`,
 						)}
-						<td class="em-total">${rowTotal}</td>
+						<td class=${isDomRow ? 'em-total dominant' : 'em-total'}>${rowTotal}</td>
 					</tr>`;
 				})}
 				<tr>
 					<th scope="row">Total</th>
 					${MODALITIES.map(
 						(m) =>
-							html`<td class="em-total">${ELEMENTS.reduce((s, el) => s + (cells[el]?.[m]?.length ?? 0), 0)}</td>`,
+							html`<td class=${m === dominantMod ? 'em-total dominant' : 'em-total'}>${colTotal(m)}</td>`,
 					)}
-					<td class="em-total">${planets.length}</td>
+					<td class="em-total">${placed}</td>
 				</tr>
 			</tbody>
 		</table>`;
 	}
 
+	/**
+	 * Detected multi-planet configurations. Each card names the figure, tags the element or modality it pivots on, flags a dissociate (out-of-sign) figure, and puts the apex planet first with its own chip, because the apex is the point the whole configuration discharges through.
+	 */
+	private renderPatterns() {
+		const patterns = this.data?.patterns ?? [];
+		if (patterns.length === 0) return nothing;
+		const sorted = [...patterns].sort(
+			(a, b) =>
+				(PATTERN_ORDER[a.kind] ?? 9) - (PATTERN_ORDER[b.kind] ?? 9) ||
+				(b.tightness ?? 0) - (a.tightness ?? 0),
+		);
+		return html`<section class="block">
+			<h3>Chart patterns</h3>
+			${sorted.map((p) => this.renderPattern(p))}
+		</section>`;
+	}
+
+	private renderPattern(p: PatternEntry) {
+		const planets = p.planets ?? [];
+		// Apex first: the spec already orders it first for Kite, T-Square, and Yod,
+		// but sorting here keeps the chip row honest for any future pattern kind.
+		const ordered = p.apex
+			? [...planets].sort((a, b) => Number(b === p.apex) - Number(a === p.apex))
+			: planets;
+		return html`<div class="pattern">
+			<div class="pattern-head">
+				<span class="pattern-name">${p.name}</span>
+				${p.element ? html`<span class="pattern-tag">${p.element}</span>` : nothing}
+				${p.modality ? html`<span class="pattern-tag">${p.modality}</span>` : nothing}
+				${
+					p.dissociate
+						? html`<span class="pattern-tag" title="Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.">Dissociate</span>`
+						: nothing
+				}
+				${
+					// Math.round, not formatNumber(x, 0): that helper strips trailing
+					// zeros, so a 100% tight pattern renders as "1%".
+					typeof p.tightness === 'number'
+						? html`<span class="pattern-tight">${Math.round(p.tightness)}% tight</span>`
+						: nothing
+				}
+			</div>
+			<div class="pattern-planets">
+				${ordered.map((name) => {
+					const glyph = PLANET_GLYPH[capitalize(name)];
+					const isApex = Boolean(p.apex) && name === p.apex;
+					return html`<span class=${isApex ? 'planet-chip apex' : 'planet-chip'}>
+						${glyph ? html`<span aria-hidden="true">${glyph}</span>` : nothing}${name}${isApex ? html`<span class="apex-tag">apex</span>` : nothing}
+					</span>`;
+				})}
+			</div>
+			${p.interpretation ? html`<p class="pattern-interp">${p.interpretation}</p>` : nothing}
+		</div>`;
+	}
+
 	private renderInterpretations() {
-		const planets = this.getPlanets().filter((p) => p.interpretation);
-		if (planets.length === 0) return nothing;
-		return html`<section class="interpretations">
-			<h3>Planet readings</h3>
-			${planets.map((p, idx) => {
+		const sections: InterpSection[] = this.getPlanets()
+			.filter((p) => p.interpretation)
+			.map((p) => {
 				const interp = p.interpretation!;
 				const glyph = PLANET_GLYPH[capitalize(p.name)] ?? '';
 				const deg = formatNumber(p.degree ?? 0, 1);
-				return html`<details class="interp-card" name="natal-planet-readings" ?open=${idx === 0}>
-					<summary>
-						<span>${glyph} ${p.name}</span>
-						<span class="interp-aside">
-							<small>${p.sign ?? ''} ${deg}</small>
-							${chevron()}
-						</span>
-					</summary>
-					<div class="interp-body">
-						${interp.summary ? html`<p class="interp-summary">${interp.summary}</p>` : nothing}
-						${interp.detailed ? html`<p class="interp-detail">${interp.detailed}</p>` : nothing}
-						${
-							interp.keywords?.length
-								? html`<div class="interp-keywords">${interp.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
-								: nothing
-						}
-					</div>
-				</details>`;
-			})}
-		</section>`;
+				const lead = interp.summary || interp.detailed || '';
+				// `detailed` only becomes a second paragraph when `summary` already
+				// took the lead line, so a response carrying one or the other never
+				// prints the same prose twice.
+				const detail = interp.summary ? interp.detailed : undefined;
+				return {
+					label: `${glyph} ${p.name}`.trim(),
+					aside: [p.sign ?? '', deg].filter(Boolean).join(' '),
+					body: lead,
+					extra: html`${detail ? html`<p>${detail}</p>` : nothing}
+					${
+						interp.keywords?.length
+							? html`<div class="interp-keywords">${interp.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
+							: nothing
+					}`,
+				};
+			});
+		return renderInterpAccordion(
+			sections,
+			'natal-planet-readings',
+			'Planet readings',
+		);
 	}
 
 	private renderAspects(planets: PlanetEntry[], aspects: AspectEntry[]) {

@@ -13,12 +13,23 @@ export interface TablistItem<T extends string = string> {
  * identical everywhere and theme through the same --roxy-* tokens.
  */
 export const tablistStyles = css`
+	/* Scroll, do not overflow. Four long labels (ashtakavarga ships
+	 * "Sarvashtakavarga", "Bhinnashtakavarga", "Reduced", "Shodhya Pinda") are wider
+	 * than a narrow card, and without this the last tab was clipped by the card edge.
+	 * min-width: 0 is what lets a flex or grid item shrink below its min-content and
+	 * therefore actually scroll. */
 	.roxy-tablist {
 		display: flex;
 		gap: 2px;
 		border-bottom: 2px solid var(--roxy-border, #e4e4e7);
+		overflow-x: auto;
+		min-width: 0;
+		scrollbar-width: thin;
 	}
 	.roxy-tab {
+		/* Never squash a label to fit: a tab that reads "Sarvashtak..." is worse than
+		 * one the reader scrolls to. */
+		flex-shrink: 0;
 		padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
 		font-size: var(--roxy-text-sm, 0.875rem);
 		background: none;

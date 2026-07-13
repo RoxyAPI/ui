@@ -8,6 +8,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatDate } from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
 
 type HoroscopeData =
@@ -146,6 +147,124 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				text-transform: capitalize;
 			}
+
+			/* The sky strip: the Moon placement and the live transits that produced
+			 * this reading. It sits under the overview because it is the evidence
+			 * for it, not decoration. */
+			.sky {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
+			}
+			.moon-line {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: baseline;
+				gap: 0.35rem var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.moon-line b {
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.moon-line .lbl {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				font-weight: var(--roxy-weight-bold, 600);
+				margin-right: 0.35rem;
+			}
+			.transits {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				display: grid;
+				gap: 0.25rem;
+			}
+			.transits li {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
+				padding-left: 0.9rem;
+				position: relative;
+			}
+			.transits li::before {
+				content: '';
+				position: absolute;
+				left: 0;
+				top: 0.5em;
+				width: 5px;
+				height: 5px;
+				border-radius: 50%;
+				background: var(--roxy-accent, #f59e0b);
+			}
+
+			.block-title {
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+			.weeks {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.week {
+				display: grid;
+				grid-template-columns: 3.5rem 1fr;
+				gap: var(--roxy-space-sm, 0.5rem);
+				align-items: baseline;
+				border-top: 1px solid var(--roxy-border, #e4e4e7);
+				padding-top: var(--roxy-space-sm, 0.5rem);
+			}
+			.week:first-child {
+				border-top: 0;
+				padding-top: 0;
+			}
+			.week-no {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.week-focus {
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-fg, #0a0a0a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.week-advice {
+				margin: 0.15rem 0 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			/* One grid for the whole list so every event starts on the same column,
+			 * however wide the longest date renders. The row wrapper keeps the
+			 * dt/dd pairing in the markup and drops out of the layout. */
+			.dates {
+				margin: 0;
+				display: grid;
+				grid-template-columns: max-content 1fr;
+				gap: 0.3rem var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.date-row {
+				display: contents;
+			}
+			.date-row dt {
+				font-variant-numeric: tabular-nums;
+				color: var(--roxy-accent-ink, #b45309);
+				font-weight: var(--roxy-weight-bold, 600);
+				white-space: nowrap;
+			}
+			.date-row dd {
+				margin: 0;
+				color: var(--roxy-fg, #0a0a0a);
+			}
 		`,
 	];
 
@@ -192,6 +311,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			</header>
 
 			${d.overview ? html`<p class="overview">${d.overview}</p>` : nothing}
+			${this.renderSky(d)}
 
 			<div class="sections">
 				${
@@ -235,6 +355,8 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 						: nothing
 				}
 			</div>
+
+			${this.renderMonth(d)}
 
 			${(() => {
 				const luckyNumber =
@@ -296,6 +418,85 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					</div>`;
 			})()}
 		</article>`;
+	}
+
+	/**
+	 * The sky behind the reading (daily only): where the Moon is, what phase it is in, and the transits the forecast was derived from. A daily horoscope that hides its transits is a fortune cookie; showing them is what makes this one auditable.
+	 */
+	private renderSky(d: HoroscopeData) {
+		const moonSign = 'moonSign' in d ? d.moonSign : '';
+		const moonPhase = 'moonPhase' in d ? d.moonPhase : '';
+		const transits = ('activeTransits' in d ? d.activeTransits : []) ?? [];
+		if (!moonSign && !moonPhase && transits.length === 0) return nothing;
+		const glyph = moonSign ? (SIGN_GLYPH[capitalize(moonSign)] ?? '') : '';
+		return html`<div class="sky">
+			${
+				moonSign || moonPhase
+					? html`<div class="moon-line">
+						${
+							moonSign
+								? html`<span
+									><span class="lbl">Moon</span>
+									<span aria-hidden="true">${glyph}</span> <b>${moonSign}</b></span
+								>`
+								: nothing
+						}
+						${
+							moonPhase
+								? html`<span><span class="lbl">Phase</span> <b>${moonPhase}</b></span>`
+								: nothing
+						}
+					</div>`
+					: nothing
+			}
+			${
+				transits.length
+					? html`<ul class="transits" aria-label="Active transits">
+						${transits.map((t) => html`<li>${t}</li>`)}
+					</ul>`
+					: nothing
+			}
+		</div>`;
+	}
+
+	/** Monthly arc: the week-by-week focus and the dated events (lunations, retrogrades, ingresses) the month turns on. */
+	private renderMonth(d: HoroscopeData) {
+		const weeks = ('weekByWeek' in d ? d.weekByWeek : []) ?? [];
+		const keyDates = ('keyDates' in d ? d.keyDates : []) ?? [];
+		if (weeks.length === 0 && keyDates.length === 0) return nothing;
+		return html`${
+			weeks.length
+				? html`<section>
+					<h3 class="block-title">Week by week</h3>
+					<div class="weeks">
+						${weeks.map(
+							(w) => html`<div class="week">
+								<span class="week-no">Week ${w.week}</span>
+								<div>
+									<div class="week-focus">${w.focus}</div>
+									${w.advice ? html`<p class="week-advice">${w.advice}</p>` : nothing}
+								</div>
+							</div>`,
+						)}
+					</div>
+				</section>`
+				: nothing
+		}
+		${
+			keyDates.length
+				? html`<section>
+					<h3 class="block-title">Key dates</h3>
+					<dl class="dates">
+						${keyDates.map(
+							(k) => html`<div class="date-row">
+								<dt>${formatDate(k.date) || k.date}</dt>
+								<dd>${k.event}</dd>
+							</div>`,
+						)}
+					</dl>
+				</section>`
+				: nothing
+		}`;
 	}
 }
 

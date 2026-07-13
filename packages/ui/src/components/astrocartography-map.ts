@@ -4,6 +4,7 @@ import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { planetColor } from '../utils/planet-color.js';
 import { WORLD_LAND_PATH } from '../utils/world-map.js';
 
@@ -69,6 +70,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 	static styles = [
 		baseStyles,
 		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.wrap {
 				width: 100%;
@@ -172,47 +174,19 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 				font-size: var(--roxy-text-sm, 0.875rem);
 				margin: 0;
 			}
-			.interpretations h3 {
-				font-size: var(--roxy-text-sm, 0.875rem);
-				font-weight: 600;
-				color: var(--roxy-muted, #71717a);
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-				margin: 0 0 var(--roxy-space-sm, 0.5rem);
-			}
-			.interp-card {
-				border: 1px solid var(--roxy-border, #e4e4e7);
-				border-radius: var(--roxy-radius-md, 8px);
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				margin-bottom: var(--roxy-space-xs, 0.25rem);
-			}
-			.interp-card summary {
-				cursor: pointer;
-				font-weight: 500;
-				color: var(--roxy-fg, #0a0a0a);
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: var(--roxy-space-md, 1rem);
-			}
-			.interp-head {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.5rem;
-			}
+			/* The shared lead is baseline-aligned for text; an empty swatch has no
+			 * baseline worth aligning to, so centre it against the planet name. */
 			.interp-dot {
 				width: 10px;
 				height: 10px;
 				border-radius: 50%;
-			}
-			.interp-body {
-				margin-top: var(--roxy-space-sm, 0.5rem);
-				display: grid;
-				gap: var(--roxy-space-xs, 0.25rem);
+				flex-shrink: 0;
+				align-self: center;
 			}
 			.interp-line {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-fg, #0a0a0a);
+				margin: 0;
 			}
 			.interp-line .code {
 				font-weight: 600;
@@ -403,7 +377,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 
 	private renderInterpretations(lines: LineSet[]) {
 		if (lines.length === 0) return nothing;
-		return html`<section class="interpretations">
+		return html`<section class="block">
 			<h3>Planetary lines</h3>
 			${lines.map((l, i) => {
 				const color = planetColor(l.planet, i);
@@ -415,7 +389,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 				];
 				return html`<details class="interp-card" name="acg-lines" ?open=${i === 0}>
 					<summary>
-						<span class="interp-head">
+						<span class="interp-lead">
 							<span class="interp-dot" style=${`background: ${color}`}></span>
 							${l.symbol ? html`${l.symbol} ` : nothing}${l.planet}
 						</span>

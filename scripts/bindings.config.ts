@@ -73,6 +73,10 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 		{ component: 'roxy-vedic-planets-table' },
 	],
 	generateDivisionalChart: [{ component: 'roxy-divisional-chart' }],
+	// NavamsaResponse and DivisionalChartResponse both wrap the rashis under the
+	// same `.chart`, and the component reads `data.chart.meta`, so the whole
+	// response binds as-is. D9 is just the divisional chart the API names.
+	generateNavamsa: [{ component: 'roxy-divisional-chart' }],
 	generateKpChart: [{ component: 'roxy-kp-chart' }],
 	getKpPlanets: [{ component: 'roxy-kp-planets-table' }],
 	getKpRulingPlanets: [{ component: 'roxy-kp-ruling-planets' }],

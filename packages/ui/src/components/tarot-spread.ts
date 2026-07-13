@@ -78,6 +78,43 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 				color: var(--roxy-warning-fg, #9a3412);
 			}
 
+			.chips {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem);
+			}
+			.chips span {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+				color: var(--roxy-fg, #0a0a0a);
+				padding: 2px 8px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+
+			.verdict {
+				display: grid;
+				grid-template-columns: minmax(0, 8rem) 1fr;
+				gap: var(--roxy-space-md, 1rem);
+				align-items: start;
+			}
+			@container (max-width: 26rem) {
+				.verdict {
+					grid-template-columns: 1fr;
+				}
+			}
+			.verdict .meta {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+				justify-items: start;
+			}
+			.arcana {
+				margin: 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+
 			.grid {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
@@ -165,6 +202,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 		const cards = isDrawn && 'cards' in d ? (d as DrawCardsResponse).cards : [];
 		const answer = isYesNo ? (d as CastYesNoResponse).answer : undefined;
 		const strength = isYesNo ? (d as CastYesNoResponse).strength : undefined;
+		const verdictCard = isYesNo ? (d as CastYesNoResponse).card : undefined;
 		const spreadLabel =
 			'spread' in d
 				? (d as CastThreeCardResponse).spread
@@ -187,9 +225,38 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 			</header>
 			${
 				isYesNo
-					? html`<div>
-						<span class=${`answer ${answerClass}`}>${answer}</span>
-						${strength ? html`<small> · ${strength}</small>` : nothing}
+					? html`<div class="verdict">
+						<div class="card">
+							<div class="image">
+								${
+									verdictCard?.imageUrl
+										? html`<img
+											src=${verdictCard.imageUrl}
+											alt=${verdictCard.name ?? 'tarot card'}
+											class=${verdictCard.reversed ? 'reversed' : ''}
+										/>`
+										: html`${verdictCard?.name ?? '?'}`
+								}
+							</div>
+							<p class="name">
+								${verdictCard?.name ?? ''}
+								${verdictCard?.reversed ? html`<small>(reversed)</small>` : nothing}
+							</p>
+							${verdictCard?.arcana ? html`<p class="arcana">${verdictCard.arcana} arcana</p>` : nothing}
+						</div>
+						<div class="meta">
+							<div>
+								<span class=${`answer ${answerClass}`}>${answer}</span>
+								${strength ? html`<small> · ${strength}</small>` : nothing}
+							</div>
+							${
+								verdictCard?.keywords && verdictCard.keywords.length > 0
+									? html`<div class="chips">
+										${verdictCard.keywords.map((k) => html`<span>${k}</span>`)}
+									</div>`
+									: nothing
+							}
+						</div>
 					</div>`
 					: nothing
 			}

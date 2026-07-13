@@ -3,7 +3,7 @@
   "name": "roxy-hexagram",
   "type": "registry:ui",
   "title": "RoxyHexagram",
-  "description": "I Ching hexagram with trigram glyphs, judgment, image, and changing lines",
+  "description": "I Ching hexagram drawn line by line with trigram glyphs, judgment, image, and a reading for every line: the oracle statement and what it asks of the querent. A cast highlights the moving lines and shows only their readings, plus the hexagram it transforms into",
   "dependencies": [
     "@roxyapi/ui-react"
   ],
@@ -13,7 +13,7 @@
   "files": [
     {
       "path": "components/roxy-hexagram.tsx",
-      "content": "'use client';\n\n/**\n * <RoxyHexagram data={...} />: I Ching hexagram with trigram glyphs, judgment, image, and changing lines.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/hexagram/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.iching.castReading();\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyHexagram as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyHexagramProps = ComponentProps<typeof Element>;\n\nexport function RoxyHexagram(props: RoxyHexagramProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyHexagram;\n",
+      "content": "'use client';\n\n/**\n * <RoxyHexagram data={...} />: I Ching hexagram drawn line by line with trigram glyphs, judgment, image, and a reading for every line: the oracle statement and what it asks of the querent. A cast highlights the moving lines and shows only their readings, plus the hexagram it transforms into.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/hexagram/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.iching.castReading();\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyHexagram as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyHexagramProps = ComponentProps<typeof Element>;\n\nexport function RoxyHexagram(props: RoxyHexagramProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyHexagram;\n",
       "type": "registry:ui",
       "target": "~/components/roxy-ui/hexagram.tsx"
     }

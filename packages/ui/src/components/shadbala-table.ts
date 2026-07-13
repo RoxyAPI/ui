@@ -135,6 +135,40 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 				white-space: nowrap;
 			}
 
+			/* Ishta against Kashta: one bar, two segments, so the balance between a
+			 * planet's benefic and malefic capacity is read at a glance rather than
+			 * inferred from two numbers. */
+			.phala {
+				display: flex;
+				height: 6px;
+				border-radius: var(--roxy-radius-full, 9999px);
+				overflow: hidden;
+				background: var(--roxy-border, #e4e4e7);
+			}
+
+			.phala-ishta {
+				background: var(--roxy-success, #16a34a);
+			}
+
+			.phala-kashta {
+				background: var(--roxy-danger, #dc2626);
+			}
+
+			.phala-label {
+				display: flex;
+				justify-content: space-between;
+				gap: var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				font-variant-numeric: tabular-nums;
+			}
+
+			.footnote {
+				margin: 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+			}
+
 			.adequacy-badge {
 				display: inline-block;
 				padding: 1px 6px;
@@ -231,6 +265,11 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 					</div>`,
 				)}
 			</div>
+			<p class="footnote">
+				Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give
+				malefic ones. Both are in virupas and are read together, since a planet can be strong
+				and still deliver hardship.
+			</p>
 		</div>`;
 	}
 
@@ -276,12 +315,39 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 							: nothing
 					}
 				</div>
+				${this.renderPhala(p)}
 			</div>
 			<div class="pills">
 				${rupasStr ? html`<span class="rupas-label">${rupasStr}</span>` : nothing}
 				<span class="${`adequacy-badge ${badgeClass}`}">${badgeLabel}</span>
 			</div>
 		</div>`;
+	}
+
+	/**
+	 * Ishta and Kashta Phala, the fruit a planet is capable of giving in its dasha
+	 * and transits. They are derived from Uchcha and Chesta Bala, not from the
+	 * six-fold total, so a planet can rank first on strength and still carry a
+	 * heavy Kashta share. Rendering only the total hides exactly that.
+	 */
+	private renderPhala(p: Planet) {
+		const ishta = typeof p.ishtaPhala === 'number' ? p.ishtaPhala : 0;
+		const kashta = typeof p.kashtaPhala === 'number' ? p.kashtaPhala : 0;
+		if (ishta + kashta <= 0) return nothing;
+		const ishtaStr = formatNumber(ishta, 1) || '0';
+		const kashtaStr = formatNumber(kashta, 1) || '0';
+		return html`<div
+				class="phala"
+				role="img"
+				aria-label="Ishta Phala ${ishtaStr}, Kashta Phala ${kashtaStr} virupas"
+			>
+				<span class="phala-ishta" style="flex-grow: ${ishta}"></span>
+				<span class="phala-kashta" style="flex-grow: ${kashta}"></span>
+			</div>
+			<div class="phala-label">
+				<span>Ishta ${ishtaStr}</span>
+				<span>Kashta ${kashtaStr}</span>
+			</div>`;
 	}
 }
 

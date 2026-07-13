@@ -322,6 +322,27 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'dasha-current',
+		tag: 'roxy-dasha-timeline',
+		heading: 'Current dasha',
+		seoLine: 'The running mahadasha, antardasha, and pratyantardasha with their readings',
+		attrs: ' period="current"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getCurrentDasha({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'dasha-sub',
+		tag: 'roxy-dasha-timeline',
+		heading: 'Antardashas',
+		seoLine: 'Antardashas within a mahadasha, with the parent period as context',
+		attrs: ' period="sub"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getSubDashas({
+    path: { mahadasha: 'venus' },
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
 		id: 'guna',
 		tag: 'roxy-guna-milan',
 		seoLine: 'Ashtakoota guna milan score for kundli matching',
@@ -395,10 +416,27 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'num-chart',
+		tag: 'roxy-numerology-card',
+		heading: 'Numerology chart',
+		seoLine: 'Full numerology chart with all six core numbers and their readings',
+		attrs: ' type="chart"',
+		sdkCall: `  const { data } = await roxy.numerology.generateNumerologyChart({
+    body: { fullName: 'Ada Lovelace', year: 1990, month: 1, day: 15 },
+  });`,
+	}),
+	entry({
 		id: 'tarot',
 		tag: 'roxy-tarot-card',
 		seoLine: 'Daily tarot card with upright and reversed meanings',
 		sdkCall: `  const { data } = await roxy.tarot.getDailyCard({ body: { seed: 'visitor-42' } });`,
+	}),
+	entry({
+		id: 'tarot-reference',
+		tag: 'roxy-tarot-card',
+		heading: 'Tarot reference card',
+		seoLine: 'Tarot card reference with both upright and reversed readings',
+		sdkCall: `  const { data } = await roxy.tarot.getCard({ path: { id: 'fool' } });`,
 	}),
 	entry({
 		id: 'spread',
@@ -407,6 +445,16 @@ window.ROXY_UI_DEMOS = [
 		attrs: ' spread="three-card"',
 		sdkCall: `  const { data } = await roxy.tarot.castThreeCard({
     body: { question: 'What does my next chapter look like?' },
+  });`,
+	}),
+	entry({
+		id: 'spread-yesno',
+		tag: 'roxy-tarot-spread',
+		heading: 'Tarot yes or no',
+		seoLine: 'Tarot yes or no verdict with the card it was drawn from',
+		attrs: ' spread="yes-no"',
+		sdkCall: `  const { data } = await roxy.tarot.castYesNo({
+    body: { question: 'Should I take the offer?' },
   });`,
 	}),
 	entry({
@@ -500,6 +548,26 @@ window.ROXY_UI_DEMOS = [
 		seoLine: 'Daily biorhythm cycle bars and energy rating',
 		attrs: ' mode="daily"',
 		sdkCall: `  const { data } = await roxy.biorhythm.getDailyBiorhythm({ body: { seed: 'visitor-42' } });`,
+	}),
+	entry({
+		id: 'bio-forecast',
+		tag: 'roxy-biorhythm-chart',
+		heading: 'Biorhythm forecast',
+		seoLine: 'Biorhythm forecast cycles with best and worst days and critical markers',
+		attrs: ' mode="forecast"',
+		sdkCall: `  const { data } = await roxy.biorhythm.getForecast({
+    body: { birthDate: '1990-01-15', days: 30 },
+  });`,
+	}),
+	entry({
+		id: 'bio-critical',
+		tag: 'roxy-biorhythm-chart',
+		heading: 'Biorhythm critical days',
+		seoLine: 'Biorhythm critical days with the advisory for each',
+		attrs: ' mode="critical-days"',
+		sdkCall: `  const { data } = await roxy.biorhythm.getCriticalDays({
+    body: { birthDate: '1990-01-15', days: 60 },
+  });`,
 	}),
 	entry({
 		id: 'hex',

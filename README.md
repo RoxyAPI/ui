@@ -196,7 +196,7 @@ Every chart, table, and card adapts to light and dark automatically. Hover any i
 <td width="50%"><strong>I Ching hexagram</strong> · <code>&lt;roxy-hexagram&gt;</code><br><sub>GET /iching/hexagrams/&lbrace;number&rbrace;, /iching/cast</sub><br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-dark.png">
-  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-light.png" alt="Hexagram with trigrams, judgment, image, changing lines">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-light.png" alt="Hexagram figure with trigrams, judgment, image, and a reading for every line">
 </picture>
 </td>
 <td width="50%"><strong>Numerology</strong> · <code>&lt;roxy-numerology-card&gt;</code><br><sub>POST /numerology/&lbrace;life-path,expression,personal-year,chart&rbrace;</sub><br>
@@ -268,6 +268,24 @@ export function Chart({ data }: { data: NatalChart }) {
 }
 ```
 
+Vue users get the same typed surface.
+
+```bash
+npm install @roxyapi/ui-vue
+```
+
+```vue
+<script setup lang="ts">
+import { RoxyNatalChart } from '@roxyapi/ui-vue';
+
+defineProps<{ data: NatalChart }>();
+</script>
+
+<template>
+	<RoxyNatalChart :data="data" />
+</template>
+```
+
 ## Quick start
 
 ```ts
@@ -297,6 +315,24 @@ Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always
 Serialize with the shipped helper, never a bare `JSON.stringify`. `@roxyapi/ui` exports `roxyDataScript(data)` (the full `<script class="roxy-data">…</script>` element) and `serializeRoxyData(data)` (just the escaped JSON). They escape `<`, `>`, and `&` so a string field containing `</script>` cannot break out of the block and corrupt the page.
 
 Load the bundle once anywhere on the page. It registers every `roxy-*` element and loads the design tokens, so every component on the page renders themed, in light or dark, from that single tag. Nothing else to add.
+
+### No-JavaScript fallback
+
+The two modes degrade differently, and only one of them can be rescued.
+
+**Controlled mode** (the `<script class="roxy-data">` island above) already holds the reading in the page. Render it server-side as ordinary HTML alongside the island and put that markup *inside* the element. Components render into a shadow root and none of them expose a `<slot>`, so light-DOM children are painted only while the element is un-upgraded, and disappear the moment the bundle registers it. You get the server HTML without JavaScript and the live component with it, from the same markup, with no flash of both.
+
+**Form mode** (`data-endpoint` + a `pk_` key) is a self-fetch widget: it cannot work without JavaScript, because there is nothing to render until the visitor submits the form. Give it a light-DOM fallback that says so and links out.
+
+```html
+<roxy-natal-chart data-endpoint="astrology/natal-chart" publishable-key="pk_live_…">
+  <!-- Painted only when JavaScript is off. Replaced by the component otherwise. -->
+  <p>JavaScript is required to generate this chart.
+     <a href="https://roxyapi.com/products/astrology">Open it on roxyapi.com</a>.</p>
+</roxy-natal-chart>
+```
+
+A `<noscript>` block works too, and is the safer choice if you also need to hide the fallback from screen readers once the component takes over.
 
 ```ts
 import { roxyDataScript } from '@roxyapi/ui';
@@ -570,6 +606,7 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 |---|---|
 | npm `@roxyapi/ui` | `npmjs.com/package/@roxyapi/ui` |
 | npm `@roxyapi/ui-react` | `npmjs.com/package/@roxyapi/ui-react` |
+| npm `@roxyapi/ui-vue` | `npmjs.com/package/@roxyapi/ui-vue` |
 | jsDelivr CDN (full bundle) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
 | jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
 | Widgets auto-mount (with browser keys, coming soon) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
@@ -624,7 +661,7 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/timeline | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
-| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram with trigrams, judgment, image, changing lines |
+| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
 | `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |
 | `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
@@ -673,7 +710,7 @@ roxy-natal-chart {
 
 ## Built for AI agents
 
-[`AGENTS.md`](AGENTS.md) is bundled inside both npm packages. Once installed, agents can read it from `node_modules/@roxyapi/ui/AGENTS.md` (or `@roxyapi/ui-react/AGENTS.md`) for the component decision tree, integration patterns, and rules.
+[`AGENTS.md`](AGENTS.md) is bundled inside every npm package. Once installed, agents can read it from `node_modules/@roxyapi/ui/AGENTS.md` (or `@roxyapi/ui-react/AGENTS.md`, `@roxyapi/ui-vue/AGENTS.md`) for the component decision tree, integration patterns, and rules.
 
 - Works with Claude Code, Cursor, Copilot, Codex, Gemini CLI, and any MCP-compatible client.
 - Component decision tree maps each RoxyAPI endpoint to the component that renders its response.
@@ -732,7 +769,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Per-component bundles run 9-21 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 85 KB gzipped today. The React package loads the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Per-component bundles run 9-21 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 85 KB gzipped today. The React and Vue packages load the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>

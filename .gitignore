@@ -9,7 +9,7 @@ node_modules/
 # the live one before a release goes out.
 packages/ui/src/types/
 
-# packages/ui/dist and packages/ui-react/dist are pure build output. The
+# packages/ui/dist and the wrapper-package dist dirs are pure build output. The
 # Release workflow runs `bun run build` then `npm publish`, which includes
 # dist via each package.json `files` allowlist; the Pages workflow rebuilds
 # before deploy. Nothing serves dist from the git repo (the shadcn registry
@@ -17,10 +17,11 @@ packages/ui/src/types/
 # never needs to be git-tracked.
 packages/ui/dist/
 packages/ui-react/dist/
+packages/ui-vue/dist/
 
 # Root README.md, LICENSE, and AGENTS.md are the canonical source files.
 # `copyRootDocsToWorkspaces` in `scripts/build.ts` mirrors all three into
-# both packages on every `bun run build` so the npm tarballs (which ship
+# every package on every `bun run build` so the npm tarballs (which ship
 # these files via each package.json `files` allowlist) carry an up-to-date
 # copy. The per-package copies are build artifacts; never edit them
 # directly, edit the root files only.
@@ -30,6 +31,9 @@ packages/ui/AGENTS.md
 packages/ui-react/README.md
 packages/ui-react/LICENSE
 packages/ui-react/AGENTS.md
+packages/ui-vue/README.md
+packages/ui-vue/LICENSE
+packages/ui-vue/AGENTS.md
 
 # apps/docs/dist is mirrored from packages/ui/dist on each `bun run build`
 # so local preview at apps/docs/ matches the GitHub Pages layout exactly.

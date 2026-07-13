@@ -326,6 +326,11 @@
           "operationId": "generateDivisionalChart",
           "method": "POST",
           "path": "/vedic-astrology/divisional-chart"
+        },
+        {
+          "operationId": "generateNavamsa",
+          "method": "POST",
+          "path": "/vedic-astrology/navamsa"
         }
       ]
     },
@@ -961,7 +966,7 @@
       "pascal": "RoxyHexagram",
       "slug": "hexagram",
       "domain": "I Ching",
-      "renders": "Hexagram with trigrams, judgment, image, changing lines",
+      "renders": "Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram",
       "endpointLabel": "GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",
       "endpoints": [
         {
