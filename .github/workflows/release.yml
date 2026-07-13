@@ -164,21 +164,33 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           bun run build
 
-      - name: Publish @roxyapi/ui
+      # ORDER IS LOAD-BEARING: least-proven package FIRST.
+      #
+      # npm publishes cannot be rolled back, so a publish that dies halfway leaves
+      # npm bumped while the repo has no version commit, no tag and no release, and
+      # the re-run is then rejected for republishing an existing version. The
+      # preflight above proves each package EXISTS, but it cannot prove a Trusted
+      # Publisher is configured on it — a package can exist and still reject OIDC.
+      #
+      # Publishing the newest package first turns that unverifiable risk into a safe
+      # failure: if its trust config is missing, the job dies before the established
+      # packages are touched and nothing is published at all. Whenever a new wrapper
+      # package is added, move it to the top of this list until it has shipped once.
+      - name: Publish @roxyapi/ui-vue
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           npm install -g npm@latest
+          (cd packages/ui-vue && npm publish --access public --provenance)
+
+      - name: Publish @roxyapi/ui
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
           (cd packages/ui && npm publish --access public --provenance)
 
       - name: Publish @roxyapi/ui-react
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           (cd packages/ui-react && npm publish --access public --provenance)
-
-      - name: Publish @roxyapi/ui-vue
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          (cd packages/ui-vue && npm publish --access public --provenance)
 
       - name: Commit, tag, push
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
