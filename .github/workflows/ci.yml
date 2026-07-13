@@ -41,10 +41,10 @@ jobs:
         # Pull the exact matching browsers from the official Playwright image on
         # Microsoft Container Registry, then copy them into the default browser
         # cache. install-deps is apt-only (no CDN download). Keep the image tag
-        # in lockstep with @playwright/test in package.json (currently 1.59.1).
+        # in lockstep with @playwright/test in package.json (currently 1.61.1).
         run: |
           bunx playwright install-deps chromium
-          docker create --name pwbrowsers mcr.microsoft.com/playwright:v1.59.1-noble
+          docker create --name pwbrowsers mcr.microsoft.com/playwright:v1.61.1-noble
           mkdir -p "$HOME/.cache/ms-playwright"
           docker cp pwbrowsers:/ms-playwright/. "$HOME/.cache/ms-playwright/"
           docker rm pwbrowsers
