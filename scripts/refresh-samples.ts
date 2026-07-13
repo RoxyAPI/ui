@@ -550,15 +550,9 @@ async function main() {
 		),
 		// `context` must be supplied or the response carries no `contextNote`, and the
 		// component branch that renders it would never be audited.
-		// `context` is honoured by the live API (it is what produces `contextNote`) but
-		// the OpenAPI spec does not declare it, so the generated query type rejects it.
-		// Cast until the spec is fixed upstream; without it the component branch that
-		// renders `contextNote` would never be audited.
 		run('angel-lookup', () =>
 			roxy.angelNumbers.analyzeNumberSequence({
-				query: { number: '1212', context: 'clock' } as unknown as {
-					number: string;
-				},
+				query: { number: '1212', context: 'clock' },
 			}),
 		),
 		run('angel-lookup-unknown', () =>

@@ -14,7 +14,7 @@
         "@hey-api/openapi-ts": "0.99.0",
         "@lit-labs/rollup-plugin-minify-html-literals": "^0.2.0",
         "@playwright/test": "^1.49.0",
-        "@roxyapi/sdk": "^1.2.29",
+        "@roxyapi/sdk": "^1.2.45",
         "@types/bun": "^1.2.0",
         "@types/node": "^24.0.0",
         "@types/react": "^19.0.0",
@@ -30,7 +30,7 @@
     },
     "packages/ui": {
       "name": "@roxyapi/ui",
-      "version": "0.13.0",
+      "version": "0.14.0",
       "dependencies": {
         "lit": "^3.2.0",
       },
@@ -40,7 +40,7 @@
     },
     "packages/ui-react": {
       "name": "@roxyapi/ui-react",
-      "version": "0.13.0",
+      "version": "0.14.0",
       "peerDependencies": {
         "react": ">=18 <20",
         "react-dom": ">=18 <20",
@@ -51,7 +51,7 @@
     },
     "packages/ui-vue": {
       "name": "@roxyapi/ui-vue",
-      "version": "0.13.0",
+      "version": "0.14.0",
       "peerDependencies": {
         "vue": ">=3.3 <4",
       },
@@ -280,7 +280,7 @@
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.60.4", "", { "os": "win32", "cpu": "x64" }, "sha512-QVTUovf40zgTqlFVrKA1uXMVvU2QWEFWfAH8Wdc48IxLvrJMQVMBRjuQyUpzZCDkakImib9eVazbWlC6ksWtJw=="],
 
-    "@roxyapi/sdk": ["@roxyapi/sdk@1.2.29", "", {}, "sha512-+83IymBAsC9BrIpqGyqnaTBHuPZ+khKPoJ4DwlbRkyAd/N8y6FFdb4Ona0qS8a/nGG5yq2wRMjp0hvVzunIsqw=="],
+    "@roxyapi/sdk": ["@roxyapi/sdk@1.2.45", "", {}, "sha512-STH0fp8/vjJ9oVno0he5t10o86fmx6xdYt9QQ5HgRBH6og1iW7OPd3BtrBxgcjuPHxZYzOFrpHVeeokK5u7oFw=="],
 
     "@roxyapi/ui": ["@roxyapi/ui@workspace:packages/ui"],
 
