@@ -386,6 +386,7 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					starLord: 'Rahu',
 					subLord: 'Jupiter',
 					subSubLord: 'Saturn',
+					kpNumber: 194,
 				},
 				ketu: {
 					sign: 'Leo',
@@ -394,6 +395,7 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					starLord: 'Ketu',
 					subLord: 'Venus',
 					subSubLord: 'Mercury',
+					kpNumber: 72,
 				},
 			},
 		},
@@ -1651,6 +1653,62 @@ describe('human design interpretations', () => {
 		expect(text.split('The body-side half of Variable.').length - 1).toBe(1);
 		expect(text).toContain('The finest substructure layer.');
 		expect(text).not.toContain('undefined');
+		el.remove();
+	});
+});
+
+describe('roxy-kp-chart planets-and-nodes table', () => {
+	const sample = specs.find((s) => s.tag === 'roxy-kp-chart')?.sample;
+
+	async function mount() {
+		const el = document.createElement('roxy-kp-chart') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = sample;
+		await settled(el);
+		return el;
+	}
+
+	/**
+	 * Cells of the body row named `name`, read out of the markup rather than with `querySelectorAll`, because happy-dom does not implement scoped queries on a ShadowRoot. Only the active tab renders and it defaults to the bodies table, so every row here is a body.
+	 */
+	function cells(el: HTMLElement, name: string): string[] {
+		const rows = (el.shadowRoot?.innerHTML ?? '').split('<tr').map((row) =>
+			[...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((cell) =>
+				cell[1]
+					.replace(/<!--[\s\S]*?-->/g, '')
+					.replace(/<[^>]+>/g, '')
+					.trim(),
+			),
+		);
+		return rows.find((row) => row[0]?.startsWith(name)) ?? [];
+	}
+
+	test('the nodes carry a KP number, exactly like the planets', async () => {
+		// The API returns kpNumber on nodes as well as planets, but the merge that
+		// folds Rahu and Ketu into the planets table used to drop it, so the KP
+		// column rendered blank on precisely those two rows and nowhere else.
+		const el = await mount();
+		expect(cells(el, 'Sun').at(-1)).toBe('201');
+		expect(cells(el, 'Rahu').at(-1)).toBe('194');
+		expect(cells(el, 'Ketu').at(-1)).toBe('72');
+		el.remove();
+	});
+
+	test('a node row still renders when the API omits its KP number', async () => {
+		const el = document.createElement('roxy-kp-chart') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		const s = sample as { nodes: { rahu: Record<string, unknown> } };
+		el.data = {
+			...(sample as object),
+			nodes: { ...s.nodes, rahu: { ...s.nodes.rahu, kpNumber: undefined } },
+		};
+		await settled(el);
+		expect(cells(el, 'Rahu').at(-1)).toBe('');
+		expect(el.shadowRoot?.textContent ?? '').not.toContain('undefined');
 		el.remove();
 	});
 });

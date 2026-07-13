@@ -58,9 +58,10 @@ function chain(values: ReadonlyArray<string | number>): string {
 }
 
 /**
- * KP (Krishnamurti Paddhati) chart. Renders /vedic-astrology/kp/chart: the
- * Ascendant with its full stellar hierarchy, a planets-and-nodes table, a
- * Placidus cusps table, and the significator tables.
+ * KP (Krishnamurti Paddhati) chart. Renders /vedic-astrology/kp/chart: an
+ * Ascendant summary, a planets-and-nodes table, a Placidus cusps table, and the
+ * significator tables. The Ascendant is cusp 1, so its full four-lord chain is
+ * already the first row of the cusps table and the header stays a summary.
  *
  * @remarks
  * The cusp and planet sub lords are the primary predictive surface in KP, so
@@ -216,6 +217,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 					starLord: node.starLord,
 					subLord: node.subLord,
 					subSubLord: node.subSubLord,
+					kpNumber: node.kpNumber,
 					retrograde: true,
 				});
 			}

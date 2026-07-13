@@ -7746,6 +7746,11 @@
                 "type": "string",
                 "description": "Zodiac sign of the Ascendant."
               },
+              "signLord": {
+                "type": "string",
+                "description": "Ruling planet of the Ascendant sign (the rashi lord). In KP this is the weakest of the four lords, ranked below the star lord and sub lord, but it still sets the broad temperament of the Lagna.",
+                "example": "Venus"
+              },
               "nakshatra": {
                 "type": "string",
                 "description": "Nakshatra (star) of the Ascendant."
@@ -7778,6 +7783,7 @@
             "required": [
               "longitude",
               "sign",
+              "signLord",
               "nakshatra",
               "nakshatraLord",
               "pada",
@@ -7958,6 +7964,11 @@
                   "subSubLord": {
                     "type": "string",
                     "description": "KP sub-sub lord (SSL) of Rahu."
+                  },
+                  "kpNumber": {
+                    "type": "number",
+                    "description": "KP number (1-249) locating Rahu in the 249-division sub-lord scheme. Each of the 249 divisions maps to a unique sign, star lord and sub lord triple, so one integer pins the position precisely enough for KP event timing.",
+                    "example": 194
                   }
                 },
                 "required": [
@@ -7967,7 +7978,8 @@
                   "nakshatra",
                   "starLord",
                   "subLord",
-                  "subSubLord"
+                  "subSubLord",
+                  "kpNumber"
                 ],
                 "description": "Rahu (North Lunar Node), shadow planet, always retrograde, acts as agent of its sign lord and star lord."
               },
@@ -8001,6 +8013,11 @@
                   "subSubLord": {
                     "type": "string",
                     "description": "KP sub-sub lord (SSL) of Ketu."
+                  },
+                  "kpNumber": {
+                    "type": "number",
+                    "description": "KP number (1-249) locating Ketu in the 249-division sub-lord scheme. Each of the 249 divisions maps to a unique sign, star lord and sub lord triple, so one integer pins the position precisely enough for KP event timing.",
+                    "example": 194
                   }
                 },
                 "required": [
@@ -8010,7 +8027,8 @@
                   "nakshatra",
                   "starLord",
                   "subLord",
-                  "subSubLord"
+                  "subSubLord",
+                  "kpNumber"
                 ],
                 "description": "Ketu (South Lunar Node), shadow planet, spiritual karmic indicator."
               }
@@ -35195,7 +35213,8 @@
                   "properties": {
                     "datetime": {
                       "type": "string",
-                      "description": "UTC datetime used for aspect calculation (ISO 8601)."
+                      "description": "Chart time the aspects were calculated for, echoed back as the local wall clock of the request (ISO 8601, no offset). This is the `date` and `time` you sent, NOT a UTC instant: hold them fixed and vary `timezone` and every longitude moves while this field does not. Combine it with the `timezone` you sent to recover the absolute moment.",
+                      "example": "1990-06-15T14:30:00"
                     },
                     "planets": {
                       "type": "array",
