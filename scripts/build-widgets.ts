@@ -30,6 +30,27 @@ const SCRIPT = `(function () {
 	var CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION.split('.')[0]}/dist/cdn/roxy-ui.js';
 	var API = 'https://roxyapi.com/api/v2';
 
+	// Load the elements from wherever THIS script was loaded from. A site that
+	// self-hosts widgets.js (a strict Content-Security-Policy, an air-gapped
+	// network) would otherwise still reach out to the CDN for roxy-ui.js and get
+	// nothing, which is the one thing self-hosting is meant to prevent. Falls back
+	// to the CDN when the origin cannot be determined.
+	function bundleUrl() {
+		var self = document.currentScript && document.currentScript.src;
+		if (!self) {
+			var tags = document.querySelectorAll('script[src]');
+			for (var i = tags.length - 1; i >= 0; i--) {
+				if (/widgets\\.js(\\?|$)/.test(tags[i].src)) { self = tags[i].src; break; }
+			}
+		}
+		if (!self) return CDN;
+		try {
+			return new URL('roxy-ui.js', self).href;
+		} catch (e) {
+			return CDN;
+		}
+	}
+
 	var WIDGET_ENDPOINTS = {
 		'natal-chart': { path: '/astrology/natal-chart', method: 'POST' },
 		'horoscope-card': { path: '/astrology/horoscope/{sign}/daily', method: 'GET' },
@@ -54,7 +75,7 @@ const SCRIPT = `(function () {
 		return new Promise(function (resolve, reject) {
 			var s = document.createElement('script');
 			s.id = 'roxy-ui-loader';
-			s.src = CDN;
+			s.src = bundleUrl();
 			s.async = true;
 			s.crossOrigin = 'anonymous';
 			s.onload = function () { resolve(); };
