@@ -88,17 +88,25 @@ async function run<T>(
 
 async function main() {
 	console.log('Geocoding canonical cities...');
-	const mumbai = await geocode('Mumbai');
-	const delhi = await geocode('Delhi');
+	// Western cities on purpose: the demo is the lead surface, and the lead example
+	// is always a globally-accessible one. Keep these in sync with PERSON1/PERSON2
+	// in apps/docs/components-manifest.js, which hardcodes the same coordinates for
+	// the displayed code snippets.
+	const newYork = await geocode('New York');
+	const london = await geocode('London');
+	const losAngeles = await geocode('Los Angeles');
 	console.log(
-		`  Mumbai → ${mumbai.latitude}, ${mumbai.longitude}, ${mumbai.timezone}`,
+		`  New York    → ${newYork.latitude}, ${newYork.longitude}, ${newYork.timezone}`,
 	);
 	console.log(
-		`  Delhi  → ${delhi.latitude}, ${delhi.longitude}, ${delhi.timezone}`,
+		`  London      → ${london.latitude}, ${london.longitude}, ${london.timezone}`,
+	);
+	console.log(
+		`  Los Angeles → ${losAngeles.latitude}, ${losAngeles.longitude}, ${losAngeles.timezone}`,
 	);
 
-	const PERSON1 = { date: '1990-01-15', time: '14:30:00', ...mumbai };
-	const PERSON2 = { date: '1992-06-20', time: '09:15:00', ...delhi };
+	const PERSON1 = { date: '1990-01-15', time: '14:30:00', ...newYork };
+	const PERSON2 = { date: '1992-06-20', time: '09:15:00', ...london };
 
 	console.log('\nFetching live samples via @roxyapi/sdk...');
 
@@ -270,7 +278,7 @@ async function main() {
 				members: [
 					PERSON1,
 					PERSON2,
-					{ date: '1985-11-02', time: '06:45:00', ...mumbai },
+					{ date: '1985-11-02', time: '06:45:00', ...losAngeles },
 				],
 			}),
 		),

@@ -10550,6 +10550,30 @@
           "imageUrl"
         ]
       },
+      "ChangingLine": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "number",
+            "example": 1,
+            "description": "Line position (1-6, bottom to top). In I-Ching, each hexagram has six lines (yao) read from bottom upward."
+          },
+          "text": {
+            "type": "string",
+            "example": "The dragon is still hidden below the surface, so it does not act.",
+            "description": "The oracle statement for this line. It applies when this specific line comes up changing (old yin or old yang) in a casting, and it speaks in the concrete imagery of the tradition."
+          },
+          "meaning": {
+            "type": "string",
+            "example": "The first line is the beginning, still underground and unrecognized. Strength is present but untested, and showing it now invites resistance it cannot yet survive. Stay hidden and build.",
+            "description": "What the line statement asks of the querent, read from its position in the hexagram (1 is the hidden beginning, 3 is the exposed threshold, 5 is the ruling line, 6 is past the peak) and from whether the line is yin or yang. This is the meaning behind the image, so a consuming agent does not have to invent one."
+          }
+        },
+        "required": [
+          "position",
+          "text"
+        ]
+      },
       "BasicHexagram": {
         "type": "object",
         "properties": {
@@ -10644,12 +10668,12 @@
           },
           "judgment": {
             "type": "string",
-            "example": "The Creative works sublime success, furthering through perseverance.",
+            "example": "Pure creative force is available and it runs from origin to completion without obstruction, so the situation rewards initiative that stays correct and does not slacken. Success here is built by sustained effort held to a straight line, not by a single burst.",
             "description": "The Judgment (Tuan) text, the primary oracle statement of the hexagram offering core guidance and outcome."
           },
           "image": {
             "type": "string",
-            "example": "The movement of heaven is full of power. Thus the superior man makes himself strong and untiring.",
+            "example": "Heaven above heaven: the same motion repeated without pause and without fatigue. Renew your own strength on your own schedule rather than waiting to be driven by circumstances.",
             "description": "The Image (Xiang) text, symbolic guidance derived from the trigram combination describing the ideal attitude and action."
           },
           "interpretation": {
@@ -10715,25 +10739,6 @@
           "advice"
         ]
       },
-      "ChangingLine": {
-        "type": "object",
-        "properties": {
-          "position": {
-            "type": "number",
-            "example": 1,
-            "description": "Line position (1-6, bottom to top). In I-Ching, each hexagram has six lines (yao) read from bottom upward."
-          },
-          "text": {
-            "type": "string",
-            "example": "Hidden dragon. Do not act.",
-            "description": "Changing line interpretation text. Applies only when this specific line is a changing line (old yin or old yang) in a casting."
-          }
-        },
-        "required": [
-          "position",
-          "text"
-        ]
-      },
       "BasicTrigram": {
         "type": "object",
         "properties": {
@@ -10789,7 +10794,7 @@
           "number": {
             "type": "number",
             "example": 1,
-            "description": "Trigram number (1-8) in the traditional I-Ching ordering."
+            "description": "Stable identifier for the trigram, 1 to 8. This is our lookup key, not a canonical sequence: the tradition has several orderings (King Wen, Fu Xi, Earlier and Later Heaven) and they disagree, so do not read ranking or precedence into it."
           },
           "symbol": {
             "type": "string",
@@ -63995,7 +64000,7 @@
                     },
                     "dailyMessage": {
                       "type": "string",
-                      "example": "Your hexagram for 2026-01-28: The Creative (乾). Supreme success through perseverance.",
+                      "example": "Your hexagram for 2026-01-28: The Creative (乾). Be like the heavens: consistent, powerful, and untiring.",
                       "description": "Concise daily message summarizing the hexagram guidance"
                     }
                   },
@@ -64413,6 +64418,13 @@
                         5
                       ],
                       "description": "Positions of changing lines (1-6, bottom to top). These lines transform yin to yang or vice versa."
+                    },
+                    "changingLines": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ChangingLine"
+                      },
+                      "description": "The oracle statement and meaning of each line that came up CHANGING, and only those. The changing lines are what the cast is actually about, so this saves a second call to read them and stops a consuming agent from having to invent them."
                     },
                     "resultingHexagram": {
                       "type": "object",

@@ -14,6 +14,7 @@ import {
 	renderHdReading,
 	renderHdThemes,
 } from '../utils/hd-reading.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 
 type HdIdentity = CalculateTypeResponse | CalculateProfileResponse;
 
@@ -30,6 +31,7 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
+		interpAccordionStyles,
 		hdReadingStyles,
 		css`
 			.wrap {

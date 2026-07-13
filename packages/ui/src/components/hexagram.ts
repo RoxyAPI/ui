@@ -11,6 +11,12 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { disclosureStyles } from '../utils/disclosure.js';
+import {
+	type InterpSection,
+	interpAccordionStyles,
+	renderInterpAccordion,
+} from '../utils/interp-accordion.js';
 
 type HexagramData =
 	| GetHexagramResponse
@@ -27,6 +33,8 @@ type HexagramData =
 export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	static styles = [
 		baseStyles,
+		disclosureStyles,
+		interpAccordionStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -45,10 +53,17 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				}
 			}
 
+			/* Hug the top. As a grid item this column would otherwise stretch to the
+			 * full card height, and because .lines is itself a grid its six rows
+			 * would stretch with it, pulling the figure apart into a ladder that
+			 * drifts away from the header. The card grew a line-readings accordion,
+			 * which is exactly when that started to show. */
 			.glyphs {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 				justify-items: center;
+				align-self: start;
+				align-content: start;
 			}
 			.symbol {
 				font-size: 3rem;
@@ -127,6 +142,14 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				color: var(--roxy-secondary, #475569);
 			}
 
+			/* The oracle statement is the line; the meaning is the reading OF the line.
+			 * Setting it apart stops the two from reading as one run-on paragraph. */
+			.line-meaning {
+				margin: 0;
+				padding-left: var(--roxy-space-sm, 0.5rem);
+				border-left: 2px solid var(--roxy-border, #e4e4e7);
+				color: var(--roxy-muted, #71717a);
+			}
 			.changing {
 				margin-top: var(--roxy-space-md, 1rem);
 				padding-top: var(--roxy-space-md, 1rem);
@@ -211,7 +234,17 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 			</div>
 			<div>
 				<h2 class="title">
-					${h.number ? html`${h.number}. ` : nothing}${h.english ?? h.chinese ?? 'Hexagram'}
+					${
+						// One text node, not two. The markup minifier collapses the space
+						// between adjacent template expressions, which rendered the title as
+						// "30.The Clinging" with the separator eaten. Join in JS instead.
+						[
+							h.number != null ? `${h.number}.` : '',
+							h.english ?? h.chinese ?? 'Hexagram',
+						]
+							.filter(Boolean)
+							.join(' ')
+					}
 				</h2>
 				<p class="subtitle">
 					${h.chinese ? html`${h.chinese}` : nothing}
@@ -262,22 +295,50 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 						</div>`
 						: nothing
 				}
+				${this.renderLines(h, changing)}
 			</div>
 		</article>`;
 	}
 
 	/**
-	 * Lines for a static hexagram (lookup/random/daily, which carry no cast `lines` array): read the `binary` pattern. Per the spec it is 6 digits bottom to top, 1 = yang (solid), 0 = yin (broken), so index 0 is line 1 (bottom). Mapped to the same 7 = solid / 8 = broken code the renderer uses for cast lines. Falls back to all-yang only if `binary` is malformed. The Unicode `symbol` block (U+4DC0) is in King Wen order, NOT line order, so it must never be used to derive the lines.
+	 * The line readings. Each line carries its oracle statement and, since the 2026-07 API rewrite, a written meaning; the component used to print only the changing-line NUMBERS and drop both, which left a reader with "Changing lines: 3" and no way to know what line 3 was telling them.
+	 *
+	 * @remarks
+	 * When lines are moving, only those lines are shown: a cast turns on the moving lines, and listing the other five buries the answer. With no lines moving (a lookup, a random draw, the daily hexagram) all six are shown, because there the hexagram is being read as a reference rather than as an answer to a question.
+	 */
+	private renderLines(h: Hexagram, changing: Set<number>) {
+		const all = h.changingLines ?? [];
+		if (all.length === 0) return nothing;
+
+		const isCast = changing.size > 0;
+		const shown = isCast ? all.filter((l) => changing.has(l.position)) : all;
+		if (shown.length === 0) return nothing;
+
+		const sections: InterpSection[] = shown.map((l) => ({
+			label: `Line ${l.position}`,
+			body: l.text ?? '',
+			extra: l.meaning
+				? html`<p class="line-meaning">${l.meaning}</p>`
+				: nothing,
+		}));
+
+		return renderInterpAccordion(
+			sections,
+			'hexagram-lines',
+			isCast ? 'Changing lines' : 'Lines',
+		);
+	}
+
+	/**
+	 * Lines for a static hexagram (lookup/random/daily, which carry no cast `lines` array): read the `binary` pattern. 6 digits BOTTOM to top, so index 0 is line 1, the bottom line, exactly like the cast `lines` array. 1 = yang (solid, 7), 0 = yin (broken, 8). Falls back to all-yang only if `binary` is malformed. The Unicode `symbol` block (U+4DC0) is in King Wen order, NOT line order, so it must never be used to derive the lines.
+	 *
+	 * @remarks
+	 * This used to `.reverse()`, because the API served `binary` top-to-bottom while documenting it bottom-to-top, and reversing was the only way to render the figure the right way up. The API fixed the data in 2026-07 (the same inversion was making `/cast` return the vertically MIRRORED hexagram for 56 of the 64 figures), so `binary` and `lines` now point the same way and the reverse would flip every asymmetric hexagram upside down. Do not put it back.
 	 */
 	private derivedLines(h: Hexagram): number[] {
 		const binary = h.binary ?? '';
 		if (/^[01]{6}$/.test(binary)) {
-			// `binary` is top to bottom (index 0 = line 6), verified against the
-			// canonical encoding: hexagram 46 (Earth over Wind) is "000110", which is
-			// Earth/Wind only when read top down. The renderer expects bottom to top
-			// (line 1 first, like the cast `lines` array), so reverse. 1 = yang
-			// (solid, 7), 0 = yin (broken, 8).
-			return Array.from(binary, (c) => (c === '1' ? 7 : 8)).reverse();
+			return Array.from(binary, (c) => (c === '1' ? 7 : 8));
 		}
 		return Array.from({ length: 6 }, () => 7);
 	}

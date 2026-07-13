@@ -19,6 +19,7 @@ import {
 	renderHdReading,
 	renderHdThemes,
 } from '../utils/hd-reading.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
@@ -47,6 +48,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		baseStyles,
 		tablistStyles,
 		disclosureStyles,
+		interpAccordionStyles,
 		hdReadingStyles,
 		css`
 			.wrap {

@@ -5,19 +5,22 @@
  * from window.ROXY_COMPONENTS (see scripts/sync-manifest.ts).
  */
 
+// New York and London. The demo is the lead surface, so the lead example is a
+// globally-accessible one. Keep in sync with scripts/refresh-samples.ts, which
+// geocodes the same cities to fetch the live sample responses.
 const PERSON1 = {
 	date: '1990-01-15',
 	time: '14:30:00',
-	latitude: 19.076,
-	longitude: 72.877,
-	timezone: 'Asia/Kolkata',
+	latitude: 40.7128,
+	longitude: -74.006,
+	timezone: 'America/New_York',
 };
 const PERSON2 = {
 	date: '1992-06-20',
 	time: '09:15:00',
-	latitude: 28.6139,
-	longitude: 77.209,
-	timezone: 'Asia/Kolkata',
+	latitude: 51.5074,
+	longitude: -0.1278,
+	timezone: 'Europe/London',
 };
 
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
@@ -332,7 +335,7 @@ window.ROXY_UI_DEMOS = [
 		seoLine: 'Detailed panchang with tithi, nakshatra, and muhurtas',
 		attrs: ' detail="detailed"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getDetailedPanchang({
-    body: { date: '2026-05-09', latitude: 19.076, longitude: 72.877 },
+    body: { date: '2026-05-09', latitude: 40.7128, longitude: -74.006 },
   });`,
 	}),
 	entry({
@@ -340,7 +343,7 @@ window.ROXY_UI_DEMOS = [
 		tag: 'roxy-choghadiya-grid',
 		seoLine: 'Day and night Choghadiya muhurta tiles for activity timing',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getChoghadiya({
-    body: { date: '2026-05-11', latitude: 19.076, longitude: 72.877 },
+    body: { date: '2026-05-11', latitude: 40.7128, longitude: -74.006 },
   });`,
 	}),
 	entry({

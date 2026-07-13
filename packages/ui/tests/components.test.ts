@@ -1061,6 +1061,110 @@ describe('roxy-data scalar formatting and structure', () => {
  * lifted to the group and not repeated per row, and that a response predating the
  * interpretation still renders.
  */
+/**
+ * The I Ching API served `binary` TOP-to-bottom while documenting it bottom-to-top until 2026-07, and this component compensated by reversing it. The API fixed the data (the same inversion was making `/cast` return the vertically MIRRORED hexagram), so the reverse had to go. Nothing caught the original bug because a mirrored hexagram is still a real hexagram. These pin the orientation so it cannot silently flip back.
+ */
+describe('roxy-hexagram line orientation and readings', () => {
+	async function mount(tag: string, data: unknown) {
+		const el = document.createElement(tag) as HTMLElement & {
+			data?: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await el.updateComplete;
+		return el;
+	}
+
+	/** Hexagram 11, Peace: Heaven below, Earth above. Bottom-to-top that is 111000, so lines 1-3 are yang and 4-6 are yin. Asymmetric, so a flipped reading is visible. */
+	const peace = {
+		number: 11,
+		english: 'Peace',
+		binary: '111000',
+		upperTrigram: 'Earth',
+		lowerTrigram: 'Heaven',
+		judgment: 'The strong is inside and rising.',
+		image: 'Heaven sits beneath the earth.',
+		changingLines: [
+			{
+				position: 1,
+				text: 'Pull up one stalk of grass.',
+				meaning: 'The first place is the beginning.',
+			},
+			{
+				position: 2,
+				text: 'Bear with the uncultivated.',
+				meaning: 'The second place is inner and supported.',
+			},
+			{
+				position: 3,
+				text: 'No plain that does not slope.',
+				meaning: 'The third place is the exposed threshold.',
+			},
+			{
+				position: 4,
+				text: 'He flutters down.',
+				meaning: 'The fourth place is close to power.',
+			},
+			{
+				position: 5,
+				text: 'The sovereign gives his daughter.',
+				meaning: 'The fifth place rules.',
+			},
+			{
+				position: 6,
+				text: 'The wall falls back into the moat.',
+				meaning: 'The sixth place is past the peak.',
+			},
+		],
+	};
+
+	test('the figure is drawn the right way up, bottom line first', async () => {
+		const el = await mount('roxy-hexagram', peace);
+		const markup = el.shadowRoot?.innerHTML ?? '';
+		// The renderer paints visual top first, so a correct Peace shows the three
+		// yin (broken) lines before the three yang (solid) ones.
+		const order = [...markup.matchAll(/class="line (broken|solid)/g)].map(
+			(m) => m[1],
+		);
+		expect(order).toEqual([
+			'broken',
+			'broken',
+			'broken',
+			'solid',
+			'solid',
+			'solid',
+		]);
+		el.remove();
+	});
+
+	test('a lookup shows all six line readings, each with its meaning', async () => {
+		const el = await mount('roxy-hexagram', peace);
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('The wall falls back into the moat.');
+		expect(text).toContain('The sixth place is past the peak.');
+		expect(text).toContain('Line 1');
+		expect(text).toContain('Line 6');
+		el.remove();
+	});
+
+	/** A cast turns on the MOVING lines. Listing the other five buries the answer, so only the changing ones are shown. */
+	test('a cast shows only the changing lines', async () => {
+		const el = await mount('roxy-hexagram', {
+			hexagram: peace,
+			lines: [7, 7, 7, 8, 6, 8],
+			changingLinePositions: [5],
+			resultingHexagram: { number: 5, english: 'Waiting' },
+		});
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('The sovereign gives his daughter.');
+		expect(text).toContain('The fifth place rules.');
+		// Line 6 did not move, so its reading is not part of this answer.
+		expect(text).not.toContain('The wall falls back into the moat.');
+		el.remove();
+	});
+});
+
 describe('human design interpretations', () => {
 	const bodygraph = {
 		type: 'Generator',
