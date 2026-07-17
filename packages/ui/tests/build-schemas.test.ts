@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, mock, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, mock, test } from 'bun:test';
 import { readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildSchemas } from '../../../scripts/build-schemas.js';
+import { resetSpecCache } from '../src/components/endpoint-form.js';
 import {
 	buildFormModel,
 	type OpenApiSchema,
@@ -56,6 +57,10 @@ async function flush(el: FormEl): Promise<void> {
 
 describe('endpoint-form slice resolution order', () => {
 	const originalFetch = globalThis.fetch;
+	// The spec cache is module state shared across test files, so a warm entry from an earlier file would satisfy the fallback assertion below without any fetch.
+	beforeEach(() => {
+		resetSpecCache();
+	});
 	afterEach(() => {
 		globalThis.fetch = originalFetch;
 	});

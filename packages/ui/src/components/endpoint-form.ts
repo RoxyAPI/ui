@@ -26,6 +26,18 @@ const SLICE_BASE = `https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION}/
 
 const specCache = new Map<string, Promise<OpenApiDoc>>();
 
+/**
+ * Drop every cached spec promise.
+
+ * @remarks
+ * Test-only, and deliberately NOT re-exported from the package entry. The cache is module state shared by every test file in a single `bun test` process, and it only self-evicts on rejection, so one file that resolves a spec leaves a warm entry that silently satisfies a later file assertion about fetching. That made slice-fallback coverage pass or fail purely on file order.
+
+ * @internal
+ */
+export function resetSpecCache(): void {
+	specCache.clear();
+}
+
 async function loadSpec(url: string): Promise<OpenApiDoc> {
 	let pending = specCache.get(url);
 	if (!pending) {
