@@ -193,6 +193,10 @@ async function copyAssets() {
 		`${UI_DIR}/src/styles/tokens.css`,
 		`${DIST}/styles/tokens.css`,
 	);
+	// Optional theme presets ship alongside tokens.css so jsDelivr serves each at
+	// dist/styles/themes/{name}.css. The whole directory is mirrored so a new
+	// preset flows through with no build change.
+	await copyDir(`${UI_DIR}/src/styles/themes`, `${DIST}/styles/themes`);
 }
 
 async function syncSiteAssets() {
@@ -458,6 +462,9 @@ async function main() {
 
 	console.log('Copying assets...');
 	await copyAssets();
+
+	console.log('Generating per-operation schema slices...');
+	execSync('bun run scripts/build-schemas.ts', { stdio: 'inherit' });
 
 	console.log('Mirroring README and LICENSE into each workspace...');
 	await copyRootDocsToWorkspaces();

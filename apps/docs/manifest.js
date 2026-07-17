@@ -598,3 +598,721 @@ window.ROXY_COMPONENTS = [
     "selfFetching": true
   }
 ];
+window.ROXY_ENDPOINT_BINDINGS = {
+  "roxy-angel-number-card": [
+    {
+      "operationId": "getAngelNumber",
+      "method": "GET",
+      "path": "/angel-numbers/numbers/{number}"
+    }
+  ],
+  "roxy-angel-number-lookup": [
+    {
+      "operationId": "analyzeNumberSequence",
+      "method": "GET",
+      "path": "/angel-numbers/lookup"
+    }
+  ],
+  "roxy-ashtakavarga-grid": [
+    {
+      "operationId": "calculateAshtakavarga",
+      "method": "POST",
+      "path": "/vedic-astrology/ashtakavarga"
+    }
+  ],
+  "roxy-aspects-table": [
+    {
+      "operationId": "detectAspectPatterns",
+      "method": "POST",
+      "path": "/astrology/aspect-patterns"
+    },
+    {
+      "operationId": "calculateAspects",
+      "method": "POST",
+      "path": "/astrology/aspects"
+    },
+    {
+      "operationId": "calculateTransitAspects",
+      "method": "POST",
+      "path": "/astrology/transit-aspects"
+    }
+  ],
+  "roxy-astrocartography-map": [
+    {
+      "operationId": "generateAstrocartography",
+      "method": "POST",
+      "path": "/astrology/astrocartography"
+    }
+  ],
+  "roxy-biorhythm-chart": [
+    {
+      "operationId": "getCriticalDays",
+      "method": "POST",
+      "path": "/biorhythm/critical-days",
+      "attrs": {
+        "mode": "critical-days"
+      }
+    },
+    {
+      "operationId": "getDailyBiorhythm",
+      "method": "POST",
+      "path": "/biorhythm/daily",
+      "attrs": {
+        "mode": "daily"
+      }
+    },
+    {
+      "operationId": "getForecast",
+      "method": "POST",
+      "path": "/biorhythm/forecast",
+      "attrs": {
+        "mode": "forecast"
+      }
+    }
+  ],
+  "roxy-bodygraph": [
+    {
+      "operationId": "generateBodygraph",
+      "method": "POST",
+      "path": "/human-design/bodygraph"
+    }
+  ],
+  "roxy-choghadiya-grid": [
+    {
+      "operationId": "getChoghadiya",
+      "method": "POST",
+      "path": "/vedic-astrology/panchang/choghadiya"
+    }
+  ],
+  "roxy-compatibility-card": [
+    {
+      "operationId": "calculateCompatibility",
+      "method": "POST",
+      "path": "/astrology/compatibility-score",
+      "attrs": {
+        "mode": "astrology"
+      }
+    },
+    {
+      "operationId": "calculateBioCompatibility",
+      "method": "POST",
+      "path": "/biorhythm/compatibility",
+      "attrs": {
+        "mode": "biorhythm"
+      }
+    },
+    {
+      "operationId": "calculateNumCompatibility",
+      "method": "POST",
+      "path": "/numerology/compatibility",
+      "attrs": {
+        "mode": "numerology"
+      }
+    }
+  ],
+  "roxy-crystal-card": [
+    {
+      "operationId": "getCrystal",
+      "method": "GET",
+      "path": "/crystals/{id}"
+    }
+  ],
+  "roxy-crystal-grid": [
+    {
+      "operationId": "getCrystalsByChakra",
+      "method": "GET",
+      "path": "/crystals/chakra/{chakra}"
+    },
+    {
+      "operationId": "getCrystalsByElement",
+      "method": "GET",
+      "path": "/crystals/element/{element}"
+    },
+    {
+      "operationId": "getCrystalsByZodiac",
+      "method": "GET",
+      "path": "/crystals/zodiac/{sign}"
+    }
+  ],
+  "roxy-dasha-timeline": [
+    {
+      "operationId": "getCurrentDasha",
+      "method": "POST",
+      "path": "/vedic-astrology/dasha/current",
+      "attrs": {
+        "period": "current"
+      }
+    },
+    {
+      "operationId": "getMajorDashas",
+      "method": "POST",
+      "path": "/vedic-astrology/dasha/major",
+      "attrs": {
+        "period": "major"
+      }
+    },
+    {
+      "operationId": "getSubDashas",
+      "method": "POST",
+      "path": "/vedic-astrology/dasha/sub/{mahadasha}",
+      "attrs": {
+        "period": "sub"
+      }
+    }
+  ],
+  "roxy-divisional-chart": [
+    {
+      "operationId": "generateDivisionalChart",
+      "method": "POST",
+      "path": "/vedic-astrology/divisional-chart"
+    },
+    {
+      "operationId": "generateNavamsa",
+      "method": "POST",
+      "path": "/vedic-astrology/navamsa"
+    }
+  ],
+  "roxy-dosha-card": [
+    {
+      "operationId": "checkKalsarpaDosha",
+      "method": "POST",
+      "path": "/vedic-astrology/dosha/kalsarpa",
+      "attrs": {
+        "type": "kalsarpa"
+      }
+    },
+    {
+      "operationId": "checkManglikDosha",
+      "method": "POST",
+      "path": "/vedic-astrology/dosha/manglik",
+      "attrs": {
+        "type": "manglik"
+      }
+    },
+    {
+      "operationId": "checkSadhesati",
+      "method": "POST",
+      "path": "/vedic-astrology/dosha/sadhesati",
+      "attrs": {
+        "type": "sadhesati"
+      }
+    }
+  ],
+  "roxy-dream-card": [
+    {
+      "operationId": "getDreamSymbol",
+      "method": "GET",
+      "path": "/dreams/symbols/{id}"
+    }
+  ],
+  "roxy-dream-search": [
+    {
+      "operationId": "searchDreamSymbols",
+      "method": "GET",
+      "path": "/dreams/symbols"
+    }
+  ],
+  "roxy-fixed-stars": [
+    {
+      "operationId": "generateFixedStars",
+      "method": "POST",
+      "path": "/astrology/fixed-stars"
+    }
+  ],
+  "roxy-forecast-digest": [
+    {
+      "operationId": "generateDigest",
+      "method": "POST",
+      "path": "/forecast/digest"
+    }
+  ],
+  "roxy-forecast-timeline": [
+    {
+      "operationId": "findSignificantDates",
+      "method": "POST",
+      "path": "/forecast/significant-dates"
+    },
+    {
+      "operationId": "generateTimeline",
+      "method": "POST",
+      "path": "/forecast/timeline"
+    },
+    {
+      "operationId": "forecastTransits",
+      "method": "POST",
+      "path": "/forecast/transits"
+    }
+  ],
+  "roxy-guna-milan": [
+    {
+      "operationId": "calculateGunMilan",
+      "method": "POST",
+      "path": "/vedic-astrology/compatibility"
+    }
+  ],
+  "roxy-hd-connection": [
+    {
+      "operationId": "calculateConnection",
+      "method": "POST",
+      "path": "/human-design/connection"
+    }
+  ],
+  "roxy-hd-penta": [
+    {
+      "operationId": "calculatePenta",
+      "method": "POST",
+      "path": "/human-design/penta"
+    }
+  ],
+  "roxy-hd-type-card": [
+    {
+      "operationId": "calculateProfile",
+      "method": "POST",
+      "path": "/human-design/profile"
+    },
+    {
+      "operationId": "calculateType",
+      "method": "POST",
+      "path": "/human-design/type"
+    }
+  ],
+  "roxy-hd-variables": [
+    {
+      "operationId": "calculateVariables",
+      "method": "POST",
+      "path": "/human-design/variables"
+    }
+  ],
+  "roxy-hexagram": [
+    {
+      "operationId": "getRandomHexagram",
+      "method": "GET",
+      "path": "/iching/hexagrams/random"
+    }
+  ],
+  "roxy-hora-table": [
+    {
+      "operationId": "getHora",
+      "method": "POST",
+      "path": "/vedic-astrology/panchang/hora"
+    }
+  ],
+  "roxy-horoscope-card": [
+    {
+      "operationId": "getDailyHoroscope",
+      "method": "GET",
+      "path": "/astrology/horoscope/{sign}/daily",
+      "attrs": {
+        "period": "daily"
+      }
+    },
+    {
+      "operationId": "getMonthlyHoroscope",
+      "method": "GET",
+      "path": "/astrology/horoscope/{sign}/monthly",
+      "attrs": {
+        "period": "monthly"
+      }
+    },
+    {
+      "operationId": "getWeeklyHoroscope",
+      "method": "GET",
+      "path": "/astrology/horoscope/{sign}/weekly",
+      "attrs": {
+        "period": "weekly"
+      }
+    }
+  ],
+  "roxy-kp-chart": [
+    {
+      "operationId": "generateKpChart",
+      "method": "POST",
+      "path": "/vedic-astrology/kp/chart"
+    }
+  ],
+  "roxy-kp-planets-table": [
+    {
+      "operationId": "getKpPlanets",
+      "method": "POST",
+      "path": "/vedic-astrology/kp/planets"
+    }
+  ],
+  "roxy-kp-ruling-planets": [
+    {
+      "operationId": "getKpRulingPlanets",
+      "method": "POST",
+      "path": "/vedic-astrology/kp/ruling-planets"
+    }
+  ],
+  "roxy-local-space-compass": [
+    {
+      "operationId": "generateLocalSpace",
+      "method": "POST",
+      "path": "/astrology/local-space"
+    }
+  ],
+  "roxy-moon-phase": [
+    {
+      "operationId": "getMoonCalendar",
+      "method": "GET",
+      "path": "/astrology/moon-phase/calendar/{year}/{month}",
+      "attrs": {
+        "mode": "calendar"
+      }
+    },
+    {
+      "operationId": "getCurrentMoonPhase",
+      "method": "GET",
+      "path": "/astrology/moon-phase/current",
+      "attrs": {
+        "mode": "current"
+      }
+    },
+    {
+      "operationId": "getUpcomingMoonPhases",
+      "method": "GET",
+      "path": "/astrology/moon-phase/upcoming",
+      "attrs": {
+        "mode": "upcoming"
+      }
+    }
+  ],
+  "roxy-nakshatra-card": [
+    {
+      "operationId": "getNakshatra",
+      "method": "GET",
+      "path": "/vedic-astrology/nakshatras/{id}"
+    }
+  ],
+  "roxy-natal-chart": [
+    {
+      "operationId": "generateNatalChart",
+      "method": "POST",
+      "path": "/astrology/natal-chart"
+    }
+  ],
+  "roxy-numerology-card": [
+    {
+      "operationId": "calculateBirthDay",
+      "method": "POST",
+      "path": "/numerology/birth-day",
+      "attrs": {
+        "type": "birth-day"
+      }
+    },
+    {
+      "operationId": "generateNumerologyChart",
+      "method": "POST",
+      "path": "/numerology/chart",
+      "attrs": {
+        "type": "chart"
+      }
+    },
+    {
+      "operationId": "getDailyNumber",
+      "method": "POST",
+      "path": "/numerology/daily",
+      "attrs": {
+        "type": "daily"
+      }
+    },
+    {
+      "operationId": "calculateExpression",
+      "method": "POST",
+      "path": "/numerology/expression",
+      "attrs": {
+        "type": "expression"
+      }
+    },
+    {
+      "operationId": "calculateLifePath",
+      "method": "POST",
+      "path": "/numerology/life-path",
+      "attrs": {
+        "type": "life-path"
+      }
+    },
+    {
+      "operationId": "calculateMaturity",
+      "method": "POST",
+      "path": "/numerology/maturity",
+      "attrs": {
+        "type": "maturity"
+      }
+    },
+    {
+      "operationId": "calculatePersonalDay",
+      "method": "POST",
+      "path": "/numerology/personal-day",
+      "attrs": {
+        "type": "personal-day"
+      }
+    },
+    {
+      "operationId": "calculatePersonalMonth",
+      "method": "POST",
+      "path": "/numerology/personal-month",
+      "attrs": {
+        "type": "personal-month"
+      }
+    },
+    {
+      "operationId": "calculatePersonalYear",
+      "method": "POST",
+      "path": "/numerology/personal-year",
+      "attrs": {
+        "type": "personal-year"
+      }
+    },
+    {
+      "operationId": "calculatePersonality",
+      "method": "POST",
+      "path": "/numerology/personality",
+      "attrs": {
+        "type": "personality"
+      }
+    },
+    {
+      "operationId": "calculateSoulUrge",
+      "method": "POST",
+      "path": "/numerology/soul-urge",
+      "attrs": {
+        "type": "soul-urge"
+      }
+    }
+  ],
+  "roxy-panchang-table": [
+    {
+      "operationId": "getBasicPanchang",
+      "method": "POST",
+      "path": "/vedic-astrology/panchang/basic",
+      "attrs": {
+        "detail": "basic"
+      }
+    },
+    {
+      "operationId": "getDetailedPanchang",
+      "method": "POST",
+      "path": "/vedic-astrology/panchang/detailed",
+      "attrs": {
+        "detail": "detailed"
+      }
+    }
+  ],
+  "roxy-positions-table": [
+    {
+      "operationId": "calculateArabicLots",
+      "method": "POST",
+      "path": "/astrology/arabic-lots"
+    },
+    {
+      "operationId": "generateAsteroids",
+      "method": "POST",
+      "path": "/astrology/asteroids"
+    },
+    {
+      "operationId": "generateLilith",
+      "method": "POST",
+      "path": "/astrology/lilith"
+    },
+    {
+      "operationId": "generateProgressions",
+      "method": "POST",
+      "path": "/astrology/progressions"
+    },
+    {
+      "operationId": "generateSolarArc",
+      "method": "POST",
+      "path": "/astrology/solar-arc"
+    }
+  ],
+  "roxy-profection-card": [
+    {
+      "operationId": "generateProfections",
+      "method": "POST",
+      "path": "/astrology/profections"
+    }
+  ],
+  "roxy-reference-card": [
+    {
+      "operationId": "getPlanetMeaning",
+      "method": "GET",
+      "path": "/astrology/planet-meanings/{id}"
+    },
+    {
+      "operationId": "getZodiacSign",
+      "method": "GET",
+      "path": "/astrology/signs/{id}"
+    },
+    {
+      "operationId": "getCenter",
+      "method": "GET",
+      "path": "/human-design/centers/{id}"
+    },
+    {
+      "operationId": "getGate",
+      "method": "GET",
+      "path": "/human-design/gates/{number}"
+    },
+    {
+      "operationId": "getTrigram",
+      "method": "GET",
+      "path": "/iching/trigrams/{id}"
+    },
+    {
+      "operationId": "getCompoundNumber",
+      "method": "GET",
+      "path": "/numerology/compound-number/{number}"
+    },
+    {
+      "operationId": "getNumberMeaning",
+      "method": "GET",
+      "path": "/numerology/meanings/{number}"
+    },
+    {
+      "operationId": "getRashi",
+      "method": "GET",
+      "path": "/vedic-astrology/rashis/{id}"
+    }
+  ],
+  "roxy-relocation-wheel": [
+    {
+      "operationId": "generateRelocationChart",
+      "method": "POST",
+      "path": "/astrology/relocation-chart"
+    }
+  ],
+  "roxy-shadbala-table": [
+    {
+      "operationId": "calculateShadbala",
+      "method": "POST",
+      "path": "/vedic-astrology/shadbala"
+    }
+  ],
+  "roxy-synastry-chart": [
+    {
+      "operationId": "calculateSynastry",
+      "method": "POST",
+      "path": "/astrology/synastry"
+    }
+  ],
+  "roxy-tarot-card": [
+    {
+      "operationId": "getDailyCard",
+      "method": "POST",
+      "path": "/tarot/daily"
+    }
+  ],
+  "roxy-tarot-catalog": [
+    {
+      "operationId": "listCards",
+      "method": "GET",
+      "path": "/tarot/cards"
+    }
+  ],
+  "roxy-tarot-spread": [
+    {
+      "operationId": "drawCards",
+      "method": "POST",
+      "path": "/tarot/draw",
+      "attrs": {
+        "spread": "draw"
+      }
+    },
+    {
+      "operationId": "castCareerSpread",
+      "method": "POST",
+      "path": "/tarot/spreads/career",
+      "attrs": {
+        "spread": "career"
+      }
+    },
+    {
+      "operationId": "castCelticCross",
+      "method": "POST",
+      "path": "/tarot/spreads/celtic-cross",
+      "attrs": {
+        "spread": "celtic-cross"
+      }
+    },
+    {
+      "operationId": "castCustomSpread",
+      "method": "POST",
+      "path": "/tarot/spreads/custom",
+      "attrs": {
+        "spread": "custom"
+      }
+    },
+    {
+      "operationId": "castLoveSpread",
+      "method": "POST",
+      "path": "/tarot/spreads/love",
+      "attrs": {
+        "spread": "love"
+      }
+    },
+    {
+      "operationId": "castThreeCard",
+      "method": "POST",
+      "path": "/tarot/spreads/three-card",
+      "attrs": {
+        "spread": "three-card"
+      }
+    },
+    {
+      "operationId": "castYesNo",
+      "method": "POST",
+      "path": "/tarot/yes-no",
+      "attrs": {
+        "spread": "yes-no"
+      }
+    }
+  ],
+  "roxy-transits-table": [
+    {
+      "operationId": "calculateTransits",
+      "method": "POST",
+      "path": "/astrology/transits"
+    }
+  ],
+  "roxy-vedic-aspects": [
+    {
+      "operationId": "calculateDrishti",
+      "method": "POST",
+      "path": "/vedic-astrology/aspects"
+    }
+  ],
+  "roxy-vedic-kundli": [
+    {
+      "operationId": "generateBirthChart",
+      "method": "POST",
+      "path": "/vedic-astrology/birth-chart"
+    }
+  ],
+  "roxy-vedic-planets-table": [
+    {
+      "operationId": "generateBirthChart",
+      "method": "POST",
+      "path": "/vedic-astrology/birth-chart"
+    }
+  ],
+  "roxy-western-planets-table": [
+    {
+      "operationId": "generateNatalChart",
+      "method": "POST",
+      "path": "/astrology/natal-chart"
+    }
+  ],
+  "roxy-yoga-list": [
+    {
+      "operationId": "listYogas",
+      "method": "GET",
+      "path": "/vedic-astrology/yoga"
+    },
+    {
+      "operationId": "detectYogas",
+      "method": "POST",
+      "path": "/vedic-astrology/yoga/detect"
+    }
+  ]
+};

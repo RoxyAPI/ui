@@ -22,11 +22,17 @@ export interface RoxyYogaListProps extends ElementAttrs {
 	baseUrl?: string;
 	/** Override the OpenAPI spec URL the self-fetch form introspects. */
 	specUrl?: string;
+	/** Response language for self-fetch, forwarded to the API `lang` query parameter (en, tr, de, es, hi, pt, fr, ru). The form never shows a language field; the site owner sets it here. Defaults to English. */
+	lang?: string;
+	/** Override the self-fetch form submit-button label. Empty derives an outcome-first label from the endpoint (Get reading, Generate, Compare, Cast). */
+	submitLabel?: string;
+	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
+	attribution?: string;
 
 }
 
 export const RoxyYogaList = React.forwardRef<HTMLElement | null, RoxyYogaListProps>(
-	function RoxyYogaList({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, ...rest }, ref) {
+	function RoxyYogaList({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -92,6 +98,27 @@ export const RoxyYogaList = React.forwardRef<HTMLElement | null, RoxyYogaListPro
 				(el as unknown as { specUrl: string }).specUrl = specUrl;
 			}
 		}, [specUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && lang !== undefined) {
+				(el as unknown as { lang: string }).lang = lang;
+			}
+		}, [lang, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && submitLabel !== undefined) {
+				(el as unknown as { submitLabel: string }).submitLabel = submitLabel;
+			}
+		}, [submitLabel, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && attribution !== undefined) {
+				(el as unknown as { attribution: string }).attribution = attribution;
+			}
+		}, [attribution, loaded]);
 
 		if (error) {
 			return React.createElement(

@@ -25,15 +25,72 @@ const PERSON2 = {
 
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
 const UI_CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
+const PRACTITIONER_THEME_URL =
+	'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css';
 
 const MANIFEST_BY_TAG = Object.fromEntries(
 	(window.ROXY_COMPONENTS || []).map((c) => [c.tag, c]),
 );
 
+// Generated endpoint map (window.ROXY_ENDPOINT_BINDINGS, mirrored by
+// scripts/sync-manifest.ts). The Embed tab derives from it, so a binding change
+// flows through with no per-card edit here.
+const ENDPOINT_BINDINGS = window.ROXY_ENDPOINT_BINDINGS || {};
+
 function lookup(tag) {
 	const meta = MANIFEST_BY_TAG[tag];
 	if (!meta) throw new Error(`Unknown tag in demo manifest: ${tag}`);
 	return meta;
+}
+
+/**
+ * Derive the Embed-tab snippets for an endpoint-bound component from its tag,
+ * slug, and the generated endpoint bindings. The tag's FIRST binding (the
+ * widgets-map default; bindings are path-sorted) drives both the script-mode
+ * element and the one-tag widgets.js div, so there is zero per-card authoring.
+ * Returns null for a component with no binding (the three helpers), and the demo
+ * hides the tab for those.
+ */
+function embedSnippet(tag, slug) {
+	const bindings = ENDPOINT_BINDINGS[tag];
+	if (!bindings || !bindings.length) return null;
+	const def = bindings[0];
+	const endpoint = def.path.replace(/^\//, '');
+	// POST is the element default, so only a GET binding needs an explicit method.
+	const methodAttr = def.method === 'POST' ? '' : ` method="${def.method}"`;
+	// The default variant's selector attribute (period/mode/type/spread/detail),
+	// so the script element renders the same view the one-tag default resolves to.
+	const configAttr = def.attrs
+		? Object.entries(def.attrs)
+				.map(([k, v]) => ` ${k}="${v}"`)
+				.join('')
+		: '';
+
+	const script = `<!-- Optional: warm practitioner theme (drop this line for the default look) -->
+<!-- <link rel="stylesheet" href="${PRACTITIONER_THEME_URL}"> -->
+<script src="${UI_CDN}/roxy-ui.js" defer></script>
+<${tag}${configAttr} data-endpoint="${endpoint}"${methodAttr} publishable-key="pk_live_..." lang="en"></${tag}>`;
+
+	const oneTag = `<script src="${UI_CDN}/widgets.js" defer></script>
+<div data-roxy-widget="${slug}" data-publishable-key="pk_live_..."></div>`;
+
+	// The selector attribute and its non-default values, surfaced on the hint line
+	// so one data-* attribute on the one-tag div switches variant.
+	const selector = def.attrs ? Object.keys(def.attrs)[0] : undefined;
+	const otherValues = selector
+		? bindings
+				.slice(1)
+				.map((b) => b.attrs && b.attrs[selector])
+				.filter(Boolean)
+		: [];
+	const variantHint =
+		selector && otherValues.length
+			? ` Switch variant with data-${selector} (${otherValues.map((v) => `"${v}"`).join(', ')}) on the one-tag div.`
+			: '';
+
+	const hint = `Mint a publishable key at roxyapi.com/account, register the origins you embed on, and replace the pk_live_ placeholder. Works on any site that allows script tags.${variantHint}`;
+
+	return { script, oneTag, hint };
 }
 
 function serverRender(tag, body) {
@@ -84,6 +141,8 @@ function entry({ id, tag, seoLine, heading, topic, attrs = '', sdkCall, code, sh
 		attrs,
 		code: code ?? serverRender(tag, sdkCall),
 		shadcn: shadcnOverride ?? shadcn(tag, sdkCall),
+		// null for the three unbound helpers, so page.js hides the Embed tab.
+		embed: embedSnippet(tag, meta.slug),
 	};
 }
 

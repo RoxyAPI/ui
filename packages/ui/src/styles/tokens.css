@@ -1,5 +1,5 @@
 /**
- * Roxy UI design tokens. ~30 CSS custom properties that every component reads. Light + dark defaults. Host page overrides at :root or per element. No Tailwind, no class-name overrides, no JS theme switcher.
+ * Roxy UI design tokens. 47 CSS custom properties that every component reads. Light + dark defaults. Host page overrides at :root or per element. No Tailwind, no class-name overrides, no JS theme switcher.
  *
  * Delivery model: this file ships as a global light-DOM stylesheet (linked, or auto-injected by the CDN bundle). Custom properties inherit through the shadow boundary, so tokens set on a light-DOM ancestor reach every component shadow. The explicit theme blocks therefore target light-DOM selectors (:root, .dark, [data-theme="dark"], a wrapper element), NOT :host (a :host rule in a global sheet matches nothing). The :host([data-theme]) selectors are kept only for the case where this CSS is ever adopted directly into a shadow root; they are inert in global delivery.
  *
@@ -80,6 +80,12 @@
 	--roxy-font-mono:
 		"Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono",
 		monospace;
+	/* Heading/display font. Defaults to the sans stack so nothing changes for an
+	 * existing consumer; a preset (the practitioner theme ships a serif) overrides
+	 * it to restyle every result heading and the self-fetch form title in one token.
+	 * Fonts do not vary by theme, so it is declared once here and inherited by the
+	 * dark/light blocks unchanged. */
+	--roxy-font-display: var(--roxy-font-sans);
 
 	--roxy-text-xs: 0.75rem;
 	--roxy-text-sm: 0.875rem;

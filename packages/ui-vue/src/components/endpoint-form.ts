@@ -3,7 +3,7 @@ import { ensureScriptLoaded } from '../load-ui.js';
 
 export interface RoxyEndpointFormProps {
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-submit`. */
-	onRoxySubmit?: (event: CustomEvent<{ endpoint: string; values: Record<string, unknown> }>) => void;
+	onRoxySubmit?: (event: CustomEvent<{ endpoint: string; values: Record<string, unknown>; queryKeys: string[]; sticky: boolean }>) => void;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-validation-error`. */
 	onRoxyValidationError?: (event: CustomEvent<{ missing: string[] }>) => void;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-spec-error`. */

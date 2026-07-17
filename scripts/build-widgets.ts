@@ -1,20 +1,21 @@
 #!/usr/bin/env bun
 /**
- * Emit packages/ui/dist/cdn/widgets.js, the auto-mount script. Once loaded
- * via the CDN it scans the page for [data-roxy-widget="{name}"] elements
- * carrying [data-publishable-key="pk_..."] and:
+ * Emit packages/ui/dist/cdn/widgets.js, the one-tag auto-mount script. Once loaded via the CDN it scans the page for `[data-roxy-widget="{slug}"]` elements carrying `[data-publishable-key="pk_..."]` and mounts each `<roxy-{slug}>`, taking one of two paths per tag:
  *
- *   1. Builds the matching <roxy-{name}> custom element
- *   2. Ensures the roxy-ui.js bundle is available
- *   3. Forwards data-* attributes onto the element
- *   4. Calls the corresponding /api/v2 endpoint with the publishable key
- *      (origin-allowlisted pk_* keys enforced server-side)
+ *   1. Every required parameter is present as a `data-*` attribute -> fetch the endpoint immediately with the publishable key and assign the result.
+ *   2. A required parameter is missing -> set `data-endpoint` / `method` / `publishable-key` and let the component render its own input UI (Phase 1 form mode), which fetches on submit.
  *
- * Drop-in for plain HTML pages and creator embed surfaces (Stan Store,
- * Linktree, etc.) where a full SDK install is not practical.
+ * @remarks
+ * The slug -> endpoint map is GENERATED from the committed endpoint bindings joined with the manifest, never hand-maintained: the first binding per component (bindings are path-sorted) is the default, and its `attrs` sibling bindings become selectable through one `data-*` attribute (for example `data-period` on the horoscope card). Required-parameter names come from the same {@link buildFormModel} the form and the schema slices use, so the widget cannot disagree with the form about what a request needs. Drop-in for plain HTML pages and creator embed surfaces where a full SDK install is not practical.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { transform } from 'esbuild';
+import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
+import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
+import {
+	buildFormModel,
+	type SpecDoc,
+} from '../packages/ui/src/utils/field-schema.js';
 
 const ROXY_UI_VERSION = (
 	JSON.parse(await readFile('packages/ui/package.json', 'utf8')) as {
@@ -22,19 +23,131 @@ const ROXY_UI_VERSION = (
 	}
 ).version;
 
-const SCRIPT = `(function () {
+const SPEC_PATH = 'specs/openapi.json';
+
+/** Raw byte budget for the minified script (asserted at build and in the unit test). */
+export const WIDGETS_BUDGET_BYTES = 8192;
+
+/**
+ * One selectable request variant a widget can resolve to. Kept minimal so the interpolated map stays under the raw-size budget:
+ *  - `m` (method) is omitted on a non-default variant, which inherits the default method (a component's endpoints share one method).
+ *  - `g` marks a request that needs body or query input (birth data, a grouped person1/person2 body, a required query field). That input is entered through the form (date pickers, the city search), not raw attributes, so such a widget always renders form mode. Path parameters are derived from `p` at runtime, so a widget whose only required inputs are path parameters (or none) fetches immediately.
+ */
+interface WidgetVariant {
+	m?: string;
+	p: string;
+	g?: 1;
+}
+
+/** The generated per-slug widget descriptor: the default variant (always carries `m`), the optional selector attribute, and its non-default variants. */
+export interface WidgetDef extends WidgetVariant {
+	m: string;
+	s?: string;
+	v?: Record<string, WidgetVariant>;
+}
+
+/** Path template parameter names, e.g. "/astrology/horoscope/{sign}/daily" -> ["sign"]. */
+function pathParams(path: string): string[] {
+	return (path.match(/\{([^}]+)\}/g) ?? []).map((t) => t.slice(1, -1));
+}
+
+/** The three helper components never auto-mount as a data widget even if a binding is ever added for them. */
+const HELPER_TAGS = new Set([
+	'roxy-data',
+	'roxy-endpoint-form',
+	'roxy-location-search',
+]);
+
+/** A variant record. A request with any required key that is NOT a path parameter (a body field, a grouped person leaf, or a required query field) needs form input, so it is marked `g` (form mode always). Path-only and parameter-free requests fetch immediately. */
+function variant(
+	method: string,
+	path: string,
+	required: string[],
+): WidgetVariant {
+	const inPath = new Set(pathParams(path));
+	return required.some((k) => !inPath.has(k))
+		? { m: method, p: path, g: 1 }
+		: { m: method, p: path };
+}
+
+/** Required parameter keys for one operation, excluding the auto-generated `seed`. Derived from the SAME {@link buildFormModel} the form and slices use, so the widget cannot disagree about what a request needs. */
+function requiredOf(spec: SpecDoc, method: string, path: string): string[] {
+	const op = spec.paths[path]?.[method.toLowerCase()];
+	if (!op) return [];
+	const model = buildFormModel(
+		op,
+		spec.components?.schemas ?? {},
+		path.replace(/^\//, ''),
+	);
+	return model.fields
+		.filter((f) => f.required && f.name !== 'seed')
+		.map((f) => f.key);
+}
+
+/**
+ * Build the slug -> {@link WidgetDef} map from the generated endpoint bindings joined with the manifest, resolving each variant's required parameters from the committed spec. Every endpoint-bound data component is included; the three helpers are excluded.
+ */
+export async function buildWidgetMap(): Promise<Record<string, WidgetDef>> {
+	const spec = JSON.parse(await readFile(SPEC_PATH, 'utf8')) as SpecDoc;
+	const bySlug: Record<string, WidgetDef> = {};
+	for (const c of ROXY_COMPONENTS) {
+		if (c.selfFetching || HELPER_TAGS.has(c.tag)) continue;
+		const bindings = ENDPOINT_BINDINGS[c.tag];
+		if (!bindings?.length) continue;
+		const [head, ...rest] = bindings;
+		if (!head) continue;
+
+		const selectorKeys = new Set<string>();
+		for (const b of bindings)
+			for (const k of Object.keys(b.attrs ?? {})) selectorKeys.add(k);
+		if (selectorKeys.size > 1) {
+			throw new Error(
+				`build-widgets: ${c.tag} exposes multiple selector attrs (${[...selectorKeys].join(', ')}); exactly one is expected`,
+			);
+		}
+		const selector = [...selectorKeys][0];
+
+		// The default always carries an explicit method; variants inherit it.
+		const def: WidgetDef = {
+			...variant(
+				head.method,
+				head.path,
+				requiredOf(spec, head.method, head.path),
+			),
+			m: head.method,
+		};
+		if (selector) {
+			def.s = selector;
+			const variants: Record<string, WidgetVariant> = {};
+			for (const b of rest) {
+				const value = b.attrs?.[selector];
+				if (value == null) continue;
+				const v = variant(b.method, b.path, requiredOf(spec, b.method, b.path));
+				// A variant inherits the default method (a component's endpoints share one).
+				if (v.m === head.method) delete v.m;
+				variants[value] = v;
+			}
+			if (Object.keys(variants).length) def.v = variants;
+		}
+		bySlug[c.slug] = def;
+	}
+	return bySlug;
+}
+
+/** The auto-mount IIFE with the generated map interpolated. Kept out of `main` so the unit test can minify and size-check the exact script that ships. */
+export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
+	return `(function () {
 	'use strict';
 	if (window.__ROXY_WIDGETS_LOADED__) return;
 	window.__ROXY_WIDGETS_LOADED__ = true;
 
 	var CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION.split('.')[0]}/dist/cdn/roxy-ui.js';
 	var API = 'https://roxyapi.com/api/v2';
+	var WIDGETS = ${JSON.stringify(map)};
 
-	// Load the elements from wherever THIS script was loaded from. A site that
-	// self-hosts widgets.js (a strict Content-Security-Policy, an air-gapped
-	// network) would otherwise still reach out to the CDN for roxy-ui.js and get
-	// nothing, which is the one thing self-hosting is meant to prevent. Falls back
-	// to the CDN when the origin cannot be determined.
+	// Load the elements from wherever THIS script was loaded from, so a site that
+	// self-hosts widgets.js keeps everything on its own origin. Falls back to the
+	// CDN when the origin cannot be determined.
 	function bundleUrl() {
 		var self = document.currentScript && document.currentScript.src;
 		if (!self) {
@@ -44,34 +157,12 @@ const SCRIPT = `(function () {
 			}
 		}
 		if (!self) return CDN;
-		try {
-			return new URL('roxy-ui.js', self).href;
-		} catch (e) {
-			return CDN;
-		}
+		try { return new URL('roxy-ui.js', self).href; } catch (e) { return CDN; }
 	}
 
-	var WIDGET_ENDPOINTS = {
-		'natal-chart': { path: '/astrology/natal-chart', method: 'POST' },
-		'horoscope-card': { path: '/astrology/horoscope/{sign}/daily', method: 'GET' },
-		'synastry-chart': { path: '/astrology/synastry', method: 'POST' },
-		'compatibility-card': { path: '/astrology/compatibility-score', method: 'POST' },
-		'moon-phase': { path: '/astrology/moon-phase/current', method: 'GET' },
-		'vedic-kundli': { path: '/vedic-astrology/birth-chart', method: 'POST' },
-		'panchang-table': { path: '/vedic-astrology/panchang/detailed', method: 'POST' },
-		'dasha-timeline': { path: '/vedic-astrology/dasha/current', method: 'POST' },
-		'dosha-card': { path: '/vedic-astrology/dosha/manglik', method: 'POST' },
-		'guna-milan': { path: '/vedic-astrology/compatibility', method: 'POST' },
-		'kp-planets-table': { path: '/vedic-astrology/kp/planets', method: 'POST' },
-		'numerology-card': { path: '/numerology/life-path', method: 'POST' },
-		'tarot-card': { path: '/tarot/daily', method: 'POST' },
-		'tarot-spread': { path: '/tarot/spreads/three-card', method: 'POST' },
-		'biorhythm-chart': { path: '/biorhythm/daily', method: 'POST' },
-		hexagram: { path: '/iching/cast', method: 'GET' },
-	};
-
 	function ensureLoaded() {
-		if (document.getElementById('roxy-ui-loader')) return Promise.resolve();
+		// The elements may already be on the page from a manual <script> include of the full bundle (the Embed tab ships both snippets); injecting a second copy would double-define every custom element.
+		if (document.getElementById('roxy-ui-loader') || (window.customElements && window.customElements.get('roxy-data'))) return Promise.resolve();
 		return new Promise(function (resolve, reject) {
 			var s = document.createElement('script');
 			s.id = 'roxy-ui-loader';
@@ -84,54 +175,96 @@ const SCRIPT = `(function () {
 		});
 	}
 
+	// data-* attributes as camelCase keys, minus the control attributes that are
+	// not request parameters (the widget name, the key, and the display toggles).
+	function collectAttrs(el) {
+		var skip = { 'data-roxy-widget': 1, 'data-roxy-mounted': 1, 'data-publishable-key': 1, 'data-attribution': 1, 'data-submit-label': 1 };
+		var out = {};
+		for (var i = 0; i < el.attributes.length; i++) {
+			var a = el.attributes[i];
+			if (a.name.indexOf('data-') === 0 && !skip[a.name]) {
+				out[a.name.slice(5).replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); })] = a.value;
+			}
+		}
+		return out;
+	}
+
+	function pathParams(path) {
+		return (path.match(/\\{([^}]+)\\}/g) || []).map(function (t) { return t.slice(1, -1); });
+	}
+
 	function fillTemplate(path, attrs) {
 		return path.replace(/\\{([^}]+)\\}/g, function (_, key) {
 			return encodeURIComponent(attrs[key] || '');
 		});
 	}
 
-	function collectAttrs(el) {
-		var out = {};
-		for (var i = 0; i < el.attributes.length; i++) {
-			var a = el.attributes[i];
-			if (a.name.indexOf('data-') === 0 && a.name !== 'data-roxy-widget' && a.name !== 'data-publishable-key') {
-				out[a.name.slice('data-'.length).replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); })] = a.value;
-			}
+	// Pick the request variant: the selector data-* attribute chooses one, else the default.
+	function resolveVariant(def, attrs) {
+		if (def.s && def.v) {
+			var v = def.v[attrs[def.s]];
+			if (v) return v;
 		}
-		return out;
+		return def;
 	}
 
 	function mount(host) {
 		var name = host.getAttribute('data-roxy-widget');
+		var def = WIDGETS[name];
+		if (!def) return;
 		var pk = host.getAttribute('data-publishable-key');
-		if (!name || !WIDGET_ENDPOINTS[name]) return;
-
-		var endpoint = WIDGET_ENDPOINTS[name];
 		var attrs = collectAttrs(host);
-		var url = API + fillTemplate(endpoint.path, attrs);
+		var variant = resolveVariant(def, attrs);
+		var method = variant.m || def.m;
+		var params = pathParams(variant.p);
+		// Immediate fetch only when every path parameter is present and the request
+		// needs no form input (g). Anything else renders form mode.
+		var complete = !!pk && !variant.g && params.every(function (k) { return attrs[k] != null && attrs[k] !== ''; });
 
 		ensureLoaded().then(function () {
 			var element = document.createElement('roxy-' + name);
-			Object.keys(attrs).forEach(function (k) {
-				if (k === 'sign' || k === 'period' || k === 'mode' || k === 'type' || k === 'spread') {
-					element.setAttribute(k, attrs[k]);
-				}
-			});
-			host.innerHTML = '';
-			host.appendChild(element);
+			// Forward the selector and path-param attributes so the element renders the
+			// right view, and pass lang / submit-label / attribution through.
+			if (def.s && attrs[def.s] != null) element.setAttribute(def.s, attrs[def.s]);
+			params.forEach(function (k) { if (attrs[k] != null) element.setAttribute(k, attrs[k]); });
+			if (attrs.lang != null) element.setAttribute('lang', attrs.lang);
+			var label = host.getAttribute('data-submit-label');
+			if (label != null) element.setAttribute('submit-label', label);
+			if (host.getAttribute('data-attribution') !== 'off') element.setAttribute('attribution', '');
 
-			if (!pk) {
-				console.warn('roxy-widget', name, 'is missing data-publishable-key, skipping fetch');
+			if (!complete) {
+				// Missing a required parameter: hand off to form mode. The component
+				// renders its own input UI and fetches on submit through one controller.
+				element.setAttribute('data-endpoint', variant.p.replace(/^\\//, ''));
+				element.setAttribute('method', method);
+				if (pk) element.setAttribute('publishable-key', pk);
+				host.innerHTML = '';
+				host.appendChild(element);
 				return;
 			}
 
-			var headers = { Accept: 'application/json' };
-			headers['X-API-Key'] = pk;
-			var init = { headers: headers, method: endpoint.method };
-			if (endpoint.method === 'POST') {
-				init.headers['Content-Type'] = 'application/json';
-				init.body = JSON.stringify(attrs);
+			host.innerHTML = '';
+			host.appendChild(element);
+
+			// Every required parameter present: fetch now and assign the result.
+			var rest = {};
+			Object.keys(attrs).forEach(function (k) {
+				if (k === def.s || params.indexOf(k) >= 0) return;
+				rest[k] = attrs[k];
+			});
+			var query = {};
+			if (rest.lang != null) { query.lang = rest.lang; delete rest.lang; }
+			var headers = { Accept: 'application/json', 'X-API-Key': pk };
+			var init = { method: method, headers: headers };
+			if (method === 'POST') {
+				headers['Content-Type'] = 'application/json';
+				init.body = JSON.stringify(rest);
+			} else {
+				Object.keys(rest).forEach(function (k) { query[k] = rest[k]; });
 			}
+			var url = API + fillTemplate(variant.p, attrs);
+			var qs = Object.keys(query).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]); }).join('&');
+			if (qs) url += (url.indexOf('?') >= 0 ? '&' : '?') + qs;
 
 			fetch(url, init)
 				.then(function (res) { return res.json(); })
@@ -158,20 +291,30 @@ const SCRIPT = `(function () {
 	}
 })();
 `;
+}
 
 async function main() {
 	const outDir = 'packages/ui/dist/cdn';
 	await mkdir(outDir, { recursive: true });
-	const { code } = await transform(SCRIPT, {
+	const map = await buildWidgetMap();
+	const { code } = await transform(buildWidgetsScript(map), {
 		minify: true,
 		target: 'es2017',
 		loader: 'js',
 	});
-	await writeFile(`${outDir}/widgets.js`, code.trim() + '\n');
-	console.log(`Wrote ${outDir}/widgets.js`);
+	const out = `${code.trim()}\n`;
+	const bytes = Buffer.byteLength(out, 'utf8');
+	if (bytes > WIDGETS_BUDGET_BYTES) {
+		throw new Error(
+			`widgets.js is ${bytes} bytes, over the ${WIDGETS_BUDGET_BYTES} raw budget`,
+		);
+	}
+	await writeFile(`${outDir}/widgets.js`, out);
+	console.log(
+		`Wrote ${outDir}/widgets.js (${bytes} bytes raw, ${Object.keys(map).length} widgets)`,
+	);
 }
 
-main().catch((err) => {
-	console.error(err);
-	process.exit(1);
-});
+if (import.meta.main) {
+	await main();
+}

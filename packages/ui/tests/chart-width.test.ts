@@ -72,4 +72,12 @@ describe('component surface', () => {
 			`Data components with a transparent root (add background: var(--roxy-surface, #fff)):\n  ${offenders.join('\n  ')}`,
 		).toEqual([]);
 	});
+
+	test('the endpoint form paints --roxy-surface so it reads on any host background', () => {
+		const src = readFileSync(
+			'packages/ui/src/components/endpoint-form.ts',
+			'utf8',
+		);
+		expect(src).toContain('background: var(--roxy-surface');
+	});
 });

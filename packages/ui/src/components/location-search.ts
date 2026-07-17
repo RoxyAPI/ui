@@ -1,8 +1,13 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, LitElement, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { debounce } from '../utils/debounce.js';
+import {
+	dispatchKeyRefusal,
+	KEY_REFUSED_MESSAGE,
+	keyIsRefused,
+} from '../utils/key-guard.js';
 
 type CityResult = SearchCitiesResponse['cities'][number];
 
@@ -159,9 +164,12 @@ export class RoxyLocationSearch extends LitElement {
 	@state()
 	private highlight = -1;
 
+	/** True when a non-publishable key is present, so the search fail-closes: no network call, a visible error, matching {@link FetchController}. */
+	@state()
+	private keyBlocked = false;
+
 	private clickOutsideHandler?: (e: MouseEvent) => void;
 	private abortController?: AbortController;
-	private secretKeyWarned = false;
 	private debouncedFetch = debounce((q: string) => {
 		void this.fetchResults(q);
 	}, 300);
@@ -176,6 +184,16 @@ export class RoxyLocationSearch extends LitElement {
 		document.addEventListener('mousedown', this.clickOutsideHandler);
 	}
 
+	protected willUpdate(changed: PropertyValues): void {
+		if (changed.has('publishableKey') || changed.has('apiKey')) {
+			// Effective key mirrors fetchResults: publishable-key wins, api-key is the
+			// legacy fallback. A set-but-non-pk_ key fail-closes here, warning once.
+			const refused = keyIsRefused(this.publishableKey ?? this.apiKey);
+			if (refused && !this.keyBlocked) dispatchKeyRefusal(this, { warn: true });
+			this.keyBlocked = refused;
+		}
+	}
+
 	disconnectedCallback(): void {
 		super.disconnectedCallback();
 		if (this.clickOutsideHandler) {
@@ -188,28 +206,10 @@ export class RoxyLocationSearch extends LitElement {
 		}
 	}
 
-	private warnIfSecretKey() {
-		if (this.secretKeyWarned) return;
-		if (!this.apiKey) return;
-		// Browser-safe publishable keys carry the `pk_` prefix and a server-side
-		// origin allowlist. Anything else (a raw secret key, UUID-style token)
-		// must not ship to the browser.
-		if (this.apiKey.startsWith('pk_')) return;
-		this.secretKeyWarned = true;
-		const message =
-			'Possible secret key in client-side <roxy-location-search>; use a `pk_` publishable key with origin allowlist instead.';
-		console.warn(message);
-		this.dispatchEvent(
-			new CustomEvent('roxy-validation-error', {
-				detail: { reason: 'possible-secret-key', message },
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
 	private async fetchResults(q: string) {
-		this.warnIfSecretKey();
+		// Fail closed: never send a non-pk_ key. willUpdate has already flipped
+		// keyBlocked and surfaced the error; this guards the direct-call paths.
+		if (this.keyBlocked) return;
 		// Abort any in-flight request so a stale response cannot overwrite a
 		// fresher one (debounced typing) or land after disconnect.
 		if (this.abortController) this.abortController.abort();
@@ -302,6 +302,9 @@ export class RoxyLocationSearch extends LitElement {
 	};
 
 	render() {
+		if (this.keyBlocked) {
+			return html`<div class="roxy-error" role="alert">${KEY_REFUSED_MESSAGE}</div>`;
+		}
 		return html`<div class="field">
 			<input
 				type="text"

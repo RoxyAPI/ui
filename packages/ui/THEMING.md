@@ -26,7 +26,8 @@ Status tokens each have a `-fg` variant (e.g. `--roxy-success-fg`) for text rend
 
 | Variable | Default | Notes |
 |---|---|---|
-| `--roxy-font-sans` | `Geist, system-ui, ...` | Body and headings |
+| `--roxy-font-sans` | `Geist, system-ui, ...` | Body text |
+| `--roxy-font-display` | `var(--roxy-font-sans)` | Result headings and the self-fetch form title. Defaults to the body font, so nothing changes until you set it; override it for an editorial serif |
 | `--roxy-font-mono` | `Geist Mono, ui-monospace, ...` | Numeric tables, code |
 | `--roxy-text-xs` | `0.75rem` | Captions |
 | `--roxy-text-sm` | `0.875rem` | Body small |
@@ -211,6 +212,43 @@ For a low-vision or high-contrast mode. Body text hits WCAG **AAA** (7:1); every
 	}
 }
 ```
+
+### Practitioner preset
+
+An optional theme file restyles every widget on a page to a warm rosewater palette with a serif display font, shadowless with hairline borders and generous radii. It only reassigns `--roxy-*` tokens, so it layers on top of the base tokens: link it AFTER the token stylesheet (or the CDN bundle that injects them), and it composes with the same dark-mode machinery.
+
+When authoring your own full re-theme, cover `--roxy-secondary` alongside `--roxy-fg` and `--roxy-muted`: it is the secondary ink used by form labels, the generic renderer, and several chart strokes, and the stock value is slate, so a warm or brand theme that skips it shows cool bluish labels, most visibly in dark mode.
+
+The one-line option carries the full look, fonts included:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">
+```
+
+Or copy the color tokens into your own stylesheet. The Customize Colors panel on the demo page has a Presets dropdown that fills the swatches and emits this snippet:
+
+```css
+:root {
+	--roxy-bg: #fbf6f3;
+	--roxy-surface: #f5e8e0;
+	--roxy-fg: #3e2a2c;
+	--roxy-muted: #7e625f;
+	--roxy-border: #ead9d2;
+	--roxy-accent: #914955;
+	--roxy-danger: #b23a38;
+}
+:root[data-theme="dark"] {
+	--roxy-bg: #231619;
+	--roxy-surface: #2e1e22;
+	--roxy-fg: #f2e4df;
+	--roxy-muted: #b39698;
+	--roxy-border: #402c31;
+	--roxy-accent: #d9a2a6;
+	--roxy-danger: #e4736b;
+}
+```
+
+`--roxy-accent-ink` and `--roxy-ring` derive from `--roxy-accent`, so the snippet does not set them. The serif display face and humanist sans body load from Google Fonts: the linked file imports both and sets `--roxy-font-display` / `--roxy-font-sans` for you, so the CSS snippet above (colors only) is the lighter option when you already have a type system.
 
 ## A11y
 

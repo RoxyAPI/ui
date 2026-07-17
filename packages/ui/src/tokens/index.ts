@@ -91,15 +91,6 @@ export const SIGNS_ORDER = [
 	'Pisces',
 ] as const;
 
-/**
- * Lowercase rashi keys in canonical zodiac order. Derived from `SIGNS_ORDER`
- * so the two stay in lockstep. The /vedic-astrology/birth-chart response
- * carries planet buckets keyed by these names.
- */
-export const RASHI_KEYS = SIGNS_ORDER.map((s) =>
-	s.toLowerCase(),
-) as readonly Lowercase<(typeof SIGNS_ORDER)[number]>[];
-
 /** Aspect symbols. Used by synastry and natal chart aspect tables. */
 export const ASPECT_SYMBOL: Record<string, string> = {
 	conjunction: '☌',

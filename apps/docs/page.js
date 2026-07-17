@@ -48,6 +48,11 @@
 			{ key: 'code', label: 'Code', body: codeBlock(`code-${demo.id}`, demo.code) },
 			{ key: 'shadcn', label: 'shadcn', body: codeBlock(`shadcn-${demo.id}`, demo.shadcn) },
 		];
+		// Endpoint-bound components get a copy-paste Embed tab; the three unbound
+		// helpers (demo.embed === null) do not.
+		if (demo.embed) {
+			tabs.push({ key: 'embed', label: 'Embed', body: embedPanel(demo) });
+		}
 		const tablist = tabs
 			.map((t, i) => `
 				<button role="tab"
@@ -88,6 +93,22 @@
 			<div class="code-block">
 				<button type="button" class="copy-btn" data-copy-target="${id}">Copy</button>
 				<pre><code id="${id}">${escapeHtml(code)}</code></pre>
+			</div>
+		`;
+	}
+
+	// Embed tab: derived entirely from demo.embed (component tag + first binding,
+	// built in components-manifest.js). Two copy-paste snippets reusing the shared
+	// codeBlock machinery, plus the key/host hint.
+	function embedPanel(demo) {
+		const e = demo.embed;
+		return `
+			<div class="embed-panel stack">
+				<p class="embed-lead">Script tag plus one element. No build step:</p>
+				${codeBlock(`embed-script-${demo.id}`, e.script)}
+				<p class="embed-lead">Or the one-tag auto-mount:</p>
+				${codeBlock(`embed-onetag-${demo.id}`, e.oneTag)}
+				<p class="embed-hint">${escapeHtml(e.hint)}</p>
 			</div>
 		`;
 	}
@@ -265,10 +286,37 @@
 	};
 	const state = JSON.parse(JSON.stringify(DEFAULTS));
 
+	// Named presets. Practitioner overrides only the tokens the shipped theme file
+	// sets (bg, fg, muted, border, secondary, accent, danger); primary and the
+	// status colors stay at the stock defaults, so the copyable snippet matches
+	// what the linked theme file produces. The theme file additionally sets surface, ring, radius, and
+	// fonts, which the color-only swatch grid does not cover; the link alternative
+	// carries the full look.
+	const PRESETS = {
+		default: DEFAULTS,
+		practitioner: {
+			light: {
+				...DEFAULTS.light,
+				secondary: '#503a3a', accent: '#914955', danger: '#b23a38',
+				bg: '#fbf6f3', fg: '#3e2a2c', muted: '#7e625f', border: '#ead9d2',
+			},
+			dark: {
+				...DEFAULTS.dark,
+				secondary: '#e0cecb', accent: '#d9a2a6', danger: '#e4736b',
+				bg: '#231619', fg: '#f2e4df', muted: '#b39698', border: '#402c31',
+			},
+		},
+	};
+	const PRACTITIONER_LINK =
+		'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">';
+
 	const swatchRow = document.getElementById('swatch-row');
 	const snippetEl = document.getElementById('customize-snippet');
 	const modeTabs = document.querySelectorAll('.mode-tabs [role="tab"]');
 	const resetBtn = document.getElementById('customize-reset');
+	const presetSelect = document.getElementById('preset-select');
+	const presetLinkAlt = document.getElementById('preset-link-alt');
+	const presetLinkSnippet = document.getElementById('preset-link-snippet');
 	let mode = 'light';
 
 	// Inject a runtime <style> we own so dark-mode swatch edits show up live
@@ -335,10 +383,23 @@
 	modeTabs.forEach((t) => {
 		t.addEventListener('click', () => setMode(t.dataset.mode));
 	});
-	resetBtn?.addEventListener('click', () => {
-		Object.assign(state, JSON.parse(JSON.stringify(DEFAULTS)));
+
+	// Fill every swatch (both modes) from a preset, regenerate the copyable
+	// snippet, and surface the one-line link alternative for the practitioner
+	// preset (the full look, including the tokens the swatch grid does not edit).
+	function applyPreset(name) {
+		const preset = PRESETS[name] ?? PRESETS.default;
+		Object.assign(state, JSON.parse(JSON.stringify(preset)));
 		applyState();
 		renderSwatches();
+		const showLink = name === 'practitioner';
+		if (presetLinkAlt) presetLinkAlt.hidden = !showLink;
+		if (showLink && presetLinkSnippet) presetLinkSnippet.textContent = PRACTITIONER_LINK;
+	}
+	presetSelect?.addEventListener('change', () => applyPreset(presetSelect.value));
+	resetBtn?.addEventListener('click', () => {
+		if (presetSelect) presetSelect.value = 'default';
+		applyPreset('default');
 	});
 
 	renderSwatches();

@@ -172,3 +172,206 @@ describe('RoxyDataElement uncontrolled mode (self-fetch UI)', () => {
 		el.remove();
 	});
 });
+
+type DreamEl = HTMLElement & {
+	updateComplete: Promise<unknown>;
+	data: unknown;
+};
+
+async function flush(el: DreamEl): Promise<void> {
+	for (let i = 0; i < 6; i++) {
+		await el.updateComplete;
+		await new Promise((r) => setTimeout(r, 0));
+	}
+}
+
+/** Mount a self-fetching dream card and drive one form submit, so the base's result state can be asserted. Slice/spec fetches 404 (inner form is inert here); the API call returns a valid symbol. */
+async function selfFetch(sticky: boolean): Promise<DreamEl> {
+	globalThis.fetch = mock(async (url: string | URL) =>
+		String(url).includes('openapi.json') || String(url).includes('/schemas/')
+			? { ok: false, status: 404, json: async () => ({}) }
+			: {
+					ok: true,
+					status: 200,
+					json: async () => ({ name: 'Water', meaning: 'Flow', letter: 'W' }),
+				},
+	) as unknown as typeof fetch;
+	const el = document.createElement('roxy-dream-card') as DreamEl;
+	el.setAttribute('data-endpoint', 'dreams/symbols/{id}');
+	el.setAttribute('method', 'GET');
+	el.setAttribute('publishable-key', 'pk_test_abc');
+	document.body.appendChild(el);
+	await flush(el);
+	const form = el.shadowRoot?.querySelector('roxy-endpoint-form');
+	form?.dispatchEvent(
+		new CustomEvent('roxy-submit', {
+			detail: {
+				endpoint: 'dreams/symbols/{id}',
+				values: { id: 'water' },
+				queryKeys: [],
+				sticky,
+			},
+			bubbles: true,
+			composed: true,
+		}),
+	);
+	await flush(el);
+	return el;
+}
+
+describe('RoxyDataElement self-fetch result affordances', () => {
+	const originalFetch = globalThis.fetch;
+	afterEach(() => {
+		globalThis.fetch = originalFetch;
+	});
+
+	test('a non-sticky self-fetch result shows an Edit control above the data', async () => {
+		const el = await selfFetch(false);
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.querySelector('.roxy-edit')).not.toBeNull();
+		expect(root.textContent).toContain('Water');
+		el.remove();
+	});
+
+	test('a sticky self-fetch result keeps the picker above the data (no Edit button)', async () => {
+		const el = await selfFetch(true);
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.querySelector('roxy-endpoint-form')).not.toBeNull();
+		expect(root.querySelector('.roxy-edit')).toBeNull();
+		expect(root.textContent).toContain('Water');
+		el.remove();
+	});
+
+	test('controlled mode (data assigned) never fetches and never shows the Edit affordance', async () => {
+		const fetchMock = mock(async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({}),
+		}));
+		globalThis.fetch = fetchMock as unknown as typeof fetch;
+		const el = document.createElement('roxy-dream-card') as DreamEl;
+		// An endpoint + key are set, but data is assigned: this is the WordPress /
+		// controlled path, which must render the result alone and issue no request.
+		el.setAttribute('data-endpoint', 'dreams/symbols/{id}');
+		el.setAttribute('method', 'GET');
+		el.setAttribute('publishable-key', 'pk_test_abc');
+		el.data = { name: 'Ocean', meaning: 'Depth', letter: 'O' };
+		document.body.appendChild(el);
+		await flush(el);
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.textContent).toContain('Ocean');
+		expect(root.querySelector('.roxy-edit')).toBeNull();
+		expect(fetchMock).not.toHaveBeenCalled();
+		el.remove();
+	});
+});
+
+/**
+ * The attribution credit converts a self-fetch or one-tag auto-mount into distribution. It renders only alongside a RESULT and only when the `attribution` attribute is enabled, so a controlled consumer (which never sets it) stays byte-identical. Default OFF for a plain self-fetch; the widgets script turns it on; `attribution="off"` forces it off.
+ */
+describe('RoxyDataElement attribution credit', () => {
+	const originalFetch = globalThis.fetch;
+	afterEach(() => {
+		globalThis.fetch = originalFetch;
+	});
+
+	/** Rendered markup with the component stylesheet stripped, so a `.roxy-attribution` CSS rule cannot be mistaken for a rendered credit. */
+	function credit(el: DreamEl): { present: boolean; markup: string } {
+		const markup = (el.shadowRoot?.innerHTML ?? '').replace(
+			/<style[\s\S]*?<\/style>/g,
+			'',
+		);
+		return { present: markup.includes('class="roxy-attribution"'), markup };
+	}
+
+	/** Self-fetch a dream card with an optional `attribution` attribute, then submit its form. */
+	async function selfFetchAttr(attribution: string | null): Promise<DreamEl> {
+		globalThis.fetch = mock(async (url: string | URL) =>
+			String(url).includes('openapi.json') || String(url).includes('/schemas/')
+				? { ok: false, status: 404, json: async () => ({}) }
+				: {
+						ok: true,
+						status: 200,
+						json: async () => ({ name: 'Water', meaning: 'Flow', letter: 'W' }),
+					},
+		) as unknown as typeof fetch;
+		const el = document.createElement('roxy-dream-card') as DreamEl;
+		el.setAttribute('data-endpoint', 'dreams/symbols/{id}');
+		el.setAttribute('method', 'GET');
+		el.setAttribute('publishable-key', 'pk_test_abc');
+		if (attribution != null) el.setAttribute('attribution', attribution);
+		document.body.appendChild(el);
+		await flush(el);
+		el.shadowRoot?.querySelector('roxy-endpoint-form')?.dispatchEvent(
+			new CustomEvent('roxy-submit', {
+				detail: {
+					endpoint: 'dreams/symbols/{id}',
+					values: { id: 'water' },
+					queryKeys: [],
+					sticky: false,
+				},
+				bubbles: true,
+				composed: true,
+			}),
+		);
+		await flush(el);
+		return el;
+	}
+
+	test('a plain self-fetch shows no credit (off by default)', async () => {
+		const el = await selfFetchAttr(null);
+		expect(credit(el).present).toBe(false);
+		expect(el.shadowRoot?.textContent).toContain('Water');
+		el.remove();
+	});
+
+	test('an enabled self-fetch shows the credit under the result', async () => {
+		const el = await selfFetchAttr('');
+		const { present, markup } = credit(el);
+		expect(present).toBe(true);
+		expect(markup).toContain('Spiritual data by RoxyAPI');
+		expect(markup).toContain(
+			'roxyapi.com/?utm_source=widget&amp;utm_medium=embed',
+		);
+		expect(markup).toContain('rel="noopener"');
+		el.remove();
+	});
+
+	test('attribution="off" forces the credit off even in self-fetch', async () => {
+		const el = await selfFetchAttr('off');
+		expect(credit(el).present).toBe(false);
+		el.remove();
+	});
+
+	test('auto-mount analog: assigned data plus the attribute shows the credit', async () => {
+		// The widgets attrs-complete path assigns data directly (not selfFetched) and
+		// sets attribution; the credit still renders alongside the result.
+		const el = document.createElement('roxy-dream-card') as DreamEl;
+		el.setAttribute('attribution', '');
+		el.data = { name: 'Ocean', meaning: 'Depth', letter: 'O' };
+		document.body.appendChild(el);
+		await flush(el);
+		expect(credit(el).present).toBe(true);
+		el.remove();
+	});
+
+	test('controlled mode (assigned data, no attribute) never shows the credit', async () => {
+		const el = document.createElement('roxy-dream-card') as DreamEl;
+		el.data = { name: 'Ocean', meaning: 'Depth', letter: 'O' };
+		document.body.appendChild(el);
+		await flush(el);
+		expect(credit(el).present).toBe(false);
+		el.remove();
+	});
+
+	test('the credit copy passes the brand rules (no apostrophe, em dash, or double hyphen dash)', async () => {
+		const el = await selfFetchAttr('');
+		const { markup } = credit(el);
+		const start = markup.indexOf('roxy-attribution');
+		const snippet = markup.slice(start, start + 200);
+		expect(snippet).not.toMatch(/[—–]/);
+		expect(snippet).not.toMatch(/'/);
+		expect(snippet).not.toMatch(/\s--\s/);
+		el.remove();
+	});
+});

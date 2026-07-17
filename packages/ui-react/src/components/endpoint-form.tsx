@@ -10,7 +10,7 @@ export interface RoxyEndpointFormProps extends ElementAttrs {
 	className?: string;
 	style?: React.CSSProperties;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-submit`. */
-	onRoxySubmit?: (event: CustomEvent<{ endpoint: string; values: Record<string, unknown> }>) => void;
+	onRoxySubmit?: (event: CustomEvent<{ endpoint: string; values: Record<string, unknown>; queryKeys: string[]; sticky: boolean }>) => void;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-validation-error`. */
 	onRoxyValidationError?: (event: CustomEvent<{ missing: string[] }>) => void;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-spec-error`. */
@@ -47,7 +47,7 @@ export const RoxyEndpointForm = React.forwardRef<HTMLElement | null, RoxyEndpoin
 			const el = internal.current;
 			const handler = onRoxySubmit;
 			if (!el || !handler) return;
-			const listener = (event: Event) => handler(event as CustomEvent<{ endpoint: string; values: Record<string, unknown> }>);
+			const listener = (event: Event) => handler(event as CustomEvent<{ endpoint: string; values: Record<string, unknown>; queryKeys: string[]; sticky: boolean }>);
 			el.addEventListener('roxy-submit', listener);
 			return () => el.removeEventListener('roxy-submit', listener);
 		}, [onRoxySubmit, loaded]);

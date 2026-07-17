@@ -96,3 +96,10 @@ pre-push:
     docs-drift:
       run: bun run docs:sync && git diff --exit-code -- README.md AGENTS.md || { echo "README.md or AGENTS.md drifted from spec, commit the sync output"; exit 1; }
       priority: 8
+
+    size-check:
+      # Runs after the build-dependent gates (audit priority 7, wrapper-drift
+      # priority 9 both run `bun run build`), so dist/cdn is fresh. Asserts the
+      # gzip/raw bundle budgets the README and CLAUDE.md claim.
+      run: bun run size:check
+      priority: 10

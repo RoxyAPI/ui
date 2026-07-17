@@ -126,3 +126,78 @@ describe('theming contract', () => {
 		);
 	});
 });
+
+/**
+ * The display-font token aliases the sans stack by default, so an existing consumer sees no change; a preset overrides it to restyle every result heading and the form title in one token. happy-dom cannot resolve a var() chain, so the default is proven by construction (the token literally references --roxy-font-sans) plus a computed check that lives in the e2e suite.
+ */
+describe('font-display token', () => {
+	test('defaults to the sans stack, so an unset preset renders headings in the body font', () => {
+		expect(TOKENS_CSS).toContain('--roxy-font-display: var(--roxy-font-sans)');
+		// It is only ever the alias, never a hardcoded (quoted) family, which would
+		// break the "unset equals sans" guarantee.
+		expect(TOKENS_CSS).not.toMatch(/--roxy-font-display:\s*"/);
+	});
+
+	test('the shared heading rule consumes the display token with a sans fallback', () => {
+		const base = readFileSync(
+			new URL('../src/utils/base-styles.ts', import.meta.url),
+			'utf8',
+		);
+		expect(base).toMatch(/h1,\s*h2,\s*h3,\s*h4/);
+		expect(base).toMatch(
+			/font-family:\s*var\(\s*--roxy-font-display,\s*var\(\s*--roxy-font-sans/,
+		);
+	});
+});
+
+/**
+ * The practitioner preset is an OPTIONAL theme file that only reassigns --roxy-* tokens, so it composes with the core token contract instead of replacing it. It must mirror the tokens.css trigger structure exactly (OS preference, [data-theme] / .dark opt-in, explicit-light opt-out) so it layers on the same dark-mode machinery.
+ */
+describe('practitioner theme preset', () => {
+	const PRACTITIONER = readFileSync(
+		new URL('../src/styles/themes/practitioner.css', import.meta.url),
+		'utf8',
+	);
+
+	test('parses: braces balance and it carries a font @import', () => {
+		const opens = (PRACTITIONER.match(/\{/g) ?? []).length;
+		const closes = (PRACTITIONER.match(/\}/g) ?? []).length;
+		expect(opens).toBe(closes);
+		expect(opens).toBeGreaterThan(0);
+		expect(PRACTITIONER).toMatch(/@import url\("https:\/\/fonts\.googleapis/);
+	});
+
+	test('mirrors the exact tokens.css trigger selectors, light and dark', () => {
+		expect(PRACTITIONER).toContain(':where(:root, :host)');
+		expect(PRACTITIONER).toContain('@media (prefers-color-scheme: dark)');
+		expect(PRACTITIONER).toContain(':root[data-theme="dark"]');
+		expect(PRACTITIONER).toContain(':root[data-theme="light"]');
+		expect(PRACTITIONER).toContain(':host([data-theme="dark"])');
+		expect(PRACTITIONER).toMatch(/^\s*\.dark,$/m);
+		expect(PRACTITIONER).toMatch(/^\s*\.light,$/m);
+	});
+
+	test('carries both mode palettes and derives accent-ink like tokens.css', () => {
+		expect(PRACTITIONER).toContain('--roxy-bg: #fbf6f3');
+		expect(PRACTITIONER).toContain('--roxy-bg: #231619');
+		expect(PRACTITIONER).toContain('--roxy-accent: #914955');
+		expect(PRACTITIONER).toContain('--roxy-accent: #d9a2a6');
+		expect(PRACTITIONER).toContain(
+			'--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black)',
+		);
+		expect(PRACTITIONER).toContain('--roxy-font-display:');
+	});
+
+	test('only sets --roxy-* custom properties (no bare CSS properties leak in)', () => {
+		const body = PRACTITIONER.replace(/\/\*[\s\S]*?\*\//g, '').replace(
+			/@import[^;]+;/g,
+			'',
+		);
+		const props = [...body.matchAll(/([\w-]+)\s*:\s*[^{};]+;/g)].map(
+			(m) => m[1],
+		);
+		expect(props.length).toBeGreaterThan(10);
+		const foreign = props.filter((p) => !p.startsWith('--roxy-'));
+		expect(foreign).toEqual([]);
+	});
+});

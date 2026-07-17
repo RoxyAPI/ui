@@ -602,6 +602,8 @@ Two ways to feed a component, and the key rule for each:
 
 Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For self-fetch embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
 
+The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean toggle, native date and time, a city search), collapses optional fields under one Advanced disclosure, and reads a `lang` attribute for localized responses. For the simplest embed, load `dist/cdn/widgets.js` and drop one `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`: with the required attributes present it fetches on mount, otherwise it renders the form. A single `<link>` to the [practitioner theme preset](https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css) restyles every widget on the page.
+
 ## Distribution
 
 | Surface | URL |
@@ -611,7 +613,8 @@ Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK
 | npm `@roxyapi/ui-vue` | `npmjs.com/package/@roxyapi/ui-vue` |
 | jsDelivr CDN (full bundle) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
 | jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
-| Widgets auto-mount (with browser keys, coming soon) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
+| Widgets auto-mount (one tag, browser keys) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
+| Practitioner theme preset (one link, warm rosewater) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css` |
 | shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
 | Components catalog (JSON: every component, domain, and endpoint) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json` |
 
@@ -771,7 +774,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Per-component bundles run 9-21 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 85 KB gzipped today. The React and Vue packages load the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Per-component bundles run 13-26 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 108 KB gzipped today. The React and Vue packages load the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>
@@ -895,11 +898,11 @@ For CSP, allow `script-src https://cdn.jsdelivr.net` if loading the bundle from 
 Semver. Pre-1.0, minor bumps may include breaking changes (we will note them in the changelog). Patch bumps are always backwards-compatible. Pin a concrete version in production code:
 
 ```bash
-npm install @roxyapi/ui@0.8.x
+npm install @roxyapi/ui@0.15.x
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@0.8.0/dist/cdn/roxy-ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@0.15.0/dist/cdn/roxy-ui.js"></script>
 ```
 
 The `@latest` URL on this page is for paste-friendly marketing; production code should pin.

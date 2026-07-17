@@ -1,48 +1,28 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { SIGN_GLYPH } from '../tokens/index.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { humanize } from '../utils/string.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import {
+	buildFormModel,
+	deriveSubmitLabel,
+	type FieldDef,
+	type FormModel,
+	isZodiacEnum,
+	LOCATION_TRIO,
+	type OpenApiDoc,
+	type OperationSchema,
+	sliceFileName,
+} from '../utils/field-schema.js';
+import { capitalize, humanize } from '../utils/string.js';
+import { ROXY_UI_VERSION } from '../version.js';
 
-interface OpenApiSchemaRef {
-	$ref?: string;
-}
+/** Production spec, fetched when no slice is available and no explicit `spec-url` is set. */
+const PROD_SPEC_URL = 'https://roxyapi.com/api/v2/openapi.json';
 
-interface OpenApiSchema extends OpenApiSchemaRef {
-	type?: string;
-	format?: string;
-	description?: string;
-	enum?: string[];
-	default?: unknown;
-	minimum?: number;
-	maximum?: number;
-	properties?: Record<string, OpenApiSchema>;
-	required?: string[];
-	items?: OpenApiSchema;
-	example?: unknown;
-}
-
-interface FieldDef {
-	/** Unique storage + input key: the property name, or "group.name" for a nested object field. */
-	key: string;
-	/** Schema property name (the label source), e.g. "date". */
-	name: string;
-	/** Parent object key for a nested schema (person1/person2); undefined for a flat field. */
-	group?: string;
-	/** True when the spec declares the field as `in: query`, so it belongs in the query string even on a POST (`?lang=` is the one every localized endpoint carries). */
-	inQuery?: boolean;
-	type: string;
-	required: boolean;
-	description?: string;
-	enum?: string[];
-	min?: number;
-	max?: number;
-	default?: unknown;
-}
-
-interface OpenApiDoc {
-	paths?: Record<string, Record<string, unknown>>;
-	components?: { schemas?: Record<string, OpenApiSchema> };
-}
+/** Version-pinned jsDelivr base for the digested per-operation schema slices, mirroring the wrapper CDN pinning so a slice matches the bundle it ships beside. */
+const SLICE_BASE = `https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION}/dist/schemas`;
 
 const specCache = new Map<string, Promise<OpenApiDoc>>();
 
@@ -66,27 +46,48 @@ async function loadSpec(url: string): Promise<OpenApiDoc> {
 	return pending;
 }
 
+/** A fresh seed for a hidden `seed` field, so each submit is a new draw unless the caller pinned one. */
+function randomSeed(): string {
+	return (
+		globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)
+	);
+}
+
+/** Parse an array-field text value into a real array: JSON when it parses to one, else comma-separated tokens. */
+function parseArrayValue(raw: string): unknown {
+	const trimmed = raw.trim();
+	if (!trimmed) return [];
+	try {
+		const parsed = JSON.parse(trimmed);
+		if (Array.isArray(parsed)) return parsed;
+	} catch {
+		// Not JSON: fall through to comma splitting.
+	}
+	return trimmed
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+}
+
 /**
- * Schema-driven form. Pass `endpoint` (e.g. "vedic-astrology/birth-chart").
- * The form introspects the cached OpenAPI spec, slots a roxy-location-search
- * when latitude+longitude+timezone fields are present, and emits a
- * `roxy-submit` CustomEvent with the validated payload on submit. The caller
- * decides what to do (call the SDK, render a chart, navigate).
+ * Schema-driven form. Pass `endpoint` (e.g. "vedic-astrology/birth-chart"). The form digests the operation's request schema into a spec-derived input for each parameter (a zodiac tile grid, a date or time input, a city search, a toggle) with progressive disclosure, and emits a `roxy-submit` CustomEvent carrying the validated payload. The caller decides what to do (call the SDK, render a chart, navigate).
  *
- * At runtime the component fetches the OpenAPI spec (its `spec-url`, default
- * /api/v2/openapi.json) and builds the fields from the operation's request
- * schema: types, enums, required flags, and property order all come from the
- * spec, so a new endpoint gets a working form with no per-endpoint code.
+ * @remarks
+ * Schema resolution order: an explicit `spec-url` fetches that full spec and digests it (unchanged, the demo path); otherwise the form tries a small version-pinned per-operation slice from the CDN, and on any miss falls back to fetching the production spec. Each input kind is chosen purely from the parameter shape (see {@link ../utils/field-schema.ts}), so a new endpoint gets a working, on-brand form with no per-endpoint code.
+ *
+ * The visitor-facing `lang` parameter is never rendered: a site owner sets the element `lang` attribute, and the form routes it to the query string on submit. Optional parameters collapse under one Advanced disclosure; a form whose only required field is an enum submits on selection.
  */
 @customElement('roxy-endpoint-form')
 export class RoxyEndpointForm extends LitElement {
 	static styles = [
 		baseStyles,
+		disclosureStyles,
 		css`
 			form {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -103,11 +104,15 @@ export class RoxyEndpointForm extends LitElement {
 				align-items: start;
 				gap: var(--roxy-space-md, 1rem);
 			}
+			.fields:empty {
+				display: none;
+			}
 			.person-group {
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-md, 1rem);
-				margin: 0 0 var(--roxy-space-md, 1rem);
+				margin: 0;
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 				min-inline-size: 0;
@@ -115,7 +120,6 @@ export class RoxyEndpointForm extends LitElement {
 			.person-group legend {
 				padding: 0 var(--roxy-space-xs, 0.25rem);
 				font-weight: var(--roxy-weight-bold, 600);
-				text-transform: capitalize;
 			}
 			.field {
 				display: flex;
@@ -123,11 +127,15 @@ export class RoxyEndpointForm extends LitElement {
 				gap: var(--roxy-space-xs, 0.25rem);
 				min-width: 0;
 			}
-			label {
+			.tiles-field {
+				grid-column: 1 / -1;
+			}
+			label,
+			.label {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-secondary, #475569);
 			}
-			label .req {
+			.req {
 				color: var(--roxy-danger-fg, #991b1b);
 				margin-left: 4px;
 			}
@@ -153,17 +161,146 @@ export class RoxyEndpointForm extends LitElement {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
+			/* Long descriptions collapse: the summary shows the first line, the body the rest. */
+			.help-details > summary {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				cursor: pointer;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.help-details .help-lead {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.help-details .help-full {
+				display: block;
+				margin-top: var(--roxy-space-xs, 0.25rem);
+			}
 			.location-block {
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
 				grid-column: 1 / -1;
 			}
-			.coords {
+			.tiles {
 				display: grid;
-				grid-template-columns: repeat(3, 1fr);
+				grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
 				gap: var(--roxy-space-sm, 0.5rem);
 			}
-			.coords input {
+			.tile {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 2px;
+				min-height: 44px;
+				padding: var(--roxy-space-sm, 0.5rem);
+				background: var(--roxy-bg, #fff);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				color: var(--roxy-fg, #0a0a0a);
+				font-family: inherit;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				cursor: pointer;
+				transition:
+					border-color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease),
+					background-color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
+			}
+			.tile:hover {
+				border-color: var(--roxy-accent, #f59e0b);
+			}
+			.tile[aria-checked='true'] {
+				border-color: var(--roxy-accent, #f59e0b);
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, transparent);
+				color: var(--roxy-accent-ink, #b45309);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.tile:focus-visible {
+				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+				outline-offset: 2px;
+			}
+			.tile-glyph {
+				font-size: 1.35em;
+				line-height: 1;
+			}
+			.toggle-row {
+				display: flex;
+				align-items: center;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.toggle {
+				position: relative;
+				flex-shrink: 0;
+				width: 44px;
+				height: 26px;
+				padding: 0;
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-full, 9999px);
+				background: var(--roxy-border, #e4e4e7);
+				cursor: pointer;
+				transition: background-color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
+			}
+			.toggle[aria-checked='true'] {
+				background: var(--roxy-accent, #f59e0b);
+				border-color: var(--roxy-accent, #f59e0b);
+			}
+			.toggle .knob {
+				position: absolute;
+				top: 2px;
+				left: 2px;
+				width: 20px;
+				height: 20px;
+				border-radius: 50%;
+				background: var(--roxy-bg, #fff);
+				transition: transform var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
+			}
+			.toggle[aria-checked='true'] .knob {
+				transform: translateX(18px);
+			}
+			.toggle:focus-visible {
+				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+				outline-offset: 2px;
+			}
+			.toggle-label {
+				cursor: pointer;
+			}
+			@media (prefers-reduced-motion: reduce) {
+				.tile,
+				.toggle,
+				.toggle .knob {
+					transition: none;
+				}
+			}
+			.advanced {
+				border-top: 1px solid var(--roxy-border, #e4e4e7);
+				padding-top: var(--roxy-space-md, 1rem);
+			}
+			.advanced > summary {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				cursor: pointer;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.advanced[open] > summary {
+				margin-bottom: var(--roxy-space-md, 1rem);
+			}
+			.advanced .fields,
+			.advanced .person-group {
+				margin-top: var(--roxy-space-md, 1rem);
+			}
+			.validation-error {
+				display: grid;
+				gap: var(--roxy-space-xs, 0.25rem);
+				padding: var(--roxy-space-md, 1rem);
+				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 8%, transparent);
+				border: 1px solid var(--roxy-danger, #dc2626);
+				border-radius: var(--roxy-radius-md, 8px);
+				color: var(--roxy-danger-fg, #991b1b);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 			button.submit {
@@ -187,11 +324,16 @@ export class RoxyEndpointForm extends LitElement {
 				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 				outline-offset: 2px;
 			}
+			@media (prefers-reduced-motion: reduce) {
+				button.submit {
+					transition: none;
+				}
+			}
 			.spec-error {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 				justify-items: start;
-				background: var(--roxy-bg, #fff);
+				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-danger, #dc2626);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
@@ -207,18 +349,30 @@ export class RoxyEndpointForm extends LitElement {
 	@property({ type: String })
 	method: 'GET' | 'POST' = 'POST';
 
+	/** Explicit OpenAPI spec URL. When set, the form fetches and digests that full spec (the demo path). When empty, it resolves a version-pinned slice first, then the production spec. */
 	@property({ type: String, attribute: 'spec-url' })
-	specUrl = 'https://roxyapi.com/api/v2/openapi.json';
+	specUrl = '';
 
+	/** Override the submit-button label. Empty derives an outcome-first label from the endpoint. */
 	@property({ type: String, attribute: 'submit-label' })
-	submitLabel = 'Submit';
+	submitLabel = '';
 
-	/** Prefill values, keyed by field name. Used by `remember` mode to restore the last submission. JS property only. */
+	/** Browser-safe publishable key, forwarded to the slotted city search so the natal or synastry form can geocode. */
+	@property({ type: String, attribute: 'publishable-key' })
+	publishableKey?: string;
+
+	/** Prefill values, keyed by field name (nested per group). Used by `remember` mode and to restore the previous submission. JS property only. */
 	@property({ attribute: false })
 	initialValues?: Record<string, unknown>;
 
 	@state()
 	private fields: FieldDef[] = [];
+
+	@state()
+	private formTitle = '';
+
+	@state()
+	private hasLang = false;
 
 	@state()
 	private values: Record<string, unknown> = {};
@@ -229,6 +383,9 @@ export class RoxyEndpointForm extends LitElement {
 	@state()
 	private specError: string | null = null;
 
+	@state()
+	private validationErrors: string[] = [];
+
 	connectedCallback(): void {
 		super.connectedCallback();
 		void this.loadSchema();
@@ -237,130 +394,76 @@ export class RoxyEndpointForm extends LitElement {
 	private async loadSchema() {
 		this.specError = null;
 		try {
-			const spec = await loadSpec(this.specUrl);
-			const path = `/${this.endpoint.replace(/^\//, '')}`;
-			const op = spec.paths?.[path]?.[this.method.toLowerCase()] as
-				| {
-						requestBody?: {
-							content?: Record<
-								string,
-								{ schema?: OpenApiSchema | OpenApiSchemaRef }
-							>;
-						};
-						parameters?: Array<{
-							name: string;
-							in: string;
-							required?: boolean;
-							schema?: OpenApiSchema;
-						}>;
-				  }
-				| undefined;
-			if (!op) {
-				throw new Error(
-					`Endpoint ${this.method} ${path} not found in OpenAPI spec`,
-				);
-			}
-
-			const schemas = spec.components?.schemas ?? {};
-			const fields: FieldDef[] = [];
-			let bodySchema: OpenApiSchema | undefined;
-
-			if (op.requestBody) {
-				const ref = op.requestBody.content?.['application/json']?.schema;
-				bodySchema = this.resolve(ref, schemas);
-			}
-
-			if (bodySchema?.properties) {
-				const required = new Set(bodySchema.required ?? []);
-				for (const [name, sub] of Object.entries(bodySchema.properties)) {
-					const resolved = this.resolve(sub, schemas) ?? {};
-					// Nested object (e.g. person1/person2 on synastry / guna-milan):
-					// expand into a labelled group of sub-fields keyed "group.sub".
-					if (resolved.type === 'object' && resolved.properties) {
-						const subRequired = new Set(resolved.required ?? []);
-						for (const [subName, subSchema] of Object.entries(
-							resolved.properties,
-						)) {
-							const r = this.resolve(subSchema, schemas) ?? {};
-							fields.push({
-								key: `${name}.${subName}`,
-								name: subName,
-								group: name,
-								type: this.fieldType(r),
-								required: required.has(name) && subRequired.has(subName),
-								description: r.description,
-								enum: r.enum,
-								min: r.minimum,
-								max: r.maximum,
-								default: r.default,
-							});
-						}
-					} else {
-						fields.push({
-							key: name,
-							name,
-							type: this.fieldType(resolved),
-							required: required.has(name),
-							description: resolved.description,
-							enum: resolved.enum,
-							min: resolved.minimum,
-							max: resolved.maximum,
-							default: resolved.default,
-						});
-					}
-				}
-			}
-
-			for (const param of op.parameters ?? []) {
-				if (param.in === 'path' || param.in === 'query') {
-					const resolved = this.resolve(param.schema, schemas) ?? {};
-					fields.push({
-						key: param.name,
-						name: param.name,
-						// A path param is substituted into the URL template by name, so only
-						// a true query param needs the query-string routing flag.
-						inQuery: param.in === 'query',
-						type: this.fieldType(resolved),
-						required: !!param.required,
-						description: resolved.description,
-						enum: resolved.enum,
-						default: resolved.default,
-					});
-				}
-			}
-
-			this.fields = fields;
-
-			// Pre-fill: schema defaults first, then any remembered/initial values
-			// (only for fields this endpoint has) so a stale stored payload from
-			// another endpoint cannot inject unknown keys. Remembered values are the
-			// previously-submitted shape (nested per group), so read them by group.
-			const init: Record<string, unknown> = {};
-			for (const f of fields) {
-				if (f.default !== undefined) init[f.key] = f.default;
-				const remembered = f.group
-					? (
-							this.initialValues?.[f.group] as
-								| Record<string, unknown>
-								| undefined
-						)?.[f.name]
-					: this.initialValues?.[f.name];
-				if (remembered !== undefined) init[f.key] = remembered;
-			}
-			this.values = init;
-			this.loaded = true;
+			this.applyModel(await this.resolveModel());
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err);
 			this.specError = message;
 			this.loaded = true;
 			this.dispatchEvent(
 				new CustomEvent('roxy-spec-error', {
-					detail: { url: this.specUrl, message },
+					detail: { url: this.specUrl || PROD_SPEC_URL, message },
 					bubbles: true,
 					composed: true,
 				}),
 			);
 		}
+	}
+
+	/** Resolve the form model: explicit spec-url wins; else a version-pinned slice; else the production spec. */
+	private async resolveModel(): Promise<FormModel> {
+		if (this.specUrl) return this.modelFromSpec(this.specUrl);
+		const slice = await this.tryLoadSlice();
+		return slice ?? this.modelFromSpec(PROD_SPEC_URL);
+	}
+
+	/** Fetch and digest one operation from a full OpenAPI document. */
+	private async modelFromSpec(url: string): Promise<FormModel> {
+		const spec = await loadSpec(url);
+		const path = `/${this.endpoint.replace(/^\//, '')}`;
+		const op = spec.paths?.[path]?.[this.method.toLowerCase()] as
+			| OperationSchema
+			| undefined;
+		if (!op) {
+			throw new Error(
+				`Endpoint ${this.method} ${path} not found in OpenAPI spec`,
+			);
+		}
+		return buildFormModel(op, spec.components?.schemas ?? {}, this.endpoint);
+	}
+
+	/** Try the small precomputed slice; return null on any miss so the caller falls back to the full spec. */
+	private async tryLoadSlice(): Promise<FormModel | null> {
+		try {
+			const res = await fetch(
+				`${SLICE_BASE}/${sliceFileName(this.method, this.endpoint)}`,
+			);
+			if (!res.ok) return null;
+			return (await res.json()) as FormModel;
+		} catch {
+			return null;
+		}
+	}
+
+	private applyModel(model: FormModel) {
+		this.fields = model.fields;
+		this.formTitle = model.title;
+		this.hasLang = model.hasLang;
+		// Pre-fill: schema defaults first, then any remembered/initial values (only
+		// for fields this endpoint has) so a stale stored payload from another
+		// endpoint cannot inject unknown keys. Remembered values are nested per
+		// group, so read them by group.
+		const init: Record<string, unknown> = {};
+		for (const f of model.fields) {
+			if (f.default !== undefined) init[f.key] = f.default;
+			const remembered = f.group
+				? (
+						this.initialValues?.[f.group] as Record<string, unknown> | undefined
+					)?.[f.name]
+				: this.initialValues?.[f.name];
+			if (remembered !== undefined) init[f.key] = remembered;
+		}
+		this.values = init;
+		this.loaded = true;
 	}
 
 	private retryLoadSchema = () => {
@@ -369,37 +472,79 @@ export class RoxyEndpointForm extends LitElement {
 		void this.loadSchema();
 	};
 
-	private resolve(
-		schema: OpenApiSchema | OpenApiSchemaRef | undefined,
-		all: Record<string, OpenApiSchema>,
-	): OpenApiSchema | undefined {
-		if (!schema) return undefined;
-		if ('$ref' in schema && schema.$ref) {
-			const name = schema.$ref.split('/').pop();
-			return name ? all[name] : undefined;
-		}
-		return schema as OpenApiSchema;
-	}
-
-	private fieldType(s: OpenApiSchema): string {
-		if (s.enum) return 'enum';
-		if (s.format === 'date') return 'date';
-		if (s.format === 'time') return 'time';
-		if (s.format === 'date-time') return 'datetime';
-		if (s.type === 'integer' || s.type === 'number') return 'number';
-		return 'text';
-	}
-
 	private setValue(name: string, value: unknown) {
 		this.values = { ...this.values, [name]: value };
+	}
+
+	/** The field's render role: a hidden autogenerated seed, a hidden defaulted limit/offset, a suppressed location coordinate, or a normally rendered input. */
+	private roleOf(
+		f: FieldDef,
+	): 'seed' | 'hidden-default' | 'location' | 'normal' {
+		if (f.name === 'seed') return 'seed';
+		if ((f.name === 'limit' || f.name === 'offset') && !f.required)
+			return 'hidden-default';
+		if (
+			(LOCATION_TRIO as readonly string[]).includes(f.name) &&
+			this.groupHasLocation(f.group)
+		)
+			return 'location';
+		return 'normal';
+	}
+
+	/** True when the field renders its own input (as opposed to being hidden or replaced by the city search). */
+	private isRendered(f: FieldDef): boolean {
+		return this.roleOf(f) === 'normal';
+	}
+
+	/** Ordered, de-duplicated group keys (undefined flat group plus each named object). */
+	private groupKeys(): (string | undefined)[] {
+		const keys: (string | undefined)[] = [];
+		for (const f of this.fields)
+			if (!keys.includes(f.group)) keys.push(f.group);
+		return keys;
 	}
 
 	/** True when the fields in `group` (or the flat top level) carry latitude+longitude+timezone, so a location-search can autofill them. */
 	private groupHasLocation(group?: string): boolean {
 		const inGroup = this.fields.filter((f) => f.group === group);
-		return (['latitude', 'longitude', 'timezone'] as const).every((n) =>
-			inGroup.some((f) => f.name === n),
+		return LOCATION_TRIO.every((n) => inGroup.some((f) => f.name === n));
+	}
+
+	/** True when the location trio in a group is required, so the block shows a required mark. */
+	private locationRequired(group?: string): boolean {
+		const inGroup = this.fields.filter((f) => f.group === group);
+		return LOCATION_TRIO.every((n) =>
+			inGroup.some((f) => f.name === n && f.required),
 		);
+	}
+
+	/** A named group is a required input when any of its leaf fields is required or it carries a location. */
+	private groupIsRequired(group: string): boolean {
+		return (
+			this.groupHasLocation(group) ||
+			this.fields.some((f) => f.group === group && f.required)
+		);
+	}
+
+	/**
+	 * The single visible required enum field, when the whole form reduces to exactly one: no location block, no named group, one required rendered enum. This is what turns the horoscope form into a tap-to-load sign grid; returns null otherwise.
+	 */
+	private get singleEnumField(): FieldDef | null {
+		if (this.groupKeys().some((g) => this.groupHasLocation(g))) return null;
+		if (this.groupKeys().some((g) => g !== undefined)) return null;
+		const req = this.fields.filter((f) => f.required && this.isRendered(f));
+		const only = req[0];
+		if (req.length !== 1 || !only) return null;
+		return only.kind === 'tiles' || only.kind === 'select' ? only : null;
+	}
+
+	private effectiveSubmitLabel(): string {
+		return this.submitLabel || deriveSubmitLabel(this.endpoint);
+	}
+
+	/** The site-owner language from the element `lang` attribute (native), or undefined. Read here, never a Lit property, to avoid shadowing the native accessor. */
+	private effectiveLang(): string | undefined {
+		return this.lang || undefined;
 	}
 
 	/** Location-select handler bound to a group: fills that group's lat/lng/timezone keys (flat top level when group is undefined). */
@@ -422,28 +567,64 @@ export class RoxyEndpointForm extends LitElement {
 		};
 	}
 
+	private selectTile(f: FieldDef, value: string) {
+		this.setValue(f.key, value);
+		if (this.singleEnumField?.key === f.key) this.submit();
+	}
+
+	/** Roving-tabindex arrow-key navigation for a tile radiogroup, modeled on the shared tablist pattern (selection follows focus). */
+	private onTilesKeyDown(f: FieldDef) {
+		return (e: KeyboardEvent) => {
+			const opts = f.enum ?? [];
+			if (opts.length === 0) return;
+			const cur = opts.indexOf(this.values[f.key] as string);
+			let next: number;
+			if (e.key === 'Home') next = 0;
+			else if (e.key === 'End') next = opts.length - 1;
+			else if (e.key === 'ArrowRight' || e.key === 'ArrowDown')
+				next = cur === -1 ? 0 : (cur + 1) % opts.length;
+			else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp')
+				next =
+					cur === -1 ? opts.length - 1 : (cur - 1 + opts.length) % opts.length;
+			else return;
+			e.preventDefault();
+			const value = opts[next];
+			if (value === undefined) return;
+			this.selectTile(f, value);
+			const root = e.currentTarget as HTMLElement;
+			requestAnimationFrame(() =>
+				root.querySelector<HTMLButtonElement>(`[data-tile='${next}']`)?.focus(),
+			);
+		};
+	}
+
 	private onSubmit = (e: Event) => {
 		e.preventDefault();
-		const missing = this.fields
-			.filter((f) => f.required)
-			.filter(
-				(f) => this.values[f.key] === undefined || this.values[f.key] === '',
-			);
-		if (missing.length > 0) {
+		this.submit();
+	};
+
+	/** Validate, then emit `roxy-submit` with the reconstructed payload, the spec query keys, and whether the form was a single-enum sticky picker. */
+	private submit() {
+		const missing = this.collectMissing();
+		if (missing.keys.length > 0) {
+			this.validationErrors = missing.labels;
 			this.dispatchEvent(
 				new CustomEvent('roxy-validation-error', {
-					detail: { missing: missing.map((m) => m.key) },
+					detail: { missing: missing.keys },
 					bubbles: true,
 					composed: true,
 				}),
 			);
 			return;
 		}
-		// Reconstruct the request shape: grouped fields nest as { group: { name: value } }.
+		this.validationErrors = [];
 		const out: Record<string, unknown> = {};
 		for (const f of this.fields) {
-			const v = this.values[f.key];
+			let v = this.values[f.key];
+			// A hidden seed autogenerates per submit unless a value was remembered.
+			if (f.name === 'seed' && (v === undefined || v === '')) v = randomSeed();
 			if (v === undefined || v === '') continue;
+			if (f.kind === 'array' && typeof v === 'string') v = parseArrayValue(v);
 			if (f.group) {
 				const g = (out[f.group] as Record<string, unknown> | undefined) ?? {};
 				g[f.name] = v;
@@ -452,27 +633,242 @@ export class RoxyEndpointForm extends LitElement {
 				out[f.name] = v;
 			}
 		}
+		// The spec knows which parameters belong in the query string; the listener
+		// does not. Report them (including a site-owner lang) so a POST with a query
+		// parameter reaches the API correctly instead of being dropped in the body.
+		const queryKeys = this.fields.filter((f) => f.inQuery).map((f) => f.name);
+		const lang = this.effectiveLang();
+		if (this.hasLang && lang) {
+			out.lang = lang;
+			queryKeys.push('lang');
+		}
 		this.dispatchEvent(
 			new CustomEvent('roxy-submit', {
 				detail: {
 					endpoint: this.endpoint,
 					values: out,
-					// The spec knows which of these belong in the query string; the
-					// listener does not. Report them so a POST with `?lang=` reaches the
-					// API as a query parameter instead of an ignored body key.
-					queryKeys: this.fields.filter((f) => f.inQuery).map((f) => f.name),
+					queryKeys,
+					sticky: this.singleEnumField != null,
 				},
 				bubbles: true,
 				composed: true,
 			}),
 		);
-	};
+	}
+
+	/** Required fields left empty, with the location trio collapsed to one entry per group. Seed and hidden defaults never block. */
+	private collectMissing(): { keys: string[]; labels: string[] } {
+		const keys: string[] = [];
+		const labels: string[] = [];
+		const locGroups = new Set<string | undefined>();
+		for (const f of this.fields) {
+			if (!f.required) continue;
+			const isLocation = this.roleOf(f) === 'location';
+			if (!this.isRendered(f) && !isLocation) continue;
+			const v = this.values[f.key];
+			if (v !== undefined && v !== '') continue;
+			keys.push(f.key);
+			if (isLocation) {
+				locGroups.add(f.group);
+				continue;
+			}
+			labels.push(
+				f.group ? `${humanize(f.group)} ${humanize(f.name)}` : humanize(f.name),
+			);
+		}
+		for (const g of locGroups) {
+			labels.push(g ? `${humanize(g)} location` : 'Birth location');
+		}
+		return { keys, labels };
+	}
+
+	private reqMark(f: FieldDef) {
+		return f.required
+			? html`<span class="req" aria-hidden="true">*</span>`
+			: nothing;
+	}
+
+	/** A description under a field: rendered inline when short, collapsed behind a disclosure showing its first line when long. */
+	private description(f: FieldDef) {
+		if (!f.description) return nothing;
+		if (f.description.length <= 120) {
+			return html`<small class="help">${f.description}</small>`;
+		}
+		const lead = f.description.split('. ')[0] ?? f.description;
+		return html`<details class="help-details">
+			<summary><span class="help-lead">${lead}</span>${chevron()}</summary>
+			<small class="help help-full">${f.description}</small>
+		</details>`;
+	}
+
+	private renderTiles(f: FieldDef) {
+		const labelId = `roxy-form-${f.key}-label`;
+		const zodiac = !!f.enum && isZodiacEnum(f.enum);
+		const opts = f.enum ?? [];
+		const cur = opts.indexOf(this.values[f.key] as string);
+		const active = cur === -1 ? 0 : cur;
+		return html`<div class="field tiles-field">
+			<span class="label" id=${labelId}>${humanize(f.name)}${this.reqMark(f)}</span>
+			<div
+				class="tiles"
+				role="radiogroup"
+				aria-labelledby=${labelId}
+				@keydown=${this.onTilesKeyDown(f)}
+			>
+				${opts.map((opt, i) => {
+					const selected = this.values[f.key] === opt;
+					const glyph = zodiac ? SIGN_GLYPH[capitalize(opt)] : undefined;
+					return html`<button
+						type="button"
+						class="tile"
+						role="radio"
+						data-tile=${i}
+						aria-checked=${selected ? 'true' : 'false'}
+						tabindex=${i === active ? '0' : '-1'}
+						@click=${() => this.selectTile(f, opt)}
+					>
+						${
+							glyph
+								? html`<span class="tile-glyph" aria-hidden="true">${glyph}</span>`
+								: nothing
+						}
+						<span class="tile-label">${humanize(opt)}</span>
+					</button>`;
+				})}
+			</div>
+			${this.description(f)}
+		</div>`;
+	}
+
+	private renderSelect(f: FieldDef) {
+		const id = `roxy-form-${f.key}`;
+		return html`<div class="field">
+			<label for=${id}>${humanize(f.name)}${this.reqMark(f)}</label>
+			<select
+				id=${id}
+				?required=${f.required}
+				@change=${(e: Event) =>
+					this.setValue(f.key, (e.target as HTMLSelectElement).value)}
+			>
+				<option value="">Choose</option>
+				${(f.enum ?? []).map(
+					(
+						opt,
+					) => html`<option value=${opt} ?selected=${this.values[f.key] === opt}>
+						${humanize(opt)}
+					</option>`,
+				)}
+			</select>
+			${this.description(f)}
+		</div>`;
+	}
+
+	private renderToggle(f: FieldDef) {
+		const id = `roxy-form-${f.key}`;
+		const checked = this.values[f.key] === true;
+		return html`<div class="field">
+			<div class="toggle-row">
+				<button
+					type="button"
+					id=${id}
+					class="toggle"
+					role="switch"
+					aria-checked=${checked ? 'true' : 'false'}
+					@click=${() => this.setValue(f.key, !checked)}
+				>
+					<span class="knob"></span>
+				</button>
+				<label class="toggle-label" for=${id}
+					>${humanize(f.name)}${this.reqMark(f)}</label
+				>
+			</div>
+			${this.description(f)}
+		</div>`;
+	}
+
+	private renderInput(f: FieldDef) {
+		const id = `roxy-form-${f.key}`;
+		const type =
+			f.kind === 'datetime'
+				? 'datetime-local'
+				: f.kind === 'number'
+					? 'number'
+					: f.kind;
+		const placeholder =
+			f.kind === 'array'
+				? 'Comma separated'
+				: f.example != null
+					? String(f.example)
+					: '';
+		return html`<div class="field">
+			<label for=${id}>${humanize(f.name)}${this.reqMark(f)}</label>
+			<input
+				id=${id}
+				type=${f.kind === 'array' ? 'text' : type}
+				?required=${f.required}
+				min=${ifDefined(f.min)}
+				max=${ifDefined(f.max)}
+				step=${f.kind === 'number' ? 'any' : nothing}
+				placeholder=${placeholder || nothing}
+				.value=${(this.values[f.key] ?? '') as string}
+				@input=${(e: Event) =>
+					this.setValue(
+						f.key,
+						this.coerce(f.kind, (e.target as HTMLInputElement).value),
+					)}
+			/>
+			${this.description(f)}
+		</div>`;
+	}
+
+	private renderField(f: FieldDef) {
+		switch (f.kind) {
+			case 'tiles':
+				return this.renderTiles(f);
+			case 'select':
+				return this.renderSelect(f);
+			case 'toggle':
+				return this.renderToggle(f);
+			default:
+				return this.renderInput(f);
+		}
+	}
+
+	private locationBlock(group?: string) {
+		return html`<div class="location-block">
+			<label
+				>${group ? `${humanize(group)} location` : 'Birth location'}${
+					this.locationRequired(group)
+						? html`<span class="req" aria-hidden="true">*</span>`
+						: nothing
+				}</label
+			>
+			<roxy-location-search
+				publishable-key=${ifDefined(this.publishableKey)}
+				@roxy-location-select=${this.onLocationFor(group)}
+				placeholder="City of birth"
+			></roxy-location-search>
+			<small class="help">
+				Required: latitude, longitude, timezone. Pick a city to autofill.
+			</small>
+		</div>`;
+	}
+
+	private groupCard(group: string) {
+		const fields = this.fields.filter(
+			(f) => f.group === group && this.isRendered(f),
+		);
+		return html`<fieldset class="person-group">
+			<legend>${humanize(group)}</legend>
+			${this.groupHasLocation(group) ? this.locationBlock(group) : nothing}
+			<div class="fields">${fields.map((f) => this.renderField(f))}</div>
+		</fieldset>`;
+	}
 
 	render() {
 		if (!this.loaded) {
 			return html`<form><div class="roxy-skeleton" style="height: 8rem"></div></form>`;
 		}
-
 		if (this.specError) {
 			return html`<div class="spec-error" role="alert">
 				Schema load failed: ${this.specError}
@@ -480,113 +876,46 @@ export class RoxyEndpointForm extends LitElement {
 			</div>`;
 		}
 
-		const renderField = (f: FieldDef) => {
-			if (
-				this.groupHasLocation(f.group) &&
-				(f.name === 'latitude' ||
-					f.name === 'longitude' ||
-					f.name === 'timezone')
-			) {
-				return nothing;
-			}
-			const inputId = `roxy-form-${f.key}`;
-			return html`<div class="field">
-				<label for=${inputId}>
-					${humanize(f.name)}${f.required ? html`<span class="req" aria-hidden="true">*</span>` : nothing}
-				</label>
-				${
-					f.enum
-						? html`<select
-							id=${inputId}
-							?required=${f.required}
-							@change=${(e: Event) => this.setValue(f.key, (e.target as HTMLSelectElement).value)}
-						>
-							<option value="">Choose</option>
-							${f.enum.map(
-								(
-									opt,
-								) => html`<option value=${opt} ?selected=${this.values[f.key] === opt}>
-									${opt}
-								</option>`,
-							)}
-						</select>`
-						: html`<input
-							id=${inputId}
-							type=${this.htmlType(f.type)}
-							?required=${f.required}
-							min=${f.min ?? ''}
-							max=${f.max ?? ''}
-							step=${f.type === 'number' ? 'any' : ''}
-							.value=${(this.values[f.key] ?? '') as string}
-							@input=${(e: Event) =>
-								this.setValue(
-									f.key,
-									this.coerce(f.type, (e.target as HTMLInputElement).value),
-								)}
-						/>`
-				}
-				${f.description ? html`<small class="help">${f.description}</small>` : nothing}
-			</div>`;
-		};
-
-		// Ordered list of field groups: the flat top level (undefined) plus each
-		// nested object (person1/person2). Order follows first appearance.
-		const groups: (string | undefined)[] = [];
-		for (const f of this.fields) {
-			if (!groups.includes(f.group)) groups.push(f.group);
-		}
-
-		const locationBlock = (group?: string) =>
-			this.groupHasLocation(group)
-				? html`<div class="location-block">
-						<label>${group ? `${humanize(group)} location` : 'Birth location'}</label>
-						<roxy-location-search
-							@roxy-location-select=${this.onLocationFor(group)}
-							placeholder="City of birth"
-						></roxy-location-search>
-						<small class="help">
-							Required: latitude, longitude, timezone. Pick a city to autofill.
-						</small>
-					</div>`
-				: nothing;
-
-		const groupBody = (group?: string) => html`${locationBlock(group)}
-			<div class="fields">
-				${this.fields.filter((f) => f.group === group).map((f) => renderField(f))}
-			</div>`;
+		const flat = this.fields.filter((f) => !f.group && this.isRendered(f));
+		const flatReq = flat.filter((f) => f.required);
+		const flatOpt = flat.filter((f) => !f.required);
+		const named = this.groupKeys().filter((g): g is string => g !== undefined);
+		const reqGroups = named.filter((g) => this.groupIsRequired(g));
+		const optGroups = named.filter((g) => !this.groupIsRequired(g));
+		const hasAdvanced = flatOpt.length > 0 || optGroups.length > 0;
 
 		return html`<form @submit=${this.onSubmit}>
-			<h2 class="title">${humanize(this.endpoint.split('/').pop() ?? '')}</h2>
-			${groups.map((g) =>
-				g === undefined
-					? groupBody(undefined)
-					: html`<fieldset class="person-group">
-							<legend>${humanize(g)}</legend>
-							${groupBody(g)}
-						</fieldset>`,
-			)}
-			<button class="submit" type="submit">${this.submitLabel}</button>
+			<h2 class="title">${this.formTitle}</h2>
+			${
+				this.validationErrors.length > 0
+					? html`<div class="validation-error" role="alert">
+							<strong>Please complete:</strong> ${this.validationErrors.join(', ')}
+						</div>`
+					: nothing
+			}
+			<div class="fields">${flatReq.map((f) => this.renderField(f))}</div>
+			${this.groupHasLocation(undefined) ? this.locationBlock(undefined) : nothing}
+			${reqGroups.map((g) => this.groupCard(g))}
+			${
+				hasAdvanced
+					? html`<details class="advanced">
+							<summary>Advanced${chevron()}</summary>
+							<div class="fields">${flatOpt.map((f) => this.renderField(f))}</div>
+							${optGroups.map((g) => this.groupCard(g))}
+						</details>`
+					: nothing
+			}
+			${
+				this.singleEnumField
+					? nothing
+					: html`<button class="submit" type="submit">${this.effectiveSubmitLabel()}</button>`
+			}
 		</form>`;
 	}
 
-	private htmlType(t: string): string {
-		switch (t) {
-			case 'date':
-				return 'date';
-			case 'time':
-				return 'time';
-			case 'datetime':
-				return 'datetime-local';
-			case 'number':
-				return 'number';
-			default:
-				return 'text';
-		}
-	}
-
-	private coerce(t: string, v: string): unknown {
+	private coerce(kind: string, v: string): unknown {
 		if (v === '') return undefined;
-		if (t === 'number') {
+		if (kind === 'number') {
 			const n = Number(v);
 			return Number.isFinite(n) ? n : undefined;
 		}

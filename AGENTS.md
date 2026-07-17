@@ -362,7 +362,7 @@ For a static chart with no picker, fetch in a Server Component and pass `data` t
 
 ### Pattern 3: schema-driven form
 
-`<roxy-endpoint-form>` reads the OpenAPI spec and renders the inputs for any endpoint. On `roxy-submit`, POST the validated values to your own route, which calls the SDK with the secret key, then set the returned data on the target component.
+`<roxy-endpoint-form>` reads the OpenAPI spec and renders the inputs for any endpoint. On `roxy-submit`, POST the validated values to your own route, which calls the SDK with the secret key, then set the returned data on the target component. For an endpoint that needs coordinates, add `publishable-key="pk_live_..."` so the built-in city search can geocode.
 
 ```html
 <roxy-endpoint-form
@@ -393,7 +393,7 @@ When you do not want a backend at all, mint a **publishable key** (`pk_live_*` /
 ></roxy-natal-chart>
 ```
 
-That single element shows a schema-driven form (city search included for endpoints that need coordinates), fetches on submit, shows a loading then error-or-result state, and re-shows the form so the user can try another query. `method` defaults to `POST`; set `method="GET"` for GET endpoints. Set `data-endpoint` to the spec path without the leading slash (`dreams/symbols/{id}`, `astrology/horoscope/{sign}/daily`).
+That single element renders a schema-driven form (a zodiac/enum tile picker, a boolean toggle, native date and time inputs, and a city search for endpoints that need coordinates), fetches on submit, and shows a loading then error-or-result state. Optional fields collapse under one Advanced disclosure, and a form whose only required field is an enum submits on selection (tap a sign, get a reading, no button). The result keeps a re-query affordance: a single-enum picker stays above the result and refetches when the selection changes, any other form gets a compact Edit query control that restores it with the previous values. `method` defaults to `POST`; set `method="GET"` for GET endpoints. Set `data-endpoint` to the spec path without the leading slash (`dreams/symbols/{id}`, `astrology/horoscope/{sign}/daily`).
 
 **Key handling is the contract. The component enforces it, not you:**
 
@@ -402,6 +402,12 @@ That single element shows a schema-driven form (city search included for endpoin
 - For production with a backend, prefer controlled mode (Patterns 1, 6, 7): the server fetches with the `sk_` key and injects the response, so no key of any kind reaches the browser.
 
 In React, the same props are typed: `<RoxyNatalChart endpoint="astrology/natal-chart" publishableKey={process.env.NEXT_PUBLIC_ROXY_PK} />`.
+
+**Three optional attributes on the self-fetch element.** `lang` sets the response language (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`): put it on the element (`<roxy-horoscope-card lang="de" ...>`) and the form routes it to the `?lang=` query on submit, so visitors never see a language field. `submit-label` overrides the derived button label. `attribution` renders a small "Spiritual data by RoxyAPI" credit under the result: off by default, and the one-tag script below turns it on unless you set `data-attribution="off"`. None of these apply in controlled mode.
+
+**One tag, no element wiring.** For the simplest embed, load `dist/cdn/widgets.js` and drop a `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`. The script mounts the matching component from a generated slug map: with every path parameter supplied as a `data-*` attribute (`data-sign`, `data-id`) it fetches on mount, otherwise it renders the same input form. A second `data-*` attribute picks a variant (`data-period`, `data-mode`, `data-type`, `data-spread`).
+
+**Theme every widget in one link.** Add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">` for a warm rosewater serif look, or set the `--roxy-font-display` token alone to swap result headings to a display face (it defaults to the body font, so nothing changes until you set it). See [THEMING.md](packages/ui/THEMING.md).
 
 ### Pattern 5: MCP tool-call response
 
@@ -490,7 +496,7 @@ const { data } = await roxy.humanDesign.generateBodygraph({
 });
 ```
 
-`lang` is a query parameter even on a POST endpoint. Put it in `query`, never in `body`; a `lang` key in the body is ignored and you get English back. In the self-fetch pattern the component reads the parameter from the spec and sends it correctly, so the generated form simply offers the language as a field.
+`lang` is a query parameter even on a POST endpoint. Put it in `query`, never in `body`; a `lang` key in the body is ignored and you get English back. In the self-fetch pattern you do not fill a language field: set `lang` as an attribute on the element (`<roxy-horoscope-card lang="de" ...>`) and the form routes it to the `?lang=` query on submit.
 
 The structural labels the components draw (section headings such as Reading or Centers, and column headers) are English.
 

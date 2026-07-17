@@ -25,6 +25,7 @@ import {
 } from '../src/utils/format.js';
 import { toKundliViewModel } from '../src/utils/kundli-render.js';
 import { MarkupDataController } from '../src/utils/markup-data.js';
+import { capitalize, humanize } from '../src/utils/string.js';
 
 describe('utils/degree', () => {
 	test('normalizes negative longitude into [0, 360)', () => {
@@ -454,5 +455,24 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 		);
 		expect(ny).toBe('8:00 AM');
 		expect(kolkata).toBe('5:30 PM');
+	});
+});
+
+describe('utils/string humanize', () => {
+	test('splits snake, kebab, and camel case into a titled label', () => {
+		expect(humanize('birth_date')).toBe('Birth date');
+		expect(humanize('mahadasha-end')).toBe('Mahadasha end');
+		expect(humanize('houseSystem')).toBe('House System');
+	});
+
+	test('splits a trailing digit off a word (the group-legend fix)', () => {
+		expect(humanize('person1')).toBe('Person 1');
+		expect(humanize('person2')).toBe('Person 2');
+		expect(humanize('personA')).toBe('Person A');
+	});
+
+	test('capitalize normalizes a lowercase enum value for glyph lookup', () => {
+		expect(capitalize('aries')).toBe('Aries');
+		expect(capitalize('SCORPIO')).toBe('Scorpio');
 	});
 });

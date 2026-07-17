@@ -29,6 +29,8 @@ jobs:
       - run: bun run typecheck
       - run: bun run build
       - run: bun run test
+      - name: Bundle-size budget (gzip full + per-component, raw widgets.js)
+        run: bun run size:check
 
       # packages/ui-{react,vue}/src is GENERATED from packages/ui. A diff here
       # means generated output was hand-edited; the next build would revert it.

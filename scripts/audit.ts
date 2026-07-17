@@ -72,6 +72,101 @@ async function audit(
 	});
 }
 
+/**
+ * Walk three self-fetch FORM-mode scenarios against the local spec mirror (no
+ * real network): a horoscope tile picker with a selection made, a natal form
+ * with the city search and date input visible, and a zero-required iching cast
+ * that reduces to one button. Asserting the INPUT UI renders is the point; the
+ * shared FORBIDDEN scan runs on each form's text too.
+ */
+async function auditForms(
+	page: Page,
+): Promise<{ section: string; issues: string[]; text: string }[]> {
+	// Block any live API call so a tile auto-submit fails cleanly instead of
+	// reaching production; the input UI is what we assert, not a result.
+	await page.route('**/api/v2/**', (route) => route.abort());
+
+	await page.evaluate(() => {
+		const scenarios = [
+			{
+				id: 'form-horoscope',
+				endpoint: 'astrology/horoscope/{sign}/daily',
+				method: 'GET',
+			},
+			{ id: 'form-natal', endpoint: 'astrology/natal-chart', method: 'POST' },
+			{ id: 'form-iching', endpoint: 'iching/cast', method: 'GET' },
+		];
+		const host = document.createElement('div');
+		host.id = 'roxy-audit-forms';
+		for (const s of scenarios) {
+			const el = document.createElement('roxy-endpoint-form');
+			el.id = s.id;
+			el.setAttribute('data-endpoint', s.endpoint);
+			el.setAttribute('method', s.method);
+			// Same-origin local mirror the preview serves, so no external fetch.
+			el.setAttribute('spec-url', './openapi.json');
+			host.appendChild(el);
+		}
+		document.body.appendChild(host);
+	});
+	// Let each form fetch and digest the local spec mirror.
+	await page.waitForTimeout(2000);
+	// Make a selection on the sign picker (auto-submit fetch is aborted).
+	await page.evaluate(() => {
+		const f = document.getElementById('form-horoscope');
+		const tile = f?.shadowRoot?.querySelector(
+			'[data-tile="0"]',
+		) as HTMLElement | null;
+		tile?.click();
+	});
+	await page.waitForTimeout(300);
+
+	return page.evaluate(() => {
+		const sr = (id: string) =>
+			(document.getElementById(id) as { shadowRoot?: ShadowRoot | null } | null)
+				?.shadowRoot ?? null;
+		const findings: { section: string; issues: string[]; text: string }[] = [];
+
+		const horoscope = sr('form-horoscope');
+		const hIssues: string[] = [];
+		if (!horoscope?.querySelector('[role="radiogroup"]'))
+			hIssues.push('no tile radiogroup rendered');
+		if ((horoscope?.querySelectorAll('[role="radio"]').length ?? 0) !== 12)
+			hIssues.push('expected 12 sign tiles');
+		if (!horoscope?.querySelector('[role="radio"][aria-checked="true"]'))
+			hIssues.push('sign selection did not register');
+		findings.push({
+			section: 'form-horoscope',
+			issues: hIssues,
+			text: horoscope?.textContent ?? '',
+		});
+
+		const natal = sr('form-natal');
+		const nIssues: string[] = [];
+		if (!natal?.querySelector('roxy-location-search'))
+			nIssues.push('no city search block');
+		if (!natal?.querySelector('input[type="date"]'))
+			nIssues.push('no date input');
+		findings.push({
+			section: 'form-natal',
+			issues: nIssues,
+			text: natal?.textContent ?? '',
+		});
+
+		const iching = sr('form-iching');
+		const iIssues: string[] = [];
+		if (!iching?.querySelector('button.submit'))
+			iIssues.push('no one-click cast button');
+		findings.push({
+			section: 'form-iching',
+			issues: iIssues,
+			text: iching?.textContent ?? '',
+		});
+
+		return findings;
+	});
+}
+
 async function main() {
 	const browser = await chromium.launch();
 	const ctx = await browser.newContext({
@@ -92,6 +187,8 @@ async function main() {
 		issues: string[];
 		text: string;
 	}>;
+	// Form-mode scenarios join the same drift + issue reporting.
+	raw.push(...(await auditForms(page)));
 
 	let fail = 0;
 	for (const r of raw) {

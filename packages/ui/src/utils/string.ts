@@ -16,8 +16,13 @@ export function capitalize(s: string): string {
 }
 
 export function humanize(s: string): string {
-	return s
-		.replace(/[_-]+/g, ' ')
-		.replace(/([a-z])([A-Z])/g, '$1 $2')
-		.replace(/^\w/, (c) => c.toUpperCase());
+	return (
+		s
+			.replace(/[_-]+/g, ' ')
+			.replace(/([a-z])([A-Z])/g, '$1 $2')
+			// Split a trailing/embedded digit off a word so "person1" reads "Person 1"
+			// and every group legend and field label spaces its ordinal.
+			.replace(/([a-z])([0-9])/g, '$1 $2')
+			.replace(/^\w/, (c) => c.toUpperCase())
+	);
 }

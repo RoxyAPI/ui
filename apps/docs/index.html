@@ -340,6 +340,27 @@
 		}
 		.copy-btn:hover { color: var(--roxy-fg); border-color: var(--roxy-fg); }
 
+		/* The card is a flex column and the grid cell is minmax(0, 1fr), but a
+		 * flex/grid item defaults to min-width: auto, so a long jsDelivr line in a
+		 * <pre> sets the card min-content wide and the pre never scrolls: it drags
+		 * the whole card past its cell and gets clipped. min-width: 0 lets the
+		 * panel shrink so the pre's own overflow-x scrollbar takes over. */
+		[role="tabpanel"] { min-width: 0; }
+		.code-block, .code-block pre { min-width: 0; }
+
+		.embed-panel .embed-lead {
+			margin: 0;
+			font-size: 0.8125rem;
+			font-weight: 500;
+			color: var(--roxy-fg);
+		}
+		.embed-panel .embed-hint {
+			margin: 0;
+			font-size: 0.78125rem;
+			line-height: 1.5;
+			color: var(--roxy-muted);
+		}
+
 		.quickstart {
 			background: color-mix(in srgb, var(--roxy-border) 14%, transparent);
 			border: 1px solid var(--roxy-border);
@@ -592,7 +613,7 @@
 				"name": "How do I theme RoxyAPI UI components?",
 				"acceptedAnswer": {
 					"@type": "Answer",
-					"text": "Override CSS custom properties on the root or per element. About 30 design tokens cover color, typography, spacing, radius, shadow, and motion. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
+					"text": "Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
 				}
 			}
 		]
@@ -774,7 +795,7 @@
 			</details>
 			<details>
 				<summary>How do I theme components?</summary>
-				<p>Override CSS custom properties on the root or per element. About 30 design tokens cover color, typography, spacing, radius, shadow, and motion. The Customize Colors panel above generates the override CSS for you.</p>
+				<p>Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. The Customize Colors panel above generates the override CSS for you.</p>
 			</details>
 		</section>
 
@@ -787,6 +808,13 @@
 				<p style="color: var(--roxy-muted); font-size: 0.875rem; margin: 0 0 0.875rem;">
 					Override CSS custom properties on <code>:root</code> for light, on <code>:root[data-theme="dark"]</code> for dark. Edits below preview live.
 				</p>
+				<div class="preset-row" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.875rem;">
+					<label for="preset-select" style="font-size: 0.875rem; color: var(--roxy-muted);">Preset</label>
+					<select id="preset-select" style="padding: 0.35rem 0.5rem; border: 1px solid var(--roxy-border); border-radius: 6px; background: var(--roxy-bg); color: var(--roxy-fg); font: inherit;">
+						<option value="default">Default</option>
+						<option value="practitioner">Practitioner</option>
+					</select>
+				</div>
 				<div class="mode-tabs" role="tablist" aria-label="Theme mode">
 					<button id="mode-light" type="button" role="tab" aria-selected="true" data-mode="light">Light</button>
 					<button id="mode-dark" type="button" role="tab" aria-selected="false" data-mode="dark">Dark</button>
@@ -795,6 +823,13 @@
 				<div class="code-block" style="margin-top: 1rem;">
 					<button type="button" class="copy-btn" data-copy-target="customize-snippet">Copy</button>
 					<pre><code id="customize-snippet"></code></pre>
+				</div>
+				<div id="preset-link-alt" hidden style="margin-top: 0.75rem;">
+					<p style="color: var(--roxy-muted); font-size: 0.8125rem; margin: 0 0 0.375rem;">Or link the preset stylesheet, no snippet to paste:</p>
+					<div class="code-block">
+						<button type="button" class="copy-btn" data-copy-target="preset-link-snippet">Copy</button>
+						<pre><code id="preset-link-snippet"></code></pre>
+					</div>
 				</div>
 			</section>
 			<footer>

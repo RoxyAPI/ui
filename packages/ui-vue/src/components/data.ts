@@ -14,6 +14,12 @@ export interface RoxyDataProps {
 	baseUrl?: string;
 	/** Override the OpenAPI spec URL the self-fetch form introspects. */
 	specUrl?: string;
+	/** Response language for self-fetch, forwarded to the API `lang` query parameter (en, tr, de, es, hi, pt, fr, ru). The form never shows a language field; the site owner sets it here. Defaults to English. */
+	lang?: string;
+	/** Override the self-fetch form submit-button label. Empty derives an outcome-first label from the endpoint (Get reading, Generate, Compare, Cast). */
+	submitLabel?: string;
+	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
+	attribution?: string;
 }
 
 export const RoxyData = defineComponent({
@@ -25,6 +31,9 @@ export const RoxyData = defineComponent({
 		publishableKey: { type: String as PropType<RoxyDataProps['publishableKey']> },
 		baseUrl: { type: String as PropType<RoxyDataProps['baseUrl']> },
 		specUrl: { type: String as PropType<RoxyDataProps['specUrl']> },
+		lang: { type: String as PropType<RoxyDataProps['lang']> },
+		submitLabel: { type: String as PropType<RoxyDataProps['submitLabel']> },
+		attribution: { type: String as PropType<RoxyDataProps['attribution']> },
 	},
 	setup(props) {
 		const loadError = ref<Error | null>(null);
@@ -51,6 +60,9 @@ export const RoxyData = defineComponent({
 			if (props.publishableKey !== undefined) elementProps['.publishableKey'] = props.publishableKey;
 			if (props.baseUrl !== undefined) elementProps['.baseUrl'] = props.baseUrl;
 			if (props.specUrl !== undefined) elementProps['.specUrl'] = props.specUrl;
+			if (props.lang !== undefined) elementProps['.lang'] = props.lang;
+			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;
+			if (props.attribution !== undefined) elementProps['.attribution'] = props.attribution;
 
 			return h('roxy-data', elementProps);
 		};

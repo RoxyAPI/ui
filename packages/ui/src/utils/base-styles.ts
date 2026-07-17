@@ -43,6 +43,29 @@ export const baseStyles = css`
 		box-sizing: border-box;
 	}
 
+	/* Every component result heading and the self-fetch form title read the
+	 * display-font token. It defaults to --roxy-font-sans, so this is a no-op for
+	 * existing consumers; a preset that sets --roxy-font-display (the practitioner
+	 * theme ships a serif) restyles every heading in one token with no per-component
+	 * markup change. */
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: var(
+			--roxy-font-display,
+			var(
+				--roxy-font-sans,
+				system-ui,
+				-apple-system,
+				BlinkMacSystemFont,
+				'Segoe UI',
+				Roboto,
+				sans-serif
+			)
+		);
+	}
+
 	@keyframes roxy-fade-in {
 		from {
 			opacity: 0;
@@ -132,6 +155,51 @@ export const baseStyles = css`
 	}
 
 	:host(:focus-within) .roxy-card {
+		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+		outline-offset: 2px;
+	}
+
+	/* Credit line under a self-fetch or auto-mount result (never controlled mode). */
+	.roxy-attribution {
+		margin-top: var(--roxy-space-sm, 0.5rem);
+		font-size: var(--roxy-text-xs, 0.75rem);
+		color: var(--roxy-muted, #71717a);
+		text-align: right;
+	}
+	.roxy-attribution a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.roxy-attribution a:hover {
+		color: var(--roxy-accent-ink, #b45309);
+		text-decoration: underline;
+	}
+	.roxy-attribution a:focus-visible {
+		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+		outline-offset: 2px;
+	}
+
+	/* Re-query affordance above a self-fetch result (uncontrolled mode only). */
+	.roxy-edit-bar {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: var(--roxy-space-sm, 0.5rem);
+	}
+	.roxy-edit {
+		padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
+		background: none;
+		border: 1px solid var(--roxy-border, #e4e4e7);
+		border-radius: var(--roxy-radius-md, 8px);
+		color: var(--roxy-fg, #0a0a0a);
+		font-family: inherit;
+		font-size: var(--roxy-text-sm, 0.875rem);
+		cursor: pointer;
+	}
+	.roxy-edit:hover {
+		border-color: var(--roxy-accent, #f59e0b);
+		color: var(--roxy-accent-ink, #b45309);
+	}
+	.roxy-edit:focus-visible {
 		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 		outline-offset: 2px;
 	}

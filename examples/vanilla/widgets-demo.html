@@ -3,52 +3,61 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Roxy UI widgets - auto-mount preview</title>
+	<title>Roxy UI widgets: one-tag auto-mount</title>
 	<style>
 		body {
 			font-family: system-ui, sans-serif;
 			max-width: 720px;
 			margin: 0 auto;
 			padding: 32px 16px;
+			color: #0a0a0a;
 		}
-		.banner { border: 1px solid #f59e0b; background: #fffbeb; color: #92400e; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-		.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff; opacity: 0.6; }
+		.note { border: 1px solid #e4e4e7; background: #fafafa; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+		.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff; }
 		code { background: #f4f4f5; padding: 1px 5px; border-radius: 4px; }
+		h2 { font-size: 1.1rem; }
 	</style>
 </head>
 <body>
-	<h1>Auto-mounted widgets (coming soon)</h1>
+	<h1>Auto-mounted widgets</h1>
 
-	<div class="banner">
-		<strong>Preview, not yet available.</strong> The auto-mount script reads
-		<code>data-*</code> attributes and fetches from the browser, which needs a
-		browser-safe key. Those keys are on the roadmap. Today, render components
-		server side: fetch with your secret key and inline the JSON. See
-		<a href="./index.html">index.html</a> for the working pattern.
-	</div>
-
-	<p>The markup below previews the planned auto-mount API. It does not fetch yet.</p>
-
-	<div class="card">
-		<h2>Daily horoscope (Aries)</h2>
-		<div data-roxy-widget="horoscope-card" data-sign="aries" data-period="daily"></div>
+	<div class="note">
+		<p>Each block below is a single <code>&lt;div data-roxy-widget="..."&gt;</code>. The
+		one-tag script reads its <code>data-*</code> attributes and mounts the matching
+		component, fetching from the browser with a publishable key.</p>
+		<p>Mint a publishable key at <code>roxyapi.com/account</code>, then replace the
+		<code>pk_live_replace_with_your_key</code> placeholder below with your own.</p>
 	</div>
 
 	<div class="card">
-		<h2>Vedic kundli</h2>
+		<h2>Loaded card: sign supplied</h2>
+		<p>The tag carries <code>data-sign</code>, so it fetches on mount and renders the reading.</p>
 		<div
-			data-roxy-widget="vedic-kundli"
-			data-date="1990-01-15"
-			data-time="14:30:00"
-			data-latitude="28.6139"
-			data-longitude="77.209"
-			data-timezone="5.5"
+			data-roxy-widget="horoscope-card"
+			data-publishable-key="pk_live_replace_with_your_key"
+			data-sign="aries"
+			data-period="daily"
 		></div>
 	</div>
 
 	<div class="card">
-		<h2>Daily tarot card</h2>
-		<div data-roxy-widget="tarot-card"></div>
+		<h2>Interactive widget: no sign supplied</h2>
+		<p>The same tag without <code>data-sign</code> renders a 12-sign tile picker, and fetches when a sign is tapped.</p>
+		<div
+			data-roxy-widget="horoscope-card"
+			data-publishable-key="pk_live_replace_with_your_key"
+		></div>
 	</div>
+
+	<div class="card">
+		<h2>Birth-data widget: natal chart</h2>
+		<p>A chart needs a date, a time, and a place, so it renders a styled form with a city search and draws the wheel on submit.</p>
+		<div
+			data-roxy-widget="natal-chart"
+			data-publishable-key="pk_live_replace_with_your_key"
+		></div>
+	</div>
+
+	<script src="../../packages/ui/dist/cdn/widgets.js"></script>
 </body>
 </html>

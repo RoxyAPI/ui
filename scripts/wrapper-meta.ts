@@ -152,6 +152,24 @@ export const SELF_FETCH_PROPS: ConfigPropDef[] = [
 		type: 'string',
 		comment: 'Override the OpenAPI spec URL the self-fetch form introspects.',
 	},
+	{
+		prop: 'lang',
+		type: 'string',
+		comment:
+			'Response language for self-fetch, forwarded to the API `lang` query parameter (en, tr, de, es, hi, pt, fr, ru). The form never shows a language field; the site owner sets it here. Defaults to English.',
+	},
+	{
+		prop: 'submitLabel',
+		type: 'string',
+		comment:
+			'Override the self-fetch form submit-button label. Empty derives an outcome-first label from the endpoint (Get reading, Generate, Compare, Cast).',
+	},
+	{
+		prop: 'attribution',
+		type: 'string',
+		comment:
+			'Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode.',
+	},
 ];
 
 export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
@@ -313,7 +331,8 @@ export const EVENTS: Record<string, EventDef[]> = {
 		{
 			event: 'roxy-submit',
 			prop: 'onRoxySubmit',
-			detailType: '{ endpoint: string; values: Record<string, unknown> }',
+			detailType:
+				'{ endpoint: string; values: Record<string, unknown>; queryKeys: string[]; sticky: boolean }',
 		},
 		{
 			event: 'roxy-validation-error',

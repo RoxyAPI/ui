@@ -1,4 +1,9 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
+import {
+	dispatchKeyRefusal,
+	KEY_REFUSED_MESSAGE,
+	keyIsRefused,
+} from './key-guard.js';
 
 /**
  * Host slots the controller drives. {@link RoxyDataElement} satisfies this, so the form mixin can attach a controller without the component wiring state by hand.
@@ -113,19 +118,11 @@ export class FetchController<T = unknown> implements ReactiveController {
 		});
 	}
 
-	/** True when a key is set and it is not a browser-safe `pk_` publishable key. Surfaces the error and refuses to send. */
+	/** True when a key is set and it is not a browser-safe `pk_` publishable key. Surfaces the error and refuses to send, via the shared {@link keyIsRefused} guard so every fetch boundary fail-closes identically. */
 	private secretKeyRefused(): boolean {
-		const key = this.publishableKey;
-		if (!key || key.startsWith('pk_')) return false;
-		this.host.error =
-			'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.';
-		this.host.dispatchEvent(
-			new CustomEvent('roxy-validation-error', {
-				detail: { reason: 'possible-secret-key' },
-				bubbles: true,
-				composed: true,
-			}),
-		);
+		if (!keyIsRefused(this.publishableKey)) return false;
+		this.host.error = KEY_REFUSED_MESSAGE;
+		dispatchKeyRefusal(this.host);
 		return true;
 	}
 

@@ -72,6 +72,14 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 	@property({ type: Boolean })
 	remember = false;
 
+	/** Override the self-fetch form's submit-button label. Empty derives one from the endpoint. */
+	@property({ type: String, attribute: 'submit-label' })
+	submitLabel?: string;
+
+	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch or auto-mount result. Off by default; any value except "off"/"false" enables it. The one-tag widgets script turns it on unless data-attribution="off". Never shown in controlled mode. */
+	@property({ type: String })
+	attribution?: string;
+
 	/** True while an uncontrolled self-fetch is in flight. Public so {@link FetchController} can drive it. */
 	@state()
 	loading = false;
@@ -79,6 +87,23 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 	/** Message from a failed self-fetch, or null. Public so {@link FetchController} can drive it. */
 	@state()
 	error: string | null = null;
+
+	/**
+	 * True once a self-fetch (not a consumer-assigned or island-hydrated `data`) produced the current result. It gates the interactive result affordances, so controlled mode never shows an Edit control or a sticky picker.
+	 */
+	@state()
+	private selfFetched = false;
+
+	/** True when the visitor asked to edit a self-fetch result, so the form is restored over the result. */
+	@state()
+	private editing = false;
+
+	/** True when the last self-fetch form was a single-enum picker, so it stays visible above the result and a change refetches. */
+	@state()
+	private sticky = false;
+
+	/** Last submitted form values (nested per group), kept in memory to restore the form on Edit and to prefill the sticky picker. */
+	private lastValues?: Record<string, unknown>;
 
 	private fetcher: FetchController<T>;
 
@@ -105,12 +130,65 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 	render(): unknown {
 		if (this.loading) return this.renderLoading();
 		if (this.error != null) return this.renderError(this.error);
-		if (this.data != null) return this.renderData(this.data);
+		if (this.data != null) {
+			// Controlled mode (consumer-assigned or island-hydrated data) renders the
+			// result alone, byte-identical to before: no picker, no Edit. The one
+			// exception is the widgets auto-mount attrs-complete path, which assigns
+			// data directly AND sets `attribution`; a real controlled consumer never
+			// sets the attribute, so this stays byte-identical for them.
+			if (!this.selfFetched) {
+				return this.showAttribution()
+					? html`${this.renderData(this.data)}${this.renderAttribution()}`
+					: this.renderData(this.data);
+			}
+			if (this.editing) return this.renderForm();
+			return this.renderResult(this.data);
+		}
 		return this.renderNoData();
 	}
 
 	/** Render the populated response. The single method every component implements. */
 	protected abstract renderData(data: T): unknown;
+
+	/**
+	 * A self-fetch result plus its re-query affordance. A single-enum form keeps its picker above the result so a new selection refetches (a sign switch is a new reading); any other form gets a compact Edit control that restores the form with the previous values.
+	 */
+	protected renderResult(data: T): unknown {
+		const body = this.sticky
+			? html`${this.renderForm()}${this.renderData(data)}`
+			: html`<div class="roxy-edit-bar">
+					<button type="button" class="roxy-edit" @click=${this.onEdit}>Edit query</button>
+				</div>
+				${this.renderData(data)}`;
+		return this.showAttribution()
+			? html`${body}${this.renderAttribution()}`
+			: body;
+	}
+
+	private onEdit = () => {
+		this.editing = true;
+	};
+
+	/** True when the attribution credit renders: the attribute is present and not explicitly disabled. */
+	private showAttribution(): boolean {
+		return (
+			this.attribution != null &&
+			this.attribution !== 'off' &&
+			this.attribution !== 'false'
+		);
+	}
+
+	/** Small muted credit under a self-fetch or auto-mount result. Reached only from the result path, so controlled mode never renders it. */
+	protected renderAttribution(): unknown {
+		return html`<div class="roxy-attribution">
+			<a
+				href="https://roxyapi.com/?utm_source=widget&utm_medium=embed"
+				target="_blank"
+				rel="noopener"
+				>Spiritual data by RoxyAPI</a
+			>
+		</div>`;
+	}
 
 	/** The data-absent branch: the self-fetch form when an endpoint is set, otherwise the empty state. */
 	protected renderNoData(): unknown {
@@ -123,16 +201,36 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 			data-endpoint=${this.endpoint}
 			method=${this.method}
 			spec-url=${ifDefined(this.specUrl)}
-			.initialValues=${this.remember ? this.readRemembered() : undefined}
+			publishable-key=${ifDefined(this.publishableKey)}
+			submit-label=${ifDefined(this.submitLabel)}
+			lang=${ifDefined(this.effectiveLang())}
+			.initialValues=${this.formInitialValues()}
 			@roxy-submit=${this.onFormSubmit}
 		></roxy-endpoint-form>`;
+	}
+
+	/** Prefill source for the form: the last submission (Edit / sticky refetch) wins over remembered storage. */
+	private formInitialValues(): Record<string, unknown> | undefined {
+		return (
+			this.lastValues ?? (this.remember ? this.readRemembered() : undefined)
+		);
+	}
+
+	/** Site-owner language from the element `lang` attribute (native accessor), routed to the API query on submit. */
+	private effectiveLang(): string | undefined {
+		return this.lang || undefined;
 	}
 
 	private onFormSubmit = (e: Event) => {
 		const detail = (e as CustomEvent).detail as {
 			values: Record<string, unknown>;
 			queryKeys?: string[];
+			sticky?: boolean;
 		};
+		this.lastValues = detail.values;
+		this.sticky = !!detail.sticky;
+		this.selfFetched = true;
+		this.editing = false;
 		if (this.remember) this.writeRemembered(detail.values);
 		void this.fetcher.run(
 			buildRequest(
