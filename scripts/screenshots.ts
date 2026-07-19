@@ -14,6 +14,7 @@ import {
 import { resolve } from 'node:path';
 import { chromium, type Page } from '@playwright/test';
 import sharp from 'sharp';
+import { ensureServer, setTheme } from './shot-utils.js';
 
 const OUT_DIR = resolve('assets/screenshots');
 const PORT = 3001;
@@ -81,33 +82,6 @@ const TARGETS: Target[] = [
 	{ id: 'loc', label: 'location-search' },
 	{ id: 'data', label: 'data' },
 ];
-
-async function ensureServer(): Promise<{ stop: () => Promise<void> }> {
-	const probe = await fetch(BASE_URL).catch(() => null);
-	if (probe?.ok) {
-		console.log(`Reusing preview server at ${BASE_URL}`);
-		return { stop: async () => {} };
-	}
-	console.log(`Starting preview server on ${BASE_URL}...`);
-	const proc = Bun.spawn(['bun', 'run', 'preview'], {
-		stdout: 'ignore',
-		stderr: 'ignore',
-	});
-	for (let i = 0; i < 30; i++) {
-		await new Promise((r) => setTimeout(r, 500));
-		const res = await fetch(BASE_URL).catch(() => null);
-		if (res?.ok) return { stop: async () => proc.kill() };
-	}
-	throw new Error('Preview server failed to start within 15s');
-}
-
-async function setTheme(page: Page, theme: 'light' | 'dark') {
-	await page.evaluate((t: string) => {
-		document.documentElement.dataset.theme = t;
-		document.body.dataset.theme = t;
-	}, theme);
-	await page.waitForTimeout(120);
-}
 
 async function shoot(page: Page, target: Target, theme: 'light' | 'dark') {
 	const card = page

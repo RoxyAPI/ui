@@ -270,51 +270,57 @@
 		// override the derivation and hand the visitor a snippet that pins it to one hue.
 		'primary', 'secondary', 'accent',
 		'success', 'warning', 'danger', 'info',
-		'bg', 'fg', 'muted', 'border',
+		// surface is the token that actually paints a component card face; bg is the
+		// page behind it. Both are editable so a preset can lift the card off the page.
+		'bg', 'surface', 'fg', 'muted', 'border',
 	];
 	const DEFAULTS = {
 		light: {
 			primary: '#0f172a', secondary: '#475569', accent: '#f59e0b',
 			success: '#16a34a', warning: '#ea580c', danger: '#dc2626', info: '#0284c7',
-			bg: '#ffffff', fg: '#0a0a0a', muted: '#71717a', border: '#e4e4e7',
+			bg: '#ffffff', surface: '#ffffff', fg: '#0a0a0a', muted: '#71717a', border: '#e4e4e7',
 		},
 		dark: {
 			primary: '#f8fafc', secondary: '#94a3b8', accent: '#fbbf24',
 			success: '#22c55e', warning: '#fb923c', danger: '#ef4444', info: '#38bdf8',
-			bg: '#0a0a0a', fg: '#fafafa', muted: '#a1a1aa', border: '#27272a',
+			bg: '#0a0a0a', surface: '#18181b', fg: '#fafafa', muted: '#a1a1aa', border: '#27272a',
 		},
 	};
 	const state = JSON.parse(JSON.stringify(DEFAULTS));
 
-	// Named presets. Practitioner overrides only the tokens the shipped theme file
-	// sets (bg, fg, muted, border, secondary, accent, danger); primary and the
-	// status colors stay at the stock defaults, so the copyable snippet matches
-	// what the linked theme file produces. The theme file additionally sets surface, ring, radius, and
-	// fonts, which the color-only swatch grid does not cover; the link alternative
-	// carries the full look.
-	const PRESETS = {
-		default: DEFAULTS,
-		practitioner: {
-			light: {
-				...DEFAULTS.light,
-				secondary: '#503a3a', accent: '#914955', danger: '#b23a38',
-				bg: '#fbf6f3', fg: '#3e2a2c', muted: '#7e625f', border: '#ead9d2',
-			},
-			dark: {
-				...DEFAULTS.dark,
-				secondary: '#e0cecb', accent: '#d9a2a6', danger: '#e4736b',
-				bg: '#231619', fg: '#f2e4df', muted: '#b39698', border: '#402c31',
-			},
-		},
-	};
-	const PRACTITIONER_LINK =
-		'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">';
+	// Named presets, built from window.ROXY_THEME_PRESETS (generated from the palette
+	// SSOT, so the demo never hand-copies hexes). Each palette overrides only the
+	// tokens its shipped theme file sets (accent, secondary, danger, bg, surface, fg,
+	// muted, border); primary and the status colors stay at the stock defaults, so the
+	// copyable snippet matches what the linked theme file produces. The theme file
+	// additionally sets ring, radii, and fonts, which the color-only swatch grid does
+	// not cover; the one-line link alternative carries the full look.
+	const THEME_PRESETS = window.ROXY_THEME_PRESETS ?? {};
+	const PRESETS = { default: DEFAULTS };
+	for (const [name, p] of Object.entries(THEME_PRESETS)) {
+		PRESETS[name] = {
+			light: { ...DEFAULTS.light, ...p.light },
+			dark: { ...DEFAULTS.dark, ...p.dark },
+		};
+	}
+	const linkFor = (file) =>
+		`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/${file}">`;
+
+	// The stylesheet link is the recommended one-line adoption path for every named
+	// preset; only "default" (the stock library look) has no file to link.
+	const presetSelect = document.getElementById('preset-select');
+	for (const [name, p] of Object.entries(THEME_PRESETS)) {
+		if (!presetSelect || !p.file) continue;
+		const opt = document.createElement('option');
+		opt.value = name;
+		opt.textContent = name[0].toUpperCase() + name.slice(1);
+		presetSelect.appendChild(opt);
+	}
 
 	const swatchRow = document.getElementById('swatch-row');
 	const snippetEl = document.getElementById('customize-snippet');
 	const modeTabs = document.querySelectorAll('.mode-tabs [role="tab"]');
 	const resetBtn = document.getElementById('customize-reset');
-	const presetSelect = document.getElementById('preset-select');
 	const presetLinkAlt = document.getElementById('preset-link-alt');
 	const presetLinkSnippet = document.getElementById('preset-link-snippet');
 	let mode = 'light';
@@ -392,9 +398,9 @@
 		Object.assign(state, JSON.parse(JSON.stringify(preset)));
 		applyState();
 		renderSwatches();
-		const showLink = name === 'practitioner';
-		if (presetLinkAlt) presetLinkAlt.hidden = !showLink;
-		if (showLink && presetLinkSnippet) presetLinkSnippet.textContent = PRACTITIONER_LINK;
+		const file = THEME_PRESETS[name]?.file;
+		if (presetLinkAlt) presetLinkAlt.hidden = !file;
+		if (file && presetLinkSnippet) presetLinkSnippet.textContent = linkFor(file);
 	}
 	presetSelect?.addEventListener('change', () => applyPreset(presetSelect.value));
 	resetBtn?.addEventListener('click', () => {

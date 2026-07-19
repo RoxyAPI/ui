@@ -15,7 +15,11 @@
           "method": "POST",
           "path": "/astrology/natal-chart"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/natal-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/natal-chart-dark.webp"
+      }
     },
     {
       "tag": "roxy-synastry-chart",
@@ -30,7 +34,11 @@
           "method": "POST",
           "path": "/astrology/synastry"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/synastry-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/synastry-chart-dark.webp"
+      }
     },
     {
       "tag": "roxy-western-planets-table",
@@ -45,7 +53,11 @@
           "method": "POST",
           "path": "/astrology/natal-chart"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/western-planets-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/western-planets-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-transits-table",
@@ -60,7 +72,11 @@
           "method": "POST",
           "path": "/astrology/transits"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/transits-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/transits-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-aspects-table",
@@ -85,7 +101,11 @@
           "method": "POST",
           "path": "/astrology/transit-aspects"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/aspects-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/aspects-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-moon-phase",
@@ -119,7 +139,11 @@
             "mode": "upcoming"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/moon-phase-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/moon-phase-dark.webp"
+      }
     },
     {
       "tag": "roxy-horoscope-card",
@@ -153,7 +177,11 @@
             "period": "weekly"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/horoscope-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/horoscope-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-astrocartography-map",
@@ -168,7 +196,11 @@
           "method": "POST",
           "path": "/astrology/astrocartography"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/astrocartography-map-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/astrocartography-map-dark.webp"
+      }
     },
     {
       "tag": "roxy-local-space-compass",
@@ -183,7 +215,11 @@
           "method": "POST",
           "path": "/astrology/local-space"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/local-space-compass-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/local-space-compass-dark.webp"
+      }
     },
     {
       "tag": "roxy-relocation-wheel",
@@ -198,7 +234,11 @@
           "method": "POST",
           "path": "/astrology/relocation-chart"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/relocation-wheel-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/relocation-wheel-dark.webp"
+      }
     },
     {
       "tag": "roxy-positions-table",
@@ -233,7 +273,11 @@
           "method": "POST",
           "path": "/astrology/solar-arc"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/positions-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/positions-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-fixed-stars",
@@ -248,7 +292,11 @@
           "method": "POST",
           "path": "/astrology/fixed-stars"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/fixed-stars-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/fixed-stars-dark.webp"
+      }
     },
     {
       "tag": "roxy-profection-card",
@@ -263,7 +311,11 @@
           "method": "POST",
           "path": "/astrology/profections"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/profection-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/profection-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-compatibility-card",
@@ -297,7 +349,11 @@
             "mode": "numerology"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/compatibility-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/compatibility-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-vedic-kundli",
@@ -312,7 +368,11 @@
           "method": "POST",
           "path": "/vedic-astrology/birth-chart"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/vedic-kundli-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/vedic-kundli-dark.webp"
+      }
     },
     {
       "tag": "roxy-divisional-chart",
@@ -332,7 +392,11 @@
           "method": "POST",
           "path": "/vedic-astrology/navamsa"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/divisional-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/divisional-chart-dark.webp"
+      }
     },
     {
       "tag": "roxy-kp-chart",
@@ -347,7 +411,11 @@
           "method": "POST",
           "path": "/vedic-astrology/kp/chart"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/kp-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/kp-chart-dark.webp"
+      }
     },
     {
       "tag": "roxy-vedic-planets-table",
@@ -362,7 +430,11 @@
           "method": "POST",
           "path": "/vedic-astrology/birth-chart"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/vedic-planets-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/vedic-planets-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-kp-planets-table",
@@ -377,7 +449,11 @@
           "method": "POST",
           "path": "/vedic-astrology/kp/planets"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/kp-planets-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/kp-planets-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-kp-ruling-planets",
@@ -392,7 +468,11 @@
           "method": "POST",
           "path": "/vedic-astrology/kp/ruling-planets"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/kp-ruling-planets-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/kp-ruling-planets-dark.webp"
+      }
     },
     {
       "tag": "roxy-ashtakavarga-grid",
@@ -407,7 +487,11 @@
           "method": "POST",
           "path": "/vedic-astrology/ashtakavarga"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/ashtakavarga-grid-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/ashtakavarga-grid-dark.webp"
+      }
     },
     {
       "tag": "roxy-shadbala-table",
@@ -422,7 +506,11 @@
           "method": "POST",
           "path": "/vedic-astrology/shadbala"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/shadbala-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/shadbala-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-dasha-timeline",
@@ -456,7 +544,11 @@
             "period": "sub"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dasha-timeline-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dasha-timeline-dark.webp"
+      }
     },
     {
       "tag": "roxy-guna-milan",
@@ -471,7 +563,11 @@
           "method": "POST",
           "path": "/vedic-astrology/compatibility"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/guna-milan-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/guna-milan-dark.webp"
+      }
     },
     {
       "tag": "roxy-panchang-table",
@@ -497,7 +593,11 @@
             "detail": "detailed"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/panchang-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/panchang-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-vedic-aspects",
@@ -512,7 +612,11 @@
           "method": "POST",
           "path": "/vedic-astrology/aspects"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/vedic-aspects-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/vedic-aspects-dark.webp"
+      }
     },
     {
       "tag": "roxy-hora-table",
@@ -527,7 +631,11 @@
           "method": "POST",
           "path": "/vedic-astrology/panchang/hora"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hora-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hora-table-dark.webp"
+      }
     },
     {
       "tag": "roxy-choghadiya-grid",
@@ -542,7 +650,11 @@
           "method": "POST",
           "path": "/vedic-astrology/panchang/choghadiya"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/choghadiya-grid-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/choghadiya-grid-dark.webp"
+      }
     },
     {
       "tag": "roxy-yoga-list",
@@ -562,7 +674,11 @@
           "method": "POST",
           "path": "/vedic-astrology/yoga/detect"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/yoga-list-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/yoga-list-dark.webp"
+      }
     },
     {
       "tag": "roxy-nakshatra-card",
@@ -577,7 +693,11 @@
           "method": "GET",
           "path": "/vedic-astrology/nakshatras/{id}"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/nakshatra-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/nakshatra-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-dosha-card",
@@ -611,7 +731,11 @@
             "type": "sadhesati"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dosha-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dosha-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-numerology-card",
@@ -709,7 +833,11 @@
             "type": "soul-urge"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/numerology-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/numerology-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-tarot-card",
@@ -724,7 +852,11 @@
           "method": "POST",
           "path": "/tarot/daily"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/tarot-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/tarot-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-tarot-catalog",
@@ -739,7 +871,11 @@
           "method": "GET",
           "path": "/tarot/cards"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/tarot-catalog-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/tarot-catalog-dark.webp"
+      }
     },
     {
       "tag": "roxy-tarot-spread",
@@ -805,7 +941,11 @@
             "spread": "yes-no"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/tarot-spread-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/tarot-spread-dark.webp"
+      }
     },
     {
       "tag": "roxy-bodygraph",
@@ -820,7 +960,11 @@
           "method": "POST",
           "path": "/human-design/bodygraph"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/bodygraph-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/bodygraph-dark.webp"
+      }
     },
     {
       "tag": "roxy-hd-type-card",
@@ -840,7 +984,11 @@
           "method": "POST",
           "path": "/human-design/type"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-type-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-type-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-hd-connection",
@@ -855,7 +1003,11 @@
           "method": "POST",
           "path": "/human-design/connection"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-connection-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-connection-dark.webp"
+      }
     },
     {
       "tag": "roxy-hd-penta",
@@ -870,7 +1022,11 @@
           "method": "POST",
           "path": "/human-design/penta"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-penta-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-penta-dark.webp"
+      }
     },
     {
       "tag": "roxy-hd-variables",
@@ -885,7 +1041,11 @@
           "method": "POST",
           "path": "/human-design/variables"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-variables-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hd-variables-dark.webp"
+      }
     },
     {
       "tag": "roxy-forecast-timeline",
@@ -910,7 +1070,11 @@
           "method": "POST",
           "path": "/forecast/transits"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/forecast-timeline-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/forecast-timeline-dark.webp"
+      }
     },
     {
       "tag": "roxy-forecast-digest",
@@ -925,7 +1089,11 @@
           "method": "POST",
           "path": "/forecast/digest"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/forecast-digest-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/forecast-digest-dark.webp"
+      }
     },
     {
       "tag": "roxy-biorhythm-chart",
@@ -959,7 +1127,11 @@
             "mode": "forecast"
           }
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/biorhythm-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/biorhythm-chart-dark.webp"
+      }
     },
     {
       "tag": "roxy-hexagram",
@@ -974,7 +1146,11 @@
           "method": "GET",
           "path": "/iching/hexagrams/random"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hexagram-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/hexagram-dark.webp"
+      }
     },
     {
       "tag": "roxy-crystal-card",
@@ -989,7 +1165,11 @@
           "method": "GET",
           "path": "/crystals/{id}"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/crystal-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/crystal-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-crystal-grid",
@@ -1014,7 +1194,11 @@
           "method": "GET",
           "path": "/crystals/zodiac/{sign}"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/crystal-grid-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/crystal-grid-dark.webp"
+      }
     },
     {
       "tag": "roxy-dream-card",
@@ -1029,7 +1213,11 @@
           "method": "GET",
           "path": "/dreams/symbols/{id}"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dream-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dream-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-dream-search",
@@ -1044,7 +1232,11 @@
           "method": "GET",
           "path": "/dreams/symbols"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dream-search-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/dream-search-dark.webp"
+      }
     },
     {
       "tag": "roxy-angel-number-card",
@@ -1059,7 +1251,11 @@
           "method": "GET",
           "path": "/angel-numbers/numbers/{number}"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/angel-number-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/angel-number-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-angel-number-lookup",
@@ -1074,7 +1270,11 @@
           "method": "GET",
           "path": "/angel-numbers/lookup"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/angel-number-lookup-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/angel-number-lookup-dark.webp"
+      }
     },
     {
       "tag": "roxy-reference-card",
@@ -1124,7 +1324,11 @@
           "method": "GET",
           "path": "/vedic-astrology/rashis/{id}"
         }
-      ]
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/reference-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/reference-card-dark.webp"
+      }
     },
     {
       "tag": "roxy-endpoint-form",
@@ -1133,7 +1337,11 @@
       "domain": "Helper",
       "renders": "Schema-driven form, emits roxy-submit",
       "endpointLabel": "Any endpoint, from the spec",
-      "endpoints": []
+      "endpoints": [],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/endpoint-form-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/endpoint-form-dark.webp"
+      }
     },
     {
       "tag": "roxy-location-search",
@@ -1142,7 +1350,11 @@
       "domain": "Helper",
       "renders": "Debounced city search input, emits roxy-location-select",
       "endpointLabel": "GET /location/search",
-      "endpoints": []
+      "endpoints": [],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/location-search-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/location-search-dark.webp"
+      }
     },
     {
       "tag": "roxy-data",
@@ -1151,7 +1363,11 @@
       "domain": "Helper",
       "renders": "Generic fallback renderer for unknown shapes",
       "endpointLabel": "Any response shape",
-      "endpoints": []
+      "endpoints": [],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/data-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.16.0/assets/previews/data-dark.webp"
+      }
     }
   ]
 }

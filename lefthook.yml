@@ -103,3 +103,10 @@ pre-push:
       # gzip/raw bundle budgets the README and CLAUDE.md claim.
       run: bun run size:check
       priority: 10
+
+    check-previews:
+      # Every manifest slug has both theme previews, no orphans, all 1200x800.
+      # Reads only committed assets/previews (no build/server), so it is safe
+      # here and NOT in build/catalog:sync. Fix with `bun run previews [slug]`.
+      run: bun run check:previews
+      priority: 11

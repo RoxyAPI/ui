@@ -439,6 +439,9 @@ async function main() {
 	console.log('Syncing token CSS string for CDN injection...');
 	execSync('bun run scripts/sync-tokens.ts', { stdio: 'inherit' });
 
+	console.log('Generating theme preset CSS from palettes...');
+	execSync('bun run scripts/sync-themes.ts', { stdio: 'inherit' });
+
 	console.log('Syncing docs manifest mirror...');
 	execSync('bun run scripts/sync-manifest.ts', { stdio: 'inherit' });
 

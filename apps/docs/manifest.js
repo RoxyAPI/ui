@@ -1316,3 +1316,97 @@ window.ROXY_ENDPOINT_BINDINGS = {
     }
   ]
 };
+window.ROXY_THEME_PRESETS = {
+  "practitioner": {
+    "file": "practitioner.css",
+    "light": {
+      "accent": "#914955",
+      "secondary": "#503a3a",
+      "danger": "#b23a38",
+      "bg": "#fbf6f3",
+      "surface": "#f5e8e0",
+      "fg": "#3e2a2c",
+      "muted": "#7e625f",
+      "border": "#ead9d2"
+    },
+    "dark": {
+      "accent": "#d9a2a6",
+      "secondary": "#e0cecb",
+      "danger": "#e4736b",
+      "bg": "#231619",
+      "surface": "#37272b",
+      "fg": "#f2e4df",
+      "muted": "#b39698",
+      "border": "#49353a"
+    }
+  },
+  "eucalyptus": {
+    "file": "eucalyptus.css",
+    "light": {
+      "accent": "#4c7060",
+      "secondary": "#3a4037",
+      "danger": "#b23a38",
+      "bg": "#f8f7f2",
+      "surface": "#edefe6",
+      "fg": "#22281f",
+      "muted": "#666d63",
+      "border": "#dce0d3"
+    },
+    "dark": {
+      "accent": "#9cc0ac",
+      "secondary": "#cfd5ca",
+      "danger": "#e4736b",
+      "bg": "#191e19",
+      "surface": "#2a312a",
+      "fg": "#e9ede3",
+      "muted": "#9fa89b",
+      "border": "#384138"
+    }
+  },
+  "kiln": {
+    "file": "kiln.css",
+    "light": {
+      "accent": "#a44a24",
+      "secondary": "#493d30",
+      "danger": "#b23a38",
+      "bg": "#faf4ea",
+      "surface": "#efe6d6",
+      "fg": "#322820",
+      "muted": "#74634f",
+      "border": "#e6d8c2"
+    },
+    "dark": {
+      "accent": "#d98d5f",
+      "secondary": "#dccdbc",
+      "danger": "#e4736b",
+      "bg": "#211710",
+      "surface": "#35281e",
+      "fg": "#f2e7d9",
+      "muted": "#b49d87",
+      "border": "#463729"
+    }
+  },
+  "moonlit": {
+    "file": "moonlit.css",
+    "light": {
+      "accent": "#254b5a",
+      "secondary": "#2d3c47",
+      "danger": "#b23a38",
+      "bg": "#faf6ec",
+      "surface": "#f1eadb",
+      "fg": "#14232e",
+      "muted": "#5c6a76",
+      "border": "#e4dbc6"
+    },
+    "dark": {
+      "accent": "#c9a96b",
+      "secondary": "#ced0c7",
+      "danger": "#e4736b",
+      "bg": "#0b1826",
+      "surface": "#1b2a39",
+      "fg": "#efe7d3",
+      "muted": "#92a4b2",
+      "border": "#263a4c"
+    }
+  }
+};

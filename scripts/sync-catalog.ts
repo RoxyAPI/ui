@@ -14,6 +14,7 @@
  * `bun run catalog:sync` (or `bun run build`) after touching manifest.ts or
  * bindings.config.ts. Committed so it is diffable and survives without a build.
  */
+import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
@@ -25,6 +26,19 @@ const version = (
 		version: string;
 	}
 ).version;
+
+// Preview composites are committed repo assets, not npm files, so they ship via the jsDelivr gh route pinned to the release tag (same pattern as build-registry.ts). Tag-pinned URLs are immutable: release.yml bumps the version, rebuilds this catalog, publishes, and pushes the tag in one run, so the tag always exists before any consumer sees the URLs through the @latest alias cache. Omit the field when a file is missing; completeness is enforced by check-previews.ts (pre-push + CI), never here (a build must exist before previews can be shot).
+const PREVIEW_CDN = `https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v${version}/assets/previews`;
+const preview = (slug: string) =>
+	existsSync(`assets/previews/${slug}-light.webp`) &&
+	existsSync(`assets/previews/${slug}-dark.webp`)
+		? {
+				preview: {
+					light: `${PREVIEW_CDN}/${slug}-light.webp`,
+					dark: `${PREVIEW_CDN}/${slug}-dark.webp`,
+				},
+			}
+		: {};
 
 const components = ROXY_COMPONENTS.map((c) => {
 	const endpoints = (ENDPOINT_BINDINGS[c.tag] ?? []).map((e) => ({
@@ -44,6 +58,7 @@ const components = ROXY_COMPONENTS.map((c) => {
 		// no single endpoint).
 		endpointLabel: c.endpointLabel,
 		endpoints,
+		...preview(c.slug),
 	};
 });
 

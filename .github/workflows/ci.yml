@@ -32,6 +32,12 @@ jobs:
       - name: Bundle-size budget (gzip full + per-component, raw widgets.js)
         run: bun run size:check
 
+      # Every manifest slug must have a committed 1200x800 light + dark preview
+      # composite, no orphans. Reads assets/previews only (no build/server), so
+      # it lives here and in lefthook pre-push, never in build/catalog:sync.
+      - name: Preview coverage (every slug has 1200x800 light + dark webp)
+        run: bun run check:previews
+
       # packages/ui-{react,vue}/src is GENERATED from packages/ui. A diff here
       # means generated output was hand-edited; the next build would revert it.
       - name: Wrapper drift (React and Vue wrappers must regenerate identically)
