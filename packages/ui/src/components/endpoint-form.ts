@@ -522,10 +522,12 @@ export class RoxyEndpointForm extends LitElement {
 		return LOCATION_TRIO.every((n) => inGroup.some((f) => f.name === n));
 	}
 
-	/** True when the location trio in a group is required, so the block shows a required mark. */
+	/**
+	 * True when the location block must show a required mark, i.e. ANY member of the trio is required. The block is a single city-search input that fills all three, so if even one is required (e.g. bodygraph requires `timezone` while `latitude`/`longitude` are optional) the input is required and `collectMissing` blocks submit without it. Requiring ALL three understated that: the asterisk went missing on a block the form still enforced, which reads as optional to a non-technical embedder.
+	 */
 	private locationRequired(group?: string): boolean {
 		const inGroup = this.fields.filter((f) => f.group === group);
-		return LOCATION_TRIO.every((n) =>
+		return LOCATION_TRIO.some((n) =>
 			inGroup.some((f) => f.name === n && f.required),
 		);
 	}

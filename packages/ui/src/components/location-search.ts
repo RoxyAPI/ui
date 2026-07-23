@@ -86,6 +86,12 @@ export class RoxyLocationSearch extends LitElement {
 				top: calc(100% + 4px);
 				left: 0;
 				right: 0;
+				/* Reset the UA <ul> defaults, or the listbox shows disc bullets and a
+				 * ~40px inline indent. Small even inset so rounded rows never clip the
+				 * container corners. */
+				margin: 0;
+				padding: var(--roxy-space-xs, 0.25rem);
+				list-style: none;
 				background: var(--roxy-bg, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
@@ -97,12 +103,13 @@ export class RoxyLocationSearch extends LitElement {
 			}
 			.option {
 				display: flex;
-				align-items: baseline;
+				align-items: center;
 				gap: var(--roxy-space-sm, 0.5rem);
 				width: 100%;
 				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
 				background: transparent;
 				border: 0;
+				border-radius: var(--roxy-radius-sm, 6px);
 				text-align: left;
 				font-family: inherit;
 				font-size: var(--roxy-text-sm, 0.875rem);

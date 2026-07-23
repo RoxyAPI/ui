@@ -176,6 +176,41 @@ describe('endpoint-form input registry rendering', () => {
 		el.remove();
 	});
 
+	test('location block shows a required mark when only timezone is required (bodygraph shape)', async () => {
+		// Bodygraph requires timezone but defaults latitude/longitude, so the single
+		// city-search input is still required (collectMissing blocks submit without it).
+		// The asterisk must reflect that, or the block reads as optional to an embedder.
+		const el = await mountForm(
+			{
+				title: 'Generate full Human Design bodygraph',
+				hasLang: true,
+				fields: [
+					{ key: 'date', name: 'date', kind: 'date', required: true },
+					{ key: 'time', name: 'time', kind: 'time', required: true },
+					{
+						key: 'latitude',
+						name: 'latitude',
+						kind: 'number',
+						required: false,
+					},
+					{
+						key: 'longitude',
+						name: 'longitude',
+						kind: 'number',
+						required: false,
+					},
+					{ key: 'timezone', name: 'timezone', kind: 'number', required: true },
+				],
+			},
+			{ 'data-endpoint': 'human-design/bodygraph', method: 'POST' },
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		const block = root.querySelector('.location-block');
+		expect(block).not.toBeNull();
+		expect(block?.querySelector('.req')).not.toBeNull();
+		el.remove();
+	});
+
 	test('a failed submit renders an inline role=alert listing humanized missing fields', async () => {
 		const el = await mountForm(
 			{
