@@ -58,6 +58,62 @@ async function scan(page: Page): Promise<void> {
 	expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([]);
 }
 
+/**
+ * Switch theme and wait until the components have actually repainted in it.
+ *
+ * @remarks
+ * `applyTheme` sets `data-theme` on `<html>` synchronously, so a bare click looks
+ * settled, but WebKit can propagate the token cascade into the shadow trees a frame
+ * later. axe then samples dark-theme text (`#fafafa`) against a background still
+ * resolving as `#ffffff`, reports contrast 1.04 on every sign tile, and the run
+ * fails about one time in three. Poll the value axe actually reads rather than
+ * sleeping on a guess.
+ *
+ * `containerId` is the subtree the caller is about to scan. The two suites mount
+ * different hosts, and polling one that is not on the page never settles.
+ *
+ * The probe asserts the invariant axe is about to measure, on the element it
+ * measures it on: a tile label and the surface behind it must sit on OPPOSITE
+ * sides of mid luminance. Watching the light-DOM host instead is not enough,
+ * because its inherited `color` flips a frame before the shadow tiles repaint
+ * their background, which is the half-applied state that produced `#f2e4df` text
+ * on a still-light `#fbf6f3` tile under the practitioner preset.
+ */
+async function setTheme(
+	page: Page,
+	theme: 'light' | 'dark',
+	containerId: string,
+): Promise<void> {
+	await page.locator(`#theme-${theme}`).click();
+	await page.waitForFunction(
+		([t, id]) => {
+			if (document.documentElement.dataset.theme !== t) return false;
+			const form = document
+				.getElementById(id)
+				?.querySelector('roxy-endpoint-form');
+			const root = (form as { shadowRoot?: ShadowRoot | null } | null)
+				?.shadowRoot;
+			const label = root?.querySelector('.tile-label');
+			const tile = label?.closest('.tile');
+			if (!label || !tile) return false;
+
+			const lum = (c: string): number | null => {
+				const n = c
+					.match(/[\d.]+/g)
+					?.slice(0, 3)
+					.map(Number);
+				return n && n.length === 3 ? (n[0]! + n[1]! + n[2]!) / 3 : null;
+			};
+			const fg = lum(getComputedStyle(label).color);
+			const bg = lum(getComputedStyle(tile).backgroundColor);
+			if (fg === null || bg === null) return false;
+			// Settled means readable: light text on a dark tile, or the reverse.
+			return Math.abs(fg - bg) > 60 && (t === 'dark' ? fg > bg : fg < bg);
+		},
+		[theme, containerId],
+	);
+}
+
 test.describe('self-fetch input a11y', () => {
 	test('the tile picker, toggle, location, and group cards render their ARIA roles', async ({
 		page,
@@ -93,7 +149,7 @@ test.describe('self-fetch input a11y', () => {
 
 	test('passes axe on dark theme', async ({ page }) => {
 		await mountForms(page);
-		await page.locator('#theme-dark').click();
+		await setTheme(page, 'dark', 'roxy-e2e-forms');
 		await scan(page);
 	});
 });
@@ -154,7 +210,7 @@ test.describe('practitioner theme preset', () => {
 			expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([]);
 		};
 		await scanThemed();
-		await page.locator('#theme-dark').click();
+		await setTheme(page, 'dark', 'roxy-practitioner');
 		await scanThemed();
 	});
 });

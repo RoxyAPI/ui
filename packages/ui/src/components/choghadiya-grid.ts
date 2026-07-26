@@ -65,7 +65,10 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 			}
 			.cho-tile {
 				display: grid;
-				grid-template-columns: 1fr auto;
+				/* minmax(0, 1fr), never a bare 1fr: a 1fr track keeps an automatic
+				 * min-content floor, so a long muhurta name widened the tile past the
+				 * card instead of wrapping, and pushed the time column out with it. */
+				grid-template-columns: minmax(0, 1fr) auto;
 				align-items: center;
 				gap: 0.25em 0.75em;
 				padding: 0.55em 0.85em;
@@ -105,6 +108,8 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 				font-size: var(--roxy-text-base, 1rem);
 				font-weight: var(--roxy-weight-bold, 600);
 				grid-column: 1;
+				min-width: 0;
+				overflow-wrap: anywhere;
 			}
 			.tile-time {
 				font-size: var(--roxy-text-xs, 0.75rem);

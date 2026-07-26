@@ -34,6 +34,14 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 				align-items: center;
 				gap: var(--roxy-space-md, 1rem);
 			}
+			/* The text column beside the numeral must be allowed to WRAP. As a flex
+			 * item it keeps min-width: auto, so a long title pushed the whole hero
+			 * past the card edge instead of breaking: the live response for 1111 is
+			 * "Spiritual Awakening, Manifestation, and Alignment", which overhung by
+			 * 5px on a phone while the shorter demo title fit and hid it. */
+			.hero > div {
+				min-width: 0;
+			}
 			.numeral {
 				font-size: 3rem;
 				line-height: 1;

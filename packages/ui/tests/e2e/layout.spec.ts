@@ -96,3 +96,90 @@ for (const vp of WIDTHS) {
 		expect(issues, `${vp.label}: ${issues.join('\n')}`).toEqual([]);
 	});
 }
+
+/**
+ * The same overflow check, but against LONG content rather than the demo fixtures.
+ *
+ * @remarks
+ * The fixtures are whatever a sample call happened to return, so a field can be short in the capture and long in production. `roxy-angel-number-card` shipped a hero that overhung its card by 5px for number 1111, whose live title is "Spiritual Awakening, Manifestation, and Alignment", while the shorter captured title fit and the gate stayed green. It only surfaced on a real WordPress page.
+ *
+ * Rewriting every fixture is not the fix. Inflating the title-ish fields in place covers the whole library in one pass and keeps the fixtures honest about what the API actually returned.
+ */
+test('no section overflows when its text fields are long', async ({ page }) => {
+	await page.setViewportSize({ width: 375, height: 900 });
+	await page.goto('/');
+	await page.waitForLoadState('networkidle');
+	await page.waitForTimeout(800);
+
+	const issues = await page.evaluate(async () => {
+		const LONG =
+			'Spiritual Awakening, Manifestation, and Alignment With Higher Purpose';
+		const TEXTY = /^(title|name|phase|label|heading)$/i;
+		const bloat = (v: unknown, depth = 0): unknown => {
+			if (depth > 3 || v === null || typeof v !== 'object') return v;
+			if (Array.isArray(v)) return v.map((x) => bloat(x, depth + 1));
+			const out: Record<string, unknown> = {};
+			for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+				out[k] =
+					typeof val === 'string' && TEXTY.test(k) && val.length < 30
+						? LONG
+						: bloat(val, depth + 1);
+			}
+			return out;
+		};
+
+		type Host = HTMLElement & {
+			shadowRoot?: ShadowRoot | null;
+			data?: unknown;
+		};
+		const hosts = ([...document.querySelectorAll('*')] as Host[]).filter(
+			(e) => e.tagName.startsWith('ROXY-') && e.shadowRoot && e.data,
+		);
+		for (const h of hosts) {
+			try {
+				h.data = bloat(structuredClone(h.data));
+			} catch {
+				// A fixture holding something structuredClone cannot copy stays as-is.
+			}
+		}
+		await new Promise((r) => setTimeout(r, 1200));
+
+		const found: string[] = [];
+		for (const h of hosts) {
+			const hostRect = h.getBoundingClientRect();
+			if (hostRect.width === 0) continue;
+			const walk = (root: ParentNode) => {
+				for (const el of root.querySelectorAll('*')) {
+					const e = el as HTMLElement & { shadowRoot?: ShadowRoot | null };
+					if (e.shadowRoot) walk(e.shadowRoot);
+					const r = e.getBoundingClientRect();
+					if (r.width === 0) continue;
+					if (r.right <= hostRect.right + 2) continue;
+					let p: HTMLElement | null = e.parentElement;
+					let scrollable = false;
+					while (p && p !== (root as unknown as HTMLElement)) {
+						const ox = getComputedStyle(p).overflowX;
+						if (ox === 'auto' || ox === 'scroll') {
+							scrollable = true;
+							break;
+						}
+						p = p.parentElement;
+					}
+					if (!scrollable) {
+						found.push(
+							`${h.tagName.toLowerCase()}: ${e.tagName.toLowerCase()}.${e.className || '?'} overflows by ${Math.round(r.right - hostRect.right)}px`,
+						);
+						break;
+					}
+				}
+			};
+			walk(h.shadowRoot as ShadowRoot);
+		}
+		return found;
+	});
+
+	// SVG chart labels are excluded: a chart cell is sized for a planet name, and
+	// a 68 character string in that field is not a case the API can produce.
+	const real = issues.filter((i) => !i.includes(': text.'));
+	expect(real, real.join('\n')).toEqual([]);
+});
