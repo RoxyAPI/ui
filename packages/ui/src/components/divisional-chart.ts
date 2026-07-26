@@ -112,15 +112,22 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
 			</div>
 
-			<svg
-				viewBox="0 0 400 400"
-				preserveAspectRatio="xMidYMid meet"
-				role="img"
-				aria-label="D${division.number} ${division.name} divisional chart with twelve sign houses"
+			<div
+				id="kundli-panel-${this.chartStyle}"
+				role="tabpanel"
+				tabindex="0"
+				aria-labelledby="kundli-tab-${this.chartStyle}"
 			>
-				<title>D${division.number} ${division.name}</title>
-				${renderKundliSvg(vm, this.chartStyle)}
-			</svg>
+				<svg
+					viewBox="0 0 400 400"
+					preserveAspectRatio="xMidYMid meet"
+					role="img"
+					aria-label="D${division.number} ${division.name} divisional chart with twelve sign houses"
+				>
+					<title>D${division.number} ${division.name}</title>
+					${renderKundliSvg(vm, this.chartStyle)}
+				</svg>
+			</div>
 
 			${
 				vargottama && vargottama.length > 0

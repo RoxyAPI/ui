@@ -730,5 +730,10 @@ export function renderKundliStyleTablist(
 		onSelect: setStyle,
 		label: 'Kundli style',
 		idPrefix: 'kundli',
+		// The chart SVG below is the panel these tabs swap. Callers MUST wrap it in
+		// `<div role="tabpanel" id="kundli-panel-${style}">`, otherwise the buttons
+		// claim role=tab while governing nothing, which is what a screen reader
+		// announces as a broken tab set.
+		controls: true,
 	});
 }

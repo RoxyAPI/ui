@@ -200,16 +200,24 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 					},
 					label: 'Card orientation',
 					idPrefix: 'tarot',
+					controls: true,
 				})}
-				${oriented?.description ? html`<p class="reading">${oriented.description}</p>` : nothing}
-				${
-					keywords.length > 0
-						? html`<div class="chips">
-							${keywords.map((k) => html`<span>${k}</span>`)}
-						</div>`
-						: nothing
-				}
-				${this.renderGuidance(oriented, `tarot-${this.orientation}-guidance`)}
+				<div
+					id="tarot-panel-${this.orientation}"
+					role="tabpanel"
+					tabindex="0"
+					aria-labelledby="tarot-tab-${this.orientation}"
+				>
+					${oriented?.description ? html`<p class="reading">${oriented.description}</p>` : nothing}
+					${
+						keywords.length > 0
+							? html`<div class="chips">
+								${keywords.map((k) => html`<span>${k}</span>`)}
+							</div>`
+							: nothing
+					}
+					${this.renderGuidance(oriented, `tarot-${this.orientation}-guidance`)}
+				</div>
 			</div>
 		</article>`;
 	}

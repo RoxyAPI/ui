@@ -407,10 +407,11 @@ window.ROXY_UI_DEMOS = [
 	// from `scripts/refresh-samples.ts` via @roxyapi/sdk, and the published SDK
 	// regenerates from the live spec on its OWN pipeline, so it does not know a
 	// brand new operation for a while. A card with no sample renders an empty
-	// state, which is worse than no card. The published SDK does not expose the two
-	// operations yet, so `refresh-samples.ts` cannot even reference them without
-	// failing typecheck. Sequence and readiness check: CLAUDE.md, "Binding a new
-	// endpoint to an EXISTING component", step 8.
+	// state, which is worse than no card. @roxyapi/sdk 1.2.50 does expose both
+	// operations, but bunfig.toml sets minimumReleaseAge = 3 days, so it cannot be
+	// installed here until 2026-07-29 and refresh-samples cannot capture them
+	// before that. Do not bypass that guard for a demo card. Full sequence:
+	// CLAUDE.md, "Binding a new endpoint to an EXISTING component", step 8.
 	entry({
 		id: 'guna',
 		tag: 'roxy-guna-milan',

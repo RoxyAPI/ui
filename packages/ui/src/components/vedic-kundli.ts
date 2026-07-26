@@ -90,15 +90,22 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 				<h2 class="title">${title}</h2>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
 			</div>
-			<svg
-				viewBox="0 0 400 400"
-				preserveAspectRatio="xMidYMid meet"
-				role="img"
-				aria-label="Vedic birth chart with twelve sign houses"
+			<div
+				id="kundli-panel-${this.chartStyle}"
+				role="tabpanel"
+				tabindex="0"
+				aria-labelledby="kundli-tab-${this.chartStyle}"
 			>
-				<title>Vedic kundli</title>
-				${renderKundliSvg(vm, this.chartStyle)}
-			</svg>
+				<svg
+					viewBox="0 0 400 400"
+					preserveAspectRatio="xMidYMid meet"
+					role="img"
+					aria-label="Vedic birth chart with twelve sign houses"
+				>
+					<title>Vedic kundli</title>
+					${renderKundliSvg(vm, this.chartStyle)}
+				</svg>
+			</div>
 		</div>`;
 	}
 }

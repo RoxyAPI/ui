@@ -1952,3 +1952,68 @@ describe('roxy-dasha-timeline organises fields into panels', () => {
 		el.remove();
 	});
 });
+
+/**
+ * ARIA contract for every tab strip in the library.
+ *
+ * A `role=tab` that governs nothing is a broken control: a screen reader
+ * announces a tab set, and activating it moves the user nowhere. Three
+ * components shipped that way (the kundli and divisional style switchers and the
+ * tarot orientation flip) because their tablists swapped a view in place without
+ * a panel element. This pins the pairing for all of them at once, so a new
+ * tablist cannot be added without its panel.
+ */
+describe('every tablist governs a real tabpanel', () => {
+	const CASES: Array<{ tag: string; sample: unknown }> = [
+		{
+			tag: 'roxy-tarot-card',
+			sample: {
+				name: 'The Star',
+				arcana: 'major',
+				upright: { description: 'Hope renewed.', keywords: ['hope'] },
+				reversed: { description: 'Faith wavers.', keywords: ['doubt'] },
+			},
+		},
+		{
+			tag: 'roxy-dasha-timeline',
+			sample: {
+				nakshatraName: 'Swati',
+				nakshatraLord: 'Rahu',
+				moonLongitude: 190.99,
+				ayanamsaType: 'lahiri',
+				mahadasha: { planet: 'Saturn', interpretation: 'Discipline.' },
+				antardasha: { planet: 'Venus' },
+				pratyantardasha: { planet: 'Rahu' },
+				sookshmaDasha: { planet: 'Jupiter' },
+			},
+		},
+	];
+
+	for (const { tag, sample } of CASES) {
+		test(`${tag}: each rendered tab points at a panel that exists`, async () => {
+			const el = document.createElement(tag) as HTMLElement & {
+				data?: unknown;
+			};
+			document.body.appendChild(el);
+			el.data = sample;
+			await settled(el);
+
+			const root = el.shadowRoot;
+			const tabs = [...(root?.querySelectorAll('[role="tab"]') ?? [])];
+			expect(tabs.length).toBeGreaterThan(0);
+
+			// The selected tab must name a panel, and that panel must be in the DOM.
+			const selected = tabs.find(
+				(t) => t.getAttribute('aria-selected') === 'true',
+			);
+			expect(selected).toBeTruthy();
+			const controls = selected?.getAttribute('aria-controls');
+			expect(controls).toBeTruthy();
+			expect(root?.querySelector(`#${controls}`)?.getAttribute('role')).toBe(
+				'tabpanel',
+			);
+
+			el.remove();
+		});
+	}
+});
