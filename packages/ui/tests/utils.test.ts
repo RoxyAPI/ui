@@ -560,3 +560,34 @@ describe('shared display formatters', () => {
 		expect(formatAyanamsa('raman-something')).toBe('Raman something');
 	});
 });
+
+describe('no component re-implements aspect or enum formatting inline', () => {
+	test('every aspect label goes through the shared helpers', async () => {
+		// Six separate inline normalizers had grown by 0.19.x, and they disagreed:
+		// one folded underscores to hyphens, one to SPACES, one did neither, so the
+		// same aspect rendered three ways and two of them missed every ASPECT_CLASS
+		// lookup. Grep is the only gate that catches a seventh being added.
+		const { readdirSync, readFileSync } = await import('node:fs');
+		const dir = new URL('../src/components/', import.meta.url).pathname;
+		const offenders: string[] = [];
+		for (const f of readdirSync(dir).filter((n) => n.endsWith('.ts'))) {
+			const src = readFileSync(dir + f, 'utf8');
+			for (const [i, line] of src.split('\n').entries()) {
+				if (line.trimStart().startsWith('*')) continue;
+				// An aspect, phase or type VALUE reshaped by hand rather than by
+				// normalizeAspect / formatAspectName / humanize. Scoped to those
+				// nouns on purpose: `data.ts` normKey strips the same separators to
+				// build a LOOKUP key, which is not display formatting and must not
+				// trip this.
+				if (
+					/\breplace\(\/\[?_/.test(line) &&
+					/\b(type|aspect|phase)\b/i.test(line) &&
+					!/formatAspectName|normalizeAspect|humanize/.test(line)
+				) {
+					offenders.push(`${f}:${i + 1} ${line.trim()}`);
+				}
+			}
+		}
+		expect(offenders, offenders.join('\n')).toEqual([]);
+	});
+});

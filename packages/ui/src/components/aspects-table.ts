@@ -364,7 +364,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			<span class="pill pill--muted">Neutral: ${s.neutral}</span>
 			${byType.map(
 				([type, count]) =>
-					html`<span class="pill pill--muted">${capitalize(type.replace(/_/g, ' '))}: ${count}</span>`,
+					html`<span class="pill pill--muted">${formatAspectName({ type })}: ${count}</span>`,
 			)}
 		</div>`;
 	}

@@ -556,7 +556,7 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 			<span class="pill">Neutral: ${s.neutral}</span>
 			${byType.map(
 				([type, count]) =>
-					html`<span class="pill">${capitalize(type.replace(/_/g, ' '))}: ${count}</span>`,
+					html`<span class="pill">${formatAspectName({ type })}: ${count}</span>`,
 			)}
 		</div>`;
 	}

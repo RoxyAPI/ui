@@ -9,7 +9,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatNumber } from '../utils/format.js';
+import { formatNumber, normalizeAspect } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -487,7 +487,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				if (!cycle) continue;
 				sections.push({
 					label: capitalize(name),
-					aside: `${formatNumber(cycle.alignment, 0)}% in step · ${cycle.phase?.replace(/_/g, ' ')}`,
+					aside: `${formatNumber(cycle.alignment, 0)}% in step · ${humanize(cycle.phase ?? '')}`,
 					body: cycle.description ?? '',
 				});
 			}
@@ -509,7 +509,8 @@ type KeyAspect = CalculateCompatibilityResponse extends {
 	: never;
 
 function formatAspect(a: KeyAspect): string {
-	const aspect = a.type.toLowerCase().replace(/_/g, '-');
+	// Lowercase on purpose: this lands mid-sentence as "Sun trine Moon".
+	const aspect = normalizeAspect(a);
 	const orb =
 		typeof a.orb === 'number' ? ` (orb ${formatNumber(a.orb, 1)}°)` : '';
 	const head = [a.planet1, aspect, a.planet2].filter(Boolean).join(' ');
