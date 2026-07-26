@@ -18,7 +18,7 @@
  * call wins and every component reuses it.
  */
 /** The @roxyapi/ui release this wrapper was generated against. The loader defaults to it, so the wrapper version in your lockfile is the runtime you actually get. */
-export const ROXY_UI_VERSION = '0.18.5';
+export const ROXY_UI_VERSION = '0.19.0';
 
 const SCRIPT_ID = 'roxyapi-ui-loader';
 const CDN_BASE_LATEST =
