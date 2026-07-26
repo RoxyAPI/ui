@@ -21,6 +21,9 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* Never an implicit auto column: it floors at min-content, so one long
+				 * unbreakable string widens the track past the padded card. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.hero {
@@ -28,13 +31,27 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 				align-items: center;
 				gap: var(--roxy-space-md, 1rem);
 			}
-			/* The text column beside the numeral must be allowed to WRAP. As a flex
-			 * item it keeps min-width: auto, so a long title pushed the whole hero
-			 * past the card edge instead of breaking: the live response for 1111 is
-			 * "Spiritual Awakening, Manifestation, and Alignment", which overhung by
-			 * 5px on a phone while the shorter demo title fit and hid it. */
-			.hero > div {
+			/* Only the TEXT column may shrink. It keeps min-width: auto as a flex
+			 * item, so a long title pushed the hero past the card instead of
+			 * wrapping. Excluding the numeral is load-bearing: it is also a div, and
+			 * letting it shrink made the 1111 overflow its own box and render
+			 * underneath the title. */
+			.numeral {
+				flex-shrink: 0;
+			}
+			.hero > div:not(.numeral) {
 				min-width: 0;
+			}
+			/* Phone width. The numeral is about half the padded card, which left the
+			 * title roughly 116px and broke it onto six lines. Stack so the title
+			 * gets the full width. */
+			@container (max-width: 24rem) {
+				.hero {
+					display: grid;
+					grid-template-columns: minmax(0, 1fr);
+					justify-items: start;
+					gap: var(--roxy-space-sm, 0.5rem);
+				}
 			}
 			.numeral {
 				font-size: 3rem;

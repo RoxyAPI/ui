@@ -20,6 +20,9 @@ export class RoxyDreamCard extends RoxyDataElement<GetDreamSymbolResponse> {
 				padding: var(--roxy-space-lg, 1.5rem);
 				box-shadow: var(--roxy-shadow-sm);
 				display: grid;
+				/* Never an implicit auto column: it floors at min-content, so one long
+				 * unbreakable string widens the track past the padded card. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.head {

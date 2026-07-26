@@ -39,6 +39,9 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 		css`
 			.wrap {
 				display: grid;
+				/* Never an implicit auto column: it floors at min-content, so one long
+				 * unbreakable string widens the track past the padded card. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 			}
 
@@ -132,6 +135,9 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 				padding: var(--roxy-space-sm, 0.5rem);
 				background: var(--roxy-surface, #fff);
 				display: grid;
+				/* Never an implicit auto column: it floors at min-content, so one long
+				 * unbreakable string widens the track past the padded card. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-xs, 0.25rem);
 			}
 			.label {
