@@ -198,6 +198,34 @@ async function main() {
 				},
 			}),
 		),
+		// The two deeper levels share the sub layout but carry a different parent
+		// shape and level label, so a shared sample would never exercise them.
+		run('dasha-antara', () =>
+			roxy.vedicAstrology.getPratyantardashas({
+				path: { mahadasha: 'Venus', antardasha: 'Saturn' },
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
+		run('dasha-sookshma', () =>
+			roxy.vedicAstrology.getSookshmaDashas({
+				path: {
+					mahadasha: 'Venus',
+					antardasha: 'Saturn',
+					pratyantardasha: 'Mercury',
+				},
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+				},
+			}),
+		),
 		run('dosha', () =>
 			roxy.vedicAstrology.checkManglikDosha({
 				body: {

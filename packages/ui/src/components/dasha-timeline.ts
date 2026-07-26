@@ -314,7 +314,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 							${
 								periods.length > 0
 									? html`<div class="timeline" role="list">
-										${periods.map((p) => this.renderBar(p, maxYears))}
+										${periods.map((p) => this.renderBar(p, maxYears, grainFor(maxYears)))}
 									</div>`
 									: nothing
 							}`
@@ -562,7 +562,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		return (now - start) / (end - start);
 	}
 
-	private renderBar(p: DashaPeriod, max: number) {
+	private renderBar(p: DashaPeriod, max: number, grain: DateGrain) {
 		const years = p.durationYears;
 		const width = max > 0 ? (years / max) * 100 : 0;
 		const current = this.isCurrent(p);
@@ -589,16 +589,44 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				}
 			</span>
 			<span class="dates">
-				${p.startDate ? formatYear(p.startDate) : ''}
-				${p.endDate ? html`- ${formatYear(p.endDate)}` : ''}
+				${p.startDate ? formatBoundary(p.startDate, grain) : ''}
+				${p.endDate ? html`- ${formatBoundary(p.endDate, grain)}` : ''}
 			</span>
 		</div>`;
 	}
 }
 
-function formatYear(s: string): string {
-	const m = s.match(/^(\d{4})/);
-	return m ? m[1] : s;
+/**
+ * How precise the bar date column has to be, chosen from the LONGEST period in
+ * the set.
+ *
+ * A Mahadasha spans years, so a bare year reads cleanly and keeps the column
+ * narrow. A Sookshma spans days: printed as a year, every one of the nine rows
+ * reads "1990 - 1990" and the column carries no information at exactly the level
+ * a reader opened the drill-down to see.
+ */
+type DateGrain = 'year' | 'month' | 'day';
+
+const DAYS_PER_YEAR = 365.25;
+
+function grainFor(maxYears: number): DateGrain {
+	if (maxYears >= 2) return 'year';
+	if (maxYears >= 60 / DAYS_PER_YEAR) return 'month';
+	return 'day';
+}
+
+/** One end of a bar, at the chosen granularity. Day grain drops the year: these rows sit under a parent line that already states it, and the column is only 8rem wide. */
+function formatBoundary(s: string, grain: DateGrain): string {
+	if (grain === 'year') {
+		const m = s.match(/^(\d{4})/);
+		return m ? m[1] : s;
+	}
+	const d = new Date(s);
+	if (Number.isNaN(d.getTime())) return s;
+	const month = d.toLocaleString('en', { month: 'short' });
+	return grain === 'month'
+		? `${month} ${d.getFullYear()}`
+		: `${d.getDate()} ${month}`;
 }
 
 declare global {

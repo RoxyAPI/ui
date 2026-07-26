@@ -403,15 +403,28 @@ window.ROXY_UI_DEMOS = [
     body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
-	// No dasha-antara / dasha-sookshma cards yet, deliberately. Their samples come
-	// from `scripts/refresh-samples.ts` via @roxyapi/sdk, and the published SDK
-	// regenerates from the live spec on its OWN pipeline, so it does not know a
-	// brand new operation for a while. A card with no sample renders an empty
-	// state, which is worse than no card. @roxyapi/sdk 1.2.50 does expose both
-	// operations, but bunfig.toml sets minimumReleaseAge = 3 days, so it cannot be
-	// installed here until 2026-07-29 and refresh-samples cannot capture them
-	// before that. Do not bypass that guard for a demo card. Full sequence:
-	// CLAUDE.md, "Binding a new endpoint to an EXISTING component", step 8.
+	entry({
+		id: 'dasha-antara',
+		tag: 'roxy-dasha-timeline',
+		heading: 'Pratyantardashas',
+		seoLine: 'Pratyantardashas within an antardasha, the third Vimshottari level',
+		attrs: ' period="antara"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getPratyantardashas({
+    path: { mahadasha: 'venus', antardasha: 'saturn' },
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'dasha-sookshma',
+		tag: 'roxy-dasha-timeline',
+		heading: 'Sookshma dashas',
+		seoLine: 'Sookshma dashas, day level timing at the fourth Vimshottari level',
+		attrs: ' period="sookshma"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getSookshmaDashas({
+    path: { mahadasha: 'venus', antardasha: 'saturn', pratyantardasha: 'mercury' },
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
 	entry({
 		id: 'guna',
 		tag: 'roxy-guna-milan',

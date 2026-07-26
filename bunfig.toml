@@ -3,4 +3,11 @@ preload = ["./packages/ui/tests/setup.ts"]
 
 [install]
 exact = false
+# Third-party packages must soak for three days before we will install them. This
+# repo ships a CDN bundle that executes in other people's browsers, so a poisoned
+# transitive release here reaches end users, not just our build. Keep this.
 minimumReleaseAge = 259200
+# Our OWN package is exempt: it is published from our CI via npm Trusted Publishing
+# (OIDC) with provenance, so the soak window buys nothing and would otherwise block
+# the demo and samples for three days every time the API gains an endpoint.
+minimumReleaseAgeExcludes = ["@roxyapi/sdk"]

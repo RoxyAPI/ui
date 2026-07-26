@@ -2017,3 +2017,80 @@ describe('every tablist governs a real tabpanel', () => {
 		});
 	}
 });
+
+/**
+ * The bar date column has to stay informative at every level. Printed as a bare
+ * year, a sookshma list renders nine identical "1990 - 1990" rows, which is the
+ * column carrying no information at exactly the level the reader drilled to.
+ */
+describe('roxy-dasha-timeline date column adapts to the period length', () => {
+	async function mount(data: unknown, period: string) {
+		const el = document.createElement('roxy-dasha-timeline') as HTMLElement & {
+			data?: unknown;
+			period?: string;
+		};
+		el.period = period;
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+	const dateCells = (el: Element) =>
+		[...(el.shadowRoot?.querySelectorAll('.dates') ?? [])].map(
+			(n) => n.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+		);
+
+	test('mahadashas keep bare years', async () => {
+		const el = await mount(
+			{
+				mahadashas: [
+					{
+						planet: 'Ketu',
+						startDate: '1990-01-15T00:00:00',
+						endDate: '1997-01-15T00:00:00',
+						durationYears: 7,
+					},
+					{
+						planet: 'Venus',
+						startDate: '1997-01-15T00:00:00',
+						endDate: '2017-01-15T00:00:00',
+						durationYears: 20,
+					},
+				],
+			},
+			'major',
+		);
+		expect(dateCells(el)[0]).toBe('1990 - 1997');
+		el.remove();
+	});
+
+	test('day-long sookshma periods do not all collapse to one repeated year', async () => {
+		const el = await mount(
+			{
+				pratyantardashaLord: 'Mercury',
+				pratyantardashaPeriod: { planet: 'Mercury', durationYears: 0.45 },
+				sookshmaDashas: [
+					{
+						planet: 'Mercury',
+						startDate: '1990-01-19T00:00:00',
+						endDate: '1990-02-02T00:00:00',
+						durationYears: 0.04,
+					},
+					{
+						planet: 'Ketu',
+						startDate: '1990-02-02T00:00:00',
+						endDate: '1990-02-08T00:00:00',
+						durationYears: 0.017,
+					},
+				],
+			},
+			'sookshma',
+		);
+		const cells = dateCells(el);
+		expect(cells[0]).not.toBe('1990 - 1990');
+		// Distinct rows must read distinctly.
+		expect(cells[0]).not.toBe(cells[1]);
+		expect(cells[0]).toContain('Jan');
+		el.remove();
+	});
+});
