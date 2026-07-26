@@ -1,6 +1,6 @@
 {
   "name": "@roxyapi/ui",
-  "version": "0.19.3",
+  "version": "0.19.4",
   "description": "Web components for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, biorhythm, I Ching, crystals, dreams, angel numbers, and more. One key, beautiful in 30 minutes.",
   "type": "module",
   "main": "./dist/index.cjs",
