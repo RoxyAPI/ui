@@ -270,7 +270,12 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			...(readings.length
 				? [{ id: 'readings' as const, label: `Readings (${readings.length})` }]
 				: []),
-			...(frame.length ? [{ id: 'frame' as const, label: 'Chart' }] : []),
+			// "Chart details", never "Chart": this panel is the sidereal frame the
+			// dates came from, not a wheel. A reader who clicks a tab labelled Chart
+			// expects to see one drawn.
+			...(frame.length
+				? [{ id: 'frame' as const, label: 'Chart details' }]
+				: []),
 		];
 		// A tab that no longer exists (data changed under a selection) must not
 		// blank the card, so fall back to the first.

@@ -1896,7 +1896,9 @@ describe('roxy-dasha-timeline organises fields into panels', () => {
 		const el = await mount(currentSample);
 		const chart = [
 			...(el.shadowRoot?.querySelectorAll('.roxy-tab') ?? []),
-		].find((t) => t.textContent?.trim() === 'Chart') as HTMLElement | undefined;
+		].find((t) => t.textContent?.trim() === 'Chart details') as
+			| HTMLElement
+			| undefined;
 		expect(chart).toBeTruthy();
 		chart?.click();
 		await settled(el);
