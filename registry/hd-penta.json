@@ -8,7 +8,7 @@
     "@roxyapi/ui-react"
   ],
   "registryDependencies": [
-    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.18.1/registry/theme.json"
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.18.2/registry/theme.json"
   ],
   "files": [
     {
