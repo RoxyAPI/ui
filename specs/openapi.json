@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 164+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 164+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
+    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 166+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 166+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
     "contact": {
       "name": "RoxyAPI Support",
       "url": "https://roxyapi.com/contact"
@@ -26840,8 +26840,8 @@
         "tags": [
           "Vedic Astrology"
         ],
-        "summary": "Get current Mahadasha, Antardasha, Pratyantardasha - Dasha Calculator API",
-        "description": "Calculate current Vimshottari Dasha periods (Mahadasha, Antardasha, Pratyantardasha) with remaining time. Accurate dasha calculator API for life phase prediction and planetary period analysis. Returns dasha timeline with start/end dates for each period. Essential for understanding current planetary influences, dasha transitions, and timing events in Vedic astrology. 120-year dasha system based on moon nakshatra at birth.",
+        "summary": "Get current Mahadasha, Antardasha, Pratyantardasha, Sookshma - Dasha Calculator API",
+        "description": "Calculate all four running Vimshottari Dasha levels (Mahadasha, Antardasha, Pratyantardasha, Sookshma) with remaining time in each. Accurate dasha calculator API for life phase prediction and planetary period analysis. Returns the dasha timeline with start/end dates for every level, ready for a current DBA readout. Essential for understanding current planetary influences, dasha transitions, and timing events in Vedic astrology. 120-year dasha system based on moon nakshatra at birth, with selectable Lahiri or KP ayanamsa.",
         "security": [
           {
             "apiKey": []
@@ -26917,6 +26917,17 @@
                     "default": 5.5,
                     "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
+                  },
+                  "ayanamsa": {
+                    "type": "string",
+                    "enum": [
+                      "kp-newcomb",
+                      "kp-old",
+                      "lahiri"
+                    ],
+                    "default": "lahiri",
+                    "example": "lahiri",
+                    "description": "Ayanamsa system used to place the birth Moon in its nakshatra, which sets every dasha start and end date. \"lahiri\" uses Lahiri/Chitrapaksha, the traditional Vedic standard, and is the default. \"kp-newcomb\" uses the KP-Newcomb dynamic formula, matching Krishnamurti Paddhati software. \"kp-old\" uses the Krishnamurti original table from KP Reader-1. Switching frames shifts every dasha boundary by weeks, so pick the one your reference software uses."
                   }
                 },
                 "required": [
@@ -26931,7 +26942,7 @@
         },
         "responses": {
           "200": {
-            "description": "Currently active Mahadasha, Antardasha, and Pratyantardasha with start/end dates, remaining balance, Moon nakshatra, and Vedic interpretations for each period.",
+            "description": "Currently active Mahadasha, Antardasha, Pratyantardasha, and Sookshma dasha with start/end dates, remaining balance, Moon nakshatra, and Vedic interpretations for each period.",
             "content": {
               "application/json": {
                 "schema": {
@@ -26964,6 +26975,26 @@
                       ],
                       "example": "Rahu",
                       "description": "Vimshottari dasha lord of the birth nakshatra. This planet rules the first Mahadasha in the native life cycle."
+                    },
+                    "moonLongitude": {
+                      "type": "number",
+                      "example": 190.994,
+                      "description": "Sidereal (nirayana) longitude of the birth Moon in degrees, 0 to 360, measured in the ayanamsa frame reported below. This single value determines the birth nakshatra and therefore every dasha start and end date in this response. Compare it against a reference chart to reconcile any date difference at its source."
+                    },
+                    "ayanamsa": {
+                      "type": "number",
+                      "example": 23.72167,
+                      "description": "Ayanamsa actually applied, in degrees. The precession offset subtracted from the tropical (sayana) longitude to get the sidereal (nirayana) one. Lahiri sits near 23 deg 43 min for a 1990 birth, KP-Newcomb near 23 deg 38 min."
+                    },
+                    "ayanamsaType": {
+                      "type": "string",
+                      "enum": [
+                        "kp-newcomb",
+                        "kp-old",
+                        "lahiri"
+                      ],
+                      "example": "lahiri",
+                      "description": "Ayanamsa system used, echoing the request field. One of \"lahiri\", \"kp-newcomb\", \"kp-old\". Echoed so a client can confirm which frame produced these dates without re-deriving it."
                     },
                     "mahadasha": {
                       "type": "object",
@@ -26998,6 +27029,11 @@
                           "type": "number",
                           "example": 6,
                           "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                        },
+                        "nominalStartDate": {
+                          "type": "string",
+                          "example": "1984-09-01T09:00:00",
+                          "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
                         },
                         "interpretation": {
                           "type": "string",
@@ -27046,6 +27082,11 @@
                           "type": "number",
                           "example": 6,
                           "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                        },
+                        "nominalStartDate": {
+                          "type": "string",
+                          "example": "1984-09-01T09:00:00",
+                          "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
                         },
                         "interpretation": {
                           "type": "string",
@@ -27112,6 +27153,11 @@
                           "example": 6,
                           "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
                         },
+                        "nominalStartDate": {
+                          "type": "string",
+                          "example": "1984-09-01T09:00:00",
+                          "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                        },
                         "interpretation": {
                           "type": "string",
                           "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
@@ -27159,6 +27205,110 @@
                         "antardashaLord"
                       ],
                       "description": "Pratyantardasha (sub-sub-period), the third level of the Vimshottari dasha hierarchy, Provides finer timing within each Antardasha for event prediction."
+                    },
+                    "sookshmaDasha": {
+                      "type": "object",
+                      "properties": {
+                        "planet": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Jupiter",
+                          "description": "Ruling graha of this Vimshottari dasha period. One of 9 planets in the Ketu-Venus-Sun-Moon-Mars-Rahu-Jupiter-Saturn-Mercury sequence."
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "example": "1990-07-04T10:12:00",
+                          "description": "Start datetime of this dasha period. Adjusted to the requested timezone offset."
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "example": "1996-07-04T10:12:00",
+                          "description": "End datetime of this dasha period. Adjusted to the requested timezone offset."
+                        },
+                        "durationYears": {
+                          "type": "number",
+                          "example": 6,
+                          "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                        },
+                        "nominalStartDate": {
+                          "type": "string",
+                          "example": "1984-09-01T09:00:00",
+                          "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                        },
+                        "interpretation": {
+                          "type": "string",
+                          "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
+                          "description": "Vedic interpretation of the planetary period describing themes, karmic lessons, and life areas affected by this graha."
+                        },
+                        "mahadashaLord": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Jupiter",
+                          "description": "Parent Mahadasha lord under which this Antardasha sub-period runs."
+                        },
+                        "antardashaLord": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Saturn",
+                          "description": "Parent Antardasha lord under which this Pratyantardasha runs."
+                        },
+                        "pratyantardashaLord": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Rahu",
+                          "description": "Parent Pratyantardasha lord under which this Sookshma dasha runs."
+                        }
+                      },
+                      "required": [
+                        "planet",
+                        "startDate",
+                        "endDate",
+                        "durationYears",
+                        "mahadashaLord",
+                        "antardashaLord",
+                        "pratyantardashaLord"
+                      ],
+                      "description": "Sookshma dasha (sookshma antardasha), the fourth level of the Vimshottari dasha hierarchy. Each Pratyantardasha divides into 9 Sookshma periods running roughly 3 to 30 days each, the finest level exposed by this API and the one used for day-level event timing and muhurta style selection."
                     },
                     "remainingInMahadasha": {
                       "type": "object",
@@ -27255,18 +27405,55 @@
                         "totalDays"
                       ],
                       "description": "Time remaining in the currently running Pratyantardasha (sub-sub-period)."
+                    },
+                    "remainingInSookshma": {
+                      "type": "object",
+                      "properties": {
+                        "years": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "Full years remaining in this Vimshottari dasha period."
+                        },
+                        "months": {
+                          "type": "number",
+                          "example": 4,
+                          "description": "Additional months remaining beyond full years."
+                        },
+                        "days": {
+                          "type": "number",
+                          "example": 15,
+                          "description": "Additional days remaining beyond full months."
+                        },
+                        "totalDays": {
+                          "type": "number",
+                          "example": 865,
+                          "description": "Total remaining days in this dasha period. Useful for progress calculations."
+                        }
+                      },
+                      "required": [
+                        "years",
+                        "months",
+                        "days",
+                        "totalDays"
+                      ],
+                      "description": "Time remaining in the currently running Sookshma dasha (fourth level). Sookshma periods last days rather than months, so this value turns over quickly."
                     }
                   },
                   "required": [
                     "moonNakshatra",
                     "nakshatraName",
                     "nakshatraLord",
+                    "moonLongitude",
+                    "ayanamsa",
+                    "ayanamsaType",
                     "mahadasha",
                     "antardasha",
                     "pratyantardasha",
+                    "sookshmaDasha",
                     "remainingInMahadasha",
                     "remainingInAntardasha",
-                    "remainingInPratyantardasha"
+                    "remainingInPratyantardasha",
+                    "remainingInSookshma"
                   ]
                 }
               }
@@ -27563,6 +27750,17 @@
                     "default": 5.5,
                     "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
+                  },
+                  "ayanamsa": {
+                    "type": "string",
+                    "enum": [
+                      "kp-newcomb",
+                      "kp-old",
+                      "lahiri"
+                    ],
+                    "default": "lahiri",
+                    "example": "lahiri",
+                    "description": "Ayanamsa system used to place the birth Moon in its nakshatra, which sets every dasha start and end date. \"lahiri\" uses Lahiri/Chitrapaksha, the traditional Vedic standard, and is the default. \"kp-newcomb\" uses the KP-Newcomb dynamic formula, matching Krishnamurti Paddhati software. \"kp-old\" uses the Krishnamurti original table from KP Reader-1. Switching frames shifts every dasha boundary by weeks, so pick the one your reference software uses."
                   }
                 },
                 "required": [
@@ -27610,6 +27808,26 @@
                       ],
                       "example": "Rahu",
                       "description": "Dasha lord of the birth nakshatra, rules the first Mahadasha."
+                    },
+                    "moonLongitude": {
+                      "type": "number",
+                      "example": 190.994,
+                      "description": "Sidereal (nirayana) longitude of the birth Moon in degrees, 0 to 360, measured in the ayanamsa frame reported below. This single value determines the birth nakshatra and therefore every dasha start and end date in this response. Compare it against a reference chart to reconcile any date difference at its source."
+                    },
+                    "ayanamsa": {
+                      "type": "number",
+                      "example": 23.72167,
+                      "description": "Ayanamsa actually applied, in degrees. The precession offset subtracted from the tropical (sayana) longitude to get the sidereal (nirayana) one. Lahiri sits near 23 deg 43 min for a 1990 birth, KP-Newcomb near 23 deg 38 min."
+                    },
+                    "ayanamsaType": {
+                      "type": "string",
+                      "enum": [
+                        "kp-newcomb",
+                        "kp-old",
+                        "lahiri"
+                      ],
+                      "example": "lahiri",
+                      "description": "Ayanamsa system used, echoing the request field. One of \"lahiri\", \"kp-newcomb\", \"kp-old\". Echoed so a client can confirm which frame produced these dates without re-deriving it."
                     },
                     "birthDashaBalance": {
                       "type": "object",
@@ -27679,6 +27897,11 @@
                             "example": 6,
                             "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
                           },
+                          "nominalStartDate": {
+                            "type": "string",
+                            "example": "1984-09-01T09:00:00",
+                            "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                          },
                           "interpretation": {
                             "type": "string",
                             "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
@@ -27705,6 +27928,9 @@
                     "moonNakshatra",
                     "nakshatraName",
                     "nakshatraLord",
+                    "moonLongitude",
+                    "ayanamsa",
+                    "ayanamsaType",
                     "birthDashaBalance",
                     "mahadashas",
                     "totalYears"
@@ -28026,6 +28252,17 @@
                     "default": 5.5,
                     "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
+                  },
+                  "ayanamsa": {
+                    "type": "string",
+                    "enum": [
+                      "kp-newcomb",
+                      "kp-old",
+                      "lahiri"
+                    ],
+                    "default": "lahiri",
+                    "example": "lahiri",
+                    "description": "Ayanamsa system used to place the birth Moon in its nakshatra, which sets every dasha start and end date. \"lahiri\" uses Lahiri/Chitrapaksha, the traditional Vedic standard, and is the default. \"kp-newcomb\" uses the KP-Newcomb dynamic formula, matching Krishnamurti Paddhati software. \"kp-old\" uses the Krishnamurti original table from KP Reader-1. Switching frames shifts every dasha boundary by weeks, so pick the one your reference software uses."
                   }
                 },
                 "required": [
@@ -28062,6 +28299,26 @@
                       "example": "Jupiter",
                       "description": "Ruling planet of the requested Mahadasha period."
                     },
+                    "moonLongitude": {
+                      "type": "number",
+                      "example": 190.994,
+                      "description": "Sidereal (nirayana) longitude of the birth Moon in degrees, 0 to 360, measured in the ayanamsa frame reported below. This single value determines the birth nakshatra and therefore every dasha start and end date in this response. Compare it against a reference chart to reconcile any date difference at its source."
+                    },
+                    "ayanamsa": {
+                      "type": "number",
+                      "example": 23.72167,
+                      "description": "Ayanamsa actually applied, in degrees. The precession offset subtracted from the tropical (sayana) longitude to get the sidereal (nirayana) one. Lahiri sits near 23 deg 43 min for a 1990 birth, KP-Newcomb near 23 deg 38 min."
+                    },
+                    "ayanamsaType": {
+                      "type": "string",
+                      "enum": [
+                        "kp-newcomb",
+                        "kp-old",
+                        "lahiri"
+                      ],
+                      "example": "lahiri",
+                      "description": "Ayanamsa system used, echoing the request field. One of \"lahiri\", \"kp-newcomb\", \"kp-old\". Echoed so a client can confirm which frame produced these dates without re-deriving it."
+                    },
                     "mahadashaPeriod": {
                       "type": "object",
                       "properties": {
@@ -28095,6 +28352,11 @@
                           "type": "number",
                           "example": 6,
                           "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                        },
+                        "nominalStartDate": {
+                          "type": "string",
+                          "example": "1984-09-01T09:00:00",
+                          "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
                         },
                         "interpretation": {
                           "type": "string",
@@ -28146,6 +28408,11 @@
                             "example": 6,
                             "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
                           },
+                          "nominalStartDate": {
+                            "type": "string",
+                            "example": "1984-09-01T09:00:00",
+                            "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                          },
                           "interpretation": {
                             "type": "string",
                             "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
@@ -28177,13 +28444,1281 @@
                         ],
                         "description": "Antardasha (bhukti), sub-period within a Mahadasha. Each Mahadasha contains 9 Antardashas proportional to the Vimshottari years of each planet."
                       },
-                      "description": "All 9 Antardasha sub-periods within this Mahadasha, proportional to each planet Vimshottari years. Sorted chronologically."
+                      "minItems": 1,
+                      "maxItems": 9,
+                      "description": "Antardasha (bhukti) sub-periods within this Mahadasha, proportional to each planet Vimshottari years, sorted chronologically. Nine for any Mahadasha the native lived through in full. FEWER than nine for the first Mahadasha in the chart, because the Vimshottari cycle was already running at birth: the Antardashas that ended before the birth date are not part of the chart, and the one in force at birth starts on the birth date."
                     }
                   },
                   "required": [
                     "mahadashaLord",
+                    "moonLongitude",
+                    "ayanamsa",
+                    "ayanamsaType",
                     "mahadashaPeriod",
                     "antardashas"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}": {
+      "post": {
+        "operationId": "getPratyantardashas",
+        "tags": [
+          "Vedic Astrology"
+        ],
+        "summary": "Get all Pratyantardashas (antara periods) for a Mahadasha and Antardasha",
+        "description": "Pratyantardasha calculator API. Returns the 9 Pratyantardasha (antara) periods inside a chosen Antardasha, the third level of the Vimshottari dasha hierarchy. Use it to drill from a Mahadasha into month level timing for event prediction, muhurta selection, and dasha timeline UIs. Each period is proportional to the Vimshottari years of its lord.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Ketu",
+                "Venus",
+                "Sun",
+                "Moon",
+                "Mars",
+                "Rahu",
+                "Jupiter",
+                "Saturn",
+                "Mercury"
+              ],
+              "example": "Saturn",
+              "description": "Mahadasha planet name, case-insensitive (e.g. saturn, Saturn, SATURN all work). Valid: Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury."
+            },
+            "required": true,
+            "description": "Mahadasha planet name, case-insensitive (e.g. saturn, Saturn, SATURN all work). Valid: Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury.",
+            "name": "mahadasha",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Ketu",
+                "Venus",
+                "Sun",
+                "Moon",
+                "Mars",
+                "Rahu",
+                "Jupiter",
+                "Saturn",
+                "Mercury"
+              ],
+              "example": "Venus",
+              "description": "Antardasha (bhukti) planet name inside that Mahadasha, case-insensitive. Every Mahadasha contains all 9 lords, so a repeat such as saturn/saturn is valid."
+            },
+            "required": true,
+            "description": "Antardasha (bhukti) planet name inside that Mahadasha, case-insensitive. Every Mahadasha contains all 9 lords, so a repeat such as saturn/saturn is valid.",
+            "name": "antardasha",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "1990-07-04",
+                    "description": "Birth date in YYYY-MM-DD format. Date determines planetary positions and nakshatra calculations for Vedic kundli (janam patri). Accurate birth date is essential for dashas, yoga calculations, and divisional charts (vargas)."
+                  },
+                  "time": {
+                    "type": "string",
+                    "format": "time",
+                    "example": "10:12:00",
+                    "description": "Birth time in 24-hour HH:MM:SS format. Time is CRITICAL for Lagna (Ascendant) calculation and house divisions. It changes every two hours roughly. Even minutes matter for accurate nakshatra pada and divisional chart (D9, D10) calculations. Without exact time, Lagna and house-based predictions will be incorrect."
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "example": 28.6139,
+                    "description": "Birth location latitude in decimal degrees. Location determines local sidereal time for Lagna calculation and affects bhava (house) cusps. Example: Delhi 28.6139, Mumbai 19.0760, Kathmandu 27.7172."
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "example": 77.209,
+                    "description": "Birth location longitude in decimal degrees. Affects local time calculations and ayanamsha adjustments. Example: Delhi 77.2090, Mumbai 72.8777, Kathmandu 85.3240."
+                  },
+                  "timezone": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": -14,
+                        "maximum": 14
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "default": 5.5,
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "example": 5.5
+                  },
+                  "ayanamsa": {
+                    "type": "string",
+                    "enum": [
+                      "kp-newcomb",
+                      "kp-old",
+                      "lahiri"
+                    ],
+                    "default": "lahiri",
+                    "example": "lahiri",
+                    "description": "Ayanamsa system used to place the birth Moon in its nakshatra, which sets every dasha start and end date. \"lahiri\" uses Lahiri/Chitrapaksha, the traditional Vedic standard, and is the default. \"kp-newcomb\" uses the KP-Newcomb dynamic formula, matching Krishnamurti Paddhati software. \"kp-old\" uses the Krishnamurti original table from KP Reader-1. Switching frames shifts every dasha boundary by weeks, so pick the one your reference software uses."
+                  }
+                },
+                "required": [
+                  "date",
+                  "time",
+                  "latitude",
+                  "longitude"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "All 9 Pratyantardasha periods within the specified Mahadasha and Antardasha, with start/end dates and the parent Antardasha period details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mahadashaLord": {
+                      "type": "string",
+                      "enum": [
+                        "Ketu",
+                        "Venus",
+                        "Sun",
+                        "Moon",
+                        "Mars",
+                        "Rahu",
+                        "Jupiter",
+                        "Saturn",
+                        "Mercury"
+                      ],
+                      "example": "Saturn",
+                      "description": "Ruling planet of the requested Mahadasha period."
+                    },
+                    "antardashaLord": {
+                      "type": "string",
+                      "enum": [
+                        "Ketu",
+                        "Venus",
+                        "Sun",
+                        "Moon",
+                        "Mars",
+                        "Rahu",
+                        "Jupiter",
+                        "Saturn",
+                        "Mercury"
+                      ],
+                      "example": "Venus",
+                      "description": "Ruling planet of the requested Antardasha sub-period."
+                    },
+                    "moonLongitude": {
+                      "type": "number",
+                      "example": 190.994,
+                      "description": "Sidereal (nirayana) longitude of the birth Moon in degrees, 0 to 360, measured in the ayanamsa frame reported below. This single value determines the birth nakshatra and therefore every dasha start and end date in this response. Compare it against a reference chart to reconcile any date difference at its source."
+                    },
+                    "ayanamsa": {
+                      "type": "number",
+                      "example": 23.72167,
+                      "description": "Ayanamsa actually applied, in degrees. The precession offset subtracted from the tropical (sayana) longitude to get the sidereal (nirayana) one. Lahiri sits near 23 deg 43 min for a 1990 birth, KP-Newcomb near 23 deg 38 min."
+                    },
+                    "ayanamsaType": {
+                      "type": "string",
+                      "enum": [
+                        "kp-newcomb",
+                        "kp-old",
+                        "lahiri"
+                      ],
+                      "example": "lahiri",
+                      "description": "Ayanamsa system used, echoing the request field. One of \"lahiri\", \"kp-newcomb\", \"kp-old\". Echoed so a client can confirm which frame produced these dates without re-deriving it."
+                    },
+                    "antardashaPeriod": {
+                      "type": "object",
+                      "properties": {
+                        "planet": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Jupiter",
+                          "description": "Ruling graha of this Vimshottari dasha period. One of 9 planets in the Ketu-Venus-Sun-Moon-Mars-Rahu-Jupiter-Saturn-Mercury sequence."
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "example": "1990-07-04T10:12:00",
+                          "description": "Start datetime of this dasha period. Adjusted to the requested timezone offset."
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "example": "1996-07-04T10:12:00",
+                          "description": "End datetime of this dasha period. Adjusted to the requested timezone offset."
+                        },
+                        "durationYears": {
+                          "type": "number",
+                          "example": 6,
+                          "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                        },
+                        "nominalStartDate": {
+                          "type": "string",
+                          "example": "1984-09-01T09:00:00",
+                          "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                        },
+                        "interpretation": {
+                          "type": "string",
+                          "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
+                          "description": "Vedic interpretation of the planetary period describing themes, karmic lessons, and life areas affected by this graha."
+                        },
+                        "mahadashaLord": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Jupiter",
+                          "description": "Parent Mahadasha lord under which this Antardasha sub-period runs."
+                        }
+                      },
+                      "required": [
+                        "planet",
+                        "startDate",
+                        "endDate",
+                        "durationYears",
+                        "mahadashaLord"
+                      ],
+                      "description": "Full details of the parent Antardasha including start/end dates and duration."
+                    },
+                    "pratyantardashas": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "planet": {
+                            "type": "string",
+                            "enum": [
+                              "Ketu",
+                              "Venus",
+                              "Sun",
+                              "Moon",
+                              "Mars",
+                              "Rahu",
+                              "Jupiter",
+                              "Saturn",
+                              "Mercury"
+                            ],
+                            "example": "Jupiter",
+                            "description": "Ruling graha of this Vimshottari dasha period. One of 9 planets in the Ketu-Venus-Sun-Moon-Mars-Rahu-Jupiter-Saturn-Mercury sequence."
+                          },
+                          "startDate": {
+                            "type": "string",
+                            "example": "1990-07-04T10:12:00",
+                            "description": "Start datetime of this dasha period. Adjusted to the requested timezone offset."
+                          },
+                          "endDate": {
+                            "type": "string",
+                            "example": "1996-07-04T10:12:00",
+                            "description": "End datetime of this dasha period. Adjusted to the requested timezone offset."
+                          },
+                          "durationYears": {
+                            "type": "number",
+                            "example": 6,
+                            "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                          },
+                          "nominalStartDate": {
+                            "type": "string",
+                            "example": "1984-09-01T09:00:00",
+                            "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                          },
+                          "interpretation": {
+                            "type": "string",
+                            "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
+                            "description": "Vedic interpretation of the planetary period describing themes, karmic lessons, and life areas affected by this graha."
+                          },
+                          "mahadashaLord": {
+                            "type": "string",
+                            "enum": [
+                              "Ketu",
+                              "Venus",
+                              "Sun",
+                              "Moon",
+                              "Mars",
+                              "Rahu",
+                              "Jupiter",
+                              "Saturn",
+                              "Mercury"
+                            ],
+                            "example": "Jupiter",
+                            "description": "Parent Mahadasha lord under which this Antardasha sub-period runs."
+                          },
+                          "antardashaLord": {
+                            "type": "string",
+                            "enum": [
+                              "Ketu",
+                              "Venus",
+                              "Sun",
+                              "Moon",
+                              "Mars",
+                              "Rahu",
+                              "Jupiter",
+                              "Saturn",
+                              "Mercury"
+                            ],
+                            "example": "Saturn",
+                            "description": "Parent Antardasha lord under which this Pratyantardasha runs."
+                          }
+                        },
+                        "required": [
+                          "planet",
+                          "startDate",
+                          "endDate",
+                          "durationYears",
+                          "mahadashaLord",
+                          "antardashaLord"
+                        ],
+                        "description": "Pratyantardasha (sub-sub-period), the third level of the Vimshottari dasha hierarchy, Provides finer timing within each Antardasha for event prediction."
+                      },
+                      "minItems": 1,
+                      "maxItems": 9,
+                      "description": "Pratyantardasha (antara) periods within this Antardasha, proportional to each planet Vimshottari years, sorted chronologically and starting with the Antardasha lord. Fewer than nine only when the parent Antardasha is the one that was already running at birth, in which case the periods that ended before the birth date are omitted."
+                    }
+                  },
+                  "required": [
+                    "mahadashaLord",
+                    "antardashaLord",
+                    "moonLongitude",
+                    "ayanamsa",
+                    "ayanamsaType",
+                    "antardashaPeriod",
+                    "pratyantardashas"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}": {
+      "post": {
+        "operationId": "getSookshmaDashas",
+        "tags": [
+          "Vedic Astrology"
+        ],
+        "summary": "Get all Sookshma dashas for a Mahadasha, Antardasha and Pratyantardasha",
+        "description": "Sookshma dasha API. Returns the 9 Sookshma periods inside a chosen Pratyantardasha, the fourth and finest level of the Vimshottari dasha hierarchy. Completes a full vimshottari drill down from the 120-year cycle to day level timing, typically 3 to 30 days per period. Built for dasha drill down tables, current DBA readouts, and precise event timing in Vedic astrology software.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Ketu",
+                "Venus",
+                "Sun",
+                "Moon",
+                "Mars",
+                "Rahu",
+                "Jupiter",
+                "Saturn",
+                "Mercury"
+              ],
+              "example": "Saturn",
+              "description": "Mahadasha planet name, case-insensitive. Valid: Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury."
+            },
+            "required": true,
+            "description": "Mahadasha planet name, case-insensitive. Valid: Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury.",
+            "name": "mahadasha",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Ketu",
+                "Venus",
+                "Sun",
+                "Moon",
+                "Mars",
+                "Rahu",
+                "Jupiter",
+                "Saturn",
+                "Mercury"
+              ],
+              "example": "Venus",
+              "description": "Antardasha (bhukti) planet name inside that Mahadasha, case-insensitive."
+            },
+            "required": true,
+            "description": "Antardasha (bhukti) planet name inside that Mahadasha, case-insensitive.",
+            "name": "antardasha",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Ketu",
+                "Venus",
+                "Sun",
+                "Moon",
+                "Mars",
+                "Rahu",
+                "Jupiter",
+                "Saturn",
+                "Mercury"
+              ],
+              "example": "Rahu",
+              "description": "Pratyantardasha (antara) planet name inside that Antardasha, case-insensitive."
+            },
+            "required": true,
+            "description": "Pratyantardasha (antara) planet name inside that Antardasha, case-insensitive.",
+            "name": "pratyantardasha",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "1990-07-04",
+                    "description": "Birth date in YYYY-MM-DD format. Date determines planetary positions and nakshatra calculations for Vedic kundli (janam patri). Accurate birth date is essential for dashas, yoga calculations, and divisional charts (vargas)."
+                  },
+                  "time": {
+                    "type": "string",
+                    "format": "time",
+                    "example": "10:12:00",
+                    "description": "Birth time in 24-hour HH:MM:SS format. Time is CRITICAL for Lagna (Ascendant) calculation and house divisions. It changes every two hours roughly. Even minutes matter for accurate nakshatra pada and divisional chart (D9, D10) calculations. Without exact time, Lagna and house-based predictions will be incorrect."
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "example": 28.6139,
+                    "description": "Birth location latitude in decimal degrees. Location determines local sidereal time for Lagna calculation and affects bhava (house) cusps. Example: Delhi 28.6139, Mumbai 19.0760, Kathmandu 27.7172."
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "example": 77.209,
+                    "description": "Birth location longitude in decimal degrees. Affects local time calculations and ayanamsha adjustments. Example: Delhi 77.2090, Mumbai 72.8777, Kathmandu 85.3240."
+                  },
+                  "timezone": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": -14,
+                        "maximum": 14
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "default": 5.5,
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "example": 5.5
+                  },
+                  "ayanamsa": {
+                    "type": "string",
+                    "enum": [
+                      "kp-newcomb",
+                      "kp-old",
+                      "lahiri"
+                    ],
+                    "default": "lahiri",
+                    "example": "lahiri",
+                    "description": "Ayanamsa system used to place the birth Moon in its nakshatra, which sets every dasha start and end date. \"lahiri\" uses Lahiri/Chitrapaksha, the traditional Vedic standard, and is the default. \"kp-newcomb\" uses the KP-Newcomb dynamic formula, matching Krishnamurti Paddhati software. \"kp-old\" uses the Krishnamurti original table from KP Reader-1. Switching frames shifts every dasha boundary by weeks, so pick the one your reference software uses."
+                  }
+                },
+                "required": [
+                  "date",
+                  "time",
+                  "latitude",
+                  "longitude"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "All 9 Sookshma dasha periods within the specified Mahadasha, Antardasha, and Pratyantardasha, with start/end dates and the parent Pratyantardasha period details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mahadashaLord": {
+                      "type": "string",
+                      "enum": [
+                        "Ketu",
+                        "Venus",
+                        "Sun",
+                        "Moon",
+                        "Mars",
+                        "Rahu",
+                        "Jupiter",
+                        "Saturn",
+                        "Mercury"
+                      ],
+                      "example": "Saturn",
+                      "description": "Ruling planet of the requested Mahadasha period."
+                    },
+                    "antardashaLord": {
+                      "type": "string",
+                      "enum": [
+                        "Ketu",
+                        "Venus",
+                        "Sun",
+                        "Moon",
+                        "Mars",
+                        "Rahu",
+                        "Jupiter",
+                        "Saturn",
+                        "Mercury"
+                      ],
+                      "example": "Venus",
+                      "description": "Ruling planet of the requested Antardasha sub-period."
+                    },
+                    "pratyantardashaLord": {
+                      "type": "string",
+                      "enum": [
+                        "Ketu",
+                        "Venus",
+                        "Sun",
+                        "Moon",
+                        "Mars",
+                        "Rahu",
+                        "Jupiter",
+                        "Saturn",
+                        "Mercury"
+                      ],
+                      "example": "Rahu",
+                      "description": "Ruling planet of the requested Pratyantardasha sub-sub-period."
+                    },
+                    "moonLongitude": {
+                      "type": "number",
+                      "example": 190.994,
+                      "description": "Sidereal (nirayana) longitude of the birth Moon in degrees, 0 to 360, measured in the ayanamsa frame reported below. This single value determines the birth nakshatra and therefore every dasha start and end date in this response. Compare it against a reference chart to reconcile any date difference at its source."
+                    },
+                    "ayanamsa": {
+                      "type": "number",
+                      "example": 23.72167,
+                      "description": "Ayanamsa actually applied, in degrees. The precession offset subtracted from the tropical (sayana) longitude to get the sidereal (nirayana) one. Lahiri sits near 23 deg 43 min for a 1990 birth, KP-Newcomb near 23 deg 38 min."
+                    },
+                    "ayanamsaType": {
+                      "type": "string",
+                      "enum": [
+                        "kp-newcomb",
+                        "kp-old",
+                        "lahiri"
+                      ],
+                      "example": "lahiri",
+                      "description": "Ayanamsa system used, echoing the request field. One of \"lahiri\", \"kp-newcomb\", \"kp-old\". Echoed so a client can confirm which frame produced these dates without re-deriving it."
+                    },
+                    "pratyantardashaPeriod": {
+                      "type": "object",
+                      "properties": {
+                        "planet": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Jupiter",
+                          "description": "Ruling graha of this Vimshottari dasha period. One of 9 planets in the Ketu-Venus-Sun-Moon-Mars-Rahu-Jupiter-Saturn-Mercury sequence."
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "example": "1990-07-04T10:12:00",
+                          "description": "Start datetime of this dasha period. Adjusted to the requested timezone offset."
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "example": "1996-07-04T10:12:00",
+                          "description": "End datetime of this dasha period. Adjusted to the requested timezone offset."
+                        },
+                        "durationYears": {
+                          "type": "number",
+                          "example": 6,
+                          "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                        },
+                        "nominalStartDate": {
+                          "type": "string",
+                          "example": "1984-09-01T09:00:00",
+                          "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                        },
+                        "interpretation": {
+                          "type": "string",
+                          "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
+                          "description": "Vedic interpretation of the planetary period describing themes, karmic lessons, and life areas affected by this graha."
+                        },
+                        "mahadashaLord": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Jupiter",
+                          "description": "Parent Mahadasha lord under which this Antardasha sub-period runs."
+                        },
+                        "antardashaLord": {
+                          "type": "string",
+                          "enum": [
+                            "Ketu",
+                            "Venus",
+                            "Sun",
+                            "Moon",
+                            "Mars",
+                            "Rahu",
+                            "Jupiter",
+                            "Saturn",
+                            "Mercury"
+                          ],
+                          "example": "Saturn",
+                          "description": "Parent Antardasha lord under which this Pratyantardasha runs."
+                        }
+                      },
+                      "required": [
+                        "planet",
+                        "startDate",
+                        "endDate",
+                        "durationYears",
+                        "mahadashaLord",
+                        "antardashaLord"
+                      ],
+                      "description": "Full details of the parent Pratyantardasha including start/end dates and duration."
+                    },
+                    "sookshmaDashas": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "planet": {
+                            "type": "string",
+                            "enum": [
+                              "Ketu",
+                              "Venus",
+                              "Sun",
+                              "Moon",
+                              "Mars",
+                              "Rahu",
+                              "Jupiter",
+                              "Saturn",
+                              "Mercury"
+                            ],
+                            "example": "Jupiter",
+                            "description": "Ruling graha of this Vimshottari dasha period. One of 9 planets in the Ketu-Venus-Sun-Moon-Mars-Rahu-Jupiter-Saturn-Mercury sequence."
+                          },
+                          "startDate": {
+                            "type": "string",
+                            "example": "1990-07-04T10:12:00",
+                            "description": "Start datetime of this dasha period. Adjusted to the requested timezone offset."
+                          },
+                          "endDate": {
+                            "type": "string",
+                            "example": "1996-07-04T10:12:00",
+                            "description": "End datetime of this dasha period. Adjusted to the requested timezone offset."
+                          },
+                          "durationYears": {
+                            "type": "number",
+                            "example": 6,
+                            "description": "Duration of this dasha period in years. Mahadasha durations range from 6 years (Sun) to 20 years (Venus)."
+                          },
+                          "nominalStartDate": {
+                            "type": "string",
+                            "example": "1984-09-01T09:00:00",
+                            "description": "Theoretical start of this period, present ONLY when the birth date truncated it. The Vimshottari cycle is already running when a native is born, so the period in force at birth began earlier: startDate is clipped to the birth moment while this field keeps the real start. Its presence is also why the first period of a chart can contain fewer than 9 sub-periods, the earlier ones having finished before birth. Absent on every period that runs its full length."
+                          },
+                          "interpretation": {
+                            "type": "string",
+                            "example": "Sun Mahadasha brings leadership opportunities, authority, and self-expression.",
+                            "description": "Vedic interpretation of the planetary period describing themes, karmic lessons, and life areas affected by this graha."
+                          },
+                          "mahadashaLord": {
+                            "type": "string",
+                            "enum": [
+                              "Ketu",
+                              "Venus",
+                              "Sun",
+                              "Moon",
+                              "Mars",
+                              "Rahu",
+                              "Jupiter",
+                              "Saturn",
+                              "Mercury"
+                            ],
+                            "example": "Jupiter",
+                            "description": "Parent Mahadasha lord under which this Antardasha sub-period runs."
+                          },
+                          "antardashaLord": {
+                            "type": "string",
+                            "enum": [
+                              "Ketu",
+                              "Venus",
+                              "Sun",
+                              "Moon",
+                              "Mars",
+                              "Rahu",
+                              "Jupiter",
+                              "Saturn",
+                              "Mercury"
+                            ],
+                            "example": "Saturn",
+                            "description": "Parent Antardasha lord under which this Pratyantardasha runs."
+                          },
+                          "pratyantardashaLord": {
+                            "type": "string",
+                            "enum": [
+                              "Ketu",
+                              "Venus",
+                              "Sun",
+                              "Moon",
+                              "Mars",
+                              "Rahu",
+                              "Jupiter",
+                              "Saturn",
+                              "Mercury"
+                            ],
+                            "example": "Rahu",
+                            "description": "Parent Pratyantardasha lord under which this Sookshma dasha runs."
+                          }
+                        },
+                        "required": [
+                          "planet",
+                          "startDate",
+                          "endDate",
+                          "durationYears",
+                          "mahadashaLord",
+                          "antardashaLord",
+                          "pratyantardashaLord"
+                        ],
+                        "description": "Sookshma dasha (sookshma antardasha), the fourth level of the Vimshottari dasha hierarchy. Each Pratyantardasha divides into 9 Sookshma periods running roughly 3 to 30 days each, the finest level exposed by this API and the one used for day-level event timing and muhurta style selection."
+                      },
+                      "minItems": 1,
+                      "maxItems": 9,
+                      "description": "Sookshma dasha periods within this Pratyantardasha, proportional to each planet Vimshottari years, sorted chronologically and starting with the Pratyantardasha lord. Fewer than nine only when the parent Pratyantardasha is the one that was already running at birth, in which case the periods that ended before the birth date are omitted."
+                    }
+                  },
+                  "required": [
+                    "mahadashaLord",
+                    "antardashaLord",
+                    "pratyantardashaLord",
+                    "moonLongitude",
+                    "ayanamsa",
+                    "ayanamsaType",
+                    "pratyantardashaPeriod",
+                    "sookshmaDashas"
                   ]
                 }
               }

@@ -1,8 +1,10 @@
 import { css, html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import type {
 	GetCurrentDashaResponse,
 	GetMajorDashasResponse,
+	GetPratyantardashasResponse,
+	GetSookshmaDashasResponse,
 	GetSubDashasResponse,
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -14,21 +16,45 @@ import {
 	interpAccordionStyles,
 	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
+import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 type DashaData =
 	| GetCurrentDashaResponse
 	| GetMajorDashasResponse
-	| GetSubDashasResponse;
+	| GetSubDashasResponse
+	| GetPratyantardashasResponse
+	| GetSookshmaDashasResponse;
 
 type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
 type Remaining = GetCurrentDashaResponse['remainingInMahadasha'];
 
-/** The level a period sits at, so no view ever labels an antardasha a mahadasha. */
-const LEVEL_LABEL = {
-	current: 'Mahadasha',
-	major: 'Mahadasha',
-	sub: 'Antardasha',
-} as const;
+/**
+ * The Vimshottari level a listed period sits at, so no view ever labels an
+ * antardasha a mahadasha.
+ *
+ * Read from the RESPONSE, not from the `period` attribute: all three drill-down
+ * routes are `period="sub"`, and only the payload says whether the list is
+ * antardashas, pratyantardashas or sookshma dashas.
+ */
+function levelOf(d: DashaData): string {
+	if ('sookshmaDashas' in d) return 'Sookshma';
+	if ('pratyantardashas' in d) return 'Pratyantardasha';
+	if ('antardashas' in d) return 'Antardasha';
+	return 'Mahadasha';
+}
+
+/** The parent period a drill-down response hangs off, with the level it sits at. */
+function parentOf(
+	d: DashaData,
+): { label: string; period: DashaPeriod } | undefined {
+	if ('pratyantardashaPeriod' in d && d.pratyantardashaPeriod)
+		return { label: 'Pratyantardasha', period: d.pratyantardashaPeriod };
+	if ('antardashaPeriod' in d && d.antardashaPeriod)
+		return { label: 'Antardasha', period: d.antardashaPeriod };
+	if ('mahadashaPeriod' in d && d.mahadashaPeriod)
+		return { label: 'Mahadasha', period: d.mahadashaPeriod };
+	return undefined;
+}
 
 /** "8y 11m 5d", the form a dasha reader expects for a remaining balance. */
 function formatBalance(b: Remaining | undefined): string {
@@ -64,6 +90,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		baseStyles,
 		disclosureStyles,
 		interpAccordionStyles,
+		tablistStyles,
 		css`
 			.wrap {
 				display: grid;
@@ -113,7 +140,6 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 
-			.balance,
 			.parent {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-muted, #71717a);
@@ -179,6 +205,27 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				font-variant-numeric: tabular-nums;
 				text-align: right;
 			}
+			[role='tabpanel'] {
+				padding-top: var(--roxy-space-md, 1rem);
+			}
+			.frame {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+				gap: var(--roxy-space-sm, 0.5rem);
+				margin: 0;
+			}
+			.frame dt {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+			.frame dd {
+				margin: 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
+				font-variant-numeric: tabular-nums;
+			}
 			.block {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
@@ -188,8 +235,23 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		`,
 	];
 
+	/**
+	 * Which dasha endpoint fed this element. `sub`, `antara` and `sookshma` are the
+	 * three drill-down levels and render identically; they stay distinct because
+	 * each maps one-to-one onto its endpoint binding, which is what lets a widget
+	 * pick a level. The LABELS come from the payload, not from here.
+	 */
 	@property({ type: String, reflect: true })
-	period: 'current' | 'major' | 'sub' = 'current';
+	period: 'current' | 'major' | 'sub' | 'antara' | 'sookshma' = 'current';
+
+	/** Which panel is showing. Reset guarded in renderData when the data changes shape. */
+	@state()
+	private view: 'timeline' | 'readings' | 'frame' = 'timeline';
+
+	/** True for any of the drill-down levels, which share one layout. */
+	private get isDrillDown(): boolean {
+		return this.period !== 'current' && this.period !== 'major';
+	}
 
 	protected renderEmpty() {
 		return html`<div class="roxy-empty" role="status">No dasha data</div>`;
@@ -200,78 +262,210 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const maxYears = periods.length
 			? Math.max(...periods.map((p) => p.durationYears))
 			: 0;
+		const readings = this.readings(d, periods);
+		const frame = this.frameRows(d);
+
+		// One panel per kind of question a reader asks: when do the periods run,
+		// what do they mean, and what chart produced them. Without the split the
+		// card became a single column of periods, prose and provenance, and the
+		// dates (the reason anyone opens it) were pushed below the fold.
+		const tabs = [
+			{ id: 'timeline' as const, label: 'Timeline' },
+			...(readings.length
+				? [{ id: 'readings' as const, label: `Readings (${readings.length})` }]
+				: []),
+			...(frame.length ? [{ id: 'frame' as const, label: 'Chart' }] : []),
+		];
+		// A tab that no longer exists (data changed under a selection) must not
+		// blank the card, so fall back to the first.
+		const view = tabs.some((t) => t.id === this.view) ? this.view : 'timeline';
 
 		return html`<div class="wrap" aria-label="Dasha timeline">
 			<header class="head">
 				<h2 class="title">${this.heading(d)}</h2>
-				${
-					'nakshatraName' in d && d.nakshatraName
-						? html`<div class="nakshatra">
-						Moon nakshatra: ${d.nakshatraName}
-						${'nakshatraLord' in d && d.nakshatraLord ? html`(lord ${d.nakshatraLord})` : nothing}
-					</div>`
-						: nothing
-				}
+				${this.renderLordChain(d)}
 			</header>
 
-			${this.renderBirthBalance(d)}
 			${this.renderParentMahadasha(d)}
-			${this.period === 'current' ? this.renderCurrent(d) : nothing}
 			${
-				periods.length > 0
-					? html`<div class="timeline" role="list">
-						${periods.map((p) => this.renderBar(p, maxYears))}
-					</div>`
+				tabs.length > 1
+					? renderTablist({
+							items: tabs,
+							active: view,
+							onSelect: (v) => {
+								this.view = v;
+							},
+							label: 'Dasha views',
+							idPrefix: 'roxy-dasha',
+							controls: true,
+						})
 					: nothing
 			}
-			${renderInterpAccordion(this.readings(d, periods), 'roxy-dasha', 'Reading')}
+			<div
+				id="roxy-dasha-panel-${view}"
+				role="tabpanel"
+				tabindex="0"
+				aria-labelledby=${tabs.length > 1 ? `roxy-dasha-tab-${view}` : nothing}
+			>
+				${
+					view === 'timeline'
+						? html`
+							${this.period === 'current' ? this.renderCurrent(d) : nothing}
+							${
+								periods.length > 0
+									? html`<div class="timeline" role="list">
+										${periods.map((p) => this.renderBar(p, maxYears))}
+									</div>`
+									: nothing
+							}`
+						: nothing
+				}
+				${
+					view === 'readings'
+						? renderInterpAccordion(
+								readings,
+								'roxy-dasha',
+								readings.length === 1 ? 'Reading' : 'Readings',
+							)
+						: nothing
+				}
+				${view === 'frame' ? this.renderFrame(frame) : nothing}
+			</div>
 		</div>`;
+	}
+
+	/**
+	 * The full lord chain a drill-down sits under, e.g. Saturn > Venus > Rahu.
+	 *
+	 * The response carries every ancestor lord on each period, and naming only the
+	 * immediate parent leaves a reader at the sookshma level unable to tell which
+	 * branch of the chart they are looking at.
+	 */
+	private renderLordChain(d: DashaData) {
+		const chain = [
+			'mahadashaLord' in d ? d.mahadashaLord : undefined,
+			'antardashaLord' in d ? d.antardashaLord : undefined,
+			'pratyantardashaLord' in d ? d.pratyantardashaLord : undefined,
+		].filter(Boolean);
+		if (chain.length > 1) {
+			return html`<div class="nakshatra">${chain.join(' \u203a ')}</div>`;
+		}
+		if ('nakshatraName' in d && d.nakshatraName) {
+			return html`<div class="nakshatra">
+				Moon nakshatra: ${d.nakshatraName}
+				${'nakshatraLord' in d && d.nakshatraLord ? html`(lord ${d.nakshatraLord})` : nothing}
+			</div>`;
+		}
+		return nothing;
+	}
+
+	/**
+	 * Provenance rows: the chart every date in this response was derived from.
+	 *
+	 * These are the fields that let a reader reconcile our dates against another
+	 * calculator. The sidereal frame is the one that actually explains a
+	 * disagreement, since Lahiri and the KP variants move every boundary by weeks,
+	 * so it is shown rather than left in the JSON.
+	 */
+	private frameRows(d: DashaData): Array<[string, string]> {
+		const rows: Array<[string, string]> = [];
+		if ('nakshatraName' in d && d.nakshatraName) {
+			const n =
+				'moonNakshatra' in d && d.moonNakshatra
+					? ` (${d.moonNakshatra} of 27)`
+					: '';
+			rows.push(['Moon nakshatra', `${d.nakshatraName}${n}`]);
+		}
+		if ('nakshatraLord' in d && d.nakshatraLord) {
+			rows.push(['Nakshatra lord', d.nakshatraLord]);
+		}
+		if ('moonLongitude' in d && typeof d.moonLongitude === 'number') {
+			rows.push([
+				'Moon longitude',
+				`${formatNumber(d.moonLongitude, 3)}\u00b0 sidereal`,
+			]);
+		}
+		if ('ayanamsaType' in d && d.ayanamsaType) {
+			const deg =
+				'ayanamsa' in d && typeof d.ayanamsa === 'number'
+					? ` (${formatNumber(d.ayanamsa, 3)}\u00b0)`
+					: '';
+			rows.push(['Ayanamsa', `${d.ayanamsaType}${deg}`]);
+		}
+		if ('birthDashaBalance' in d && d.birthDashaBalance) {
+			const lord =
+				'nakshatraLord' in d && d.nakshatraLord ? `${d.nakshatraLord} ` : '';
+			rows.push([
+				'Balance at birth',
+				`${formatBalance(d.birthDashaBalance)} of the opening ${lord}mahadasha`,
+			]);
+		}
+		if ('totalYears' in d && typeof d.totalYears === 'number') {
+			rows.push(['Cycle length', `${d.totalYears} years`]);
+		}
+		return rows;
+	}
+
+	private renderFrame(rows: Array<[string, string]>) {
+		return html`<dl class="frame">
+			${rows.map(([label, value]) => html`<div><dt>${label}</dt><dd>${value}</dd></div>`)}
+		</dl>`;
 	}
 
 	private heading(d: DashaData): string {
 		if (this.period === 'major') return 'Vimshottari Mahadasha';
-		if (this.period === 'sub') {
-			const lord = 'mahadashaLord' in d ? d.mahadashaLord : '';
-			return lord ? `Antardashas in ${lord} Mahadasha` : 'Antardashas';
+		if (this.isDrillDown) {
+			const parent = parentOf(d);
+			const level = levelOf(d);
+			return parent
+				? `${level}s in ${parent.period.planet} ${parent.label}`
+				: `${level}s`;
 		}
 		return 'Active dashas';
 	}
 
-	private renderBirthBalance(d: DashaData) {
-		if (!('birthDashaBalance' in d) || !d.birthDashaBalance) return nothing;
-		const lord = 'nakshatraLord' in d && d.nakshatraLord ? d.nakshatraLord : '';
-		const remaining = formatBalance(d.birthDashaBalance);
-		return html`<p class="balance">
-			Birth dasha balance: ${remaining} of
-			${lord ? html`<strong>${lord}</strong>` : 'the opening mahadasha'} remained at birth.
-		</p>`;
-	}
-
-	/** Sub mode lists antardashas inside one mahadasha, so name the parent and its span. */
+	/**
+	 * Drill-down modes list sub-periods inside one parent, so name the parent and
+	 * its span. A sub-period means nothing without its parent lord.
+	 *
+	 * `nominalStartDate` is present only when birth cut the parent short, which is
+	 * also why such a list can hold fewer than nine rows: the sub-periods that
+	 * finished before the native was born are not part of the chart. Saying so
+	 * turns a surprising short list into an explained one.
+	 */
 	private renderParentMahadasha(d: DashaData) {
-		if (!('mahadashaPeriod' in d) || !d.mahadashaPeriod) return nothing;
-		const p = d.mahadashaPeriod;
+		const parent = parentOf(d);
+		if (!parent) return nothing;
+		const p = parent.period;
 		const span = formatSpan(p);
+		const began = p.nominalStartDate ? formatDate(p.nominalStartDate) : '';
 		return html`<p class="parent">
-			Inside the <strong>${p.planet}</strong> Mahadasha${span ? `, ${span}` : ''}
+			Inside the <strong>${p.planet}</strong> ${parent.label}${span ? `, ${span}` : ''}
 			${typeof p.durationYears === 'number' ? `(${formatNumber(p.durationYears, 1)} years)` : ''}.
+			${
+				began
+					? html`<br />It began ${began}, before birth, so only the sub-periods running
+						after the birth date are listed.`
+					: nothing
+			}
 		</p>`;
 	}
 
 	/**
 	 * Every reading the response carries, behind one exclusive accordion. Current
-	 * mode has three (mahadasha, antardasha, pratyantardasha); sub mode leads with
-	 * the parent mahadasha reading, then the antardasha running now; major mode
-	 * shows the mahadasha running now.
+	 * mode has four (mahadasha, antardasha, pratyantardasha, sookshma); drill-down
+	 * modes lead with the parent period reading, then the sub-period running now;
+	 * major mode shows the mahadasha running now.
 	 */
 	private readings(d: DashaData, periods: DashaPeriod[]): InterpSection[] {
 		const sections: InterpSection[] = [];
 
-		if ('mahadashaPeriod' in d && d.mahadashaPeriod?.interpretation) {
+		const parent = parentOf(d);
+		if (parent?.period.interpretation) {
 			sections.push({
-				label: `${d.mahadashaPeriod.planet} Mahadasha`,
-				aside: formatSpan(d.mahadashaPeriod),
-				body: d.mahadashaPeriod.interpretation,
+				label: `${parent.period.planet} ${parent.label}`,
+				aside: formatSpan(parent.period),
+				body: parent.period.interpretation,
 			});
 		}
 
@@ -280,6 +474,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				['Mahadasha', d.mahadasha, d.remainingInMahadasha],
 				['Antardasha', d.antardasha, d.remainingInAntardasha],
 				['Pratyantardasha', d.pratyantardasha, d.remainingInPratyantardasha],
+				['Sookshma', d.sookshmaDasha, d.remainingInSookshma],
 			] as const;
 			for (const [label, period, remaining] of levels) {
 				if (!period?.interpretation) continue;
@@ -295,7 +490,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const active = periods.find((p) => this.isCurrent(p));
 		if (active?.interpretation) {
 			sections.push({
-				label: `${active.planet} ${LEVEL_LABEL[this.period]}`,
+				label: `${active.planet} ${levelOf(d)}`,
 				aside: formatSpan(active),
 				body: active.interpretation,
 			});
@@ -310,6 +505,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			['Mahadasha', d.mahadasha, d.remainingInMahadasha],
 			['Antardasha', d.antardasha, d.remainingInAntardasha],
 			['Pratyantardasha', d.pratyantardasha, d.remainingInPratyantardasha],
+			['Sookshma', d.sookshmaDasha, d.remainingInSookshma],
 		] as const;
 		return html`<div class="current">
 			${levels.map(([label, period, remaining]) => {
@@ -327,6 +523,10 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	private collectPeriods(d: DashaData): DashaPeriod[] {
 		if ('mahadashas' in d && d.mahadashas?.length) return d.mahadashas;
 		if ('antardashas' in d && d.antardashas?.length) return d.antardashas;
+		if ('pratyantardashas' in d && d.pratyantardashas?.length)
+			return d.pratyantardashas;
+		if ('sookshmaDashas' in d && d.sookshmaDashas?.length)
+			return d.sookshmaDashas;
 		return [];
 	}
 

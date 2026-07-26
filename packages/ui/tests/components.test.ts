@@ -1712,3 +1712,243 @@ describe('roxy-kp-chart planets-and-nodes table', () => {
 		el.remove();
 	});
 });
+
+/**
+ * Dasha drill-down. All three sub levels share one layout and one `period`
+ * family, so the LEVEL must be read from the payload: labelling from the
+ * attribute would call a pratyantardasha an antardasha. The parent note also has
+ * to explain a birth-truncated parent, which is why such a list can hold fewer
+ * than nine rows.
+ */
+describe('roxy-dasha-timeline drill-down levels', () => {
+	async function mount(data: unknown, period: string) {
+		const el = document.createElement('roxy-dasha-timeline') as HTMLElement & {
+			data?: unknown;
+			period?: string;
+		};
+		el.period = period;
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+	const text = (el: Element) => el.shadowRoot?.textContent ?? '';
+
+	test('a pratyantardasha list is labelled by its payload, not its attribute', async () => {
+		const el = await mount(
+			{
+				mahadashaLord: 'Saturn',
+				antardashaLord: 'Venus',
+				antardashaPeriod: {
+					planet: 'Venus',
+					startDate: '2025-06-20',
+					endDate: '2028-08-19',
+					durationYears: 3.17,
+				},
+				pratyantardashas: [
+					{
+						planet: 'Venus',
+						startDate: '2025-06-20',
+						endDate: '2025-12-29',
+						durationYears: 0.53,
+					},
+				],
+			},
+			'antara',
+		);
+		expect(text(el)).toContain('Pratyantardashas in Venus Antardasha');
+		el.remove();
+	});
+
+	test('a sookshma list names its pratyantardasha parent', async () => {
+		const el = await mount(
+			{
+				pratyantardashaLord: 'Rahu',
+				pratyantardashaPeriod: {
+					planet: 'Rahu',
+					startDate: '2026-08-08',
+					endDate: '2027-01-29',
+					durationYears: 0.48,
+				},
+				sookshmaDashas: [
+					{
+						planet: 'Rahu',
+						startDate: '2026-08-08',
+						endDate: '2026-09-03',
+						durationYears: 0.07,
+					},
+				],
+			},
+			'sookshma',
+		);
+		expect(text(el)).toContain('Sookshmas in Rahu Pratyantardasha');
+		el.remove();
+	});
+
+	test('a birth-truncated parent explains why the list is short', async () => {
+		const el = await mount(
+			{
+				mahadashaLord: 'Rahu',
+				mahadashaPeriod: {
+					planet: 'Rahu',
+					startDate: '1990-07-02',
+					endDate: '2002-08-29',
+					durationYears: 12.16,
+					nominalStartDate: '1984-08-29',
+				},
+				antardashas: [
+					{
+						planet: 'Saturn',
+						startDate: '1990-07-02',
+						endDate: '1992-08-10',
+						durationYears: 2.1,
+						nominalStartDate: '1989-10-05',
+					},
+				],
+			},
+			'sub',
+		);
+		expect(text(el)).toContain('before birth');
+		el.remove();
+	});
+
+	test('current mode shows all four running levels', async () => {
+		const el = await mount(
+			{
+				mahadasha: { planet: 'Saturn' },
+				antardasha: { planet: 'Venus' },
+				pratyantardasha: { planet: 'Rahu' },
+				sookshmaDasha: { planet: 'Jupiter' },
+				remainingInSookshma: { years: 0, months: 0, days: 16 },
+			},
+			'current',
+		);
+		const t = text(el);
+		for (const label of [
+			'Mahadasha',
+			'Antardasha',
+			'Pratyantardasha',
+			'Sookshma',
+		]) {
+			expect(t).toContain(label);
+		}
+		expect(t).toContain('Jupiter');
+		expect(t).toContain('16d left');
+		el.remove();
+	});
+});
+
+/**
+ * The response carries more than periods: a sidereal frame (moon longitude,
+ * ayanamsa), the birth balance, and the lord chain. Those used to be dropped
+ * entirely. They are now a panel rather than extra rows under the timeline,
+ * because the dates are what a reader opens the card for and provenance pushed
+ * them below the fold.
+ */
+describe('roxy-dasha-timeline organises fields into panels', () => {
+	const currentSample = {
+		moonNakshatra: 15,
+		nakshatraName: 'Swati',
+		nakshatraLord: 'Rahu',
+		moonLongitude: 190.994,
+		ayanamsa: 23.7217,
+		ayanamsaType: 'lahiri',
+		mahadasha: {
+			planet: 'Saturn',
+			interpretation: 'Discipline and structure.',
+		},
+		antardasha: { planet: 'Venus' },
+		pratyantardasha: { planet: 'Rahu' },
+		sookshmaDasha: { planet: 'Jupiter' },
+		remainingInSookshma: { years: 0, months: 0, days: 16 },
+	};
+
+	async function mount(data: unknown, period = 'current') {
+		const el = document.createElement('roxy-dasha-timeline') as HTMLElement & {
+			data?: unknown;
+			period?: string;
+		};
+		el.period = period;
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+	const tabs = (el: Element) =>
+		[...(el.shadowRoot?.querySelectorAll('.roxy-tab') ?? [])].map(
+			(t) => t.textContent?.trim() ?? '',
+		);
+
+	test('the timeline panel is what shows first, so dates are never behind a click', async () => {
+		const el = await mount(currentSample);
+		expect(tabs(el)[0]).toBe('Timeline');
+		expect(el.shadowRoot?.textContent).toContain('Jupiter');
+		el.remove();
+	});
+
+	test('readings are counted in their tab label rather than stacked under the periods', async () => {
+		const el = await mount(currentSample);
+		expect(tabs(el).some((t) => t.startsWith('Readings ('))).toBe(true);
+		el.remove();
+	});
+
+	test('the chart panel surfaces the sidereal frame the dates came from', async () => {
+		const el = await mount(currentSample);
+		const chart = [
+			...(el.shadowRoot?.querySelectorAll('.roxy-tab') ?? []),
+		].find((t) => t.textContent?.trim() === 'Chart') as HTMLElement | undefined;
+		expect(chart).toBeTruthy();
+		chart?.click();
+		await settled(el);
+
+		const t = el.shadowRoot?.textContent ?? '';
+		// Every provenance field, none of them dropped.
+		expect(t).toContain('lahiri');
+		expect(t).toContain('190.994');
+		expect(t).toContain('23.722');
+		expect(t).toContain('Swati');
+		expect(t).toContain('15 of 27');
+		el.remove();
+	});
+
+	test('a drill-down names its full lord chain, not just the nearest parent', async () => {
+		const el = await mount(
+			{
+				mahadashaLord: 'Saturn',
+				antardashaLord: 'Venus',
+				pratyantardashaLord: 'Rahu',
+				pratyantardashaPeriod: { planet: 'Rahu', durationYears: 0.48 },
+				sookshmaDashas: [
+					{
+						planet: 'Rahu',
+						startDate: '2026-08-08',
+						endDate: '2026-09-03',
+						durationYears: 0.07,
+					},
+				],
+			},
+			'sookshma',
+		);
+		expect(el.shadowRoot?.textContent).toContain('Saturn › Venus › Rahu');
+		el.remove();
+	});
+
+	test('no tab strip when there is only one panel worth showing', async () => {
+		const el = await mount(
+			{
+				mahadashas: [
+					{
+						planet: 'Ketu',
+						startDate: '1990-01-01',
+						endDate: '1997-01-01',
+						durationYears: 7,
+					},
+				],
+			},
+			'major',
+		);
+		expect(tabs(el)).toHaveLength(0);
+		expect(el.shadowRoot?.textContent).toContain('Ketu');
+		el.remove();
+	});
+});

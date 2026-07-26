@@ -91,6 +91,12 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	getSubDashas: [
 		{ component: 'roxy-dasha-timeline', attrs: { period: 'sub' } },
 	],
+	getPratyantardashas: [
+		{ component: 'roxy-dasha-timeline', attrs: { period: 'antara' } },
+	],
+	getSookshmaDashas: [
+		{ component: 'roxy-dasha-timeline', attrs: { period: 'sookshma' } },
+	],
 	calculateGunMilan: [{ component: 'roxy-guna-milan' }],
 	getDetailedPanchang: [
 		{ component: 'roxy-panchang-table', attrs: { detail: 'detailed' } },

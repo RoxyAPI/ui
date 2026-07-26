@@ -374,7 +374,8 @@ window.ROXY_UI_DEMOS = [
 	entry({
 		id: 'dasha',
 		tag: 'roxy-dasha-timeline',
-		seoLine: 'Mahadasha and antardasha timeline visualizer',
+		seoLine:
+			'Vimshottari timeline visualizer, mahadasha through sookshma with drill-down at every level',
 		attrs: ' period="major"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getMajorDashas({
     body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
@@ -384,7 +385,8 @@ window.ROXY_UI_DEMOS = [
 		id: 'dasha-current',
 		tag: 'roxy-dasha-timeline',
 		heading: 'Current dasha',
-		seoLine: 'The running mahadasha, antardasha, and pratyantardasha with their readings',
+		seoLine:
+			'The running mahadasha, antardasha, pratyantardasha and sookshma with their readings',
 		attrs: ' period="current"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getCurrentDasha({
     body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
@@ -401,6 +403,14 @@ window.ROXY_UI_DEMOS = [
     body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
+	// No dasha-antara / dasha-sookshma cards yet, deliberately. Their samples come
+	// from `scripts/refresh-samples.ts` via @roxyapi/sdk, and the published SDK
+	// regenerates from the live spec on its OWN pipeline, so it does not know a
+	// brand new operation for a while. A card with no sample renders an empty
+	// state, which is worse than no card. The published SDK does not expose the two
+	// operations yet, so `refresh-samples.ts` cannot even reference them without
+	// failing typecheck. Sequence and readiness check: CLAUDE.md, "Binding a new
+	// endpoint to an EXISTING component", step 8.
 	entry({
 		id: 'guna',
 		tag: 'roxy-guna-milan',

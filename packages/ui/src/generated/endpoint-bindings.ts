@@ -175,6 +175,22 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 				period: 'sub',
 			},
 		},
+		{
+			operationId: 'getPratyantardashas',
+			method: 'POST',
+			path: '/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}',
+			attrs: {
+				period: 'antara',
+			},
+		},
+		{
+			operationId: 'getSookshmaDashas',
+			method: 'POST',
+			path: '/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}',
+			attrs: {
+				period: 'sookshma',
+			},
+		},
 	],
 	'roxy-divisional-chart': [
 		{

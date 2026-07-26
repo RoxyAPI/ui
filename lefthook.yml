@@ -32,7 +32,14 @@ pre-commit:
     typecheck:
       run: bun run typecheck
     build-and-stage-codegen:
-      glob: "packages/ui/src/**/*.{ts,css}"
+      # `scripts/bindings.config.ts` and `scripts/wrapper-meta.ts` are in here
+      # deliberately: both are hand-edited source feeding generated output
+      # (endpoint-bindings.ts via `generate`; manifest.js, widgets.js and the
+      # react/vue wrappers via `build`). Without them in the glob such a commit
+      # ships stale generated artifacts. For wrapper-meta the CI drift gate
+      # cannot save you either: it rebuilds from the same stale map, so the
+      # wrappers regenerate byte-identical and the gate passes green.
+      glob: "{packages/ui/src/**/*.{ts,css},scripts/bindings.config.ts,scripts/wrapper-meta.ts}"
       # The build emits committed codegen: packages/ui-react/src and
       # packages/ui-vue/src (wrappers + load-ui), registry,
       # apps/docs/manifest.js. Stage every diff so the commit captures the full

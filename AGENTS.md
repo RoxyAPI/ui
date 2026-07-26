@@ -26,7 +26,8 @@ Map the natural-language request to a component first; fall back to the table be
 | "kundli matching", "Guna Milan", "match for marriage", "36-point compatibility" | `<roxy-guna-milan>` |
 | "are we compatible", "compatibility score", "love score" (cross-domain) | `<roxy-compatibility-card>` |
 | "panchang for today", "tithi", "nakshatra", "muhurta", "auspicious times" | `<roxy-panchang-table>` |
-| "dasha", "mahadasha", "current planetary period", "Vimshottari" | `<roxy-dasha-timeline>` |
+| "dasha", "mahadasha", "current planetary period", "Vimshottari" | `<roxy-dasha-timeline>` (`period="current"`, or `"major"` for the 120-year timeline) |
+| "antardasha", "bhukti", "pratyantardasha", "antara", "sookshma", "drill into my dasha" | `<roxy-dasha-timeline>` with `period="sub"`, `"antara"` or `"sookshma"`, one per drill-down level |
 | "manglik", "kalsarpa", "sadhesati", "any doshas in my chart" | `<roxy-dosha-card>` |
 | "KP planets", "sub-lord", "Krishnamurti" | `<roxy-kp-planets-table>` |
 | "life path number", "expression number", "personal year", "numerology chart" | `<roxy-numerology-card>` |
@@ -75,7 +76,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-kp-ruling-planets>` | Vedic (KP) | POST /vedic-astrology/kp/ruling-planets | Day lord, Moon/Lagna hierarchies, ruling planets, significators |
 | `<roxy-ashtakavarga-grid>` | Vedic | POST /vedic-astrology/ashtakavarga | Sarva, Bhinna, and Shodhya Pinda views in a tabbed heatmap |
 | `<roxy-shadbala-table>` | Vedic | POST /vedic-astrology/shadbala | Six-fold planetary strength bar plus rupas and adequacy badge |
-| `<roxy-dasha-timeline>` | Vedic | POST /vedic-astrology/dasha/{current,major,sub/...} | Vimshottari mahadasha + antardasha + pratyantardasha |
+| `<roxy-dasha-timeline>` | Vedic | POST /vedic-astrology/dasha/{current,major,sub/...} | Vimshottari mahadasha, antardasha, pratyantardasha and sookshma, drill-down at every level |
 | `<roxy-guna-milan>` | Vedic | POST /vedic-astrology/compatibility | 36-point Ashtakoota with eight sub-scores |
 | `<roxy-panchang-table>` | Vedic | POST /vedic-astrology/panchang/{basic,detailed} | 15+ muhurtas in detailed mode |
 | `<roxy-vedic-aspects>` | Vedic | POST /vedic-astrology/aspects | Graha drishti rows with aspect type, strength, and orb, plus mutual aspects |

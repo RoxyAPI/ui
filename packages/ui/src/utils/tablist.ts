@@ -52,7 +52,13 @@ export const tablistStyles = css`
 	}
 	.roxy-tab:focus-visible {
 		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
-		outline-offset: 2px;
+		/* INSET, not the usual outward 2px gap. The strip is a scroll container
+		 * exactly one tab tall, so a ring drawn outside the button is clipped top and
+		 * bottom and reads as two disconnected slivers beside the label. Overflow
+		 * cannot be relaxed on one axis alone, since a visible paired with auto
+		 * computes to auto, and padding the strip would push the active tab underline
+		 * off the strip bottom border. Drawing the ring inside costs no layout. */
+		outline-offset: -2px;
 		border-radius: 4px;
 	}
 `;

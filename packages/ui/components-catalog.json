@@ -517,7 +517,7 @@
       "pascal": "RoxyDashaTimeline",
       "slug": "dasha-timeline",
       "domain": "Vedic",
-      "renders": "Vimshottari mahadasha + antardasha + pratyantardasha",
+      "renders": "Vimshottari mahadasha, antardasha, pratyantardasha and sookshma, drill-down at every level",
       "endpointLabel": "POST /vedic-astrology/dasha/{current,major,sub/...}",
       "endpoints": [
         {
@@ -542,6 +542,22 @@
           "path": "/vedic-astrology/dasha/sub/{mahadasha}",
           "attrs": {
             "period": "sub"
+          }
+        },
+        {
+          "operationId": "getPratyantardashas",
+          "method": "POST",
+          "path": "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}",
+          "attrs": {
+            "period": "antara"
+          }
+        },
+        {
+          "operationId": "getSookshmaDashas",
+          "method": "POST",
+          "path": "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}",
+          "attrs": {
+            "period": "sookshma"
           }
         }
       ],

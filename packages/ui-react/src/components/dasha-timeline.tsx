@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { GetCurrentDashaResponse, GetMajorDashasResponse, GetSubDashasResponse } from '../types/index.js';
+import type { GetCurrentDashaResponse, GetMajorDashasResponse, GetPratyantardashasResponse, GetSookshmaDashasResponse, GetSubDashasResponse } from '../types/index.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
@@ -9,11 +9,11 @@ type ElementAttrs = Omit<
 
 export interface RoxyDashaTimelineProps extends ElementAttrs {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse;
+	data?: GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse | GetPratyantardashasResponse | GetSookshmaDashasResponse;
 	className?: string;
 	style?: React.CSSProperties;
-	/** Which dasha response shape to render: the current running periods, the major mahadashas, or the sub-period breakdown. */
-	period?: 'current' | 'major' | 'sub';
+	/** Which dasha response shape to render: the running periods, the major mahadashas, or one of the three drill-down levels (antardashas, pratyantardashas, sookshma dashas). */
+	period?: 'current' | 'major' | 'sub' | 'antara' | 'sookshma';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -69,7 +69,7 @@ export const RoxyDashaTimeline = React.forwardRef<HTMLElement | null, RoxyDashaT
 		React.useEffect(() => {
 			const el = internal.current;
 			if (el && period !== undefined) {
-				(el as unknown as { period: 'current' | 'major' | 'sub' }).period = period;
+				(el as unknown as { period: 'current' | 'major' | 'sub' | 'antara' | 'sookshma' }).period = period;
 			}
 		}, [period, loaded]);
 
