@@ -2158,3 +2158,56 @@ describe('roxy-dasha-timeline heads correctly with no period attribute', () => {
 		el.remove();
 	});
 });
+
+/**
+ * Tarot spread heading. Same failure class as the dasha timeline: the label used
+ * to come from the `spread` ATTRIBUTE, whose default is `three-card`, so a host
+ * that cannot set attributes (the WordPress plugin) headed every reading "three
+ * card" including a yes or no cast. The API also sends `spread: null` on several
+ * casts, so the response field alone is not enough either.
+ */
+describe('roxy-tarot-spread titles itself from the response', () => {
+	async function mount(data: unknown) {
+		const el = document.createElement('roxy-tarot-spread') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+	const title = (el: Element) =>
+		el.shadowRoot?.querySelector('.title')?.textContent?.trim() ?? '';
+
+	test('a yes or no cast is not headed "three card"', async () => {
+		const el = await mount({
+			question: 'Should I take the new job',
+			answer: 'Yes',
+			strength: 'Strong',
+			spread: null,
+			card: { name: 'The Star', orientation: 'upright' },
+		});
+		expect(title(el)).toBe('Yes or no');
+		el.remove();
+	});
+
+	test('a named spread is used and capitalised', async () => {
+		const el = await mount({
+			spread: 'celtic cross',
+			question: 'What about work',
+			positions: [{ position: 'Present', card: { name: 'The Star' } }],
+		});
+		expect(title(el)).toBe('Celtic cross');
+		el.remove();
+	});
+
+	test('a null spread falls back without rendering an empty heading', async () => {
+		const el = await mount({
+			spread: null,
+			question: 'What about work',
+			positions: [{ position: 'Present', card: { name: 'The Star' } }],
+		});
+		expect(title(el)).toBe('Three card');
+		el.remove();
+	});
+});

@@ -27,6 +27,11 @@ type TarotSpreadData =
  * Tarot spread card. Renders /tarot/spreads/{three-card,celtic-cross,love},
  * /tarot/yes-no, /tarot/draw responses.
  */
+/** "three card" -> "Three card". Spread names arrive lowercase from both the API and the attribute, and a heading should not. */
+function titleCase(v: string): string {
+	return v ? v.charAt(0).toUpperCase() + v.slice(1) : v;
+}
+
 @customElement('roxy-tarot-spread')
 export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 	static styles = [
@@ -203,10 +208,19 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 		const answer = isYesNo ? (d as CastYesNoResponse).answer : undefined;
 		const strength = isYesNo ? (d as CastYesNoResponse).strength : undefined;
 		const verdictCard = isYesNo ? (d as CastYesNoResponse).card : undefined;
-		const spreadLabel =
-			'spread' in d
-				? (d as CastThreeCardResponse).spread
-				: this.spread.replace(/-/g, ' ');
+		// Title from the RESPONSE SHAPE first, the attribute only as a last resort.
+		// The API sends `spread: null` on several casts, and a host that cannot set
+		// attributes (the WordPress plugin maps an operationId to a bare tag) always
+		// falls through to the property default, so a yes or no reading was headed
+		// "three card". Reading the shape means the heading is right either way.
+		const spreadLabel = isYesNo
+			? 'Yes or no'
+			: isDrawn
+				? 'Card draw'
+				: titleCase(
+						('spread' in d ? (d as CastThreeCardResponse).spread : '') ||
+							this.spread.replace(/-/g, ' '),
+					);
 		const question =
 			'question' in d ? (d as CastThreeCardResponse).question : undefined;
 		const summary =
