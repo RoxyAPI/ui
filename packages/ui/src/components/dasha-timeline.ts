@@ -239,7 +239,8 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	 * Which dasha endpoint fed this element. `sub`, `antara` and `sookshma` are the
 	 * three drill-down levels and render identically; they stay distinct because
 	 * each maps one-to-one onto its endpoint binding, which is what lets a widget
-	 * pick a level. The LABELS come from the payload, not from here.
+	 * pick a level. The heading and the level LABELS come from the payload, not
+	 * from here, so a host that cannot set attributes still renders correctly.
 	 */
 	@property({ type: String, reflect: true })
 	period: 'current' | 'major' | 'sub' | 'antara' | 'sookshma' = 'current';
@@ -247,11 +248,6 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	/** Which panel is showing. Reset guarded in renderData when the data changes shape. */
 	@state()
 	private view: 'timeline' | 'readings' | 'frame' = 'timeline';
-
-	/** True for any of the drill-down levels, which share one layout. */
-	private get isDrillDown(): boolean {
-		return this.period !== 'current' && this.period !== 'major';
-	}
 
 	protected renderEmpty() {
 		return html`<div class="roxy-empty" role="status">No dasha data</div>`;
@@ -412,16 +408,25 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		</dl>`;
 	}
 
+	/**
+	 * Heading, decided by the PAYLOAD first and the `period` attribute only as a
+	 * tie-break.
+	 *
+	 * Not every host can set the attribute. The WordPress plugin maps an
+	 * operationId to a bare component tag with no attrs, so every dasha shortcode
+	 * arrives with the default `period="current"`; keying off the attribute alone
+	 * titled an antardasha list "Active dashas" there. A drill-down response is
+	 * self-identifying (it carries a parent period), so the markup does not need
+	 * to be told.
+	 */
 	private heading(d: DashaData): string {
-		if (this.period === 'major') return 'Vimshottari Mahadasha';
-		if (this.isDrillDown) {
-			const parent = parentOf(d);
-			const level = levelOf(d);
-			return parent
-				? `${level}s in ${parent.period.planet} ${parent.label}`
-				: `${level}s`;
+		const parent = parentOf(d);
+		if (parent) {
+			return `${levelOf(d)}s in ${parent.period.planet} ${parent.label}`;
 		}
-		return 'Active dashas';
+		if ('mahadashas' in d) return 'Vimshottari Mahadasha';
+		if ('mahadasha' in d) return 'Active dashas';
+		return this.period === 'major' ? 'Vimshottari Mahadasha' : 'Active dashas';
 	}
 
 	/**

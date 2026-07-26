@@ -2094,3 +2094,65 @@ describe('roxy-dasha-timeline date column adapts to the period length', () => {
 		el.remove();
 	});
 });
+
+/**
+ * A host that cannot pass attributes must still get correct headings. The
+ * WordPress plugin maps an operationId to a bare tag with no attrs, so every
+ * dasha shortcode arrives with the default `period="current"`; the heading has to
+ * come from the payload or an antardasha list is titled "Active dashas" there.
+ */
+describe('roxy-dasha-timeline heads correctly with no period attribute', () => {
+	async function mountNoAttrs(data: unknown) {
+		const el = document.createElement('roxy-dasha-timeline') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+	const heading = (el: Element) =>
+		el.shadowRoot?.querySelector('.title')?.textContent?.trim() ?? '';
+
+	test('a drill-down payload titles itself, not "Active dashas"', async () => {
+		const el = await mountNoAttrs({
+			mahadashaLord: 'Saturn',
+			antardashaLord: 'Venus',
+			antardashaPeriod: { planet: 'Venus', durationYears: 3.2 },
+			pratyantardashas: [
+				{
+					planet: 'Venus',
+					startDate: '2025-06-20T00:00:00',
+					endDate: '2025-12-29T00:00:00',
+					durationYears: 0.5,
+				},
+			],
+		});
+		expect(heading(el)).toBe('Pratyantardashas in Venus Antardasha');
+		el.remove();
+	});
+
+	test('a major payload titles itself', async () => {
+		const el = await mountNoAttrs({
+			mahadashas: [
+				{
+					planet: 'Ketu',
+					startDate: '1990-01-15T00:00:00',
+					endDate: '1997-01-15T00:00:00',
+					durationYears: 7,
+				},
+			],
+		});
+		expect(heading(el)).toBe('Vimshottari Mahadasha');
+		el.remove();
+	});
+
+	test('a current payload still reads as the running periods', async () => {
+		const el = await mountNoAttrs({
+			mahadasha: { planet: 'Saturn' },
+			antardasha: { planet: 'Venus' },
+		});
+		expect(heading(el)).toBe('Active dashas');
+		el.remove();
+	});
+});
