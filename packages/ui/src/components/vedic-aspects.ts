@@ -161,7 +161,7 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 
 		return html`<div class="wrap" aria-label="Vedic aspects">
 			<div class="head">
-				<h2 class="title">Vedic Aspects</h2>
+				<h2 class="title">Vedic aspects</h2>
 				${when ? html`<p class="subtitle">Chart time ${when}</p>` : nothing}
 			</div>
 			${

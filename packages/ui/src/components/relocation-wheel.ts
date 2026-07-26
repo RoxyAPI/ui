@@ -118,12 +118,34 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 				<div class="move">
 					${
 						typeof c?.distanceKm === 'number'
-							? html`<span>${Math.round(c.distanceKm).toLocaleString()} km ${c.direction ?? ''} of birthplace</span>`
+							? html`<span>
+								${
+									// Under a kilometre the bearing is noise: "0 km south of
+									// birthplace" reads as a broken calculation, not a same-place
+									// relocation.
+									Math.round(c.distanceKm) === 0
+										? 'Same location as birth'
+										: `${Math.round(c.distanceKm).toLocaleString()} km ${c.direction ?? ''} of birthplace`
+								}
+							</span>`
 							: nothing
 					}
 					${
 						c
-							? html`<span>Ascendant ${c.ascendantSignChanged ? 'changes sign' : 'keeps its sign'}</span>`
+							? html`<span>
+								${
+									// Name the sign in BOTH branches. Reporting only the boolean
+									// put "Ascendant keeps its sign" directly above a summary
+									// reading "The Ascendant moves to Gemini", and a reader
+									// cannot tell which one is wrong. Neither was: the sign is
+									// Gemini either way. Stating it reconciles the two.
+									data.ascendant?.sign
+										? `Ascendant ${c.ascendantSignChanged ? 'moves to' : 'stays in'} ${data.ascendant.sign}`
+										: c.ascendantSignChanged
+											? 'Ascendant changes sign'
+											: 'Ascendant keeps its sign'
+								}
+							</span>`
 							: nothing
 					}
 				</div>

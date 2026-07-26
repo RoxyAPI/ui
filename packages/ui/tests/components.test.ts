@@ -1100,6 +1100,24 @@ describe('roxy-data hides what the PHP renderer hides', () => {
 		expect(titled.text).toContain('The Builder');
 		titled.el.remove();
 	});
+
+	test('a value that renders as nothing does not draw a section heading', async () => {
+		// An empty object still counts as complex, so it was promoted to a
+		// full-width section and drew a heading over a blank body. Emptiness nests:
+		// { breakdown: { western: [], vedic: [] } } has keys and still renders
+		// nothing.
+		const { html, text } = await mount({
+			title: 'Probe',
+			kept: { depth: 3 },
+			emptyObject: {},
+			emptyArray: [],
+			nestedEmpty: { western: [], vedic: {} },
+		});
+		expect(text).toContain('Kept');
+		expect(html).not.toContain('Empty object');
+		expect(html).not.toContain('Empty array');
+		expect(html).not.toContain('Nested empty');
+	});
 });
 
 describe('roxy-data scalar formatting and structure', () => {
@@ -1905,11 +1923,14 @@ describe('roxy-dasha-timeline organises fields into panels', () => {
 
 		const t = el.shadowRoot?.textContent ?? '';
 		// Every provenance field, none of them dropped.
-		expect(t).toContain('lahiri');
+		expect(t).toContain('Lahiri (23.72\u00b0)');
 		expect(t).toContain('190.994');
-		expect(t).toContain('23.722');
 		expect(t).toContain('Swati');
 		expect(t).toContain('15 of 27');
+		// The frame is a label, not the API enum. Guards the regression where the
+		// panel printed the raw `lahiri` slug beside a sibling card that formatted
+		// the same field.
+		expect(t).not.toContain('lahiri');
 		el.remove();
 	});
 
@@ -2004,16 +2025,23 @@ describe('every tablist governs a real tabpanel', () => {
 			const tabs = [...(root?.querySelectorAll('[role="tab"]') ?? [])];
 			expect(tabs.length).toBeGreaterThan(0);
 
-			// The selected tab must name a panel, and that panel must be in the DOM.
-			const selected = tabs.find(
-				(t) => t.getAttribute('aria-selected') === 'true',
+			// EVERY tab names a panel that exists, not just the selected one. The APG
+			// puts aria-controls on each element with role tab, and a reference that
+			// does not resolve is the same as having none: a screen reader user
+			// cannot tell what an inactive tab governs. Only the active panel holds
+			// content; the rest are empty and hidden so the content stays lazy.
+			expect(tabs.some((t) => t.getAttribute('aria-selected') === 'true')).toBe(
+				true,
 			);
-			expect(selected).toBeTruthy();
-			const controls = selected?.getAttribute('aria-controls');
-			expect(controls).toBeTruthy();
-			expect(root?.querySelector(`#${controls}`)?.getAttribute('role')).toBe(
-				'tabpanel',
-			);
+			for (const tab of tabs) {
+				const controls = tab.getAttribute('aria-controls');
+				expect(controls).toBeTruthy();
+				const panel = root?.querySelector(`#${controls}`);
+				expect(panel?.getAttribute('role')).toBe('tabpanel');
+				// Inactive panels are hidden, so an empty one is never announced.
+				const selected = tab.getAttribute('aria-selected') === 'true';
+				expect(panel?.hasAttribute('hidden')).toBe(!selected);
+			}
 
 			el.remove();
 		});
@@ -2093,6 +2121,58 @@ describe('roxy-dasha-timeline date column adapts to the period length', () => {
 		// Distinct rows must read distinctly.
 		expect(cells[0]).not.toBe(cells[1]);
 		expect(cells[0]).toContain('Jan');
+		el.remove();
+	});
+
+	test('a mixed set takes its grain from the shortest bar, not the longest', async () => {
+		// The set is never uniform: a sookshma list runs from about 8 days to about
+		// 73. Choosing the grain from the LONGEST member picked months, and every
+		// short row then printed both ends as the same month: "Jan 1990 - Jan 1990".
+		const el = await mount(
+			{
+				sookshmaDashas: [
+					{
+						planet: 'Saturn',
+						startDate: '1990-01-03T00:00:00',
+						endDate: '1990-01-11T00:00:00',
+						durationYears: 0.022,
+					},
+					{
+						planet: 'Mercury',
+						startDate: '1990-01-11T00:00:00',
+						endDate: '1990-03-25T00:00:00',
+						durationYears: 0.2,
+					},
+				],
+			},
+			'sookshma',
+		);
+		const cells = dateCells(el);
+		expect(cells[0]).not.toBe('Jan 1990 - Jan 1990');
+		expect(cells[0]).not.toBe(cells[1]);
+		el.remove();
+	});
+
+	test('day grain still carries the year', async () => {
+		// A sookshma period routinely straddles new year, and a bar reading
+		// "28 Dec - 3 Jan" does not say which side moved. The table is a date
+		// reference: a practitioner reads a boundary off it and writes it down.
+		const el = await mount(
+			{
+				sookshmaDashas: [
+					{
+						planet: 'Ketu',
+						startDate: '1989-12-28T00:00:00',
+						endDate: '1990-01-03T00:00:00',
+						durationYears: 0.016,
+					},
+				],
+			},
+			'sookshma',
+		);
+		const cell = dateCells(el)[0] ?? '';
+		expect(cell).toContain('1989');
+		expect(cell).toContain('1990');
 		el.remove();
 	});
 });

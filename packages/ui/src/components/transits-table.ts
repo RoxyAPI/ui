@@ -5,7 +5,12 @@ import type { TransitsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
-import { formatDate, formatNumber, formatTime } from '../utils/format.js';
+import {
+	formatAspectName,
+	formatDate,
+	formatNumber,
+	formatTime,
+} from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
@@ -358,7 +363,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						<td class="num">${formatNumber(p.degree, 2)}</td>
 						<td class="speed">
 							<span class="speed-arrow" aria-hidden="true">${speedArrow}</span>
-							${formatNumber(Math.abs(p.speed), 4)}
+							${formatNumber(Math.abs(p.speed), 2)}&deg;/day
 						</td>
 					</tr>`;
 				})}
@@ -375,7 +380,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 				const nGlyph = PLANET_GLYPH[capitalize(a.natalPlanet)] ?? '';
 				const nature = (a.nature ?? 'neutral').toLowerCase();
 				const interp = a.interpretation;
-				const type = (a.type ?? '').toLowerCase();
+				const type = formatAspectName(a);
 				const status = a.isApplying ? 'Applying' : 'Separating';
 				return html`<details class="aspect-card" role="listitem" name="transit-aspects" ?open=${idx === 0}>
 					<summary>

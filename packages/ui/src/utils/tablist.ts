@@ -71,8 +71,10 @@ export const tablistStyles = css`
  *
  * Pass `controls: true` when each tab governs a sibling
  * `<div role="tabpanel" id="${idPrefix}-panel-${id}">` so the buttons advertise
- * `aria-controls`. Omit it for tablists that swap a single rendered view in
- * place with no separate panel element (the kundli style switch).
+ * `aria-controls`. The host renders only the ACTIVE panel; this helper emits an
+ * empty hidden panel for each of the others so the `aria-controls` on every tab
+ * resolves. Omit it for tablists that swap a single rendered view in place with
+ * no separate panel element (the kundli style switch).
  *
  * @example
  * ```ts
@@ -126,16 +128,33 @@ export function renderTablist<T extends string>(opts: {
 				role="tab"
 				id="${idPrefix}-tab-${it.id}"
 				aria-selected=${active === it.id ? 'true' : 'false'}
-				aria-controls=${
-					// Only the active panel is rendered, so only the active tab points
-					// at a live element; otherwise aria-controls would dangle.
-					controls && active === it.id ? `${idPrefix}-panel-${it.id}` : nothing
-				}
+				aria-controls=${controls ? `${idPrefix}-panel-${it.id}` : nothing}
 				tabindex=${active === it.id ? '0' : '-1'}
 				@click=${() => onSelect(it.id)}
 			>
 				${it.label}
 			</button>`,
 		)}
-	</div>`;
+	</div>
+	${
+		/**
+		 * Stand-in panels for the tabs that are not selected.
+		 *
+		 * The APG requires `aria-controls` on EVERY tab, not just the active one, and it must resolve to a real `tabpanel`. Components render one panel at a time, so without these the other tabs either carried a dangling IDREF or, as here previously, dropped the attribute and lost the relationship entirely: a screen reader user could not tell what any inactive tab governed.
+		 *
+		 * Empty and `hidden`, so they cost two nodes and no layout, and the panel content stays lazy: a natal chart does not build its wheel, aspect grid and positions table all at once just to satisfy an IDREF. The host still renders the ACTIVE panel itself, at `${idPrefix}-panel-${active}`, which is why these skip it.
+		 */
+		controls
+			? items
+					.filter((it) => it.id !== active)
+					.map(
+						(it) => html`<div
+							role="tabpanel"
+							id="${idPrefix}-panel-${it.id}"
+							aria-labelledby="${idPrefix}-tab-${it.id}"
+							hidden
+						></div>`,
+					)
+			: nothing
+	}`;
 }

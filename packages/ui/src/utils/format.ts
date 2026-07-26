@@ -4,6 +4,8 @@
  * template literals cleanly.
  */
 
+import { capitalize, humanize } from './string.js';
+
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 const BARE_TIME = /^\d{2}:\d{2}(:\d{2})?$/;
 /** An ISO datetime with NO timezone designator: a wall clock, not an instant. */
@@ -19,7 +21,10 @@ const NAIVE_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
  *
  * An offset-bearing timestamp (`...Z`, `...+05:30`) IS a real instant, so it keeps the normal behaviour and converts to the viewer's local time.
  */
-function resolve(input: string): { d: Date; timeZone?: string } {
+export function resolveDisplayDate(input: string): {
+	d: Date;
+	timeZone?: string;
+} {
 	const naive = BARE_TIME.test(input)
 		? `1970-01-01T${input}`
 		: NAIVE_DATETIME.test(input)
@@ -33,7 +38,7 @@ function resolve(input: string): { d: Date; timeZone?: string } {
 export function formatTime(input: unknown): string {
 	if (typeof input !== 'string' || input.length === 0) return '';
 	if (DATE_ONLY.test(input)) return '';
-	const { d, timeZone } = resolve(input);
+	const { d, timeZone } = resolveDisplayDate(input);
 	if (Number.isNaN(d.getTime())) return input;
 	return d.toLocaleTimeString(undefined, {
 		hour: 'numeric',
@@ -45,7 +50,7 @@ export function formatTime(input: unknown): string {
 
 export function formatDate(input: unknown): string {
 	if (typeof input !== 'string' || input.length === 0) return '';
-	const { d, timeZone } = resolve(
+	const { d, timeZone } = resolveDisplayDate(
 		DATE_ONLY.test(input) ? `${input}T00:00:00` : input,
 	);
 	if (Number.isNaN(d.getTime())) return input;
@@ -65,6 +70,14 @@ export function formatTimeRange(
 	const end = formatTime(t.end);
 	if (start && end) return `${start} - ${end}`;
 	return start || end || '';
+}
+
+/** Two dates as one label: `Jan 1, 2026 - Jan 7, 2026`. Falls back to whichever end parses when the other is absent. */
+export function formatDateRange(start: unknown, end: unknown): string {
+	const a = formatDate(start);
+	const b = formatDate(end);
+	if (a && b) return `${a} - ${b}`;
+	return a || b;
 }
 
 /**
@@ -107,10 +120,72 @@ export const ASPECT_CLASS: Record<string, string> = {
 };
 
 /**
- * Normalize the `type` field on an aspect entry to a lowercase, hyphen-separated
- * canonical name (`SEMI_SEXTILE` → `semi-sextile`). Accepts any aspect-shaped
- * object so both natal and synastry inter-aspect entries can share this.
+ * Normalize the `type` field on an aspect entry to a lowercase, hyphen-separated canonical name (`SEMI_SEXTILE` and `SEMI SEXTILE` both become `semi-sextile`). Accepts any aspect-shaped object so both natal and synastry inter-aspect entries can share this.
+ *
+ * @remarks
+ * Spaces are folded as well as underscores because the endpoints do not agree on the separator: aspects returns `SEMI SEXTILE` where synastry returns `SEMI_SEXTILE`. Handling only the underscore left the space form failing every {@link ASPECT_CLASS} and `ASPECT_SYMBOL` lookup, so the same aspect rendered hyphenated and correctly coloured in one component and space-separated in the neutral fallback colour in another.
  */
 export function normalizeAspect(a: { type?: string }): string {
-	return (a.type ?? '').toLowerCase().replace(/_/g, '-');
+	return (a.type ?? '')
+		.toLowerCase()
+		.trim()
+		.replace(/[\s_]+/g, '-');
+}
+
+/**
+ * Display label for an aspect: `SEMI_SEXTILE` -> `Semi-sextile`.
+ *
+ * The raw value is an API enum and the table column it lands in is read by practitioners, not parsers. {@link normalizeAspect} stays the lookup key for classes and glyphs; this is the human-facing form.
+ */
+export function formatAspectName(a: { type?: string }): string {
+	return capitalize(normalizeAspect(a));
+}
+
+/**
+ * Display label for an ayanamsa identifier. `kp-newcomb` -> `KP Newcomb`.
+ *
+ * The raw values are API enums. KP is an initialism and must stay uppercase, which {@link humanize} alone cannot know, so the three known frames are mapped explicitly and anything else degrades to a humanized slug rather than rendering the enum.
+ */
+const AYANAMSA_LABEL: Record<string, string> = {
+	'kp-newcomb': 'KP Newcomb',
+	'kp-old': 'KP Old',
+	lahiri: 'Lahiri',
+};
+
+export function formatAyanamsa(type: unknown, degrees?: unknown): string {
+	const label =
+		typeof type === 'string' ? (AYANAMSA_LABEL[type] ?? humanize(type)) : '';
+	const deg =
+		typeof degrees === 'number' ? `${formatNumber(degrees, 2)}\u00b0` : '';
+	if (label && deg) return `${label} (${deg})`;
+	return label || deg;
+}
+
+/**
+ * Date plus time in one label: `Jan 15, 1990, 2:30 PM`.
+ *
+ * @remarks
+ * Components were concatenating a raw date and a raw time (`1990-01-15 \u00b7 14:30:00`) while siblings rendered the same instant through {@link formatDate}. One helper keeps every card reading the same way.
+ *
+ * Birth details arrive as two fields rather than one timestamp, so `time` may be passed separately; it is merged into a naive datetime, which {@link formatDate} and {@link formatTime} pin to UTC so the wall clock renders identically for every viewer.
+ *
+ * @example
+ * ```ts
+ * formatDateTime('1990-01-15T14:30:00');    // 'Jan 15, 1990, 2:30 PM'
+ * formatDateTime('1990-01-15', '14:30:00'); // 'Jan 15, 1990, 2:30 PM'
+ * formatDateTime('1990-01-15');             // 'Jan 15, 1990'
+ * ```
+ */
+export function formatDateTime(input: unknown, time?: unknown): string {
+	const merged =
+		typeof input === 'string' &&
+		DATE_ONLY.test(input) &&
+		typeof time === 'string' &&
+		BARE_TIME.test(time)
+			? `${input}T${time}`
+			: input;
+	const date = formatDate(merged);
+	const clock = formatTime(merged);
+	if (date && clock) return `${date}, ${clock}`;
+	return date || clock;
 }

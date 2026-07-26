@@ -4,7 +4,7 @@ import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GetChoghadiyaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatTimeRange } from '../utils/format.js';
+import { formatDate, formatTimeRange } from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
 
 type ChoghadiyaPeriod = GetChoghadiyaResponse['dayChoghadiya'][number];
@@ -175,7 +175,7 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 		return html`<div class="wrap">
 			<div class="header">
 				<h2 class="title">Choghadiya</h2>
-				${date ? html`<p class="subtitle">${date}</p>` : nothing}
+				${date ? html`<p class="subtitle">${formatDate(date)}</p>` : nothing}
 			</div>
 
 			<div class="cho-grid">

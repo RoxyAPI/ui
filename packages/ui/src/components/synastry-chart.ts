@@ -11,6 +11,7 @@ import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	ASPECT_CLASS,
+	formatAspectName,
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
@@ -570,7 +571,7 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 		const meaning = a.meaning;
 		const lead = html`<span class="interp-lead">
 			<span aria-hidden="true" class="glyph">${g1}</span>${a.planet1}
-			<span class="asp-name ${nature}">${normalizeAspect(a)}</span>
+			<span class="asp-name ${nature}">${formatAspectName(a)}</span>
 			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
 		</span>`;
 		const aside = html`<span class="interp-aside">
@@ -739,7 +740,7 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 					(a) => html`<tr>
 						<td>${a.planet1}</td>
 						<td>${a.planet2}</td>
-						<td>${normalizeAspect(a) || ''}</td>
+						<td>${formatAspectName(a)}</td>
 						<td class="orb">${formatNumber(a.orb, 1)}</td>
 						<td>${formatNumber(a.strength, 0)}</td>
 					</tr>`,

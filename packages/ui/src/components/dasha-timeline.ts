@@ -10,7 +10,12 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatDate, formatNumber } from '../utils/format.js';
+import {
+	formatAyanamsa,
+	formatDate,
+	formatNumber,
+	resolveDisplayDate,
+} from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -258,6 +263,13 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const maxYears = periods.length
 			? Math.max(...periods.map((p) => p.durationYears))
 			: 0;
+		// Grain comes from the SHORTEST bar, not the longest: the column has to
+		// resolve every row, and the set is never uniform. A sookshma set whose
+		// longest member is 73 days picked month grain, and its 8 day members
+		// then printed both ends as the same month: `Saturn Jan 1990 - Jan 1990`.
+		const grain = grainFor(
+			periods.length ? Math.min(...periods.map((p) => p.durationYears)) : 0,
+		);
 		const readings = this.readings(d, periods);
 		const frame = this.frameRows(d);
 
@@ -315,7 +327,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 							${
 								periods.length > 0
 									? html`<div class="timeline" role="list">
-										${periods.map((p) => this.renderBar(p, maxYears, grainFor(maxYears)))}
+										${periods.map((p) => this.renderBar(p, maxYears, grain))}
 									</div>`
 									: nothing
 							}`
@@ -387,11 +399,13 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			]);
 		}
 		if ('ayanamsaType' in d && d.ayanamsaType) {
-			const deg =
-				'ayanamsa' in d && typeof d.ayanamsa === 'number'
-					? ` (${formatNumber(d.ayanamsa, 3)}\u00b0)`
-					: '';
-			rows.push(['Ayanamsa', `${d.ayanamsaType}${deg}`]);
+			rows.push([
+				'Ayanamsa',
+				formatAyanamsa(
+					d.ayanamsaType,
+					'ayanamsa' in d ? d.ayanamsa : undefined,
+				),
+			]);
 		}
 		if ('birthDashaBalance' in d && d.birthDashaBalance) {
 			const lord =
@@ -625,18 +639,27 @@ function grainFor(maxYears: number): DateGrain {
 	return 'day';
 }
 
-/** One end of a bar, at the chosen granularity. Day grain drops the year: these rows sit under a parent line that already states it, and the column is only 8rem wide. */
+/**
+ * One end of a bar, at the chosen granularity.
+ *
+ * @remarks
+ * Every grain carries the year. Day grain used to drop it on the grounds that the parent line states it, but a sookshma period routinely straddles new year, so a bar read `28 Dec - 3 Jan` with nothing saying which side moved. A dasha table is a date reference: a practitioner reads a boundary off it and writes it down.
+ *
+ * The API returns naive datetimes (`1990-01-15T14:30:00`), which are wall clocks in the timezone of the CHART, not instants. {@link resolveDisplayDate} pins them to UTC so a boundary landing in the DST gap of the viewer cannot silently shift a day.
+ */
 function formatBoundary(s: string, grain: DateGrain): string {
 	if (grain === 'year') {
 		const m = s.match(/^(\d{4})/);
 		return m ? m[1] : s;
 	}
-	const d = new Date(s);
+	const { d, timeZone } = resolveDisplayDate(s);
 	if (Number.isNaN(d.getTime())) return s;
-	const month = d.toLocaleString('en', { month: 'short' });
-	return grain === 'month'
-		? `${month} ${d.getFullYear()}`
-		: `${d.getDate()} ${month}`;
+	return d.toLocaleDateString('en', {
+		day: grain === 'day' ? 'numeric' : undefined,
+		month: 'short',
+		year: 'numeric',
+		timeZone,
+	});
 }
 
 declare global {

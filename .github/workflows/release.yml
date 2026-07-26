@@ -22,6 +22,8 @@ jobs:
     permissions:
       contents: write
       id-token: write
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -206,6 +208,20 @@ jobs:
           git tag "v$VERSION"
           git push --follow-tags
 
+      # The Pages demo is deployed from THIS run, by the deploy-pages job below.
+      # It cannot be left to pages.yml: the `release: [published]` trigger there
+      # has never once fired, because GitHub does not start a workflow
+      # from an event created with the default GITHUB_TOKEN, and both the
+      # `release: vX` push and the GitHub Release here use exactly that token.
+      # The demo therefore sat one commit behind every release. `apps/docs`
+      # already holds the post-bump build from the "Bump versions and rebuild"
+      # step, so this uploads the correct artifact with no extra build.
+      - name: Upload Pages artifact
+        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/docs
+
       - name: Pack npm tarballs for release assets
         if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
@@ -224,3 +240,29 @@ jobs:
           make_latest: 'true'
           files: |
             .release-assets/*.tgz
+
+  # Deliberately a SEPARATE job. `actions/deploy-pages` requires the
+  # `github-pages` environment, and an `environment:` on the release job would
+  # add an `environment` claim to its OIDC token. The npm Trusted Publishers for
+  # all three packages were configured WITHOUT an environment, so inlining this
+  # would fail every publish. Keeping it behind `needs:` leaves those claims
+  # byte-identical.
+  deploy-pages:
+    needs: release
+    if: needs.release.outputs.version != ''
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # Same group as pages.yml so a release deploy and a push deploy serialize
+    # instead of racing. Not cancel-in-progress: a half-applied deploy is worse
+    # than a slow one.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

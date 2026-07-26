@@ -403,7 +403,6 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 							? filtered.map(
 									(y) => html`<div class="yoga-chip">
 									${y.name}
-									<span class="yoga-id">${y.id}</span>
 								</div>`,
 								)
 							: html`<p class="no-results">No yogas match your search.</p>`

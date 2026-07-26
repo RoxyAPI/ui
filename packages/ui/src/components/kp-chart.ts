@@ -4,7 +4,7 @@ import type { KpChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
-import { formatNumber } from '../utils/format.js';
+import { formatAyanamsa } from '../utils/format.js';
 import {
 	renderTablist,
 	type TablistItem,
@@ -251,7 +251,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 				${
 					typeof d.meta?.ayanamsa === 'number'
 						? html`<div class="ayan">
-							${d.meta.ayanamsaType ?? 'Ayanamsa'}: ${formatNumber(d.meta.ayanamsa, 4)}°
+							Ayanamsa: ${formatAyanamsa(d.meta.ayanamsaType, d.meta.ayanamsa)}
 							${d.meta.houseSystem ? html`· ${d.meta.houseSystem} houses` : nothing}
 						</div>`
 						: nothing

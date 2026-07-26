@@ -109,6 +109,22 @@ function isComplex(value: Json): boolean {
 	);
 }
 
+/**
+ * True when a value would render as nothing: `[]`, `{}`, or an object whose every value is itself empty.
+ *
+ * @remarks
+ * An empty object still counts as {@link isComplex}, so it is promoted to a full-width section and draws a heading over a blank body. This is the generic fallback renderer for endpoints with no bespoke component, so it receives whatever shape the API returns and a heading with nothing under it is the most visible way it can look broken.
+ *
+ * Recursive because emptiness nests: `{ breakdown: { western: [], vedic: [] } }` has keys at the top level and still renders as nothing.
+ */
+function isEmptyValue(value: Json): boolean {
+	if (value === null || value === undefined) return true;
+	if (Array.isArray(value)) return value.length === 0;
+	if (typeof value !== 'object') return false;
+	const values = Object.values(value as Record<string, Json>);
+	return values.length === 0 || values.every(isEmptyValue);
+}
+
 @customElement('roxy-data')
 export class RoxyData extends RoxyDataElement<Json> {
 	static styles = [
@@ -420,8 +436,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 				k !== summaryKey &&
 				k !== quoteKey &&
 				!SKIP_KEYS.includes(k) &&
-				v !== null &&
-				v !== undefined,
+				!isEmptyValue(v),
 		);
 		// Scalars and primitive arrays fit the two-column rows; objects and
 		// object arrays promote to full-width sections so nested tables are

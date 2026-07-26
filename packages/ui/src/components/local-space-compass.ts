@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import type { LocalSpaceResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatDateTime } from '../utils/format.js';
 import { planetColor } from '../utils/planet-color.js';
 
 type Body = LocalSpaceResponse['bodies'][number];
@@ -117,6 +118,20 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 			.body-glyph.below {
 				opacity: 0.45;
 			}
+
+			/* A grid item keeps min-width: auto, so it refuses to shrink below its
+			 * min-content and instead widens the track. One wide table therefore
+			 * dragged the header, dial and summary out past the card edge with it,
+			 * and the overflow was unreachable because nothing scrolled. Let the
+			 * items shrink and give the table its own scroller. */
+			.wrap > * {
+				min-width: 0;
+			}
+			.table-scroll {
+				overflow-x: auto;
+				min-width: 0;
+				-webkit-overflow-scrolling: touch;
+			}
 			.list {
 				width: 100%;
 				border-collapse: collapse;
@@ -183,7 +198,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 				<h2 class="title">Local space</h2>
 				${
 					bd
-						? html`<div class="meta">${[bd.date, bd.time].filter(Boolean).join(' · ')}</div>`
+						? html`<div class="meta">${formatDateTime(bd.date, bd.time)}</div>`
 						: nothing
 				}
 			</header>
@@ -256,7 +271,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 
 	private renderList(bodies: Body[]) {
 		if (bodies.length === 0) return nothing;
-		return html`<table class="list">
+		return html`<div class="table-scroll"><table class="list">
 			<caption class="roxy-sr-only">
 				Local space directions: each body with its compass direction, azimuth,
 				altitude and whether it sits above or below the horizon.
@@ -292,7 +307,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 					</tr>`;
 				})}
 			</tbody>
-		</table>`;
+		</table></div>`;
 	}
 }
 

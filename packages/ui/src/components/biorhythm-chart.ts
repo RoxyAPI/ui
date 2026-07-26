@@ -8,7 +8,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatDate } from '../utils/format.js';
+import { formatDate, formatDateRange } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -315,7 +315,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		return html`<section class="wrap" aria-label="Biorhythm forecast">
 			<header class="head">
 				<h2 class="title">Forecast</h2>
-				<span class="energy">${[d.startDate, d.endDate].filter(Boolean).join(' - ')}</span>
+				<span class="energy">${formatDateRange(d.startDate, d.endDate)}</span>
 			</header>
 			<svg
 				viewBox="0 0 ${w} ${h}"
@@ -413,12 +413,17 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		return html`<section class="wrap" aria-label="Critical days">
 			<header class="head">
 				<h2 class="title">Critical days</h2>
-				<span class="energy">${[d.startDate, d.endDate].filter(Boolean).join(' - ')}</span>
+				<span class="energy">${formatDateRange(d.startDate, d.endDate)}</span>
 			</header>
 			<dl class="stats">
 				${this.stat('Events', typeof d.totalCriticalDays === 'number' ? `${d.totalCriticalDays}` : '')}
 				${this.stat('Double days', doubles.length ? `${doubles.length}` : '0')}
-				${this.stat('Triple day', d.tripleCriticalDay ? formatDate(d.tripleCriticalDay) : 'none')}
+				${this.stat(
+					'Triple day',
+					d.tripleCriticalDay
+						? formatDate(d.tripleCriticalDay)
+						: 'None in range',
+				)}
 			</dl>
 			${
 				doubles.length > 0

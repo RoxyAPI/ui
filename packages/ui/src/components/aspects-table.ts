@@ -9,7 +9,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
-import { formatNumber, normalizeAspect } from '../utils/format.js';
+import { formatAspectName, formatDate, formatNumber } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 
@@ -296,7 +296,9 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			return this.renderEmpty();
 
 		// Natal aspects date the chart, transits date the sky.
-		const date = 'transitDate' in d ? d.transitDate : 'date' in d ? d.date : '';
+		const date = formatDate(
+			'transitDate' in d ? d.transitDate : 'date' in d ? d.date : '',
+		);
 		const options = 'options' in d ? d.options : undefined;
 
 		return html`<div class="wrap" aria-label="Aspects">
@@ -379,7 +381,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		return html`<div class="strongest">
 			<span class="label">Strongest</span>
 			<span aria-hidden="true" class="glyph">${g1}</span>${s.planet1}
-			<span class="nature-badge ${nature}">${normalizeAspect(s)}</span>
+			<span class="nature-badge ${nature}">${formatAspectName(s)}</span>
 			<span aria-hidden="true" class="glyph">${g2}</span>${s.planet2}
 			<span class="meta">${s.isApplying ? 'Applying' : 'Separating'} · orb ${formatNumber(s.orb, 2)}° · str ${score(s.strength)}</span>
 		</div>`;
@@ -394,7 +396,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const g1 = PLANET_GLYPH[capitalize(a.planet1)] ?? '';
 		const g2 = PLANET_GLYPH[capitalize(a.planet2)] ?? '';
 		const nature = (a.interpretation ?? 'neutral').toLowerCase();
-		const type = (a.type ?? '').toLowerCase().replace(/_/g, ' ');
+		const type = formatAspectName(a);
 		const status = a.isApplying ? 'Applying' : 'Separating';
 		// Natal aspects carry `meaning` (static aspect lore); transits carry `transitInterpretation` (timed guidance).
 		const meaning = 'meaning' in a ? a.meaning : undefined;

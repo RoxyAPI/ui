@@ -46,6 +46,12 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 				gap: var(--roxy-space-md, 1rem);
 			}
 
+			/* See local-space-compass: grid and flex items keep min-width: auto and
+			 * widen their track rather than shrink, which pushed the whole score
+			 * header past the card edge and clipped the Score column outright. */
+			.card > * {
+				min-width: 0;
+			}
 			.score-header {
 				display: flex;
 				align-items: center;
@@ -53,6 +59,12 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 			}
 			.score-info {
 				flex: 1;
+				min-width: 0;
+			}
+			.table-scroll {
+				overflow-x: auto;
+				min-width: 0;
+				-webkit-overflow-scrolling: touch;
 			}
 			.score-bar {
 				display: grid;
@@ -165,6 +177,37 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 					display: none;
 				}
 			}
+
+			/* Phone width. The ring is a fixed 120px and the verdict is right
+			 * aligned against it, so on a ~300px card the total, the percentage and
+			 * a two line recommendation were all competing for the ~115px left over
+			 * and the summary read as a collision rather than a score. Stack: ring
+			 * over its own line, everything else full width and left aligned. */
+			@container (max-width: 26rem) {
+				.score-header {
+					flex-direction: column-reverse;
+					align-items: stretch;
+				}
+				.score-ring {
+					align-self: center;
+				}
+				/* Stacked, the ring sits directly above the same figure in larger
+				 * type, so its inner label is the number printed twice in a row.
+				 * role="meter" carries aria-valuenow, so dropping the text costs
+				 * nothing to a screen reader and leaves a clean gauge. */
+				.score-ring .ring-text,
+				.score-ring .ring-max {
+					display: none;
+				}
+				.score-bar {
+					grid-template-columns: 1fr;
+					gap: var(--roxy-space-xs, 0.25rem);
+				}
+				.verdict-wrap {
+					justify-items: start;
+					text-align: left;
+				}
+			}
 			.mini-bar {
 				height: 8px;
 				background: var(--roxy-border, #e4e4e7);
@@ -271,7 +314,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 
 			${
 				breakdown.length > 0
-					? html`<table>
+					? html`<div class="table-scroll"><table>
 						<caption class="roxy-sr-only">
 							Guna Milan breakdown: each koota with the classification of person 1 and
 							person 2, and the score it earned out of its maximum.
@@ -306,7 +349,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 								</tr>`;
 							})}
 						</tbody>
-					</table>`
+					</table></div>`
 					: nothing
 			}
 			${

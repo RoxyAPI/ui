@@ -154,7 +154,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 
 		return html`<div class="wrap" aria-label="Forecast digest">
 			<div class="head">
-				<h2 class="title">Forecast Digest</h2>
+				<h2 class="title">Forecast digest</h2>
 				${range ? html`<p class="subtitle">${range}</p>` : nothing}
 			</div>
 			${windows.map((w) => this.renderWindow(w))}
@@ -167,7 +167,13 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 	}
 
 	private renderWindow(w: DigestWindow) {
-		const top = w.top ?? [];
+		// The window is a ranked summary, so the strongest event must lead. The
+		// payload order is by domain and then by date within it, which put a
+		// significance 30 event above a significance 90 one and made the bars
+		// read as noise. Sorted copy: never mutate the array we were handed.
+		const top = [...(w.top ?? [])].sort(
+			(a, b) => (b.significance ?? 0) - (a.significance ?? 0),
+		);
 		const byDomain = w.byDomain ?? {};
 		const domains = Object.entries(byDomain) as Array<[string, number]>;
 		return html`<section class="window">

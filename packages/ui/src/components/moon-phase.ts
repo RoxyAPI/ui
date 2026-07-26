@@ -8,7 +8,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatNumber } from '../utils/format.js';
+import { formatDate, formatNumber } from '../utils/format.js';
 
 type MoonPhaseData =
 	| GetCurrentMoonPhaseResponse
@@ -147,7 +147,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 				<span class="emoji" aria-hidden="true">${emoji}</span>
 				<div>
 					<h2 class="label">${d.phase ?? 'Moon'}</h2>
-					${d.date ? html`<div class="date">${d.date}</div>` : nothing}
+					${d.date ? html`<div class="date">${formatDate(d.date)}</div>` : nothing}
 				</div>
 			</div>
 			<div class="stats">
@@ -204,7 +204,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 		return html`<div class="list-item" role="listitem">
 			<span aria-hidden="true">${emoji}</span>
 			<span>${p.phase}</span>
-			<span>${p.date ?? ''}</span>
+			<span>${formatDate(p.date)}</span>
 		</div>`;
 	}
 }

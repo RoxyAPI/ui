@@ -4,6 +4,7 @@ import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { formatDateTime } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { planetColor } from '../utils/planet-color.js';
 import { WORLD_LAND_PATH } from '../utils/world-map.js';
@@ -209,7 +210,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 				${
 					bd
 						? html`<div class="meta">
-							${[bd.date, bd.time].filter(Boolean).join(' · ')} ·
+							${formatDateTime(bd.date, bd.time)} ·
 							${formatLat(Math.round(bd.latitude))} ${formatLon(Math.round(bd.longitude))}
 						</div>`
 						: nothing

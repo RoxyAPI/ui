@@ -282,8 +282,9 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			'energyRating' in d && typeof d.energyRating === 'number'
 				? d.energyRating
 				: null;
+		// `date` is an ISO day; `week` and `month` are already human ranges.
 		const dateLabel =
-			('date' in d && d.date) ||
+			('date' in d && d.date && formatDate(d.date)) ||
 			('week' in d && d.week) ||
 			('month' in d && d.month) ||
 			'';

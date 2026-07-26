@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import {
+	ASPECT_SYMBOL,
 	MOON_PHASE_EMOJI,
 	PLANET_ABBR,
 	PLANET_GLYPH,
@@ -18,10 +19,15 @@ import {
 	polarToCartesian,
 } from '../src/utils/degree.js';
 import {
+	formatAspectName,
+	formatAyanamsa,
 	formatDate,
+	formatDateRange,
+	formatDateTime,
 	formatNumber,
 	formatPercent,
 	formatTime,
+	normalizeAspect,
 } from '../src/utils/format.js';
 import { toKundliViewModel } from '../src/utils/kundli-render.js';
 import { MarkupDataController } from '../src/utils/markup-data.js';
@@ -474,5 +480,83 @@ describe('utils/string humanize', () => {
 	test('capitalize normalizes a lowercase enum value for glyph lookup', () => {
 		expect(capitalize('aries')).toBe('Aries');
 		expect(capitalize('SCORPIO')).toBe('Scorpio');
+	});
+});
+
+describe('aspect names normalize across both API separators', () => {
+	test('underscore and space forms collapse to the same canonical key', () => {
+		// /aspects returns `SEMI SEXTILE`, synastry returns `SEMI_SEXTILE`. Folding
+		// only the underscore left the space form failing every ASPECT_CLASS and
+		// ASPECT_SYMBOL lookup, so the same aspect rendered correctly coloured in
+		// one component and in the neutral fallback in another.
+		expect(normalizeAspect({ type: 'SEMI_SEXTILE' })).toBe('semi-sextile');
+		expect(normalizeAspect({ type: 'SEMI SEXTILE' })).toBe('semi-sextile');
+		expect(normalizeAspect({ type: 'Semi  Sextile ' })).toBe('semi-sextile');
+	});
+
+	test('the display label is capitalized, never the raw enum', () => {
+		expect(formatAspectName({ type: 'SEMI_SQUARE' })).toBe('Semi-square');
+		expect(formatAspectName({ type: 'TRINE' })).toBe('Trine');
+		expect(formatAspectName({})).toBe('');
+	});
+
+	test('every aspect the API returns resolves to a glyph, none to a slug', () => {
+		// The nine values in the astrology + vedic specs. A miss here is what
+		// rendered `sesquiquadrate` into the aspect grid as the literal text `ses`.
+		const apiAspects = [
+			'CONJUNCTION',
+			'SEMI_SEXTILE',
+			'SEMI_SQUARE',
+			'SEXTILE',
+			'SQUARE',
+			'TRINE',
+			'SESQUIQUADRATE',
+			'QUINCUNX',
+			'OPPOSITION',
+		];
+		for (const type of apiAspects) {
+			const key = normalizeAspect({ type }).replace(/-/g, '');
+			expect(ASPECT_SYMBOL[key]).toBeTruthy();
+		}
+	});
+
+	test('semisextile and quincunx are not swapped', () => {
+		// Unicode defines the set at 260C, 26BA, 2220, 26B9, 25A1, 25B3, 26BC,
+		// 26BB, 260D for 0/30/45/60/90/120/135/150/180 degrees. An earlier
+		// revision used the XOR and NAND operators Unicode lists as cross
+		// references, and had the two the wrong way round.
+		expect(ASPECT_SYMBOL.semisextile).toBe('\u26ba');
+		expect(ASPECT_SYMBOL.quincunx).toBe('\u26bb');
+		expect(ASPECT_SYMBOL.sesquiquadrate).toBe('\u26bc');
+		expect(ASPECT_SYMBOL.semisquare).toBe('\u2220');
+	});
+});
+
+describe('shared display formatters', () => {
+	test('formatDateTime merges the split date and time birth fields', () => {
+		// Birth details arrive as two fields, not one timestamp.
+		expect(formatDateTime('1990-01-15', '14:30:00')).toBe(
+			'Jan 15, 1990, 2:30 PM',
+		);
+		expect(formatDateTime('1990-01-15T14:30:00')).toBe('Jan 15, 1990, 2:30 PM');
+		expect(formatDateTime('1990-01-15')).toBe('Jan 15, 1990');
+		expect(formatDateTime(undefined)).toBe('');
+	});
+
+	test('formatDateRange falls back to whichever end is present', () => {
+		expect(formatDateRange('2026-01-01', '2026-01-07')).toBe(
+			'Jan 1, 2026 - Jan 7, 2026',
+		);
+		expect(formatDateRange('2026-01-01', undefined)).toBe('Jan 1, 2026');
+		expect(formatDateRange(undefined, undefined)).toBe('');
+	});
+
+	test('formatAyanamsa keeps KP uppercase and degrades unknown frames', () => {
+		expect(formatAyanamsa('kp-newcomb', 23.6214)).toBe(
+			'KP Newcomb (23.62\u00b0)',
+		);
+		expect(formatAyanamsa('lahiri', 23.72)).toBe('Lahiri (23.72\u00b0)');
+		expect(formatAyanamsa('lahiri')).toBe('Lahiri');
+		expect(formatAyanamsa('raman-something')).toBe('Raman something');
 	});
 });

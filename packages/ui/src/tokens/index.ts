@@ -92,14 +92,24 @@ export const SIGNS_ORDER = [
 ] as const;
 
 /** Aspect symbols. Used by synastry and natal chart aspect tables. */
+/**
+ * Glyph per aspect, keyed by the hyphen-free canonical name.
+ *
+ * @remarks
+ * These are the nine aspects Unicode itself defines as a set, in its Miscellaneous Symbols block note: `260C, 26BA, 2220, 26B9, 25A1, 25B3, 26BC, 26BB, 260D` for 0, 30, 45, 60, 90, 120, 135, 150 and 180 degrees. That is exactly the vocabulary the API returns, so every aspect resolves to a real glyph and none falls through to a truncated slug.
+ *
+ * Do not substitute the visually similar maths operators. An earlier revision used `⊻` XOR for quincunx and `⊼` NAND for semisextile, which are the two characters Unicode lists as cross-references FROM the real glyphs, and it had them the wrong way round: charts rendered a 150 degree quincunx with the 30 degree semisextile symbol and vice versa. An astrologer reads the glyph, not the tooltip.
+ */
 export const ASPECT_SYMBOL: Record<string, string> = {
 	conjunction: '☌',
-	opposition: '☍',
-	trine: '△',
+	semisextile: '⚺',
+	semisquare: '∠',
+	sextile: '⚹',
 	square: '□',
-	sextile: '✱',
-	quincunx: '⊻',
-	semisextile: '⊼',
+	trine: '△',
+	sesquiquadrate: '⚼',
+	quincunx: '⚻',
+	opposition: '☍',
 };
 
 /** Trigrams used by I Ching hexagrams. Eight trigrams compose 64 hexagrams. */

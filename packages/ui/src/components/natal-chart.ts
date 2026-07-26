@@ -19,6 +19,7 @@ import {
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	ASPECT_CLASS,
+	formatDateTime,
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
@@ -503,9 +504,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				${
 					data.birthDetails
 						? html`<div class="meta">
-							${[data.birthDetails.date, data.birthDetails.time]
-								.filter(Boolean)
-								.join(' · ')}
+							${formatDateTime(data.birthDetails.date, data.birthDetails.time)}
 						</div>`
 						: nothing
 				}
@@ -618,10 +617,17 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 								const a = byPair.get([rowName, colName].sort().join('|'));
 								if (!a) return html`<td class="empty"></td>`;
 								const name = normalizeAspect(a);
+								// Every aspect the API returns has a glyph. The fallback is
+								// for an unknown future one, and initials read as an
+								// abbreviation where `name.slice(0, 3)` read as a leaked slug:
+								// `sesquiquadrate` rendered as the literal text `ses`.
 								const sym =
 									ASPECT_SYMBOL[name] ??
 									ASPECT_SYMBOL[name.replace(/-/g, '')] ??
-									name.slice(0, 3);
+									name
+										.split('-')
+										.map((part) => part.charAt(0).toUpperCase())
+										.join('');
 								const cls = ASPECT_CLASS[name] ?? 'aspect-other';
 								const orb = formatNumber(a.orb, 1);
 								return html`<td class=${`cell ${cls}`} title=${`${rowName} ${name} ${colName}${orb ? ` (orb ${orb}°)` : ''}`}>

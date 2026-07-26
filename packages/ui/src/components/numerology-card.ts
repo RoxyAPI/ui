@@ -16,6 +16,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
+import { formatDate } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -327,7 +328,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${this.renderHero(headerLabel, d.personalDay, d.theme)}
 			${d.guidance ? html`<p class="meaning">${d.guidance}</p>` : nothing}
 			<dl class="attrs">
-				${this.attr('Date', d.targetDate)}
+				${this.attr('Date', formatDate(d.targetDate))}
 				${this.attr(
 					'Personal month',
 					joinCycle(d.personalMonth, d.personalMonthTheme),
@@ -384,7 +385,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			<div>
 				<p class="label">${headerLabel}</p>
 				${d.profile?.name ? html`<h2 class="title">${d.profile.name}</h2>` : nothing}
-				${d.profile?.birthdate ? html`<p class="label">${d.profile.birthdate}</p>` : nothing}
+				${d.profile?.birthdate ? html`<p class="label">${formatDate(d.profile.birthdate)}</p>` : nothing}
 			</div>
 			${d.summary ? html`<p class="meaning">${d.summary}</p>` : nothing}
 			${

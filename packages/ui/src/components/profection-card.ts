@@ -4,6 +4,7 @@ import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
 import type { ProfectionsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatDate } from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
 
 /**
@@ -139,7 +140,7 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 		return html`<div class="wrap">
 			<header>
 				<h2 class="title">Annual profection</h2>
-				${data.targetDate ? html`<span class="badge"><b>For</b> ${data.targetDate}</span>` : nothing}
+				${data.targetDate ? html`<span class="badge"><b>For</b> ${formatDate(data.targetDate)}</span>` : nothing}
 			</header>
 			<div class="focus">
 				<div class="age">

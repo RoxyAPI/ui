@@ -14,8 +14,11 @@ on:
       - 'specs/openapi.json'
       - 'scripts/**'
       - '.github/workflows/pages.yml'
-  release:
-    types: [published]
+  # No `release: [published]` trigger. It looked like it covered releases and
+  # never fired once: GitHub does not start a workflow from an event created
+  # with the default GITHUB_TOKEN, and release.yml creates the Release with
+  # exactly that token. Releases now deploy Pages from inside the release.yml
+  # `deploy-pages` job, which shares this concurrency group.
   workflow_dispatch:
 
 permissions:

@@ -4,7 +4,7 @@ import { PLANET_GLYPH } from '../tokens/index.js';
 import type { GetHoraResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatTimeRange } from '../utils/format.js';
+import { formatDate, formatTimeRange } from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
 
 type HoraPeriod = NonNullable<GetHoraResponse['dayHoras']>[number];
@@ -117,7 +117,7 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 		return html`<div class="wrap" aria-label="Hora periods">
 			<div class="head">
 				<h2 class="title">Hora</h2>
-				${d.date ? html`<p class="subtitle">${d.date}</p>` : nothing}
+				${d.date ? html`<p class="subtitle">${formatDate(d.date)}</p>` : nothing}
 			</div>
 			<div class="cols">
 				${this.renderColumn('Day', day)}

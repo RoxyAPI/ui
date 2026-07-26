@@ -15,7 +15,7 @@ import {
 	longitudeToSignPosition,
 } from '../utils/degree.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatNumber } from '../utils/format.js';
+import { formatDate, formatNumber } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -327,7 +327,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				title: 'Solar arc directions',
 				badges: [
 					{ label: 'Arc', value: `${formatNumber(data.solarArc, 2)}°` },
-					{ label: 'Directed to', value: data.targetDate },
+					{ label: 'Directed to', value: formatDate(data.targetDate) },
 				],
 				summary: data.summary,
 				cols: { house: false, motion: false, formula: false, natal: true },
@@ -378,7 +378,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		return {
 			title: 'Secondary progressions',
 			badges: [
-				{ label: 'Progressed to', value: data.targetDate },
+				{ label: 'Progressed to', value: formatDate(data.targetDate) },
 				{
 					label: 'Elapsed',
 					value: `${formatNumber(data.elapsedYears, 1)} yrs`,

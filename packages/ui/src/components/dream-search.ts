@@ -100,7 +100,7 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 
 		return html`<section class="wrap" aria-label="Dream symbols">
 			<header class="head">
-				<h2 class="title">Dream Symbols</h2>
+				<h2 class="title">Dream symbols</h2>
 				<span class="count">${total} match${total === 1 ? '' : 'es'}</span>
 			</header>
 			<ul class="grid">

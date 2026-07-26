@@ -16,65 +16,83 @@ import { expect, test } from '@playwright/test';
  * min-content, and the min-content of a `white-space: nowrap` table is far wider
  * than the card. The column blows out and drags every sibling with it. The fix is
  * `grid-template-columns: minmax(0, 1fr)` plus `min-width: 0` on the scroll box.
+ *
+ * Run at every WIDTH, not just the default. The first version of this spec only
+ * ever ran at the Playwright desktop default, and the three configured projects
+ * are all desktop, so the whole class simply moved to phone width: `guna-milan`
+ * clipped its Score column off the card and `local-space-compass` put its header,
+ * dial, summary and table 170px past the edge, both invisible to a green run. A
+ * card that is only correct at 1280px is not shippable for an embed library.
  */
-test('no section overflows its host or clips its content', async ({ page }) => {
-	await page.goto('/');
-	await page.waitForLoadState('networkidle');
-	await page.waitForTimeout(800);
+const WIDTHS = [
+	{ label: 'phone', width: 375, height: 900 },
+	{ label: 'tablet', width: 768, height: 1024 },
+	{ label: 'desktop', width: 1280, height: 900 },
+];
 
-	const issues = await page.evaluate(() => {
-		/** Self-fetching widgets render only an input until the user acts. They are legitimately short. */
-		const ALLOW_SHORT = new Set(['loc', 'form']);
-		const demos =
-			(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
-				.ROXY_UI_DEMOS ?? [];
-		const found: string[] = [];
+for (const vp of WIDTHS) {
+	test(`no section overflows its host or clips its content at ${vp.label} (${vp.width}px)`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: vp.width, height: vp.height });
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+		await page.waitForTimeout(800);
 
-		for (const d of demos) {
-			const host = document.getElementById(d.id);
-			if (!host) {
-				found.push(`${d.id}: host missing`);
-				continue;
-			}
-			const sr = (host as HTMLElement & { shadowRoot?: ShadowRoot | null })
-				.shadowRoot;
-			if (!sr) continue;
+		const issues = await page.evaluate(() => {
+			/** Self-fetching widgets render only an input until the user acts. They are legitimately short. */
+			const ALLOW_SHORT = new Set(['loc', 'form']);
+			const demos =
+				(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
+					.ROXY_UI_DEMOS ?? [];
+			const found: string[] = [];
 
-			const hostRect = host.getBoundingClientRect();
-			if (hostRect.height < 40 && !ALLOW_SHORT.has(d.id)) {
-				found.push(
-					`${d.id}: renders almost nothing (${Math.round(hostRect.height)}px tall)`,
-				);
-			}
+			for (const d of demos) {
+				const host = document.getElementById(d.id);
+				if (!host) {
+					found.push(`${d.id}: host missing`);
+					continue;
+				}
+				const sr = (host as HTMLElement & { shadowRoot?: ShadowRoot | null })
+					.shadowRoot;
+				if (!sr) continue;
 
-			for (const el of sr.querySelectorAll('*')) {
-				const e = el as HTMLElement;
-				const r = e.getBoundingClientRect();
-				if (r.width === 0) continue;
-				// 2px of tolerance for sub-pixel rounding.
-				if (r.right <= hostRect.right + 2) continue;
+				const hostRect = host.getBoundingClientRect();
+				if (hostRect.height < 40 && !ALLOW_SHORT.has(d.id)) {
+					found.push(
+						`${d.id}: renders almost nothing (${Math.round(hostRect.height)}px tall)`,
+					);
+				}
 
-				// An ancestor that scrolls horizontally is doing its job, not overflowing.
-				let p: HTMLElement | null = e.parentElement;
-				let scrollable = false;
-				while (p && p !== (sr as unknown as HTMLElement)) {
-					const ox = getComputedStyle(p).overflowX;
-					if (ox === 'auto' || ox === 'scroll') {
-						scrollable = true;
+				for (const el of sr.querySelectorAll('*')) {
+					const e = el as HTMLElement;
+					const r = e.getBoundingClientRect();
+					if (r.width === 0) continue;
+					// 2px of tolerance for sub-pixel rounding.
+					if (r.right <= hostRect.right + 2) continue;
+
+					// An ancestor that scrolls horizontally is doing its job, not overflowing.
+					let p: HTMLElement | null = e.parentElement;
+					let scrollable = false;
+					while (p && p !== (sr as unknown as HTMLElement)) {
+						const ox = getComputedStyle(p).overflowX;
+						if (ox === 'auto' || ox === 'scroll') {
+							scrollable = true;
+							break;
+						}
+						p = p.parentElement;
+					}
+					if (!scrollable) {
+						found.push(
+							`${d.id}: ${e.tagName.toLowerCase()}.${e.className || '?'} overflows the card by ${Math.round(r.right - hostRect.right)}px`,
+						);
 						break;
 					}
-					p = p.parentElement;
-				}
-				if (!scrollable) {
-					found.push(
-						`${d.id}: ${e.tagName.toLowerCase()}.${e.className || '?'} overflows the card by ${Math.round(r.right - hostRect.right)}px`,
-					);
-					break;
 				}
 			}
-		}
-		return found;
-	});
+			return found;
+		});
 
-	expect(issues, issues.join('\n')).toEqual([]);
-});
+		expect(issues, `${vp.label}: ${issues.join('\n')}`).toEqual([]);
+	});
+}

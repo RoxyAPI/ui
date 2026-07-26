@@ -149,7 +149,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 			<div class="hero">
 				${d.number ? html`<div class="numeral">${d.number}</div>` : nothing}
 				<div>
-					<p class="label">Number analysis</p>
+					${known?.title ? html`<p class="label">Number analysis</p>` : nothing}
 					<h2 class="title">${heading}</h2>
 				</div>
 			</div>

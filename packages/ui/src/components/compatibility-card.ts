@@ -15,7 +15,7 @@ import {
 	interpAccordionStyles,
 	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
-import { capitalize } from '../utils/string.js';
+import { capitalize, humanize } from '../utils/string.js';
 
 type CompatibilityData =
 	| CalculateCompatibilityResponse
@@ -286,7 +286,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			aria-label=${`Compatibility (${this.mode})`}
 		>
 			<div class="head">
-				<h2>${this.mode} compatibility</h2>
+				<h2>${humanize(`${this.mode} compatibility`)}</h2>
 				<div>
 					${
 						typeof score === 'number'
