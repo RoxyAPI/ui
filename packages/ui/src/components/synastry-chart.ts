@@ -1,10 +1,7 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
-import type {
-	CalculateSynastryResponse,
-	NatalChartResponse,
-} from '../types/index.js';
+import type { CalculateSynastryResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
@@ -18,23 +15,19 @@ import {
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 
-type PlanetEntry = NatalChartResponse['planets'][number];
+/**
+ * A planet as the synastry response now returns it.
+ *
+ * @remarks
+ * Was `NatalChartResponse['planets'][number]`, because `/astrology/synastry` did not return positions and a caller had to merge two natal responses in by hand. The endpoint returns them as of 2026-07-26, so the wheel is drawable from ONE call. The synastry shape is the plotting subset (no `interpretation`, `speed` or `latitude`); the wheel only ever read `name`, `longitude` and `isRetrograde`, so nothing is lost.
+ */
+type PlanetEntry = CalculateSynastryResponse['person1']['planets'][number];
 type InterAspect = CalculateSynastryResponse['interAspects'][number];
 type SynastrySummary = CalculateSynastryResponse['summary'];
 type SynastryPerson = CalculateSynastryResponse['person1'];
 
 /** How many inter-aspects get a full reading before the rest fall back to the catalog table. A synastry can return 90+ contacts; a practitioner works the tightest ones. */
 const READING_COUNT = 12;
-
-// Drawing the dual wheel requires per-person planet longitudes alongside
-// the synastry response. Callers can merge planet arrays from
-// /astrology/natal-chart into `person1.planets` and `person2.planets`
-// before passing the payload in; without them, the component falls back
-// to the inter-aspects table and a status note instead of an empty wheel.
-type SynastryWithPlanets = CalculateSynastryResponse & {
-	person1?: { planets?: PlanetEntry[] };
-	person2?: { planets?: PlanetEntry[] };
-};
 
 const SIZE = 360;
 const CENTER = SIZE / 2;
@@ -48,7 +41,7 @@ const P2_R = 96;
  * /astrology/synastry.
  */
 @customElement('roxy-synastry-chart')
-export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
+export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse> {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
@@ -378,7 +371,7 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 		return html`<div class="roxy-empty" role="status">No synastry data</div>`;
 	}
 
-	protected renderData(d: SynastryWithPlanets) {
+	protected renderData(d: CalculateSynastryResponse) {
 		const { person1, person2, compatibilityScore, analysis } = d;
 		const interAspects = d.interAspects ?? [];
 		const p1Planets = person1?.planets ?? [];
@@ -458,10 +451,10 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 							<span><span class="swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 						</div>`
 					: html`<div class="missing-planets" role="status">
-						Synastry response missing planet positions. Pass
-						<code>data</code> with <code>person1.planets</code> and
-						<code>person2.planets</code> arrays from the natal-chart endpoint, or
-						use the <code>&lt;roxy-data&gt;</code> fallback.
+						Synastry response missing planet positions. A current
+						<code>/astrology/synastry</code> response carries
+						<code>person1.planets</code> and <code>person2.planets</code>; the
+						inter-aspect readings below still work without them.
 					</div>`
 			}
 			${this.renderSummaryPills(d.summary)}
@@ -665,7 +658,7 @@ export class RoxySynastryChart extends RoxyDataElement<SynastryWithPlanets> {
 	 * rim with the label outside, so the two rising signs are immediately
 	 * scannable on the wheel without depending on tooltips.
 	 */
-	private renderAscendants(data: SynastryWithPlanets) {
+	private renderAscendants(data: CalculateSynastryResponse) {
 		const items: ReturnType<typeof svg>[] = [];
 		const make = (
 			asc: { sign: string; degree: number } | undefined,

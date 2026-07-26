@@ -296,6 +296,15 @@ window.ROXY_UI_DEMOS = [
 		sdkCall: `  const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });`,
 	}),
 	entry({
+		id: 'horoscope-monthly',
+		tag: 'roxy-horoscope-card',
+		heading: 'Monthly horoscope',
+		seoLine:
+			'Month-level horoscope with a week-by-week breakdown, key lunar dates and one takeaway for the month',
+		attrs: ' period="monthly"',
+		sdkCall: `  const { data } = await roxy.astrology.getMonthlyHoroscope({ path: { sign: 'aries' } });`,
+	}),
+	entry({
 		id: 'compat',
 		tag: 'roxy-compatibility-card',
 		seoLine: 'Astrology, numerology, biorhythm compatibility breakdown',

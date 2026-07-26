@@ -124,6 +124,9 @@ async function main() {
 		run('horoscope', () =>
 			roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } }),
 		),
+		run('horoscope-monthly', () =>
+			roxy.astrology.getMonthlyHoroscope({ path: { sign: 'aries' } }),
+		),
 		run('synastry', () =>
 			roxy.astrology.calculateSynastry({
 				body: { person1: PERSON1, person2: PERSON2 },
@@ -616,11 +619,6 @@ async function main() {
 				},
 			}),
 		),
-		run('__natal2', () =>
-			roxy.astrology.generateNatalChart({
-				body: { ...PERSON2, houseSystem: 'placidus' },
-			}),
-		),
 	];
 
 	const results = await Promise.all(calls);
@@ -642,20 +640,6 @@ async function main() {
 		if (r.error || r.name.startsWith('__')) continue;
 		samples[r.name] = r.data;
 	}
-
-	const natal1 = results.find((r) => r.name === 'natal')?.data as
-		| { planets?: unknown[] }
-		| undefined;
-	const natal2 = results.find((r) => r.name === '__natal2')?.data as
-		| { planets?: unknown[] }
-		| undefined;
-	const syn = samples.synastry as
-		| { person1?: Record<string, unknown>; person2?: Record<string, unknown> }
-		| undefined;
-	if (syn && natal1?.planets)
-		syn.person1 = { ...(syn.person1 ?? {}), planets: natal1.planets };
-	if (syn && natal2?.planets)
-		syn.person2 = { ...(syn.person2 ?? {}), planets: natal2.planets };
 
 	// The /vedic-astrology/yoga catalog returns 300+ entries. The demo page
 	// only needs enough to prove the search filter and chip grid render, so

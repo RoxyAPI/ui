@@ -18,6 +18,18 @@ const projects = requested?.length
 
 export default defineConfig({
 	testDir: './packages/ui/tests/e2e',
+	/**
+	 * 90s, not the 30s default.
+	 *
+	 * The axe passes mount the whole demo (54 components, 69 cards) and scan it in
+	 * both themes. Isolated they take 10-12s, but the matrix runs three browsers
+	 * over the same machine and contention triples that: a run was observed at
+	 * 29.1s against the 30s ceiling, and adding one demo card was enough to tip
+	 * `addStyleTag` in the practitioner spec over it. That failure reads as a
+	 * theming or a11y bug and is neither, which is the expensive part. Raise the
+	 * ceiling rather than trim the coverage that makes these the slow ones.
+	 */
+	timeout: 90_000,
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 2 : 0,
