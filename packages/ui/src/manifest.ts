@@ -320,11 +320,11 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'dasha-timeline',
 		heading: 'Vimshottari dasha',
 		description:
-			'Vimshottari dasha timeline, mahadasha through sookshma, with the active period highlighted',
+			'Vimshottari dasha timeline, mahadasha through prana, with the active period highlighted',
 		docsLabel: 'Vedic',
 		endpointLabel: 'POST /vedic-astrology/dasha/{current,major,sub/...}',
 		docsSummary:
-			'Vimshottari mahadasha, antardasha, pratyantardasha and sookshma, drill-down at every level',
+			'Vimshottari mahadasha, antardasha, pratyantardasha, sookshma and prana, drill-down at every level',
 		topic: 'Vedic',
 	},
 	{

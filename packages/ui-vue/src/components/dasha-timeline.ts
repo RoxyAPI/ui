@@ -1,12 +1,12 @@
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { GetCurrentDashaResponse, GetMajorDashasResponse, GetPratyantardashasResponse, GetSookshmaDashasResponse, GetSubDashasResponse } from '../types/index.js';
+import type { GetCurrentDashaResponse, GetMajorDashasResponse, GetPranaDashasResponse, GetPratyantardashasResponse, GetSookshmaDashasResponse, GetSubDashasResponse } from '../types/index.js';
 
 export interface RoxyDashaTimelineProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse | GetPratyantardashasResponse | GetSookshmaDashasResponse;
-	/** Which dasha response shape to render: the running periods, the major mahadashas, or one of the three drill-down levels (antardashas, pratyantardashas, sookshma dashas). */
-	period?: 'current' | 'major' | 'sub' | 'antara' | 'sookshma';
+	data?: GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse | GetPratyantardashasResponse | GetSookshmaDashasResponse | GetPranaDashasResponse;
+	/** Which dasha response shape to render: the running periods, the major mahadashas, or one of the four drill-down levels (antardashas, pratyantardashas, sookshma dashas, prana dashas). */
+	period?: 'current' | 'major' | 'sub' | 'antara' | 'sookshma' | 'prana';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */

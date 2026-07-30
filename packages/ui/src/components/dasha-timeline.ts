@@ -3,6 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import type {
 	GetCurrentDashaResponse,
 	GetMajorDashasResponse,
+	GetPranaDashasResponse,
 	GetPratyantardashasResponse,
 	GetSookshmaDashasResponse,
 	GetSubDashasResponse,
@@ -13,6 +14,7 @@ import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatAyanamsa,
 	formatDate,
+	formatDateTime,
 	formatNumber,
 	resolveDisplayDate,
 } from '../utils/format.js';
@@ -28,10 +30,12 @@ type DashaData =
 	| GetMajorDashasResponse
 	| GetSubDashasResponse
 	| GetPratyantardashasResponse
-	| GetSookshmaDashasResponse;
+	| GetSookshmaDashasResponse
+	| GetPranaDashasResponse;
 
 type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
 type Remaining = GetCurrentDashaResponse['remainingInMahadasha'];
+type HouseThemes = GetCurrentDashaResponse['houseThemes'];
 
 /**
  * The Vimshottari level a listed period sits at, so no view ever labels an
@@ -42,6 +46,11 @@ type Remaining = GetCurrentDashaResponse['remainingInMahadasha'];
  * antardashas, pratyantardashas or sookshma dashas.
  */
 function levelOf(d: DashaData): string {
+	// Deepest level first, matching parentOf. No response carries two of these
+	// keys today, so the order is not yet load-bearing; it is the order that stays
+	// correct when a level is added, since a shallower key that a deeper payload
+	// also carried would otherwise win the chain and mislabel it.
+	if ('pranaDashas' in d) return 'Prana';
 	if ('sookshmaDashas' in d) return 'Sookshma';
 	if ('pratyantardashas' in d) return 'Pratyantardasha';
 	if ('antardashas' in d) return 'Antardasha';
@@ -52,6 +61,8 @@ function levelOf(d: DashaData): string {
 function parentOf(
 	d: DashaData,
 ): { label: string; period: DashaPeriod } | undefined {
+	if ('sookshmaPeriod' in d && d.sookshmaPeriod)
+		return { label: 'Sookshma', period: d.sookshmaPeriod };
 	if ('pratyantardashaPeriod' in d && d.pratyantardashaPeriod)
 		return { label: 'Pratyantardasha', period: d.pratyantardashaPeriod };
 	if ('antardashaPeriod' in d && d.antardashaPeriod)
@@ -71,10 +82,43 @@ function formatBalance(b: Remaining | undefined): string {
 	return parts.length ? parts.join(' ') : '0d';
 }
 
-/** "Jun 17, 2018 to Jun 17, 2035" for the accordion aside. */
+/**
+ * The houses a period lord acts on, as words: `[2, 7, 8]` reads "wealth, marriage, longevity".
+ *
+ * @remarks
+ * The words come from the response `houseThemes` map and nowhere else. The API localizes them with the rest of the interpretation prose, so a Hindi response renders Hindi houses; a table of meanings held in the component would be English forever and would drift from the reading beside it.
+ *
+ * `strongHouses` is preferred over `signifiedHouses`: it is the grade A and B subset a KP reading acts on, two or three houses rather than up to eight, which is what keeps this to one line beside a bar. One keyword per house, the primary theme, for the same reason.
+ *
+ * Returns an empty string unless the request asked for significators, since both the map and the house lists are absent otherwise.
+ */
+function houseWords(
+	sig: DashaPeriod['significators'],
+	themes: HouseThemes,
+): string {
+	if (!themes) return '';
+	const houses = sig?.strongHouses?.length
+		? sig.strongHouses
+		: sig?.signifiedHouses;
+	if (!houses?.length) return '';
+	return houses
+		.map((h) => themes[String(h)]?.[0])
+		.filter(Boolean)
+		.join(', ');
+}
+
+/**
+ * "Jun 17, 2018 to Jun 17, 2035" for the accordion aside.
+ *
+ * @remarks
+ * A prana period, and a deep sookshma, opens and closes on the same calendar day, so the date alone printed "Aug 8, 2026 to Aug 8, 2026" and named no span at all. The clock is added only when the two ends collapse, so every longer period keeps the shorter form.
+ */
 function formatSpan(p: { startDate?: string; endDate?: string }): string {
 	const start = p.startDate ? formatDate(p.startDate) : '';
 	const end = p.endDate ? formatDate(p.endDate) : '';
+	if (start && start === end) {
+		return `${formatDateTime(p.startDate)} to ${formatDateTime(p.endDate)}`;
+	}
 	if (start && end) return `${start} to ${end}`;
 	return start || end;
 }
@@ -83,11 +127,15 @@ function formatSpan(p: { startDate?: string; endDate?: string }): string {
  * Dasha timeline. Renders /vedic-astrology/dasha/{current,major,sub/{...}}.
  *
  * @remarks
- * Default mode shows the active mahadasha, antardasha and pratyantardasha with
- * the reading each one carries. `period="major"` draws the full 120-year
+ * Default mode shows all five active levels, mahadasha through prana, with the
+ * reading each one carries. `period="major"` draws the full 120-year
  * Vimshottari timeline; `period="sub"` draws the antardashas inside one
  * mahadasha and states which mahadasha they sit in, since an antardasha means
  * nothing without its parent lord.
+ *
+ * When the request asked for significators, each period also names the houses
+ * its lord acts on, in words taken from the response rather than from any table
+ * held here, so the words arrive in the language the caller requested.
  */
 @customElement('roxy-dasha-timeline')
 export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
@@ -163,6 +211,9 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				display: grid;
 				grid-template-columns: 5rem 1fr 8rem;
 				gap: var(--roxy-space-sm, 0.5rem);
+				/* Tighter than the gap between two bars, so a bar and its own house
+				 * line read as one row rather than as two entries. */
+				row-gap: 0.15rem;
 				align-items: center;
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
@@ -213,6 +264,28 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				font-variant-numeric: tabular-nums;
 				text-align: right;
 			}
+			/* Time grain prints a clock as well as a date, and two of those do not fit
+			 * a column sized for a bare date. Give the range its own full-width row
+			 * rather than squeezing the track, which at phone width would leave the
+			 * bar itself a few pixels wide. */
+			.bar.fine {
+				grid-template-columns: 5rem 1fr;
+			}
+			.bar.fine .dates {
+				grid-column: 1 / -1;
+				min-width: 0;
+				text-align: left;
+			}
+			.bar .houses {
+				/* Full width on a second row: the three tracks are sized for a planet,
+				 * a bar and a date, and words belong in none of them. */
+				grid-column: 1 / -1;
+				/* A grid item floors at min-content, so the words wrap inside the row
+				 * instead of widening the track past the card. */
+				min-width: 0;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
 			[role='tabpanel'] {
 				padding-top: var(--roxy-space-md, 1rem);
 			}
@@ -244,14 +317,16 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	];
 
 	/**
-	 * Which dasha endpoint fed this element. `sub`, `antara` and `sookshma` are the
-	 * three drill-down levels and render identically; they stay distinct because
-	 * each maps one-to-one onto its endpoint binding, which is what lets a widget
-	 * pick a level. The heading and the level LABELS come from the payload, not
-	 * from here, so a host that cannot set attributes still renders correctly.
+	 * Which dasha endpoint fed this element. `sub`, `antara`, `sookshma` and
+	 * `prana` are the four drill-down levels and render identically; they stay
+	 * distinct because each maps one-to-one onto its endpoint binding, which is
+	 * what lets a widget pick a level. The heading and the level LABELS come from
+	 * the payload, not from here, so a host that cannot set attributes still
+	 * renders correctly.
 	 */
 	@property({ type: String, reflect: true })
-	period: 'current' | 'major' | 'sub' | 'antara' | 'sookshma' = 'current';
+	period: 'current' | 'major' | 'sub' | 'antara' | 'sookshma' | 'prana' =
+		'current';
 
 	/** Which panel is showing. Reset guarded in renderData when the data changes shape. */
 	@state()
@@ -330,7 +405,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 							${
 								periods.length > 0
 									? html`<div class="timeline" role="list">
-										${periods.map((p) => this.renderBar(p, maxYears, grain))}
+										${periods.map((p) => this.renderBar(p, maxYears, grain, d.houseThemes))}
 									</div>`
 									: nothing
 							}`
@@ -362,6 +437,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			'mahadashaLord' in d ? d.mahadashaLord : undefined,
 			'antardashaLord' in d ? d.antardashaLord : undefined,
 			'pratyantardashaLord' in d ? d.pratyantardashaLord : undefined,
+			'sookshmaLord' in d ? d.sookshmaLord : undefined,
 		].filter(Boolean);
 		if (chain.length > 1) {
 			return html`<div class="nakshatra">${chain.join(' \u203a ')}</div>`;
@@ -468,7 +544,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const began = p.nominalStartDate ? formatDate(p.nominalStartDate) : '';
 		return html`<p class="parent">
 			Inside the <strong>${p.planet}</strong> ${parent.label}${span ? `, ${span}` : ''}
-			${typeof p.durationYears === 'number' ? `(${formatNumber(p.durationYears, 1)} years)` : ''}.
+			${typeof p.durationYears === 'number' ? `(${formatDuration(p.durationYears)})` : ''}.
 			${
 				began
 					? html`<br />It began ${began}, before birth, so only the sub-periods running
@@ -480,9 +556,9 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 
 	/**
 	 * Every reading the response carries, behind one exclusive accordion. Current
-	 * mode has four (mahadasha, antardasha, pratyantardasha, sookshma); drill-down
-	 * modes lead with the parent period reading, then the sub-period running now;
-	 * major mode shows the mahadasha running now.
+	 * mode has five (mahadasha, antardasha, pratyantardasha, sookshma, prana);
+	 * drill-down modes lead with the parent period reading, then the sub-period
+	 * running now; major mode shows the mahadasha running now.
 	 */
 	private readings(d: DashaData, periods: DashaPeriod[]): InterpSection[] {
 		const sections: InterpSection[] = [];
@@ -502,6 +578,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				['Antardasha', d.antardasha, d.remainingInAntardasha],
 				['Pratyantardasha', d.pratyantardasha, d.remainingInPratyantardasha],
 				['Sookshma', d.sookshmaDasha, d.remainingInSookshma],
+				['Prana', d.pranaDasha, d.remainingInPrana],
 			] as const;
 			for (const [label, period, remaining] of levels) {
 				if (!period?.interpretation) continue;
@@ -533,15 +610,18 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			['Antardasha', d.antardasha, d.remainingInAntardasha],
 			['Pratyantardasha', d.pratyantardasha, d.remainingInPratyantardasha],
 			['Sookshma', d.sookshmaDasha, d.remainingInSookshma],
+			['Prana', d.pranaDasha, d.remainingInPrana],
 		] as const;
 		return html`<div class="current">
 			${levels.map(([label, period, remaining]) => {
 				if (!period) return nothing;
 				const left = formatBalance(remaining);
+				const houses = houseWords(period.significators, d.houseThemes);
 				return html`<div>
 					<span>${label}</span>
 					<strong>${period.planet}</strong>
 					${left ? html`<small>${left} left</small>` : nothing}
+					${houses ? html`<small class="houses">Signifies ${houses}</small>` : nothing}
 				</div>`;
 			})}
 		</div>`;
@@ -554,6 +634,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			return d.pratyantardashas;
 		if ('sookshmaDashas' in d && d.sookshmaDashas?.length)
 			return d.sookshmaDashas;
+		if ('pranaDashas' in d && d.pranaDashas?.length) return d.pranaDashas;
 		return [];
 	}
 
@@ -589,14 +670,23 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		return (now - start) / (end - start);
 	}
 
-	private renderBar(p: DashaPeriod, max: number, grain: DateGrain) {
+	private renderBar(
+		p: DashaPeriod,
+		max: number,
+		grain: DateGrain,
+		themes: HouseThemes,
+	) {
 		const years = p.durationYears;
 		const width = max > 0 ? (years / max) * 100 : 0;
 		const current = this.isCurrent(p);
 		const progress = current ? this.progressIn(p) : -1;
 		const trackClass = current ? 'bar-track bar-now' : 'bar-track';
+		const houses = houseWords(p.significators, themes);
+		const cls = ['bar', current ? 'now' : '', grain === 'time' ? 'fine' : '']
+			.filter(Boolean)
+			.join(' ');
 		return html`<div
-			class=${current ? 'bar now' : 'bar'}
+			class=${cls}
 			role="listitem"
 			aria-current=${current ? 'time' : 'false'}
 		>
@@ -619,36 +709,55 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				${p.startDate ? formatBoundary(p.startDate, grain) : ''}
 				${p.endDate ? html`- ${formatBoundary(p.endDate, grain)}` : ''}
 			</span>
+			${houses ? html`<span class="houses">Signifies ${houses}</span>` : nothing}
 		</div>`;
 	}
 }
 
 /**
- * How precise the bar date column has to be, chosen from the LONGEST period in
+ * How precise the bar date column has to be, chosen from the SHORTEST period in
  * the set.
  *
  * A Mahadasha spans years, so a bare year reads cleanly and keeps the column
  * narrow. A Sookshma spans days: printed as a year, every one of the nine rows
  * reads "1990 - 1990" and the column carries no information at exactly the level
- * a reader opened the drill-down to see.
+ * a reader opened the drill-down to see. A Prana runs minutes to days, so it
+ * needs the clock for the same reason: at day grain the deepest sets print both
+ * ends of a row as the same date.
  */
-type DateGrain = 'year' | 'month' | 'day';
+type DateGrain = 'year' | 'month' | 'day' | 'time';
 
 const DAYS_PER_YEAR = 365.25;
 
-function grainFor(maxYears: number): DateGrain {
-	if (maxYears >= 2) return 'year';
-	if (maxYears >= 60 / DAYS_PER_YEAR) return 'month';
-	return 'day';
+/**
+ * A period length in the largest unit that still carries information.
+ *
+ * @remarks
+ * Every level was printed in years, which is right for a mahadasha and useless below it: a sookshma read "0.5 years" where a reader wants days, and a prana read "0 years" because rounding a period shorter than seven hours to one decimal place of a year is zero. The unit has to follow the level.
+ */
+function formatDuration(years: number): string {
+	if (years >= 1) return `${formatNumber(years, 1)} years`;
+	const days = years * DAYS_PER_YEAR;
+	if (days >= 1) return `${formatNumber(days, days >= 10 ? 0 : 1)} days`;
+	const hours = days * 24;
+	if (hours >= 1) return `${formatNumber(hours, 1)} hours`;
+	return `${formatNumber(hours * 60, 0)} minutes`;
+}
+
+function grainFor(minYears: number): DateGrain {
+	if (minYears >= 2) return 'year';
+	if (minYears >= 60 / DAYS_PER_YEAR) return 'month';
+	if (minYears >= 1 / DAYS_PER_YEAR) return 'day';
+	return 'time';
 }
 
 /**
  * One end of a bar, at the chosen granularity.
  *
  * @remarks
- * Every grain carries the year. Day grain used to drop it on the grounds that the parent line states it, but a sookshma period routinely straddles new year, so a bar read `28 Dec - 3 Jan` with nothing saying which side moved. A dasha table is a date reference: a practitioner reads a boundary off it and writes it down.
+ * Every grain carries the year. Day grain used to drop it on the grounds that the parent line states it, but a sookshma period routinely straddles new year, so a bar read `28 Dec - 3 Jan` with nothing saying which side moved. A dasha table is a date reference: a practitioner reads a boundary off it and writes it down. Time grain carries the whole date for the same reason, since a prana period straddles midnight as readily as a sookshma one straddles new year.
  *
- * The API returns naive datetimes (`1990-01-15T14:30:00`), which are wall clocks in the timezone of the CHART, not instants. {@link resolveDisplayDate} pins them to UTC so a boundary landing in the DST gap of the viewer cannot silently shift a day.
+ * The API returns naive datetimes (`1990-01-15T14:30:00`), which are wall clocks in the timezone of the CHART, not instants. {@link resolveDisplayDate} pins them to UTC so a boundary landing in the DST gap of the viewer cannot silently shift a day, and formatting in that same zone is what keeps a printed clock time equal to the chart clock time for every viewer.
  */
 function formatBoundary(s: string, grain: DateGrain): string {
 	if (grain === 'year') {
@@ -657,10 +766,12 @@ function formatBoundary(s: string, grain: DateGrain): string {
 	}
 	const { d, timeZone } = resolveDisplayDate(s);
 	if (Number.isNaN(d.getTime())) return s;
-	return d.toLocaleDateString('en', {
-		day: grain === 'day' ? 'numeric' : undefined,
+	return d.toLocaleString('en', {
+		day: grain === 'month' ? undefined : 'numeric',
 		month: 'short',
 		year: 'numeric',
+		hour: grain === 'time' ? 'numeric' : undefined,
+		minute: grain === 'time' ? '2-digit' : undefined,
 		timeZone,
 	});
 }

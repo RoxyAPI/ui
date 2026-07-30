@@ -51,7 +51,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'vedic-planets-table': 'BirthChartResponse',
 	'panchang-table': 'GetBasicPanchangResponse | GetDetailedPanchangResponse',
 	'dasha-timeline':
-		'GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse | GetPratyantardashasResponse | GetSookshmaDashasResponse',
+		'GetCurrentDashaResponse | GetMajorDashasResponse | GetSubDashasResponse | GetPratyantardashasResponse | GetSookshmaDashasResponse | GetPranaDashasResponse',
 	'dosha-card': 'ManglikResponse | KalsarpaResponse | SadhesatiResponse',
 	'guna-milan': 'CompatibilityResponse',
 	'kp-planets-table': 'KpPlanetsResponse',
@@ -260,9 +260,9 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 	'dasha-timeline': [
 		{
 			prop: 'period',
-			type: "'current' | 'major' | 'sub' | 'antara' | 'sookshma'",
+			type: "'current' | 'major' | 'sub' | 'antara' | 'sookshma' | 'prana'",
 			comment:
-				'Which dasha response shape to render: the running periods, the major mahadashas, or one of the three drill-down levels (antardashas, pratyantardashas, sookshma dashas).',
+				'Which dasha response shape to render: the running periods, the major mahadashas, or one of the four drill-down levels (antardashas, pratyantardashas, sookshma dashas, prana dashas).',
 		},
 	],
 	'dosha-card': [

@@ -191,6 +191,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 				period: 'sookshma',
 			},
 		},
+		{
+			operationId: 'getPranaDashas',
+			method: 'POST',
+			path: '/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}/{sookshma}',
+			attrs: {
+				period: 'prana',
+			},
+		},
 	],
 	'roxy-divisional-chart': [
 		{

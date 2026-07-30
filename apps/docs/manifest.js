@@ -247,10 +247,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-dasha-timeline",
     "slug": "dasha-timeline",
     "heading": "Vimshottari dasha",
-    "description": "Vimshottari dasha timeline, mahadasha through sookshma, with the active period highlighted",
+    "description": "Vimshottari dasha timeline, mahadasha through prana, with the active period highlighted",
     "docsLabel": "Vedic",
     "endpointLabel": "POST /vedic-astrology/dasha/{current,major,sub/...}",
-    "docsSummary": "Vimshottari mahadasha, antardasha, pratyantardasha and sookshma, drill-down at every level",
+    "docsSummary": "Vimshottari mahadasha, antardasha, pratyantardasha, sookshma and prana, drill-down at every level",
     "topic": "Vedic"
   },
   {
@@ -773,6 +773,14 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "path": "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}",
       "attrs": {
         "period": "sookshma"
+      }
+    },
+    {
+      "operationId": "getPranaDashas",
+      "method": "POST",
+      "path": "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}/{sookshma}",
+      "attrs": {
+        "period": "prana"
       }
     }
   ],

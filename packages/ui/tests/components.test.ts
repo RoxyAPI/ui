@@ -1830,14 +1830,16 @@ describe('roxy-dasha-timeline drill-down levels', () => {
 		el.remove();
 	});
 
-	test('current mode shows all four running levels', async () => {
+	test('current mode shows all five running levels', async () => {
 		const el = await mount(
 			{
 				mahadasha: { planet: 'Saturn' },
 				antardasha: { planet: 'Venus' },
 				pratyantardasha: { planet: 'Rahu' },
 				sookshmaDasha: { planet: 'Jupiter' },
+				pranaDasha: { planet: 'Mercury' },
 				remainingInSookshma: { years: 0, months: 0, days: 16 },
+				remainingInPrana: { years: 0, months: 0, days: 0 },
 			},
 			'current',
 		);
@@ -1847,11 +1849,288 @@ describe('roxy-dasha-timeline drill-down levels', () => {
 			'Antardasha',
 			'Pratyantardasha',
 			'Sookshma',
+			'Prana',
 		]) {
 			expect(t).toContain(label);
 		}
 		expect(t).toContain('Jupiter');
+		expect(t).toContain('Mercury');
 		expect(t).toContain('16d left');
+		// A prana period routinely has zero days left, which formatBalance renders
+		// as `0d` rather than dropping the line: a fifth level that silently loses
+		// its balance reads as a missing level.
+		expect(t).toContain('0d left');
+		el.remove();
+	});
+
+	test('a prana list names its sookshma parent and the full four-lord chain', async () => {
+		const el = await mount(
+			{
+				mahadashaLord: 'Saturn',
+				antardashaLord: 'Venus',
+				pratyantardashaLord: 'Rahu',
+				sookshmaLord: 'Jupiter',
+				sookshmaPeriod: {
+					planet: 'Jupiter',
+					startDate: '2026-08-08T04:00:00',
+					endDate: '2026-08-11T09:00:00',
+					durationYears: 0.0087,
+				},
+				pranaDashas: [
+					{
+						planet: 'Jupiter',
+						startDate: '2026-08-08T04:00:00',
+						endDate: '2026-08-08T15:12:00',
+						durationYears: 0.00128,
+					},
+					{
+						planet: 'Saturn',
+						startDate: '2026-08-08T15:12:00',
+						endDate: '2026-08-09T04:34:00',
+						durationYears: 0.00152,
+					},
+				],
+			},
+			'prana',
+		);
+		const t = text(el);
+		expect(t).toContain('Pranas in Jupiter Sookshma');
+		// Every ancestor lord, or a reader at the fifth level cannot tell which
+		// branch of the chart the list belongs to.
+		expect(t).toContain('Saturn › Venus › Rahu › Jupiter');
+		el.remove();
+	});
+
+	test('a sub-day parent states its span and length in units that carry information', async () => {
+		const el = await mount(
+			{
+				sookshmaLord: 'Sun',
+				sookshmaPeriod: {
+					planet: 'Sun',
+					// Six and a half hours, opening and closing on one calendar day.
+					startDate: '2026-08-08T04:00:00',
+					endDate: '2026-08-08T10:36:00',
+					durationYears: 0.00075,
+				},
+				pranaDashas: [
+					{
+						planet: 'Sun',
+						startDate: '2026-08-08T04:00:00',
+						endDate: '2026-08-08T04:20:00',
+						durationYears: 0.0000375,
+					},
+				],
+			},
+			'prana',
+		);
+		const t = text(el).replace(/\s+/g, ' ');
+		// Dates alone read "Aug 8, 2026 to Aug 8, 2026", which names no span.
+		expect(t).toContain('4:00 AM to Aug 8, 2026, 10:36 AM');
+		// A year with one decimal place rounds this to zero.
+		expect(t).toContain('(6.6 hours)');
+		expect(t).not.toContain('0 years');
+		el.remove();
+	});
+
+	test('a mahadasha parent keeps the plain date span and years', async () => {
+		const el = await mount(
+			{
+				mahadashaLord: 'Rahu',
+				mahadashaPeriod: {
+					planet: 'Rahu',
+					startDate: '1990-07-02',
+					endDate: '2002-08-29',
+					durationYears: 12.16,
+				},
+				antardashas: [
+					{
+						planet: 'Saturn',
+						startDate: '1990-07-02',
+						endDate: '1992-08-10',
+						durationYears: 2.1,
+					},
+				],
+			},
+			'sub',
+		);
+		const t = text(el).replace(/\s+/g, ' ');
+		expect(t).toContain('Jul 2, 1990 to Aug 29, 2002');
+		expect(t).toContain('(12.2 years)');
+		// No clock on a period whose two ends are different days.
+		expect(t).not.toContain('12:00 AM');
+		el.remove();
+	});
+
+	test('a sub-day prana set prints the clock, so the two ends of a row differ', async () => {
+		const el = await mount(
+			{
+				sookshmaLord: 'Sun',
+				sookshmaPeriod: {
+					planet: 'Sun',
+					startDate: '2026-08-08T04:00:00',
+					endDate: '2026-08-08T10:36:00',
+					durationYears: 0.00075,
+				},
+				pranaDashas: [
+					{
+						planet: 'Sun',
+						startDate: '2026-08-08T04:00:00',
+						endDate: '2026-08-08T04:20:00',
+						durationYears: 0.0000375,
+					},
+				],
+			},
+			'prana',
+		);
+		const dates = el.shadowRoot?.querySelector('.dates')?.textContent ?? '';
+		// Day grain would render both boundaries as the same date and the column
+		// would carry no information at exactly the level the reader drilled to.
+		expect(dates).toContain('4:00');
+		expect(dates).toContain('4:20');
+		// The date stays on every grain: a prana period straddles midnight as
+		// readily as a sookshma one straddles new year.
+		expect(dates).toContain('2026');
+		el.remove();
+	});
+});
+
+/**
+ * `houseThemes` turns the bare house numbers on the significators of a period
+ * into words. The map is sent ONCE per response and the API localizes it, so the
+ * component looks each house up rather than holding any table of meanings: a
+ * local table would be English forever and would drift from the reading printed
+ * beside it. Absent map or absent significators must render nothing at all,
+ * since both are opt-in on the request.
+ */
+describe('roxy-dasha-timeline house meanings', () => {
+	async function mount(data: unknown, period = 'current') {
+		const el = document.createElement('roxy-dasha-timeline') as HTMLElement & {
+			data?: unknown;
+			period?: string;
+		};
+		el.period = period;
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+	const text = (el: Element) => el.shadowRoot?.textContent ?? '';
+
+	const themes = {
+		'2': ['wealth', 'family', 'speech', 'possessions', 'food'],
+		'7': ['marriage', 'partner', 'trade', 'contracts', 'travel'],
+		'8': ['longevity', 'inheritance', 'occult', 'surgery', 'loss'],
+		'11': ['gains', 'friends', 'hopes', 'income', 'elder siblings'],
+	};
+
+	test('a running level names the houses its lord acts on, in words', async () => {
+		const el = await mount({
+			mahadasha: {
+				planet: 'Saturn',
+				significators: {
+					house: 11,
+					starLord: 'Moon',
+					signifiedHouses: [2, 7, 8, 11],
+					strongHouses: [2, 7, 8],
+					strength: { score: 62.5, grade: 'B', label: 'strong' },
+				},
+			},
+			antardasha: { planet: 'Venus' },
+			pratyantardasha: { planet: 'Rahu' },
+			sookshmaDasha: { planet: 'Jupiter' },
+			pranaDasha: { planet: 'Mercury' },
+			houseThemes: themes,
+		});
+		expect(text(el)).toContain('Signifies wealth, marriage, longevity');
+		el.remove();
+	});
+
+	test('the strong subset wins over the full signified list, so the line stays one line', async () => {
+		const el = await mount({
+			mahadasha: {
+				planet: 'Saturn',
+				significators: {
+					signifiedHouses: [2, 7, 8, 11],
+					strongHouses: [11],
+				},
+			},
+			antardasha: { planet: 'Venus' },
+			pratyantardasha: { planet: 'Rahu' },
+			sookshmaDasha: { planet: 'Jupiter' },
+			pranaDasha: { planet: 'Mercury' },
+			houseThemes: themes,
+		});
+		const t = text(el);
+		expect(t).toContain('Signifies gains');
+		expect(t).not.toContain('wealth');
+		el.remove();
+	});
+
+	test('an empty strong set falls back to every signified house', async () => {
+		const el = await mount({
+			mahadasha: {
+				planet: 'Saturn',
+				significators: { signifiedHouses: [7], strongHouses: [] },
+			},
+			antardasha: { planet: 'Venus' },
+			pratyantardasha: { planet: 'Rahu' },
+			sookshmaDasha: { planet: 'Jupiter' },
+			pranaDasha: { planet: 'Mercury' },
+			houseThemes: themes,
+		});
+		expect(text(el)).toContain('Signifies marriage');
+		el.remove();
+	});
+
+	test('a timeline bar carries the same words as a running level', async () => {
+		const el = await mount(
+			{
+				mahadashas: [
+					{
+						planet: 'Saturn',
+						startDate: '2018-06-17',
+						endDate: '2037-06-17',
+						durationYears: 19,
+						significators: { signifiedHouses: [11], strongHouses: [11] },
+					},
+				],
+				houseThemes: themes,
+			},
+			'major',
+		);
+		const bar = el.shadowRoot?.querySelector('.bar .houses');
+		expect(bar?.textContent).toContain('Signifies gains');
+		el.remove();
+	});
+
+	test('no map and no significators render no house line and no digits', async () => {
+		const el = await mount({
+			mahadasha: { planet: 'Saturn' },
+			antardasha: { planet: 'Venus' },
+			pratyantardasha: { planet: 'Rahu' },
+			sookshmaDasha: { planet: 'Jupiter' },
+			pranaDasha: { planet: 'Mercury' },
+		});
+		expect(el.shadowRoot?.querySelector('.houses')).toBeNull();
+		expect(text(el)).not.toContain('Signifies');
+		el.remove();
+	});
+
+	test('a house the map does not carry is dropped rather than printed as a digit', async () => {
+		const el = await mount({
+			mahadasha: {
+				planet: 'Saturn',
+				significators: { strongHouses: [2, 5] },
+			},
+			antardasha: { planet: 'Venus' },
+			pratyantardasha: { planet: 'Rahu' },
+			sookshmaDasha: { planet: 'Jupiter' },
+			pranaDasha: { planet: 'Mercury' },
+			houseThemes: themes,
+		});
+		const line =
+			el.shadowRoot?.querySelector('.houses')?.textContent?.trim() ?? '';
+		expect(line).toBe('Signifies wealth');
 		el.remove();
 	});
 });
