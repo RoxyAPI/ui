@@ -442,11 +442,14 @@ async function main() {
 	console.log('Generating theme preset CSS from palettes...');
 	execSync('bun run scripts/sync-themes.ts', { stdio: 'inherit' });
 
-	console.log('Syncing docs manifest mirror...');
-	execSync('bun run scripts/sync-manifest.ts', { stdio: 'inherit' });
-
+	// Bindings BEFORE the mirror: sync-manifest copies the generated bindings into
+	// apps/docs/manifest.js, so running it first mirrors the previous build's map
+	// and the demo Embed tab derives from a stale one until the next build.
 	console.log('Generating spec-derived endpoint bindings...');
 	execSync('bun run scripts/sync-bindings.ts', { stdio: 'inherit' });
+
+	console.log('Syncing docs manifest mirror...');
+	execSync('bun run scripts/sync-manifest.ts', { stdio: 'inherit' });
 
 	console.log('Generating components catalog (for jsDelivr + the /ui page)...');
 	execSync('bun run scripts/sync-catalog.ts', { stdio: 'inherit' });
