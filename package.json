@@ -45,7 +45,7 @@
 		"@hey-api/openapi-ts": "0.99.0",
 		"@lit-labs/rollup-plugin-minify-html-literals": "^0.2.0",
 		"@playwright/test": "^1.61.1",
-		"@roxyapi/sdk": "^1.2.50",
+		"@roxyapi/sdk": "^1.2.53",
 		"@types/bun": "^1.3.14",
 		"@types/node": "^26.1.1",
 		"@types/react": "^19.2.17",

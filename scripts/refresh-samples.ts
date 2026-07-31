@@ -108,6 +108,18 @@ async function main() {
 	const PERSON1 = { date: '1990-01-15', time: '14:30:00', ...newYork };
 	const PERSON2 = { date: '1992-06-20', time: '09:15:00', ...london };
 
+	/**
+	 * Shared body for all six Vimshottari levels. `significators` is off by default on the API, and it is the switch that also returns the `houseThemes` map, so without it the timeline renders bare house numbers and neither the significator line nor the house wording is ever exercised by the showcase or the audit.
+	 */
+	const DASHA_BODY = {
+		date: PERSON1.date,
+		time: PERSON1.time,
+		latitude: PERSON1.latitude,
+		longitude: PERSON1.longitude,
+		timezone: PERSON1.timezone,
+		significators: true,
+	};
+
 	console.log('\nFetching live samples via @roxyapi/sdk...');
 
 	const calls: Array<Promise<Result>> = [
@@ -172,13 +184,7 @@ async function main() {
 		),
 		run('dasha', () =>
 			roxy.vedicAstrology.getMajorDashas({
-				body: {
-					date: PERSON1.date,
-					time: PERSON1.time,
-					latitude: PERSON1.latitude,
-					longitude: PERSON1.longitude,
-					timezone: PERSON1.timezone,
-				},
+				body: DASHA_BODY,
 			}),
 		),
 		// Current and sub are separate render branches. Without their own samples the
@@ -186,39 +192,21 @@ async function main() {
 		// context and the level label live.
 		run('dasha-current', () =>
 			roxy.vedicAstrology.getCurrentDasha({
-				body: {
-					date: PERSON1.date,
-					time: PERSON1.time,
-					latitude: PERSON1.latitude,
-					longitude: PERSON1.longitude,
-					timezone: PERSON1.timezone,
-				},
+				body: DASHA_BODY,
 			}),
 		),
 		run('dasha-sub', () =>
 			roxy.vedicAstrology.getSubDashas({
 				path: { mahadasha: 'Venus' },
-				body: {
-					date: PERSON1.date,
-					time: PERSON1.time,
-					latitude: PERSON1.latitude,
-					longitude: PERSON1.longitude,
-					timezone: PERSON1.timezone,
-				},
+				body: DASHA_BODY,
 			}),
 		),
-		// The two deeper levels share the sub layout but carry a different parent
+		// The three deeper levels share the sub layout but carry a different parent
 		// shape and level label, so a shared sample would never exercise them.
 		run('dasha-antara', () =>
 			roxy.vedicAstrology.getPratyantardashas({
 				path: { mahadasha: 'Venus', antardasha: 'Saturn' },
-				body: {
-					date: PERSON1.date,
-					time: PERSON1.time,
-					latitude: PERSON1.latitude,
-					longitude: PERSON1.longitude,
-					timezone: PERSON1.timezone,
-				},
+				body: DASHA_BODY,
 			}),
 		),
 		run('dasha-sookshma', () =>
@@ -228,13 +216,18 @@ async function main() {
 					antardasha: 'Saturn',
 					pratyantardasha: 'Mercury',
 				},
-				body: {
-					date: PERSON1.date,
-					time: PERSON1.time,
-					latitude: PERSON1.latitude,
-					longitude: PERSON1.longitude,
-					timezone: PERSON1.timezone,
+				body: DASHA_BODY,
+			}),
+		),
+		run('dasha-prana', () =>
+			roxy.vedicAstrology.getPranaDashas({
+				path: {
+					mahadasha: 'Venus',
+					antardasha: 'Saturn',
+					pratyantardasha: 'Mercury',
+					sookshma: 'Ketu',
 				},
+				body: DASHA_BODY,
 			}),
 		),
 		run('dosha', () =>

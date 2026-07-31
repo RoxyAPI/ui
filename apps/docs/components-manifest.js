@@ -23,6 +23,17 @@ const PERSON2 = {
 	timezone: 'Europe/London',
 };
 
+/**
+ * The body every Vimshottari card sends. `significators` is off by default on the API and is what also returns the `houseThemes` map, so a snippet without it reproduces bare house numbers instead of the house wording shown in the card beside it.
+ */
+const DASHA_BODY = {
+	date: PERSON1.date,
+	time: PERSON1.time,
+	latitude: PERSON1.latitude,
+	longitude: PERSON1.longitude,
+	significators: true,
+};
+
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
 const UI_CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
 const PRACTITIONER_THEME_URL =
@@ -384,10 +395,10 @@ window.ROXY_UI_DEMOS = [
 		id: 'dasha',
 		tag: 'roxy-dasha-timeline',
 		seoLine:
-			'Vimshottari timeline visualizer, mahadasha through sookshma with drill-down at every level',
+			'Vimshottari timeline visualizer, mahadasha through prana with drill-down at every level',
 		attrs: ' period="major"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getMajorDashas({
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+    body: ${JSON.stringify(DASHA_BODY, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
@@ -395,10 +406,10 @@ window.ROXY_UI_DEMOS = [
 		tag: 'roxy-dasha-timeline',
 		heading: 'Current dasha',
 		seoLine:
-			'The running mahadasha, antardasha, pratyantardasha and sookshma with their readings',
+			'The running mahadasha, antardasha, pratyantardasha, sookshma and prana with their readings',
 		attrs: ' period="current"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getCurrentDasha({
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+    body: ${JSON.stringify(DASHA_BODY, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
@@ -409,7 +420,7 @@ window.ROXY_UI_DEMOS = [
 		attrs: ' period="sub"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getSubDashas({
     path: { mahadasha: 'venus' },
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+    body: ${JSON.stringify(DASHA_BODY, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
@@ -420,7 +431,7 @@ window.ROXY_UI_DEMOS = [
 		attrs: ' period="antara"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getPratyantardashas({
     path: { mahadasha: 'venus', antardasha: 'saturn' },
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+    body: ${JSON.stringify(DASHA_BODY, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
@@ -431,7 +442,18 @@ window.ROXY_UI_DEMOS = [
 		attrs: ' period="sookshma"',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.getSookshmaDashas({
     path: { mahadasha: 'venus', antardasha: 'saturn', pratyantardasha: 'mercury' },
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+    body: ${JSON.stringify(DASHA_BODY, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'dasha-prana',
+		tag: 'roxy-dasha-timeline',
+		heading: 'Prana dashas',
+		seoLine: 'Prana dashas, hour level timing at the fifth Vimshottari level',
+		attrs: ' period="prana"',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getPranaDashas({
+    path: { mahadasha: 'venus', antardasha: 'saturn', pratyantardasha: 'mercury', sookshma: 'ketu' },
+    body: ${JSON.stringify(DASHA_BODY, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
