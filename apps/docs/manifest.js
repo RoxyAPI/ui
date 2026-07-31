@@ -184,7 +184,7 @@ window.ROXY_COMPONENTS = [
     "description": "Full KP chart with Ascendant, Placidus cusps, and planets and nodes in tabbed stellar-hierarchy tables",
     "docsLabel": "Vedic (KP)",
     "endpointLabel": "POST /vedic-astrology/kp/chart",
-    "docsSummary": "Ascendant, cusps, planets and nodes with KP stellar hierarchy",
+    "docsSummary": "Ascendant, cusps, planets and nodes with KP stellar hierarchy and house meanings",
     "topic": "Vedic"
   },
   {
@@ -192,10 +192,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-vedic-planets-table",
     "slug": "vedic-planets-table",
     "heading": "Vedic planets",
-    "description": "Vedic planetary positions table with degree, nakshatra, pada, nakshatra lord, bhava, and avastha",
+    "description": "Vedic planetary positions table with degree, nakshatra, pada, nakshatra lord, bhava, and all three avastha systems",
     "docsLabel": "Vedic",
     "endpointLabel": "POST /vedic-astrology/birth-chart",
-    "docsSummary": "Degree, nakshatra, pada, lord, bhava, avastha columns",
+    "docsSummary": "Degree, nakshatra, pada, lord, bhava, Baladi, Jagradadi and Deeptadi columns",
     "topic": "Vedic"
   },
   {
@@ -217,7 +217,7 @@ window.ROXY_COMPONENTS = [
     "description": "KP ruling planets with day lord, Moon and Lagna stellar hierarchies, and house significators",
     "docsLabel": "Vedic (KP)",
     "endpointLabel": "POST /vedic-astrology/kp/ruling-planets",
-    "docsSummary": "Day lord, Moon/Lagna hierarchies, ruling planets, significators",
+    "docsSummary": "Day lord, Moon/Lagna hierarchies, ruling planets, significators with house meanings",
     "topic": "Vedic"
   },
   {
@@ -316,7 +316,7 @@ window.ROXY_COMPONENTS = [
     "description": "Yoga reference cards from the catalog with optional detail mode",
     "docsLabel": "Vedic",
     "endpointLabel": "GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect",
-    "docsSummary": "Filterable yoga cards from the 300 plus yoga catalog",
+    "docsSummary": "Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode",
     "topic": "Vedic"
   },
   {

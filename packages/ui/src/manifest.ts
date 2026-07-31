@@ -252,7 +252,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		docsLabel: 'Vedic (KP)',
 		endpointLabel: 'POST /vedic-astrology/kp/chart',
 		docsSummary:
-			'Ascendant, cusps, planets and nodes with KP stellar hierarchy',
+			'Ascendant, cusps, planets and nodes with KP stellar hierarchy and house meanings',
 		topic: 'Vedic',
 	},
 	{
@@ -261,10 +261,11 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'vedic-planets-table',
 		heading: 'Vedic planets',
 		description:
-			'Vedic planetary positions table with degree, nakshatra, pada, nakshatra lord, bhava, and avastha',
+			'Vedic planetary positions table with degree, nakshatra, pada, nakshatra lord, bhava, and all three avastha systems',
 		docsLabel: 'Vedic',
 		endpointLabel: 'POST /vedic-astrology/birth-chart',
-		docsSummary: 'Degree, nakshatra, pada, lord, bhava, avastha columns',
+		docsSummary:
+			'Degree, nakshatra, pada, lord, bhava, Baladi, Jagradadi and Deeptadi columns',
 		topic: 'Vedic',
 	},
 	{
@@ -288,7 +289,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		docsLabel: 'Vedic (KP)',
 		endpointLabel: 'POST /vedic-astrology/kp/ruling-planets',
 		docsSummary:
-			'Day lord, Moon/Lagna hierarchies, ruling planets, significators',
+			'Day lord, Moon/Lagna hierarchies, ruling planets, significators with house meanings',
 		topic: 'Vedic',
 	},
 	{
@@ -396,7 +397,8 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		docsLabel: 'Vedic',
 		endpointLabel:
 			'GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect',
-		docsSummary: 'Filterable yoga cards from the 300 plus yoga catalog',
+		docsSummary:
+			'Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode',
 		topic: 'Vedic',
 	},
 	{

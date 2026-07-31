@@ -14,14 +14,52 @@ type YogaListData =
 	| DetectYogasResponse
 	| { yogas: Array<GetYogaResponse> };
 
+type DetectedYoga = DetectYogasResponse['yogas'][number];
+
+/**
+ * True when a yoga matched its own rule but a stronger family silenced it under the classical precedence norms, rather than failing the rule outright. The response states which in its `evidence`.
+ *
+ * The two are genuinely different to a reader: a failed rule says nothing about the chart, while "Kedara would apply but Pasa outranks it" is a real feature of it.
+ */
+function isOutranked(y: DetectedYoga): boolean {
+	return /classically (outranks|suppresses)/i.test(y.evidence ?? '');
+}
+
+/** The three detect verdicts in reading order, each with the note that explains the group. Ordered by what a reader wants first: what fired, what nearly fired, then the rest as reference. */
+const VERDICTS = [
+	{
+		id: 'present',
+		label: 'Present',
+		open: true,
+		note: 'Every classical condition is satisfied by this chart.',
+	},
+	{
+		id: 'outranked',
+		label: 'Outranked',
+		open: true,
+		note: 'The rule matched, but a stronger family silences it under the classical precedence norms.',
+	},
+	{
+		id: 'absent',
+		label: 'Not present',
+		open: false,
+		note: 'At least one classical condition fails. Read the evidence for which.',
+	},
+] as const;
+
+type Verdict = (typeof VERDICTS)[number]['id'];
+
 /**
  * Yoga catalog and detail renderer. Accepts four data modes:
  *   - Catalog: ListYogasResponse (yogas array of {id, name} + total)
  *   - Detail: GetYogaResponse (single yoga with description, result, quality)
  *   - Detail array: { yogas: Array<GetYogaResponse> } for pre-filtered sets
- *   - Detect: DetectYogasResponse (each yoga carries a present verdict + evidence); present yogas render first, each badged present/absent with its classical evidence
+ *   - Detect: DetectYogasResponse (each yoga carries a present verdict + evidence); grouped by verdict, each badged present, outranked or not present, with its classical evidence
  *
  * All multi-item modes include a live search filter.
+ *
+ * @remarks
+ * Detect returns a verdict for every yoga in the detected set on every chart, of which a real chart fires low single digits, so a flat list buries the handful a reader came for. They are grouped by verdict, in reading order: what fired, what would have fired but was outranked, then everything that failed its rule, collapsed because it is reference rather than result. Every grouping and every label is read from the response, so this component holds no table of yoga data of its own.
  */
 @customElement('roxy-yoga-list')
 export class RoxyYogaList extends RoxyDataElement<YogaListData> {
@@ -151,8 +189,59 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 55%, transparent);
 				color: var(--roxy-fg, #0a0a0a);
 			}
+			.present-badge.is-outranked {
+				background: color-mix(in srgb, var(--roxy-warning, #f59e0b) 16%, transparent);
+				color: var(--roxy-warning-fg, #b45309);
+			}
 			.detail-card.absent {
 				opacity: 0.72;
+			}
+			/* An outranked yoga DID match its own rule, so it stays more legible than
+			 * one that simply failed: it is a real feature of the chart that a
+			 * stronger family silenced. */
+			.detail-card.outranked {
+				opacity: 0.88;
+			}
+			.group-stack {
+				display: grid;
+				gap: var(--roxy-space-md, 1rem);
+			}
+			.group {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.group-summary {
+				display: flex;
+				align-items: baseline;
+				gap: var(--roxy-space-sm, 0.5rem);
+				cursor: pointer;
+				list-style: none;
+				color: var(--roxy-muted, #71717a);
+			}
+			.group-summary::before {
+				content: '+';
+				font-size: 1.1em;
+				line-height: 1;
+				color: var(--roxy-accent-ink, #b45309);
+			}
+			.group[open] > .group-summary::before {
+				content: '-';
+			}
+			.group-label {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+			.group-count {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-variant-numeric: tabular-nums;
+			}
+			.group-note {
+				margin: 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				line-height: var(--roxy-leading-normal, 1.5);
 			}
 			.evidence {
 				font-size: var(--roxy-text-xs, 0.75rem);
@@ -166,10 +255,13 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				margin: 0;
 				line-height: var(--roxy-leading-normal, 1.5);
 			}
-			details {
+			/* Scoped to the card, never a bare details summary rule: a verdict group
+			 * is itself a details element, so an unscoped details[open] summary rule
+			 * would flip every card's Effects marker the moment its group opened. */
+			.detail-card details {
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
-			details summary {
+			.detail-card details > summary {
 				cursor: pointer;
 				color: var(--roxy-accent-ink, #b45309);
 				font-weight: 500;
@@ -179,15 +271,15 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				align-items: center;
 				gap: 0.4em;
 			}
-			details summary::before {
+			.detail-card details > summary::before {
 				content: '+';
 				font-size: 1.1em;
 				line-height: 1;
 			}
-			details[open] summary::before {
+			.detail-card details[open] > summary::before {
 				content: '-';
 			}
-			details .result-body {
+			.detail-card details .result-body {
 				padding-top: var(--roxy-space-xs, 0.25rem);
 				color: var(--roxy-fg, #0a0a0a);
 				line-height: var(--roxy-leading-normal, 1.5);
@@ -211,6 +303,31 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 	private readonly handleInput = (e: Event) => {
 		this.filter = (e.target as HTMLInputElement).value;
 	};
+
+	/** The verdict a detected yoga falls under. The one grouping the response itself supports, so nothing about the classical scheme is duplicated here. */
+	private verdictOf(y: DetectedYoga): Verdict {
+		return y.present ? 'present' : isOutranked(y) ? 'outranked' : 'absent';
+	}
+
+	/**
+	 * One verdict group, or nothing when no yoga fell under it (a chart with no outranked yoga shows no Outranked heading).
+	 *
+	 * A `<details>` rather than a plain section: the rule-failed group is thirty-odd cards of reference on a real chart, and collapsing keeps it in the DOM, searchable and indexed, while the result stays at the top. A group forces itself open while a filter is active, so a match can never hide inside a collapsed heading.
+	 */
+	private renderVerdictGroup(
+		verdict: (typeof VERDICTS)[number],
+		yogas: DetectedYoga[],
+	) {
+		if (!yogas.length) return nothing;
+		return html`<details class="group" ?open=${verdict.open || !!this.filter}>
+			<summary class="group-summary">
+				<span class="group-label">${verdict.label}</span>
+				<span class="group-count">${yogas.length}</span>
+			</summary>
+			<p class="group-note">${verdict.note}</p>
+			<div class="detail-grid">${yogas.map((y) => this.renderDetectCard(y))}</div>
+		</details>`;
+	}
 
 	private renderQualityChip(quality: string) {
 		const cls = `quality-chip quality-${quality}`;
@@ -239,13 +356,19 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		</div>`;
 	}
 
-	/** Detect-mode card: shows the present/absent verdict and the classical evidence that triggered or failed it. */
-	private renderDetectCard(y: DetectYogasResponse['yogas'][number]) {
-		return html`<div class="detail-card ${y.present ? '' : 'absent'}">
+	/** Detect-mode card: shows the three-way verdict (present, outranked, not present) and the classical evidence behind it. */
+	private renderDetectCard(y: DetectedYoga) {
+		const outranked = !y.present && isOutranked(y);
+		const [cls, label] = y.present
+			? ['is-present', 'Present']
+			: outranked
+				? ['is-outranked', 'Outranked']
+				: ['is-absent', 'Not present'];
+		return html`<div class="detail-card ${y.present ? '' : outranked ? 'outranked' : 'absent'}">
 			<p class="detail-name">
 				${y.name}
 				${y.quality ? this.renderQualityChip(y.quality) : nothing}
-				<span class="present-badge ${y.present ? 'is-present' : 'is-absent'}">${y.present ? 'Present' : 'Not present'}</span>
+				<span class="present-badge ${cls}">${label}</span>
 			</p>
 			${y.description ? html`<p class="description">${y.description}</p>` : nothing}
 			${
@@ -282,19 +405,15 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				d as { yogas: Array<GetYogaResponse | { id: string; name: string }> }
 			).yogas;
 
-			// Detect mode: every entry carries a `present` verdict. Render present
-			// yogas first, mark each present/absent, and surface the classical
+			// Detect mode: every entry carries a `present` verdict. Group by verdict,
+			// badge each present, outranked or not present, and surface the classical
 			// evidence. Must precede the detail-array check because detect entries
 			// also carry `description`.
 			if (allYogas.length > 0 && 'present' in allYogas[0]) {
-				const detected = allYogas as DetectYogasResponse['yogas'];
+				const detected = allYogas as DetectedYoga[];
 				const filtered = lc
 					? detected.filter((y) => y.name.toLowerCase().includes(lc))
 					: detected;
-				const ordered = [
-					...filtered.filter((y) => y.present),
-					...filtered.filter((y) => !y.present),
-				];
 				const presentCount =
 					(d as DetectYogasResponse).total ??
 					detected.filter((y) => y.present).length;
@@ -314,14 +433,19 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 						/>
 					</div>
 					<div
-						class="detail-grid"
+						class="group-stack"
 						role="region"
 						aria-live="polite"
 						aria-label="Detected yogas"
 					>
 						${
-							ordered.length > 0
-								? ordered.map((y) => this.renderDetectCard(y))
+							filtered.length > 0
+								? VERDICTS.map((v) =>
+										this.renderVerdictGroup(
+											v,
+											filtered.filter((y) => this.verdictOf(y) === v.id),
+										),
+									)
 								: html`<p class="no-results">No yogas match your search.</p>`
 						}
 					</div>

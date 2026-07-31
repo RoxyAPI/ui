@@ -5,6 +5,7 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatAyanamsa } from '../utils/format.js';
+import { houseThemeLine, houseWords } from '../utils/house-themes.js';
 import {
 	renderTablist,
 	type TablistItem,
@@ -57,6 +58,11 @@ function chain(values: ReadonlyArray<string | number>): string {
 	return [...new Set(values.map(String))].join(' > ');
 }
 
+/** The same first-occurrence-wins fold {@link chain} applies, for the house wording beneath it, so the numbers and the words never disagree about how many houses there are. */
+function dedupe(houses: readonly number[] | undefined): number[] {
+	return [...new Set(houses ?? [])];
+}
+
 /**
  * KP (Krishnamurti Paddhati) chart. Renders /vedic-astrology/kp/chart: an
  * Ascendant summary, a planets-and-nodes table, a Placidus cusps table, and the
@@ -69,6 +75,11 @@ function chain(values: ReadonlyArray<string | number>): string {
  * The significators tab is the event-timing surface: house-wise (which planets
  * signify each house) and planet-wise (which houses each planet signifies),
  * both graded L1 to L4 with the API's own level labels shown as the legend.
+ *
+ * Every bare house number is captioned from the response `houseThemes` map, so
+ * "11, 6" reads "gains, enemies" and a cusp row says what that cusp is for. The
+ * words are the requested language and the requested `focus` lens, which is why
+ * they are read from the payload and never from a table held here.
  */
 @customElement('roxy-kp-chart')
 export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
@@ -180,6 +191,17 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			}
 			.empty-cell {
 				color: var(--roxy-muted, #71717a);
+			}
+			/* House wording sits under its number, never beside it: these cells are
+			 * nowrap, and a house list plus its words on one line would push the
+			 * table well past the card. */
+			.themes {
+				display: block;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: var(--roxy-weight-normal, 400);
+				text-transform: none;
+				letter-spacing: normal;
 			}
 		`,
 	];
@@ -325,12 +347,13 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 
 	private renderCusps() {
 		const cusps = this.data?.cusps ?? [];
+		const themes = this.data?.houseThemes;
 		if (!cusps.length)
 			return html`<p class="roxy-empty" role="status">No cusps</p>`;
 		return html`<table role="table">
 			<caption class="roxy-sr-only">
-				KP Placidus cusps: each house cusp with its position, sign lord, nakshatra and
-				pada, star lord, sub lord, sub sub lord and KP number.
+				KP Placidus cusps: each house cusp with what it signifies, its position, sign
+				lord, nakshatra and pada, star lord, sub lord, sub sub lord and KP number.
 			</caption>
 			<thead>
 				<tr>
@@ -347,7 +370,9 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			<tbody>
 				${cusps.map(
 					(c) => html`<tr>
-						<td class="body num">${c.house}</td>
+						<td class="body num">
+							${c.house}${this.renderThemes(houseThemeLine(c.house, themes))}
+						</td>
 						<td class="num">
 							${typeof c.longitude === 'number' ? formatSignPosition(c.longitude) : (c.sign ?? '')}
 						</td>
@@ -371,6 +396,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 	 */
 	private renderSignificators() {
 		const sig = this.data?.significators;
+		const themes = this.data?.houseThemes;
 		const houseWise = sig?.houseWise ?? [];
 		const planetWise = sig?.planetWise ?? [];
 		if (!houseWise.length && !planetWise.length)
@@ -399,7 +425,9 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 							<tbody>
 								${houseWise.map(
 									(h) => html`<tr>
-										<td class="body num">${h.house}</td>
+										<td class="body num">
+											${h.house}${this.renderThemes(houseThemeLine(h.house, themes))}
+										</td>
 										${LEVELS.map((l) => this.renderCell(this.planetsAtLevel(h, l).join(', ')))}
 										<td class="chain">${chain(h.all ?? [])}</td>
 									</tr>`,
@@ -431,7 +459,9 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 									(p) => html`<tr>
 										<td class="body">${p.planet}</td>
 										${LEVELS.map((l) => this.renderCell(this.housesAtLevel(p, l).join(', ')))}
-										<td class="chain">${chain(p.allHouses ?? [])}</td>
+										<td class="chain">
+											${chain(p.allHouses ?? [])}${this.renderThemes(houseWords(dedupe(p.allHouses), themes))}
+										</td>
 									</tr>`,
 								)}
 							</tbody>
@@ -439,6 +469,11 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 					: nothing
 			}
 		`;
+	}
+
+	/** The house wording under a number cell, or nothing when the request did not ask for themes. */
+	private renderThemes(words: string) {
+		return words ? html`<span class="themes">${words}</span>` : nothing;
 	}
 
 	/** An em-dash-free placeholder keeps an empty level cell from reading as missing data. */

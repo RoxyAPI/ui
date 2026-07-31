@@ -403,7 +403,7 @@
       "pascal": "RoxyKpChart",
       "slug": "kp-chart",
       "domain": "Vedic (KP)",
-      "renders": "Ascendant, cusps, planets and nodes with KP stellar hierarchy",
+      "renders": "Ascendant, cusps, planets and nodes with KP stellar hierarchy and house meanings",
       "endpointLabel": "POST /vedic-astrology/kp/chart",
       "endpoints": [
         {
@@ -422,7 +422,7 @@
       "pascal": "RoxyVedicPlanetsTable",
       "slug": "vedic-planets-table",
       "domain": "Vedic",
-      "renders": "Degree, nakshatra, pada, lord, bhava, avastha columns",
+      "renders": "Degree, nakshatra, pada, lord, bhava, Baladi, Jagradadi and Deeptadi columns",
       "endpointLabel": "POST /vedic-astrology/birth-chart",
       "endpoints": [
         {
@@ -460,7 +460,7 @@
       "pascal": "RoxyKpRulingPlanets",
       "slug": "kp-ruling-planets",
       "domain": "Vedic (KP)",
-      "renders": "Day lord, Moon/Lagna hierarchies, ruling planets, significators",
+      "renders": "Day lord, Moon/Lagna hierarchies, ruling planets, significators with house meanings",
       "endpointLabel": "POST /vedic-astrology/kp/ruling-planets",
       "endpoints": [
         {
@@ -685,7 +685,7 @@
       "pascal": "RoxyYogaList",
       "slug": "yoga-list",
       "domain": "Vedic",
-      "renders": "Filterable yoga cards from the 300 plus yoga catalog",
+      "renders": "Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode",
       "endpointLabel": "GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect",
       "endpoints": [
         {

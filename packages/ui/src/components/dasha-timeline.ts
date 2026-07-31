@@ -18,6 +18,7 @@ import {
 	formatNumber,
 	resolveDisplayDate,
 } from '../utils/format.js';
+import { type HouseThemes, houseWords } from '../utils/house-themes.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -35,7 +36,6 @@ type DashaData =
 
 type DashaPeriod = GetMajorDashasResponse['mahadashas'][number];
 type Remaining = GetCurrentDashaResponse['remainingInMahadasha'];
-type HouseThemes = GetCurrentDashaResponse['houseThemes'];
 
 /**
  * The Vimshottari level a listed period sits at, so no view ever labels an
@@ -85,26 +85,16 @@ function formatBalance(b: Remaining | undefined): string {
 /**
  * The houses a period lord acts on, as words: `[2, 7, 8]` reads "wealth, marriage, longevity".
  *
- * @remarks
- * The words come from the response `houseThemes` map and nowhere else. The API localizes them with the rest of the interpretation prose, so a Hindi response renders Hindi houses; a table of meanings held in the component would be English forever and would drift from the reading beside it.
- *
- * `strongHouses` is preferred over `signifiedHouses`: it is the grade A and B subset a KP reading acts on, two or three houses rather than up to eight, which is what keeps this to one line beside a bar. One keyword per house, the primary theme, for the same reason.
- *
- * Returns an empty string unless the request asked for significators, since both the map and the house lists are absent otherwise.
+ * `strongHouses` is preferred over `signifiedHouses`: it is the grade A and B subset a KP reading acts on, two or three houses rather than up to eight, which is what keeps this to one line beside a bar. Empty unless the request asked for significators, since both the map and the house lists are absent otherwise.
  */
-function houseWords(
+function periodHouseWords(
 	sig: DashaPeriod['significators'],
 	themes: HouseThemes,
 ): string {
-	if (!themes) return '';
-	const houses = sig?.strongHouses?.length
-		? sig.strongHouses
-		: sig?.signifiedHouses;
-	if (!houses?.length) return '';
-	return houses
-		.map((h) => themes[String(h)]?.[0])
-		.filter(Boolean)
-		.join(', ');
+	return houseWords(
+		sig?.strongHouses?.length ? sig.strongHouses : sig?.signifiedHouses,
+		themes,
+	);
 }
 
 /**
@@ -616,7 +606,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			${levels.map(([label, period, remaining]) => {
 				if (!period) return nothing;
 				const left = formatBalance(remaining);
-				const houses = houseWords(period.significators, d.houseThemes);
+				const houses = periodHouseWords(period.significators, d.houseThemes);
 				return html`<div>
 					<span>${label}</span>
 					<strong>${period.planet}</strong>
@@ -681,7 +671,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const current = this.isCurrent(p);
 		const progress = current ? this.progressIn(p) : -1;
 		const trackClass = current ? 'bar-track bar-now' : 'bar-track';
-		const houses = houseWords(p.significators, themes);
+		const houses = periodHouseWords(p.significators, themes);
 		const cls = ['bar', current ? 'now' : '', grain === 'time' ? 'fine' : '']
 			.filter(Boolean)
 			.join(' ');

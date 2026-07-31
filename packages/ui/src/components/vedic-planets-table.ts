@@ -32,9 +32,18 @@ type MetaEntry = BirthChartResponse['meta'][string];
  * Vedic planetary positions table. Renders /vedic-astrology/birth-chart `meta`
  * as the full reference-grade positions grid a practitioner reads alongside
  * the kundli wheel: graha, rashi, exact degree, nakshatra and pada, nakshatra
- * lord, bhava (house), Baladi avastha, and retrograde.
+ * lord, bhava (house), all three avastha systems, and retrograde.
  *
  * @remarks
+ * The three avastha systems each get their own column rather than one merged
+ * state, because they answer different questions and a reader looks up exactly
+ * one of them at a time: Baladi is the age state read from the degree, Jagradadi
+ * the waking state and Deeptadi the dispositional state, both read from sign
+ * dignity. Dignity is a relationship to a sign lord, which Rahu, Ketu and the
+ * Lagna do not have, so the API returns only `awastha` for those three and their
+ * last two cells are deliberately EMPTY. They are not rendered as a dash or a
+ * placeholder: both read as data that failed to arrive.
+ *
  * The positions grid is the default view. The same birth-chart response also
  * carries chart-wide conditions and readings, surfaced as collapsed accordions
  * below the grid so they never crowd the table: combust grahas (astangata),
@@ -73,7 +82,9 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 				width: 100%;
 				border-collapse: collapse;
 				font-size: var(--roxy-text-sm, 0.875rem);
-				min-width: 620px;
+				/* Three avastha columns rather than one, so the grid needs the room
+				 * before the scroll container takes over. */
+				min-width: 760px;
 			}
 			thead {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 20%, transparent);
@@ -254,7 +265,10 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			<table role="table">
 				<caption class="roxy-sr-only">
 					Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada,
-					nakshatra lord, house, avastha and retrograde state.
+					nakshatra lord, house, its state in all three avastha systems, and retrograde
+					state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and
+					the Lagna do not have, so those two cells are blank on the Rahu, Ketu and
+					Lagna rows.
 				</caption>
 				<thead>
 					<tr>
@@ -265,7 +279,21 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 						<th scope="col">Pada</th>
 						<th scope="col">Nak. lord</th>
 						<th scope="col">House</th>
-						<th scope="col">Avastha</th>
+						<th scope="col" title="Baladi: the five age states, set by degree within the sign">
+							Baladi
+						</th>
+						<th
+							scope="col"
+							title="Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only"
+						>
+							Jagradadi
+						</th>
+						<th
+							scope="col"
+							title="Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only"
+						>
+							Deeptadi
+						</th>
 						<th scope="col">Retro</th>
 					</tr>
 				</thead>
@@ -289,6 +317,8 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 							<td>${p.nakshatra?.lord ?? ''}</td>
 							<td class="num">${typeof p.house === 'number' ? p.house : ''}</td>
 							<td>${p.awastha ?? ''}</td>
+							<td>${p.jagradadi ?? ''}</td>
+							<td>${p.deeptadi ?? ''}</td>
 							<td>${p.isRetrograde ? html`<span class="retro">R</span>` : nothing}</td>
 						</tr>`;
 					})}

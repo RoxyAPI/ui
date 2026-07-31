@@ -639,10 +639,10 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-compatibility-card>` | Cross | POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility | Score card with category breakdown |
 | `<roxy-vedic-kundli>` | Vedic | POST /vedic-astrology/birth-chart | South, North, or East Indian kundli with degree detail and optional Chandra Lagna view |
 | `<roxy-divisional-chart>` | Vedic | POST /vedic-astrology/{divisional-chart,navamsa} | Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa |
-| `<roxy-kp-chart>` | Vedic (KP) | POST /vedic-astrology/kp/chart | Ascendant, cusps, planets and nodes with KP stellar hierarchy |
-| `<roxy-vedic-planets-table>` | Vedic | POST /vedic-astrology/birth-chart | Degree, nakshatra, pada, lord, bhava, avastha columns |
+| `<roxy-kp-chart>` | Vedic (KP) | POST /vedic-astrology/kp/chart | Ascendant, cusps, planets and nodes with KP stellar hierarchy and house meanings |
+| `<roxy-vedic-planets-table>` | Vedic | POST /vedic-astrology/birth-chart | Degree, nakshatra, pada, lord, bhava, Baladi, Jagradadi and Deeptadi columns |
 | `<roxy-kp-planets-table>` | Vedic (KP) | POST /vedic-astrology/kp/planets | Sub-lord and sub-sub-lord columns |
-| `<roxy-kp-ruling-planets>` | Vedic (KP) | POST /vedic-astrology/kp/ruling-planets | Day lord, Moon/Lagna hierarchies, ruling planets, significators |
+| `<roxy-kp-ruling-planets>` | Vedic (KP) | POST /vedic-astrology/kp/ruling-planets | Day lord, Moon/Lagna hierarchies, ruling planets, significators with house meanings |
 | `<roxy-ashtakavarga-grid>` | Vedic | POST /vedic-astrology/ashtakavarga | Sarva, Bhinna, and Shodhya Pinda views in a tabbed heatmap |
 | `<roxy-shadbala-table>` | Vedic | POST /vedic-astrology/shadbala | Six-fold planetary strength bar plus rupas and adequacy badge |
 | `<roxy-dasha-timeline>` | Vedic | POST /vedic-astrology/dasha/{current,major,sub/...} | Vimshottari mahadasha, antardasha, pratyantardasha, sookshma and prana, drill-down at every level |
@@ -651,7 +651,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-vedic-aspects>` | Vedic | POST /vedic-astrology/aspects | Graha drishti rows with aspect type, strength, and orb, plus mutual aspects |
 | `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
 | `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
-| `<roxy-yoga-list>` | Vedic | GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect | Filterable yoga cards from the 300 plus yoga catalog |
+| `<roxy-yoga-list>` | Vedic | GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect | Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode |
 | `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
 | `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |
 | `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |

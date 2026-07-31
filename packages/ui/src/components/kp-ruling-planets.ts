@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import type { KpRulingPlanetsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { houseWords } from '../utils/house-themes.js';
 
 /**
  * KP ruling planets card. Renders /vedic-astrology/kp/ruling-planets: the day
@@ -10,6 +11,12 @@ import { baseStyles } from '../utils/base-styles.js';
  * lord, sub-sub lord), the consolidated ruling-planet list ordered by
  * strength, and, when birth data is supplied, the house significators per
  * planet. The primary horary timing tool in KP astrology.
+ *
+ * @remarks
+ * `significators` and `houseThemes` both arrive only when the request carried
+ * birth data, so the significator table and its house wording appear together
+ * or not at all. The wording is read from the response, never from a table held
+ * here, so it follows the requested language and the requested `focus` lens.
  */
 @customElement('roxy-kp-ruling-planets')
 export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse> {
@@ -114,6 +121,17 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 				font-size: var(--roxy-text-xs, 0.75rem);
 				letter-spacing: 0.04em;
 			}
+			.num {
+				font-variant-numeric: tabular-nums;
+			}
+			/* The house wording sits under its numbers rather than beside them: a
+			 * planet can signify eight houses, and one line of both would push the
+			 * table past the card on a phone. */
+			.themes {
+				display: block;
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
 		`,
 	];
 
@@ -171,7 +189,8 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 				significators.length
 					? html`<table>
 						<caption class="roxy-sr-only">
-							House significators: each ruling planet and the houses it signifies.
+							House significators: each ruling planet, the houses it signifies, and what
+							those houses stand for.
 						</caption>
 						<thead>
 							<tr>
@@ -180,12 +199,16 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 							</tr>
 						</thead>
 						<tbody>
-							${significators.map(
-								(s) => html`<tr>
+							${significators.map((s) => {
+								const words = houseWords(s.signifies, d.houseThemes);
+								return html`<tr>
 									<td>${s.planet}</td>
-									<td>${(s.signifies ?? []).join(', ')}</td>
-								</tr>`,
-							)}
+									<td>
+										<span class="num">${(s.signifies ?? []).join(', ')}</span>
+										${words ? html`<span class="themes">${words}</span>` : nothing}
+									</td>
+								</tr>`;
+							})}
 						</tbody>
 					</table>`
 					: nothing

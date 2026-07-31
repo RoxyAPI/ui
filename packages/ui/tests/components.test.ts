@@ -246,6 +246,19 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					isRetrograde: false,
 					house: 5,
 					awastha: 'Vriddha',
+					jagradadi: 'Swapna',
+					deeptadi: 'Kopa',
+				},
+				// The nodes carry Baladi only: the other two systems are read from
+				// sign dignity, which Rahu and Ketu do not have.
+				Rahu: {
+					graha: 'Rahu',
+					rashi: 'Capricorn',
+					longitude: 293.9,
+					nakshatra: { name: 'Dhanishta', pada: 1, key: 23, lord: 'Mars' },
+					isRetrograde: true,
+					house: 4,
+					awastha: 'Kumara',
 				},
 			},
 			aries: { rashi: 'aries', signs: [] },
@@ -2567,6 +2580,233 @@ describe('roxy-tarot-spread titles itself from the response', () => {
 			positions: [{ position: 'Present', card: { name: 'The Star' } }],
 		});
 		expect(title(el)).toBe('Three card');
+		el.remove();
+	});
+});
+
+/**
+ * The three avastha systems the birth chart returns per graha. Baladi applies to
+ * every body; Jagradadi and Deeptadi need sign dignity, which Rahu, Ketu and the
+ * Lagna do not have, so their cells must render EMPTY rather than as a
+ * placeholder that reads like a failed fetch.
+ */
+describe('vedic planets table avastha columns', () => {
+	const sample = specs.find(
+		(s) => s.tag === 'roxy-vedic-planets-table',
+	)?.sample;
+
+	async function mount() {
+		const el = document.createElement(
+			'roxy-vedic-planets-table',
+		) as unknown as HTMLElement & { data?: unknown };
+		document.body.appendChild(el);
+		el.data = sample;
+		await settled(el);
+		return el;
+	}
+
+	test('heads a column per system instead of one "avastha"', async () => {
+		const el = await mount();
+		const heads = [...(el.shadowRoot?.querySelectorAll('thead th') ?? [])].map(
+			(th) => th.textContent?.trim(),
+		);
+		expect(heads).toContain('Baladi');
+		expect(heads).toContain('Jagradadi');
+		expect(heads).toContain('Deeptadi');
+		expect(heads).not.toContain('Avastha');
+		el.remove();
+	});
+
+	test('renders all three states for a graha and leaves the node cells blank', async () => {
+		const el = await mount();
+		const rows = [...(el.shadowRoot?.querySelectorAll('tbody tr') ?? [])];
+		// Match on the graha cell, not the row text: the Lagna row carries "Rahu"
+		// as its nakshatra lord and would otherwise answer for it.
+		const cells = (name: string) => {
+			const row = rows.find((r) =>
+				r.querySelector('td')?.textContent?.trim().endsWith(name),
+			);
+			return [...(row?.querySelectorAll('td') ?? [])].map((td) =>
+				td.textContent?.trim(),
+			);
+		};
+		// Graha, rashi, degree, nakshatra, pada, nak lord, house, then the three
+		// avastha columns.
+		expect(cells('Sun').slice(7, 10)).toEqual(['Vriddha', 'Swapna', 'Kopa']);
+		expect(cells('Rahu').slice(7, 10)).toEqual(['Kumara', '', '']);
+		el.remove();
+	});
+});
+
+/** Detect mode: every verdict grouped by verdict, with the two kinds of absent told apart. */
+describe('yoga list detect grouping', () => {
+	const detected = {
+		total: 1,
+		yogas: [
+			{
+				id: 'kemadruma',
+				name: 'Kemadruma Yoga',
+				description: 'Moon isolated',
+				result: 'Struggle early in life.',
+				quality: 'Negative',
+				present: true,
+				evidence: 'Moon is isolated: no qualifying planet in the 2nd OR 12th.',
+			},
+			{
+				id: 'kedara',
+				name: 'Kedara Yoga',
+				description: 'Seven grahas in four rasis',
+				result: 'Agricultural wealth.',
+				quality: 'Positive',
+				present: false,
+				evidence: 'The seven visible grahas occupy 5 rasis, not 4',
+			},
+			{
+				id: 'sula',
+				name: 'Sula Yoga',
+				description: 'Seven grahas in three rasis',
+				result: 'Sharp and cruel.',
+				quality: 'Both',
+				present: false,
+				evidence:
+					'The seven visible grahas occupy 3 rasis, but another Nabhasa yoga is present and classically suppresses Sankhya',
+			},
+			{
+				id: 'rajju',
+				name: 'Rajju Yoga',
+				description: 'All grahas in movable signs',
+				result: 'Fond of travel.',
+				quality: 'Both',
+				present: false,
+				evidence:
+					'All seven visible grahas occupy movable signs, but an Akriti yoga is present and classically outranks Asraya',
+			},
+		],
+	};
+
+	async function mount(data: unknown = detected) {
+		const el = document.createElement(
+			'roxy-yoga-list',
+		) as unknown as HTMLElement & { data?: unknown };
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+
+	test('groups by verdict, result first and reference last', async () => {
+		const el = await mount();
+		const groups = [...(el.shadowRoot?.querySelectorAll('.group') ?? [])].map(
+			(g) => [
+				g.querySelector('.group-label')?.textContent?.trim(),
+				g.querySelector('.group-count')?.textContent?.trim(),
+				(g as HTMLDetailsElement).open,
+			],
+		);
+		expect(groups).toEqual([
+			['Present', '1', true],
+			['Outranked', '2', true],
+			['Not present', '1', false],
+		]);
+		el.remove();
+	});
+
+	test('an outranked yoga is badged apart from one whose rule failed', async () => {
+		const el = await mount();
+		const badge = (name: string) => {
+			const card = [
+				...(el.shadowRoot?.querySelectorAll('.detail-card') ?? []),
+			].find((c) => c.textContent?.includes(name));
+			return card?.querySelector('.present-badge')?.textContent?.trim();
+		};
+		expect(badge('Kemadruma')).toBe('Present');
+		expect(badge('Sula')).toBe('Outranked');
+		expect(badge('Rajju')).toBe('Outranked');
+		expect(badge('Kedara')).toBe('Not present');
+		el.remove();
+	});
+
+	test('a group with no yoga in it renders no heading', async () => {
+		const el = await mount({
+			total: 0,
+			yogas: [detected.yogas[1]],
+		});
+		const labels = [
+			...(el.shadowRoot?.querySelectorAll('.group-label') ?? []),
+		].map((l) => l.textContent?.trim());
+		expect(labels).toEqual(['Not present']);
+		el.remove();
+	});
+
+	test('a filter forces every group open so a match cannot hide', async () => {
+		const el = await mount();
+		const input = el.shadowRoot?.querySelector('.search') as HTMLInputElement;
+		input.value = 'kedara';
+		input.dispatchEvent(new Event('input'));
+		await settled(el);
+		const groups = [...(el.shadowRoot?.querySelectorAll('.group') ?? [])];
+		expect(groups.length).toBe(1);
+		expect((groups[0] as HTMLDetailsElement).open).toBe(true);
+		el.remove();
+	});
+});
+
+/** House wording joined from the response `houseThemes` map, never from a table held in a component. */
+describe('KP house themes', () => {
+	const themes = {
+		'1': ['self', 'body', 'vitality'],
+		'3': ['siblings', 'courage'],
+		'6': ['enemies', 'debt'],
+		'10': ['career', 'status'],
+		'11': ['gains', 'friends'],
+	};
+
+	async function mount(tag: string, data: unknown) {
+		const el = document.createElement(tag) as unknown as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+
+	test('the ruling-planets significator rows caption their houses', async () => {
+		const el = await mount('roxy-kp-ruling-planets', {
+			dayLord: 'Moon',
+			rulingPlanets: ['Moon'],
+			significators: [{ planet: 'Mercury', signifies: [3, 6, 10] }],
+			houseThemes: themes,
+		});
+		expect(el.shadowRoot?.querySelector('.themes')?.textContent?.trim()).toBe(
+			'siblings, enemies, career',
+		);
+		el.remove();
+	});
+
+	test('a response without the map renders the numbers alone', async () => {
+		const el = await mount('roxy-kp-ruling-planets', {
+			dayLord: 'Moon',
+			rulingPlanets: ['Moon'],
+			significators: [{ planet: 'Mercury', signifies: [3, 6, 10] }],
+		});
+		expect(el.shadowRoot?.querySelector('.themes')).toBeNull();
+		el.remove();
+	});
+
+	test('a KP cusp row carries every keyword for its own house', async () => {
+		const el = await mount('roxy-kp-chart', {
+			meta: { ayanamsa: 23.71, ayanamsaType: 'kp-newcomb' },
+			ascendant: { sign: 'Taurus' },
+			cusps: [{ house: 1, sign: 'Taurus', signLord: 'Venus' }],
+			planets: [],
+			houseThemes: themes,
+		});
+		(el as unknown as { activeTab: string }).activeTab = 'cusps';
+		await settled(el);
+		expect(el.shadowRoot?.querySelector('.themes')?.textContent?.trim()).toBe(
+			'self, body, vitality',
+		);
 		el.remove();
 	});
 });
