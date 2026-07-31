@@ -120,6 +120,18 @@
       "description": "Day and night Choghadiya muhurta tiles for activity timing"
     },
     {
+      "name": "roxy-upagraha-table",
+      "description": "The eleven upagrahas in their time-based and Sun-based groups, with rashi, degree, and nakshatra"
+    },
+    {
+      "name": "roxy-chara-karakas",
+      "description": "Jaimini chara karakas ranked Atmakaraka first, with the scheme that produced the ranking"
+    },
+    {
+      "name": "roxy-arudha-padas",
+      "description": "The twelve Jaimini arudha padas with their derivation, the Arudha Lagna and the Upapada marked"
+    },
+    {
       "name": "roxy-yoga-list",
       "description": "Yoga reference cards from the catalog with optional detail mode"
     },

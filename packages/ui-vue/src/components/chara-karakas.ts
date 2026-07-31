@@ -1,10 +1,10 @@
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { GetAvasthaResponse, GetCenterResponse, GetCompoundNumberResponse, GetGateResponse, GetNumberMeaningResponse, GetPlanetMeaningResponse, GetRashiResponse, GetTrigramResponse, GetZodiacSignResponse } from '../types/index.js';
+import type { CharaKarakaResponse } from '../types/index.js';
 
-export interface RoxyReferenceCardProps {
+export interface RoxyCharaKarakasProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetZodiacSignResponse | GetPlanetMeaningResponse | GetRashiResponse | GetTrigramResponse | GetGateResponse | GetCenterResponse | GetNumberMeaningResponse | GetCompoundNumberResponse | GetAvasthaResponse;
+	data?: CharaKarakaResponse;
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -23,18 +23,18 @@ export interface RoxyReferenceCardProps {
 	attribution?: string;
 }
 
-export const RoxyReferenceCard = defineComponent({
-	name: 'RoxyReferenceCard',
+export const RoxyCharaKarakas = defineComponent({
+	name: 'RoxyCharaKarakas',
 	props: {
-		data: { type: Object as PropType<RoxyReferenceCardProps['data']> },
-		endpoint: { type: String as PropType<RoxyReferenceCardProps['endpoint']> },
-		method: { type: String as PropType<RoxyReferenceCardProps['method']> },
-		publishableKey: { type: String as PropType<RoxyReferenceCardProps['publishableKey']> },
-		baseUrl: { type: String as PropType<RoxyReferenceCardProps['baseUrl']> },
-		specUrl: { type: String as PropType<RoxyReferenceCardProps['specUrl']> },
-		lang: { type: String as PropType<RoxyReferenceCardProps['lang']> },
-		submitLabel: { type: String as PropType<RoxyReferenceCardProps['submitLabel']> },
-		attribution: { type: String as PropType<RoxyReferenceCardProps['attribution']> },
+		data: { type: Object as PropType<RoxyCharaKarakasProps['data']> },
+		endpoint: { type: String as PropType<RoxyCharaKarakasProps['endpoint']> },
+		method: { type: String as PropType<RoxyCharaKarakasProps['method']> },
+		publishableKey: { type: String as PropType<RoxyCharaKarakasProps['publishableKey']> },
+		baseUrl: { type: String as PropType<RoxyCharaKarakasProps['baseUrl']> },
+		specUrl: { type: String as PropType<RoxyCharaKarakasProps['specUrl']> },
+		lang: { type: String as PropType<RoxyCharaKarakasProps['lang']> },
+		submitLabel: { type: String as PropType<RoxyCharaKarakasProps['submitLabel']> },
+		attribution: { type: String as PropType<RoxyCharaKarakasProps['attribution']> },
 	},
 	setup(props) {
 		const loadError = ref<Error | null>(null);
@@ -65,7 +65,7 @@ export const RoxyReferenceCard = defineComponent({
 			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;
 			if (props.attribution !== undefined) elementProps['.attribution'] = props.attribution;
 
-			return h('roxy-reference-card', elementProps);
+			return h('roxy-chara-karakas', elementProps);
 		};
 	},
 });

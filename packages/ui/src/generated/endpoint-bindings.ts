@@ -610,6 +610,11 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/numerology/meanings/{number}',
 		},
 		{
+			operationId: 'getAvastha',
+			method: 'GET',
+			path: '/vedic-astrology/avasthas/{id}',
+		},
+		{
 			operationId: 'getRashi',
 			method: 'GET',
 			path: '/vedic-astrology/rashis/{id}',

@@ -61,7 +61,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'numerology-card':
 		'CalculateLifePathResponse | CalculateExpressionResponse | CalculateSoulUrgeResponse | CalculatePersonalityResponse | CalculateBirthDayResponse | CalculateMaturityResponse | GetDailyNumberResponse | CalculatePersonalDayResponse | CalculatePersonalMonthResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
 	'reference-card':
-		'GetZodiacSignResponse | GetPlanetMeaningResponse | GetRashiResponse | GetTrigramResponse | GetGateResponse | GetCenterResponse | GetNumberMeaningResponse | GetCompoundNumberResponse',
+		'GetZodiacSignResponse | GetPlanetMeaningResponse | GetRashiResponse | GetTrigramResponse | GetGateResponse | GetCenterResponse | GetNumberMeaningResponse | GetCompoundNumberResponse | GetAvasthaResponse',
 	'tarot-card': 'GetCardResponse | GetDailyCardResponse',
 	'tarot-catalog': 'ListCardsResponse',
 	'tarot-spread':
@@ -88,6 +88,9 @@ export const DATA_TYPES: Record<string, string> = {
 	'divisional-chart': 'DivisionalChartResponse',
 	'ashtakavarga-grid': 'AshtakavargaResponse',
 	'shadbala-table': 'ShadbalaResponse',
+	'upagraha-table': 'UpagrahaResponse',
+	'chara-karakas': 'CharaKarakaResponse',
+	'arudha-padas': 'ArudhaResponse',
 	'yoga-list':
 		'ListYogasResponse | GetYogaResponse | DetectYogasResponse | { yogas: GetYogaResponse[] }',
 	'choghadiya-grid': 'GetChoghadiyaResponse',

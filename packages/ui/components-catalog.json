@@ -681,6 +681,45 @@
       }
     },
     {
+      "tag": "roxy-upagraha-table",
+      "pascal": "RoxyUpagrahaTable",
+      "slug": "upagraha-table",
+      "domain": "Vedic",
+      "renders": "Time-based and Sun-based upagrahas with rashi, degree, longitude and nakshatra",
+      "endpointLabel": "POST /vedic-astrology/upagraha",
+      "endpoints": [],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.19.4/assets/previews/upagraha-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.19.4/assets/previews/upagraha-table-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-chara-karakas",
+      "pascal": "RoxyCharaKarakas",
+      "slug": "chara-karakas",
+      "domain": "Vedic",
+      "renders": "Karaka offices in rank order with graha, degree, scheme, and what each is read for",
+      "endpointLabel": "POST /vedic-astrology/chara-karakas",
+      "endpoints": [],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.19.4/assets/previews/chara-karakas-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.19.4/assets/previews/chara-karakas-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-arudha-padas",
+      "pascal": "RoxyArudhaPadas",
+      "slug": "arudha-padas",
+      "domain": "Vedic",
+      "renders": "Twelve padas with bhava, lord, pada rashi, house from Lagna, and the classical exception marked",
+      "endpointLabel": "POST /vedic-astrology/arudha",
+      "endpoints": [],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.19.4/assets/previews/arudha-padas-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.19.4/assets/previews/arudha-padas-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-yoga-list",
       "pascal": "RoxyYogaList",
       "slug": "yoga-list",
@@ -1342,6 +1381,11 @@
           "operationId": "getNumberMeaning",
           "method": "GET",
           "path": "/numerology/meanings/{number}"
+        },
+        {
+          "operationId": "getAvastha",
+          "method": "GET",
+          "path": "/vedic-astrology/avasthas/{id}"
         },
         {
           "operationId": "getRashi",

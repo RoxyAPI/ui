@@ -1,5 +1,8 @@
 import { describe, expect, test } from 'bun:test';
-import { UI_BINDINGS } from '../../../scripts/bindings.config.js';
+import {
+	UI_BINDINGS,
+	UNBOUND_COMPONENTS,
+} from '../../../scripts/bindings.config.js';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 
@@ -58,9 +61,14 @@ describe('endpoint bindings', () => {
 
 	test('every data-bound component has at least one endpoint binding', () => {
 		// selfFetching components (the generic renderer, location search, endpoint
-		// form) render no single endpoint response, so they carry no binding.
+		// form) render no single endpoint response, so they carry no binding, and
+		// UNBOUND_COMPONENTS are the ones deliberately kept out of the auto-mount
+		// widget build. Everything else must be bound.
 		const missing = ROXY_COMPONENTS.filter(
-			(c) => !c.selfFetching && !ENDPOINT_BINDINGS[c.tag]?.length,
+			(c) =>
+				!c.selfFetching &&
+				!UNBOUND_COMPONENTS[c.tag] &&
+				!ENDPOINT_BINDINGS[c.tag]?.length,
 		).map((c) => c.tag);
 		expect(
 			missing,
@@ -189,5 +197,18 @@ describe('endpointLabel tells the truth about what a component renders', () => {
 			}
 		}
 		expect(liars).toEqual([]);
+	});
+});
+
+describe('deliberately unbound components', () => {
+	test('each names a component the library ships and carries no binding', () => {
+		for (const [tag, endpoint] of Object.entries(UNBOUND_COMPONENTS)) {
+			expect(TAGS.has(tag), `${tag} in the manifest`).toBe(true);
+			expect(
+				ENDPOINT_BINDINGS[tag],
+				`${tag} is declared unbound but has a binding`,
+			).toBeUndefined();
+			expect(endpoint).toMatch(/^(GET|POST) \//);
+		}
 	});
 });

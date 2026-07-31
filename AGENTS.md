@@ -82,6 +82,9 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-vedic-aspects>` | Vedic | POST /vedic-astrology/aspects | Graha drishti rows with aspect type, strength, and orb, plus mutual aspects |
 | `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
 | `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
+| `<roxy-upagraha-table>` | Vedic | POST /vedic-astrology/upagraha | Time-based and Sun-based upagrahas with rashi, degree, longitude and nakshatra |
+| `<roxy-chara-karakas>` | Vedic | POST /vedic-astrology/chara-karakas | Karaka offices in rank order with graha, degree, scheme, and what each is read for |
+| `<roxy-arudha-padas>` | Vedic | POST /vedic-astrology/arudha | Twelve padas with bhava, lord, pada rashi, house from Lagna, and the classical exception marked |
 | `<roxy-yoga-list>` | Vedic | GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect | Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode |
 | `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
 | `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |

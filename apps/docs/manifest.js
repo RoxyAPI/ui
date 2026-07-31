@@ -309,6 +309,39 @@ window.ROXY_COMPONENTS = [
     "topic": "Vedic"
   },
   {
+    "pascal": "RoxyUpagrahaTable",
+    "tag": "roxy-upagraha-table",
+    "slug": "upagraha-table",
+    "heading": "Upagrahas",
+    "description": "The eleven upagrahas in their time-based and Sun-based groups, with rashi, degree, and nakshatra",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/upagraha",
+    "docsSummary": "Time-based and Sun-based upagrahas with rashi, degree, longitude and nakshatra",
+    "topic": "Vedic"
+  },
+  {
+    "pascal": "RoxyCharaKarakas",
+    "tag": "roxy-chara-karakas",
+    "slug": "chara-karakas",
+    "heading": "Chara karakas",
+    "description": "Jaimini chara karakas ranked Atmakaraka first, with the scheme that produced the ranking",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/chara-karakas",
+    "docsSummary": "Karaka offices in rank order with graha, degree, scheme, and what each is read for",
+    "topic": "Vedic"
+  },
+  {
+    "pascal": "RoxyArudhaPadas",
+    "tag": "roxy-arudha-padas",
+    "slug": "arudha-padas",
+    "heading": "Arudha padas",
+    "description": "The twelve Jaimini arudha padas with their derivation, the Arudha Lagna and the Upapada marked",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/arudha",
+    "docsSummary": "Twelve padas with bhava, lord, pada rashi, house from Lagna, and the classical exception marked",
+    "topic": "Vedic"
+  },
+  {
     "pascal": "RoxyYogaList",
     "tag": "roxy-yoga-list",
     "slug": "yoga-list",
@@ -1192,6 +1225,11 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getNumberMeaning",
       "method": "GET",
       "path": "/numerology/meanings/{number}"
+    },
+    {
+      "operationId": "getAvastha",
+      "method": "GET",
+      "path": "/vedic-astrology/avasthas/{id}"
     },
     {
       "operationId": "getRashi",

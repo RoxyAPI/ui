@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { GetAvasthaResponse, GetCenterResponse, GetCompoundNumberResponse, GetGateResponse, GetNumberMeaningResponse, GetPlanetMeaningResponse, GetRashiResponse, GetTrigramResponse, GetZodiacSignResponse } from '../types/index.js';
+import type { CharaKarakaResponse } from '../types/index.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
 	'children' | 'data'
 >;
 
-export interface RoxyReferenceCardProps extends ElementAttrs {
+export interface RoxyCharaKarakasProps extends ElementAttrs {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetZodiacSignResponse | GetPlanetMeaningResponse | GetRashiResponse | GetTrigramResponse | GetGateResponse | GetCenterResponse | GetNumberMeaningResponse | GetCompoundNumberResponse | GetAvasthaResponse;
+	data?: CharaKarakaResponse;
 	className?: string;
 	style?: React.CSSProperties;
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
@@ -31,8 +31,8 @@ export interface RoxyReferenceCardProps extends ElementAttrs {
 
 }
 
-export const RoxyReferenceCard = React.forwardRef<HTMLElement | null, RoxyReferenceCardProps>(
-	function RoxyReferenceCard({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, ...rest }, ref) {
+export const RoxyCharaKarakas = React.forwardRef<HTMLElement | null, RoxyCharaKarakasProps>(
+	function RoxyCharaKarakas({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -128,7 +128,7 @@ export const RoxyReferenceCard = React.forwardRef<HTMLElement | null, RoxyRefere
 			);
 		}
 
-		return React.createElement('roxy-reference-card', {
+		return React.createElement('roxy-chara-karakas', {
 			ref: internal,
 			className,
 			style,

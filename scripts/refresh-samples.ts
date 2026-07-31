@@ -582,6 +582,62 @@ async function main() {
 			}),
 		),
 		run('yoga', () => roxy.vedicAstrology.listYogas()),
+		// Detect is a different render branch from the catalog: it is the one that
+		// carries a verdict and evidence per yoga, so without its own sample neither
+		// the showcase nor the audit ever walks the grouped view.
+		run('yoga-detect', () =>
+			roxy.vedicAstrology.detectYogas({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
+		run('upagraha', () =>
+			roxy.vedicAstrology.getUpagrahaPositions({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
+		// The scheme is echoed in the response and drives the card label, so the
+		// sample pins the eight-karaka default rather than leaving it implicit.
+		run('chara-karakas', () =>
+			roxy.vedicAstrology.calculateCharaKarakas({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+					scheme: 'eight',
+				},
+			}),
+		),
+		run('arudha', () =>
+			roxy.vedicAstrology.calculateArudhaPadas({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
+		// Dipta is the first Deeptadi state, so the reference card shows a record
+		// from the nine-fold system rather than the five-fold one the chart column
+		// already spells out.
+		run('reference-avastha', () =>
+			roxy.vedicAstrology.getAvastha({ path: { id: 'dipta' } }),
+		),
 		run('dream', () => roxy.dreams.getDreamSymbol({ path: { id: 'water' } })),
 		run('angel-card', () =>
 			roxy.angelNumbers.getAngelNumber({ path: { number: '111' } }),

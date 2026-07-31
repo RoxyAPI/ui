@@ -238,4 +238,19 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	getCenter: [{ component: 'roxy-reference-card' }],
 	getNumberMeaning: [{ component: 'roxy-reference-card' }],
 	getCompoundNumber: [{ component: 'roxy-reference-card' }],
+	getAvastha: [{ component: 'roxy-reference-card' }],
+};
+
+/**
+ * Components that render an endpoint response but are deliberately NOT bound above, with the endpoint each one takes.
+ *
+ * @remarks
+ * A binding is what makes a component a one-tag widget: it enters the generated widget map, the demo Embed tab, and the hosted embed surfaces. These three are practitioner-depth Jyotish tables read beside a full chart, not paste-one-line-into-a-landing-page widgets, and the auto-mount script is held to a hard byte budget that has to stay available for the endpoints the copy-paste audience actually asks for (horoscope, natal wheel, compatibility).
+ *
+ * They ship in full as web components and in both framework wrapper packages, and self-fetch works by setting `data-endpoint` and a publishable key explicitly. Only the zero-config auto-mount path is withheld. `bindings.test.ts` reads this map so the every-component-is-bound gate keeps biting for every other component.
+ */
+export const UNBOUND_COMPONENTS: Record<string, string> = {
+	'roxy-upagraha-table': 'POST /vedic-astrology/upagraha',
+	'roxy-chara-karakas': 'POST /vedic-astrology/chara-karakas',
+	'roxy-arudha-padas': 'POST /vedic-astrology/arudha',
 };

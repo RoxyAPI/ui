@@ -3,7 +3,7 @@ import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 
 /**
- * The demo Embed tab derives entirely from two GENERATED browser globals, exactly as the static docs site builds them: `apps/docs/manifest.js` (mirror of the component manifest + endpoint bindings) and `apps/docs/components-manifest.js` (which reads those globals and builds `window.ROXY_UI_DEMOS`, each bound card carrying an `embed` snippet). These evaluate both committed files against a window stub, in the same order index.html loads them, then assert (1) the mirror matches source and (2) every endpoint-bound card derives a snippet naming its tag and its first-binding endpoint, while the three unbound helpers derive none.
+ * The demo Embed tab derives entirely from two GENERATED browser globals, exactly as the static docs site builds them: `apps/docs/manifest.js` (mirror of the component manifest + endpoint bindings) and `apps/docs/components-manifest.js` (which reads those globals and builds `window.ROXY_UI_DEMOS`, each bound card carrying an `embed` snippet). These evaluate both committed files against a window stub, in the same order index.html loads them, then assert (1) the mirror matches source and (2) every endpoint-bound card derives a snippet naming its tag and its first-binding endpoint, while every unbound card derives none.
  */
 
 const HELPER_TAGS = new Set([
@@ -102,9 +102,17 @@ describe('embed tab derivation', () => {
 			boundChecked++;
 		}
 
-		// The test itself must have exercised both branches.
+		// The test itself must have exercised both branches. The unbound side is the
+		// three helpers plus every component deliberately kept out of the auto-mount
+		// widget build, derived rather than counted so adding one is not a red gate.
+		const unbound = new Set(
+			ROXY_COMPONENTS.filter((c) => !ENDPOINT_BINDINGS[c.tag]?.length).map(
+				(c) => c.tag,
+			),
+		);
 		expect(boundChecked).toBeGreaterThan(40);
-		expect(helperChecked).toBe(3);
+		expect(unbound.size).toBeGreaterThanOrEqual(3);
+		expect(helperChecked).toBe(demos.filter((d) => unbound.has(d.tag)).length);
 	});
 
 	test('a multi-variant component surfaces its other selector values on the hint line', async () => {

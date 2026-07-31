@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-upagraha-table",
+  "type": "registry:ui",
+  "title": "RoxyUpagrahaTable",
+  "description": "The eleven upagrahas in their time-based and Sun-based groups, with rashi, degree, and nakshatra",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.19.4/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-upagraha-table.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyUpagrahaTable data={...} />: The eleven upagrahas in their time-based and Sun-based groups, with rashi, degree, and nakshatra.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/upagraha-table/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyUpagrahaTable as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyUpagrahaTableProps = ComponentProps<typeof Element>;\n\nexport function RoxyUpagrahaTable(props: RoxyUpagrahaTableProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyUpagrahaTable;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/upagraha-table.tsx"
+    }
+  ]
+}

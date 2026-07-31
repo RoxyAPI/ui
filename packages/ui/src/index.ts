@@ -8,6 +8,7 @@
 // Angel numbers
 export { RoxyAngelNumberCard } from './components/angel-number-card.js';
 export { RoxyAngelNumberLookup } from './components/angel-number-lookup.js';
+export { RoxyArudhaPadas } from './components/arudha-padas.js';
 export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
 // Western astrology
 export { RoxyAspectsTable } from './components/aspects-table.js';
@@ -16,6 +17,7 @@ export { RoxyAstrocartographyMap } from './components/astrocartography-map.js';
 export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
 // Human Design
 export { RoxyBodygraph } from './components/bodygraph.js';
+export { RoxyCharaKarakas } from './components/chara-karakas.js';
 export { RoxyChoghadiyaGrid } from './components/choghadiya-grid.js';
 export { RoxyCompatibilityCard } from './components/compatibility-card.js';
 // Crystals
@@ -68,6 +70,7 @@ export { RoxyTarotCard } from './components/tarot-card.js';
 export { RoxyTarotCatalog } from './components/tarot-catalog.js';
 export { RoxyTarotSpread } from './components/tarot-spread.js';
 export { RoxyTransitsTable } from './components/transits-table.js';
+export { RoxyUpagrahaTable } from './components/upagraha-table.js';
 // Vedic astrology
 export { RoxyVedicAspects } from './components/vedic-aspects.js';
 export { RoxyVedicKundli } from './components/vedic-kundli.js';

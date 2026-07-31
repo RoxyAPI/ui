@@ -1,6 +1,7 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import type {
+	GetAvasthaResponse,
 	GetCenterResponse,
 	GetCompoundNumberResponse,
 	GetGateResponse,
@@ -25,7 +26,8 @@ type ReferenceData =
 	| GetGateResponse
 	| GetCenterResponse
 	| GetNumberMeaningResponse
-	| GetCompoundNumberResponse;
+	| GetCompoundNumberResponse
+	| GetAvasthaResponse;
 
 /** Keys used to derive the title, in priority order. */
 const TITLE_KEYS = ['name', 'english', 'title'];

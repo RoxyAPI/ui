@@ -498,10 +498,43 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'upagraha',
+		tag: 'roxy-upagraha-table',
+		seoLine: 'Upagraha positions: Gulika, Mandi and the Dhuma group',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getUpagrahaPositions({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'chara-karakas',
+		tag: 'roxy-chara-karakas',
+		seoLine: 'Jaimini chara karakas ranked Atmakaraka first',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateCharaKarakas({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude, scheme: 'eight' }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'arudha',
+		tag: 'roxy-arudha-padas',
+		seoLine: 'Arudha padas with the Arudha Lagna and the Upapada',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateArudhaPadas({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
 		id: 'yoga',
 		tag: 'roxy-yoga-list',
 		seoLine: 'Filterable yoga catalog with detail cards',
 		sdkCall: `  const { data } = await roxy.vedicAstrology.listYogas();`,
+	}),
+	entry({
+		id: 'yoga-detect',
+		tag: 'roxy-yoga-list',
+		heading: 'Yoga detection',
+		seoLine: 'Yoga detection with present, outranked and absent verdicts',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.detectYogas({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+  });`,
 	}),
 	entry({
 		id: 'nakshatra',
@@ -744,6 +777,15 @@ window.ROXY_UI_DEMOS = [
 		seoLine: 'Glossary card for any reference lookup: sign, planet, rashi, gate, number',
 		sdkCall: `  const { data } = await roxy.astrology.getZodiacSign({
     path: { id: 'aries' },
+  });`,
+	}),
+	entry({
+		id: 'reference-avastha',
+		tag: 'roxy-reference-card',
+		heading: 'Avastha reference',
+		seoLine: 'Avastha reference: the planetary state a birth chart returns',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getAvastha({
+    path: { id: 'dipta' },
   });`,
 	}),
 	entry({

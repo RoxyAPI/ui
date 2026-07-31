@@ -14,8 +14,10 @@ import {
 	ROXY_UI_VERSION,
 	RoxyAngelNumberCard,
 	RoxyAngelNumberLookup,
+	RoxyArudhaPadas,
 	RoxyAshtakavargaGrid,
 	RoxyBiorhythmChart,
+	RoxyCharaKarakas,
 	RoxyChoghadiyaGrid,
 	RoxyCompatibilityCard,
 	RoxyCrystalGrid,
@@ -43,6 +45,7 @@ import {
 	RoxyTarotCatalog,
 	RoxyTarotSpread,
 	RoxyTransitsTable,
+	RoxyUpagrahaTable,
 	RoxyVedicKundli,
 	RoxyVedicPlanetsTable,
 	RoxyWesternPlanetsTable,
@@ -672,6 +675,117 @@ const specs: ComponentSpec<HTMLElement>[] = [
 		tag: 'roxy-shadbala-table',
 		ctor: RoxyShadbalaTable as unknown as new () => HTMLElement,
 		sample: null,
+	},
+	{
+		tag: 'roxy-upagraha-table',
+		ctor: RoxyUpagrahaTable as unknown as new () => HTMLElement,
+		sample: {
+			timeBased: [
+				{
+					name: 'Gulika',
+					longitude: 43.21,
+					rashi: 'Taurus',
+					degreeInSign: 13.21,
+					nakshatra: 'Rohini',
+					nakshatraIndex: 4,
+					nakshatraPada: 1,
+				},
+				{
+					name: 'Mandi',
+					longitude: 40.44,
+					rashi: 'Taurus',
+					degreeInSign: 10.44,
+					nakshatra: 'Rohini',
+					nakshatraIndex: 4,
+					nakshatraPada: 1,
+				},
+			],
+			sunBased: [
+				{
+					name: 'Dhuma',
+					longitude: 45.01,
+					rashi: 'Taurus',
+					degreeInSign: 15.01,
+					nakshatra: 'Rohini',
+					nakshatraIndex: 4,
+					nakshatraPada: 2,
+				},
+			],
+		},
+	},
+	{
+		tag: 'roxy-chara-karakas',
+		ctor: RoxyCharaKarakas as unknown as new () => HTMLElement,
+		sample: {
+			scheme: 'eight',
+			atmakaraka: 'Moon',
+			darakaraka: 'Sun',
+			karakas: [
+				{
+					id: 'atmakaraka',
+					name: 'Atmakaraka',
+					abbreviation: 'AK',
+					graha: 'Moon',
+					rashi: 'Leo',
+					degreeInRashi: 27.6686,
+					rankingDegree: 27.6686,
+					isReversed: false,
+					meaning: 'Soul and self',
+					significations: 'The desire that brought the soul to this birth.',
+				},
+				{
+					id: 'gnatikaraka',
+					name: 'Gnatikaraka',
+					abbreviation: 'GK',
+					graha: 'Rahu',
+					rashi: 'Capricorn',
+					degreeInRashi: 23.9523,
+					rankingDegree: 6.0477,
+					isReversed: true,
+					meaning: 'Relatives and obstacles',
+					significations: 'Rivals, disputes and the obstacles to work through.',
+				},
+			],
+		},
+	},
+	{
+		tag: 'roxy-arudha-padas',
+		ctor: RoxyArudhaPadas as unknown as new () => HTMLElement,
+		sample: {
+			lagnaRashi: 'Gemini',
+			arudhaLagna: 'Pisces',
+			upapada: 'Virgo',
+			padas: [
+				{
+					id: 'a1',
+					abbreviation: 'AL',
+					name: 'Arudha Lagna',
+					house: 1,
+					bhavaRashi: 'Gemini',
+					lord: 'Mercury',
+					lordRashi: 'Sagittarius',
+					rashi: 'Pisces',
+					houseFromLagna: 10,
+					exceptionApplied: true,
+					meaning: 'Public image',
+					significations: 'How the world sees the native.',
+				},
+				{
+					id: 'a12',
+					abbreviation: 'UL',
+					name: 'Upapada',
+					house: 12,
+					bhavaRashi: 'Taurus',
+					lord: 'Venus',
+					lordRashi: 'Capricorn',
+					rashi: 'Virgo',
+					houseFromLagna: 4,
+					exceptionApplied: false,
+					meaning: 'Marriage',
+					significations: 'The spouse and the durability of the marriage.',
+				},
+			],
+		},
 	},
 	{
 		tag: 'roxy-yoga-list',
@@ -2807,6 +2921,59 @@ describe('KP house themes', () => {
 		expect(el.shadowRoot?.querySelector('.themes')?.textContent?.trim()).toBe(
 			'self, body, vitality',
 		);
+		el.remove();
+	});
+});
+
+/** The practitioner-depth Jyotish tables added for the Jaimini and upagraha surfaces. */
+describe('vedic practitioner tables', () => {
+	const sampleFor = (tag: string) => specs.find((s) => s.tag === tag)?.sample;
+
+	async function mount(tag: string) {
+		const el = document.createElement(tag) as unknown as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = sampleFor(tag);
+		await settled(el);
+		return el;
+	}
+
+	test('upagrahas keep Gulika and Mandi as separate points', async () => {
+		const el = await mount('roxy-upagraha-table');
+		const names = [...(el.shadowRoot?.querySelectorAll('td.name') ?? [])].map(
+			(n) => n.textContent?.trim(),
+		);
+		expect(names).toEqual(['Gulika', 'Mandi', 'Dhuma']);
+		// Two groups, each with its own table, never merged into one list.
+		expect(el.shadowRoot?.querySelectorAll('table').length).toBe(2);
+		el.remove();
+	});
+
+	test('chara karakas name the scheme that produced the ranking', async () => {
+		const el = await mount('roxy-chara-karakas');
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(
+			el.shadowRoot?.querySelector('.scheme-chip')?.textContent?.trim(),
+		).toBe('eight');
+		expect(text).toContain('Rahu included');
+		// Rahu is ranked from the end of its sign, so both degrees are shown.
+		expect(text).toContain('23.95');
+		expect(text).toContain('6.05');
+		expect(el.shadowRoot?.querySelector('.reversed')).toBeTruthy();
+		el.remove();
+	});
+
+	test('arudha padas surface the Upapada and the classical exception', async () => {
+		const el = await mount('roxy-arudha-padas');
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Upapada');
+		expect(text).toContain('Arudha Lagna');
+		// Both lifted padas are marked in the table, not only summarised above it.
+		expect(el.shadowRoot?.querySelectorAll('tr.lead-row').length).toBe(2);
+		expect(
+			el.shadowRoot?.querySelector('.exception')?.textContent?.trim(),
+		).toBe('Moved');
 		el.remove();
 	});
 });

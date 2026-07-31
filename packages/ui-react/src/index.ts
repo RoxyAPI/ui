@@ -7,6 +7,10 @@ export {
 	type RoxyAngelNumberLookupProps,
 } from './components/angel-number-lookup.js';
 export {
+	RoxyArudhaPadas,
+	type RoxyArudhaPadasProps,
+} from './components/arudha-padas.js';
+export {
 	RoxyAshtakavargaGrid,
 	type RoxyAshtakavargaGridProps,
 } from './components/ashtakavarga-grid.js';
@@ -26,6 +30,10 @@ export {
 	RoxyBodygraph,
 	type RoxyBodygraphProps,
 } from './components/bodygraph.js';
+export {
+	RoxyCharaKarakas,
+	type RoxyCharaKarakasProps,
+} from './components/chara-karakas.js';
 export {
 	RoxyChoghadiyaGrid,
 	type RoxyChoghadiyaGridProps,
@@ -182,6 +190,10 @@ export {
 	RoxyTransitsTable,
 	type RoxyTransitsTableProps,
 } from './components/transits-table.js';
+export {
+	RoxyUpagrahaTable,
+	type RoxyUpagrahaTableProps,
+} from './components/upagraha-table.js';
 export {
 	RoxyVedicAspects,
 	type RoxyVedicAspectsProps,
