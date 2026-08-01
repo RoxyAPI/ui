@@ -36,7 +36,7 @@
 		"test:e2e": "playwright test",
 		"check": "biome check . --fix",
 		"brand:check": "bun run scripts/brand-grep.ts",
-		"postinstall": "bun run generate || true"
+		"postinstall": "ROXYAPI_SPEC_FILE=specs/openapi.json bun run generate || true"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.12.1",
