@@ -51,11 +51,15 @@ pre-commit:
 pre-push:
   parallel: false
   commands:
+    # Hermetic: regenerates from the committed spec, so this verifies the committed types still
+    # reproduce from it, with no network dependency. Refreshing the spec is the release job.
     spec-drift:
+      env:
+        ROXYAPI_SPEC_FILE: specs/openapi.json
       run: |
         bun run generate
         git diff --exit-code -- specs/openapi.json packages/ui/src/types/ \
-          || { echo "specs/openapi.json or generated types drifted from live spec. Run 'bun run generate' and commit."; exit 1; }
+          || { echo "Generated types drifted from the committed spec. Run 'bun run generate' and commit."; exit 1; }
       priority: 1
     typecheck:
       run: bun run typecheck

@@ -11,23 +11,38 @@ const SPEC_URL =
 	process.env.ROXY_OPENAPI_URL ?? 'https://roxyapi.com/api/v2/openapi.json';
 const SPEC_PATH = 'specs/openapi.json';
 
-console.log(`Fetching OpenAPI spec from ${SPEC_URL}`);
+/**
+ * Path to read the spec from instead of fetching it.
+ *
+ * @remarks
+ * Keeps generation offline and byte-reproducible, which is what the codegen drift check in CI
+ * relies on. Distinct from `ROXY_OPENAPI_URL`, which only points the fetch at a different server.
+ */
+const SPEC_FILE = process.env.ROXYAPI_SPEC_FILE;
 
 let spec: unknown;
-try {
-	const res = await fetch(SPEC_URL, {
-		headers: { 'Cache-Control': 'no-cache' },
-	});
-	if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-	spec = await res.json();
-} catch (err) {
-	if (existsSync(SPEC_PATH)) {
-		console.warn(
-			`! Live spec fetch failed (${err instanceof Error ? err.message : String(err)}). Using cached ${SPEC_PATH}.`,
-		);
-		spec = JSON.parse(await Bun.file(SPEC_PATH).text());
-	} else {
-		throw err;
+if (SPEC_FILE) {
+	console.log(
+		`Reading OpenAPI spec from ${SPEC_FILE} (offline, ROXYAPI_SPEC_FILE)`,
+	);
+	spec = JSON.parse(await Bun.file(SPEC_FILE).text());
+} else {
+	console.log(`Fetching OpenAPI spec from ${SPEC_URL}`);
+	try {
+		const res = await fetch(SPEC_URL, {
+			headers: { 'Cache-Control': 'no-cache' },
+		});
+		if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+		spec = await res.json();
+	} catch (err) {
+		if (existsSync(SPEC_PATH)) {
+			console.warn(
+				`! Live spec fetch failed (${err instanceof Error ? err.message : String(err)}). Using cached ${SPEC_PATH}.`,
+			);
+			spec = JSON.parse(await Bun.file(SPEC_PATH).text());
+		} else {
+			throw err;
+		}
 	}
 }
 

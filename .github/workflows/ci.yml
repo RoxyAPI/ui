@@ -15,11 +15,16 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
 
-      - name: Verify OpenAPI spec is in sync with live API
+      # Hermetic: regenerates from the committed spec, so this verifies that the committed
+      # generated types still reproduce from it, with no network dependency. Refreshing the
+      # spec itself is the release workflow's job.
+      - name: Verify generated types match the committed OpenAPI spec
+        env:
+          ROXYAPI_SPEC_FILE: specs/openapi.json
         run: |
           bun run generate
           git diff --exit-code -- specs/openapi.json packages/ui/src/types/ \
-            || { echo "::error::OpenAPI spec or generated types are stale. Run 'bun run generate' locally and commit."; exit 1; }
+            || { echo "::error::Generated types are stale. Run 'bun run generate' locally and commit."; exit 1; }
 
       - run: bun run check
       - name: No stray backticks inside css`` templates
