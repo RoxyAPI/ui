@@ -51,15 +51,17 @@ pre-commit:
 pre-push:
   parallel: false
   commands:
-    # Hermetic: regenerates from the committed spec, so this verifies the committed types still
-    # reproduce from it, with no network dependency. Refreshing the spec is the release job.
+    # Hermetic: regenerates from the committed spec, then asserts the TRACKED generator outputs
+    # still reproduce. `packages/ui/src/types` is gitignored, so it is deliberately not asserted
+    # (a git diff on it is always empty). `build` is what normalises generator formatting, so the
+    # bindings and catalog are asserted through it rather than straight off `generate`.
     spec-drift:
       env:
         ROXYAPI_SPEC_FILE: specs/openapi.json
       run: |
-        bun run generate
-        git diff --exit-code -- specs/openapi.json packages/ui/src/types/ \
-          || { echo "Generated types drifted from the committed spec. Run 'bun run generate' and commit."; exit 1; }
+        bun run build
+        git diff --exit-code -- specs/openapi.json packages/ui/src/generated packages/ui/components-catalog.json \
+          || { echo "Generated bindings or catalog drifted from the committed spec. Run 'bun run build' and commit."; exit 1; }
       priority: 1
     typecheck:
       run: bun run typecheck

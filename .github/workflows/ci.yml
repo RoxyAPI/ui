@@ -15,17 +15,9 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
 
-      # Hermetic: regenerates from the committed spec, so this verifies that the committed
-      # generated types still reproduce from it, with no network dependency. Refreshing the
-      # spec itself is the release workflow's job.
-      - name: Verify generated types match the committed OpenAPI spec
-        env:
-          ROXYAPI_SPEC_FILE: specs/openapi.json
-        run: |
-          bun run generate
-          git diff --exit-code -- specs/openapi.json packages/ui/src/types/ \
-            || { echo "::error::Generated types are stale. Run 'bun run generate' locally and commit."; exit 1; }
-
+      # `postinstall` already ran the hermetic generate during `bun install`, so there is
+      # nothing to re-run here. The committed codegen is asserted after `bun run build`
+      # below, which is the step that formats generator output into its canonical form.
       - run: bun run check
       - name: No stray backticks inside css`` templates
         run: bun run scripts/check-css-backticks.ts
@@ -42,6 +34,16 @@ jobs:
       # it lives here and in lefthook pre-push, never in build/catalog:sync.
       - name: Preview coverage (every slug has 1200x800 light + dark webp)
         run: bun run check:previews
+
+      # The TRACKED generator outputs must reproduce from the committed spec. Asserted after
+      # `bun run build`, because build is what normalises generator output into the committed
+      # (tab-indented) form; asserting straight after `generate` would fail on indentation alone.
+      # `packages/ui/src/types` is deliberately NOT listed: it is gitignored, so a git diff on it
+      # is always empty and asserting it only produced false confidence.
+      - name: Codegen drift (bindings and catalog reproduce from the committed spec)
+        run: |
+          git diff --exit-code -- specs/openapi.json packages/ui/src/generated packages/ui/components-catalog.json \
+            || { echo "::error::Generated bindings or catalog are stale. Run 'bun run build' locally and commit."; exit 1; }
 
       # packages/ui-{react,vue}/src is GENERATED from packages/ui. A diff here
       # means generated output was hand-edited; the next build would revert it.

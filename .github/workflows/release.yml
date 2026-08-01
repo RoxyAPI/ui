@@ -69,45 +69,30 @@ jobs:
       - name: Regenerate types from spec
         run: bun run generate
 
-      - name: Spec drift gate
+      # The human-review barrier for a manual-publish repo: block the release when the committed
+      # spec is behind live, so a spec refresh always lands in a reviewed commit before it ships.
+      # `packages/ui/src/types` is gitignored and therefore cannot be asserted here.
+      - name: Spec drift gate (committed spec must already match live)
         run: |
-          if ! git diff --exit-code -- specs/openapi.json packages/ui/src/types/; then
-            echo "OpenAPI spec or generated types are stale relative to live API. Local must be in sync before release."
-            exit 1
-          fi
+          git diff --exit-code -- specs/openapi.json \
+            || { echo "::error::specs/openapi.json is behind the live API. Run 'bun run generate', commit the refresh, then release."; exit 1; }
 
       - name: Sync docs from spec
         run: bun run docs:sync
 
-      - name: Check if spec changed
-        id: diff
-        run: |
-          OLD=$(git show HEAD:specs/openapi.json 2>/dev/null | jq -cS '{paths, components}' || echo '')
-          NEW=$(jq -cS '{paths, components}' specs/openapi.json)
-          if [ "$OLD" = "$NEW" ]; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-
       - name: Lint
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: bun run check
 
       - name: Typecheck
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: bun run typecheck
 
       - name: Build
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: bun run build
 
       - name: Unit tests
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: bun run test
 
       - name: Provision Playwright browsers from MCR image (bypass cdn.playwright.dev)
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         # cdn.playwright.dev browser-binary downloads stall from GitHub runners
         # (the binaries never finish, hanging the job). Pull the exact matching
         # browsers from the official Playwright image on Microsoft Container
@@ -123,11 +108,9 @@ jobs:
           ls -1 "$HOME/.cache/ms-playwright"
 
       - name: E2E tests
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: bun run test:e2e
 
       - name: UI audit (no [object Object], no empty-state drift)
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           bun run preview &
           PREVIEW_PID=$!
@@ -142,7 +125,6 @@ jobs:
 
       - name: Bump versions and rebuild
         id: bump
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           BUMP="${{ github.event.inputs.version_bump || 'patch' }}"
           bump() {
@@ -179,23 +161,19 @@ jobs:
       # packages are touched and nothing is published at all. Whenever a new wrapper
       # package is added, move it to the top of this list until it has shipped once.
       - name: Publish @roxyapi/ui-vue
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           npm install -g npm@latest
           (cd packages/ui-vue && npm publish --access public --provenance)
 
       - name: Publish @roxyapi/ui
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           (cd packages/ui && npm publish --access public --provenance)
 
       - name: Publish @roxyapi/ui-react
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           (cd packages/ui-react && npm publish --access public --provenance)
 
       - name: Commit, tag, push
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -217,13 +195,11 @@ jobs:
       # already holds the post-bump build from the "Bump versions and rebuild"
       # step, so this uploads the correct artifact with no extra build.
       - name: Upload Pages artifact
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-pages-artifact@v5
         with:
           path: apps/docs
 
       - name: Pack npm tarballs for release assets
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p .release-assets
           (cd packages/ui && npm pack --pack-destination ../../.release-assets)
@@ -232,7 +208,6 @@ jobs:
           ls -la .release-assets/
 
       - name: Create GitHub release
-        if: steps.diff.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.bump.outputs.version }}
