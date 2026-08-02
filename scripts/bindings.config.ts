@@ -253,4 +253,5 @@ export const UNBOUND_COMPONENTS: Record<string, string> = {
 	'roxy-upagraha-table': 'POST /vedic-astrology/upagraha',
 	'roxy-chara-karakas': 'POST /vedic-astrology/chara-karakas',
 	'roxy-arudha-padas': 'POST /vedic-astrology/arudha',
+	'roxy-heliacal-table': 'POST /vedic-astrology/heliacal',
 };

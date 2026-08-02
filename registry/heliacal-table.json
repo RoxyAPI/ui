@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-heliacal-table",
+  "type": "registry:ui",
+  "title": "RoxyHeliacalTable",
+  "description": "Whether each graha stands far enough from the Sun to be seen, with the date it next rises or sets",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-heliacal-table.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyHeliacalTable data={...} />: Whether each graha stands far enough from the Sun to be seen, with the date it next rises or sets.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/heliacal-table/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyHeliacalTable as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyHeliacalTableProps = ComponentProps<typeof Element>;\n\nexport function RoxyHeliacalTable(props: RoxyHeliacalTableProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyHeliacalTable;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/heliacal-table.tsx"
+    }
+  ]
+}

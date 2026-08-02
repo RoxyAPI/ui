@@ -681,6 +681,19 @@
       }
     },
     {
+      "tag": "roxy-heliacal-table",
+      "pascal": "RoxyHeliacalTable",
+      "slug": "heliacal-table",
+      "domain": "Vedic",
+      "renders": "Udaya and asta windows for the six visible grahas, the calculation behind Guru Asta and Shukra Asta",
+      "endpointLabel": "POST /vedic-astrology/heliacal",
+      "endpoints": [],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/heliacal-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/heliacal-table-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-upagraha-table",
       "pascal": "RoxyUpagrahaTable",
       "slug": "upagraha-table",

@@ -47,6 +47,7 @@ const TARGETS: Target[] = [
 	{ id: 'kp', label: 'kp-planets-table' },
 	{ id: 'kp-ruling', label: 'kp-ruling-planets' },
 	{ id: 'upagraha', label: 'upagraha-table' },
+	{ id: 'heliacal', label: 'heliacal-table' },
 	{ id: 'chara-karakas', label: 'chara-karakas' },
 	{ id: 'arudha', label: 'arudha-padas' },
 	{ id: 'ashtakavarga', label: 'ashtakavarga-grid' },

@@ -104,6 +104,10 @@ export {
 	RoxyHdVariables,
 	type RoxyHdVariablesProps,
 } from './components/hd-variables.js';
+export {
+	RoxyHeliacalTable,
+	type RoxyHeliacalTableProps,
+} from './components/heliacal-table.js';
 export { RoxyHexagram, type RoxyHexagramProps } from './components/hexagram.js';
 export {
 	RoxyHoraTable,

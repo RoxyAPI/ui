@@ -602,6 +602,16 @@ async function main() {
 				},
 			}),
 		),
+		run('heliacal', () =>
+			roxy.vedicAstrology.getHeliacalVisibility({
+				body: {
+					date: PERSON1.date,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
 		run('upagraha', () =>
 			roxy.vedicAstrology.getUpagrahaPositions({
 				body: {

@@ -388,6 +388,19 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Vedic',
 	},
 	{
+		pascal: 'RoxyHeliacalTable',
+		tag: 'roxy-heliacal-table',
+		slug: 'heliacal-table',
+		heading: 'Heliacal rising and setting',
+		description:
+			'Whether each graha stands far enough from the Sun to be seen, with the date it next rises or sets',
+		docsLabel: 'Vedic',
+		endpointLabel: 'POST /vedic-astrology/heliacal',
+		docsSummary:
+			'Udaya and asta windows for the six visible grahas, the calculation behind Guru Asta and Shukra Asta',
+		topic: 'Vedic',
+	},
+	{
 		pascal: 'RoxyUpagrahaTable',
 		tag: 'roxy-upagraha-table',
 		slug: 'upagraha-table',

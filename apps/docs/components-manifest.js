@@ -498,6 +498,14 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'heliacal',
+		tag: 'roxy-heliacal-table',
+		seoLine: 'Heliacal rising and setting: the Guru Asta and Shukra Asta windows',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getHeliacalVisibility({
+    body: { date: '${PERSON1.date}', latitude: ${PERSON1.latitude}, longitude: ${PERSON1.longitude}, timezone: ${PERSON1.timezone} },
+  });`,
+	}),
+	entry({
 		id: 'upagraha',
 		tag: 'roxy-upagraha-table',
 		seoLine: 'Upagraha positions: Gulika, Mandi and the Dhuma group',

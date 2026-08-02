@@ -88,6 +88,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'divisional-chart': 'DivisionalChartResponse',
 	'ashtakavarga-grid': 'AshtakavargaResponse',
 	'shadbala-table': 'ShadbalaResponse',
+	'heliacal-table': 'HeliacalResponse',
 	'upagraha-table': 'UpagrahaResponse',
 	'chara-karakas': 'CharaKarakaResponse',
 	'arudha-padas': 'ArudhaResponse',

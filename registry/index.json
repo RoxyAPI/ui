@@ -120,6 +120,10 @@
       "description": "Day and night Choghadiya muhurta tiles for activity timing"
     },
     {
+      "name": "roxy-heliacal-table",
+      "description": "Whether each graha stands far enough from the Sun to be seen, with the date it next rises or sets"
+    },
+    {
       "name": "roxy-upagraha-table",
       "description": "The eleven upagrahas in their time-based and Sun-based groups, with rashi, degree, and nakshatra"
     },

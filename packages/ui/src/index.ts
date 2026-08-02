@@ -43,6 +43,7 @@ export { RoxyHdConnection } from './components/hd-connection.js';
 export { RoxyHdPenta } from './components/hd-penta.js';
 export { RoxyHdTypeCard } from './components/hd-type-card.js';
 export { RoxyHdVariables } from './components/hd-variables.js';
+export { RoxyHeliacalTable } from './components/heliacal-table.js';
 // I Ching
 export { RoxyHexagram } from './components/hexagram.js';
 export { RoxyHoraTable } from './components/hora-table.js';
