@@ -823,7 +823,10 @@ function joinCycle(num: number | undefined, theme: string | undefined): string {
 }
 
 /** "ages 27 to 35", or "ages 54 onward" for the final phase, which the API closes with a null end age. */
-function ageRange(start: number | undefined, end: number | undefined): string {
+function ageRange(
+	start: number | null | undefined,
+	end: number | null | undefined,
+): string {
 	if (start == null) return '';
 	return end == null ? `ages ${start} onward` : `ages ${start} to ${end}`;
 }

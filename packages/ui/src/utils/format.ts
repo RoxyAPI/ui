@@ -189,3 +189,38 @@ export function formatDateTime(input: unknown, time?: unknown): string {
 	if (date && clock) return `${date}, ${clock}`;
 	return date || clock;
 }
+
+/**
+ * The Sanskrit form of a name, but only when it actually differs from the English one.
+ *
+ * @remarks
+ * Several endpoints pair an English `name` with a `sanskritName` that is sometimes the SAME string, because the tradition and the translation coincide (a nakshatra is `Ashwini` either way). Rendering the pair unconditionally then prints `Ashwini (Ashwini)`. That guard is the whole reason this exists: it is one comparison, it is easy to leave out, and leaving it out is invisible until a reader hits a name where the two agree.
+ *
+ * Presentation deliberately stays with the caller, since the same fact is drawn as a parenthetical in a table cell and as a middot-separated span on a chart heading.
+ */
+export function distinctSanskrit(
+	name: unknown,
+	sanskritName: unknown,
+): string | undefined {
+	if (typeof sanskritName !== 'string' || !sanskritName) return undefined;
+	return sanskritName === name ? undefined : sanskritName;
+}
+
+/**
+ * `English (Sanskrit)` for a value that carries both, falling back to whichever one exists.
+ *
+ * @example
+ * ```ts
+ * formatWithSanskrit('Tuesday', 'Mangalavara'); // 'Tuesday (Mangalavara)'
+ * formatWithSanskrit('Ashwini', 'Ashwini');     // 'Ashwini'
+ * ```
+ */
+export function formatWithSanskrit(
+	name: unknown,
+	sanskritName: unknown,
+): string {
+	const english = typeof name === 'string' ? name : '';
+	const sanskrit = distinctSanskrit(english, sanskritName);
+	if (!english) return sanskrit ?? '';
+	return sanskrit ? `${english} (${sanskrit})` : english;
+}

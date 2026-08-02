@@ -214,19 +214,19 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 		</article>`;
 	}
 
-	private attr(label: string, value: string | number | undefined) {
+	private attr(label: string, value: string | number | null | undefined) {
 		if (value === undefined || value === null || value === '') return nothing;
 		return html`<div class="attr"><dt>${label}</dt><dd>${value}</dd></div>`;
 	}
 
-	private list(label: string, values: readonly string[] | undefined) {
+	private list(label: string, values: readonly string[] | null | undefined) {
 		if (!values?.length) return nothing;
 		return html`<div class="attr"><dt>${label}</dt><dd>${values.join(', ')}</dd></div>`;
 	}
 
 	private renderMeaning(m: GetCrystalResponse['meaning'] | undefined) {
 		if (!m) return nothing;
-		const rows: Array<[string, string | undefined]> = [
+		const rows: Array<[string, string | null | undefined]> = [
 			['Spiritual', m.spiritual],
 			['Emotional', m.emotional],
 			['Physical', m.physical],

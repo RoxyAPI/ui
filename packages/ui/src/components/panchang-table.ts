@@ -7,7 +7,12 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
-import { formatDate, formatTime, formatTimeRange } from '../utils/format.js';
+import {
+	formatDate,
+	formatTime,
+	formatTimeRange,
+	formatWithSanskrit,
+} from '../utils/format.js';
 
 type PanchangData = GetBasicPanchangResponse | GetDetailedPanchangResponse;
 type Detailed = GetDetailedPanchangResponse;
@@ -161,7 +166,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		const detailed = 'sunrise' in d ? d : null;
 		const basic = 'sunLongitude' in d ? d : null;
 
-		const muhurtas: Array<[string, PanchangTime | undefined]> = detailed
+		const muhurtas: Array<[string, PanchangTime | null | undefined]> = detailed
 			? [
 					['Brahma Muhurta', detailed.brahmaMuhurta],
 					['Abhijit Muhurta', detailed.abhijitMuhurta],
@@ -307,7 +312,10 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		if (detailed?.vara) {
 			rows.push({
 				label: 'Vara',
-				value: detailed.vara.name ?? '',
+				value: formatWithSanskrit(
+					detailed.vara.name,
+					detailed.vara.sanskritName,
+				),
 				meta: detailed.vara.lord ? `Lord ${detailed.vara.lord}` : '',
 			});
 		}
@@ -494,10 +502,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 
 	/** "English (Sanskrit)" label for the Moon or Sun rashi at sunrise. */
 	private formatRashi(r: RashiPlacement | undefined): string {
-		if (!r?.name) return '';
-		return r.sanskritName && r.sanskritName !== r.name
-			? `${r.name} (${r.sanskritName})`
-			: r.name;
+		return formatWithSanskrit(r?.name, r?.sanskritName);
 	}
 
 	/** Sun nakshatra with pada and lord, the form a panchang reader expects. */

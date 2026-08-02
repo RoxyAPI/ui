@@ -4,6 +4,7 @@ import { PLANET_GLYPH } from '../tokens/index.js';
 import type { DivisionalChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { distinctSanskrit } from '../utils/format.js';
 import {
 	type ChartStyle,
 	type KundliViewModel,
@@ -98,7 +99,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 					<h2 class="title">
 						D${division.number} ${division.name}
 						${
-							division.sanskritName && division.sanskritName !== division.name
+							distinctSanskrit(division.name, division.sanskritName)
 								? html`<span class="division-meta"> · ${division.sanskritName}</span>`
 								: nothing
 						}

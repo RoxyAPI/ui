@@ -15,7 +15,8 @@ export interface OpenApiSchemaRef {
 
 /** The subset of an OpenAPI 3 schema object the form reads. */
 export interface OpenApiSchema extends OpenApiSchemaRef {
-	type?: string;
+	/** A plain name in 3.0, or an ARRAY in 3.1 where nullability is spelled `['number', 'null']`. Read it through {@link scalarType}, never compare it directly. */
+	type?: string | string[];
 	format?: string;
 	description?: string;
 	enum?: string[];
@@ -132,7 +133,7 @@ function representative(s: OpenApiSchema): OpenApiSchema {
 	if (!union || union.length === 0) return s;
 	return (
 		union.find((m) => Array.isArray(m.enum)) ??
-		union.find((m) => m.type && m.type !== 'null') ??
+		union.find((m) => scalarType(m) && scalarType(m) !== 'null') ??
 		union[0] ??
 		s
 	);
@@ -141,17 +142,31 @@ function representative(s: OpenApiSchema): OpenApiSchema {
 /**
  * Map one resolved schema to its {@link InputKind}, or `null` when the shape is genuinely unhandled. The form treats `null` as a plain text fallback (never crashes); the taxonomy gate treats it as a failure (forces a decision). Object schemas are never passed here: an object with `properties` expands into a group of leaf fields upstream, so it has no leaf kind of its own.
  */
+/**
+ * The single scalar type name a schema resolves to, across both OpenAPI spellings.
+ *
+ * @remarks
+ * OpenAPI 3.1 expresses a nullable scalar as `type: ['number', 'null']` where 3.0 wrote `type: 'number', nullable: true`. Every direct `type === 'number'` comparison silently stops matching the day the served document switches, and the field then classifies as UNHANDLED rather than as a number, which is how a whole form degrades to text boxes without one test noticing. The `null` member carries no input information, so the remaining single member IS the type.
+ */
+export function scalarType(s: OpenApiSchema): string | undefined {
+	if (typeof s.type === 'string') return s.type;
+	if (!Array.isArray(s.type)) return undefined;
+	const real = s.type.filter((t) => t !== 'null');
+	return real.length === 1 ? real[0] : undefined;
+}
+
 export function classifyInput(schema: OpenApiSchema): InputKind | null {
 	const s = representative(schema);
+	const type = scalarType(s);
 	if (Array.isArray(s.enum))
 		return s.enum.length <= TILE_MAX ? 'tiles' : 'select';
-	if (s.type === 'boolean') return 'toggle';
+	if (type === 'boolean') return 'toggle';
 	if (s.format === 'date') return 'date';
 	if (s.format === 'time') return 'time';
 	if (s.format === 'date-time') return 'datetime';
-	if (s.type === 'integer' || s.type === 'number') return 'number';
-	if (s.type === 'string') return 'text';
-	if (s.type === 'array') return 'array';
+	if (type === 'integer' || type === 'number') return 'number';
+	if (type === 'string') return 'text';
+	if (type === 'array') return 'array';
 	return null;
 }
 

@@ -19,6 +19,7 @@ import {
 	polarToCartesian,
 } from '../src/utils/degree.js';
 import {
+	distinctSanskrit,
 	formatAspectName,
 	formatAyanamsa,
 	formatDate,
@@ -27,6 +28,7 @@ import {
 	formatNumber,
 	formatPercent,
 	formatTime,
+	formatWithSanskrit,
 	normalizeAspect,
 } from '../src/utils/format.js';
 import { toKundliViewModel } from '../src/utils/kundli-render.js';
@@ -558,6 +560,24 @@ describe('shared display formatters', () => {
 		expect(formatAyanamsa('lahiri', 23.72)).toBe('Lahiri (23.72\u00b0)');
 		expect(formatAyanamsa('lahiri')).toBe('Lahiri');
 		expect(formatAyanamsa('raman-something')).toBe('Raman something');
+	});
+
+	test('formatWithSanskrit only appends a Sanskrit form that actually differs', () => {
+		expect(formatWithSanskrit('Tuesday', 'Mangalavara')).toBe(
+			'Tuesday (Mangalavara)',
+		);
+		// The guard this helper exists for. Several nakshatras and rashis carry the
+		// same string in both fields, and without it they render as `Ashwini (Ashwini)`.
+		expect(formatWithSanskrit('Ashwini', 'Ashwini')).toBe('Ashwini');
+		expect(formatWithSanskrit('Tuesday', undefined)).toBe('Tuesday');
+		expect(formatWithSanskrit(undefined, 'Mangalavara')).toBe('Mangalavara');
+		expect(formatWithSanskrit(undefined, undefined)).toBe('');
+	});
+
+	test('distinctSanskrit reports absence rather than an empty string', () => {
+		expect(distinctSanskrit('Ashwini', 'Ashwini')).toBeUndefined();
+		expect(distinctSanskrit('Aries', 'Mesha')).toBe('Mesha');
+		expect(distinctSanskrit('Aries', '')).toBeUndefined();
 	});
 });
 
