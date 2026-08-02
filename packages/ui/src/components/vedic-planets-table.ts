@@ -6,7 +6,7 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
-import { formatNumber } from '../utils/format.js';
+import { formatNumber, formatWithSanskrit } from '../utils/format.js';
 import { capitalize } from '../utils/string.js';
 
 /**
@@ -107,6 +107,12 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			}
 			tbody tr.lagna {
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 10%, transparent);
+			}
+			/* The moderns are separated from the nine grahas by a RULE, never a tint. A tint
+			   would read as emphasis the tradition does not give them, and a tinted row is
+			   exactly where this library has measured muted text below the AA floor before. */
+			tbody tr.modern-first {
+				border-top-width: 2px;
 			}
 			td.graha {
 				font-weight: var(--roxy-weight-bold, 600);
@@ -268,7 +274,8 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 					nakshatra lord, house, its state in all three avastha systems, and retrograde
 					state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and
 					the Lagna do not have, so those two cells are blank on the Rahu, Ketu and
-					Lagna rows.
+					Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no
+					sign, so every avastha and house cell is blank on their rows too.
 				</caption>
 				<thead>
 					<tr>
@@ -322,6 +329,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 							<td>${p.isRetrograde ? html`<span class="retro">R</span>` : nothing}</td>
 						</tr>`;
 					})}
+					${this.renderModernRows()}
 				</tbody>
 			</table>
 			</div>
@@ -331,6 +339,39 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			${this.renderYogas()}
 			${this.renderHouses()}
 		</div>`;
+	}
+
+	/**
+	 * Uranus, Neptune and Pluto, present only when the caller sent `modernPlanets: true`.
+	 *
+	 * @remarks
+	 * They arrive in their OWN array rather than inside `meta`, which is deliberate on the API side and load-bearing here: a component iterating `meta` must not pick them up by accident, because classical Jyotish is defined over nine grahas. The moderns rule no sign, so they have no dignity and therefore no Baladi, Jagradadi or Deeptadi state and no house lordship.
+	 *
+	 * Those cells are left BLANK rather than filled with a zero or a dash, matching what the nodes and the Lagna already do two columns over. A zero would read as a measured state of zero strength, which is a different and false claim from "this system does not apply here".
+	 */
+	private renderModernRows() {
+		const moderns = this.data?.modernPlanets ?? [];
+		if (moderns.length === 0) return nothing;
+		return moderns.map((m, i) => {
+			const signGlyph = SIGN_GLYPH[capitalize(m.rashi ?? '')] ?? '';
+			return html`<tr class="modern ${i === 0 ? 'modern-first' : ''}">
+				<td class="graha">${formatWithSanskrit(m.planet, m.sanskritName)}</td>
+				<td>
+					${signGlyph ? html`<span class="glyph">${signGlyph}</span>` : nothing}${m.rashi ?? ''}
+				</td>
+				<td class="num">
+					${typeof m.longitude === 'number' ? formatSignPosition(m.longitude) : ''}
+				</td>
+				<td>${m.nakshatra?.name ?? ''}</td>
+				<td class="num">${m.nakshatra?.pada ?? ''}</td>
+				<td>${m.nakshatra?.lord ?? ''}</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>${m.isRetrograde ? html`<span class="retro">R</span>` : nothing}</td>
+			</tr>`;
+		});
 	}
 
 	private renderCombustion() {

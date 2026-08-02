@@ -161,6 +161,10 @@ async function main() {
 				},
 			}),
 		),
+		// `modernPlanets` and `avasthaInfo` default to FALSE on the API, and the planets
+		// table renders a row group and three columns that exist only when they are sent.
+		// A sample that omits them leaves those renderers permanently unaudited, since the
+		// audit can only see what the fixture contains.
 		run('vedic-planets', () =>
 			roxy.vedicAstrology.generateBirthChart({
 				body: {
@@ -169,6 +173,8 @@ async function main() {
 					latitude: PERSON1.latitude,
 					longitude: PERSON1.longitude,
 					timezone: PERSON1.timezone,
+					modernPlanets: true,
+					avasthaInfo: true,
 				},
 			}),
 		),

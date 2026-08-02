@@ -19,6 +19,7 @@ import {
 	polarToCartesian,
 } from '../src/utils/degree.js';
 import {
+	AYANAMSA_LABEL,
 	distinctSanskrit,
 	formatAspectName,
 	formatAyanamsa,
@@ -553,12 +554,25 @@ describe('shared display formatters', () => {
 		expect(formatDateRange(undefined, undefined)).toBe('');
 	});
 
+	test('every ayanamsa the spec accepts has a human label', async () => {
+		// The map is hand-written because no humanizer can know that KP is an initialism or
+		// that Raman is a person. That is exactly why it goes stale: `raman` shipped months
+		// after the map and rendered as a bare "Raman" until someone read the output. Bind it
+		// to the committed spec so the next frame cannot arrive unlabelled.
+		const spec = await Bun.file('specs/openapi.json').json();
+		const frames: string[] =
+			spec.components.schemas.BirthChartRequest.properties.ayanamsa.enum;
+		expect(frames.length).toBeGreaterThan(3);
+		expect(frames.filter((f) => !AYANAMSA_LABEL[f])).toEqual([]);
+	});
+
 	test('formatAyanamsa keeps KP uppercase and degrades unknown frames', () => {
 		expect(formatAyanamsa('kp-newcomb', 23.6214)).toBe(
 			'KP Newcomb (23.62\u00b0)',
 		);
 		expect(formatAyanamsa('lahiri', 23.72)).toBe('Lahiri (23.72\u00b0)');
 		expect(formatAyanamsa('lahiri')).toBe('Lahiri');
+		expect(formatAyanamsa('raman', 22.5)).toBe('B.V. Raman (22.5\u00b0)');
 		expect(formatAyanamsa('raman-something')).toBe('Raman something');
 	});
 

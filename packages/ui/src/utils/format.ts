@@ -144,12 +144,15 @@ export function formatAspectName(a: { type?: string }): string {
 /**
  * Display label for an ayanamsa identifier. `kp-newcomb` -> `KP Newcomb`.
  *
- * The raw values are API enums. KP is an initialism and must stay uppercase, which {@link humanize} alone cannot know, so the three known frames are mapped explicitly and anything else degrades to a humanized slug rather than rendering the enum.
+ * The raw values are API enums, and every one of them needs a human form that {@link humanize} cannot derive: KP is an initialism that must stay uppercase, and `raman` is a person, B.V. Raman, not a word. Anything unmapped degrades to a humanized slug rather than rendering the enum, which is a safe fallback and NOT a licence to skip the map: `raman` shipped as a frame months after this map was written and read as a bare "Raman" until 2026-08-03. `format.test.ts` now fails if the committed spec gains a frame this map lacks.
  */
-const AYANAMSA_LABEL: Record<string, string> = {
+export const AYANAMSA_LABEL: Record<string, string> = {
 	'kp-newcomb': 'KP Newcomb',
 	'kp-old': 'KP Old',
 	lahiri: 'Lahiri',
+	raman: 'B.V. Raman',
+
+	custom: 'Custom',
 };
 
 export function formatAyanamsa(type: unknown, degrees?: unknown): string {
