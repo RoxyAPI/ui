@@ -18,6 +18,7 @@ import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
+import { widgetSnippets } from './widget-snippets.js';
 
 const OUT_PATH = 'packages/ui/components-catalog.json';
 
@@ -28,6 +29,11 @@ const version = (
 ).version;
 
 // Preview composites are committed repo assets, not npm files, so they ship via the jsDelivr gh route pinned to the release tag (same pattern as build-registry.ts). Tag-pinned URLs are immutable: release.yml bumps the version, rebuilds this catalog, publishes, and pushes the tag in one run, so the tag always exists before any consumer sees the URLs through the @latest alias cache. Omit the field when a file is missing; completeness is enforced by check-previews.ts (pre-push + CI), never here (a build must exist before previews can be shot).
+// @latest while pre-1.0, matching what the /ui page and the demo already reference. Switch to @1 at the 1.0.0 cutover, in one place.
+const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
+const THEME_URL =
+	'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css';
+
 const PREVIEW_CDN = `https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v${version}/assets/previews`;
 const preview = (slug: string) =>
 	existsSync(`assets/previews/${slug}-light.webp`) &&
@@ -47,6 +53,23 @@ const components = ROXY_COMPONENTS.map((c) => {
 		path: e.path,
 		...(e.attrs ? { attrs: e.attrs } : {}),
 	}));
+	// The canonical copy-paste snippets, built once here so the demo, the
+	// roxyapi.com /widgets page and any future consumer render the same string
+	// instead of each rebuilding it. Absent for the helpers, which bind to nothing.
+	const head = endpoints[0];
+	const snippets = head
+		? {
+				snippets: widgetSnippets({
+					tag: c.tag,
+					slug: c.slug,
+					method: head.method,
+					path: head.path,
+					attrs: head.attrs,
+					cdnBase: CDN_BASE,
+					themeUrl: THEME_URL,
+				}),
+			}
+		: {};
 	return {
 		tag: c.tag,
 		pascal: c.pascal,
@@ -58,6 +81,7 @@ const components = ROXY_COMPONENTS.map((c) => {
 		// no single endpoint).
 		endpointLabel: c.endpointLabel,
 		endpoints,
+		...snippets,
 		...preview(c.slug),
 	};
 });

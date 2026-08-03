@@ -36,6 +36,8 @@ const DASHA_BODY = {
 
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
 const UI_CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
+// Must match PK_PLACEHOLDER in scripts/widget-snippets.ts, which produces the snippets.
+const PK_PLACEHOLDER = 'pk_live_YOUR_KEY';
 const PRACTITIONER_THEME_URL =
 	'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css';
 
@@ -62,32 +64,25 @@ function lookup(tag) {
  * Returns null for a component with no binding (the three helpers), and the demo
  * hides the tab for those.
  */
+/**
+ * The Embed-tab snippets for an endpoint-bound component.
+ *
+ * Read from `window.ROXY_WIDGET_SNIPPETS`, which `scripts/sync-manifest.ts` emits from the
+ * same builder that writes the snippets into `components-catalog.json`. This function used to
+ * rebuild them here, which meant two implementations of one string and they drifted: this one
+ * shipped the practitioner theme commented out, the roxyapi.com /widgets page emitted it live.
+ * Do not reintroduce a local build; change `scripts/widget-snippets.ts` instead and every
+ * surface follows. Returns null for a component with no binding, so the demo hides the tab.
+ */
 function embedSnippet(tag, slug) {
-	const bindings = ENDPOINT_BINDINGS[tag];
-	if (!bindings || !bindings.length) return null;
+	const snippets = (window.ROXY_WIDGET_SNIPPETS || {})[tag];
+	if (!snippets) return null;
+	const bindings = ENDPOINT_BINDINGS[tag] || [];
 	const def = bindings[0];
-	const endpoint = def.path.replace(/^\//, '');
-	// POST is the element default, so only a GET binding needs an explicit method.
-	const methodAttr = def.method === 'POST' ? '' : ` method="${def.method}"`;
-	// The default variant's selector attribute (period/mode/type/spread/detail),
-	// so the script element renders the same view the one-tag default resolves to.
-	const configAttr = def.attrs
-		? Object.entries(def.attrs)
-				.map(([k, v]) => ` ${k}="${v}"`)
-				.join('')
-		: '';
-
-	const script = `<!-- Optional: warm practitioner theme (drop this line for the default look) -->
-<!-- <link rel="stylesheet" href="${PRACTITIONER_THEME_URL}"> -->
-<script src="${UI_CDN}/roxy-ui.js" defer></script>
-<${tag}${configAttr} data-endpoint="${endpoint}"${methodAttr} publishable-key="pk_live_..." lang="en"></${tag}>`;
-
-	const oneTag = `<script src="${UI_CDN}/widgets.js" defer></script>
-<div data-roxy-widget="${slug}" data-publishable-key="pk_live_..."></div>`;
 
 	// The selector attribute and its non-default values, surfaced on the hint line
 	// so one data-* attribute on the one-tag div switches variant.
-	const selector = def.attrs ? Object.keys(def.attrs)[0] : undefined;
+	const selector = def && def.attrs ? Object.keys(def.attrs)[0] : undefined;
 	const otherValues = selector
 		? bindings
 				.slice(1)
@@ -99,9 +94,9 @@ function embedSnippet(tag, slug) {
 			? ` Switch variant with data-${selector} (${otherValues.map((v) => `"${v}"`).join(', ')}) on the one-tag div.`
 			: '';
 
-	const hint = `Mint a publishable key at roxyapi.com/account, register the origins you embed on, and replace the pk_live_ placeholder. Works on any site that allows script tags.${variantHint}`;
+	const hint = `Mint a publishable key at roxyapi.com/account, register the origins you embed on, and replace the ${PK_PLACEHOLDER} placeholder. Works on any site that allows script tags.${variantHint}`;
 
-	return { script, oneTag, hint };
+	return { script: snippets.script, oneTag: snippets.oneTag, hint };
 }
 
 function serverRender(tag, body) {

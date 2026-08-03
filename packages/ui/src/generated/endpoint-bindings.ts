@@ -45,11 +45,6 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-aspects-table': [
 		{
-			operationId: 'detectAspectPatterns',
-			method: 'POST',
-			path: '/astrology/aspect-patterns',
-		},
-		{
 			operationId: 'calculateAspects',
 			method: 'POST',
 			path: '/astrology/aspects',
@@ -58,6 +53,11 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'calculateTransitAspects',
 			method: 'POST',
 			path: '/astrology/transit-aspects',
+		},
+		{
+			operationId: 'detectAspectPatterns',
+			method: 'POST',
+			path: '/astrology/aspect-patterns',
 		},
 	],
 	'roxy-astrocartography-map': [
@@ -83,14 +83,6 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-biorhythm-chart': [
 		{
-			operationId: 'getCriticalDays',
-			method: 'POST',
-			path: '/biorhythm/critical-days',
-			attrs: {
-				mode: 'critical-days',
-			},
-		},
-		{
 			operationId: 'getDailyBiorhythm',
 			method: 'POST',
 			path: '/biorhythm/daily',
@@ -104,6 +96,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/biorhythm/forecast',
 			attrs: {
 				mode: 'forecast',
+			},
+		},
+		{
+			operationId: 'getCriticalDays',
+			method: 'POST',
+			path: '/biorhythm/critical-days',
+			attrs: {
+				mode: 'critical-days',
 			},
 		},
 	],
@@ -138,19 +138,19 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 		{
-			operationId: 'calculateBioCompatibility',
-			method: 'POST',
-			path: '/biorhythm/compatibility',
-			attrs: {
-				mode: 'biorhythm',
-			},
-		},
-		{
 			operationId: 'calculateNumCompatibility',
 			method: 'POST',
 			path: '/numerology/compatibility',
 			attrs: {
 				mode: 'numerology',
+			},
+		},
+		{
+			operationId: 'calculateBioCompatibility',
+			method: 'POST',
+			path: '/biorhythm/compatibility',
+			attrs: {
+				mode: 'biorhythm',
 			},
 		},
 	],
@@ -180,19 +180,19 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-dasha-timeline': [
 		{
-			operationId: 'getCurrentDasha',
-			method: 'POST',
-			path: '/vedic-astrology/dasha/current',
-			attrs: {
-				period: 'current',
-			},
-		},
-		{
 			operationId: 'getMajorDashas',
 			method: 'POST',
 			path: '/vedic-astrology/dasha/major',
 			attrs: {
 				period: 'major',
+			},
+		},
+		{
+			operationId: 'getCurrentDasha',
+			method: 'POST',
+			path: '/vedic-astrology/dasha/current',
+			attrs: {
+				period: 'current',
 			},
 		},
 		{
@@ -242,19 +242,19 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-dosha-card': [
 		{
-			operationId: 'checkKalsarpaDosha',
-			method: 'POST',
-			path: '/vedic-astrology/dosha/kalsarpa',
-			attrs: {
-				type: 'kalsarpa',
-			},
-		},
-		{
 			operationId: 'checkManglikDosha',
 			method: 'POST',
 			path: '/vedic-astrology/dosha/manglik',
 			attrs: {
 				type: 'manglik',
+			},
+		},
+		{
+			operationId: 'checkKalsarpaDosha',
+			method: 'POST',
+			path: '/vedic-astrology/dosha/kalsarpa',
+			attrs: {
+				type: 'kalsarpa',
 			},
 		},
 		{
@@ -296,14 +296,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-forecast-timeline': [
 		{
-			operationId: 'findSignificantDates',
-			method: 'POST',
-			path: '/forecast/significant-dates',
-		},
-		{
 			operationId: 'generateTimeline',
 			method: 'POST',
 			path: '/forecast/timeline',
+		},
+		{
+			operationId: 'findSignificantDates',
+			method: 'POST',
+			path: '/forecast/significant-dates',
 		},
 		{
 			operationId: 'forecastTransits',
@@ -341,14 +341,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-hd-type-card': [
 		{
-			operationId: 'calculateProfile',
-			method: 'POST',
-			path: '/human-design/profile',
-		},
-		{
 			operationId: 'calculateType',
 			method: 'POST',
 			path: '/human-design/type',
+		},
+		{
+			operationId: 'calculateProfile',
+			method: 'POST',
+			path: '/human-design/profile',
 		},
 	],
 	'roxy-hd-variables': [
@@ -389,19 +389,19 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 		{
-			operationId: 'getMonthlyHoroscope',
-			method: 'GET',
-			path: '/astrology/horoscope/{sign}/monthly',
-			attrs: {
-				period: 'monthly',
-			},
-		},
-		{
 			operationId: 'getWeeklyHoroscope',
 			method: 'GET',
 			path: '/astrology/horoscope/{sign}/weekly',
 			attrs: {
 				period: 'weekly',
+			},
+		},
+		{
+			operationId: 'getMonthlyHoroscope',
+			method: 'GET',
+			path: '/astrology/horoscope/{sign}/monthly',
+			attrs: {
+				period: 'monthly',
 			},
 		},
 	],
@@ -435,14 +435,6 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-moon-phase': [
 		{
-			operationId: 'getMoonCalendar',
-			method: 'GET',
-			path: '/astrology/moon-phase/calendar/{year}/{month}',
-			attrs: {
-				mode: 'calendar',
-			},
-		},
-		{
 			operationId: 'getCurrentMoonPhase',
 			method: 'GET',
 			path: '/astrology/moon-phase/current',
@@ -456,6 +448,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/astrology/moon-phase/upcoming',
 			attrs: {
 				mode: 'upcoming',
+			},
+		},
+		{
+			operationId: 'getMoonCalendar',
+			method: 'GET',
+			path: '/astrology/moon-phase/calendar/{year}/{month}',
+			attrs: {
+				mode: 'calendar',
 			},
 		},
 	],
@@ -475,27 +475,11 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-numerology-card': [
 		{
-			operationId: 'calculateBirthDay',
+			operationId: 'calculateLifePath',
 			method: 'POST',
-			path: '/numerology/birth-day',
+			path: '/numerology/life-path',
 			attrs: {
-				type: 'birth-day',
-			},
-		},
-		{
-			operationId: 'generateNumerologyChart',
-			method: 'POST',
-			path: '/numerology/chart',
-			attrs: {
-				type: 'chart',
-			},
-		},
-		{
-			operationId: 'getDailyNumber',
-			method: 'POST',
-			path: '/numerology/daily',
-			attrs: {
-				type: 'daily',
+				type: 'life-path',
 			},
 		},
 		{
@@ -507,11 +491,27 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 		{
-			operationId: 'calculateLifePath',
+			operationId: 'calculateSoulUrge',
 			method: 'POST',
-			path: '/numerology/life-path',
+			path: '/numerology/soul-urge',
 			attrs: {
-				type: 'life-path',
+				type: 'soul-urge',
+			},
+		},
+		{
+			operationId: 'calculatePersonality',
+			method: 'POST',
+			path: '/numerology/personality',
+			attrs: {
+				type: 'personality',
+			},
+		},
+		{
+			operationId: 'calculateBirthDay',
+			method: 'POST',
+			path: '/numerology/birth-day',
+			attrs: {
+				type: 'birth-day',
 			},
 		},
 		{
@@ -520,6 +520,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/numerology/maturity',
 			attrs: {
 				type: 'maturity',
+			},
+		},
+		{
+			operationId: 'getDailyNumber',
+			method: 'POST',
+			path: '/numerology/daily',
+			attrs: {
+				type: 'daily',
 			},
 		},
 		{
@@ -547,31 +555,15 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 		{
-			operationId: 'calculatePersonality',
+			operationId: 'generateNumerologyChart',
 			method: 'POST',
-			path: '/numerology/personality',
+			path: '/numerology/chart',
 			attrs: {
-				type: 'personality',
-			},
-		},
-		{
-			operationId: 'calculateSoulUrge',
-			method: 'POST',
-			path: '/numerology/soul-urge',
-			attrs: {
-				type: 'soul-urge',
+				type: 'chart',
 			},
 		},
 	],
 	'roxy-panchang-table': [
-		{
-			operationId: 'getBasicPanchang',
-			method: 'POST',
-			path: '/vedic-astrology/panchang/basic',
-			attrs: {
-				detail: 'basic',
-			},
-		},
 		{
 			operationId: 'getDetailedPanchang',
 			method: 'POST',
@@ -580,13 +572,16 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 				detail: 'detailed',
 			},
 		},
+		{
+			operationId: 'getBasicPanchang',
+			method: 'POST',
+			path: '/vedic-astrology/panchang/basic',
+			attrs: {
+				detail: 'basic',
+			},
+		},
 	],
 	'roxy-positions-table': [
-		{
-			operationId: 'calculateArabicLots',
-			method: 'POST',
-			path: '/astrology/arabic-lots',
-		},
 		{
 			operationId: 'generateAsteroids',
 			method: 'POST',
@@ -607,6 +602,11 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'POST',
 			path: '/astrology/solar-arc',
 		},
+		{
+			operationId: 'calculateArabicLots',
+			method: 'POST',
+			path: '/astrology/arabic-lots',
+		},
 	],
 	'roxy-profection-card': [
 		{
@@ -617,24 +617,19 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-reference-card': [
 		{
-			operationId: 'getPlanetMeaning',
-			method: 'GET',
-			path: '/astrology/planet-meanings/{id}',
-		},
-		{
 			operationId: 'getZodiacSign',
 			method: 'GET',
 			path: '/astrology/signs/{id}',
 		},
 		{
-			operationId: 'getCenter',
+			operationId: 'getPlanetMeaning',
 			method: 'GET',
-			path: '/human-design/centers/{id}',
+			path: '/astrology/planet-meanings/{id}',
 		},
 		{
-			operationId: 'getGate',
+			operationId: 'getRashi',
 			method: 'GET',
-			path: '/human-design/gates/{number}',
+			path: '/vedic-astrology/rashis/{id}',
 		},
 		{
 			operationId: 'getTrigram',
@@ -642,9 +637,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/iching/trigrams/{id}',
 		},
 		{
-			operationId: 'getCompoundNumber',
+			operationId: 'getGate',
 			method: 'GET',
-			path: '/numerology/compound-number/{number}',
+			path: '/human-design/gates/{number}',
+		},
+		{
+			operationId: 'getCenter',
+			method: 'GET',
+			path: '/human-design/centers/{id}',
 		},
 		{
 			operationId: 'getNumberMeaning',
@@ -652,14 +652,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/numerology/meanings/{number}',
 		},
 		{
+			operationId: 'getCompoundNumber',
+			method: 'GET',
+			path: '/numerology/compound-number/{number}',
+		},
+		{
 			operationId: 'getAvastha',
 			method: 'GET',
 			path: '/vedic-astrology/avasthas/{id}',
-		},
-		{
-			operationId: 'getRashi',
-			method: 'GET',
-			path: '/vedic-astrology/rashis/{id}',
 		},
 	],
 	'roxy-relocation-wheel': [
@@ -699,19 +699,11 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-tarot-spread': [
 		{
-			operationId: 'drawCards',
+			operationId: 'castThreeCard',
 			method: 'POST',
-			path: '/tarot/draw',
+			path: '/tarot/spreads/three-card',
 			attrs: {
-				spread: 'draw',
-			},
-		},
-		{
-			operationId: 'castCareerSpread',
-			method: 'POST',
-			path: '/tarot/spreads/career',
-			attrs: {
-				spread: 'career',
+				spread: 'three-card',
 			},
 		},
 		{
@@ -723,14 +715,6 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 		{
-			operationId: 'castCustomSpread',
-			method: 'POST',
-			path: '/tarot/spreads/custom',
-			attrs: {
-				spread: 'custom',
-			},
-		},
-		{
 			operationId: 'castLoveSpread',
 			method: 'POST',
 			path: '/tarot/spreads/love',
@@ -739,11 +723,19 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 		{
-			operationId: 'castThreeCard',
+			operationId: 'castCareerSpread',
 			method: 'POST',
-			path: '/tarot/spreads/three-card',
+			path: '/tarot/spreads/career',
 			attrs: {
-				spread: 'three-card',
+				spread: 'career',
+			},
+		},
+		{
+			operationId: 'castCustomSpread',
+			method: 'POST',
+			path: '/tarot/spreads/custom',
+			attrs: {
+				spread: 'custom',
 			},
 		},
 		{
@@ -752,6 +744,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/tarot/yes-no',
 			attrs: {
 				spread: 'yes-no',
+			},
+		},
+		{
+			operationId: 'drawCards',
+			method: 'POST',
+			path: '/tarot/draw',
+			attrs: {
+				spread: 'draw',
 			},
 		},
 	],

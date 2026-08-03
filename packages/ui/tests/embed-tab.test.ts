@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { PK_PLACEHOLDER } from '../../../scripts/widget-snippets.js';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 
@@ -90,7 +91,7 @@ describe('embed tab derivation', () => {
 			// GET surfaces an explicit method; POST omits it (the element default).
 			if (first.method === 'POST') expect(e.script).not.toContain(' method=');
 			else expect(e.script).toContain(` method="${first.method}"`);
-			expect(e.script).toContain('publishable-key="pk_live_..."');
+			expect(e.script).toContain(`publishable-key="${PK_PLACEHOLDER}"`);
 
 			// One-tag variant references the widgets slug and the widgets.js script.
 			const comp = ROXY_COMPONENTS.find((c) => c.tag === demo.tag);
