@@ -4,6 +4,7 @@ import { describe, expect, test } from 'bun:test';
 // preload (bunfig.toml). Lit reads document and customElements at module load,
 // so the order matters: setup -> import.
 import '../src/index.js';
+import { FAMILY_ORDER } from '../src/components/yoga-list.js';
 
 /** `updateComplete` lives on LitElement, not on the `HTMLElement` that `createElement` returns, and every call site was reaching it through the same double cast. One helper, one place to change. */
 const settled = (el: Element): Promise<void> =>
@@ -1356,7 +1357,7 @@ describe('roxy-data scalar formatting and structure', () => {
  * interpretation still renders.
  */
 /**
- * The I Ching API served `binary` TOP-to-bottom while documenting it bottom-to-top until 2026-07, and this component compensated by reversing it. The API fixed the data (the same inversion was making `/cast` return the vertically MIRRORED hexagram), so the reverse had to go. Nothing caught the original bug because a mirrored hexagram is still a real hexagram. These pin the orientation so it cannot silently flip back.
+ * `binary` is BOTTOM-to-top, which is how a hexagram is read and how the API documents it, so the component renders it in order and reverses nothing. Orientation needs pinning because a vertically mirrored hexagram is still a real hexagram: it renders cleanly, names a different figure, and no type or schema check can see it.
  */
 describe('roxy-hexagram line orientation and readings', () => {
 	async function mount(tag: string, data: unknown) {
@@ -1831,9 +1832,10 @@ describe('roxy-kp-chart planets-and-nodes table', () => {
 	}
 
 	test('the nodes carry a KP number, exactly like the planets', async () => {
-		// The API returns kpNumber on nodes as well as planets, but the merge that
-		// folds Rahu and Ketu into the planets table used to drop it, so the KP
-		// column rendered blank on precisely those two rows and nowhere else.
+		// The API returns kpNumber on nodes as well as planets, and the merge that
+		// folds Rahu and Ketu into the planets table has to carry it across. Drop it
+		// there and the KP column blanks on precisely those two rows and nowhere
+		// else, which reads as missing data rather than as a bug.
 		const el = await mount();
 		expect(cells(el, 'Sun').at(-1)).toBe('201');
 		expect(cells(el, 'Rahu').at(-1)).toBe('194');
@@ -2264,10 +2266,10 @@ describe('roxy-dasha-timeline house meanings', () => {
 
 /**
  * The response carries more than periods: a sidereal frame (moon longitude,
- * ayanamsa), the birth balance, and the lord chain. Those used to be dropped
- * entirely. They are now a panel rather than extra rows under the timeline,
- * because the dates are what a reader opens the card for and provenance pushed
- * them below the fold.
+ * ayanamsa), the birth balance, and the lord chain. They belong in their own
+ * panel rather than as extra rows under the timeline, because the dates are what
+ * a reader opens the card for and provenance above them pushes those below the
+ * fold.
  */
 describe('roxy-dasha-timeline organises fields into panels', () => {
 	const currentSample = {
@@ -2763,6 +2765,7 @@ describe('yoga list detect grouping', () => {
 				description: 'Moon isolated',
 				result: 'Struggle early in life.',
 				quality: 'Negative',
+				family: 'classical',
 				present: true,
 				evidence: 'Moon is isolated: no qualifying planet in the 2nd OR 12th.',
 			},
@@ -2772,6 +2775,7 @@ describe('yoga list detect grouping', () => {
 				description: 'Seven grahas in four rasis',
 				result: 'Agricultural wealth.',
 				quality: 'Positive',
+				family: 'sankhya',
 				present: false,
 				evidence: 'The seven visible grahas occupy 5 rasis, not 4',
 			},
@@ -2781,7 +2785,9 @@ describe('yoga list detect grouping', () => {
 				description: 'Seven grahas in three rasis',
 				result: 'Sharp and cruel.',
 				quality: 'Both',
+				family: 'sankhya',
 				present: false,
+				suppressedBy: 'akriti',
 				evidence:
 					'The seven visible grahas occupy 3 rasis, but another Nabhasa yoga is present and classically suppresses Sankhya',
 			},
@@ -2791,7 +2797,9 @@ describe('yoga list detect grouping', () => {
 				description: 'All grahas in movable signs',
 				result: 'Fond of travel.',
 				quality: 'Both',
+				family: 'asraya',
 				present: false,
+				suppressedBy: 'akriti',
 				evidence:
 					'All seven visible grahas occupy movable signs, but an Akriti yoga is present and classically outranks Asraya',
 			},
@@ -2825,19 +2833,119 @@ describe('yoga list detect grouping', () => {
 		el.remove();
 	});
 
-	test('an outranked yoga is badged apart from one whose rule failed', async () => {
+	const badgeIn = (el: HTMLElement) => (name: string) => {
+		const card = [
+			...(el.shadowRoot?.querySelectorAll('.detail-card') ?? []),
+		].find((c) => c.textContent?.includes(name));
+		return card?.querySelector('.present-badge')?.textContent?.trim();
+	};
+
+	test('an outranked yoga is badged apart from one whose rule failed, and names the family that silenced it', async () => {
 		const el = await mount();
-		const badge = (name: string) => {
-			const card = [
-				...(el.shadowRoot?.querySelectorAll('.detail-card') ?? []),
-			].find((c) => c.textContent?.includes(name));
-			return card?.querySelector('.present-badge')?.textContent?.trim();
-		};
+		const badge = badgeIn(el);
 		expect(badge('Kemadruma')).toBe('Present');
-		expect(badge('Sula')).toBe('Outranked');
-		expect(badge('Rajju')).toBe('Outranked');
+		expect(badge('Sula')).toBe('Outranked by Akriti');
+		expect(badge('Rajju')).toBe('Outranked by Akriti');
 		expect(badge('Kedara')).toBe('Not present');
 		el.remove();
+	});
+
+	test('the verdict comes from suppressedBy, never from the evidence prose', async () => {
+		// `evidence` is translated on every locale, so matching it would group correctly in
+		// English and nowhere else. Both halves are asserted: the prose alone must NOT
+		// promote a card, and the field alone must, with the prose translated out from
+		// under it.
+		const el = await mount({
+			total: 0,
+			yogas: [
+				{
+					...detected.yogas[2],
+					suppressedBy: undefined,
+					evidence:
+						'The seven visible grahas occupy 3 rasis, but another Nabhasa yoga is present and classically suppresses Sankhya',
+				},
+				{
+					...detected.yogas[3],
+					evidence: 'सातों दृश्य ग्रह चर राशियों में हैं, परन्तु एक आकृति योग उपस्थित है',
+				},
+			],
+		});
+		const badge = badgeIn(el);
+		expect(badge('Sula')).toBe('Not present');
+		expect(badge('Rajju')).toBe('Outranked by Akriti');
+		el.remove();
+	});
+
+	test('cards inside a verdict group are ordered by classical family', async () => {
+		const el = await mount({
+			total: 0,
+			yogas: [
+				{ ...detected.yogas[1], id: 'a', name: 'Sankhya One', present: false },
+				{
+					...detected.yogas[1],
+					id: 'b',
+					name: 'Asraya One',
+					family: 'asraya',
+					present: false,
+				},
+				{
+					...detected.yogas[1],
+					id: 'c',
+					name: 'Classical One',
+					family: 'classical',
+					present: false,
+				},
+				{
+					...detected.yogas[1],
+					id: 'd',
+					name: 'Akriti One',
+					family: 'akriti',
+					present: false,
+				},
+			],
+		});
+		const names = [
+			...(el.shadowRoot?.querySelectorAll('.detail-name') ?? []),
+		].map((n) => n.textContent?.trim().split(/\s{2,}|\n/)[0]);
+		expect(names).toEqual([
+			'Classical One',
+			'Asraya One',
+			'Akriti One',
+			'Sankhya One',
+		]);
+		el.remove();
+	});
+
+	test('a de-emphasised verdict card never dims its text with opacity', async () => {
+		// Opacity composites text against the page, so it lowers the contrast of every
+		// colour inside the card. The muted body text of a verdict card sits close
+		// enough to the AA floor that any dimming drops it under. The axe pass only
+		// reaches cards in an OPEN group, so the collapsed rule-failed group needs
+		// this assertion rather than the scan.
+		const el = await mount();
+		const sheet = (
+			el.constructor as unknown as { styles: Array<{ cssText: string }> }
+		).styles
+			.map((s) => s.cssText)
+			.join('\n');
+		const verdictRules =
+			sheet.match(/\.detail-card\.(absent|outranked)\s*\{[^}]*\}/g) ?? [];
+		expect(verdictRules.length).toBe(2);
+		expect(verdictRules.filter((r) => /opacity/.test(r))).toEqual([]);
+		el.remove();
+	});
+
+	test('every family the spec can return is placed in the classical order', async () => {
+		// FAMILY_ORDER holds order, never membership. Without this binding a new family
+		// would sort silently to the end of every group.
+		const spec = await Bun.file('specs/openapi.json').json();
+		const families: string[] =
+			spec.components.schemas.YogaDetectResponse.properties.yogas.items
+				.properties.family.enum;
+		expect(families.length).toBeGreaterThan(3);
+		expect(
+			families.filter((f) => !(FAMILY_ORDER as readonly string[]).includes(f)),
+		).toEqual([]);
 	});
 
 	test('a group with no yoga in it renders no heading', async () => {
@@ -2974,6 +3082,58 @@ describe('vedic practitioner tables', () => {
 		expect(
 			el.shadowRoot?.querySelector('.exception')?.textContent?.trim(),
 		).toBe('Moved');
+		el.remove();
+	});
+});
+
+describe('bhav chalit', () => {
+	async function mount(data: unknown) {
+		const el = document.createElement(
+			'roxy-bhav-chalit-table',
+		) as unknown as HTMLElement & { data?: unknown };
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+
+	const graha = (over: Record<string, unknown> = {}) => ({
+		graha: 'Sun',
+		longitude: 271.6,
+		rashi: 'Capricorn',
+		bhava: 8,
+		rashiHouse: 8,
+		moved: false,
+		...over,
+	});
+
+	test('zero moved reads as a normal result, never as missing data', async () => {
+		// The live sample has seven grahas moving, so this branch is the one no
+		// fixture exercises. A chart where the two agree is a real and common
+		// outcome, and rendering it as an empty list would read as a failed call.
+		const el = await mount({
+			houseSystem: 'sripati',
+			movedCount: 0,
+			grahas: [graha(), graha({ graha: 'Moon', bhava: 3, rashiHouse: 3 })],
+			bhavas: [],
+		});
+		const lede = el.shadowRoot?.querySelector('.lede')?.textContent ?? '';
+		expect(lede).toContain('No graha changes house');
+		expect(lede).toContain('normal result');
+		expect(el.shadowRoot?.querySelectorAll('.moved-row').length).toBe(0);
+		el.remove();
+	});
+
+	test('a moved graha names both placements', async () => {
+		const el = await mount({
+			movedCount: 1,
+			grahas: [graha({ graha: 'Mars', bhava: 7, rashiHouse: 6, moved: true })],
+			bhavas: [],
+		});
+		const row = el.shadowRoot?.querySelector('.moved-row')?.textContent ?? '';
+		expect(row).toContain('Mars');
+		expect(row).toContain('house 6 in the Rashi chart');
+		expect(row).toContain('house 7 here');
 		el.remove();
 	});
 });

@@ -194,7 +194,7 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 	 * Both numbers are degrees of TIME in oblique ascension rather than a plain longitude gap, which is the measure the Surya Siddhanta defines these limits in and the reason the verdict depends on latitude at all.
 	 *
 	 * @remarks
-	 * The differing-limit note is derived by COMPARING the two numbers the response carries, never by naming which grahas have a retrograde variant. Only Mercury and Venus do (ix.7-8 gives them 12 or 14 and 8 or 10; Jupiter, Saturn, Mars and the Moon each have one limit whatever their motion), and an earlier revision of this line appended "the tighter retrograde limit" to every retrograde graha, so a retrograde Jupiter claimed a variant limit that does not exist. A practitioner reads that as the component not knowing the rule. Comparing the data cannot make that mistake, and it needs no copy of the table.
+	 * The differing-limit note is derived by COMPARING the two numbers the response carries, never by naming which grahas have a retrograde variant. Only Mercury and Venus do: ix.7-8 gives them 12 or 14 and 8 or 10, while Jupiter, Saturn, Mars and the Moon each have one limit whatever their motion. Tying the note to retrograde motion instead would claim a variant limit for a retrograde Jupiter, which does not exist, and a practitioner reads that as the component not knowing the rule. Comparing the data cannot make that mistake and needs no copy of the table.
 	 */
 	private metaLine(g: Graha) {
 		const side =

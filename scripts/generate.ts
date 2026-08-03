@@ -80,7 +80,7 @@ try {
  * @remarks
  * The wrappers are self-contained: they carry their own copy of the types rather than depending on `@roxyapi/ui`, so a consumer installs exactly one package and is still fully typed. The copies live in gitignored `src/types/` directories, which means they must exist before ANYTHING typechecks.
  *
- * They used to be emitted only by `build`, while `typecheck` runs BEFORE `build` in CI. On a clean checkout that produced 106 TS2307 errors: locally it passed only because a previous build had left the directories behind. Emitting them here, from `generate` (which `postinstall` runs), is what makes a clean clone typecheck.
+ * They are emitted HERE, from `generate` (which `postinstall` runs), and not from `build`, because `typecheck` runs before `build` in CI. Emitting them from `build` typechecks fine on any machine where a previous build left the directories behind, and fails with a wall of `TS2307` on a clean clone.
  */
 try {
 	const { emitTypes } = await import('./wrapper-meta.js');

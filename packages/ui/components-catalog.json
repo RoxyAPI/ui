@@ -687,10 +687,73 @@
       "domain": "Vedic",
       "renders": "Udaya and asta windows for the six visible grahas, the calculation behind Guru Asta and Shukra Asta",
       "endpointLabel": "POST /vedic-astrology/heliacal",
-      "endpoints": [],
+      "endpoints": [
+        {
+          "operationId": "getHeliacalVisibility",
+          "method": "POST",
+          "path": "/vedic-astrology/heliacal"
+        }
+      ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/heliacal-table-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/heliacal-table-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-gochara-table",
+      "pascal": "RoxyGocharaTable",
+      "slug": "gochara-table",
+      "domain": "Vedic",
+      "renders": "Vedic gochara with aspects to the natal chart and the Gochara Kaksha reading drawn as a position within the sign",
+      "endpointLabel": "POST /vedic-astrology/transit",
+      "endpoints": [
+        {
+          "operationId": "calculateTransit",
+          "method": "POST",
+          "path": "/vedic-astrology/transit"
+        }
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/gochara-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/gochara-table-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-bhava-bala-table",
+      "pascal": "RoxyBhavaBalaTable",
+      "slug": "bhava-bala-table",
+      "domain": "Vedic",
+      "renders": "House strength in rupas and virupas, ranked, with Bhavadhipati, Dig and Drishti Bala shown as proportions of the total",
+      "endpointLabel": "POST /vedic-astrology/bhava-bala",
+      "endpoints": [
+        {
+          "operationId": "calculateBhavaBala",
+          "method": "POST",
+          "path": "/vedic-astrology/bhava-bala"
+        }
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/bhava-bala-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/bhava-bala-table-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-bhav-chalit-table",
+      "pascal": "RoxyBhavChalitTable",
+      "slug": "bhav-chalit-table",
+      "domain": "Vedic",
+      "renders": "The Chalit chart against the Rashi chart, leading with how many grahas move and which, plus the unequal bhava spans",
+      "endpointLabel": "POST /vedic-astrology/bhav-chalit",
+      "endpoints": [
+        {
+          "operationId": "calculateBhavChalit",
+          "method": "POST",
+          "path": "/vedic-astrology/bhav-chalit"
+        }
+      ],
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/bhav-chalit-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/bhav-chalit-table-dark.webp"
       }
     },
     {
@@ -700,7 +763,13 @@
       "domain": "Vedic",
       "renders": "Time-based and Sun-based upagrahas with rashi, degree, longitude and nakshatra",
       "endpointLabel": "POST /vedic-astrology/upagraha",
-      "endpoints": [],
+      "endpoints": [
+        {
+          "operationId": "getUpagrahaPositions",
+          "method": "POST",
+          "path": "/vedic-astrology/upagraha"
+        }
+      ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/upagraha-table-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/upagraha-table-dark.webp"
@@ -713,7 +782,13 @@
       "domain": "Vedic",
       "renders": "Karaka offices in rank order with graha, degree, scheme, and what each is read for",
       "endpointLabel": "POST /vedic-astrology/chara-karakas",
-      "endpoints": [],
+      "endpoints": [
+        {
+          "operationId": "calculateCharaKarakas",
+          "method": "POST",
+          "path": "/vedic-astrology/chara-karakas"
+        }
+      ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/chara-karakas-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/chara-karakas-dark.webp"
@@ -726,7 +801,13 @@
       "domain": "Vedic",
       "renders": "Twelve padas with bhava, lord, pada rashi, house from Lagna, and the classical exception marked",
       "endpointLabel": "POST /vedic-astrology/arudha",
-      "endpoints": [],
+      "endpoints": [
+        {
+          "operationId": "calculateArudhaPadas",
+          "method": "POST",
+          "path": "/vedic-astrology/arudha"
+        }
+      ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/arudha-padas-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/assets/previews/arudha-padas-dark.webp"

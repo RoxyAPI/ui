@@ -25,11 +25,18 @@ const ROXY_UI_VERSION = (
 
 const SPEC_PATH = 'specs/openapi.json';
 
-/** Raw byte budget for the minified script (asserted at build and in the unit test). */
-export const WIDGETS_BUDGET_BYTES = 8192;
+/**
+ * GZIPPED byte budget for the minified script, asserted at build and in the unit test.
+ *
+ * @remarks
+ * Gzipped, not raw, because that is the weight a browser actually downloads and it matches how every other artifact is budgeted in `check-sizes.ts`. The distinction matters here more than elsewhere: most of this file is an interpolated slug map, and repetitive JSON compresses at roughly ten to one, so a raw measurement overstates the real cost by about threefold and would reject a script no user would notice.
+ *
+ * Measure compressed before concluding this file is too big.
+ */
+export const WIDGETS_BUDGET_BYTES = 4096;
 
 /**
- * One selectable request variant a widget can resolve to. Kept minimal so the interpolated map stays under the raw-size budget:
+ * One selectable request variant a widget can resolve to. Kept minimal so the interpolated map stays small:
  *  - `m` (method) is omitted on a non-default variant, which inherits the default method (a component's endpoints share one method).
  *  - `g` marks a request that needs body or query input (birth data, a grouped person1/person2 body, a required query field). That input is entered through the form (date pickers, the city search), not raw attributes, so such a widget always renders form mode. Path parameters are derived from `p` at runtime, so a widget whose only required inputs are path parameters (or none) fetches immediately.
  */
@@ -303,15 +310,16 @@ async function main() {
 		loader: 'js',
 	});
 	const out = `${code.trim()}\n`;
-	const bytes = Buffer.byteLength(out, 'utf8');
-	if (bytes > WIDGETS_BUDGET_BYTES) {
+	const raw = Buffer.byteLength(out, 'utf8');
+	const gzipped = Bun.gzipSync(Buffer.from(out), { level: 9 }).length;
+	if (gzipped > WIDGETS_BUDGET_BYTES) {
 		throw new Error(
-			`widgets.js is ${bytes} bytes, over the ${WIDGETS_BUDGET_BYTES} raw budget`,
+			`widgets.js is ${gzipped} bytes gzipped, over the ${WIDGETS_BUDGET_BYTES} budget`,
 		);
 	}
 	await writeFile(`${outDir}/widgets.js`, out);
 	console.log(
-		`Wrote ${outDir}/widgets.js (${bytes} bytes raw, ${Object.keys(map).length} widgets)`,
+		`Wrote ${outDir}/widgets.js (${gzipped} bytes gzipped, ${raw} raw, ${Object.keys(map).length} widgets)`,
 	);
 }
 

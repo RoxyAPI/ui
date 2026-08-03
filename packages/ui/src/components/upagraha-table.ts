@@ -6,6 +6,7 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { capitalize } from '../utils/string.js';
 
 type Upagraha = UpagrahaResponse['timeBased'][number];
@@ -38,6 +39,7 @@ const GROUPS = [
 export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -125,6 +127,7 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 		return html`<div class="wrap" aria-label="Upagraha positions">
 			<header class="head">
 				<h2 class="title">Upagrahas</h2>
+				${renderFrameCaption(d.frame)}
 			</header>
 			${groups.map((g) => this.renderGroup(g, d[g.key]))}
 		</div>`;

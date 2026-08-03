@@ -401,6 +401,45 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Vedic',
 	},
 	{
+		pascal: 'RoxyGocharaTable',
+		tag: 'roxy-gochara-table',
+		slug: 'gochara-table',
+		heading: 'Gochara transits',
+		description:
+			'Where each graha transits now, the natal house it falls in, and the Ashtakavarga-qualified kaksha verdict',
+		docsLabel: 'Vedic',
+		endpointLabel: 'POST /vedic-astrology/transit',
+		docsSummary:
+			'Vedic gochara with aspects to the natal chart and the Gochara Kaksha reading drawn as a position within the sign',
+		topic: 'Vedic',
+	},
+	{
+		pascal: 'RoxyBhavaBalaTable',
+		tag: 'roxy-bhava-bala-table',
+		slug: 'bhava-bala-table',
+		heading: 'Bhava Bala',
+		description:
+			'The twelve houses ranked by strength, with the three classical components that make up each total',
+		docsLabel: 'Vedic',
+		endpointLabel: 'POST /vedic-astrology/bhava-bala',
+		docsSummary:
+			'House strength in rupas and virupas, ranked, with Bhavadhipati, Dig and Drishti Bala shown as proportions of the total',
+		topic: 'Vedic',
+	},
+	{
+		pascal: 'RoxyBhavChalitTable',
+		tag: 'roxy-bhav-chalit-table',
+		slug: 'bhav-chalit-table',
+		heading: 'Bhav Chalit',
+		description:
+			'Which grahas change house once the bhavas are cut at their real cusps instead of at sign boundaries',
+		docsLabel: 'Vedic',
+		endpointLabel: 'POST /vedic-astrology/bhav-chalit',
+		docsSummary:
+			'The Chalit chart against the Rashi chart, leading with how many grahas move and which, plus the unequal bhava spans',
+		topic: 'Vedic',
+	},
+	{
 		pascal: 'RoxyUpagrahaTable',
 		tag: 'roxy-upagraha-table',
 		slug: 'upagraha-table',

@@ -4,6 +4,7 @@ import { SIGN_GLYPH } from '../tokens/index.js';
 import type { ArudhaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { capitalize } from '../utils/string.js';
 
 type Pada = ArudhaResponse['padas'][number];
@@ -23,6 +24,7 @@ const LEAD_IDS = new Set(['a1', 'a12']);
 export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -151,6 +153,7 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 		return html`<div class="wrap" aria-label="Arudha padas">
 			<header class="head">
 				<h2 class="title">Arudha padas</h2>
+				${renderFrameCaption(d.frame)}
 			</header>
 			<div class="leads">
 				<div class="lead"><span>Lagna</span><strong>${d.lagnaRashi ?? ''}</strong></div>

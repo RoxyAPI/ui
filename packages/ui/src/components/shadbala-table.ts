@@ -5,6 +5,7 @@ import type { ShadbalaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { capitalize } from '../utils/string.js';
 
 type Planet = ShadbalaResponse['planets'][number];
@@ -43,6 +44,7 @@ const BALA_COMPONENTS: Array<{
 export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -250,6 +252,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 			<div class="head">
 				<h2 class="title">Shadbala</h2>
 				<p class="subtitle">${sorted.length} planets ranked by strength</p>
+				${renderFrameCaption(d.frame)}
 			</div>
 
 			<div role="list" aria-label="Planet strength bars">

@@ -506,6 +506,50 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'gochara',
+		tag: 'roxy-gochara-table',
+		seoLine: 'Vedic gochara transits with the Ashtakavarga kaksha verdict',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateTransit({
+    body: {
+      birthDate: '${PERSON1.date}',
+      birthTime: '${PERSON1.time}',
+      transitDate: '2026-02-03',
+      transitTime: '12:00:00',
+      latitude: ${PERSON1.latitude},
+      longitude: ${PERSON1.longitude},
+      timezone: '${PERSON1.timezone}',
+    },
+  });`,
+	}),
+	entry({
+		id: 'bhava-bala',
+		tag: 'roxy-bhava-bala-table',
+		seoLine: 'Bhava Bala: the twelve houses ranked by classical strength',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateBhavaBala({
+    body: {
+      date: '${PERSON1.date}',
+      time: '${PERSON1.time}',
+      latitude: ${PERSON1.latitude},
+      longitude: ${PERSON1.longitude},
+      timezone: '${PERSON1.timezone}',
+    },
+  });`,
+	}),
+	entry({
+		id: 'bhav-chalit',
+		tag: 'roxy-bhav-chalit-table',
+		seoLine: 'Bhav Chalit: which grahas change house on the real cusps',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.calculateBhavChalit({
+    body: {
+      date: '${PERSON1.date}',
+      time: '${PERSON1.time}',
+      latitude: ${PERSON1.latitude},
+      longitude: ${PERSON1.longitude},
+      timezone: '${PERSON1.timezone}',
+    },
+  });`,
+	}),
+	entry({
 		id: 'upagraha',
 		tag: 'roxy-upagraha-table',
 		seoLine: 'Upagraha positions: Gulika, Mandi and the Dhuma group',
@@ -540,8 +584,12 @@ window.ROXY_UI_DEMOS = [
 		tag: 'roxy-yoga-list',
 		heading: 'Yoga detection',
 		seoLine: 'Yoga detection with present, outranked and absent verdicts',
+		// The only card not on PERSON1: the outranked verdict needs a chart where a
+		// stronger family silences a yoga that did match its rule. Keep this date in
+		// step with the yoga-detect request in scripts/refresh-samples.ts, or the
+		// snippet stops producing the result beside it.
 		sdkCall: `  const { data } = await roxy.vedicAstrology.detectYogas({
-    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
+    body: ${JSON.stringify({ date: '1941-04-26', time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({

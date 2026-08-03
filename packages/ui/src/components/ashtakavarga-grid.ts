@@ -4,6 +4,7 @@ import { SIGN_GLYPH } from '../tokens/index.js';
 import type { AshtakavargaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
 	renderTablist,
 	type TablistItem,
@@ -39,6 +40,7 @@ type SarvaRow = AshtakavargaResponse['sarvashtakavarga'];
 export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		tablistStyles,
 		css`
 			.wrap {
@@ -236,6 +238,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 						? html`<p class="subtitle">${signs.length} signs</p>`
 						: nothing
 				}
+				${renderFrameCaption(d.frame)}
 			</div>
 
 			${renderTablist({

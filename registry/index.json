@@ -124,6 +124,18 @@
       "description": "Whether each graha stands far enough from the Sun to be seen, with the date it next rises or sets"
     },
     {
+      "name": "roxy-gochara-table",
+      "description": "Where each graha transits now, the natal house it falls in, and the Ashtakavarga-qualified kaksha verdict"
+    },
+    {
+      "name": "roxy-bhava-bala-table",
+      "description": "The twelve houses ranked by strength, with the three classical components that make up each total"
+    },
+    {
+      "name": "roxy-bhav-chalit-table",
+      "description": "Which grahas change house once the bhavas are cut at their real cusps instead of at sign boundaries"
+    },
+    {
       "name": "roxy-upagraha-table",
       "description": "The eleven upagrahas in their time-based and Sun-based groups, with rashi, degree, and nakshatra"
     },

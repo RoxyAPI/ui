@@ -29,6 +29,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/angel-numbers/lookup',
 		},
 	],
+	'roxy-arudha-padas': [
+		{
+			operationId: 'calculateArudhaPadas',
+			method: 'POST',
+			path: '/vedic-astrology/arudha',
+		},
+	],
 	'roxy-ashtakavarga-grid': [
 		{
 			operationId: 'calculateAshtakavarga',
@@ -58,6 +65,20 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'generateAstrocartography',
 			method: 'POST',
 			path: '/astrology/astrocartography',
+		},
+	],
+	'roxy-bhav-chalit-table': [
+		{
+			operationId: 'calculateBhavChalit',
+			method: 'POST',
+			path: '/vedic-astrology/bhav-chalit',
+		},
+	],
+	'roxy-bhava-bala-table': [
+		{
+			operationId: 'calculateBhavaBala',
+			method: 'POST',
+			path: '/vedic-astrology/bhava-bala',
 		},
 	],
 	'roxy-biorhythm-chart': [
@@ -91,6 +112,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'generateBodygraph',
 			method: 'POST',
 			path: '/human-design/bodygraph',
+		},
+	],
+	'roxy-chara-karakas': [
+		{
+			operationId: 'calculateCharaKarakas',
+			method: 'POST',
+			path: '/vedic-astrology/chara-karakas',
 		},
 	],
 	'roxy-choghadiya-grid': [
@@ -283,6 +311,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/forecast/transits',
 		},
 	],
+	'roxy-gochara-table': [
+		{
+			operationId: 'calculateTransit',
+			method: 'POST',
+			path: '/vedic-astrology/transit',
+		},
+	],
 	'roxy-guna-milan': [
 		{
 			operationId: 'calculateGunMilan',
@@ -321,6 +356,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'calculateVariables',
 			method: 'POST',
 			path: '/human-design/variables',
+		},
+	],
+	'roxy-heliacal-table': [
+		{
+			operationId: 'getHeliacalVisibility',
+			method: 'POST',
+			path: '/vedic-astrology/heliacal',
 		},
 	],
 	'roxy-hexagram': [
@@ -718,6 +760,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'calculateTransits',
 			method: 'POST',
 			path: '/astrology/transits',
+		},
+	],
+	'roxy-upagraha-table': [
+		{
+			operationId: 'getUpagrahaPositions',
+			method: 'POST',
+			path: '/vedic-astrology/upagraha',
 		},
 	],
 	'roxy-vedic-aspects': [

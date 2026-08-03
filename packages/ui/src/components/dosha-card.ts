@@ -7,6 +7,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 
 type DoshaData = ManglikResponse | KalsarpaResponse | SadhesatiResponse;
 
@@ -24,6 +25,7 @@ const DOSHA_LABELS: Record<string, string> = {
 export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -169,6 +171,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 				<span class=${`badge ${present ? 'present' : 'absent'}`}>
 					${present ? 'Present' : 'Absent'}
 				</span>
+				${renderFrameCaption(d.frame)}
 			</header>
 			${
 				'type' in d && d.type

@@ -376,7 +376,7 @@ describe('utils/markup-data', () => {
 });
 
 /**
- * `formatNumber` used to strip trailing zeros from the WHOLE string, so with `dp = 0` it ate them off the integer: 100 rendered as "1", 90 as "9", and 0 as the empty string. It shipped, visibly, as "1% tight" on a 100-percent-tight stellium. Zeros may only be dropped after a decimal point.
+ * Zeros may only be dropped AFTER a decimal point. Stripping trailing zeros from the whole string eats them off the integer at `dp = 0`, turning 100 into "1", 90 into "9" and 0 into the empty string, which reads as a plausible number rather than as an error.
  */
 describe('formatNumber does not eat integer zeros', () => {
 	test('integers survive at dp 0', () => {

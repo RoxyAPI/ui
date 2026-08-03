@@ -23,6 +23,14 @@ export {
 	type RoxyAstrocartographyMapProps,
 } from './components/astrocartography-map.js';
 export {
+	RoxyBhavChalitTable,
+	type RoxyBhavChalitTableProps,
+} from './components/bhav-chalit-table.js';
+export {
+	RoxyBhavaBalaTable,
+	type RoxyBhavaBalaTableProps,
+} from './components/bhava-bala-table.js';
+export {
 	RoxyBiorhythmChart,
 	type RoxyBiorhythmChartProps,
 } from './components/biorhythm-chart.js';
@@ -87,6 +95,10 @@ export {
 	RoxyForecastTimeline,
 	type RoxyForecastTimelineProps,
 } from './components/forecast-timeline.js';
+export {
+	RoxyGocharaTable,
+	type RoxyGocharaTableProps,
+} from './components/gochara-table.js';
 export {
 	RoxyGunaMilan,
 	type RoxyGunaMilanProps,

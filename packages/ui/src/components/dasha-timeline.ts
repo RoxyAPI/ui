@@ -745,7 +745,7 @@ function grainFor(minYears: number): DateGrain {
  * One end of a bar, at the chosen granularity.
  *
  * @remarks
- * Every grain carries the year. Day grain used to drop it on the grounds that the parent line states it, but a sookshma period routinely straddles new year, so a bar read `28 Dec - 3 Jan` with nothing saying which side moved. A dasha table is a date reference: a practitioner reads a boundary off it and writes it down. Time grain carries the whole date for the same reason, since a prana period straddles midnight as readily as a sookshma one straddles new year.
+ * Every grain carries the year, including day grain, even though the parent line already states it. A sookshma period routinely straddles new year, so dropping the year leaves a bar reading `28 Dec - 3 Jan` with nothing saying which side moved. A dasha table is a date reference: a practitioner reads a boundary off it and writes it down. Time grain carries the whole date for the same reason, since a prana period straddles midnight as readily as a sookshma one straddles new year.
  *
  * The API returns naive datetimes (`1990-01-15T14:30:00`), which are wall clocks in the timezone of the CHART, not instants. {@link resolveDisplayDate} pins them to UTC so a boundary landing in the DST gap of the viewer cannot silently shift a day, and formatting in that same zone is what keeps a printed clock time equal to the chart clock time for every viewer.
  */

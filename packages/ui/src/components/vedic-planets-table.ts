@@ -7,6 +7,7 @@ import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber, formatWithSanskrit } from '../utils/format.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { capitalize } from '../utils/string.js';
 
 /**
@@ -56,6 +57,7 @@ type MetaEntry = BirthChartResponse['meta'][string];
 export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		disclosureStyles,
 		css`
 			.wrap {
@@ -266,6 +268,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		return html`<div class="wrap" aria-label="Vedic planetary positions">
 			<header class="head">
 				<h2 class="title">Planetary positions</h2>
+				${renderFrameCaption(d.frame)}
 			</header>
 			<div class="scroll" tabindex="0">
 			<table role="table">

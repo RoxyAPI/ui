@@ -4,6 +4,7 @@ import type { CompatibilityResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber, formatPercent } from '../utils/format.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 
 /**
  * The eight kootas and the points each carries, in the classical order the API
@@ -35,6 +36,7 @@ const KOOTA_MAX: Record<string, number> = {
 export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -366,6 +368,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 					</div>`
 					: nothing
 			}
+			${renderFrameCaption(d.frame)}
 		</article>`;
 	}
 }

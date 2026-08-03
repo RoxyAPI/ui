@@ -4,8 +4,9 @@
  * repo's own component-to-endpoint map (scripts/bindings.config.ts) with the
  * RoxyAPI spec (specs/openapi.json) on `operationId`, resolving each binding's
  * HTTP method + path from the spec. The API spec stays UI-agnostic; the binding
- * is owned here. It replaces the endpoint strings that used to be hand-kept in
- * src/manifest.ts, so the tag-to-endpoint mapping cannot drift from the API.
+ * is owned here. Generating it is what keeps the tag-to-endpoint mapping from
+ * drifting: a hand-kept endpoint string in src/manifest.ts cannot be checked
+ * against the spec, and this can.
  *
  * Reads specs/openapi.json (refreshed by scripts/generate.ts from the live
  * spec). Run standalone with `bun run bindings:sync`; also runs as a step of

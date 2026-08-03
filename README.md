@@ -364,7 +364,7 @@ The highest-demand components by domain, in the order you are most likely to shi
 
 ### 1. Western astrology (natal chart, daily horoscope, synastry)
 
-The global astrology app market is $6.27B and almost entirely Western. Zodiac dating apps, Co-Star-style natal chart products, daily horoscope features, and lunar-cycle wellness apps all ship these first.
+The natal wheel, the daily horoscope and the synastry comparison, which is what most astrology products ship first. Zodiac dating apps, natal chart products, horoscope features and lunar-cycle wellness apps all build on these three.
 
 ```tsx
 import { createRoxy } from '@roxyapi/sdk';
@@ -394,7 +394,7 @@ const { data: synastry } = await roxy.astrology.calculateSynastry({
 
 ### 2. Vedic astrology (kundli, panchang, dasha, dosha, KP, ashtakavarga, divisional)
 
-The depth moat. India astrology market: $163M in 2024, projected $1.8B by 2030 (49% CAGR). Kundli, panchang, dasha, dosha, KP horary, and divisional charts (D9 Navamsa, D10 Dasamsa) are the highest-traffic Vedic queries for every matrimonial platform, kundli generator, muhurat app, and professional reader.
+The deepest domain in the catalog. Kundli, panchang, dasha, dosha, KP horary, ashtakavarga and the divisional charts (D9 Navamsa, D10 Dasamsa) are what matrimonial platforms, kundli generators, muhurat apps and professional readers need, and each one has a component rather than a raw payload.
 
 ```tsx
 import {
@@ -450,7 +450,7 @@ const { data: d9 } = await roxy.vedicAstrology.generateDivisionalChart({
 
 ### 3. Numerology (life path, full chart, personal year)
 
-Commodity content with durable demand. `life path number calculator` is among the highest-volume spiritual searches globally. Works without birth time. Easiest domain to integrate.
+Life path, the full chart, and the personal year. The easiest domain to integrate: a name and a birth date are enough, with no birth time and no coordinates.
 
 ```tsx
 import { RoxyNumerologyCard } from '@roxyapi/ui-react';
@@ -476,7 +476,7 @@ const { data: pyear } = await roxy.numerology.calculatePersonalYear({
 
 ### 4. Tarot (daily card, three-card, Celtic Cross)
 
-High search volume, evergreen. The tarot card database is the highest per-endpoint call count in the catalog because apps fetch once and cache.
+Draw a single daily card, a three-card spread, or a full Celtic Cross. The card database is stable reference data, so fetch it once and cache it rather than calling per render.
 
 ```tsx
 import { RoxyTarotCard, RoxyTarotSpread } from '@roxyapi/ui-react';
@@ -500,7 +500,7 @@ const { data: cc } = await roxy.tarot.castCelticCross({
 
 ### 5. Human Design (bodygraph)
 
-The breakout 2026 self-knowledge category, computed from the same ephemeris as Western astrology plus the I Ching gate wheel and chakra-style centers. Self-discovery apps, dating and compatibility products, and AI coaching bots ship the full bodygraph first. No coordinates needed; Human Design uses the birth instant, not the observer location.
+A self-knowledge system computed from the same ephemeris as Western astrology, laid over the I Ching gate wheel and nine chakra-style centers. Self-discovery apps, dating and compatibility products, and AI coaching bots render the full bodygraph. No coordinates needed; Human Design uses the birth instant, not the observer location.
 
 The response is a reading, not a set of labels: the type, strategy, authority, profile, and definition each arrive with the text that explains them, every defined channel and every center carry their own interpretation, and each of the activations carries a gate meaning and the meaning of its line. `<RoxyBodygraph>` lays that out for you. The chart and the identity read at a glance, and every body of prose sits behind a disclosure, so one component renders a complete reading without becoming a wall of text.
 
@@ -527,7 +527,7 @@ const { data: bodygraph } = await roxy.humanDesign.generateBodygraph({
 
 ### 6. Forecast (transits, cross-domain timeline)
 
-The first cross-domain, stateless forecast in the catalog: one call merges Western transits, Vedic Vimshottari dasha boundaries, and biorhythm critical days into a single significance-scored, time-ordered timeline. Forecast feeds, transit alerts, and timing tools are the buyers. Acquire on the high-volume `astrology transits` search, convert on the cross-domain timeline no competitor ships. No coordinates needed.
+One stateless call merges Western transits, Vedic Vimshottari dasha boundaries, and biorhythm critical days into a single significance-scored, time-ordered timeline. Built for forecast feeds, transit alerts, and timing tools. No coordinates needed.
 
 ```tsx
 import { RoxyForecastTimeline } from '@roxyapi/ui-react';
@@ -552,7 +552,7 @@ const { data: timeline } = await roxy.forecast.generateTimeline({
 
 ### 7. Biorhythm (daily, forecast)
 
-Zero competition domain. Steady search volume with the top Google result being a static calculator page. Pure land-grab for wellness, productivity, sports, and couples apps.
+Physical, emotional and intellectual cycles from a birth date alone, as a daily reading or a forward forecast with the critical days marked. Fits wellness, productivity, sports and couples apps.
 
 ```tsx
 import { RoxyBiorhythmChart } from '@roxyapi/ui-react';
@@ -573,7 +573,7 @@ const { data: forecast } = await roxy.biorhythm.getForecast({
 
 ### 8. I Ching (cast a reading, hexagram lookup)
 
-Meditation apps, decision-making tools, and wisdom chatbots. `i ching API` and `hexagram API` are the keywords.
+Cast a reading with its changing lines and the hexagram it transforms into, or look up any of the 64 figures directly. Fits meditation apps, decision-making tools and wisdom chatbots.
 
 ```tsx
 import { RoxyHexagram } from '@roxyapi/ui-react';
@@ -652,6 +652,9 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
 | `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
 | `<roxy-heliacal-table>` | Vedic | POST /vedic-astrology/heliacal | Udaya and asta windows for the six visible grahas, the calculation behind Guru Asta and Shukra Asta |
+| `<roxy-gochara-table>` | Vedic | POST /vedic-astrology/transit | Vedic gochara with aspects to the natal chart and the Gochara Kaksha reading drawn as a position within the sign |
+| `<roxy-bhava-bala-table>` | Vedic | POST /vedic-astrology/bhava-bala | House strength in rupas and virupas, ranked, with Bhavadhipati, Dig and Drishti Bala shown as proportions of the total |
+| `<roxy-bhav-chalit-table>` | Vedic | POST /vedic-astrology/bhav-chalit | The Chalit chart against the Rashi chart, leading with how many grahas move and which, plus the unequal bhava spans |
 | `<roxy-upagraha-table>` | Vedic | POST /vedic-astrology/upagraha | Time-based and Sun-based upagrahas with rashi, degree, longitude and nakshatra |
 | `<roxy-chara-karakas>` | Vedic | POST /vedic-astrology/chara-karakas | Karaka offices in rank order with graha, degree, scheme, and what each is read for |
 | `<roxy-arudha-padas>` | Vedic | POST /vedic-astrology/arudha | Twelve padas with bhava, lord, pada rashi, house from Lagna, and the classical exception marked |

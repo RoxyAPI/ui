@@ -79,7 +79,10 @@ describe('widgets.js size budget', () => {
 			target: 'es2017',
 			loader: 'js',
 		});
-		const bytes = Buffer.byteLength(`${code.trim()}\n`, 'utf8');
+		const out = `${code.trim()}\n`;
+		// Gzipped, matching the build assertion and every other size budget: it is
+		// what a browser downloads, and this file is mostly a highly compressible map.
+		const bytes = Bun.gzipSync(Buffer.from(out), { level: 9 }).length;
 		expect(bytes).toBeLessThanOrEqual(WIDGETS_BUDGET_BYTES);
 	});
 });

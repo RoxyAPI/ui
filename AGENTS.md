@@ -83,6 +83,9 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
 | `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
 | `<roxy-heliacal-table>` | Vedic | POST /vedic-astrology/heliacal | Udaya and asta windows for the six visible grahas, the calculation behind Guru Asta and Shukra Asta |
+| `<roxy-gochara-table>` | Vedic | POST /vedic-astrology/transit | Vedic gochara with aspects to the natal chart and the Gochara Kaksha reading drawn as a position within the sign |
+| `<roxy-bhava-bala-table>` | Vedic | POST /vedic-astrology/bhava-bala | House strength in rupas and virupas, ranked, with Bhavadhipati, Dig and Drishti Bala shown as proportions of the total |
+| `<roxy-bhav-chalit-table>` | Vedic | POST /vedic-astrology/bhav-chalit | The Chalit chart against the Rashi chart, leading with how many grahas move and which, plus the unequal bhava spans |
 | `<roxy-upagraha-table>` | Vedic | POST /vedic-astrology/upagraha | Time-based and Sun-based upagrahas with rashi, degree, longitude and nakshatra |
 | `<roxy-chara-karakas>` | Vedic | POST /vedic-astrology/chara-karakas | Karaka offices in rank order with graha, degree, scheme, and what each is read for |
 | `<roxy-arudha-padas>` | Vedic | POST /vedic-astrology/arudha | Twelve padas with bhava, lord, pada rashi, house from Lagna, and the classical exception marked |

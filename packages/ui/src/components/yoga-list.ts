@@ -7,6 +7,8 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
+import { capitalize } from '../utils/string.js';
 
 type YogaListData =
 	| ListYogasResponse
@@ -16,13 +18,39 @@ type YogaListData =
 
 type DetectedYoga = DetectYogasResponse['yogas'][number];
 
+/** Anything the three modes render that may carry a classical family: a detect verdict (always), a catalog row or a detail (only the Nabhasa ones). */
+type FamilyBearing = { family?: DetectedYoga['family'] };
+
 /**
- * True when a yoga matched its own rule but a stronger family silenced it under the classical precedence norms, rather than failing the rule outright. The response states which in its `evidence`.
+ * The family that silenced a yoga, when one did.
  *
- * The two are genuinely different to a reader: a failed rule says nothing about the chart, while "Kedara would apply but Pasa outranks it" is a real feature of it.
+ * @remarks
+ * A yoga that failed its own rule and one that matched but was outranked are both `present: false`, and they read very differently: a failed rule says nothing about the chart, while "Kedara would apply but Pasa outranks it" is a real feature of it. `suppressedBy` states which, as a stable untranslated key.
+ *
+ * Read the field, never the `evidence` sentence. That prose is translated on every locale, so matching it groups correctly in English and nowhere else.
  */
-function isOutranked(y: DetectedYoga): boolean {
-	return /classically (outranks|suppresses)/i.test(y.evidence ?? '');
+function suppressor(y: DetectedYoga): string | undefined {
+	return y.suppressedBy || undefined;
+}
+
+/**
+ * The four Nabhasa families in the order the tradition arranges them, with the single-combination yogas first.
+ *
+ * @remarks
+ * ORDER only, never membership. Every verdict carries its own `family`, so no yoga-to-family table belongs in this component; one would be a second source of truth that a rule change upstream could silently invalidate. A test binds this list to the response schema so a new family cannot arrive unordered.
+ */
+export const FAMILY_ORDER = [
+	'classical',
+	'asraya',
+	'dala',
+	'akriti',
+	'sankhya',
+] as const;
+
+/** Sort key placing a known family in classical order and anything unmapped last, so an unrecognised value still renders rather than disappearing. */
+function familyRank(y: FamilyBearing): number {
+	const i = FAMILY_ORDER.indexOf(y.family as (typeof FAMILY_ORDER)[number]);
+	return i === -1 ? FAMILY_ORDER.length : i;
 }
 
 /** The three detect verdicts in reading order, each with the note that explains the group. Ordered by what a reader wants first: what fired, what nearly fired, then the rest as reference. */
@@ -37,7 +65,7 @@ const VERDICTS = [
 		id: 'outranked',
 		label: 'Outranked',
 		open: true,
-		note: 'The rule matched, but a stronger family silences it under the classical precedence norms.',
+		note: 'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.',
 	},
 	{
 		id: 'absent',
@@ -60,11 +88,16 @@ type Verdict = (typeof VERDICTS)[number]['id'];
  *
  * @remarks
  * Detect returns a verdict for every yoga in the detected set on every chart, of which a real chart fires low single digits, so a flat list buries the handful a reader came for. They are grouped by verdict, in reading order: what fired, what would have fired but was outranked, then everything that failed its rule, collapsed because it is reference rather than result. Every grouping and every label is read from the response, so this component holds no table of yoga data of its own.
+ *
+ * Verdict is the primary grouping and `family` the secondary sort within it, rather than grouping by family outright. A reader opens a detection result to learn what a chart has; the Nabhasa arrangement is how the set is catalogued, not what a chart says. Sorting inside each verdict gives the classical order where it is readable and keeps the answer at the top.
+ *
+ * The compact catalog mode shows no family chip: only part of the glossary is Nabhasa, so a chip on some rows and a gap on the rest reads as missing data. Filter the catalog with the `family` query parameter instead.
  */
 @customElement('roxy-yoga-list')
 export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		css`
 			.wrap {
 				display: grid;
@@ -174,6 +207,18 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				color: var(--roxy-warning-fg, #b45309);
 				border: 1px solid color-mix(in srgb, var(--roxy-warning, #f59e0b) 40%, transparent);
 			}
+			/* Classification, not a verdict, so it is outlined rather than filled and
+			 * never competes with the quality or present badges beside it. Text is
+			 * --roxy-fg on the plain surface: muted ink on a tinted chip fails AA. */
+			.family-chip {
+				display: inline-block;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				font-weight: 500;
+				padding: 0.15em 0.6em;
+				border-radius: 999px;
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				color: var(--roxy-fg, #0a0a0a);
+			}
 			.present-badge {
 				display: inline-block;
 				font-size: var(--roxy-text-xs, 0.75rem);
@@ -193,14 +238,18 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				background: color-mix(in srgb, var(--roxy-warning, #f59e0b) 16%, transparent);
 				color: var(--roxy-warning-fg, #b45309);
 			}
+			/* De-emphasis is carried by the SURFACE, never by opacity on the card.
+			 * Opacity composites the text against the page too, so it drags every
+			 * colour inside toward the background: at 0.88 the muted body text of an
+			 * outranked card measures 3.81:1, under the AA 4.5:1 floor, and a
+			 * collapsed group only hides that from an audit rather than fixing it.
+			 * A recessed background reads as secondary while text stays at full
+			 * contrast, and the verdict badge already carries the distinction. */
 			.detail-card.absent {
-				opacity: 0.72;
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 22%, var(--roxy-surface, #fff));
 			}
-			/* An outranked yoga DID match its own rule, so it stays more legible than
-			 * one that simply failed: it is a real feature of the chart that a
-			 * stronger family silenced. */
 			.detail-card.outranked {
-				opacity: 0.88;
+				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 10%, var(--roxy-surface, #fff));
 			}
 			.group-stack {
 				display: grid;
@@ -304,9 +353,9 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		this.filter = (e.target as HTMLInputElement).value;
 	};
 
-	/** The verdict a detected yoga falls under. The one grouping the response itself supports, so nothing about the classical scheme is duplicated here. */
+	/** The verdict a detected yoga falls under. Both signals come from the response, so nothing about the classical scheme is duplicated here. */
 	private verdictOf(y: DetectedYoga): Verdict {
-		return y.present ? 'present' : isOutranked(y) ? 'outranked' : 'absent';
+		return y.present ? 'present' : suppressor(y) ? 'outranked' : 'absent';
 	}
 
 	/**
@@ -319,13 +368,14 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		yogas: DetectedYoga[],
 	) {
 		if (!yogas.length) return nothing;
+		const ordered = [...yogas].sort((a, b) => familyRank(a) - familyRank(b));
 		return html`<details class="group" ?open=${verdict.open || !!this.filter}>
 			<summary class="group-summary">
 				<span class="group-label">${verdict.label}</span>
 				<span class="group-count">${yogas.length}</span>
 			</summary>
 			<p class="group-note">${verdict.note}</p>
-			<div class="detail-grid">${yogas.map((y) => this.renderDetectCard(y))}</div>
+			<div class="detail-grid">${ordered.map((y) => this.renderDetectCard(y))}</div>
 		</details>`;
 	}
 
@@ -334,11 +384,25 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		return html`<span class=${cls}>${quality}</span>`;
 	}
 
+	/**
+	 * The classical family as a neutral chip. Rendered in all three modes because all three carry the field, and left out entirely when absent, which is the correct reading for a catalog row that is not Nabhasa.
+	 *
+	 * Capitalized rather than mapped: every value is already a Sanskrit proper noun, so a label table would be a second source of truth for five strings that need no translation.
+	 */
+	private renderFamilyChip(y: FamilyBearing) {
+		return y.family
+			? html`<span class="family-chip" title="Classical family">
+				${capitalize(y.family)}
+			</span>`
+			: nothing;
+	}
+
 	private renderDetailCard(yoga: GetYogaResponse) {
 		return html`<div class="detail-card">
 			<p class="detail-name">
 				${yoga.name}
 				${yoga.quality ? this.renderQualityChip(yoga.quality) : nothing}
+				${this.renderFamilyChip(yoga)}
 			</p>
 			${
 				yoga.description
@@ -356,18 +420,23 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		</div>`;
 	}
 
-	/** Detect-mode card: shows the three-way verdict (present, outranked, not present) and the classical evidence behind it. */
+	/**
+	 * Detect-mode card: the three-way verdict, the classical family, and the evidence behind it.
+	 *
+	 * An outranked card names the family that silenced it (`Outranked by Akriti`) rather than saying only that something did. That is strictly more than the badge used to carry, it is exact rather than parsed out of prose, and it reads the same under any `lang`.
+	 */
 	private renderDetectCard(y: DetectedYoga) {
-		const outranked = !y.present && isOutranked(y);
+		const by = y.present ? undefined : suppressor(y);
 		const [cls, label] = y.present
 			? ['is-present', 'Present']
-			: outranked
-				? ['is-outranked', 'Outranked']
+			: by
+				? ['is-outranked', `Outranked by ${capitalize(by)}`]
 				: ['is-absent', 'Not present'];
-		return html`<div class="detail-card ${y.present ? '' : outranked ? 'outranked' : 'absent'}">
+		return html`<div class="detail-card ${y.present ? '' : by ? 'outranked' : 'absent'}">
 			<p class="detail-name">
 				${y.name}
 				${y.quality ? this.renderQualityChip(y.quality) : nothing}
+				${this.renderFamilyChip(y)}
 				<span class="present-badge ${cls}">${label}</span>
 			</p>
 			${y.description ? html`<p class="description">${y.description}</p>` : nothing}
@@ -422,6 +491,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 						<h2 class="title">Detected yogas</h2>
 						<span class="count">${presentCount} of ${detected.length} present</span>
 					</div>
+					${renderFrameCaption((d as DetectYogasResponse).frame)}
 					<div class="search-wrap">
 						<input
 							class="search"

@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
 	type ChartStyle,
 	type KundliViewModel,
@@ -35,7 +36,7 @@ import { tablistStyles } from '../utils/tablist.js';
  */
 @customElement('roxy-vedic-kundli')
 export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
-	static styles = [baseStyles, kundliStyles, tablistStyles];
+	static styles = [baseStyles, frameCaptionStyles, kundliStyles, tablistStyles];
 
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
 	chartStyle: ChartStyle = 'north';
@@ -78,7 +79,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 		return html`<div class="roxy-empty" role="status">No kundli data</div>`;
 	}
 
-	protected renderData(_d: BirthChartResponse) {
+	protected renderData(d: BirthChartResponse) {
 		const vm = this.viewModel();
 		if (!vm) return this.renderEmpty();
 		const title =
@@ -87,7 +88,10 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 				: 'Vedic kundli';
 		return html`<div class="wrap">
 			<div class="header">
-				<h2 class="title">${title}</h2>
+				<div>
+					<h2 class="title">${title}</h2>
+					${renderFrameCaption(d.frame)}
+				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
 			</div>
 			<div

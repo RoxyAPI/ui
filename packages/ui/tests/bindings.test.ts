@@ -212,3 +212,63 @@ describe('deliberately unbound components', () => {
 		}
 	});
 });
+
+/**
+ * Provenance coverage. Fifteen Vedic responses echo the sidereal frame they were computed in, and a chart drawn without saying which frame produced it cannot be reconciled against any other calculator, because changing the ayanamsa can move a graha into a different rashi.
+ *
+ * This binds the spec to the source: any component rendering a frame-carrying response must call {@link renderFrameCaption}. Without it a new component ships silently unlabelled, which reads to a practitioner as a wrong chart rather than a missing caption.
+ */
+describe('sidereal frame provenance', () => {
+	test('every component rendering a frame-carrying response renders the frame', async () => {
+		const spec = (await Bun.file('specs/openapi.json').json()) as {
+			paths: Record<
+				string,
+				Record<
+					string,
+					{
+						operationId?: string;
+						responses?: Record<
+							string,
+							{ content?: Record<string, { schema?: { $ref?: string } }> }
+						>;
+					}
+				>
+			>;
+			components: {
+				schemas: Record<string, { properties?: Record<string, unknown> }>;
+			};
+		};
+
+		const framed = new Set(
+			Object.entries(spec.components.schemas)
+				.filter(([, s]) => s.properties?.frame)
+				.map(([name]) => name),
+		);
+		expect(framed.size).toBeGreaterThan(10);
+
+		const owing = new Set<string>();
+		for (const methods of Object.values(spec.paths)) {
+			for (const op of Object.values(methods)) {
+				const ref =
+					op?.responses?.['200']?.content?.['application/json']?.schema?.$ref;
+				const schema = ref?.split('/').pop();
+				if (!op?.operationId || !schema || !framed.has(schema)) continue;
+				for (const b of UI_BINDINGS[op.operationId] ?? []) {
+					owing.add(b.component);
+				}
+				for (const [tag, path] of Object.entries(UNBOUND_COMPONENTS)) {
+					if (path.endsWith(op.operationId)) owing.add(tag);
+				}
+			}
+		}
+		expect(owing.size).toBeGreaterThan(5);
+
+		const missing: string[] = [];
+		for (const tag of owing) {
+			const file = `packages/ui/src/components/${tag.replace(/^roxy-/, '')}.ts`;
+			const src = await Bun.file(file).text();
+			if (!src.includes('renderFrameCaption')) missing.push(tag);
+		}
+		expect(missing).toEqual([]);
+	});
+});

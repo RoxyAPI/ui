@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-bhava-bala-table",
+  "type": "registry:ui",
+  "title": "RoxyBhavaBalaTable",
+  "description": "The twelve houses ranked by strength, with the three classical components that make up each total",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.20.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-bhava-bala-table.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyBhavaBalaTable data={...} />: The twelve houses ranked by strength, with the three classical components that make up each total.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/bhava-bala-table/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyBhavaBalaTable as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyBhavaBalaTableProps = ComponentProps<typeof Element>;\n\nexport function RoxyBhavaBalaTable(props: RoxyBhavaBalaTableProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyBhavaBalaTable;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/bhava-bala-table.tsx"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import type { DivisionalChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { distinctSanskrit } from '../utils/format.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
 	type ChartStyle,
 	type KundliViewModel,
@@ -27,6 +28,7 @@ import { tablistStyles } from '../utils/tablist.js';
 export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		kundliStyles,
 		tablistStyles,
 		css`
@@ -109,6 +111,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 							? html`<p class="significance">${division.significance}</p>`
 							: nothing
 					}
+					${renderFrameCaption(d.frame)}
 				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
 			</div>

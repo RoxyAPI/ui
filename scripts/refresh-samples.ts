@@ -589,10 +589,58 @@ async function main() {
 		),
 		run('yoga', () => roxy.vedicAstrology.listYogas()),
 		// Detect is a different render branch from the catalog: it is the one that
-		// carries a verdict and evidence per yoga, so without its own sample neither
-		// the showcase nor the audit ever walks the grouped view.
+		// carries a verdict per yoga, so without its own sample neither the showcase
+		// nor the audit ever walks the grouped view.
+		//
+		// This is the ONE card that does not use PERSON1, and the date is load-bearing
+		// rather than arbitrary. The card shows three verdict groups, and the third,
+		// a yoga that matched its own rule and was then outranked by a stronger
+		// family, only occurs on a chart where an Akriti yoga coincides with an
+		// Asraya or Sankhya one. PERSON1 is not such a chart, so on PERSON1 the group
+		// is empty and the whole outranked path renders nowhere. The demo card's own
+		// snippet passes this same date, so the code shown still produces the output
+		// shown.
 		run('yoga-detect', () =>
 			roxy.vedicAstrology.detectYogas({
+				body: {
+					date: '1941-04-26',
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
+		// The VEDIC transit: birth chart plus a transit instant, which is a different
+		// request from the western calculateTransits above. transitDate is pinned rather
+		// than "today" so the committed sample stays stable between recaptures; a moving
+		// date would rewrite every kaksha on every run and bury real diffs.
+		run('gochara', () =>
+			roxy.vedicAstrology.calculateTransit({
+				body: {
+					birthDate: PERSON1.date,
+					birthTime: PERSON1.time,
+					transitDate: '2026-02-03',
+					transitTime: '12:00:00',
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
+		run('bhava-bala', () =>
+			roxy.vedicAstrology.calculateBhavaBala({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
+		run('bhav-chalit', () =>
+			roxy.vedicAstrology.calculateBhavChalit({
 				body: {
 					date: PERSON1.date,
 					time: PERSON1.time,

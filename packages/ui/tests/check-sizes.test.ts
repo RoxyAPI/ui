@@ -40,7 +40,7 @@ describe('size gate against the real build', () => {
 		const absurd = await collectArtifacts({
 			fullGzip: 1,
 			componentGzip: 1,
-			widgetsRaw: 1,
+			widgetsGzip: 1,
 		});
 		expect(findOffenders(absurd).length).toBe(absurd.length);
 	});

@@ -13,6 +13,8 @@ export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
 // Western astrology
 export { RoxyAspectsTable } from './components/aspects-table.js';
 export { RoxyAstrocartographyMap } from './components/astrocartography-map.js';
+export { RoxyBhavChalitTable } from './components/bhav-chalit-table.js';
+export { RoxyBhavaBalaTable } from './components/bhava-bala-table.js';
 // Biorhythm
 export { RoxyBiorhythmChart } from './components/biorhythm-chart.js';
 // Human Design
@@ -37,6 +39,7 @@ export { RoxyFixedStars } from './components/fixed-stars.js';
 // Forecast
 export { RoxyForecastDigest } from './components/forecast-digest.js';
 export { RoxyForecastTimeline } from './components/forecast-timeline.js';
+export { RoxyGocharaTable } from './components/gochara-table.js';
 export { RoxyGunaMilan } from './components/guna-milan.js';
 // Human Design
 export { RoxyHdConnection } from './components/hd-connection.js';

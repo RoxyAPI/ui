@@ -3,7 +3,7 @@
  * Bundle-size gate. Asserts the gzip/raw budgets the README and CLAUDE.md claim and exits non-zero listing every offender, so a size regression cannot reach a registry. Run after a build (it measures `packages/ui/dist/cdn`).
  *
  * @remarks
- * Three budgets: the full CDN bundle and every per-component CDN file are measured GZIPPED (that is the byte weight a browser downloads over a compressing CDN); the one-tag `widgets.js` is measured RAW and reuses {@link WIDGETS_BUDGET_BYTES} so the number lives in exactly one place. {@link findOffenders} is the pure comparison seam the unit test drives with synthetic budgets.
+ * Three budgets, ALL measured GZIPPED, because that is the byte weight a browser downloads over a compressing CDN; the one-tag `widgets.js` reuses {@link WIDGETS_BUDGET_BYTES} so the number lives in exactly one place. {@link findOffenders} is the pure comparison seam the unit test drives with synthetic budgets.
  */
 import { readdir } from 'node:fs/promises';
 import { WIDGETS_BUDGET_BYTES } from './build-widgets.js';
@@ -17,14 +17,14 @@ export interface SizeBudgets {
 	fullGzip: number;
 	/** each `dist/cdn/components/*.js`, gzipped. */
 	componentGzip: number;
-	/** `dist/cdn/widgets.js`, raw. */
-	widgetsRaw: number;
+	/** `dist/cdn/widgets.js`, gzipped. */
+	widgetsGzip: number;
 }
 
 export const DEFAULT_BUDGETS: SizeBudgets = {
 	fullGzip: 150 * KB,
 	componentGzip: 30 * KB,
-	widgetsRaw: WIDGETS_BUDGET_BYTES,
+	widgetsGzip: WIDGETS_BUDGET_BYTES,
 };
 
 export interface Artifact {
@@ -59,9 +59,9 @@ export async function collectArtifacts(
 	});
 	out.push({
 		name: 'cdn/widgets.js',
-		actual: (await readBytes(`${distCdn}/widgets.js`)).length,
-		budget: budgets.widgetsRaw,
-		metric: 'raw',
+		actual: gzipLen(await readBytes(`${distCdn}/widgets.js`)),
+		budget: budgets.widgetsGzip,
+		metric: 'gzip',
 	});
 	const compDir = `${distCdn}/components`;
 	const files = (await readdir(compDir))

@@ -45,6 +45,17 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 		{ component: 'roxy-compatibility-card', attrs: { mode: 'astrology' } },
 	],
 	calculateTransits: [{ component: 'roxy-transits-table' }],
+	// The VEDIC transit, singular, and a different response from calculateTransits
+	// above: natal houses, aspects to the natal chart and the Gochara Kaksha.
+	// Bound rather than left in UNBOUND_COMPONENTS because gochara is the daily
+	// reading a practitioner opens, which is exactly the copy-paste audience.
+	calculateTransit: [{ component: 'roxy-gochara-table' }],
+	getUpagrahaPositions: [{ component: 'roxy-upagraha-table' }],
+	calculateCharaKarakas: [{ component: 'roxy-chara-karakas' }],
+	calculateArudhaPadas: [{ component: 'roxy-arudha-padas' }],
+	getHeliacalVisibility: [{ component: 'roxy-heliacal-table' }],
+	calculateBhavaBala: [{ component: 'roxy-bhava-bala-table' }],
+	calculateBhavChalit: [{ component: 'roxy-bhav-chalit-table' }],
 	calculateAspects: [{ component: 'roxy-aspects-table' }],
 	calculateTransitAspects: [{ component: 'roxy-aspects-table' }],
 	detectAspectPatterns: [{ component: 'roxy-aspects-table' }],
@@ -245,13 +256,10 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
  * Components that render an endpoint response but are deliberately NOT bound above, with the endpoint each one takes.
  *
  * @remarks
- * A binding is what makes a component a one-tag widget: it enters the generated widget map, the demo Embed tab, and the hosted embed surfaces. These three are practitioner-depth Jyotish tables read beside a full chart, not paste-one-line-into-a-landing-page widgets, and the auto-mount script is held to a hard byte budget that has to stay available for the endpoints the copy-paste audience actually asks for (horoscope, natal wheel, compatibility).
+ * A binding is what makes a component a one-tag widget: it enters the generated widget map, the demo Embed tab, and the hosted embed surfaces. An unbound component still ships in full as a web component and in both wrapper packages, and still self-fetches when given an explicit `data-endpoint` and a publishable key. Only the zero-config auto-mount path is withheld.
  *
- * They ship in full as web components and in both framework wrapper packages, and self-fetch works by setting `data-endpoint` and a publishable key explicitly. Only the zero-config auto-mount path is withheld. `bindings.test.ts` reads this map so the every-component-is-bound gate keeps biting for every other component.
+ * **Empty on purpose.** Every component that renders an endpoint is now a widget. Add an entry here only for a genuine product reason, never because of bundle size: the widget map compresses at roughly ten to one, so the size argument that used to justify entries here does not survive measuring the gzipped script.
+ *
+ * `bindings.test.ts` reads this map, so the every-component-is-bound gate keeps biting for everything absent from it.
  */
-export const UNBOUND_COMPONENTS: Record<string, string> = {
-	'roxy-upagraha-table': 'POST /vedic-astrology/upagraha',
-	'roxy-chara-karakas': 'POST /vedic-astrology/chara-karakas',
-	'roxy-arudha-padas': 'POST /vedic-astrology/arudha',
-	'roxy-heliacal-table': 'POST /vedic-astrology/heliacal',
-};
+export const UNBOUND_COMPONENTS: Record<string, string> = {};

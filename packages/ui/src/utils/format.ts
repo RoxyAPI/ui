@@ -84,7 +84,7 @@ export function formatDateRange(start: unknown, end: unknown): string {
  * Format a number, dropping trailing zeros in the FRACTIONAL part only: `2.50` becomes `2.5`, `2.0` becomes `2`, and `100` stays `100`.
  *
  * @remarks
- * The old implementation ran `.replace(/\.?0+$/, '')` against the whole string, which happily ate zeros off the INTEGER when there was no decimal point. At `dp = 0` that meant `100` rendered as `1`, `90` as `9`, `20` as `2`, and `0` as the empty string. It shipped: a 100 percent tight stellium displayed as "1% tight", and an aspect of strength 100 as "str 1". Guard on the decimal point, and never strip from the integer side.
+ * Guard on the decimal point, and never strip from the integer side. A naive `.replace(/\.?0+$/, '')` over the whole string eats zeros off the INTEGER whenever there is no decimal point, so at `dp = 0` it turns `100` into `1`, `90` into `9` and `0` into the empty string.
  *
  * @example
  * ```ts
@@ -144,7 +144,7 @@ export function formatAspectName(a: { type?: string }): string {
 /**
  * Display label for an ayanamsa identifier. `kp-newcomb` -> `KP Newcomb`.
  *
- * The raw values are API enums, and every one of them needs a human form that {@link humanize} cannot derive: KP is an initialism that must stay uppercase, and `raman` is a person, B.V. Raman, not a word. Anything unmapped degrades to a humanized slug rather than rendering the enum, which is a safe fallback and NOT a licence to skip the map: `raman` shipped as a frame months after this map was written and read as a bare "Raman" until 2026-08-03. `format.test.ts` now fails if the committed spec gains a frame this map lacks.
+ * The raw values are API enums, and every one of them needs a human form that {@link humanize} cannot derive: KP is an initialism that must stay uppercase, and `raman` is a person, B.V. Raman, not a word. Anything unmapped degrades to a humanized slug rather than rendering the enum. That fallback is a safety net, not a licence to skip the map, since a humanized slug reads as a bare surname where a full name belongs. A test fails if the committed spec gains a frame this map lacks.
  */
 export const AYANAMSA_LABEL: Record<string, string> = {
 	'kp-newcomb': 'KP Newcomb',

@@ -89,6 +89,9 @@ export const DATA_TYPES: Record<string, string> = {
 	'ashtakavarga-grid': 'AshtakavargaResponse',
 	'shadbala-table': 'ShadbalaResponse',
 	'heliacal-table': 'HeliacalResponse',
+	'gochara-table': 'CalculateTransitResponse',
+	'bhava-bala-table': 'BhavaBalaResponse',
+	'bhav-chalit-table': 'BhavChalitResponse',
 	'upagraha-table': 'UpagrahaResponse',
 	'chara-karakas': 'CharaKarakaResponse',
 	'arudha-padas': 'ArudhaResponse',
@@ -399,7 +402,7 @@ export interface WrapperMeta {
  * Components that take no response at all. They are plain `LitElement`s driven by configuration (`RoxyLocationSearch`, `RoxyEndpointForm`), NOT `RoxyDataElement` subclasses, so they get no `data` prop and must not advertise {@link SELF_FETCH_PROPS}.
  *
  * @remarks
- * This list exists because `'unknown'` cannot carry that meaning. `hasData` used to be derived as `DATA_TYPES[slug] !== 'unknown'`, which conflated "not a data component" with "a data component whose response type genuinely IS `unknown`". `roxy-data` is the second: it is a `RoxyDataElement<Json>` and renders ANY response, which is the whole point of the generic fallback. So it was silently stripped of its `data` prop in BOTH published wrapper packages, and `<RoxyData :data="..."/>` could only ever render its empty state. Membership here, not the shape of the type, is what decides.
+ * Membership here, not the shape of the type, is what decides. Deriving it as `DATA_TYPES[slug] !== 'unknown'` instead would conflate "not a data component" with "a data component whose response type genuinely IS `unknown`", and `roxy-data` is the latter: it is a `RoxyDataElement<Json>` that renders ANY response, which is the whole point of the generic fallback. Such a component would lose its `data` prop in both wrapper packages and could only ever render its empty state.
  */
 const NO_DATA_SLUGS = new Set(['location-search', 'endpoint-form']);
 
@@ -430,7 +433,7 @@ export function wrapperMeta(slug: string): WrapperMeta {
  * Response types are copied INTO each wrapper package rather than imported from `@roxyapi/ui`, so a wrapper is self-contained: installing `@roxyapi/ui-react` or `@roxyapi/ui-vue` alone gives you fully typed props with no second install.
  *
  * @remarks
- * They used to be emitted as `import type { ... } from '@roxyapi/ui/types'` while neither wrapper declared `@roxyapi/ui` as a dependency. Inside this repo a `paths` mapping in `tsconfig.build.json` resolved it, so the build was green and the published `.d.ts` shipped an import of a package the consumer never installs. With the TypeScript default `skipLibCheck: true` the unresolved import is swallowed and every `data` prop silently degrades to `any`; with `skipLibCheck: false` it is a hard `TS2307`. Either way the typed wrapper was not actually typed. Vendoring the types is what makes the guarantee real.
+ * Never replace this with `import type { ... } from '@roxyapi/ui/types'`. Neither wrapper declares `@roxyapi/ui` as a dependency, and a local `paths` mapping resolves such an import inside this repo, so the build stays green while the published `.d.ts` carries an import of a package the consumer never installs. Under the TypeScript default `skipLibCheck: true` that unresolved import is swallowed and every `data` prop degrades to `any`; under `skipLibCheck: false` it is a hard `TS2307`. Either way the typed wrapper would not actually be typed. Vendoring is what makes the guarantee real.
  */
 export const TYPES_IMPORT = '../types/index.js';
 

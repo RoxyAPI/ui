@@ -98,7 +98,7 @@ export const SIGNS_ORDER = [
  * @remarks
  * These are the nine aspects Unicode itself defines as a set, in its Miscellaneous Symbols block note: `260C, 26BA, 2220, 26B9, 25A1, 25B3, 26BC, 26BB, 260D` for 0, 30, 45, 60, 90, 120, 135, 150 and 180 degrees. That is exactly the vocabulary the API returns, so every aspect resolves to a real glyph and none falls through to a truncated slug.
  *
- * Do not substitute the visually similar maths operators. An earlier revision used `⊻` XOR for quincunx and `⊼` NAND for semisextile, which are the two characters Unicode lists as cross-references FROM the real glyphs, and it had them the wrong way round: charts rendered a 150 degree quincunx with the 30 degree semisextile symbol and vice versa. An astrologer reads the glyph, not the tooltip.
+ * Do not substitute the visually similar maths operators. Unicode lists `⊻` XOR and `⊼` NAND as cross-references FROM the real quincunx and semisextile glyphs, so they look like safe stand-ins and are easy to pair the wrong way round, which renders a 150 degree quincunx with the 30 degree semisextile symbol. An astrologer reads the glyph, not the tooltip.
  */
 export const ASPECT_SYMBOL: Record<string, string> = {
 	conjunction: '☌',

@@ -24,14 +24,14 @@
  * rebrand the library.
  *
  * Without it, `:root.dark` and `[data-theme="dark"]` carry class/attribute specificity (0,1,1)
- * and outrank a plain `:root` (0,1,0), so a consumer's accent survived under
- * prefers-color-scheme and was silently reverted to amber under the other two dark signals.
- * One brand override, three different results.
+ * and outrank a plain `:root` (0,1,0). A brand override would then hold under
+ * prefers-color-scheme and be reverted under the other two dark signals: one override, three
+ * different results.
  *
- * A cascade layer was tried first and reverted: layers mean UNLAYERED rules win, so every theme
- * block became weaker than ANY unlayered rule on the page (a consumer's Tailwind reset, the demo
- * page's own CSS) and dark mode broke outright. :where() lowers only OUR specificity, which is
- * exactly the intent, and leaves the cascade otherwise untouched.
+ * Do NOT reach for a cascade layer instead. Layers mean UNLAYERED rules win, so every theme
+ * block becomes weaker than ANY unlayered rule on the page (a consumer's Tailwind reset, a demo
+ * page's own CSS) and dark mode stops applying at all. :where() lowers only OUR specificity,
+ * which is exactly the intent, and leaves the cascade otherwise untouched.
  */
 :where(:root, :host) {
 	/* Color: brand */
@@ -39,16 +39,16 @@
 	--roxy-secondary: #475569;
 	--roxy-accent: #f59e0b;
 	/* Text-safe accent variant, DERIVED from --roxy-accent so overriding the accent
-	 * alone rebrands the whole library. It used to be a hardcoded amber, so a
-	 * consumer following the theming recipe and setting only --roxy-accent was left
-	 * with the active tab label, the conjunction aspect lines and the focus ring
-	 * still painting amber: a two-tone palette from a one-line override.
+	 * alone rebrands the whole library. Never hardcode a colour here: a consumer
+	 * following the theming recipe sets only --roxy-accent, and a fixed value leaves
+	 * the active tab label, the conjunction aspect lines and the focus ring on the
+	 * old hue, giving a two-tone palette from a one-line override.
 	 *
 	 * The raw accent is too light for text (amber-500 is 2.14:1 on white, far under
 	 * WCAG AA). Mixing 70% of it into black is measured, not guessed: rasterised to
 	 * real pixels, the darkest of the twelve shipped domain accents still lands at
-	 * 5.24:1 on white, above AA and above the 5.02:1 the old hardcoded value gave.
-	 * At 75% amber falls to 4.46 and fails, so 70 is a ceiling, not a round number.
+	 * 5.24:1 on white, above AA. At 75% amber falls to 4.46 and fails, so 70 is a
+	 * ceiling, not a round number.
 	 *
 	 * Fills (planet glyphs, chart accents, non-text badges) keep --roxy-accent. */
 	--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
