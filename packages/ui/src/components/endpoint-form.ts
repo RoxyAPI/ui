@@ -10,6 +10,7 @@ import {
 	type FieldDef,
 	type FormModel,
 	isZodiacEnum,
+	LOCATION_PAIR,
 	LOCATION_TRIO,
 	type OpenApiDoc,
 	type OperationSchema,
@@ -500,6 +501,14 @@ export class RoxyEndpointForm extends LitElement {
 			this.groupHasLocation(f.group)
 		)
 			return 'location';
+		// A flat timezone in a group with no coordinates of its own is still suppressed when a
+		// location group has claimed it, otherwise the prefixed shape shows a raw decimal-hours
+		// box beside two city searches that already know the answer.
+		if (
+			f.name === 'timezone' &&
+			this.locationGroups().some((g) => this.timezoneFieldFor(g)?.key === f.key)
+		)
+			return 'location';
 		return 'normal';
 	}
 
@@ -516,10 +525,39 @@ export class RoxyEndpointForm extends LitElement {
 		return keys;
 	}
 
-	/** True when the fields in `group` (or the flat top level) carry latitude+longitude+timezone, so a location-search can autofill them. */
+	/** True when the fields in `group` (or the flat top level) carry a latitude+longitude pair, so a location-search can autofill them. Timezone is NOT required here, see {@link LOCATION_PAIR}. */
 	private groupHasLocation(group?: string): boolean {
 		const inGroup = this.fields.filter((f) => f.group === group);
-		return LOCATION_TRIO.every((n) => inGroup.some((f) => f.name === n));
+		return LOCATION_PAIR.every((n) => inGroup.some((f) => f.name === n));
+	}
+
+	/**
+	 * Location groups in field order. Order is load-bearing: when a request carries coordinate
+	 * groups but only ONE unprefixed top-level `timezone`, the FIRST group owns it, because that
+	 * timezone belongs to the primary moment (`generateRelocationChart` has one `timezone` and it is
+	 * the birth timezone). Without an owner both city boxes would write the same key and the second
+	 * pick would silently overwrite the first with the wrong offset.
+	 */
+	private locationGroups(): (string | undefined)[] {
+		return this.groupKeys().filter((g) => this.groupHasLocation(g));
+	}
+
+	/**
+	 * The timezone field a group's city search should fill, or undefined when there is none.
+	 *
+	 * Prefers a timezone inside the group (the nested `person1`/`person2` shape has its own). Falls
+	 * back to an unowned flat `timezone` for the first location group only, which is what makes the
+	 * prefixed shape work without leaving a decimal-hours box for a visitor to guess at.
+	 */
+	private timezoneFieldFor(group?: string): FieldDef | undefined {
+		const own = this.fields.find(
+			(f) => f.group === group && f.name === 'timezone',
+		);
+		if (own) return own;
+		if (this.locationGroups()[0] !== group) return undefined;
+		return this.fields.find(
+			(f) => f.group === undefined && f.name === 'timezone',
+		);
 	}
 
 	/**
@@ -561,9 +599,16 @@ export class RoxyEndpointForm extends LitElement {
 		return this.lang || undefined;
 	}
 
-	/** Location-select handler bound to a group: fills that group's lat/lng/timezone keys (flat top level when group is undefined). */
+	/**
+	 * Location-select handler bound to a group: fills that group's coordinate keys plus whichever
+	 * timezone field it owns.
+	 *
+	 * Keys are LOOKED UP from the model rather than built as `group.name`. That assumption held only
+	 * while every group came from object nesting; a prefixed group stores under the original wire
+	 * name (`birthLatitude`), so constructing `birth.latitude` would write a key the request builder
+	 * never reads and the coordinates would silently stay empty.
+	 */
 	private onLocationFor(group?: string) {
-		const prefix = group ? `${group}.` : '';
 		return (e: Event) => {
 			const detail = (e as CustomEvent).detail as {
 				latitude?: number;
@@ -572,12 +617,16 @@ export class RoxyEndpointForm extends LitElement {
 				utcOffset?: number;
 			};
 			if (!detail) return;
-			this.values = {
-				...this.values,
-				[`${prefix}latitude`]: detail.latitude,
-				[`${prefix}longitude`]: detail.longitude,
-				[`${prefix}timezone`]: detail.timezone ?? detail.utcOffset,
-			};
+			const keyOf = (name: string) =>
+				this.fields.find((f) => f.group === group && f.name === name)?.key;
+			const next: Record<string, unknown> = { ...this.values };
+			const lat = keyOf('latitude');
+			const lon = keyOf('longitude');
+			if (lat) next[lat] = detail.latitude;
+			if (lon) next[lon] = detail.longitude;
+			const tz = this.timezoneFieldFor(group);
+			if (tz) next[tz.key] = detail.timezone ?? detail.utcOffset;
+			this.values = next;
 		};
 	}
 
@@ -848,6 +897,20 @@ export class RoxyEndpointForm extends LitElement {
 		}
 	}
 
+	/**
+	 * The fields this group's city search actually fills, named in the help text.
+	 *
+	 * Not the hardcoded "latitude, longitude, timezone" it used to say: a group does not always own a
+	 * timezone. `generateRelocationChart` has one top-level `timezone` that belongs to the birth
+	 * moment, so the relocation block fills coordinates only, and promising a timezone there would be
+	 * a visible lie on the one form that made this method necessary.
+	 */
+	private locationFillList(group?: string): string {
+		const names = [...LOCATION_PAIR] as string[];
+		if (this.timezoneFieldFor(group)) names.push('timezone');
+		return names.join(', ');
+	}
+
 	private locationBlock(group?: string) {
 		return html`<div class="location-block">
 			<label
@@ -860,10 +923,10 @@ export class RoxyEndpointForm extends LitElement {
 			<roxy-location-search
 				publishable-key=${ifDefined(this.publishableKey)}
 				@roxy-location-select=${this.onLocationFor(group)}
-				placeholder="City of birth"
+				placeholder=${group ? `${humanize(group)} city` : 'City of birth'}
 			></roxy-location-search>
 			<small class="help">
-				Required: latitude, longitude, timezone. Pick a city to autofill.
+				Fills ${this.locationFillList(group)}. Pick a city to autofill.
 			</small>
 		</div>`;
 	}

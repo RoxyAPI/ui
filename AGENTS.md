@@ -141,6 +141,8 @@ Every snippet below follows this rule.
 
 Every chart endpoint (Western, Vedic, KP, synastry, transits, dasha, dosha, panchang) needs `latitude`, `longitude`, and `timezone`. Never ask the user to type coordinates. Call `/location/search` first, then feed the result into the chart endpoint.
 
+Two endpoints take TWO locations, and they name them differently. `POST /astrology/synastry`, `/astrology/composite-chart`, `/vedic-astrology/compatibility` and `/human-design/connection` nest a full location per person (`person1` / `person2`, or `personA` / `personB`). `POST /astrology/relocation-chart` instead takes `birthLatitude`, `birthLongitude`, `relocationLatitude`, `relocationLongitude` at the top level with a single `timezone`, which is the BIRTH timezone: relocating does not move the birth moment. `<roxy-endpoint-form>` renders a separate city search for each location automatically, so self-fetch mode needs no extra work.
+
 ```ts
 // Right
 const { data: cities } = await roxy.location.searchCities({ query: { q: 'Mumbai' } });

@@ -19,6 +19,16 @@ const projects = requested?.length
 export default defineConfig({
 	testDir: './packages/ui/tests/e2e',
 	/**
+	 * `.e2e.ts`, deliberately NOT the Playwright default of `.spec.ts`.
+	 *
+	 * Bun's test runner globs `*.spec.ts` as well as `*.test.ts`, so while these files carried the
+	 * default suffix a bare `bun test` swept them up and reported 4 failures ("Playwright Test did not
+	 * expect test.describe() to be called here"). The enumerated `test` script in package.json hid
+	 * that, but anyone running `bun test` directly saw a red suite that was not red, which is worse
+	 * than a broken test: it trains you to ignore the number. One suffix, one runner each.
+	 */
+	testMatch: '**/*.e2e.ts',
+	/**
 	 * 90s, not the 30s default.
 	 *
 	 * The axe passes mount the whole demo (54 components, 69 cards) and scan it in

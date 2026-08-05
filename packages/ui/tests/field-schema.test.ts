@@ -5,6 +5,7 @@ import {
 	deriveSubmitLabel,
 	deriveTitle,
 	isZodiacEnum,
+	LOCATION_PAIR,
 	type OpenApiSchema,
 	type OperationSchema,
 	sliceFileName,
@@ -88,6 +89,91 @@ describe('isZodiacEnum', () => {
 
 describe('buildFormModel', () => {
 	const schemas: Record<string, OpenApiSchema> = {};
+
+	/**
+	 * Two locations reach a request in two shapes. Nested per-person objects (`person1`/`person2`)
+	 * were always grouped by object nesting, but `generateRelocationChart` puts BOTH coordinate pairs
+	 * at the top level and distinguishes them by a name prefix, so it is the only operation in the
+	 * spec that the nesting-only grouping could not see. It rendered four raw number inputs and a
+	 * decimal-hours timezone to the visitor.
+	 *
+	 * `key` must stay the ORIGINAL wire name. Rewriting it to `birth.latitude` would group correctly
+	 * and then serialise a body the API rejects, which is the failure mode a group-shape test alone
+	 * would miss.
+	 */
+	test('a prefixed coordinate pair becomes its own group, keeping the wire key', () => {
+		const op: OperationSchema = {
+			summary: 'Relocation chart',
+			requestBody: {
+				content: {
+					'application/json': {
+						schema: {
+							type: 'object',
+							required: ['date', 'birthLatitude', 'relocationLatitude'],
+							properties: {
+								date: { type: 'string', format: 'date' },
+								timezone: { type: 'number' },
+								birthLatitude: { type: 'number' },
+								birthLongitude: { type: 'number' },
+								relocationLatitude: { type: 'number' },
+								relocationLongitude: { type: 'number' },
+							},
+						},
+					},
+				},
+			},
+		};
+
+		const { fields } = buildFormModel(
+			op,
+			schemas,
+			'astrology/relocation-chart',
+		);
+		const groups = [...new Set(fields.map((f) => f.group))];
+		const located = groups.filter((g) =>
+			LOCATION_PAIR.every((n) =>
+				fields.some((f) => f.group === g && f.name === n),
+			),
+		);
+
+		expect(located).toEqual(['birth', 'relocation']);
+		expect(
+			fields.find((f) => f.group === 'birth' && f.name === 'latitude')?.key,
+		).toBe('birthLatitude');
+		expect(
+			fields.find((f) => f.group === 'relocation' && f.name === 'longitude')
+				?.key,
+		).toBe('relocationLongitude');
+		// The shared timezone stays flat and unprefixed; the form assigns it to the first group.
+		expect(fields.find((f) => f.name === 'timezone')?.group).toBeUndefined();
+	});
+
+	/** A prefix is harvested from coordinates ONLY. `birthDate` must not invent a `birth` group holding a lone date. */
+	test('a non-coordinate field sharing a prefix stays in the flat group', () => {
+		const op: OperationSchema = {
+			summary: 'Solar return',
+			requestBody: {
+				content: {
+					'application/json': {
+						schema: {
+							type: 'object',
+							properties: {
+								birthDate: { type: 'string', format: 'date' },
+								birthTime: { type: 'string' },
+								latitude: { type: 'number' },
+								longitude: { type: 'number' },
+							},
+						},
+					},
+				},
+			},
+		};
+
+		const { fields } = buildFormModel(op, schemas, 'astrology/solar-return');
+		expect(fields.find((f) => f.name === 'birthDate')?.group).toBeUndefined();
+		expect(fields.find((f) => f.name === 'birthTime')?.group).toBeUndefined();
+		expect(fields.find((f) => f.name === 'latitude')?.group).toBeUndefined();
+	});
 
 	test('a path enum plus a lang query becomes one tile field, lang suppressed', () => {
 		const op: OperationSchema = {

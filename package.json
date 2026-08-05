@@ -32,7 +32,7 @@
 		"check:previews": "bun run scripts/check-previews.ts",
 		"audit": "bun run scripts/audit.ts",
 		"typecheck": "tsc --noEmit",
-		"test": "bun test packages/ui/tests/utils.test.ts packages/ui/tests/components.test.ts packages/ui/tests/base-element.test.ts packages/ui/tests/bindings.test.ts packages/ui/tests/chart-width.test.ts packages/ui/tests/bodygraph.test.ts packages/ui/tests/theming.test.ts packages/ui/tests/themes.test.ts packages/ui/tests/field-schema.test.ts packages/ui/tests/taxonomy.test.ts packages/ui/tests/endpoint-form.test.ts packages/ui/tests/key-guard.test.ts packages/ui/tests/build-schemas.test.ts packages/ui/tests/widgets.test.ts packages/ui/tests/embed-tab.test.ts packages/ui/tests/check-sizes.test.ts --timeout 10000",
+		"test": "bun test --timeout 10000",
 		"test:e2e": "playwright test",
 		"check": "biome check . --fix",
 		"brand:check": "bun run scripts/brand-grep.ts",

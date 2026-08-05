@@ -183,6 +183,15 @@ jobs:
           # and the committed codegen (registry, manifest, docs tables).
           git add packages/ registry/ apps/docs/manifest.js README.md AGENTS.md
           git commit -m "release: v$VERSION"
+          # These two lines are INERT and the tag you see on the remote is not from here.
+          # `git tag` makes a LIGHTWEIGHT tag and `git push --follow-tags` pushes only
+          # ANNOTATED ones, so this pushes the commit and silently drops the tag. Tagging
+          # actually happens server-side in the `action-gh-release` step below, via
+          # `tag_name`, which is why every tag on this remote is lightweight (no `^{}`
+          # dereference line in `git ls-remote --tags`). Verified 2026-08-05 after the same
+          # two lines were found losing every tag in a sibling repo that has no Release step.
+          # So do NOT remove `action-gh-release` or replace it with a plain `git push`
+          # believing this covers tagging. Cleanup tracked; not touched on a release day.
           git tag "v$VERSION"
           git push --follow-tags
 

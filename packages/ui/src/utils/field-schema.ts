@@ -109,6 +109,47 @@ export const TILE_MAX = 12;
 /** The latitude+longitude+timezone trio the form suppresses in favour of a city search. Centralised so the render path and tests agree. */
 export const LOCATION_TRIO = ['latitude', 'longitude', 'timezone'] as const;
 
+/**
+ * The coordinate pair that DEFINES a location group. `timezone` is deliberately absent.
+ *
+ * @remarks
+ * A group qualifies for a city search on latitude+longitude alone, because a timezone is not always
+ * part of the group that owns the coordinates: `generateRelocationChart` carries two coordinate
+ * pairs and exactly ONE top-level `timezone`, which is the BIRTH timezone (relocating does not move
+ * the birth moment), so the relocation pair correctly has no timezone of its own. Requiring all
+ * three would leave that operation rendering raw number inputs, which is the bug this exists to
+ * prevent.
+ */
+export const LOCATION_PAIR = ['latitude', 'longitude'] as const;
+
+/**
+ * Split a flat coordinate property into its group prefix and canonical leaf name, or `null` when the
+ * name is not a prefixed coordinate.
+ *
+ * @remarks
+ * **Two shapes carry two locations in one request and this handles the second one.** Most
+ * multi-location operations nest per person (`person1`/`person2`, `personA`/`personB`), so object
+ * nesting alone already groups them. `generateRelocationChart` is the only operation in the spec
+ * that instead puts both pairs at the TOP level and distinguishes them by a name prefix
+ * (`birthLatitude` / `relocationLatitude`). Keying the grouping off the prefix as well as off the
+ * nesting means both shapes converge on the same group machinery, and a future `partnerLatitude`
+ * needs no code change.
+ *
+ * Matching is deliberately restricted to the coordinate pair. A prefix is NOT harvested from any
+ * other field name, so `birthDate` stays an ordinary field in the flat group and does not invent a
+ * phantom `birth` group with a lone date in it.
+ */
+export function splitCoordinateName(
+	name: string,
+): { group: string; leaf: (typeof LOCATION_PAIR)[number] } | null {
+	const m = name.match(/^(.+?)(Latitude|Longitude)$/);
+	if (!m) return null;
+	return {
+		group: m[1],
+		leaf: m[2].toLowerCase() as (typeof LOCATION_PAIR)[number],
+	};
+}
+
 /** Canonical lowercase zodiac set, derived from {@link SIGNS_ORDER} so sign detection and the glyph map can never disagree. */
 const ZODIAC_LOWER = SIGNS_ORDER.map((s) => s.toLowerCase());
 
@@ -232,8 +273,23 @@ export function buildFormModel(
 					);
 				}
 			} else {
+				// A prefixed coordinate joins a group named after its prefix and reports the
+				// canonical leaf name, so the trio logic and the city search match it unchanged.
+				// `key` stays the ORIGINAL property name because it is the storage and wire
+				// identity: rewriting it to `birth.latitude` would serialise a body the API
+				// rejects.
+				const coord = splitCoordinateName(name);
 				fields.push(
-					toField(name, resolved, { key: name, required: required.has(name) }),
+					coord
+						? toField(coord.leaf, resolved, {
+								key: name,
+								group: coord.group,
+								required: required.has(name),
+							})
+						: toField(name, resolved, {
+								key: name,
+								required: required.has(name),
+							}),
 				);
 			}
 		}

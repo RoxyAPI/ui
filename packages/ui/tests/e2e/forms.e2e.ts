@@ -19,6 +19,11 @@ const FORMS = [
 	{ id: 'e2e-tarot-draw', endpoint: 'tarot/draw', method: 'POST' },
 	{ id: 'e2e-natal', endpoint: 'astrology/natal-chart', method: 'POST' },
 	{ id: 'e2e-synastry', endpoint: 'astrology/synastry', method: 'POST' },
+	{
+		id: 'e2e-relocation',
+		endpoint: 'astrology/relocation-chart',
+		method: 'POST',
+	},
 ];
 
 async function mountForms(page: Page): Promise<void> {
@@ -45,7 +50,10 @@ async function mountForms(page: Page): Promise<void> {
 		const sy = document.getElementById('e2e-synastry');
 		return (
 			!!ho?.shadowRoot?.querySelector('[role="radiogroup"]') &&
-			!!sy?.shadowRoot?.querySelector('fieldset.person-group')
+			!!sy?.shadowRoot?.querySelector('fieldset.person-group') &&
+			!!document
+				.getElementById('e2e-relocation')
+				?.shadowRoot?.querySelector('roxy-location-search')
 		);
 	});
 }
@@ -212,5 +220,42 @@ test.describe('practitioner theme preset', () => {
 		await scanThemed();
 		await setTheme(page, 'dark', 'roxy-practitioner');
 		await scanThemed();
+	});
+});
+
+/**
+ * The two-locations-in-one-request case, rendered rather than modelled.
+ *
+ * `generateRelocationChart` is the only operation in the spec that carries two coordinate pairs at
+ * the TOP level, told apart by a name prefix (`birthLatitude` / `relocationLatitude`) instead of by
+ * per-person object nesting. Grouping used to come from nesting alone, so this form fell through to
+ * four raw number inputs and a decimal-hours timezone box, which no visitor of an embedder's site
+ * can answer. The unit tests assert the form MODEL; this asserts what a browser actually paints,
+ * which is the only claim that matters to the person filling it in.
+ */
+test.describe('two-location form', () => {
+	test('relocation renders two city searches and no raw coordinate inputs', async ({
+		page,
+	}) => {
+		await mountForms(page);
+
+		const pickers = page.locator('#e2e-relocation roxy-location-search');
+		await expect(pickers).toHaveCount(2);
+
+		// Each block is labelled from its group, so the two are tellable apart.
+		const labels = await page
+			.locator('#e2e-relocation .location-block label')
+			.allInnerTexts();
+		expect(labels.join(' | ').toLowerCase()).toContain('birth');
+		expect(labels.join(' | ').toLowerCase()).toContain('relocation');
+
+		// No coordinate or timezone field may survive as a typed input.
+		const names = await page
+			.locator('#e2e-relocation input')
+			.evaluateAll((els) =>
+				els.map((e) => (e as HTMLInputElement).name || e.id || ''),
+			);
+		const raw = names.filter((n) => /latitude|longitude|timezone/i.test(n));
+		expect(raw, `raw inputs still rendered: ${raw.join(', ')}`).toEqual([]);
 	});
 });
