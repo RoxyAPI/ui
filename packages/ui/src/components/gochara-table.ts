@@ -32,6 +32,8 @@ const KAKSHA_COUNT = 8;
  * The eight kaksha lords run in a fixed order from the start of every sign, and this component deliberately holds NO copy of that order. Only the CURRENT kaksha is labelled, from the `lord` the response carries. A local table would be a second source of truth for data the API owns, and it would sit in a public repo.
  *
  * **`bindu` is null for Rahu and Ketu and must render blank, never as an unfavourable verdict.** The nodes have no Bhinnashtakavarga of their own, so there is no bindu to give; treating the absence as a negative would invent a reading the tradition does not make. Since the OpenAPI 3.1 nullability fix the type is `boolean | null`, so a `bindu ? a : b` no longer typechecks its way past the distinction.
+ *
+ * `hide-readings` takes the Key transits section and nothing else. Every graha row stays whole, including the kaksha line: that sentence is a readout of `number`, `lord`, `startDegree`, `endDegree` and `binduCount`, so it is the calculation written out rather than a reading of it. The Key transits section is the reverse, a list of `description` sentences whose one datum, the natal house, is already on the graha row above, so it goes whole rather than leaving its heading behind.
  */
 @customElement('roxy-gochara-table')
 export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> {
@@ -166,8 +168,8 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 		if (!planets.length) return this.renderEmpty();
 		const key = d.keyTransits ?? [];
 
-		return html`<div class="wrap" aria-label="Gochara transits">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Gochara transits">
+			<header class="head" part="header">
 				<h2 class="title">Gochara</h2>
 				<p class="sub">
 					Where each graha transits at
@@ -175,10 +177,10 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 					natal chart of ${formatDateTime(d.birthDatetime)}.
 				</p>
 			</header>
-			<div>${planets.map((p) => this.renderPlanet(p))}</div>
+			<div part="table">${planets.map((p) => this.renderPlanet(p))}</div>
 			${
-				key.length
-					? html`<section class="key">
+				key.length && !this.hideReadings
+					? html`<section class="key" part="section key-transits">
 						<h3 class="key-title">Key transits</h3>
 						${key.map(
 							(k) => html`<p class="key-item">
@@ -251,6 +253,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 
 		return html`<div
 				class="kaksha-bar"
+				part="chart"
 				role="img"
 				aria-label="Kaksha ${here} of ${KAKSHA_COUNT} within ${''}the current sign"
 			>

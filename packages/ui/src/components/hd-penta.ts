@@ -16,6 +16,8 @@ type PentaGate = Penta['gates'][number];
  * The penta is the only Human Design chart whose subject is a group rather than a person, so every row answers "who supplies this" as well as "is it there". The response reports that as zero-based indices into the member list that was sent, which is the one thing a card must not print raw: members are lettered instead, A for the first member sent, and the footnote says so.
  *
  * Read in two passes. The channels are the functions the group performs, and a channel is a defined Strength only when both of its gates are held somewhere in the group, so the attribution line under each one shows which member carries which end. The twelve gates below are the same data seen per role, and they are where a gap shows up as itself: a gate held by nobody, which the summary also counts.
+ *
+ * Every word of prose on this card is written here rather than returned by the endpoint, and that changes nothing about the line: the lead, the two triangle notes, the gates note and the Core footnote are the written report on the chart, so `hide-readings` takes them the same way `roxy-hd-connection` takes its own. What stays is the whole penta: the fact tiles, both triangle headings, every channel with its gates, circuit, defined and core badges and its per-member attribution, and every gate row with its gap badge. The member-lettering footnote stays with them, because it is the legend those attributions are read through and the rows are undecodable without it.
  */
 @customElement('roxy-hd-penta')
 export class RoxyHdPenta extends RoxyDataElement<Penta> {
@@ -151,8 +153,8 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 		const gaps = s?.gapGates ?? [];
 		const hasCore = channels.some((c) => c.isCore);
 
-		return html`<div class="wrap" aria-label="Human Design penta">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Human Design penta">
+			<header class="head" part="header">
 				<h2 class="title">Penta</h2>
 				${typeof d.memberCount === 'number' ? html`<span class="count">${d.memberCount} members</span>` : nothing}
 			</header>
@@ -186,13 +188,19 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 					value: gaps.length > 0 ? gaps.join(', ') : undefined,
 				},
 			])}
-			<p class="lead">
-				A penta is the field three to five people form when they work as a group.
-				It is read from the twelve penta gates the members bring between them: a
-				channel with both of its gates held somewhere in the group is a defined
-				Strength, and a gate no member holds is a gap the group has to compensate
-				for.
-			</p>
+			${
+				// The tiles above count the members, the defined channels, the filled
+				// gates and the gaps; this paragraph is what those counts mean.
+				this.hideReadings
+					? nothing
+					: html`<p class="lead">
+						A penta is the field three to five people form when they work as a group.
+						It is read from the twelve penta gates the members bring between them: a
+						channel with both of its gates held somewhere in the group is a defined
+						Strength, and a gate no member holds is a gap the group has to compensate
+						for.
+					</p>`
+			}
 			${this.renderGroup(
 				'Upper (direction)',
 				channels.filter((c) => c.position === 'upper'),
@@ -214,7 +222,9 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 				)
 			}
 			${
-				hasCore
+				// The Core badge on the row is the fact; this explains the tradition
+				// behind it.
+				hasCore && !this.hideReadings
 					? html`<p class="footnote">
 						Core is the 2/14 Channel of the Beat, the material core of the penta:
 						gate 2 sets the direction for resources, gate 14 is the resources
@@ -224,8 +234,10 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 			}
 			${this.renderGates(gates)}
 			${
+				// Not exposition but the legend: every attribution above is a letter, and
+				// without this line there is nothing to read them against.
 				channels.length > 0 || gates.length > 0
-					? html`<p class="footnote">
+					? html`<p class="footnote" part="legend">
 						Members are lettered in the order they were sent, so A is the first
 						member of the group.
 					</p>`
@@ -239,9 +251,9 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 	 */
 	private renderGroup(label: string, channels: PentaChannel[], note?: string) {
 		if (channels.length === 0) return nothing;
-		return html`<div class="section">
+		return html`<div class="section" part="section channels">
 			<h3>${label}</h3>
-			${note ? html`<p class="note">${note}</p>` : nothing}
+			${note && !this.hideReadings ? html`<p class="note">${note}</p>` : nothing}
 			${channels.map(
 				(c) => html`<div class="row">
 					<span class="gates">${c.gateA}-${c.gateB}</span>
@@ -266,12 +278,16 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 	private renderGates(gates: PentaGate[]) {
 		if (gates.length === 0) return nothing;
 		const filled = gates.filter((g) => g.filled).length;
-		return html`<div class="section">
+		return html`<div class="section" part="section gates">
 			<h3>Gates (${filled} of ${gates.length} filled)</h3>
-			<p class="note">
-				The role each gate brings to the group, and who carries it. A gap is a
-				role no member holds, so the group compensates for it.
-			</p>
+			${
+				this.hideReadings
+					? nothing
+					: html`<p class="note">
+						The role each gate brings to the group, and who carries it. A gap is a
+						role no member holds, so the group compensates for it.
+					</p>`
+			}
 			${gates.map(
 				(g) => html`<div class="row">
 					<span class="gate-id">${g.gate}</span>

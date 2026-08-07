@@ -16,7 +16,6 @@ import {
 	type ReadingSection,
 	renderHdFacts,
 	renderHdKeynotes,
-	renderHdReading,
 	renderHdThemes,
 } from '../utils/hd-reading.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
@@ -37,6 +36,8 @@ type ChannelEntry = Bodygraph['channels'][number];
  * A center returns `notSelfQuestion` whatever its state, but the question describes the conditioning of an OPEN center, so it is rendered only when the center is open. `theme` already tracks the defined or open state and is always shown.
  *
  * The chart is theme-driven through `--roxy-*` custom properties on `:host`, so it adopts the host palette in light and dark without runtime color probing.
+ *
+ * `hide-readings` leaves the chart, the fact tiles, the incarnation cross, the themes and the legend, and drops the reading accordion together with the channels, centers and activations sections. Those three exist to hold the prose behind each disclosure, and the wiring they describe is already drawn in the chart above them: the gate numbers, the lit channels, and the filled centers.
  */
 @customElement('roxy-bodygraph')
 export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
@@ -320,8 +321,8 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		);
 		const gateTitles = this.buildGateTitles(d.gates ?? []);
 
-		return html`<div class="wrap">
-			<header class="head">
+		return html`<div class="wrap" part="card">
+			<header class="head" part="header">
 				<h2 class="title">Bodygraph</h2>
 				${
 					// One text node, not two: the markup minifier collapses the leading
@@ -333,9 +334,10 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 						: nothing
 				}
 			</header>
-			<div class="layout">
+			<div class="layout" part="layout">
 				<svg
 					class="chart"
+					part="chart"
 					viewBox=${BODYGRAPH_VIEWBOX}
 					preserveAspectRatio="xMidYMid meet"
 					role="img"
@@ -386,7 +388,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 
 	private renderSummary(d: Bodygraph) {
 		const ic = d.incarnationCross;
-		return html`<div class="summary">
+		return html`<div class="summary" part="details">
 			${renderHdFacts([
 				{ label: 'Type', value: d.type },
 				{ label: 'Strategy', value: d.strategy },
@@ -394,7 +396,13 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				{ label: 'Profile', value: d.profile },
 				{ label: 'Definition', value: d.definition },
 			])}
-			${d.typeDescription ? html`<p class="lead">${d.typeDescription}</p>` : nothing}
+			${
+				// The tiles name the type; this paragraph explains it. The cross NAME
+				// and its gates below are chart facts and stay.
+				d.typeDescription && !this.hideReadings
+					? html`<p class="lead">${d.typeDescription}</p>`
+					: nothing
+			}
 			${
 				ic?.name
 					? html`<p class="cross">
@@ -408,7 +416,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 					: nothing
 			}
 			${renderHdThemes(d.signature, d.notSelf)}
-			<div class="legend">
+			<div class="legend" part="legend">
 				<span class="legend-caption">Center colors when defined. Open centers are outlined.</span>
 				<span><span class="swatch bg-gold defined"></span>Head, G</span>
 				<span><span class="swatch bg-green defined"></span>Ajna</span>
@@ -445,7 +453,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				body: ic?.description ?? '',
 			},
 		];
-		return renderHdReading(sections, 'hd-reading');
+		return this.renderInterpretation(sections, 'hd-reading');
 	}
 
 	/**
@@ -455,7 +463,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	 * is gate order; no circuit ranking is invented.
 	 */
 	private renderChannels(channels: ChannelEntry[]) {
-		if (channels.length === 0) return nothing;
+		if (channels.length === 0 || this.hideReadings) return nothing;
 		const groups = new Map<string, ChannelEntry[]>();
 		for (const c of channels) {
 			const key = c.circuit ?? '';
@@ -467,7 +475,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		// channel overall, not the first of each circuit.
 		let index = 0;
 
-		return html`<section class="block">
+		return html`<section class="block" part="section channels">
 			<h3>Defined channels (${channels.length})</h3>
 			${[...groups].map(
 				([circuit, list]) => html`<div class="group">
@@ -480,7 +488,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 					${list.map(
 						(
 							c,
-						) => html`<details class="interp-card" name="hd-channel" ?open=${index++ === 0}>
+						) => html`<details class="interp-card" part="reading" name="hd-channel" ?open=${index++ === 0}>
 							<summary>
 								<span class="interp-lead">
 									<span class="chan-gates">${c.gateA}-${c.gateB}</span>
@@ -506,15 +514,15 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	 * centers only.
 	 */
 	private renderCenters(centers: CenterEntry[]) {
-		if (centers.length === 0) return nothing;
+		if (centers.length === 0 || this.hideReadings) return nothing;
 		const definedCount = centers.filter((c) => c.defined).length;
-		return html`<section class="block">
+		return html`<section class="block" part="section centers">
 			<h3>Centers (${definedCount} defined, ${centers.length - definedCount} open)</h3>
 			${centers.map(
 				(
 					c,
 					i,
-				) => html`<details class="interp-card" name="hd-center" ?open=${i === 0}>
+				) => html`<details class="interp-card" part="reading" name="hd-center" ?open=${i === 0}>
 					<summary>
 						<span class="interp-lead">${c.name ?? ''}</span>
 						${chevron()}
@@ -558,7 +566,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	 */
 	private renderActivations(d: Bodygraph) {
 		const gates = d.gates ?? [];
-		if (gates.length === 0) return nothing;
+		if (gates.length === 0 || this.hideReadings) return nothing;
 
 		const personality = gates.filter((g) => g.side === 'personality');
 		const design = gates.filter((g) => g.side === 'design');
@@ -569,7 +577,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		const shown = split ? (side === 'design' ? design : personality) : gates;
 		const sideNote = split ? d.sides?.[side] : undefined;
 
-		return html`<section class="block">
+		return html`<section class="block" part="section activations">
 			<h3>Activations (${gates.length})</h3>
 			${
 				split
@@ -593,6 +601,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			}
 			<div
 				id=${split ? `hd-panel-${side}` : nothing}
+				part="panel"
 				role=${split ? 'tabpanel' : nothing}
 				aria-labelledby=${split ? `hd-tab-${side}` : nothing}
 			>
@@ -605,7 +614,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	private renderGate(g: GateActivation, open: boolean) {
 		const glyph = this.planetGlyph(g.planet);
 		const hex = g.ichingHexagram;
-		return html`<details class="interp-card" name="hd-gate" ?open=${open}>
+		return html`<details class="interp-card" part="reading" name="hd-gate" ?open=${open}>
 			<summary>
 				<span class="interp-lead">
 					${glyph ? html`<span class="glyph" aria-hidden="true">${glyph}</span>` : nothing}

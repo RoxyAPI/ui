@@ -22,6 +22,16 @@ const MONTHS = [
 
 /**
  * Single-crystal detail card. Renders /crystals/{id}: the stone's photo, description, and full metaphysical profile (spiritual / emotional / physical meaning, governing chakras, zodiac signs, planet, elements, colours, Mohs hardness, numerical vibration, birthstone month), plus its affirmation and the crystals it pairs with. This is the detail view; roxy-crystal-grid is the gallery.
+ *
+ * @remarks
+ * The card is half mineral record and half reading, and the split is clean.
+ * `hide-readings` keeps the photo, the name, the whole attribute grid (planet,
+ * Mohs hardness, numerical vibration, birthstone month, chakras, zodiac signs,
+ * elements and the colour swatches) and the crystals it pairs with, which is a
+ * catalogue relation rather than a claim about the stone. It drops the
+ * description, the spiritual, emotional and physical meanings, the keyword chips
+ * that belong to them, and the affirmation. The meaning block is three headed
+ * paragraphs and nothing else, so it goes whole.
  */
 @customElement('roxy-crystal-card')
 export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
@@ -159,16 +169,21 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 		const month =
 			typeof d.birthMonth === 'number' ? MONTHS[d.birthMonth - 1] : undefined;
 
-		return html`<article class="wrap" aria-label=${d.name ?? 'Crystal'}>
-			<div class="hero">
-				${d.imageUrl ? html`<img class="photo" src=${d.imageUrl} alt=${d.name ?? 'Crystal'} loading="lazy" />` : nothing}
+		return html`<article class="wrap" part="card" aria-label=${d.name ?? 'Crystal'}>
+			<div class="hero" part="header">
+				${d.imageUrl ? html`<img class="photo" part="chart" src=${d.imageUrl} alt=${d.name ?? 'Crystal'} loading="lazy" />` : nothing}
 				<div>
 					<h2 class="title">${d.name}</h2>
-					${d.description ? html`<p class="desc">${d.description}</p>` : nothing}
+					${
+						// The grid below is the stone; this paragraph is what it is said to do.
+						d.description && !this.hideReadings
+							? html`<p class="desc">${d.description}</p>`
+							: nothing
+					}
 				</div>
 			</div>
 
-			<dl class="attrs">
+			<dl class="attrs" part="details">
 				${this.attr('Planet', d.planet)}
 				${this.attr('Hardness', typeof d.hardness === 'number' ? `${d.hardness} Mohs` : undefined)}
 				${this.attr('Vibration', d.numericalVibration)}
@@ -193,19 +208,19 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 			${this.renderMeaning(d.meaning)}
 
 			${
-				keywords.length
-					? html`<div>
+				keywords.length && !this.hideReadings
+					? html`<div part="section keywords">
 						<p class="section-label">Keywords</p>
 						<div class="chips">${keywords.map((k) => html`<span class="chip">${k}</span>`)}</div>
 					</div>`
 					: nothing
 			}
 
-			${d.affirmation ? html`<p class="affirmation">${d.affirmation}</p>` : nothing}
+			${d.affirmation && !this.hideReadings ? html`<p class="affirmation">${d.affirmation}</p>` : nothing}
 
 			${
 				pairs.length
-					? html`<div>
+					? html`<div part="section pairs-with">
 						<p class="section-label">Pairs with</p>
 						<div class="chips">${pairs.map((p) => html`<span class="chip">${String(p).replace(/-/g, ' ')}</span>`)}</div>
 					</div>`
@@ -225,7 +240,9 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 	}
 
 	private renderMeaning(m: GetCrystalResponse['meaning'] | undefined) {
-		if (!m) return nothing;
+		// Three headed paragraphs and nothing else, so the block goes whole rather
+		// than leaving Spiritual, Emotional and Physical over nothing.
+		if (!m || this.hideReadings) return nothing;
 		const rows: Array<[string, string | null | undefined]> = [
 			['Spiritual', m.spiritual],
 			['Emotional', m.emotional],
@@ -233,7 +250,7 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 		];
 		const present = rows.filter(([, v]) => Boolean(v));
 		if (present.length === 0) return nothing;
-		return html`<div class="meaning">
+		return html`<div class="meaning" part="section meaning">
 			${present.map(([label, text]) => html`<h3>${label}</h3><p>${text}</p>`)}
 		</div>`;
 	}

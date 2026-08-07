@@ -19,7 +19,6 @@ import { formatDate, formatNumber } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 
@@ -195,19 +194,25 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	protected renderData(data: PositionsResponse) {
 		const vm = this.toViewModel(data);
 		const cols = vm.cols;
-		return html`<div class="wrap">
-			<header>
+		return html`<div class="wrap" part="card">
+			<header part="header">
 				<h2 class="title">${this.heading || vm.title}</h2>
 				${
 					vm.badges.length
-						? html`<div class="badges">
+						? html`<div class="badges" part="details">
 							${vm.badges.map((b) => html`<span class="badge"><b>${b.label}</b> ${b.value}</span>`)}
 						</div>`
 						: nothing
 				}
 			</header>
-			${vm.summary ? html`<p class="summary">${vm.summary}</p>` : nothing}
-			<div class="scroll">
+			${
+				// The response `summary` is a written overview of the positions, not a
+				// count of them, so it goes with the readings.
+				vm.summary && !this.hideReadings
+					? html`<p class="summary">${vm.summary}</p>`
+					: nothing
+			}
+			<div class="scroll" part="table">
 				<table>
 					<caption>
 						${vm.title}
@@ -280,7 +285,11 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 					body: r.interpretation ?? '',
 				};
 			});
-		return renderInterpAccordion(sections, 'positions-readings', 'Readings');
+		return this.renderInterpretation(
+			sections,
+			'positions-readings',
+			'Readings',
+		);
 	}
 
 	private toViewModel(data: PositionsResponse): ViewModel {

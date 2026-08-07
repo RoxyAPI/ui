@@ -19,6 +19,16 @@ type HoroscopeData =
 /**
  * Daily, weekly, or monthly horoscope card. Pass `data` from
  * /astrology/horoscope/{sign}/{daily|weekly|monthly}.
+ *
+ * @remarks
+ * A horoscope reads as prose end to end, but it is not one: the card has a real
+ * data spine and `hide-readings` keeps all of it. The sign and its glyph, the
+ * period and date, the energy meter, the sky strip (Moon sign, Moon phase and the
+ * transits this reading was derived from), the lucky number, colour, days and
+ * compatible signs, and the monthly key dates all stay. The overview paragraph,
+ * the love, career, health, finance and advice sections, and the week-by-week
+ * focus and advice go. The two prose blocks each carry their own heading, so each
+ * goes whole rather than leaving one over nothing.
  */
 @customElement('roxy-horoscope-card')
 export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
@@ -294,9 +304,10 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 
 		return html`<article
 			class="card"
+			part="card"
 			aria-label=${`${this.period} horoscope for ${sign}`}
 		>
-			<header class="head">
+			<header class="head" part="header">
 				<span class="glyph" aria-hidden="true">${glyph}</span>
 				<div>
 					<h2 class="title">${sign} ${this.period}</h2>
@@ -304,7 +315,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				</div>
 				${
 					energy !== null
-						? html`<span class="energy" aria-label=${`Energy ${energy} of 10`}>
+						? html`<span class="energy" part="details" aria-label=${`Energy ${energy} of 10`}>
 							Energy ${energy}/10
 							<span class="energy-bar"
 								><span style="width: ${(energy / 10) * 100}%"></span
@@ -314,51 +325,63 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				}
 			</header>
 
-			${d.overview ? html`<p class="overview">${d.overview}</p>` : nothing}
+			${
+				// The sky strip below is the evidence for this paragraph; the paragraph
+				// is the read of it.
+				d.overview && !this.hideReadings
+					? html`<p class="overview">${d.overview}</p>`
+					: nothing
+			}
 			${this.renderSky(d)}
 
-			<div class="sections">
-				${
-					d.love
-						? html`<div class="section">
-							<h3>Love</h3>
-							<p>${d.love}</p>
-						</div>`
-						: nothing
-				}
-				${
-					d.career
-						? html`<div class="section">
-							<h3>Career</h3>
-							<p>${d.career}</p>
-						</div>`
-						: nothing
-				}
-				${
-					d.health
-						? html`<div class="section">
-							<h3>Health</h3>
-							<p>${d.health}</p>
-						</div>`
-						: nothing
-				}
-				${
-					d.finance
-						? html`<div class="section">
-							<h3>Finance</h3>
-							<p>${d.finance}</p>
-						</div>`
-						: nothing
-				}
-				${
-					'advice' in d && d.advice
-						? html`<div class="section">
-							<h3>Advice</h3>
-							<p>${d.advice}</p>
-						</div>`
-						: nothing
-				}
-			</div>
+			${
+				// Five headed paragraphs and nothing else, so the block goes whole rather
+				// than leaving five headings over nothing.
+				this.hideReadings
+					? nothing
+					: html`<div class="sections" part="section outlook">
+					${
+						d.love
+							? html`<div class="section">
+								<h3>Love</h3>
+								<p>${d.love}</p>
+							</div>`
+							: nothing
+					}
+					${
+						d.career
+							? html`<div class="section">
+								<h3>Career</h3>
+								<p>${d.career}</p>
+							</div>`
+							: nothing
+					}
+					${
+						d.health
+							? html`<div class="section">
+								<h3>Health</h3>
+								<p>${d.health}</p>
+							</div>`
+							: nothing
+					}
+					${
+						d.finance
+							? html`<div class="section">
+								<h3>Finance</h3>
+								<p>${d.finance}</p>
+							</div>`
+							: nothing
+					}
+					${
+						'advice' in d && d.advice
+							? html`<div class="section">
+								<h3>Advice</h3>
+								<p>${d.advice}</p>
+							</div>`
+							: nothing
+					}
+				</div>`
+			}
 
 			${this.renderMonth(d)}
 
@@ -381,7 +404,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					compatibleSigns.length === 0
 				)
 					return nothing;
-				return html`<div class="lucky">
+				return html`<div class="lucky" part="details">
 						${
 							luckyNumber !== undefined
 								? html`<span>Lucky number <strong>${luckyNumber}</strong></span>`
@@ -433,7 +456,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 		const transits = ('activeTransits' in d ? d.activeTransits : []) ?? [];
 		if (!moonSign && !moonPhase && transits.length === 0) return nothing;
 		const glyph = moonSign ? (SIGN_GLYPH[capitalize(moonSign)] ?? '') : '';
-		return html`<div class="sky">
+		return html`<div class="sky" part="section sky">
 			${
 				moonSign || moonPhase
 					? html`<div class="moon-line">
@@ -469,8 +492,10 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 		const keyDates = ('keyDates' in d ? d.keyDates : []) ?? [];
 		if (weeks.length === 0 && keyDates.length === 0) return nothing;
 		return html`${
-			weeks.length
-				? html`<section>
+			// Each week is a focus phrase and a line of advice, so the block is prose
+			// under its own heading and goes whole.
+			weeks.length && !this.hideReadings
+				? html`<section part="section week-by-week">
 					<h3 class="block-title">Week by week</h3>
 					<div class="weeks">
 						${weeks.map(
@@ -487,8 +512,10 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				: nothing
 		}
 		${
+			// Dated lunations, retrogrades and ingresses: the month's ephemeris, not a
+			// read of it, so it stays.
 			keyDates.length
-				? html`<section>
+				? html`<section part="section key-dates">
 					<h3 class="block-title">Key dates</h3>
 					<dl class="dates">
 						${keyDates.map(

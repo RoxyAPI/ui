@@ -8,7 +8,6 @@ import { hdReadingStyles, renderHdFacts } from '../utils/hd-reading.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { humanize } from '../utils/string.js';
 
@@ -172,8 +171,8 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 		const centers = d.centers ?? [];
 		const definedCenters = centers.filter((c) => c.defined).length;
 
-		return html`<div class="wrap" aria-label="Human Design connection">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Human Design connection">
+			<header class="head" part="header">
 				<h2 class="title">Connection</h2>
 				${typeof d.totalChannels === 'number' ? html`<span class="count">${d.totalChannels} channels</span>` : nothing}
 			</header>
@@ -193,12 +192,16 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 							: undefined,
 				},
 			])}
-			<p class="lead">
-				A connection chart reads the two charts as one bodygraph. Wherever the
-				two of them together hold both gates of a channel, that channel is
-				defined between them, and the centers it joins are defined in the
-				connection whether or not either person defines them alone.
-			</p>
+			${
+				this.hideReadings
+					? nothing
+					: html`<p class="lead">
+						A connection chart reads the two charts as one bodygraph. Wherever the
+						two of them together hold both gates of a channel, that channel is
+						defined between them, and the centers it joins are defined in the
+						connection whether or not either person defines them alone.
+					</p>`
+			}
 			${this.renderDynamics(d.summary)}
 			${this.renderCenters(centers)}
 			${this.renderChannels(channels, centers)}
@@ -232,7 +235,11 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 				body: 'Both people independently hold both gates, so neither needs the other to complete it. A shared and familiar frequency rather than an attraction.',
 			},
 		];
-		return renderInterpAccordion(sections, 'hd-connection-dynamic', 'Dynamics');
+		return this.renderInterpretation(
+			sections,
+			'hd-connection-dynamic',
+			'Dynamics',
+		);
 	}
 
 	/**
@@ -240,16 +247,22 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 	 */
 	private renderCenters(centers: CombinedCenter[]) {
 		if (centers.length === 0) return nothing;
-		return html`<section class="block">
+		return html`<section class="block" part="section centers">
 			<h3>Centers</h3>
-			<p class="note">
-				Defined is the state of the combined chart. Beside it is who already
-				defines that center in their own chart. A center defined only together is
-				what the connection itself creates: it is there when the two are together
-				and gone when they are apart. The combined definition counts how the
-				defined centers hang together, so Single is one connected piece and a
-				split is more than one.
-			</p>
+			${
+				// The rows below are the state of each center and stay; this note is the
+				// explanation of how to read them.
+				this.hideReadings
+					? nothing
+					: html`<p class="note">
+						Defined is the state of the combined chart. Beside it is who already
+						defines that center in their own chart. A center defined only together is
+						what the connection itself creates: it is there when the two are together
+						and gone when they are apart. The combined definition counts how the
+						defined centers hang together, so Single is one connected piece and a
+						split is more than one.
+					</p>`
+			}
 			${centers.map((c) => {
 				const by = c.definedBy ?? [];
 				const a = by.includes('A');
@@ -281,12 +294,18 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 		);
 		const centerName = (id: string) => names.get(id) || humanize(id);
 
-		return html`<section class="block">
+		return html`<section class="block" part="section channels">
 			<h3>Channels</h3>
 			<!-- tabindex + role: a scrollable region must be reachable by keyboard. A
 			     table has no focusable content of its own, so without this a keyboard
 			     user cannot scroll to the columns that overflow. -->
-			<div class="scroll" tabindex="0" role="region" aria-label="Connection channels">
+			<div
+				class="scroll"
+				part="table"
+				tabindex="0"
+				role="region"
+				aria-label="Connection channels"
+			>
 				<table role="table">
 					<caption class="roxy-sr-only">
 						Connection channels: each channel with its gates, the centers it links, its

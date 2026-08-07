@@ -3137,3 +3137,1521 @@ describe('bhav chalit', () => {
 		el.remove();
 	});
 });
+
+/**
+ * `hide-readings` renders the chart and the data and omits the written interpretation.
+ *
+ * The property lives on `RoxyDataElement`, so every component inherits it and a new one picks it up with no wiring. What each component counts as a reading is its own decision, which is what these cases pin: the prose has to go, and the thing a practitioner reads the numbers off has to stay.
+ *
+ * Markers are deliberately unnatural strings. A `not.toContain` against real copy passes for the wrong reason the moment the sample wording drifts.
+ */
+describe('hide-readings', () => {
+	interface ReadingCase {
+		/** Test name. Distinct from the tag, because one component can carry more than one response shape. */
+		name: string;
+		tag: string;
+		data: unknown;
+		attrs?: Record<string, string>;
+		/** Prose that must render by default and must be gone when readings are hidden. */
+		readings: string[];
+		/** Facts that must survive in both modes. */
+		data_: string[];
+		/** False when the component's disclosure cards sit inside a DATA section (a contact list, an aspect list) rather than a section that is only prose, so there is no block to name `readings`. */
+		readingsSection?: boolean;
+	}
+
+	async function mount(
+		tag: string,
+		data: unknown,
+		attrs: Record<string, string> = {},
+	) {
+		const el = document.createElement(tag) as HTMLElement & {
+			data?: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+
+	/**
+	 * The RENDERED text, with the shadow root's own `<style>` skipped.
+	 *
+	 * @remarks
+	 * `shadowRoot.textContent` concatenates the stylesheet too, and these cases assert `not.toContain`, so any marker that also appears in a CSS comment or a class name fails for a reason that has nothing to do with the render. It cost a real debugging round: `yoga-list` names its Effects disclosure in a comment explaining why the marker rule is scoped.
+	 */
+	const text = (el: Element): string =>
+		[...(el.shadowRoot?.childNodes ?? [])]
+			.filter((n) => (n as Element).tagName !== 'STYLE')
+			.map((n) => n.textContent ?? '')
+			.join('\n');
+
+	const natal = {
+		planets: [
+			{
+				name: 'Sun',
+				longitude: 12.5,
+				sign: 'Aries',
+				degree: 12.5,
+				interpretation: {
+					summary: 'ZZREADINGPLANET',
+					keywords: ['ZZREADINGKEYWORD'],
+				},
+			},
+			{ name: 'Moon', longitude: 200.1, sign: 'Libra', degree: 20.1 },
+		],
+		aspects: [
+			{ planet1: 'Sun', planet2: 'Moon', aspect: 'opposition', orb: 7.6 },
+		],
+		houses: [],
+		ascendant: { longitude: 100 },
+		aspectsInterpretation: {
+			harmonious: 3,
+			challenging: 1,
+			neutral: 0,
+			summary: 'ZZREADINGASPECTS',
+		},
+		patterns: [
+			{
+				kind: 'T_SQUARE',
+				name: 'T-Square',
+				planets: ['Sun', 'Moon'],
+				tightness: 88,
+				interpretation: 'ZZREADINGPATTERN',
+			},
+		],
+	};
+
+	const cases: ReadingCase[] = [
+		{
+			name: 'roxy-natal-chart',
+			tag: 'roxy-natal-chart',
+			data: natal,
+			readings: [
+				'ZZREADINGPLANET',
+				'ZZREADINGKEYWORD',
+				'ZZREADINGASPECTS',
+				'ZZREADINGPATTERN',
+			],
+			data_: ['2 planets', 'T-Square', '88% tight', 'Harmonious 3'],
+		},
+		{
+			name: 'roxy-positions-table',
+			tag: 'roxy-positions-table',
+			data: {
+				summary: 'ZZREADINGSUMMARY',
+				houseSystem: 'placidus',
+				asteroids: [
+					{
+						name: 'Ceres',
+						sign: 'Leo',
+						degree: 12.5,
+						house: 5,
+						interpretation: 'ZZREADINGBODY',
+					},
+				],
+			},
+			readings: ['ZZREADINGSUMMARY', 'ZZREADINGBODY'],
+			data_: ['Asteroids', 'Ceres', 'Leo', 'placidus'],
+		},
+		{
+			name: 'roxy-compatibility-card',
+			tag: 'roxy-compatibility-card',
+			data: {
+				overallScore: 86,
+				categories: { emotional: 88 },
+				summary: 'ZZREADINGSUMMARY',
+				interpretation: 'ZZREADINGINTERP',
+				advice: 'ZZREADINGADVICE',
+				strengths: ['ZZREADINGSTRENGTH'],
+				archetype: { label: 'The Alchemists', description: 'ZZREADINGARCH' },
+				signCompatibility: {
+					sun: {
+						person1Sign: 'Aries',
+						person2Sign: 'Libra',
+						description: 'ZZREADINGSIGN',
+					},
+				},
+				elementBalance: {
+					person1: { fire: 3, earth: 1, air: 2, water: 1 },
+					person2: { fire: 1, earth: 2, air: 3, water: 1 },
+					sharedElement: 'air',
+					description: 'ZZREADINGELEMENT',
+				},
+				keyAspects: [
+					{
+						planet1: 'Sun',
+						planet2: 'Moon',
+						type: 'trine',
+						orb: 2.4,
+						description: 'ZZREADINGASPECT',
+					},
+				],
+			},
+			readings: [
+				'ZZREADINGSUMMARY',
+				'ZZREADINGINTERP',
+				'ZZREADINGADVICE',
+				'ZZREADINGSTRENGTH',
+				'ZZREADINGARCH',
+				'ZZREADINGSIGN',
+				'ZZREADINGELEMENT',
+				'ZZREADINGASPECT',
+			],
+			data_: [
+				'86',
+				'emotional',
+				'The Alchemists',
+				'Sun trine Moon',
+				'Element balance',
+			],
+		},
+		{
+			name: 'roxy-numerology-card',
+			tag: 'roxy-numerology-card',
+			data: {
+				number: 7,
+				calculation: '1+9+9+0 = 7',
+				meaning: {
+					title: 'The Seeker',
+					description: 'ZZREADINGDESC',
+					career: 'ZZREADINGCAREER',
+					keywords: ['ZZREADINGKEYWORD'],
+					strengths: ['ZZREADINGSTRENGTH'],
+				},
+			},
+			readings: [
+				'ZZREADINGDESC',
+				'ZZREADINGCAREER',
+				'ZZREADINGKEYWORD',
+				'ZZREADINGSTRENGTH',
+			],
+			data_: ['Life Path', 'The Seeker', '1+9+9+0 = 7'],
+		},
+		{
+			name: 'roxy-tarot-card',
+			tag: 'roxy-tarot-card',
+			data: {
+				card: {
+					name: 'The Star',
+					arcana: 'major',
+					reversed: false,
+					meaning: 'ZZREADINGMEANING',
+					keywords: ['ZZREADINGKEYWORD'],
+					love: 'ZZREADINGLOVE',
+				},
+				dailyMessage: 'ZZREADINGDAILY',
+			},
+			readings: [
+				'ZZREADINGMEANING',
+				'ZZREADINGKEYWORD',
+				'ZZREADINGLOVE',
+				'ZZREADINGDAILY',
+			],
+			data_: ['The Star', 'major arcana', 'drawn upright'],
+		},
+		{
+			name: 'roxy-hexagram',
+			tag: 'roxy-hexagram',
+			data: {
+				number: 11,
+				english: 'Peace',
+				binary: '111000',
+				upperTrigram: 'Earth',
+				lowerTrigram: 'Heaven',
+				judgment: 'ZZREADINGJUDGMENT',
+				image: 'ZZREADINGIMAGE',
+				changingLines: [
+					{
+						position: 1,
+						text: 'ZZREADINGLINE',
+						meaning: 'ZZREADINGLINEMEANING',
+					},
+				],
+			},
+			readings: [
+				'ZZREADINGJUDGMENT',
+				'ZZREADINGIMAGE',
+				'ZZREADINGLINE',
+				'ZZREADINGLINEMEANING',
+			],
+			data_: ['11. Peace', 'Earth', 'Heaven'],
+		},
+		{
+			name: 'roxy-biorhythm-chart (daily)',
+			tag: 'roxy-biorhythm-chart',
+			data: {
+				quickRead: { physical: 0.5 },
+				energyRating: 8,
+				overallPhase: 'high',
+				dailyMessage: 'ZZREADINGDAILY',
+				advice: 'ZZREADINGADVICE',
+				spotlight: {
+					cycle: 'physical',
+					value: 50,
+					phase: 'high',
+					message: 'ZZREADINGSPOT',
+				},
+			},
+			readings: ['ZZREADINGDAILY', 'ZZREADINGADVICE', 'ZZREADINGSPOT'],
+			data_: ['physical', 'Energy 8/10', '50%'],
+			readingsSection: false,
+		},
+		{
+			// The advisory accordion is the critical-days shape, not the daily one,
+			// so the accordion path needs its own case.
+			name: 'roxy-biorhythm-chart (critical days)',
+			tag: 'roxy-biorhythm-chart',
+			attrs: { mode: 'critical-days' },
+			data: {
+				startDate: '2026-08-01',
+				endDate: '2026-08-31',
+				totalCriticalDays: 1,
+				criticalDays: [
+					{
+						date: '2026-08-12',
+						cycle: 'physical',
+						severity: 'high',
+						direction: 'falling',
+						period: 23,
+						advisory: 'ZZREADINGADVISORY',
+					},
+				],
+			},
+			// The per-day rows live inside the advisory accordion and go with it, so
+			// what survives here is the window and the counts.
+			readings: ['ZZREADINGADVISORY'],
+			data_: ['Critical days', 'Events', 'Aug 1, 2026'],
+		},
+		{
+			name: 'roxy-bodygraph',
+			tag: 'roxy-bodygraph',
+			data: {
+				type: 'Generator',
+				typeDescription: 'ZZREADINGTYPE',
+				strategy: 'Wait to respond',
+				strategyDescription: 'ZZREADINGSTRATEGY',
+				authority: 'Sacral',
+				centers: [
+					{
+						id: 'sacral',
+						name: 'Sacral',
+						defined: true,
+						theme: 'ZZREADINGTHEME',
+					},
+				],
+				channels: [
+					{
+						gateA: 34,
+						gateB: 20,
+						name: 'Charisma',
+						description: 'ZZREADINGCHANNEL',
+					},
+				],
+				gates: [
+					{
+						gate: 34,
+						line: 2,
+						side: 'personality',
+						gateName: 'Power',
+						gateDescription: 'ZZREADINGGATE',
+					},
+				],
+			},
+			readings: [
+				'ZZREADINGTYPE',
+				'ZZREADINGSTRATEGY',
+				'ZZREADINGTHEME',
+				'ZZREADINGCHANNEL',
+				'ZZREADINGGATE',
+			],
+			data_: ['Generator', 'Wait to respond', 'Sacral'],
+		},
+		{
+			name: 'roxy-hd-type-card',
+			tag: 'roxy-hd-type-card',
+			data: {
+				type: 'Generator',
+				typeDescription: 'ZZREADINGTYPE',
+				strategy: 'Wait to respond',
+				strategyDescription: 'ZZREADINGSTRATEGY',
+				authority: 'Sacral',
+				authorityDescription: 'ZZREADINGAUTHORITY',
+				aura: 'ZZREADINGAURA',
+				signature: 'Satisfaction',
+			},
+			readings: [
+				'ZZREADINGTYPE',
+				'ZZREADINGSTRATEGY',
+				'ZZREADINGAUTHORITY',
+				'ZZREADINGAURA',
+			],
+			data_: ['Generator', 'Wait to respond', 'Satisfaction'],
+		},
+		{
+			name: 'roxy-hd-connection',
+			tag: 'roxy-hd-connection',
+			data: {
+				totalChannels: 1,
+				combinedDefinition: 'single',
+				summary: {
+					electromagnetic: 1,
+					dominance: 0,
+					compromise: 0,
+					companionship: 0,
+				},
+				centers: [
+					{ id: 'sacral', name: 'Sacral', defined: true, definedBy: ['A'] },
+				],
+				channels: [
+					{
+						gateA: 34,
+						gateB: 20,
+						name: 'Charisma',
+						circuit: 'Individual',
+						dynamic: 'electromagnetic',
+						centers: ['sacral'],
+						personAGates: [34],
+						personBGates: [20],
+					},
+				],
+			},
+			readings: [
+				'reads the two charts as one bodygraph',
+				'The classic point of attraction',
+				'Defined is the state of the combined chart',
+			],
+			data_: ['Charisma', 'Sacral', '1 channels', 'Individual'],
+		},
+		{
+			name: 'roxy-angel-number-lookup',
+			tag: 'roxy-angel-number-lookup',
+			data: {
+				number: 1234,
+				type: 'sequential',
+				digits: 4,
+				digitRoot: 1,
+				knownMeaning: {
+					title: 'Progress',
+					coreMessage: 'ZZREADINGCORE',
+					keywords: ['ZZREADINGKEYWORD'],
+					meaning: { love: 'ZZREADINGLOVE' },
+					affirmation: 'ZZREADINGAFFIRM',
+				},
+			},
+			readings: [
+				'ZZREADINGCORE',
+				'ZZREADINGKEYWORD',
+				'ZZREADINGLOVE',
+				'ZZREADINGAFFIRM',
+			],
+			data_: ['1234', 'sequential', '4 digits', 'Digit root 1'],
+		},
+		{
+			name: 'roxy-synastry-chart',
+			tag: 'roxy-synastry-chart',
+			data: {
+				compatibilityScore: 78,
+				analysis: {
+					overall: 'ZZREADINGOVERALL',
+					strengths: ['ZZREADINGSTRENGTH'],
+					challenges: ['ZZREADINGCHALLENGE'],
+				},
+				summary: {
+					total: 1,
+					harmonious: 1,
+					challenging: 0,
+					neutral: 0,
+					byType: { TRINE: 1 },
+				},
+				interAspects: [
+					{
+						planet1: 'Sun',
+						planet2: 'Moon',
+						type: 'TRINE',
+						orb: 2.4,
+						strength: 80,
+						interpretation: 'harmonious',
+						meaning: {
+							relationshipContext: 'ZZREADINGCONTEXT',
+							description: { short: 'ZZREADINGSHORT' },
+							keywords: ['ZZREADINGKEYWORD'],
+						},
+					},
+				],
+				person1: {
+					sunSign: 'Aries',
+					planets: [{ name: 'Sun', longitude: 12 }],
+				},
+				person2: {
+					sunSign: 'Libra',
+					planets: [{ name: 'Sun', longitude: 200 }],
+				},
+			},
+			readings: [
+				'ZZREADINGOVERALL',
+				'ZZREADINGSTRENGTH',
+				'ZZREADINGCHALLENGE',
+				'ZZREADINGCONTEXT',
+				'ZZREADINGSHORT',
+				'ZZREADINGKEYWORD',
+			],
+			// The contact line itself is data, so hiding the prose must leave the
+			// header of every card standing.
+			data_: ['78', 'Sun', 'Moon', 'Trine', 'orb 2.4', 'Harmonious: 1'],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-aspects-table',
+			tag: 'roxy-aspects-table',
+			data: {
+				aspects: [
+					{
+						planet1: 'Sun',
+						planet2: 'Moon',
+						type: 'TRINE',
+						orb: 2.4,
+						strength: 80,
+						isApplying: true,
+						interpretation: 'harmonious',
+						meaning: {
+							description: { short: 'ZZREADINGSHORT' },
+							keywords: ['ZZREADINGKEYWORD'],
+						},
+					},
+				],
+				summary: {
+					total: 1,
+					harmonious: 1,
+					challenging: 0,
+					neutral: 0,
+					byType: { TRINE: 1 },
+				},
+			},
+			readings: ['ZZREADINGSHORT', 'ZZREADINGKEYWORD'],
+			data_: ['Sun', 'Moon', 'Trine', 'Applying', 'Harmonious: 1'],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-astrocartography-map',
+			tag: 'roxy-astrocartography-map',
+			data: {
+				summary: 'ZZREADINGSUMMARY',
+				lines: [
+					{
+						planet: 'Sun',
+						symbol: '☉',
+						mc: { longitude: 10, interpretation: 'ZZREADINGMC' },
+						ic: { longitude: -170, interpretation: 'ZZREADINGIC' },
+						ascendant: { points: [], interpretation: 'ZZREADINGAC' },
+						descendant: { points: [], interpretation: 'ZZREADINGDC' },
+					},
+				],
+			},
+			readings: [
+				'ZZREADINGSUMMARY',
+				'ZZREADINGMC',
+				'ZZREADINGIC',
+				'ZZREADINGAC',
+				'ZZREADINGDC',
+			],
+			data_: ['Astrocartography', 'Sun'],
+		},
+		{
+			name: 'roxy-fixed-stars',
+			tag: 'roxy-fixed-stars',
+			data: {
+				orb: 1,
+				summary: 'ZZREADINGSUMMARY',
+				conjunctions: [
+					{
+						point: 'MC',
+						star: 'Regulus',
+						orb: 0.42,
+						interpretation: 'ZZREADINGCONTACT',
+					},
+				],
+				stars: [],
+			},
+			readings: ['ZZREADINGSUMMARY', 'ZZREADINGCONTACT'],
+			data_: ['Fixed stars', 'Regulus', 'MC', 'orb 0.42'],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-hd-variables',
+			tag: 'roxy-hd-variables',
+			data: {
+				baseDescription: 'ZZREADINGBASE',
+				arrows: [
+					{
+						name: 'Determination',
+						position: 'Top left',
+						direction: 'left',
+						layer: 'Primary Health System',
+						layerDescription: 'ZZREADINGLAYER',
+						directionLabel: 'Active',
+						colorLabel: 'Taste',
+						color: 1,
+						tone: 2,
+						base: 3,
+						description: 'ZZREADINGARROW',
+						colorMeaning: 'ZZREADINGCOLOR',
+						toneMeaning: 'ZZREADINGTONE',
+						directionMeaning: 'ZZREADINGDIRECTION',
+					},
+				],
+			},
+			readings: [
+				'ZZREADINGBASE',
+				'ZZREADINGLAYER',
+				'ZZREADINGARROW',
+				'ZZREADINGCOLOR',
+				'ZZREADINGTONE',
+				'ZZREADINGDIRECTION',
+			],
+			data_: ['Variables', 'Determination', 'Active', 'Color 1'],
+		},
+		{
+			name: 'roxy-dosha-card',
+			tag: 'roxy-dosha-card',
+			attrs: { type: 'sadhesati' },
+			data: {
+				present: true,
+				severity: 'moderate',
+				type: 'Rising',
+				description: 'ZZREADINGDESC',
+				effects: {
+					career: 'ZZREADINGCAREER',
+					phases: { Peak: 'ZZREADINGPEAK' },
+				},
+				remedies: ['ZZREADINGREMEDY'],
+				exceptions: ['ZZREADINGEXCEPTION'],
+				frame: { ayanamsa: 'lahiri', ayanamsaDegrees: 24.2131 },
+			},
+			readings: [
+				'ZZREADINGDESC',
+				'ZZREADINGCAREER',
+				'ZZREADINGPEAK',
+				'ZZREADINGREMEDY',
+				'ZZREADINGEXCEPTION',
+				// Each list carries its own heading, so the heading goes with it.
+				'Remedies',
+				'Exceptions',
+			],
+			// The phase IS the Sade Sati answer, so it has to outlive the prose.
+			data_: [
+				'Sade Sati',
+				'Present',
+				'Current phase',
+				'Rising',
+				'Sidereal frame',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-yoga-list (detect)',
+			tag: 'roxy-yoga-list',
+			data: {
+				total: 1,
+				frame: { ayanamsa: 'lahiri', ayanamsaDegrees: 23.7214 },
+				yogas: [
+					{
+						name: 'Gaja Kesari',
+						present: true,
+						quality: 'Positive',
+						family: 'classical',
+						description: 'ZZREADINGDESC',
+						result: 'ZZREADINGRESULT',
+						evidence: 'Jupiter in kendra from the Moon',
+					},
+					{
+						name: 'Kedara',
+						present: false,
+						suppressedBy: 'akriti',
+						family: 'sankhya',
+						description: 'ZZREADINGDESC2',
+						evidence: 'All seven grahas fall in four rashis',
+					},
+				],
+			},
+			readings: [
+				'ZZREADINGDESC',
+				'ZZREADINGDESC2',
+				'ZZREADINGRESULT',
+				'Effects',
+			],
+			// The verdict, the family it was outranked by, and the classical evidence
+			// behind both are the detection, not a read of it.
+			data_: [
+				'Detected yogas',
+				'1 of 2 present',
+				'Gaja Kesari',
+				'Present',
+				'Outranked by Akriti',
+				'Jupiter in kendra from the Moon',
+				'Sidereal frame',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-tarot-spread (three card)',
+			tag: 'roxy-tarot-spread',
+			data: {
+				spread: 'three card',
+				question: 'Should the move go ahead',
+				positions: [
+					{
+						name: 'Past',
+						card: { name: 'The Star', arcana: 'major', reversed: false },
+						interpretation: 'ZZREADINGPOSITION',
+					},
+				],
+				summary: 'ZZREADINGSUMMARY',
+			},
+			readings: ['ZZREADINGPOSITION', 'ZZREADINGSUMMARY'],
+			// The question is the querent's own words echoed back, never a reading.
+			data_: ['Three card', 'Should the move go ahead', 'Past', 'The Star'],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-tarot-spread (yes or no)',
+			tag: 'roxy-tarot-spread',
+			attrs: { spread: 'yes-no' },
+			data: {
+				answer: 'Yes',
+				strength: 'strong',
+				card: {
+					name: 'The Sun',
+					arcana: 'major',
+					reversed: true,
+					keywords: ['ZZREADINGKEYWORD'],
+				},
+				interpretation: 'ZZREADINGINTERP',
+			},
+			readings: ['ZZREADINGKEYWORD', 'ZZREADINGINTERP'],
+			data_: [
+				'Yes or no',
+				'Yes',
+				'strong',
+				'The Sun',
+				'(reversed)',
+				'major arcana',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-profection-card',
+			tag: 'roxy-profection-card',
+			data: {
+				age: 34,
+				profectedHouse: 11,
+				profectedSign: 'Aquarius',
+				lordOfYear: 'Saturn',
+				lordNatalPosition: { sign: 'Taurus', house: 2 },
+				targetDate: '2026-08-07',
+				interpretation: 'ZZREADINGINTERP',
+			},
+			readings: ['ZZREADINGINTERP'],
+			data_: [
+				'Annual profection',
+				'34',
+				'House 11',
+				'Aquarius',
+				'Saturn',
+				'house 2',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-guna-milan',
+			tag: 'roxy-guna-milan',
+			data: {
+				total: 24.5,
+				maxScore: 36,
+				percentage: 68,
+				isCompatible: true,
+				recommendation: 'ZZREADINGRECOMMENDATION',
+				breakdown: [
+					{
+						category: 'Nadi',
+						score: 8,
+						maxScore: 8,
+						person1: 'Aadi',
+						person2: 'Madhya',
+						description: 'Health and genetic compatibility',
+					},
+				],
+				doshas: ['Bhakoot'],
+				doshaCancellations: [{ dosha: 'Nadi', reason: 'same rashi' }],
+				frame: { ayanamsa: 'lahiri', ayanamsaDegrees: 24.2131 },
+			},
+			readings: ['ZZREADINGRECOMMENDATION'],
+			// The koota description says what the category evaluates and reads the same
+			// for every couple, so it is a column gloss rather than a reading.
+			data_: [
+				'24.5',
+				'Compatible',
+				'Nadi',
+				'Aadi',
+				'Madhya',
+				'Health and genetic compatibility',
+				'Bhakoot',
+				'Sidereal frame',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-gochara-table',
+			tag: 'roxy-gochara-table',
+			data: {
+				transitDatetime: '2026-08-07T09:00:00Z',
+				birthDatetime: '1990-01-01T09:00:00Z',
+				transitingPlanets: [
+					{
+						name: 'Saturn',
+						longitude: 310.5,
+						sign: 'Aquarius',
+						natalHouse: 10,
+						kaksha: {
+							number: 3,
+							lord: 'Venus',
+							startDegree: 7.5,
+							endDegree: 11.25,
+							bindu: true,
+							binduCount: 5,
+						},
+						aspectsToNatal: [
+							{ aspectType: 'conjunction', natalPlanet: 'Sun', orb: 4.6 },
+						],
+					},
+				],
+				keyTransits: [
+					{
+						planet: 'Saturn',
+						description: 'ZZREADINGKEYTRANSIT',
+						natalHouse: 10,
+						aspects: [],
+					},
+				],
+			},
+			readings: ['ZZREADINGKEYTRANSIT', 'Key transits'],
+			// The kaksha line is the calculation written out, not a read of it.
+			data_: [
+				'Gochara',
+				'Saturn',
+				'Aquarius',
+				'natal house 10',
+				'Kaksha',
+				'ruled by Venus',
+				'gave bindu',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-forecast-timeline',
+			tag: 'roxy-forecast-timeline',
+			data: {
+				startDate: '2026-08-01',
+				endDate: '2026-08-31',
+				count: 1,
+				events: [
+					{
+						date: '2026-08-12',
+						domain: 'western',
+						type: 'transit-aspect',
+						body: 'saturn',
+						target: 'moon',
+						aspect: 'square',
+						orb: 0.12,
+						significance: 88,
+						description: 'ZZREADINGEVENT',
+					},
+				],
+			},
+			readings: ['ZZREADINGEVENT'],
+			// The headline is built from the structured fields, so the row is complete
+			// without the sentence that restates it.
+			data_: [
+				'Forecast timeline',
+				'Western',
+				'Saturn',
+				'Moon',
+				'orb 0.1',
+				'88',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-forecast-digest',
+			tag: 'roxy-forecast-digest',
+			data: {
+				startDate: '2026-08-01',
+				endDate: '2026-08-31',
+				windows: [
+					{
+						days: 7,
+						count: 2,
+						byDomain: { western: 2 },
+						top: [
+							{
+								date: '2026-08-12',
+								domain: 'western',
+								type: 'transit-aspect',
+								significance: 88,
+								description: 'ZZREADINGEVENT',
+							},
+						],
+					},
+				],
+			},
+			readings: ['ZZREADINGEVENT'],
+			data_: ['Forecast digest', 'Next 7 days', '2 events', 'Western 2'],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-hd-penta',
+			tag: 'roxy-hd-penta',
+			data: {
+				memberCount: 4,
+				summary: {
+					definedChannels: 1,
+					filledGates: 1,
+					coreDefined: true,
+					gapGates: [31],
+				},
+				channels: [
+					{
+						gateA: 34,
+						gateB: 20,
+						name: 'Charisma',
+						circuit: 'Individual',
+						position: 'upper',
+						defined: true,
+						isCore: true,
+						gateAHeldBy: [0],
+						gateBHeldBy: [1, 2],
+					},
+				],
+				gates: [
+					{ gate: 34, gateName: 'Power', filled: true, heldBy: [0] },
+					{ gate: 31, gateName: 'Leadership', filled: false, heldBy: [] },
+				],
+			},
+			// Written here rather than returned by the endpoint, and still the report.
+			readings: [
+				'A penta is the field three to five people form',
+				'Upper channels run from the G Center',
+				'The role each gate brings to the group',
+				'Core is the 2/14 Channel of the Beat',
+			],
+			// The lettering footnote is the legend those attributions are read through.
+			data_: [
+				'Penta',
+				'4 members',
+				'Upper (direction)',
+				'Charisma',
+				'Individual circuit',
+				'Gates (1 of 2 filled)',
+				'Gap',
+				'Members are lettered in the order they were sent',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-moon-phase',
+			tag: 'roxy-moon-phase',
+			data: {
+				phase: 'Waxing Gibbous Moon',
+				date: '2026-08-07',
+				illumination: 0.78,
+				age: 10.2,
+				sign: 'Sagittarius',
+				distance: 384400,
+				meaning: {
+					symbol: '🌔',
+					description: 'ZZREADINGMEANING',
+					keywords: ['ZZREADINGKEYWORD'],
+				},
+			},
+			readings: ['ZZREADINGMEANING', 'ZZREADINGKEYWORD'],
+			data_: [
+				'Waxing Gibbous Moon',
+				'Illumination',
+				'78%',
+				'10.2 days',
+				'Sagittarius',
+				'384k km',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-horoscope-card (daily)',
+			tag: 'roxy-horoscope-card',
+			data: {
+				sign: 'aries',
+				date: '2026-08-07',
+				energyRating: 8,
+				overview: 'ZZREADINGOVERVIEW',
+				love: 'ZZREADINGLOVE',
+				career: 'ZZREADINGCAREER',
+				health: 'ZZREADINGHEALTH',
+				finance: 'ZZREADINGFINANCE',
+				advice: 'ZZREADINGADVICE',
+				moonSign: 'Libra',
+				moonPhase: 'Waxing Gibbous',
+				activeTransits: ['Mars trine natal Sun'],
+				luckyNumber: 7,
+				luckyColor: 'crimson',
+				compatibleSigns: ['leo'],
+			},
+			readings: [
+				'ZZREADINGOVERVIEW',
+				'ZZREADINGLOVE',
+				'ZZREADINGCAREER',
+				'ZZREADINGHEALTH',
+				'ZZREADINGFINANCE',
+				'ZZREADINGADVICE',
+				// Five headed paragraphs, so the headings go with the block.
+				'Love',
+				'Career',
+				'Health',
+				'Finance',
+				'Advice',
+			],
+			// The sky strip is the evidence the reading was derived from, so it stays.
+			data_: [
+				'aries daily',
+				'Energy 8/10',
+				'Libra',
+				'Waxing Gibbous',
+				'Mars trine natal Sun',
+				'Lucky number',
+				'crimson',
+				'leo',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-horoscope-card (monthly)',
+			tag: 'roxy-horoscope-card',
+			attrs: { period: 'monthly' },
+			data: {
+				sign: 'aries',
+				month: 'August 2026',
+				overview: 'ZZREADINGOVERVIEW',
+				weekByWeek: [
+					{ week: 1, focus: 'ZZREADINGFOCUS', advice: 'ZZREADINGWEEKADVICE' },
+				],
+				keyDates: [{ date: '2026-08-12', event: 'Full Moon in Aquarius' }],
+			},
+			readings: [
+				'ZZREADINGOVERVIEW',
+				'ZZREADINGFOCUS',
+				'ZZREADINGWEEKADVICE',
+				'Week by week',
+			],
+			// Dated lunations and ingresses are the month's ephemeris.
+			data_: [
+				'aries monthly',
+				'August 2026',
+				'Key dates',
+				'Full Moon in Aquarius',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-crystal-card',
+			tag: 'roxy-crystal-card',
+			data: {
+				name: 'Amethyst',
+				description: 'ZZREADINGDESCRIPTION',
+				planet: 'Jupiter',
+				hardness: 7,
+				numericalVibration: '3',
+				birthMonth: 2,
+				chakras: ['crown'],
+				zodiacSigns: ['Pisces'],
+				elements: ['Air'],
+				colors: ['purple'],
+				meaning: {
+					spiritual: 'ZZREADINGSPIRITUAL',
+					emotional: 'ZZREADINGEMOTIONAL',
+					physical: 'ZZREADINGPHYSICAL',
+				},
+				keywords: ['ZZREADINGKEYWORD'],
+				affirmation: 'ZZREADINGAFFIRMATION',
+				pairsWith: ['clear-quartz'],
+			},
+			readings: [
+				'ZZREADINGDESCRIPTION',
+				'ZZREADINGSPIRITUAL',
+				'ZZREADINGEMOTIONAL',
+				'ZZREADINGPHYSICAL',
+				'ZZREADINGKEYWORD',
+				'ZZREADINGAFFIRMATION',
+				'Spiritual',
+				'Emotional',
+				'Keywords',
+			],
+			// The mineral record: hardness, vibration, birthstone month, and the
+			// catalogue relation to other stones.
+			data_: [
+				'Amethyst',
+				'Jupiter',
+				'7 Mohs',
+				'February',
+				'crown',
+				'Pisces',
+				'Air',
+				'purple',
+				'Pairs with',
+				'clear quartz',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-angel-number-card',
+			tag: 'roxy-angel-number-card',
+			data: {
+				number: 1111,
+				title: 'Awakening',
+				coreMessage: 'ZZREADINGCORE',
+				type: 'repeating',
+				digitRoot: 4,
+				energy: 'positive',
+				keywords: ['ZZREADINGKEYWORD'],
+				meaning: { spiritual: 'ZZREADINGSPIRITUAL', love: 'ZZREADINGLOVE' },
+				biblical: 'ZZREADINGBIBLICAL',
+				shadow: 'ZZREADINGSHADOW',
+				affirmation: 'ZZREADINGAFFIRMATION',
+				actionSteps: ['ZZREADINGSTEP'],
+			},
+			readings: [
+				'ZZREADINGCORE',
+				'ZZREADINGKEYWORD',
+				'ZZREADINGSPIRITUAL',
+				'ZZREADINGLOVE',
+				'ZZREADINGBIBLICAL',
+				'ZZREADINGSHADOW',
+				'ZZREADINGAFFIRMATION',
+				'ZZREADINGSTEP',
+				'Action steps',
+			],
+			data_: [
+				'1111',
+				'Angel number',
+				'Awakening',
+				'repeating',
+				'Digit root 4',
+				'positive',
+			],
+		},
+		{
+			name: 'roxy-nakshatra-card',
+			tag: 'roxy-nakshatra-card',
+			data: {
+				name: 'Ashwini',
+				number: 1,
+				range: '0.00 to 13.20 Aries',
+				lord: 'Ketu',
+				deity: 'Ashwini Kumaras',
+				symbol: 'Horse head',
+				characteristics: 'ZZREADINGCHARACTERISTICS',
+				remedies: {
+					mantras: 'ZZREADINGMANTRA',
+					gemstones: 'ZZREADINGGEMSTONE',
+					rituals: 'ZZREADINGRITUAL',
+				},
+			},
+			readings: [
+				'ZZREADINGCHARACTERISTICS',
+				'ZZREADINGMANTRA',
+				'ZZREADINGGEMSTONE',
+				'ZZREADINGRITUAL',
+				'Characteristics',
+				'Remedies',
+			],
+			data_: [
+				'Ashwini',
+				'Nakshatra 1 of 27',
+				'0.00 to 13.20 Aries',
+				'Ketu',
+				'Ashwini Kumaras',
+				'Horse head',
+			],
+			readingsSection: false,
+		},
+		{
+			name: 'roxy-reference-card',
+			tag: 'roxy-reference-card',
+			data: {
+				id: 'aries',
+				name: 'Aries',
+				symbol: '♈',
+				element: 'Fire',
+				modality: 'Cardinal',
+				rulingPlanet: 'Mars',
+				keywords: ['ZZREADINGKEYWORD'],
+				motto: 'ZZREADINGMOTTO',
+				gifts:
+					'ZZREADINGGIFTS, and this sentence runs past the length at which a value is read as prose.',
+				strengths: [
+					'ZZREADINGSTRENGTH, which is a whole sentence rather than a value and is chipped only for want of a better shape.',
+				],
+				famous: ['Lady Gaga'],
+				compatibleSigns: ['Leo'],
+			},
+			readings: [
+				'ZZREADINGKEYWORD',
+				'ZZREADINGMOTTO',
+				'ZZREADINGGIFTS',
+				'ZZREADINGSTRENGTH',
+				// A list of sentences is prose laid out as chips, heading and all.
+				'Strengths',
+			],
+			data_: [
+				'Aries',
+				'Reference',
+				'Fire',
+				'Cardinal',
+				'Mars',
+				'Famous',
+				'Lady Gaga',
+				'Compatible Signs',
+				'Leo',
+			],
+			readingsSection: false,
+		},
+	];
+
+	/**
+	 * The one card where the attribute is a documented no-op, and the list a reader is promised in README.md and AGENTS.md.
+	 *
+	 * Pinned here so it cannot grow by accident: adding a component to it is a decision to ship an attribute that does nothing on that tag, and it has to be written into both of those files in the same change.
+	 */
+	const NO_OP: ReadingCase[] = [
+		{
+			name: 'roxy-dream-card',
+			tag: 'roxy-dream-card',
+			data: {
+				id: 'water',
+				name: 'Water',
+				letter: 'w',
+				meaning: 'ZZREADINGMEANING',
+			},
+			readings: [],
+			data_: ['Water', 'ZZREADINGMEANING'],
+			readingsSection: false,
+		},
+	];
+
+	test.each(cases)('$name renders its readings by default', async ({
+		tag,
+		data,
+		attrs,
+		readings,
+		data_,
+	}: ReadingCase) => {
+		const el = await mount(tag, data, attrs);
+		const body = text(el);
+		for (const r of readings) expect(body).toContain(r);
+		for (const d of data_) expect(body).toContain(d);
+		el.remove();
+	});
+
+	test.each(
+		cases,
+	)('$name drops every reading and keeps every fact under hide-readings', async ({
+		tag,
+		data,
+		attrs,
+		readings,
+		data_,
+	}: ReadingCase) => {
+		const el = await mount(tag, data, {
+			...(attrs ?? {}),
+			'hide-readings': '',
+		});
+		const body = text(el);
+		for (const r of readings) expect(body).not.toContain(r);
+		for (const d of data_) expect(body).toContain(d);
+		el.remove();
+	});
+
+	test('the default is off, and the property round-trips with the attribute', async () => {
+		const el = await mount('roxy-natal-chart', natal);
+		const typed = el as unknown as { hideReadings: boolean };
+		expect(typed.hideReadings).toBe(false);
+		expect(el.hasAttribute('hide-readings')).toBe(false);
+
+		typed.hideReadings = true;
+		await settled(el);
+		expect(el.hasAttribute('hide-readings')).toBe(true);
+		expect(text(el)).not.toContain('ZZREADINGPLANET');
+
+		// Back off again: the prose returns, so nothing is destroyed on the way in.
+		typed.hideReadings = false;
+		await settled(el);
+		expect(el.hasAttribute('hide-readings')).toBe(false);
+		expect(text(el)).toContain('ZZREADINGPLANET');
+		el.remove();
+	});
+
+	test('the natal wheel, the tabs and the aspect grid survive hide-readings', async () => {
+		const el = await mount('roxy-natal-chart', natal, { 'hide-readings': '' });
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.querySelector('svg[part="chart"]')).not.toBeNull();
+		// Twelve sign glyphs is the wheel actually drawn, not just an <svg> present.
+		expect(root.querySelectorAll('text.sign-glyph').length).toBe(12);
+		expect(root.querySelector('[part~="tablist"]')).not.toBeNull();
+		expect(root.querySelector('[part~="legend"]')).not.toBeNull();
+		expect(root.querySelector('[part~="patterns"]')).not.toBeNull();
+		expect(root.querySelector('[part~="readings"]')).toBeNull();
+		el.remove();
+	});
+
+	test('the dasha Readings tab goes with the readings, never left over an empty panel', async () => {
+		const dasha = {
+			mahadasha: {
+				planet: 'Venus',
+				startDate: '2020-01-01',
+				endDate: '2040-01-01',
+				durationYears: 20,
+				interpretation: 'ZZREADINGDASHA',
+			},
+		};
+		const on = await mount('roxy-dasha-timeline', dasha);
+		expect(text(on)).toContain('Reading');
+		on.remove();
+
+		const off = await mount('roxy-dasha-timeline', dasha, {
+			'hide-readings': '',
+		});
+		const body = text(off);
+		expect(body).not.toContain('ZZREADINGDASHA');
+		expect(body).not.toContain('Reading');
+		// The periods themselves are the point of the card and stay.
+		expect(body).toContain('Venus');
+		expect(body).toContain('Mahadasha');
+		off.remove();
+	});
+
+	/** A part stops at the shadow boundary, so a component that nests another has to re-export or the host page can reach only the outer one. Same for the attribute: it has to be forwarded or the inner readings ignore it. */
+	test('the relocation wheel forwards hide-readings and re-exports the wheel parts', async () => {
+		const relocation = {
+			...natal,
+			changes: {
+				distanceKm: 1200,
+				direction: 'north',
+				ascendantSignChanged: false,
+				angularPlanets: [],
+				planetsChangedHouse: [],
+			},
+			interpretation: { summary: 'ZZREADINGRELOC' },
+		};
+		const el = await mount('roxy-relocation-wheel', relocation, {
+			'hide-readings': '',
+		});
+		const root = el.shadowRoot as ShadowRoot;
+		const inner = root.querySelector('roxy-natal-chart');
+		expect(inner).not.toBeNull();
+		expect(inner?.hasAttribute('hide-readings')).toBe(true);
+		expect(inner?.getAttribute('exportparts') ?? '').toContain('readings');
+		expect(text(el)).not.toContain('ZZREADINGRELOC');
+		expect(text(el)).toContain('1,200 km north of birthplace');
+		el.remove();
+	});
+
+	/**
+	 * The vocabulary is the deliverable: one `::part(readings)` rule has to reach every component, including ones added later, so the name cannot vary per component.
+	 */
+	test('every reading accordion carries the same part names', async () => {
+		for (const { name, tag, data, attrs, readingsSection } of cases) {
+			const el = await mount(tag, data, attrs);
+			const root = el.shadowRoot as ShadowRoot;
+			if (readingsSection !== false) {
+				const section = root.querySelector('[part~="readings"]');
+				expect(section, `${name} should expose part="readings"`).not.toBeNull();
+				expect(section?.getAttribute('part')).toContain('section');
+			}
+			// Whichever block holds it, every disclosure card is addressable by the
+			// same name, so one ::part(reading) rule restyles the library.
+			for (const card of root.querySelectorAll('.interp-card')) {
+				expect(
+					card.getAttribute('part'),
+					`${name} has an .interp-card with no part`,
+				).toContain('reading');
+			}
+			el.remove();
+		}
+	});
+
+	test('the natal chart exposes its structural parts', async () => {
+		const el = await mount('roxy-natal-chart', natal);
+		const root = el.shadowRoot as ShadowRoot;
+		const parts = [...root.querySelectorAll('[part]')].flatMap((n) =>
+			(n.getAttribute('part') ?? '').split(/\s+/).filter(Boolean),
+		);
+		for (const name of [
+			'card',
+			'header',
+			'tablist',
+			'tab',
+			'panel',
+			'chart',
+			'legend',
+			'details',
+			'section',
+			'patterns',
+			'pattern',
+			'readings',
+			'reading',
+		]) {
+			expect(parts, `natal chart should expose part ${name}`).toContain(name);
+		}
+		el.remove();
+	});
+
+	test('part names are kebab-case throughout the library', async () => {
+		for (const { name, tag, data, attrs } of [...cases, ...NO_OP]) {
+			const el = await mount(tag, data, attrs);
+			for (const node of el.shadowRoot?.querySelectorAll('[part]') ?? []) {
+				for (const part of (node.getAttribute('part') ?? '')
+					.split(/\s+/)
+					.filter(Boolean)) {
+					expect(part, `${name} part "${part}"`).toMatch(/^[a-z][a-z0-9-]*$/);
+				}
+			}
+			el.remove();
+		}
+	});
+
+	/**
+	 * `::part(card)` has to reach every component or the vocabulary is only half true: a host page that writes one border rule cannot be asked which tags it happens to apply to.
+	 */
+	test('every component exposes card and header, whatever else it draws', async () => {
+		for (const { name, tag, data, attrs } of [...cases, ...NO_OP]) {
+			const el = await mount(tag, data, attrs);
+			const root = el.shadowRoot as ShadowRoot;
+			for (const part of ['card', 'header']) {
+				expect(
+					root.querySelector(`[part~="${part}"]`),
+					`${name} should expose part ${part}`,
+				).not.toBeNull();
+			}
+			el.remove();
+		}
+	});
+
+	/**
+	 * A no-op has to be a decision rather than an omission, so it is asserted as one: the render is identical with the attribute and without it, and the prose the card exists for is still there.
+	 */
+	test.each(
+		NO_OP,
+	)('$name is a documented no-op and renders identically either way', async ({
+		tag,
+		data,
+		attrs,
+		data_,
+	}: ReadingCase) => {
+		const on = await mount(tag, data, attrs);
+		const off = await mount(tag, data, {
+			...(attrs ?? {}),
+			'hide-readings': '',
+		});
+		expect(off.shadowRoot?.innerHTML).toBe(on.shadowRoot?.innerHTML ?? '');
+		for (const d of data_) expect(text(off)).toContain(d);
+		on.remove();
+		off.remove();
+	});
+
+	/**
+	 * The angel-number card hand-rolled its own `<details>` accordion, which was neither `.interp-card` markup nor a call to the shared helper, so it slipped past the guard that caught the other five. It draws the shared accordion now, and this pins that rather than the symptom.
+	 */
+	test('the angel number card draws the shared accordion, not a private one', async () => {
+		const d = {
+			number: 1111,
+			title: 'Awakening',
+			meaning: { spiritual: 'ZZREADINGSPIRITUAL' },
+			biblical: 'ZZREADINGBIBLICAL',
+		};
+		const el = await mount('roxy-angel-number-card', d);
+		const root = el.shadowRoot as ShadowRoot;
+		const section = root.querySelector('[part~="readings"]');
+		expect(section).not.toBeNull();
+		expect(section?.getAttribute('part')).toContain('section');
+		const rows = root.querySelectorAll('details');
+		expect(rows.length).toBe(2);
+		for (const row of rows) {
+			expect(row.classList.contains('interp-card')).toBe(true);
+			expect(row.getAttribute('part')).toContain('reading');
+			// Exclusive, so the card grows by at most one open section.
+			expect(row.getAttribute('name')).toBe('angel-meaning');
+		}
+		el.remove();
+	});
+
+	/**
+	 * The one accepted cost in this batch, asserted so it stays the cost that was accepted. A digest row has no structured headline beside its sentence, so hiding the prose falls back to the shape a description-less event already renders in rather than emptying the row.
+	 */
+	test('a digest row keeps its date, its type and its significance without the prose', async () => {
+		const digest = {
+			startDate: '2026-08-01',
+			endDate: '2026-08-31',
+			windows: [
+				{
+					days: 7,
+					count: 1,
+					byDomain: { western: 1 },
+					top: [
+						{
+							date: '2026-08-12',
+							domain: 'western',
+							type: 'transit-aspect',
+							significance: 88,
+							description: 'ZZREADINGEVENT',
+						},
+					],
+				},
+			],
+		};
+		const el = await mount('roxy-forecast-digest', digest, {
+			'hide-readings': '',
+		});
+		const body = text(el);
+		expect(body).not.toContain('ZZREADINGEVENT');
+		expect(body).toContain('Transit aspect');
+		expect(body).toContain('Next 7 days');
+		expect(
+			(el.shadowRoot as ShadowRoot).querySelector('[part~="legend"]'),
+		).not.toBeNull();
+		el.remove();
+	});
+
+	/**
+	 * Hiding a section has to take its heading with it, or the card ships a heading over nothing: a lie to a reader and an axe `heading-order` risk to a scan.
+	 */
+	test('no heading is left standing over a section that was dropped', async () => {
+		for (const { name, tag, data, attrs } of cases) {
+			const el = await mount(tag, data, {
+				...(attrs ?? {}),
+				'hide-readings': '',
+			});
+			const root = el.shadowRoot as ShadowRoot;
+			for (const heading of root.querySelectorAll('h2, h3')) {
+				const block = heading.parentElement;
+				if (!block) continue;
+				const siblings = [...block.childNodes].filter(
+					(n) => n !== heading && (n.textContent ?? '').trim().length > 0,
+				);
+				expect(
+					siblings.length,
+					`${name} left "${heading.textContent?.trim()}" over an empty block`,
+				).toBeGreaterThan(0);
+			}
+			el.remove();
+		}
+	});
+});

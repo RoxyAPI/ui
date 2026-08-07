@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-transit-wheel",
+  "type": "registry:ui",
+  "title": "RoxyTransitWheel",
+  "description": "Natal and transit bi-wheel with an aspect line for every transit to the natal chart",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.22.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-transit-wheel.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyTransitWheel data={...} />: Natal and transit bi-wheel with an aspect line for every transit to the natal chart.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/transit-wheel/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyTransitWheel as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyTransitWheelProps = ComponentProps<typeof Element>;\n\nexport function RoxyTransitWheel(props: RoxyTransitWheelProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyTransitWheel;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/transit-wheel.tsx"
+    }
+  ]
+}

@@ -7,7 +7,6 @@ import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
@@ -143,19 +142,27 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 			.filter(Boolean)
 			.join(' · ');
 
-		return html`<article class="card" aria-label=${card.name ?? 'Tarot card'}>
+		const readings = !this.hideReadings;
+
+		return html`<article
+			class="card"
+			part="card"
+			aria-label=${card.name ?? 'Tarot card'}
+		>
 			${this.renderImage(card.imageUrl, card.name, reversed)}
-			<div>
+			<div part="header">
 				<div class="meta">
 					${meta ? `${meta} · ` : ''}<span class="drawn"
 						>${reversed ? 'drawn reversed' : 'drawn upright'}</span
 					>
 				</div>
 				<h2 class="title">${card.name ?? 'Tarot card'}</h2>
-				${d.dailyMessage ? html`<p class="message">${d.dailyMessage}</p>` : nothing}
-				${card.meaning ? html`<p class="reading">${card.meaning}</p>` : nothing}
+				${d.dailyMessage && readings ? html`<p class="message">${d.dailyMessage}</p>` : nothing}
+				${card.meaning && readings ? html`<p class="reading">${card.meaning}</p>` : nothing}
 				${
-					keywords.length > 0
+					// Keyword chips are the shorthand of the meaning above them, so they
+					// go with the prose rather than with the card identity.
+					keywords.length > 0 && readings
 						? html`<div class="chips">
 							${keywords.map((k) => html`<span>${k}</span>`)}
 						</div>`
@@ -174,9 +181,15 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 			oriented?.keywords ??
 			[];
 
-		return html`<article class="card" aria-label=${d.name ?? 'Tarot card'}>
+		const readings = !this.hideReadings;
+
+		return html`<article
+			class="card"
+			part="card"
+			aria-label=${d.name ?? 'Tarot card'}
+		>
 			${this.renderImage(d.imageUrl, d.name, reversed)}
-			<div>
+			<div part="header">
 				<div class="meta">
 					${[
 						d.arcana ? `${d.arcana} arcana` : '',
@@ -204,13 +217,14 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 				})}
 				<div
 					id="tarot-panel-${this.orientation}"
+					part="panel"
 					role="tabpanel"
 					tabindex="0"
 					aria-labelledby="tarot-tab-${this.orientation}"
 				>
-					${oriented?.description ? html`<p class="reading">${oriented.description}</p>` : nothing}
+					${oriented?.description && readings ? html`<p class="reading">${oriented.description}</p>` : nothing}
 					${
-						keywords.length > 0
+						keywords.length > 0 && readings
 							? html`<div class="chips">
 								${keywords.map((k) => html`<span>${k}</span>`)}
 							</div>`
@@ -232,12 +246,18 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 		if (!imageUrl) {
 			return html`<div
 				class=${cls}
+				part="chart"
 				style="aspect-ratio: 0.6; display: flex; align-items: center; justify-content: center; color: var(--roxy-muted)"
 			>
 				${name ?? '?'}
 			</div>`;
 		}
-		return html`<img class=${cls} src=${imageUrl} alt=${name ?? 'Tarot card'} />`;
+		return html`<img
+			class=${cls}
+			part="chart"
+			src=${imageUrl}
+			alt=${name ?? 'Tarot card'}
+		/>`;
 	}
 
 	/** The five life-area readings for the orientation on screen. Grouped per orientation so switching the reference card swaps the whole accordion rather than leaving a stale section open. */
@@ -247,7 +267,7 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 			label,
 			body: guidance[key] ?? '',
 		}));
-		return renderInterpAccordion(sections, name, 'Guidance');
+		return this.renderInterpretation(sections, name, 'Guidance');
 	}
 }
 

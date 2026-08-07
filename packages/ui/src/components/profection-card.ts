@@ -11,6 +11,9 @@ import { capitalize } from '../utils/string.js';
  * Annual profection card. Renders a /astrology/profections response: the year's
  * profected whole-sign house and sign, the lord of the year and where it sits in
  * the natal chart, and the reading. A single focal card, not a table.
+ *
+ * @remarks
+ * The profection itself is arithmetic: the age, the house it activates, the sign on it, and the lord with its natal placement. Those are the card, and they all survive `hide-readings`; the closing paragraph is the only interpretation on it.
  */
 @customElement('roxy-profection-card')
 export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
@@ -140,12 +143,12 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 		const lordGlyph = PLANET_GLYPH[capitalize(data.lordOfYear ?? '')];
 		const lordNatalGlyph =
 			SIGN_GLYPH[capitalize(data.lordNatalPosition?.sign ?? '')];
-		return html`<div class="wrap">
-			<header>
+		return html`<div class="wrap" part="card">
+			<header part="header">
 				<h2 class="title">Annual profection</h2>
 				${data.targetDate ? html`<span class="badge"><b>For</b> ${formatDate(data.targetDate)}</span>` : nothing}
 			</header>
-			<div class="focus">
+			<div class="focus" part="details">
 				<div class="age">
 					<span class="n">${data.age}</span>
 					<span class="l">Age</span>
@@ -156,7 +159,7 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 					<span class="sign">${signGlyph ? html`<span class="sg">${signGlyph}</span>` : nothing}${data.profectedSign}</span>
 				</div>
 			</div>
-			<div class="lord">
+			<div class="lord" part="details">
 				<span class="label">Lord of the year</span>
 				<span class="value">${lordGlyph ? html`${lordGlyph} ` : nothing}${data.lordOfYear}</span>
 				${
@@ -165,7 +168,13 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 						: nothing
 				}
 			</div>
-			${data.interpretation ? html`<p class="interp">${data.interpretation}</p>` : nothing}
+			${
+				// The house, the sign and the lord above are the profection; this is the
+				// read of them.
+				data.interpretation && !this.hideReadings
+					? html`<p class="interp">${data.interpretation}</p>`
+					: nothing
+			}
 		</div>`;
 	}
 }

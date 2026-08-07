@@ -6,6 +6,9 @@ import { baseStyles } from '../utils/base-styles.js';
 
 /**
  * Dream symbol card. Renders /dreams/symbols/{id}: the symbol name as a heading, the full psychological interpretation as the body, and the dictionary letter as a chip for alphabetical context.
+ *
+ * @remarks
+ * **`hide-readings` is a deliberate no-op here, and it is the only card in the library that is.** The response is `{id, name, letter, meaning}`: three of those four fields are the lookup key itself, and `meaning` is the entire card. Honouring the attribute would leave a dictionary heading with nothing under it, which is not a chart without a report, it is an empty card. Rendering nothing at all was the other option and is worse, because a site-wide `hide-readings` would then delete the component from the page rather than trim it. Documented in README.md and AGENTS.md so an integrator learns this without testing for it, and pinned by `components.test.ts`.
  */
 @customElement('roxy-dream-card')
 export class RoxyDreamCard extends RoxyDataElement<GetDreamSymbolResponse> {
@@ -67,8 +70,8 @@ export class RoxyDreamCard extends RoxyDataElement<GetDreamSymbolResponse> {
 	];
 
 	protected renderData(d: GetDreamSymbolResponse) {
-		return html`<article class="card" aria-label=${d.name ?? 'Dream symbol'}>
-			<header class="head">
+		return html`<article class="card" part="card" aria-label=${d.name ?? 'Dream symbol'}>
+			<header class="head" part="header">
 				${d.letter ? html`<span class="letter" aria-hidden="true">${d.letter}</span>` : nothing}
 				<div>
 					<p class="label">Dream symbol</p>

@@ -627,6 +627,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-synastry-chart>` | Western | POST /astrology/synastry | Dual-wheel synastry with inter-aspects table |
 | `<roxy-western-planets-table>` | Western | POST /astrology/natal-chart | Sign, degree, house, motion columns plus ASC, MC, PoF, Vertex |
 | `<roxy-transits-table>` | Western | POST /astrology/transits | Transit planet positions plus optional aspects to a natal chart |
+| `<roxy-transit-wheel>` | Western | POST /astrology/transit-aspects | Natal chart on the inner ring, transiting bodies on the outer ring, aspect lines between them |
 | `<roxy-aspects-table>` | Western | POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns | Aspect rows coloured by nature with orb and strength, plus detected chart patterns |
 | `<roxy-moon-phase>` | Western | GET /astrology/moon-phase/{current,upcoming,calendar/...} | Moon phase card and calendar |
 | `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly} | Daily, weekly, or monthly horoscope card |
@@ -710,6 +711,58 @@ roxy-natal-chart {
 	--roxy-accent: #ec4899;
 }
 ```
+
+### Reach inside the component from your own CSS
+
+Every chart and reading component names its structural blocks with `part`, so a stylesheet outside the component can restyle or hide any of them with no JavaScript and no fork. The names are the same in every component, so one rule covers the whole library.
+
+```css
+/* Chart only. The wheel, the tables and the numbers stay; the written report goes. */
+roxy-natal-chart::part(readings) {
+	display: none;
+}
+
+/* Or restyle it. */
+roxy-natal-chart::part(card) {
+	border: 0;
+	box-shadow: none;
+}
+```
+
+The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, plus `form`, `loading`, `error` and `attribution` on the built-in states.
+
+### Chart without the written report
+
+For the same outcome in markup rather than CSS, set `hide-readings`. The component renders the chart and the data and leaves the interpretation out of the page entirely, which is what you want when your own copy supplies the words.
+
+```html
+<roxy-natal-chart hide-readings></roxy-natal-chart>
+```
+
+```tsx
+<RoxyNatalChart data={chart} hideReadings />
+```
+
+It is off by default, so nothing changes until you ask for it. Wheels, maps, tables, grids, legends, badges and every number stay; the interpretive prose is what goes.
+
+#### Which components it applies to
+
+Every component that renders a written interpretation acts on it, so you never have to test a tag to find out. A pure chart or table has no interpretation to take away, so on those it is a no-op by definition and there is nothing to know.
+
+There is exactly one component where it is a no-op despite the component being mostly prose, and that is deliberate:
+
+| Component | Behaviour |
+|---|---|
+| `<roxy-dream-card>` | `hide-readings` is ignored. The dream symbol response is the symbol, its dictionary letter and the interpretation, so removing the interpretation would leave a heading over nothing. Style it with `::part(card)` or leave the card out of the page instead. |
+
+What each family keeps when you set it:
+
+- Charts and wheels keep the drawing, the legend, the glyphs, every degree and house, and the tab strip.
+- Tables keep every row and column, including the calculated ones (kaksha bindus, koota scores, significance bars, orbs and strengths).
+- Cards keep the header, the badges, the meters and the fact grids: a dosha keeps its present or absent verdict, its phase and its severity; a crystal keeps its Mohs hardness and its attribute grid; a horoscope keeps its energy meter, its Moon placement, the transits behind the reading and its key dates.
+- Vedic responses keep the sidereal frame caption, so a chart is still reconcilable against another calculator.
+
+What goes: interpretation paragraphs, the reading accordions, keyword chips attached to a reading, remedies and action steps and strengths lists (sentences laid out as bullets), and any section whose only content was one of those, heading included.
 
 ## Reliability
 

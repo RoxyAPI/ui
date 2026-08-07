@@ -73,6 +73,7 @@ export { RoxySynastryChart } from './components/synastry-chart.js';
 export { RoxyTarotCard } from './components/tarot-card.js';
 export { RoxyTarotCatalog } from './components/tarot-catalog.js';
 export { RoxyTarotSpread } from './components/tarot-spread.js';
+export { RoxyTransitWheel } from './components/transit-wheel.js';
 export { RoxyTransitsTable } from './components/transits-table.js';
 export { RoxyUpagrahaTable } from './components/upagraha-table.js';
 // Vedic astrology

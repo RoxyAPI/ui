@@ -39,7 +39,7 @@
     },
     {
       "name": "Forecast",
-      "description": "Merge upcoming transit aspects, sign ingresses, retrograde stations, new and full moons, biorhythm critical days, and Vimshottari dasha changes into one time-ordered forecast for a single subject. The only cross-domain forecast timeline behind one key, positions verified against NASA JPL Horizons, available over Remote MCP with typed SDKs. Horizon capped at 90 days."
+      "description": "Forecast API that merges upcoming transit aspects, sign ingresses, retrograde stations, new and full moons, biorhythm critical days, and Vimshottari dasha changes into one time-ordered forecast for a single subject. The only cross-domain forecast timeline behind one key, positions verified against NASA JPL Horizons, available over Remote MCP with typed SDKs. Horizon capped at 90 days."
     },
     {
       "name": "Human Design",
@@ -75,7 +75,7 @@
     },
     {
       "name": "Location and Timezone",
-      "description": "City search and geocoding API with 23,000+ cities across 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fully offline dataset with no third party geocoding call, and fields that map directly to the astrology endpoints. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Location and timezone API with city search and geocoding across 23,000+ cities in 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fully offline dataset with no third party geocoding call, and fields that map directly to the astrology endpoints. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Usage",

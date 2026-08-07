@@ -8,6 +8,13 @@ import { baseStyles } from '../utils/base-styles.js';
  * Nakshatra reference card. Renders /vedic-astrology/nakshatras/{id}: the
  * lunar mansion number, longitude range, ruling planet, presiding deity,
  * symbol, native characteristics, and traditional remedies.
+ *
+ * @remarks
+ * The classical attribution table is the card and it survives `hide-readings`
+ * whole: the name, which of the twenty-seven it is, the longitude range it spans,
+ * and its lord, deity and symbol. Those are what a practitioner reads a placement
+ * against. The characteristics paragraph and the remedies are the reading, and
+ * each carries its own heading, so each section goes whole.
  */
 @customElement('roxy-nakshatra-card')
 export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
@@ -99,8 +106,8 @@ export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 	protected renderData(n: NakshatraResponse) {
 		const remedies = n.remedies;
 
-		return html`<article class="wrap" aria-label=${`Nakshatra ${n.name}`}>
-			<header class="head">
+		return html`<article class="wrap" part="card" aria-label=${`Nakshatra ${n.name}`}>
+			<header class="head" part="header">
 				<h2 class="name">${n.name}</h2>
 				${
 					typeof n.number === 'number'
@@ -110,15 +117,17 @@ export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 				${n.range ? html`<span class="range">${n.range}</span>` : nothing}
 			</header>
 
-			<dl class="facts">
+			<dl class="facts" part="details">
 				${n.lord ? html`<div class="fact"><dt>Lord</dt><dd>${n.lord}</dd></div>` : nothing}
 				${n.deity ? html`<div class="fact"><dt>Deity</dt><dd>${n.deity}</dd></div>` : nothing}
 				${n.symbol ? html`<div class="fact"><dt>Symbol</dt><dd>${n.symbol}</dd></div>` : nothing}
 			</dl>
 
 			${
-				n.characteristics
-					? html`<div class="section">
+				// The lord, deity and symbol above are the mansion; this paragraph is
+				// what a native of it is said to be like.
+				n.characteristics && !this.hideReadings
+					? html`<div class="section" part="section characteristics">
 						<h3>Characteristics</h3>
 						<p>${n.characteristics}</p>
 					</div>`
@@ -126,8 +135,8 @@ export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 			}
 
 			${
-				remedies
-					? html`<div class="section">
+				remedies && !this.hideReadings
+					? html`<div class="section" part="section remedies">
 						<h3>Remedies</h3>
 						<div class="remedies">
 							${remedies.mantras ? html`<div class="remedy"><strong>Mantras:</strong> ${remedies.mantras}</div>` : nothing}

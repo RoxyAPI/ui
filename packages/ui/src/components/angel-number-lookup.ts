@@ -5,10 +5,7 @@ import { buildMeaningSections } from '../utils/angel-sections.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import {
-	interpAccordionStyles,
-	renderInterpAccordion,
-} from '../utils/interp-accordion.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 
 /**
  * Angel number lookup card. Renders /angel-numbers/lookup: the analysed sequence with its pattern classification (type, digit count, unique digits, palindrome, repeating), the context note when the caller said where the number was seen, the known angel-number meaning when the sequence is in the database, and the foundational digit-root meaning that interprets any sequence. Built for synchronicity trackers where users enter arbitrary numbers.
@@ -170,15 +167,19 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 		const heading = known?.title ?? 'Number analysis';
 		const steps = known?.actionSteps ?? [];
 
-		return html`<article class="card" aria-label=${`Number ${d.number ?? ''}`}>
-			<div class="hero">
+		return html`<article
+			class="card"
+			part="card"
+			aria-label=${`Number ${d.number ?? ''}`}
+		>
+			<div class="hero" part="header">
 				${d.number ? html`<div class="numeral">${d.number}</div>` : nothing}
 				<div>
 					${known?.title ? html`<p class="label">Number analysis</p>` : nothing}
 					<h2 class="title">${heading}</h2>
 				</div>
 			</div>
-			<div class="badges">
+			<div class="badges" part="details">
 				${d.type ? html`<span class="badge">${d.type}</span>` : nothing}
 				${typeof d.digits === 'number' ? html`<span class="badge">${d.digits} digits</span>` : nothing}
 				${typeof d.uniqueDigits === 'number' ? html`<span class="badge">${d.uniqueDigits} unique</span>` : nothing}
@@ -188,16 +189,23 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 				${known?.energy ? html`<span class=${`badge energy-${known.energy}`}>${known.energy} energy</span>` : nothing}
 			</div>
 			${
+				// The caller's own note about where the number was seen, echoed back.
+				// Not an interpretation, so it survives hide-readings.
 				d.contextNote
-					? html`<div class="context">
+					? html`<div class="context" part="section context">
 						<p class="label">Where you saw it</p>
 						<p>${d.contextNote}</p>
 					</div>`
 					: nothing
 			}
 			${
-				known
-					? html`<div class="section">
+				// Both sections below are interpretation end to end: the core message,
+				// the life-area accordion, the affirmation and the action steps. The
+				// facts they would otherwise carry (the number, its digit root, the
+				// title) are already in the hero and the badges, so the whole section
+				// goes rather than leaving a heading over nothing.
+				known && !this.hideReadings
+					? html`<div class="section" part="section known-meaning">
 						<p class="label">Known angel number</p>
 						${known.coreMessage ? html`<p>${known.coreMessage}</p>` : nothing}
 						${
@@ -217,8 +225,8 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 					: nothing
 			}
 			${
-				root
-					? html`<div class="section">
+				root && !this.hideReadings
+					? html`<div class="section" part="section digit-root">
 						<p class="label">Foundational digit root${root.number ? ` (${root.number})` : ''}</p>
 						${root.title ? html`<h3>${root.title}</h3>` : nothing}
 						${root.coreMessage ? html`<p>${root.coreMessage}</p>` : nothing}
@@ -235,7 +243,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 		biblical?: string,
 		shadow?: string,
 	) {
-		return renderInterpAccordion(
+		return this.renderInterpretation(
 			buildMeaningSections(meaning, biblical, shadow),
 			name,
 			'Reading',

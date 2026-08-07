@@ -45,6 +45,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Astrology"
   },
   {
+    "pascal": "RoxyTransitWheel",
+    "tag": "roxy-transit-wheel",
+    "slug": "transit-wheel",
+    "heading": "Transit bi-wheel",
+    "description": "Natal and transit bi-wheel with an aspect line for every transit to the natal chart",
+    "docsLabel": "Western",
+    "endpointLabel": "POST /astrology/transit-aspects",
+    "docsSummary": "Natal chart on the inner ring, transiting bodies on the outer ring, aspect lines between them",
+    "topic": "Astrology"
+  },
+  {
     "pascal": "RoxyAspectsTable",
     "tag": "roxy-aspects-table",
     "slug": "aspects-table",
@@ -1416,6 +1427,13 @@ window.ROXY_ENDPOINT_BINDINGS = {
       }
     }
   ],
+  "roxy-transit-wheel": [
+    {
+      "operationId": "calculateTransitAspects",
+      "method": "POST",
+      "path": "/astrology/transit-aspects"
+    }
+  ],
   "roxy-transits-table": [
     {
       "operationId": "calculateTransits",
@@ -1581,6 +1599,10 @@ window.ROXY_WIDGET_SNIPPETS = {
   "roxy-transits-table": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transits-table data-endpoint=\"astrology/transits\" publishable-key=\"pk_live_YOUR_KEY\" lang=\"en\"></roxy-transits-table>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transits-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-transit-wheel": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transit-wheel data-endpoint=\"astrology/transit-aspects\" publishable-key=\"pk_live_YOUR_KEY\" lang=\"en\"></roxy-transit-wheel>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transit-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
   "roxy-aspects-table": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-aspects-table data-endpoint=\"astrology/aspects\" publishable-key=\"pk_live_YOUR_KEY\" lang=\"en\"></roxy-aspects-table>",

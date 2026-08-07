@@ -78,6 +78,7 @@ export const DATA_TYPES: Record<string, string> = {
 	hexagram:
 		'GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse',
 	'transits-table': 'TransitsResponse',
+	'transit-wheel': 'CalculateTransitAspectsResponse',
 	'aspects-table':
 		'CalculateAspectsResponse | CalculateTransitAspectsResponse | DetectAspectPatternsResponse',
 	'vedic-aspects': 'CalculateDrishtiResponse',
@@ -129,9 +130,12 @@ export interface ConfigPropDef {
 }
 
 /**
- * Universal self-fetch props, present on every data-bound component because they live on the shared {@link RoxyDataElement} base. They are wired identically to {@link CONFIG_PROPS}, so adding them here is enough to make uncontrolled mode a typed, first-class part of every wrapper. Set `endpoint` + `publishableKey` to let the component render its own input form and fetch live; leave them unset for controlled mode (pass `data`).
+ * Universal props, present on every data-bound component because they live on the shared `RoxyDataElement` base rather than on any one element. They are wired identically to {@link CONFIG_PROPS}, so adding one here is enough to make it a typed, first-class part of every wrapper, including components added later.
+ *
+ * @remarks
+ * Most of these drive uncontrolled mode: set `endpoint` + `publishableKey` and the component renders its own input form and fetches live; leave them unset for controlled mode (pass `data`). `hideReadings` is the exception and is not about fetching at all, which is why this list is named for the base and not for self-fetch.
  */
-export const SELF_FETCH_PROPS: ConfigPropDef[] = [
+export const BASE_PROPS: ConfigPropDef[] = [
 	{
 		prop: 'endpoint',
 		type: 'string',
@@ -177,6 +181,12 @@ export const SELF_FETCH_PROPS: ConfigPropDef[] = [
 		comment:
 			'Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode.',
 	},
+	{
+		prop: 'hideReadings',
+		type: 'boolean',
+		comment:
+			'Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely.',
+	},
 ];
 
 export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
@@ -202,6 +212,19 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 			type: "'placidus' | 'whole-sign' | 'equal' | 'koch'",
 			comment:
 				'House system the chart was cast with. Labels the house cusps; does not recompute positions.',
+		},
+	],
+	'transit-wheel': [
+		{
+			prop: 'heading',
+			type: 'string',
+			comment: 'Heading above the bi-wheel. Defaults to "Transits".',
+		},
+		{
+			prop: 'ascendant',
+			type: 'number',
+			comment:
+				'Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the page from a chart endpoint that returns one. Rotates the wheel so that longitude falls on the left horizon and draws the ASC/DSC axis. Leave it unset and the wheel keeps a fixed zodiacal orientation with 0 degrees Aries on the left; no house cusps are drawn either way, because the transit-aspects response carries none.',
 		},
 	],
 	'horoscope-card': [
@@ -399,7 +422,7 @@ export interface WrapperMeta {
 }
 
 /**
- * Components that take no response at all. They are plain `LitElement`s driven by configuration (`RoxyLocationSearch`, `RoxyEndpointForm`), NOT `RoxyDataElement` subclasses, so they get no `data` prop and must not advertise {@link SELF_FETCH_PROPS}.
+ * Components that take no response at all. They are plain `LitElement`s driven by configuration (`RoxyLocationSearch`, `RoxyEndpointForm`), NOT `RoxyDataElement` subclasses, so they get no `data` prop and must not advertise {@link BASE_PROPS}.
  *
  * @remarks
  * Membership here, not the shape of the type, is what decides. Deriving it as `DATA_TYPES[slug] !== 'unknown'` instead would conflate "not a data component" with "a data component whose response type genuinely IS `unknown`", and `roxy-data` is the latter: it is a `RoxyDataElement<Json>` that renders ANY response, which is the whole point of the generic fallback. Such a component would lose its `data` prop in both wrapper packages and could only ever render its empty state.
@@ -410,7 +433,7 @@ const NO_DATA_SLUGS = new Set(['location-search', 'endpoint-form']);
  * Resolve the full wrapper surface for one component. Every generator goes through this so the React and Vue packages cannot disagree about the same element.
  *
  * @remarks
- * The self-fetch rule is the one derivation worth centralising: data-bound components extend `RoxyDataElement` and therefore ALL carry {@link SELF_FETCH_PROPS} on top of their own config. See {@link NO_DATA_SLUGS} for the two that do not.
+ * The base-class rule is the one derivation worth centralising: data-bound components extend `RoxyDataElement` and therefore ALL carry {@link BASE_PROPS} on top of their own config. See {@link NO_DATA_SLUGS} for the two that do not.
  */
 export function wrapperMeta(slug: string): WrapperMeta {
 	const dataType = DATA_TYPES[slug] ?? 'unknown';
@@ -419,7 +442,7 @@ export function wrapperMeta(slug: string): WrapperMeta {
 	return {
 		dataType,
 		hasData,
-		config: hasData ? [...own, ...SELF_FETCH_PROPS] : own,
+		config: hasData ? [...own, ...BASE_PROPS] : own,
 		events: EVENTS[slug] ?? [],
 		typeRefs: collectTypeRefs(slug),
 	};

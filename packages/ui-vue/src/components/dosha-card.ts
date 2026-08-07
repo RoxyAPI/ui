@@ -23,6 +23,8 @@ export interface RoxyDoshaCardProps {
 	submitLabel?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
+	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
+	hideReadings?: boolean;
 }
 
 export const RoxyDoshaCard = defineComponent({
@@ -38,6 +40,7 @@ export const RoxyDoshaCard = defineComponent({
 		lang: { type: String as PropType<RoxyDoshaCardProps['lang']> },
 		submitLabel: { type: String as PropType<RoxyDoshaCardProps['submitLabel']> },
 		attribution: { type: String as PropType<RoxyDoshaCardProps['attribution']> },
+		hideReadings: { type: Boolean as PropType<RoxyDoshaCardProps['hideReadings']> },
 	},
 	setup(props) {
 		const loadError = ref<Error | null>(null);
@@ -68,6 +71,7 @@ export const RoxyDoshaCard = defineComponent({
 			if (props.lang !== undefined) elementProps['.lang'] = props.lang;
 			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;
 			if (props.attribution !== undefined) elementProps['.attribution'] = props.attribution;
+			if (props.hideReadings !== undefined) elementProps['.hideReadings'] = props.hideReadings;
 
 			return h('roxy-dosha-card', elementProps);
 		};

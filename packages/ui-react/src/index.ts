@@ -203,6 +203,10 @@ export {
 	type RoxyTarotSpreadProps,
 } from './components/tarot-spread.js';
 export {
+	RoxyTransitWheel,
+	type RoxyTransitWheelProps,
+} from './components/transit-wheel.js';
+export {
 	RoxyTransitsTable,
 	type RoxyTransitsTableProps,
 } from './components/transits-table.js';

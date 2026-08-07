@@ -376,6 +376,19 @@ async function main() {
 				timezone: PERSON1.timezone,
 			}),
 		),
+		// A fixed transitDate/transitTime, not today's default: the bi-wheel and its
+		// committed previews have to render the same sky on every recapture, and the
+		// same pair is hardcoded in the demo card's sdkCall so the snippet
+		// reproduces the picture beside it.
+		run('transit-wheel', () =>
+			roxy.astrology.calculateTransitAspects({
+				body: {
+					natalChart: PERSON1,
+					transitDate: '2026-05-11',
+					transitTime: '12:00:00',
+				},
+			}),
+		),
 		run('astrocartography', () =>
 			rawPost('astrology/astrocartography', {
 				date: PERSON1.date,

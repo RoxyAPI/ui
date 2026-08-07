@@ -20,7 +20,6 @@ import { formatDate } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { humanize } from '../utils/string.js';
 
@@ -296,15 +295,18 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 	}
 
 	private renderNumberCard(d: NumberCardData, headerLabel: string) {
-		return html`<article class="card" aria-label=${headerLabel}>
+		const readings = !this.hideReadings;
+		return html`<article class="card" part="card" aria-label=${headerLabel}>
 			${this.renderHero(headerLabel, d.number, d.meaning?.title, isMaster(d.number, d.type))}
-			${d.meaning?.description ? html`<p class="meaning">${d.meaning.description}</p>` : nothing}
-			${d.calculation ? html`<pre class="calc">${d.calculation}</pre>` : nothing}
+			${d.meaning?.description && readings ? html`<p class="meaning">${d.meaning.description}</p>` : nothing}
+			${d.calculation ? html`<pre class="calc" part="calculation">${d.calculation}</pre>` : nothing}
 			${
+				// The debt NUMBER is a fact about the chart; the sentences that follow
+				// it are the reading of that fact.
 				d.hasKarmicDebt && d.karmicDebtNumber
-					? html`<div class="karmic">
+					? html`<div class="karmic" part="section karmic-debt">
 						Karmic debt ${d.karmicDebtNumber}.
-						${karmicDebtText(d.karmicDebtMeaning)}
+						${readings ? karmicDebtText(d.karmicDebtMeaning) : ''}
 					</div>`
 					: nothing
 			}
@@ -314,10 +316,11 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 
 	/** The daily number carries the same full interpretation as a core number, plus the message for the day. */
 	private renderDailyNumber(d: GetDailyNumberResponse, headerLabel: string) {
-		return html`<article class="card" aria-label=${headerLabel}>
+		const readings = !this.hideReadings;
+		return html`<article class="card" part="card" aria-label=${headerLabel}>
 			${this.renderHero(headerLabel, d.number, d.meaning?.title, isMaster(d.number, d.type))}
-			${d.dailyMessage ? html`<p class="meaning">${d.dailyMessage}</p>` : nothing}
-			${d.meaning?.description ? html`<p class="meaning">${d.meaning.description}</p>` : nothing}
+			${d.dailyMessage && readings ? html`<p class="meaning">${d.dailyMessage}</p>` : nothing}
+			${d.meaning?.description && readings ? html`<p class="meaning">${d.meaning.description}</p>` : nothing}
 			${this.renderReading(d.meaning, 'numerology-daily-guidance')}
 		</article>`;
 	}
@@ -327,10 +330,10 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		d: CalculatePersonalDayResponse,
 		headerLabel: string,
 	) {
-		return html`<article class="card" aria-label=${headerLabel}>
+		return html`<article class="card" part="card" aria-label=${headerLabel}>
 			${this.renderHero(headerLabel, d.personalDay, d.theme)}
-			${d.guidance ? html`<p class="meaning">${d.guidance}</p>` : nothing}
-			<dl class="attrs">
+			${d.guidance && !this.hideReadings ? html`<p class="meaning">${d.guidance}</p>` : nothing}
+			<dl class="attrs" part="details">
 				${this.attr('Date', formatDate(d.targetDate))}
 				${this.attr(
 					'Personal month',
@@ -348,10 +351,10 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		d: CalculatePersonalMonthResponse,
 		headerLabel: string,
 	) {
-		return html`<article class="card" aria-label=${headerLabel}>
+		return html`<article class="card" part="card" aria-label=${headerLabel}>
 			${this.renderHero(headerLabel, d.personalMonth, d.theme)}
-			${d.focus ? html`<p class="meaning">${d.focus}</p>` : nothing}
-			<dl class="attrs">
+			${d.focus && !this.hideReadings ? html`<p class="meaning">${d.focus}</p>` : nothing}
+			<dl class="attrs" part="details">
 				${this.attr('Calendar month', d.calendarMonth)}
 				${this.attr(
 					'Personal year',
@@ -365,15 +368,20 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		d: CalculatePersonalYearResponse,
 		headerLabel: string,
 	) {
-		return html`<article class="card" aria-label=${headerLabel}>
+		const readings = !this.hideReadings;
+		return html`<article class="card" part="card" aria-label=${headerLabel}>
 			${this.renderHero(headerLabel, d.personalYear, d.theme)}
 			${d.cycle ? html`<p class="label">${d.cycle}</p>` : nothing}
-			${d.forecast ? html`<p class="meaning">${d.forecast}</p>` : nothing}
-			${this.renderLists(
-				['Opportunities', d.opportunities],
-				['Challenges', d.challenges],
-			)}
-			${d.advice ? html`<p class="meaning">${d.advice}</p>` : nothing}
+			${d.forecast && readings ? html`<p class="meaning">${d.forecast}</p>` : nothing}
+			${
+				readings
+					? this.renderLists(
+							['Opportunities', d.opportunities],
+							['Challenges', d.challenges],
+						)
+					: nothing
+			}
+			${d.advice && readings ? html`<p class="meaning">${d.advice}</p>` : nothing}
 		</article>`;
 	}
 
@@ -384,16 +392,18 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		const profile = d.birthDayProfile;
 		const maturity = d.maturityStatus;
 
-		return html`<article class="card" aria-label=${headerLabel}>
-			<div>
+		const readings = !this.hideReadings;
+
+		return html`<article class="card" part="card" aria-label=${headerLabel}>
+			<div part="header">
 				<p class="label">${headerLabel}</p>
 				${d.profile?.name ? html`<h2 class="title">${d.profile.name}</h2>` : nothing}
 				${d.profile?.birthdate ? html`<p class="label">${formatDate(d.profile.birthdate)}</p>` : nothing}
 			</div>
-			${d.summary ? html`<p class="meaning">${d.summary}</p>` : nothing}
+			${d.summary && readings ? html`<p class="meaning">${d.summary}</p>` : nothing}
 			${
 				cores.length > 0
-					? html`<div class="cores">
+					? html`<div class="cores" part="details cores">
 						${cores.map(
 							([k, v]) => html`<div class="item">
 								<div class="core-head">
@@ -407,7 +417,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 					</div>`
 					: nothing
 			}
-			${renderInterpAccordion(
+			${this.renderInterpretation(
 				cores.map(([k, v]) => ({
 					label: humanize(k),
 					aside: [
@@ -427,7 +437,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			)}
 			${
 				maturity
-					? html`<dl class="attrs">
+					? html`<dl class="attrs" part="details maturity">
 						${this.attr('Maturity', maturity.isActive ? 'Active' : 'Not yet active')}
 						${this.attr('Current age', maturity.currentAge)}
 						${this.attr('Activates', maturity.activationRange)}
@@ -436,7 +446,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			}
 			${
 				profile
-					? html`<section class="sub">
+					? html`<section class="sub" part="section birth-day-profile">
 						<h3>Birth day profile</h3>
 						${
 							profile.title
@@ -445,7 +455,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								</h4>`
 								: nothing
 						}
-						${profile.description ? html`<p>${profile.description}</p>` : nothing}
+						${profile.description && readings ? html`<p>${profile.description}</p>` : nothing}
 						${this.renderReading(profile, 'numerology-birth-day-profile')}
 					</section>`
 					: nothing
@@ -453,7 +463,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${ins ? this.renderInsights(ins) : nothing}
 			${
 				lucky
-					? html`<section class="sub">
+					? html`<section class="sub" part="section lucky-associations">
 						<h3>Lucky associations</h3>
 						<dl class="attrs">
 							${this.attr('Day', lucky.day)}
@@ -481,10 +491,11 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		const subconscious = ins.subconsciousSelf;
 		const letters = ins.nameLetters;
 		const present = Object.entries(lessons?.presentNumbers ?? {});
+		const readings = !this.hideReadings;
 
 		return html`${
 			lessons
-				? html`<section class="sub">
+				? html`<section class="sub" part="section karmic-lessons">
 					<h3>Karmic lessons</h3>
 					${
 						lessons.missingNumbers?.length
@@ -500,7 +511,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							</div>`
 							: nothing
 					}
-					${renderInterpAccordion(
+					${this.renderInterpretation(
 						(lessons.lessons ?? []).map((l) => ({
 							label: l.lesson ?? `Lesson ${l.number}`,
 							aside: l.number != null ? `${l.number}` : '',
@@ -516,7 +527,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				: nothing
 		}${
 			debt?.hasKarmicDebt
-				? html`<section class="sub">
+				? html`<section class="sub" part="section karmic-debt">
 					<h3>Karmic debt</h3>
 					${
 						debt.debtNumbers?.length
@@ -525,7 +536,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							</div>`
 							: nothing
 					}
-					${renderInterpAccordion(
+					${this.renderInterpretation(
 						(debt.meanings ?? []).map((m) => ({
 							label: `Karmic debt ${m.number}`,
 							body: m.description ?? '',
@@ -546,7 +557,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				: nothing
 		}${
 			year
-				? html`<section class="sub">
+				? html`<section class="sub" part="section personal-year">
 					<h3>Personal year</h3>
 					<h4 class="sub-title">
 						${[
@@ -557,13 +568,19 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							.filter(Boolean)
 							.join(' · ')}
 					</h4>
-					${year.forecast ? html`<p>${year.forecast}</p>` : nothing}
-					${this.renderLists(
-						['Opportunities', year.opportunities],
-						['Challenges', year.challenges],
-					)}
-					${year.advice ? html`<p>${year.advice}</p>` : nothing}
+					${year.forecast && readings ? html`<p>${year.forecast}</p>` : nothing}
 					${
+						readings
+							? this.renderLists(
+									['Opportunities', year.opportunities],
+									['Challenges', year.challenges],
+								)
+							: nothing
+					}
+					${year.advice && readings ? html`<p>${year.advice}</p>` : nothing}
+					${
+						// The month and its theme name where the year sits now; `focus` is
+						// the sentence about it.
 						year.personalMonth
 							? html`<p>
 								<strong>${[
@@ -574,17 +591,20 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								]
 									.filter(Boolean)
 									.join(' · ')}.</strong>
-								${year.personalMonth.focus ?? ''}
+								${readings ? (year.personalMonth.focus ?? '') : ''}
 							</p>`
 							: nothing
 					}
 				</section>`
 				: nothing
 		}${
-			ins.pinnacles?.length
-				? html`<section class="sub">
+			// Both period sections are an accordion and nothing else, so hiding the
+			// readings takes the heading with it rather than leaving one over an
+			// empty block.
+			ins.pinnacles?.length && readings
+				? html`<section class="sub" part="section pinnacles">
 					<h3>Pinnacles</h3>
-					${renderInterpAccordion(
+					${this.renderInterpretation(
 						ins.pinnacles.map((p) => ({
 							label: [
 								p.position != null ? `Pinnacle ${p.position}` : 'Pinnacle',
@@ -610,10 +630,10 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				</section>`
 				: nothing
 		}${
-			ins.challenges?.length
-				? html`<section class="sub">
+			ins.challenges?.length && readings
+				? html`<section class="sub" part="section obstacle-periods">
 					<h3>Challenges</h3>
-					${renderInterpAccordion(
+					${this.renderInterpretation(
 						ins.challenges.map((c) => ({
 							label: [
 								c.position != null ? `Challenge ${c.position}` : 'Challenge',
@@ -645,7 +665,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				: nothing
 		}${
 			passion || subconscious
-				? html`<section class="sub">
+				? html`<section class="sub" part="section name-numbers">
 					<h3>Name numbers</h3>
 					${
 						passion
@@ -660,7 +680,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 										.filter(Boolean)
 										.join(' · ')}
 								</h4>
-								${passion.description ? html`<p>${passion.description}</p>` : nothing}
+								${passion.description && readings ? html`<p>${passion.description}</p>` : nothing}
 								${
 									typeof passion.count === 'number'
 										? html`<p class="label">${`Appears ${passion.count} times in the name`}</p>`
@@ -682,7 +702,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 										.filter(Boolean)
 										.join(' · ')}
 								</h4>
-								${subconscious.description ? html`<p>${subconscious.description}</p>` : nothing}
+								${subconscious.description && readings ? html`<p>${subconscious.description}</p>` : nothing}
 								${
 									subconscious.uniqueNumbers?.length
 										? html`<p class="label">${`Numbers present: ${subconscious.uniqueNumbers.join(', ')}`}</p>`
@@ -694,10 +714,10 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				</section>`
 				: nothing
 		}${
-			letters
-				? html`<section class="sub">
+			letters && readings
+				? html`<section class="sub" part="section name-letters">
 					<h3>Name letters</h3>
-					${renderInterpAccordion(
+					${this.renderInterpretation(
 						[
 							{
 								label: 'Cornerstone',
@@ -736,7 +756,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		title: string | undefined,
 		master = false,
 	) {
-		return html`<div class="hero">
+		return html`<div class="hero" part="header">
 			${typeof num === 'number' ? html`<div class="numeral">${num}</div>` : nothing}
 			<div>
 				<p class="label">${headerLabel}</p>
@@ -746,9 +766,13 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		</div>`;
 	}
 
-	/** Keyword chips, the strengths and challenges lists, and the three life-area readings behind a disclosure. The whole interpretation, laid out as a reading. */
+	/**
+	 * Keyword chips, the strengths and challenges lists, and the three life-area readings behind a disclosure. The whole interpretation, laid out as a reading.
+	 *
+	 * Every part of it is prose or the shorthand of prose, so `hide-readings` drops the block whole rather than gating three pieces.
+	 */
 	private renderReading(r: NumerologyReading | undefined, name: string) {
-		if (!r) return nothing;
+		if (!r || this.hideReadings) return nothing;
 		const sections: InterpSection[] = GUIDANCE_FIELDS.map(([key, label]) => ({
 			label,
 			body: (r[key] as string | undefined) ?? '',
@@ -757,7 +781,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			r.keywords?.length
 				? html`<div class="chips">${r.keywords.map((k) => html`<span>${k}</span>`)}</div>`
 				: nothing
-		}${this.renderLists(['Strengths', r.strengths], ['Challenges', r.challenges])}${renderInterpAccordion(sections, name, 'Guidance')}`;
+		}${this.renderLists(['Strengths', r.strengths], ['Challenges', r.challenges])}${this.renderInterpretation(sections, name, 'Guidance')}`;
 	}
 
 	/**

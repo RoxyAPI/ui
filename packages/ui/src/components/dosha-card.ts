@@ -20,6 +20,9 @@ const DOSHA_LABELS: Record<string, string> = {
 /**
  * Dosha presence card. Renders /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati}.
  * Visual severity indicator + remedies + scoped effects.
+ *
+ * @remarks
+ * The verdict is the data and the counsel is the reading. `hide-readings` keeps the present/absent badge, the subtype (which for Sade Sati is the phase, the whole answer), the severity meter and the frame caption, and drops the description, the scoped effects, the remedies and the exceptions. Each of those three sections is prose end to end, so it goes whole rather than leaving a heading over nothing.
  */
 @customElement('roxy-dosha-card')
 export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
@@ -164,9 +167,10 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 
 		return html`<article
 			class="card"
+			part="card"
 			aria-label=${label}
 		>
-			<header class="head">
+			<header class="head" part="header">
 				<h2 class="title">${label}</h2>
 				<span class=${`badge ${present ? 'present' : 'absent'}`}>
 					${present ? 'Present' : 'Absent'}
@@ -184,6 +188,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 				d.severity
 					? html`<div
 						class="severity-bar"
+						part="details"
 						role="meter"
 						aria-valuemin="0"
 						aria-valuemax="3"
@@ -194,11 +199,18 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 					</div>`
 					: nothing
 			}
-			${d.description ? html`<p class="description">${d.description}</p>` : nothing}
+			${
+				// The badge above states the verdict; this paragraph is the read of it.
+				d.description && !this.hideReadings
+					? html`<p class="description">${d.description}</p>`
+					: nothing
+			}
 			${this.renderEffects(d)}
 			${
-				d.remedies && d.remedies.length > 0
-					? html`<div>
+				// Remedies and exceptions are prescriptive sentences laid out as bullets,
+				// so each list goes with its own heading rather than leaving one behind.
+				d.remedies && d.remedies.length > 0 && !this.hideReadings
+					? html`<div part="section remedies">
 						<h3>Remedies</h3>
 						<ul>
 							${d.remedies.map((r) => html`<li>${r}</li>`)}
@@ -207,8 +219,11 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 					: nothing
 			}
 			${
-				'exceptions' in d && d.exceptions && d.exceptions.length > 0
-					? html`<div>
+				'exceptions' in d &&
+				d.exceptions &&
+				d.exceptions.length > 0 &&
+				!this.hideReadings
+					? html`<div part="section exceptions">
 					<h3>Exceptions</h3>
 					<ul>
 						${d.exceptions.map((r) => html`<li>${r}</li>`)}
@@ -220,7 +235,9 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 	}
 
 	private renderEffects(d: DoshaData) {
-		if (!d.effects) return nothing;
+		// Every effect is a paragraph about a life area, so the block is prose end to
+		// end and goes whole under hide-readings.
+		if (!d.effects || this.hideReadings) return nothing;
 		// Effects mix flat string fields (marriage, career...) with a nested map
 		// (Sadhesati effects.phases: { Rising, Peak, Setting }). Render both; the
 		// old string-only filter silently dropped the phase-specific effects, which
@@ -244,7 +261,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 			}
 		}
 		if (sections.length === 0) return nothing;
-		return html`<div class="effects">${sections}</div>`;
+		return html`<div class="effects" part="section effects">${sections}</div>`;
 	}
 }
 

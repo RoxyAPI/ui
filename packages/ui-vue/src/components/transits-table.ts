@@ -21,6 +21,8 @@ export interface RoxyTransitsTableProps {
 	submitLabel?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
+	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
+	hideReadings?: boolean;
 }
 
 export const RoxyTransitsTable = defineComponent({
@@ -35,6 +37,7 @@ export const RoxyTransitsTable = defineComponent({
 		lang: { type: String as PropType<RoxyTransitsTableProps['lang']> },
 		submitLabel: { type: String as PropType<RoxyTransitsTableProps['submitLabel']> },
 		attribution: { type: String as PropType<RoxyTransitsTableProps['attribution']> },
+		hideReadings: { type: Boolean as PropType<RoxyTransitsTableProps['hideReadings']> },
 	},
 	setup(props) {
 		const loadError = ref<Error | null>(null);
@@ -64,6 +67,7 @@ export const RoxyTransitsTable = defineComponent({
 			if (props.lang !== undefined) elementProps['.lang'] = props.lang;
 			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;
 			if (props.attribution !== undefined) elementProps['.attribution'] = props.attribution;
+			if (props.hideReadings !== undefined) elementProps['.hideReadings'] = props.hideReadings;
 
 			return h('roxy-transits-table', elementProps);
 		};

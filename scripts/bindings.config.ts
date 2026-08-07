@@ -57,7 +57,12 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	calculateBhavaBala: [{ component: 'roxy-bhava-bala-table' }],
 	calculateBhavChalit: [{ component: 'roxy-bhav-chalit-table' }],
 	calculateAspects: [{ component: 'roxy-aspects-table' }],
-	calculateTransitAspects: [{ component: 'roxy-aspects-table' }],
+	// The bi-wheel leads: a practitioner reads transits ON the chart, and the
+	// aspect rows are the same contacts in a list. Both render the one response.
+	calculateTransitAspects: [
+		{ component: 'roxy-transit-wheel' },
+		{ component: 'roxy-aspects-table' },
+	],
 	detectAspectPatterns: [{ component: 'roxy-aspects-table' }],
 	getCurrentMoonPhase: [
 		{ component: 'roxy-moon-phase', attrs: { mode: 'current' } },

@@ -2,12 +2,17 @@ import {
 	type CSSResultGroup,
 	html,
 	LitElement,
+	nothing,
 	type PropertyValues,
 } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { baseStyles } from './base-styles.js';
 import { buildRequest, FetchController } from './fetch-controller.js';
+import {
+	type InterpSection,
+	renderInterpAccordion,
+} from './interp-accordion.js';
 import { MarkupDataController } from './markup-data.js';
 
 /**
@@ -22,6 +27,8 @@ import { MarkupDataController } from './markup-data.js';
  * The JavaScript `data` property always wins over markup, so a host that assigns `el.data = …` after upgrade is authoritative.
  *
  * Self-fetch needs `<roxy-endpoint-form>` (and `<roxy-location-search>`) registered. The CDN bundle and the full `@roxyapi/ui` entry register everything; per-component ESM consumers that want self-fetch import the form component too.
+ *
+ * Two things every subclass inherits for the host page to shape the render from outside the shadow root, with no JavaScript: the `hide-readings` attribute ({@link RoxyDataElement.hideReadings}), and the `part` names on the base's own branches (`form`, `loading`, `error`, `edit-bar`, `attribution`). A component adds `part` to its own structural blocks; the vocabulary is in `docs/authoring.md`.
  *
  * @example
  * ```ts
@@ -71,6 +78,17 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 	/** Persist the last self-fetch form values in sessionStorage (keyed by endpoint) and prefill the form on reload. */
 	@property({ type: Boolean })
 	remember = false;
+
+	/**
+	 * Render the chart and the data, and omit the written interpretation. Off by default, so a component that does not set it is byte-identical to before.
+	 *
+	 * @remarks
+	 * The suppressed content is the prose an endpoint returns ABOUT the result: the interpretation accordion, the interpretive paragraphs, and the keyword chips that belong to them. Everything a practitioner reads the numbers off stays: wheels, tables, grids, legends, pills, counts and dates. The reading is dropped from the DOM rather than hidden with CSS, so a page that publishes the chart alone never ships the prose it is not showing.
+	 *
+	 * Set it when the page supplies its own words, which is the common case for a practitioner site that wants the graphic under its own writing.
+	 */
+	@property({ type: Boolean, attribute: 'hide-readings', reflect: true })
+	hideReadings = false;
 
 	/** Override the self-fetch form's submit-button label. Empty derives one from the endpoint. */
 	@property({ type: String, attribute: 'submit-label' })
@@ -151,12 +169,29 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 	protected abstract renderData(data: T): unknown;
 
 	/**
+	 * The interpretation accordion, gated by {@link RoxyDataElement.hideReadings}. Every component that shows a written reading routes through here instead of calling {@link renderInterpAccordion} directly.
+	 *
+	 * @remarks
+	 * The gate lives on the base rather than in each component because the property does, and a plain render function cannot read component state. One call site per accordion, one place that decides whether prose renders, and the section it emits carries the same `readings` part in every component.
+	 *
+	 * Prose that is NOT in an accordion (a summary paragraph, a per-item interpretation) is still the component's own to gate, since only the component knows which of its blocks are readings.
+	 */
+	protected renderInterpretation(
+		sections: InterpSection[],
+		name: string,
+		heading?: string,
+	): unknown {
+		if (this.hideReadings) return nothing;
+		return renderInterpAccordion(sections, name, heading);
+	}
+
+	/**
 	 * A self-fetch result plus its re-query affordance. A single-enum form keeps its picker above the result so a new selection refetches (a sign switch is a new reading); any other form gets a compact Edit control that restores the form with the previous values.
 	 */
 	protected renderResult(data: T): unknown {
 		const body = this.sticky
 			? html`${this.renderForm()}${this.renderData(data)}`
-			: html`<div class="roxy-edit-bar">
+			: html`<div class="roxy-edit-bar" part="edit-bar">
 					<button type="button" class="roxy-edit" @click=${this.onEdit}>Edit query</button>
 				</div>
 				${this.renderData(data)}`;
@@ -180,7 +215,7 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 
 	/** Small muted credit under a self-fetch or auto-mount result. Reached only from the result path, so controlled mode never renders it. */
 	protected renderAttribution(): unknown {
-		return html`<div class="roxy-attribution">
+		return html`<div class="roxy-attribution" part="attribution">
 			<a
 				href="https://roxyapi.com/?utm_source=widget&utm_medium=embed"
 				target="_blank"
@@ -198,6 +233,7 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 	/** Internal self-fetch form. Reuses the introspecting `<roxy-endpoint-form>`; the consumer never places it. */
 	protected renderForm(): unknown {
 		return html`<roxy-endpoint-form
+			part="form"
 			data-endpoint=${this.endpoint}
 			method=${this.method}
 			spec-url=${ifDefined(this.specUrl)}
@@ -276,12 +312,13 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 			style="height: 8rem"
 			role="status"
 			aria-label="Loading"
+			part="loading"
 		></div>`;
 	}
 
 	/** Error state shown when a self-fetch fails. Keeps the form in view so the request can be retried. */
 	protected renderError(message: string): unknown {
-		const banner = html`<div class="roxy-error" role="alert">${message}</div>`;
+		const banner = html`<div class="roxy-error" role="alert" part="error">${message}</div>`;
 		return this.endpoint ? html`${banner}${this.renderForm()}` : banner;
 	}
 }

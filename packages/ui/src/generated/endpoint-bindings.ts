@@ -755,6 +755,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 	],
+	'roxy-transit-wheel': [
+		{
+			operationId: 'calculateTransitAspects',
+			method: 'POST',
+			path: '/astrology/transit-aspects',
+		},
+	],
 	'roxy-transits-table': [
 		{
 			operationId: 'calculateTransits',

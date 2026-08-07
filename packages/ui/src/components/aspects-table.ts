@@ -304,8 +304,8 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		);
 		const options = 'options' in d ? d.options : undefined;
 
-		return html`<div class="wrap" aria-label="Aspects">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Aspects">
+			<div class="head" part="header">
 				<h2 class="title">${aspects.length === 0 ? 'Aspect patterns' : 'Aspects'}</h2>
 				${
 					aspects.length > 0 || date
@@ -326,14 +326,14 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			${summary && 'strongest' in summary && summary.strongest ? this.renderStrongest(summary.strongest) : nothing}
 			${
 				aspects.length > 0
-					? html`<div role="list" aria-label="Aspect list">
+					? html`<div role="list" part="section aspects" aria-label="Aspect list">
 						${aspects.map((a, i) => this.renderAspect(a, i))}
 					</div>`
 					: nothing
 			}
 			${
 				patterns.length > 0
-					? html`<div>
+					? html`<div part="section patterns">
 						<p class="section-label">Patterns</p>
 						${[...patterns]
 							.sort(
@@ -357,7 +357,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const total = 'totalAspects' in s ? s.totalAspects : s.total;
 		// byType is a map, not a list: render the pairs, never the object.
 		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
-		return html`<div class="summary-pills" role="region" aria-label="Aspect summary">
+		return html`<div class="summary-pills" part="details" role="region" aria-label="Aspect summary">
 			${typeof total === 'number' ? html`<span class="pill pill--muted">Total: ${total}</span>` : nothing}
 			<span class="pill pill--success">Harmonious: ${s.harmonious}</span>
 			<span class="pill pill--danger">Challenging: ${s.challenging}</span>
@@ -381,7 +381,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const g1 = PLANET_GLYPH[capitalize(s.planet1)] ?? '';
 		const g2 = PLANET_GLYPH[capitalize(s.planet2)] ?? '';
 		const nature = (s.interpretation ?? 'neutral').toLowerCase();
-		return html`<div class="strongest">
+		return html`<div class="strongest" part="details strongest">
 			<span class="label">Strongest</span>
 			<span aria-hidden="true" class="glyph">${g1}</span>${s.planet1}
 			<span class="nature-badge ${nature}">${formatAspectName(s)}</span>
@@ -410,12 +410,16 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			<span class="nature-badge ${nature}">${type}</span>
 			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
 			<span class="meta">${status} · orb ${formatNumber(a.orb, 2)}° · str ${score(a.strength)}</span>`;
-		if (!hasBody) {
-			return html`<div class="interp-card" role="listitem">
+		// The header is the aspect itself (both bodies, the type, applying or
+		// separating, orb and strength) and is never a reading, so an aspect the
+		// API sent no meaning for already renders flat. Hiding the readings reuses
+		// that shape rather than dropping the row.
+		if (!hasBody || this.hideReadings) {
+			return html`<div class="interp-card" part="reading" role="listitem">
 				<div class="static-head">${header}</div>
 			</div>`;
 		}
-		return html`<details class="interp-card" role="listitem" name="aspects" ?open=${idx === 0}>
+		return html`<details class="interp-card" part="reading" role="listitem" name="aspects" ?open=${idx === 0}>
 			<summary>${header}${chevron()}</summary>
 			<div class="interp-body">
 				${meaning ? this.renderMeaning(meaning) : nothing}
@@ -464,7 +468,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const ordered = p.apex
 			? [...planets].sort((a, b) => Number(b === p.apex) - Number(a === p.apex))
 			: planets;
-		return html`<div class="pattern">
+		return html`<div class="pattern" part="pattern">
 			<div class="pattern-head">
 				<span class="pattern-name">${p.name ?? p.kind ?? 'Pattern'}</span>
 				${p.element ? html`<span class="pattern-tag">${p.element}</span>` : nothing}
@@ -489,7 +493,14 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 					</div>`
 					: nothing
 			}
-			${p.interpretation ? html`<p class="pattern-interp">${p.interpretation}</p>` : nothing}
+			${
+				// The figure, its planets and its tightness are the finding; the
+				// paragraph is the reading of it. Same split as roxy-natal-chart, which
+				// renders the same `patterns` shape.
+				p.interpretation && !this.hideReadings
+					? html`<p class="pattern-interp">${p.interpretation}</p>`
+					: nothing
+			}
 		</div>`;
 	}
 }

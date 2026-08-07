@@ -22,7 +22,6 @@ import { type HouseThemes, houseWords } from '../utils/house-themes.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
@@ -338,7 +337,9 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const grain = grainFor(
 			periods.length ? Math.min(...periods.map((p) => p.durationYears)) : 0,
 		);
-		const readings = this.readings(d, periods);
+		// Empty when readings are hidden, which drops the tab as well as the panel:
+		// a "Readings (0)" tab onto a blank panel is worse than no tab.
+		const readings = this.hideReadings ? [] : this.readings(d, periods);
 		const frame = this.frameRows(d);
 
 		// One panel per kind of question a reader asks: when do the periods run,
@@ -361,8 +362,8 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		// blank the card, so fall back to the first.
 		const view = tabs.some((t) => t.id === this.view) ? this.view : 'timeline';
 
-		return html`<div class="wrap" aria-label="Dasha timeline">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Dasha timeline">
+			<header class="head" part="header">
 				<h2 class="title">${this.heading(d)}</h2>
 				${this.renderLordChain(d)}
 			</header>
@@ -384,6 +385,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			}
 			<div
 				id="roxy-dasha-panel-${view}"
+				part="panel"
 				role="tabpanel"
 				tabindex="0"
 				aria-labelledby=${tabs.length > 1 ? `roxy-dasha-tab-${view}` : nothing}
@@ -394,7 +396,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 							${this.period === 'current' ? this.renderCurrent(d) : nothing}
 							${
 								periods.length > 0
-									? html`<div class="timeline" role="list">
+									? html`<div class="timeline" part="chart timeline" role="list">
 										${periods.map((p) => this.renderBar(p, maxYears, grain, d.houseThemes))}
 									</div>`
 									: nothing
@@ -403,7 +405,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				}
 				${
 					view === 'readings'
-						? renderInterpAccordion(
+						? this.renderInterpretation(
 								readings,
 								'roxy-dasha',
 								readings.length === 1 ? 'Reading' : 'Readings',
@@ -491,7 +493,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	}
 
 	private renderFrame(rows: Array<[string, string]>) {
-		return html`<dl class="frame">
+		return html`<dl class="frame" part="details frame">
 			${rows.map(([label, value]) => html`<div><dt>${label}</dt><dd>${value}</dd></div>`)}
 		</dl>`;
 	}
@@ -602,7 +604,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			['Sookshma', d.sookshmaDasha, d.remainingInSookshma],
 			['Prana', d.pranaDasha, d.remainingInPrana],
 		] as const;
-		return html`<div class="current">
+		return html`<div class="current" part="details current">
 			${levels.map(([label, period, remaining]) => {
 				if (!period) return nothing;
 				const left = formatBalance(remaining);

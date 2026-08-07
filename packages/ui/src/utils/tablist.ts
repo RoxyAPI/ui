@@ -69,6 +69,8 @@ export const tablistStyles = css`
  * roving tabindex, and moves focus to the newly selected tab. Pair with
  * {@link tablistStyles}.
  *
+ * The strip carries `part="tablist"` and each button `part="tab"`, so a host page can restyle or hide the view switch from outside the shadow root without knowing which component drew it.
+ *
  * Pass `controls: true` when each tab governs a sibling
  * `<div role="tabpanel" id="${idPrefix}-panel-${id}">` so the buttons advertise
  * `aria-controls`. The host renders only the ACTIVE panel; this helper emits an
@@ -117,6 +119,7 @@ export function renderTablist<T extends string>(opts: {
 	};
 	return html`<div
 		class="roxy-tablist"
+		part="tablist"
 		role="tablist"
 		aria-label=${label}
 		@keydown=${onKeyDown}
@@ -125,6 +128,7 @@ export function renderTablist<T extends string>(opts: {
 			(it) => html`<button
 				type="button"
 				class="roxy-tab"
+				part="tab"
 				role="tab"
 				id="${idPrefix}-tab-${it.id}"
 				aria-selected=${active === it.id ? 'true' : 'false'}

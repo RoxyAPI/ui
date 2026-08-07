@@ -4,14 +4,11 @@
  * @remarks
  * `/human-design/type` returns a strict subset of the `/human-design/bodygraph` interpretation fields (type, aura, strategy, authority, their descriptions, signature, not-self, profile), so `roxy-bodygraph` and `roxy-hd-type-card` would otherwise render the same markup and carry the same CSS twice. Both import from here instead: the bodygraph wraps the chart around it, the type card is the reading on its own.
  *
- * The disclosure accordion itself is NOT here. It lives in `utils/interp-accordion.ts`, because the same accordion serves any endpoint that returns a labelled reading (`roxy-hexagram` uses it for the changing lines). Import `interpAccordionStyles` alongside `hdReadingStyles`.
+ * The disclosure accordion itself is NOT here. It lives in `utils/interp-accordion.ts`, because the same accordion serves any endpoint that returns a labelled reading (`roxy-hexagram` uses it for the changing lines), and both HD components draw it through `RoxyDataElement.renderInterpretation` so `hide-readings` is honoured. Import `interpAccordionStyles` alongside `hdReadingStyles`.
  */
 
 import { css, html, nothing } from 'lit';
-import {
-	type InterpSection,
-	renderInterpAccordion,
-} from './interp-accordion.js';
+import type { InterpSection } from './interp-accordion.js';
 
 /** One row of the reading accordion. Alias of the shared {@link InterpSection} so HD call sites keep reading naturally. */
 export type ReadingSection = InterpSection;
@@ -97,9 +94,9 @@ export const hdReadingStyles = css`
 export function renderHdFacts(facts: Fact[]) {
 	const shown = facts.filter((f) => Boolean(f.value));
 	if (shown.length === 0) return nothing;
-	return html`<div class="facts">
+	return html`<div class="facts" part="facts">
 		${shown.map(
-			(f) => html`<div class="fact">
+			(f) => html`<div class="fact" part="fact">
 				<span>${f.label}</span>
 				<strong>${f.value}</strong>
 			</div>`,
@@ -110,25 +107,16 @@ export function renderHdFacts(facts: Fact[]) {
 /** The signature and not-self pills: the feeling of being in alignment, and the one that signals being out of it. */
 export function renderHdThemes(signature?: string, notSelf?: string) {
 	if (!signature && !notSelf) return nothing;
-	return html`<div class="themes">
+	return html`<div class="themes" part="themes">
 		${signature ? html`<span class="pill pill--good">Signature: ${signature}</span>` : nothing}
 		${notSelf ? html`<span class="pill pill--shadow">Not-self: ${notSelf}</span>` : nothing}
 	</div>`;
 }
 
-/** The reading accordion. Thin pass-through to the shared renderer so the HD components keep a domain-named call site while the markup and CSS live in one place. */
-export function renderHdReading(
-	sections: ReadingSection[],
-	name: string,
-	heading = 'Reading',
-) {
-	return renderInterpAccordion(sections, name, heading);
-}
-
 /** The two profile lines, each with the keynote of the line. Personality first: it is the conscious line and the one the profile is read from. */
 export function renderHdKeynotes(k: ProfileKeynotes | undefined) {
 	if (!k?.personality && !k?.design) return nothing;
-	return html`<dl class="keynotes">
+	return html`<dl class="keynotes" part="keynotes">
 		${
 			k.personality
 				? html`<dt>Line ${k.personalityLine ?? ''} · Personality</dt>

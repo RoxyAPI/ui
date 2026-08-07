@@ -12,7 +12,6 @@ import { formatDate, formatDateRange } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { humanize } from '../utils/string.js';
 
@@ -257,8 +256,8 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		});
 		const spot = d.spotlight;
 
-		return html`<section class="wrap" aria-label="Daily biorhythm">
-			<header class="head">
+		return html`<section class="wrap" part="card" aria-label="Daily biorhythm">
+			<header class="head" part="header">
 				<h2 class="title">Biorhythm</h2>
 				<div class="head-meta">
 					${d.overallPhase ? html`<span class="phase">${humanize(d.overallPhase)}</span>` : nothing}
@@ -273,6 +272,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 				spot
 					? html`<div
 						class="spotlight"
+						part="details spotlight"
 						style=${`border-left-color: ${CYCLE_COLOR[spot.cycle] ?? 'var(--roxy-accent, #f59e0b)'}`}
 					>
 						<p class="label">Spotlight cycle</p>
@@ -281,11 +281,17 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 							${typeof spot.value === 'number' ? html`<span class="energy">${spot.value}%</span>` : nothing}
 							${spot.phase ? html`<span class="phase">${humanize(spot.phase)}</span>` : nothing}
 						</div>
-						${spot.message ? html`<p>${spot.message}</p>` : nothing}
+						${
+							// The cycle, its value and its phase are the reading's subject;
+							// the message is the reading.
+							spot.message && !this.hideReadings
+								? html`<p>${spot.message}</p>`
+								: nothing
+						}
 					</div>`
 					: nothing
 			}
-			<div class="bars" role="list">
+			<div class="bars" part="chart bars" role="list">
 				${entries.map(([cycle, v]) => {
 					const pct = ((v + 1) / 2) * 100; // -1..1 -> 0..100
 					const color = CYCLE_COLOR[cycle] ?? 'var(--roxy-accent, #f59e0b)';
@@ -301,8 +307,12 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					</div>`;
 				})}
 			</div>
-			${d.dailyMessage ? html`<p class="advice">${d.dailyMessage}</p>` : nothing}
-			${d.advice ? html`<p class="advice">${d.advice}</p>` : nothing}
+			${
+				this.hideReadings
+					? nothing
+					: html`${d.dailyMessage ? html`<p class="advice">${d.dailyMessage}</p>` : nothing}
+						${d.advice ? html`<p class="advice">${d.advice}</p>` : nothing}`
+			}
 		</section>`;
 	}
 
@@ -315,13 +325,14 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		const xStep = w / Math.max(days.length - 1, 1);
 		const s = d.summary;
 
-		return html`<section class="wrap" aria-label="Biorhythm forecast">
-			<header class="head">
+		return html`<section class="wrap" part="card" aria-label="Biorhythm forecast">
+			<header class="head" part="header">
 				<h2 class="title">Forecast</h2>
 				<span class="energy">${formatDateRange(d.startDate, d.endDate)}</span>
 			</header>
 			<svg
 				viewBox="0 0 ${w} ${h}"
+				part="chart"
 				role="img"
 				aria-label="Biorhythm cycle lines across the forecast window"
 			>
@@ -364,7 +375,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 						: nothing,
 				)}
 			</svg>
-			<div class="legend">
+			<div class="legend" part="legend">
 				${FORECAST_CYCLES.map(
 					(cycle) => html`<span class="key">
 						<span class="dot" style=${`background: ${CYCLE_COLOR[cycle]}`}></span>${cycle}
@@ -374,7 +385,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			</div>
 			${
 				s
-					? html`<dl class="stats">
+					? html`<dl class="stats" part="details">
 						${this.stat('Best day', formatDate(s.bestDay))}
 						${this.stat('Worst day', formatDate(s.worstDay))}
 						${this.stat(
@@ -392,7 +403,11 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					</dl>`
 					: nothing
 			}
-			${s?.periodAdvice ? html`<p class="advice">${s.periodAdvice}</p>` : nothing}
+			${
+				s?.periodAdvice && !this.hideReadings
+					? html`<p class="advice">${s.periodAdvice}</p>`
+					: nothing
+			}
 		</section>`;
 	}
 
@@ -413,12 +428,12 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			</p>`,
 		}));
 
-		return html`<section class="wrap" aria-label="Critical days">
-			<header class="head">
+		return html`<section class="wrap" part="card" aria-label="Critical days">
+			<header class="head" part="header">
 				<h2 class="title">Critical days</h2>
 				<span class="energy">${formatDateRange(d.startDate, d.endDate)}</span>
 			</header>
-			<dl class="stats">
+			<dl class="stats" part="details">
 				${this.stat('Events', typeof d.totalCriticalDays === 'number' ? `${d.totalCriticalDays}` : '')}
 				${this.stat('Double days', doubles.length ? `${doubles.length}` : '0')}
 				${this.stat(
@@ -435,7 +450,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					</p>`
 					: nothing
 			}
-			${renderInterpAccordion(sections, 'biorhythm-critical', 'Advisories')}
+			${this.renderInterpretation(sections, 'biorhythm-critical', 'Advisories')}
 		</section>`;
 	}
 

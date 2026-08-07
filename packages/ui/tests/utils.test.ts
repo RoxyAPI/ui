@@ -12,6 +12,8 @@ import {
 import { debounce } from '../src/utils/debounce.js';
 import {
 	arcMidpoint,
+	arcSeparation,
+	fanOut,
 	formatSignPosition,
 	longitudeToSignPosition,
 	normalizeLongitude,
@@ -90,6 +92,55 @@ describe('utils/degree', () => {
 		expect(arcMidpoint(100, 100)).toBeCloseTo(100);
 		// unequal house: 10 deg cusp, 70 deg next -> midpoint 40
 		expect(arcMidpoint(10, 70)).toBeCloseTo(40);
+	});
+
+	test('arcSeparation is the angle a fixed-width mark spans at a radius', () => {
+		// A mark as wide as the radius spans one radian.
+		expect(arcSeparation(50, 50)).toBeCloseTo(180 / Math.PI);
+		// Half the radius, half the angle: a smaller ring needs MORE degrees for
+		// the same glyph, which is the whole reason this is derived per ring.
+		expect(arcSeparation(13, 86)).toBeGreaterThan(arcSeparation(13, 122));
+		expect(arcSeparation(10, 0)).toBe(0);
+	});
+
+	test('fanOut leaves an uncrowded set exactly where it was', () => {
+		const out = fanOut([{ l: 0 }, { l: 90 }, { l: 200 }], (p) => p.l, 8);
+		expect(out.map((p) => p.longitude)).toEqual([0, 90, 200]);
+		expect(out.map((p) => p.displayLongitude)).toEqual([0, 90, 200]);
+	});
+
+	test('fanOut spreads a conjunction apart without moving its true longitude', () => {
+		const out = fanOut(
+			[{ l: 100 }, { l: 101 }, { l: 102 }, { l: 103 }],
+			(p) => p.l,
+			8,
+		);
+		// The reported positions are untouched; only the display value moves.
+		expect(out.map((p) => p.longitude)).toEqual([100, 101, 102, 103]);
+		expect(out.map((p) => p.displayLongitude)).toEqual([100, 108, 116, 124]);
+		for (let i = 1; i < out.length; i++) {
+			const gap =
+				(out[i]?.displayLongitude ?? 0) - (out[i - 1]?.displayLongitude ?? 0);
+			expect(gap).toBeGreaterThanOrEqual(8);
+		}
+	});
+
+	test('fanOut sorts by longitude and drops non-finite entries', () => {
+		const out = fanOut(
+			[{ l: 300 }, { l: Number.NaN }, { l: 10 }, { l: -20 }],
+			(p) => p.l,
+			5,
+		);
+		// -20 normalizes to 340, so the order is 10, 300, 340.
+		expect(out.map((p) => p.longitude)).toEqual([10, 300, 340]);
+	});
+
+	test('a cluster that overruns 360 slides back instead of wrapping', () => {
+		const out = fanOut([{ l: 355 }, { l: 356 }, { l: 357 }], (p) => p.l, 10);
+		// Last would land at 375, so everything shifts back by 15 and the stack
+		// stays anchored near its real longitudes rather than jumping to Aries.
+		expect(out.map((p) => p.displayLongitude)).toEqual([340, 350, 360]);
+		expect(out.map((p) => p.longitude)).toEqual([355, 356, 357]);
 	});
 });
 

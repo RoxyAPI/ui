@@ -190,6 +190,18 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'transit-wheel',
+		tag: 'roxy-transit-wheel',
+		seoLine: 'Natal and transit bi-wheel with aspect lines to the natal chart',
+		sdkCall: `  const { data } = await roxy.astrology.calculateTransitAspects({
+    body: {
+      natalChart: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n      ')},
+      transitDate: '2026-05-11',
+      transitTime: '12:00:00',
+    },
+  });`,
+	}),
+	entry({
 		id: 'aspects-table',
 		tag: 'roxy-aspects-table',
 		seoLine: 'Natal and transit aspects with chart-pattern detection',

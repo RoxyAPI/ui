@@ -13,7 +13,6 @@ import { formatNumber, normalizeAspect } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { capitalize, humanize } from '../utils/string.js';
 
@@ -284,11 +283,14 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				? (d as CalculateCompatibilityResponse).keyAspects
 				: undefined;
 
+		const readings = !this.hideReadings;
+
 		return html`<article
 			class="card"
+			part="card"
 			aria-label=${`Compatibility (${this.mode})`}
 		>
-			<div class="head">
+			<div class="head" part="header">
 				<h2>${humanize(`${this.mode} compatibility`)}</h2>
 				<div>
 					${
@@ -302,7 +304,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 
 			${
 				Object.keys(breakdown).length > 0
-					? html`<div role="list">
+					? html`<div role="list" part="details breakdown">
 						${Object.entries(breakdown).map(
 							([k, v]) => html`<div class="bar-row" role="listitem">
 								<span style="text-transform: capitalize">${k}</span>
@@ -316,23 +318,28 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 					: nothing
 			}
 			${
+				// The archetype LABEL is the classification the score resolved to and
+				// stays; only the sentence explaining it is a reading.
 				archetype
 					? html`<p>
 						<span class="archetype">${archetype.label}</span>
-						${archetype.description ? html` · ${archetype.description}` : nothing}
+						${archetype.description && readings ? html` · ${archetype.description}` : nothing}
 					</p>`
 					: nothing
 			}
-			${summary ? html`<p class="lead">${summary}</p>` : nothing}
-			${interpretation ? html`<p class="body">${interpretation}</p>` : nothing}
-			${advice ? html`<p class="body">${advice}</p>` : nothing}
+			${summary && readings ? html`<p class="lead">${summary}</p>` : nothing}
+			${interpretation && readings ? html`<p class="body">${interpretation}</p>` : nothing}
+			${advice && readings ? html`<p class="body">${advice}</p>` : nothing}
 			${this.renderAspectBreakdown()}
 			${this.renderSignCompatibility()}
 			${this.renderElementBalance()}
 			${this.renderSubScores()}
 			${
-				(strengths?.length ?? 0) > 0 || (challenges?.length ?? 0) > 0
-					? html`<div class="lists">
+				// Each entry is a sentence about the pair, so the two lists are prose
+				// laid out as bullets rather than data.
+				readings &&
+				((strengths?.length ?? 0) > 0 || (challenges?.length ?? 0) > 0)
+					? html`<div class="lists" part="section strengths-challenges">
 						${
 							strengths?.length
 								? html`<div>
@@ -358,11 +365,11 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			}
 			${
 				keyAspects?.length
-					? html`<div class="lists">
+					? html`<div class="lists" part="section key-aspects">
 						<div>
 							<h3>Key aspects</h3>
 							<ul class="key-aspects">
-								${keyAspects.slice(0, 6).map((a) => html`<li>${formatAspect(a)}</li>`)}
+								${keyAspects.slice(0, 6).map((a) => html`<li>${formatAspect(a, readings)}</li>`)}
 							</ul>
 						</div>
 					</div>`
@@ -375,7 +382,12 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 	private renderAspectBreakdown() {
 		const b = this.astro()?.aspectBreakdown;
 		if (!b) return nothing;
-		return html`<div class="pills" role="region" aria-label="Aspect breakdown">
+		return html`<div
+			class="pills"
+			part="details aspect-breakdown"
+			role="region"
+			aria-label="Aspect breakdown"
+		>
 			${typeof b.total === 'number' ? html`<span class="pill">Total: ${b.total}</span>` : nothing}
 			<span class="pill pill--success">Harmonious: ${b.harmonious}</span>
 			<span class="pill pill--danger">Challenging: ${b.challenging}</span>
@@ -412,7 +424,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				};
 			},
 		).filter((s): s is InterpSection => s !== null);
-		return renderInterpAccordion(
+		return this.renderInterpretation(
 			sections,
 			'compat-signs',
 			'Sign compatibility',
@@ -432,7 +444,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			...ELEMENTS.map((e) => Math.max(p1?.[e] ?? 0, p2?.[e] ?? 0)),
 		);
 		const shared = eb.sharedElement?.toLowerCase();
-		return html`<section class="block">
+		return html`<section class="block" part="section element-balance">
 			<h3>Element balance</h3>
 			<div class="elements">
 				<div class="el-row head">
@@ -456,7 +468,12 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 					</div>`;
 				})}
 			</div>
-			${eb.description ? html`<p class="shared-note">${eb.description}</p>` : nothing}
+			${
+				// The mirrored bars are the balance; this sentence is what it means.
+				eb.description && !this.hideReadings
+					? html`<p class="shared-note">${eb.description}</p>`
+					: nothing
+			}
 		</section>`;
 	}
 
@@ -492,7 +509,11 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				});
 			}
 		}
-		return renderInterpAccordion(sections, 'compat-sub-scores', 'Breakdown');
+		return this.renderInterpretation(
+			sections,
+			'compat-sub-scores',
+			'Breakdown',
+		);
 	}
 
 	/** The astrology response, or undefined when the card is showing another domain. `signCompatibility` is unique to it, so it is the discriminator. */
@@ -508,13 +529,16 @@ type KeyAspect = CalculateCompatibilityResponse extends {
 	? T
 	: never;
 
-function formatAspect(a: KeyAspect): string {
+/** "Sun trine Moon (orb 2.4°)", with the written reading of the contact appended unless the host asked for the data alone. */
+function formatAspect(a: KeyAspect, withReading: boolean): string {
 	// Lowercase on purpose: this lands mid-sentence as "Sun trine Moon".
 	const aspect = normalizeAspect(a);
 	const orb =
 		typeof a.orb === 'number' ? ` (orb ${formatNumber(a.orb, 1)}°)` : '';
 	const head = [a.planet1, aspect, a.planet2].filter(Boolean).join(' ');
-	return a.description ? `${head}${orb} · ${a.description}` : `${head}${orb}`;
+	return a.description && withReading
+		? `${head}${orb} · ${a.description}`
+		: `${head}${orb}`;
 }
 
 declare global {

@@ -207,8 +207,8 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 	protected renderData(data: AstrocartographyResponse) {
 		const lines = data.lines ?? [];
 		const bd = data.birthDetails;
-		return html`<div class="wrap">
-			<header>
+		return html`<div class="wrap" part="card">
+			<header part="header">
 				<h2 class="title">Astrocartography</h2>
 				${
 					bd
@@ -221,7 +221,13 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 			</header>
 			${this.renderMap(lines, bd)}
 			${this.renderLegend(lines)}
-			${data.summary ? html`<p class="summary">${data.summary}</p>` : nothing}
+			${
+				// The map and its key are the deliverable here; the summary is prose
+				// about what the map shows.
+				data.summary && !this.hideReadings
+					? html`<p class="summary">${data.summary}</p>`
+					: nothing
+			}
 			${this.renderInterpretations(lines)}
 		</div>`;
 	}
@@ -232,6 +238,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 	) {
 		return html`<svg
 			viewBox="0 0 ${W} ${H}"
+			part="chart"
 			role="img"
 			aria-label="World map of planetary astrocartography lines"
 		>
@@ -367,7 +374,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 
 	private renderLegend(lines: LineSet[]) {
 		if (lines.length === 0) return nothing;
-		return html`<div class="legend">
+		return html`<div class="legend" part="legend">
 			${lines.map((l, i) => {
 				const color = planetColor(l.planet, i);
 				return html`<span class="legend-item">
@@ -379,9 +386,14 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 		</div>`;
 	}
 
+	/**
+	 * The written read of each planetary line. Prose end to end, and the lines it
+	 * describes are already drawn and keyed on the map above, so `hide-readings`
+	 * takes the section whole.
+	 */
 	private renderInterpretations(lines: LineSet[]) {
-		if (lines.length === 0) return nothing;
-		return html`<section class="block">
+		if (lines.length === 0 || this.hideReadings) return nothing;
+		return html`<section class="block" part="section readings">
 			<h3>Planetary lines</h3>
 			${lines.map((l, i) => {
 				const color = planetColor(l.planet, i);
@@ -391,7 +403,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 					['AC', l.ascendant.interpretation],
 					['DC', l.descendant.interpretation],
 				];
-				return html`<details class="interp-card" name="acg-lines" ?open=${i === 0}>
+				return html`<details class="interp-card" part="reading" name="acg-lines" ?open=${i === 0}>
 					<summary>
 						<span class="interp-lead">
 							<span class="interp-dot" style=${`background: ${color}`}></span>

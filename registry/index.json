@@ -24,6 +24,10 @@
       "description": "Live planet positions plus aspects to a natal chart"
     },
     {
+      "name": "roxy-transit-wheel",
+      "description": "Natal and transit bi-wheel with an aspect line for every transit to the natal chart"
+    },
+    {
       "name": "roxy-aspects-table",
       "description": "Natal and transit aspect grid with chart-pattern detection (grand trines, t-squares, stelliums, yods)"
     },

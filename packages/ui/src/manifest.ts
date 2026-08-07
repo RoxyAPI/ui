@@ -90,6 +90,19 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Astrology',
 	},
 	{
+		pascal: 'RoxyTransitWheel',
+		tag: 'roxy-transit-wheel',
+		slug: 'transit-wheel',
+		heading: 'Transit bi-wheel',
+		description:
+			'Natal and transit bi-wheel with an aspect line for every transit to the natal chart',
+		docsLabel: 'Western',
+		endpointLabel: 'POST /astrology/transit-aspects',
+		docsSummary:
+			'Natal chart on the inner ring, transiting bodies on the outer ring, aspect lines between them',
+		topic: 'Astrology',
+	},
+	{
 		pascal: 'RoxyAspectsTable',
 		tag: 'roxy-aspects-table',
 		slug: 'aspects-table',

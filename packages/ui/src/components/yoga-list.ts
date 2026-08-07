@@ -92,6 +92,8 @@ type Verdict = (typeof VERDICTS)[number]['id'];
  * Verdict is the primary grouping and `family` the secondary sort within it, rather than grouping by family outright. A reader opens a detection result to learn what a chart has; the Nabhasa arrangement is how the set is catalogued, not what a chart says. Sorting inside each verdict gives the classical order where it is readable and keeps the answer at the top.
  *
  * The compact catalog mode shows no family chip: only part of the glossary is Nabhasa, so a chip on some rows and a gap on the rest reads as missing data. Filter the catalog with the `family` query parameter instead.
+ *
+ * `hide-readings` leaves the detection intact and takes the prose off each card: the `description` and the Effects disclosure go, and the name, quality chip, family chip and verdict badge stay, so a card with nothing to disclose renders in the flat shape it already uses. `evidence` stays with them, because it is the classical condition trace behind the verdict rather than a reading of it, the same provenance role the frame caption plays. The verdict group notes are this component's own copy explaining how to read the grouping, not something the endpoint returned, so they stay too.
  */
 @customElement('roxy-yoga-list')
 export class RoxyYogaList extends RoxyDataElement<YogaListData> {
@@ -369,7 +371,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 	) {
 		if (!yogas.length) return nothing;
 		const ordered = [...yogas].sort((a, b) => familyRank(a) - familyRank(b));
-		return html`<details class="group" ?open=${verdict.open || !!this.filter}>
+		return html`<details class="group" part="section verdict" ?open=${verdict.open || !!this.filter}>
 			<summary class="group-summary">
 				<span class="group-label">${verdict.label}</span>
 				<span class="group-count">${yogas.length}</span>
@@ -405,19 +407,26 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				${this.renderFamilyChip(yoga)}
 			</p>
 			${
-				yoga.description
+				yoga.description && !this.hideReadings
 					? html`<p class="description">${yoga.description}</p>`
 					: nothing
 			}
-			${
-				yoga.result
-					? html`<details>
-						<summary>Effects</summary>
-						<div class="result-body">${yoga.result}</div>
-					</details>`
-					: nothing
-			}
+			${this.renderEffects(yoga.result)}
 		</div>`;
+	}
+
+	/**
+	 * The Effects disclosure, the one written reading a yoga card carries.
+	 *
+	 * @remarks
+	 * Deliberately NOT the shared `renderInterpAccordion`: that helper emits a titled `<section>` per accordion, and a detect response puts thirty-odd of these inside verdict groups, so each card would grow a Reading heading of its own. It is the same compact expander the verdict group above it uses, and it carries `part="reading"` so one `::part(reading)` rule still reaches it.
+	 */
+	private renderEffects(result: string | undefined) {
+		if (!result || this.hideReadings) return nothing;
+		return html`<details part="reading">
+			<summary>Effects</summary>
+			<div class="result-body">${result}</div>
+		</details>`;
 	}
 
 	/**
@@ -439,15 +448,8 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				${this.renderFamilyChip(y)}
 				<span class="present-badge ${cls}">${label}</span>
 			</p>
-			${y.description ? html`<p class="description">${y.description}</p>` : nothing}
-			${
-				y.present && y.result
-					? html`<details>
-						<summary>Effects</summary>
-						<div class="result-body">${y.result}</div>
-					</details>`
-					: nothing
-			}
+			${y.description && !this.hideReadings ? html`<p class="description">${y.description}</p>` : nothing}
+			${y.present ? this.renderEffects(y.result) : nothing}
 			${y.evidence ? html`<p class="evidence">${y.evidence}</p>` : nothing}
 		</div>`;
 	}
@@ -465,7 +467,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 			typeof (d as GetYogaResponse).description === 'string'
 		) {
 			const yoga = d as GetYogaResponse;
-			return html`<div class="wrap">${this.renderDetailCard(yoga)}</div>`;
+			return html`<div class="wrap" part="card">${this.renderDetailCard(yoga)}</div>`;
 		}
 
 		// Detail-array mode: { yogas: Array<GetYogaResponse> } where items have description
@@ -486,8 +488,8 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				const presentCount =
 					(d as DetectYogasResponse).total ??
 					detected.filter((y) => y.present).length;
-				return html`<div class="wrap">
-					<div class="head">
+				return html`<div class="wrap" part="card">
+					<div class="head" part="header">
 						<h2 class="title">Detected yogas</h2>
 						<span class="count">${presentCount} of ${detected.length} present</span>
 					</div>
@@ -504,6 +506,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 					</div>
 					<div
 						class="group-stack"
+						part="section verdicts"
 						role="region"
 						aria-live="polite"
 						aria-label="Detected yogas"
@@ -530,8 +533,8 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 					? detailYogas.filter((y) => y.name.toLowerCase().includes(lc))
 					: detailYogas;
 				const total = (d as ListYogasResponse).total;
-				return html`<div class="wrap">
-					<div class="head">
+				return html`<div class="wrap" part="card">
+					<div class="head" part="header">
 						<h2 class="title">Yoga catalog</h2>
 						${
 							total !== undefined
@@ -551,6 +554,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 					</div>
 					<div
 						class="detail-grid"
+						part="section yogas"
 						role="region"
 						aria-live="polite"
 						aria-label="Yoga results"
@@ -570,8 +574,8 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				? catalogYogas.filter((y) => y.name.toLowerCase().includes(lc))
 				: catalogYogas;
 			const total = (d as ListYogasResponse).total;
-			return html`<div class="wrap">
-				<div class="head">
+			return html`<div class="wrap" part="card">
+				<div class="head" part="header">
 					<h2 class="title">Yoga catalog</h2>
 					${
 						total !== undefined
@@ -591,6 +595,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				</div>
 				<div
 					class="grid"
+					part="section yogas"
 					role="region"
 					aria-live="polite"
 					aria-label="Yoga results"

@@ -15,7 +15,6 @@ import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 
 type HexagramData =
@@ -209,8 +208,10 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		const lines = castLines ?? this.derivedLines(h);
 		const changing = new Set(changingLinePositions ?? []);
 
-		return html`<article class="card" aria-label="I Ching hexagram">
-			<div class="glyphs">
+		const readings = !this.hideReadings;
+
+		return html`<article class="card" part="card" aria-label="I Ching hexagram">
+			<div class="glyphs" part="chart">
 				${h.symbol ? html`<div class="symbol">${h.symbol}</div>` : nothing}
 				<div class="lines" aria-hidden="true">
 					${lines
@@ -232,7 +233,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 						})}
 				</div>
 			</div>
-			<div>
+			<div part="header">
 				<h2 class="title">
 					${
 						// One text node, not two. The markup minifier collapses the space
@@ -250,7 +251,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 					${h.chinese ? html`${h.chinese}` : nothing}
 					${h.pinyin ? html` · ${h.pinyin}` : nothing}
 				</p>
-				<div class="trigrams">
+				<div class="trigrams" part="details">
 					${
 						h.upperTrigram
 							? html`<div>
@@ -272,17 +273,24 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 							: nothing
 					}
 				</div>
-				${h.judgment ? html`<p class="judgment">${h.judgment}</p>` : nothing}
-				${h.image ? html`<p class="image">${h.image}</p>` : nothing}
-				${dailyMessage ? html`<p class="message">${dailyMessage}</p>` : nothing}
 				${
-					h.interpretation?.general
+					// The Judgment and the Image are the written oracle of the figure, so
+					// they go with the readings; the figure, the trigrams and which lines
+					// are moving are what stays.
+					h.judgment && readings
+						? html`<p class="judgment">${h.judgment}</p>`
+						: nothing
+				}
+				${h.image && readings ? html`<p class="image">${h.image}</p>` : nothing}
+				${dailyMessage && readings ? html`<p class="message">${dailyMessage}</p>` : nothing}
+				${
+					h.interpretation?.general && readings
 						? html`<p>${h.interpretation.general}</p>`
 						: nothing
 				}
 				${
 					changing.size > 0
-						? html`<div class="changing">
+						? html`<div class="changing" part="section changing-lines">
 							Changing lines: ${Array.from(changing)
 								.sort((a, b) => a - b)
 								.join(', ')}.
@@ -322,7 +330,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				: nothing,
 		}));
 
-		return renderInterpAccordion(
+		return this.renderInterpretation(
 			sections,
 			'hexagram-lines',
 			isCast ? 'Changing lines' : 'Lines',

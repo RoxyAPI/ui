@@ -11,6 +11,9 @@ type DigestEvent = NonNullable<DigestWindow['top']>[number];
 
 /**
  * Forecast digest: the rolled-up reading across the next 24 hours, 7, 30, and 90 days. Renders /forecast/digest. Each window shows how many events fall in it, a per-domain breakdown (western, vedic, biorhythm), and the few highest-significance events with a significance bar coloured by domain. Use it as the at-a-glance period summary that pairs with the day-by-day roxy-forecast-timeline.
+ *
+ * @remarks
+ * What a digest is for survives `hide-readings` intact: the windows, their event counts, the per-domain breakdown, every event date and the significance ranking. Only the written `description` goes, and each row falls back to the component's existing type label rather than emptying out. This is the one accepted cost here, and it is deliberate: unlike the timeline, a digest row carries no structured headline beside the sentence, so hiding the prose costs the bodies involved. The counts above it, which is what the card is read for, do not move.
  */
 @customElement('roxy-forecast-digest')
 export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> {
@@ -155,8 +158,8 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 			.filter(Boolean)
 			.join(' – ');
 
-		return html`<div class="wrap" aria-label="Forecast digest">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Forecast digest">
+			<div class="head" part="header">
 				<h2 class="title">Forecast digest</h2>
 				${range ? html`<p class="subtitle">${range}</p>` : nothing}
 			</div>
@@ -179,14 +182,14 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 		);
 		const byDomain = w.byDomain ?? {};
 		const domains = Object.entries(byDomain) as Array<[string, number]>;
-		return html`<section class="window">
-			<div class="window-head">
+		return html`<section class="window" part="section window">
+			<div class="window-head" part="details">
 				<span class="window-label">${this.windowLabel(w.days)}</span>
 				<span class="window-count">${w.count ?? 0} event${w.count === 1 ? '' : 's'}</span>
 			</div>
 			${
 				domains.length > 0
-					? html`<div class="domains">
+					? html`<div class="domains" part="legend">
 						${domains.map(
 							([dom, n]) => html`<span class="domain-chip">
 								<span class="swatch sw-${dom}"></span>${humanize(dom)} ${n}
@@ -205,9 +208,16 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 
 	private renderEvent(e: DigestEvent) {
 		const sig = typeof e.significance === 'number' ? e.significance : 0;
+		// Hiding the readings reuses the shape a description-less event already
+		// renders in, rather than inventing a second headline builder or leaving the
+		// row blank.
+		const label =
+			this.hideReadings || e.description == null
+				? humanize(e.type ?? '')
+				: e.description;
 		return html`<div class="event" role="listitem">
 			<span class="event-date">${formatDate(e.date)}</span>
-			<span class="event-desc">${e.description ?? humanize(e.type ?? '')}</span>
+			<span class="event-desc">${label}</span>
 			<span class="sig" role="img" aria-label="significance ${formatNumber(sig, 0)} of 100">
 				<span class="sig-fill ${e.domain}" style="width:${Math.max(0, Math.min(100, sig))}%"></span>
 			</span>

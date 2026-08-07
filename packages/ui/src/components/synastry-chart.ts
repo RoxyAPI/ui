@@ -398,8 +398,8 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		);
 		const lead = ranked.slice(0, READING_COUNT);
 
-		return html`<div class="wrap" aria-label="Synastry compatibility chart">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Synastry compatibility chart">
+			<div class="head" part="header">
 				<h2 class="title">Synastry</h2>
 				${
 					typeof score === 'number'
@@ -414,6 +414,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				hasPlanets
 					? html`<svg
 							viewBox="0 0 ${SIZE} ${SIZE}"
+							part="chart"
 							role="img"
 							aria-label="Dual chart wheel comparing two natal charts"
 						>
@@ -444,7 +445,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 							${this.renderRing(p1Planets, P1_R, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, 'p2', 2)}
 							${this.renderAscendants(d)}
 						</svg>
-						<div class="legend-row">
+						<div class="legend-row" part="legend">
 							<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>
 							<span><span class="swatch" style="background: var(--roxy-info)"></span>Person 2</span>
 							<span><span class="swatch" style="background: var(--roxy-success)"></span>harmonious</span>
@@ -458,10 +459,15 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 					</div>`
 			}
 			${this.renderSummaryPills(d.summary)}
-			${summaryText ? html`<p class="summary">${summaryText}</p>` : nothing}
+			${
+				// The contact counts above are the data; this paragraph is the read.
+				summaryText && !this.hideReadings
+					? html`<p class="summary">${summaryText}</p>`
+					: nothing
+			}
 			${
 				lead.length > 0
-					? html`<section class="block">
+					? html`<section class="block" part="section inter-aspects">
 						<h3>Inter-aspects</h3>
 						${lead.map((a, i) => this.renderAspectCard(a, i))}
 					</section>`
@@ -469,8 +475,10 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			}
 			${ranked.length > lead.length ? this.renderCatalog(ranked) : nothing}
 			${
-				strengths.length > 0 || challenges.length > 0
-					? html`<div class="lists">
+				// Each entry is a sentence about the pair, so the two lists are prose
+				// laid out as bullets rather than data.
+				!this.hideReadings && (strengths.length > 0 || challenges.length > 0)
+					? html`<div class="lists" part="section strengths-challenges">
 						${
 							strengths.length
 								? html`<div>
@@ -542,7 +550,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		if (!s || typeof s !== 'object') return nothing;
 		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
 		if (typeof s.total !== 'number' && byType.length === 0) return nothing;
-		return html`<div class="summary-pills" role="region" aria-label="Inter-aspect summary">
+		return html`<div class="summary-pills" part="details" role="region" aria-label="Inter-aspect summary">
 			${typeof s.total === 'number' ? html`<span class="pill">Total: ${s.total}</span>` : nothing}
 			<span class="pill pill--success">Harmonious: ${s.harmonious}</span>
 			<span class="pill pill--danger">Challenging: ${s.challenging}</span>
@@ -570,12 +578,19 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		const aside = html`<span class="interp-aside">
 			<small>orb ${formatNumber(a.orb, 2)}° · str ${formatNumber(a.strength, 0)}</small>
 		</span>`;
-		if (!meaning?.relationshipContext && !meaning?.description?.short) {
-			return html`<div class="interp-card">
+		// The header is the contact itself (both bodies, the aspect, orb and
+		// strength) and is never a reading, so a card with nothing to disclose
+		// already renders flat. Hiding the readings reuses that shape rather than
+		// dropping the contact.
+		if (
+			this.hideReadings ||
+			(!meaning?.relationshipContext && !meaning?.description?.short)
+		) {
+			return html`<div class="interp-card" part="reading">
 				<div class="static-head">${lead}${aside}</div>
 			</div>`;
 		}
-		return html`<details class="interp-card" name="synastry-aspects" ?open=${index === 0}>
+		return html`<details class="interp-card" part="reading" name="synastry-aspects" ?open=${index === 0}>
 			<summary>${lead}${chevron()}${aside}</summary>
 			<div class="interp-body">
 				${
@@ -597,7 +612,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 	private renderCatalog(ranked: InterAspect[]) {
 		return html`<details class="catalog">
 			<summary>${chevron()} All ${ranked.length} inter-aspects</summary>
-			<div class="scroll">${this.renderAspects(ranked)}</div>
+			<div class="scroll" part="table">${this.renderAspects(ranked)}</div>
 		</details>`;
 	}
 

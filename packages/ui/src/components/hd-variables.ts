@@ -146,9 +146,9 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 		const arrows = [...(d.arrows ?? [])].sort(
 			(a, b) => quadrantOrder(a.position) - quadrantOrder(b.position),
 		);
-		return html`<div class="wrap" aria-label="Human Design variables">
-			<h2 class="title">Variables</h2>
-			<div class="grid">${arrows.map((a) => this.renderArrow(a))}</div>
+		return html`<div class="wrap" part="card" aria-label="Human Design variables">
+			<h2 class="title" part="header">Variables</h2>
+			<div class="grid" part="details arrows">${arrows.map((a) => this.renderArrow(a))}</div>
 			${
 				d.confident === false
 					? html`<p class="note" role="note">
@@ -196,10 +196,14 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 	 * the group intro rather than repeated in each body. Group order follows the
 	 * already quadrant-sorted arrows, which puts the body layer before the mind
 	 * layer without naming either.
+	 *
+	 * Prose end to end, and the arrows themselves are already tiled above with
+	 * their direction, color, tone and base, so `hide-readings` takes the section
+	 * whole.
 	 */
 	private renderReading(arrows: Arrow[], baseDescription: string | undefined) {
 		const readable = arrows.filter((a) => a.description || a.colorMeaning);
-		if (readable.length === 0) return nothing;
+		if (readable.length === 0 || this.hideReadings) return nothing;
 
 		const groups = new Map<string, Arrow[]>();
 		for (const a of readable) {
@@ -210,7 +214,7 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 		}
 		let index = 0;
 
-		return html`<section class="block">
+		return html`<section class="block" part="section readings">
 			<h3>Reading</h3>
 			${[...groups].map(
 				([layer, list]) => html`<div class="group">
@@ -242,7 +246,7 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 			},
 		].filter((f) => Boolean(f.body));
 
-		return html`<details class="interp-card" name="hd-variable" ?open=${open}>
+		return html`<details class="interp-card" part="reading" name="hd-variable" ?open=${open}>
 			<summary>
 				<span class="interp-lead">${a.name ?? ''}</span>
 				${chevron()}

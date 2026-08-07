@@ -26,6 +26,14 @@ type TarotSpreadData =
 /**
  * Tarot spread card. Renders /tarot/spreads/{three-card,celtic-cross,love},
  * /tarot/yes-no, /tarot/draw responses.
+ *
+ * @remarks
+ * The cast is the data: which card landed in which position, whether it came up
+ * reversed, its arcana, the art, and the yes or no verdict with its strength.
+ * `hide-readings` keeps every one of those and drops the words: the per-position
+ * interpretation, the per-card meaning on a raw draw, the keyword chips beside
+ * the verdict, and the closing summary. A reader still sees the spread they drew,
+ * which is the whole point of publishing the graphic under your own commentary.
  */
 /** "three card" -> "Three card". Spread names arrive lowercase from both the API and the attribute, and a heading should not. */
 function titleCase(v: string): string {
@@ -238,16 +246,16 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 			? answer.toLowerCase().replace(/[^a-z]/g, '')
 			: '';
 
-		return html`<article class="wrap" aria-label="Tarot spread">
-			<header class="head">
+		return html`<article class="wrap" part="card" aria-label="Tarot spread">
+			<header class="head" part="header">
 				<h2 class="title">${spreadLabel}</h2>
 				${question ? html`<span class="question">"${question}"</span>` : nothing}
 			</header>
 			${
 				isYesNo
-					? html`<div class="verdict">
+					? html`<div class="verdict" part="section verdict">
 						<div class="card">
-							<div class="image">
+							<div class="image" part="chart">
 								${
 									verdictCard?.imageUrl
 										? html`<img
@@ -264,13 +272,17 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 							</p>
 							${verdictCard?.arcana ? html`<p class="arcana">${verdictCard.arcana} arcana</p>` : nothing}
 						</div>
-						<div class="meta">
+						<div class="meta" part="details">
 							<div>
 								<span class=${`answer ${answerClass}`}>${answer}</span>
 								${strength ? html`<small> · ${strength}</small>` : nothing}
 							</div>
 							${
-								verdictCard?.keywords && verdictCard.keywords.length > 0
+								// The answer and its strength are the cast; the chips are what
+								// the card is taken to say.
+								verdictCard?.keywords &&
+								verdictCard.keywords.length > 0 &&
+								!this.hideReadings
 									? html`<div class="chips">
 										${verdictCard.keywords.map((k) => html`<span>${k}</span>`)}
 									</div>`
@@ -282,11 +294,11 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 			}
 			${
 				positions.length > 0
-					? html`<div class="grid">
+					? html`<div class="grid" part="section positions">
 						${positions.map(
 							(p) => html`<div class="card">
 								<p class="label">${p.name ?? ''}</p>
-								<div class="image">
+								<div class="image" part="chart">
 									${
 										p.card?.imageUrl
 											? html`<img
@@ -301,7 +313,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 									${p.card?.name ?? ''}
 									${p.card?.reversed ? html`<small>(reversed)</small>` : nothing}
 								</p>
-								${p.interpretation ? html`<p class="interp">${p.interpretation}</p>` : nothing}
+								${p.interpretation && !this.hideReadings ? html`<p class="interp">${p.interpretation}</p>` : nothing}
 							</div>`,
 						)}
 					</div>`
@@ -309,10 +321,10 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 			}
 			${
 				cards.length > 0
-					? html`<div class="grid">
+					? html`<div class="grid" part="section cards">
 						${cards.map(
 							(c) => html`<div class="card">
-								<div class="image">
+								<div class="image" part="chart">
 									${
 										c.imageUrl
 											? html`<img
@@ -327,14 +339,14 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 									${c.name ?? ''}
 									${c.reversed ? html`<small>(reversed)</small>` : nothing}
 								</p>
-								${c.meaning ? html`<p class="interp">${c.meaning}</p>` : nothing}
+								${c.meaning && !this.hideReadings ? html`<p class="interp">${c.meaning}</p>` : nothing}
 							</div>`,
 						)}
 					</div>`
 					: nothing
 			}
-			${summary ? html`<p class="reading">${summary}</p>` : nothing}
-			${yesNoInterp ? html`<p class="reading">${yesNoInterp}</p>` : nothing}
+			${summary && !this.hideReadings ? html`<p class="reading">${summary}</p>` : nothing}
+			${yesNoInterp && !this.hideReadings ? html`<p class="reading">${yesNoInterp}</p>` : nothing}
 		</article>`;
 	}
 }

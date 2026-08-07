@@ -30,6 +30,7 @@ const TARGETS: Target[] = [
 	{ id: 'synastry', label: 'synastry-chart' },
 	{ id: 'western-planets', label: 'western-planets-table' },
 	{ id: 'transits', label: 'transits-table' },
+	{ id: 'transit-wheel', label: 'transit-wheel' },
 	{ id: 'aspects-table', label: 'aspects-table' },
 	{ id: 'astrocartography', label: 'astrocartography-map' },
 	{ id: 'local-space', label: 'local-space-compass' },

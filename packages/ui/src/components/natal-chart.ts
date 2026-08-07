@@ -26,7 +26,6 @@ import {
 import {
 	type InterpSection,
 	interpAccordionStyles,
-	renderInterpAccordion,
 } from '../utils/interp-accordion.js';
 import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
@@ -498,8 +497,8 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		const aspects = data.aspects ?? [];
 		const view = this.view;
 
-		return html`<div class="wrap">
-			<header>
+		return html`<div class="wrap" part="card">
+			<header part="header">
 				<h2 class="title">${this.heading}</h2>
 				${
 					data.birthDetails
@@ -526,6 +525,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						})}
 						<div
 							id="natal-panel-${view}"
+							part="panel"
 							role="tabpanel"
 							aria-labelledby="natal-tab-${view}"
 						>
@@ -533,7 +533,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						</div>`
 					: this.renderWheel(planets, aspects)
 			}
-			<div class="legend">
+			<div class="legend" part="legend">
 				<span>${planets.length} planets</span>
 				${aspects.length > 0 ? html`<span>${aspects.length} aspects</span>` : nothing}
 				${
@@ -557,6 +557,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	private renderWheel(planets: PlanetEntry[], aspects: AspectEntry[]) {
 		return html`<svg
 			viewBox="0 0 ${SIZE} ${SIZE}"
+			part="chart"
 			role="img"
 			aria-label="Natal chart wheel with twelve houses, planets, and aspects"
 		>
@@ -592,7 +593,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		if (names.length === 0)
 			return html`<p class="roxy-empty" role="status">No planets to grid</p>`;
 
-		return html`<div class="grid-scroll">
+		return html`<div class="grid-scroll" part="table aspect-grid">
 			<table class="aspect-grid">
 				<caption class="roxy-sr-only">
 					Planet by planet aspect grid: the aspect each pair of planets forms, read from
@@ -851,7 +852,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 
 		const retrogrades = summary?.retrogradePlanets ?? [];
 
-		return html`<div class="details">
+		return html`<div class="details" part="details">
 			${
 				summary?.dominantElement || summary?.dominantModality
 					? html`<div class="pill-row">
@@ -879,7 +880,13 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					</div>`
 					: nothing
 			}
-			${ai?.summary ? html`<p class="summary">${ai.summary}</p>` : nothing}
+			${
+				// Prose about the aspect balance, not the balance itself: the counts
+				// above it are the data and stay.
+				ai?.summary && !this.hideReadings
+					? html`<p class="summary">${ai.summary}</p>`
+					: nothing
+			}
 			${this.renderElementModalityGrid()}
 		</div>`;
 	}
@@ -919,7 +926,11 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		const colTotal = (m: string) =>
 			ELEMENTS.reduce((s, el) => s + (cells[el]?.[m]?.length ?? 0), 0);
 
-		return html`<table class="em-grid" aria-label="Element and modality distribution">
+		return html`<table
+			class="em-grid"
+			part="table element-modality"
+			aria-label="Element and modality distribution"
+		>
 			<caption>
 				All ${placed} bodies in the chart, placed by sign
 			</caption>
@@ -972,7 +983,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				(PATTERN_ORDER[a.kind] ?? 9) - (PATTERN_ORDER[b.kind] ?? 9) ||
 				(b.tightness ?? 0) - (a.tightness ?? 0),
 		);
-		return html`<section class="block">
+		return html`<section class="block" part="section patterns">
 			<h3>Chart patterns</h3>
 			${sorted.map((p) => this.renderPattern(p))}
 		</section>`;
@@ -985,7 +996,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		const ordered = p.apex
 			? [...planets].sort((a, b) => Number(b === p.apex) - Number(a === p.apex))
 			: planets;
-		return html`<div class="pattern">
+		return html`<div class="pattern" part="pattern">
 			<div class="pattern-head">
 				<span class="pattern-name">${p.name}</span>
 				${p.element ? html`<span class="pattern-tag">${p.element}</span>` : nothing}
@@ -1012,7 +1023,13 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					</span>`;
 				})}
 			</div>
-			${p.interpretation ? html`<p class="pattern-interp">${p.interpretation}</p>` : nothing}
+			${
+				// The figure, its planets and its tightness are the finding; the
+				// paragraph is the reading of it.
+				p.interpretation && !this.hideReadings
+					? html`<p class="pattern-interp">${p.interpretation}</p>`
+					: nothing
+			}
 		</div>`;
 	}
 
@@ -1040,7 +1057,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					}`,
 				};
 			});
-		return renderInterpAccordion(
+		return this.renderInterpretation(
 			sections,
 			'natal-planet-readings',
 			'Planet readings',

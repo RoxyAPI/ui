@@ -4,14 +4,21 @@ import type { GetAngelNumberResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { interpAccordionStyles } from '../utils/interp-accordion.js';
 
 /**
  * Angel number card. Renders /angel-numbers/numbers/{number}: the number as a hero numeral, its title and core message, the pattern type / digit root / energy badges, keyword chips, the life-area interpretations (spiritual, love, career, money, twin flame) plus the biblical and shadow readings as an exclusive accordion, the affirmation, and the action steps.
+ *
+ * @remarks
+ * The numeral, the pattern type, the digit root and the energy badge are computed from the sequence, so they are the card's data spine and `hide-readings` keeps every one of them. The core message, the keyword chips, the life-area accordion, the affirmation and the action steps are the reading and all go, which is the same line `roxy-angel-number-lookup` already draws on the same domain.
+ *
+ * The accordion draws the shared `interp-accordion` through `RoxyDataElement.renderInterpretation` rather than the bare `<details>` it once hand-rolled. That local copy predated the helper, so it neither honoured `hide-readings` nor answered to `::part(reading)`, and being plain `<details>` rather than `.interp-card` markup it was invisible to the e2e guard that caught the other five.
  */
 @customElement('roxy-angel-number-card')
 export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse> {
 	static styles = [
 		baseStyles,
+		interpAccordionStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -117,31 +124,6 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 				border-radius: var(--roxy-radius-full, 9999px);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
-			.sections {
-				display: grid;
-				gap: var(--roxy-space-xs, 0.25rem);
-				border-top: 1px solid var(--roxy-border, #e4e4e7);
-				padding-top: var(--roxy-space-md, 1rem);
-			}
-			details {
-				border: 1px solid var(--roxy-border, #e4e4e7);
-				border-radius: var(--roxy-radius-sm, 4px);
-				overflow: hidden;
-			}
-			summary {
-				cursor: pointer;
-				padding: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				font-weight: var(--roxy-weight-bold, 600);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				list-style-position: inside;
-			}
-			details p {
-				margin: 0;
-				padding: 0 var(--roxy-space-md, 1rem) var(--roxy-space-md, 1rem);
-				font-size: var(--roxy-text-sm, 0.875rem);
-				color: var(--roxy-fg, #0a0a0a);
-				line-height: 1.6;
-			}
 			.affirmation {
 				margin: 0;
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, transparent);
@@ -178,30 +160,37 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 		const keywords = d.keywords ?? [];
 		const steps = d.actionSteps ?? [];
 
-		return html`<article class="card" aria-label=${`Angel number ${d.number ?? ''}`}>
-			<div class="hero">
+		return html`<article class="card" part="card" aria-label=${`Angel number ${d.number ?? ''}`}>
+			<div class="hero" part="header">
 				${d.number ? html`<div class="numeral">${d.number}</div>` : nothing}
 				<div>
 					<p class="label">Angel number</p>
 					${d.title ? html`<h2 class="title">${d.title}</h2>` : nothing}
 				</div>
 			</div>
-			${d.coreMessage ? html`<p class="core">${d.coreMessage}</p>` : nothing}
-			<div class="badges">
+			${
+				// The badges below classify the sequence; this is what it is said to say.
+				d.coreMessage && !this.hideReadings
+					? html`<p class="core">${d.coreMessage}</p>`
+					: nothing
+			}
+			<div class="badges" part="details">
 				${d.type ? html`<span class="badge">${d.type}</span>` : nothing}
 				${typeof d.digitRoot === 'number' ? html`<span class="badge">Digit root ${d.digitRoot}</span>` : nothing}
 				${d.energy ? html`<span class=${`badge ${energyClass}`}>${d.energy}</span>` : nothing}
 			</div>
 			${
-				keywords.length > 0
+				keywords.length > 0 && !this.hideReadings
 					? html`<div class="chips">${keywords.map((k) => html`<span>${k}</span>`)}</div>`
 					: nothing
 			}
 			${this.renderSections(d)}
-			${d.affirmation ? html`<p class="affirmation">${d.affirmation}</p>` : nothing}
+			${d.affirmation && !this.hideReadings ? html`<p class="affirmation">${d.affirmation}</p>` : nothing}
 			${
-				steps.length > 0
-					? html`<div class="steps">
+				// Each step is a sentence of advice, so the list is prose under its own
+				// heading and goes whole.
+				steps.length > 0 && !this.hideReadings
+					? html`<div class="steps" part="section action-steps">
 						<h3>Action steps</h3>
 						<ul>${steps.map((s) => html`<li>${s}</li>`)}</ul>
 					</div>`
@@ -215,16 +204,11 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 	}
 
 	private renderSections(d: NonNullable<GetAngelNumberResponse>) {
-		const sections = buildMeaningSections(d.meaning, d.biblical, d.shadow);
-		if (sections.length === 0) return nothing;
-		return html`<div class="sections">
-			${sections.map(
-				(s, i) => html`<details name="angel-meaning" ?open=${i === 0}>
-					<summary>${s.label}</summary>
-					<p>${s.body}</p>
-				</details>`,
-			)}
-		</div>`;
+		return this.renderInterpretation(
+			buildMeaningSections(d.meaning, d.biblical, d.shadow),
+			'angel-meaning',
+			'Reading',
+		);
 	}
 }
 

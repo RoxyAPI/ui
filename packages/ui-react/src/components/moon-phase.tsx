@@ -30,11 +30,13 @@ export interface RoxyMoonPhaseProps extends ElementAttrs {
 	submitLabel?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
+	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
+	hideReadings?: boolean;
 
 }
 
 export const RoxyMoonPhase = React.forwardRef<HTMLElement | null, RoxyMoonPhaseProps>(
-	function RoxyMoonPhase({ data, className, style, mode, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, ...rest }, ref) {
+	function RoxyMoonPhase({ data, className, style, mode, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -128,6 +130,13 @@ export const RoxyMoonPhase = React.forwardRef<HTMLElement | null, RoxyMoonPhaseP
 				(el as unknown as { attribution: string }).attribution = attribution;
 			}
 		}, [attribution, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && hideReadings !== undefined) {
+				(el as unknown as { hideReadings: boolean }).hideReadings = hideReadings;
+			}
+		}, [hideReadings, loaded]);
 
 		if (error) {
 			return React.createElement(

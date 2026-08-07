@@ -22,6 +22,12 @@ const glyphFor = (name: string): string =>
  * place. Reuses {@link RoxyNatalChart} for the wheel (identical data shape) and
  * adds the relocation read: the move geometry, the planets that change house,
  * and the bodies pulled onto a relocated angle.
+ *
+ * @remarks
+ * Composing another component means two things have to be forwarded or they stop
+ * at the boundary: `hide-readings` is passed down, so suppressing prose here also
+ * suppresses the wheel's planet readings; and the wheel's parts are re-exported,
+ * because a part is only addressable one shadow root deep.
  */
 @customElement('roxy-relocation-wheel')
 export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse> {
@@ -108,14 +114,16 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 
 	protected renderData(data: RelocationChartResponse) {
 		const c = data.changes;
-		return html`<div class="stack">
+		return html`<div class="stack" part="stack">
 			<roxy-natal-chart
 				heading="Relocation chart"
+				exportparts="card, header, tablist, tab, panel, chart, table, aspect-grid, element-modality, legend, details, section, patterns, pattern, readings, reading"
+				?hide-readings=${this.hideReadings}
 				.data=${data}
 			></roxy-natal-chart>
-			<section class="changes">
+			<section class="changes" part="card changes">
 				<h3 class="title">What changes at this location</h3>
-				<div class="move">
+				<div class="move" part="details">
 					${
 						typeof c?.distanceKm === 'number'
 							? html`<span>
@@ -150,13 +158,15 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 					}
 				</div>
 				${
-					data.interpretation?.summary
+					// The only prose here. The move geometry, the angular planets and the
+					// house changes below it are all data and survive hide-readings.
+					data.interpretation?.summary && !this.hideReadings
 						? html`<p class="summary">${data.interpretation.summary}</p>`
 						: nothing
 				}
 				${
 					c?.angularPlanets?.length
-						? html`<div>
+						? html`<div part="section angular-planets">
 							<p class="block-label">Angular planets here</p>
 							<div class="chips">
 								${c.angularPlanets.map((p) => html`<span class="chip">${glyphFor(p)} ${p}</span>`)}
@@ -164,7 +174,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 						</div>`
 						: nothing
 				}
-				<div>
+				<div part="section house-changes">
 					<p class="block-label">Planets that change house</p>
 					${
 						c?.planetsChangedHouse?.length

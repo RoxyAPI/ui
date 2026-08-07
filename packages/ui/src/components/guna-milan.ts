@@ -31,6 +31,13 @@ const KOOTA_MAX: Record<string, number> = {
  * classifies under it (Varna: Shudra against Shudra, Yoni: Sheep against Horse),
  * because the point total alone tells a couple nothing about WHY a koota scored
  * as it did.
+ *
+ * `hide-readings` drops exactly one block, the recommendation line. The koota
+ * descriptions stay: each states what its category evaluates and reads the same
+ * for every couple, so it is a column gloss on the table rather than a reading of
+ * this match, the same way `houseThemes` labels a house list. The score, the
+ * ring, the compatible verdict, the eight-row breakdown and the dosha and
+ * cancellation chips are all data and all survive.
  */
 @customElement('roxy-guna-milan')
 export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
@@ -274,10 +281,10 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 		const dashFill = pct * 2.827;
 		const dashGap = (100 - pct) * 2.827;
 
-		return html`<article class="card" aria-label="Guna Milan score">
-			<div class="score-header">
+		return html`<article class="card" part="card" aria-label="Guna Milan score">
+			<div class="score-header" part="header">
 				<div class="score-info">
-					<div class="score-bar">
+					<div class="score-bar" part="details">
 						<div>
 							<span class="total">${formatNumber(d.total, 1)}</span>
 							<span class="over"> / ${d.maxScore}</span>
@@ -298,14 +305,16 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 									: nothing
 							}
 							${
-								d.recommendation
+								// The compatible verdict beside it and the dosha chips below are
+								// the data; this line is the counsel drawn from them.
+								d.recommendation && !this.hideReadings
 									? html`<span class="recommendation">${d.recommendation}</span>`
 									: nothing
 							}
 						</div>
 					</div>
 				</div>
-				<div class="score-ring" role="meter" aria-label="Guna milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
+				<div class="score-ring" part="chart" role="meter" aria-label="Guna milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
 					<svg viewBox="0 0 100 100" aria-hidden="true">
 						<circle class="ring-track" cx="50" cy="50" r="45" fill="none" stroke="${trackColor}" stroke-width="8"/>
 						<circle class="ring-fill" cx="50" cy="50" r="45" fill="none" stroke="${fillColor}" stroke-width="8"
@@ -319,7 +328,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 
 			${
 				breakdown.length > 0
-					? html`<div class="table-scroll"><table>
+					? html`<div class="table-scroll" part="table"><table>
 						<caption class="roxy-sr-only">
 							Guna Milan breakdown: each koota with the classification of person 1 and
 							person 2, and the score it earned out of its maximum.
@@ -359,7 +368,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 			}
 			${
 				(d.doshas?.length ?? 0) > 0 || (d.doshaCancellations?.length ?? 0) > 0
-					? html`<div class="tags">
+					? html`<div class="tags" part="details">
 						${d.doshas?.map((x) => html`<span class="dosha">${x}</span>`)}
 						${d.doshaCancellations?.map(
 							(x) =>

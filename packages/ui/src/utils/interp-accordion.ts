@@ -5,6 +5,8 @@
  * Exclusive by construction (`<details name>`), so a card grows by at most one open section and never becomes a wall of text. Callers pass their own group `name` so two accordions on one page do not fight over which section is open.
  *
  * This lives here rather than in a component because the same accordion is the right shape wherever an endpoint returns a labelled reading: the Human Design bodygraph and type card use it for strategy, authority, and aura; `roxy-hexagram` uses it for the changing lines. The CSS was copy-pasted into six components before 2026-07 and had already drifted (`.interp-body` had five distinct definitions), which is the drift this exists to stop. Migrate the remaining copies to it when they are next touched.
+ *
+ * **Call it through `RoxyDataElement.renderInterpretation`, never directly.** That method is where `hide-readings` is honoured, so a direct call renders prose a host asked to be left out. The section it emits carries `part="section readings"` and each row `part="reading"`, which is what makes the readings of EVERY component addressable under one name from outside the shadow root.
  */
 
 import { css, html, nothing } from 'lit';
@@ -125,10 +127,13 @@ export function renderInterpAccordion(
 	const shown = sections.filter((s) => Boolean(s.body));
 	if (shown.length === 0) return nothing;
 
-	return html`<section class="block">
+	return html`<section class="block" part="section readings">
 		<h3>${heading}</h3>
 		${shown.map(
-			(s, i) => html`<details class="interp-card" name=${name} ?open=${i === 0}>
+			(
+				s,
+				i,
+			) => html`<details class="interp-card" part="reading" name=${name} ?open=${i === 0}>
 				<summary>
 					<span class="interp-lead">${s.label}</span>
 					${chevron()}

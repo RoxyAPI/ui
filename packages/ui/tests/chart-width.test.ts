@@ -14,6 +14,7 @@ const TOKEN = '--roxy-chart-max-width';
 const ALLOWED = new Set([
 	'components/natal-chart.ts',
 	'components/synastry-chart.ts',
+	'components/transit-wheel.ts',
 	'components/bodygraph.ts',
 	'components/biorhythm-chart.ts',
 	'components/local-space-compass.ts',

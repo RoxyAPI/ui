@@ -46,6 +46,9 @@ const DOMAIN_ORDER: readonly ForecastDomain[] = [
  * the domain.
  *
  * Theming flows through `--roxy-*` custom properties on `:host`.
+ *
+ * @remarks
+ * `hide-readings` drops only `description`. Every event keeps its date, its domain marker, its significance bar and the headline built from the structured `body`, `aspect`, `target` and `orb`, so nothing factual is lost: the sentence restates that headline in prose, which is exactly the report a page supplying its own words does not want repeated under every row.
  */
 @customElement('roxy-forecast-timeline')
 export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> {
@@ -225,8 +228,8 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 			events.some((e) => e.domain === dom),
 		);
 
-		return html`<div class="wrap" aria-label="Forecast timeline">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Forecast timeline">
+			<header class="head" part="header">
 				<h2 class="title">Forecast timeline</h2>
 				${
 					d.startDate && d.endDate
@@ -238,7 +241,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 			</header>
 			${
 				present.length
-					? html`<div class="legend">
+					? html`<div class="legend" part="legend">
 						${present.map(
 							(dom) =>
 								html`<span><span class="swatch swatch-${dom}"></span>${DOMAIN_LABEL[dom]}</span>`,
@@ -248,7 +251,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 			}
 			${
 				grouped.length
-					? html`<div class="days" role="list">
+					? html`<div class="days" part="section events" role="list">
 						${grouped.map(([date, dayEvents]) => this.renderDay(date, dayEvents))}
 					</div>`
 					: html`<p class="roxy-empty" role="status">No events in this window</p>`
@@ -286,7 +289,14 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 			<span class="dot dot-${e.domain}" aria-hidden="true"></span>
 			<div class="event-body">
 				<div class="event-line">${this.renderHeadline(e)}</div>
-				${e.description ? html`<p class="event-desc">${e.description}</p>` : nothing}
+				${
+					// The headline above already carries the bodies, the aspect and the orb
+					// from the structured fields, so this sentence is the written read of a
+					// row that stays complete without it.
+					e.description && !this.hideReadings
+						? html`<p class="event-desc">${e.description}</p>`
+						: nothing
+				}
 				<div class="sig" title="Significance ${width} of 100">
 					<span class="sig-track">
 						<span class="sig-fill sig-fill-${e.domain}" style="width: ${width}%"></span>

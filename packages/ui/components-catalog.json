@@ -95,6 +95,29 @@
       }
     },
     {
+      "tag": "roxy-transit-wheel",
+      "pascal": "RoxyTransitWheel",
+      "slug": "transit-wheel",
+      "domain": "Western",
+      "renders": "Natal chart on the inner ring, transiting bodies on the outer ring, aspect lines between them",
+      "endpointLabel": "POST /astrology/transit-aspects",
+      "endpoints": [
+        {
+          "operationId": "calculateTransitAspects",
+          "method": "POST",
+          "path": "/astrology/transit-aspects"
+        }
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transit-wheel data-endpoint=\"astrology/transit-aspects\" publishable-key=\"pk_live_YOUR_KEY\" lang=\"en\"></roxy-transit-wheel>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transit-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.22.0/assets/previews/transit-wheel-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.22.0/assets/previews/transit-wheel-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-aspects-table",
       "pascal": "RoxyAspectsTable",
       "slug": "aspects-table",

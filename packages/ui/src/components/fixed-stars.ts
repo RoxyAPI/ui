@@ -158,8 +158,8 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 	protected renderData(data: FixedStarsResponse) {
 		const conjunctions = data.conjunctions ?? [];
 		const stars = data.stars ?? [];
-		return html`<div class="wrap">
-			<header>
+		return html`<div class="wrap" part="card">
+			<header part="header">
 				<h2 class="title">Fixed stars</h2>
 				${
 					typeof data.orb === 'number'
@@ -167,16 +167,22 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 						: nothing
 				}
 			</header>
-			${data.summary ? html`<p class="summary">${data.summary}</p>` : nothing}
+			${
+				// The contacts and the catalog below are positional data; this is the
+				// written read of them.
+				data.summary && !this.hideReadings
+					? html`<p class="summary">${data.summary}</p>`
+					: nothing
+			}
 			${
 				conjunctions.length
-					? html`<section>
+					? html`<section part="section conjunctions">
 						<p class="subhead">Conjunctions to the chart</p>
 						${conjunctions.map(
 							(
 								c,
 								i,
-							) => html`<details class="interp-card" name="fixed-star-contacts" ?open=${i === 0}>
+							) => html`<details class="interp-card" part="reading" name="fixed-star-contacts" ?open=${i === 0}>
 								<summary>
 									<span class="interp-lead"><span class="point">${c.point}</span> conjunct ${c.star}</span>
 									${chevron()}
@@ -184,7 +190,14 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 										<small>orb ${formatNumber(c.orb, 2)}°</small>
 									</span>
 								</summary>
-								${c.interpretation ? html`<div class="interp-body"><p>${c.interpretation}</p></div>` : nothing}
+								${
+									// A contact the API sent no reading for already renders as a
+									// bodyless card, so hiding the readings reuses that shape and
+									// keeps every star, point and orb on screen.
+									c.interpretation && !this.hideReadings
+										? html`<div class="interp-body"><p>${c.interpretation}</p></div>`
+										: nothing
+								}
 							</details>`,
 						)}
 					</section>`

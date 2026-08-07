@@ -17,6 +17,8 @@ import { humanize } from '../utils/string.js';
 
 /**
  * Every reference / glossary lookup this card renders. They do NOT share field names (a zodiac sign has 17 fields, a number meaning has 3), so the card renders heuristically rather than by fixed keys: a symbol + title hero, the prose fields as labelled paragraphs, keyword and string-list fields as chips, and every remaining scalar as an attribute grid. One card replaces eight near-identical bespoke ones.
+ *
+ * `hide-readings` needs no second classification here, because the bucketing IS the line: what `collect` calls prose is the reading and what it calls a fact is the data. So the labelled paragraphs go, the keyword chips go, and a list whose items run to sentence length (a sign's `strengths`) goes with them, while the attribute grid and the short-item lists (`famous`, `compatibleSigns`, chakras) stay. On a lookup that is almost entirely prose the card keeps its symbol, title and whatever facts the response carries, which is the same flat shape it already renders for a response that had no prose to begin with.
  */
 type ReferenceData =
 	| GetZodiacSignResponse
@@ -43,6 +45,18 @@ const PROSE_KEYS = new Set([
 ]);
 /** Keys never shown as their own row/section (rendered elsewhere or noise). */
 const SKIP_KEYS = new Set(['id', 'symbol', ...TITLE_KEYS]);
+
+/**
+ * Longest a string may be before it is read as prose rather than as a value. The same threshold decides a scalar field and a list item, so `motto: "I am."` stays a fact while `strengths: ["You are the most courageous and ambitious sign, ..."]` is recognised as sentences laid out as chips.
+ */
+const PROSE_LENGTH = 48;
+
+/**
+ * A response key as a `part` name. Derived through {@link humanize} so one rule covers camelCase, snake_case and the space-joined keys `collect` builds for a nested field (`description short`), and the result is always the kebab-case a `part` has to be.
+ */
+function partName(key: string): string {
+	return humanize(key).toLowerCase().replace(/\s+/g, '-');
+}
 
 /** Best-effort one-line label for an object inside an array (e.g. a gate channel partner), joining its primitive values so it never renders as [object Object]. */
 function objectLabel(obj: Record<string, unknown>): string {
@@ -151,7 +165,8 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 			: [];
 
 		const prose: Array<[string, string]> = [];
-		const lists: Array<[string, string[]]> = [];
+		/** Label, items, and whether the items read as sentences rather than values. */
+		const lists: Array<[string, string[], boolean]> = [];
 		const facts: Array<[string, string]> = [];
 		// Bucket each field into prose / chip-list / fact. Recurses one level into
 		// nested objects (description {short,long}, keywords {positive,negative},
@@ -169,9 +184,14 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 							: String(v),
 					)
 					.filter((s) => s.length > 0);
-				if (items.length > 0) lists.push([label, items]);
+				if (items.length > 0)
+					lists.push([
+						label,
+						items,
+						items.some((i) => i.length > PROSE_LENGTH),
+					]);
 			} else if (typeof value === 'string') {
-				if (PROSE_KEYS.has(label) || value.length > 48)
+				if (PROSE_KEYS.has(label) || value.length > PROSE_LENGTH)
 					prose.push([label, value]);
 				else facts.push([label, value]);
 			} else if (typeof value === 'number' || typeof value === 'boolean') {
@@ -190,23 +210,29 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 			collect(key, value, 0);
 		}
 
-		return html`<article class="card" aria-label=${title}>
-			<header class="head">
+		const readings = !this.hideReadings;
+
+		return html`<article class="card" part="card" aria-label=${title}>
+			<header class="head" part="header">
 				${symbol ? html`<span class="symbol" aria-hidden="true">${symbol}</span>` : nothing}
 				<div>
 					<p class="label">Reference</p>
 					<h2 class="name">${title}</h2>
 				</div>
 			</header>
-			${keywords.length > 0 ? html`<div class="chips">${keywords.map((k) => html`<span>${k}</span>`)}</div>` : nothing}
-			${prose.map(
-				([key, text]) => html`<p class="prose">
-					<span class="prose-label">${humanize(key)}</span>${text}
-				</p>`,
-			)}
+			${keywords.length > 0 && readings ? html`<div class="chips">${keywords.map((k) => html`<span>${k}</span>`)}</div>` : nothing}
+			${
+				readings
+					? prose.map(
+							([key, text]) => html`<p class="prose">
+						<span class="prose-label">${humanize(key)}</span>${text}
+					</p>`,
+						)
+					: nothing
+			}
 			${
 				facts.length > 0
-					? html`<div class="facts-wrap">
+					? html`<div class="facts-wrap" part="details">
 						<dl class="facts">
 							${facts.map(
 								([key, value]) => html`<div class="fact">
@@ -218,8 +244,10 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 					</div>`
 					: nothing
 			}
-			${lists.map(
-				([key, items]) => html`<div class="list">
+			${lists.map(([key, items, isProse]) =>
+				isProse && !readings
+					? nothing
+					: html`<div class="list" part="section ${partName(key)}">
 					<h3>${humanize(key)}</h3>
 					<div class="chips">${items.map((i) => html`<span>${i}</span>`)}</div>
 				</div>`,

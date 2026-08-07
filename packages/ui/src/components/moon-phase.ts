@@ -20,6 +20,9 @@ type MoonListEntry =
 
 /**
  * Moon phase card. Renders /astrology/moon-phase/{current,upcoming,calendar/...}.
+ *
+ * @remarks
+ * `hide-readings` keeps the whole ephemeris half: the phase glyph, the phase name, the date, and the illumination, age, sign and distance tiles, plus every row of the upcoming and calendar lists. Only `meaning.description` and its keyword chips go. The glyph is unaffected because it comes from `meaning.symbol`, which is the phase drawn rather than the phase interpreted.
  */
 @customElement('roxy-moon-phase')
 export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
@@ -129,10 +132,11 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 			const year = 'year' in d ? d.year : undefined;
 			return html`<article
 				class="card"
+				part="card"
 				aria-label="Moon phase calendar"
 			>
-				<h2 class="label">${month ?? 'Moon phases'} ${year ?? ''}</h2>
-				<div class="list" role="list">
+				<h2 class="label" part="header">${month ?? 'Moon phases'} ${year ?? ''}</h2>
+				<div class="list" part="table" role="list">
 					${list.map((phase) => this.renderListItem(phase))}
 				</div>
 			</article>`;
@@ -145,15 +149,15 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 		// The API ships the exact phase emoji in meaning.symbol; prefer it and fall
 		// back to the name-derived glyph for the list endpoints that omit meaning.
 		const emoji = d.meaning?.symbol || phaseEmoji(d.phase);
-		return html`<article class="card" aria-label="Current moon phase">
-			<div class="hero">
+		return html`<article class="card" part="card" aria-label="Current moon phase">
+			<div class="hero" part="header">
 				<span class="emoji" aria-hidden="true">${emoji}</span>
 				<div>
 					<h2 class="label">${d.phase ?? 'Moon'}</h2>
 					${d.date ? html`<div class="date">${formatDate(d.date)}</div>` : nothing}
 				</div>
 			</div>
-			<div class="stats">
+			<div class="stats" part="details">
 				${
 					typeof d.illumination === 'number'
 						? html`<div>
@@ -188,12 +192,14 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 				}
 			</div>
 			${
-				d.meaning?.description
+				// The tiles above are the ephemeris; the description and the chips that
+				// belong to it are what the phase is taken to mean.
+				d.meaning?.description && !this.hideReadings
 					? html`<p class="meaning">${d.meaning.description}</p>`
 					: nothing
 			}
 			${
-				d.meaning?.keywords?.length
+				d.meaning?.keywords?.length && !this.hideReadings
 					? html`<div class="keywords">
 						${d.meaning.keywords.map((k) => html`<span>${k}</span>`)}
 					</div>`

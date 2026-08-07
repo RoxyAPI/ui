@@ -11,7 +11,6 @@ import {
 	hdReadingStyles,
 	renderHdFacts,
 	renderHdKeynotes,
-	renderHdReading,
 	renderHdThemes,
 } from '../utils/hd-reading.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
@@ -79,8 +78,8 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 	 * The type read. The tiles answer it at a glance, the lead paragraph grounds the type label in what the aura actually does, and the accordion carries the three interpretations that make the chart actionable: how to engage (strategy), how to decide (authority), and how the field is felt by others (aura).
 	 */
 	private renderType(d: CalculateTypeResponse) {
-		return html`<div class="wrap">
-			<header class="head">
+		return html`<div class="wrap" part="card">
+			<header class="head" part="header">
 				<h2 class="title">Type</h2>
 				${
 					d.type || d.profile
@@ -96,9 +95,14 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 				{ label: 'Authority', value: d.authority },
 				{ label: 'Profile', value: d.profile },
 			])}
-			${d.typeDescription ? html`<p class="lead">${d.typeDescription}</p>` : nothing}
+			${
+				// The tiles above name the type; this paragraph explains it.
+				d.typeDescription && !this.hideReadings
+					? html`<p class="lead">${d.typeDescription}</p>`
+					: nothing
+			}
 			${renderHdThemes(d.signature, d.notSelf)}
-			${renderHdReading(
+			${this.renderInterpretation(
 				[
 					{ label: 'Strategy', aside: d.strategy, body: d.strategyDescription },
 					{
@@ -117,8 +121,8 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 	 * The profile read. Two keynote sentences, so they render open as a definition list rather than behind a disclosure: putting a single sentence behind a click costs the reader more than it saves.
 	 */
 	private renderProfile(d: CalculateProfileResponse) {
-		return html`<div class="wrap">
-			<header class="head">
+		return html`<div class="wrap" part="card">
+			<header class="head" part="header">
 				<h2 class="title">Profile</h2>
 				${d.profile ? html`<div class="type-line">${d.profile}</div>` : nothing}
 			</header>
@@ -127,15 +131,21 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 				{ label: 'Personality line', value: d.personalityLine?.toString() },
 				{ label: 'Design line', value: d.designLine?.toString() },
 			])}
-			<section class="block">
-				<h3>Lines</h3>
-				${renderHdKeynotes({
-					personality: d.personalityKeynote,
-					personalityLine: d.personalityLine,
-					design: d.designKeynote,
-					designLine: d.designLine,
-				})}
-			</section>
+			${
+				// The section holds nothing but the two keynote sentences, and the line
+				// numbers are already tiles above it, so it goes whole.
+				this.hideReadings
+					? nothing
+					: html`<section class="block" part="section lines">
+						<h3>Lines</h3>
+						${renderHdKeynotes({
+							personality: d.personalityKeynote,
+							personalityLine: d.personalityLine,
+							design: d.designKeynote,
+							designLine: d.designLine,
+						})}
+					</section>`
+			}
 		</div>`;
 	}
 }
