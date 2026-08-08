@@ -7,8 +7,10 @@ export interface RoxyTransitWheelProps {
 	data?: CalculateTransitAspectsResponse;
 	/** Heading above the bi-wheel. Defaults to "Transits". */
 	heading?: string;
-	/** Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the page from a chart endpoint that returns one. Rotates the wheel so that longitude falls on the left horizon and draws the ASC/DSC axis. Leave it unset and the wheel keeps a fixed zodiacal orientation with 0 degrees Aries on the left; no house cusps are drawn either way, because the transit-aspects response carries none. */
+	/** Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the page from a chart endpoint that returns one. Rotates the wheel so that longitude falls on the left horizon and draws the ASC/DSC axis. Leave it unset and the wheel keeps a fixed zodiacal orientation with 0 degrees Aries on the left. */
 	ascendant?: number;
+	/** The twelve natal house cusps, supplied by the page: the /astrology/natal-chart `houses` array verbatim, or twelve bare cusp longitudes in house order. The transit-aspects response numbers every body by house but returns no cusp longitudes, so this is the only way the wheel can draw the sectors those numbers refer to. Supplying it draws the twelve cusps and their numbers, and rotates the first cusp onto the left horizon unless an ascendant is also given. Anything that does not resolve to houses 1 to 12 with finite longitudes is ignored rather than half drawn. */
+	houses?: Array<{ number: number; longitude: number }> | number[];
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -35,6 +37,7 @@ export const RoxyTransitWheel = defineComponent({
 		data: { type: Object as PropType<RoxyTransitWheelProps['data']> },
 		heading: { type: String as PropType<RoxyTransitWheelProps['heading']> },
 		ascendant: { type: Number as PropType<RoxyTransitWheelProps['ascendant']> },
+		houses: { type: Array as PropType<RoxyTransitWheelProps['houses']> },
 		endpoint: { type: String as PropType<RoxyTransitWheelProps['endpoint']> },
 		method: { type: String as PropType<RoxyTransitWheelProps['method']> },
 		publishableKey: { type: String as PropType<RoxyTransitWheelProps['publishableKey']> },
@@ -67,6 +70,7 @@ export const RoxyTransitWheel = defineComponent({
 			if (props.data !== undefined) elementProps['.data'] = props.data;
 			if (props.heading !== undefined) elementProps['.heading'] = props.heading;
 			if (props.ascendant !== undefined) elementProps['.ascendant'] = props.ascendant;
+			if (props.houses !== undefined) elementProps['.houses'] = props.houses;
 			if (props.endpoint !== undefined) elementProps['.endpoint'] = props.endpoint;
 			if (props.method !== undefined) elementProps['.method'] = props.method;
 			if (props.publishableKey !== undefined) elementProps['.publishableKey'] = props.publishableKey;

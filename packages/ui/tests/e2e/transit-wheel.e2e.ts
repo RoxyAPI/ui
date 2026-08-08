@@ -83,11 +83,24 @@ const measure = (sel: string) => {
 			title: n.querySelector('title')?.textContent ?? '',
 		}),
 	);
+	const cusps = [
+		...root.querySelectorAll<SVGLineElement>('line.house-cusp'),
+	].map((n) => ({
+		x2: n.x2.baseVal.value,
+		y2: n.y2.baseVal.value,
+	}));
 	return {
 		natal: read('text.natal-glyph'),
 		transit: read('text.transit-glyph'),
 		signs: read('text.sign-glyph'),
 		lines,
+		cusps,
+		houseNums: [...root.querySelectorAll('text.house-num')].map(
+			(n) => n.textContent ?? '',
+		),
+		headers: [...root.querySelectorAll('thead th')].map((n) =>
+			(n.textContent ?? '').trim(),
+		),
 		hasReadings: Boolean(root.querySelector('[part~="readings"]')),
 		readingRows: root.querySelectorAll('[part~="reading"]').length,
 		readingText: (
@@ -155,9 +168,9 @@ test('the two rings sit at different radii, transiting outside natal', async ({
 
 	// The rings are the ones the tooltips claim they are, so the colour and the
 	// meaning agree.
-	for (const n of m.natal) expect(n.title.startsWith('natal ')).toBe(true);
+	for (const n of m.natal) expect(n.title.startsWith('Natal ')).toBe(true);
 	for (const t of m.transit)
-		expect(t.title.startsWith('transiting ')).toBe(true);
+		expect(t.title.startsWith('Transiting ')).toBe(true);
 });
 
 /**
@@ -223,7 +236,7 @@ test('a supplied ascendant rotates the wheel and marks the axis', async ({
 	const before = await page.evaluate(measure, WHEEL);
 	expect(before.axis).toEqual([]);
 	expect(before.legend).toContain('Sign wheel');
-	expect(before.legend).toContain('no houses');
+	expect(before.legend).toContain('No house cusps');
 
 	// 90 degrees: 0 Cancer on the left horizon.
 	await setProp(page, 'ascendant', 90);
@@ -232,6 +245,8 @@ test('a supplied ascendant rotates the wheel and marks the axis', async ({
 	expect(after.axis).toEqual(['ASC', 'DSC']);
 	expect(after.legend).toContain('Ascendant on the left horizon');
 	expect(after.legend).not.toContain('Sign wheel');
+	// A rotation is still not a cusp: no sector ring appears.
+	expect(after.cusps.length).toBe(0);
 
 	// Cancer's midpoint (105 degrees) is now 15 degrees past the left horizon,
 	// and Capricorn's is 15 degrees past the right one.
@@ -249,6 +264,111 @@ test('a supplied ascendant rotates the wheel and marks the axis', async ({
 	const restored = await page.evaluate(measure, WHEEL);
 	expect(restored.axis).toEqual([]);
 	expect(restored.legend).toContain('Sign wheel');
+});
+
+/**
+ * The house work, against the real production response rather than a fixture.
+ *
+ * @remarks
+ * This is the assertion the old docblock would have failed. `/astrology/transit-aspects`
+ * returns a real house per body and a `houseSystem`, so the captured sample has
+ * to show more than one distinct house number: a column of 1s is what the API
+ * used to return and what the component used to refuse to render for that reason.
+ */
+test('the live response fills the House columns with real, varied houses', async ({
+	page,
+}) => {
+	await ready(page);
+	const m = await page.evaluate(measure, WHEEL);
+
+	expect(m.headers).toEqual([
+		'Body',
+		'Natal',
+		'Natal house',
+		'Transiting',
+		'Transiting house',
+	]);
+	const houses = await page.evaluate((sel) => {
+		const root = (document.querySelector(sel) as HTMLElement)
+			.shadowRoot as ShadowRoot;
+		return [...root.querySelectorAll('tbody tr')].map((row) =>
+			[...row.querySelectorAll('td')].map((n) => (n.textContent ?? '').trim()),
+		);
+	}, WHEEL);
+	const natalHouses = new Set(houses.map((cells) => cells[1]));
+	const transitHouses = new Set(houses.map((cells) => cells[3]));
+	expect(natalHouses.size).toBeGreaterThan(3);
+	expect(transitHouses.size).toBeGreaterThan(3);
+	for (const set of [natalHouses, transitHouses]) {
+		for (const h of set) expect(Number(h)).toBeGreaterThanOrEqual(1);
+		for (const h of set) expect(Number(h)).toBeLessThanOrEqual(12);
+	}
+
+	// The system behind those numbers is named, and the wheel separately says it
+	// has no sectors to draw them in.
+	expect(m.legend).toMatch(/(placidus|whole-sign|equal|koch) houses/);
+	expect(m.legend).toContain('No house cusps');
+	expect(m.cusps.length).toBe(0);
+	expect(m.houseNums.length).toBe(0);
+});
+
+/**
+ * The sector ring, measured in a real browser. The cusps are deliberately
+ * unequal, so a component that fell back to 30 degree steps draws a plausible
+ * wheel and fails here on the spacing.
+ */
+test('cusps supplied by the page draw a real, unequal house ring', async ({
+	page,
+}) => {
+	await ready(page);
+	const CUSPS = [350, 30, 50, 80, 110, 140, 170, 210, 230, 260, 290, 320];
+	await setProp(
+		page,
+		'houses',
+		CUSPS.map((longitude, i) => ({ number: i + 1, longitude })),
+	);
+	const m = await page.evaluate(measure, WHEEL);
+
+	expect(m.houseNums).toEqual([
+		'1',
+		'2',
+		'3',
+		'4',
+		'5',
+		'6',
+		'7',
+		'8',
+		'9',
+		'10',
+		'11',
+		'12',
+	]);
+	expect(m.cusps.length).toBe(12);
+	// House 1 lands on the left horizon, and the twelve turns between consecutive
+	// cusps reproduce the supplied spans rather than twelve equal thirties.
+	const first = m.cusps[0];
+	if (!first) throw new Error('twelve cusps expected');
+	expect(first.y2).toBeCloseTo(CENTER, 0);
+	expect(first.x2).toBeLessThan(CENTER);
+	const angle = (p: { x2: number; y2: number }) =>
+		(Math.atan2(p.y2 - CENTER, p.x2 - CENTER) * 180) / Math.PI;
+	const spans = m.cusps.map((_, i) => {
+		const a = m.cusps[i];
+		const b = m.cusps[(i + 1) % 12];
+		if (!a || !b) throw new Error('twelve cusps expected');
+		let d = angle(a) - angle(b);
+		while (d < 0) d += 360;
+		return Math.round(d);
+	});
+	expect(spans).toEqual([40, 20, 30, 30, 30, 30, 40, 20, 30, 30, 30, 30]);
+	expect(m.legend).toContain('House cusps supplied by the page');
+	expect(m.legend).not.toContain('No house cusps');
+
+	// Taking them away puts it back, so nothing was baked in.
+	await setProp(page, 'houses', undefined);
+	const restored = await page.evaluate(measure, WHEEL);
+	expect(restored.cusps.length).toBe(0);
+	expect(restored.legend).toContain('No house cusps');
 });
 
 /**

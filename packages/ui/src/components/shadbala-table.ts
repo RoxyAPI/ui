@@ -1,12 +1,11 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { ShadbalaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
-import { capitalize } from '../utils/string.js';
 
 type Planet = ShadbalaResponse['planets'][number];
 
@@ -280,7 +279,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 	}
 
 	private renderPlanetRow(p: Planet) {
-		const glyph = PLANET_GLYPH[capitalize(p.planet)] ?? '';
+		const glyph = planetGlyph(p.planet) ?? '';
 
 		// Compute positive component values (drikBala can be negative)
 		const values = BALA_COMPONENTS.map((b) => Math.max(0, p[b.key] as number));

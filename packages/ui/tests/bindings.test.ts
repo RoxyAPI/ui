@@ -272,3 +272,34 @@ describe('sidereal frame provenance', () => {
 		expect(missing).toEqual([]);
 	});
 });
+
+/**
+ * A typed wrapper prop that the element never reads is a lie shipped as public API.
+ *
+ * @remarks
+ * `roxy-natal-chart` declared `house-system`, `wrapper-meta.ts` documented it, and both generated wrappers set it on every render. Nothing anywhere read `this.houseSystem`, so a consumer following our own generated types picked a system and got silence; the legend went on reading the response field beside it. `roxy-hexagram` carried the same defect in `mode`. Neither could fail: the property is declared, the attribute reflects, the wrapper compiles, and the drift gate regenerates from the same map.
+ *
+ * The scan is deliberately generous. It asks only that the source MENTION `this.<prop>` somewhere, because a component that reads its own property in any way is making a decision with it, while one that never names it cannot be. That is enough to catch the whole class, and it is what makes the answer to "wire it or delete it" a test result rather than an opinion.
+ */
+describe('every wrapper-visible config prop is read by its element', () => {
+	test('no CONFIG_PROPS entry is declared, typed, and then ignored', async () => {
+		const { CONFIG_PROPS } = await import('../../../scripts/wrapper-meta.js');
+		const dead: string[] = [];
+		let checked = 0;
+		for (const [slug, props] of Object.entries(CONFIG_PROPS)) {
+			const src = await Bun.file(
+				`packages/ui/src/components/${slug}.ts`,
+			).text();
+			for (const { prop } of props) {
+				checked++;
+				if (!src.includes(`this.${prop}`)) dead.push(`${slug}.${prop}`);
+			}
+		}
+		// Not vacuous: the map has to have been found and walked.
+		expect(checked).toBeGreaterThan(15);
+		expect(
+			dead,
+			`Declared in scripts/wrapper-meta.ts, typed into both wrappers, and never read by the element. Wire it or delete it from all three:\n  ${dead.join('\n  ')}`,
+		).toEqual([]);
+	});
+});

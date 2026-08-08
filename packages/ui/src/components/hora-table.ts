@@ -1,11 +1,10 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { GetHoraResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatTimeRange } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 
 type HoraPeriod = NonNullable<GetHoraResponse['dayHoras']>[number];
 
@@ -117,7 +116,7 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 		return html`<div class="wrap" aria-label="Hora periods">
 			<div class="head">
 				<h2 class="title">Hora</h2>
-				${d.date ? html`<p class="subtitle">${formatDate(d.date)}</p>` : nothing}
+				${d.date ? html`<p class="subtitle">${formatDate(this.effectiveLang(), d.date)}</p>` : nothing}
 			</div>
 			<div class="cols">
 				${this.renderColumn('Day', day)}
@@ -132,9 +131,9 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 			<p class="section-label">${label}</p>
 			${horas.map(
 				(h) => html`<div class="row">
-					<span class="glyph" aria-hidden="true">${PLANET_GLYPH[capitalize(h.planet ?? '')] ?? '·'}</span>
+					<span class="glyph" aria-hidden="true">${planetGlyph(h.planet) ?? '·'}</span>
 					<span class="planet">${h.planet}</span>
-					<span class="time">${formatTimeRange(h)}</span>
+					<span class="time">${formatTimeRange(this.effectiveLang(), h)}</span>
 					${typeof h.number === 'number' ? html`<span class="num">${h.number}</span>` : nothing}
 				</div>`,
 			)}

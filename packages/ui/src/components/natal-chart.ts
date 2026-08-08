@@ -1,10 +1,10 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import {
-	ASPECT_SYMBOL,
-	PLANET_GLYPH,
-	SIGN_GLYPH,
+	aspectSymbol,
+	planetGlyph,
 	SIGNS_ORDER,
+	signGlyph,
 } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -19,6 +19,7 @@ import {
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	ASPECT_CLASS,
+	formatAspectName,
 	formatDateTime,
 	formatNumber,
 	normalizeAspect,
@@ -27,7 +28,8 @@ import {
 	type InterpSection,
 	interpAccordionStyles,
 } from '../utils/interp-accordion.js';
-import { capitalize } from '../utils/string.js';
+import { display, displayList } from '../utils/localized.js';
+import { capitalize, lookupKey } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
@@ -76,6 +78,25 @@ export type WheelChart = Omit<NatalChartResponse, ChartExtras> &
 /**
  * Western natal chart wheel. Renders the 12 zodiac signs, 12 houses, planet
  * markers, and aspect lines from a /astrology/natal-chart response.
+ *
+ * @remarks
+ * **There is deliberately no `house-system` input, and re-adding one would be a
+ * lie in the types.** The house system is a REQUEST parameter: /astrology/natal-chart
+ * and /astrology/relocation-chart both take it and both echo the system they
+ * actually used as a required `houseSystem` field, which is what the legend
+ * chip reads. This component computes nothing astrological, so an attribute
+ * could never move a cusp; all it could do is print a label contradicting the
+ * cusps drawn beside it. One shipped anyway, declared and typed and wired
+ * through both framework wrappers, and nothing ever read it, so a consumer who
+ * followed our own generated types set it and got silence. Change the system in
+ * the REQUEST (the self-fetch form already offers it, straight off the spec) and
+ * the response relabels itself.
+ *
+ * **The equal-sector fallback is visible, on purpose.** With fewer than twelve
+ * cusps in the response the wheel draws twelve equal 30 degree sectors from the
+ * Ascendant, which is a different chart from a Placidus one; it says so in the
+ * accessible name and in a legend chip rather than numbering the sectors 1 to 12
+ * and letting a reader assume the response carried them.
  */
 @customElement('roxy-natal-chart')
 export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
@@ -240,6 +261,16 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				border-radius: 50%;
 				margin-right: 4px;
 				vertical-align: middle;
+			}
+			/* The equal-sector fallback has to be READ, not blend into the muted
+			 * legend beside it, so it takes --roxy-fg and a border. Not a tint with
+			 * coloured text: on a tinted chip that measures below the 4.5 floor. */
+			.legend .caveat {
+				color: var(--roxy-fg, #0a0a0a);
+				font-weight: var(--roxy-weight-bold, 600);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-full, 9999px);
+				padding: 1px 8px;
 			}
 
 			.grid-scroll {
@@ -460,9 +491,6 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		`,
 	];
 
-	@property({ type: String, attribute: 'house-system', reflect: true })
-	houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch' = 'placidus';
-
 	/** Heading above the wheel. Defaults to "Natal chart"; reuse (e.g. the relocation wheel) sets its own. */
 	@property({ type: String })
 	heading = 'Natal chart';
@@ -484,12 +512,23 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		return typeof m === 'number' ? m : null;
 	}
 
+	/**
+	 * True when the response carried all twelve house cusps, so every house on the
+	 * wheel is a longitude the API sent rather than a 30 degree sector this
+	 * component invented. Read by the spokes, the numbers, the cusp degrees, the
+	 * accessible name and the legend, so the drawing and the words about it cannot
+	 * disagree about which chart is on screen.
+	 */
+	private get hasCusps(): boolean {
+		return (this.data?.houses ?? []).length === 12;
+	}
+
 	private toAngle(lon: number): number {
 		return 180 + this.getAscendant() - lon;
 	}
 
 	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No chart data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No chart data')}</div>`;
 	}
 
 	protected renderData(data: WheelChart) {
@@ -499,11 +538,11 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 
 		return html`<div class="wrap" part="card">
 			<header part="header">
-				<h2 class="title">${this.heading}</h2>
+				<h2 class="title">${this.t(this.heading)}</h2>
 				${
 					data.birthDetails
 						? html`<div class="meta">
-							${formatDateTime(data.birthDetails.date, data.birthDetails.time)}
+							${formatDateTime(this.effectiveLang(), data.birthDetails.date, data.birthDetails.time)}
 						</div>`
 						: nothing
 				}
@@ -512,14 +551,14 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				aspects.length > 0
 					? html`${renderTablist({
 							items: [
-								{ id: 'wheel', label: 'Wheel' },
-								{ id: 'grid', label: 'Aspect grid' },
+								{ id: 'wheel', label: this.t('Wheel') },
+								{ id: 'grid', label: this.t('Aspect grid') },
 							],
 							active: view,
 							onSelect: (v) => {
 								this.view = v;
 							},
-							label: 'Natal chart views',
+							label: this.t('Natal chart views'),
 							idPrefix: 'natal',
 							controls: true,
 						})}
@@ -534,17 +573,20 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					: this.renderWheel(planets, aspects)
 			}
 			<div class="legend" part="legend">
-				<span>${planets.length} planets</span>
-				${aspects.length > 0 ? html`<span>${aspects.length} aspects</span>` : nothing}
+				<span>${this.t('{{count}} planets', { count: planets.length })}</span>
+				${aspects.length > 0 ? html`<span>${this.t('{{count}} aspects', { count: aspects.length })}</span>` : nothing}
 				${
-					data.houseSystem
-						? html`<span>${data.houseSystem} houses</span>`
-						: nothing
+					// The system names the CUSPS, so it is only true while there are
+					// cusps. Without them the caveat takes its place rather than sitting
+					// beside it and contradicting it.
+					this.hasCusps && data.houseSystem
+						? html`<span>${this.t('{{system}} houses', { system: data.houseSystem })}</span>`
+						: html`<span class="caveat">${this.t('Equal sectors from the Ascendant, no house cusps in this response')}</span>`
 				}
 				${
 					aspects.length > 0
-						? html`<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>harmonious</span>
-							<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>challenging</span>`
+						? html`<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>${this.t('Harmonious')}</span>
+							<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>${this.t('Challenging')}</span>`
 						: nothing
 				}
 			</div>
@@ -559,12 +601,17 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			viewBox="0 0 ${SIZE} ${SIZE}"
 			part="chart"
 			role="img"
-			aria-label="Natal chart wheel with twelve houses, planets, and aspects"
+			aria-label=${
+				this.hasCusps
+					? this.t('Natal chart wheel with twelve houses, planets, and aspects')
+					: this.t(
+							'Natal chart wheel with planets and aspects, houses shown as equal sectors from the Ascendant',
+						)
+			}
 		>
-			<title>Natal chart wheel</title>
+			<title>${this.t('Natal chart wheel')}</title>
 			<desc>
-				Twelve zodiac sign segments around a circular wheel. Planet glyphs are
-				placed at their ecliptic longitudes. Aspect lines connect related planets.
+				${this.t('Twelve zodiac sign segments around a circular wheel. Planet glyphs are placed at their ecliptic longitudes. Aspect lines connect related planets.')}
 			</desc>
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${OUTER_R} stroke-width="1.5" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${SIGN_R - 14} stroke-width="0.8" />
@@ -583,59 +630,60 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 * nature, with the exact orb in the SVG-free `<title>` tooltip.
 	 */
 	private renderAspectGrid(planets: PlanetEntry[], aspects: AspectEntry[]) {
-		const names = planets.map((p) => capitalize(p.name));
-		// Lookup aspects by unordered planet pair.
+		// Both values per body, deliberately: `name` is the English one the pairing
+		// and the glyph table are keyed on, `label` is the one a reader sees. The
+		// label is rendered verbatim, never through `capitalize`, which lowercases
+		// the rest of the string and made a tooltip read "North node"; the pairing
+		// folds through `lookupKey`, the same normalizer the glyph table uses.
+		const bodies = planets.map((p) => ({
+			name: p.name,
+			label: display(p, 'name'),
+		}));
+		const pairKey = (a: string, b: string) =>
+			[lookupKey(a), lookupKey(b)].sort().join('|');
 		const byPair = new Map<string, AspectEntry>();
-		for (const a of aspects) {
-			const k = [capitalize(a.planet1), capitalize(a.planet2)].sort().join('|');
-			byPair.set(k, a);
-		}
-		if (names.length === 0)
-			return html`<p class="roxy-empty" role="status">No planets to grid</p>`;
+		for (const a of aspects) byPair.set(pairKey(a.planet1, a.planet2), a);
+		if (bodies.length === 0)
+			return html`<p class="roxy-empty" role="status">${this.t('No planets to grid')}</p>`;
 
 		return html`<div class="grid-scroll" part="table aspect-grid">
 			<table class="aspect-grid">
 				<caption class="roxy-sr-only">
-					Planet by planet aspect grid: the aspect each pair of planets forms, read from
-					the planet naming the row across to the planet naming the column.
+					${this.t('Planet by planet aspect grid: the aspect each pair of planets forms, read from the planet naming the row across to the planet naming the column.')}
 				</caption>
 				<thead>
 					<tr>
 						<th></th>
-						${names.slice(0, -1).map((n) => {
-							const g = PLANET_GLYPH[n] ?? n.slice(0, 2);
-							return html`<th scope="col" title=${n}>${g}</th>`;
+						${bodies.slice(0, -1).map((b) => {
+							const g = planetGlyph(b.name) ?? b.label;
+							return html`<th scope="col" title=${b.label}>${g}</th>`;
 						})}
 					</tr>
 				</thead>
 				<tbody>
-					${names.slice(1).map((rowName, ri) => {
-						const rowGlyph = PLANET_GLYPH[rowName] ?? rowName.slice(0, 2);
+					${bodies.slice(1).map((row, ri) => {
+						const rowGlyph = planetGlyph(row.name) ?? row.label;
 						// Row i (1-based) pairs with columns 0..i-1.
 						return html`<tr>
-							<th scope="row" title=${rowName}>${rowGlyph}</th>
-							${names.slice(0, ri + 1).map((colName) => {
-								const a = byPair.get([rowName, colName].sort().join('|'));
+							<th scope="row" title=${row.label}>${rowGlyph}</th>
+							${bodies.slice(0, ri + 1).map((col) => {
+								const a = byPair.get(pairKey(row.name, col.name));
 								if (!a) return html`<td class="empty"></td>`;
 								const name = normalizeAspect(a);
-								// Every aspect the API returns has a glyph. The fallback is
-								// for an unknown future one, and initials read as an
-								// abbreviation where `name.slice(0, 3)` read as a leaked slug:
-								// `sesquiquadrate` rendered as the literal text `ses`.
+								// Every aspect the API returns has a glyph, and a miss falls
+								// back to the full aspect NAME. Never to initials or a slice:
+								// an invented two-letter code in a one-glyph cell reads as a
+								// deliberate abbreviation, which is how `sesquiquadrate`
+								// once shipped rendering as the literal text `ses`.
 								const sym =
-									ASPECT_SYMBOL[name] ??
-									ASPECT_SYMBOL[name.replace(/-/g, '')] ??
-									name
-										.split('-')
-										.map((part) => part.charAt(0).toUpperCase())
-										.join('');
+									aspectSymbol(name) ?? display(a, 'type', formatAspectName(a));
 								const cls = ASPECT_CLASS[name] ?? 'aspect-other';
 								const orb = formatNumber(a.orb, 1);
-								return html`<td class=${`cell ${cls}`} title=${`${rowName} ${name} ${colName}${orb ? ` (orb ${orb}°)` : ''}`}>
+								return html`<td class=${`cell ${cls}`} title=${`${row.label} ${display(a, 'type', name)} ${col.label}${orb ? ` (${this.t('orb')} ${orb}°)` : ''}`}>
 									<span class="asp">${sym}</span>
 								</td>`;
 							})}
-							${names.slice(ri + 1, -1).map(() => html`<td class="empty"></td>`)}
+							${bodies.slice(ri + 1, -1).map(() => html`<td class="empty"></td>`)}
 						</tr>`;
 					})}
 				</tbody>
@@ -686,12 +734,12 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	private renderSpokes() {
 		// Draw a spoke at each real house cusp longitude so Placidus / Koch
 		// unequal houses render correctly. Fall back to 12 equal spokes from the
-		// Ascendant only when the response carries no houses array.
+		// Ascendant only when the response carries no houses array, which the
+		// accessible name and the legend caveat both declare.
 		const houses = this.data?.houses ?? [];
-		const cuspLongitudes =
-			houses.length === 12
-				? houses.map((h) => h.longitude)
-				: Array.from({ length: 12 }, (_, i) => this.getAscendant() + i * 30);
+		const cuspLongitudes = this.hasCusps
+			? houses.map((h) => h.longitude)
+			: Array.from({ length: 12 }, (_, i) => this.getAscendant() + i * 30);
 		return cuspLongitudes.map((lon) => {
 			const angle = this.toAngle(lon);
 			const start = polarToCartesian(CENTER, CENTER, HOUSE_R, angle);
@@ -704,7 +752,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		return SIGNS_ORDER.map((sign, i) => {
 			const angle = this.toAngle(i * 30 + 15);
 			const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
-			return svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
+			return svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${signGlyph(sign) ?? ''}</text>`;
 		});
 	}
 
@@ -713,7 +761,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		// Place each house number at the angular midpoint between its cusp and
 		// the next, so the label sits inside the house even when houses are
 		// unequal. Fall back to equal 30-degree sectors when houses are absent.
-		if (houses.length === 12) {
+		if (this.hasCusps) {
 			return houses.map((house, i) => {
 				const next = houses[(i + 1) % 12];
 				const mid = arcMidpoint(
@@ -764,7 +812,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 */
 	private renderCuspDegrees() {
 		const houses = this.data?.houses ?? [];
-		if (houses.length !== 12) return nothing;
+		if (!this.hasCusps) return nothing;
 		return houses.map((house) => {
 			const angle = this.toAngle(house.longitude);
 			const pos = polarToCartesian(CENTER, CENTER, HOUSE_R + 9, angle);
@@ -828,7 +876,10 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				PLANET_R + 8,
 				displayAngle,
 			);
-			const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
+			// The glyph is looked up on the canonical English name and its fallback is
+			// the localized one, because the fallback is TEXT the reader is left with.
+			const label = display(p, 'name');
+			const glyph = planetGlyph(p.name) ?? label;
 			const sp = longitudeToSignPosition(p.longitude);
 			const retro = p.isRetrograde === true;
 			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
@@ -839,7 +890,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						? svg`<line class="planet-leader" x1=${rimPos.x} y1=${rimPos.y} x2=${leaderInner.x} y2=${leaderInner.y} />`
 						: nothing
 				}
-				<text class="planet-glyph" x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central"><title>${p.name}${retro ? ' retrograde' : ''} - ${degLabel} ${p.sign ?? ''}</title>${glyph}</text>
+				<text class="planet-glyph" x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central"><title>${label}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel} ${display(p, 'sign')}</title>${glyph}</text>
 				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${degLabel}${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
 			</g>`;
 		});
@@ -850,32 +901,39 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		const ai = this.data?.aspectsInterpretation;
 		if (!summary && !ai) return nothing;
 
-		const retrogrades = summary?.retrogradePlanets ?? [];
+		// Pairs, not names: the glyph beside each retrograde body is looked up on the
+		// English value while the pill prints the localized one, and the two arrays
+		// the API returns are index-aligned, which is what makes that possible.
+		const retrogrades = displayList(summary, 'retrogradePlanets');
 
 		return html`<div class="details" part="details">
 			${
 				summary?.dominantElement || summary?.dominantModality
 					? html`<div class="pill-row">
-						${summary.dominantElement ? html`<span class="pill">Dominant element: ${summary.dominantElement}</span>` : nothing}
-						${summary.dominantModality ? html`<span class="pill">Dominant modality: ${summary.dominantModality}</span>` : nothing}
+						${summary.dominantElement ? html`<span class="pill">${this.t('Dominant element')}: ${display(summary, 'dominantElement')}</span>` : nothing}
+						${summary.dominantModality ? html`<span class="pill">${this.t('Dominant modality')}: ${display(summary, 'dominantModality')}</span>` : nothing}
 					</div>`
 					: nothing
 			}
 			${
 				ai
 					? html`<div class="pill-row">
-						<span class="pill pill--success">Harmonious ${ai.harmonious}</span>
-						<span class="pill pill--danger">Challenging ${ai.challenging}</span>
-						<span class="pill pill--muted">Neutral ${ai.neutral}</span>
+						<span class="pill pill--success">${this.t('Harmonious')} ${ai.harmonious}</span>
+						<span class="pill pill--danger">${this.t('Challenging')} ${ai.challenging}</span>
+						<span class="pill pill--muted">${this.t('Neutral')} ${ai.neutral}</span>
 					</div>`
 					: nothing
 			}
 			${
 				retrogrades.length > 0
 					? html`<div class="pill-row">
-						${retrogrades.map((p) => {
-							const glyph = PLANET_GLYPH[p] ?? p.slice(0, 2);
-							return html`<span class="pill pill--muted">${glyph} ${p} R</span>`;
+						${retrogrades.map(({ value, label }) => {
+							// `?? ''` and never a slice: the full name is printed right
+							// beside the glyph, so a miss must drop the glyph, not invent
+							// one. This is the site that shipped `No North Node R`,
+							// `So South Node R` and `Bl Black Moon Lilith` to a customer.
+							const glyph = planetGlyph(value) ?? '';
+							return html`<span class="pill pill--muted">${glyph} ${label} R</span>`;
 						})}
 					</div>`
 					: nothing
@@ -896,6 +954,8 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 *
 	 * @remarks
 	 * The cells are derived from the planet signs, not read from `summary.elementDistribution`, because a 1D distribution cannot fill a cross-tab. That makes the body set the reconciliation risk: the API counts every body it returns (nodes, Chiron, and Black Moon Lilith included), so the grid must too, or the totals here would contradict the dominant-element pill rendered right above it. Hence the totals count placed bodies rather than `planets.length` (an unrecognized sign would otherwise inflate the grand total past the sum of its rows), the caption names the body set, and the dominant row and column are tinted from `summary` so the pill and the grid land on the same cell.
+	 *
+	 * **The seven headers stay English in every language, and that is a limit of the response rather than an oversight.** The API localizes the DOMINANT element and modality and nothing else, so the only translation available covers one row and one column; rendering those two in Spanish beside five English siblings would read as a bug, and inventing the other five here would put a table of domain vocabulary back in a component. The tint is what ties the localized pill above to its cell, and a tint needs no words.
 	 */
 	private renderElementModalityGrid() {
 		const planets = this.getPlanets();
@@ -904,6 +964,11 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		const MODALITIES = ['Cardinal', 'Fixed', 'Mutable'] as const;
 		const order = SIGNS_ORDER as readonly string[];
 		const summary = this.data?.summary;
+		// English on both sides, on purpose. These three are lookups, not labels:
+		// the dominant pair is COMPARED against the local element and modality
+		// arrays and each sign is resolved to its index in SIGNS_ORDER, so reading
+		// `dominantElementLocalized` or `signLocalized` here would match nothing on
+		// a translated page and everything on an English one.
 		const dominantEl = capitalize(summary?.dominantElement ?? '');
 		const dominantMod = capitalize(summary?.dominantModality ?? '');
 
@@ -916,8 +981,9 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			if (idx < 0) continue;
 			const el = ELEMENTS[idx % 4];
 			const mod = MODALITIES[idx % 3];
-			const glyph =
-				PLANET_GLYPH[capitalize(p.name)] ?? capitalize(p.name).slice(0, 2);
+			// The cell shows the glyph alone, so a miss falls back to the full name:
+			// wide and obviously wrong, rather than a plausible two-letter code.
+			const glyph = planetGlyph(p.name) ?? display(p, 'name');
 			cells[el]?.[mod]?.push(glyph);
 			placed++;
 		}
@@ -926,13 +992,20 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		const colTotal = (m: string) =>
 			ELEMENTS.reduce((s, el) => s + (cells[el]?.[m]?.length ?? 0), 0);
 
-		return html`<table
-			class="em-grid"
-			part="table element-modality"
-			aria-label="Element and modality distribution"
-		>
+		// Same scroll box as the aspect grid beside it. A cell holds a joined list
+		// of glyphs, so it is normally tiny, but a body with no glyph renders its
+		// FULL name there by design, and the table has to carry that without
+		// dragging the card out with it. `.grid-scroll` pairs `overflow-x: auto`
+		// with `min-width: 0`, and it is the `min-width` half that actually lets a
+		// grid item scroll instead of growing to fit.
+		return html`<div class="grid-scroll">
+			<table
+				class="em-grid"
+				part="table element-modality"
+				aria-label=${this.t('Element and modality distribution')}
+			>
 			<caption>
-				All ${placed} bodies in the chart, placed by sign
+				${this.t('All {{count}} bodies in the chart, placed by sign', { count: placed })}
 			</caption>
 			<thead>
 				<tr>
@@ -941,7 +1014,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						(m) =>
 							html`<th scope="col" class=${m === dominantMod ? 'dominant' : ''}>${m.slice(0, 3)}</th>`,
 					)}
-					<th scope="col">Total</th>
+					<th scope="col">${this.t('Total')}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -961,19 +1034,23 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					</tr>`;
 				})}
 				<tr>
-					<th scope="row">Total</th>
+					<th scope="row">${this.t('Total')}</th>
 					${MODALITIES.map(
 						(m) =>
 							html`<td class=${m === dominantMod ? 'em-total dominant' : 'em-total'}>${colTotal(m)}</td>`,
 					)}
 					<td class="em-total">${placed}</td>
 				</tr>
-			</tbody>
-		</table>`;
+				</tbody>
+			</table>
+		</div>`;
 	}
 
 	/**
 	 * Detected multi-planet configurations. Each card names the figure, tags the element or modality it pivots on, flags a dissociate (out-of-sign) figure, and puts the apex planet first with its own chip, because the apex is the point the whole configuration discharges through.
+	 *
+	 * @remarks
+	 * A pattern carries no localized partner for its `name`, `element`, `modality` or its `planets` list, so all four render English on every page. Do NOT translate the chips by looking each body up in `planets[].nameLocalized`: the response is the authority for its own vocabulary, and a second translation of the same fact assembled here is exactly what can end up disagreeing with the wheel beside it.
 	 */
 	private renderPatterns() {
 		const patterns = this.data?.patterns ?? [];
@@ -984,7 +1061,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				(b.tightness ?? 0) - (a.tightness ?? 0),
 		);
 		return html`<section class="block" part="section patterns">
-			<h3>Chart patterns</h3>
+			<h3>${this.t('Chart patterns')}</h3>
 			${sorted.map((p) => this.renderPattern(p))}
 		</section>`;
 	}
@@ -1003,23 +1080,23 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				${p.modality ? html`<span class="pattern-tag">${p.modality}</span>` : nothing}
 				${
 					p.dissociate
-						? html`<span class="pattern-tag" title="Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.">Dissociate</span>`
+						? html`<span class="pattern-tag" title=${this.t('Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.')}>${this.t('Dissociate')}</span>`
 						: nothing
 				}
 				${
 					// Math.round, not formatNumber(x, 0): that helper strips trailing
 					// zeros, so a 100% tight pattern renders as "1%".
 					typeof p.tightness === 'number'
-						? html`<span class="pattern-tight">${Math.round(p.tightness)}% tight</span>`
+						? html`<span class="pattern-tight">${this.t('{{percent}}% tight', { percent: Math.round(p.tightness) })}</span>`
 						: nothing
 				}
 			</div>
 			<div class="pattern-planets">
 				${ordered.map((name) => {
-					const glyph = PLANET_GLYPH[capitalize(name)];
+					const glyph = planetGlyph(name);
 					const isApex = Boolean(p.apex) && name === p.apex;
 					return html`<span class=${isApex ? 'planet-chip apex' : 'planet-chip'}>
-						${glyph ? html`<span aria-hidden="true">${glyph}</span>` : nothing}${name}${isApex ? html`<span class="apex-tag">apex</span>` : nothing}
+						${glyph ? html`<span aria-hidden="true">${glyph}</span>` : nothing}${name}${isApex ? html`<span class="apex-tag">${this.t('apex')}</span>` : nothing}
 					</span>`;
 				})}
 			</div>
@@ -1038,16 +1115,17 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			.filter((p) => p.interpretation)
 			.map((p) => {
 				const interp = p.interpretation!;
-				const glyph = PLANET_GLYPH[capitalize(p.name)] ?? '';
+				const glyph = planetGlyph(p.name) ?? '';
 				const deg = formatNumber(p.degree ?? 0, 1);
+				const label = display(p, 'name');
 				const lead = interp.summary || interp.detailed || '';
 				// `detailed` only becomes a second paragraph when `summary` already
 				// took the lead line, so a response carrying one or the other never
 				// prints the same prose twice.
 				const detail = interp.summary ? interp.detailed : undefined;
 				return {
-					label: `${glyph} ${p.name}`.trim(),
-					aside: [p.sign ?? '', deg].filter(Boolean).join(' '),
+					label: `${glyph} ${label}`.trim(),
+					aside: [display(p, 'sign'), deg].filter(Boolean).join(' '),
 					body: lead,
 					extra: html`${detail ? html`<p>${detail}</p>` : nothing}
 					${
@@ -1060,20 +1138,23 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		return this.renderInterpretation(
 			sections,
 			'natal-planet-readings',
-			'Planet readings',
+			this.t('Planet readings'),
 		);
 	}
 
 	private renderAspects(planets: PlanetEntry[], aspects: AspectEntry[]) {
+		// Keyed on the canonical English name at BOTH ends, because this map is how
+		// an aspect finds the two longitudes its line is drawn between. The localized
+		// names go in the `<title>` and nowhere near the key.
 		const planetMap = new Map<string, number>();
 		for (const p of planets) {
 			if (typeof p.longitude !== 'number') continue;
-			const name = capitalize(p.name);
+			const name = lookupKey(p.name);
 			if (name) planetMap.set(name, p.longitude);
 		}
 		return aspects.map((a) => {
-			const l1 = planetMap.get(capitalize(a.planet1));
-			const l2 = planetMap.get(capitalize(a.planet2));
+			const l1 = planetMap.get(lookupKey(a.planet1));
+			const l2 = planetMap.get(lookupKey(a.planet2));
 			if (l1 === undefined || l2 === undefined) return nothing;
 			const p1 = polarToCartesian(
 				CENTER,
@@ -1090,7 +1171,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			const aspectName = normalizeAspect(a);
 			const aspectClass = ASPECT_CLASS[aspectName] ?? 'aspect-other';
 			const orbLabel = formatNumber(a.orb, 1);
-			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${a.planet1} ${aspectName || ''} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${display(a, 'planet1')} ${display(a, 'type', aspectName)} ${display(a, 'planet2')}${orbLabel ? ` (${this.t('orb')} ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
 }

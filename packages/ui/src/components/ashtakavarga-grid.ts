@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { SIGN_GLYPH } from '../tokens/index.js';
+import { signGlyph } from '../tokens/index.js';
 import type { AshtakavargaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -342,7 +342,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 							return html`<tr>
 								<td>
 									<div class="planet-cell">
-										<span class="glyph" aria-hidden="true">${SIGN_GLYPH[sign] ?? ''}</span>
+										<span class="glyph" aria-hidden="true">${signGlyph(sign) ?? ''}</span>
 										${sign}
 									</div>
 								</td>
@@ -420,8 +420,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 					<tr>
 						<th scope="col">Planet</th>
 						${signs.map(
-							(s) =>
-								html`<th scope="col" title=${s}>${SIGN_GLYPH[s] ?? s.slice(0, 2)}</th>`,
+							(s) => html`<th scope="col" title=${s}>${signGlyph(s) ?? s}</th>`,
 						)}
 						<th scope="col">Total</th>
 					</tr>

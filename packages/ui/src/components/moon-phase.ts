@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { MOON_PHASE_EMOJI } from '../tokens/index.js';
+import { moonPhaseEmoji } from '../tokens/index.js';
 import type {
 	GetCurrentMoonPhaseResponse,
 	GetMoonCalendarResponse,
@@ -154,7 +154,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 				<span class="emoji" aria-hidden="true">${emoji}</span>
 				<div>
 					<h2 class="label">${d.phase ?? 'Moon'}</h2>
-					${d.date ? html`<div class="date">${formatDate(d.date)}</div>` : nothing}
+					${d.date ? html`<div class="date">${formatDate(this.effectiveLang(), d.date)}</div>` : nothing}
 				</div>
 			</div>
 			<div class="stats" part="details">
@@ -213,31 +213,19 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 		return html`<div class="list-item" role="listitem">
 			<span aria-hidden="true">${emoji}</span>
 			<span>${p.phase}</span>
-			<span>${formatDate(p.date)}</span>
+			<span>${formatDate(this.effectiveLang(), p.date)}</span>
 		</div>`;
 	}
 }
 
 /**
- * Map a phase name to its emoji, tolerant of the live API naming. The API sends
- * suffixed names ("Waxing Gibbous Moon") and "Third Quarter Moon" where the map
- * keys are unsuffixed and use "last quarter"; only "new moon"/"full moon" keep
- * the suffix. Try the raw lowercase, then the suffix stripped, then the
- * third->last quarter alias, then the alias re-suffixed, so every one of the
- * eight phases resolves in both the suffixed and unsuffixed forms.
+ * Map a phase name to its emoji, tolerant of the live API naming. The
+ * suffix-stripping and third/last quarter alias reconciliation now live in
+ * {@link moonPhaseEmoji}, so every caller of the token resolves the same eight
+ * phases from the same live API spellings.
  */
 function phaseEmoji(phase: string | undefined): string {
-	if (!phase) return '🌙';
-	const lc = phase.toLowerCase().trim();
-	const noMoon = lc.replace(/\s*moon$/, '').trim();
-	const alias = noMoon === 'third quarter' ? 'last quarter' : noMoon;
-	return (
-		MOON_PHASE_EMOJI[lc] ??
-		MOON_PHASE_EMOJI[noMoon] ??
-		MOON_PHASE_EMOJI[alias] ??
-		MOON_PHASE_EMOJI[`${alias} moon`] ??
-		'🌙'
-	);
+	return moonPhaseEmoji(phase) ?? '🌙';
 }
 
 function formatIllumination(v: number): string {

@@ -1,10 +1,14 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
-import type { CalculateTransitAspectsResponse } from '../types/index.js';
+import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
+import type {
+	CalculateTransitAspectsResponse,
+	NatalChartResponse,
+} from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
+	arcMidpoint,
 	arcSeparation,
 	fanOut,
 	longitudeToSignPosition,
@@ -24,6 +28,7 @@ import {
 	type InterpSection,
 	interpAccordionStyles,
 } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
 
 type Body = CalculateTransitAspectsResponse['transitPlanets'][number];
@@ -56,6 +61,8 @@ const TRANSIT_LINE_R = 112;
 const NATAL_LINE_R = 104;
 /** Innermost circle, closing the wheel under the natal degree labels. */
 const HUB_R = 70;
+/** House sector numbers, inside the hub: the only band on this wheel with nothing else in it. Drawn ONLY from cusps the page supplied. */
+const HOUSE_NUM_R = 58;
 /**
  * Widths a fanned cluster has to clear. The glyph is the wider mark but sits on
  * the larger radius, and the degree label is narrower on a smaller one, so which
@@ -67,9 +74,13 @@ const DEG_LABEL_WIDTH = 15;
 const LEADER_TICK = 8;
 const LEADER_FOOT = 4;
 
-/** Glyph for an API body name. `capitalize` folds "North Node" onto the map's "North node" key, which is how every chart in the library resolves the nodes and Black Moon Lilith. */
-const glyphFor = (name: string): string =>
-	PLANET_GLYPH[capitalize(name)] ?? name.slice(0, 2);
+/**
+ * Glyph for an API body, or the name a reader sees when the library has none: the SVG ring position is the sole identifier for that body, so a miss must stay visibly wrong rather than a plausible fabricated abbreviation.
+ *
+ * Two arguments because the two halves answer to different languages. `name` is the canonical English value the glyph table is keyed on and must stay English; `label` is what is left ON SCREEN when that lookup misses, so it is the localized one.
+ */
+const glyphFor = (name: string, label: string): string =>
+	planetGlyph(name) ?? label;
 
 /** `12°34'` from a raw ecliptic longitude, the form a practitioner reads off a wheel. */
 const degLabel = (longitude: number): string => {
@@ -85,7 +96,7 @@ const degLabel = (longitude: number): string => {
 const score = (v: unknown): string =>
 	typeof v === 'number' && Number.isFinite(v) ? String(Math.round(v)) : '';
 
-/** Bodies keyed by their canonical name, so an aspect or a table row can find a longitude without rescanning the array. */
+/** Bodies keyed by their canonical ENGLISH name, so an aspect or a table row can find a longitude without rescanning the array. The API keeps `name` English in every language for exactly this, and keying on `nameLocalized` would resolve nothing on a translated page. */
 const byName = (list: Body[]): Map<string, Body> => {
 	const m = new Map<string, Body>();
 	for (const p of list) m.set(capitalize(p.name), p);
@@ -107,18 +118,27 @@ const byName = (list: Body[]): Map<string, Body> => {
  * orbs reconciles with the transit-to-natal separation, and only 4 with the
  * reverse.
  *
- * **The wheel is sign-based, and that is a property of the response, not a
- * shortcut.** /astrology/transit-aspects returns no ascendant and no house-cusp
- * longitudes, so there is nothing to orient a house wheel to. It does carry a
- * `house` number per body, but that number comes back as `1` for every body on
- * every chart tested, so it is not a placement and is deliberately never
- * rendered: printing it would put twenty-eight bodies in the first house. The
- * default wheel fixes 0 degrees Aries on the left horizon, says so in the legend
- * and in the SVG description rather than leaving a reader to discover it, and
- * draws no house divisions at all. A host that already holds the ascendant (from
- * /astrology/natal-chart) can pass {@link RoxyTransitWheel.ascendant} to rotate
- * the same wheel onto the real horizon; that is a rotation of supplied data,
- * never a derived cusp, so no house sectors appear in that mode either.
+ * **The response carries real houses, and it did not always.** Every body comes
+ * back with a `house` read against the NATAL cusps (a transiting body reports the
+ * natal house it is currently passing through) plus a top-level `houseSystem`.
+ * Verified live on 2026-08-08: the fourteen natal house numbers reconcile body
+ * for body with /astrology/natal-chart for the same birth data, and requesting
+ * `whole-sign` moves them. An earlier revision of the API did return `1` for
+ * every body, and the comment saying so outlived the fix and went on justifying a
+ * missing House column for months. The numbers are rendered, in their own
+ * columns, labelled with the system the response names.
+ *
+ * **What is still absent is the GEOMETRY, and that is why the default wheel has
+ * no house ring.** The response carries no ascendant and no cusp longitudes, so a
+ * house number is a placement with no sector to draw it in. Equal sectors derived
+ * from {@link RoxyTransitWheel.ascendant} and labelled with a quadrant system
+ * would replace one false statement with a worse one, so the default wheel fixes
+ * 0 degrees Aries on the left horizon, says so in the legend and in the SVG
+ * description rather than leaving a reader to discover it, and draws no house
+ * divisions at all. A host that holds the real cusps (from /astrology/natal-chart,
+ * which returns all twelve) passes {@link RoxyTransitWheel.houses} and gets the
+ * sector ring. Both props are supplied data placed on a circle, never a cusp this
+ * component worked out.
  */
 @customElement('roxy-transit-wheel')
 export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsResponse> {
@@ -222,12 +242,27 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				.planet-deg {
 					font-size: 10px;
 				}
+				.house-num {
+					font-size: 12px;
+				}
 			}
 			.tick {
 				stroke: var(--roxy-border, #e4e4e7);
 			}
 			.tick-major {
 				stroke: var(--roxy-secondary, #475569);
+			}
+			/* Dashed, so a house cusp is never mistaken for one of the solid sign
+			 * boundaries it crosses. Only ever drawn from supplied cusps. */
+			.house-cusp {
+				stroke: var(--roxy-secondary, #475569);
+				stroke-width: 1;
+				stroke-dasharray: 3 3;
+			}
+			.house-num {
+				fill: var(--roxy-secondary, #475569);
+				font-size: 9px;
+				font-family: var(--roxy-font-sans);
 			}
 			.axis-tick {
 				stroke: var(--roxy-accent-ink, #b45309);
@@ -420,7 +455,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		`,
 	];
 
-	/** Heading above the wheel. */
+	/** Heading above the wheel. The default is translated; a heading the page sets is passed through the catalogue too, so a host that supplies its own English wording still gets it localized when one is registered for it. */
 	@property({ type: String })
 	heading = 'Transits';
 
@@ -431,48 +466,116 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 * @remarks
 	 * /astrology/transit-aspects returns no ascendant, so this is the only way the
 	 * wheel can sit on a real horizon. Setting it ROTATES the wheel so the given
-	 * longitude falls on the left horizon and draws the ASC/DSC axis. Nothing else
-	 * changes, and no house cusps are drawn, because none are available to draw.
-	 * Leave it unset for the honest default: 0 degrees Aries on the left.
+	 * longitude falls on the left horizon and draws the ASC/DSC axis. It draws no
+	 * house divisions, because a rotation is not a cusp; that is what
+	 * {@link RoxyTransitWheel.houses} is for. Leave both unset for the honest
+	 * default: 0 degrees Aries on the left.
 	 */
 	@property({ type: Number })
 	ascendant?: number;
 
-	/** True when the page supplied a usable ascendant, so the wheel sits on a real horizon rather than the Aries default. */
-	private get oriented(): boolean {
+	/**
+	 * The twelve natal house cusps, supplied by the page. Takes the
+	 * /astrology/natal-chart `houses` array verbatim, or twelve bare cusp
+	 * longitudes in house order.
+	 *
+	 * @remarks
+	 * /astrology/transit-aspects numbers every body by house but returns no cusp
+	 * longitudes, so this is the only way the wheel can draw the sectors those
+	 * numbers refer to. Supplying it draws the twelve cusp lines and their numbers
+	 * and, unless {@link RoxyTransitWheel.ascendant} also arrives, rotates the
+	 * first cusp onto the left horizon.
+	 *
+	 * Both accepted shapes exist because the natural source is a natal-chart
+	 * response a host already holds, and passing `chart.houses` straight through
+	 * has to work; twelve numbers is the terser form for a host that stored only
+	 * the longitudes. Anything that does not resolve to houses 1 to 12 with finite
+	 * longitudes is ignored outright rather than half drawn, which is the same
+	 * degrade-honestly rule the rest of this component follows: a partial house
+	 * ring is a claim about placements the wheel cannot support.
+	 */
+	@property({ type: Array })
+	houses?: NatalChartResponse['houses'] | number[];
+
+	/** True when the page supplied a usable ascendant, so the ASC/DSC axis is a value the host gave rather than one derived from a cusp. */
+	private get ascendantGiven(): boolean {
 		return (
 			typeof this.ascendant === 'number' && Number.isFinite(this.ascendant)
 		);
 	}
 
 	/**
+	 * The supplied cusps, normalized to houses 1 to 12 in order, or null.
+	 *
+	 * @remarks
+	 * Sorted by house number rather than trusted in array order, and rejected
+	 * whole unless the twelve numbers are exactly 1 to 12 with finite longitudes.
+	 * A cusp set that fails either check is not a house division, and drawing part
+	 * of one would put a sector boundary where the host never claimed there was
+	 * one.
+	 */
+	private get cusps(): Array<{ number: number; longitude: number }> | null {
+		const raw = this.houses;
+		if (!Array.isArray(raw) || raw.length !== 12) return null;
+		const out = raw
+			.map((h, i) =>
+				typeof h === 'number'
+					? { number: i + 1, longitude: h }
+					: { number: Number(h?.number), longitude: Number(h?.longitude) },
+			)
+			.sort((a, b) => a.number - b.number);
+		const complete = out.every(
+			(c, i) => c.number === i + 1 && Number.isFinite(c.longitude),
+		);
+		return complete ? out : null;
+	}
+
+	/**
 	 * Ecliptic longitude to SVG angle. 0 degrees is at 3 o'clock and positive
 	 * angles run clockwise on screen, so subtracting the longitude makes the
 	 * zodiac run counterclockwise, which is how a chart wheel is read. The 180
-	 * offset puts the reference point on the left horizon: 0 Aries by default,
-	 * the supplied Ascendant when there is one.
+	 * offset puts the reference point on the left horizon: the supplied Ascendant
+	 * first, else the supplied first house cusp, else 0 Aries.
+	 *
+	 * The Ascendant wins because the two are not the same longitude under every
+	 * system: whole-sign puts cusp 1 at 0 degrees of the rising sign, which can be
+	 * most of a sign away from the Ascendant itself.
 	 */
 	private toAngle(longitude: number): number {
-		return 180 + (this.oriented ? (this.ascendant as number) : 0) - longitude;
+		const origin = this.ascendantGiven
+			? (this.ascendant as number)
+			: (this.cusps?.[0]?.longitude ?? 0);
+		return 180 + origin - longitude;
 	}
 
 	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No transit data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No transit data')}</div>`;
 	}
 
 	protected renderData(d: CalculateTransitAspectsResponse) {
 		const natal = d.natalPlanets ?? [];
 		const transit = d.transitPlanets ?? [];
 		const aspects = d.aspects ?? [];
-		const when = formatDateTime(d.transitDate);
+		const when = formatDateTime(this.effectiveLang(), d.transitDate);
+		// Label then number, at every count and in every language: the catalogue
+		// carries no plural rules, so "1 aspects" is the alternative in English and
+		// three wrong endings are the alternative in Russian.
 		const count =
 			aspects.length > 0
-				? `${aspects.length} aspect${aspects.length === 1 ? '' : 's'} to the natal chart`
+				? this.t('Aspects to the natal chart: {{count}}', {
+						count: aspects.length,
+					})
 				: '';
+		// The House columns and the house-system chip both stand on the SAME fact:
+		// that a body came back with a house. Derived once from the payload rather
+		// than assumed from the type, so a host feeding an older captured response
+		// loses the columns instead of printing a column of blanks under a system
+		// name.
+		const houses = [...natal, ...transit].some((p) => Number.isFinite(p.house));
 
-		return html`<div class="wrap" part="card" aria-label="Natal and transit bi-wheel">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Natal and transit bi-wheel')}>
 			<div class="head" part="header">
-				<h2 class="title">${this.heading}</h2>
+				<h2 class="title">${this.t(this.heading)}</h2>
 				${
 					when || count
 						? html`<p class="subtitle">${[when, count].filter(Boolean).join(' · ')}</p>`
@@ -480,11 +583,29 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				}
 			</div>
 			${this.renderWheel(natal, transit, aspects)}
-			${this.renderLegend(natal, transit, aspects)}
+			${this.renderLegend(natal, transit, aspects, houses ? d.houseSystem : undefined)}
 			${this.renderSummary(d.summary)}
-			${this.renderPositions(natal, transit)}
+			${this.renderPositions(natal, transit, houses)}
 			${this.renderReadings(aspects)}
 		</div>`;
+	}
+
+	/**
+	 * What sits on the left horizon, in words. Rendered as a legend chip AND as a
+	 * sentence of the SVG description, from this one getter, so the drawing and
+	 * its accessible text cannot end up claiming different orientations.
+	 */
+	private get orientationCaption(): string {
+		if (this.ascendantGiven) return this.t('Ascendant on the left horizon');
+		if (this.cusps) return this.t('First house cusp on the left horizon');
+		return this.t('Sign wheel, 0° Aries on the left');
+	}
+
+	/** Whether the twelve sectors on the wheel are real cusps, in words. Same dual use as {@link RoxyTransitWheel.orientationCaption}. */
+	private get cuspCaption(): string {
+		return this.cusps
+			? this.t('House cusps supplied by the page')
+			: this.t('No house cusps');
 	}
 
 	private renderWheel(
@@ -496,28 +617,22 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			viewBox="0 0 ${SIZE} ${SIZE}"
 			part="chart"
 			role="img"
-			aria-label="Bi-wheel with natal bodies on the inner ring and transiting bodies on the outer ring"
+			aria-label=${this.t('Bi-wheel with natal bodies on the inner ring and transiting bodies on the outer ring')}
 		>
-			<title>Natal and transit bi-wheel</title>
+			<title>${this.t('Natal and transit bi-wheel')}</title>
 			<desc>
-				Twelve zodiac sign segments around a circular wheel. Natal bodies sit at
-				their ecliptic longitudes on the inner ring and transiting bodies on the
-				outer ring, and each line joins a transiting body to the natal body it
-				aspects.
-				${
-					this.oriented
-						? 'The Ascendant supplied by the page sits on the left horizon.'
-						: 'Fixed zodiacal orientation, 0 degrees Aries on the left horizon. This response carries no Ascendant and no house cusps, so no houses are drawn.'
-				}
+				${this.t('Twelve zodiac sign segments around a circular wheel. Natal bodies sit at their ecliptic longitudes on the inner ring and transiting bodies on the outer ring, and each line joins a transiting body to the natal body it aspects.')}
+				${this.orientationCaption}. ${this.cuspCaption}.
 			</desc>
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${OUTER_R} stroke-width="1.5" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${BAND_R} stroke-width="0.8" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${TRANSIT_LINE_R} stroke-width="0.6" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${HUB_R} stroke-width="0.5" />
 			${this.renderTicks()} ${this.renderSpokes()} ${this.renderSigns()}
+			${this.renderHouses()}
 			${this.renderAspectLines(natal, transit, aspects)}
-			${this.renderRing(natal, NATAL_R, NATAL_DEG_R, 'natal-glyph', 'natal', 1)}
-			${this.renderRing(transit, TRANSIT_R, TRANSIT_DEG_R, 'transit-glyph', 'transiting', -1)}
+			${this.renderRing(natal, NATAL_R, NATAL_DEG_R, 'natal-glyph', this.t('Natal'), 1)}
+			${this.renderRing(transit, TRANSIT_R, TRANSIT_DEG_R, 'transit-glyph', this.t('Transiting'), -1)}
 			${this.renderAxis()}
 		</svg>`;
 	}
@@ -542,13 +657,59 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return ticks;
 	}
 
-	/** Twelve sign boundaries, drawn from the inner ring outward. Sign divisions, never house cusps: the response carries no cusp longitudes. */
+	/** Twelve sign boundaries, drawn from the inner ring outward. Solid, and always exactly 30 degrees apart: house cusps are the dashed lines from {@link RoxyTransitWheel.renderHouses} and only exist when the page supplied them. */
 	private renderSpokes() {
 		return SIGNS_ORDER.map((_, i) => {
 			const angle = this.toAngle(i * 30);
 			const start = polarToCartesian(CENTER, CENTER, HUB_R, angle);
 			const end = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
 			return svg`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.6" />`;
+		});
+	}
+
+	/**
+	 * The twelve house sectors, drawn ONLY from cusps the page supplied.
+	 *
+	 * @remarks
+	 * Dashed and inset to the sign band, because the solid spokes beside them are
+	 * sign boundaries and a reader who cannot tell the two apart cannot reconcile
+	 * the chart against another calculator. Each number sits at the arc midpoint
+	 * of its own sector, so an unequal house carries its label inside itself; the
+	 * hub is the one band on this wheel with nothing else in it.
+	 *
+	 * Nothing here is derived. With no cusps supplied this renders nothing at all
+	 * rather than twelve equal sectors from the Ascendant, which would be a
+	 * different chart wearing the same label.
+	 *
+	 * **Known and accepted: a fanned glyph can sit one sector off.** {@link fanOut}
+	 * displaces a crowded glyph in ANGLE, so a body a degree inside a cusp can be
+	 * drawn just past it; measured on a real Capricorn stellium, the natal Sun
+	 * glyph landed in the ninth sector while the body is in the eighth. The leader
+	 * runs back to a tick at the true longitude and the House column is the
+	 * authoritative number, which is the same trade professional chart software
+	 * makes. Do not "fix" it by clamping a glyph to its sector: that would move the
+	 * mark AND still not be the position.
+	 */
+	private renderHouses() {
+		const cusps = this.cusps;
+		if (!cusps) return nothing;
+		return cusps.map((cusp, i) => {
+			const next = cusps[(i + 1) % 12];
+			const angle = this.toAngle(cusp.longitude);
+			const start = polarToCartesian(CENTER, CENTER, HUB_R, angle);
+			const end = polarToCartesian(CENTER, CENTER, BAND_R, angle);
+			const label = polarToCartesian(
+				CENTER,
+				CENTER,
+				HOUSE_NUM_R,
+				this.toAngle(
+					arcMidpoint(cusp.longitude, next?.longitude ?? cusp.longitude + 30),
+				),
+			);
+			return svg`<g>
+				<line class="house-cusp" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} />
+				<text class="house-num" x=${label.x} y=${label.y} text-anchor="middle" dominant-baseline="central">${cusp.number}</text>
+			</g>`;
 		});
 	}
 
@@ -560,7 +721,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				SIGN_R,
 				this.toAngle(i * 30 + 15),
 			);
-			return svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[sign]}</text>`;
+			return svg`<text class="sign-glyph" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${signGlyph(sign)}</text>`;
 		});
 	}
 
@@ -606,7 +767,8 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				// fan-out has already separated the GLYPHS of, so the extra precision
 				// costs the legibility of the position it is trying to state.
 				const label = `${longitudeToSignPosition(longitude).degree}°`;
-				const tooltip = `${kind} ${p.name}${retro ? ' retrograde' : ''} - ${degLabel(longitude)} ${p.sign ?? ''}`;
+				const body = display(p, 'name');
+				const tooltip = `${kind} ${body}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel(longitude)} ${display(p, 'sign')}`;
 				const displaced = Math.abs(displayLongitude - longitude) > 0.5;
 				const tick = polarToCartesian(
 					CENTER,
@@ -626,7 +788,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 						? svg`<line class=${`leader ${cls}`} x1=${tick.x} y1=${tick.y} x2=${foot.x} y2=${foot.y} />`
 						: nothing
 				}
-				<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${tooltip}</title>${glyphFor(p.name)}</text>
+				<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${tooltip}</title>${glyphFor(p.name, body)}</text>
 				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${label}${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
 			</g>`;
 			},
@@ -665,13 +827,20 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			);
 			const name = normalizeAspect(a);
 			const orb = formatNumber(a.orb, 1);
-			return svg`<line class=${`aspect ${ASPECT_CLASS[name] ?? 'aspect-other'}`} x1=${from.x} y1=${from.y} x2=${to.x} y2=${to.y}><title>transiting ${a.planet1} ${name} natal ${a.planet2}${orb ? ` (orb ${orb}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${ASPECT_CLASS[name] ?? 'aspect-other'}`} x1=${from.x} y1=${from.y} x2=${to.x} y2=${to.y}><title>${this.t('Transiting')} ${display(a, 'planet1')} ${display(a, 'type', name)} ${this.t('Natal')} ${display(a, 'planet2')}${orb ? ` (${this.t('orb')} ${orb}°)` : ''}</title></line>`;
 		});
 	}
 
-	/** ASC and DSC ticks, drawn ONLY when the page supplied an ascendant. Nothing is derived: the descendant is the exact opposite point of the value given. */
+	/**
+	 * ASC and DSC ticks, drawn ONLY when the page supplied an ascendant. Nothing
+	 * is derived: the descendant is the exact opposite point of the value given.
+	 *
+	 * Gated on the ascendant alone, never on the cusps. Under whole-sign the first
+	 * cusp is 0 degrees of the rising sign rather than the Ascendant, so labelling
+	 * it ASC would be wrong on exactly the charts a traditional reader casts.
+	 */
 	private renderAxis() {
-		if (!this.oriented) return nothing;
+		if (!this.ascendantGiven) return nothing;
 		const asc = normalizeLongitude(this.ascendant as number);
 		return [asc, oppositePoint(asc)].map((lon, i) => {
 			const angle = this.toAngle(lon);
@@ -689,22 +858,30 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 * A reader who cannot tell whether the divisions are signs or houses cannot
 	 * reconcile the chart against another calculator, so the caption is
 	 * provenance rather than decoration.
+	 *
+	 * `houseSystem` labels the house NUMBERS in the table, which is the only thing
+	 * the response can vouch for, and the cusp chip separately says where the
+	 * drawn sectors came from. Two statements, each true on its own, rather than
+	 * one chip implying the ring and the numbers share a source.
 	 */
 	private renderLegend(
 		natal: Body[],
 		transit: Body[],
 		aspects: TransitAspect[],
+		houseSystem: string | undefined,
 	) {
 		return html`<div class="legend" part="legend">
-			<span><span class="swatch swatch--natal"></span>${natal.length} natal</span>
-			<span><span class="swatch swatch--transit"></span>${transit.length} transiting</span>
+			<span><span class="swatch swatch--natal"></span>${this.t('{{count}} natal bodies', { count: natal.length })}</span>
+			<span><span class="swatch swatch--transit"></span>${this.t('{{count}} transiting bodies', { count: transit.length })}</span>
 			${
 				aspects.length > 0
-					? html`<span><span class="swatch swatch--harmonious"></span>harmonious</span>
-						<span><span class="swatch swatch--challenging"></span>challenging</span>`
+					? html`<span><span class="swatch swatch--harmonious"></span>${this.t('Harmonious')}</span>
+						<span><span class="swatch swatch--challenging"></span>${this.t('Challenging')}</span>`
 					: nothing
 			}
-			<span>${this.oriented ? 'Ascendant on the left horizon' : 'Sign wheel, 0° Aries on the left, no houses'}</span>
+			${houseSystem ? html`<span>${this.t('{{system}} houses', { system: houseSystem })}</span>` : nothing}
+			<span>${this.orientationCaption}</span>
+			<span>${this.cuspCaption}</span>
 		</div>`;
 	}
 
@@ -713,12 +890,15 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		if (!s) return nothing;
 		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
 		return html`<div part="details">
-			<div class="summary-pills" role="region" aria-label="Transit aspect summary">
-				${typeof s.total === 'number' ? html`<span class="pill pill--muted">Total: ${s.total}</span>` : nothing}
-				<span class="pill pill--success">Harmonious: ${s.harmonious}</span>
-				<span class="pill pill--danger">Challenging: ${s.challenging}</span>
-				<span class="pill pill--muted">Neutral: ${s.neutral}</span>
+			<div class="summary-pills" role="region" aria-label=${this.t('Transit aspect summary')}>
+				${typeof s.total === 'number' ? html`<span class="pill pill--muted">${this.t('Total')}: ${s.total}</span>` : nothing}
+				<span class="pill pill--success">${this.t('Harmonious')}: ${s.harmonious}</span>
+				<span class="pill pill--danger">${this.t('Challenging')}: ${s.challenging}</span>
+				<span class="pill pill--muted">${this.t('Neutral')}: ${s.neutral}</span>
 				${byType.map(
+					// English in every language, and nothing to do about it here: `byType`
+					// is an object KEYED by the canonical aspect name, so the response
+					// carries no localized partner for these the way `aspects[]` does.
 					([type, count]) =>
 						html`<span class="pill pill--muted">${formatAspectName({ type })}: ${count}</span>`,
 				)}
@@ -729,12 +909,14 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 
 	/** The tightest transit by orb: the one contact most likely to be felt, lifted out so it is not buried among seventy others. */
 	private renderStrongest(s: NonNullable<TransitSummary['strongest']>) {
+		const transiting = display(s, 'planet1');
+		const natal = display(s, 'planet2');
 		return html`<div class="strongest" part="details strongest">
-			<span class="label">Strongest</span>
-			<span aria-hidden="true" class="glyph">${glyphFor(s.planet1)}</span>transiting ${s.planet1}
-			<span class="nature-badge ${(s.interpretation ?? 'neutral').toLowerCase()}">${formatAspectName(s)}</span>
-			<span aria-hidden="true" class="glyph">${glyphFor(s.planet2)}</span>natal ${s.planet2}
-			<span class="meta">${s.isApplying ? 'Applying' : 'Separating'} · orb ${formatNumber(s.orb, 2)}° · str ${score(s.strength)}</span>
+			<span class="label">${this.t('Strongest')}</span>
+			<span aria-hidden="true" class="glyph">${glyphFor(s.planet1, transiting)}</span>${this.t('Transiting')} ${transiting}
+			<span class="nature-badge ${(s.interpretation ?? 'neutral').toLowerCase()}">${display(s, 'type', formatAspectName(s))}</span>
+			<span aria-hidden="true" class="glyph">${glyphFor(s.planet2, natal)}</span>${this.t('Natal')} ${natal}
+			<span class="meta">${s.isApplying ? this.t('Applying') : this.t('Separating')} · ${this.t('orb')} ${formatNumber(s.orb, 2)}° · ${this.t('strength')} ${score(s.strength)}</span>
 		</div>`;
 	}
 
@@ -743,40 +925,63 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 * glyph stays readable and nothing the response carries is dropped.
 	 *
 	 * @remarks
-	 * The per-body `house` the response also carries is deliberately absent: it
-	 * comes back as `1` for every body on every chart, so a House column would
-	 * report twenty-eight bodies in the first house, which is worse than no
-	 * column.
+	 * The House columns are where the response's house numbers land, because the
+	 * wheel has no sectors to put them in unless the page supplied cusps. Both
+	 * columns are read against the NATAL cusps: the transiting one is the natal
+	 * house that body is currently passing through, which is the whole point of a
+	 * transit report and is why the two are not the same fact under one heading.
+	 * `showHouses` comes from the payload rather than the type, so a response
+	 * without them loses the columns instead of printing a column of blanks.
 	 */
-	private renderPositions(natal: Body[], transit: Body[]) {
+	private renderPositions(natal: Body[], transit: Body[], showHouses: boolean) {
 		if (natal.length === 0 && transit.length === 0) return nothing;
 		const natalBy = byName(natal);
 		const transitBy = byName(transit);
 		const rows = natal.length > 0 ? natal : transit;
 		const cell = (p: Body | undefined) =>
 			p
-				? html`${SIGN_GLYPH[capitalize(p.sign ?? '')] ?? ''} ${degLabel(p.longitude)} ${p.sign ?? ''}${p.isRetrograde ? html`<span class="retro-badge" aria-label="retrograde">℞</span>` : nothing}`
+				? html`${signGlyph(p.sign) ?? ''} ${degLabel(p.longitude)} ${display(p, 'sign')}${p.isRetrograde ? html`<span class="retro-badge" aria-label=${this.t('retrograde')}>℞</span>` : nothing}`
 				: nothing;
-		return html`<div class="scroll" part="table">
+		const houseCell = (p: Body | undefined) =>
+			showHouses
+				? html`<td>${p && Number.isFinite(p.house) ? p.house : nothing}</td>`
+				: nothing;
+		// tabindex + role: the House columns pushed this table past the card, so it
+		// genuinely scrolls now, and a scrollable region with no focusable content
+		// of its own is unreachable by keyboard. Same pattern as `hd-connection`,
+		// except the name is borrowed from the caption rather than written again:
+		// one translated sentence, and it cannot drift from what the table holds.
+		return html`<div
+			class="scroll"
+			part="table"
+			tabindex="0"
+			role="region"
+			aria-labelledby="transit-positions"
+		>
 			<table>
-				<caption class="roxy-sr-only">
-					Every body with its natal position and its position on the transit date,
-					each as a zodiac sign and a degree.
+				<caption id="transit-positions" class="roxy-sr-only">
+					${this.t('Every body with its natal position and its position on the transit date, each as a zodiac sign and a degree.')}
+					${showHouses ? this.t('Both house numbers are read against the natal house cusps.') : nothing}
 				</caption>
 				<thead>
 					<tr>
-						<th scope="col">Body</th>
-						<th scope="col"><span class="swatch swatch--natal" aria-hidden="true"></span>Natal</th>
-						<th scope="col"><span class="swatch swatch--transit" aria-hidden="true"></span>Transiting</th>
+						<th scope="col">${this.t('Body')}</th>
+						<th scope="col"><span class="swatch swatch--natal" aria-hidden="true"></span>${this.t('Natal')}</th>
+						${showHouses ? html`<th scope="col">${this.t('Natal house')}</th>` : nothing}
+						<th scope="col"><span class="swatch swatch--transit" aria-hidden="true"></span>${this.t('Transiting')}</th>
+						${showHouses ? html`<th scope="col">${this.t('Transiting house')}</th>` : nothing}
 					</tr>
 				</thead>
 				<tbody>
 					${rows.map((p) => {
 						const key = capitalize(p.name);
+						const body = display(p, 'name');
 						return html`<tr>
-							<th scope="row"><span aria-hidden="true" class="glyph">${glyphFor(p.name)}</span> ${p.name}</th>
+							<th scope="row"><span aria-hidden="true" class="glyph">${glyphFor(p.name, body)}</span> ${body}</th>
 							<td>${cell(natalBy.get(key))}</td>
+							${houseCell(natalBy.get(key))}
 							<td>${cell(transitBy.get(key))}</td>
+							${houseCell(transitBy.get(key))}
 						</tr>`;
 					})}
 				</tbody>
@@ -797,13 +1002,15 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				const t = a.transitInterpretation as NonNullable<
 					TransitAspect['transitInterpretation']
 				>;
+				const transiting = display(a, 'planet1');
+				const natal = display(a, 'planet2');
 				return {
-					label: `${glyphFor(a.planet1)} ${a.planet1} ${formatAspectName(a)} ${glyphFor(a.planet2)} ${a.planet2}`,
-					aside: `orb ${formatNumber(a.orb, 2)}° · str ${score(a.strength)}`,
+					label: `${glyphFor(a.planet1, transiting)} ${transiting} ${display(a, 'type', formatAspectName(a))} ${glyphFor(a.planet2, natal)} ${natal}`,
+					aside: `${this.t('orb')} ${formatNumber(a.orb, 2)}° · ${this.t('strength')} ${score(a.strength)}`,
 					body: t.summary,
-					extra: html`${t.impact ? html`<p><strong>Impact:</strong> ${t.impact}</p>` : nothing}
-					${t.timing ? html`<p><strong>Timing:</strong> ${t.timing}</p>` : nothing}
-					${t.guidance ? html`<p><strong>Guidance:</strong> ${t.guidance}</p>` : nothing}
+					extra: html`${t.impact ? html`<p><strong>${this.t('Impact')}:</strong> ${t.impact}</p>` : nothing}
+					${t.timing ? html`<p><strong>${this.t('Timing')}:</strong> ${t.timing}</p>` : nothing}
+					${t.guidance ? html`<p><strong>${this.t('Guidance')}:</strong> ${t.guidance}</p>` : nothing}
 					${
 						t.keywords?.length
 							? html`<div class="interp-keywords">${t.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
@@ -814,7 +1021,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return this.renderInterpretation(
 			sections,
 			'transit-aspect-readings',
-			'Transit readings',
+			this.t('Transit readings'),
 		);
 	}
 }

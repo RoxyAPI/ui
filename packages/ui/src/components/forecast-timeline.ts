@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { ASPECT_SYMBOL } from '../tokens/index.js';
+import { aspectSymbol } from '../tokens/index.js';
 import type {
 	FindSignificantDatesResponse,
 	ForecastTransitsResponse,
@@ -8,7 +8,13 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { ASPECT_CLASS, formatDate, formatNumber } from '../utils/format.js';
+import {
+	ASPECT_CLASS,
+	formatAspectName,
+	formatDate,
+	formatNumber,
+	normalizeAspect,
+} from '../utils/format.js';
 import { capitalize, humanize } from '../utils/string.js';
 
 /** Timeline, significant-dates, and forecast-transits all return the same `{ events, startDate, endDate, birthData, count }` shape. */
@@ -234,7 +240,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 				${
 					d.startDate && d.endDate
 						? html`<div class="range">
-							${formatDate(d.startDate)} - ${formatDate(d.endDate)} · ${d.count ?? events.length} events
+							${formatDate(this.effectiveLang(), d.startDate)} - ${formatDate(this.effectiveLang(), d.endDate)} · ${d.count ?? events.length} events
 						</div>`
 						: nothing
 				}
@@ -275,7 +281,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 
 	private renderDay(date: string, events: ForecastEvent[]) {
 		return html`<div class="day" role="listitem">
-			<div class="day-date">${formatDate(date)}</div>
+			<div class="day-date">${formatDate(this.effectiveLang(), date)}</div>
 			<div class="events">
 				${events.map((e) => this.renderEvent(e))}
 			</div>
@@ -317,9 +323,11 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 	private renderHeadline(e: ForecastEvent) {
 		const body = e.body ? capitalize(e.body) : '';
 		const target = e.target ? capitalize(e.target) : '';
-		const aspect = e.aspect ? e.aspect.toLowerCase() : '';
+		const aspect = normalizeAspect({ type: e.aspect });
 		const aspectClass = ASPECT_CLASS[aspect] ?? '';
-		const aspectSym = aspect ? (ASPECT_SYMBOL[aspect] ?? aspect) : '';
+		const aspectSym = aspect
+			? (aspectSymbol(e.aspect) ?? formatAspectName({ type: e.aspect }))
+			: '';
 		const orb = typeof e.orb === 'number' ? formatNumber(e.orb, 1) : '';
 		const qualifier = this.typeQualifier(e);
 

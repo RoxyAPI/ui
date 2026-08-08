@@ -1,8 +1,10 @@
 import { css, html, nothing, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatNumber, formatTime } from '../utils/format.js';
+import { foldLocalized } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
 
 /**
@@ -401,11 +403,17 @@ export class RoxyData extends RoxyDataElement<Json> {
 		return table;
 	}
 
-	/** Drop the fields that are noise on a reading card. See {@link SUPPRESS_NOISE}. */
+	/**
+	 * Drop the fields that are noise on a reading card, and fold each localized twin into the field it translates. See {@link SUPPRESS_NOISE} and {@link foldLocalized}.
+	 *
+	 * @remarks
+	 * The single funnel for BOTH render paths, the table and the object, which is why the fold belongs here: it is one call and no column-building or row-building code has to know the convention exists. Folding runs FIRST, so a field this then suppresses takes its translation with it rather than leaving `Type Localized` standing where `Type` was hidden.
+	 */
 	private suppress(obj: Record<string, Json>): Record<string, Json> {
-		const titled = TITLE_KEYS.some((k) => typeof obj[k] === 'string');
+		const folded = foldLocalized(obj);
+		const titled = TITLE_KEYS.some((k) => typeof folded[k] === 'string');
 		return Object.fromEntries(
-			Object.entries(obj).filter(([k]) => {
+			Object.entries(folded).filter(([k]) => {
 				const n = normKey(k);
 				if (SUPPRESS_ALWAYS.has(n)) return false;
 				if (titled && SUPPRESS_NAMED.has(n)) return false;
@@ -515,6 +523,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		// width with prose wrapping to two words a line.
 		return html`<roxy-data
 			bare
+			lang=${ifDefined(this.effectiveLang())}
 			.data=${value}
 			.depth=${this.depth + 1}
 		></roxy-data>`;
@@ -540,6 +549,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		// the cell does not paint a card inside a cell.
 		return html`<roxy-data
 			bare
+			lang=${ifDefined(this.effectiveLang())}
 			.data=${value}
 			.depth=${this.depth + 1}
 		></roxy-data>`;
@@ -560,8 +570,8 @@ export class RoxyData extends RoxyDataElement<Json> {
 		}
 		if (typeof value === 'boolean') return value ? 'Yes' : 'No';
 		if (ISO_DATE.test(value)) {
-			const time = formatTime(value);
-			const date = formatDate(value);
+			const time = formatTime(this.effectiveLang(), value);
+			const date = formatDate(this.effectiveLang(), value);
 			return time ? `${date}, ${time}` : date;
 		}
 		if (ENUM_STRING.test(value)) return humanize(value.toLowerCase());

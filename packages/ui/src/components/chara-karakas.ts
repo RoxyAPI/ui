@@ -1,12 +1,11 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { CharaKarakaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
-import { capitalize } from '../utils/string.js';
 
 type Karaka = CharaKarakaResponse['karakas'][number];
 
@@ -212,8 +211,8 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 	}
 
 	private renderRow(k: Karaka, isFirst: boolean) {
-		const glyph = PLANET_GLYPH[capitalize(k.graha ?? '')] ?? '';
-		const signGlyph = SIGN_GLYPH[capitalize(k.rashi ?? '')] ?? '';
+		const glyph = planetGlyph(k.graha) ?? '';
+		const sGlyph = signGlyph(k.rashi) ?? '';
 		return html`<tr class=${isFirst ? 'ak' : ''}>
 			<td class="office">
 				${k.name ?? ''}${k.abbreviation ? html`<span class="abbr">${k.abbreviation}</span>` : nothing}
@@ -222,7 +221,7 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 				${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${k.graha ?? ''}
 			</td>
 			<td>
-				${signGlyph ? html`<span class="glyph">${signGlyph}</span>` : nothing}${k.rashi ?? ''}
+				${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${k.rashi ?? ''}
 			</td>
 			<td class="num">${formatNumber(k.degreeInRashi, 2)}</td>
 			<td class="num">

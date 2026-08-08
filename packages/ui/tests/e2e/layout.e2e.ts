@@ -150,8 +150,20 @@ test('no section overflows when its text fields are long', async ({ page }) => {
 			if (hostRect.width === 0) continue;
 			const walk = (root: ParentNode) => {
 				for (const el of root.querySelectorAll('*')) {
-					const e = el as HTMLElement & { shadowRoot?: ShadowRoot | null };
+					const e = el as HTMLElement & {
+						shadowRoot?: ShadowRoot | null;
+						ownerSVGElement?: SVGSVGElement | null;
+					};
 					if (e.shadowRoot) walk(e.shadowRoot);
+					// Nodes INSIDE a chart are skipped, and the `<svg>` itself is not
+					// (ownerSVGElement is null on the root), so a chart overhanging its
+					// card is still caught. A label slot is sized for a glyph, and a 68
+					// character planet name is not a case the API can produce. It is
+					// exactly what this harness manufactures, though: a body with no
+					// glyph deliberately renders its FULL name so a lookup miss is
+					// visibly wrong instead of a plausible two-letter code, and bloating
+					// every `name` field turns every body into a miss.
+					if (e.ownerSVGElement) continue;
 					const r = e.getBoundingClientRect();
 					if (r.width === 0) continue;
 					if (r.right <= hostRect.right + 2) continue;
@@ -178,8 +190,7 @@ test('no section overflows when its text fields are long', async ({ page }) => {
 		return found;
 	});
 
-	// SVG chart labels are excluded: a chart cell is sized for a planet name, and
-	// a 68 character string in that field is not a case the API can produce.
-	const real = issues.filter((i) => !i.includes(': text.'));
-	expect(real, real.join('\n')).toEqual([]);
+	// Chart internals are excluded inside the walk, not filtered out here, so an
+	// excluded node cannot mask a real offender further down the same subtree.
+	expect(issues, issues.join('\n')).toEqual([]);
 });

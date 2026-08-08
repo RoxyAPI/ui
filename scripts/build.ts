@@ -5,9 +5,11 @@
  * Outputs (under packages/ui/dist/):
  *   index.js, index.cjs, index.d.ts                   ESM/CJS/types main entry
  *   components/{name}.js                              per-component ESM
+ *   locales/{lang}.js                                 chrome-string catalogue, ESM
  *   styles/tokens.css                                 token contract
  *   cdn/roxy-ui.js                                    UMD with Lit bundled, all elements registered
  *   cdn/components/{name}.js                          UMD per-component, tokens injected
+ *   cdn/locales/{lang}.js                             chrome-string catalogue, one script tag
  *   cdn/widgets.js                                    auto-mount script for [data-roxy-widget]
  *
  * Also codegens and bundles the typed framework wrappers (packages/ui-react,
@@ -30,6 +32,7 @@ import * as esbuild from 'esbuild';
 
 const UI_DIR = 'packages/ui';
 const SRC_COMPONENTS = `${UI_DIR}/src/components`;
+const SRC_LOCALES = `${UI_DIR}/src/locales`;
 const DIST = `${UI_DIR}/dist`;
 
 // esbuild's minifier only rewrites JavaScript. Everything inside Lit's css`` and
@@ -75,8 +78,8 @@ function litTemplateMinify(): esbuild.Plugin {
 	};
 }
 
-async function listComponents(): Promise<string[]> {
-	const entries = await readdir(SRC_COMPONENTS, { withFileTypes: true });
+async function listModules(dir: string): Promise<string[]> {
+	const entries = await readdir(dir, { withFileTypes: true });
 	return entries
 		.filter(
 			(e) =>
@@ -89,16 +92,23 @@ async function clean() {
 	await rm(DIST, { recursive: true, force: true });
 	await mkdir(DIST, { recursive: true });
 	await mkdir(`${DIST}/components`, { recursive: true });
+	await mkdir(`${DIST}/locales`, { recursive: true });
 	await mkdir(`${DIST}/cdn/components`, { recursive: true });
+	await mkdir(`${DIST}/cdn/locales`, { recursive: true });
 	await mkdir(`${DIST}/styles`, { recursive: true });
 }
 
-async function buildEsm(components: string[]) {
+async function buildEsm(components: string[], locales: string[]) {
 	const entries: Record<string, string> = {
 		index: `${UI_DIR}/src/index.ts`,
 	};
 	for (const c of components) {
 		entries[`components/${c}`] = `${SRC_COMPONENTS}/${c}.ts`;
+	}
+	// Locale catalogues are their OWN entries, never folded into a component, so
+	// an English site downloads none of them.
+	for (const l of locales) {
+		entries[`locales/${l}`] = `${SRC_LOCALES}/${l}.ts`;
 	}
 
 	await esbuild.build({
@@ -149,7 +159,19 @@ function cdnComponentEntry(component: string): string {
 	].join('\n');
 }
 
-async function buildCdn(components: string[]) {
+/**
+ * One `<script src=".../cdn/locales/{lang}.js">` that translates every Roxy element on the page.
+ *
+ * @remarks
+ * A standalone IIFE, not an import of the component bundle, because it has to work whichever order the two scripts land in and whether the page loaded the full bundle or three per-component files. The catalogue reaches them all through the `globalThis` registry `src/i18n/registry.ts` owns, which is exactly why that registry is a global rather than a module binding: every `cdn/components/*.js` carries its own copy of the module.
+ *
+ * No token injection here (unlike {@link cdnComponentEntry}): a catalogue paints nothing, and a page that loads only this file has no elements to theme.
+ */
+function cdnLocaleEntry(lang: string): string {
+	return [`import './locales/${lang}.js';`, ''].join('\n');
+}
+
+async function buildCdn(components: string[], locales: string[]) {
 	// Full CDN bundle entry is src/cdn.ts (not src/index.ts): it registers every
 	// element AND injects tokens.css so a single drop-in script tag yields full
 	// theming + dark mode. Per-component files get the same treatment via
@@ -184,6 +206,24 @@ async function buildCdn(components: string[]) {
 			minify: true,
 			sourcemap: true,
 			plugins: [litTemplateMinify()],
+		});
+	}
+
+	for (const l of locales) {
+		await esbuild.build({
+			stdin: {
+				contents: cdnLocaleEntry(l),
+				resolveDir: `${UI_DIR}/src`,
+				sourcefile: `cdn-locale-${l}.ts`,
+				loader: 'ts',
+			},
+			outfile: `${DIST}/cdn/locales/${l}.js`,
+			format: 'iife',
+			platform: 'browser',
+			target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
+			bundle: true,
+			minify: true,
+			sourcemap: true,
 		});
 	}
 }
@@ -422,10 +462,10 @@ async function buildTypes() {
 	}
 }
 
-// Deterministic build metadata: only the component list. A timestamp here
-// would diff on every build and pollute git history of the committed dist.
-async function emitMetadata(components: string[]) {
-	const meta = { components };
+// Deterministic build metadata: only the component and locale lists. A timestamp
+// here would diff on every build and pollute git history of the committed dist.
+async function emitMetadata(components: string[], locales: string[]) {
+	const meta = { components, locales };
 	await writeFile(
 		`${DIST}/manifest.json`,
 		`${JSON.stringify(meta, null, 2)}\n`,
@@ -457,14 +497,17 @@ async function main() {
 	console.log('Cleaning dist...');
 	await clean();
 
-	const components = await listComponents();
-	console.log(`Found ${components.length} components.`);
+	const components = await listModules(SRC_COMPONENTS);
+	const locales = await listModules(SRC_LOCALES);
+	console.log(
+		`Found ${components.length} components and ${locales.length} locale(s): ${locales.join(', ')}.`,
+	);
 
 	console.log('Building ESM and CJS...');
-	await buildEsm(components);
+	await buildEsm(components, locales);
 
 	console.log('Building CDN UMD...');
-	await buildCdn(components);
+	await buildCdn(components, locales);
 
 	console.log('Copying assets...');
 	await copyAssets();
@@ -501,7 +544,7 @@ async function main() {
 	await buildTypes();
 
 	console.log('Writing manifest...');
-	await emitMetadata(components);
+	await emitMetadata(components, locales);
 
 	console.log('Syncing dist into apps/docs for preview parity with Pages...');
 	await syncSiteAssets();

@@ -41,6 +41,7 @@ describe('size gate against the real build', () => {
 			fullGzip: 1,
 			componentGzip: 1,
 			widgetsGzip: 1,
+			localeGzip: 1,
 		});
 		expect(findOffenders(absurd).length).toBe(absurd.length);
 	});

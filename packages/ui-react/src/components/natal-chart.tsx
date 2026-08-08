@@ -12,8 +12,6 @@ export interface RoxyNatalChartProps extends ElementAttrs {
 	data?: NatalChartResponse;
 	className?: string;
 	style?: React.CSSProperties;
-	/** House system the chart was cast with. Labels the house cusps; does not recompute positions. */
-	houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -36,7 +34,7 @@ export interface RoxyNatalChartProps extends ElementAttrs {
 }
 
 export const RoxyNatalChart = React.forwardRef<HTMLElement | null, RoxyNatalChartProps>(
-	function RoxyNatalChart({ data, className, style, houseSystem, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
+	function RoxyNatalChart({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -67,13 +65,6 @@ export const RoxyNatalChart = React.forwardRef<HTMLElement | null, RoxyNatalChar
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
-
-		React.useEffect(() => {
-			const el = internal.current;
-			if (el && houseSystem !== undefined) {
-				(el as unknown as { houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch' }).houseSystem = houseSystem;
-			}
-		}, [houseSystem, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

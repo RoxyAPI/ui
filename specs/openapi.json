@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 175+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 175+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
+    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 176+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 176+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 to $699/month.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
     "contact": {
       "name": "RoxyAPI Support",
       "url": "https://roxyapi.com/contact"
@@ -145,7 +145,12 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Planet or point name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). The lunar nodes are the mean node; software using the true node may show node positions up to 1.75 degrees different."
+                  "description": "Planet or point name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees. The lunar nodes are the mean node; software using the true node may show node positions up to 1.75 degrees different."
+                },
+                "nameLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Planet or point name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "longitude": {
                   "type": "number",
@@ -160,7 +165,12 @@
                 "sign": {
                   "type": "string",
                   "example": "Cancer",
-                  "description": "Tropical zodiac sign this planet occupies."
+                  "description": "Tropical zodiac sign this planet occupies. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use signLocalized for anything a reader sees."
+                },
+                "signLocalized": {
+                  "type": "string",
+                  "example": "Cáncer",
+                  "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "degree": {
                   "type": "number",
@@ -249,7 +259,12 @@
                 "sign": {
                   "type": "string",
                   "example": "Taurus",
-                  "description": "Zodiac sign on this house cusp."
+                  "description": "Zodiac sign on this house cusp. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                },
+                "signLocalized": {
+                  "type": "string",
+                  "example": "Tauro",
+                  "description": "Zodiac sign name on this cusp in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "degree": {
                   "type": "number",
@@ -279,17 +294,32 @@
                 "planet1": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "First planet in the aspect pair."
+                  "description": "First planet in the aspect pair. Always English, whatever the lang parameter says. Use planet1Localized for anything a reader sees."
+                },
+                "planet1Localized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "First planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "planet2": {
                   "type": "string",
                   "example": "Moon",
-                  "description": "Second planet in the aspect pair."
+                  "description": "Second planet in the aspect pair. Always English, whatever the lang parameter says. Use planet2Localized for anything a reader sees."
+                },
+                "planet2Localized": {
+                  "type": "string",
+                  "example": "Luna",
+                  "description": "Second planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "type": {
                   "type": "string",
                   "example": "TRINE",
-                  "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.)."
+                  "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.). Always English, whatever the lang parameter says. Use typeLocalized for anything a reader sees."
+                },
+                "typeLocalized": {
+                  "type": "string",
+                  "example": "Trígono",
+                  "description": "Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "angle": {
                   "type": "number",
@@ -486,7 +516,12 @@
               "sign": {
                 "type": "string",
                 "example": "Taurus",
-                "description": "Zodiac sign on the Ascendant (rising sign)."
+                "description": "Zodiac sign on the Ascendant (rising sign). Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Tauro",
+                "description": "Ascendant sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "degree": {
                 "type": "number",
@@ -512,7 +547,12 @@
               "sign": {
                 "type": "string",
                 "example": "Aquarius",
-                "description": "Zodiac sign on the Midheaven (MC)."
+                "description": "Zodiac sign on the Midheaven (MC). Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Acuario",
+                "description": "Midheaven sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "degree": {
                 "type": "number",
@@ -562,6 +602,11 @@
                 ],
                 "example": "night",
                 "description": "Chart sect used for the calculation. Day (diurnal) when the Sun is above the horizon, night (nocturnal) when below. Day charts use Ascendant plus Moon minus Sun, night charts use Ascendant plus Sun minus Moon."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Leo",
+                "description": "Part of Fortune sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               }
             },
             "required": [
@@ -593,6 +638,11 @@
                 "maximum": 360,
                 "example": 162.9,
                 "description": "Absolute ecliptic longitude of the Vertex (0-360)."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Cáncer",
+                "description": "Vertex sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               }
             },
             "required": [
@@ -608,12 +658,22 @@
               "dominantElement": {
                 "type": "string",
                 "example": "Water",
-                "description": "Most represented element in the chart (Fire, Earth, Air, Water)."
+                "description": "Most represented element in the chart (Fire, Earth, Air, Water). Always English, whatever the lang parameter says. Use dominantElementLocalized for anything a reader sees."
+              },
+              "dominantElementLocalized": {
+                "type": "string",
+                "example": "Agua",
+                "description": "Element name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "dominantModality": {
                 "type": "string",
                 "example": "Cardinal",
-                "description": "Most represented modality in the chart (Cardinal, Fixed, Mutable)."
+                "description": "Most represented modality in the chart (Cardinal, Fixed, Mutable). Always English, whatever the lang parameter says. Use dominantModalityLocalized for anything a reader sees."
+              },
+              "dominantModalityLocalized": {
+                "type": "string",
+                "example": "Cardinal",
+                "description": "Modality name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "retrogradePlanets": {
                 "type": "array",
@@ -624,7 +684,18 @@
                   "Mercury",
                   "Saturn"
                 ],
-                "description": "Planets in retrograde motion at the time of birth."
+                "description": "Planets in retrograde motion at the time of birth. Always English, whatever the lang parameter says. Use retrogradePlanetsLocalized for anything a reader sees."
+              },
+              "retrogradePlanetsLocalized": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "Mercurio",
+                  "Saturno"
+                ],
+                "description": "The same retrograde bodies in the requested language, for display only. Index aligned with retrogradePlanets, so entry n of one names entry n of the other. Present only when lang is set to a language other than English, since in English it would repeat retrogradePlanets exactly."
               },
               "elementDistribution": {
                 "type": "object",
@@ -955,17 +1026,32 @@
                 "planet1": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "First planet in the aspect pair."
+                  "description": "First planet in the aspect pair. Always English, whatever the lang parameter says. Use planet1Localized for anything a reader sees."
+                },
+                "planet1Localized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "First planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "planet2": {
                   "type": "string",
                   "example": "Moon",
-                  "description": "Second planet in the aspect pair."
+                  "description": "Second planet in the aspect pair. Always English, whatever the lang parameter says. Use planet2Localized for anything a reader sees."
+                },
+                "planet2Localized": {
+                  "type": "string",
+                  "example": "Luna",
+                  "description": "Second planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "type": {
                   "type": "string",
                   "example": "TRINE",
-                  "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.)."
+                  "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.). Always English, whatever the lang parameter says. Use typeLocalized for anything a reader sees."
+                },
+                "typeLocalized": {
+                  "type": "string",
+                  "example": "Trígono",
+                  "description": "Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "angle": {
                   "type": "number",
@@ -1536,7 +1622,12 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). The lunar nodes are the mean node; software using the true node may show node positions up to 1.75 degrees different."
+                  "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees. The lunar nodes are the mean node; software using the true node may show node positions up to 1.75 degrees different."
+                },
+                "nameLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "longitude": {
                   "type": "number",
@@ -1551,7 +1642,12 @@
                 "sign": {
                   "type": "string",
                   "example": "Sagittarius",
-                  "description": "Tropical zodiac sign the planet currently occupies. Changes when longitude crosses a 30-degree boundary."
+                  "description": "Tropical zodiac sign the planet currently occupies. Changes when longitude crosses a 30-degree boundary. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                },
+                "signLocalized": {
+                  "type": "string",
+                  "example": "Sagitario",
+                  "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "degree": {
                   "type": "number",
@@ -1589,17 +1685,32 @@
                 "transitPlanet": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Transiting planet forming the aspect."
+                  "description": "Transiting planet forming the aspect. Always English, whatever the lang parameter says. Use transitPlanetLocalized for anything a reader sees."
+                },
+                "transitPlanetLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Transiting planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "natalPlanet": {
                   "type": "string",
                   "example": "Mars",
-                  "description": "Natal planet being aspected."
+                  "description": "Natal planet being aspected. Always English, whatever the lang parameter says. Use natalPlanetLocalized for anything a reader sees."
+                },
+                "natalPlanetLocalized": {
+                  "type": "string",
+                  "example": "Marte",
+                  "description": "Natal planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "type": {
                   "type": "string",
                   "example": "CONJUNCTION",
-                  "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.)."
+                  "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.). Always English, whatever the lang parameter says. Use typeLocalized for anything a reader sees."
+                },
+                "typeLocalized": {
+                  "type": "string",
+                  "example": "Conjunción",
+                  "description": "Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "angle": {
                   "type": "number",
@@ -2143,6 +2254,11 @@
                   "maximum": 30,
                   "example": 15.32,
                   "description": "Degree within the zodiac sign on this cusp (0-29.999)."
+                },
+                "signLocalized": {
+                  "type": "string",
+                  "example": "Tauro",
+                  "description": "Zodiac sign name on this cusp in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 }
               },
               "required": [
@@ -2165,7 +2281,12 @@
               "sign": {
                 "type": "string",
                 "example": "Gemini",
-                "description": "Tropical zodiac sign on this relocated angle."
+                "description": "Tropical zodiac sign on this relocated angle. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Géminis",
+                "description": "Zodiac sign name on this angle in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "degree": {
                 "type": "number",
@@ -2191,7 +2312,12 @@
               "sign": {
                 "type": "string",
                 "example": "Gemini",
-                "description": "Tropical zodiac sign on this relocated angle."
+                "description": "Tropical zodiac sign on this relocated angle. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Géminis",
+                "description": "Zodiac sign name on this angle in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "degree": {
                 "type": "number",
@@ -2232,6 +2358,11 @@
                 "maximum": 360,
                 "example": 162.9,
                 "description": "Absolute ecliptic longitude of the Vertex (0-360)."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Sagitario",
+                "description": "Vertex sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               }
             },
             "required": [
@@ -2257,7 +2388,12 @@
                     "planet": {
                       "type": "string",
                       "example": "Sun",
-                      "description": "Body that occupies a different house after relocation."
+                      "description": "Body that occupies a different house after relocation. Always English, whatever the lang parameter says. Use planetLocalized for anything a reader sees."
+                    },
+                    "planetLocalized": {
+                      "type": "string",
+                      "example": "Sol",
+                      "description": "Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "natalHouse": {
                       "type": "number",
@@ -2286,7 +2422,17 @@
                 "example": [
                   "Venus"
                 ],
-                "description": "Bodies within three degrees of a relocated angle (Ascendant, Imum Coeli, Descendant, or Midheaven), where their influence is strongest at this location."
+                "description": "Bodies within three degrees of a relocated angle (Ascendant, Imum Coeli, Descendant, or Midheaven), where their influence is strongest at this location. Always English, whatever the lang parameter says. Use angularPlanetsLocalized for anything a reader sees."
+              },
+              "angularPlanetsLocalized": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "Venus"
+                ],
+                "description": "The same angular bodies in the requested language, for display only. Index aligned with angularPlanets. Present only when lang is set to a language other than English."
               },
               "distanceKm": {
                 "type": "number",
@@ -2400,6 +2546,16 @@
             "type": "boolean",
             "example": false,
             "description": "Whether the planet appears to move backward from Earth perspective. Retrograde periods signal review and introspection."
+          },
+          "nameLocalized": {
+            "type": "string",
+            "example": "Sol",
+            "description": "Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+          },
+          "signLocalized": {
+            "type": "string",
+            "example": "Cáncer",
+            "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
           },
           "interpretation": {
             "type": "object",
@@ -3555,7 +3711,12 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Body name in canonical English. One of the 10 classical planets, the lunar nodes, Chiron, or Black Moon Lilith."
+                  "description": "Body name in canonical English. One of the 10 classical planets, the lunar nodes, Chiron, or Black Moon Lilith. Unchanged by the lang parameter, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees."
+                },
+                "nameLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "longitude": {
                   "type": "number",
@@ -3567,7 +3728,12 @@
                 "sign": {
                   "type": "string",
                   "example": "Virgo",
-                  "description": "Tropical zodiac sign the progressed body falls in."
+                  "description": "Tropical zodiac sign the progressed body falls in. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                },
+                "signLocalized": {
+                  "type": "string",
+                  "example": "Virgo",
+                  "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "degree": {
                   "type": "number",
@@ -3625,7 +3791,12 @@
               "sign": {
                 "type": "string",
                 "example": "Leo",
-                "description": "Tropical zodiac sign the progressed angle falls in."
+                "description": "Tropical zodiac sign the progressed angle falls in. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Leo",
+                "description": "Zodiac sign name on this angle in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "degree": {
                 "type": "number",
@@ -3655,7 +3826,12 @@
               "sign": {
                 "type": "string",
                 "example": "Leo",
-                "description": "Tropical zodiac sign the progressed angle falls in."
+                "description": "Tropical zodiac sign the progressed angle falls in. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+              },
+              "signLocalized": {
+                "type": "string",
+                "example": "Leo",
+                "description": "Zodiac sign name on this angle in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
               },
               "degree": {
                 "type": "number",
@@ -16441,6 +16617,373 @@
         }
       }
     },
+    "/astrology/planets/monthly": {
+      "post": {
+        "operationId": "getMonthlyTropicalEphemeris",
+        "tags": [
+          "Western Astrology"
+        ],
+        "summary": "Monthly Ephemeris - Daily tropical planetary positions for a month",
+        "description": "Get daily tropical ecliptic positions for all 14 Western bodies (the 10 classical planets Sun through Pluto, the lunar nodes, Chiron, and Black Moon Lilith) for an entire month. Returns longitude, zodiac sign, degree within sign, and retrograde status for each body on each day, calculated at noon UTC. Omit year and month to get the month in progress, so a published ephemeris page stays current without a redeploy. Essential for ephemeris tables, transit tracking, retrograde calendars, and planetary movement charts. Monthly ephemeris API, tropical position table, daily planet transit positions, ecliptic longitude calculator. Verified against NASA JPL Horizons.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "minimum": 1900,
+                    "maximum": 2100,
+                    "example": 2026,
+                    "description": "Year for the monthly ephemeris (1900-2100). Defaults to the current year (UTC)."
+                  },
+                  "month": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12,
+                    "example": 8,
+                    "description": "Month number (1-12) for the ephemeris. Defaults to the current month (UTC)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Monthly ephemeris data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "year": {
+                      "type": "number",
+                      "example": 2026,
+                      "description": "Year of the ephemeris. Echoes the year that was requested, or the current UTC year when it was omitted."
+                    },
+                    "month": {
+                      "type": "number",
+                      "example": 8,
+                      "description": "Month of the ephemeris. Echoes the month that was requested, or the current UTC month when it was omitted."
+                    },
+                    "days": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2026-08-01",
+                            "description": "Date in YYYY-MM-DD format."
+                          },
+                          "positions": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "planet": {
+                                  "type": "string",
+                                  "example": "Mars",
+                                  "description": "Body name, one of the 14 bodies Western astrology reads: Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                                },
+                                "planetLocalized": {
+                                  "type": "string",
+                                  "example": "Marte",
+                                  "description": "Body name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat planet exactly."
+                                },
+                                "longitude": {
+                                  "type": "number",
+                                  "example": 83.4062,
+                                  "description": "Tropical ecliptic longitude in degrees (0-360), measured from the vernal equinox. This is the Western zodiac, not the sidereal one, so the two differ by the ayanamsa of roughly 24 degrees."
+                                },
+                                "sign": {
+                                  "type": "string",
+                                  "example": "Gemini",
+                                  "description": "Tropical zodiac sign the body occupies on this date. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use signLocalized for anything a reader sees."
+                                },
+                                "signLocalized": {
+                                  "type": "string",
+                                  "example": "Geminis",
+                                  "description": "Zodiac sign name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat sign exactly."
+                                },
+                                "degreeInSign": {
+                                  "type": "number",
+                                  "example": 23.4062,
+                                  "description": "Degrees traversed within the current sign (0-30). Useful for precise transit tracking and for printing a position as sign plus degree."
+                                },
+                                "isRetrograde": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "description": "Whether the body is in apparent retrograde motion on this date. The lunar nodes are always retrograde and Black Moon Lilith is always direct."
+                                }
+                              },
+                              "required": [
+                                "planet",
+                                "longitude",
+                                "sign",
+                                "degreeInSign",
+                                "isRetrograde"
+                              ]
+                            },
+                            "description": "Tropical positions of all 14 Western bodies on this date at noon UTC."
+                          }
+                        },
+                        "required": [
+                          "date",
+                          "positions"
+                        ]
+                      },
+                      "description": "Daily planetary position entries for the entire month."
+                    }
+                  },
+                  "required": [
+                    "year",
+                    "month",
+                    "days"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/astrology/moon-phase/current": {
       "get": {
         "operationId": "getCurrentMoonPhase",
@@ -17679,7 +18222,12 @@
                             "sign": {
                               "type": "string",
                               "example": "Taurus",
-                              "description": "Ascendant (rising sign) of this person."
+                              "description": "Ascendant (rising sign) of this person. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                            },
+                            "signLocalized": {
+                              "type": "string",
+                              "example": "Tauro",
+                              "description": "Ascendant sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                             },
                             "degree": {
                               "type": "number",
@@ -17696,12 +18244,22 @@
                         "sunSign": {
                           "type": "string",
                           "example": "Cancer",
-                          "description": "Sun sign (zodiac sign) of this person. Core identity and ego expression."
+                          "description": "Sun sign (zodiac sign) of this person. Core identity and ego expression. Always English, whatever the lang parameter says. Use sunSignLocalized for anything a reader sees."
+                        },
+                        "sunSignLocalized": {
+                          "type": "string",
+                          "example": "Cáncer",
+                          "description": "Sun sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                         },
                         "moonSign": {
                           "type": "string",
                           "example": "Pisces",
-                          "description": "Moon sign of this person. Emotional nature and inner needs."
+                          "description": "Moon sign of this person. Emotional nature and inner needs. Always English, whatever the lang parameter says. Use moonSignLocalized for anything a reader sees."
+                        },
+                        "moonSignLocalized": {
+                          "type": "string",
+                          "example": "Piscis",
+                          "description": "Moon sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                         },
                         "planets": {
                           "type": "array",
@@ -17711,7 +18269,12 @@
                               "name": {
                                 "type": "string",
                                 "example": "Sun",
-                                "description": "Planet or point name. Matches the names used in interAspects."
+                                "description": "Planet or point name. Matches the names used in interAspects. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                              },
+                              "nameLocalized": {
+                                "type": "string",
+                                "example": "Sol",
+                                "description": "Planet or point name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                               },
                               "longitude": {
                                 "type": "number",
@@ -17721,7 +18284,12 @@
                               "sign": {
                                 "type": "string",
                                 "example": "Cancer",
-                                "description": "Zodiac sign containing the planet."
+                                "description": "Zodiac sign containing the planet. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                              },
+                              "signLocalized": {
+                                "type": "string",
+                                "example": "Cáncer",
+                                "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                               },
                               "degree": {
                                 "type": "number",
@@ -17773,7 +18341,12 @@
                             "sign": {
                               "type": "string",
                               "example": "Virgo",
-                              "description": "Ascendant (rising sign) of this person."
+                              "description": "Ascendant (rising sign) of this person. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                            },
+                            "signLocalized": {
+                              "type": "string",
+                              "example": "Virgo",
+                              "description": "Ascendant sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                             },
                             "degree": {
                               "type": "number",
@@ -17790,12 +18363,22 @@
                         "sunSign": {
                           "type": "string",
                           "example": "Pisces",
-                          "description": "Sun sign (zodiac sign) of this person. Core identity and ego expression."
+                          "description": "Sun sign (zodiac sign) of this person. Core identity and ego expression. Always English, whatever the lang parameter says. Use sunSignLocalized for anything a reader sees."
+                        },
+                        "sunSignLocalized": {
+                          "type": "string",
+                          "example": "Piscis",
+                          "description": "Sun sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                         },
                         "moonSign": {
                           "type": "string",
                           "example": "Scorpio",
-                          "description": "Moon sign of this person. Emotional nature and inner needs."
+                          "description": "Moon sign of this person. Emotional nature and inner needs. Always English, whatever the lang parameter says. Use moonSignLocalized for anything a reader sees."
+                        },
+                        "moonSignLocalized": {
+                          "type": "string",
+                          "example": "Escorpio",
+                          "description": "Moon sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                         },
                         "planets": {
                           "type": "array",
@@ -17805,7 +18388,12 @@
                               "name": {
                                 "type": "string",
                                 "example": "Sun",
-                                "description": "Planet or point name. Matches the names used in interAspects."
+                                "description": "Planet or point name. Matches the names used in interAspects. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                              },
+                              "nameLocalized": {
+                                "type": "string",
+                                "example": "Sol",
+                                "description": "Planet or point name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                               },
                               "longitude": {
                                 "type": "number",
@@ -17815,7 +18403,12 @@
                               "sign": {
                                 "type": "string",
                                 "example": "Cancer",
-                                "description": "Zodiac sign containing the planet."
+                                "description": "Zodiac sign containing the planet. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                              },
+                              "signLocalized": {
+                                "type": "string",
+                                "example": "Cáncer",
+                                "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                               },
                               "degree": {
                                 "type": "number",
@@ -17866,17 +18459,32 @@
                           "planet1": {
                             "type": "string",
                             "example": "Venus",
-                            "description": "Planet from person 1 chart."
+                            "description": "Planet from person 1 chart. Always English, whatever the lang parameter says. Use planet1Localized for anything a reader sees."
+                          },
+                          "planet1Localized": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "Person 1 planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "planet2": {
                             "type": "string",
                             "example": "Mars",
-                            "description": "Planet from person 2 chart."
+                            "description": "Planet from person 2 chart. Always English, whatever the lang parameter says. Use planet2Localized for anything a reader sees."
+                          },
+                          "planet2Localized": {
+                            "type": "string",
+                            "example": "Marte",
+                            "description": "Person 2 planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "type": {
                             "type": "string",
                             "example": "TRINE",
-                            "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.)."
+                            "description": "Aspect type (CONJUNCTION, OPPOSITION, TRINE, SQUARE, SEXTILE, etc.). Always English, whatever the lang parameter says. Use typeLocalized for anything a reader sees."
+                          },
+                          "typeLocalized": {
+                            "type": "string",
+                            "example": "Trígono",
+                            "description": "Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "angle": {
                             "type": "number",
@@ -19601,6 +20209,18 @@
                     "maximum": 100,
                     "example": 50,
                     "description": "Minimum aspect strength threshold (0-100). Higher values return only tighter, more potent aspects. Useful for filtering out wide-orb aspects."
+                  },
+                  "houseSystem": {
+                    "type": "string",
+                    "enum": [
+                      "placidus",
+                      "whole-sign",
+                      "equal",
+                      "koch"
+                    ],
+                    "default": "placidus",
+                    "example": "placidus",
+                    "description": "House system used to divide the natal chart into 12 houses. Every house number in the response is read against these natal cusps, for the natal bodies and the transiting bodies alike. Placidus (default) is time sensitive and the most widely used in Western astrology. Whole Sign assigns one sign per house. Equal divides into 30 degree segments from the Ascendant. Koch emphasizes higher latitudes. Quadrant systems fall back to Whole Sign above the polar circle."
                   }
                 },
                 "required": [
@@ -19622,6 +20242,17 @@
                       "type": "string",
                       "example": "2026-02-03 12:00:00",
                       "description": "Date and time of the transit calculation."
+                    },
+                    "houseSystem": {
+                      "type": "string",
+                      "enum": [
+                        "placidus",
+                        "whole-sign",
+                        "equal",
+                        "koch"
+                      ],
+                      "example": "placidus",
+                      "description": "House system actually used for the natal cusps behind every house number in this response. Differs from the requested system only above the polar circle, where quadrant systems fall back to Whole Sign."
                     },
                     "transitPlanets": {
                       "type": "array",
@@ -19677,8 +20308,8 @@
                             "type": "integer",
                             "minimum": 1,
                             "maximum": 12,
-                            "example": 7,
-                            "description": "House placement (1-12). Determined by the selected house system and birth location."
+                            "example": 10,
+                            "description": "Natal house (1-12) this transiting body is currently passing through, read against the natal house cusps. This is the life area the transit activates, so it is driven by the natal birth time and location rather than by the transit moment."
                           },
                           "speed": {
                             "type": "number",
@@ -19689,6 +20320,16 @@
                             "type": "boolean",
                             "example": false,
                             "description": "Whether the planet appears to move backward from Earth perspective. Retrograde periods signal review and introspection."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                          },
+                          "signLocalized": {
+                            "type": "string",
+                            "example": "Cáncer",
+                            "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           }
                         },
                         "required": [
@@ -19702,7 +20343,7 @@
                           "isRetrograde"
                         ]
                       },
-                      "description": "Current transiting positions in the tropical zodiac. All 14 celestial bodies: the 10 classical planets (Sun through Pluto), the lunar nodes, Chiron, and Black Moon Lilith."
+                      "description": "Current transiting positions in the tropical zodiac, each placed in the natal house it is passing through. All 14 celestial bodies: the 10 classical planets (Sun through Pluto), the lunar nodes, Chiron, and Black Moon Lilith."
                     },
                     "natalPlanets": {
                       "type": "array",
@@ -19770,6 +20411,16 @@
                             "type": "boolean",
                             "example": false,
                             "description": "Whether the planet appears to move backward from Earth perspective. Retrograde periods signal review and introspection."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                          },
+                          "signLocalized": {
+                            "type": "string",
+                            "example": "Cáncer",
+                            "description": "Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           }
                         },
                         "required": [
@@ -19783,7 +20434,7 @@
                           "isRetrograde"
                         ]
                       },
-                      "description": "Natal (birth chart) planetary positions used as the baseline for transit aspect comparison."
+                      "description": "Natal (birth chart) planetary positions used as the baseline for transit aspect comparison, each placed in its natal house."
                     },
                     "aspects": {
                       "type": "array",
@@ -19879,6 +20530,21 @@
                             ],
                             "example": "harmonious",
                             "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                          },
+                          "planet1Localized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "First planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                          },
+                          "planet2Localized": {
+                            "type": "string",
+                            "example": "Luna",
+                            "description": "Second planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                          },
+                          "typeLocalized": {
+                            "type": "string",
+                            "example": "Trígono",
+                            "description": "Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "transitInterpretation": {
                             "type": "object",
@@ -20059,6 +20725,21 @@
                               ],
                               "example": "harmonious",
                               "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                            },
+                            "planet1Localized": {
+                              "type": "string",
+                              "example": "Sol",
+                              "description": "First planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                            },
+                            "planet2Localized": {
+                              "type": "string",
+                              "example": "Luna",
+                              "description": "Second planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                            },
+                            "typeLocalized": {
+                              "type": "string",
+                              "example": "Trígono",
+                              "description": "Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                             }
                           },
                           "required": [
@@ -20102,6 +20783,7 @@
                   },
                   "required": [
                     "transitDate",
+                    "houseSystem",
                     "transitPlanets",
                     "natalPlanets",
                     "aspects",
@@ -30107,10 +30789,34 @@
           "Vedic Astrology"
         ],
         "summary": "Monthly Ephemeris - Daily sidereal planetary positions for a month",
-        "description": "Get daily sidereal ecliptic positions for all 9 Vedic planets (Navagraha) for an entire month. Returns longitude, zodiac sign, degree within sign, and retrograde status for each planet on each day. Calculated at noon UTC. Essential for ephemeris generation, transit tracking, and planetary movement visualization. Monthly planetary ephemeris API, sidereal position table, daily graha gochara positions, ecliptic longitude calculator.",
+        "description": "Get daily sidereal ecliptic positions for all 9 Vedic planets (Navagraha) for an entire month. Returns longitude, zodiac sign, degree within sign, and retrograde status for each planet on each day. Calculated at noon UTC. Omit year and month to get the month in progress, so a published ephemeris page stays current without a redeploy. Essential for ephemeris generation, transit tracking, and planetary movement visualization. Monthly planetary ephemeris API, sidereal position table, daily graha gochara positions, ecliptic longitude calculator.",
         "security": [
           {
             "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "requestBody": {
@@ -30124,14 +30830,14 @@
                     "minimum": 1900,
                     "maximum": 2100,
                     "example": 2026,
-                    "description": "Year for monthly ephemeris (1900-2100)."
+                    "description": "Year for monthly ephemeris (1900-2100). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 12,
                     "example": 2,
-                    "description": "Month number (1-12) for ephemeris."
+                    "description": "Month number (1-12) for ephemeris. Defaults to the current month (UTC)."
                   },
                   "coordinateSystem": {
                     "type": "string",
@@ -30143,11 +30849,7 @@
                     "example": "sidereal",
                     "description": "Coordinate system for longitude output. \"sidereal\" (Nirayana) uses Lahiri ayanamsa - standard for Vedic astrology. \"tropical\" (Sayana) uses raw ecliptic longitude matching Western astrology. Defaults to \"sidereal\"."
                   }
-                },
-                "required": [
-                  "year",
-                  "month"
-                ]
+                }
               }
             }
           }
@@ -30163,12 +30865,12 @@
                     "year": {
                       "type": "number",
                       "example": 2026,
-                      "description": "Year of the ephemeris."
+                      "description": "Year of the ephemeris. Echoes the year that was requested, or the current UTC year when it was omitted."
                     },
                     "month": {
                       "type": "number",
                       "example": 2,
-                      "description": "Month of the ephemeris."
+                      "description": "Month of the ephemeris. Echoes the month that was requested, or the current UTC month when it was omitted."
                     },
                     "days": {
                       "type": "array",
@@ -30188,7 +30890,12 @@
                                 "planet": {
                                   "type": "string",
                                   "example": "Mars",
-                                  "description": "Planet name, one of the Navagraha (Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu)."
+                                  "description": "Planet name, one of the Navagraha (Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                                },
+                                "planetLocalized": {
+                                  "type": "string",
+                                  "example": "Marte",
+                                  "description": "Planet name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat planet exactly. Rahu and Ketu are rendered as the lunar nodes they are, so Spanish returns Nodo Norte and Nodo Sur while Hindi returns their Sanskrit names."
                                 },
                                 "longitude": {
                                   "type": "number",
@@ -30198,7 +30905,12 @@
                                 "sign": {
                                   "type": "string",
                                   "example": "Capricorn",
-                                  "description": "Zodiac sign (rashi) the planet occupies on this date."
+                                  "description": "Zodiac sign (rashi) the planet occupies on this date. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use signLocalized for anything a reader sees."
+                                },
+                                "signLocalized": {
+                                  "type": "string",
+                                  "example": "Capricornio",
+                                  "description": "Zodiac sign name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat sign exactly."
                                 },
                                 "degreeInSign": {
                                   "type": "number",
@@ -44849,10 +45561,34 @@
           "Vedic Astrology"
         ],
         "summary": "Monthly Planetary Aspects - Major and minor aspect events for a month",
-        "description": "Calculate all planetary aspect events (excluding Moon) for a given month. Detects 22 aspect types. 5 major (conjunction, opposition, trine, square, sextile) and 17 minor (vigintile, semi-sextile, undecile, semi-quintile, novile, semi-square, septile, quintile, binovile, centile, biseptile, tredecile, sesqui-square, bi-quintile, quincunx, triseptile, quadranovile). Returns exact date and time of closest approach using ternary search refinement. Uses degree-based aspect methodology on sidereal positions (Lahiri ayanamsa). For Moon-specific aspects, use the /aspects/lunar endpoint. Essential for transit timing, muhurta selection, and monthly astrological forecasting. Monthly planetary aspects API, graha drishti calendar, mutual aspect ephemeris, minor aspects.",
+        "description": "Calculate all planetary aspect events (excluding Moon) for a given month. Detects 22 aspect types. 5 major (conjunction, opposition, trine, square, sextile) and 17 minor (vigintile, semi-sextile, undecile, semi-quintile, novile, semi-square, septile, quintile, binovile, centile, biseptile, tredecile, sesqui-square, bi-quintile, quincunx, triseptile, quadranovile). Returns exact date and time of closest approach using ternary search refinement. Uses degree-based aspect methodology on sidereal positions (Lahiri ayanamsa). Omit year and month to get the month in progress, so a published aspect calendar stays current without a redeploy. For Moon-specific aspects, use the /aspects/lunar endpoint. Essential for transit timing, muhurta selection, and monthly astrological forecasting. Monthly planetary aspects API, graha drishti calendar, mutual aspect ephemeris, minor aspects.",
         "security": [
           {
             "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "requestBody": {
@@ -44866,14 +45602,14 @@
                     "minimum": 1900,
                     "maximum": 2100,
                     "example": 2026,
-                    "description": "Year for monthly analysis (1900-2100)."
+                    "description": "Year for monthly analysis (1900-2100). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 12,
                     "example": 2,
-                    "description": "Month number (1-12)."
+                    "description": "Month number (1-12). Defaults to the current month (UTC)."
                   },
                   "timezone": {
                     "anyOf": [
@@ -44900,11 +45636,7 @@
                     "example": "sidereal",
                     "description": "Coordinate system for longitude output. \"sidereal\" (Nirayana) uses Lahiri ayanamsa - standard for Vedic astrology. \"tropical\" (Sayana) uses raw ecliptic longitude matching Western astrology. Defaults to \"sidereal\"."
                   }
-                },
-                "required": [
-                  "year",
-                  "month"
-                ]
+                }
               }
             }
           }
@@ -44920,12 +45652,12 @@
                     "year": {
                       "type": "number",
                       "example": 2026,
-                      "description": "Year of the aspect analysis."
+                      "description": "Year of the aspect analysis. Echoes the year that was requested, or the current UTC year when it was omitted."
                     },
                     "month": {
                       "type": "number",
                       "example": 2,
-                      "description": "Month of the aspect analysis."
+                      "description": "Month of the aspect analysis. Echoes the month that was requested, or the current UTC month when it was omitted."
                     },
                     "timezone": {
                       "type": "number",
@@ -44940,12 +45672,22 @@
                           "planet1": {
                             "type": "string",
                             "example": "Mars",
-                            "description": "First planet forming the aspect. One of the Navagraha, Sun through Ketu."
+                            "description": "First planet forming the aspect. One of the Navagraha, Sun through Ketu. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planet1Localized for anything a reader sees."
+                          },
+                          "planet1Localized": {
+                            "type": "string",
+                            "example": "Marte",
+                            "description": "First planet name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat planet1 exactly."
                           },
                           "planet2": {
                             "type": "string",
                             "example": "Venus",
-                            "description": "Second planet forming the aspect."
+                            "description": "Second planet forming the aspect. Always English, whatever the lang parameter says. Use planet2Localized for anything a reader sees."
+                          },
+                          "planet2Localized": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "Second planet name in the requested language, for display. Present only when lang is set to a language other than English."
                           },
                           "aspect": {
                             "type": "string",
@@ -45229,10 +45971,34 @@
           "Vedic Astrology"
         ],
         "summary": "Monthly Lunar Aspects - Moon aspect events with all planets for a month",
-        "description": "Track all lunar aspect events for a given month including major and minor aspects. The Moon traverses approximately 13 degrees per day, forming 22 aspect types with each planet. 5 major (conjunction, opposition, trine, square, sextile) and 17 minor (vigintile, semi-sextile, undecile, semi-quintile, novile, semi-square, septile, quintile, binovile, centile, biseptile, tredecile, sesqui-square, bi-quintile, quincunx, triseptile, quadranovile). Returns exact date and time of each Moon aspect event with ternary search refinement to the minute. Essential for muhurta selection, daily panchang analysis, and chandra gochar predictions. Monthly lunar aspects API, Moon transit calendar, chandra drishti ephemeris, minor lunar aspects.",
+        "description": "Track all lunar aspect events for a given month including major and minor aspects. The Moon traverses approximately 13 degrees per day, forming 22 aspect types with each planet. 5 major (conjunction, opposition, trine, square, sextile) and 17 minor (vigintile, semi-sextile, undecile, semi-quintile, novile, semi-square, septile, quintile, binovile, centile, biseptile, tredecile, sesqui-square, bi-quintile, quincunx, triseptile, quadranovile). Returns exact date and time of each Moon aspect event with ternary search refinement to the minute. Omit year and month to get the month in progress, so a published lunar calendar stays current without a redeploy. Essential for muhurta selection, daily panchang analysis, and chandra gochar predictions. Monthly lunar aspects API, Moon transit calendar, chandra drishti ephemeris, minor lunar aspects.",
         "security": [
           {
             "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "requestBody": {
@@ -45246,14 +46012,14 @@
                     "minimum": 1900,
                     "maximum": 2100,
                     "example": 2026,
-                    "description": "Year for monthly analysis (1900-2100)."
+                    "description": "Year for monthly analysis (1900-2100). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 12,
                     "example": 2,
-                    "description": "Month number (1-12)."
+                    "description": "Month number (1-12). Defaults to the current month (UTC)."
                   },
                   "timezone": {
                     "anyOf": [
@@ -45280,11 +46046,7 @@
                     "example": "sidereal",
                     "description": "Coordinate system for longitude output. \"sidereal\" (Nirayana) uses Lahiri ayanamsa - standard for Vedic astrology. \"tropical\" (Sayana) uses raw ecliptic longitude matching Western astrology. Defaults to \"sidereal\"."
                   }
-                },
-                "required": [
-                  "year",
-                  "month"
-                ]
+                }
               }
             }
           }
@@ -45300,12 +46062,12 @@
                     "year": {
                       "type": "number",
                       "example": 2026,
-                      "description": "Year of the lunar aspect analysis."
+                      "description": "Year of the lunar aspect analysis. Echoes the year that was requested, or the current UTC year when it was omitted."
                     },
                     "month": {
                       "type": "number",
                       "example": 2,
-                      "description": "Month of the lunar aspect analysis."
+                      "description": "Month of the lunar aspect analysis. Echoes the month that was requested, or the current UTC month when it was omitted."
                     },
                     "timezone": {
                       "type": "number",
@@ -45320,7 +46082,12 @@
                           "planet": {
                             "type": "string",
                             "example": "Jupiter",
-                            "description": "Planet that the Moon forms an aspect with."
+                            "description": "Planet that the Moon forms an aspect with. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Júpiter",
+                            "description": "Planet name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat planet exactly."
                           },
                           "aspect": {
                             "type": "string",
@@ -46126,10 +46893,34 @@
           "Vedic Astrology"
         ],
         "summary": "Monthly Transit - Planetary sign changes for an entire month",
-        "description": "Get all planetary sign (rashi) changes for a given month. Shows when each planet transitions from one zodiac sign to another. Covers all 9 Vedic planets: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu. Includes starting positions at the beginning of the month. Essential for transit prediction, monthly horoscope generation, and muhurta planning. Monthly planetary transit API, gochar calendar, rashi parivartan dates.",
+        "description": "Get all planetary sign (rashi) changes for a given month. Shows when each planet transitions from one zodiac sign to another. Covers all 9 Vedic planets: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu. Includes starting positions at the beginning of the month. Omit year and month to get the month in progress, so a published gochar calendar stays current without a redeploy. Essential for transit prediction, monthly horoscope generation, and muhurta planning. Monthly planetary transit API, gochar calendar, rashi parivartan dates.",
         "security": [
           {
             "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "requestBody": {
@@ -46143,14 +46934,14 @@
                     "minimum": 1900,
                     "maximum": 2100,
                     "example": 2026,
-                    "description": "Year for monthly transit analysis (1900-2100)."
+                    "description": "Year for monthly transit analysis (1900-2100). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 12,
                     "example": 2,
-                    "description": "Month number (1-12) for transit analysis."
+                    "description": "Month number (1-12) for transit analysis. Defaults to the current month (UTC)."
                   },
                   "timezone": {
                     "anyOf": [
@@ -46177,11 +46968,7 @@
                     "example": "sidereal",
                     "description": "Coordinate system for longitude output. \"sidereal\" (Nirayana) uses Lahiri ayanamsa - standard for Vedic astrology. \"tropical\" (Sayana) uses raw ecliptic longitude matching Western astrology. Defaults to \"sidereal\"."
                   }
-                },
-                "required": [
-                  "year",
-                  "month"
-                ]
+                }
               }
             }
           }
@@ -46197,12 +46984,17 @@
                     "year": {
                       "type": "number",
                       "example": 2026,
-                      "description": "Year of the monthly transit analysis."
+                      "description": "Year of the monthly transit analysis. Echoes the year that was requested, or the current UTC year when it was omitted."
                     },
                     "month": {
                       "type": "number",
                       "example": 2,
-                      "description": "Month of the monthly transit analysis."
+                      "description": "Month of the monthly transit analysis. Echoes the month that was requested, or the current UTC month when it was omitted."
+                    },
+                    "timezone": {
+                      "type": "number",
+                      "example": 5.5,
+                      "description": "Timezone offset from UTC in hours that the event dates and times are reported in. Echoes the requested timezone."
                     },
                     "startingPositions": {
                       "type": "array",
@@ -46212,12 +47004,22 @@
                           "planet": {
                             "type": "string",
                             "example": "Sun",
-                            "description": "Planet (graha) name. One of the 9 Navagraha used in Vedic transit (Gochar) analysis."
+                            "description": "Planet (graha) name. One of the 9 Navagraha used in Vedic transit (Gochar) analysis. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Planet name in the requested language, for display. Present only when lang is set to a language other than English."
                           },
                           "sign": {
                             "type": "string",
                             "example": "Capricorn",
-                            "description": "Zodiac sign (rashi) the planet occupies at the start of the month."
+                            "description": "Zodiac sign (rashi) the planet occupies at the start of the month. Always English. Use signLocalized for anything a reader sees."
+                          },
+                          "signLocalized": {
+                            "type": "string",
+                            "example": "Capricornio",
+                            "description": "Zodiac sign name in the requested language, for display. Present only when lang is set to a language other than English."
                           },
                           "longitude": {
                             "type": "number",
@@ -46241,17 +47043,32 @@
                           "planet": {
                             "type": "string",
                             "example": "Mars",
-                            "description": "Planet that changes sign (rashi) during this month. One of the Navagraha: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu."
+                            "description": "Planet that changes sign (rashi) during this month. One of the Navagraha: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Marte",
+                            "description": "Planet name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat planet exactly."
                           },
                           "fromSign": {
                             "type": "string",
                             "example": "Gemini",
-                            "description": "Zodiac sign the planet is leaving (previous rashi)."
+                            "description": "Zodiac sign the planet is leaving (previous rashi). Always English. Use fromSignLocalized for anything a reader sees."
+                          },
+                          "fromSignLocalized": {
+                            "type": "string",
+                            "example": "Géminis",
+                            "description": "Name of the sign being left, in the requested language, for display. Present only when lang is set to a language other than English."
                           },
                           "toSign": {
                             "type": "string",
                             "example": "Cancer",
-                            "description": "Zodiac sign the planet is entering (new rashi transit)."
+                            "description": "Zodiac sign the planet is entering (new rashi transit). Always English. Use toSignLocalized for anything a reader sees."
+                          },
+                          "toSignLocalized": {
+                            "type": "string",
+                            "example": "Cáncer",
+                            "description": "Name of the sign being entered, in the requested language, for display. Present only when lang is set to a language other than English."
                           },
                           "date": {
                             "type": "string",
@@ -46290,6 +47107,7 @@
                   "required": [
                     "year",
                     "month",
+                    "timezone",
                     "startingPositions",
                     "transitEvents"
                   ]
@@ -46902,10 +47720,34 @@
           "Vedic Astrology"
         ],
         "summary": "Monthly Declination Parallels - Parallel and contraparallel events for a month",
-        "description": "Find all declination parallel and contraparallel events between the 7 visible planets for a given month. Parallels occur when two planets share the same celestial declination (equivalent to conjunction in strength). Contraparallels occur at opposite declinations (equivalent to opposition). Scanned daily at noon UTC. Essential for advanced transit analysis and hidden aspect discovery. Monthly declination parallels API, planetary parallel ephemeris, contraparallel event calendar.",
+        "description": "Find all declination parallel and contraparallel events between the 7 visible planets for a given month. Parallels occur when two planets share the same celestial declination (equivalent to conjunction in strength). Contraparallels occur at opposite declinations (equivalent to opposition). Scanned daily at noon UTC. Omit year and month to get the month in progress, so a published parallel calendar stays current without a redeploy. Essential for advanced transit analysis and hidden aspect discovery. Monthly declination parallels API, planetary parallel ephemeris, contraparallel event calendar.",
         "security": [
           {
             "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
           }
         ],
         "requestBody": {
@@ -46919,14 +47761,14 @@
                     "minimum": 1900,
                     "maximum": 2100,
                     "example": 2026,
-                    "description": "Year for monthly parallel analysis (1900-2100)."
+                    "description": "Year for monthly parallel analysis (1900-2100). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 12,
                     "example": 2,
-                    "description": "Month number (1-12) for parallel analysis."
+                    "description": "Month number (1-12) for parallel analysis. Defaults to the current month (UTC)."
                   },
                   "timezone": {
                     "anyOf": [
@@ -46943,11 +47785,7 @@
                     "description": "Timezone offset from UTC in hours. Output times are converted to this timezone. Defaults to 0 (UTC).",
                     "example": 5.5
                   }
-                },
-                "required": [
-                  "year",
-                  "month"
-                ]
+                }
               }
             }
           }
@@ -46963,12 +47801,12 @@
                     "year": {
                       "type": "number",
                       "example": 2026,
-                      "description": "Year of the parallel analysis."
+                      "description": "Year of the parallel analysis. Echoes the year that was requested, or the current UTC year when it was omitted."
                     },
                     "month": {
                       "type": "number",
                       "example": 2,
-                      "description": "Month of the parallel analysis."
+                      "description": "Month of the parallel analysis. Echoes the month that was requested, or the current UTC month when it was omitted."
                     },
                     "events": {
                       "type": "array",
@@ -46978,12 +47816,22 @@
                           "planet1": {
                             "type": "string",
                             "example": "Venus",
-                            "description": "First planet in the parallel or contraparallel pair."
+                            "description": "First planet in the parallel or contraparallel pair. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planet1Localized for anything a reader sees."
+                          },
+                          "planet1Localized": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "First planet name in the requested language, for display. Present only when lang is set to a language other than English, since in English it would repeat planet1 exactly."
                           },
                           "planet2": {
                             "type": "string",
                             "example": "Mars",
-                            "description": "Second planet in the pair."
+                            "description": "Second planet in the pair. Always English, whatever the lang parameter says. Use planet2Localized for anything a reader sees."
+                          },
+                          "planet2Localized": {
+                            "type": "string",
+                            "example": "Marte",
+                            "description": "Second planet name in the requested language, for display. Present only when lang is set to a language other than English."
                           },
                           "type": {
                             "type": "string",

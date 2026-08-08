@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type {
 	CalculateBioCompatibilityResponse,
 	CalculateCompatibilityResponse,
@@ -412,13 +412,12 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 						(p === 'person1' ? pair.person1Sign : pair.person2Sign) ?? '',
 					);
 					const deg = persons?.[p]?.[planet]?.degree;
-					const glyph = SIGN_GLYPH[sign] ?? '';
+					const glyph = signGlyph(sign) ?? '';
 					const degree = typeof deg === 'number' ? ` ${Math.round(deg)}°` : '';
 					return `${glyph} ${sign}${degree}`.trim();
 				};
 				return {
-					label:
-						`${PLANET_GLYPH[capitalize(planet)] ?? ''} ${capitalize(planet)}`.trim(),
+					label: `${planetGlyph(planet) ?? ''} ${capitalize(planet)}`.trim(),
 					aside: `${at('person1')} and ${at('person2')}`,
 					body: pair.description ?? '',
 				};

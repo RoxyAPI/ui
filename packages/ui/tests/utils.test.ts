@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'bun:test';
 import {
-	ASPECT_SYMBOL,
-	MOON_PHASE_EMOJI,
-	PLANET_ABBR,
-	PLANET_GLYPH,
-	SIGN_ABBR,
-	SIGN_GLYPH,
+	aspectSymbol,
+	moonPhaseEmoji,
+	planetAbbr,
+	planetGlyph,
 	SIGNS_ORDER,
-	TRIGRAM_GLYPH,
+	signAbbr,
+	signGlyph,
+	trigramGlyph,
 } from '../src/tokens/index.js';
 import { debounce } from '../src/utils/debounce.js';
 import {
@@ -26,15 +26,20 @@ import {
 	formatAspectName,
 	formatAyanamsa,
 	formatDate,
+	formatDateGrain,
 	formatDateRange,
 	formatDateTime,
+	formatInteger,
 	formatNumber,
 	formatPercent,
 	formatTime,
+	formatTimeRange,
 	formatWithSanskrit,
+	monthName,
 	normalizeAspect,
 } from '../src/utils/format.js';
 import { toKundliViewModel } from '../src/utils/kundli-render.js';
+import { display, displayList, foldLocalized } from '../src/utils/localized.js';
 import { MarkupDataController } from '../src/utils/markup-data.js';
 import { capitalize, humanize } from '../src/utils/string.js';
 
@@ -275,37 +280,59 @@ describe('tokens', () => {
 		expect(SIGNS_ORDER[11]).toBe('Pisces');
 	});
 
-	test('PLANET_GLYPH covers all classical seven plus nodes', () => {
-		expect(PLANET_GLYPH.Sun).toBe('☉');
-		expect(PLANET_GLYPH.Moon).toBe('☽');
-		expect(PLANET_GLYPH.Rahu).toBe('☊');
-		expect(PLANET_GLYPH.Ketu).toBe('☋');
+	test('planetGlyph covers all classical seven plus nodes', () => {
+		expect(planetGlyph('Sun')).toBe('☉');
+		expect(planetGlyph('Moon')).toBe('☽');
+		expect(planetGlyph('Rahu')).toBe('☊');
+		expect(planetGlyph('Ketu')).toBe('☋');
 	});
 
-	test('PLANET_ABBR has two-letter codes', () => {
-		expect(PLANET_ABBR.Sun).toBe('Su');
-		expect(PLANET_ABBR.Saturn).toBe('Sa');
-		expect(PLANET_ABBR.Rahu).toBe('Ra');
+	test('planetAbbr has two-letter codes', () => {
+		expect(planetAbbr('Sun')).toBe('Su');
+		expect(planetAbbr('Saturn')).toBe('Sa');
+		expect(planetAbbr('Rahu')).toBe('Ra');
 	});
 
-	test('SIGN_GLYPH and SIGN_ABBR cover all 12 signs', () => {
+	test('signGlyph and signAbbr cover all 12 signs', () => {
 		for (const s of SIGNS_ORDER) {
-			expect(SIGN_GLYPH[s]).toBeTruthy();
-			expect(SIGN_ABBR[s]).toBeTruthy();
+			expect(signGlyph(s)).toBeTruthy();
+			expect(signAbbr(s)).toBeTruthy();
 		}
 	});
 
-	test('TRIGRAM_GLYPH covers eight directions', () => {
-		expect(TRIGRAM_GLYPH.heaven).toBe('☰');
-		expect(TRIGRAM_GLYPH.earth).toBe('☷');
-		expect(TRIGRAM_GLYPH.fire).toBe('☲');
-		expect(TRIGRAM_GLYPH.water).toBe('☵');
+	test('trigramGlyph covers eight directions', () => {
+		expect(trigramGlyph('heaven')).toBe('☰');
+		expect(trigramGlyph('Earth')).toBe('☷');
+		expect(trigramGlyph('fire')).toBe('☲');
+		expect(trigramGlyph('WATER')).toBe('☵');
 	});
 
-	test('MOON_PHASE_EMOJI covers eight phases', () => {
-		expect(Object.keys(MOON_PHASE_EMOJI)).toHaveLength(8);
-		expect(MOON_PHASE_EMOJI['new moon']).toBe('🌑');
-		expect(MOON_PHASE_EMOJI['full moon']).toBe('🌕');
+	test('moonPhaseEmoji resolves the suffixed and unsuffixed API spellings', () => {
+		expect(moonPhaseEmoji('new moon')).toBe('🌑');
+		expect(moonPhaseEmoji('Full Moon')).toBe('🌕');
+		expect(moonPhaseEmoji('Waxing Gibbous Moon')).toBe('🌔');
+		expect(moonPhaseEmoji('Third Quarter Moon')).toBe('🌗');
+	});
+
+	test('every accessor returns undefined on a miss, never a fabricated code', () => {
+		// The whole point of the accessor API: a lookup failure has to be
+		// visible to the caller so it can render the FULL name. The old records
+		// let each call site invent `name.slice(0, 2)` instead, which is how
+		// `No North Node R` and `Bl Black Moon Lilith` shipped to a customer.
+		for (const get of [
+			planetGlyph,
+			planetAbbr,
+			signGlyph,
+			signAbbr,
+			aspectSymbol,
+			trigramGlyph,
+			moonPhaseEmoji,
+		]) {
+			expect(get('Nibiru')).toBeUndefined();
+			expect(get('')).toBeUndefined();
+			expect(get(undefined)).toBeUndefined();
+			expect(get(null)).toBeUndefined();
+		}
 	});
 });
 
@@ -482,7 +509,7 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 
 	test('a wall clock is identical for every viewer on earth', () => {
 		const seen = ZONES.map((tz) =>
-			withTz(tz, () => formatTime('2026-07-13T04:36:00')),
+			withTz(tz, () => formatTime('en', '2026-07-13T04:36:00')),
 		);
 		expect(new Set(seen).size).toBe(1);
 		expect(seen[0]).toBe('4:36 AM');
@@ -491,16 +518,16 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 	test('a wall clock inside the viewer DST gap does not shift an hour', () => {
 		// 2026-03-08 02:30 does not exist in New York: the clock jumps 02:00 -> 03:00.
 		expect(
-			withTz('America/New_York', () => formatTime('2026-03-08T02:30:00')),
+			withTz('America/New_York', () => formatTime('en', '2026-03-08T02:30:00')),
 		).toBe('2:30 AM');
 		expect(
-			withTz('Asia/Kolkata', () => formatTime('2026-03-08T02:30:00')),
+			withTz('Asia/Kolkata', () => formatTime('en', '2026-03-08T02:30:00')),
 		).toBe('2:30 AM');
 	});
 
 	test('the calendar day never rolls under the viewer timezone', () => {
 		const seen = ZONES.map((tz) =>
-			withTz(tz, () => formatDate('1990-06-15T00:30:00')),
+			withTz(tz, () => formatDate('en', '1990-06-15T00:30:00')),
 		);
 		expect(new Set(seen).size).toBe(1);
 		expect(seen[0]).toBe('Jun 15, 1990');
@@ -508,13 +535,92 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 
 	test('an offset-bearing timestamp IS an instant and still converts to viewer local', () => {
 		const ny = withTz('America/New_York', () =>
-			formatTime('2026-07-13T12:00:00Z'),
+			formatTime('en', '2026-07-13T12:00:00Z'),
 		);
 		const kolkata = withTz('Asia/Kolkata', () =>
-			formatTime('2026-07-13T12:00:00Z'),
+			formatTime('en', '2026-07-13T12:00:00Z'),
 		);
 		expect(ny).toBe('8:00 AM');
 		expect(kolkata).toBe('5:30 PM');
+	});
+});
+
+/**
+ * The date and the heading above it must come from the SAME language. Chrome was localized first, so a Spanish page rendered `Carta natal` over `Jan 15, 1990, 2:30 PM`: the formatters were still passing `undefined` to Intl, which means the locale of whoever happens to be looking.
+ *
+ * @remarks
+ * The locale threaded here is the DISPLAY one (`resolveLang`, full tag), never the API one (`apiLang`, region stripped and unsupported languages dropped). They are deliberately different values and swapping them is silent: `?lang=es-AR` is a 400, so the wire value must be `es`, while Intl wants `es-AR` because an Argentine reader and a Castilian reader do not write the same date. Passing the wire value to Intl would degrade every regional visitor to the base language and nothing would fail.
+ */
+describe('dates and numbers follow the page locale, not the viewer', () => {
+	const D = '1990-01-15T14:30:00';
+
+	test('the region is kept, because es-AR and es do not write a date the same way', () => {
+		// The whole point of taking the DISPLAY locale. Truncating to what the API
+		// query accepts (`es`) would render this Argentine page in Castilian
+		// conventions, and no gate would notice.
+		expect(formatDate('es-AR', D)).not.toBe(formatDate('es', D));
+		expect(formatDate('es-AR', D)).toContain('ene');
+		expect(formatDate('es', D)).toContain('ene');
+	});
+
+	test('the hour cycle is the locale, not a hardcoded 12-hour clock', () => {
+		// `hour12: true` used to be pinned for every locale, so a German or
+		// Castilian page printed an AM/PM clock beside a form labelled "24 horas".
+		expect(formatTime('de', D)).toBe('14:30');
+		expect(formatTime('es', D)).toBe('14:30');
+		expect(formatTime('en', D)).toBe('2:30 PM');
+		expect(formatTimeRange('de', { start: '06:00', end: '18:30' })).toBe(
+			'6:00 - 18:30',
+		);
+	});
+
+	test('no language signal is English, never the browser default', () => {
+		// A page that declares no language is English as far as this library is
+		// concerned, which is what the chrome catalogue already falls back to.
+		// `navigator.language` is the VISITOR's preference and is deliberately out
+		// of the chain: two people on one page must see one string.
+		for (const value of [undefined, '']) {
+			expect(formatDate(value, D)).toBe(formatDate('en', D));
+			expect(formatDateTime(value, D)).toBe('Jan 15, 1990, 2:30 PM');
+		}
+	});
+
+	test('a lang attribute a site owner typed by hand degrades, never throws', () => {
+		// `lang` is author-controlled. `en_US` and `english` make Intl raise a
+		// RangeError, which inside a render is a blank component; a structurally
+		// valid but unknown tag silently falls back to the RUNTIME default, which
+		// is the viewer again.
+		for (const tag of ['english', 'en_US', 'zz', 'x']) {
+			expect(() => formatDate(tag, D)).not.toThrow();
+			expect(formatDate(tag, D)).toBe(formatDate('en', D));
+		}
+	});
+
+	test('the grain formatter localizes every level except the bare year', () => {
+		expect(formatDateGrain('es', D, 'year')).toBe('1990');
+		expect(formatDateGrain('en', D, 'year')).toBe('1990');
+		expect(formatDateGrain('es', D, 'month')).toBe('ene 1990');
+		expect(formatDateGrain('en', D, 'month')).toBe('Jan 1990');
+		expect(formatDateGrain('de', D, 'time')).toContain('14:30');
+		expect(formatDateGrain('en', D, 'time')).toContain('2:30 PM');
+		expect(formatDateGrain('en', undefined, 'day')).toBe('');
+	});
+
+	test('month names come from Intl, not from a table of English strings', () => {
+		// Two components carried a byte-identical array of twelve English months.
+		expect(monthName('en', 1)).toBe('January');
+		expect(monthName('es', 1)).toBe('enero');
+		expect(monthName('fr', 12)).toBe('décembre');
+		for (const bad of [0, 13, 1.5, '3', undefined]) {
+			expect(monthName('en', bad)).toBe('');
+		}
+	});
+
+	test('digit grouping follows the page too', () => {
+		expect(formatInteger('en', 12345.6)).toBe('12,346');
+		expect(formatInteger('de', 12345.6)).toBe('12.346');
+		expect(formatInteger('en', undefined)).toBe('');
+		expect(formatInteger('en', Number.NaN)).toBe('');
 	});
 });
 
@@ -569,8 +675,13 @@ describe('aspect names normalize across both API separators', () => {
 			'OPPOSITION',
 		];
 		for (const type of apiAspects) {
-			const key = normalizeAspect({ type }).replace(/-/g, '');
-			expect(ASPECT_SYMBOL[key]).toBeTruthy();
+			// Both the raw enum and the normalized key must resolve: the accessor
+			// folds the separator itself, so no call site has to remember which
+			// spelling the endpoint it renders happens to use.
+			expect(aspectSymbol(type)).toBeTruthy();
+			expect(aspectSymbol(normalizeAspect({ type }))).toBe(
+				aspectSymbol(type) as string,
+			);
 		}
 	});
 
@@ -579,30 +690,32 @@ describe('aspect names normalize across both API separators', () => {
 		// 26BB, 260D for 0/30/45/60/90/120/135/150/180 degrees. An earlier
 		// revision used the XOR and NAND operators Unicode lists as cross
 		// references, and had the two the wrong way round.
-		expect(ASPECT_SYMBOL.semisextile).toBe('\u26ba');
-		expect(ASPECT_SYMBOL.quincunx).toBe('\u26bb');
-		expect(ASPECT_SYMBOL.sesquiquadrate).toBe('\u26bc');
-		expect(ASPECT_SYMBOL.semisquare).toBe('\u2220');
+		expect(aspectSymbol('semisextile')).toBe('\u26ba');
+		expect(aspectSymbol('quincunx')).toBe('\u26bb');
+		expect(aspectSymbol('sesquiquadrate')).toBe('\u26bc');
+		expect(aspectSymbol('semisquare')).toBe('\u2220');
 	});
 });
 
 describe('shared display formatters', () => {
 	test('formatDateTime merges the split date and time birth fields', () => {
 		// Birth details arrive as two fields, not one timestamp.
-		expect(formatDateTime('1990-01-15', '14:30:00')).toBe(
+		expect(formatDateTime('en', '1990-01-15', '14:30:00')).toBe(
 			'Jan 15, 1990, 2:30 PM',
 		);
-		expect(formatDateTime('1990-01-15T14:30:00')).toBe('Jan 15, 1990, 2:30 PM');
-		expect(formatDateTime('1990-01-15')).toBe('Jan 15, 1990');
-		expect(formatDateTime(undefined)).toBe('');
+		expect(formatDateTime('en', '1990-01-15T14:30:00')).toBe(
+			'Jan 15, 1990, 2:30 PM',
+		);
+		expect(formatDateTime('en', '1990-01-15')).toBe('Jan 15, 1990');
+		expect(formatDateTime('en', undefined)).toBe('');
 	});
 
 	test('formatDateRange falls back to whichever end is present', () => {
-		expect(formatDateRange('2026-01-01', '2026-01-07')).toBe(
+		expect(formatDateRange('en', '2026-01-01', '2026-01-07')).toBe(
 			'Jan 1, 2026 - Jan 7, 2026',
 		);
-		expect(formatDateRange('2026-01-01', undefined)).toBe('Jan 1, 2026');
-		expect(formatDateRange(undefined, undefined)).toBe('');
+		expect(formatDateRange('en', '2026-01-01', undefined)).toBe('Jan 1, 2026');
+		expect(formatDateRange('en', undefined, undefined)).toBe('');
 	});
 
 	test('every ayanamsa the spec accepts has a human label', async () => {
@@ -674,5 +787,117 @@ describe('no component re-implements aspect or enum formatting inline', () => {
 			}
 		}
 		expect(offenders, offenders.join('\n')).toEqual([]);
+	});
+});
+
+/**
+ * The canonical/localized pair, at the level of the helpers rather than a render.
+ *
+ * @remarks
+ * The API answers a translated request with the display value BESIDE the canonical one and keeps the canonical one English in every language, because that is what code compares against. Every rule about which half goes where lives in `utils/localized.ts`, so it is pinned here once instead of at the thirty call sites that read it.
+ */
+describe('the localized half of a response, and the English half beside it', () => {
+	test('display prefers the localized value and falls back to the canonical one', () => {
+		expect(display({ name: 'Sun', nameLocalized: 'Sol' }, 'name')).toBe('Sol');
+		// An English response omits the field entirely, which is the common case.
+		expect(display({ name: 'Sun' }, 'name')).toBe('Sun');
+		// An empty translation is not a translation.
+		expect(display({ name: 'Sun', nameLocalized: '' }, 'name')).toBe('Sun');
+		// The shape a component actually holds: a row it looked for and did not
+		// find, which must read as empty rather than throw mid-render.
+		const rows: Array<{ name?: string; nameLocalized?: string }> = [];
+		expect(display(rows.find(Boolean), 'name')).toBe('');
+	});
+
+	test('the English fallback can be a formatted form of the canonical value', () => {
+		// `type` is `SEMI_SEXTILE` on the wire and never that on screen, so the
+		// English branch is the display helper rather than the raw field.
+		const aspect = { type: 'SEMI_SEXTILE' };
+		expect(display(aspect, 'type', formatAspectName(aspect))).toBe(
+			'Semi-sextile',
+		);
+		expect(
+			display({ ...aspect, typeLocalized: 'Semisextil' }, 'type', 'ignored'),
+		).toBe('Semisextil');
+	});
+
+	test('displayList zips by index and never re-sorts one side', () => {
+		expect(
+			displayList(
+				{
+					retrogradePlanets: ['Mars', 'Saturn'],
+					retrogradePlanetsLocalized: ['Marte', 'Saturno'],
+				},
+				'retrogradePlanets',
+			),
+		).toEqual([
+			{ value: 'Mars', label: 'Marte' },
+			{ value: 'Saturn', label: 'Saturno' },
+		]);
+		// A short or absent localized list degrades per item, so every glyph still
+		// resolves off the value half.
+		expect(
+			displayList(
+				{
+					retrogradePlanets: ['Mars', 'Pluto'],
+					retrogradePlanetsLocalized: [],
+				},
+				'retrogradePlanets',
+			),
+		).toEqual([
+			{ value: 'Mars', label: 'Mars' },
+			{ value: 'Pluto', label: 'Pluto' },
+		]);
+		const noSummary: { retrogradePlanets?: string[] } = {};
+		expect(displayList(noSummary, 'retrogradePlanets')).toEqual([]);
+	});
+
+	test('foldLocalized collapses the twin into its partner and keeps the order', () => {
+		expect(
+			foldLocalized({
+				planet: 'Sun',
+				planetLocalized: 'Sol',
+				longitude: 105.03,
+				sign: 'Cancer',
+				signLocalized: 'Cáncer',
+			}),
+		).toEqual({ planet: 'Sol', longitude: 105.03, sign: 'Cáncer' });
+		// Position, not just membership: the generic renderer builds its columns
+		// out of this key order, so a translated response has to lay out exactly
+		// like an English one.
+		expect(
+			Object.keys(
+				foldLocalized({
+					planet: 'Sun',
+					planetLocalized: 'Sol',
+					longitude: 105.03,
+					sign: 'Cancer',
+					signLocalized: 'Cáncer',
+				}),
+			),
+		).toEqual(['planet', 'longitude', 'sign']);
+	});
+
+	test('a row with nothing to fold is returned untouched, not rebuilt', () => {
+		// Reference identity, because "the English path is unchanged" is a stronger
+		// claim than "the English path is equivalent" and this is how it is proved.
+		const row = { planet: 'Sun', longitude: 105.03, sign: 'Cancer' };
+		expect(foldLocalized(row)).toBe(row);
+	});
+
+	test('a localized key with NO canonical partner is left alone', () => {
+		// Suppressing on the name alone would delete the only copy of the value.
+		const row = { planet: 'Sun', noteLocalized: 'Nota' };
+		expect(foldLocalized(row)).toBe(row);
+		expect(foldLocalized({ Localized: 'x' })).toEqual({ Localized: 'x' });
+	});
+
+	test('an empty translation does not blank out the canonical value', () => {
+		expect(foldLocalized({ sign: 'Cancer', signLocalized: '' })).toEqual({
+			sign: 'Cancer',
+		});
+		expect(foldLocalized({ sign: 'Cancer', signLocalized: null })).toEqual({
+			sign: 'Cancer',
+		});
 	});
 });

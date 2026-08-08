@@ -1,6 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import { TRIGRAM_GLYPH } from '../tokens/index.js';
+import { customElement } from 'lit/decorators.js';
+import { trigramGlyph } from '../tokens/index.js';
 import type {
 	CastReadingResponse,
 	GetDailyHexagramResponse,
@@ -27,6 +27,14 @@ type HexagramData =
 /**
  * I Ching hexagram card. Renders /iching/hexagrams/{number}, /iching/cast,
  * /iching/daily, /iching/daily/cast.
+ *
+ * @remarks
+ * **There is deliberately no `mode` input.** Which of the four shapes arrived is
+ * shape-detected from the payload in {@link RoxyHexagram.resolveHexagram}, which
+ * is the rule for every multi-endpoint component here: an attribute and a
+ * response can disagree, and only one of them is the reading. A `mode` property
+ * shipped anyway, reflected and typed into both framework wrappers, and nothing
+ * ever read it.
  */
 @customElement('roxy-hexagram')
 export class RoxyHexagram extends RoxyDataElement<HexagramData> {
@@ -159,9 +167,6 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		`,
 	];
 
-	@property({ type: String, reflect: true })
-	mode: 'lookup' | 'cast' | 'daily' = 'lookup';
-
 	private resolveHexagram(): {
 		hex: Hexagram;
 		lines?: number[];
@@ -257,7 +262,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 							? html`<div>
 								Upper
 								<span class="tri-glyph"
-									>${TRIGRAM_GLYPH[h.upperTrigram] ?? ''}</span
+									>${trigramGlyph(h.upperTrigram) ?? ''}</span
 								>${h.upperTrigram}
 							</div>`
 							: nothing
@@ -267,7 +272,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 							? html`<div>
 								Lower
 								<span class="tri-glyph"
-									>${TRIGRAM_GLYPH[h.lowerTrigram] ?? ''}</span
+									>${trigramGlyph(h.lowerTrigram) ?? ''}</span
 								>${h.lowerTrigram}
 							</div>`
 							: nothing

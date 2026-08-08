@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -8,7 +8,6 @@ import { formatSignPosition } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber, formatWithSanskrit } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
-import { capitalize } from '../utils/string.js';
 
 /**
  * Fixed display order: Lagna pinned first as the chart frame, then the nine
@@ -310,14 +309,14 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 				<tbody>
 					${rows.map(([name, p]) => {
 						const isLagna = (p.graha ?? name) === 'Lagna';
-						const glyph = PLANET_GLYPH[capitalize(p.graha ?? name)] ?? '';
-						const signGlyph = SIGN_GLYPH[capitalize(p.rashi ?? '')] ?? '';
+						const glyph = planetGlyph(p.graha ?? name) ?? '';
+						const sGlyph = signGlyph(p.rashi) ?? '';
 						return html`<tr class=${isLagna ? 'lagna' : ''}>
 							<td class="graha">
 								${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${p.graha ?? name}
 							</td>
 							<td>
-								${signGlyph ? html`<span class="glyph">${signGlyph}</span>` : nothing}${p.rashi ?? ''}
+								${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${p.rashi ?? ''}
 							</td>
 							<td class="num">
 								${typeof p.longitude === 'number' ? formatSignPosition(p.longitude) : ''}
@@ -356,11 +355,11 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		const moderns = this.data?.modernPlanets ?? [];
 		if (moderns.length === 0) return nothing;
 		return moderns.map((m, i) => {
-			const signGlyph = SIGN_GLYPH[capitalize(m.rashi ?? '')] ?? '';
+			const sGlyph = signGlyph(m.rashi) ?? '';
 			return html`<tr class="modern ${i === 0 ? 'modern-first' : ''}">
 				<td class="graha">${formatWithSanskrit(m.planet, m.sanskritName)}</td>
 				<td>
-					${signGlyph ? html`<span class="glyph">${signGlyph}</span>` : nothing}${m.rashi ?? ''}
+					${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${m.rashi ?? ''}
 				</td>
 				<td class="num">
 					${typeof m.longitude === 'number' ? formatSignPosition(m.longitude) : ''}
@@ -386,7 +385,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			</summary>
 			<div class="panel-body">
 				${combust.map((c) => {
-					const glyph = PLANET_GLYPH[capitalize(c.planet)] ?? '';
+					const glyph = planetGlyph(c.planet) ?? '';
 					const dist = formatNumber(c.distanceFromSun, 2);
 					const orb = formatNumber(c.orb, 1);
 					return html`<div class="condition">
@@ -430,7 +429,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			</summary>
 			<div class="panel-body">
 				${entries.map(([name, v]) => {
-					const glyph = PLANET_GLYPH[capitalize(name)] ?? '';
+					const glyph = planetGlyph(name) ?? '';
 					return html`<div class="interp">
 						<span class="planet">${glyph ? `${glyph} ` : ''}${name}</span>
 						${v.rashi ? html`<p><span class="label">Rashi.</span> ${v.rashi}</p>` : nothing}

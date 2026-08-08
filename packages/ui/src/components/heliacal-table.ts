@@ -1,11 +1,10 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { HeliacalResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDateTime, formatNumber } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 
 type Graha = HeliacalResponse['grahas'][number];
 type Event = NonNullable<Graha['lastEvent']>;
@@ -146,7 +145,7 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 	}
 
 	private renderGraha(g: Graha) {
-		const glyph = PLANET_GLYPH[capitalize(g.graha ?? '')] ?? '';
+		const glyph = planetGlyph(g.graha) ?? '';
 		return html`<article class="row">
 			<div class="row-top">
 				<span class="graha">
@@ -176,12 +175,12 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 			const verb = NEXT_EVENT_WORD[next.type];
 			const where = next.horizon === 'east' ? 'in the east' : 'in the west';
 			return html`${g.visible ? 'Visible until it' : 'Invisible until it'} ${verb}
-			${where} on <strong>${formatDateTime(next.datetime)}</strong>`;
+			${where} on <strong>${formatDateTime(this.effectiveLang(), next.datetime)}</strong>`;
 		}
 		if (last) {
 			return html`${EVENT_WORD[last.type]}
 			${last.horizon === 'east' ? 'in the east' : 'in the west'} on
-			<strong>${formatDateTime(last.datetime)}</strong>, with no further event
+			<strong>${formatDateTime(this.effectiveLang(), last.datetime)}</strong>, with no further event
 			inside the search window`;
 		}
 		return html`No rising or setting inside the search window, which is normal for

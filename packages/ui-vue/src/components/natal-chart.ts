@@ -5,8 +5,6 @@ import type { NatalChartResponse } from '../types/index.js';
 export interface RoxyNatalChartProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
 	data?: NatalChartResponse;
-	/** House system the chart was cast with. Labels the house cusps; does not recompute positions. */
-	houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -31,7 +29,6 @@ export const RoxyNatalChart = defineComponent({
 	name: 'RoxyNatalChart',
 	props: {
 		data: { type: Object as PropType<RoxyNatalChartProps['data']> },
-		houseSystem: { type: String as PropType<RoxyNatalChartProps['houseSystem']> },
 		endpoint: { type: String as PropType<RoxyNatalChartProps['endpoint']> },
 		method: { type: String as PropType<RoxyNatalChartProps['method']> },
 		publishableKey: { type: String as PropType<RoxyNatalChartProps['publishableKey']> },
@@ -62,7 +59,6 @@ export const RoxyNatalChart = defineComponent({
 
 			const elementProps: Record<string, unknown> = {};
 			if (props.data !== undefined) elementProps['.data'] = props.data;
-			if (props.houseSystem !== undefined) elementProps['.houseSystem'] = props.houseSystem;
 			if (props.endpoint !== undefined) elementProps['.endpoint'] = props.endpoint;
 			if (props.method !== undefined) elementProps['.method'] = props.method;
 			if (props.publishableKey !== undefined) elementProps['.publishableKey'] = props.publishableKey;

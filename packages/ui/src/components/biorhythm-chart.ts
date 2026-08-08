@@ -328,7 +328,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		return html`<section class="wrap" part="card" aria-label="Biorhythm forecast">
 			<header class="head" part="header">
 				<h2 class="title">Forecast</h2>
-				<span class="energy">${formatDateRange(d.startDate, d.endDate)}</span>
+				<span class="energy">${formatDateRange(this.effectiveLang(), d.startDate, d.endDate)}</span>
 			</header>
 			<svg
 				viewBox="0 0 ${w} ${h}"
@@ -362,7 +362,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					// definition: mark it there rather than hiding it in the curves.
 					day.isCritical
 						? svg`<circle cx=${(i * xStep).toFixed(2)} cy=${h / 2} r="3" fill="var(--roxy-danger, #dc2626)"><title>${[
-								formatDate(day.date),
+								formatDate(this.effectiveLang(), day.date),
 								day.criticalCycles?.length
 									? `${day.criticalCycles.join(', ')} critical`
 									: 'critical',
@@ -386,8 +386,8 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			${
 				s
 					? html`<dl class="stats" part="details">
-						${this.stat('Best day', formatDate(s.bestDay))}
-						${this.stat('Worst day', formatDate(s.worstDay))}
+						${this.stat('Best day', formatDate(this.effectiveLang(), s.bestDay))}
+						${this.stat('Worst day', formatDate(this.effectiveLang(), s.worstDay))}
 						${this.stat(
 							'Average energy',
 							typeof s.averageEnergy === 'number'
@@ -415,7 +415,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		const days = d.criticalDays ?? [];
 		const doubles = d.doubleCriticalDays ?? [];
 		const sections: InterpSection[] = days.map((day) => ({
-			label: formatDate(day.date) || day.date,
+			label: formatDate(this.effectiveLang(), day.date) || day.date,
 			aside: [day.cycle, day.severity].filter(Boolean).join(' · '),
 			body: day.advisory ?? '',
 			extra: html`<p class="crit-meta">
@@ -431,7 +431,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		return html`<section class="wrap" part="card" aria-label="Critical days">
 			<header class="head" part="header">
 				<h2 class="title">Critical days</h2>
-				<span class="energy">${formatDateRange(d.startDate, d.endDate)}</span>
+				<span class="energy">${formatDateRange(this.effectiveLang(), d.startDate, d.endDate)}</span>
 			</header>
 			<dl class="stats" part="details">
 				${this.stat('Events', typeof d.totalCriticalDays === 'number' ? `${d.totalCriticalDays}` : '')}
@@ -439,14 +439,14 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 				${this.stat(
 					'Triple day',
 					d.tripleCriticalDay
-						? formatDate(d.tripleCriticalDay)
+						? formatDate(this.effectiveLang(), d.tripleCriticalDay)
 						: 'None in range',
 				)}
 			</dl>
 			${
 				doubles.length > 0
 					? html`<p class="crit-note">
-						Two or more cycles cross zero on ${doubles.map((x) => formatDate(x) || x).join(', ')}. Take extra care on these dates.
+						Two or more cycles cross zero on ${doubles.map((x) => formatDate(this.effectiveLang(), x) || x).join(', ')}. Take extra care on these dates.
 					</p>`
 					: nothing
 			}

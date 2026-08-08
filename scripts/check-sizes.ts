@@ -3,7 +3,9 @@
  * Bundle-size gate. Asserts the gzip/raw budgets the README and CLAUDE.md claim and exits non-zero listing every offender, so a size regression cannot reach a registry. Run after a build (it measures `packages/ui/dist/cdn`).
  *
  * @remarks
- * Three budgets, ALL measured GZIPPED, because that is the byte weight a browser downloads over a compressing CDN; the one-tag `widgets.js` reuses {@link WIDGETS_BUDGET_BYTES} so the number lives in exactly one place. {@link findOffenders} is the pure comparison seam the unit test drives with synthetic budgets.
+ * Four budgets, ALL measured GZIPPED, because that is the byte weight a browser downloads over a compressing CDN; the one-tag `widgets.js` reuses {@link WIDGETS_BUDGET_BYTES} so the number lives in exactly one place. {@link findOffenders} is the pure comparison seam the unit test drives with synthetic budgets.
+ *
+ * Every artifact CLASS the build emits needs a budget here, not just the ones that were big when it was written: an unbudgeted output is one nobody is measuring, and a chrome-string catalogue is exactly the shape that grows one string at a time.
  */
 import { readdir } from 'node:fs/promises';
 import { WIDGETS_BUDGET_BYTES } from './build-widgets.js';
@@ -19,12 +21,18 @@ export interface SizeBudgets {
 	componentGzip: number;
 	/** `dist/cdn/widgets.js`, gzipped. */
 	widgetsGzip: number;
+	/** each `dist/cdn/locales/*.js`, gzipped. */
+	localeGzip: number;
 }
 
 export const DEFAULT_BUDGETS: SizeBudgets = {
 	fullGzip: 150 * KB,
 	componentGzip: 30 * KB,
 	widgetsGzip: WIDGETS_BUDGET_BYTES,
+	// A catalogue is one download that translates every element on the page, and
+	// it is pure text, which gzip eats. 8 KB is several times the natal-chart
+	// scope, so the ceiling bites long before a payload is worth splitting.
+	localeGzip: 8 * KB,
 };
 
 export interface Artifact {
@@ -63,17 +71,20 @@ export async function collectArtifacts(
 		budget: budgets.widgetsGzip,
 		metric: 'gzip',
 	});
-	const compDir = `${distCdn}/components`;
-	const files = (await readdir(compDir))
-		.filter((f) => f.endsWith('.js'))
-		.sort();
-	for (const f of files) {
-		out.push({
-			name: `cdn/components/${f}`,
-			actual: gzipLen(await readBytes(`${compDir}/${f}`)),
-			budget: budgets.componentGzip,
-			metric: 'gzip',
-		});
+	for (const [dir, budget] of [
+		['components', budgets.componentGzip],
+		['locales', budgets.localeGzip],
+	] as const) {
+		const path = `${distCdn}/${dir}`;
+		const files = (await readdir(path)).filter((f) => f.endsWith('.js')).sort();
+		for (const f of files) {
+			out.push({
+				name: `cdn/${dir}/${f}`,
+				actual: gzipLen(await readBytes(`${path}/${f}`)),
+				budget,
+				metric: 'gzip',
+			});
+		}
 	}
 	return out;
 }

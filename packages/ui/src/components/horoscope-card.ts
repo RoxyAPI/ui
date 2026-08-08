@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { SIGN_GLYPH } from '../tokens/index.js';
+import { signGlyph } from '../tokens/index.js';
 import type {
 	GetDailyHoroscopeResponse,
 	GetMonthlyHoroscopeResponse,
@@ -9,7 +9,6 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 
 type HoroscopeData =
 	| GetDailyHoroscopeResponse
@@ -290,14 +289,14 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 
 	protected renderData(d: HoroscopeData) {
 		const sign = d.sign ?? '';
-		const glyph = sign ? (SIGN_GLYPH[capitalize(sign)] ?? '') : '';
+		const glyph = signGlyph(sign) ?? '';
 		const energy =
 			'energyRating' in d && typeof d.energyRating === 'number'
 				? d.energyRating
 				: null;
 		// `date` is an ISO day; `week` and `month` are already human ranges.
 		const dateLabel =
-			('date' in d && d.date && formatDate(d.date)) ||
+			('date' in d && d.date && formatDate(this.effectiveLang(), d.date)) ||
 			('week' in d && d.week) ||
 			('month' in d && d.month) ||
 			'';
@@ -455,7 +454,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 		const moonPhase = 'moonPhase' in d ? d.moonPhase : '';
 		const transits = ('activeTransits' in d ? d.activeTransits : []) ?? [];
 		if (!moonSign && !moonPhase && transits.length === 0) return nothing;
-		const glyph = moonSign ? (SIGN_GLYPH[capitalize(moonSign)] ?? '') : '';
+		const glyph = signGlyph(moonSign) ?? '';
 		return html`<div class="sky" part="section sky">
 			${
 				moonSign || moonPhase
@@ -520,7 +519,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					<dl class="dates">
 						${keyDates.map(
 							(k) => html`<div class="date-row">
-								<dt>${formatDate(k.date) || k.date}</dt>
+								<dt>${formatDate(this.effectiveLang(), k.date) || k.date}</dt>
 								<dd>${k.event}</dd>
 							</div>`,
 						)}

@@ -1,13 +1,12 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { BhavChalitResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { houseWords } from '../utils/house-themes.js';
-import { capitalize } from '../utils/string.js';
 
 type Graha = BhavChalitResponse['grahas'][number];
 type Bhava = BhavChalitResponse['bhavas'][number];
@@ -193,7 +192,7 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 	}
 
 	private renderMoved(g: Graha, themes: BhavChalitResponse['houseThemes']) {
-		const glyph = PLANET_GLYPH[capitalize(g.graha ?? '')] ?? '';
+		const glyph = planetGlyph(g.graha) ?? '';
 		const words =
 			typeof g.bhava === 'number' ? houseWords([g.bhava], themes) : '';
 		return html`<div class="moved-row">

@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { GenerateBodygraphResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -19,7 +19,6 @@ import {
 	renderHdThemes,
 } from '../utils/hd-reading.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
-import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 type Bodygraph = GenerateBodygraphResponse;
@@ -372,7 +371,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			const parts: string[] = [`Gate ${g.gate}`];
 			if (g.line != null) parts[0] += `.${g.line}`;
 			if (g.gateName) parts.push(g.gateName);
-			const glyph = this.planetGlyph(g.planet);
+			const glyph = this.gateGlyph(g.planet);
 			if (glyph) parts.push(`${glyph} ${g.side ?? ''}`.trim());
 			titles.set(g.gate, parts.join(' · '));
 		}
@@ -380,10 +379,9 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	}
 
 	/** Monochrome planet glyph for an API planet name, or the name itself when the wheel has no glyph for it. */
-	private planetGlyph(planet: string | undefined): string {
+	private gateGlyph(planet: string | undefined): string {
 		if (!planet) return '';
-		const name = capitalize(planet);
-		return PLANET_GLYPH[name] ?? planet;
+		return planetGlyph(planet) ?? planet;
 	}
 
 	private renderSummary(d: Bodygraph) {
@@ -612,7 +610,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	}
 
 	private renderGate(g: GateActivation, open: boolean) {
-		const glyph = this.planetGlyph(g.planet);
+		const glyph = this.gateGlyph(g.planet);
 		const hex = g.ichingHexagram;
 		return html`<details class="interp-card" part="reading" name="hd-gate" ?open=${open}>
 			<summary>

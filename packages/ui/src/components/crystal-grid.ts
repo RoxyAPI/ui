@@ -11,6 +11,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { cssColor } from '../utils/css-color.js';
+import { monthName } from '../utils/format.js';
 
 /**
  * Any crystal list response that carries a `crystals` summary array. Every crystals endpoint that returns more than one stone shares the `{ name, id, imageUrl, colors }` item shape, so one grid renders them all.
@@ -22,24 +23,6 @@ type CrystalGridData =
 	| GetCrystalsByZodiacResponse
 	| GetBirthstonesResponse
 	| SearchCrystalsResponse;
-
-/**
- * Month number to birthstone month name for the derived heading.
- */
-const MONTHS = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
-];
 
 /**
  * Crystal grid. Renders any crystals list response (/crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search) as a responsive gallery of crystal tiles with photo, name, and colour swatches. The heading is derived from the response filter (chakra, element, zodiac sign, or birth month) or set explicitly via the `heading` attribute.
@@ -167,7 +150,7 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 		if ('element' in d && d.element) return `${d.element} element crystals`;
 		if ('sign' in d && d.sign) return `Crystals for ${d.sign}`;
 		if ('month' in d && typeof d.month === 'number')
-			return `${MONTHS[d.month - 1] ?? ''} birthstones`.trim();
+			return `${monthName(this.effectiveLang(), d.month)} birthstones`.trim();
 		return 'Crystals';
 	}
 }

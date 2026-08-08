@@ -2,6 +2,13 @@
  * Display formatters for ISO timestamps and floats coming back from the API.
  * Every helper returns "" for nullish or unparseable input so it falls out of
  * template literals cleanly.
+ *
+ * @remarks
+ * **This file is the ONLY place in the library that may call `Intl` or a `toLocale*` method, and every helper that does takes the locale as its first argument, required.** Both halves are enforced by a source scan in `tests/i18n.test.ts`.
+ *
+ * The locale is the DISPLAY locale, the full tag `resolveLang` returns, region included. It is NOT the value that goes on `?lang=`: that one is truncated to a supported two-letter code because the API rejects anything else, and handing THAT to Intl would render every Argentine visitor's dates in Castilian conventions. `es-AR` is exactly the tag Intl wants.
+ *
+ * It is required rather than optional because the defect it replaces was an omission: `toLocaleDateString(undefined, ...)` means "the locale of whoever is looking", so a Spanish page rendered `Carta natal` above `Jan 15, 1990, 2:30 PM`, and two visitors to the same page saw two different strings. An optional parameter defaults straight back to that. A missing argument is now a typecheck failure at every call site.
  */
 
 import { capitalize, humanize } from './string.js';
@@ -11,17 +18,47 @@ const BARE_TIME = /^\d{2}:\d{2}(:\d{2})?$/;
 /** An ISO datetime with NO timezone designator: a wall clock, not an instant. */
 const NAIVE_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
 
+/** Canonical form per tag seen, so a page carrying an unparseable `lang` does not throw once per rendered date. */
+const CANONICAL: Map<string, string> = new Map();
+
+/**
+ * The locale list to hand Intl: the page's tag first, English behind it.
+ *
+ * @remarks
+ * Two failure modes, both reachable from a `lang` attribute a site owner typed by hand and neither of which may reach a visitor:
+ *
+ * - **A structurally invalid tag throws.** `lang="english"` or `lang="en_US"` makes every `toLocale*` call raise a RangeError, which inside a render is a blank component rather than a wrong date. Canonicalizing behind a try/catch degrades it to English instead.
+ * - **A valid-but-unknown tag falls back to the RUNTIME default**, which is the viewer's browser again, so the bug reappears for exactly the pages least likely to notice. Naming `en` as the second entry makes the fallback the page's, not the visitor's.
+ *
+ * No language signal at all resolves to English for the same reason the chrome catalogue does: a page that never declares a language is English as far as this library is concerned, and English chrome over German dates is the inconsistency this whole file exists to remove. `navigator.language` is deliberately absent from the chain here as it is in `resolveLang`: it is the VISITOR's preference, not the site's.
+ */
+function intlLocales(locale: string | undefined): string[] {
+	if (!locale) return ['en'];
+	const cached = CANONICAL.get(locale);
+	if (cached) return [cached, 'en'];
+	let canonical = 'en';
+	try {
+		canonical = Intl.getCanonicalLocales(locale)[0] ?? 'en';
+	} catch {
+		canonical = 'en';
+	}
+	CANONICAL.set(locale, canonical);
+	return [canonical, 'en'];
+}
+
 /**
  * Resolve an API timestamp to a Date plus the timezone it must be RENDERED in.
  *
  * @remarks
  * The API returns chart times naive (`2026-07-13T04:36:00`): that is 04:36 in the CHART's timezone, not UTC and not the viewer's. A wall clock must read the same for every viewer on earth, so hora at sunrise says 04:36 in Tokyo and in Chicago alike.
  *
- * Handing a naive string to `new Date()` makes the runtime interpret it in the VIEWER's zone, which is a silent corruption whenever that wall clock lands in the viewer's DST gap. In America/New_York `2026-03-08T02:30:00` does not exist, so the clock jumps and it renders as `3:30 AM`. Pinning the wall clock to UTC, which has no DST and therefore no gap, preserves the digits exactly while Intl still applies the viewer's locale conventions.
+ * Handing a naive string to `new Date()` makes the runtime interpret it in the VIEWER's zone, which is a silent corruption whenever that wall clock lands in the viewer's DST gap. In America/New_York `2026-03-08T02:30:00` does not exist, so the clock jumps and it renders as `3:30 AM`. Pinning the wall clock to UTC, which has no DST and therefore no gap, preserves the digits exactly while Intl still writes them in the PAGE locale conventions.
  *
  * An offset-bearing timestamp (`...Z`, `...+05:30`) IS a real instant, so it keeps the normal behaviour and converts to the viewer's local time.
+ *
+ * Deliberately NOT exported. It used to be, so a component needing a shape these helpers did not offer could pin its own wall clock and call Intl itself, which is how `dasha-timeline` came to hardcode `toLocaleString('en', ...)` and pin every boundary date to English. A shape that is missing is added here, beside the locale handling, not reimplemented in a component.
  */
-export function resolveDisplayDate(input: string): {
+function resolveDisplayDate(input: string): {
 	d: Date;
 	timeZone?: string;
 } {
@@ -35,26 +72,31 @@ export function resolveDisplayDate(input: string): {
 		: { d: new Date(input) };
 }
 
-export function formatTime(input: unknown): string {
+/**
+ * The clock, in the page locale: `2:30 PM` in English, `14:30` in German.
+ *
+ * @remarks
+ * The hour cycle is the locale's, never ours. It used to be pinned `hour12: true`, which put an AM/PM clock on every page in Europe and Latin America while the embedded form beside it labelled its own input "formato de 24 horas". CLDR already knows which convention each locale reads, including the ones that surprise you (`es` is 24-hour, `es-AR` is 12-hour with `p. m.`), so asserting a cycle here is asserting we know better than the locale data.
+ */
+export function formatTime(locale: string | undefined, input: unknown): string {
 	if (typeof input !== 'string' || input.length === 0) return '';
 	if (DATE_ONLY.test(input)) return '';
 	const { d, timeZone } = resolveDisplayDate(input);
 	if (Number.isNaN(d.getTime())) return input;
-	return d.toLocaleTimeString(undefined, {
+	return d.toLocaleTimeString(intlLocales(locale), {
 		hour: 'numeric',
 		minute: '2-digit',
-		hour12: true,
 		timeZone,
 	});
 }
 
-export function formatDate(input: unknown): string {
+export function formatDate(locale: string | undefined, input: unknown): string {
 	if (typeof input !== 'string' || input.length === 0) return '';
 	const { d, timeZone } = resolveDisplayDate(
 		DATE_ONLY.test(input) ? `${input}T00:00:00` : input,
 	);
 	if (Number.isNaN(d.getTime())) return input;
-	return d.toLocaleDateString(undefined, {
+	return d.toLocaleDateString(intlLocales(locale), {
 		month: 'short',
 		day: 'numeric',
 		year: 'numeric',
@@ -63,21 +105,88 @@ export function formatDate(input: unknown): string {
 }
 
 export function formatTimeRange(
+	locale: string | undefined,
 	t: { start?: string; end?: string } | undefined,
 ): string {
 	if (!t) return '';
-	const start = formatTime(t.start);
-	const end = formatTime(t.end);
+	const start = formatTime(locale, t.start);
+	const end = formatTime(locale, t.end);
 	if (start && end) return `${start} - ${end}`;
 	return start || end || '';
 }
 
 /** Two dates as one label: `Jan 1, 2026 - Jan 7, 2026`. Falls back to whichever end parses when the other is absent. */
-export function formatDateRange(start: unknown, end: unknown): string {
-	const a = formatDate(start);
-	const b = formatDate(end);
+export function formatDateRange(
+	locale: string | undefined,
+	start: unknown,
+	end: unknown,
+): string {
+	const a = formatDate(locale, start);
+	const b = formatDate(locale, end);
 	if (a && b) return `${a} - ${b}`;
 	return a || b;
+}
+
+/** How much of a timestamp a label shows. `time` is the whole date plus the clock. */
+export type DateGrain = 'year' | 'month' | 'day' | 'time';
+
+/**
+ * A timestamp at a chosen granularity, for an axis or a bar end where the full date would not fit.
+ *
+ * @remarks
+ * Every grain below `year` carries the year, because a period routinely straddles new year and a label reading `28 Dec - 3 Jan` says nothing about which side moved. `year` is sliced off the string rather than formatted, since a bare four-digit year is the same in every locale this library ships and running it through Intl would introduce era and numbering-system differences into an axis tick.
+ */
+export function formatDateGrain(
+	locale: string | undefined,
+	input: unknown,
+	grain: DateGrain,
+): string {
+	if (typeof input !== 'string' || input.length === 0) return '';
+	if (grain === 'year') {
+		const m = input.match(/^(\d{4})/);
+		return m?.[1] ?? input;
+	}
+	const { d, timeZone } = resolveDisplayDate(input);
+	if (Number.isNaN(d.getTime())) return input;
+	return d.toLocaleString(intlLocales(locale), {
+		day: grain === 'month' ? undefined : 'numeric',
+		month: 'short',
+		year: 'numeric',
+		hour: grain === 'time' ? 'numeric' : undefined,
+		minute: grain === 'time' ? '2-digit' : undefined,
+		timeZone,
+	});
+}
+
+/**
+ * Month name from a 1-based month number: `January`, `enero`, `janvier`.
+ *
+ * @remarks
+ * Two components carried a byte-identical array of twelve English month names, which is both a duplicated table and a table of something the platform already knows in every language. Anchored to a UTC noon so no timezone can roll the date into the neighbouring month.
+ */
+export function monthName(locale: string | undefined, month: unknown): string {
+	if (typeof month !== 'number' || !Number.isInteger(month)) return '';
+	if (month < 1 || month > 12) return '';
+	return new Date(Date.UTC(2000, month - 1, 1, 12)).toLocaleDateString(
+		intlLocales(locale),
+		{ month: 'long', timeZone: 'UTC' },
+	);
+}
+
+/**
+ * A whole number with the page locale's digit grouping: `12,345` in English, `12.345` in Spanish.
+ *
+ * @remarks
+ * Rounds rather than truncating, so a caller testing the magnitude (`Math.round(km) === 0`) and this label agree about which side of a boundary a value fell.
+ */
+export function formatInteger(
+	locale: string | undefined,
+	value: unknown,
+): string {
+	if (typeof value !== 'number' || !Number.isFinite(value)) return '';
+	return value.toLocaleString(intlLocales(locale), {
+		maximumFractionDigits: 0,
+	});
 }
 
 /**
@@ -174,12 +283,17 @@ export function formatAyanamsa(type: unknown, degrees?: unknown): string {
  *
  * @example
  * ```ts
- * formatDateTime('1990-01-15T14:30:00');    // 'Jan 15, 1990, 2:30 PM'
- * formatDateTime('1990-01-15', '14:30:00'); // 'Jan 15, 1990, 2:30 PM'
- * formatDateTime('1990-01-15');             // 'Jan 15, 1990'
+ * formatDateTime('en', '1990-01-15T14:30:00');    // 'Jan 15, 1990, 2:30 PM'
+ * formatDateTime('en', '1990-01-15', '14:30:00'); // 'Jan 15, 1990, 2:30 PM'
+ * formatDateTime('de', '1990-01-15T14:30:00');    // '15. Jan. 1990, 14:30'
+ * formatDateTime('en', '1990-01-15');             // 'Jan 15, 1990'
  * ```
  */
-export function formatDateTime(input: unknown, time?: unknown): string {
+export function formatDateTime(
+	locale: string | undefined,
+	input: unknown,
+	time?: unknown,
+): string {
 	const merged =
 		typeof input === 'string' &&
 		DATE_ONLY.test(input) &&
@@ -187,8 +301,8 @@ export function formatDateTime(input: unknown, time?: unknown): string {
 		BARE_TIME.test(time)
 			? `${input}T${time}`
 			: input;
-	const date = formatDate(merged);
-	const clock = formatTime(merged);
+	const date = formatDate(locale, merged);
+	const clock = formatTime(locale, merged);
 	if (date && clock) return `${date}, ${clock}`;
 	return date || clock;
 }

@@ -334,7 +334,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${this.renderHero(headerLabel, d.personalDay, d.theme)}
 			${d.guidance && !this.hideReadings ? html`<p class="meaning">${d.guidance}</p>` : nothing}
 			<dl class="attrs" part="details">
-				${this.attr('Date', formatDate(d.targetDate))}
+				${this.attr('Date', formatDate(this.effectiveLang(), d.targetDate))}
 				${this.attr(
 					'Personal month',
 					joinCycle(d.personalMonth, d.personalMonthTheme),
@@ -398,7 +398,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			<div part="header">
 				<p class="label">${headerLabel}</p>
 				${d.profile?.name ? html`<h2 class="title">${d.profile.name}</h2>` : nothing}
-				${d.profile?.birthdate ? html`<p class="label">${formatDate(d.profile.birthdate)}</p>` : nothing}
+				${d.profile?.birthdate ? html`<p class="label">${formatDate(this.effectiveLang(), d.profile.birthdate)}</p>` : nothing}
 			</div>
 			${d.summary && readings ? html`<p class="meaning">${d.summary}</p>` : nothing}
 			${

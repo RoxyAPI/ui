@@ -1,6 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH, SIGNS_ORDER } from '../tokens/index.js';
+import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type { CalculateSynastryResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -533,7 +533,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 					${shown.map(
 						([label, value]) => html`<span>
 							<span class="lbl">${label}</span>
-							<span aria-hidden="true">${SIGN_GLYPH[capitalize(value.split(' ')[0] ?? '')] ?? ''}</span>
+							<span aria-hidden="true">${signGlyph(value.split(' ')[0]) ?? ''}</span>
 							${value}
 						</span>`,
 					)}
@@ -566,8 +566,8 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 	 * One inter-chart contact as a reading. The header is the scannable line (both bodies, the aspect coloured by nature, orb and strength); the body leads with `meaning.relationshipContext`, which is the whole point of a synastry aspect: not what a trine means, but what THIS trine does to THESE two people.
 	 */
 	private renderAspectCard(a: InterAspect, index: number) {
-		const g1 = PLANET_GLYPH[capitalize(a.planet1)] ?? '';
-		const g2 = PLANET_GLYPH[capitalize(a.planet2)] ?? '';
+		const g1 = planetGlyph(a.planet1) ?? '';
+		const g2 = planetGlyph(a.planet2) ?? '';
 		const nature = (a.interpretation ?? 'neutral').toLowerCase();
 		const meaning = a.meaning;
 		const lead = html`<span class="interp-lead">
@@ -633,7 +633,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		return SIGNS_ORDER.map((s, i) => {
 			const angle = this.toAngle(i * 30 + 15);
 			const pos = polarToCartesian(CENTER, CENTER, SIGN_R, angle);
-			return svg`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${SIGN_GLYPH[s]}</text>`;
+			return svg`<text class="sign" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${signGlyph(s)}</text>`;
 		});
 	}
 
@@ -656,7 +656,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				radius + degOffset,
 				angle,
 			);
-			const glyph = PLANET_GLYPH[capitalize(p.name)] ?? p.name.slice(0, 2);
+			const glyph = planetGlyph(p.name) ?? p.name;
 			const sp = longitudeToSignPosition(p.longitude);
 			const retro = p.isRetrograde === true;
 			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;

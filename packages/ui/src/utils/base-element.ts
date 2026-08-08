@@ -7,6 +7,9 @@ import {
 } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { resolveLang } from '../i18n/lang.js';
+import { LocaleController } from '../i18n/locale-controller.js';
+import { translate } from '../i18n/registry.js';
 import { baseStyles } from './base-styles.js';
 import { buildRequest, FetchController } from './fetch-controller.js';
 import {
@@ -130,7 +133,27 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		// Controlled mode: hydrate `data` from a direct-child roxy-data island when
 		// no JS property was assigned. Keyless; the server already fetched.
 		new MarkupDataController<T>(this);
+		// Re-render if a chrome-string catalogue lands after this element upgraded.
+		new LocaleController(this);
 		this.fetcher = new FetchController<T>(this);
+	}
+
+	/**
+	 * The chrome string for this element's language, keyed by its own English source text.
+	 *
+	 * @remarks
+	 * Pass the English copy, never a key. With no catalogue registered the source string is returned unchanged, so an English page pays nothing and a language we do not ship degrades to English rather than to a visible key.
+	 *
+	 * Chrome only. A value the API returned (a planet, a sign, an aspect, a house system) is NOT translated here: it is rendered as the response carries it, so the words on the chart and the words in the response can never disagree.
+	 *
+	 * @example
+	 * ```ts
+	 * this.t('Aspect grid');                        // 'Cuadricula de aspectos' under lang="es"
+	 * this.t('{{count}} planets', { count: 12 });   // '12 planetas'
+	 * ```
+	 */
+	protected t(source: string, vars?: Record<string, string | number>): string {
+		return translate(this.effectiveLang(), source, vars);
 	}
 
 	protected willUpdate(changed: PropertyValues): void {
@@ -182,7 +205,10 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		heading?: string,
 	): unknown {
 		if (this.hideReadings) return nothing;
-		return renderInterpAccordion(sections, name, heading);
+		// The default heading is localized HERE rather than in the accordion:
+		// that is a plain render function with no host, so it cannot read a
+		// language, and this is the one call site every component routes through.
+		return renderInterpAccordion(sections, name, heading ?? this.t('Reading'));
 	}
 
 	/**
@@ -192,7 +218,7 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		const body = this.sticky
 			? html`${this.renderForm()}${this.renderData(data)}`
 			: html`<div class="roxy-edit-bar" part="edit-bar">
-					<button type="button" class="roxy-edit" @click=${this.onEdit}>Edit query</button>
+					<button type="button" class="roxy-edit" @click=${this.onEdit}>${this.t('Edit query')}</button>
 				</div>
 				${this.renderData(data)}`;
 		return this.showAttribution()
@@ -220,7 +246,7 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 				href="https://roxyapi.com/?utm_source=widget&utm_medium=embed"
 				target="_blank"
 				rel="noopener"
-				>Spiritual data by RoxyAPI</a
+				>${this.t('Spiritual data by RoxyAPI')}</a
 			>
 		</div>`;
 	}
@@ -252,9 +278,13 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		);
 	}
 
-	/** Site-owner language from the element `lang` attribute (native accessor), routed to the API query on submit. */
-	private effectiveLang(): string | undefined {
-		return this.lang || undefined;
+	/**
+	 * Site-owner language for this element: the `lang` attribute, the nearest ancestor carrying one, or the document. Protected so a component that composes another can forward it (a child inside this shadow root cannot reach the host page on its own).
+	 *
+	 * Full tag, region included. The truncation to what `?lang=` accepts happens where the request is built, in `<roxy-endpoint-form>`.
+	 */
+	protected effectiveLang(): string | undefined {
+		return resolveLang(this);
 	}
 
 	private onFormSubmit = (e: Event) => {
@@ -302,7 +332,7 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 
 	/** Terminal empty state. Subclasses override for a domain-specific message. */
 	protected renderEmpty(): unknown {
-		return html`<div class="roxy-empty" role="status">No data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No data')}</div>`;
 	}
 
 	/** Loading placeholder shown during a self-fetch. */
@@ -311,7 +341,7 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 			class="roxy-skeleton"
 			style="height: 8rem"
 			role="status"
-			aria-label="Loading"
+			aria-label=${this.t('Loading')}
 			part="loading"
 		></div>`;
 	}

@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { DivisionalChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -140,7 +140,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 						${vargottama.map(
 							(planet) =>
 								html`<span class="vargottama-pill" role="listitem">
-									${PLANET_GLYPH[planet] ?? ''} ${planet}
+									${planetGlyph(planet) ?? ''} ${planet}
 								</span>`,
 						)}
 					</div>`

@@ -1,5 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -213,7 +214,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 				${
 					bd
 						? html`<div class="meta">
-							${formatDateTime(bd.date, bd.time)} ·
+							${formatDateTime(this.effectiveLang(), bd.date, bd.time)} ·
 							${formatLat(Math.round(bd.latitude))} ${formatLon(Math.round(bd.longitude))}
 						</div>`
 						: nothing
@@ -292,7 +293,9 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 
 	private renderBodyLines(line: LineSet, index: number) {
 		const color = planetColor(line.planet, index);
-		const glyph = line.symbol || line.planet.slice(0, 2);
+		// Response symbol first, then the shared table, then the full name. Never a
+		// truncation: `North Node.slice(0, 2)` labelled a whole map line "No".
+		const glyph = line.symbol || planetGlyph(line.planet) || line.planet;
 		const items = [
 			this.renderMeridian(
 				line.mc.longitude,

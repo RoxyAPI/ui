@@ -1,11 +1,10 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { GetChoghadiyaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatTimeRange } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 
 type ChoghadiyaPeriod = GetChoghadiyaResponse['dayChoghadiya'][number];
 
@@ -155,8 +154,8 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 					? 'bad'
 					: 'neutral';
 		const current = this.isCurrent(period);
-		const lordGlyph = PLANET_GLYPH[capitalize(period.lord)] ?? '';
-		const timeRange = formatTimeRange(period);
+		const lordGlyph = planetGlyph(period.lord) ?? '';
+		const timeRange = formatTimeRange(this.effectiveLang(), period);
 		return html`<div
 			class="cho-tile ${effectClass}${current ? ' now' : ''}"
 			role="listitem"
@@ -183,7 +182,7 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 		return html`<div class="wrap">
 			<div class="header">
 				<h2 class="title">Choghadiya</h2>
-				${date ? html`<p class="subtitle">${formatDate(date)}</p>` : nothing}
+				${date ? html`<p class="subtitle">${formatDate(this.effectiveLang(), date)}</p>` : nothing}
 			</div>
 
 			<div class="cho-grid">

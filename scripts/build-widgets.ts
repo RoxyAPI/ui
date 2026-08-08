@@ -10,6 +10,7 @@
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { transform } from 'esbuild';
+import { API_LANGUAGES } from '../packages/ui/src/generated/api-languages.js';
 import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
 import {
@@ -151,6 +152,16 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 	var CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION.split('.')[0]}/dist/cdn/roxy-ui.js';
 	var API = 'https://roxyapi.com/api/v2';
 	var WIDGETS = ${JSON.stringify(map)};
+	var LANGS = ${JSON.stringify(API_LANGUAGES)};
+
+	// The API takes a two-letter code and 400s on anything else, so a site owner
+	// writing the tag their page already carries (data-lang="es-AR") would break
+	// every request. Truncate the region, and drop a language the API does not
+	// accept rather than sending it.
+	function apiLang(tag) {
+		var base = String(tag || '').toLowerCase().split('-')[0];
+		return LANGS.indexOf(base) >= 0 ? base : null;
+	}
 
 	// Load the elements from wherever THIS script was loaded from, so a site that
 	// self-hosts widgets.js keeps everything on its own origin. Falls back to the
@@ -260,7 +271,7 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 				rest[k] = attrs[k];
 			});
 			var query = {};
-			if (rest.lang != null) { query.lang = rest.lang; delete rest.lang; }
+			if (rest.lang != null) { var lang = apiLang(rest.lang); if (lang) query.lang = lang; delete rest.lang; }
 			var headers = { Accept: 'application/json', 'X-API-Key': pk };
 			var init = { method: method, headers: headers };
 			if (method === 'POST') {

@@ -522,7 +522,7 @@ This is how the WordPress plugin renders: PHP fetches the response server-side, 
 
 Most RoxyAPI endpoints return their interpretation text in eight languages, selected with the `lang` query parameter (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`). Human Design, for example, returns the type, strategy, authority, profile, channel, center, gate, and line readings in the requested language.
 
-The components hold no copy of their own; they print the prose the response carries. So the language of the response is the language of the render, and there is no locale prop to set.
+The components hold no copy of their own; they print the prose the response carries. So the language of the response is the language of the render.
 
 ```ts
 const { data } = await roxy.humanDesign.generateBodygraph({
@@ -531,9 +531,33 @@ const { data } = await roxy.humanDesign.generateBodygraph({
 });
 ```
 
-`lang` is a query parameter even on a POST endpoint. Put it in `query`, never in `body`; a `lang` key in the body is ignored and you get English back. In the self-fetch pattern you do not fill a language field: set `lang` as an attribute on the element (`<roxy-horoscope-card lang="de" ...>`) and the form routes it to the `?lang=` query on submit.
+`lang` is a query parameter even on a POST endpoint. Put it in `query`, never in `body`; a `lang` key in the body is ignored and you get English back. In the self-fetch pattern you do not fill a language field: the component reads the page language and routes it to the `?lang=` query on submit.
 
-The structural labels the components draw (section headings such as Reading or Centers, and column headers) are English.
+## The labels the components write
+
+Separate from the response, and set separately. The wording a component supplies itself (headings, tab labels, table captions, legends, empty states) comes from a catalogue you load for the language you serve.
+
+```html
+<html lang="es-AR">
+  ...
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/locales/es.js"></script>
+```
+
+```ts
+import '@roxyapi/ui';
+import '@roxyapi/ui/locales/es';
+```
+
+The language comes from `lang` on the element, else the nearest ancestor carrying `lang`, else `<html>`. So a site that already declares its language needs no per-component attribute. A regional tag reads its base language, so `es-AR` and `es-419` both use `es`, and the request goes out as `?lang=es` because that is what the API accepts.
+
+English is the default and needs no catalogue. Load only the languages your site serves; one catalogue covers every Roxy component on the page.
+
+A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt`, `ru`, `tr`. Each covers `<roxy-natal-chart>`, `<roxy-transit-wheel>` and the shared labels every component inherits; the remaining components write English labels until their entries land. **The values the API returns are never rewritten**: a planet, sign, aspect, element or house-system name renders exactly as the response carries it, so the words on the chart and the words in the response can never disagree. Ask for a language and the response carries the reader-facing name beside the English one, so the chart prints the translated name while the English one stays available to compare against in your own code.
+
+Dates, times and numbers need no catalogue at all. They follow the same page language and are written the way that language writes them, hour cycle included, so a German page reads `15. Jan. 1990, 14:30` and an Argentine one `15 de ene de 1990, 2:30 p. m.`.
+
+Ask for the response language AND load the matching catalogue, and the whole card reads in one language.
 
 ## Theming and dark mode
 

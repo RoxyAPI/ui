@@ -1088,6 +1088,100 @@ describe('roxy-data heuristic', () => {
 });
 
 /**
+ * The generic renderer against a response that carries its own translation.
+ *
+ * @remarks
+ * `roxy-data` derives its columns from `Object.keys(row)` and knows nothing about what any of them mean, so the day the API began echoing `planetLocalized` beside `planet` this element started drawing `Planet | Planet Localized | Longitude | Sign | Sign Localized`: two extra columns, headed in English, carrying the same fact twice, on a page whose owner changed nothing. That is a REGRESSION rather than a missing feature, which is why it is repaired at the key layer both render paths funnel through (`suppress` -> `foldLocalized`) instead of at each column-building site.
+ *
+ * Sabotage-verified by dropping the `foldLocalized` call: the six columns come straight back and these tests go red.
+ */
+describe('roxy-data folds a localized field into the field it translates', () => {
+	const mount = async (data: unknown) => {
+		const el = document.createElement('roxy-data') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		const root = el.shadowRoot as ShadowRoot;
+		return {
+			el,
+			headers: [...root.querySelectorAll('th')].map((th) =>
+				th.textContent?.trim(),
+			),
+			cells: [...root.querySelectorAll('td')].map((td) =>
+				td.textContent?.trim(),
+			),
+		};
+	};
+
+	/** The real shape of a monthly-ephemeris row, which is the page this shipped to. */
+	const ROW = {
+		planet: 'Sun',
+		planetLocalized: 'Sol',
+		longitude: 105.03,
+		sign: 'Cancer',
+		signLocalized: 'Cáncer',
+		degree: 15.03,
+	};
+
+	test('a translated row keeps its column count and reads in the page language', async () => {
+		const { el, headers, cells } = await mount([ROW]);
+		expect(headers).toEqual(['Planet', 'Longitude', 'Sign', 'Degree']);
+		expect(cells).toEqual(['Sol', '105.03', 'Cáncer', '15.03']);
+		el.remove();
+	});
+
+	test('an English row, which carries no localized field, renders exactly as before', async () => {
+		const { planetLocalized, signLocalized, ...english } = ROW;
+		expect([planetLocalized, signLocalized]).toEqual(['Sol', 'Cáncer']);
+		const { el, headers, cells } = await mount([english]);
+		expect(headers).toEqual(['Planet', 'Longitude', 'Sign', 'Degree']);
+		expect(cells).toEqual(['Sun', '105.03', 'Cancer', '15.03']);
+		el.remove();
+	});
+
+	test('a localized field with no canonical partner still renders', async () => {
+		// Suppressing on the name alone would delete the only copy of the value.
+		const { el, headers, cells } = await mount([
+			{ planet: 'Sun', noteLocalized: 'Nota' },
+		]);
+		expect(headers).toEqual(['Planet', 'Note Localized']);
+		expect(cells).toEqual(['Sun', 'Nota']);
+		el.remove();
+	});
+
+	test('a card rather than a table folds the same way', async () => {
+		// The object path and the table path share one `suppress`, so neither can
+		// be fixed without the other. Asserted rather than assumed.
+		const el = document.createElement('roxy-data') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = {
+			name: 'Sun',
+			nameLocalized: 'Sol',
+			sign: 'Cancer',
+			signLocalized: 'Cáncer',
+		};
+		await settled(el);
+		const root = el.shadowRoot as ShadowRoot;
+		const rendered = (root.innerHTML ?? '').replace(
+			/<style[\s\S]*?<\/style>/g,
+			'',
+		);
+		const labels = [...root.querySelectorAll('dt')].map((dt) =>
+			dt.textContent?.trim(),
+		);
+		expect(labels).toEqual(['Sign']);
+		expect(rendered).toContain('Sol');
+		expect(rendered).toContain('Cáncer');
+		expect(rendered).not.toContain('Cancer<');
+		el.remove();
+	});
+});
+
+/**
  * `roxy-data` and the WordPress plugin's `GenericRenderer.php` render the SAME responses for the same visitor: this component when JavaScript runs, the PHP renderer when it does not. `roxy-data` used to print everything the API returned, so a WordPress reading card showed the derivation math, the schema discriminator and the pagination counters whenever JS was ON, and hid them when JS was OFF. The JS path, which is the path almost every visitor takes, was the worse one.
  *
  * The payload below is the real shape of `/numerology/life-path`, verified live.
@@ -4653,5 +4747,107 @@ describe('hide-readings', () => {
 			}
 			el.remove();
 		}
+	});
+});
+
+/**
+ * The natal wheel draws twelve equal 30 degree sectors from the Ascendant when the response carries fewer than twelve cusps, and that is a DIFFERENT chart from a Placidus one.
+ *
+ * @remarks
+ * It shipped silent: the numbers 1 to 12 went round the wheel, the SVG accessible name asserted `twelve houses` unconditionally, and the `{{system}} houses` legend chip simply vanished. So the one state where the drawing is the component's own construction was the one state that said nothing, and no reader could tell it from a real chart. Both halves are asserted here, in both directions, because a caveat that also shows on a good response is as useless as one that never shows.
+ */
+describe('the natal chart declares its equal-sector fallback', () => {
+	const settled = (el: Element): Promise<void> =>
+		(el as unknown as { updateComplete: Promise<void> }).updateComplete;
+
+	/** Twelve UNEQUAL Placidus cusps, so the real path cannot be confused with the fallback. */
+	const CUSPS = [
+		85.7, 106.0, 126.7, 151.5, 184.3, 225.8, 265.7, 286.0, 306.7, 331.5, 4.3,
+		45.8,
+	].map((longitude, i) => ({ number: i + 1, longitude, sign: 'Aries' }));
+
+	const chart = (houses: unknown) => ({
+		planets: [{ name: 'Sun', longitude: 12.5, sign: 'Aries', degree: 12.5 }],
+		aspects: [],
+		houses,
+		houseSystem: 'placidus',
+		ascendant: { longitude: 85.7 },
+		birthDetails: { date: '1990-01-15', time: '14:30:00' },
+	});
+
+	async function mount(houses: unknown) {
+		const el = document.createElement('roxy-natal-chart') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = chart(houses);
+		await settled(el);
+		return el;
+	}
+
+	const CAVEAT = 'Equal sectors from the Ascendant';
+	const TWELVE = 'Natal chart wheel with twelve houses, planets, and aspects';
+	const FALLBACK =
+		'Natal chart wheel with planets and aspects, houses shown as equal sectors from the Ascendant';
+
+	test('a response with all twelve cusps names its system and claims twelve houses', async () => {
+		const el = await mount(CUSPS);
+		const root = el.shadowRoot as ShadowRoot;
+		const legend = root.querySelector('[part~="legend"]')?.textContent ?? '';
+		expect(legend).toContain('placidus houses');
+		expect(legend).not.toContain(CAVEAT);
+		expect(root.querySelector('.caveat')).toBeNull();
+		expect(
+			root.querySelector('svg[part="chart"]')?.getAttribute('aria-label'),
+		).toBe(TWELVE);
+		// The real cusps are drawn, degree labels and all.
+		expect(root.querySelectorAll('text.cusp-deg').length).toBe(12);
+		el.remove();
+	});
+
+	test('a response with no cusps says so, visibly and in the accessible name', async () => {
+		const el = await mount([]);
+		const root = el.shadowRoot as ShadowRoot;
+		const legend = root.querySelector('[part~="legend"]')?.textContent ?? '';
+		expect(legend).toContain(CAVEAT);
+		expect(legend).toContain('no house cusps in this response');
+		// The system chip is GONE, not sitting beside the caveat contradicting it:
+		// the system names cusps, and there are none.
+		expect(legend).not.toContain('placidus houses');
+		expect(
+			root.querySelector('svg[part="chart"]')?.getAttribute('aria-label'),
+		).toBe(FALLBACK);
+		// No cusp degrees, because there are no cusps to print.
+		expect(root.querySelectorAll('text.cusp-deg').length).toBe(0);
+		// The sectors are still numbered and still drawn, so the chart is readable.
+		expect(root.querySelectorAll('text.house-num').length).toBe(12);
+		el.remove();
+	});
+
+	test('a partial cusp set is the fallback too, not a partly real wheel', async () => {
+		// Eleven cusps is the shape that reads as data and is not: the old code
+		// took `!== 12` as its condition and said nothing about it either.
+		const el = await mount(CUSPS.slice(0, 11));
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.querySelector('[part~="legend"]')?.textContent ?? '').toContain(
+			CAVEAT,
+		);
+		expect(
+			root.querySelector('svg[part="chart"]')?.getAttribute('aria-label'),
+		).toBe(FALLBACK);
+		el.remove();
+	});
+
+	test('the caveat is visible text, never a hidden or a screen-reader-only note', async () => {
+		// The whole defect was that a reader could not distinguish the two charts,
+		// so an sr-only caveat would be the same bug with a better conscience.
+		const el = await mount([]);
+		const root = el.shadowRoot as ShadowRoot;
+		const caveat = root.querySelector('.caveat');
+		expect(caveat).not.toBeNull();
+		expect(caveat?.classList.contains('roxy-sr-only')).toBe(false);
+		expect(caveat?.getAttribute('hidden')).toBeNull();
+		expect((caveat?.textContent ?? '').trim().length).toBeGreaterThan(20);
+		el.remove();
 	});
 });

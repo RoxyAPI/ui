@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type {
 	CalculateAspectsResponse,
 	CalculateTransitAspectsResponse,
@@ -11,7 +11,6 @@ import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatAspectName, formatDate, formatNumber } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
-import { capitalize } from '../utils/string.js';
 
 /**
  * Natal + transit aspect grid with chart-pattern detection. Renders three endpoints that share an aspects/patterns shape: /astrology/aspects (natal aspects + patterns + a harmonious/challenging summary), /astrology/transit-aspects (transiting-to-natal aspects with timing guidance), and /astrology/aspect-patterns (patterns only: grand trines, t-squares, stelliums, yods, kites). Each aspect row shows the two bodies, the aspect type coloured by nature, its orb and strength, and an expandable interpretation; patterns render as labelled cards listing the planets they bind, apex first.
@@ -300,6 +299,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 
 		// Natal aspects date the chart, transits date the sky.
 		const date = formatDate(
+			this.effectiveLang(),
 			'transitDate' in d ? d.transitDate : 'date' in d ? d.date : '',
 		);
 		const options = 'options' in d ? d.options : undefined;
@@ -378,8 +378,8 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			NonNullable<CalculateTransitAspectsResponse['summary']>['strongest']
 		>,
 	) {
-		const g1 = PLANET_GLYPH[capitalize(s.planet1)] ?? '';
-		const g2 = PLANET_GLYPH[capitalize(s.planet2)] ?? '';
+		const g1 = planetGlyph(s.planet1) ?? '';
+		const g2 = planetGlyph(s.planet2) ?? '';
 		const nature = (s.interpretation ?? 'neutral').toLowerCase();
 		return html`<div class="strongest" part="details strongest">
 			<span class="label">Strongest</span>
@@ -396,8 +396,8 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			| NonNullable<CalculateTransitAspectsResponse['aspects']>[number],
 		idx: number,
 	) {
-		const g1 = PLANET_GLYPH[capitalize(a.planet1)] ?? '';
-		const g2 = PLANET_GLYPH[capitalize(a.planet2)] ?? '';
+		const g1 = planetGlyph(a.planet1) ?? '';
+		const g2 = planetGlyph(a.planet2) ?? '';
 		const nature = (a.interpretation ?? 'neutral').toLowerCase();
 		const type = formatAspectName(a);
 		const status = a.isApplying ? 'Applying' : 'Separating';
@@ -484,7 +484,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 				ordered.length
 					? html`<div class="pattern-planets">
 						${ordered.map((name) => {
-							const glyph = PLANET_GLYPH[capitalize(name)];
+							const glyph = planetGlyph(name);
 							const isApex = Boolean(p.apex) && name === p.apex;
 							return html`<span class=${isApex ? 'planet-chip apex' : 'planet-chip'}>
 								${glyph ? html`<span aria-hidden="true">${glyph}</span>` : nothing}${name}${isApex ? html`<span class="apex-tag">apex</span>` : nothing}

@@ -1,7 +1,8 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { SIGN_GLYPH } from '../tokens/index.js';
+import { apiLang } from '../i18n/lang.js';
+import { signGlyph } from '../tokens/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
@@ -16,7 +17,7 @@ import {
 	type OperationSchema,
 	sliceFileName,
 } from '../utils/field-schema.js';
-import { capitalize, humanize } from '../utils/string.js';
+import { humanize } from '../utils/string.js';
 import { ROXY_UI_VERSION } from '../version.js';
 
 /** Production spec, fetched when no slice is available and no explicit `spec-url` is set. */
@@ -594,9 +595,14 @@ export class RoxyEndpointForm extends LitElement {
 		return this.submitLabel || deriveSubmitLabel(this.endpoint);
 	}
 
-	/** The site-owner language from the element `lang` attribute (native), or undefined. Read here, never a Lit property, to avoid shadowing the native accessor. */
+	/**
+	 * The value this form may put on `?lang=`, or undefined to leave the request on the API default.
+	 *
+	 * @remarks
+	 * NOT the raw site language. `?lang=es-AR` is a 400 and `?lang=es` is a 200, and the language now resolves from `<html lang>` rather than only from an attribute a developer typed, so the unfiltered tag reaching the query string would break every regional and every untranslated locale. {@link apiLang} does both narrowings; this method exists so the submit path reads as one call.
+	 */
 	private effectiveLang(): string | undefined {
-		return this.lang || undefined;
+		return apiLang(this);
 	}
 
 	/**
@@ -780,7 +786,7 @@ export class RoxyEndpointForm extends LitElement {
 			>
 				${opts.map((opt, i) => {
 					const selected = this.values[f.key] === opt;
-					const glyph = zodiac ? SIGN_GLYPH[capitalize(opt)] : undefined;
+					const glyph = zodiac ? signGlyph(opt) : undefined;
 					return html`<button
 						type="button"
 						class="tile"

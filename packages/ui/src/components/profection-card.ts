@@ -1,11 +1,10 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { ProfectionsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 
 /**
  * Annual profection card. Renders a /astrology/profections response: the year's
@@ -139,14 +138,13 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 	}
 
 	protected renderData(data: ProfectionsResponse) {
-		const signGlyph = SIGN_GLYPH[capitalize(data.profectedSign ?? '')];
-		const lordGlyph = PLANET_GLYPH[capitalize(data.lordOfYear ?? '')];
-		const lordNatalGlyph =
-			SIGN_GLYPH[capitalize(data.lordNatalPosition?.sign ?? '')];
+		const sGlyph = signGlyph(data.profectedSign);
+		const lordGlyph = planetGlyph(data.lordOfYear);
+		const lordNatalGlyph = signGlyph(data.lordNatalPosition?.sign);
 		return html`<div class="wrap" part="card">
 			<header part="header">
 				<h2 class="title">Annual profection</h2>
-				${data.targetDate ? html`<span class="badge"><b>For</b> ${formatDate(data.targetDate)}</span>` : nothing}
+				${data.targetDate ? html`<span class="badge"><b>For</b> ${formatDate(this.effectiveLang(), data.targetDate)}</span>` : nothing}
 			</header>
 			<div class="focus" part="details">
 				<div class="age">
@@ -156,7 +154,7 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 				<span class="arrow">activates</span>
 				<div class="house">
 					<span class="h">House ${data.profectedHouse}</span>
-					<span class="sign">${signGlyph ? html`<span class="sg">${signGlyph}</span>` : nothing}${data.profectedSign}</span>
+					<span class="sign">${sGlyph ? html`<span class="sg">${sGlyph}</span>` : nothing}${data.profectedSign}</span>
 				</div>
 			</div>
 			<div class="lord" part="details">

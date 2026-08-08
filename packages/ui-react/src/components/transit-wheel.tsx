@@ -14,8 +14,10 @@ export interface RoxyTransitWheelProps extends ElementAttrs {
 	style?: React.CSSProperties;
 	/** Heading above the bi-wheel. Defaults to "Transits". */
 	heading?: string;
-	/** Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the page from a chart endpoint that returns one. Rotates the wheel so that longitude falls on the left horizon and draws the ASC/DSC axis. Leave it unset and the wheel keeps a fixed zodiacal orientation with 0 degrees Aries on the left; no house cusps are drawn either way, because the transit-aspects response carries none. */
+	/** Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the page from a chart endpoint that returns one. Rotates the wheel so that longitude falls on the left horizon and draws the ASC/DSC axis. Leave it unset and the wheel keeps a fixed zodiacal orientation with 0 degrees Aries on the left. */
 	ascendant?: number;
+	/** The twelve natal house cusps, supplied by the page: the /astrology/natal-chart `houses` array verbatim, or twelve bare cusp longitudes in house order. The transit-aspects response numbers every body by house but returns no cusp longitudes, so this is the only way the wheel can draw the sectors those numbers refer to. Supplying it draws the twelve cusps and their numbers, and rotates the first cusp onto the left horizon unless an ascendant is also given. Anything that does not resolve to houses 1 to 12 with finite longitudes is ignored rather than half drawn. */
+	houses?: Array<{ number: number; longitude: number }> | number[];
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -38,7 +40,7 @@ export interface RoxyTransitWheelProps extends ElementAttrs {
 }
 
 export const RoxyTransitWheel = React.forwardRef<HTMLElement | null, RoxyTransitWheelProps>(
-	function RoxyTransitWheel({ data, className, style, heading, ascendant, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
+	function RoxyTransitWheel({ data, className, style, heading, ascendant, houses, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -83,6 +85,13 @@ export const RoxyTransitWheel = React.forwardRef<HTMLElement | null, RoxyTransit
 				(el as unknown as { ascendant: number }).ascendant = ascendant;
 			}
 		}, [ascendant, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && houses !== undefined) {
+				(el as unknown as { houses: Array<{ number: number; longitude: number }> | number[] }).houses = houses;
+			}
+		}, [houses, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

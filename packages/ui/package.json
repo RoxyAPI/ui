@@ -18,6 +18,10 @@
       "types": "./dist/components/*.d.ts",
       "import": "./dist/components/*.js"
     },
+    "./locales/*": {
+      "types": "./dist/locales/*.d.ts",
+      "import": "./dist/locales/*.js"
+    },
     "./types": {
       "types": "./dist/types/index.d.ts"
     },
@@ -67,7 +71,9 @@
   },
   "sideEffects": [
     "./src/components/*.ts",
+    "./src/locales/*.ts",
     "./dist/components/*.js",
+    "./dist/locales/*.js",
     "./dist/cdn/*.js"
   ],
   "engines": {

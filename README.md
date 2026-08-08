@@ -764,6 +764,32 @@ What each family keeps when you set it:
 
 What goes: interpretation paragraphs, the reading accordions, keyword chips attached to a reading, remedies and action steps and strengths lists (sentences laid out as bullets), and any section whose only content was one of those, heading included.
 
+## Languages
+
+A component reads the page language and renders its own labels in it. Set `lang` on the element, on any ancestor of it, or on `<html>`, and add the catalogue for that language.
+
+```html
+<html lang="es-AR">
+  ...
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/locales/es.js"></script>
+```
+
+```ts
+import '@roxyapi/ui';
+import '@roxyapi/ui/locales/es';
+```
+
+With `@roxyapi/ui-react` or `@roxyapi/ui-vue`, add the catalogue with the script tag above: the components themselves are loaded from the CDN, and one tag in your HTML covers the whole app.
+
+A regional tag resolves to its language, so `es-AR`, `es-MX` and `es-419` all read the `es` catalogue and a CMS that emits an accurate tag needs no configuration. English is the default and needs no catalogue, so an English-only page downloads nothing extra. Load only the languages your site serves: each is its own small file, and one of them translates every Roxy component on the page.
+
+Two things are separate on purpose. The catalogue is the wording this library writes: headings, tabs, table captions, legends, empty states. The wording the API returns is localized by the request, as shown above, and the component prints what came back. That covers the vocabulary as well as the interpretations: ask a chart for Spanish and the planet, sign and aspect names read Spanish on the wheel, in its tooltips, in the aspect grid and in the tables, with the same glyphs beside them. Ask for both and the whole card reads in one language.
+
+Dates, times and numbers follow the page as well, in the conventions that language actually uses: a Spanish page reads `15 ene 1990`, an Argentine one `15 de ene de 1990`, a German one `15. Jan. 1990, 14:30`. The hour cycle comes from the language, not from us, so nobody gets a 12-hour clock on a page that writes 24. This needs no catalogue and no attribute: it follows the same `lang` your page already declares.
+
+A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt`, `ru`, `tr`. Each covers `<roxy-natal-chart>`, `<roxy-transit-wheel>` and the shared chrome every component inherits; the remaining components render English labels until their catalogue entries land.
+
 ## Reliability
 
 - Verified astronomical calculations from Roxy Ephemeris, verified against NASA JPL Horizons.

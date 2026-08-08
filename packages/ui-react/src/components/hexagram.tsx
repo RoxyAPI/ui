@@ -12,8 +12,6 @@ export interface RoxyHexagramProps extends ElementAttrs {
 	data?: GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse;
 	className?: string;
 	style?: React.CSSProperties;
-	/** Which I Ching response shape to render: a static hexagram lookup, a cast with changing lines, or the daily hexagram. */
-	mode?: 'lookup' | 'cast' | 'daily';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -36,7 +34,7 @@ export interface RoxyHexagramProps extends ElementAttrs {
 }
 
 export const RoxyHexagram = React.forwardRef<HTMLElement | null, RoxyHexagramProps>(
-	function RoxyHexagram({ data, className, style, mode, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
+	function RoxyHexagram({ data, className, style, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -67,13 +65,6 @@ export const RoxyHexagram = React.forwardRef<HTMLElement | null, RoxyHexagramPro
 				(el as unknown as { data: unknown }).data = data;
 			}
 		}, [data, loaded]);
-
-		React.useEffect(() => {
-			const el = internal.current;
-			if (el && mode !== undefined) {
-				(el as unknown as { mode: 'lookup' | 'cast' | 'daily' }).mode = mode;
-			}
-		}, [mode, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

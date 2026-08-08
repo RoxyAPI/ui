@@ -1,12 +1,11 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 
 /** A body or point row, normalized so planets and the four angles share a table. */
 interface BodyRow {
@@ -150,8 +149,8 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 				</thead>
 				<tbody>
 					${rows.map((r) => {
-						const glyph = PLANET_GLYPH[capitalize(r.name)] ?? '';
-						const signGlyph = SIGN_GLYPH[capitalize(r.sign ?? '')] ?? '';
+						const glyph = planetGlyph(r.name) ?? '';
+						const sGlyph = signGlyph(r.sign) ?? '';
 						const speed =
 							typeof r.speed === 'number' ? formatNumber(r.speed, 3) : '';
 						return html`<tr class=${r.isPoint ? 'point' : ''}>
@@ -159,7 +158,7 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 								${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${r.name}
 							</td>
 							<td>
-								${signGlyph ? html`<span class="glyph">${signGlyph}</span>` : nothing}${r.sign ?? ''}
+								${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${r.sign ?? ''}
 							</td>
 							<td class="num">
 								${typeof r.longitude === 'number' ? formatSignPosition(r.longitude) : ''}

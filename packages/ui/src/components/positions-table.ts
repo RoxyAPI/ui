@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type {
 	ArabicLotsResponse,
 	AsteroidsResponse,
@@ -237,7 +237,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	}
 
 	private renderRow(r: Row, cols: ViewModel['cols']) {
-		const glyph = PLANET_GLYPH[capitalize(r.label)];
+		const glyph = planetGlyph(r.label);
 		return html`<tr class=${r.isAngle ? 'angle' : ''}>
 			<td class="body-cell">${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${r.label}</td>
 			<td>${this.signCell(r.sign, r.degree)}</td>
@@ -265,7 +265,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	}
 
 	private signCell(sign: string, degree: number) {
-		const g = SIGN_GLYPH[capitalize(sign)];
+		const g = signGlyph(sign);
 		return html`<span class="sign">${g ? html`<span class="sg">${g}</span>` : nothing}${formatDegreeInSign(degree)} ${sign}</span>`;
 	}
 
@@ -278,7 +278,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		const sections: InterpSection[] = rows
 			.filter((r) => r.interpretation)
 			.map((r) => {
-				const glyph = PLANET_GLYPH[capitalize(r.label)] ?? '';
+				const glyph = planetGlyph(r.label) ?? '';
 				return {
 					label: `${glyph} ${r.label}`.trim(),
 					aside: `${r.sign} ${formatDegreeInSign(r.degree)}`.trim(),
@@ -336,7 +336,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				title: 'Solar arc directions',
 				badges: [
 					{ label: 'Arc', value: `${formatNumber(data.solarArc, 2)}°` },
-					{ label: 'Directed to', value: formatDate(data.targetDate) },
+					{
+						label: 'Directed to',
+						value: formatDate(this.effectiveLang(), data.targetDate),
+					},
 				],
 				summary: data.summary,
 				cols: { house: false, motion: false, formula: false, natal: true },
@@ -387,7 +390,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		return {
 			title: 'Secondary progressions',
 			badges: [
-				{ label: 'Progressed to', value: formatDate(data.targetDate) },
+				{
+					label: 'Progressed to',
+					value: formatDate(this.effectiveLang(), data.targetDate),
+				},
 				{
 					label: 'Elapsed',
 					value: `${formatNumber(data.elapsedYears, 1)} yrs`,

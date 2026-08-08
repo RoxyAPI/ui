@@ -206,14 +206,11 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 				'Override the auto-derived gallery heading. Empty by default, in which case the heading is "Tarot deck".',
 		},
 	],
-	'natal-chart': [
-		{
-			prop: 'houseSystem',
-			type: "'placidus' | 'whole-sign' | 'equal' | 'koch'",
-			comment:
-				'House system the chart was cast with. Labels the house cusps; does not recompute positions.',
-		},
-	],
+	// `natal-chart` deliberately has NO entry. It carried a `houseSystem` prop
+	// that nothing in the element ever read: the system is a REQUEST parameter and
+	// both bound responses echo the one they used, so an attribute could only ever
+	// print a label contradicting the cusps drawn beside it. See the element
+	// docblock before adding it back.
 	'transit-wheel': [
 		{
 			prop: 'heading',
@@ -224,7 +221,13 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 			prop: 'ascendant',
 			type: 'number',
 			comment:
-				'Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the page from a chart endpoint that returns one. Rotates the wheel so that longitude falls on the left horizon and draws the ASC/DSC axis. Leave it unset and the wheel keeps a fixed zodiacal orientation with 0 degrees Aries on the left; no house cusps are drawn either way, because the transit-aspects response carries none.',
+				'Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the page from a chart endpoint that returns one. Rotates the wheel so that longitude falls on the left horizon and draws the ASC/DSC axis. Leave it unset and the wheel keeps a fixed zodiacal orientation with 0 degrees Aries on the left.',
+		},
+		{
+			prop: 'houses',
+			type: 'Array<{ number: number; longitude: number }> | number[]',
+			comment:
+				'The twelve natal house cusps, supplied by the page: the /astrology/natal-chart `houses` array verbatim, or twelve bare cusp longitudes in house order. The transit-aspects response numbers every body by house but returns no cusp longitudes, so this is the only way the wheel can draw the sectors those numbers refer to. Supplying it draws the twelve cusps and their numbers, and rotates the first cusp onto the left horizon unless an ascendant is also given. Anything that does not resolve to houses 1 to 12 with finite longitudes is ignored rather than half drawn.',
 		},
 	],
 	'horoscope-card': [
@@ -327,14 +330,9 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 				'Which biorhythm response shape to render: a single day, a multi-day forecast, or the critical days list.',
 		},
 	],
-	hexagram: [
-		{
-			prop: 'mode',
-			type: "'lookup' | 'cast' | 'daily'",
-			comment:
-				'Which I Ching response shape to render: a static hexagram lookup, a cast with changing lines, or the daily hexagram.',
-		},
-	],
+	// `hexagram` deliberately has NO entry, for the same reason `natal-chart` has
+	// none: it carried a `mode` prop nothing read, because the component
+	// shape-detects which of its four responses arrived. See its element docblock.
 	'crystal-grid': [
 		{
 			prop: 'heading',

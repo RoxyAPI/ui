@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { PLANET_GLYPH, SIGN_GLYPH } from '../tokens/index.js';
+import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { TransitsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -11,7 +11,6 @@ import {
 	formatNumber,
 	formatTime,
 } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 /**
@@ -255,7 +254,10 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 			summary,
 		} = d;
 
-		const dateStr = [formatDate(transitDate), formatTime(transitTime)]
+		const dateStr = [
+			formatDate(this.effectiveLang(), transitDate),
+			formatTime(this.effectiveLang(), transitTime),
+		]
 			.filter(Boolean)
 			.join(' ');
 		const aspectCount = transitAspects?.length ?? 0;
@@ -339,8 +341,8 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 			</thead>
 			<tbody>
 				${planets.map((p) => {
-					const pGlyph = PLANET_GLYPH[capitalize(p.name)] ?? '';
-					const sGlyph = SIGN_GLYPH[capitalize(p.sign)] ?? '';
+					const pGlyph = planetGlyph(p.name) ?? '';
+					const sGlyph = signGlyph(p.sign) ?? '';
 					const speedArrow = p.speed >= 0 ? '↑' : '↓';
 					return html`<tr>
 						<td>
@@ -376,8 +378,8 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	) {
 		return html`<div role="list" aria-label="Transit aspects">
 			${aspects.map((a, idx) => {
-				const tGlyph = PLANET_GLYPH[capitalize(a.transitPlanet)] ?? '';
-				const nGlyph = PLANET_GLYPH[capitalize(a.natalPlanet)] ?? '';
+				const tGlyph = planetGlyph(a.transitPlanet) ?? '';
+				const nGlyph = planetGlyph(a.natalPlanet) ?? '';
 				const nature = (a.nature ?? 'neutral').toLowerCase();
 				const interp = a.interpretation;
 				const type = formatAspectName(a);

@@ -1,11 +1,10 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { SIGN_GLYPH } from '../tokens/index.js';
+import { signGlyph } from '../tokens/index.js';
 import type { ArudhaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
-import { capitalize } from '../utils/string.js';
 
 type Pada = ArudhaResponse['padas'][number];
 
@@ -200,7 +199,7 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 	}
 
 	private renderRow(p: Pada) {
-		const glyph = (sign?: string) => SIGN_GLYPH[capitalize(sign ?? '')] ?? '';
+		const glyph = (sign?: string) => signGlyph(sign) ?? '';
 		const cell = (sign?: string) => {
 			const g = glyph(sign);
 			return html`${g ? html`<span class="glyph">${g}</span>` : nothing}${sign ?? ''}`;

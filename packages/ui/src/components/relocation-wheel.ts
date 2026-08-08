@@ -1,20 +1,20 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 // Registers <roxy-natal-chart>, reused below as the wheel renderer. The
 // relocation response is structurally a natal chart (same planets, houses, and
 // angles), so the wheel is shared rather than duplicated.
 import './natal-chart.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { RelocationChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { capitalize } from '../utils/string.js';
+import { formatInteger } from '../utils/format.js';
 
 type HouseChange =
 	RelocationChartResponse['changes']['planetsChangedHouse'][number];
 
-const glyphFor = (name: string): string =>
-	PLANET_GLYPH[capitalize(name)] ?? PLANET_GLYPH[name] ?? '';
+const glyphFor = (name: string): string => planetGlyph(name) ?? '';
 
 /**
  * Relocation chart. The birth instant is unchanged, so every planet keeps its
@@ -117,6 +117,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 		return html`<div class="stack" part="stack">
 			<roxy-natal-chart
 				heading="Relocation chart"
+				lang=${ifDefined(this.effectiveLang())}
 				exportparts="card, header, tablist, tab, panel, chart, table, aspect-grid, element-modality, legend, details, section, patterns, pattern, readings, reading"
 				?hide-readings=${this.hideReadings}
 				.data=${data}
@@ -133,7 +134,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 									// relocation.
 									Math.round(c.distanceKm) === 0
 										? 'Same location as birth'
-										: `${Math.round(c.distanceKm).toLocaleString()} km ${c.direction ?? ''} of birthplace`
+										: `${formatInteger(this.effectiveLang(), c.distanceKm)} km ${c.direction ?? ''} of birthplace`
 								}
 							</span>`
 							: nothing

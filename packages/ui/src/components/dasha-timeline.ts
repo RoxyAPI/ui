@@ -12,11 +12,12 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
+	type DateGrain,
 	formatAyanamsa,
 	formatDate,
+	formatDateGrain,
 	formatDateTime,
 	formatNumber,
-	resolveDisplayDate,
 } from '../utils/format.js';
 import { type HouseThemes, houseWords } from '../utils/house-themes.js';
 import {
@@ -102,11 +103,14 @@ function periodHouseWords(
  * @remarks
  * A prana period, and a deep sookshma, opens and closes on the same calendar day, so the date alone printed "Aug 8, 2026 to Aug 8, 2026" and named no span at all. The clock is added only when the two ends collapse, so every longer period keeps the shorter form.
  */
-function formatSpan(p: { startDate?: string; endDate?: string }): string {
-	const start = p.startDate ? formatDate(p.startDate) : '';
-	const end = p.endDate ? formatDate(p.endDate) : '';
+function formatSpan(
+	locale: string | undefined,
+	p: { startDate?: string; endDate?: string },
+): string {
+	const start = p.startDate ? formatDate(locale, p.startDate) : '';
+	const end = p.endDate ? formatDate(locale, p.endDate) : '';
 	if (start && start === end) {
-		return `${formatDateTime(p.startDate)} to ${formatDateTime(p.endDate)}`;
+		return `${formatDateTime(locale, p.startDate)} to ${formatDateTime(locale, p.endDate)}`;
 	}
 	if (start && end) return `${start} to ${end}`;
 	return start || end;
@@ -532,8 +536,10 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const parent = parentOf(d);
 		if (!parent) return nothing;
 		const p = parent.period;
-		const span = formatSpan(p);
-		const began = p.nominalStartDate ? formatDate(p.nominalStartDate) : '';
+		const span = formatSpan(this.effectiveLang(), p);
+		const began = p.nominalStartDate
+			? formatDate(this.effectiveLang(), p.nominalStartDate)
+			: '';
 		return html`<p class="parent">
 			Inside the <strong>${p.planet}</strong> ${parent.label}${span ? `, ${span}` : ''}
 			${typeof p.durationYears === 'number' ? `(${formatDuration(p.durationYears)})` : ''}.
@@ -559,7 +565,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		if (parent?.period.interpretation) {
 			sections.push({
 				label: `${parent.period.planet} ${parent.label}`,
-				aside: formatSpan(parent.period),
+				aside: formatSpan(this.effectiveLang(), parent.period),
 				body: parent.period.interpretation,
 			});
 		}
@@ -577,7 +583,9 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				const left = formatBalance(remaining);
 				sections.push({
 					label: `${period.planet} ${label}`,
-					aside: left ? `${left} left` : formatSpan(period),
+					aside: left
+						? `${left} left`
+						: formatSpan(this.effectiveLang(), period),
 					body: period.interpretation,
 				});
 			}
@@ -587,7 +595,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		if (active?.interpretation) {
 			sections.push({
 				label: `${active.planet} ${levelOf(d)}`,
-				aside: formatSpan(active),
+				aside: formatSpan(this.effectiveLang(), active),
 				body: active.interpretation,
 			});
 		}
@@ -698,26 +706,13 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				}
 			</span>
 			<span class="dates">
-				${p.startDate ? formatBoundary(p.startDate, grain) : ''}
-				${p.endDate ? html`- ${formatBoundary(p.endDate, grain)}` : ''}
+				${p.startDate ? formatDateGrain(this.effectiveLang(), p.startDate, grain) : ''}
+				${p.endDate ? html`- ${formatDateGrain(this.effectiveLang(), p.endDate, grain)}` : ''}
 			</span>
 			${houses ? html`<span class="houses">Signifies ${houses}</span>` : nothing}
 		</div>`;
 	}
 }
-
-/**
- * How precise the bar date column has to be, chosen from the SHORTEST period in
- * the set.
- *
- * A Mahadasha spans years, so a bare year reads cleanly and keeps the column
- * narrow. A Sookshma spans days: printed as a year, every one of the nine rows
- * reads "1990 - 1990" and the column carries no information at exactly the level
- * a reader opened the drill-down to see. A Prana runs minutes to days, so it
- * needs the clock for the same reason: at day grain the deepest sets print both
- * ends of a row as the same date.
- */
-type DateGrain = 'year' | 'month' | 'day' | 'time';
 
 const DAYS_PER_YEAR = 365.25;
 
@@ -736,36 +731,22 @@ function formatDuration(years: number): string {
 	return `${formatNumber(hours * 60, 0)} minutes`;
 }
 
+/**
+ * How precise the bar date column has to be, chosen from the SHORTEST period in
+ * the set.
+ *
+ * A Mahadasha spans years, so a bare year reads cleanly and keeps the column
+ * narrow. A Sookshma spans days: printed as a year, every one of the nine rows
+ * reads "1990 - 1990" and the column carries no information at exactly the level
+ * a reader opened the drill-down to see. A Prana runs minutes to days, so it
+ * needs the clock for the same reason: at day grain the deepest sets print both
+ * ends of a row as the same date.
+ */
 function grainFor(minYears: number): DateGrain {
 	if (minYears >= 2) return 'year';
 	if (minYears >= 60 / DAYS_PER_YEAR) return 'month';
 	if (minYears >= 1 / DAYS_PER_YEAR) return 'day';
 	return 'time';
-}
-
-/**
- * One end of a bar, at the chosen granularity.
- *
- * @remarks
- * Every grain carries the year, including day grain, even though the parent line already states it. A sookshma period routinely straddles new year, so dropping the year leaves a bar reading `28 Dec - 3 Jan` with nothing saying which side moved. A dasha table is a date reference: a practitioner reads a boundary off it and writes it down. Time grain carries the whole date for the same reason, since a prana period straddles midnight as readily as a sookshma one straddles new year.
- *
- * The API returns naive datetimes (`1990-01-15T14:30:00`), which are wall clocks in the timezone of the CHART, not instants. {@link resolveDisplayDate} pins them to UTC so a boundary landing in the DST gap of the viewer cannot silently shift a day, and formatting in that same zone is what keeps a printed clock time equal to the chart clock time for every viewer.
- */
-function formatBoundary(s: string, grain: DateGrain): string {
-	if (grain === 'year') {
-		const m = s.match(/^(\d{4})/);
-		return m ? m[1] : s;
-	}
-	const { d, timeZone } = resolveDisplayDate(s);
-	if (Number.isNaN(d.getTime())) return s;
-	return d.toLocaleString('en', {
-		day: grain === 'month' ? undefined : 'numeric',
-		month: 'short',
-		year: 'numeric',
-		hour: grain === 'time' ? 'numeric' : undefined,
-		minute: grain === 'time' ? '2-digit' : undefined,
-		timeZone,
-	});
 }
 
 declare global {

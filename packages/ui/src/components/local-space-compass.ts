@@ -1,5 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { LocalSpaceResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -201,7 +202,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 				<h2 class="title">Local space</h2>
 				${
 					bd
-						? html`<div class="meta">${formatDateTime(bd.date, bd.time)}</div>`
+						? html`<div class="meta">${formatDateTime(this.effectiveLang(), bd.date, bd.time)}</div>`
 						: nothing
 				}
 			</header>
@@ -263,7 +264,9 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 			const below = b.aboveHorizon === false;
 			const end = azimuthPoint(b.azimuth, SPOKE);
 			const glyphPos = azimuthPoint(b.azimuth, GLYPH_R);
-			const glyph = b.symbol || b.planet.slice(0, 2);
+			// Response symbol first, then the shared table, then the full name. Never a
+			// truncation: `North Node.slice(0, 2)` drew a compass spoke labelled "No".
+			const glyph = b.symbol || planetGlyph(b.planet) || b.planet;
 			const altLabel = `${b.altitude > 0 ? '+' : ''}${Math.round(b.altitude)}°`;
 			return svg`<g>
 				<line class=${`spoke${below ? ' below' : ''}`} stroke=${color} x1=${CENTER} y1=${CENTER} x2=${end.x} y2=${end.y}><title>${b.planet} ${b.compassDirection} ${Math.round(b.azimuth)}° altitude ${altLabel}</title></line>

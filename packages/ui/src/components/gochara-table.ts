@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { PLANET_GLYPH } from '../tokens/index.js';
+import { planetGlyph } from '../tokens/index.js';
 import type { CalculateTransitResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -13,7 +13,6 @@ import {
 	formatDateTime,
 	formatNumber,
 } from '../utils/format.js';
-import { capitalize } from '../utils/string.js';
 
 type Transiting = CalculateTransitResponse['transitingPlanets'][number];
 type Kaksha = Transiting['kaksha'];
@@ -173,8 +172,8 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 				<h2 class="title">Gochara</h2>
 				<p class="sub">
 					Where each graha transits at
-					<strong>${formatDateTime(d.transitDatetime)}</strong>, read against the
-					natal chart of ${formatDateTime(d.birthDatetime)}.
+					<strong>${formatDateTime(this.effectiveLang(), d.transitDatetime)}</strong>, read against the
+					natal chart of ${formatDateTime(this.effectiveLang(), d.birthDatetime)}.
 				</p>
 			</header>
 			<div part="table">${planets.map((p) => this.renderPlanet(p))}</div>
@@ -199,7 +198,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 	}
 
 	private renderPlanet(p: Transiting) {
-		const glyph = PLANET_GLYPH[capitalize(p.name ?? '')] ?? '';
+		const glyph = planetGlyph(p.name) ?? '';
 		const pos =
 			typeof p.longitude === 'number'
 				? longitudeToSignPosition(p.longitude)

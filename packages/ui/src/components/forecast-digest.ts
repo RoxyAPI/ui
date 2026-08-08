@@ -154,7 +154,10 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 	protected renderData(d: GenerateDigestResponse) {
 		const windows = d.windows ?? [];
 		if (windows.length === 0) return this.renderEmpty();
-		const range = [formatDate(d.startDate), formatDate(d.endDate)]
+		const range = [
+			formatDate(this.effectiveLang(), d.startDate),
+			formatDate(this.effectiveLang(), d.endDate),
+		]
 			.filter(Boolean)
 			.join(' – ');
 
@@ -216,7 +219,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 				? humanize(e.type ?? '')
 				: e.description;
 		return html`<div class="event" role="listitem">
-			<span class="event-date">${formatDate(e.date)}</span>
+			<span class="event-date">${formatDate(this.effectiveLang(), e.date)}</span>
 			<span class="event-desc">${label}</span>
 			<span class="sig" role="img" aria-label="significance ${formatNumber(sig, 0)} of 100">
 				<span class="sig-fill ${e.domain}" style="width:${Math.max(0, Math.min(100, sig))}%"></span>

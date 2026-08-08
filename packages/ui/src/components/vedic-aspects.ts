@@ -156,7 +156,7 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 		const planets = d.planets ?? [];
 		if (aspects.length === 0 && mutual.length === 0) return this.renderEmpty();
 		const when = d.datetime
-			? `${formatDate(d.datetime)}, ${formatTime(d.datetime)}`
+			? `${formatDate(this.effectiveLang(), d.datetime)}, ${formatTime(this.effectiveLang(), d.datetime)}`
 			: '';
 
 		return html`<div class="wrap" aria-label="Vedic aspects">

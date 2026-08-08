@@ -1,6 +1,6 @@
 import type { TemplateResult } from 'lit';
 import { nothing, svg } from 'lit';
-import { PLANET_ABBR, SIGN_ABBR, SIGNS_ORDER } from '../tokens/index.js';
+import { planetAbbr, SIGNS_ORDER, signAbbr } from '../tokens/index.js';
 import { longitudeToSignPosition } from './degree.js';
 import { capitalize } from './string.js';
 import { renderTablist } from './tablist.js';
@@ -95,10 +95,12 @@ function isDivisionalPlacement(p: PlacedGraha, cellSign: string): boolean {
  * mark. The degree is shown only when the longitude actually maps to the cell
  * the graha is rendered in (the D1 case); divisional placements show the
  * abbreviation alone since the API longitude refers to D1, not the divisional
- * sign.
+ * sign. A body the library has no abbreviation for falls back to its full
+ * name: the cell is the only place that name appears, so it must stay
+ * visibly wrong rather than a fabricated two-letter code.
  */
 function grahaLabel(p: PlacedGraha, cellSign: string): string {
-	const abbr = PLANET_ABBR[capitalize(p.graha)] ?? p.graha.slice(0, 2);
+	const abbr = planetAbbr(p.graha) ?? p.graha;
 	const retro = p.isRetrograde ? RETRO_MARK : '';
 	if (
 		typeof p.longitude !== 'number' ||
@@ -307,7 +309,7 @@ function renderSouthCell(
 	const r = southCellRect(sign);
 	const cx = r.x + r.w / 2;
 	const cy = r.y + r.h / 2;
-	const signAbbr = SIGN_ABBR[sign] ?? sign.slice(0, 2);
+	const sAbbr = signAbbr(sign) ?? sign;
 	// Inset the Lagna diagonal so it does not collide with the chart frame on
 	// corner cells (Pisces, Gemini, Virgo, Sagittarius) or with the sign label
 	// in the top-left of every cell.
@@ -322,7 +324,7 @@ function renderSouthCell(
 					`
 					: nothing
 			}
-			<text class="sign-text" x=${r.x + 6} y=${r.y + 12} text-anchor="start" dominant-baseline="central">${signAbbr}</text>
+			<text class="sign-text" x=${r.x + 6} y=${r.y + 12} text-anchor="start" dominant-baseline="central">${sAbbr}</text>
 			${
 				houseNum > 0
 					? svg`<text class="house-num" x=${r.x + r.w - 6} y=${r.y + 12} text-anchor="end" dominant-baseline="central">${houseNum}</text>`
@@ -470,7 +472,7 @@ function renderNorthCell(
 	// names its sign so the reader can see which sign rises without translating
 	// the number; other cells stay number-only.
 	const rashiLabel = isLagna
-		? `${rashiNum} · ${SIGN_ABBR[sign] ?? sign.slice(0, 2)}`
+		? `${rashiNum} · ${signAbbr(sign) ?? sign}`
 		: `${rashiNum}`;
 	return svg`
 		<g class=${isLagna ? 'cell lagna' : 'cell'}>
@@ -648,7 +650,7 @@ function renderEastCell(
 	const cell = EAST_CELLS[sign];
 	if (!cell) return svg``;
 	const { centroid: cen, points } = cell;
-	const signAbbr = SIGN_ABBR[sign] ?? sign.slice(0, 2);
+	const sAbbr = signAbbr(sign) ?? sign;
 	const polyPoints = points.map((p) => `${p.x},${p.y}`).join(' ');
 	return svg`
 		<g class=${isLagna ? 'cell lagna' : 'cell'}>
@@ -657,7 +659,7 @@ function renderEastCell(
 					? svg`<polygon class="lagna-bg" points=${polyPoints} />`
 					: nothing
 			}
-			<text class="sign-text" x=${cen.x} y=${cen.y - 16} text-anchor="middle" dominant-baseline="central">${signAbbr}</text>
+			<text class="sign-text" x=${cen.x} y=${cen.y - 16} text-anchor="middle" dominant-baseline="central">${sAbbr}</text>
 			${
 				houseNum > 0
 					? svg`<text class="house-num" x=${cen.x + 18} y=${cen.y - 16} text-anchor="start" dominant-baseline="central">${houseNum}</text>`

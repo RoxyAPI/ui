@@ -52,6 +52,11 @@ function runtimeCtor(type: string): string {
 	if (type === 'number') return 'Number';
 	if (type === 'boolean') return 'Boolean';
 	if (type.startsWith('(')) return 'Function';
+	// A union whose every member is an array is still an Array at runtime, and
+	// Vue warns on the console for the whole life of the app if one arrives
+	// against a declared Object.
+	if (type.split('|').every((t) => /^Array<|\[\]$/.test(t.trim())))
+		return 'Array';
 	return 'Object';
 }
 

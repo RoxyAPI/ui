@@ -5,8 +5,6 @@ import type { CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse
 export interface RoxyHexagramProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
 	data?: GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse;
-	/** Which I Ching response shape to render: a static hexagram lookup, a cast with changing lines, or the daily hexagram. */
-	mode?: 'lookup' | 'cast' | 'daily';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -31,7 +29,6 @@ export const RoxyHexagram = defineComponent({
 	name: 'RoxyHexagram',
 	props: {
 		data: { type: Object as PropType<RoxyHexagramProps['data']> },
-		mode: { type: String as PropType<RoxyHexagramProps['mode']> },
 		endpoint: { type: String as PropType<RoxyHexagramProps['endpoint']> },
 		method: { type: String as PropType<RoxyHexagramProps['method']> },
 		publishableKey: { type: String as PropType<RoxyHexagramProps['publishableKey']> },
@@ -62,7 +59,6 @@ export const RoxyHexagram = defineComponent({
 
 			const elementProps: Record<string, unknown> = {};
 			if (props.data !== undefined) elementProps['.data'] = props.data;
-			if (props.mode !== undefined) elementProps['.mode'] = props.mode;
 			if (props.endpoint !== undefined) elementProps['.endpoint'] = props.endpoint;
 			if (props.method !== undefined) elementProps['.method'] = props.method;
 			if (props.publishableKey !== undefined) elementProps['.publishableKey'] = props.publishableKey;

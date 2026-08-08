@@ -202,7 +202,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		return html`<div class="wrap" aria-label="Panchang">
 			<header class="head">
 				<h2 class="title">Panchang</h2>
-				<span class="date">${detailed ? formatDate(detailed.date) : ''}</span>
+				<span class="date">${detailed ? formatDate(this.effectiveLang(), detailed.date) : ''}</span>
 			</header>
 			<table>
 				<tbody>
@@ -210,10 +210,10 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 					${
 						detailed
 							? html`
-								${this.renderRow('Sunrise', formatTime(detailed.sunrise))}
-								${this.renderRow('Sunset', formatTime(detailed.sunset))}
-								${this.renderRow('Moonrise', formatTime(detailed.moonrise))}
-								${this.renderRow('Moonset', formatTime(detailed.moonset))}
+								${this.renderRow('Sunrise', formatTime(this.effectiveLang(), detailed.sunrise))}
+								${this.renderRow('Sunset', formatTime(this.effectiveLang(), detailed.sunset))}
+								${this.renderRow('Moonrise', formatTime(this.effectiveLang(), detailed.moonrise))}
+								${this.renderRow('Moonset', formatTime(this.effectiveLang(), detailed.moonset))}
 								${this.renderRow('Moon sign', this.formatRashi(detailed.moonSign))}
 								${this.renderRow('Sun sign', this.formatRashi(detailed.sunSign))}
 								${this.renderRow('Sun nakshatra', this.formatSunNakshatra(detailed.sunNakshatra))}
@@ -360,7 +360,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	/** Renders one row per [label, period] pair, dropping any with no range. */
 	private renderPeriodRows(rows: Array<[string, PanchangTime]>) {
 		return rows.map(([k, v]) => {
-			const range = formatTimeRange(v);
+			const range = formatTimeRange(this.effectiveLang(), v);
 			return range
 				? html`<tr>
 						<th>${k}</th>
@@ -471,7 +471,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 			: '';
 		return html`<tr>
 			<th>${label}</th>
-			<td>ends ${formatTime(t.endsAt)}${next}</td>
+			<td>ends ${formatTime(this.effectiveLang(), t.endsAt)}${next}</td>
 		</tr>`;
 	}
 
@@ -480,7 +480,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		return html`<tr>
 			<th>Moon sign</th>
 			<td>
-				${m.current ?? ''} until ${formatTime(m.changesAt)}${m.next ? `, then ${m.next}` : ''}
+				${m.current ?? ''} until ${formatTime(this.effectiveLang(), m.changesAt)}${m.next ? `, then ${m.next}` : ''}
 			</td>
 		</tr>`;
 	}
@@ -490,14 +490,14 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		start: string | null | undefined,
 		end: string | null | undefined,
 	): string {
-		const range = formatTimeRange({
+		const range = formatTimeRange(this.effectiveLang(), {
 			start: start ?? undefined,
 			end: end ?? undefined,
 		});
 		if (!range || !start || !end) return range;
 		return start.slice(0, 10) === end.slice(0, 10)
 			? range
-			: `${range} (ends ${formatDate(end)})`;
+			: `${range} (ends ${formatDate(this.effectiveLang(), end)})`;
 	}
 
 	/** "English (Sanskrit)" label for the Moon or Sun rashi at sunrise. */
@@ -518,7 +518,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	/** Current planetary hora with its active window. */
 	private formatHora(h: Hora | undefined): string {
 		if (!h?.current) return '';
-		const range = formatTimeRange(h);
+		const range = formatTimeRange(this.effectiveLang(), h);
 		return range ? `${h.current} (${range})` : h.current;
 	}
 

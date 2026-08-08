@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { SIGN_GLYPH } from '../tokens/index.js';
+import { signGlyph } from '../tokens/index.js';
 import type { FixedStarsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -8,7 +8,6 @@ import { formatDegreeInSign } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
-import { capitalize } from '../utils/string.js';
 
 type Star = FixedStarsResponse['stars'][number];
 
@@ -224,7 +223,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 					</thead>
 					<tbody>
 						${stars.map((s) => {
-							const g = SIGN_GLYPH[capitalize(s.sign)];
+							const g = signGlyph(s.sign);
 							return html`<tr>
 								<td>${s.name}</td>
 								<td>${g ? html`<span class="sg">${g}</span>` : nothing}${formatDegreeInSign(s.degree)} ${s.sign}</td>

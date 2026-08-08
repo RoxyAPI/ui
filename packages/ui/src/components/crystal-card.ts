@@ -4,21 +4,7 @@ import type { GetCrystalResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { cssColor } from '../utils/css-color.js';
-
-const MONTHS = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
-];
+import { monthName } from '../utils/format.js';
 
 /**
  * Single-crystal detail card. Renders /crystals/{id}: the stone's photo, description, and full metaphysical profile (spiritual / emotional / physical meaning, governing chakras, zodiac signs, planet, elements, colours, Mohs hardness, numerical vibration, birthstone month), plus its affirmation and the crystals it pairs with. This is the detail view; roxy-crystal-grid is the gallery.
@@ -166,8 +152,7 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 		const colors = d.colors ?? [];
 		const keywords = d.keywords ?? [];
 		const pairs = d.pairsWith ?? [];
-		const month =
-			typeof d.birthMonth === 'number' ? MONTHS[d.birthMonth - 1] : undefined;
+		const month = monthName(this.effectiveLang(), d.birthMonth) || undefined;
 
 		return html`<article class="wrap" part="card" aria-label=${d.name ?? 'Crystal'}>
 			<div class="hero" part="header">

@@ -1,13 +1,12 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { SIGN_GLYPH } from '../tokens/index.js';
+import { signGlyph } from '../tokens/index.js';
 import type { UpagrahaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
-import { capitalize } from '../utils/string.js';
 
 type Upagraha = UpagrahaResponse['timeBased'][number];
 
@@ -157,11 +156,11 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 					</thead>
 					<tbody>
 						${rows.map((u) => {
-							const signGlyph = SIGN_GLYPH[capitalize(u.rashi ?? '')] ?? '';
+							const sGlyph = signGlyph(u.rashi) ?? '';
 							return html`<tr>
 								<td class="name">${u.name}</td>
 								<td>
-									${signGlyph ? html`<span class="glyph">${signGlyph}</span>` : nothing}${u.rashi ?? ''}
+									${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${u.rashi ?? ''}
 								</td>
 								<td class="num">
 									${typeof u.longitude === 'number' ? formatSignPosition(u.longitude) : ''}
