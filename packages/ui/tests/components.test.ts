@@ -4851,3 +4851,102 @@ describe('the natal chart declares its equal-sector fallback', () => {
 		el.remove();
 	});
 });
+
+/**
+ * The second generic renderer against a response that carries its own translation.
+ *
+ * @remarks
+ * `<roxy-reference-card>` builds its ENTIRE output from `Object.entries`, so it shares `<roxy-data>`'s exposure and had none of its repair: the day the API began echoing `nameLocalized` beside `name`, every non-English reference lookup drew one fact as two rows, each under its own heading, on a page whose owner changed nothing. It reached production, which `<roxy-data>` did not, because nothing here asserted the shape.
+ *
+ * The payload below is the real `/human-design/gates/51?lang=es` response, the one that exposed it live.
+ *
+ * Three levels read a key and each is covered, because folding at only one of them looks fixed from the outside: the record itself, a nested object one level down (`collect` recurses to depth 2), and the primitive join in `objectLabel` that labels an object inside an array.
+ *
+ * Sabotage-verified by dropping each `foldLocalized` call in turn: every one of these goes red on its own.
+ */
+describe('roxy-reference-card folds a localized field into the field it translates', () => {
+	const mount = async (data: unknown) => {
+		const el = document.createElement('roxy-reference-card') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		const root = el.shadowRoot as ShadowRoot;
+		return {
+			el,
+			labels: [...root.querySelectorAll('dt')].map((dt) =>
+				dt.textContent?.trim(),
+			),
+			values: [...root.querySelectorAll('dd')].map((dd) =>
+				dd.textContent?.trim(),
+			),
+			text: (root.innerHTML ?? '').replace(/<style[\s\S]*?<\/style>/g, ''),
+		};
+	};
+
+	/** The live Spanish gate lookup, verbatim. */
+	const GATE = {
+		number: 51,
+		name: 'Shock',
+		nameLocalized: 'Conmoción',
+		centerName: 'Heart',
+		centerNameLocalized: 'Corazón',
+	};
+
+	test('a translated lookup prints each fact ONCE, in the reader language', async () => {
+		const { el, labels, values } = await mount(GATE);
+		expect(labels).not.toContain('Name Localized');
+		expect(labels).not.toContain('Center Name Localized');
+		expect(labels.filter((l) => l === 'Center Name')).toHaveLength(1);
+		expect(values).toContain('Corazón');
+		expect(values).not.toContain('Heart');
+		el.remove();
+	});
+
+	test('an English lookup, which carries no localized field, renders exactly as before', async () => {
+		const { nameLocalized, centerNameLocalized, ...english } = GATE;
+		expect([nameLocalized, centerNameLocalized]).toEqual([
+			'Conmoción',
+			'Corazón',
+		]);
+		const { el, values } = await mount(english);
+		expect(values).toContain('Heart');
+		expect(values).not.toContain('Corazón');
+		el.remove();
+	});
+
+	test('a localized field with no canonical partner still renders', async () => {
+		// Suppressing on the name alone would delete the only copy of the value.
+		const { el, labels, values } = await mount({
+			number: 51,
+			noteLocalized: 'Nota',
+		});
+		expect(labels).toContain('Note Localized');
+		expect(values).toContain('Nota');
+		el.remove();
+	});
+
+	test('a nested object one level down folds too', async () => {
+		const { el, labels, values } = await mount({
+			number: 51,
+			channel: { name: 'Shock', nameLocalized: 'Conmoción' },
+		});
+		expect(labels.some((l) => l?.includes('Localized'))).toBe(false);
+		expect(values).toContain('Conmoción');
+		expect(values).not.toContain('Shock');
+		el.remove();
+	});
+
+	test('an object inside an array is labelled from the folded values only', async () => {
+		// objectLabel joins every primitive, so an unfolded row reads
+		// "Shock · Conmoción": the same fact twice inside one chip.
+		const { el, text } = await mount({
+			number: 51,
+			partners: [{ name: 'Shock', nameLocalized: 'Conmoción' }],
+		});
+		expect(text).toContain('Conmoción');
+		expect(text).not.toContain('Shock · Conmoción');
+		el.remove();
+	});
+});
