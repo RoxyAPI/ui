@@ -20318,6 +20318,87 @@
                       "example": "placidus",
                       "description": "House system actually used for the natal cusps behind every house number in this response. Differs from the requested system only above the polar circle, where quadrant systems fall back to Whole Sign."
                     },
+                    "houses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "number": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 12,
+                            "example": 1,
+                            "description": "House number (1-12). Each house governs specific life themes in Western astrology."
+                          },
+                          "longitude": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "example": 45.32,
+                            "description": "Ecliptic longitude of this house cusp in degrees (0-360)."
+                          },
+                          "sign": {
+                            "type": "string",
+                            "example": "Taurus",
+                            "description": "Zodiac sign on this house cusp. Colors the themes of this life area."
+                          },
+                          "degree": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 30,
+                            "example": 15.32,
+                            "description": "Degree within the zodiac sign on this cusp (0-29.999)."
+                          },
+                          "signLocalized": {
+                            "type": "string",
+                            "example": "Tauro",
+                            "description": "Zodiac sign name on this cusp in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                          }
+                        },
+                        "required": [
+                          "number",
+                          "longitude",
+                          "sign",
+                          "degree"
+                        ]
+                      },
+                      "description": "The twelve NATAL house cusps that every house number in this response is read against, in the house system named by houseSystem. Same shape as the natal-chart houses array, so a bi-wheel can be drawn with real house sectors from this one response instead of pairing it with a second call."
+                    },
+                    "ascendant": {
+                      "type": "object",
+                      "properties": {
+                        "sign": {
+                          "type": "string",
+                          "example": "Taurus",
+                          "description": "Tropical zodiac sign on the natal Ascendant. Always English, whatever the lang parameter says. Use signLocalized for anything a reader sees."
+                        },
+                        "signLocalized": {
+                          "type": "string",
+                          "example": "Tauro",
+                          "description": "Ascendant sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                        },
+                        "degree": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 30,
+                          "example": 15.32,
+                          "description": "Degree within the Ascendant sign (0-29.999)."
+                        },
+                        "longitude": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 360,
+                          "example": 45.32,
+                          "description": "Absolute ecliptic longitude of the natal Ascendant in degrees (0-360)."
+                        }
+                      },
+                      "required": [
+                        "sign",
+                        "degree",
+                        "longitude"
+                      ],
+                      "description": "The natal Ascendant (rising sign): the eastern horizon at birth, and the left-hand horizon a chart wheel is oriented to. Reported alongside the cusps because the two are not the same longitude in every house system: Whole Sign puts the first cusp at 0 degrees of the rising sign, which can sit most of a sign away from the Ascendant itself."
+                    },
                     "transitPlanets": {
                       "type": "array",
                       "items": {
@@ -20899,6 +20980,8 @@
                   "required": [
                     "transitDate",
                     "houseSystem",
+                    "houses",
+                    "ascendant",
                     "transitPlanets",
                     "natalPlanets",
                     "aspects",
