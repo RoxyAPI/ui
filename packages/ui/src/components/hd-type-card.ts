@@ -14,6 +14,7 @@ import {
 	renderHdThemes,
 } from '../utils/hd-reading.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 
 type HdIdentity = CalculateTypeResponse | CalculateProfileResponse;
 
@@ -24,6 +25,8 @@ type HdIdentity = CalculateTypeResponse | CalculateProfileResponse;
  * Both endpoints answer "who is this person" rather than "how is the chart wired", so one card serves both and detects which it was given: the type response leads with the type and carries the strategy, authority, and aura readings; the profile response carries the two lines and their keynotes. This is the same shape-detecting pattern `roxy-positions-table` uses across the five Western point-list endpoints.
  *
  * The interpretation surface (fact tiles, lead paragraph, signature and not-self pills, the exclusive reading accordion, the line keynotes) is shared with `roxy-bodygraph` through `utils/hd-reading.ts`, because `/human-design/type` returns a strict subset of the bodygraph interpretation fields. Reach for `roxy-bodygraph` when the chart itself is wanted; reach for this when only the reading is.
+ *
+ * The type, strategy, authority, signature and not-self values are read through `display()`, so a translated response prints the display half and the canonical English stays available to anything that compares. `/human-design/profile` carries no vocabulary at all: its profile is `5/1` and its two keynotes are prose the API translates in place.
  */
 @customElement('roxy-hd-type-card')
 export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
@@ -67,7 +70,7 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 	];
 
 	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No Human Design data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No Human Design data')}</div>`;
 	}
 
 	protected renderData(d: HdIdentity) {
@@ -80,20 +83,27 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 	private renderType(d: CalculateTypeResponse) {
 		return html`<div class="wrap" part="card">
 			<header class="head" part="header">
-				<h2 class="title">Type</h2>
+				<h2 class="title">${this.t('Type')}</h2>
 				${
 					d.type || d.profile
 						? html`<div class="type-line">
-							${[d.type, d.profile ? `Profile ${d.profile}` : ''].filter(Boolean).join(' · ')}
+							${[
+								display(d, 'type'),
+								d.profile
+									? this.t('Profile {{profile}}', { profile: d.profile })
+									: '',
+							]
+								.filter(Boolean)
+								.join(' · ')}
 						</div>`
 						: nothing
 				}
 			</header>
 			${renderHdFacts([
-				{ label: 'Type', value: d.type },
-				{ label: 'Strategy', value: d.strategy },
-				{ label: 'Authority', value: d.authority },
-				{ label: 'Profile', value: d.profile },
+				{ label: this.t('Type'), value: display(d, 'type') },
+				{ label: this.t('Strategy'), value: display(d, 'strategy') },
+				{ label: this.t('Authority'), value: display(d, 'authority') },
+				{ label: this.t('Profile'), value: d.profile },
 			])}
 			${
 				// The tiles above name the type; this paragraph explains it.
@@ -101,16 +111,24 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 					? html`<p class="lead">${d.typeDescription}</p>`
 					: nothing
 			}
-			${renderHdThemes(d.signature, d.notSelf)}
+			${renderHdThemes(
+				d.signature ? display(d, 'signature') : undefined,
+				d.notSelf ? display(d, 'notSelf') : undefined,
+				this.translator,
+			)}
 			${this.renderInterpretation(
 				[
-					{ label: 'Strategy', aside: d.strategy, body: d.strategyDescription },
 					{
-						label: 'Authority',
-						aside: d.authority,
+						label: this.t('Strategy'),
+						aside: display(d, 'strategy'),
+						body: d.strategyDescription,
+					},
+					{
+						label: this.t('Authority'),
+						aside: display(d, 'authority'),
 						body: d.authorityDescription,
 					},
-					{ label: 'Aura', body: d.aura },
+					{ label: this.t('Aura'), body: d.aura },
 				],
 				'hd-type-reading',
 			)}
@@ -123,13 +141,16 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 	private renderProfile(d: CalculateProfileResponse) {
 		return html`<div class="wrap" part="card">
 			<header class="head" part="header">
-				<h2 class="title">Profile</h2>
+				<h2 class="title">${this.t('Profile')}</h2>
 				${d.profile ? html`<div class="type-line">${d.profile}</div>` : nothing}
 			</header>
 			${renderHdFacts([
-				{ label: 'Profile', value: d.profile },
-				{ label: 'Personality line', value: d.personalityLine?.toString() },
-				{ label: 'Design line', value: d.designLine?.toString() },
+				{ label: this.t('Profile'), value: d.profile },
+				{
+					label: this.t('Personality line'),
+					value: d.personalityLine?.toString(),
+				},
+				{ label: this.t('Design line'), value: d.designLine?.toString() },
 			])}
 			${
 				// The section holds nothing but the two keynote sentences, and the line
@@ -137,13 +158,16 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 				this.hideReadings
 					? nothing
 					: html`<section class="block" part="section lines">
-						<h3>Lines</h3>
-						${renderHdKeynotes({
-							personality: d.personalityKeynote,
-							personalityLine: d.personalityLine,
-							design: d.designKeynote,
-							designLine: d.designLine,
-						})}
+						<h3>${this.t('Lines')}</h3>
+						${renderHdKeynotes(
+							{
+								personality: d.personalityKeynote,
+								personalityLine: d.personalityLine,
+								design: d.designKeynote,
+								designLine: d.designLine,
+							},
+							this.translator,
+						)}
 					</section>`
 			}
 		</div>`;

@@ -2,9 +2,15 @@
  * Every English chrome string currently covered by a shipped locale, and the type a catalogue is checked against.
  *
  * @remarks
- * **Chrome only.** These are the words the library itself writes: headings, tab labels, table captions, legends, empty states, accessible names. Domain vocabulary (planet, sign, aspect, element and modality NAMES) is deliberately absent: those are values the API returns, they are being localized server-side as additive display fields, and duplicating them here would create a second translation of the same fact that can disagree with the response rendered beside it.
+ * **Chrome only.** These are the words the library itself writes: headings, tab labels, table captions, legends, empty states, accessible names. Planet, sign and aspect NAMES are deliberately absent: those are values the API returns, it localizes them as additive display fields, and duplicating them here would create a second translation of the same fact that can disagree with the response rendered beside it.
  *
- * **Scope is the two Western chart wheels plus the shared chrome they inherit**, which is what a Western practitioner site needs to read as a Spanish product: a natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
+ * **The four elements and three modalities are the one exception, and they are here because the component WROTE them.** The element-modality cross-tab derives its 4x3 axes from a local array, not from the response, so there is no API value to defer to for six of the seven headers and the seventh (the dominant pair) would have been the only translated word in the table. Two rules keep that from becoming a second translation: the arrays stay canonical English because they are the CELL KEYS, and every value in every catalogue is pinned to what `/astrology/natal-chart?lang=` returns for `dominantElementLocalized` and `dominantModalityLocalized`, so the tinted pill above the grid and the header on its row read the same word. `tests/i18n.test.ts` asserts that agreement on a real render. Anything the response carries a localized partner for still belongs to the response.
+ *
+ * **`Car`, `Fix` and `Mut` are catalogue entries, not a truncation.** The grid used to render its column headers as `modality.slice(0, 3)`, which is a byte operation with no idea of the word: Spanish would have read `Fij`, and Hindi and Russian would have split a matra or a Cyrillic word mid-stem. A translator decides the abbreviation, and the full modality name rides beside it as the column `title` so a reader can expand it.
+ *
+ * **Scope is the two Western chart wheels, the Human Design bodygraph, type and variables cards, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
+ *
+ * **A component earns its vocabulary by having its chrome here, and the two move in ONE change.** Reading `nameLocalized` under an English heading is worse than reading `name` under one, so a card is either translated or it is not. `<roxy-hd-connection>` and `<roxy-hd-penta>` are deliberately absent: almost all of their chrome is Human Design doctrine the COMPONENT wrote (what an electromagnetic channel is, what the upper triangle of a penta carries), so translating them is a paragraph-level meaning risk of exactly the shape lesson 32 describes, and they stay English end to end until a practitioner pass can source them.
  *
  * **Two entries may never differ only by case.** The runtime key is {@link lookupKey} of the source string, so `harmonious` and `Harmonious` are ONE key and the second silently overwrites the first in every catalogue. Both shipped, which is why the natal legend read `Armónicos` in Spanish where English read `harmonious`. Only the capitalized forms remain and `tests/i18n.test.ts` fails on any new pair that collides.
  *
@@ -59,6 +65,21 @@ export const CHROME_STRINGS = [
 	'Element and modality distribution',
 	'Total',
 
+	// Natal chart: the element-modality cross-tab axes. The four elements name
+	// the rows in full; the three modalities name the columns as an abbreviation
+	// with the full word on the column `title`, because three glyph-wide columns
+	// cannot carry `Veraenderlich` or a Cyrillic adjective.
+	'Fire',
+	'Earth',
+	'Air',
+	'Water',
+	'Cardinal',
+	'Fixed',
+	'Mutable',
+	'Car',
+	'Fix',
+	'Mut',
+
 	// Natal chart: configurations.
 	'Chart patterns',
 	'Dissociate',
@@ -111,6 +132,100 @@ export const CHROME_STRINGS = [
 	'Impact',
 	'Timing',
 	'Guidance',
+
+	// `<roxy-data>`, the generic fallback every unbound endpoint renders through.
+	// It has no domain vocabulary of its own: its column headings come from the
+	// wire field names via `humanize()`, so they are derived rather than literal
+	// and a catalogue keyed on English source text cannot reach them. Everything
+	// below is a word the component itself wrote.
+	'Nested data omitted',
+	'Generic data display',
+	'Empty list',
+	'Data table',
+	'{{count}} rows',
+	'Yes',
+	'No',
+	'illustration',
+
+	// Human Design, shared by `<roxy-bodygraph>` and `<roxy-hd-type-card>`.
+	// `/human-design/type` returns a strict subset of the bodygraph
+	// interpretation, so the two cards render the same identity vocabulary
+	// through `utils/hd-reading.ts` and translating one without the other puts a
+	// Spanish bodygraph over an English type card on the same page.
+	// `Personality` and `Design` name the two chart SIDES, which the wire carries
+	// as the machine values `personality` and `design`: the component is what
+	// turns those into words, so they are chrome. The count in a tab label rides
+	// outside the string as digits in parentheses.
+	'Type',
+	'Strategy',
+	'Authority',
+	'Profile',
+	'Definition',
+	'Aura',
+	'Incarnation cross',
+	'Signature: {{value}}',
+	'Not-self: {{value}}',
+	'Profile {{profile}}',
+	'Line {{line}} · Personality',
+	'Line {{line}} · Design',
+	'Personality',
+	'Design',
+
+	// `<roxy-bodygraph>`. The nine centre names, the channel names, the circuit
+	// families and the activating bodies are NOT here: the response carries a
+	// localized partner for every one of them, so the card reads them off the
+	// wire and the colour legend is assembled from the same names the accordion
+	// prints.
+	'Bodygraph',
+	'No bodygraph data',
+	'Human Design bodygraph',
+	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette',
+	'Nine energy centers in their canonical positions over a human silhouette, each filled with its traditional color when defined and outlined when open, wired by channels between activated gates.',
+	'Center colors when defined. Open centers are outlined.',
+	'Open center',
+	'Defined channels ({{count}})',
+	'{{circuit}} circuit',
+	'Centers ({{defined}} defined, {{open}} open)',
+	'Defined',
+	'Open',
+	'Motor',
+	'Awareness',
+	'Not-self question',
+	'Biology',
+	'Gates {{gates}}',
+	'Activations ({{count}})',
+	'Chart sides',
+	'Line {{line}}',
+	'Gate {{gate}}',
+	'I Ching hexagram {{number}}',
+
+	// `<roxy-hd-type-card>`, on top of the shared identity block above.
+	'No Human Design data',
+	'Personality line',
+	'Design line',
+	'Lines',
+
+	// `<roxy-hd-variables>`. The four arrow names, their layers, their bodygraph
+	// positions and every Color, Direction, Base and Cognition VALUE come back
+	// localized, so only the words the card writes around them are here.
+	'Variables',
+	'No variables data',
+	'Human Design variables',
+	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.',
+	'Low confidence: a birth time near a color or tone boundary (within {{margin}}°). Verify the exact birth time.',
+	'Color {{color}} · Tone {{tone}} · Base {{base}}',
+	'Knife-edge: could flip with a more precise birth time.',
+	'Base',
+	'Color',
+	'Tone',
+	'Direction',
+	'Cognition',
+
+	// `<roxy-reference-card>`, the second generic renderer. Like `<roxy-data>` it
+	// derives every field label from the wire name through `humanize()`, so these
+	// two are the only words it writes itself.
+	'Reference',
+	'No reference data',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

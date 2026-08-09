@@ -7,6 +7,8 @@ import { baseStyles } from '../utils/base-styles.js';
 import {
 	BODYGRAPH_VIEWBOX,
 	type BodygraphCenterId,
+	CENTER_GEOMETRY,
+	type CenterColor,
 	channelKey,
 	renderBodygraphSvg,
 } from '../utils/bodygraph-render.js';
@@ -17,8 +19,10 @@ import {
 	renderHdFacts,
 	renderHdKeynotes,
 	renderHdThemes,
+	sideWord,
 } from '../utils/hd-reading.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 type Bodygraph = GenerateBodygraphResponse;
@@ -27,12 +31,22 @@ type CenterEntry = Bodygraph['centers'][number];
 type ChannelEntry = Bodygraph['channels'][number];
 
 /**
+ * The order the color key reads in, which is the order the centers themselves are colored in from the crown down: the two identity centers, the mental awareness center, the pressure and expression group, then the two life-force motors.
+ *
+ * @remarks
+ * The four rows and the names inside them are DERIVED from {@link CENTER_GEOMETRY} and the response rather than written out, so a legend can never claim a color for a center the chart draws in another one, and the names in the key are the same words the accordion below prints.
+ */
+const LEGEND_COLORS: readonly CenterColor[] = ['gold', 'green', 'brown', 'red'];
+
+/**
  * Human Design bodygraph. Pass `data` from /human-design/bodygraph. Renders the nine centers in their canonical positions and shapes, filled when defined and outlined when open, the 36 channels as wiring between gates with active channels emphasized, and the activated gate numbers.
  *
  * @remarks
  * The response carries a full interpretation, not just labels, so the card is laid out in four passes from identity down to detail. Identity sits beside the chart and is always visible: the type, strategy, authority, profile, and definition tiles, the type description as the lead paragraph, the incarnation cross, and the signature and not-self themes. Everything below is progressive disclosure through the shared exclusive-accordion pattern, so only one body of prose is ever open at a time and the card never becomes a wall of text: the reading (strategy, authority, profile, definition, aura, cross), the defined channels grouped by circuit, the nine centers, and the 26 gate activations split by chart side.
  *
  * A center returns `notSelfQuestion` whatever its state, but the question describes the conditioning of an OPEN center, so it is rendered only when the center is open. `theme` already tracks the defined or open state and is always shown.
+ *
+ * **Every name on this card is read twice.** A translated response echoes the display value beside the canonical one (`nameLocalized` next to `name`, `planetLocalized` next to `planet`) and keeps the canonical one English in every language, so the reader gets `display(...)` and the machine keeps the English: `planetGlyph` is keyed on `planet`, the defined-center Set and the channel groups are keyed on `id` and `circuit`, and the tab state is the wire value `personality` or `design`. `docs/authoring.md`, "Vocabulary: the response carries BOTH halves". Two fields have no localized partner and print as sent, each with a note at its site: `incarnationCross.name` and `ichingHexagram.english`.
  *
  * The chart is theme-driven through `--roxy-*` custom properties on `:host`, so it adopts the host palette in light and dark without runtime color probing.
  *
@@ -303,14 +317,13 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	];
 
 	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No bodygraph data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No bodygraph data')}</div>`;
 	}
 
 	protected renderData(d: Bodygraph) {
+		const centers = d.centers ?? [];
 		const definedCenters = new Set<BodygraphCenterId>(
-			(d.centers ?? [])
-				.filter((c) => c.defined)
-				.map((c) => c.id as BodygraphCenterId),
+			centers.filter((c) => c.defined).map((c) => c.id as BodygraphCenterId),
 		);
 		const activeGates = new Set<number>(
 			(d.gates ?? []).map((g) => g.gate).filter((n): n is number => n != null),
@@ -319,16 +332,30 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			(d.channels ?? []).map((c) => channelKey(c.gateA, c.gateB)),
 		);
 		const gateTitles = this.buildGateTitles(d.gates ?? []);
+		// The chart reads the same names the accordion below it does, so a Spanish
+		// card cannot draw `Head` in the margin over `Cabeza` in the disclosure. The
+		// SET above is still keyed on `id`, which is the machine value and stays
+		// `solar-plexus` in every language.
+		const centerNames = new Map<BodygraphCenterId, string>(
+			centers.map((c) => [c.id as BodygraphCenterId, display(c, 'name')]),
+		);
 
 		return html`<div class="wrap" part="card">
 			<header class="head" part="header">
-				<h2 class="title">Bodygraph</h2>
+				<h2 class="title">${this.t('Bodygraph')}</h2>
 				${
 					// One text node, not two: the markup minifier collapses the leading
 					// space of an adjacent template and the separator would lose it.
 					d.type || d.profile
 						? html`<div class="type-line">
-							${[d.type, d.profile ? `Profile ${d.profile}` : ''].filter(Boolean).join(' · ')}
+							${[
+								display(d, 'type'),
+								d.profile
+									? this.t('Profile {{profile}}', { profile: d.profile })
+									: '',
+							]
+								.filter(Boolean)
+								.join(' · ')}
 						</div>`
 						: nothing
 				}
@@ -340,26 +367,30 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 					viewBox=${BODYGRAPH_VIEWBOX}
 					preserveAspectRatio="xMidYMid meet"
 					role="img"
-					aria-label="Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette"
+					aria-label=${this.t(
+						'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette',
+					)}
 				>
-					<title>Human Design bodygraph</title>
+					<title>${this.t('Human Design bodygraph')}</title>
 					<desc>
-						Nine energy centers in their canonical positions over a human
-						silhouette, each filled with its traditional color when defined and
-						outlined when open, wired by channels between activated gates.
+						${this.t(
+							'Nine energy centers in their canonical positions over a human silhouette, each filled with its traditional color when defined and outlined when open, wired by channels between activated gates.',
+						)}
 					</desc>
 					${renderBodygraphSvg({
 						definedCenters,
 						activeChannels,
 						activeGates,
 						gateTitles,
+						centerNames,
+						stateWords: { defined: this.t('Defined'), open: this.t('Open') },
 					})}
 				</svg>
-				${this.renderSummary(d)}
+				${this.renderSummary(d, centerNames)}
 			</div>
 			${this.renderReading(d)}
 			${this.renderChannels(d.channels ?? [])}
-			${this.renderCenters(d.centers ?? [])}
+			${this.renderCenters(centers)}
 			${this.renderActivations(d)}
 		</div>`;
 	}
@@ -368,31 +399,36 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		const titles = new Map<number, string>();
 		for (const g of gates) {
 			if (g.gate == null) continue;
-			const parts: string[] = [`Gate ${g.gate}`];
+			const parts: string[] = [this.t('Gate {{gate}}', { gate: g.gate })];
 			if (g.line != null) parts[0] += `.${g.line}`;
-			if (g.gateName) parts.push(g.gateName);
-			const glyph = this.gateGlyph(g.planet);
-			if (glyph) parts.push(`${glyph} ${g.side ?? ''}`.trim());
+			const gateName = display(g, 'gateName');
+			if (gateName) parts.push(gateName);
+			const glyph = this.gateGlyph(g);
+			if (glyph)
+				parts.push(`${glyph} ${sideWord(g.side, this.translator)}`.trim());
 			titles.set(g.gate, parts.join(' · '));
 		}
 		return titles;
 	}
 
-	/** Monochrome planet glyph for an API planet name, or the name itself when the wheel has no glyph for it. */
-	private gateGlyph(planet: string | undefined): string {
-		if (!planet) return '';
-		return planetGlyph(planet) ?? planet;
+	/** Monochrome planet glyph for an activation, or its body name when the wheel has no glyph for it. The lookup is keyed on the canonical English name, which the API keeps English in every language for exactly this; the fallback TEXT is the reader's. */
+	private gateGlyph(g: GateActivation): string {
+		if (!g.planet) return '';
+		return planetGlyph(g.planet) ?? display(g, 'planet');
 	}
 
-	private renderSummary(d: Bodygraph) {
+	private renderSummary(
+		d: Bodygraph,
+		centerNames: ReadonlyMap<BodygraphCenterId, string>,
+	) {
 		const ic = d.incarnationCross;
 		return html`<div class="summary" part="details">
 			${renderHdFacts([
-				{ label: 'Type', value: d.type },
-				{ label: 'Strategy', value: d.strategy },
-				{ label: 'Authority', value: d.authority },
-				{ label: 'Profile', value: d.profile },
-				{ label: 'Definition', value: d.definition },
+				{ label: this.t('Type'), value: display(d, 'type') },
+				{ label: this.t('Strategy'), value: display(d, 'strategy') },
+				{ label: this.t('Authority'), value: display(d, 'authority') },
+				{ label: this.t('Profile'), value: d.profile },
+				{ label: this.t('Definition'), value: display(d, 'definition') },
 			])}
 			${
 				// The tiles name the type; this paragraph explains it. The cross NAME
@@ -402,6 +438,11 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 					: nothing
 			}
 			${
+				// `incarnationCross.name` is the one piece of vocabulary on this card the
+				// API does NOT localize (`Left Angle Cross of the Clarion` comes back
+				// English in every language), so it prints as sent. Do not translate it
+				// here from `angleLocalized` plus the gates: that is a second translation
+				// of the same fact and it can disagree with the reading below.
 				ic?.name
 					? html`<p class="cross">
 						${ic.name}
@@ -413,15 +454,33 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 					</p>`
 					: nothing
 			}
-			${renderHdThemes(d.signature, d.notSelf)}
-			<div class="legend" part="legend">
-				<span class="legend-caption">Center colors when defined. Open centers are outlined.</span>
-				<span><span class="swatch bg-gold defined"></span>Head, G</span>
-				<span><span class="swatch bg-green defined"></span>Ajna</span>
-				<span><span class="swatch bg-brown defined"></span>Throat, Spleen, Solar Plexus, Root</span>
-				<span><span class="swatch bg-red defined"></span>Heart, Sacral</span>
-				<span><span class="swatch"></span>Open center</span>
-			</div>
+			${renderHdThemes(
+				d.signature ? display(d, 'signature') : undefined,
+				d.notSelf ? display(d, 'notSelf') : undefined,
+				this.translator,
+			)}
+			${this.renderLegend(centerNames)}
+		</div>`;
+	}
+
+	/** The color key, built from the chart geometry and named with the response vocabulary, so the four rows can never claim a color the chart does not draw and never name a center in a different language from the accordion. */
+	private renderLegend(centerNames: ReadonlyMap<BodygraphCenterId, string>) {
+		const named = LEGEND_COLORS.map(
+			(color) =>
+				[
+					color,
+					CENTER_GEOMETRY.filter((c) => c.color === color)
+						.map((c) => centerNames.get(c.id) || c.label)
+						.join(', '),
+				] as const,
+		);
+		return html`<div class="legend" part="legend">
+			<span class="legend-caption">${this.t('Center colors when defined. Open centers are outlined.')}</span>
+			${named.map(
+				([color, names]) =>
+					html`<span><span class="swatch bg-${color} defined"></span>${names}</span>`,
+			)}
+			<span><span class="swatch"></span>${this.t('Open center')}</span>
 		</div>`;
 	}
 
@@ -431,23 +490,31 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	private renderReading(d: Bodygraph) {
 		const ic = d.incarnationCross;
 		const sections: ReadingSection[] = [
-			{ label: 'Strategy', aside: d.strategy, body: d.strategyDescription },
-			{ label: 'Authority', aside: d.authority, body: d.authorityDescription },
 			{
-				label: 'Profile',
+				label: this.t('Strategy'),
+				aside: display(d, 'strategy'),
+				body: d.strategyDescription,
+			},
+			{
+				label: this.t('Authority'),
+				aside: display(d, 'authority'),
+				body: d.authorityDescription,
+			},
+			{
+				label: this.t('Profile'),
 				aside: d.profile,
 				body: d.profileDescription,
-				extra: renderHdKeynotes(d.profileKeynotes),
+				extra: renderHdKeynotes(d.profileKeynotes, this.translator),
 			},
 			{
-				label: 'Definition',
-				aside: d.definition,
+				label: this.t('Definition'),
+				aside: display(d, 'definition'),
 				body: d.definitionDescription,
 			},
-			{ label: 'Aura', body: d.aura },
+			{ label: this.t('Aura'), body: d.aura },
 			{
-				label: 'Incarnation cross',
-				aside: ic?.angle,
+				label: this.t('Incarnation cross'),
+				aside: ic ? display(ic, 'angle') : undefined,
 				body: ic?.description ?? '',
 			},
 		];
@@ -474,10 +541,16 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		let index = 0;
 
 		return html`<section class="block" part="section channels">
-			<h3>Defined channels (${channels.length})</h3>
+			<h3>${this.t('Defined channels ({{count}})', { count: channels.length })}</h3>
 			${[...groups].map(
 				([circuit, list]) => html`<div class="group">
-					${circuit ? html`<p class="group-head">${circuit} circuit</p>` : nothing}
+					${
+						circuit
+							? html`<p class="group-head">${this.t('{{circuit}} circuit', {
+									circuit: display(list[0], 'circuit'),
+								})}</p>`
+							: nothing
+					}
 					${
 						list[0]?.circuitDescription
 							? html`<p class="group-note">${list[0].circuitDescription}</p>`
@@ -490,7 +563,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 							<summary>
 								<span class="interp-lead">
 									<span class="chan-gates">${c.gateA}-${c.gateB}</span>
-									<span>${c.name ?? ''}</span>
+									<span>${display(c, 'name')}</span>
 								</span>
 								${chevron()}
 							</summary>
@@ -515,20 +588,23 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		if (centers.length === 0 || this.hideReadings) return nothing;
 		const definedCount = centers.filter((c) => c.defined).length;
 		return html`<section class="block" part="section centers">
-			<h3>Centers (${definedCount} defined, ${centers.length - definedCount} open)</h3>
+			<h3>${this.t('Centers ({{defined}} defined, {{open}} open)', {
+				defined: definedCount,
+				open: centers.length - definedCount,
+			})}</h3>
 			${centers.map(
 				(
 					c,
 					i,
 				) => html`<details class="interp-card" part="reading" name="hd-center" ?open=${i === 0}>
 					<summary>
-						<span class="interp-lead">${c.name ?? ''}</span>
+						<span class="interp-lead">${display(c, 'name')}</span>
 						${chevron()}
 						<span class="interp-aside">
 							<span class="chips">
-								<span class="chip ${c.defined ? 'chip--on' : ''}">${c.defined ? 'Defined' : 'Open'}</span>
-								${c.motor ? html`<span class="chip">Motor</span>` : nothing}
-								${c.awareness ? html`<span class="chip">Awareness</span>` : nothing}
+								<span class="chip ${c.defined ? 'chip--on' : ''}">${c.defined ? this.t('Defined') : this.t('Open')}</span>
+								${c.motor ? html`<span class="chip">${this.t('Motor')}</span>` : nothing}
+								${c.awareness ? html`<span class="chip">${this.t('Awareness')}</span>` : nothing}
 							</span>
 						</span>
 					</summary>
@@ -537,15 +613,15 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 						${
 							!c.defined && c.notSelfQuestion
 								? html`<dl class="keynotes">
-									<dt>Not-self question</dt>
+									<dt>${this.t('Not-self question')}</dt>
 									<dd>${c.notSelfQuestion}</dd>
 								</dl>`
 								: nothing
 						}
-						${c.biology ? html`<p class="footnote">Biology. ${c.biology}</p>` : nothing}
+						${c.biology ? html`<p class="footnote">${this.t('Biology')}. ${c.biology}</p>` : nothing}
 						${
 							c.gates?.length
-								? html`<p class="footnote">Gates ${c.gates.join(', ')}</p>`
+								? html`<p class="footnote">${this.t('Gates {{gates}}', { gates: c.gates.join(', ') })}</p>`
 								: nothing
 						}
 					</div>
@@ -576,22 +652,25 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		const sideNote = split ? d.sides?.[side] : undefined;
 
 		return html`<section class="block" part="section activations">
-			<h3>Activations (${gates.length})</h3>
+			<h3>${this.t('Activations ({{count}})', { count: gates.length })}</h3>
 			${
 				split
 					? renderTablist({
 							items: [
 								{
 									id: 'personality' as const,
-									label: `Personality (${personality.length})`,
+									label: `${this.t('Personality')} (${personality.length})`,
 								},
-								{ id: 'design' as const, label: `Design (${design.length})` },
+								{
+									id: 'design' as const,
+									label: `${this.t('Design')} (${design.length})`,
+								},
 							],
 							active: side,
 							onSelect: (v) => {
 								this.side = v;
 							},
-							label: 'Chart sides',
+							label: this.t('Chart sides'),
 							idPrefix: 'hd',
 							controls: true,
 						})
@@ -610,36 +689,40 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	}
 
 	private renderGate(g: GateActivation, open: boolean) {
-		const glyph = this.gateGlyph(g.planet);
+		const glyph = this.gateGlyph(g);
+		const body = display(g, 'planet');
 		const hex = g.ichingHexagram;
 		return html`<details class="interp-card" part="reading" name="hd-gate" ?open=${open}>
 			<summary>
 				<span class="interp-lead">
 					${glyph ? html`<span class="glyph" aria-hidden="true">${glyph}</span>` : nothing}
 					<span class="gate-id">${g.gate}${g.line != null ? `.${g.line}` : ''}</span>
-					<span>${g.gateName ?? ''}</span>
+					<span>${display(g, 'gateName')}</span>
 				</span>
 				${chevron()}
-				${g.planet ? html`<span class="interp-aside"><small>${g.planet}</small></span>` : nothing}
+				${body ? html`<span class="interp-aside"><small>${body}</small></span>` : nothing}
 			</summary>
 			<div class="interp-body">
 				${g.gateDescription ? html`<p>${g.gateDescription}</p>` : nothing}
 				${
 					g.lineMeaning
 						? html`<dl class="keynotes">
-							<dt>Line ${g.line ?? ''}</dt>
+							<dt>${this.t('Line {{line}}', { line: g.line ?? '' })}</dt>
 							<dd>${g.lineMeaning}</dd>
 						</dl>`
 						: nothing
 				}
 				${
 					g.planetDescription
-						? html`<p class="footnote">${g.planet}. ${g.planetDescription}</p>`
+						? html`<p class="footnote">${body}. ${g.planetDescription}</p>`
 						: nothing
 				}
 				${
+					// The hexagram field is literally named `english` and the API returns
+					// it English in every language, so it prints as sent rather than being
+					// looked up somewhere else.
 					hex?.number
-						? html`<p class="footnote">I Ching hexagram ${hex.number}${hex.english ? `, ${hex.english}` : ''}</p>`
+						? html`<p class="footnote">${this.t('I Ching hexagram {{number}}', { number: hex.number })}${hex.english ? `, ${hex.english}` : ''}</p>`
 						: nothing
 				}
 			</div>

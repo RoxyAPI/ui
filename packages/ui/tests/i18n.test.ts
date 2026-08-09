@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 
 // Registers every element. happy-dom is loaded by preload (bunfig.toml), and
 // Lit reads document and customElements at module load, so setup -> import.
@@ -12,6 +12,7 @@ import {
 	registerLocale,
 	translate,
 } from '../src/i18n/registry.js';
+import { CENTER_GEOMETRY } from '../src/utils/bodygraph-render.js';
 import { lookupKey } from '../src/utils/string.js';
 // Side effect: registers the Spanish catalogue for the translate() assertions
 // below. The per-catalogue tests load every locale from the directory instead.
@@ -31,6 +32,16 @@ function text(el: Element): string {
 }
 
 beforeEach(() => {
+	document.documentElement.removeAttribute('lang');
+	document.body.innerHTML = '';
+});
+
+// And again on the way out. `bun test` shares one happy-dom document across
+// files, so a page language left standing here is inherited by whichever file
+// runs next: every `t()` call site in the library resolves through
+// `document.documentElement.lang`, so an unrelated English assertion two files
+// later fails in Spanish.
+afterEach(() => {
 	document.documentElement.removeAttribute('lang');
 	document.body.innerHTML = '';
 });
@@ -235,24 +246,104 @@ describe('shipped locales', () => {
 		// it renders as one English word inside otherwise translated chrome. The
 		// exceptions are declared per language, so a genuine coincidence is a
 		// decision somebody wrote down rather than a gap nobody noticed.
+		// Human Design is where this list grew: the system is a 1987 Western one and
+		// most languages print its vocabulary as a loanword, so `Aura`, `Bodygraph`
+		// and `Motor` recur below with a source behind each rather than a shrug. Each
+		// locale file names the source for its own entries.
 		const IDENTICAL_BY_DESIGN: Record<string, string[]> = {
 			// `Neutral` is the German word too; `Total` is `Gesamt`. German takes
-			// `Radix` for the natal ring label, so it is NOT on this list.
-			de: ['Neutral'],
+			// `Radix` for the natal ring label, so it is NOT on this list. `Fix` is
+			// the full German quality, which is why the abbreviation needs none.
+			// `Definition`, `Aura`, `Design` and `Motor` are the German Human Design
+			// terms as the German schools print them (`Motorenzentren`,
+			// `Persönlichkeitsseite`/`Designseite`); `Bodygraph` is the loanword the
+			// API's own German prose uses sixteen times inside this same card, which
+			// is why `Körpergrafik` was passed over.
+			de: [
+				'Aura',
+				'Bodygraph',
+				'Definition',
+				'Design',
+				'Fix',
+				'Motor',
+				'Neutral',
+			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
 			// it is the naturalised modifier a chart writes in front of a body.
-			es: ['Total', 'Natal'],
+			// `Cardinal`, `Mutable` and `Mut` are Spanish words that coincide with
+			// the English; `No` is the same word in both. `Aura`, `Motor`, `Color`,
+			// `Base` and `Variables` are the Spanish Human Design words, and
+			// `Bodygraph` is the loanword the API's Spanish prose prints.
+			es: [
+				'Aura',
+				'Base',
+				'Bodygraph',
+				'Cardinal',
+				'Color',
+				'Motor',
+				'Mut',
+				'Mutable',
+				'Natal',
+				'No',
+				'Total',
+				'Variables',
+			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
-			// and is NOT.
-			fr: ['Total', 'apex', '{{count}} aspects', 'Transits', 'Natal'],
+			// and is NOT. `Air`, `Cardinal` and `Mutable` are the real French words
+			// and coincide with the English; `Mut` truncates `Mutable` onto the same
+			// three letters, and `illustration` is spelled identically in French.
+			// French Human Design keeps `Type`, `Aura`, `Design`, `Bodygraph`,
+			// `Direction`, `Base`, `Cognition` and `Variables` unchanged, and
+			// `Activations` differs from the English only in a plural it already has.
+			fr: [
+				'Activations ({{count}})',
+				'Air',
+				'Aura',
+				'Base',
+				'Bodygraph',
+				'Cardinal',
+				'Cognition',
+				'Design',
+				'Direction',
+				'Mut',
+				'Mutable',
+				'Natal',
+				'Total',
+				'Transits',
+				'Type',
+				'Variables',
+				'apex',
+				'illustration',
+				'{{count}} aspects',
+			],
 			hi: [],
-			pt: ['Total', 'Natal'],
+			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
+			// `Mutável` at three characters, which lands on the English set;
+			// `Cardinal` is the full Portuguese word. `Aura`, `Bodygraph` and `Motor`
+			// are what Brazilian Human Design writing prints (`Centro Motor`), `Base`
+			// is the cognate for the PHS layer, and `Design` is the chart side, which
+			// Brazilian usage keeps English precisely to hold it apart from
+			// `Desenho`.
+			pt: [
+				'Aura',
+				'Base',
+				'Bodygraph',
+				'Car',
+				'Cardinal',
+				'Design',
+				'Fix',
+				'Motor',
+				'Mut',
+				'Natal',
+				'Total',
+			],
 			ru: [],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
-			// is `Toplam`.
-			tr: ['orb', 'apex', 'Natal'],
+			// is `Toplam`. Turkish Human Design borrows `Aura`, `Bodygraph` and
+			// `Motor` the same way (`Motor merkezler`).
+			tr: ['orb', 'apex', 'Natal', 'Aura', 'Bodygraph', 'Motor'],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
 			const untranslated = Object.entries(catalog)
@@ -506,6 +597,63 @@ describe('a component renders its chrome in the page language', () => {
 	});
 
 	/**
+	 * `<roxy-data>`, which shipped with ZERO `t()` calls while `docs/todo.md` and the main repo both recorded its chrome as done.
+	 *
+	 * @remarks
+	 * It is the generic fallback every unbound endpoint renders through, so it is the component a Spanish site is most likely to be looking at, and it was the WORST case rather than a missing nicety: `foldLocalized` already runs inside its `suppress()` funnel, so it was printing `Sol` and `Piscis` under `Yes`, `No` and `31 rows` in English. Spanish values under English chrome is the state `docs/authoring.md` says is worse than all-English, and this component had been in it since the fold landed.
+	 *
+	 * What is NOT asserted here, because it cannot be fixed here: the column HEADINGS. They come from the wire field name through `humanize()`, so they are derived rather than literal and no catalogue keyed on English source text can reach them. That is the shared field-name-to-label artifact `<roxy-endpoint-form>` needs too.
+	 */
+	test('the generic fallback reads Spanish, chrome and values together', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-data');
+		// Past the row threshold, so the count disclosure renders, and carrying a
+		// boolean so the Yes/No pair does.
+		(el as unknown as { data: unknown }).data = Array.from(
+			{ length: 14 },
+			(_, i) => ({
+				planet: 'Sun',
+				planetLocalized: 'Sol',
+				degree: i,
+				isRetrograde: i % 2 === 0,
+			}),
+		);
+		document.body.appendChild(el);
+		await settled(el);
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		const rendered = text(el);
+		expect(rendered).toContain('14 filas');
+		expect(rendered).not.toContain('14 rows');
+		expect(
+			root.querySelector('.roxy-table-wrap')?.getAttribute('aria-label'),
+		).toBe('Tabla de datos');
+		expect(root.querySelector('.roxy-card')?.getAttribute('aria-label')).toBe(
+			'Visualización de datos genérica',
+		);
+		// The fold was already putting the Spanish value under the English column,
+		// which is the half this catalogue completes.
+		expect(rendered).toContain('Sol');
+		expect(rendered).not.toContain('Planet Localized');
+		el.remove();
+	});
+
+	test('its booleans and empty state translate too', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-data');
+		(el as unknown as { data: unknown }).data = {
+			name: 'Prueba',
+			isRetrograde: false,
+			items: [],
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const rendered = text(el);
+		expect(rendered).toContain('No');
+		expect(rendered).not.toContain('Yes');
+		el.remove();
+	});
+
+	/**
 	 * The transit wheel, which is the second half of the practitioner card and shipped with ZERO `t()` calls while the natal chart beside it had 32. A Spanish agency selling a Spanish natal card over an English transit wheel is the exact half-translated state this whole feature exists to remove.
 	 */
 	test('the transit wheel reads Spanish from the page language alone', async () => {
@@ -622,7 +770,7 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 			dominantElement: 'Water',
 			dominantElementLocalized: 'Agua',
 			dominantModality: 'Fixed',
-			dominantModalityLocalized: 'Fijo',
+			dominantModalityLocalized: 'Fija',
 			retrogradePlanets: ['Mars'],
 			retrogradePlanetsLocalized: ['Marte'],
 		},
@@ -671,7 +819,7 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		expect(rendered).toContain('Cáncer');
 		expect(rendered).toContain('Trígono');
 		expect(rendered).toContain('Agua');
-		expect(rendered).toContain('Fijo');
+		expect(rendered).toContain('Fija');
 		// The English vocabulary is GONE from the reader's half, not merely joined
 		// by Spanish beside it.
 		expect(rendered).not.toContain('Sun');
@@ -732,16 +880,136 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		el.remove();
 	});
 
-	test('the element and modality headers stay English, which the response forces', async () => {
-		// The API localizes the DOMINANT element and modality and nothing else, so
-		// the cross-tab has a translation for one row and one column out of seven.
-		// Two Spanish headers among five English ones reads as a bug; the tint is
-		// what ties the localized pill to its cell. Pinned so it stays a decision.
+	/**
+	 * The cross-tab axes are the one vocabulary the CATALOGUE owns, and this is the assertion that keeps that safe.
+	 *
+	 * @remarks
+	 * The 4x3 grid is the component's own construction, so six of its seven headers have no field in the response to defer to and the seventh, the dominant pair, would have been the only translated word in the table. They were left English for that reason and a Spanish customer circled the grid and wrote TRANSLATE on it.
+	 *
+	 * Translating them re-opens exactly one risk: the dominant element and modality DO come back localized, they are rendered as a pill directly above this grid, and the grid tints the matching row and column. So the catalogue and the API have to say the same word or one card reads `Elemento dominante: Agua` over a row headed something else. This test renders both and asserts they meet.
+	 */
+	test('the dominant pill and the row it tints read the same word', async () => {
 		const el = await mountNatal(NATAL_BOTH, 'es-AR');
+		const root = shadow(el);
 		const rendered = text(el);
-		for (const header of ['Fire', 'Earth', 'Air', 'Water', 'Car', 'Fix', 'Mut'])
-			expect(rendered).toContain(header);
+		// Straight off the response, through `display()`.
+		expect(rendered).toContain('Elemento dominante: Agua');
+		expect(rendered).toContain('Modalidad dominante: Fija');
+		// Straight out of the catalogue, and the same two words.
+		const rowHeads = [...root.querySelectorAll('.em-grid tbody th')].map((th) =>
+			(th.textContent ?? '').trim(),
+		);
+		expect(rowHeads).toEqual(['Fuego', 'Tierra', 'Aire', 'Agua', 'Total']);
+		const colHeads = [...root.querySelectorAll('.em-grid thead th')];
+		expect(colHeads.map((th) => (th.textContent ?? '').trim())).toEqual([
+			'',
+			'Card',
+			'Fija',
+			'Mut',
+			'Total',
+		]);
+		// The abbreviation is decodable: the full modality rides as the column
+		// title, because `Card` and `Mut` say nothing on their own and a Cyrillic
+		// or Devanagari abbreviation says less.
+		expect(
+			colHeads.map((th) => th.getAttribute('title')).filter(Boolean),
+		).toEqual(['Cardinal', 'Fija', 'Mutable']);
+		// The tint still lands on the dominant row and column, which is what makes
+		// the pill and the grid one reading rather than two.
+		expect(
+			root.querySelector('.em-grid tbody tr:nth-child(4) th')?.className,
+		).toContain('dominant');
 		el.remove();
+	});
+
+	/**
+	 * Every catalogue against the words the API itself returns, not just the Spanish one on a render.
+	 *
+	 * @remarks
+	 * Captured live from `/astrology/natal-chart?lang=` on 2026-08-09, one chart per dominant pair, plus `/astrology/signs?lang=` for the elements. A hardcoded table rather than a live call, for the reason the oracles cross into `gold-standard`: the NUMBERS travel, the dependency does not. Re-run those two endpoints if a value here is ever disputed.
+	 */
+	test('every catalogue names the elements and modalities the way the API does', async () => {
+		const API_VOCAB: Record<string, Record<string, string>> = {
+			de: {
+				Fire: 'Feuer',
+				Earth: 'Erde',
+				Air: 'Luft',
+				Water: 'Wasser',
+				Cardinal: 'Kardinal',
+				Fixed: 'Fix',
+				Mutable: 'Veränderlich',
+			},
+			es: {
+				Fire: 'Fuego',
+				Earth: 'Tierra',
+				Air: 'Aire',
+				Water: 'Agua',
+				Cardinal: 'Cardinal',
+				Fixed: 'Fija',
+				Mutable: 'Mutable',
+			},
+			fr: {
+				Fire: 'Feu',
+				Earth: 'Terre',
+				Air: 'Air',
+				Water: 'Eau',
+				Cardinal: 'Cardinal',
+				Fixed: 'Fixe',
+				Mutable: 'Mutable',
+			},
+			hi: {
+				Fire: 'अग्नि',
+				Earth: 'पृथ्वी',
+				Air: 'वायु',
+				Water: 'जल',
+				Cardinal: 'चर',
+				Fixed: 'स्थिर',
+				Mutable: 'द्विस्वभाव',
+			},
+			pt: {
+				Fire: 'Fogo',
+				Earth: 'Terra',
+				Air: 'Ar',
+				Water: 'Água',
+				Cardinal: 'Cardinal',
+				Fixed: 'Fixo',
+				Mutable: 'Mutável',
+			},
+			ru: {
+				Fire: 'Огонь',
+				Earth: 'Земля',
+				Air: 'Воздух',
+				Water: 'Вода',
+				Cardinal: 'Кардинальный',
+				Fixed: 'Фиксированный',
+				Mutable: 'Мутабельный',
+			},
+			tr: {
+				Fire: 'Ateş',
+				Earth: 'Toprak',
+				Air: 'Hava',
+				Water: 'Su',
+				Cardinal: 'Öncü',
+				Fixed: 'Sabit',
+				Mutable: 'Değişken',
+			},
+		};
+		// `de` Mutable was exempted here until 2026-08-09, because the API served
+		// `Veraenderlich` with the umlaut expanded while every other German string
+		// it serves keeps one. The API was corrected the same day, so the pair is
+		// back under the drift check below rather than carved out of it.
+
+		const drift: string[] = [];
+		for (const [lang, catalog] of await shippedCatalogues()) {
+			for (const [source, apiWord] of Object.entries(API_VOCAB[lang] ?? {})) {
+				if (catalog[source] !== apiWord)
+					drift.push(`${lang}.ts ${source}: ${catalog[source]} vs ${apiWord}`);
+			}
+		}
+		expect(
+			drift,
+			`A catalogue element or modality must be the word the API returns for the same concept, or the dominant pill and the grid row it tints read differently on one card:\n  ${drift.join('\n  ')}`,
+		).toEqual([]);
 	});
 
 	test('the aspect grid pairs on the English name and labels in Spanish', async () => {
@@ -754,7 +1022,10 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		grid?.click();
 		await settled(el);
 
-		const heads = [...root.querySelectorAll('th[title]')];
+		// Scoped to the aspect grid: the element-modality cross-tab beside it now
+		// carries `title` on its own column headers too, and an unscoped query
+		// reads both tables as one (lesson 31, assert per SITE).
+		const heads = [...root.querySelectorAll('.aspect-grid th[title]')];
 		expect(heads.map((th) => th.getAttribute('title'))).toEqual([
 			'Sol',
 			'Marte',
@@ -777,6 +1048,10 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		expect(rendered).toContain('☉ Sun');
 		expect(rendered).toContain('♂ Mars R');
 		expect(rendered).toContain('Water');
+		// The cross-tab axes cost English nothing: the catalogue key IS the English
+		// source, so a page with no language renders the same words it always did.
+		expect(rendered).toContain('Fire');
+		expect(rendered).toContain('Car');
 		expect(markup(el)).toContain('aspect aspect-trine');
 		el.remove();
 	});
@@ -875,5 +1150,404 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		// no localized partner for those pills and they stay English by necessity.
 		expect(rendered).toContain('Trine');
 		el.remove();
+	});
+});
+
+/**
+ * Human Design, the second domain to serve both halves, and the one where the change was a REPAIR rather than a feature.
+ *
+ * @remarks
+ * All eleven Human Design operations stopped translating their machine identifiers in place on 2026-08-09 and began echoing the display copy beside them instead. That fixed two real defects here: `PLANET_GLYPH` is keyed on the canonical English body, so an activation row used to print the bare word where the glyph belongs on every translated page, and the bodygraph SVG paints its own centre labels, so the chart said `Head` while the accordion under it said `Cabeza`. It also left this card reading English vocabulary until the components were told which copy is which, which is what these tests pin.
+ *
+ * Asserted per SITE, never once per card: a body draws its glyph in the chart tooltip and in its activation row, and a centre name appears in the chart margin, in the colour legend and in its disclosure, so a single whole-card `toContain` is satisfied by any one of them (lesson 31).
+ *
+ * The vocabulary below is what `/human-design/bodygraph?lang=es` and `?lang=ru` returned on 2026-08-09, captured live rather than invented, so a fixture cannot drift into asserting a translation the API does not serve.
+ */
+describe('the Human Design cards read the display half and key on the English one', () => {
+	const CENTERS: ReadonlyArray<readonly [string, string, string, boolean]> = [
+		['head', 'Head', 'Cabeza', false],
+		['ajna', 'Ajna', 'Ajna', false],
+		['throat', 'Throat', 'Garganta', false],
+		['g', 'G Center', 'Centro G', true],
+		['heart', 'Heart', 'Corazón', false],
+		['sacral', 'Sacral', 'Sacral', true],
+		['solar-plexus', 'Solar Plexus', 'Plexo Solar', false],
+		['spleen', 'Spleen', 'Bazo', true],
+		['root', 'Root', 'Raíz', true],
+	];
+
+	/** One bodygraph carrying BOTH halves of every field the card prints. */
+	const HD_BOTH = {
+		type: 'Generator',
+		typeLocalized: 'Generador',
+		typeDescription:
+			'El aura envolvente responde a lo que la vida le presenta.',
+		strategy: 'Wait to respond',
+		strategyLocalized: 'Esperar para responder',
+		strategyDescription: 'Esperar una senal externa antes de actuar.',
+		authority: 'Sacral',
+		authorityLocalized: 'Sacral',
+		authorityDescription: 'La respuesta sacral llega en el momento.',
+		definition: 'Single',
+		definitionLocalized: 'Simple',
+		definitionDescription: 'Todos los centros definidos forman una sola pieza.',
+		aura: 'Abierta y envolvente.',
+		signature: 'Satisfaction',
+		signatureLocalized: 'Satisfacción',
+		notSelf: 'Frustration',
+		notSelfLocalized: 'Frustración',
+		profile: '5/1',
+		profileKeynotes: {
+			personalityLine: 5,
+			designLine: 1,
+			personality: 'Hereje: una fuerza practica sobre la que otros proyectan.',
+			design: 'Investigador: construye una base segura antes de actuar.',
+		},
+		profileDescription: 'Hereje sobre Investigador.',
+		incarnationCross: {
+			gates: [51, 57, 61, 62],
+			angle: 'Left Angle',
+			angleLocalized: 'Ángulo izquierdo',
+			angleCode: 'LAX',
+			// English in every language: the API localizes no part of this name.
+			name: 'Left Angle Cross of the Clarion',
+			description: 'El tema de vida de la cruz.',
+		},
+		sides: {
+			personality: 'El lado consciente, impreso en negro.',
+			design: 'El lado inconsciente, impreso en rojo.',
+		},
+		centers: CENTERS.map(([id, name, nameLocalized, defined]) => ({
+			id,
+			name,
+			nameLocalized,
+			defined,
+			motor: id === 'sacral',
+			awareness: id === 'spleen',
+			theme: 'Tema del centro.',
+			notSelfQuestion: 'Pregunta del no-ser.',
+			biology: 'La glandula.',
+			gates: [1, 2],
+		})),
+		channels: [
+			{
+				gateA: 5,
+				gateB: 15,
+				name: 'Rhythm',
+				nameLocalized: 'Ritmo',
+				circuit: 'Collective',
+				circuitLocalized: 'Colectivo',
+				centers: ['sacral', 'g'],
+				description: 'Descripcion del canal.',
+				circuitDescription: 'Descripcion del circuito.',
+			},
+		],
+		gates: [
+			{
+				planet: 'Sun',
+				planetLocalized: 'Sol',
+				side: 'personality',
+				gate: 51,
+				line: 5,
+				gateName: 'Mystery',
+				gateNameLocalized: 'Misterio',
+				gateDescription: 'Presion de cabeza por conocer.',
+				lineMeaning: 'Significado de la linea.',
+				planetDescription: 'La activacion dominante.',
+				ichingHexagram: { number: 61, english: 'Inner Truth' },
+			},
+			{
+				planet: 'Earth',
+				planetLocalized: 'Tierra',
+				side: 'design',
+				gate: 57,
+				line: 2,
+				gateName: 'Intuition',
+				gateNameLocalized: 'Intuición',
+				gateDescription: 'La claridad del oido.',
+				lineMeaning: 'Significado de la linea.',
+				planetDescription: 'El equilibrio de la activacion solar.',
+				ichingHexagram: { number: 57, english: 'The Gentle' },
+			},
+		],
+	};
+
+	/** The same chart as an ENGLISH response, which carries no localized field at all. */
+	const HD_ENGLISH = JSON.parse(
+		JSON.stringify(HD_BOTH, (key, value) =>
+			key.endsWith('Localized') ? undefined : value,
+		),
+	);
+
+	async function mount(
+		tag: string,
+		data: unknown,
+		lang?: string,
+	): Promise<Element> {
+		if (lang) document.documentElement.lang = lang;
+		const el = document.createElement(tag);
+		(el as unknown as { data: unknown }).data = data;
+		document.body.appendChild(el);
+		await settled(el);
+		return el;
+	}
+
+	const shadow = (el: Element): ShadowRoot =>
+		(el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+
+	const textsAt = (root: ShadowRoot, selector: string): string[] =>
+		[...root.querySelectorAll(selector)].map((n) =>
+			(n.textContent ?? '').trim(),
+		);
+
+	/** The nine names in the order the CHART paints them, which is the geometry order (crown down, Spleen before Sacral) rather than the order the response lists them in. */
+	const chartOrder = (which: 1 | 2): string[] =>
+		CENTER_GEOMETRY.map(
+			(g) => CENTERS.find(([id]) => id === g.id)?.[which] ?? '',
+		);
+
+	test('the bodygraph prints the localized body, centre, channel and gate names', async () => {
+		const el = await mount('roxy-bodygraph', HD_BOTH, 'es-AR');
+		const rendered = text(el);
+		expect(rendered).toContain('Generador');
+		expect(rendered).toContain('Esperar para responder');
+		expect(rendered).toContain('Simple');
+		expect(rendered).toContain('Ángulo izquierdo');
+		expect(rendered).toContain('Ritmo');
+		expect(rendered).toContain('Colectivo');
+		expect(rendered).toContain('Misterio');
+		expect(rendered).toContain('Sol');
+		// The English vocabulary is GONE from the reader's half.
+		expect(rendered).not.toContain('Generator');
+		expect(rendered).not.toContain('Wait to respond');
+		expect(rendered).not.toContain('Rhythm');
+		expect(rendered).not.toContain('Collective');
+		expect(rendered).not.toContain('Mystery');
+		expect(rendered).not.toContain('Intuition');
+		el.remove();
+	});
+
+	test('and every glyph still resolves, because the lookup stayed on the English body', async () => {
+		// The load-bearing assertion. `planetGlyph` is keyed on the canonical name,
+		// so pointing it at `planetLocalized` draws a chart with no glyphs on it, in
+		// Spanish only, which is exactly the defect the API change repaired.
+		const el = await mount('roxy-bodygraph', HD_BOTH, 'es-AR');
+		const root = shadow(el);
+		expect(textsAt(root, '.interp-card .glyph')).toEqual(['☉']);
+		// Personality is the open tab, so the Earth row is behind the second one.
+		const design = [...root.querySelectorAll('.roxy-tab')].find(
+			(t) => t.id === 'hd-tab-design',
+		) as HTMLElement | undefined;
+		expect(design).toBeTruthy();
+		design?.click();
+		await settled(el);
+		expect(textsAt(shadow(el), '.interp-card .glyph')).toEqual(['♁']);
+		// The row behind the second tab is not in the DOM until it is clicked, so
+		// its half of the vocabulary can only be asserted here (lesson 11).
+		expect(text(el)).toContain('Tierra');
+		expect(text(el)).not.toContain('Earth');
+		// The chart tooltip pairs the glyph with the localized gate name.
+		const gateTitle = [...shadow(el).querySelectorAll('.bg-gate title')].map(
+			(n) => n.textContent ?? '',
+		);
+		expect(
+			gateTitle.some((t) => t.includes('Misterio') && t.includes('☉')),
+		).toBe(true);
+		el.remove();
+	});
+
+	test('the chart margin, the colour legend and the accordion name a centre the same way', async () => {
+		// The defect that made this necessary: the SVG paints its own labels, so a
+		// Spanish card read `Head` on the chart against `Cabeza` in the disclosure
+		// directly below it. Asserted at all three sites.
+		const el = await mount('roxy-bodygraph', HD_BOTH, 'es-AR');
+		const root = shadow(el);
+		expect(textsAt(root, '.bg-center-label')).toEqual(chartOrder(2));
+		expect(textsAt(root, '.legend span')).toContain('Cabeza, Centro G');
+		expect(textsAt(root, '.legend span')).toContain(
+			'Garganta, Bazo, Plexo Solar, Raíz',
+		);
+		expect(textsAt(root, 'details[name="hd-center"] .interp-lead')).toEqual(
+			CENTERS.map(([, , localized]) => localized),
+		);
+		// The FILL still keys on `id`, which is the machine value and identical in
+		// every language: four centres come back defined and four shapes are filled.
+		expect(root.querySelectorAll('.bg-center.defined').length).toBe(4);
+		el.remove();
+	});
+
+	test('a centre name too long for the margin is compressed, never clipped', async () => {
+		// `Солнечное сплетение` is what the API returns for ru, 19 characters against
+		// the 12 of `Solar Plexus`, and the outermost `<svg>` clips at the viewport,
+		// so an overrun reads as a truncated word and no layout gate can see it
+		// (`layout.e2e.ts` skips every node inside an SVG).
+		const long = {
+			...HD_BOTH,
+			centers: HD_BOTH.centers.map((c) =>
+				c.id === 'solar-plexus'
+					? { ...c, nameLocalized: 'Солнечное сплетение' }
+					: c,
+			),
+		};
+		const el = await mount('roxy-bodygraph', long, 'ru');
+		const labels = [...shadow(el).querySelectorAll('.bg-center-label')];
+		const squeezed = labels.filter((n) => n.hasAttribute('textLength'));
+		expect(squeezed.map((n) => n.textContent?.trim())).toEqual([
+			'Солнечное сплетение',
+		]);
+		expect(squeezed[0]?.getAttribute('lengthAdjust')).toBe('spacingAndGlyphs');
+		el.remove();
+	});
+
+	test('an English bodygraph, which carries no localized field, is unchanged', async () => {
+		const el = await mount('roxy-bodygraph', HD_ENGLISH);
+		const root = shadow(el);
+		const rendered = text(el);
+		expect(rendered).toContain('Generator');
+		expect(rendered).toContain('Rhythm');
+		expect(rendered).toContain('Mystery');
+		expect(textsAt(root, '.bg-center-label')).toEqual(chartOrder(1));
+		expect(textsAt(root, '.interp-card .glyph')).toEqual(['☉']);
+		// The one name the API never localizes prints as sent in both languages.
+		expect(rendered).toContain('Left Angle Cross of the Clarion');
+		el.remove();
+	});
+
+	test('the type card reads the same identity vocabulary as the bodygraph', async () => {
+		const el = await mount('roxy-hd-type-card', HD_BOTH, 'es-AR');
+		const rendered = text(el);
+		expect(rendered).toContain('Generador');
+		expect(rendered).toContain('Satisfacción');
+		expect(rendered).toContain('Frustración');
+		expect(rendered).not.toContain('Generator');
+		expect(rendered).not.toContain('Satisfaction');
+		el.remove();
+	});
+
+	test('the variables card localizes all seven arrow fields and still sorts by quadrant', async () => {
+		// The sort is `quadrantOrder(position)` on the CANONICAL position, so a
+		// switch to `positionLocalized` sends every arrow to the unknown bucket and
+		// the grid falls back to response order. The fixture is deliberately out of
+		// order so that failure is visible.
+		const arrow = (
+			name: string,
+			nameLocalized: string,
+			layer: string,
+			layerLocalized: string,
+			position: string,
+			positionLocalized: string,
+		) => ({
+			name,
+			nameLocalized,
+			layer,
+			layerLocalized,
+			position,
+			positionLocalized,
+			direction: 'right',
+			directionLabel: 'Passive',
+			directionLabelLocalized: 'Pasivo',
+			color: 4,
+			colorLabel: 'Touch',
+			colorLabelLocalized: 'Tacto',
+			tone: 5,
+			base: 1,
+			baseName: 'Reactive',
+			baseNameLocalized: 'Reactivo',
+			description: 'Lectura de la flecha.',
+			colorMeaning: 'Significado del color.',
+			activation: { planet: 'Sun', side: 'design' },
+		});
+		const el = await mount(
+			'roxy-hd-variables',
+			{
+				confident: true,
+				arrows: [
+					arrow(
+						'Perspective',
+						'Perspectiva',
+						'Rave Psychology',
+						'Psicología Rave',
+						'Bottom right',
+						'Inferior derecha',
+					),
+					arrow(
+						'Determination',
+						'Determinación',
+						'Primary Health System',
+						'Sistema de Salud Primaria',
+						'Top left',
+						'Superior izquierda',
+					),
+				],
+			},
+			'es-AR',
+		);
+		const root = shadow(el);
+		expect(textsAt(root, '.arrow .name')).toEqual([
+			'Determinación',
+			'Perspectiva',
+		]);
+		const rendered = text(el);
+		expect(rendered).toContain('Pasivo');
+		expect(rendered).toContain('Tacto');
+		expect(rendered).toContain('Reactivo');
+		expect(rendered).toContain('Inferior derecha');
+		expect(rendered).toContain('Psicología Rave');
+		expect(rendered).not.toContain('Determination');
+		expect(rendered).not.toContain('Bottom right');
+		expect(rendered).not.toContain('Touch');
+		el.remove();
+	});
+
+	/**
+	 * The generic half of the same change, and the one nobody deploys to see.
+	 *
+	 * @remarks
+	 * `<roxy-reference-card>` builds its whole output from `Object.entries`, so the day `/human-design/gates/{number}` began echoing `nameLocalized` beside `name` it started drawing the same fact twice under two English headings, on a page whose owner changed nothing. That is `<roxy-data>`'s regression in the second generic renderer (lesson 31), and the fold repairs it at every level that reads a key, including one object inside an array.
+	 */
+	test('the reference card folds the localized twin instead of printing both', async () => {
+		const el = await mount(
+			'roxy-reference-card',
+			{
+				name: 'Head',
+				nameLocalized: 'Cabeza',
+				centerName: 'Head',
+				centerNameLocalized: 'Cabeza',
+				channelPartners: [
+					{ gate: 12, channel: 'Openness', channelLocalized: 'Apertura' },
+				],
+			},
+			'es-AR',
+		);
+		const rendered = text(el);
+		expect(rendered).toContain('Cabeza');
+		expect(rendered).toContain('Apertura');
+		expect(rendered).not.toContain('Head');
+		expect(rendered).not.toContain('Openness');
+		// The duplicate heading the fold exists to remove.
+		expect(rendered).not.toContain('Name Localized');
+		expect(rendered).not.toContain('Center Name Localized');
+		el.remove();
+	});
+
+	/**
+	 * The rule that keeps the two halves of this feature from separating again.
+	 *
+	 * @remarks
+	 * A component that prints `nameLocalized` under headings it never translated renders Spanish data under English chrome, which `docs/authoring.md` calls worse than consistent English. That is a judgement no type can carry, so it is a source scan: reading `utils/localized.js` obliges a component to have chrome of its own. It is why `roxy-hd-connection` and `roxy-hd-penta` are untouched, and why touching them means translating their chrome in the same change.
+	 */
+	test('no component reads the localized vocabulary without chrome of its own', async () => {
+		const base = 'packages/ui/src/components';
+		const offenders: string[] = [];
+		for (const file of await readdir(base)) {
+			if (!file.endsWith('.ts') || file.endsWith('.test.ts')) continue;
+			const src = await Bun.file(`${base}/${file}`).text();
+			if (!src.includes('utils/localized.js')) continue;
+			if (!/this\.t\(|this\.translator/.test(src)) offenders.push(file);
+		}
+		expect(
+			offenders,
+			`These read the API display vocabulary but translate none of their own words, so they render localized values under English headings:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
 	});
 });

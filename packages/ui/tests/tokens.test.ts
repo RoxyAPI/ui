@@ -136,20 +136,36 @@ describe('every name the spec can emit resolves to a glyph', () => {
  * The fallback, not the table, was the reason the bug shipped. `?? name.slice(0, 2)` turns any miss
  * into a plausible two-letter code, so a lookup failure renders as something that reads like a
  * deliberate abbreviation and nothing about the output says it is broken.
+ *
+ * @remarks
+ * The guard was originally anchored on `??`, which is only the half of the class that had bitten us. The other half had shipped at the same time and the anchor could not see it: the element-modality cross-tab wrote its column headers as `modality.slice(0, 3)` with no fallback in sight, so `Cardinal` became `Car` on purpose and every translated word became debris. **A short `slice` on a string is a byte operation with no idea where the word ends**, so it produces `Fij` in Spanish and splits a matra off its consonant in Devanagari or a stem mid-word in Cyrillic, in a header slot where the reader has no way to tell a truncation from an abbreviation. An abbreviation is a decision a translator makes and a catalogue carries; it is never a substring.
+ *
+ * So the pattern is now any `.slice(0, n)` for n of 1 to 4, `??` or not. That upper bound is what keeps it honest rather than noisy: every legitimate slice in the tree is either negative (`slice(0, -1)`), non-literal (`slice(0, ri + 1)`), an offset (`slice(1)`), or a genuinely larger window (`slice(0, 6)`, `slice(0, 10)`), and none of those manufactures a label. Sabotage-verified by restoring the `m.slice(0, 3)` header, which turns this test red on its own.
  */
 describe('a glyph miss is never papered over with a truncation', () => {
-	test('no component or shared renderer falls back to a sliced name', async () => {
-		const TRUNCATING_FALLBACK =
-			/\?\?\s*[\w.?[\]']+\.slice\(\s*0\s*,\s*[23]\s*\)/;
+	test('no component or shared renderer renders a sliced name', async () => {
+		const TRUNCATING_FALLBACK = /\.slice\(\s*0\s*,\s*[1-4]\s*\)/;
+		// Comments out, code only. Half the files that ever carried this bug now
+		// carry a why-note QUOTING it, so a scan over raw lines would fail on the
+		// documentation of the fix and pass on nothing.
+		const codeLines = (src: string): Array<[number, string]> =>
+			src
+				.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+				.split('\n')
+				.map((line, i) => [i + 1, line] as [number, string])
+				.filter(([, line]) => {
+					const t = line.trim();
+					return !t.startsWith('//') && !t.startsWith('*');
+				});
 		const offenders: string[] = [];
 		for (const dir of ['components', 'utils']) {
 			const base = `packages/ui/src/${dir}`;
 			for (const file of await readdir(base)) {
 				if (!file.endsWith('.ts') || file.endsWith('.test.ts')) continue;
 				const src = await Bun.file(`${base}/${file}`).text();
-				for (const [i, line] of src.split('\n').entries()) {
+				for (const [n, line] of codeLines(src)) {
 					if (TRUNCATING_FALLBACK.test(line)) {
-						offenders.push(`${dir}/${file}:${i + 1} ${line.trim()}`);
+						offenders.push(`${dir}/${file}:${n} ${line.trim()}`);
 					}
 				}
 			}

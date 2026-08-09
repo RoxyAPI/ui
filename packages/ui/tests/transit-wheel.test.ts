@@ -217,6 +217,13 @@ const data: CalculateTransitAspectsResponse = {
 			isApplying: true,
 			strength: 100,
 			interpretation: 'challenging',
+			transitInterpretation: {
+				summary: 'Sun opposes your natal Sun',
+				timing: 'Active for a few days',
+				impact: 'x',
+				guidance: 'y',
+				keywords: ['k'],
+			},
 		},
 	},
 };

@@ -36,6 +36,8 @@ export interface SnippetInput {
  * Build both snippets for one component.
  *
  * The practitioner theme ships COMMENTED OUT on purpose. It is an opt-in restyle, so emitting it live would hand every copy-paste user the warm serif preset as though it were the default. The comment above it is what tells them the choice exists.
+ *
+ * No `lang` attribute for the same reason. A component with none resolves its language from the element, then the nearest ancestor carrying `lang`, then `<html lang>`, so a snippet pasted into a Spanish CMS speaks Spanish with no edit. Emitting `lang="en"` won that chain at the first link and pinned every embedder to English, including the ones whose page already said otherwise.
  */
 export function widgetSnippets(i: SnippetInput): WidgetSnippets {
 	const endpoint = i.path.replace(/^\//, '');
@@ -48,7 +50,7 @@ export function widgetSnippets(i: SnippetInput): WidgetSnippets {
 	const script = `<!-- Optional: warm practitioner theme (drop this line for the default look) -->
 <!-- <link rel="stylesheet" href="${i.themeUrl}"> -->
 <script src="${i.cdnBase}/roxy-ui.js" defer></script>
-<${i.tag}${configAttr} data-endpoint="${endpoint}"${methodAttr} publishable-key="${PK_PLACEHOLDER}" lang="en"></${i.tag}>`;
+<${i.tag}${configAttr} data-endpoint="${endpoint}"${methodAttr} publishable-key="${PK_PLACEHOLDER}"></${i.tag}>`;
 
 	const oneTag = `<script src="${i.cdnBase}/widgets.js" defer></script>
 <div data-roxy-widget="${i.slug}" data-publishable-key="${PK_PLACEHOLDER}"></div>`;

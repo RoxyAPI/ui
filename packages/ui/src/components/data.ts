@@ -25,6 +25,17 @@ import { humanize } from '../utils/string.js';
  * round to 2 decimals, booleans read Yes/No, ISO dates and datetimes format
  * for the locale, SCREAMING_SNAKE enums humanize, http(s) strings link out.
  *
+ * Every word this component writes goes through `this.t()`, which is not
+ * optional politeness: `suppress()` already folds the API's localized values
+ * into their canonical columns, so before the catalogue landed a Spanish page
+ * read `Sol` and `Piscis` under `Yes`, `No` and `31 rows` in English. What a
+ * catalogue CANNOT reach is the column headings, which come from the wire field
+ * name through `humanize()` and are therefore computed per response; those stay
+ * English on both this path and the PHP one, which at least keeps them
+ * consistent with each other. The PHP twin has none of these strings yet, so
+ * the JS and no-JS paths currently disagree on the chrome as well as the fold
+ * (`docs/todo.md`, and lesson 6 for why that matters).
+ *
  * When a schema declares an `x-roxy-ui` hint, a future dispatcher can opt
  * into a hand-tuned component instead of this fallback.
  */
@@ -306,10 +317,10 @@ export class RoxyData extends RoxyDataElement<Json> {
 	protected renderData(data: Json) {
 		if (this.depth >= MAX_DEPTH) {
 			return html`<div class="roxy-empty" role="status">
-				Nested data omitted
+				${this.t('Nested data omitted')}
 			</div>`;
 		}
-		return html`<div class="roxy-card" aria-label="Generic data display">
+		return html`<div class="roxy-card" aria-label=${this.t('Generic data display')}>
 			${this.renderValue(data)}
 		</div>`;
 	}
@@ -323,7 +334,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 	private renderArray(arr: Json[]): TemplateResult {
 		if (arr.length === 0) {
-			return html`<div class="roxy-empty" role="status">Empty list</div>`;
+			return html`<div class="roxy-empty" role="status">${this.t('Empty list')}</div>`;
 		}
 		if (arr.every(isPrimitive)) {
 			return this.renderChips(arr as (Scalar | null)[]);
@@ -367,7 +378,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		const table = html`<div
 			class="roxy-table-wrap"
 			role="group"
-			aria-label="Data table"
+			aria-label=${this.t('Data table')}
 			tabindex="0"
 		>
 			<table class="roxy-table" role="table">
@@ -396,7 +407,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		// inline. Past the threshold it folds away behind its own row count.
 		if (clean.length > DETAILS_ROWS) {
 			return html`<details class="roxy-table-details">
-				<summary>${clean.length} rows</summary>
+				<summary>${this.t('{{count}} rows', { count: clean.length })}</summary>
 				${table}
 			</details>`;
 		}
@@ -458,7 +469,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 					? html`<img
 						class="roxy-image"
 						src=${String(obj[imageKey])}
-						alt=${titleKey ? String(obj[titleKey]) : 'illustration'}
+						alt=${titleKey ? String(obj[titleKey]) : this.t('illustration')}
 						loading="lazy"
 					/>`
 					: nothing
@@ -512,7 +523,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 	private renderField(value: Json, key?: string): TemplateResult | string {
 		if (value === null || value === undefined) return '';
 		if (value === true && key !== undefined && isBadgeKey(key)) {
-			return html`<span class="roxy-badge">Yes</span>`;
+			return html`<span class="roxy-badge">${this.t('Yes')}</span>`;
 		}
 		if (isPrimitive(value)) return html`${this.scalarTemplate(value)}`;
 		if (Array.isArray(value) && value.every(isPrimitive)) {
@@ -535,7 +546,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 	): TemplateResult | string {
 		if (value === null || value === undefined) return '';
 		if (value === true && key !== undefined && isBadgeKey(key)) {
-			return html`<span class="roxy-badge">Yes</span>`;
+			return html`<span class="roxy-badge">${this.t('Yes')}</span>`;
 		}
 		if (isPrimitive(value)) return this.scalarTemplate(value);
 		if (Array.isArray(value) && value.every(isPrimitive)) {
@@ -568,7 +579,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		if (typeof value === 'number') {
 			return formatNumber(value, 2) || String(value);
 		}
-		if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+		if (typeof value === 'boolean') return value ? this.t('Yes') : this.t('No');
 		if (ISO_DATE.test(value)) {
 			const time = formatTime(this.effectiveLang(), value);
 			const date = formatDate(this.effectiveLang(), value);

@@ -156,6 +156,12 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		return translate(this.effectiveLang(), source, vars);
 	}
 
+	/** {@link RoxyDataElement.t} as a value, bound once, for a shared render helper that has no host of its own and therefore cannot resolve a page language (`utils/hd-reading.ts`). Named `translator` and not `translate` because `HTMLElement.translate` is a real DOM property and shadowing it with a protected member makes every `@customElement` decorator in the library fail to typecheck. */
+	protected readonly translator = (
+		source: string,
+		vars?: Record<string, string | number>,
+	): string => this.t(source, vars);
+
 	protected willUpdate(changed: PropertyValues): void {
 		if (changed.has('publishableKey')) {
 			this.fetcher.publishableKey = this.publishableKey;

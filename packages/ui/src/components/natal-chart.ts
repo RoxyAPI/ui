@@ -955,13 +955,35 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 * @remarks
 	 * The cells are derived from the planet signs, not read from `summary.elementDistribution`, because a 1D distribution cannot fill a cross-tab. That makes the body set the reconciliation risk: the API counts every body it returns (nodes, Chiron, and Black Moon Lilith included), so the grid must too, or the totals here would contradict the dominant-element pill rendered right above it. Hence the totals count placed bodies rather than `planets.length` (an unrecognized sign would otherwise inflate the grand total past the sum of its rows), the caption names the body set, and the dominant row and column are tinted from `summary` so the pill and the grid land on the same cell.
 	 *
-	 * **The seven headers stay English in every language, and that is a limit of the response rather than an oversight.** The API localizes the DOMINANT element and modality and nothing else, so the only translation available covers one row and one column; rendering those two in Spanish beside five English siblings would read as a bug, and inventing the other five here would put a table of domain vocabulary back in a component. The tint is what ties the localized pill above to its cell, and a tint needs no words.
+	 * **The seven headers are CHROME, not response vocabulary, and that is what licenses translating them.** The axes are the component's own 4x3 construction, so six of the seven have no field in the response to defer to and the seventh (the dominant pair) would otherwise have been the only translated word in the table. They therefore go through the chrome catalogue like every other heading here, and each catalogue value is pinned to what the API returns for `dominantElementLocalized` / `dominantModalityLocalized` so the tinted pill above the grid and the header on its row cannot read two different words for one element. Verified live on 2026-08-09 against `/astrology/natal-chart?lang=` in all seven languages; `tests/i18n.test.ts` re-asserts the agreement on a render.
+	 *
+	 * **The English arrays stay, because they are the CELL KEYS.** `SIGNS_ORDER.indexOf` resolves each sign to an index and the modulo picks the bucket, so the array values are compared and keyed on, never read (lesson 31). Only the header text nodes move.
 	 */
 	private renderElementModalityGrid() {
 		const planets = this.getPlanets();
 		if (planets.length === 0) return nothing;
 		const ELEMENTS = ['Fire', 'Earth', 'Air', 'Water'] as const;
 		const MODALITIES = ['Cardinal', 'Fixed', 'Mutable'] as const;
+		// Header text, keyed by the canonical bucket name. Written out as literal
+		// `t()` calls rather than `this.t(el)` so the static scan in
+		// `tests/i18n.test.ts` can see every one of them: a dynamic key is exactly
+		// the shape that ships a string no catalogue carries.
+		const ELEMENT_LABEL: Record<string, string> = {
+			Fire: this.t('Fire'),
+			Earth: this.t('Earth'),
+			Air: this.t('Air'),
+			Water: this.t('Water'),
+		};
+		// The column is three glyphs wide, so it shows an abbreviation the
+		// CATALOGUE supplies and carries the full word as its `title`. Never a
+		// substring of the translated word: `slice(0, 3)` counts UTF-16 units with
+		// no idea where the word ends, so Spanish read `Fij` and Devanagari split a
+		// matra off its consonant. `tokens.test.ts` fails on any small slice now.
+		const MODALITY_LABEL: Record<string, { abbr: string; full: string }> = {
+			Cardinal: { abbr: this.t('Car'), full: this.t('Cardinal') },
+			Fixed: { abbr: this.t('Fix'), full: this.t('Fixed') },
+			Mutable: { abbr: this.t('Mut'), full: this.t('Mutable') },
+		};
 		const order = SIGNS_ORDER as readonly string[];
 		const summary = this.data?.summary;
 		// English on both sides, on purpose. These three are lookups, not labels:
@@ -1012,7 +1034,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					<th></th>
 					${MODALITIES.map(
 						(m) =>
-							html`<th scope="col" class=${m === dominantMod ? 'dominant' : ''}>${m.slice(0, 3)}</th>`,
+							html`<th scope="col" title=${MODALITY_LABEL[m]?.full ?? m} class=${m === dominantMod ? 'dominant' : ''}>${MODALITY_LABEL[m]?.abbr ?? m}</th>`,
 					)}
 					<th scope="col">${this.t('Total')}</th>
 				</tr>
@@ -1025,7 +1047,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						0,
 					);
 					return html`<tr>
-						<th scope="row" class=${isDomRow ? 'dominant' : ''}>${el}</th>
+						<th scope="row" class=${isDomRow ? 'dominant' : ''}>${ELEMENT_LABEL[el] ?? el}</th>
 						${MODALITIES.map(
 							(m) =>
 								html`<td class=${isDomRow || m === dominantMod ? 'dominant' : ''}>${(cells[el]?.[m] ?? []).join(' ')}</td>`,

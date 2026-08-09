@@ -4,8 +4,9 @@ import type { CalculateVariablesResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { sideWord } from '../utils/hd-reading.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
-import { capitalize } from '../utils/string.js';
+import { display } from '../utils/localized.js';
 
 type Variables = CalculateVariablesResponse;
 type Arrow = Variables['arrows'][number];
@@ -17,6 +18,8 @@ type Arrow = Variables['arrows'][number];
  * The quadrant grid stays the primary read: it is the arrow map as it appears on the chart, and it is what a reader scans first. The interpretation sits below it in an exclusive accordion, grouped by the two layers the arrows belong to (the body-side Primary Health System, the mind-side Rave Psychology), because the layer description is one text shared by the two arrows in it and belongs to the group rather than to each arrow. Only one arrow reading is ever open, so the card grows by one paragraph at most.
  *
  * `cognition` rides only on the determination arrow and is rendered when present. A low-confidence calculation (a birth time near a color or tone boundary) is flagged per arrow and for the chart as a whole.
+ *
+ * **Seven of the fields on an arrow come back twice**, canonical English plus a `*Localized` display copy (`name`, `layer`, `position`, `colorLabel`, `directionLabel`, `baseName` and the cognition `label`), so each is printed through `display()`. Everything the card COMPUTES with stays on the canonical half: `quadrantOrder` sorts on `position`, the layer grouping keys on `layer`, and the arrow glyph is chosen on `direction`, which is the wire enum `left` or `right` rather than a word. The activating body is the only vocabulary here with no localized partner and prints as sent.
  */
 @customElement('roxy-hd-variables')
 export class RoxyHdVariables extends RoxyDataElement<Variables> {
@@ -146,13 +149,22 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 		const arrows = [...(d.arrows ?? [])].sort(
 			(a, b) => quadrantOrder(a.position) - quadrantOrder(b.position),
 		);
-		return html`<div class="wrap" part="card" aria-label="Human Design variables">
-			<h2 class="title" part="header">Variables</h2>
+		return html`<div class="wrap" part="card" aria-label=${this.t('Human Design variables')}>
+			<h2 class="title" part="header">${this.t('Variables')}</h2>
 			<div class="grid" part="details arrows">${arrows.map((a) => this.renderArrow(a))}</div>
 			${
 				d.confident === false
 					? html`<p class="note" role="note">
-						Low confidence: a birth time near a color or tone boundary${typeof d.confidenceMarginDeg === 'number' ? ` (within ${d.confidenceMarginDeg}°)` : ''}. Verify the exact birth time.
+						${
+							typeof d.confidenceMarginDeg === 'number'
+								? this.t(
+										'Low confidence: a birth time near a color or tone boundary (within {{margin}}°). Verify the exact birth time.',
+										{ margin: d.confidenceMarginDeg },
+									)
+								: this.t(
+										'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.',
+									)
+						}
 					</p>`
 					: nothing
 			}
@@ -162,29 +174,44 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 
 	private renderArrow(a: Arrow) {
 		// A left arrow is strategic/active, a right arrow receptive/passive in HD.
+		// The glyph is chosen on `direction`, which is the wire enum and stays
+		// `left` or `right` in every language; `directionLabel` is the word beside
+		// it and is read through `display`.
 		const glyph = a.direction === 'left' ? '←' : '→';
+		const baseName = display(a, 'baseName');
 		return html`<div class="arrow">
 			<div class="arrow-head">
 				<span class="glyph" aria-hidden="true">${glyph}</span>
-				<span class="name">${a.name ?? ''}</span>
+				<span class="name">${display(a, 'name')}</span>
 			</div>
-			${a.layer ? html`<span class="layer">${a.layer}</span>` : nothing}
+			${a.layer ? html`<span class="layer">${display(a, 'layer')}</span>` : nothing}
 			<span class="labels">
-				${[a.directionLabel, a.colorLabel].filter(Boolean).join(' · ')}
+				${[display(a, 'directionLabel'), display(a, 'colorLabel')].filter(Boolean).join(' · ')}
 			</span>
 			${
 				typeof a.color === 'number'
-					? html`<span class="ctb">Color ${a.color} · Tone ${a.tone} · Base ${a.base}${a.baseName ? `, ${a.baseName}` : ''}</span>`
+					? html`<span class="ctb">${this.t(
+							'Color {{color}} · Tone {{tone}} · Base {{base}}',
+							{
+								color: a.color,
+								tone: a.tone ?? '',
+								base: a.base ?? '',
+							},
+						)}${baseName ? `, ${baseName}` : ''}</span>`
 					: nothing
 			}
 			${
+				// The activating body is the one word on this card the response does not
+				// localize, so it prints as sent. Its `side` is the machine enum
+				// `personality` or `design`, which the component turns into a word, so
+				// that half comes from the catalogue.
 				a.activation?.planet
-					? html`<span class="ctb">${[a.activation.planet, capitalize(a.activation.side ?? '')].filter(Boolean).join(' · ')}</span>`
+					? html`<span class="ctb">${[a.activation.planet, sideWord(a.activation.side, this.translator)].filter(Boolean).join(' · ')}</span>`
 					: nothing
 			}
 			${
 				a.confident === false
-					? html`<span class="note" role="note">Knife-edge: could flip with a more precise birth time.</span>`
+					? html`<span class="note" role="note">${this.t('Knife-edge: could flip with a more precise birth time.')}</span>`
 					: nothing
 			}
 		</div>`;
@@ -215,10 +242,10 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 		let index = 0;
 
 		return html`<section class="block" part="section readings">
-			<h3>Reading</h3>
+			<h3>${this.t('Reading')}</h3>
 			${[...groups].map(
 				([layer, list]) => html`<div class="group">
-					${layer ? html`<p class="group-head">${layer}</p>` : nothing}
+					${layer ? html`<p class="group-head">${display(list[0], 'layer')}</p>` : nothing}
 					${
 						list[0]?.layerDescription
 							? html`<p class="group-note">${list[0].layerDescription}</p>`
@@ -227,7 +254,7 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 					${list.map((a) => this.renderArrowReading(a, index++ === 0))}
 				</div>`,
 			)}
-			${baseDescription ? html`<p class="footnote">Base. ${baseDescription}</p>` : nothing}
+			${baseDescription ? html`<p class="footnote">${this.t('Base')}. ${baseDescription}</p>` : nothing}
 		</section>`;
 	}
 
@@ -236,21 +263,24 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 		// arrow alone. Its label joins the term because, unlike color and direction,
 		// the tile above carries no cognition label to read it against.
 		const cog = a.cognition;
+		const cogLabel = cog ? display(cog, 'label') : '';
 		const facets: Array<{ label: string; body: string | undefined }> = [
-			{ label: 'Color', body: a.colorMeaning },
-			{ label: 'Tone', body: a.toneMeaning },
-			{ label: 'Direction', body: a.directionMeaning },
+			{ label: this.t('Color'), body: a.colorMeaning },
+			{ label: this.t('Tone'), body: a.toneMeaning },
+			{ label: this.t('Direction'), body: a.directionMeaning },
 			{
-				label: cog?.label ? `Cognition · ${cog.label}` : 'Cognition',
+				label: cogLabel
+					? `${this.t('Cognition')} · ${cogLabel}`
+					: this.t('Cognition'),
 				body: cog?.description,
 			},
 		].filter((f) => Boolean(f.body));
 
 		return html`<details class="interp-card" part="reading" name="hd-variable" ?open=${open}>
 			<summary>
-				<span class="interp-lead">${a.name ?? ''}</span>
+				<span class="interp-lead">${display(a, 'name')}</span>
 				${chevron()}
-				${a.position ? html`<span class="interp-aside"><small>${a.position}</small></span>` : nothing}
+				${a.position ? html`<span class="interp-aside"><small>${display(a, 'position')}</small></span>` : nothing}
 			</summary>
 			<div class="interp-body">
 				${a.description ? html`<p>${a.description}</p>` : nothing}
@@ -269,7 +299,7 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 	}
 
 	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No variables data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No variables data')}</div>`;
 	}
 }
 

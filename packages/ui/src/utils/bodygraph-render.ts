@@ -1,5 +1,6 @@
 import type { TemplateResult } from 'lit';
 import { nothing, svg } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 /**
  * Fixed geometry and renderer for the Human Design bodygraph. The diagram is a
@@ -569,20 +570,61 @@ function closestPointOnPolygon(p: Point, poly: readonly Point[]): Point {
 }
 
 /**
+ * `.bg-center-label` font size and the slimmest margin a label may leave, both in viewBox units, so {@link labelFit} can tell whether a name will still be inside the viewport when it is painted.
+ *
+ * @remarks
+ * The font size is duplicated from the component stylesheet on purpose: the geometry module cannot read a CSS custom property, and a label that overruns is CLIPPED by the outermost `<svg>` viewport rather than overflowing the card, so no layout gate can see it (`tests/e2e/layout.e2e.ts` skips every node with an `ownerSVGElement`). Keep the two in step.
+ */
+const LABEL_FONT_PX = 11;
+const LABEL_MARGIN = 4;
+/** Rough advance width per character at {@link LABEL_FONT_PX}, measured against the sans stack for mixed-case Latin. Only ever used to decide whether to compress, never to position anything. */
+const LABEL_CHAR_WIDTH = LABEL_FONT_PX * 0.55;
+
+/**
+ * The width to pin a center label to, or `undefined` to let it set naturally.
+ *
+ * @remarks
+ * Every center name comes from the RESPONSE now, so the longest label is a fact about the reader's language rather than about our geometry: `Solar Plexus` is 12 characters and the Russian the API returns for it, `Солнечное сплетение`, is 19. Past the viewport edge the browser simply clips, which reads as a truncated word rather than as a bug, so an over-long name is squeezed into the margin it has instead. Under the limit nothing is emitted at all, so every existing chart is byte-identical.
+ */
+function labelFit(
+	label: string,
+	anchor: Point,
+	align: 'start' | 'middle' | 'end',
+): number | undefined {
+	const available =
+		align === 'end'
+			? anchor.x - LABEL_MARGIN
+			: align === 'start'
+				? VIEW_W - anchor.x - LABEL_MARGIN
+				: Math.min(anchor.x, VIEW_W - anchor.x) * 2 - LABEL_MARGIN;
+	const natural = label.length * LABEL_CHAR_WIDTH;
+	return natural > available ? Math.max(available, 0) : undefined;
+}
+
+/**
  * Render the nine center shapes, filled with their semantic color when defined
  * and outlined when open, each with a margin label tied to its shape by a thin
  * leader line so the Heart and every other center is unambiguous regardless of
  * whether it is defined.
+ *
+ * @remarks
+ * The label is the name the RESPONSE gave the center when the caller passed one, so the chart and the accordion under it read the same word in every language. The chart keeps its own English label only for a center the response did not carry. The state word in the tooltip is the caller's for the same reason.
  */
-function renderCenters(defined: Set<BodygraphCenterId>): TemplateResult[] {
+function renderCenters(
+	defined: Set<BodygraphCenterId>,
+	names: ReadonlyMap<BodygraphCenterId, string> | undefined,
+	stateWords: { defined: string; open: string },
+): TemplateResult[] {
 	return CENTER_GEOMETRY.map((c) => {
 		const isDefined = defined.has(c.id);
 		const cls = `bg-center bg-${c.color}${isDefined ? ' defined' : ''}`;
 		const edge = closestPointOnPolygon(c.labelAnchor, c.points);
+		const label = names?.get(c.id) || c.label;
+		const fit = labelFit(label, c.labelAnchor, c.labelAlign);
 		return svg`<g>
 			<line class="bg-leader" x1=${c.labelAnchor.x} y1=${c.labelAnchor.y} x2=${edge.x} y2=${edge.y} />
-			<polygon class=${cls} points=${polygonPoints(c.points)}><title>${c.label}: ${isDefined ? 'defined' : 'open'}</title></polygon>
-			<text class="bg-center-label" x=${c.labelAnchor.x} y=${c.labelAnchor.y} text-anchor=${c.labelAlign} dominant-baseline="central">${c.label}</text>
+			<polygon class=${cls} points=${polygonPoints(c.points)}><title>${label}: ${isDefined ? stateWords.defined : stateWords.open}</title></polygon>
+			<text class="bg-center-label" x=${c.labelAnchor.x} y=${c.labelAnchor.y} text-anchor=${c.labelAlign} dominant-baseline="central" textLength=${ifDefined(fit)} lengthAdjust=${ifDefined(fit === undefined ? undefined : 'spacingAndGlyphs')}>${label}</text>
 		</g>`;
 	});
 }
@@ -613,6 +655,10 @@ export interface BodygraphRenderInput {
 	activeChannels: Set<string>;
 	activeGates: Set<number>;
 	gateTitles: Map<number, string>;
+	/** What to write in the margin beside each center, keyed by center id. The response is the authority for its own vocabulary, so this carries `centers[].nameLocalized` where the API sent one and `centers[].name` otherwise; an id with no entry keeps the chart's own English label. */
+	centerNames?: ReadonlyMap<BodygraphCenterId, string>;
+	/** The two words a center shape states its state with in its tooltip. Supplied by the caller because only a component can reach a chrome catalogue. */
+	stateWords?: { defined: string; open: string };
 }
 
 /** Build the lookup key for an active channel from its two gate numbers. */
@@ -635,7 +681,11 @@ export function renderBodygraphSvg(
 	return svg`
 		${renderBody()}
 		${renderChannels(input.activeChannels, input.activeGates)}
-		${renderCenters(input.definedCenters)}
+		${renderCenters(
+			input.definedCenters,
+			input.centerNames,
+			input.stateWords ?? { defined: 'defined', open: 'open' },
+		)}
 		${renderGateNumbers(input.activeGates, input.gateTitles)}
 	`;
 }

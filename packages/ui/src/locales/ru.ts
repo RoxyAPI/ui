@@ -13,6 +13,30 @@
  * Rejected against sources, so nobody restores them: `формирующийся`/`распадающийся` for applying and separating (Russian Wikipedia lists that as a SEPARATE axis alongside сходящиеся/расходящиеся, so substituting it changes what the chip asserts), `бикольцо` for the bi-wheel (zero attestation, a bare calque; the professional form is `двойная карта`, per the ZET 9 manual), `вершина дома` for a cusp (correct Russian, but this catalogue already spends `вершина` on the aspect-pattern apex, and every Russian program UI writes `куспид`), `космограмма` for the sign-wheel chip (it names the whole chart TYPE and would claim the chart has no houses, which is a different chip), and `равнодомная система` for the equal-sector fallback (a house-system name, and the fallback fires precisely when the response named none).
  *
  * One caveat recorded rather than hidden: the applying and separating pair is attested in two Russian Wikipedia articles citing two different published Russian astrology books, but one publisher. Worth a second look if anyone reaches a second independent source.
+ *
+ * **`Аспектные фигуры` replaced `Конфигурации аспектов` on 2026-08-09, and the evidence genuinely cuts both ways.** The old string was the MORE attested term (astromeridian, `аспекты в натальной карте называются конфигурациями`; astromaya, `образовывать геометрические фигуры, которые и называют конфигурациями`; astro21). It was replaced anyway, for the reason the Spanish sibling records: `конфигурация` is also the generic Russian tech word for settings, Russian astrology software really does ship an aspect-configuration screen with the orb tables on it (ZET, `Аспектация`), and we have already paid once for a heading that a reader could resolve to a settings panel. The replacement is attested for exactly this class with no such reading: vgoroskope, `эта структура в астрологии называется аспектными фигурами`. It also matches `de.ts` `Aspektfiguren` and `es.ts` `Figuras planetarias`, so all three locales now name the same thing the same way. Mitigating fact for anyone reconsidering: ZET itself calls settings `Настройка` and `Установки`, never `конфигурация`.
+ *
+ * **`Через знак` replaced `Диссоциированная` in the same pass.** The old word had no attestation in Russian astrology at all. The new one is the native term and its source sentence is almost our own: astro21, `если одна планета в аспекте в конце знака, а другая в начале, то такой аспект называется аспектом через знак (или рваным аспектом). Тогда это будет соединение в разных знаках, трин в разных стихиях или напряженный аспект в разных крестах.` The explanation sentence moved with the chip so the two use one word. **Caveat recorded rather than hidden: that is ONE school across two pages, not two independent authorities.** `Вне знака` is the plain-Russian fallback if a second source never turns up. Separately, that same page holds that out-of-sign aspects work at full strength, which our English source string contradicts; the translation stays faithful to the source rather than taking a side, and the disagreement is the API's to settle.
+ *
+ * **`Длительность` replaced `Сроки` for the timing paragraph, and that was a CONTRACT error rather than a vocabulary one.** The spec defines the field as how long the transit influence lasts, with buckets like a few hours or a few days. `Сроки` reads as deadlines or terms, which is a schedule. Every sibling locale already used a duration word.
+ *
+ * `Кард.`, `Фикс.` and `Мут.` for the cross-tab columns are ours: every Russian source spells all three qualities out, including in the tally panel beside a chart. The trailing period is correct Russian truncation orthography. The full forms are the bare MASCULINE ADJECTIVES rather than the noun `крест`, which is what a Russian distribution table actually prints: astrologbrova tallies a chart and writes `Итог - Кардинальный 5, Фиксированный 3, Мутабельный 2`. `крест` stays where it belongs, in `Преобладающий крест` and `по стихиям и крестам`.
+ *
+ * One thing noted and not changed: `дома по системе {{system}}` renders `по системе Плацидус` where Russian wants the genitive `Плацидуса`. The interpolated value comes off the wire in nominative form and no wording here can decline it.
+ *
+ * **The 54 Human Design strings added on 2026-08-09 were SOURCED, not translated, because Human Design vocabulary is a settled Russian jargon and guessing at it produces grammatical strings that name the wrong thing.** The governing rule of that pass: where `packages/human-design/src/locales/ru.ts` in the API already ships Russian for a concept, the label MATCHES it, because every one of these labels prints directly above one of those values. The centre chips sit over `Голова / Аджна / Горло / G-центр / Сердце / Сакральный / Солнечное сплетение / Селезёнка / Корень`; `{{circuit}} контур` sits over `Индивидуальный / Коллективный / Племенной`, which are masculine nominatives and so agree with `контур` for all three; `Внутренний авторитет` sits over `Сакральный / Эмоциональный / Селезёночный`, masculine again; and `База` sits over `Реактивная / Интегративная / Объективная`, which are FEMININE and are themselves the proof that the Base layer is `База` here and not the neuter synonym `Основание`.
+ *
+ * Sources, all fetched live and all Russian Human Design practice rather than dictionaries. hdeducation.ru (the school running the certified analyst programme) for `Тип`, `Стратегия`, `Внутренний Авторитет`, `Ложное Я`, the heading `Определенность и Открытость` that both centre chips come from, `моторных центров`, and `Награда Манифестора (подпись Типа)`. humdes.com knowledge base for the section titles `Ворота`, `Каналы`, `Центры`, `Профили`, `Контуры`, and its Переменные article for `Когниция` (`Когниция это не продукт упражнения сознания личности, это продукт работы мозга`) and for `Цвета, Тона и Базы`. lybomudr.ru for `Линии`, `Инкарнационные кресты`, `Гексаграммы И-Цзин`, `Переменные`, and `D сторона Дизайна, P сторона Личности`, which is where `Стороны карты` comes from. realfaq.ru, whose pinned thread is titled `Цвет, Тон и База в Дизайне Человека`, and which also supplies the mechanism behind the two low-confidence strings (`Период устойчивости Базы` is about 8 minutes, of Тона about 40 minutes). ihumandesign.su for `Бодиграф`, `Определенность`, `Переменные Дизайна Человека` and `активации` (`Красно-черные активации указывают на две и более активаций одних и тех же ворот`). human-design.space for `Индивидуальный контур`, `Коллективный контур`, `Племенной контур`. gate65.ee and humandesignart.ru for `подпись` as the reward-for-correctness term. chronos.mg for `И-цзин` and `Инкарнационный крест`.
+ *
+ * **Three entries are judgements rather than lookups, so they are written down before someone quietly reverses them.**
+ *
+ * `Definition` is `Тип определённости`, NOT `Определение`. The concept really is `определённость` in Russian (lybomudr and realfaq both title articles `Определённости`, ihumandesign heads a section `Определенность`, and the API prose says `самый медленный из всех типов определённости`), but the bare noun is already spent on the centre chips below it, and `Определение` is unusable twice over: it is the ordinary Russian word for a dictionary definition, and the Variables card on the same page already prints an ARROW called `Определение`, the Determination arrow. One word over two Human Design concepts on one page is lesson 32 with the language swapped.
+ *
+ * `Defined` and `Open` are the NOUNS `Определённость` and `Открытость`, not adjectives, and that is the same fix as `Натал` and `Транзит` above. The SVG renders `{centre}: {word}` and the nine centre names run across all three genders (`Голова` f., `Горло` n., `Сакральный` m.), so any one adjective is wrong on most rows. The noun pair is not a workaround either: it is hdeducation's own heading for exactly this distinction. `Открытый центр` keeps its adjective because there the noun it modifies is the fixed masculine `центр`.
+ *
+ * `Signature` is `Подпись типа`, and the extra word is deliberate. `Подпись` alone is the Russian UI word for a caption, and this string is a pill sitting under a chart, which is precisely the slot where a reader resolves a label to the wrong thing correctly. `подпись Типа` is the attested full phrase and carries no such reading.
+ *
+ * Rejected against sources, so nobody restores them: `Сигнатура` for the signature (no attestation in any Russian Human Design source read here, against three that print `подпись`), `Основание` for the PHS Base (attested at realfaq as a synonym, but neuter, and every base name the API returns is feminine), `Определение` for `Definition` (above), and `Врата` for the gates. **That last one is the one open caveat and it is a divergence, not an oversight:** the API's own gate prose writes `врата`, while humdes, hdeducation, lybomudr, ihumandesign and human-design.space all print `Ворота`, so the chrome follows the five sources and the card ends up carrying both forms. They are register variants of one word, not two concepts, which is why this was left to stand rather than fixed from the wrong repo.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -61,10 +85,21 @@ export const ru: Record<ChromeString, string> = {
 	'Element and modality distribution': 'Распределение по стихиям и крестам',
 	Total: 'Всего',
 
-	'Chart patterns': 'Конфигурации аспектов',
-	Dissociate: 'Диссоциированная',
+	Fire: 'Огонь',
+	Earth: 'Земля',
+	Air: 'Воздух',
+	Water: 'Вода',
+	Cardinal: 'Кардинальный',
+	Fixed: 'Фиксированный',
+	Mutable: 'Мутабельный',
+	Car: 'Кард.',
+	Fix: 'Фикс.',
+	Mut: 'Мут.',
+
+	'Chart patterns': 'Аспектные фигуры',
+	Dissociate: 'Через знак',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.':
-		'Вне знака: одна или несколько планет выходят за стихию или крест конфигурации, поэтому тема сохраняется, но действует слабее.',
+		'Через знак: одна или несколько планет выходят за стихию или крест фигуры, поэтому тема сохраняется, но действует слабее.',
 	'{{percent}}% tight': 'точность {{percent}}%',
 	apex: 'вершина',
 
@@ -107,8 +142,84 @@ export const ru: Record<ChromeString, string> = {
 
 	'Transit readings': 'Трактовки транзитов',
 	Impact: 'Влияние',
-	Timing: 'Сроки',
+	Timing: 'Длительность',
 	Guidance: 'Рекомендации',
+
+	'Nested data omitted': 'Вложенные данные не отображаются',
+	'Generic data display': 'Отображение данных',
+	'Empty list': 'Список пуст',
+	'Data table': 'Таблица данных',
+	'{{count}} rows': 'Строк: {{count}}',
+	Yes: 'Да',
+	No: 'Нет',
+	illustration: 'Иллюстрация',
+
+	Type: 'Тип',
+	Strategy: 'Стратегия',
+	Authority: 'Внутренний авторитет',
+	Profile: 'Профиль',
+	Definition: 'Тип определённости',
+	Aura: 'Аура',
+	'Incarnation cross': 'Инкарнационный крест',
+	'Signature: {{value}}': 'Подпись типа: {{value}}',
+	'Not-self: {{value}}': 'Ложное Я: {{value}}',
+	'Profile {{profile}}': 'Профиль {{profile}}',
+	'Line {{line}} · Personality': 'Линия {{line}} · Личность',
+	'Line {{line}} · Design': 'Линия {{line}} · Дизайн',
+	Personality: 'Личность',
+	Design: 'Дизайн',
+
+	Bodygraph: 'Бодиграф',
+	'No bodygraph data': 'Нет данных бодиграфа',
+	'Human Design bodygraph': 'Бодиграф Дизайна Человека',
+	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
+		'Бодиграф Дизайна Человека с девятью центрами, каналами и активированными воротами на силуэте человека',
+	'Nine energy centers in their canonical positions over a human silhouette, each filled with its traditional color when defined and outlined when open, wired by channels between activated gates.':
+		'Девять энергетических центров в их каноническом расположении на силуэте человека: определённые залиты своим традиционным цветом, открытые показаны контуром, а каналы соединяют активированные ворота.',
+	'Center colors when defined. Open centers are outlined.':
+		'Цвета центров в определённом состоянии. Открытые центры показаны контуром.',
+	'Open center': 'Открытый центр',
+	'Defined channels ({{count}})': 'Определённые каналы ({{count}})',
+	'{{circuit}} circuit': '{{circuit}} контур',
+	'Centers ({{defined}} defined, {{open}} open)':
+		'Центры (определённых: {{defined}}, открытых: {{open}})',
+	Defined: 'Определённость',
+	Open: 'Открытость',
+	Motor: 'Мотор',
+	Awareness: 'Осознанность',
+	'Not-self question': 'Вопрос ложного Я',
+	Biology: 'Биология',
+	'Gates {{gates}}': 'Ворота {{gates}}',
+	'Activations ({{count}})': 'Активации ({{count}})',
+	'Chart sides': 'Стороны карты',
+	'Line {{line}}': 'Линия {{line}}',
+	'Gate {{gate}}': 'Ворота {{gate}}',
+	'I Ching hexagram {{number}}': 'Гексаграмма И-цзин {{number}}',
+
+	'No Human Design data': 'Нет данных Дизайна Человека',
+	'Personality line': 'Линия Личности',
+	'Design line': 'Линия Дизайна',
+	Lines: 'Линии',
+
+	Variables: 'Переменные',
+	'No variables data': 'Нет данных о переменных',
+	'Human Design variables': 'Переменные Дизайна Человека',
+	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
+		'Низкая достоверность: время рождения близко к границе цвета или тона. Уточните точное время рождения.',
+	'Low confidence: a birth time near a color or tone boundary (within {{margin}}°). Verify the exact birth time.':
+		'Низкая достоверность: время рождения близко к границе цвета или тона (в пределах {{margin}}°). Уточните точное время рождения.',
+	'Color {{color}} · Tone {{tone}} · Base {{base}}':
+		'Цвет {{color}} · Тон {{tone}} · База {{base}}',
+	'Knife-edge: could flip with a more precise birth time.':
+		'На грани: значение может измениться при более точном времени рождения.',
+	Base: 'База',
+	Color: 'Цвет',
+	Tone: 'Тон',
+	Direction: 'Направление',
+	Cognition: 'Когниция',
+
+	Reference: 'Справочник',
+	'No reference data': 'Нет данных справочника',
 };
 
 registerLocale('ru', ru);

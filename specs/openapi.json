@@ -1980,7 +1980,12 @@
                 "planet": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Celestial body this set of planetary lines belongs to."
+                  "description": "Celestial body this set of planetary lines belongs to. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                },
+                "planetLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "symbol": {
                   "type": "string",
@@ -2731,7 +2736,12 @@
                 "planet": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Body name (Sun, Moon, Mercury through Pluto, plus North Node, Chiron, or Black Moon Lilith when requested). Localized when a translation exists."
+                  "description": "Body name (Sun, Moon, Mercury through Pluto, plus North Node, Chiron, or Black Moon Lilith when requested). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                },
+                "planetLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "symbol": {
                   "type": "string",
@@ -2940,7 +2950,12 @@
                       "point": {
                         "type": "string",
                         "example": "Sun",
-                        "description": "Natal point conjunct this star: a planet name, or the chart angles MC and ASC. Planet names are localized to the requested language."
+                        "description": "Natal point conjunct this star: a planet name, or the chart angles MC and ASC. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use pointLocalized for anything a reader sees."
+                      },
+                      "pointLocalized": {
+                        "type": "string",
+                        "example": "Sol",
+                        "description": "Natal point name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                       },
                       "pointLongitude": {
                         "type": "number",
@@ -2989,7 +3004,12 @@
                 "point": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Natal point conjunct the star: a localized planet name, or the chart angles MC and ASC."
+                  "description": "Natal point conjunct the star: a planet name, or the chart angles MC and ASC. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use pointLocalized for anything a reader sees."
+                },
+                "pointLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Natal point name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "orb": {
                   "type": "number",
@@ -3091,12 +3111,17 @@
                 "id": {
                   "type": "string",
                   "example": "fortune",
-                  "description": "Stable machine identifier for the lot (fortune, spirit, eros, necessity, courage, victory, nemesis). Use this for lookups; the name field carries the localized display label."
+                  "description": "Stable machine identifier for the lot (fortune, spirit, eros, necessity, courage, victory, nemesis). Use this for lookups."
                 },
                 "name": {
                   "type": "string",
                   "example": "Part of Fortune",
-                  "description": "Display name of the lot, localized to the requested language."
+                  "description": "Name of the lot. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees."
+                },
+                "nameLocalized": {
+                  "type": "string",
+                  "example": "Parte de la Fortuna",
+                  "description": "Lot name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "longitude": {
                   "type": "number",
@@ -3285,7 +3310,12 @@
                 "name": {
                   "type": "string",
                   "example": "Ceres",
-                  "description": "Display name of the asteroid, localized to the requested language."
+                  "description": "Name of the asteroid: Ceres, Pallas, Juno, or Vesta. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees."
+                },
+                "nameLocalized": {
+                  "type": "string",
+                  "example": "Palas",
+                  "description": "Asteroid name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "longitude": {
                   "type": "number",
@@ -3492,8 +3522,17 @@
               "properties": {
                 "variant": {
                   "type": "string",
+                  "enum": [
+                    "mean",
+                    "true"
+                  ],
                   "example": "mean",
-                  "description": "Which lunar apogee this entry describes, localized to the requested language. The mean variant is the smoothed average apogee; the true variant is the instantaneous osculating apogee."
+                  "description": "Which lunar apogee this entry describes. The mean variant is the smoothed average apogee; the true variant is the instantaneous osculating apogee. Always one of these two English literals, whatever the lang parameter says, so it stays safe to compare against in code. Use variantLocalized for anything a reader sees."
+                },
+                "variantLocalized": {
+                  "type": "string",
+                  "example": "media",
+                  "description": "Apogee variant label in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "longitude": {
                   "type": "number",
@@ -3999,7 +4038,12 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Name of the directed point, localized to the requested language. This covers the planets and the two angles, the Ascendant and the Midheaven, alike."
+                  "description": "Name of the directed point, covering the planets and the two angles, the Ascendant and the Midheaven, alike. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees."
+                },
+                "nameLocalized": {
+                  "type": "string",
+                  "example": "Sol",
+                  "description": "Directed point name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                 },
                 "natalLongitude": {
                   "type": "number",
@@ -14471,8 +14515,13 @@
                           "air",
                           "water"
                         ],
-                        "example": "Fire",
-                        "description": "Elemental classification: Fire, Earth, Air, or Water."
+                        "example": "fire",
+                        "description": "Elemental classification: fire, earth, air, or water. Always one of these four English literals, whatever the lang parameter says, so it stays safe to compare against in code. Use elementLocalized for anything a reader sees."
+                      },
+                      "elementLocalized": {
+                        "type": "string",
+                        "example": "Fuego",
+                        "description": "Element name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                       },
                       "dates": {
                         "type": "object",
@@ -14805,8 +14854,13 @@
                         "air",
                         "water"
                       ],
-                      "example": "Fire",
-                      "description": "Elemental classification: Fire, Earth, Air, or Water. Determines temperament and compatibility group."
+                      "example": "fire",
+                      "description": "Elemental classification: fire, earth, air, or water. Determines temperament and compatibility group. Always one of these four English literals, whatever the lang parameter says, so it stays safe to compare against in code. Use elementLocalized for anything a reader sees."
+                    },
+                    "elementLocalized": {
+                      "type": "string",
+                      "example": "Fuego",
+                      "description": "Element name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "modality": {
                       "type": "string",
@@ -14815,13 +14869,23 @@
                         "fixed",
                         "mutable"
                       ],
+                      "example": "cardinal",
+                      "description": "Quality/modality: cardinal (initiating), fixed (sustaining), or mutable (adapting). Always one of these three English literals, whatever the lang parameter says, so it stays safe to compare against in code. Use modalityLocalized for anything a reader sees."
+                    },
+                    "modalityLocalized": {
+                      "type": "string",
                       "example": "Cardinal",
-                      "description": "Quality/modality: Cardinal (initiating), Fixed (sustaining), or Mutable (adapting)."
+                      "description": "Modality name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "rulingPlanet": {
                       "type": "string",
                       "example": "Mars",
-                      "description": "Traditional ruling planet that governs this sign."
+                      "description": "Traditional ruling planet that governs this sign. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use rulingPlanetLocalized for anything a reader sees."
+                    },
+                    "rulingPlanetLocalized": {
+                      "type": "string",
+                      "example": "Marte",
+                      "description": "Ruling planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "dates": {
                       "type": "object",
@@ -20591,7 +20655,8 @@
                               "impact",
                               "guidance",
                               "keywords"
-                            ]
+                            ],
+                            "description": "Rich interpretation of the transit aspect: narrative summary, timing, impact assessment, practical guidance, and keywords."
                           }
                         },
                         "required": [
@@ -20602,7 +20667,8 @@
                           "orb",
                           "isApplying",
                           "strength",
-                          "interpretation"
+                          "interpretation",
+                          "transitInterpretation"
                         ]
                       },
                       "description": "Transit-to-natal aspects with interpretations, strength ratings, and guidance. Each aspect represents a transiting planet forming a geometric angle to a natal planet."
@@ -20740,6 +20806,54 @@
                               "type": "string",
                               "example": "Trígono",
                               "description": "Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
+                            },
+                            "transitInterpretation": {
+                              "type": "object",
+                              "properties": {
+                                "summary": {
+                                  "type": "string",
+                                  "example": "Sun supports your natal Moon harmoniously",
+                                  "description": "Narrative interpretation of this transit aspect and its life impact."
+                                },
+                                "timing": {
+                                  "type": "string",
+                                  "example": "Active for a few days",
+                                  "description": "When this transit is most active and how long its influence lasts, localized. The bucket follows the speed of the transiting body: a few hours for the Moon, a few days for the Sun, Mercury, Venus and Mars, one to two weeks for Jupiter, several weeks for Saturn, and an extended period for Uranus, Neptune and Pluto."
+                                },
+                                "impact": {
+                                  "type": "string",
+                                  "example": "Self-awareness and ego flows easily with Inner emotional life. Opportunities arise naturally in this area.",
+                                  "description": "Strength and nature of this transit effect — constructive, challenging, or neutral."
+                                },
+                                "guidance": {
+                                  "type": "string",
+                                  "example": "Take advantage of this supportive energy. Things flow easily, so act on opportunities.",
+                                  "description": "Practical advice for working with this transit energy."
+                                },
+                                "keywords": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "example": [
+                                    "accept",
+                                    "accepting",
+                                    "difficult",
+                                    "natural",
+                                    "support",
+                                    "talent"
+                                  ],
+                                  "description": "Key themes activated by this transit aspect."
+                                }
+                              },
+                              "required": [
+                                "summary",
+                                "timing",
+                                "impact",
+                                "guidance",
+                                "keywords"
+                              ],
+                              "description": "Rich interpretation of the transit aspect: narrative summary, timing, impact assessment, practical guidance, and keywords."
                             }
                           },
                           "required": [
@@ -20750,7 +20864,8 @@
                             "orb",
                             "isApplying",
                             "strength",
-                            "interpretation"
+                            "interpretation",
+                            "transitInterpretation"
                           ],
                           "description": "The tightest aspect by orb. This is the most potent transit currently active — the one most likely to be felt."
                         },
@@ -46370,7 +46485,7 @@
           "Vedic Astrology"
         ],
         "summary": "Transit Analysis - Compare current planets to natal chart (Gochar)",
-        "description": "Analyze planetary transits (Gochar) over natal chart positions. Returns transiting planets with their natal house positions, aspects to natal planets, and highlights key transits from slow-moving planets (Jupiter, Saturn, Rahu, Ketu). Essential for timing predictions, event forecasting, and understanding current planetary influences. Transit analysis API, gochar calculator, vedic transit predictions.",
+        "description": "Analyze planetary transits (Gochar) over natal chart positions. Each transiting graha comes back with TWO whole-sign house numbers, because the two readings answer different questions: houseFromMoon is counted from the natal Moon sign (Janma Rashi), which is the reference classical Gochara uses, and natalHouse is counted from the Lagna. Also returns graha drishti onto the natal grahas (7th for every graha, plus Mars 4th and 8th, Jupiter 5th and 9th, Saturn 3rd and 10th), degree-based angular aspects with orbs, the Gochara Kaksha verdict, and highlighted transits from the slow-moving grahas (Jupiter, Saturn, Rahu, Ketu). Essential for timing predictions, event forecasting, and understanding current planetary influences. Transit analysis API, gochar calculator, vedic transit predictions, Chandra Lagna gochara, graha drishti.",
         "security": [
           {
             "apiKey": []
@@ -46465,6 +46580,26 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "frame": {
+                      "type": "object",
+                      "properties": {
+                        "ayanamsa": {
+                          "type": "string",
+                          "example": "lahiri",
+                          "description": "Sidereal frame this chart was cast in, echoing the ayanamsa request field. \"lahiri\" when the field was omitted."
+                        },
+                        "ayanamsaDegrees": {
+                          "type": "number",
+                          "example": 24.2247,
+                          "description": "Degrees actually subtracted from every tropical longitude to produce this chart, read at the birth instant. Subtract it back to recover the tropical positions, or compare it against your reference software to confirm you are in the same frame before chasing a placement difference."
+                        }
+                      },
+                      "required": [
+                        "ayanamsa",
+                        "ayanamsaDegrees"
+                      ],
+                      "description": "The zodiac frame every longitude in this response was computed in, so a cached or forwarded payload is self describing. Sidereal requests report the Lahiri ayanamsa, read at the birth instant; the transit positions use the same named frame resolved at their own instant, which moves by about 50 arcseconds a year. A tropical request reports \"tropical\" with 0 degrees subtracted, which is the one case a Vedic table can otherwise be rendered in the wrong zodiac with nothing on screen saying so."
+                    },
                     "birthDatetime": {
                       "type": "string",
                       "example": "1990-07-04T10:12:00",
@@ -46533,7 +46668,12 @@
                           "natalHouse": {
                             "type": "number",
                             "example": 10,
-                            "description": "Which natal house (whole-sign bhava from the Lagna) this planet is currently transiting through. Key for Gochar predictions."
+                            "description": "Which natal house (whole-sign bhava counted from the Lagna) this graha is currently transiting through. This is the Lagna reading of the transit, which is what a transit chart drawn over the birth chart shows. For the house classical Gochara is judged from, read houseFromMoon instead."
+                          },
+                          "houseFromMoon": {
+                            "type": "number",
+                            "example": 7,
+                            "description": "Which house this graha is transiting counted from the natal Moon sign (Janma Rashi), 1-12 whole-sign and counted inclusively, so the Moon sign itself is 1. This is the number classical Gochara is reckoned in: Phaladeepika chapter 26 opens by saying that of all the Lagnas only the Moon Lagna matters for transit results, and the Vedha and Ashtakavarga transit rules are counted from the Moon throughout. The reference sign is the sign of the Moon entry in natalPlanets, so a client can label the column without a second request."
                           },
                           "aspectsToNatal": {
                             "type": "array",
@@ -46548,7 +46688,7 @@
                                 "aspectType": {
                                   "type": "string",
                                   "example": "square",
-                                  "description": "Aspect type: conjunction, opposition, trine, square, or sextile."
+                                  "description": "Degree-based angular aspect between the two longitudes: conjunction, opposition, trine, square, or sextile. This is the Western aspect vocabulary and it is offered for charts read that way. Parashari jyotish has no sextile, square or trine, so for the Vedic reading use drishtiToNatal, which reports graha drishti by house count."
                                 },
                                 "orb": {
                                   "type": "number",
@@ -46562,7 +46702,52 @@
                                 "orb"
                               ]
                             },
-                            "description": "Aspects formed between this transiting planet and natal planets."
+                            "description": "Degree-based angular aspects between this transiting graha and the natal grahas. Western vocabulary, kept for callers who read a chart that way; drishtiToNatal is the Vedic answer to the same question."
+                          },
+                          "drishtiToNatal": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "natalPlanet": {
+                                  "type": "string",
+                                  "example": "Sun",
+                                  "description": "Natal graha receiving the drishti from this transiting graha."
+                                },
+                                "aspectType": {
+                                  "type": "string",
+                                  "enum": [
+                                    "conjunction",
+                                    "7th",
+                                    "4th",
+                                    "8th",
+                                    "5th",
+                                    "9th",
+                                    "3rd",
+                                    "10th"
+                                  ],
+                                  "example": "3rd",
+                                  "description": "Which house the drishti falls on, counted whole-sign and inclusively from the transiting graha. Every graha aspects the 7th; Mars adds the 4th and 8th, Jupiter the 5th and 9th, Saturn the 3rd and 10th. Same vocabulary the /aspects endpoint returns, so the two can be compared directly."
+                                },
+                                "strength": {
+                                  "type": "number",
+                                  "example": 100,
+                                  "description": "Drishti strength as a percentage. Full and special aspects are 100; the partial quarter, half and three-quarter sights are not reported."
+                                },
+                                "orb": {
+                                  "type": "number",
+                                  "example": 2.5,
+                                  "description": "Gap between the two degrees-in-sign, in degrees. Graha drishti is whole-sign and does not depend on this, so read it as how exact the sight is inside the pair of rashis rather than as a condition for the aspect."
+                                }
+                              },
+                              "required": [
+                                "natalPlanet",
+                                "aspectType",
+                                "strength",
+                                "orb"
+                              ]
+                            },
+                            "description": "Graha drishti cast by this transiting graha onto the natal grahas, the Vedic reading of transit-to-natal aspects. Rahu and Ketu cast none. Empty when this graha reaches no occupied natal sign."
                           },
                           "kaksha": {
                             "type": "object",
@@ -46620,7 +46805,9 @@
                           "longitude",
                           "sign",
                           "natalHouse",
+                          "houseFromMoon",
                           "aspectsToNatal",
+                          "drishtiToNatal",
                           "kaksha"
                         ]
                       },
@@ -46638,13 +46825,18 @@
                           },
                           "description": {
                             "type": "string",
-                            "example": "Saturn transiting natal 10th house",
-                            "description": "Human-readable transit summary."
+                            "example": "Saturn transiting Pisces (natal house 10, 4 from the Moon)",
+                            "description": "Human-readable transit summary, naming the rashi being transited and both house readings: from the Lagna, then from the natal Moon."
                           },
                           "natalHouse": {
                             "type": "number",
                             "example": 10,
-                            "description": "Natal house being transited by this slow planet."
+                            "description": "Natal house being transited by this slow graha, counted whole-sign from the Lagna. Mirrors natalHouse on the matching transitingPlanets entry."
+                          },
+                          "houseFromMoon": {
+                            "type": "number",
+                            "example": 4,
+                            "description": "House being transited by this slow graha counted from the natal Moon sign (Janma Rashi), the classical Gochara reference. Mirrors houseFromMoon on the matching transitingPlanets entry."
                           },
                           "aspects": {
                             "type": "array",
@@ -46654,20 +46846,33 @@
                             "example": [
                               "conjunction to natal Sun (orb 4.64°)"
                             ],
-                            "description": "Notable aspects to natal planets from this slow-moving transiting planet."
+                            "description": "Notable degree-based angular aspects to natal planets from this slow-moving transiting planet, in Western vocabulary."
+                          },
+                          "drishti": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": [
+                              "3rd drishti to natal Sun"
+                            ],
+                            "description": "Graha drishti this slow-moving transiting graha casts on the natal grahas, the Vedic reading. Empty for Rahu and Ketu, which cast none."
                           }
                         },
                         "required": [
                           "planet",
                           "description",
                           "natalHouse",
-                          "aspects"
+                          "houseFromMoon",
+                          "aspects",
+                          "drishti"
                         ]
                       },
                       "description": "Highlighted transits from slow-moving planets (Jupiter, Saturn, Rahu, Ketu), most impactful for Gochar analysis."
                     }
                   },
                   "required": [
+                    "frame",
                     "birthDatetime",
                     "transitDatetime",
                     "natalPlanets",
@@ -55602,7 +55807,12 @@
                     "type": {
                       "type": "string",
                       "example": "Manifestor",
-                      "description": "Human Design energy type. One of Manifestor, Generator, Manifesting Generator, Projector, Reflector."
+                      "description": "Human Design energy type. One of Manifestor, Generator, Manifesting Generator, Projector, Reflector. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use typeLocalized for anything a reader sees."
+                    },
+                    "typeLocalized": {
+                      "type": "string",
+                      "example": "Manifestador",
+                      "description": "Energy type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "typeDescription": {
                       "type": "string",
@@ -55617,7 +55827,12 @@
                     "strategy": {
                       "type": "string",
                       "example": "Inform",
-                      "description": "The aura strategy for engaging life correctly for this type."
+                      "description": "The aura strategy for engaging life correctly for this type. Always English, whatever the lang parameter says. Use strategyLocalized for anything a reader sees."
+                    },
+                    "strategyLocalized": {
+                      "type": "string",
+                      "example": "Informar",
+                      "description": "Strategy name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "strategyDescription": {
                       "type": "string",
@@ -55627,7 +55842,12 @@
                     "authority": {
                       "type": "string",
                       "example": "Emotional",
-                      "description": "Inner authority for decision making. One of Emotional, Sacral, Splenic, Ego, Self-Projected, Mental, Lunar."
+                      "description": "Inner authority for decision making. One of Emotional, Sacral, Splenic, Ego, Self-Projected, Mental, Lunar. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use authorityLocalized for anything a reader sees."
+                    },
+                    "authorityLocalized": {
+                      "type": "string",
+                      "example": "Emocional",
+                      "description": "Inner authority name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "authorityDescription": {
                       "type": "string",
@@ -55637,12 +55857,22 @@
                     "signature": {
                       "type": "string",
                       "example": "Peace",
-                      "description": "The signature feeling of living in alignment with the type."
+                      "description": "The signature feeling of living in alignment with the type. Always English, whatever the lang parameter says. Use signatureLocalized for anything a reader sees."
+                    },
+                    "signatureLocalized": {
+                      "type": "string",
+                      "example": "Paz",
+                      "description": "Signature theme name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "notSelf": {
                       "type": "string",
                       "example": "Anger",
-                      "description": "The not-self theme, the recurring feeling that signals being out of alignment."
+                      "description": "The not-self theme, the recurring feeling that signals being out of alignment. Always English, whatever the lang parameter says. Use notSelfLocalized for anything a reader sees."
+                    },
+                    "notSelfLocalized": {
+                      "type": "string",
+                      "example": "Ira",
+                      "description": "Not-self theme name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "profile": {
                       "type": "string",
@@ -55689,7 +55919,12 @@
                     "definition": {
                       "type": "string",
                       "example": "Split",
-                      "description": "Definition type from the number of connected components among defined centers. One of None, Single, Split, Triple Split, Quadruple Split."
+                      "description": "Definition type from the number of connected components among defined centers. One of None, Single, Split, Triple Split, Quadruple Split. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use definitionLocalized for anything a reader sees."
+                    },
+                    "definitionLocalized": {
+                      "type": "string",
+                      "example": "Dividida",
+                      "description": "Definition type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "definitionDescription": {
                       "type": "string",
@@ -55728,7 +55963,12 @@
                         "angle": {
                           "type": "string",
                           "example": "Left Angle",
-                          "description": "Cross angle. One of Right Angle, Juxtaposition, Left Angle."
+                          "description": "Cross angle. One of Right Angle, Juxtaposition, Left Angle. Always English, whatever the lang parameter says. Use angleLocalized for anything a reader sees."
+                        },
+                        "angleLocalized": {
+                          "type": "string",
+                          "example": "Ángulo Izquierdo",
+                          "description": "Cross angle name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                         },
                         "angleCode": {
                           "type": "string",
@@ -55767,7 +56007,12 @@
                           "name": {
                             "type": "string",
                             "example": "Sacral",
-                            "description": "Display name of the center."
+                            "description": "Display name of the center. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Sacro",
+                            "description": "Center name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "defined": {
                             "type": "boolean",
@@ -55844,12 +56089,22 @@
                           "name": {
                             "type": "string",
                             "example": "Charisma",
-                            "description": "Name of the defined channel."
+                            "description": "Name of the defined channel. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Carisma",
+                            "description": "Channel name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "circuit": {
                             "type": "string",
                             "example": "Individual",
-                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal."
+                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal. Always English, whatever the lang parameter says. Use circuitLocalized for anything a reader sees."
+                          },
+                          "circuitLocalized": {
+                            "type": "string",
+                            "example": "Individual",
+                            "description": "Circuit family name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "centers": {
                             "type": "array",
@@ -55893,7 +56148,12 @@
                           "planet": {
                             "type": "string",
                             "example": "Sun",
-                            "description": "Activating body. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto."
+                            "description": "Activating body. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto. Always English, whatever the lang parameter says, so it stays safe to compare against in code and to key a glyph table on. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Activating body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "side": {
                             "type": "string",
@@ -55913,7 +56173,12 @@
                           "gateName": {
                             "type": "string",
                             "example": "Shock",
-                            "description": "Human Design keynote name of the gate, describing its bodygraph function."
+                            "description": "Human Design keynote name of the gate, describing its bodygraph function. Always English, whatever the lang parameter says. Use gateNameLocalized for anything a reader sees."
+                          },
+                          "gateNameLocalized": {
+                            "type": "string",
+                            "example": "Choque",
+                            "description": "Gate keynote name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "gateDescription": {
                             "type": "string",
@@ -56408,12 +56673,22 @@
                           "name": {
                             "type": "string",
                             "example": "Charisma",
-                            "description": "Name of the channel whose connection dynamic is reported."
+                            "description": "Name of the channel whose connection dynamic is reported. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Carisma",
+                            "description": "Channel name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "circuit": {
                             "type": "string",
                             "example": "Individual",
-                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal."
+                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal. Always English, whatever the lang parameter says. Use circuitLocalized for anything a reader sees."
+                          },
+                          "circuitLocalized": {
+                            "type": "string",
+                            "example": "Individual",
+                            "description": "Circuit family name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "centers": {
                             "type": "array",
@@ -56429,7 +56704,12 @@
                           "dynamic": {
                             "type": "string",
                             "example": "Electromagnetic",
-                            "description": "Connection dynamic for this channel. Electromagnetic means each person holds one of the two gates and the channel completes only together, the classic point of attraction. Dominance means one person holds both gates and the other holds neither, a one-way conditioning. Compromise means one person holds both gates and the other holds a single hanging gate. Companionship means both people independently hold both gates, a shared and familiar frequency."
+                            "description": "Connection dynamic for this channel. Electromagnetic means each person holds one of the two gates and the channel completes only together, the classic point of attraction. Dominance means one person holds both gates and the other holds neither, a one-way conditioning. Compromise means one person holds both gates and the other holds a single hanging gate. Companionship means both people independently hold both gates, a shared and familiar frequency. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use dynamicLocalized for anything a reader sees."
+                          },
+                          "dynamicLocalized": {
+                            "type": "string",
+                            "example": "Electromagnético",
+                            "description": "Connection dynamic name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "personAGates": {
                             "type": "array",
@@ -56478,7 +56758,12 @@
                           "name": {
                             "type": "string",
                             "example": "Sacral",
-                            "description": "Display name of the center."
+                            "description": "Display name of the center. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Sacro",
+                            "description": "Center name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "defined": {
                             "type": "boolean",
@@ -56508,7 +56793,12 @@
                     "combinedDefinition": {
                       "type": "string",
                       "example": "Single",
-                      "description": "Definition of the combined connection bodygraph from connected components among its defined centers. One of None, Single, Split, Triple Split, Quadruple Split."
+                      "description": "Definition of the combined connection bodygraph from connected components among its defined centers. One of None, Single, Split, Triple Split, Quadruple Split. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use combinedDefinitionLocalized for anything a reader sees."
+                    },
+                    "combinedDefinitionLocalized": {
+                      "type": "string",
+                      "example": "Simple",
+                      "description": "Combined definition name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "summary": {
                       "type": "object",
@@ -56912,12 +57202,22 @@
                           "name": {
                             "type": "string",
                             "example": "The Beat",
-                            "description": "Name of the Penta channel. One of The Alpha, Inspiration, The Prodigal, Rhythm, The Beat, Discovery."
+                            "description": "Name of the Penta channel. One of The Alpha, Inspiration, The Prodigal, Rhythm, The Beat, Discovery. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "El Ritmo",
+                            "description": "Penta channel name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "circuit": {
                             "type": "string",
                             "example": "Individual",
-                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal."
+                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal. Always English, whatever the lang parameter says. Use circuitLocalized for anything a reader sees."
+                          },
+                          "circuitLocalized": {
+                            "type": "string",
+                            "example": "Individual",
+                            "description": "Circuit family name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "position": {
                             "type": "string",
@@ -56983,7 +57283,12 @@
                           "gateName": {
                             "type": "string",
                             "example": "Extremes",
-                            "description": "Human Design keynote name of the gate, describing the role it brings to the group."
+                            "description": "Human Design keynote name of the gate, describing the role it brings to the group. Always English, whatever the lang parameter says. Use gateNameLocalized for anything a reader sees."
+                          },
+                          "gateNameLocalized": {
+                            "type": "string",
+                            "example": "Extremos",
+                            "description": "Gate keynote name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "filled": {
                             "type": "boolean",
@@ -57425,7 +57730,12 @@
                           "body": {
                             "type": "string",
                             "example": "Sun",
-                            "description": "Transiting body whose current position lands on this gate. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto."
+                            "description": "Transiting body whose current position lands on this gate. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto. Always English, whatever the lang parameter says, so it stays safe to compare against in code and to key a glyph table on. Use bodyLocalized for anything a reader sees."
+                          },
+                          "bodyLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Transiting body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "gate": {
                             "type": "number",
@@ -57440,7 +57750,12 @@
                           "gateName": {
                             "type": "string",
                             "example": "Shock",
-                            "description": "Human Design keynote name of the gate the transiting body activates."
+                            "description": "Human Design keynote name of the gate the transiting body activates. Always English, whatever the lang parameter says. Use gateNameLocalized for anything a reader sees."
+                          },
+                          "gateNameLocalized": {
+                            "type": "string",
+                            "example": "Choque",
+                            "description": "Gate keynote name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "ichingHexagram": {
                             "type": "object",
@@ -57491,12 +57806,22 @@
                           "name": {
                             "type": "string",
                             "example": "Charisma",
-                            "description": "Name of the channel the transit temporarily completes."
+                            "description": "Name of the channel the transit temporarily completes. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Carisma",
+                            "description": "Channel name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "circuit": {
                             "type": "string",
                             "example": "Individual",
-                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal."
+                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal. Always English, whatever the lang parameter says. Use circuitLocalized for anything a reader sees."
+                          },
+                          "circuitLocalized": {
+                            "type": "string",
+                            "example": "Individual",
+                            "description": "Circuit family name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "centers": {
                             "type": "array",
@@ -57512,7 +57837,12 @@
                           "kind": {
                             "type": "string",
                             "example": "personal",
-                            "description": "How the transit completes the channel. personal means the natal chart already holds one gate and the transit supplies the other, the classic electromagnetic completion. educational means both gates are open in the natal chart and the transit supplies both at once."
+                            "description": "How the transit completes the channel. personal means the natal chart already holds one gate and the transit supplies the other, the classic electromagnetic completion. educational means both gates are open in the natal chart and the transit supplies both at once. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use kindLocalized for anything a reader sees."
+                          },
+                          "kindLocalized": {
+                            "type": "string",
+                            "example": "personal",
+                            "description": "Completion kind name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "natalGates": {
                             "type": "array",
@@ -57561,7 +57891,12 @@
                           "name": {
                             "type": "string",
                             "example": "Sacral",
-                            "description": "Display name of the center."
+                            "description": "Display name of the center. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Sacro",
+                            "description": "Center name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "temporarilyDefined": {
                             "type": "boolean",
@@ -57920,7 +58255,12 @@
                     "type": {
                       "type": "string",
                       "example": "Manifestor",
-                      "description": "Human Design energy type. One of Manifestor, Generator, Manifesting Generator, Projector, Reflector."
+                      "description": "Human Design energy type. One of Manifestor, Generator, Manifesting Generator, Projector, Reflector. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use typeLocalized for anything a reader sees."
+                    },
+                    "typeLocalized": {
+                      "type": "string",
+                      "example": "Manifestador",
+                      "description": "Energy type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "typeDescription": {
                       "type": "string",
@@ -57935,7 +58275,12 @@
                     "strategy": {
                       "type": "string",
                       "example": "Inform",
-                      "description": "The aura strategy for engaging life correctly for this type."
+                      "description": "The aura strategy for engaging life correctly for this type. Always English, whatever the lang parameter says. Use strategyLocalized for anything a reader sees."
+                    },
+                    "strategyLocalized": {
+                      "type": "string",
+                      "example": "Informar",
+                      "description": "Strategy name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "strategyDescription": {
                       "type": "string",
@@ -57945,7 +58290,12 @@
                     "authority": {
                       "type": "string",
                       "example": "Emotional",
-                      "description": "Inner authority for decision making. One of Emotional, Sacral, Splenic, Ego, Self-Projected, Mental, Lunar."
+                      "description": "Inner authority for decision making. One of Emotional, Sacral, Splenic, Ego, Self-Projected, Mental, Lunar. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use authorityLocalized for anything a reader sees."
+                    },
+                    "authorityLocalized": {
+                      "type": "string",
+                      "example": "Emocional",
+                      "description": "Inner authority name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "authorityDescription": {
                       "type": "string",
@@ -57955,12 +58305,22 @@
                     "signature": {
                       "type": "string",
                       "example": "Peace",
-                      "description": "The signature feeling of living in alignment."
+                      "description": "The signature feeling of living in alignment. Always English, whatever the lang parameter says. Use signatureLocalized for anything a reader sees."
+                    },
+                    "signatureLocalized": {
+                      "type": "string",
+                      "example": "Paz",
+                      "description": "Signature theme name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "notSelf": {
                       "type": "string",
                       "example": "Anger",
-                      "description": "The not-self theme that signals being out of alignment."
+                      "description": "The not-self theme that signals being out of alignment. Always English, whatever the lang parameter says. Use notSelfLocalized for anything a reader sees."
+                    },
+                    "notSelfLocalized": {
+                      "type": "string",
+                      "example": "Ira",
+                      "description": "Not-self theme name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "profile": {
                       "type": "string",
@@ -58313,7 +58673,12 @@
                           "planet": {
                             "type": "string",
                             "example": "Sun",
-                            "description": "Activating body. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto."
+                            "description": "Activating body. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto. Always English, whatever the lang parameter says, so it stays safe to compare against in code and to key a glyph table on. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Activating body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "side": {
                             "type": "string",
@@ -58333,7 +58698,12 @@
                           "gateName": {
                             "type": "string",
                             "example": "Shock",
-                            "description": "Human Design keynote name of the gate, describing its bodygraph function."
+                            "description": "Human Design keynote name of the gate, describing its bodygraph function. Always English, whatever the lang parameter says. Use gateNameLocalized for anything a reader sees."
+                          },
+                          "gateNameLocalized": {
+                            "type": "string",
+                            "example": "Choque",
+                            "description": "Gate keynote name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "gateDescription": {
                             "type": "string",
@@ -58393,7 +58763,12 @@
                           "planet": {
                             "type": "string",
                             "example": "Sun",
-                            "description": "Activating body. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto."
+                            "description": "Activating body. One of Sun, Earth, Moon, North Node, South Node, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto. Always English, whatever the lang parameter says, so it stays safe to compare against in code and to key a glyph table on. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Activating body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "side": {
                             "type": "string",
@@ -58413,7 +58788,12 @@
                           "gateName": {
                             "type": "string",
                             "example": "Shock",
-                            "description": "Human Design keynote name of the gate, describing its bodygraph function."
+                            "description": "Human Design keynote name of the gate, describing its bodygraph function. Always English, whatever the lang parameter says. Use gateNameLocalized for anything a reader sees."
+                          },
+                          "gateNameLocalized": {
+                            "type": "string",
+                            "example": "Choque",
+                            "description": "Gate keynote name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "gateDescription": {
                             "type": "string",
@@ -58749,7 +59129,12 @@
                     "name": {
                       "type": "string",
                       "example": "Power",
-                      "description": "Human Design keynote name of the gate."
+                      "description": "Human Design keynote name of the gate. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                    },
+                    "nameLocalized": {
+                      "type": "string",
+                      "example": "Poder",
+                      "description": "Gate keynote name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "center": {
                       "type": "string",
@@ -58759,7 +59144,12 @@
                     "centerName": {
                       "type": "string",
                       "example": "Sacral",
-                      "description": "Display name of the center."
+                      "description": "Display name of the center. Always English, whatever the lang parameter says. Use centerNameLocalized for anything a reader sees."
+                    },
+                    "centerNameLocalized": {
+                      "type": "string",
+                      "example": "Sacro",
+                      "description": "Center name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "ichingHexagram": {
                       "type": "object",
@@ -58794,7 +59184,12 @@
                           "channel": {
                             "type": "string",
                             "example": "Charisma",
-                            "description": "Name of the shared channel."
+                            "description": "Name of the shared channel. Always English, whatever the lang parameter says. Use channelLocalized for anything a reader sees."
+                          },
+                          "channelLocalized": {
+                            "type": "string",
+                            "example": "Carisma",
+                            "description": "Channel name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           }
                         },
                         "required": [
@@ -59182,12 +59577,22 @@
                           "name": {
                             "type": "string",
                             "example": "Charisma",
-                            "description": "Name of the defined channel."
+                            "description": "Name of the defined channel. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Carisma",
+                            "description": "Channel name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "circuit": {
                             "type": "string",
                             "example": "Individual",
-                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal."
+                            "description": "Circuit family of the channel. One of Individual, Collective, Tribal. Always English, whatever the lang parameter says. Use circuitLocalized for anything a reader sees."
+                          },
+                          "circuitLocalized": {
+                            "type": "string",
+                            "example": "Individual",
+                            "description": "Circuit family name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "centers": {
                             "type": "array",
@@ -59584,7 +59989,12 @@
                           "name": {
                             "type": "string",
                             "example": "Sacral",
-                            "description": "Display name of the center."
+                            "description": "Display name of the center. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Sacro",
+                            "description": "Center name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "defined": {
                             "type": "boolean",
@@ -59940,7 +60350,12 @@
                     "name": {
                       "type": "string",
                       "example": "Sacral",
-                      "description": "Display name of the center."
+                      "description": "Display name of the center. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                    },
+                    "nameLocalized": {
+                      "type": "string",
+                      "example": "Sacro",
+                      "description": "Center name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "motor": {
                       "type": "boolean",
@@ -60667,17 +61082,32 @@
                           "name": {
                             "type": "string",
                             "example": "Determination",
-                            "description": "Arrow name. Determination is the top-left arrow governing the Primary Health System and digestion, Environment the bottom-left arrow, Perspective the bottom-right arrow also called View, and Motivation the top-right arrow."
+                            "description": "Arrow name. Determination is the top-left arrow governing the Primary Health System and digestion, Environment the bottom-left arrow, Perspective the bottom-right arrow also called View, and Motivation the top-right arrow. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees."
+                          },
+                          "nameLocalized": {
+                            "type": "string",
+                            "example": "Determinación",
+                            "description": "Arrow name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "layer": {
                             "type": "string",
                             "example": "Primary Health System",
-                            "description": "Which half of the advanced layer the arrow belongs to. Primary Health System covers the body-side Determination and Environment arrows, Rave Psychology covers the mind-side Perspective and Motivation arrows."
+                            "description": "Which half of the advanced layer the arrow belongs to. Primary Health System covers the body-side Determination and Environment arrows, Rave Psychology covers the mind-side Perspective and Motivation arrows. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use layerLocalized for anything a reader sees."
+                          },
+                          "layerLocalized": {
+                            "type": "string",
+                            "example": "Sistema de Salud Primario",
+                            "description": "Layer name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "position": {
                             "type": "string",
                             "example": "Top left",
-                            "description": "Position of the arrow at the head of the bodygraph. One of Top left, Bottom left, Top right, Bottom right."
+                            "description": "Position of the arrow at the head of the bodygraph. One of Top left, Bottom left, Top right, Bottom right. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use positionLocalized for anything a reader sees."
+                          },
+                          "positionLocalized": {
+                            "type": "string",
+                            "example": "Superior izquierda",
+                            "description": "Arrow position name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "activation": {
                             "type": "object",
@@ -60722,12 +61152,22 @@
                           "colorLabel": {
                             "type": "string",
                             "example": "Touch",
-                            "description": "Name of the Color theme for this arrow, for example a determination family such as Touch, an environment such as Mountains, a perspective such as Personal, or a motivation such as Hope."
+                            "description": "Name of the Color theme for this arrow, for example a determination family such as Touch, an environment such as Mountains, a perspective such as Personal, or a motivation such as Hope. Always English, whatever the lang parameter says. Use colorLabelLocalized for anything a reader sees."
+                          },
+                          "colorLabelLocalized": {
+                            "type": "string",
+                            "example": "Tacto",
+                            "description": "Color theme name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "directionLabel": {
                             "type": "string",
                             "example": "Active",
-                            "description": "Keynote of the arrow direction for this arrow, for example Active or Passive for Determination, Focused or Peripheral for Perspective."
+                            "description": "Keynote of the arrow direction for this arrow, for example Active or Passive for Determination, Focused or Peripheral for Perspective. Always English, whatever the lang parameter says. Use directionLabelLocalized for anything a reader sees."
+                          },
+                          "directionLabelLocalized": {
+                            "type": "string",
+                            "example": "Activo",
+                            "description": "Arrow direction keynote in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "description": {
                             "type": "string",
@@ -60757,7 +61197,12 @@
                           "baseName": {
                             "type": "string",
                             "example": "Progressive",
-                            "description": "Name of the Base. Informational only: the Base is finer than any civil birth time can resolve."
+                            "description": "Name of the Base. Informational only: the Base is finer than any civil birth time can resolve. Always English, whatever the lang parameter says. Use baseNameLocalized for anything a reader sees."
+                          },
+                          "baseNameLocalized": {
+                            "type": "string",
+                            "example": "Progresivo",
+                            "description": "Base name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                           },
                           "cognition": {
                             "type": "object",
@@ -60765,7 +61210,12 @@
                               "label": {
                                 "type": "string",
                                 "example": "Smell",
-                                "description": "Name of the Cognition, the strongest sense. One of six read off the Determination Tone: Smell, Taste, Outer Vision, Inner Vision, Feeling, Touch."
+                                "description": "Name of the Cognition, the strongest sense. One of six read off the Determination Tone: Smell, Taste, Outer Vision, Inner Vision, Feeling, Touch. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use labelLocalized for anything a reader sees."
+                              },
+                              "labelLocalized": {
+                                "type": "string",
+                                "example": "Olfato",
+                                "description": "Cognition name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                               },
                               "description": {
                                 "type": "string",

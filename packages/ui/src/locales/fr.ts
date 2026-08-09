@@ -10,11 +10,35 @@
  *
  * **`roue` is the only wheel noun in this file, deliberately.** French astrology software says `double roue` (Auréas) and the French astrology web says `double carte` (Astrotheme) for the same drawing; both are attested, and forking to `carte` inside one component would leave the library with two nouns for one thing. Nothing about `double roue` is canonical the way `bi-wheel` is in English, so this is a consistency choice rather than a term of art.
  *
+ * **`Aspects composés` replaced `Configurations du thème` on 2026-08-09, and the Spanish fix for the same string does NOT transfer here.** The Spanish entry back-translated to "chart SETTINGS" and a live agency emailed asking us to hide his own T-Squares; Spanish resolved it with `Figuras planetarias`. In French that answer is actively wrong: `figures` and `dessins planétaires` name the whole-chart shapes (Bol, Seau, Éclaboussure, Locomotive), one level up from the chips in this block. French sorts our exact set under `aspects composés`, and both sources say so beside our own list: astrotheme.fr, `certains groupes isolés de planètes créent parfois des configurations spéciales : c est ce que l on appelle les aspects composés`, and autourdelalune, `l étude du dessin planétaire ainsi que celle des aspects composés`. `Configurations planétaires` is attested for the same figures and was the runner-up; it lost for keeping the `configuration` stem, which in French software is exactly the settings word (`panneau de configuration`, `configuration des thèmes`), and that stem is what produced the support ticket in Spanish.
+ *
+ * **`le thème` was removed from the out-of-sign tooltip in the same pass, and it was a second live mistranslation rather than a style fix.** French astrology reserves `le thème` for the birth chart itself, so `le thème demeure donc mais agit plus faiblement` read as "the birth chart persists but acts more weakly", which is nonsense. The English `theme` meant the pattern character. `qui reste donc valable` now refers unambiguously to `la configuration`.
+ *
+ * **`Dissonants` replaced `Tendus` and `Durée` replaced `Période`.** astresnet.org states the register directly, in a sentence about the aspect colour code: `aujourd hui c est le terme d harmonique, de dissonant, qui emporte l adhésion de la communauté astrologique`. `Tendus` is real French but pairs badly with `Neutres`, since the conjunction is defined as `ni harmonique ni tendue`, so a legend carrying both reads as overlapping. `Période` was not wrong either, but the field is a duration (`how long this transit influence lasts`), and `Période` names WHICH span is active rather than HOW LONG it lasts.
+ *
+ * `Card` for the cardinal column is ours, not a convention. Every French source that presents a modality breakdown spells all three out in full, including one whose entire subject is the distribution table (`Signes fixes = 25 pts`, `Signes cardinaux = 12,5 pts`, `Signes mutables = 9 pts`). `Car` was rejected because it is a high-frequency French conjunction and a common noun; `Fixe` needs no truncation at all.
+ *
  * Rejected against sources, so nobody restores them: `Applicatif`/`Séparatif` for applying and separating (the obvious calque, found on no French astrology source; the specialist glossaries and Auréas both print `appliquant`/`séparant`), `bi-roue` (an invented calque with zero attestation), `anneau` for a chart ring (forces the banned elision and is not the French word for this), `pointe` alone for a cusp (a real synonym but ambiguous out of context, where `cuspide` is not), `Maison en transit` for the transited house (it reverses the semantics and says the HOUSE is transiting), and `corps céleste` for a body (correct, but long for a column header and it breaks continuity with `astres` in the natal catalogue).
  *
  * Two entries sit in front of an API-returned body name, so they are the noun forms `Transit` and `Natal` rather than the attested adjective `transitante`, which French places after the noun and which the component cannot compose. The tooltip therefore reads `Transit Mars carré Natal Venus`, which is the T. and N. convention French chart software already uses.
  *
  * `Impact`, `Timing` and `Guidance` have no French astrological vocabulary behind them at all: they are report-layout labels, so `Effets`, `Période` and `Conseils` are plain French. `Datation` is the technical French word for the timing dimension if a more expert register is ever wanted.
+ *
+ * **The 54 Human Design entries added 2026-08-09 lean on a second, higher-authority source: `packages/human-design/src/locales/fr.ts` in the API repo, itself sourced from humandesign.fr, human-design-france.com and Jovian Archive France.** Where a chrome label sits over a value the API already translates (`Type`, the four circuit names, the nine centre names, `Personality`/`Design` as chart sides), the two files were read side by side so the label and the value it captions never name different concepts. Live sources beyond that file are cited below per cluster.
+ *
+ * **`Type`, `Aura`, `Design`, `Bodygraph`, `Activations`, `Variables`, `Base`, `Direction` and `Cognition` ship byte-identical to their English source, each independently attested rather than assumed identical.** humain-design.fr headers a table `**Type** **et** **Stratégie**`; three independent practitioner sites (alinemaurer.com, virginiepetitjean.fr, sacree-merline.fr) write `l'aura`/`aura` unmodified for a type's energy field; the API locale's own comment records that `Base` is deliberately unchanged (`Base Réactive, Base Objective` is the natural French) and timetowakeup.net's PHS page confirms it independently, `chaque Ton a 5 Bases`; sandrinecalmel.fr titles its guide `du BodyGraph` and humain-design.fr and humandesignhub.app both keep `bodygraph` lower case in running prose rather than translating to `schéma corporel`, which this file follows (capitalized only as the card title, lower case inside a sentence, matching the API locale's own usage); the API locale uses `L'activation dominante` for a bare planetary hit, which is the same word `Activations` names as a section heading; and astrologiesiderale.com titles a glossary page `Quelles sont les 6 cognitions du DH ?`, matching the API locale's own `cognitionMeanings` values (`Odorat`, `Goût`, `Vision extérieure`, `Vision intérieure`, `Ressenti`, `Toucher`) term for term. `Direction` is the ordinary French word humandesignhub.app already uses for the G Center's function (`il oriente identité, direction et amour`), reused here for the arrow's own direction.
+ *
+ * **`Incarnation cross` is `Incarnation en croix`, not the attested `croix d'incarnation`, because the register gate forbids the apostrophe that phrase cannot avoid.** Every live source checked (geneticmatrix.com, elisasorci.fr, timetowakeup.net, crea-matieres.ch, astrologiesiderale.com) uses the elided form universally and none offers an alternative, so this is not a community-attested rendering: it borrows the ordinary French idiom `en croix` (as in `les bras en croix`) to keep both words without the elision, and it wants a native Human Design reader's sign-off before it is treated as settled.
+ *
+ * **`{{circuit}} circuit` becomes `Circuit {{circuit}}` and `I Ching hexagram {{number}}` becomes `Hexagramme {{number}} du Yi-King`, both reordered against the English word order.** sandrinecalmel.fr, emmanuellesimonet.com and elyflyprocessus.wordpress.com all write `Circuit Individuel`, `Circuit Tribal` and `Circuit Collectif`, noun before adjective, never the reverse; designhumainpourtous.fr and timetowakeup.net's navigation both spell the divination text `Yi-King`, hyphenated, which this file follows for the hexagram footnote.
+ *
+ * **`Non-Soi` replaces a literal `Not-Self` calque.** wombloom.fr titles its explainer `Signature et Non-Soi en Design Humain` and marytyson.fr repeats `le non-soi` throughout a full article on the concept, so `Not-self: {{value}}` is `Non-Soi : {{value}}` and `Not-self question` is `Question du Non-Soi` (the `du` elides cleanly, since `Non-Soi` starts on a consonant). The motor/awareness centre chips follow humandesignhub.app's own section headers, `### Centres moteurs` and `### Centres de conscience`, giving `Moteur` and `Conscience`.
+ *
+ * **`Human Design` itself is rendered `Design Humain`** in the three strings that name the product rather than a chart part (`Aucune donnée de Design Humain`, `Bodygraph du Design Humain`, `Variables du Design Humain`), matching the name every French Human Design site read this session uses for itself (humain-design.fr, designhumainpourtous.fr, wombloom.fr, timetowakeup.net) rather than leaving the system name in English.
+ *
+ * **The two low-confidence warnings and the knife-edge string were rewritten around the same elision the rest of this file already routes around.** A literal `proche d'une limite` and `Vérifiez l'heure de naissance exacte` each force an apostrophe, so both became telegraphic labels instead, `heure de naissance en limite de couleur ou de ton` and `Heure de naissance exacte à vérifier`, the same technique lines 9 and 15 already use for `orbe` and `apex`. `Knife-edge` is the attested French idiom `sur le fil du rasoir` rather than an invented literal calque.
+ *
+ * **`Ligne Personnalité` and `Ligne Design` have no attested source as a fixed compact label.** The underlying concept, the conscious line in black versus the unconscious line in red, is well attested (elisasorci.fr, alinemaurer.com) but not this exact compact tile pairing, so the two are built compositionally from `Ligne` and the already-attested side names `Personnalité`/`Design` and want a native Human Design reader's pass. `Chart sides` (`Côtés du thème`) is not compositional in the same risky sense: it reuses `côté`, the API locale's own word for a chart side (`Le côté conscient`, `Le côté inconscient`), over `thème`, which both the API locale and this file already use for the whole chart.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -28,7 +52,7 @@ export const fr: Record<ChromeString, string> = {
 	Reading: 'Interprétation',
 
 	'Natal chart': 'Thème natal',
-	'Relocation chart': 'Thème de relocalisation',
+	'Relocation chart': 'Thème relocalisé',
 	'No chart data': 'Aucune donnée de thème',
 	Wheel: 'Roue',
 	'Aspect grid': 'Grille des aspects',
@@ -56,17 +80,28 @@ export const fr: Record<ChromeString, string> = {
 	'Dominant element': 'Élément dominant',
 	'Dominant modality': 'Modalité dominante',
 	Harmonious: 'Harmoniques',
-	Challenging: 'Tendus',
+	Challenging: 'Dissonants',
 	Neutral: 'Neutres',
 	'All {{count}} bodies in the chart, placed by sign':
 		'Les {{count}} astres du thème, classés par signe',
-	'Element and modality distribution': 'Répartition par élément et modalité',
+	'Element and modality distribution': 'Répartition par éléments et modalités',
 	Total: 'Total',
 
-	'Chart patterns': 'Configurations du thème',
+	Fire: 'Feu',
+	Earth: 'Terre',
+	Air: 'Air',
+	Water: 'Eau',
+	Cardinal: 'Cardinal',
+	Fixed: 'Fixe',
+	Mutable: 'Mutable',
+	Car: 'Card',
+	Fix: 'Fixe',
+	Mut: 'Mut',
+
+	'Chart patterns': 'Aspects composés',
 	Dissociate: 'Dissociée',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.':
-		'Hors signe : une ou plusieurs planètes sortent du même élément ou de la même modalité que la configuration, le thème demeure donc mais agit plus faiblement.',
+		'Hors signe : une ou plusieurs planètes sortent du même élément ou de la même modalité que la configuration, qui reste donc valable mais agit plus faiblement.',
 	'{{percent}}% tight': '{{percent}}% de précision',
 	apex: 'apex',
 
@@ -100,15 +135,96 @@ export const fr: Record<ChromeString, string> = {
 	'Every body with its natal position and its position on the transit date, each as a zodiac sign and a degree.':
 		'Chaque astre avec sa position natale et sa position à la date du transit, chacune indiquée en signe du zodiaque et en degré.',
 	'Both house numbers are read against the natal house cusps.':
-		'Les deux numéros de maison se lisent sur les cuspides des maisons natales.',
+		'Les deux numéros de maison se lisent par rapport aux cuspides des maisons natales.',
 	Body: 'Astre',
 	'Natal house': 'Maison natale',
 	'Transiting house': 'Maison transitée',
 
 	'Transit readings': 'Interprétations des transits',
 	Impact: 'Effets',
-	Timing: 'Période',
+	Timing: 'Durée',
 	Guidance: 'Conseils',
+
+	'Nested data omitted': 'Données imbriquées omises',
+	'Generic data display': 'Affichage générique de données',
+	'Empty list': 'Liste vide',
+	'Data table': 'Tableau de données',
+	'{{count}} rows': '{{count}} lignes',
+	Yes: 'Oui',
+	No: 'Non',
+	illustration: 'illustration',
+
+	// Human Design identity, shared by `<roxy-bodygraph>` and `<roxy-hd-type-card>`.
+	Type: 'Type',
+	Strategy: 'Stratégie',
+	Authority: 'Autorité',
+	Profile: 'Profil',
+	Definition: 'Définition',
+	Aura: 'Aura',
+	'Incarnation cross': 'Incarnation en croix',
+	'Signature: {{value}}': 'Signature : {{value}}',
+	'Not-self: {{value}}': 'Non-Soi : {{value}}',
+	'Profile {{profile}}': 'Profil {{profile}}',
+	'Line {{line}} · Personality': 'Ligne {{line}} · Personnalité',
+	'Line {{line}} · Design': 'Ligne {{line}} · Design',
+	Personality: 'Personnalité',
+	Design: 'Design',
+
+	// `<roxy-bodygraph>`.
+	Bodygraph: 'Bodygraph',
+	'No bodygraph data': 'Aucune donnée de bodygraph',
+	'Human Design bodygraph': 'Bodygraph du Design Humain',
+	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
+		'Bodygraph du Design Humain avec neuf centres, canaux et portes activées superposés à une silhouette humaine',
+	'Nine energy centers in their canonical positions over a human silhouette, each filled with its traditional color when defined and outlined when open, wired by channels between activated gates.':
+		'Neuf centres énergétiques à leurs positions canoniques sur une silhouette humaine, chacun rempli de sa couleur traditionnelle quand il est défini et juste contouré quand il est ouvert, reliés par des canaux entre portes activées.',
+	'Center colors when defined. Open centers are outlined.':
+		'Couleur des centres définis. Les centres ouverts sont juste contourés.',
+	'Open center': 'Centre ouvert',
+	'Defined channels ({{count}})': 'Canaux définis ({{count}})',
+	'{{circuit}} circuit': 'Circuit {{circuit}}',
+	'Centers ({{defined}} defined, {{open}} open)':
+		'Centres ({{defined}} définis, {{open}} ouverts)',
+	Defined: 'Défini',
+	Open: 'Ouvert',
+	Motor: 'Moteur',
+	Awareness: 'Conscience',
+	'Not-self question': 'Question du Non-Soi',
+	Biology: 'Biologie',
+	'Gates {{gates}}': 'Portes {{gates}}',
+	'Activations ({{count}})': 'Activations ({{count}})',
+	'Chart sides': 'Côtés du thème',
+	'Line {{line}}': 'Ligne {{line}}',
+	'Gate {{gate}}': 'Porte {{gate}}',
+	'I Ching hexagram {{number}}': 'Hexagramme {{number}} du Yi-King',
+
+	// `<roxy-hd-type-card>`, on top of the shared identity block above.
+	'No Human Design data': 'Aucune donnée de Design Humain',
+	'Personality line': 'Ligne Personnalité',
+	'Design line': 'Ligne Design',
+	Lines: 'Lignes',
+
+	// `<roxy-hd-variables>`.
+	Variables: 'Variables',
+	'No variables data': 'Aucune donnée de variables',
+	'Human Design variables': 'Variables du Design Humain',
+	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
+		'Confiance faible : heure de naissance en limite de couleur ou de ton. Heure de naissance exacte à vérifier.',
+	'Low confidence: a birth time near a color or tone boundary (within {{margin}}°). Verify the exact birth time.':
+		'Confiance faible : heure de naissance en limite de couleur ou de ton (à {{margin}}° près). Heure de naissance exacte à vérifier.',
+	'Color {{color}} · Tone {{tone}} · Base {{base}}':
+		'Couleur {{color}} · Ton {{tone}} · Base {{base}}',
+	'Knife-edge: could flip with a more precise birth time.':
+		'Sur le fil du rasoir : pourrait basculer avec une heure de naissance plus précise.',
+	Base: 'Base',
+	Color: 'Couleur',
+	Tone: 'Ton',
+	Direction: 'Direction',
+	Cognition: 'Cognition',
+
+	// `<roxy-reference-card>`.
+	Reference: 'Référence',
+	'No reference data': 'Aucune donnée de référence',
 };
 
 registerLocale('fr', fr);

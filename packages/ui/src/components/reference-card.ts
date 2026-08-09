@@ -13,10 +13,13 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { foldLocalized } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
 
 /**
  * Every reference / glossary lookup this card renders. They do NOT share field names (a zodiac sign has 17 fields, a number meaning has 3), so the card renders heuristically rather than by fixed keys: a symbol + title hero, the prose fields as labelled paragraphs, keyword and string-list fields as chips, and every remaining scalar as an attribute grid. One card replaces eight near-identical bespoke ones.
+ *
+ * It is the second GENERIC renderer in the library, and it shares `<roxy-data>`'s two consequences. Its field labels come from the wire name through `humanize()`, so they are derived rather than literal and no catalogue keyed on English source text can reach them: `Reference` and the empty state are the only two words the card writes itself. And because it enumerates `Object.keys`, an additive API field is not automatically backwards compatible for it, which is why every level that reads a key runs through `foldLocalized` first.
  *
  * `hide-readings` needs no second classification here, because the bucketing IS the line: what `collect` calls prose is the reading and what it calls a fact is the data. So the labelled paragraphs go, the keyword chips go, and a list whose items run to sentence length (a sign's `strengths`) goes with them, while the attribute grid and the short-item lists (`famous`, `compatibleSigns`, chakras) stay. On a lookup that is almost entirely prose the card keeps its symbol, title and whatever facts the response carries, which is the same flat shape it already renders for a response that had no prose to begin with.
  */
@@ -58,9 +61,9 @@ function partName(key: string): string {
 	return humanize(key).toLowerCase().replace(/\s+/g, '-');
 }
 
-/** Best-effort one-line label for an object inside an array (e.g. a gate channel partner), joining its primitive values so it never renders as [object Object]. */
+/** Best-effort one-line label for an object inside an array (e.g. a gate channel partner), joining its primitive values so it never renders as [object Object]. Folded first, or a translated response joins each value to its own translation. */
 function objectLabel(obj: Record<string, unknown>): string {
-	return Object.values(obj)
+	return Object.values(foldLocalized(obj))
 		.filter((v) => typeof v === 'string' || typeof v === 'number')
 		.map(String)
 		.join(' · ');
@@ -157,7 +160,12 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 	];
 
 	protected renderData(d: ReferenceData) {
-		const rec = d as Record<string, unknown>;
+		// Folded before anything reads a key. This card builds its whole output from
+		// `Object.entries`, so the day the API began echoing `nameLocalized` beside
+		// `name` it started drawing the same fact twice, once under each heading, on
+		// a page whose owner changed nothing. The fold puts the reader's value under
+		// the canonical key and drops the twin (lesson 31, the `<roxy-data>` half).
+		const rec = foldLocalized(d as Record<string, unknown>);
 		const title = this.deriveTitle(rec);
 		const symbol = typeof rec.symbol === 'string' ? rec.symbol : undefined;
 		const keywords = Array.isArray(rec.keywords)
@@ -197,7 +205,9 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 			} else if (typeof value === 'number' || typeof value === 'boolean') {
 				facts.push([label, String(value)]);
 			} else if (typeof value === 'object' && depth < 2) {
-				for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+				for (const [k, v] of Object.entries(
+					foldLocalized(value as Record<string, unknown>),
+				)) {
 					collect(`${label} ${k}`, v, depth + 1);
 				}
 			}
@@ -216,7 +226,7 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 			<header class="head" part="header">
 				${symbol ? html`<span class="symbol" aria-hidden="true">${symbol}</span>` : nothing}
 				<div>
-					<p class="label">Reference</p>
+					<p class="label">${this.t('Reference')}</p>
 					<h2 class="name">${title}</h2>
 				</div>
 			</header>
@@ -256,7 +266,7 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 	}
 
 	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No reference data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No reference data')}</div>`;
 	}
 
 	private deriveTitle(rec: Record<string, unknown>): string {
@@ -266,7 +276,7 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 		const type = typeof rec.type === 'string' ? humanize(rec.type) : '';
 		const number = rec.number;
 		if (number != null) return `${type} ${number}`.trim();
-		return 'Reference';
+		return this.t('Reference');
 	}
 }
 
