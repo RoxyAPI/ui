@@ -218,6 +218,8 @@ The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period`, `Rox
 
 Every component takes `hide-readings` (`hideReadings` in React and Vue). It renders the chart and the data and leaves the interpretation out of the page: wheels, maps, tables, grids, legends, badges and every number stay, the interpretive prose goes. Off by default, so a component that does not set it is unchanged.
 
+The line is drawn on the CONTENT, never on the block, so a block that reads like analysis still stays when it is made of measurements. `<roxy-natal-chart>` and `<roxy-aspects-table>` both render the `patterns` payload and both make the same cut: the figure name, element, modality, tightness and planet chips are geometry and survive, the paragraph under them is the reading and goes. To remove such a block entirely, hide its part instead: `roxy-natal-chart::part(patterns) { display: none }`.
+
 ```html
 <roxy-natal-chart hide-readings></roxy-natal-chart>
 ```
@@ -608,7 +610,7 @@ roxy-natal-chart::part(card) {
 | `details` | The numeric summary: pills, badges, stat lists, fact tiles |
 | `table` | A data table, or the scroll box around one |
 | `tablist`, `tab`, `panel` | The view switch and the panel it governs |
-| `section` | Any structural block, paired with a specific name (`section patterns`) |
+| `section` | Any structural block, paired with a specific name (`section patterns`), so `::part(patterns)` targets that block alone |
 | `readings` | The interpretation accordion |
 | `reading` | One disclosure card inside it |
 | `form`, `loading`, `error`, `attribution` | The built-in states |

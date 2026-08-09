@@ -139,6 +139,7 @@ export const de: Record<ChromeString, string> = {
 		'Spitze des ersten Hauses am linken Horizont',
 	'Sign wheel, 0° Aries on the left': 'Tierkreis, 0° Widder links',
 	'House cusps supplied by the page': 'Von der Seite übergebene Häuserspitzen',
+	'House cusps from the response': 'Aus der Antwort übernommene Häuserspitzen',
 	'No house cusps': 'Keine Häuserspitzen',
 
 	'Transit aspect summary': 'Übersicht der Transitaspekte',

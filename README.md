@@ -722,6 +722,12 @@ roxy-natal-chart::part(readings) {
 	display: none;
 }
 
+/* A single named block. Every structural section carries `section` plus its own
+   name, so the chart patterns block goes without touching anything else. */
+roxy-natal-chart::part(patterns) {
+	display: none;
+}
+
 /* Or restyle it. */
 roxy-natal-chart::part(card) {
 	border: 0;
@@ -729,7 +735,7 @@ roxy-natal-chart::part(card) {
 }
 ```
 
-The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, plus `form`, `loading`, `error` and `attribution` on the built-in states.
+The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, plus `form`, `loading`, `error` and `attribution` on the built-in states. A `section` also carries its own name, which is what `::part(patterns)` above targets, so any single block can be dropped or restyled on its own.
 
 ### Chart without the written report
 
@@ -744,6 +750,8 @@ For the same outcome in markup rather than CSS, set `hide-readings`. The compone
 ```
 
 It is off by default, so nothing changes until you ask for it. Wheels, maps, tables, grids, legends, badges and every number stay; the interpretive prose is what goes.
+
+That line is drawn on the content, not on the block, so a block made of measurements stays even when it reads like analysis. The clearest case is the natal chart patterns block: a T-Square or a Stellium is a geometric fact about where the bodies sit, so the figure, its element and modality, its tightness and its planets all survive, and only the paragraph under them goes. To drop the block itself, hide its part: `roxy-natal-chart::part(patterns) { display: none }`.
 
 #### Which components it applies to
 

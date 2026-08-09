@@ -107,6 +107,7 @@ export const CHROME_STRINGS = [
 	'First house cusp on the left horizon',
 	'Sign wheel, 0° Aries on the left',
 	'House cusps supplied by the page',
+	'House cusps from the response',
 	'No house cusps',
 
 	// Transit bi-wheel: summary and the tightest contact. `Natal` and

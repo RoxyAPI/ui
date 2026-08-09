@@ -144,6 +144,7 @@ export const hi: Record<ChromeString, string> = {
 	'First house cusp on the left horizon': 'बाएँ क्षितिज पर प्रथम भाव की संधि',
 	'Sign wheel, 0° Aries on the left': 'राशि चक्र, बाईं ओर 0° मेष',
 	'House cusps supplied by the page': 'पृष्ठ से मिली भाव संधियाँ',
+	'House cusps from the response': 'उत्तर से मिली भाव संधियाँ',
 	'No house cusps': 'कोई भाव संधि नहीं',
 
 	'Transit aspect summary': 'गोचर दृष्टि सारांश',

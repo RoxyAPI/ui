@@ -118,6 +118,7 @@ export const pt: Record<ChromeString, string> = {
 	'Sign wheel, 0° Aries on the left': 'Roda zodiacal, 0° de Áries à esquerda',
 	'House cusps supplied by the page':
 		'Cúspides das casas fornecidas pela página',
+	'House cusps from the response': 'Cúspides das casas incluídas na resposta',
 	'No house cusps': 'Sem cúspides de casas',
 
 	'Transit aspect summary': 'Resumo dos aspectos de trânsito',

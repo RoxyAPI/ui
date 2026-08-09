@@ -4506,6 +4506,81 @@ describe('hide-readings', () => {
 		el.remove();
 	});
 
+	/**
+	 * Where the line falls INSIDE the chart patterns block, pinned in both
+	 * directions.
+	 *
+	 * @remarks
+	 * A live customer read this block as an interpretation that `hide-readings`
+	 * should have taken away, and the block does keep its labels. That is the
+	 * documented contract rather than a miss: a T-Square is a geometric fact about
+	 * where the bodies sit, so the figure, the element and modality it pivots on,
+	 * its tightness and its planets are measurements, and only the paragraph is a
+	 * reading. Both halves are asserted, because the tempting "fix" is to gate the
+	 * whole block and that would silently drop five measurements a practitioner
+	 * publishes deliberately.
+	 *
+	 * The same fixture runs through `<roxy-aspects-table>`, which renders the
+	 * identical `patterns` payload. The two components must cut in the same place
+	 * or the same figure appears and disappears depending on which tag a page
+	 * reached for.
+	 */
+	test('the chart patterns block keeps its geometry and drops only its prose', async () => {
+		const withFigure = {
+			...natal,
+			patterns: [
+				{
+					kind: 'T_SQUARE',
+					name: 'T-Square',
+					planets: ['Moon', 'Sun'],
+					apex: 'Sun',
+					element: 'Fire',
+					modality: 'Cardinal',
+					dissociate: true,
+					tightness: 88,
+					interpretation: 'ZZREADINGPATTERN',
+				},
+			],
+		};
+		// Every measurement in the card, and the one string that is a reading.
+		const geometry = [
+			'T-Square',
+			'Fire',
+			'Cardinal',
+			'Dissociate',
+			'88% tight',
+			'Sun',
+			'Moon',
+			'apex',
+		];
+
+		for (const tag of ['roxy-natal-chart', 'roxy-aspects-table']) {
+			const on = await mount(tag, withFigure);
+			expect(text(on), `${tag} default`).toContain('ZZREADINGPATTERN');
+			on.remove();
+
+			const off = await mount(tag, withFigure, { 'hide-readings': '' });
+			const body = text(off);
+			expect(body, `${tag} hidden`).not.toContain('ZZREADINGPATTERN');
+			for (const fact of geometry) {
+				expect(body, `${tag} keeps ${fact}`).toContain(fact);
+			}
+			off.remove();
+		}
+	});
+
+	/** The lever for a page that wants the block gone anyway. `hide-readings` is for prose; a block of measurements is removed by hiding its own part, which is what the README now shows. */
+	test('the patterns block is targetable on its own part, separately from readings', async () => {
+		const el = await mount('roxy-natal-chart', natal);
+		const root = el.shadowRoot as ShadowRoot;
+		const section = root.querySelector('[part~="patterns"]');
+		// `section` plus its own name: the generic part is what the docs list, the
+		// specific one is what a stylesheet targets.
+		expect(section?.getAttribute('part')).toBe('section patterns');
+		expect(section).not.toBe(root.querySelector('[part~="readings"]'));
+		el.remove();
+	});
+
 	test('the dasha Readings tab goes with the readings, never left over an empty panel', async () => {
 		const dasha = {
 			mahadasha: {

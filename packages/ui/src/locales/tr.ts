@@ -129,6 +129,7 @@ export const tr: Record<ChromeString, string> = {
 	'First house cusp on the left horizon': '1. ev başlangıcı sol ufukta',
 	'Sign wheel, 0° Aries on the left': 'Burç çemberi, 0° Koç solda',
 	'House cusps supplied by the page': 'Sayfadan gelen ev başlangıçları',
+	'House cusps from the response': 'Yanıttan gelen ev başlangıçları',
 	'No house cusps': 'Ev başlangıcı yok',
 
 	'Transit aspect summary': 'Transit açıları özeti',

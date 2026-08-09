@@ -36,6 +36,20 @@ type TransitAspect = CalculateTransitAspectsResponse['aspects'][number];
 type TransitSummary = CalculateTransitAspectsResponse['summary'];
 
 /**
+ * The transit-aspects response plus the natal frame it now carries.
+ *
+ * @remarks
+ * `/astrology/transit-aspects` returns `houses` and `ascendant` field for field identical to the
+ * natal-chart ones, which is what lets the prop and the payload share one code path below. They are
+ * declared here as OPTIONAL rather than read straight off the generated response type because
+ * `specs/openapi.json` is refreshed from live only after the API deploys, so the type does not name
+ * them yet and this component must compile against both the old spec and the new one. Once the spec
+ * refresh lands the intersection is a no-op and this alias can go.
+ */
+type TransitAspectsPayload = CalculateTransitAspectsResponse &
+	Partial<Pick<NatalChartResponse, 'houses' | 'ascendant'>>;
+
+/**
  * Radii, outermost first. Every one is explicit rather than derived from its
  * neighbour, because the two rings of glyphs and their two bands of degree
  * labels have to interleave without touching, and an offset-from-the-last-ring
@@ -61,7 +75,7 @@ const TRANSIT_LINE_R = 112;
 const NATAL_LINE_R = 104;
 /** Innermost circle, closing the wheel under the natal degree labels. */
 const HUB_R = 70;
-/** House sector numbers, inside the hub: the only band on this wheel with nothing else in it. Drawn ONLY from cusps the page supplied. */
+/** House sector numbers, inside the hub: the only band on this wheel with nothing else in it. Drawn ONLY from real cusps, the response ones or a page override. */
 const HOUSE_NUM_R = 58;
 /**
  * Widths a fanned cluster has to clear. The glyph is the wider mark but sits on
@@ -128,17 +142,23 @@ const byName = (list: Body[]): Map<string, Body> => {
  * missing House column for months. The numbers are rendered, in their own
  * columns, labelled with the system the response names.
  *
- * **What is still absent is the GEOMETRY, and that is why the default wheel has
- * no house ring.** The response carries no ascendant and no cusp longitudes, so a
- * house number is a placement with no sector to draw it in. Equal sectors derived
- * from {@link RoxyTransitWheel.ascendant} and labelled with a quadrant system
- * would replace one false statement with a worse one, so the default wheel fixes
- * 0 degrees Aries on the left horizon, says so in the legend and in the SVG
- * description rather than leaving a reader to discover it, and draws no house
- * divisions at all. A host that holds the real cusps (from /astrology/natal-chart,
- * which returns all twelve) passes {@link RoxyTransitWheel.houses} and gets the
- * sector ring. Both props are supplied data placed on a circle, never a cusp this
- * component worked out.
+ * **The GEOMETRY arrived next, and the wheel now draws itself.** The response also
+ * carries the twelve natal cusps as `houses` and the natal `ascendant`, the same
+ * twelve the house numbers above were read against, so the sector ring and the
+ * real horizon come out of the one call the page already made. That closed the
+ * house-less bi-wheel every embed drew through WordPress, /embed and the CDN
+ * widgets, none of which can compose a second call. {@link RoxyTransitWheel.houses}
+ * and {@link RoxyTransitWheel.ascendant} remain as OVERRIDES and keep winning
+ * where a page sets them, which is what a stored response predating the fields,
+ * or a trimming proxy, needs.
+ *
+ * **Nothing is ever derived, whichever source it came from.** A payload with
+ * neither field still fixes 0 degrees Aries on the left horizon, says so in the
+ * legend and in the SVG description rather than leaving a reader to discover it,
+ * and draws no house divisions at all. Equal sectors derived from an Ascendant
+ * and labelled with a quadrant system would replace one false statement with a
+ * worse one. Every cusp on this wheel is a longitude some source stated, placed
+ * on a circle, never one this component worked out.
  */
 @customElement('roxy-transit-wheel')
 export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsResponse> {
@@ -460,31 +480,37 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	heading = 'Transits';
 
 	/**
-	 * Natal Ascendant as an ecliptic longitude in degrees (0-360), supplied by the
-	 * page from a chart endpoint that returns one.
+	 * Natal Ascendant as an ecliptic longitude in degrees (0-360), to override the
+	 * one the response carries.
 	 *
 	 * @remarks
-	 * /astrology/transit-aspects returns no ascendant, so this is the only way the
-	 * wheel can sit on a real horizon. Setting it ROTATES the wheel so the given
-	 * longitude falls on the left horizon and draws the ASC/DSC axis. It draws no
-	 * house divisions, because a rotation is not a cusp; that is what
-	 * {@link RoxyTransitWheel.houses} is for. Leave both unset for the honest
-	 * default: 0 degrees Aries on the left.
+	 * Leave it unset on a live /astrology/transit-aspects response: that endpoint
+	 * returns the natal `ascendant` and the wheel reads it, so the horizon is
+	 * right with no page wiring at all. Set it only to orient the wheel on a
+	 * DIFFERENT horizon than the response describes, or to give one to a payload
+	 * that carries none. Either way it ROTATES the wheel so the given longitude
+	 * falls on the left horizon and draws the ASC/DSC axis. It draws no house
+	 * divisions, because a rotation is not a cusp; that is what
+	 * {@link RoxyTransitWheel.houses} is for. With neither the prop nor a payload
+	 * ascendant the wheel falls back to the honest default: 0 degrees Aries on
+	 * the left.
 	 */
 	@property({ type: Number })
 	ascendant?: number;
 
 	/**
-	 * The twelve natal house cusps, supplied by the page. Takes the
-	 * /astrology/natal-chart `houses` array verbatim, or twelve bare cusp
-	 * longitudes in house order.
+	 * The twelve natal house cusps, to override the ones the response carries.
+	 * Takes the /astrology/natal-chart `houses` array verbatim, or twelve bare
+	 * cusp longitudes in house order.
 	 *
 	 * @remarks
-	 * /astrology/transit-aspects numbers every body by house but returns no cusp
-	 * longitudes, so this is the only way the wheel can draw the sectors those
-	 * numbers refer to. Supplying it draws the twelve cusp lines and their numbers
-	 * and, unless {@link RoxyTransitWheel.ascendant} also arrives, rotates the
-	 * first cusp onto the left horizon.
+	 * Leave it unset on a live /astrology/transit-aspects response: that endpoint
+	 * returns the same twelve natal cusps its house numbers are read against, so
+	 * the sector ring draws itself. Set it to draw a different cusp set than the
+	 * response carries, or to give one to a payload that carries none (a stored
+	 * response predating the field, or a proxy that trims it). Supplying either
+	 * source draws the twelve cusp lines and their numbers and, unless an
+	 * ascendant is also available, rotates the first cusp onto the left horizon.
 	 *
 	 * Both accepted shapes exist because the natural source is a natal-chart
 	 * response a host already holds, and passing `chart.houses` straight through
@@ -497,25 +523,54 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	@property({ type: Array })
 	houses?: NatalChartResponse['houses'] | number[];
 
-	/** True when the page supplied a usable ascendant, so the ASC/DSC axis is a value the host gave rather than one derived from a cusp. */
-	private get ascendantGiven(): boolean {
-		return (
-			typeof this.ascendant === 'number' && Number.isFinite(this.ascendant)
-		);
+	/** The response widened to the natal frame it carries. One cast, so nothing below repeats it. */
+	private get payload(): TransitAspectsPayload | undefined {
+		return this.data as TransitAspectsPayload | undefined;
 	}
 
 	/**
-	 * The supplied cusps, normalized to houses 1 to 12 in order, or null.
+	 * The Ascendant longitude the wheel orients on, or undefined.
+	 *
+	 * @remarks
+	 * The PROP wins over the payload wherever both exist: a page that passes one
+	 * has said something the response cannot know, and silently preferring the
+	 * response would make the prop dead on exactly the responses that carry the
+	 * field.
+	 */
+	private get effectiveAscendant(): number | undefined {
+		for (const value of [this.ascendant, this.payload?.ascendant?.longitude]) {
+			if (typeof value === 'number' && Number.isFinite(value)) return value;
+		}
+		return undefined;
+	}
+
+	/** True when an ascendant is available at all, so the ASC/DSC axis is a real horizon rather than one derived from a cusp. */
+	private get ascendantGiven(): boolean {
+		return this.effectiveAscendant !== undefined;
+	}
+
+	/** True when the sector ring came from the page rather than from the response, so the legend can say which. */
+	private get cuspsFromPage(): boolean {
+		return Array.isArray(this.houses);
+	}
+
+	/**
+	 * The cusps to draw, normalized to houses 1 to 12 in order, or null. The prop
+	 * first, then the ones the response carries, on the same precedence rule as
+	 * {@link RoxyTransitWheel.effectiveAscendant}.
 	 *
 	 * @remarks
 	 * Sorted by house number rather than trusted in array order, and rejected
 	 * whole unless the twelve numbers are exactly 1 to 12 with finite longitudes.
 	 * A cusp set that fails either check is not a house division, and drawing part
 	 * of one would put a sector boundary where the host never claimed there was
-	 * one.
+	 * one. A malformed PROP is rejected outright rather than falling through to
+	 * the payload: the page overrode the response on purpose, and quietly drawing
+	 * the response cusps under a bad override would be a different chart than
+	 * either source asked for.
 	 */
 	private get cusps(): Array<{ number: number; longitude: number }> | null {
-		const raw = this.houses;
+		const raw = this.houses ?? this.payload?.houses;
 		if (!Array.isArray(raw) || raw.length !== 12) return null;
 		const out = raw
 			.map((h, i) =>
@@ -542,9 +597,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 * most of a sign away from the Ascendant itself.
 	 */
 	private toAngle(longitude: number): number {
-		const origin = this.ascendantGiven
-			? (this.ascendant as number)
-			: (this.cusps?.[0]?.longitude ?? 0);
+		const origin = this.effectiveAscendant ?? this.cusps?.[0]?.longitude ?? 0;
 		return 180 + origin - longitude;
 	}
 
@@ -601,11 +654,21 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return this.t('Sign wheel, 0° Aries on the left');
 	}
 
-	/** Whether the twelve sectors on the wheel are real cusps, in words. Same dual use as {@link RoxyTransitWheel.orientationCaption}. */
+	/**
+	 * Whether the twelve sectors on the wheel are real cusps, in words, and where
+	 * they came from. Same dual use as {@link RoxyTransitWheel.orientationCaption}.
+	 *
+	 * @remarks
+	 * The source is named because the caption is provenance: a reader
+	 * reconciling this wheel against another calculator needs to know whether the
+	 * cusps are the ones the endpoint computed the house numbers against, or a set
+	 * the page substituted for them.
+	 */
 	private get cuspCaption(): string {
-		return this.cusps
+		if (!this.cusps) return this.t('No house cusps');
+		return this.cuspsFromPage
 			? this.t('House cusps supplied by the page')
-			: this.t('No house cusps');
+			: this.t('House cusps from the response');
 	}
 
 	private renderWheel(
@@ -657,7 +720,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return ticks;
 	}
 
-	/** Twelve sign boundaries, drawn from the inner ring outward. Solid, and always exactly 30 degrees apart: house cusps are the dashed lines from {@link RoxyTransitWheel.renderHouses} and only exist when the page supplied them. */
+	/** Twelve sign boundaries, drawn from the inner ring outward. Solid, and always exactly 30 degrees apart: house cusps are the dashed lines from {@link RoxyTransitWheel.renderHouses} and only exist when a cusp set is available. */
 	private renderSpokes() {
 		return SIGNS_ORDER.map((_, i) => {
 			const angle = this.toAngle(i * 30);
@@ -668,7 +731,8 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	}
 
 	/**
-	 * The twelve house sectors, drawn ONLY from cusps the page supplied.
+	 * The twelve house sectors, drawn ONLY from cusps some source stated: the ones
+	 * the response carries, or the {@link RoxyTransitWheel.houses} override.
 	 *
 	 * @remarks
 	 * Dashed and inset to the sign band, because the solid spokes beside them are
@@ -677,7 +741,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 * of its own sector, so an unequal house carries its label inside itself; the
 	 * hub is the one band on this wheel with nothing else in it.
 	 *
-	 * Nothing here is derived. With no cusps supplied this renders nothing at all
+	 * Nothing here is derived. With no cusps available this renders nothing at all
 	 * rather than twelve equal sectors from the Ascendant, which would be a
 	 * different chart wearing the same label.
 	 *
@@ -832,16 +896,18 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	}
 
 	/**
-	 * ASC and DSC ticks, drawn ONLY when the page supplied an ascendant. Nothing
-	 * is derived: the descendant is the exact opposite point of the value given.
+	 * ASC and DSC ticks, drawn ONLY when an ascendant is available, from the prop
+	 * or from the response. Nothing is derived: the descendant is the exact
+	 * opposite point of that value.
 	 *
 	 * Gated on the ascendant alone, never on the cusps. Under whole-sign the first
 	 * cusp is 0 degrees of the rising sign rather than the Ascendant, so labelling
 	 * it ASC would be wrong on exactly the charts a traditional reader casts.
 	 */
 	private renderAxis() {
-		if (!this.ascendantGiven) return nothing;
-		const asc = normalizeLongitude(this.ascendant as number);
+		const given = this.effectiveAscendant;
+		if (given === undefined) return nothing;
+		const asc = normalizeLongitude(given);
 		return [asc, oppositePoint(asc)].map((lon, i) => {
 			const angle = this.toAngle(lon);
 			const inner = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
@@ -926,7 +992,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 *
 	 * @remarks
 	 * The House columns are where the response's house numbers land, because the
-	 * wheel has no sectors to put them in unless the page supplied cusps. Both
+	 * wheel has no sectors to put them in unless a cusp set is available. Both
 	 * columns are read against the NATAL cusps: the transiting one is the natal
 	 * house that body is currently passing through, which is the whole point of a
 	 * transit report and is why the two are not the same fact under one heading.

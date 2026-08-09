@@ -126,8 +126,15 @@ const CUSPS = [
  * whichever way the fields are read, so an aspect between two DIFFERENT bodies,
  * with all four longitudes distinct, is the only fixture that can fail when the
  * transiting and natal roles are exchanged.
+ *
+ * `houses` and `ascendant` are deliberately ABSENT, which is what makes this the
+ * degraded-payload fixture: a response stored before those fields shipped, or one
+ * a proxy trimmed. They are omitted from the TYPE rather than from the object
+ * alone so this keeps compiling once `specs/openapi.json` is refreshed from live
+ * and the two become required, and so every case that wants them adds them back
+ * in one visible place ({@link withChart}).
  */
-const data: CalculateTransitAspectsResponse = {
+const data: Omit<CalculateTransitAspectsResponse, 'houses' | 'ascendant'> = {
 	transitDate: '2026-05-11 12:00:00',
 	houseSystem: 'placidus',
 	// Houses that DIFFER per body and differ between the two rings, which is what
@@ -683,6 +690,195 @@ describe('roxy-transit-wheel', () => {
 		expect(legend).toContain('Ascendant on the left horizon');
 		expect(legend).toContain('House cusps supplied by the page');
 		el.remove();
+	});
+
+	/**
+	 * The house-less bi-wheel, closed at the source.
+	 *
+	 * @remarks
+	 * /astrology/transit-aspects now returns the same twelve natal cusps its house
+	 * numbers are read against, plus the natal Ascendant, so the sector ring and
+	 * the real horizon need NO page wiring. That is the whole point: WordPress,
+	 * /embed and the CDN widgets each hand the component exactly one operation's
+	 * response and cannot compose a second call, so a prop-only route left every
+	 * bi-wheel on those surfaces house-less with 0 degrees Aries on the left.
+	 *
+	 * Asserted as coordinates rather than as counts, for the reason the prop tests
+	 * give: twelve equal sectors from an Ascendant draw a perfectly plausible
+	 * wheel and are a different chart. The payload ascendant is 340 and cusp 1 is
+	 * 350, so orienting on the wrong one of the two is a visible 10 degree turn
+	 * rather than a coincidence.
+	 */
+	const PAYLOAD_ASC = 340;
+	const withChart = (
+		over: Record<string, unknown> = {},
+	): CalculateTransitAspectsResponse =>
+		({
+			...data,
+			houses: CUSPS,
+			ascendant: { sign: 'Pisces', degree: 10, longitude: PAYLOAD_ASC },
+			...over,
+		}) as unknown as CalculateTransitAspectsResponse;
+
+	test('draws the cusps and the horizon the response itself carries, with no props at all', async () => {
+		const el = await mount(withChart());
+		const r = root(el);
+
+		const lines = [...r.querySelectorAll('line.house-cusp')];
+		expect(lines.length).toBe(12);
+		for (const [i, cusp] of CUSPS.entries()) {
+			const outer = expected(cusp.longitude, BAND_R, PAYLOAD_ASC);
+			expect(num(lines[i] ?? null, 'x2'), `cusp ${cusp.number} x`).toBeCloseTo(
+				outer.x,
+				6,
+			);
+			expect(num(lines[i] ?? null, 'y2'), `cusp ${cusp.number} y`).toBeCloseTo(
+				outer.y,
+				6,
+			);
+		}
+
+		// The sectors stay UNEQUAL, so an equal-house fallback dressed in the same
+		// cusp count cannot pass this.
+		const angleOf = (n: Element | null) =>
+			(Math.atan2(num(n, 'y2') - CENTER, num(n, 'x2') - CENTER) * 180) /
+			Math.PI;
+		const spans = lines.map((_, i) => {
+			let d = angleOf(lines[i] ?? null) - angleOf(lines[(i + 1) % 12] ?? null);
+			while (d < 0) d += 360;
+			return Math.round(d % 360);
+		});
+		expect(spans).toEqual([40, 20, 30, 30, 30, 30, 40, 20, 30, 30, 30, 30]);
+
+		// The wheel turned onto the payload ASCENDANT, not onto cusp 1: a body at
+		// 340 would sit on the left horizon, and the natal Sun at 0 Aries sits 20
+		// degrees round from it. Orienting on cusp 1 (350) puts it 10 degrees away.
+		const sun = expected(0, NATAL_R, PAYLOAD_ASC);
+		expect(num(glyph(el, 'Natal', 'Sun'), 'x')).toBeCloseTo(sun.x, 6);
+		expect(num(glyph(el, 'Natal', 'Sun'), 'y')).toBeCloseTo(sun.y, 6);
+		expect(num(glyph(el, 'Natal', 'Sun'), 'x')).not.toBeCloseTo(
+			expected(0, NATAL_R, 350).x,
+			3,
+		);
+
+		// And the card says both facts, with the source named: a reader
+		// reconciling against another calculator needs to know these cusps are the
+		// ones the endpoint numbered the bodies against.
+		expect(
+			[...r.querySelectorAll('text.axis-label')].map((n) => n.textContent),
+		).toEqual(['ASC', 'DSC']);
+		const legend = r.querySelector('[part~="legend"]')?.textContent ?? '';
+		expect(legend).toContain('Ascendant on the left horizon');
+		expect(legend).toContain('House cusps from the response');
+		expect(legend).not.toContain('House cusps supplied by the page');
+		expect(legend).not.toContain('No house cusps');
+		el.remove();
+	});
+
+	/** The props are OVERRIDES, not a fallback: a page that passes one has said something the response cannot know, and preferring the payload would make both props dead on exactly the responses that carry the fields. */
+	test('the page props still outrank the ones the response carries', async () => {
+		const shifted = CUSPS.map((c) => ({ ...c, longitude: c.longitude + 5 }));
+		const el = await mount(
+			withChart(),
+			{ ascendant: '90' },
+			{ houses: shifted },
+		);
+		const r = root(el);
+
+		// Both overrides took effect at once: the first cusp is the SHIFTED 355,
+		// placed against the PROP ascendant 90.
+		const first = expected(355, BAND_R, 90);
+		const line = r.querySelectorAll('line.house-cusp')[0] ?? null;
+		expect(num(line, 'x2')).toBeCloseTo(first.x, 6);
+		expect(num(line, 'y2')).toBeCloseTo(first.y, 6);
+		// Neither payload value leaked in.
+		expect(num(line, 'x2')).not.toBeCloseTo(
+			expected(350, BAND_R, PAYLOAD_ASC).x,
+			3,
+		);
+		expect(num(glyph(el, 'Natal', 'Moon'), 'x')).toBeCloseTo(
+			CENTER - NATAL_R,
+			6,
+		);
+		expect(r.querySelector('[part~="legend"]')?.textContent ?? '').toContain(
+			'House cusps supplied by the page',
+		);
+		el.remove();
+	});
+
+	/** Each prop overrides on its own, so a page that holds only one of the two does not lose the other. */
+	test('one prop overrides without discarding the payload half beside it', async () => {
+		// Ascendant prop only: the response cusps still draw, turned onto 90.
+		const ascOnly = await mount(withChart(), { ascendant: '90' });
+		const line = root(ascOnly).querySelectorAll('line.house-cusp')[0] ?? null;
+		const viaProp = expected(350, BAND_R, 90);
+		expect(num(line, 'x2')).toBeCloseTo(viaProp.x, 6);
+		expect(
+			root(ascOnly).querySelector('[part~="legend"]')?.textContent ?? '',
+		).toContain('House cusps from the response');
+		ascOnly.remove();
+
+		// Cusp prop only: the response ASCENDANT still orients the wheel, so the
+		// shifted cusp 1 lands where 355 falls against 340, not on the horizon.
+		const cuspsOnly = await mount(
+			withChart(),
+			{},
+			{ houses: CUSPS.map((c) => ({ ...c, longitude: c.longitude + 5 })) },
+		);
+		const shiftedFirst = expected(355, BAND_R, PAYLOAD_ASC);
+		const shiftedLine =
+			root(cuspsOnly).querySelectorAll('line.house-cusp')[0] ?? null;
+		expect(num(shiftedLine, 'x2')).toBeCloseTo(shiftedFirst.x, 6);
+		expect(
+			[...root(cuspsOnly).querySelectorAll('text.axis-label')].map(
+				(n) => n.textContent,
+			),
+		).toEqual(['ASC', 'DSC']);
+		cuspsOnly.remove();
+	});
+
+	/** A malformed override is rejected whole rather than falling through to the payload: the page overrode the response on purpose, and quietly drawing the response cusps under a bad override is a third chart neither source asked for. */
+	test('a malformed cusp prop is not quietly replaced by the response cusps', async () => {
+		const el = await mount(withChart(), {}, { houses: CUSPS.slice(0, 11) });
+		const r = root(el);
+		expect(r.querySelector('line.house-cusp')).toBeNull();
+		expect(r.querySelector('text.house-num')).toBeNull();
+		expect(r.querySelector('[part~="legend"]')?.textContent ?? '').toContain(
+			'No house cusps',
+		);
+		// The ascendant half is untouched by the bad cusp override.
+		const sun = expected(0, NATAL_R, PAYLOAD_ASC);
+		expect(num(glyph(el, 'Natal', 'Sun'), 'x')).toBeCloseTo(sun.x, 6);
+		el.remove();
+	});
+
+	/** Half a frame is still honest: each field stands alone, and the captions say exactly which of the two arrived. */
+	test('a payload carrying only one of the two says so and draws only that', async () => {
+		const ascOnly = await mount(withChart({ houses: undefined }));
+		expect(root(ascOnly).querySelector('line.house-cusp')).toBeNull();
+		expect(
+			[...root(ascOnly).querySelectorAll('text.axis-label')].map(
+				(n) => n.textContent,
+			),
+		).toEqual(['ASC', 'DSC']);
+		const ascLegend =
+			root(ascOnly).querySelector('[part~="legend"]')?.textContent ?? '';
+		expect(ascLegend).toContain('Ascendant on the left horizon');
+		expect(ascLegend).toContain('No house cusps');
+		ascOnly.remove();
+
+		const cuspsOnly = await mount(withChart({ ascendant: undefined }));
+		expect(root(cuspsOnly).querySelectorAll('line.house-cusp').length).toBe(12);
+		expect(root(cuspsOnly).querySelector('text.axis-label')).toBeNull();
+		const cuspLegend =
+			root(cuspsOnly).querySelector('[part~="legend"]')?.textContent ?? '';
+		expect(cuspLegend).toContain('First house cusp on the left horizon');
+		expect(cuspLegend).toContain('House cusps from the response');
+		// Cusp 1 is on the left horizon, which is the documented fallback when no
+		// Ascendant is available from either source.
+		const line = root(cuspsOnly).querySelectorAll('line.house-cusp')[0] ?? null;
+		expect(num(line, 'x2')).toBeCloseTo(CENTER - BAND_R, 6);
+		cuspsOnly.remove();
 	});
 
 	test('renders the summary counts, the byType map and the strongest contact', async () => {

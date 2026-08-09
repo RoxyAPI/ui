@@ -139,6 +139,8 @@ export const es: Record<ChromeString, string> = {
 		'Rueda de signos, 0° Aries a la izquierda',
 	'House cusps supplied by the page':
 		'Cúspides de casas proporcionadas por la página',
+	'House cusps from the response':
+		'Cúspides de casas incluidas en la respuesta',
 	'No house cusps': 'Sin cúspides de casas',
 
 	'Transit aspect summary': 'Resumen de aspectos de tránsito',

@@ -122,6 +122,7 @@ export const fr: Record<ChromeString, string> = {
 	'First house cusp on the left horizon': 'Cuspide de la maison 1 à gauche',
 	'Sign wheel, 0° Aries on the left': 'Roue des signes, 0° Bélier à gauche',
 	'House cusps supplied by the page': 'Cuspides de maison fournies par la page',
+	'House cusps from the response': 'Cuspides de maison issues de la réponse',
 	'No house cusps': 'Aucune cuspide de maison',
 
 	'Transit aspect summary': 'Résumé des aspects de transits',

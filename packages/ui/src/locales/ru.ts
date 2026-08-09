@@ -122,6 +122,7 @@ export const ru: Record<ChromeString, string> = {
 		'Куспид первого дома слева на горизонте',
 	'Sign wheel, 0° Aries on the left': 'Зодиакальный круг, 0° Овна слева',
 	'House cusps supplied by the page': 'Куспиды домов заданы страницей',
+	'House cusps from the response': 'Куспиды домов из ответа',
 	'No house cusps': 'Без куспидов домов',
 
 	'Transit aspect summary': 'Сводка транзитных аспектов',

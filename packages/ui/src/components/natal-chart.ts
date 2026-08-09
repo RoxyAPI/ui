@@ -591,7 +591,13 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				}
 			</div>
 			${this.renderDetails()}
-			${this.renderPatterns()}
+			${
+				// Ungated on purpose. The figures are chart geometry, not a reading, and
+				// only the paragraph inside each card answers to hide-readings. Do NOT
+				// wrap this call in the flag: the reasoning, and the escape hatch for a
+				// page that wants the block gone anyway, are on renderPatterns.
+				this.renderPatterns()
+			}
 			${this.renderInterpretations()}
 		</div>`;
 	}
@@ -1073,6 +1079,10 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 *
 	 * @remarks
 	 * A pattern carries no localized partner for its `name`, `element`, `modality` or its `planets` list, so all four render English on every page. Do NOT translate the chips by looking each body up in `planets[].nameLocalized`: the response is the authority for its own vocabulary, and a second translation of the same fact assembled here is exactly what can end up disagreeing with the wheel beside it.
+	 *
+	 * **This block is DATA, so `hide-readings` thins it rather than removing it, and that split is deliberate.** A T-Square is a geometric fact about where the bodies sit, exactly like the aspect rows and the house cusps: the figure, its element and modality, its tightness and its planets are all measurements, and the only reading in the card is the paragraph, which {@link RoxyNatalChart.renderPattern} already drops. The line is the one the library states everywhere else and the one the docs promise: "wheels, maps, tables, grids, legends, badges and every number stay, the interpretive prose goes". `<roxy-aspects-table>` renders this identical `patterns` payload and makes the identical cut, so gating the whole block here would make the same figure appear and disappear depending on which component a page reached for.
+	 *
+	 * **A page that wants the block gone entirely has a lever, and it is not this flag.** The section carries `part="section patterns"`, so `roxy-natal-chart::part(patterns) { display: none }` removes it. That is the documented answer for dropping a block of DATA, the same way `::part(readings)` styles the interpretation; `hide-readings` is the answer for prose, and stretching it to cover measurements would leave a practitioner with no way to publish the figures without the words.
 	 */
 	private renderPatterns() {
 		const patterns = this.data?.patterns ?? [];
