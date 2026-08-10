@@ -347,6 +347,34 @@
       }
     },
     {
+      "tag": "roxy-ephemeris-table",
+      "pascal": "RoxyEphemerisTable",
+      "slug": "ephemeris-table",
+      "domain": "Cross",
+      "renders": "Per-body sign changes and retrograde windows for the month, over the full daily position grid",
+      "endpointLabel": "POST /astrology/planets/monthly, /vedic-astrology/planetary-positions/monthly",
+      "endpoints": [
+        {
+          "operationId": "getMonthlyTropicalEphemeris",
+          "method": "POST",
+          "path": "/astrology/planets/monthly"
+        },
+        {
+          "operationId": "getMonthlyEphemeris",
+          "method": "POST",
+          "path": "/vedic-astrology/planetary-positions/monthly"
+        }
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ephemeris-table data-endpoint=\"astrology/planets/monthly\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-ephemeris-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ephemeris-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.26.0/assets/previews/ephemeris-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.26.0/assets/previews/ephemeris-table-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-fixed-stars",
       "pascal": "RoxyFixedStars",
       "slug": "fixed-stars",

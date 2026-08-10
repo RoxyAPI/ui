@@ -49,15 +49,29 @@ export function formatSignPosition(longitude: number): string {
 	return `${degree}° ${sign} ${String(minute).padStart(2, '0')}'`;
 }
 
+/**
+ * A within-sign decimal degree (0-30) split into whole degrees and minutes, with the rounding carry already applied.
+ *
+ * @remarks
+ * Separate from {@link formatDegreeInSign} because a printed ephemeris interleaves the sign BETWEEN the two halves (`09♌56`, the form every published ephemeris has used for a century) rather than putting the sign beside a finished `9°56'`. Rounding 59.6 minutes up has to roll the degree with it, and that carry is the part a caller gets wrong, so it lives here once and both forms read it.
+ */
+export function splitDegreeInSign(deg: number): {
+	degree: number;
+	minute: number;
+} {
+	let degree = Math.floor(deg);
+	let minute = Math.round((deg - degree) * 60);
+	if (minute === 60) {
+		minute = 0;
+		degree += 1;
+	}
+	return { degree, minute };
+}
+
 /** Format a within-sign decimal degree (0-30) as degree-and-minute, e.g. 17.99 to "17°59'". The reference-grade form astrologers read when the sign is already known (asteroids, lots, directed points, fixed stars). */
 export function formatDegreeInSign(deg: number): string {
-	let d = Math.floor(deg);
-	let m = Math.round((deg - d) * 60);
-	if (m === 60) {
-		m = 0;
-		d += 1;
-	}
-	return `${d}°${String(m).padStart(2, '0')}'`;
+	const { degree, minute } = splitDegreeInSign(deg);
+	return `${degree}°${String(minute).padStart(2, '0')}'`;
 }
 
 /**

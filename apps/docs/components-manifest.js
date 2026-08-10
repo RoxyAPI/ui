@@ -34,6 +34,16 @@ const DASHA_BODY = {
 	significators: true,
 };
 
+/**
+ * The month both ephemeris cards request. Fixed rather than "the month in progress"
+ * (which the API defaults to when year and month are omitted) so the demo, the
+ * captured sample and the preview image all describe the same 31 days: this month
+ * carries a solar ingress, two Mercury ingresses, a mid-month Chiron station and
+ * four bodies retrograde throughout, so every render branch on the card has data.
+ * Keep in sync with scripts/refresh-samples.ts.
+ */
+const EPHEMERIS_MONTH = { year: 2026, month: 8 };
+
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
 const UI_CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
 // Must match PK_PLACEHOLDER in scripts/widget-snippets.ts, which produces the snippets.
@@ -261,6 +271,29 @@ window.ROXY_UI_DEMOS = [
 		seoLine: 'The seven Hermetic lots with their sect-aware formulas',
 		sdkCall: `  const { data } = await roxy.astrology.calculateArabicLots({
     body: ${JSON.stringify(PERSON1, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	entry({
+		id: 'ephemeris',
+		tag: 'roxy-ephemeris-table',
+		heading: 'Ephemeris',
+		topic: 'Astrology',
+		seoLine: 'Monthly ephemeris: daily tropical positions with sign changes and retrogrades',
+		sdkCall: `  const { data } = await roxy.astrology.getMonthlyTropicalEphemeris({
+    body: ${JSON.stringify(EPHEMERIS_MONTH, null, 2).replace(/\n/g, '\n    ')},
+  });`,
+	}),
+	// The second shape the one table renders: nine Navagraha instead of fourteen
+	// Western bodies, Rahu and Ketu instead of the lunar nodes. Without this card
+	// the sidereal roster is never rendered on the showcase or walked by the audit.
+	entry({
+		id: 'ephemeris-vedic',
+		tag: 'roxy-ephemeris-table',
+		heading: 'Ephemeris (Navagraha)',
+		topic: 'Astrology',
+		seoLine: 'Monthly Navagraha ephemeris: daily sidereal positions with sign changes and retrogrades',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getMonthlyEphemeris({
+    body: ${JSON.stringify(EPHEMERIS_MONTH, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({

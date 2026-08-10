@@ -36,7 +36,18 @@
  *
  * `Signature` is `Подпись типа`, and the extra word is deliberate. `Подпись` alone is the Russian UI word for a caption, and this string is a pill sitting under a chart, which is precisely the slot where a reader resolves a label to the wrong thing correctly. `подпись Типа` is the attested full phrase and carries no such reading.
  *
- * Rejected against sources, so nobody restores them: `Сигнатура` for the signature (no attestation in any Russian Human Design source read here, against three that print `подпись`), `Основание` for the PHS Base (attested at realfaq as a synonym, but neuter, and every base name the API returns is feminine), `Определение` for `Definition` (above), and `Врата` for the gates. **That last one is the one open caveat and it is a divergence, not an oversight:** the API's own gate prose writes `врата`, while humdes, hdeducation, lybomudr, ihumandesign and human-design.space all print `Ворота`, so the chrome follows the five sources and the card ends up carrying both forms. They are register variants of one word, not two concepts, which is why this was left to stand rather than fixed from the wrong repo.
+ * Rejected against sources, so nobody restores them: `Сигнатура` for the signature (no attestation in any Russian Human Design source read here, against three that print `подпись`), `Основание` for the PHS Base (attested at realfaq as a synonym, but neuter, and every base name the API returns is feminine), `Определение` for `Definition` (above), and `Врата` for the gates. **That last one is the one open caveat and it is a divergence, not an oversight:** the API's own gate prose writes `врата`, while humdes, hdeducation, lybomudr, ihumandesign and human-design.space all print `Ворота`, so the chrome follows the five sources and the card ends up carrying both forms. They are register variants of one word, not two concepts, which is why this was left to stand rather than fixed from the wrong repo. *
+ * ## Monthly ephemeris
+ *
+ * **`Эфемериды`, always plural.** astro.com.ru heads its page `Эфемериды` and explains it as `Эфемериды показывают, где сейчас находится каждая планета: в каком знаке зодиака и на каком градусе`, and its ephemeris page describes exactly this component: `Введите любой месяц ... получите полную таблицу позиций планет на каждый день этого месяца`, which is where `Положения планет по дням` comes from. The singular `эфемерида` was rejected because every loaded page uses the plural and the singular reads as one row rather than the table. `Положение планет` singular is what astro-seek uses for its NOW page, so the plural is what separates a per-day table from a snapshot.
+ *
+ * **`Вход в знаки` for the section, not `Ингрессии`.** Astro-Seek heads its own monthly calendar `Ретроградное движение, Вход в знаки, Полнолуния` and reserves `Ингрессии` for its professional calculator, where the astrologer AstroNavigator has to gloss it with its Latin etymology (`Ингрессия планеты (от лат ingressio - вхождение)`). `Транзиты` was rejected for this slot: astro.com.ru sells Транзиты as aspects to a natal chart, so an ingress list under that label reads as a personal forecast. `Ретроградные периоды` is a section heading on astro.com.ru and the phrasing mirkosmosa.ru uses (`период ретроградного или директного движения`).
+ *
+ * **The ingress string is nominal because the verb inflects the sign.** Astro-Seek prints `Меркурий входит в Льва` and `Меркурий входит в Девы`, which are two different cases of two different signs, so `входит в {{sign}}` fed a bare nominative name produces wrong Russian for every sign. `Вход в знак {{sign}}` puts the sign in apposition to the inanimate masculine `знак`, which takes the same form in the accusative, so all twelve stay in the nominative the API sends.
+ *
+ * **`Ретроградный период` rather than the bare adjective**, for the reason the Portuguese catalogue uses a noun: `ретроградный` agrees in gender with whatever it sits under and this card also prints the lunar nodes. `Дата` is the column header Astro-Seek, AstroNavigator and kakras.ru all use above a column of dates; `Число` was rejected as it reads as a count.
+ *
+ * The empty state and the table caption are COMPOSED rather than lifted, following the patterns already in this file; no astrology page publishes either.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -145,6 +156,16 @@ export const ru: Record<ChromeString, string> = {
 	Impact: 'Влияние',
 	Timing: 'Длительность',
 	Guidance: 'Рекомендации',
+
+	Ephemeris: 'Эфемериды',
+	'No ephemeris data': 'Нет данных эфемерид',
+	'Sign changes and retrograde periods': 'Вход в знаки и ретроградные периоды',
+	'Daily positions': 'Положения планет по дням',
+	Date: 'Дата',
+	'Enters {{sign}} on {{date}}': 'Вход в знак {{sign}}, {{date}}',
+	'Retrograde {{range}}': 'Ретроградный период {{range}}',
+	'Every body with its position on each day of the month, as a zodiac sign and a degree.':
+		'Каждый объект с его положением на каждый день месяца, указано знаком зодиака и градусом.',
 
 	'Nested data omitted': 'Вложенные данные не отображаются',
 	'Generic data display': 'Отображение данных',

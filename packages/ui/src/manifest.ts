@@ -193,6 +193,20 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Astrology',
 	},
 	{
+		pascal: 'RoxyEphemerisTable',
+		tag: 'roxy-ephemeris-table',
+		slug: 'ephemeris-table',
+		heading: 'Ephemeris',
+		description:
+			'Monthly ephemeris: every body day by day, with each sign change and retrograde stretch called out',
+		docsLabel: 'Cross',
+		endpointLabel:
+			'POST /astrology/planets/monthly, /vedic-astrology/planetary-positions/monthly',
+		docsSummary:
+			'Per-body sign changes and retrograde windows for the month, over the full daily position grid',
+		topic: 'Astrology',
+	},
+	{
 		pascal: 'RoxyFixedStars',
 		tag: 'roxy-fixed-stars',
 		slug: 'fixed-stars',

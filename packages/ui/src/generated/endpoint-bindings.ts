@@ -280,6 +280,18 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/dreams/symbols',
 		},
 	],
+	'roxy-ephemeris-table': [
+		{
+			operationId: 'getMonthlyTropicalEphemeris',
+			method: 'POST',
+			path: '/astrology/planets/monthly',
+		},
+		{
+			operationId: 'getMonthlyEphemeris',
+			method: 'POST',
+			path: '/vedic-astrology/planetary-positions/monthly',
+		},
+	],
 	'roxy-fixed-stars': [
 		{
 			operationId: 'generateFixedStars',

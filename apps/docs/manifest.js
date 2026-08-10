@@ -133,6 +133,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Astrology"
   },
   {
+    "pascal": "RoxyEphemerisTable",
+    "tag": "roxy-ephemeris-table",
+    "slug": "ephemeris-table",
+    "heading": "Ephemeris",
+    "description": "Monthly ephemeris: every body day by day, with each sign change and retrograde stretch called out",
+    "docsLabel": "Cross",
+    "endpointLabel": "POST /astrology/planets/monthly, /vedic-astrology/planetary-positions/monthly",
+    "docsSummary": "Per-body sign changes and retrograde windows for the month, over the full daily position grid",
+    "topic": "Astrology"
+  },
+  {
     "pascal": "RoxyFixedStars",
     "tag": "roxy-fixed-stars",
     "slug": "fixed-stars",
@@ -952,6 +963,18 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "path": "/dreams/symbols"
     }
   ],
+  "roxy-ephemeris-table": [
+    {
+      "operationId": "getMonthlyTropicalEphemeris",
+      "method": "POST",
+      "path": "/astrology/planets/monthly"
+    },
+    {
+      "operationId": "getMonthlyEphemeris",
+      "method": "POST",
+      "path": "/vedic-astrology/planetary-positions/monthly"
+    }
+  ],
   "roxy-fixed-stars": [
     {
       "operationId": "generateFixedStars",
@@ -1631,6 +1654,10 @@ window.ROXY_WIDGET_SNIPPETS = {
   "roxy-positions-table": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-positions-table data-endpoint=\"astrology/asteroids\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-positions-table>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"positions-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-ephemeris-table": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ephemeris-table data-endpoint=\"astrology/planets/monthly\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-ephemeris-table>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ephemeris-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
   "roxy-fixed-stars": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-fixed-stars data-endpoint=\"astrology/fixed-stars\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-fixed-stars>",

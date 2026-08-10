@@ -39,6 +39,10 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	generateProgressions: [{ component: 'roxy-positions-table' }],
 	generateSolarArc: [{ component: 'roxy-positions-table' }],
 	calculateArabicLots: [{ component: 'roxy-positions-table' }],
+	// Both monthly ephemerides return the same shape, so one table serves both.
+	// The Western one is declared first, which is what makes it the widget
+	// default (declaration order, never sorted).
+	getMonthlyTropicalEphemeris: [{ component: 'roxy-ephemeris-table' }],
 	generateFixedStars: [{ component: 'roxy-fixed-stars' }],
 	generateProfections: [{ component: 'roxy-profection-card' }],
 	calculateCompatibility: [
@@ -93,6 +97,9 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	// same `.chart`, and the component reads `data.chart.meta`, so the whole
 	// response binds as-is. D9 is just the divisional chart the API names.
 	generateNavamsa: [{ component: 'roxy-divisional-chart' }],
+	// The Navagraha half of the shared ephemeris table; the Western half is
+	// declared above and stays the widget default.
+	getMonthlyEphemeris: [{ component: 'roxy-ephemeris-table' }],
 	generateKpChart: [{ component: 'roxy-kp-chart' }],
 	getKpPlanets: [{ component: 'roxy-kp-planets-table' }],
 	getKpRulingPlanets: [{ component: 'roxy-kp-ruling-planets' }],

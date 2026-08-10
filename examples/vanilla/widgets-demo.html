@@ -58,6 +58,18 @@
 		></div>
 	</div>
 
+	<div class="card">
+		<h2>Zero-attribute widget: this month's ephemeris</h2>
+		<p>Nothing about this request is per visitor, so the tag carries no <code>data-*</code>
+		beyond the key: it fetches on mount and renders the month in progress, and the page
+		stays current with no redeploy. Point it at
+		<code>vedic-astrology/planetary-positions/monthly</code> instead for the Navagraha.</p>
+		<div
+			data-roxy-widget="ephemeris-table"
+			data-publishable-key="pk_live_replace_with_your_key"
+		></div>
+	</div>
+
 	<script src="../../packages/ui/dist/cdn/widgets.js"></script>
 </body>
 </html>

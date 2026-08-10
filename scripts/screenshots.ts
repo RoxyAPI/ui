@@ -36,6 +36,7 @@ const TARGETS: Target[] = [
 	{ id: 'local-space', label: 'local-space-compass' },
 	{ id: 'relocation', label: 'relocation-wheel' },
 	{ id: 'asteroids', label: 'positions-table' },
+	{ id: 'ephemeris', label: 'ephemeris-table' },
 	{ id: 'fixed-stars', label: 'fixed-stars' },
 	{ id: 'profections', label: 'profection-card' },
 	{ id: 'moon', label: 'moon-phase' },

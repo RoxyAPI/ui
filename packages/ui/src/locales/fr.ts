@@ -10,7 +10,7 @@
  *
  * **`roue` is the only wheel noun in this file, deliberately.** French astrology software says `double roue` (Auréas) and the French astrology web says `double carte` (Astrotheme) for the same drawing; both are attested, and forking to `carte` inside one component would leave the library with two nouns for one thing. Nothing about `double roue` is canonical the way `bi-wheel` is in English, so this is a consistency choice rather than a term of art.
  *
- * **`Aspects composés` replaced `Configurations du thème` on 2026-08-09, and the Spanish fix for the same string does NOT transfer here.** The Spanish entry back-translated to "chart SETTINGS" and a live agency emailed asking us to hide his own T-Squares; Spanish resolved it with `Figuras planetarias`. In French that answer is actively wrong: `figures` and `dessins planétaires` name the whole-chart shapes (Bol, Seau, Éclaboussure, Locomotive), one level up from the chips in this block. French sorts our exact set under `aspects composés`, and both sources say so beside our own list: astrotheme.fr, `certains groupes isolés de planètes créent parfois des configurations spéciales : c est ce que l on appelle les aspects composés`, and autourdelalune, `l étude du dessin planétaire ainsi que celle des aspects composés`. `Configurations planétaires` is attested for the same figures and was the runner-up; it lost for keeping the `configuration` stem, which in French software is exactly the settings word (`panneau de configuration`, `configuration des thèmes`), and that stem is what produced the support ticket in Spanish.
+ * **`Aspects composés` replaced `Configurations du thème` on 2026-08-09, and the Spanish fix for the same string does NOT transfer here.** The Spanish entry back-translated to "chart SETTINGS", so a reader took the block for a preferences panel and looked for a way to switch it off; Spanish resolved it with `Figuras planetarias`. In French that answer is actively wrong: `figures` and `dessins planétaires` name the whole-chart shapes (Bol, Seau, Éclaboussure, Locomotive), one level up from the chips in this block. French sorts our exact set under `aspects composés`, and both sources say so beside our own list: astrotheme.fr, `certains groupes isolés de planètes créent parfois des configurations spéciales : c est ce que l on appelle les aspects composés`, and autourdelalune, `l étude du dessin planétaire ainsi que celle des aspects composés`. `Configurations planétaires` is attested for the same figures and was the runner-up; it lost for keeping the `configuration` stem, which in French software is exactly the settings word (`panneau de configuration`, `configuration des thèmes`), and that stem is what made the Spanish entry misread.
  *
  * **`le thème` was removed from the out-of-sign tooltip in the same pass, and it was a second live mistranslation rather than a style fix.** French astrology reserves `le thème` for the birth chart itself, so `le thème demeure donc mais agit plus faiblement` read as "the birth chart persists but acts more weakly", which is nonsense. The English `theme` meant the pattern character. `qui reste donc valable` now refers unambiguously to `la configuration`.
  *
@@ -38,7 +38,20 @@
  *
  * **The two low-confidence warnings and the knife-edge string were rewritten around the same elision the rest of this file already routes around.** A literal `proche d'une limite` and `Vérifiez l'heure de naissance exacte` each force an apostrophe, so both became telegraphic labels instead, `heure de naissance en limite de couleur ou de ton` and `Heure de naissance exacte à vérifier`, the same technique lines 9 and 15 already use for `orbe` and `apex`. `Knife-edge` is the attested French idiom `sur le fil du rasoir` rather than an invented literal calque.
  *
- * **`Ligne Personnalité` and `Ligne Design` have no attested source as a fixed compact label.** The underlying concept, the conscious line in black versus the unconscious line in red, is well attested (elisasorci.fr, alinemaurer.com) but not this exact compact tile pairing, so the two are built compositionally from `Ligne` and the already-attested side names `Personnalité`/`Design` and want a native Human Design reader's pass. `Chart sides` (`Côtés du thème`) is not compositional in the same risky sense: it reuses `côté`, the API locale's own word for a chart side (`Le côté conscient`, `Le côté inconscient`), over `thème`, which both the API locale and this file already use for the whole chart.
+ * **`Ligne Personnalité` and `Ligne Design` have no attested source as a fixed compact label.** The underlying concept, the conscious line in black versus the unconscious line in red, is well attested (elisasorci.fr, alinemaurer.com) but not this exact compact tile pairing, so the two are built compositionally from `Ligne` and the already-attested side names `Personnalité`/`Design` and want a native Human Design reader's pass. `Chart sides` (`Côtés du thème`) is not compositional in the same risky sense: it reuses `côté`, the API locale's own word for a chart side (`Le côté conscient`, `Le côté inconscient`), over `thème`, which both the API locale and this file already use for the whole chart. *
+ * ## Monthly ephemeris
+ *
+ * **`Éphémérides` is settled by the two authorities above astrology.** The CNRS lexical database gives `ÉPHÉMÉRIDE, subst. fém.` and defines it as `Tables où sont indiquées jour par jour la position des astres et des planètes ... utilisées par les astronomes, les astrologues et les marins` (cnrtl.fr), and the French national ephemeris institute heads its own table `EPHEMERIDES DE POSITION` and writes `Les éphémérides ci-dessus sont approchées` (promenade.imcce.fr), which also pins the feminine plural agreement. **`Efemérides` on fr.astro-seek.com is Spanish leakage in a French build and is not evidence.**
+ *
+ * **`Changements de signe` over `ingrès`.** `Ingrès` is real French astrology vocabulary, attested on astro.com/free/free_chart_f.htm (`des éphémérides pour les éclipses, les ingrès de la Lune`), in dictionnaire-astrologie.com as its own headword, and by the astrologer Nicolas Giraud (`la force du printemps arrive en puissance avec l ingrès du Soleil en Bélier`). It is rejected anyway on two counts: it is insider vocabulary a lay reader does not carry, and its own practitioners disagree about the accent, with `ingrés` in print elsewhere. `Rétrogradations` is a section heading on astroastro.fr.
+ *
+ * **`Entrée en {{sign}} le {{date}}` substitutes safely for all twelve.** astrotheme writes `son entrée en Balance`, astroastro.fr uses the literal column header `Entre en`, and planeteastrologie.com prints the dated form verbatim: `La Lune entre en Cancer le 9.8.2026 à 7:45 am UTC`. Every French sign name begins with a consonant and `en` never elides, so no exception table is needed. `Positions planétaires` is a table heading on planeteastrologie.com and a section heading on formation-astrologie.com and astrotheme.
+ *
+ * `Date` is identical to the English and is the real French word; every French table this was checked against pairs it with `Heure`, never with `Temps`.
+ *
+ * **The empty state is deliberately generic, and that is a two-part decision.** French elision would make it `Aucune donnée d ephemerides`, and the brand rule banning apostrophes is an ENGLISH typography convention that cannot be applied to a mandatory French elision without producing broken text; and the singular `éphéméride` is everyday French for a tear-off desk calendar, which is exactly the false-friend shape this catalogue exists to avoid. `Aucune donnée disponible` sidesteps both, at the cost of not naming the card. It is the same routing this file already documents for `orbe` and `apex`. If a future string needs an article before a vowel, say so rather than mangling the French.
+ *
+ * The empty state and the table caption are COMPOSED rather than lifted; no astrology page publishes either. The vocabulary in both is sourced, the sentence frame is judgement.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -145,6 +158,17 @@ export const fr: Record<ChromeString, string> = {
 	Impact: 'Effets',
 	Timing: 'Durée',
 	Guidance: 'Conseils',
+
+	Ephemeris: 'Éphémérides',
+	'No ephemeris data': 'Aucune donnée disponible',
+	'Sign changes and retrograde periods':
+		'Changements de signe et rétrogradations',
+	'Daily positions': 'Positions planétaires au quotidien',
+	Date: 'Date',
+	'Enters {{sign}} on {{date}}': 'Entrée en {{sign}} le {{date}}',
+	'Retrograde {{range}}': 'Rétrograde {{range}}',
+	'Every body with its position on each day of the month, as a zodiac sign and a degree.':
+		'Chaque astre avec sa position à chaque jour du mois, indiquée en signe du zodiaque et en degré.',
 
 	'Nested data omitted': 'Données imbriquées omises',
 	'Generic data display': 'Affichage générique de données',

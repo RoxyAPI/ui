@@ -445,6 +445,23 @@ async function main() {
 				timezone: PERSON1.timezone,
 			}),
 		),
+		// A fixed year and month rather than the month in progress, which is what
+		// the API returns when both are omitted: the demo, the captured sample and
+		// the committed preview image all have to describe the same 31 days, and
+		// this month happens to carry a solar ingress, two Mercury ingresses, a
+		// mid-month Chiron station and four bodies retrograde throughout, so no
+		// render branch on the card is left without data. Keep in sync with
+		// EPHEMERIS_MONTH in apps/docs/components-manifest.js.
+		run('ephemeris', () =>
+			roxy.astrology.getMonthlyTropicalEphemeris({
+				body: { year: 2026, month: 8 },
+			}),
+		),
+		run('ephemeris-vedic', () =>
+			roxy.vedicAstrology.getMonthlyEphemeris({
+				body: { year: 2026, month: 8 },
+			}),
+		),
 		run('fixed-stars', () =>
 			rawPost('astrology/fixed-stars', {
 				date: PERSON1.date,

@@ -37,6 +37,33 @@ async function ready(page: import('@playwright/test').Page) {
 	}, WHEEL);
 }
 
+/**
+ * Re-assign the demo response with `houses` and `ascendant` removed, which is the
+ * shape `/astrology/transit-aspects` returned before it began carrying them.
+ *
+ * @remarks
+ * The captured sample now arrives WITH both, so the wheel draws real cusps off the
+ * response and the degraded state stopped being reachable from the live fixture. It
+ * still has to be covered: a proxy that trims fields, and any response a consumer
+ * stored before the fields shipped, land in exactly this branch, and the component
+ * promises to say `No house cusps` rather than invent a ring. Stripping the two
+ * fields is the only way to reach it now, and it is deliberately done from the REAL
+ * payload rather than a hand-written one so the rest of the response stays honest.
+ */
+async function stripHouses(page: import('@playwright/test').Page) {
+	await page.evaluate(async (sel) => {
+		const el = document.querySelector(sel) as HTMLElement & {
+			data: Record<string, unknown>;
+			updateComplete: Promise<unknown>;
+		};
+		const { houses, ascendant, ...rest } = el.data;
+		void houses;
+		void ascendant;
+		el.data = rest;
+		await el.updateComplete;
+	}, WHEEL);
+}
+
 /** Set a property on the element and wait for Lit to finish the re-render. */
 async function setProp(
 	page: import('@playwright/test').Page,
@@ -184,6 +211,10 @@ test('places the zodiac counterclockwise from 0 degrees Aries on the left', asyn
 	page,
 }) => {
 	await ready(page);
+	// The response now carries cusps, and a wheel with cusps rotates the first one
+	// onto the left horizon. The fixed zodiacal orientation is the UNROTATED state,
+	// so it is measured on the response that has neither cusps nor an ascendant.
+	await stripHouses(page);
 	const m = await page.evaluate(measure, WHEEL);
 	expect(m.signs.length).toBe(12);
 
@@ -237,6 +268,7 @@ test('a supplied ascendant rotates the wheel and marks the axis', async ({
 	page,
 }) => {
 	await ready(page);
+	await stripHouses(page);
 	const before = await page.evaluate(measure, WHEEL);
 	expect(before.axis).toEqual([]);
 	expect(before.legend).toContain('Sign wheel');
@@ -308,12 +340,23 @@ test('the live response fills the House columns with real, varied houses', async
 		for (const h of set) expect(Number(h)).toBeLessThanOrEqual(12);
 	}
 
-	// The system behind those numbers is named, and the wheel separately says it
-	// has no sectors to draw them in.
+	// The system behind those numbers is named, and the response now carries the
+	// cusps those numbers refer to, so the wheel draws the ring instead of saying
+	// it has none. Both halves are asserted: a legend that named a system while
+	// drawing no sectors was the honest state when the cusps were missing, and it
+	// would be a lie now that they are not.
 	expect(m.legend).toMatch(/(placidus|whole-sign|equal|koch) houses/);
-	expect(m.legend).toContain('No house cusps');
-	expect(m.cusps.length).toBe(0);
-	expect(m.houseNums.length).toBe(0);
+	expect(m.legend).toContain('House cusps from the response');
+	expect(m.legend).not.toContain('No house cusps');
+	expect(m.cusps.length).toBe(12);
+	expect(m.houseNums.length).toBe(12);
+
+	// And the degraded shape still says so, which is what a trimmed response gets.
+	await stripHouses(page);
+	const stripped = await page.evaluate(measure, WHEEL);
+	expect(stripped.legend).toContain('No house cusps');
+	expect(stripped.cusps.length).toBe(0);
+	expect(stripped.houseNums.length).toBe(0);
 });
 
 /**
@@ -325,6 +368,10 @@ test('cusps supplied by the page draw a real, unequal house ring', async ({
 	page,
 }) => {
 	await ready(page);
+	// The prop path in isolation: the response now carries its own cusps and its
+	// own ascendant, and an ascendant is what decides the rotation, so the supplied
+	// ring could not be measured against the horizon while both were present.
+	await stripHouses(page);
 	const CUSPS = [350, 30, 50, 80, 110, 140, 170, 210, 230, 260, 290, 320];
 	await setProp(
 		page,
@@ -373,6 +420,19 @@ test('cusps supplied by the page draw a real, unequal house ring', async ({
 	const restored = await page.evaluate(measure, WHEEL);
 	expect(restored.cusps.length).toBe(0);
 	expect(restored.legend).toContain('No house cusps');
+
+	// And the precedence, which only became reachable once the response grew cusps
+	// of its own: the page-supplied ring wins, and the legend says which one is on
+	// screen rather than leaving a reader to guess.
+	await ready(page);
+	await setProp(
+		page,
+		'houses',
+		CUSPS.map((longitude, i) => ({ number: i + 1, longitude })),
+	);
+	const both = await page.evaluate(measure, WHEEL);
+	expect(both.legend).toContain('House cusps supplied by the page');
+	expect(both.legend).not.toContain('House cusps from the response');
 });
 
 /**

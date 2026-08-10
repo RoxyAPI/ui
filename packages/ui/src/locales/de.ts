@@ -52,7 +52,18 @@
  *
  * **`Grenzfall` for the knife-edge warning has no attested German Human Design idiom**; searches for `auf der Kippe` and similar returned birth-time-precision advice but never a fixed phrase for a Color/Tone boundary. `Grenzfall` (borderline case) is plain, unambiguous German chosen to echo `Grenze` in the two `Low confidence` sentences immediately around it, the same deliberate cross-reference `es.ts` makes with `límite`.
  *
- * Rejected against sources, so nobody restores them: `Referenz` for the glossary card (attested German, but its dominant sense is a professional's recommendation, not a lookup entry); `Innere Autorität` for the authority tile (attested and common, but false for the API's `Mental` and `Lunar` values); `Base` for the PHS substructure layer (the wrong homograph, a chemistry alkali); `Körpergrafik` for the bodygraph card (real and widespread, beaten by the API's own sixteen inline uses of `Bodygraph`); and `Zenter` for center, which several community sites use but the API and this catalogue both spell `Zentrum`/`Zentren`.
+ * Rejected against sources, so nobody restores them: `Referenz` for the glossary card (attested German, but its dominant sense is a professional's recommendation, not a lookup entry); `Innere Autorität` for the authority tile (attested and common, but false for the API's `Mental` and `Lunar` values); `Base` for the PHS substructure layer (the wrong homograph, a chemistry alkali); `Körpergrafik` for the bodygraph card (real and widespread, beaten by the API's own sixteen inline uses of `Bodygraph`); and `Zenter` for center, which several community sites use but the API and this catalogue both spell `Zentrum`/`Zentren`. *
+ * ## Monthly ephemeris
+ *
+ * **`Ephemeriden` for the card and `Planetenstände` for the table, which is the split German astrology actually uses.** astrologie-schule.com publishes the tables under `Ephemeriden 2026` and calls the grid itself an `Ephemeridentabelle`; `Planetenstände` is the unanimous German heading over a positions table and `Tagespositionen` returned no heading attestation at all, so `Tägliche Planetenstände` keeps the attested head noun and carries the daily sense in a modifier. `Aktuelle Planetenstände` is attested and was rejected because it means CURRENT, which is wrong over a whole month.
+ *
+ * **`Zeichenwechsel` is settled by Astrodienst, which lists it as the synonym of the loanword**: astro.com/astrowiki/de/Ingress opens `Als "Ingress" bezeichnet man den Eintritt eines Planeten in ein neues Tierkreiszeichen` and gives `Synonym: Zeichenwechsel`. **`Ingresse` is rejected outright**, and the proof is that a German astrology portal glossary resolves the word to the mobile game (astroportal.com/wiki/ingress: `Ingress ist ein Spiel, das von Niantic entwickelt wurde`). `Rückläufigkeiten` is the same page family: astro.com/astrowiki/de/Rückläufigkeit heads its table columns `Beginn Rückläufigkeit (UT)` and `Ende Rückläufigkeit (UT)`. `Rücklauf` was rejected because DWDS gives it as the return rate of questionnaires.
+ *
+ * **`Wechsel in das Zeichen {{sign}}` exists because the obvious phrasing cannot be templated.** German ingress prose puts the sign in a gendered article and two of the twelve are weak nouns, so `wechselt in den Löwen` and `zum Schützen` inflect the very word the UI substitutes. Article-free calendar rows are the way out: mondrausch.com prints all twelve as `Sternzeichenwechsel Krebs → Löwe` and `Sternzeichenwechsel Skorpion → Schütze`, and astroschmid.ch uses the column header `Zeichenwechsel` with cells reading `Mond in Löwe`. Putting the sign in apposition to the neuter `Zeichen` keeps every one of the twelve in bare nominative. Both halves are attested (astro-mentoring.de, `in das erste Tierkreiszeichen Widder eintritt`; universumspost.de, `verlässt ... das Zeichen Fische`). `Eintritt {{sign}}` and `Wechsel zu {{sign}}` were rejected: the first is attested only with a preposition and an article, the second takes the dative and reintroduces `zum Löwen`.
+ *
+ * `Datum` is the plain column header. `Termine` was rejected for this slot: it is correct over a list of dated EVENTS, which is how astro.com/astrowiki/de/Rückläufigkeit uses it in `Zeiträume und Termine`, and wrong as the header of a column of calendar dates.
+ *
+ * Two of the eight are COMPOSED rather than lifted, because no astrology page publishes an empty state or a screen-reader caption: `Keine Ephemeridendaten` follows this file's other empty states and the table caption is the transit caption above it with the month clause swapped in.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -162,6 +173,16 @@ export const de: Record<ChromeString, string> = {
 	Impact: 'Wirkung',
 	Timing: 'Zeitraum',
 	Guidance: 'Empfehlung',
+
+	Ephemeris: 'Ephemeriden',
+	'No ephemeris data': 'Keine Ephemeridendaten',
+	'Sign changes and retrograde periods': 'Zeichenwechsel und Rückläufigkeiten',
+	'Daily positions': 'Tägliche Planetenstände',
+	Date: 'Datum',
+	'Enters {{sign}} on {{date}}': 'Wechsel in das Zeichen {{sign}} am {{date}}',
+	'Retrograde {{range}}': 'Rückläufig {{range}}',
+	'Every body with its position on each day of the month, as a zodiac sign and a degree.':
+		'Jeder Himmelskörper mit seiner Position an jedem Tag des Monats, als Tierkreiszeichen und Grad.',
 
 	'Nested data omitted': 'Verschachtelte Daten ausgelassen',
 	'Generic data display': 'Generische Datenanzeige',

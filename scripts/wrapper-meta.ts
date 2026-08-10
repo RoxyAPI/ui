@@ -36,6 +36,8 @@ export const DATA_TYPES: Record<string, string> = {
 	'relocation-wheel': 'RelocationChartResponse',
 	'positions-table':
 		'AsteroidsResponse | LilithResponse | ProgressionsResponse | SolarArcResponse | ArabicLotsResponse',
+	'ephemeris-table':
+		'GetMonthlyTropicalEphemerisResponse | GetMonthlyEphemerisResponse',
 	'fixed-stars': 'FixedStarsResponse',
 	'profection-card': 'ProfectionsResponse',
 	'western-planets-table': 'NatalChartResponse',
@@ -196,6 +198,14 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 			type: 'string',
 			comment:
 				'Override the auto-derived heading. Empty by default, in which case it is derived from the response shape (Asteroids, Black Moon Lilith, Secondary progressions, Solar arc directions, or Arabic lots).',
+		},
+	],
+	'ephemeris-table': [
+		{
+			prop: 'heading',
+			type: 'string',
+			comment:
+				'Card heading above the month. Defaults to "Ephemeris", translated into the page language like every other label the component writes.',
 		},
 	],
 	'tarot-catalog': [

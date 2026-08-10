@@ -44,7 +44,20 @@
  *
  * Rejected against sources, so nobody restores them: `Baz` for the Variables Base layer, which astrology-api.io prints but which reads as the chemistry sense, where humandesignhub.app writes `temeller` for the same 1-5 layer; `farkındalık soruları`, which perikulahci uses for exactly this open-centre prompt but which would collide with the `Farkındalık` chip printed beside it; and `Variable` as a loanword, which the API prose uses but which cannot inflect without the apostrophe this catalogue forbids, where `Değişken` is attested twice.
  *
- * **Thin, and wanting a native practitioner pass: Turkish Human Design writing online barely covers the Variables at all.** `Renk`, `Ton` and `Biliş` rest on astrology-api.io plus the RoxyAPI Turkish descriptions, which name Ton and Renk in running text and speak of bilişsel potansiyel. `Temel` for Base and `Yön` for the arrow direction are the plainest defensible Turkish and are attested in NO practitioner source. `Referans` and `Biyoloji` are ordinary Turkish rather than Human Design terms.
+ * **Thin, and wanting a native practitioner pass: Turkish Human Design writing online barely covers the Variables at all.** `Renk`, `Ton` and `Biliş` rest on astrology-api.io plus the RoxyAPI Turkish descriptions, which name Ton and Renk in running text and speak of bilişsel potansiyel. `Temel` for Base and `Yön` for the arrow direction are the plainest defensible Turkish and are attested in NO practitioner source. `Referans` and `Biyoloji` are ordinary Turkish rather than Human Design terms. *
+ * ## Monthly ephemeris
+ *
+ * **`Efemeris` is the Turkish spelling and the native gloss is a definition rather than a heading.** Astro-Seek heads its Turkish tables `Efemeris Tabloları` and captions each month `Efemeris - Ağustos 2026`, and the Psikolojik Astroloji Akademisi explains the word (`Latince "ephemeris", "günlük" anlamına gelmektedir. Efemerisin diğer adı gök günlüğüdür`). That sentence is also why the section below it can drop the word daily: the card title already carries it.
+ *
+ * **`Gezegen konumları` is the attested heading and the loss of `günlük` is deliberate.** astroloji.org heads its live table `Gezegen Konumları` and describes it as `gezegenlerin anlık burç dereceleri ve günlük hareket hızları`, and myburc.com uses the same heading. `Günlük Gezegen Konumları` is grammatical but was found as no rendered heading anywhere, and the `Tarih` column plus the card title already carry the per-day sense. `Konumlar` alone was rejected: astroloji.org uses `Konum` for the geographic location field on its own chart form.
+ *
+ * **`Burç değişimleri`, not `Burç geçişleri`, and the collision is with our own product.** Astrolojidergisi.com publishes a `BURÇ DEĞİŞİM TABLOSU`, and the Uranyen Astroloji Okulu writes `gezegenlerin birbiri ardına burç değiştirdiği nadir yıllardan biri`. The fully quoted alternative `geçiş` is also the standard Turkish for TRANSIT (Astro-Seek navigation `Astroloji Transitler`), so on a page that also carries transit content it would name the wrong thing. `Retro` is what Turkish tables print rather than a full loanword: astroloji.org marks its cells `R` with the title `Retro`, and the astrologer Kristin Demirci publishes `2026 RETRO DÖNEMLERİ`.
+ *
+ * **`{{sign}} burcuna geçiyor` is the one Turkish frame a template can fill, and the reason is structural.** The dative lands on `burç`, never on the sign name: `burç` plus the possessive and the buffer consonant gives `burcuna`, byte-identical for all twelve, with the sign staying in bare nominative. burcoloji.com prints the whole set on one page (`Venüs Kova Burcuna Geçiyor`, `Neptün Koç Burcuna Geçiyor`, `Uranüs İkizler Burcuna Geçiyor`, `Jüpiter Aslan Burcuna Geçiyor`), and the astrologer Burçak Kayış writes the same frame in prose (`Venüs başak burcuna geçiyor`). **The bare-sign dative is rejected**: `Koç a`, `Boğa ya`, `İkizler e` need four different endings plus an apostrophe, which is both uncomputable from a substituted string and against the register rule this catalogue follows. The date is separated by a colon for the same reason, since a Turkish postposition on a formatted date would harmonise with its last vowel.
+ *
+ * `Tarih` is the column header Astro-Seek prints above its own ephemeris dates and the word astroloji.org uses in its birth-date field.
+ *
+ * The empty state and the table caption are COMPOSED rather than lifted, following the patterns already in this file; no astrology page publishes either.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -152,6 +165,16 @@ export const tr: Record<ChromeString, string> = {
 	Impact: 'Etki',
 	Timing: 'Süre',
 	Guidance: 'Öneri',
+
+	Ephemeris: 'Efemeris',
+	'No ephemeris data': 'Efemeris verisi yok',
+	'Sign changes and retrograde periods': 'Burç değişimleri ve retro dönemleri',
+	'Daily positions': 'Gezegen konumları',
+	Date: 'Tarih',
+	'Enters {{sign}} on {{date}}': '{{date}}: {{sign}} burcuna geçiyor',
+	'Retrograde {{range}}': 'Retro: {{range}}',
+	'Every body with its position on each day of the month, as a zodiac sign and a degree.':
+		'Her gök cisminin ayın her günündeki konumu, burç ve derece olarak.',
 
 	'Nested data omitted': 'İç içe veri gösterilmiyor',
 	'Generic data display': 'Veri görünümü',

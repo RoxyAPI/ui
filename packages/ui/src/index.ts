@@ -35,6 +35,7 @@ export { RoxyDreamCard } from './components/dream-card.js';
 export { RoxyDreamSearch } from './components/dream-search.js';
 // Helpers
 export { RoxyEndpointForm } from './components/endpoint-form.js';
+export { RoxyEphemerisTable } from './components/ephemeris-table.js';
 export { RoxyFixedStars } from './components/fixed-stars.js';
 // Forecast
 export { RoxyForecastDigest } from './components/forecast-digest.js';

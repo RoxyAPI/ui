@@ -635,6 +635,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-local-space-compass>` | Western | POST /astrology/local-space | Compass dial of planetary azimuth lines from the birthplace, dimmed below the horizon |
 | `<roxy-relocation-wheel>` | Western | POST /astrology/relocation-chart | Relocated chart wheel plus the move geometry, angular planets, and planets that change house |
 | `<roxy-positions-table>` | Western | POST /astrology/asteroids, /astrology/lilith, /astrology/progressions, /astrology/solar-arc, /astrology/arabic-lots | Body, sign, degree, and per-shape columns (house, motion, formula, or natal arc) plus each reading |
+| `<roxy-ephemeris-table>` | Cross | POST /astrology/planets/monthly, /vedic-astrology/planetary-positions/monthly | Per-body sign changes and retrograde windows for the month, over the full daily position grid |
 | `<roxy-fixed-stars>` | Western | POST /astrology/fixed-stars | Star to natal point conjunctions with readings, plus a catalog of position, magnitude, nature, and keywords |
 | `<roxy-profection-card>` | Western | POST /astrology/profections | Profected house and sign for the year, the lord of the year, its natal placement, and the reading |
 | `<roxy-compatibility-card>` | Cross | POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility | Score card with category breakdown |
@@ -796,7 +797,7 @@ Two things are separate on purpose. The catalogue is the wording this library wr
 
 Dates, times and numbers follow the page as well, in the conventions that language actually uses: a Spanish page reads `15 ene 1990`, an Argentine one `15 de ene de 1990`, a German one `15. Jan. 1990, 14:30`. The hour cycle comes from the language, not from us, so nobody gets a 12-hour clock on a page that writes 24. This needs no catalogue and no attribute: it follows the same `lang` your page already declares.
 
-A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt`, `ru`, `tr`. Each covers `<roxy-natal-chart>`, `<roxy-transit-wheel>`, `<roxy-data>`, `<roxy-bodygraph>`, `<roxy-hd-type-card>`, `<roxy-hd-variables>`, `<roxy-reference-card>` and the shared chrome every component inherits; the remaining components render English labels until their catalogue entries land. Every term in every catalogue is sourced from named astrology references in that language rather than translated word for word, because the words a practitioner reads are the product.
+A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt`, `ru`, `tr`. Each covers `<roxy-natal-chart>`, `<roxy-transit-wheel>`, `<roxy-ephemeris-table>`, `<roxy-data>`, `<roxy-bodygraph>`, `<roxy-hd-type-card>`, `<roxy-hd-variables>`, `<roxy-reference-card>` and the shared chrome every component inherits; the remaining components render English labels until their catalogue entries land. Every term in every catalogue is sourced from named astrology references in that language rather than translated word for word, because the words a practitioner reads are the product.
 
 ## Reliability
 

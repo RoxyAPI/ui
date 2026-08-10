@@ -300,6 +300,10 @@ describe('shipped locales', () => {
 			fr: [
 				'Activations ({{count}})',
 				'Air',
+				// `Date` is the French word and the accent-free spelling is a
+				// coincidence; every French table it was checked against pairs it with
+				// `Heure`, never with `Temps`.
+				'Date',
 				'Aura',
 				'Base',
 				'Bodygraph',

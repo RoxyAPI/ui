@@ -56,6 +56,10 @@
       "description": "Editorial positions table for asteroids, Black Moon Lilith, secondary progressions, solar arc directions, and the Arabic lots"
     },
     {
+      "name": "roxy-ephemeris-table",
+      "description": "Monthly ephemeris: every body day by day, with each sign change and retrograde stretch called out"
+    },
+    {
       "name": "roxy-fixed-stars",
       "description": "Fixed star conjunctions to the natal chart, tightest first, with the precessed star catalog"
     },

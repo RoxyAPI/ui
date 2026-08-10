@@ -159,6 +159,74 @@ export function formatDateGrain(
 }
 
 /**
+ * A day inside a month already named elsewhere: `Aug 3`, `3 ago`, `3. Aug.`.
+ *
+ * @remarks
+ * Deliberately WITHOUT the year, which is the one thing {@link formatDateGrain} will not do at any grain below `year`, and for a good reason there: a period can straddle new year and `28 Dec - 3 Jan` says nothing about which side moved. This shape exists for the opposite case, a payload whose own fields pin the month (a monthly ephemeris carries `year` and `month` at the top level and prints them in its header), where repeating the year on thirty-one rows and a dozen chips is noise rather than safety. Do not reach for it where the month is not already on screen.
+ *
+ * A date-only string is pinned to UTC the way {@link formatDate} pins it, so the digits read the same for every viewer instead of rolling back a day west of Greenwich.
+ */
+export function formatMonthDay(
+	locale: string | undefined,
+	input: unknown,
+): string {
+	if (typeof input !== 'string' || input.length === 0) return '';
+	const { d, timeZone } = resolveDisplayDate(
+		DATE_ONLY.test(input) ? `${input}T00:00:00` : input,
+	);
+	if (Number.isNaN(d.getTime())) return input;
+	return d.toLocaleDateString(intlLocales(locale), {
+		month: 'short',
+		day: 'numeric',
+		timeZone,
+	});
+}
+
+/**
+ * A day of the month with its weekday: `1 Sat`, `sáb 1`, `Sa., 1.`.
+ *
+ * @remarks
+ * The row label a printed ephemeris uses (`01 Sa`, `02 Su`), and it carries neither the month nor the year because the page header already names both. The weekday is not decoration: half of what a practitioner asks a monthly ephemeris is which DAY of the week a placement falls on, and deriving it from a bare number is exactly the arithmetic a table exists to save. Order and separator belong to the locale, which is why this is one Intl call rather than a join.
+ *
+ * A date-only string is pinned to UTC the way {@link formatDate} pins it, so the weekday cannot roll backwards west of Greenwich.
+ */
+export function formatWeekdayDay(
+	locale: string | undefined,
+	input: unknown,
+): string {
+	if (typeof input !== 'string' || input.length === 0) return '';
+	const { d, timeZone } = resolveDisplayDate(
+		DATE_ONLY.test(input) ? `${input}T00:00:00` : input,
+	);
+	if (Number.isNaN(d.getTime())) return input;
+	return d.toLocaleDateString(intlLocales(locale), {
+		weekday: 'short',
+		day: 'numeric',
+		timeZone,
+	});
+}
+
+/**
+ * A calendar month and its year: `August 2026`, `agosto de 2026`, `August 2026`.
+ *
+ * @remarks
+ * Takes the two NUMBERS an endpoint returns rather than a timestamp, because that is the shape a monthly payload echoes, and anchors them at UTC noon for the same reason {@link monthName} does: no timezone can roll the anchor into the neighbouring month. The connective belongs to the locale (`de` in Spanish, nothing in English), which is why this is one Intl call rather than a join of {@link monthName} and the year.
+ */
+export function formatMonthYear(
+	locale: string | undefined,
+	year: unknown,
+	month: unknown,
+): string {
+	if (typeof year !== 'number' || !Number.isFinite(year)) return '';
+	if (typeof month !== 'number' || !Number.isInteger(month)) return '';
+	if (month < 1 || month > 12) return '';
+	return new Date(Date.UTC(year, month - 1, 1, 12)).toLocaleDateString(
+		intlLocales(locale),
+		{ month: 'long', year: 'numeric', timeZone: 'UTC' },
+	);
+}
+
+/**
  * Month name from a 1-based month number: `January`, `enero`, `janvier`.
  *
  * @remarks

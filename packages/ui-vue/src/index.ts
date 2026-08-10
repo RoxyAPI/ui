@@ -84,6 +84,10 @@ export {
 	type RoxyEndpointFormProps,
 } from './components/endpoint-form.js';
 export {
+	RoxyEphemerisTable,
+	type RoxyEphemerisTableProps,
+} from './components/ephemeris-table.js';
+export {
 	RoxyFixedStars,
 	type RoxyFixedStarsProps,
 } from './components/fixed-stars.js';

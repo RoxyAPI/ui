@@ -16,7 +16,7 @@
  *
  * **`Duración` replaced `Tiempos`, and this one is a CONTRACT error rather than a vocabulary one.** The field is not a schedule: the spec says `how long this transit influence lasts`, and the values are buckets like `Active for a few hours`. `Tiempos:` in front of that does not read as a duration. `Duración` is also what Spanish astrology calls it (astroworld.es, `la duración de esa activación depende directamente de la velocidad orbital del planeta en tránsito`) and it is what `fr.ts` and `pt.ts` were already saying.
  *
- * Rejected against sources, so nobody restores them: `Aplicante`/`Separante` for applying and separating (Spanish Wikipedia phrases it that way in passing, but the two astrologer-authored references write `aplicativo`/`separativo`), `Aplicación`/`Separación` (what Astro-Seek prints, and that UI is demonstrably machine-translated on aspect vocabulary: it renders SQUARE as `Cuadrado`, which is not `Cuadratura`), `birrueda` for the bi-wheel (zero attestation, an invention) and `carta superpuesta` for it (attested, but it names the overlay rather than the two-ring structure the inner and outer strings are built on), `astros` for a body (idiomatic, but this catalogue already spends one word on that concept, `cuerpos`, and both would have to move together), `ápice` for the apex and `Configuraciones planetarias` for the figures (real Spanish, and rejected for keeping the exact `configuración` stem that produced the support ticket on a card where a settings panel is plausible).
+ * Rejected against sources, so nobody restores them: `Aplicante`/`Separante` for applying and separating (Spanish Wikipedia phrases it that way in passing, but the two astrologer-authored references write `aplicativo`/`separativo`), `Aplicación`/`Separación` (what Astro-Seek prints, and that UI is demonstrably machine-translated on aspect vocabulary: it renders SQUARE as `Cuadrado`, which is not `Cuadratura`), `birrueda` for the bi-wheel (zero attestation, an invention) and `carta superpuesta` for it (attested, but it names the overlay rather than the two-ring structure the inner and outer strings are built on), `astros` for a body (idiomatic, but this catalogue already spends one word on that concept, `cuerpos`, and both would have to move together), `ápice` for the apex and `Configuraciones planetarias` for the figures (real Spanish, and rejected for keeping the exact `configuración` stem that made the earlier entry misread as a settings panel, on a card where a settings panel is plausible).
  *
  * One entry is the plainest defensible Spanish rather than sourced vocabulary, and is flagged for a bilingual practitioner: `Casa en tránsito` for the natal house a transiting body is passing through, which Spanish only says as a whole clause. `Casa transitada` is the one defensible alternative and was passed over because it breaks the natal / en tránsito pairing the rest of the card establishes.
  *
@@ -50,7 +50,22 @@
  *
  * Four entries are the plainest defensible Spanish rather than sourced vocabulary, and want a bilingual practitioner: `En el límite` for the knife-edge warning, which has no Spanish Human Design idiom and is deliberately worded off `límite de Color o de Tono` in the note above it so the two agree; `Confianza baja` for the low-confidence note; `Lados de la carta` for the tab list, where the community says `las dos columnas` of the graph and the API says `lado`, and the API won because its side descriptions render in the panel underneath; and `Referencia` on the glossary card, which is generic chrome with no Human Design content at all.
  *
- * Rejected against sources, so nobody restores them: `Cuerpo gráfico` for the card title (attested, beaten by the API pairing), `Autoridad interna` for the authority tile (attested, false for `Mental` and `Lunar`), `Sentido` and `Orientación` for the arrow direction (one collides with the Cognition Variable, the other is already in use), `consciencia` for the awareness chip (half the sources spell it that way and the API spells it the other), `sin definir` for an open centre (what sunrisehumandesign.com and designinmovement.com print, and it contradicts the `abierta` the API prose uses three rows down), and lower-cased `línea de diseño`, which reads as a graphic-design line on a card that draws one.
+ * Rejected against sources, so nobody restores them: `Cuerpo gráfico` for the card title (attested, beaten by the API pairing), `Autoridad interna` for the authority tile (attested, false for `Mental` and `Lunar`), `Sentido` and `Orientación` for the arrow direction (one collides with the Cognition Variable, the other is already in use), `consciencia` for the awareness chip (half the sources spell it that way and the API spells it the other), `sin definir` for an open centre (what sunrisehumandesign.com and designinmovement.com print, and it contradicts the `abierta` the API prose uses three rows down), and lower-cased `línea de diseño`, which reads as a graphic-design line on a card that draws one. *
+ * ## Monthly ephemeris
+ *
+ * **`Efemérides` is the Spanish word for the table itself and it is plural even when one table is meant.** lunadominante.com defines it (`Las Efemérides Astrológicas no son otra cosa que unas tablas en las que se registra la posición de los planetas a lo largo del tiempo`) and losarcanos.com writes it singular-with-plural-form (`Una efemérides es un libro de posiciones planetarias que enumera dónde estarán los planetas en el zodíaco`). One sentence on astraly.app carries three of these entries at once: `las efemérides astrológicas suelen incluir la longitud zodiacal de cada planeta ... así como datos como los cambios de signo, las retrogradaciones y los aspectos exactos`, which settles `Posiciones diarias` (`tablas que registran las posiciones diarias de los planetas`), `Cambios de signo` and the retrograde half in the same breath.
+ *
+ * **`Cambios de signo` over `Ingresos`, and the reason is the noun rather than the concept.** carta-natal.es heads exactly this page `CAMBIO DE SIGNO SOLAR` and explains it as `El momento exacto en que se produce el cambio de signo solar varía de un año para otro`, so the term is the tool's own. `Ingreso` is the technical Spanish and carta-natal.es uses the VERB on the same page (`El Sol ingresa en un signo justo cuando sale de aquel por el que estaba transitando`), but the noun `ingresos` is what Spanish calls income, and es.astro-seek.com puts exactly that word in its own navigation, so a chip headed with it invites the wrong reading on a card that also shows numbers.
+ *
+ * **`Entra en {{sign}}` is the plainest attested verb.** astroworld.es, whose author Francisco Lorenzo Quiles has published Spanish astrology software since 1989, titles a piece `El Sol entra en Virgo` and writes `El sol entra en el perspicaz Virgo` and `la Luna estará vacía de curso hasta que entra en Tauro`. Every Spanish sign name takes `en` with no article and no elision, so the substitution is safe for all twelve.
+ *
+ * **`Retrógrado` follows the entry this file already spends on the word**, and it is what a Spanish chart prints beside a planet: carta-natal.es marks each retrograde body `[R]` in its live positions table, and mercurioretrogrado.com explains its own table as `un planeta, su posición exacta (grado y minuto en el signo) y si está directo o retrógrado`. `períodos retrógrados` for the section is astrolink.com (`los períodos de retrogradación`, `Anota los períodos en los que Mercurio estará retrógrado`).
+ *
+ * `Fecha` is the column header carta-natal.es uses on this exact kind of table (`Fecha y Hora UT`) and the field label losarcanos.com uses on its ephemeris form (`Fecha de Nacimiento`).
+ *
+ * Two of the eight are COMPOSED rather than lifted, because no astrology page publishes an empty state or a screen-reader caption: `Sin datos de efemérides` follows the pattern this file already uses for the other empty states, and the table caption is the transit-table caption above it with the transit clause swapped for the month one. The vocabulary in both is sourced; the sentence frame is judgement.
+ *
+ * Rejected against sources, so nobody restores them: `Ingresos` for the sign-change section (real astrology Spanish, and the everyday word for income), `entradas de signos` (what es.astro-seek.com prints, and that build is the one this file already documents as machine-translated on aspect vocabulary), and `Efeméride` singular, which no Spanish source writes for the table.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -163,6 +178,17 @@ export const es: Record<ChromeString, string> = {
 	Impact: 'Impacto',
 	Timing: 'Duración',
 	Guidance: 'Orientación',
+
+	Ephemeris: 'Efemérides',
+	'No ephemeris data': 'Sin datos de efemérides',
+	'Sign changes and retrograde periods':
+		'Cambios de signo y períodos retrógrados',
+	'Daily positions': 'Posiciones diarias',
+	Date: 'Fecha',
+	'Enters {{sign}} on {{date}}': 'Entra en {{sign}} el {{date}}',
+	'Retrograde {{range}}': 'Retrógrado {{range}}',
+	'Every body with its position on each day of the month, as a zodiac sign and a degree.':
+		'Cada cuerpo con su posición en cada día del mes, con su signo zodiacal y su grado.',
 
 	'Nested data omitted': 'Datos anidados omitidos',
 	'Generic data display': 'Visualización de datos genérica',

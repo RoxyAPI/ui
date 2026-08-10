@@ -8,7 +8,7 @@
  *
  * **`Car`, `Fix` and `Mut` are catalogue entries, not a truncation.** The grid used to render its column headers as `modality.slice(0, 3)`, which is a byte operation with no idea of the word: Spanish would have read `Fij`, and Hindi and Russian would have split a matra or a Cyrillic word mid-stem. A translator decides the abbreviation, and the full modality name rides beside it as the column `title` so a reader can expand it.
  *
- * **Scope is the two Western chart wheels, the Human Design bodygraph, type and variables cards, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
+ * **Scope is the two Western chart wheels, the monthly ephemeris table, the Human Design bodygraph, type and variables cards, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The ephemeris table joined for the first reason and the second at once: it was unbound, so a monthly ephemeris rendered through `<roxy-data>` as `Year 2026 / Month 8 / 31 Rows` on every site in every language. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
  *
  * **A component earns its vocabulary by having its chrome here, and the two move in ONE change.** Reading `nameLocalized` under an English heading is worse than reading `name` under one, so a card is either translated or it is not. `<roxy-hd-connection>` and `<roxy-hd-penta>` are deliberately absent: almost all of their chrome is Human Design doctrine the COMPONENT wrote (what an electromagnetic channel is, what the upper triangle of a penta carries), so translating them is a paragraph-level meaning risk of exactly the shape lesson 32 describes, and they stay English end to end until a practitioner pass can source them.
  *
@@ -133,6 +133,22 @@ export const CHROME_STRINGS = [
 	'Impact',
 	'Timing',
 	'Guidance',
+
+	// `<roxy-ephemeris-table>`, which renders BOTH monthly ephemerides, the
+	// tropical Western one and the sidereal Navagraha one. Body and sign names
+	// come back localized and are read off the wire; the two things this card
+	// derives itself, a sign change and a retrograde stretch, are what it has to
+	// write words for. `Enters {{sign}} on {{date}}` is the accessible name of a
+	// chip whose visible text is already the localized sign and the date, so the
+	// only word it adds is the verb.
+	'Ephemeris',
+	'No ephemeris data',
+	'Sign changes and retrograde periods',
+	'Daily positions',
+	'Date',
+	'Enters {{sign}} on {{date}}',
+	'Retrograde {{range}}',
+	'Every body with its position on each day of the month, as a zodiac sign and a degree.',
 
 	// `<roxy-data>`, the generic fallback every unbound endpoint renders through.
 	// It has no domain vocabulary of its own: its column headings come from the
