@@ -149,6 +149,25 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 	static styles = [
 		baseStyles,
 		css`
+			/* The daily grid is far wider than any phone, and the scroll box
+			 * already contains it: measured in a real theme at 390px that box is
+			 * 280px wide around a 970px table and scrolls correctly. The host
+			 * still reported a scrollWidth of 955 and handed that to the page, so
+			 * the document itself became draggable 595px sideways over empty
+			 * space while nothing visible was out of place.
+			 *
+			 * clip rather than hidden, because clip does not create a scroll
+			 * container: the inner box keeps its own scrolling and its focus
+			 * ring. Only the inline axis is clipped, so nothing overflowing
+			 * downward is affected. Verified on the live page, document
+			 * scrollWidth 985 to 390, page no longer scrolls, table still does.
+			 *
+			 * Deliberately here rather than in the shared base styles. All 63
+			 * components would inherit it, and one that paints outside its own
+			 * inline box on purpose would be silently cropped. */
+			:host {
+				overflow-x: clip;
+			}
 			.wrap {
 				width: 100%;
 				background: var(--roxy-surface, #fff);
