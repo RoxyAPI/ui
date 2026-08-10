@@ -75,7 +75,7 @@
     },
     {
       "name": "Location and Timezone",
-      "description": "Location and timezone API with city search and geocoding across 23,000+ cities in 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fully offline dataset with no third party geocoding call, and fields that map directly to the astrology endpoints. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Location and timezone API with city search and geocoding across 235,000+ cities in 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. Coverage goes down to towns of a few hundred people and every administrative seat, so a rural birthplace resolves as reliably as a capital. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fully offline dataset with no third party geocoding call, and fields that map directly to the astrology endpoints. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Usage",
@@ -87728,18 +87728,18 @@
           }
         ],
         "summary": "Search cities worldwide - Geocoding autocomplete with coordinates and timezone",
-        "description": "City autocomplete and geocoding search across 23,000+ locations in 240+ countries, including deep coverage of Indian tier-2 and tier-3 cities. Returns geographic coordinates (latitude, longitude), IANA timezone, and DST-aware UTC offset for each match. Built for birth chart location pickers, horoscope apps, event scheduling, and any feature requiring place-to-coordinates resolution. Partial name matching with intelligent ranking: exact prefix matches first, then sorted by population for relevance. Common alternate names like Bombay, Calcutta, Madras, and Banaras transparently resolve to their canonical entries.",
+        "description": "Turn a place name into coordinates, an IANA timezone and a DST-aware UTC offset, across 235,000+ cities and towns in 240+ countries. Coverage reaches rural towns of a few hundred people and every administrative seat, so a birthplace outside a major metro resolves as reliably as a capital. Matching is case-insensitive, accent-insensitive and partial, so ber matches Berlin, Bern and Bergen, native scripts are transliterated, and historic names resolve to the current place, so bombay returns Mumbai and peking returns Beijing. Results are ordered by match quality first and population second, so an exactly named small town is never buried under a larger city that merely shares its opening letters. Built for birth chart location pickers, horoscope apps, event scheduling, and any feature that needs place-to-coordinates resolution.",
         "parameters": [
           {
             "schema": {
               "type": "string",
               "minLength": 1,
               "maxLength": 100,
-              "description": "City name to search for. Accepts bare city (\"berlin\"), city plus country (\"berlin germany\"), or comma-qualified (\"berlin, germany\", \"springfield, illinois\") for disambiguation. Matches against city name, province/state, or combined \"city country\" queries. Case-insensitive with partial matching (e.g. \"ber\" matches Berlin, Bern, Bergen).",
+              "description": "Place to search for, written the way a person would. Accepts a bare city (berlin), a city plus country (berlin germany), a comma-qualified place (richfield, utah), a fully qualified place (richfield, utah, united states), or a historic name (bombay, peking, constantinople). Commas are optional, and a qualifier the dataset spells differently, such as USA for United States, still resolves. Matched against city name, alternate names, state or province, and country. Add the state or country whenever the name is common, since that is what separates the six Springfields, and Richfield, Utah from Richfield, Minnesota.",
               "example": "berlin"
             },
             "required": true,
-            "description": "City name to search for. Accepts bare city (\"berlin\"), city plus country (\"berlin germany\"), or comma-qualified (\"berlin, germany\", \"springfield, illinois\") for disambiguation. Matches against city name, province/state, or combined \"city country\" queries. Case-insensitive with partial matching (e.g. \"ber\" matches Berlin, Bern, Bergen).",
+            "description": "Place to search for, written the way a person would. Accepts a bare city (berlin), a city plus country (berlin germany), a comma-qualified place (richfield, utah), a fully qualified place (richfield, utah, united states), or a historic name (bombay, peking, constantinople). Commas are optional, and a qualifier the dataset spells differently, such as USA for United States, still resolves. Matched against city name, alternate names, state or province, and country. Add the state or country whenever the name is common, since that is what separates the six Springfields, and Richfield, Utah from Richfield, Minnesota.",
             "name": "q",
             "in": "query"
           },
@@ -87776,7 +87776,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Matching cities sorted by relevance (prefix match first) then population",
+            "description": "Matching places, best match first, with coordinates, IANA timezone and UTC offset",
             "content": {
               "application/json": {
                 "schema": {
@@ -87785,7 +87785,7 @@
                     "total": {
                       "type": "number",
                       "example": 3,
-                      "description": "Total number of cities matching the search query."
+                      "description": "Number of places matching the query across all pages, not the number returned in this response. Greater than 1 means the name is ambiguous, so show province and country and let the user confirm before using the result for a chart."
                     },
                     "limit": {
                       "type": "number",
@@ -87795,7 +87795,7 @@
                     "offset": {
                       "type": "number",
                       "example": 0,
-                      "description": "Number of cities skipped. Use with limit for pagination."
+                      "description": "Number of places skipped. Use with limit to page through results."
                     },
                     "cities": {
                       "type": "array",
@@ -87809,7 +87809,7 @@
                           },
                           "province": {
                             "type": "string",
-                            "description": "State, province, canton, or administrative region. Helps disambiguate cities with the same name across regions (e.g. Springfield IL vs Springfield MO).",
+                            "description": "State, province, canton, or administrative region. Show it whenever more than one result comes back: it is what separates Richfield, Utah from Richfield, Minnesota, and the six US Springfields from each other. Empty for the small number of places with no administrative division recorded.",
                             "example": "Berlin"
                           },
                           "country": {
@@ -87834,17 +87834,17 @@
                           },
                           "timezone": {
                             "type": "string",
-                            "description": "IANA timezone identifier following the tz database standard (e.g. Europe/Berlin, America/New_York, Asia/Tokyo). Use with JavaScript Date, Luxon, day.js, or any date library for accurate local time conversion.",
+                            "description": "IANA timezone identifier following the tz database standard (e.g. Europe/Berlin, America/New_York, Asia/Tokyo). Always present. Pass THIS, not the numeric offset, into any chart or panchang request for a past date: the calculation endpoints resolve it to the offset that was actually in force on that date, including historical daylight saving. Also works directly with JavaScript Date, Luxon, day.js, or any date library.",
                             "example": "Europe/Berlin"
                           },
                           "utcOffset": {
                             "type": "number",
-                            "description": "Current UTC offset in decimal hours, automatically adjusted for daylight saving time. Pass directly as the timezone parameter in astrology API endpoints. Examples: 1 for CET, 2 for CEST, -5 for EST, 5.5 for IST, 5.75 for Nepal.",
+                            "description": "UTC offset in decimal hours for TODAY at this place, already adjusted for daylight saving. Convenient for displaying local time now. For a birth date or any past date use the `timezone` field instead, since the offset in force then may differ. Examples: 1 for CET, 2 for CEST, -5 for EST, 5.5 for IST, 5.75 for Nepal.",
                             "example": 1
                           },
                           "population": {
                             "type": "number",
-                            "description": "City population estimate from geographic databases. Larger cities rank higher in search results, ensuring major metropolitan areas appear first in autocomplete suggestions.",
+                            "description": "Population estimate for the place. Breaks ties between results of equal match quality, so among several places matching equally well the largest leads. It never outranks a better match, which is why a small town still wins when its name is typed exactly. May be 0 for a hamlet or administrative seat that carries no published figure.",
                             "example": 3644826
                           }
                         },
@@ -87861,7 +87861,7 @@
                         ],
                         "description": "Geographic location with coordinates, timezone, and UTC offset. Every field is designed for direct use as input parameters in astrology, horoscope, and location-dependent API calculations."
                       },
-                      "description": "City results for the current page, sorted by relevance (prefix match first) then population."
+                      "description": "Matching places for the current page, best match first. Ordered by match quality, then population within equal quality: an exact name beats a qualified name such as richfield, utah, which beats a name merely starting with the query, which beats an incidental match on state or country. Take the first entry when total is 1, otherwise disambiguate on province and country."
                     }
                   },
                   "required": [
@@ -88137,8 +88137,8 @@
                   "properties": {
                     "total": {
                       "type": "number",
-                      "example": 240,
-                      "description": "Total number of countries available."
+                      "example": 246,
+                      "description": "Total number of countries with at least one place in the dataset."
                     },
                     "limit": {
                       "type": "number",
@@ -88172,8 +88172,8 @@
                           },
                           "cityCount": {
                             "type": "number",
-                            "description": "Number of searchable cities available for this country. Useful for showing coverage in UI or deciding whether to offer city search for a given country.",
-                            "example": 82
+                            "description": "Number of searchable places in this country, including small towns and administrative seats. Useful for showing coverage in a UI or sizing a dependent city dropdown.",
+                            "example": 11894
                           }
                         },
                         "required": [
@@ -88473,8 +88473,8 @@
                   "properties": {
                     "total": {
                       "type": "number",
-                      "example": 82,
-                      "description": "Total number of cities available for this country."
+                      "example": 11894,
+                      "description": "Total number of places available for this country across all pages."
                     },
                     "limit": {
                       "type": "number",
@@ -88498,7 +88498,7 @@
                           },
                           "province": {
                             "type": "string",
-                            "description": "State, province, canton, or administrative region. Helps disambiguate cities with the same name across regions (e.g. Springfield IL vs Springfield MO).",
+                            "description": "State, province, canton, or administrative region. Show it whenever more than one result comes back: it is what separates Richfield, Utah from Richfield, Minnesota, and the six US Springfields from each other. Empty for the small number of places with no administrative division recorded.",
                             "example": "Berlin"
                           },
                           "country": {
@@ -88523,17 +88523,17 @@
                           },
                           "timezone": {
                             "type": "string",
-                            "description": "IANA timezone identifier following the tz database standard (e.g. Europe/Berlin, America/New_York, Asia/Tokyo). Use with JavaScript Date, Luxon, day.js, or any date library for accurate local time conversion.",
+                            "description": "IANA timezone identifier following the tz database standard (e.g. Europe/Berlin, America/New_York, Asia/Tokyo). Always present. Pass THIS, not the numeric offset, into any chart or panchang request for a past date: the calculation endpoints resolve it to the offset that was actually in force on that date, including historical daylight saving. Also works directly with JavaScript Date, Luxon, day.js, or any date library.",
                             "example": "Europe/Berlin"
                           },
                           "utcOffset": {
                             "type": "number",
-                            "description": "Current UTC offset in decimal hours, automatically adjusted for daylight saving time. Pass directly as the timezone parameter in astrology API endpoints. Examples: 1 for CET, 2 for CEST, -5 for EST, 5.5 for IST, 5.75 for Nepal.",
+                            "description": "UTC offset in decimal hours for TODAY at this place, already adjusted for daylight saving. Convenient for displaying local time now. For a birth date or any past date use the `timezone` field instead, since the offset in force then may differ. Examples: 1 for CET, 2 for CEST, -5 for EST, 5.5 for IST, 5.75 for Nepal.",
                             "example": 1
                           },
                           "population": {
                             "type": "number",
-                            "description": "City population estimate from geographic databases. Larger cities rank higher in search results, ensuring major metropolitan areas appear first in autocomplete suggestions.",
+                            "description": "Population estimate for the place. Breaks ties between results of equal match quality, so among several places matching equally well the largest leads. It never outranks a better match, which is why a small town still wins when its name is typed exactly. May be 0 for a hamlet or administrative seat that carries no published figure.",
                             "example": 3644826
                           }
                         },
