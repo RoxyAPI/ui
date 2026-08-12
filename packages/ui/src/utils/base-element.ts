@@ -89,6 +89,25 @@ export abstract class RoxyDataElement<
 	@property({ type: Boolean, attribute: 'hide-readings', reflect: true })
 	hideReadings = false;
 
+	/**
+	 * Remove named structural blocks from this component, as a comma-separated list of `part` names.
+	 *
+	 * @remarks
+	 * The sibling of {@link RoxyDataElement.hideReadings} and deliberately a different tool. `hide-readings` drops the PROSE an endpoint returns about a result; this drops a whole block whatever it contains, which is what a page wants when the block is measurement rather than writing. Hiding the chart-pattern list on a teaching page is the case it exists for: a T-square is data, so `hide-readings` leaves it standing on purpose.
+	 *
+	 * Any name in `components-catalog.json` works, on any component that publishes it, because the rule is generated from the name rather than from a list of components that opted in. A name no block carries costs nothing and hides nothing.
+	 *
+	 * **This hides with CSS, it does not remove from the DOM, and the difference is the reason both exist.** A part name is a rendering concern the base can act on generically; whether a block is prose is a question only the component can answer. So a page that must not SHIP the words uses `hide-readings`, and a page that just should not SHOW a block uses this.
+	 *
+	 * @example
+	 * ```html
+	 * <roxy-natal-chart hide-sections="patterns"></roxy-natal-chart>
+	 * <roxy-natal-chart hide-sections="patterns, aspects"></roxy-natal-chart>
+	 * ```
+	 */
+	@property({ type: String, attribute: 'hide-sections', reflect: true })
+	hideSections = '';
+
 	/** Override the self-fetch form's submit-button label. Empty derives one from the endpoint. */
 	@property({ type: String, attribute: 'submit-label' })
 	submitLabel?: string;
@@ -145,6 +164,37 @@ export abstract class RoxyDataElement<
 	}
 
 	render(): unknown {
+		return html`${this.hiddenSectionsStyle()}${this.renderState()}`;
+	}
+
+	/**
+	 * The one rule set that acts on {@link RoxyDataElement.hideSections}, generated from the names rather than from a list of components.
+	 *
+	 * @remarks
+	 * `[part~="name"]` is the selector because `part` is a space-separated list: the natal chart's aspect grid carries `section aspects table aspect-grid`, so a `~=` match reaches it by any one of its names while `=` would reach it by none. It is emitted INSIDE the shadow root, which is the only place a rule can see a `part` attribute on the element that declares it.
+	 *
+	 * Names are filtered to the same `[a-z][a-z0-9-]*` shape the catalog and the WordPress setting both use, so nothing a page passes can close the rule or inject a second one. An unknown name compiles to a selector that matches nothing, which is why there is no validation error and no list of legal names to keep in sync.
+	 *
+	 * A `<style>` element in the template rather than a static stylesheet, because static styles are evaluated once and shared across every instance, so two charts on one page could not hide different blocks. Lit supports per-instance style elements; the documented cost is a re-parse when the expression changes, which is irrelevant here because the value is set once from a page attribute and effectively never changes after that.
+	 *
+	 * **`!important` is load-bearing and is not a shortcut around specificity.** Lit puts static `styles` in `adoptedStyleSheets`, and the scoping spec applies those AFTER any `<style>` element inside the same shadow root, so an in-tree rule loses to the component's own stylesheet at equal specificity no matter how it is written. Measured: `patterns` is a bare `section` with no declared display and hid correctly without it, while `legend` carries `display:flex` from the static sheet and stayed visible. The WordPress site-wide rule needs no `!important` for the opposite reason, that an outer-tree `::part()` rule already outranks anything inside.
+	 */
+	private hiddenSectionsStyle(): unknown {
+		const names = this.hideSections
+			.split(',')
+			.map((n) => n.trim().toLowerCase())
+			.filter((n) => /^[a-z][a-z0-9-]*$/.test(n));
+		if (names.length === 0) return nothing;
+		const rules = names
+			.map((n) => `[part~="${n}"]{display:none!important}`)
+			.join('');
+		return html`<style>
+			${rules}
+		</style>`;
+	}
+
+	/** The state machine every render goes through, split out so {@link render} can pair it with the per-instance rules above. */
+	private renderState(): unknown {
 		if (this.loading) return this.renderLoading();
 		if (this.error != null) return this.renderError(this.error);
 		if (this.data != null) {

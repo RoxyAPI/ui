@@ -32,11 +32,13 @@ export interface RoxyCompatibilityCardProps extends ElementAttrs {
 	attribution?: string;
 	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
 	hideReadings?: boolean;
+	/** Comma-separated list of `part` names to take off this component, for example "patterns" or "patterns, legend". Per element rather than per site, so the same component can drop a block on one page and keep it on another with no CSS. Sibling of hideReadings and a different tool: this hides a whole block whatever it contains, where hideReadings drops interpretive prose out of the markup. Names come from the `parts` array in components-catalog.json; a name the component does not carry hides nothing and is not an error. */
+	hideSections?: string;
 
 }
 
 export const RoxyCompatibilityCard = React.forwardRef<HTMLElement | null, RoxyCompatibilityCardProps>(
-	function RoxyCompatibilityCard({ data, className, style, mode, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, ...rest }, ref) {
+	function RoxyCompatibilityCard({ data, className, style, mode, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, hideSections, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -137,6 +139,13 @@ export const RoxyCompatibilityCard = React.forwardRef<HTMLElement | null, RoxyCo
 				(el as unknown as { hideReadings: boolean }).hideReadings = hideReadings;
 			}
 		}, [hideReadings, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && hideSections !== undefined) {
+				(el as unknown as { hideSections: string }).hideSections = hideSections;
+			}
+		}, [hideSections, loaded]);
 
 		if (error) {
 			return React.createElement(

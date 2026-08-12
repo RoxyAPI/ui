@@ -219,7 +219,7 @@ The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period`, `Rox
 
 Every component takes `hide-readings` (`hideReadings` in React and Vue). It renders the chart and the data and leaves the interpretation out of the page: wheels, maps, tables, grids, legends, badges and every number stay, the interpretive prose goes. Off by default, so a component that does not set it is unchanged.
 
-The line is drawn on the CONTENT, never on the block, so a block that reads like analysis still stays when it is made of measurements. `<roxy-natal-chart>` and `<roxy-aspects-table>` both render the `patterns` payload and both make the same cut: the figure name, element, modality, tightness and planet chips are geometry and survive, the paragraph under them is the reading and goes. To remove such a block entirely, hide its part instead: `roxy-natal-chart::part(patterns) { display: none }`.
+The line is drawn on the CONTENT, never on the block, so a block that reads like analysis still stays when it is made of measurements. `<roxy-natal-chart>` and `<roxy-aspects-table>` both render the `patterns` payload and both make the same cut: the figure name, element, modality, tightness and planet chips are geometry and survive, the paragraph under them is the reading and goes. To remove such a block entirely, use `hide-sections` below.
 
 ```html
 <roxy-natal-chart hide-readings></roxy-natal-chart>
@@ -240,6 +240,25 @@ One component is a documented no-op despite being mostly prose:
 | `<roxy-dream-card>` | Ignores `hide-readings`. The dream symbol response is the symbol, its dictionary letter and the interpretation, so removing the interpretation would leave a heading over nothing. Style it with `::part(card)` or leave the card out of the page instead. |
 
 What survives, by family: charts keep the drawing, legend, glyphs, degrees and tab strip; tables keep every row and every calculated column (kaksha bindus, koota scores, significance bars, orbs, strengths); cards keep the header, badges, meters and fact grids, so a dosha keeps its verdict, phase and severity, a crystal keeps its Mohs hardness and attribute grid, and a horoscope keeps its energy meter, Moon placement, active transits and key dates; every Vedic response keeps its sidereal frame caption. What goes: interpretation paragraphs, reading accordions, keyword chips attached to a reading, remedies, action steps and strengths lists, and any section whose only content was one of those, heading included.
+
+### 6e. Removing a whole block
+
+Every component also takes `hide-sections` (`hideSections` in React and Vue): a comma-separated list of `part` names, and each one named is taken off that component.
+
+```html
+<roxy-natal-chart hide-sections="patterns"></roxy-natal-chart>
+<roxy-natal-chart hide-sections="patterns, legend"></roxy-natal-chart>
+```
+
+```tsx
+<RoxyNatalChart data={chart} hideSections="patterns" />
+```
+
+**It is per element, which is the difference from a stylesheet.** A `::part()` rule in your CSS reaches every matching component on the site at once; this reaches the one you put it on, so the same chart can keep its patterns on one page and drop them on another with no CSS at all.
+
+**Use `hide-readings` when the words must not ship, and `hide-sections` when a block should not show.** They are different tools rather than two spellings of one. `hide-readings` drops interpretive prose out of the markup entirely, so the page never ships text it is not displaying. `hide-sections` hides the block with CSS and leaves it in the DOM, because a block is a rendering concern and its content may be measurements you have no reason to strip.
+
+Any name a component publishes works, and the names are in `components-catalog.json` under `parts`. A name the component does not carry hides nothing and is not an error, so one list can be applied across a page of mixed components. Names are case-insensitive and spaces around the commas are ignored.
 
 ### 6c. Vue and Nuxt
 

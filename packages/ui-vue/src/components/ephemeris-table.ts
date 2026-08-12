@@ -25,6 +25,8 @@ export interface RoxyEphemerisTableProps {
 	attribution?: string;
 	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
 	hideReadings?: boolean;
+	/** Comma-separated list of `part` names to take off this component, for example "patterns" or "patterns, legend". Per element rather than per site, so the same component can drop a block on one page and keep it on another with no CSS. Sibling of hideReadings and a different tool: this hides a whole block whatever it contains, where hideReadings drops interpretive prose out of the markup. Names come from the `parts` array in components-catalog.json; a name the component does not carry hides nothing and is not an error. */
+	hideSections?: string;
 }
 
 export const RoxyEphemerisTable = defineComponent({
@@ -41,6 +43,7 @@ export const RoxyEphemerisTable = defineComponent({
 		submitLabel: { type: String as PropType<RoxyEphemerisTableProps['submitLabel']> },
 		attribution: { type: String as PropType<RoxyEphemerisTableProps['attribution']> },
 		hideReadings: { type: Boolean as PropType<RoxyEphemerisTableProps['hideReadings']> },
+		hideSections: { type: String as PropType<RoxyEphemerisTableProps['hideSections']> },
 	},
 	setup(props) {
 		const loadError = ref<Error | null>(null);
@@ -72,6 +75,7 @@ export const RoxyEphemerisTable = defineComponent({
 			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;
 			if (props.attribution !== undefined) elementProps['.attribution'] = props.attribution;
 			if (props.hideReadings !== undefined) elementProps['.hideReadings'] = props.hideReadings;
+			if (props.hideSections !== undefined) elementProps['.hideSections'] = props.hideSections;
 
 			return h('roxy-ephemeris-table', elementProps);
 		};

@@ -311,3 +311,133 @@ test('hide-readings does something on every component that promises it, and noth
 	// And the documented no-op really is one.
 	expect(NO_OP.filter((t) => changed.has(t))).toEqual([]);
 });
+
+/**
+ * `hide-sections` is the sibling of `hide-readings` and the tests below pin the
+ * two things that make it a different tool rather than a second spelling of the
+ * same one: it hides a block whatever the block contains, and it is PER
+ * INSTANCE. The second is the whole reason it exists on the element instead of
+ * in a stylesheet, because a site-wide rule cannot show the chart patterns on
+ * one page and hide them on another.
+ */
+async function setHideSections(
+	page: import('@playwright/test').Page,
+	selector: string,
+	value: string,
+) {
+	await page.evaluate(
+		async ([sel, v]) => {
+			const el = document.querySelector(sel as string) as HTMLElement & {
+				hideSections: string;
+				updateComplete: Promise<unknown>;
+			};
+			el.hideSections = v as string;
+			await el.updateComplete;
+		},
+		[selector, value] as const,
+	);
+}
+
+/** Computed display of the first element carrying `part~=name`, plus whether it is still in the DOM at all. */
+const sectionProbe = ([sel, name]: readonly [string, string]) => {
+	const el = document.querySelector(sel) as HTMLElement;
+	const node = el.shadowRoot?.querySelector(
+		`[part~="${name}"]`,
+	) as HTMLElement | null;
+	return {
+		inDom: Boolean(node),
+		display: node ? getComputedStyle(node).display : 'absent',
+	};
+};
+
+test('hide-sections hides a named block and leaves the rest of the card alone', async ({
+	page,
+}) => {
+	await ready(page, NATAL);
+
+	const before = await page.evaluate(sectionProbe, [
+		NATAL,
+		'patterns',
+	] as const);
+	expect(before.inDom).toBe(true);
+	expect(before.display).not.toBe('none');
+
+	await setHideSections(page, NATAL, 'patterns');
+
+	const after = await page.evaluate(sectionProbe, [NATAL, 'patterns'] as const);
+	// Hidden, and deliberately NOT removed: that is the documented difference
+	// from hide-readings, which drops prose out of the DOM so it never ships.
+	expect(after.display).toBe('none');
+	expect(after.inDom).toBe(true);
+
+	// The wheel and the readings are untouched, so this is a block-level lever
+	// rather than a blunt one.
+	const others = await page.evaluate(probe, NATAL);
+	expect(others.hasWheel).toBe(true);
+	expect(others.hasReadings).toBe(true);
+	expect(others.signGlyphs).toBeGreaterThan(0);
+});
+
+test('hide-sections takes a list, ignores a name nothing carries, and reflects', async ({
+	page,
+}) => {
+	await ready(page, NATAL);
+	await setHideSections(page, NATAL, ' Patterns , legend , not-a-real-block ');
+
+	// Whitespace and case are tolerated the same way the WordPress setting
+	// tolerates them, so a site owner typing a list by hand cannot miss.
+	expect(
+		(await page.evaluate(sectionProbe, [NATAL, 'patterns'] as const)).display,
+	).toBe('none');
+	expect(
+		(await page.evaluate(sectionProbe, [NATAL, 'legend'] as const)).display,
+	).toBe('none');
+
+	// An unknown name compiles to a selector matching nothing. No error, no
+	// console noise, and nothing else hidden.
+	const still = await page.evaluate(probe, NATAL);
+	expect(still.hasWheel).toBe(true);
+	expect(still.hasReadings).toBe(true);
+
+	expect(
+		await page.evaluate(
+			(sel) => document.querySelector(sel)?.getAttribute('hide-sections'),
+			NATAL,
+		),
+	).toContain('Patterns');
+});
+
+test('two components on one page hide different blocks, which a stylesheet could not do', async ({
+	page,
+}) => {
+	await ready(page, NATAL);
+
+	// Clone the populated card so both carry identical data, then diverge only
+	// on the attribute. This is the per-placement case the WordPress shortcode
+	// override compiles down to.
+	await page.evaluate(async (sel) => {
+		const first = document.querySelector(sel) as HTMLElement & {
+			data: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		const second = document.createElement('roxy-natal-chart') as HTMLElement & {
+			data: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		second.id = 'natal-twin';
+		document.body.append(second);
+		second.data = first.data;
+		await second.updateComplete;
+	}, NATAL);
+
+	const TWIN = 'roxy-natal-chart#natal-twin';
+	await setHideSections(page, NATAL, 'patterns');
+
+	expect(
+		(await page.evaluate(sectionProbe, [NATAL, 'patterns'] as const)).display,
+	).toBe('none');
+	// The twin never received the attribute and must be unaffected.
+	const twin = await page.evaluate(sectionProbe, [TWIN, 'patterns'] as const);
+	expect(twin.inDom).toBe(true);
+	expect(twin.display).not.toBe('none');
+});
