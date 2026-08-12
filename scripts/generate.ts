@@ -62,6 +62,13 @@ console.log('Syncing endpoint bindings + catalog...');
 execSync('bun run scripts/sync-bindings.ts', { stdio: 'inherit' });
 execSync('bun run scripts/sync-catalog.ts', { stdio: 'inherit' });
 
+// Field labels come from the same spec, so they refresh on the same command. Build time and
+// not run time: the form already consumes version-pinned schema artifacts, so fetching labels
+// from the browser would add a request and a visible English-then-translated flash for no
+// decoupling those artifacts do not already have.
+console.log('Syncing field labels...');
+execSync('bun run scripts/sync-field-labels.ts', { stdio: 'inherit' });
+
 // Generate just response types via hey-api. Skip if module unavailable
 // (allows offline scaffolding before the install completes).
 try {

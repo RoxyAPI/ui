@@ -34,7 +34,7 @@ import { humanize } from '../utils/string.js';
  * English on both this path and the PHP one, which at least keeps them
  * consistent with each other. The PHP twin has none of these strings yet, so
  * the JS and no-JS paths currently disagree on the chrome as well as the fold
- * (`docs/todo.md`, and lesson 6 for why that matters).
+ * (see lesson 6 for why that matters).
  *
  * When a schema declares an `x-roxy-ui` hint, a future dispatcher can opt
  * into a hand-tuned component instead of this fallback.

@@ -10,17 +10,28 @@ Every Roxy UI component reads its colors, fonts, spacing, and motion from a sing
 |---|---|---|---|
 | `--roxy-bg` | `#ffffff` | `#0a0a0a` | Card and chart backgrounds |
 | `--roxy-fg` | `#0a0a0a` | `#fafafa` | Body text, headings |
+| `--roxy-primary` | `#0f172a` | `#f8fafc` | Brand base. Also the neutral end of the planet colour scale |
 | `--roxy-muted` | `#71717a` | `#a1a1aa` | Secondary text, subheadings |
 | `--roxy-border` | `#e4e4e7` | `#27272a` | Wheel lines, table borders |
 | `--roxy-accent` | `#f59e0b` | `#fbbf24` | Planet glyphs, hexagram lines, focused state |
-| `--roxy-accent-ink` | `#b45309` | `#fbbf24` | Accent-colored text and marks ON THE PAGE (a strong accent shade, "Now"/active labels, chart strokes). Map to a page-legible accent shade, NOT an on-accent foreground. |
+| `--roxy-accent-ink` | `color-mix(in oklab, var(--roxy-accent) 70%, black)` | `var(--roxy-accent)` | Accent-coloured text and marks ON THE PAGE ("Now" and active labels, chart strokes). **Derived from `--roxy-accent`, so set the accent and this follows**, darkened for legibility on a light background. Override only to make accent TEXT a different shade from accent FILLS; if you do, map it to a page-legible accent shade, never to an on-accent foreground. |
 | `--roxy-success` | `#16a34a` | `#22c55e` | Positive doshas, biorhythm peaks |
 | `--roxy-warning` | `#ea580c` | `#fb923c` | Caution states, mid severity |
 | `--roxy-danger` | `#dc2626` | `#ef4444` | Manglik present, critical days |
 | `--roxy-info` | `#0284c7` | `#38bdf8` | Informational badges |
-| `--roxy-ring` | `rgba(245, 158, 11, 0.4)` | `rgba(251, 191, 36, 0.45)` | Focus outlines |
+| `--roxy-ring` | `color-mix(in srgb, var(--roxy-accent) 40%, transparent)` | `color-mix(in srgb, var(--roxy-accent) 45%, transparent)` | Focus outlines. **Derived from `--roxy-accent`, so set the accent and this follows.** Override it only to break the focus ring away from your accent hue |
+| `--roxy-heat` | `var(--roxy-danger)` | `var(--roxy-danger)` | Intensity ramp for graded cells. Mixed to transparency per tier so the text colour stays `--roxy-fg` and reads in both themes. Set it to break heat away from the danger hue |
 
-Status tokens each have a `-fg` variant (e.g. `--roxy-success-fg`) for text rendered on top of the status color, sized for WCAG-AA contrast.
+Every status token has a `-fg` partner for text rendered ON the status colour, sized for WCAG-AA contrast:
+
+| Variable | Light default | Dark default |
+|---|---|---|
+| `--roxy-success-fg` | `#166534` | `#86efac` |
+| `--roxy-warning-fg` | `#9a3412` | `#fdba74` |
+| `--roxy-danger-fg` | `#991b1b` | `#fca5a5` |
+| `--roxy-info-fg` | `#075985` | `#7dd3fc` |
+
+**This table is complete and a test keeps it that way.** `tests/theming-docs.test.ts` fails when a `--roxy-*` token defined in `src/styles/tokens.css` is missing here. It was added because the omission of `--roxy-surface` cost a downstream consumer real time: a chart with no surface token renders as a white rectangle, and two integrations learned that from `tokens.css` rather than from this file. The table stays hand-written rather than generated because the "Used by" column is the part worth reading, and generating it would trade that for completeness we can simply assert.
 
 ### Typography
 

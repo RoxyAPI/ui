@@ -115,6 +115,34 @@ describe('theming contract', () => {
 		expect(TOKENS_CSS).not.toMatch(/^\.dark,$/m);
 	});
 
+	test('every theme trigger declares color-scheme, or native controls stay light', () => {
+		// A <select> we colour ourselves looks right closed and then opens a popup the OS
+		// paints in its LIGHT appearance, whose <option> rows inherit our near-white
+		// --roxy-fg: white text on white. Reported on the hosted embed forms. The popup is
+		// rendered outside the DOM, so no selector reaches it and `color-scheme` is the only
+		// control we have. Same omission dims the date and time pickers, the number spinner,
+		// the autofill highlight and the scrollbar.
+		//
+		// Counted rather than merely present: there are four theme triggers (light default,
+		// the prefers-color-scheme block, and the explicit light and dark opt-ins), and one
+		// missing declaration means that ONE path renders native controls in the wrong scheme
+		// while the other three look correct, which is the hardest shape to notice.
+		// Anchored to a declaration, because `prefers-color-scheme: dark` CONTAINS the
+		// substring `color-scheme: dark`: a loose match counts all four media queries and
+		// their prose and reports 6 where there are 2, passing whether or not the property
+		// is declared at all.
+		const light = TOKENS_CSS.match(/^\s*color-scheme:\s*light;/gm) ?? [];
+		const dark = TOKENS_CSS.match(/^\s*color-scheme:\s*dark;/gm) ?? [];
+		expect(
+			light.length,
+			'color-scheme: light must be in the default and explicit-light blocks',
+		).toBe(2);
+		expect(
+			dark.length,
+			'color-scheme: dark must be in the media block and the explicit-dark block',
+		).toBe(2);
+	});
+
 	test('accent-ink and ring derive from --roxy-accent, never hardcoded', () => {
 		expect(TOKENS_CSS).not.toMatch(/--roxy-accent-ink:\s*#/);
 		expect(TOKENS_CSS).not.toMatch(/--roxy-ring:\s*rgba\(/);

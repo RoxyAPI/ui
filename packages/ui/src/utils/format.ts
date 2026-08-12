@@ -56,6 +56,8 @@ function intlLocales(locale: string | undefined): string[] {
  *
  * An offset-bearing timestamp (`...Z`, `...+05:30`) IS a real instant, so it keeps the normal behaviour and converts to the viewer's local time.
  *
+ * A DATE_ONLY value (`2026-08-01`) is the same wall clock with the time left off, and it is normalised HERE rather than at each call site because leaving it to the caller is a defect that formats correctly for whoever writes the code: the platform parses a bare date as UTC midnight, and Intl then renders that instant in the VIEWER's zone, so every viewer west of Greenwich reads the previous day. Three helpers pinned it inline and {@link formatDateGrain} did not, which nothing caught because its only caller passes full datetimes.
+ *
  * Deliberately NOT exported. It used to be, so a component needing a shape these helpers did not offer could pin its own wall clock and call Intl itself, which is how `dasha-timeline` came to hardcode `toLocaleString('en', ...)` and pin every boundary date to English. A shape that is missing is added here, beside the locale handling, not reimplemented in a component.
  */
 function resolveDisplayDate(input: string): {
@@ -64,9 +66,11 @@ function resolveDisplayDate(input: string): {
 } {
 	const naive = BARE_TIME.test(input)
 		? `1970-01-01T${input}`
-		: NAIVE_DATETIME.test(input)
-			? input
-			: null;
+		: DATE_ONLY.test(input)
+			? `${input}T00:00:00`
+			: NAIVE_DATETIME.test(input)
+				? input
+				: null;
 	return naive
 		? { d: new Date(`${naive}Z`), timeZone: 'UTC' }
 		: { d: new Date(input) };
@@ -92,9 +96,7 @@ export function formatTime(locale: string | undefined, input: unknown): string {
 
 export function formatDate(locale: string | undefined, input: unknown): string {
 	if (typeof input !== 'string' || input.length === 0) return '';
-	const { d, timeZone } = resolveDisplayDate(
-		DATE_ONLY.test(input) ? `${input}T00:00:00` : input,
-	);
+	const { d, timeZone } = resolveDisplayDate(input);
 	if (Number.isNaN(d.getTime())) return input;
 	return d.toLocaleDateString(intlLocales(locale), {
 		month: 'short',
@@ -164,16 +166,14 @@ export function formatDateGrain(
  * @remarks
  * Deliberately WITHOUT the year, which is the one thing {@link formatDateGrain} will not do at any grain below `year`, and for a good reason there: a period can straddle new year and `28 Dec - 3 Jan` says nothing about which side moved. This shape exists for the opposite case, a payload whose own fields pin the month (a monthly ephemeris carries `year` and `month` at the top level and prints them in its header), where repeating the year on thirty-one rows and a dozen chips is noise rather than safety. Do not reach for it where the month is not already on screen.
  *
- * A date-only string is pinned to UTC the way {@link formatDate} pins it, so the digits read the same for every viewer instead of rolling back a day west of Greenwich.
+ * A date-only string is pinned to UTC like every other naive value, so the digits read the same for every viewer instead of rolling back a day west of Greenwich.
  */
 export function formatMonthDay(
 	locale: string | undefined,
 	input: unknown,
 ): string {
 	if (typeof input !== 'string' || input.length === 0) return '';
-	const { d, timeZone } = resolveDisplayDate(
-		DATE_ONLY.test(input) ? `${input}T00:00:00` : input,
-	);
+	const { d, timeZone } = resolveDisplayDate(input);
 	if (Number.isNaN(d.getTime())) return input;
 	return d.toLocaleDateString(intlLocales(locale), {
 		month: 'short',
@@ -188,16 +188,14 @@ export function formatMonthDay(
  * @remarks
  * The row label a printed ephemeris uses (`01 Sa`, `02 Su`), and it carries neither the month nor the year because the page header already names both. The weekday is not decoration: half of what a practitioner asks a monthly ephemeris is which DAY of the week a placement falls on, and deriving it from a bare number is exactly the arithmetic a table exists to save. Order and separator belong to the locale, which is why this is one Intl call rather than a join.
  *
- * A date-only string is pinned to UTC the way {@link formatDate} pins it, so the weekday cannot roll backwards west of Greenwich.
+ * A date-only string is pinned to UTC like every other naive value, so the weekday cannot roll backwards west of Greenwich.
  */
 export function formatWeekdayDay(
 	locale: string | undefined,
 	input: unknown,
 ): string {
 	if (typeof input !== 'string' || input.length === 0) return '';
-	const { d, timeZone } = resolveDisplayDate(
-		DATE_ONLY.test(input) ? `${input}T00:00:00` : input,
-	);
+	const { d, timeZone } = resolveDisplayDate(input);
 	if (Number.isNaN(d.getTime())) return input;
 	return d.toLocaleDateString(intlLocales(locale), {
 		weekday: 'short',

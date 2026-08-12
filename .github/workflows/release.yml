@@ -250,3 +250,32 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  # Publishing to npm is NOT shipping. `@latest` resolves per FILE, so a release can go
+  # half-live and stay that way silently: on 2026-08-12, twelve hours after 0.27.2 and
+  # 0.27.3 published, the CDN still served `roxy-ui.js` at 0.27.1 while the locale
+  # catalogues had already moved, so every hosted embed ran a bundle older than the strings
+  # it was loading and rendered untranslated in all seven languages. npm looked correct
+  # throughout and nothing errored. It was a hand-typed runbook step, and it was missed on
+  # two consecutive releases, so it is automated.
+  #
+  # It is a SEPARATE JOB, and deliberately not a step at the end of `release`. The purge can
+  # only run after `npm publish`, but a CDN hiccup must never strand the release: as a step
+  # it would fail before "Commit, tag, push", leaving the packages published with no git
+  # tag, no GitHub Release and no Pages deploy, which is strictly worse than the stale CDN
+  # it exists to prevent. Behind `needs: release` every one of those has already happened,
+  # so a failure here means exactly one thing, says so loudly, and is fixed by re-running
+  # this job alone. The script is idempotent.
+  verify-cdn:
+    needs: release
+    if: needs.release.outputs.version != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      # No `bun install` and no build. The script talks to the CDN over plain fetch and
+      # derives its asset list from the built manifest plus the theme filenames, both of
+      # which are produced by the release job. It reads them from the checkout, so the
+      # locale and theme lists are whatever that version actually shipped.
+      - name: Purge jsDelivr and verify the edge actually flipped
+        run: bun run purge:cdn ${{ needs.release.outputs.version }}

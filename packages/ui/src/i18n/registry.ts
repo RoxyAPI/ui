@@ -18,8 +18,28 @@ import { lookupKey } from '../utils/string.js';
 interface LocaleRegistry {
 	/** Language tag (lower case) to catalogue, keyed by {@link lookupKey} of the English source string. */
 	catalogs: Record<string, Record<string, string>>;
+	/**
+	 * Language tag (lower case) to the API's field-label map: `fields` keyed by wire name,
+	 * `enums` keyed `{fieldName}.{value}`.
+	 *
+	 * A SEPARATE key space from `catalogs` on purpose. A chrome string is keyed by the English
+	 * text a component writes, which is a constant in our source; a field label is keyed by a
+	 * name that only the OpenAPI spec knows, computed per operation, so no catalogue keyed on
+	 * English source text can ever reach it. Same registry because the delivery problem is
+	 * identical (a payload that may land after first paint), so it reuses one global object and
+	 * one listener set rather than growing a second of each.
+	 */
+	fieldLabels: Record<string, FieldLabels>;
+	/** Language tags whose fetch is in flight or done, so N forms on a page cost ONE request. */
+	requested: Set<string>;
 	/** Elements waiting to re-render when a catalogue arrives. */
 	listeners: Set<() => void>;
+}
+
+/** The `/languages/field-labels` payload, minus the echoed `lang`. */
+export interface FieldLabels {
+	fields: Record<string, string>;
+	enums: Record<string, string>;
 }
 
 const GLOBAL_KEY = '__ROXY_UI_I18N__';
@@ -28,7 +48,12 @@ function registry(): LocaleRegistry {
 	const holder = globalThis as unknown as Record<string, LocaleRegistry>;
 	const existing = holder[GLOBAL_KEY];
 	if (existing) return existing;
-	const created: LocaleRegistry = { catalogs: {}, listeners: new Set() };
+	const created: LocaleRegistry = {
+		catalogs: {},
+		fieldLabels: {},
+		requested: new Set(),
+		listeners: new Set(),
+	};
 	holder[GLOBAL_KEY] = created;
 	return created;
 }
@@ -83,6 +108,52 @@ export function translate(
 	const tag = lang.toLowerCase();
 	const catalog = catalogs[tag] ?? catalogs[tag.split('-')[0] as string];
 	return interpolate(catalog?.[lookupKey(source)] ?? source, vars);
+}
+
+/**
+ * Publish a field-label map for a language tag and wake every mounted element.
+ *
+ * @remarks
+ * Exported so a host that already has the payload (a server-rendered page, a test, a WordPress
+ * plugin inlining it) can supply it without a network call, exactly as {@link registerLocale}
+ * allows for chrome strings.
+ */
+export function registerFieldLabels(lang: string, labels: FieldLabels): void {
+	const reg = registry();
+	reg.fieldLabels[lang.toLowerCase()] = labels;
+	for (const listener of reg.listeners) listener();
+}
+
+/** The field-label map for `lang`, resolving a regional tag against its base language. */
+function labelsFor(lang: string | undefined): FieldLabels | undefined {
+	if (!lang) return undefined;
+	const { fieldLabels } = registry();
+	const tag = lang.toLowerCase();
+	return fieldLabels[tag] ?? fieldLabels[tag.split('-')[0] as string];
+}
+
+/**
+ * The label for a request field name, or `undefined` when nothing has been published.
+ *
+ * @remarks
+ * Returning `undefined` rather than the name is deliberate: the caller owns the fallback, which is
+ * `humanize()`, and that keeps this resolver honest about what it actually knows. A form renders
+ * identically to before until a payload arrives.
+ */
+export function fieldLabel(
+	lang: string | undefined,
+	name: string,
+): string | undefined {
+	return labelsFor(lang)?.fields[name];
+}
+
+/** The label for one selectable option, keyed `{fieldName}.{value}` as the API publishes it. */
+export function optionLabel(
+	lang: string | undefined,
+	field: string,
+	value: string,
+): string | undefined {
+	return labelsFor(lang)?.enums[`${field}.${value}`];
 }
 
 /** Subscribe to catalogue arrivals. Returns the unsubscribe, so an element can drop it on disconnect. */

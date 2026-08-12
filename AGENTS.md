@@ -215,51 +215,6 @@ Several components select a view, mode, or chart layout in addition to `data`. T
 
 The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period`, `RoxyMoonPhase` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` and `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`, `RoxyHexagram` `mode`. Outside React and Vue, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
 
-### 6d. Chart without the written report
-
-Every component takes `hide-readings` (`hideReadings` in React and Vue). It renders the chart and the data and leaves the interpretation out of the page: wheels, maps, tables, grids, legends, badges and every number stay, the interpretive prose goes. Off by default, so a component that does not set it is unchanged.
-
-The line is drawn on the CONTENT, never on the block, so a block that reads like analysis still stays when it is made of measurements. `<roxy-natal-chart>` and `<roxy-aspects-table>` both render the `patterns` payload and both make the same cut: the figure name, element, modality, tightness and planet chips are geometry and survive, the paragraph under them is the reading and goes. To remove such a block entirely, use `hide-sections` below.
-
-```html
-<roxy-natal-chart hide-readings></roxy-natal-chart>
-```
-
-```tsx
-<RoxyNatalChart data={chart} hideReadings />
-```
-
-Reach for it when the page supplies its own words, which is the usual case for a practitioner site that writes its own commentary under the chart. The prose is left out of the markup rather than hidden with CSS, so the page never ships text it is not showing.
-
-**Which components act on it.** Every component that renders a written interpretation, so there is no tag you have to test to find out. A pure chart or table has no interpretation to take away, so the attribute is a no-op on those by definition.
-
-One component is a documented no-op despite being mostly prose:
-
-| Component | Behaviour |
-|---|---|
-| `<roxy-dream-card>` | Ignores `hide-readings`. The dream symbol response is the symbol, its dictionary letter and the interpretation, so removing the interpretation would leave a heading over nothing. Style it with `::part(card)` or leave the card out of the page instead. |
-
-What survives, by family: charts keep the drawing, legend, glyphs, degrees and tab strip; tables keep every row and every calculated column (kaksha bindus, koota scores, significance bars, orbs, strengths); cards keep the header, badges, meters and fact grids, so a dosha keeps its verdict, phase and severity, a crystal keeps its Mohs hardness and attribute grid, and a horoscope keeps its energy meter, Moon placement, active transits and key dates; every Vedic response keeps its sidereal frame caption. What goes: interpretation paragraphs, reading accordions, keyword chips attached to a reading, remedies, action steps and strengths lists, and any section whose only content was one of those, heading included.
-
-### 6e. Removing a whole block
-
-Every component also takes `hide-sections` (`hideSections` in React and Vue): a comma-separated list of `part` names, and each one named is taken off that component.
-
-```html
-<roxy-natal-chart hide-sections="patterns"></roxy-natal-chart>
-<roxy-natal-chart hide-sections="patterns, legend"></roxy-natal-chart>
-```
-
-```tsx
-<RoxyNatalChart data={chart} hideSections="patterns" />
-```
-
-**It is per element, which is the difference from a stylesheet.** A `::part()` rule in your CSS reaches every matching component on the site at once; this reaches the one you put it on, so the same chart can keep its patterns on one page and drop them on another with no CSS at all.
-
-**Use `hide-readings` when the words must not ship, and `hide-sections` when a block should not show.** They are different tools rather than two spellings of one. `hide-readings` drops interpretive prose out of the markup entirely, so the page never ships text it is not displaying. `hide-sections` hides the block with CSS and leaves it in the DOM, because a block is a rendering concern and its content may be measurements you have no reason to strip.
-
-Any name a component publishes works, and the names are in `components-catalog.json` under `parts`. A name the component does not carry hides nothing and is not an error, so one list can be applied across a page of mixed components. Names are case-insensitive and spaces around the commas are ignored.
-
 ### 6c. Vue and Nuxt
 
 `@roxyapi/ui-vue` exposes the same components with the same prop names. Bind `data` and the config props normally; the package sets them as DOM properties for you, so an object payload never gets stringified into an attribute. Listen to widget events with the usual `@` syntax.
@@ -607,19 +562,36 @@ Per-element scope is supported:
 
 Every visible aspect of the chart is driven by `--roxy-*` CSS custom properties on `:host`. Override any token on `:root`, on `:host`, or per element. Do not write Tailwind utility classes inside the components; the Shadow DOM boundary stops them at the door.
 
-## Restyling a block from outside the component
+## Choosing what a component renders
 
-Tokens cover colour, spacing and type. When you need to reach a specific block, every chart and reading component names its structural pieces with `part`, so a stylesheet on the page can target them. The names are identical in every component, so one rule covers the library.
+Three tools, one vocabulary. Every structural block carries a `part` name; `::part()` targets it from a stylesheet, `hide-sections` drops it on one element, and `hide-readings` removes interpretive prose from the markup entirely.
 
-```css
-roxy-natal-chart::part(readings) {
-	display: none;
-}
-roxy-natal-chart::part(card) {
-	border: 0;
-	box-shadow: none;
-}
+**Pick by what you need:**
+
+| Need | Use |
+|---|---|
+| Restyle a block | `::part(name)` in your CSS |
+| Hide a block everywhere on the site | `::part(name) { display: none }` |
+| Hide a block on ONE element, keep it on another | `hide-sections="name"` |
+| Keep the chart, drop the written interpretation | `hide-readings` |
+
+`hide-readings` and `hide-sections` are different tools, not two spellings of one. `hide-readings` leaves the prose out of the markup, so the page never ships text it is not displaying. `hide-sections` hides the block whatever it holds, because a block may be measurements you have no reason to strip.
+
+```html
+<roxy-natal-chart hide-readings></roxy-natal-chart>
+<roxy-natal-chart hide-sections="patterns, legend"></roxy-natal-chart>
 ```
+
+```tsx
+<RoxyNatalChart data={chart} hideReadings />
+<RoxyNatalChart data={chart} hideSections="patterns" />
+```
+
+Both are off by default. `hide-sections` takes a comma-separated list, is case-insensitive, ignores spaces around commas, and a name the component does not carry hides nothing and is not an error, so one list can be applied across a page of mixed components.
+
+**The line `hide-readings` draws is on the CONTENT, never on the block**, so a block that reads like analysis stays when it is made of measurements. `<roxy-natal-chart>` and `<roxy-aspects-table>` both render the `patterns` payload and both make the same cut: figure name, element, modality, tightness and planet chips are geometry and survive; the paragraph under them is the reading and goes. To remove the block itself, that is what `hide-sections` is for. What survives elsewhere: charts keep the drawing, legend, glyphs, degrees and tab strip; tables keep every calculated column (kaksha bindus, koota scores, orbs, strengths); cards keep header, badges, meters and fact grids; every Vedic response keeps its sidereal frame caption. One documented no-op: `<roxy-dream-card>` ignores `hide-readings`, because the response IS the interpretation and removing it would leave a heading over nothing.
+
+### The part vocabulary
 
 | part | What it names |
 |---|---|
@@ -635,9 +607,7 @@ roxy-natal-chart::part(card) {
 | `reading` | One disclosure card inside it |
 | `form`, `loading`, `error`, `edit-bar`, `attribution` | The built-in states, on every component |
 
-The table is the shared vocabulary, not the whole list. **`components-catalog.json` carries a `parts` array for every component, so you can read the exact names a component answers to instead of guessing or inspecting the DOM.** A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike.
-
-Two notes. Parts reach exactly one shadow root deep, and a component that draws another one re-exports its parts, so `roxy-relocation-wheel::part(readings)` reaches the wheel it nests. And to remove a reading rather than hide it, use `hide-readings` (above): a `display: none` rule still ships the words in the page.
+That table is the shared vocabulary, not the whole list. **`components-catalog.json` carries a `parts` array for every component, so read the exact names a component answers to instead of guessing or inspecting the DOM.** A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike. Parts reach exactly one shadow root deep, and a component that draws another re-exports its parts, so `roxy-relocation-wheel::part(readings)` reaches the wheel it nests.
 
 ## Rules every agent must follow
 
@@ -651,7 +621,7 @@ Two notes. Parts reach exactly one shadow root deep, and a component that draws 
 
 ## Domain ordering
 
-When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, numerology, tarot, human design, forecast, biorhythm, I Ching, crystals, dreams, angel numbers. Location is utility, not a selling domain.
+When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers. Location is utility, not a selling domain. The `domain` field in `components-catalog.json` carries the same names, so sort by this list rather than by whatever order you discovered components in.
 
 ## What not to ship
 
@@ -666,9 +636,8 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 
 ## Where to look next
 
-- Component source: `packages/ui/src/components/`
-- Sample data for every component: `apps/docs/sample-data.js`
-- Token reference: `packages/ui/THEMING.md`
-- Live preview: `bun run preview` then open `http://localhost:3001`
+- **Machine-readable catalog, and the one to reach for first**: <https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json>. Every component with its `tag`, `pascal` name, `domain`, what it renders, the `endpoints` it consumes, its `parts`, and copy-paste `snippets`. Fetch and query it instead of scraping the tables in this file.
+- Token reference: `THEMING.md`, beside this file in the package
 - Endpoint reference: <https://roxyapi.com/api-reference>
-- Machine-readable component catalog (every component, its domain, what it renders, and the endpoint(s) it consumes): <https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json>. Fetch it to discover or map components programmatically instead of scraping this table.
+- Integration guide: <https://roxyapi.com/docs/ui>
+- Live preview of every component: <https://roxyapi.github.io/ui/>

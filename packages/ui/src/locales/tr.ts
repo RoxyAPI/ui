@@ -71,6 +71,7 @@
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { registerLocale } from '../i18n/registry.js';
+import './field-labels/tr.js';
 
 export const tr: Record<ChromeString, string> = {
 	'Edit query': 'Sorguyu düzenle',

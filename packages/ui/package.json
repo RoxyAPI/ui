@@ -72,6 +72,7 @@
   "sideEffects": [
     "./src/components/*.ts",
     "./src/locales/*.ts",
+    "./src/locales/field-labels/*.ts",
     "./dist/components/*.js",
     "./dist/locales/*.js",
     "./dist/cdn/*.js"

@@ -98,6 +98,107 @@ for (const vp of WIDTHS) {
 }
 
 /**
+ * The same three widths, asked of the DOCUMENT rather than of each host.
+ *
+ * @remarks
+ * The check above measures a card against its own host, which is the defect it was
+ * written for and is structurally blind to the one an embedder hits first: a page
+ * that scrolls sideways passes it as long as every card is individually contained.
+ * The showcase constrains its demo cards, so a component that blows out a BARE
+ * consumer page (a WordPress post, a plain HTML embed) is exactly the case the
+ * per-host walk cannot see, and that is the most common way these components ship.
+ *
+ * `scrollWidth === clientWidth` on the root element is the whole assertion, but on THIS
+ * page it is worth nothing until the showcase stops clipping: `article.demo-card` is
+ * `overflow: hidden`, so a 900px node injected into a card's shadow root moves that
+ * card's `scrollWidth` to 920 and the document's not at all. Measured, all three
+ * widths. A gate that cannot fail for the case it was written for is worse than no
+ * gate, so every LIGHT-DOM ancestor of a demo host is unclipped first, which is what a
+ * bare consumer page looks like. Nothing inside a shadow root is touched, and a code
+ * block or a scroll box that clips on its own keeps clipping, so the only thing that
+ * can reach the document is a component pushing past the viewport.
+ *
+ * Unclip BOTH axes. `overflow-x: visible` beside a non-visible `overflow-y` computes
+ * to `auto`, so the box turns into a scroller and swallows the overflow exactly as the
+ * `hidden` did, which is how the first version of this test measured clean against an
+ * injected 900px div.
+ *
+ * The walk that follows a failure is diagnostics only: it names the widest nodes past
+ * the viewport, worst first, so the message names a component rather than leaving the
+ * reader to bisect the page by hand. It skips a node an ancestor still contains either
+ * way, scrolled OR clipped, since neither can be what moved the document. Read the list
+ * as suspects rather than as findings: the assertion is the number in front of it.
+ */
+for (const vp of WIDTHS) {
+	test(`the page itself does not scroll sideways at ${vp.label} (${vp.width}px)`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: vp.width, height: vp.height });
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+		await page.waitForTimeout(800);
+
+		const issues = await page.evaluate(async () => {
+			const demos =
+				(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
+					.ROXY_UI_DEMOS ?? [];
+			for (const d of demos) {
+				let p = document.getElementById(d.id)?.parentElement ?? null;
+				while (p) {
+					if (getComputedStyle(p).overflowX !== 'visible')
+						p.style.overflow = 'visible';
+					p = p.parentElement;
+				}
+			}
+			await new Promise((r) => setTimeout(r, 300));
+
+			const root = document.documentElement;
+			const overflow = root.scrollWidth - root.clientWidth;
+			if (overflow <= 0) return [];
+
+			const limit = root.clientWidth;
+			const widest: { label: string; over: number }[] = [];
+			const walk = (node: ParentNode, owner: string) => {
+				for (const el of node.querySelectorAll('*')) {
+					const e = el as HTMLElement & { shadowRoot?: ShadowRoot | null };
+					const tag = e.tagName.toLowerCase();
+					const label = tag.startsWith('roxy-') ? tag : owner;
+					if (e.shadowRoot) walk(e.shadowRoot, label);
+					const r = e.getBoundingClientRect();
+					if (r.width === 0 || r.right <= limit + 2) continue;
+					let p: HTMLElement | null = e.parentElement;
+					let contained = false;
+					while (p && p !== (node as unknown as HTMLElement)) {
+						if (getComputedStyle(p).overflowX !== 'visible') {
+							contained = true;
+							break;
+						}
+						p = p.parentElement;
+					}
+					if (!contained) {
+						widest.push({
+							label: `${label} ${tag}.${e.className || '?'}`,
+							over: Math.round(r.right - limit),
+						});
+					}
+				}
+			};
+			walk(document.body, 'document');
+
+			const named = widest
+				.sort((a, b) => b.over - a.over)
+				.slice(0, 5)
+				.map((w) => `${w.label} (+${w.over}px)`);
+			return [
+				`page scrolls ${overflow}px sideways (scrollWidth ${root.scrollWidth} vs clientWidth ${limit}); widest: ${named.join(', ') || 'no uncontained node found, check a margin or a transform'}`,
+			];
+		});
+
+		expect(issues, `${vp.label}: ${issues.join('\n')}`).toEqual([]);
+	});
+}
+
+/**
  * The same overflow check, but against LONG content rather than the demo fixtures.
  *
  * @remarks

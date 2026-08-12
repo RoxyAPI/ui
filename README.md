@@ -736,7 +736,11 @@ roxy-natal-chart::part(card) {
 }
 ```
 
-The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, plus `form`, `loading`, `error` and `attribution` on the built-in states. A `section` also carries its own name, which is what `::part(patterns)` above targets, so any single block can be dropped or restyled on its own.
+The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, plus `form`, `loading`, `error`, `edit-bar` and `attribution` on the built-in states. A `section` also carries its own name, which is what `::part(patterns)` above targets, so any single block can be dropped or restyled on its own.
+
+That list is the shared vocabulary, not the whole set. **[`components-catalog.json`](https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json) carries a `parts` array for every component**, so you can read the exact names a component answers to instead of guessing or inspecting the DOM. A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike.
+
+One nesting rule worth knowing: parts reach exactly one shadow root deep, and a component that draws another one re-exports its parts, so `roxy-relocation-wheel::part(readings)` reaches the wheel nested inside it.
 
 ### Chart without the written report
 
@@ -752,7 +756,7 @@ For the same outcome in markup rather than CSS, set `hide-readings`. The compone
 
 It is off by default, so nothing changes until you ask for it. Wheels, maps, tables, grids, legends, badges and every number stay; the interpretive prose is what goes.
 
-That line is drawn on the content, not on the block, so a block made of measurements stays even when it reads like analysis. The clearest case is the natal chart patterns block: a T-Square or a Stellium is a geometric fact about where the bodies sit, so the figure, its element and modality, its tightness and its planets all survive, and only the paragraph under them goes. To drop the block itself, hide its part: `roxy-natal-chart::part(patterns) { display: none }`.
+That line is drawn on the content, not on the block, so a block made of measurements stays even when it reads like analysis. The clearest case is the natal chart patterns block: a T-Square or a Stellium is a geometric fact about where the bodies sit, so the figure, its element and modality, its tightness and its planets all survive, and only the paragraph under them goes. To drop the block itself, use `hide-sections` below.
 
 #### Which components it applies to
 
@@ -772,6 +776,25 @@ What each family keeps when you set it:
 - Vedic responses keep the sidereal frame caption, so a chart is still reconcilable against another calculator.
 
 What goes: interpretation paragraphs, the reading accordions, keyword chips attached to a reading, remedies and action steps and strengths lists (sentences laid out as bullets), and any section whose only content was one of those, heading included.
+
+### Remove a whole block
+
+Every component also takes `hide-sections` (`hideSections` in React and Vue): a comma-separated list of `part` names, and each one named is taken off that component.
+
+```html
+<roxy-natal-chart hide-sections="patterns"></roxy-natal-chart>
+<roxy-natal-chart hide-sections="patterns, legend"></roxy-natal-chart>
+```
+
+```tsx
+<RoxyNatalChart data={chart} hideSections="patterns" />
+```
+
+The names are the same `part` names listed above, so anything you can target with `::part()` you can also drop with an attribute. The rule is generated from the name rather than from a list of components that opted in, so it works on every component, and a name no block carries hides nothing rather than erroring.
+
+**Use `hide-readings` when the words must not ship, and `hide-sections` when a block should not show.** They are different tools rather than two spellings of one. `hide-readings` drops interpretive prose out of the markup entirely, so the page never ships text it is not displaying. `hide-sections` hides the block and leaves it in the DOM, because a block is a rendering concern and its content may be measurements you have no reason to strip.
+
+**Reach for `::part()` instead when one rule should cover a whole site**, and for `hide-sections` when two components on the same page have to differ, which a stylesheet cannot express.
 
 ## Languages
 

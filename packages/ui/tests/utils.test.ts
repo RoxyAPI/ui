@@ -533,6 +533,45 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 		expect(seen[0]).toBe('Jun 15, 1990');
 	});
 
+	test('a DATE_ONLY value keeps its calendar day at every grain', () => {
+		// `formatDateGrain` handed the bare date straight to `new Date()`, which
+		// reads it as UTC midnight, and then let Intl render it in the viewer's
+		// zone, so every grain below `year` showed 31 Jul west of Greenwich. Its
+		// only caller passes full datetimes, so nothing on screen was wrong yet
+		// and nothing would have failed the day one date-only field reached it.
+		const GRAINS = ['year', 'month', 'day', 'time'] as const;
+		const west = 'America/Los_Angeles';
+		for (const grain of GRAINS) {
+			const seen = [...ZONES, west].map((tz) =>
+				withTz(tz, () => formatDateGrain('en', '2026-08-01', grain)),
+			);
+			expect(new Set(seen).size).toBe(1);
+		}
+		const grain = (g: (typeof GRAINS)[number]) =>
+			withTz(west, () => formatDateGrain('en', '2026-08-01', g));
+		expect(grain('year')).toBe('2026');
+		expect(grain('month')).toBe('Aug 2026');
+		expect(grain('day')).toBe('Aug 1, 2026');
+		expect(grain('time')).toBe('Aug 1, 2026, 12:00 AM');
+	});
+
+	test('a full datetime still reads as its own wall clock at every grain', () => {
+		const GRAINS = ['year', 'month', 'day', 'time'] as const;
+		const expected = [
+			'1990',
+			'Jan 1990',
+			'Jan 15, 1990',
+			'Jan 15, 1990, 2:30 PM',
+		];
+		GRAINS.forEach((g, i) => {
+			const seen = [...ZONES, 'America/Los_Angeles'].map((tz) =>
+				withTz(tz, () => formatDateGrain('en', '1990-01-15T14:30:00', g)),
+			);
+			expect(new Set(seen).size).toBe(1);
+			expect(seen[0]).toBe(expected[i]);
+		});
+	});
+
 	test('an offset-bearing timestamp IS an instant and still converts to viewer local', () => {
 		const ny = withTz('America/New_York', () =>
 			formatTime('en', '2026-07-13T12:00:00Z'),

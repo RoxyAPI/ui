@@ -54,6 +54,206 @@ afterEach(() => {
 	document.body.innerHTML = '';
 });
 
+/** Everything this library ships as source. The generated types tree is excluded because nobody writes it. */
+const SRC = 'packages/ui/src';
+
+/** Every `.ts` under `src`, full path, sorted. Shared by every source scan below. */
+async function sourceFiles(): Promise<string[]> {
+	const entries = await readdir(SRC, { recursive: true });
+	return entries
+		.filter((f) => f.endsWith('.ts') && !f.startsWith('types/'))
+		.map((f) => `${SRC}/${f}`)
+		.sort();
+}
+
+/** Source with block comments and whole-line comments blanked, so prose ABOUT a construct is never read as one. Line count survives, because a scan reports a site. */
+function code(src: string): string {
+	return src
+		.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+		.split('\n')
+		.map((line) => {
+			const t = line.trim();
+			return t.startsWith('//') || t.startsWith('*') ? '' : line;
+		})
+		.join('\n');
+}
+
+/** {@link code} as numbered lines, blanks dropped, for the scans that report `path:line`. */
+function codeLines(src: string): Array<[number, string]> {
+	return code(src)
+		.split('\n')
+		.map((line, i) => [i + 1, line] as [number, string])
+		.filter(([, line]) => line.trim() !== '');
+}
+
+/* ------------------------------------------------------------------------- *
+ * The markup scanner. ONE detector, read by the library-wide ratchet and by
+ * the form-path guard at the bottom of this file, so the two can never
+ * disagree about what a visitor reads.
+ * ------------------------------------------------------------------------- */
+
+/** Attributes a visitor or a screen reader READS. `class`, `role` and `id` are machine values and are not on it. */
+const VISIBLE_ATTRS =
+	/\b(?:placeholder|aria-label|aria-placeholder|aria-description|title|alt)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
+
+/**
+ * Text allowed to sit in a template as a literal, with the reason. Keep it SHORT: an entry here is copy no visitor will ever read in their own language.
+ *
+ * `UTC` is a unit symbol, identical in all seven languages and printed immediately in front of a signed number, so a catalogue entry would be seven copies of the same three letters plus a way to get the sign onto the wrong side of it.
+ *
+ * The three wire identifiers are the `<code>` spans in the synastry missing-planets notice. An endpoint path and two response field names are what a developer types into their own request, so translating them would break the thing the notice is telling them to look at. The sentence AROUND them is prose and is still counted.
+ */
+const LITERAL_BY_DESIGN = new Set([
+	'UTC',
+	'/astrology/synastry',
+	'person1.planets',
+	'person2.planets',
+]);
+
+/** Stands in for one `${...}`, so an interpolated slot can never be mistaken for copy. */
+const EXPR = ' ';
+
+/** A named character reference. Stripped before the prose test, because `&deg;` and `&middot;` are symbols spelled in ASCII, not words. */
+const ENTITY = /&(?:[a-zA-Z]+|#\d+|#x[0-9a-fA-F]+);/g;
+
+/** The tagged templates that paint something a visitor sees. `svg` is on the list because a chart draws its own labels: three of them were leaking English from inside `<title>` and `<text>` nodes no `html` scan could reach. */
+const MARKUP_TAGS = ['html', 'svg'];
+
+function skipString(src: string, i: number): number {
+	const quote = src[i] as string;
+	i++;
+	while (i < src.length) {
+		if (src[i] === '\\') i += 2;
+		else if (src[i] === quote) return i + 1;
+		else i++;
+	}
+	return i;
+}
+
+/** Whether the backtick at `i` opens a markup template, i.e. is preceded by a WHOLE {@link MARKUP_TAGS} tag rather than the tail of some other identifier or a property access. */
+function isMarkupTag(src: string, i: number): boolean {
+	for (const tag of MARKUP_TAGS) {
+		const start = i - tag.length;
+		if (start < 0 || src.slice(start, i) !== tag) continue;
+		if (start === 0 || !/[A-Za-z0-9_$.]/.test(src[start - 1] as string))
+			return true;
+	}
+	return false;
+}
+
+/** Read a template literal body. `keep` decides whether its own text is collected; a nested markup template is collected either way. */
+function scanTemplate(
+	src: string,
+	start: number,
+	out: string[],
+	keep: boolean,
+): number {
+	let text = '';
+	let i = start;
+	while (i < src.length) {
+		const c = src[i] as string;
+		if (c === '\\') {
+			i += 2;
+			continue;
+		}
+		if (c === '`') {
+			if (keep) out.push(text);
+			return i + 1;
+		}
+		if (c === '$' && src[i + 1] === '{') {
+			text += EXPR;
+			i = scanExpr(src, i + 2, out);
+			continue;
+		}
+		text += c;
+		i++;
+	}
+	if (keep) out.push(text);
+	return i;
+}
+
+/** Skip one `${...}`, recursing into any markup template inside it so a mapped row is scanned too. */
+function scanExpr(src: string, start: number, out: string[]): number {
+	let depth = 1;
+	let i = start;
+	while (i < src.length) {
+		const c = src[i] as string;
+		if (c === "'" || c === '"') {
+			i = skipString(src, i);
+			continue;
+		}
+		if (c === '`') {
+			i = scanTemplate(src, i + 1, out, isMarkupTag(src, i));
+			continue;
+		}
+		if (c === '{') depth++;
+		else if (c === '}') {
+			depth--;
+			if (depth === 0) return i + 1;
+		}
+		i++;
+	}
+	return i;
+}
+
+/** Every markup template in a file, at any nesting depth, interpolations replaced by {@link EXPR}. One tag test for both the outer walk and the nested one, so they cannot disagree about what opens a template. */
+function markupTemplates(src: string): string[] {
+	const out: string[] = [];
+	for (let i = 0; i < src.length; i++) {
+		if (src[i] === '`' && isMarkupTag(src, i))
+			i = scanTemplate(src, i + 1, out, true) - 1;
+	}
+	return out;
+}
+
+/** An element whose text content is a machine language rather than copy. */
+const OPAQUE_TAG = /^\s*(?:style|script)\b/i;
+
+/** The words a visitor reads out of one template: its text nodes plus its human-facing attribute values. */
+function visibleStrings(template: string): string[] {
+	const found: string[] = [];
+	let inTag = false;
+	let opaque = false;
+	let buf = '';
+	for (const c of template) {
+		if (c === '<' && !inTag) {
+			if (!opaque) found.push(buf);
+			buf = '';
+			inTag = true;
+		} else if (c === '>' && inTag) {
+			for (const m of buf.matchAll(VISIBLE_ATTRS))
+				found.push(m[1] ?? m[2] ?? '');
+			opaque = OPAQUE_TAG.test(buf);
+			buf = '';
+			inTag = false;
+		} else {
+			buf += c;
+		}
+	}
+	if (!inTag && !opaque) found.push(buf);
+	return found;
+}
+
+/**
+ * Every user-visible literal one source file writes into its own markup: the whole pipeline, comments stripped, in the order they appear.
+ *
+ * A string that IS translated is invisible here for free, because `${this.t('...')}` is an interpolation and collapses to {@link EXPR} before anything reads it. What survives is copy that reaches a reader in English on all seven translated sites.
+ */
+function visibleLiterals(src: string): string[] {
+	const found: string[] = [];
+	for (const template of markupTemplates(code(src))) {
+		for (const raw of visibleStrings(template)) {
+			const literal = raw.replaceAll(EXPR, ' ').trim().replace(/\s+/g, ' ');
+			// Two consecutive letters, entities removed first. Numbers, punctuation,
+			// glyphs, units and single characters are not copy anybody translates.
+			if (!/[A-Za-z]{2,}/.test(literal.replace(ENTITY, ''))) continue;
+			if (LITERAL_BY_DESIGN.has(literal)) continue;
+			found.push(literal);
+		}
+	}
+	return found;
+}
+
 /**
  * The language chain. Only link 1 shipped, so a component on a fully Spanish page rendered English chrome and there was no way to fix it short of hand-editing every embed. Links 2 and 3 are what make a Spanish WordPress site work with ZERO plugin change, because WordPress already emits `<html lang="es-AR">`.
  */
@@ -457,6 +657,140 @@ describe('every localized call site is a string the catalogues carry', () => {
 });
 
 /**
+ * The hole under the guard above: NOTHING obliges an author to call `t()` in the first place.
+ *
+ * @remarks
+ * The forward scan reads `t('...')` call sites, so a component that writes `<h2>Transits</h2>` straight into its template has zero findings and ships English in all seven languages. Every gate agreed it was fine: the literal is valid TypeScript, the render is correct, the catalogues are complete, and the component simply never asks for a translation. `transits-table` was the proof, measuring as fully English on a page whose natal chart beside it was fully Spanish.
+ *
+ * So this is the same inverted scan the form path has carried since 2026-08-12, pointed at the whole library and read through a RATCHET rather than a gate. Measured 2026-08-13: **645 untranslated literals across 55 files**, which is a translation programme and not a commit. The budget freezes that debt where it stands and closes the door behind it, which is the part that matters: a component added tomorrow is not in the table, so its budget is zero and its first hardcoded word is a red test.
+ *
+ * @remarks The detector is `visibleLiterals`, shared with the form-path guard at the bottom of this file. It reads text nodes and human-facing attributes out of every `html` and `svg` template, and anything routed through `t()` is invisible to it for free, because an interpolation collapses before the text is read.
+ *
+ * @remarks Known blind spots, stated rather than implied. Copy passed to a helper as a plain argument is NOT seen: `renderTablist({ items: [{ label: 'Positions' }], label: 'Transit views' })` is an object literal, not markup, and every tab label in the library reaches a reader that way. Nor is a string assigned to a `@property` default, a `const` table of labels, or anything a component builds by concatenation. This guard closes the template door; it does not prove a file is localized.
+ */
+describe('a component may not write its own words, and the debt only shrinks', () => {
+	/**
+	 * Frozen debt, measured 2026-08-13. Path under `src` to the number of user-visible literals that component still writes itself.
+	 *
+	 * **A file absent from this table must have ZERO, and that is the whole point of the guard.** A number here may only go DOWN, and lowering it is the bookkeeping that puts the repair in the diff: paying a file off and leaving its row stale would let the debt creep back up under a budget nobody re-read. Delete the row when it reaches zero.
+	 *
+	 * **The correct response to a failure is `t()`, never a new row.**
+	 */
+	const UNTRANSLATED_DEBT: Record<string, number> = {
+		'components/angel-number-card.ts': 4,
+		'components/angel-number-lookup.ts': 12,
+		'components/arudha-padas.ts': 18,
+		'components/ashtakavarga-grid.ts': 23,
+		'components/aspects-table.ts': 19,
+		'components/astrocartography-map.ts': 10,
+		'components/bhav-chalit-table.ts': 14,
+		'components/bhava-bala-table.ts': 12,
+		'components/biorhythm-chart.ts': 14,
+		'components/chara-karakas.ts': 13,
+		'components/choghadiya-grid.ts': 12,
+		'components/compatibility-card.ts': 12,
+		'components/crystal-card.ts': 4,
+		'components/crystal-grid.ts': 1,
+		'components/dasha-timeline.ts': 10,
+		'components/divisional-chart.ts': 4,
+		'components/dosha-card.ts': 4,
+		'components/dream-card.ts': 2,
+		'components/dream-search.ts': 4,
+		'components/fixed-stars.ts': 14,
+		'components/forecast-digest.ts': 6,
+		'components/forecast-timeline.ts': 7,
+		'components/gochara-table.ts': 17,
+		'components/guna-milan.ts': 10,
+		'components/hd-connection.ts': 17,
+		'components/hd-penta.ts': 14,
+		'components/heliacal-table.ts': 12,
+		'components/hexagram.ts': 6,
+		'components/hora-table.ts': 3,
+		'components/horoscope-card.ts': 18,
+		'components/kp-chart.ts': 41,
+		'components/kp-planets-table.ts': 13,
+		'components/kp-ruling-planets.ts': 19,
+		'components/local-space-compass.ts': 12,
+		'components/moon-phase.ts': 9,
+		'components/nakshatra-card.ts': 10,
+		'components/numerology-card.ts': 21,
+		'components/panchang-table.ts': 18,
+		'components/positions-table.ts': 8,
+		'components/profection-card.ts': 8,
+		'components/relocation-wheel.ts': 7,
+		'components/shadbala-table.ts': 13,
+		'components/synastry-chart.ts': 31,
+		'components/tarot-card.ts': 1,
+		'components/tarot-catalog.ts': 1,
+		'components/tarot-spread.ts': 6,
+		'components/transits-table.ts': 20,
+		'components/upagraha-table.ts': 10,
+		'components/vedic-aspects.ts': 12,
+		'components/vedic-kundli.ts': 3,
+		'components/vedic-planets-table.ts': 29,
+		'components/western-planets-table.ts': 10,
+		'components/yoga-list.ts': 22,
+		'utils/frame.ts': 2,
+		'utils/kundli-render.ts': 3,
+	};
+
+	/** Path to the literals it writes, keyed the way the budget is. */
+	async function measure(): Promise<Map<string, string[]>> {
+		const out = new Map<string, string[]>();
+		for (const path of await sourceFiles()) {
+			const found = visibleLiterals(await Bun.file(path).text());
+			if (found.length) out.set(path.slice(SRC.length + 1), found);
+		}
+		return out;
+	}
+
+	test('no file writes more untranslated copy than its frozen budget', async () => {
+		const measured = await measure();
+		// Not vacuous in the direction that matters: a detector that silently stopped
+		// finding anything reports every budgeted file as improved and fails below.
+		expect((await sourceFiles()).length).toBeGreaterThan(60);
+
+		const regressions: string[] = [];
+		for (const [file, literals] of measured) {
+			const budget = UNTRANSLATED_DEBT[file] ?? 0;
+			if (literals.length <= budget) continue;
+			regressions.push(
+				`${file}: ${literals.length} untranslated, budget ${budget}\n      ${literals.join('\n      ')}`,
+			);
+		}
+		expect(
+			regressions,
+			`Copy a visitor reads, written straight into a template, so it renders English in all seven languages. Wrap each one in this.t(...) and add the English source to src/i18n/chrome-strings.ts and every src/locales/*.ts. A file absent from UNTRANSLATED_DEBT must carry NONE, which is what makes a new component start out localized:\n  ${regressions.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	test('a file that improved has its budget lowered in the same change', async () => {
+		const measured = await measure();
+		const improved: string[] = [];
+		for (const [file, budget] of Object.entries(UNTRANSLATED_DEBT)) {
+			const found = measured.get(file)?.length ?? 0;
+			if (found < budget)
+				improved.push(`${file}: ${found} now, budget ${budget}`);
+		}
+		expect(
+			improved,
+			`These carry less untranslated copy than their budget allows, which is a failure with a one-line fix: lower the number (or delete the row at zero) so the debt cannot slip back in behind it:\n  ${improved.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	test('the frozen budget covers only files that still exist', async () => {
+		// A row for a deleted or renamed component is dead weight that hides real debt
+		// behind a stale total, and it reads as coverage nobody has.
+		const live = new Set(
+			(await sourceFiles()).map((p) => p.slice(SRC.length + 1)),
+		);
+		expect(Object.keys(UNTRANSLATED_DEBT).filter((f) => !live.has(f))).toEqual(
+			[],
+		);
+	});
+});
+
+/**
  * The second half of "the component does not know the locale". Chrome was localized first, which made the other half visible: `toLocaleDateString(undefined, ...)` means the locale of whoever is LOOKING, so a Spanish page rendered `Carta natal` over `Jan 15, 1990, 2:30 PM` and two visitors to one page saw two different strings.
  *
  * @remarks
@@ -470,28 +804,6 @@ describe('locale formatting cannot escape the sanctioned utility', () => {
 	const RAW_INTL = /\.toLocale(?:Date|Time)?String\s*\(|\bIntl\.[A-Z]/;
 	/** How a call site is allowed to name the locale. A string literal is not on the list: that IS the `'en'` bug. */
 	const SANCTIONED = ['this.effectiveLang()', 'locale,', 'locale)'];
-
-	/** Every `.ts` under `src`, minus the generated types tree and this utility's own file. */
-	async function sourceFiles(): Promise<string[]> {
-		const base = 'packages/ui/src';
-		const entries = await readdir(base, { recursive: true });
-		return entries
-			.filter((f) => f.endsWith('.ts') && !f.startsWith('types/'))
-			.map((f) => `${base}/${f}`)
-			.sort();
-	}
-
-	/** Source with block comments dropped and comment lines skipped, so prose naming a call is never mistaken for one. */
-	function codeLines(src: string): Array<[number, string]> {
-		return src
-			.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
-			.split('\n')
-			.map((line, i) => [i + 1, line] as [number, string])
-			.filter(([, line]) => {
-				const t = line.trim();
-				return !t.startsWith('//') && !t.startsWith('*');
-			});
-	}
 
 	test('no file outside utils/format.ts calls Intl or a toLocale method', async () => {
 		const offenders: string[] = [];
@@ -622,7 +934,7 @@ describe('a component renders its chrome in the page language', () => {
 	});
 
 	/**
-	 * `<roxy-data>`, which shipped with ZERO `t()` calls while `docs/todo.md` and the main repo both recorded its chrome as done.
+	 * `<roxy-data>`, which shipped with ZERO `t()` calls while it was recorded everywhere as done.
 	 *
 	 * @remarks
 	 * It is the generic fallback every unbound endpoint renders through, so it is the component a Spanish site is most likely to be looking at, and it was the WORST case rather than a missing nicety: `foldLocalized` already runs inside its `suppress()` funnel, so it was printing `Sol` and `Piscis` under `Yes`, `No` and `31 rows` in English. Spanish values under English chrome is the state `docs/authoring.md` says is worse than all-English, and this component had been in it since the fold landed.
@@ -1592,157 +1904,34 @@ describe('the form path writes no untranslated words', () => {
 		'packages/ui/src/components/location-search.ts',
 	];
 
-	/** Attributes a visitor or a screen reader READS. `class`, `role` and `id` are machine values and are not on it. */
-	const VISIBLE_ATTRS =
-		/\b(?:placeholder|aria-label|aria-placeholder|aria-description|title|alt)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
-
-	/**
-	 * Text allowed to sit in a template as a literal, with the reason.
-	 *
-	 * `UTC` is a unit symbol, identical in all seven languages and printed immediately in front of a signed number, so a catalogue entry would be seven copies of the same three letters plus a way to get the sign onto the wrong side of it.
-	 */
-	const LITERAL_BY_DESIGN = new Set(['UTC']);
-
-	/** Stands in for one `${...}`, so an interpolated slot can never be mistaken for copy. */
-	const EXPR = ' ';
-
-	function skipString(src: string, i: number): number {
-		const quote = src[i] as string;
-		i++;
-		while (i < src.length) {
-			if (src[i] === '\\') i += 2;
-			else if (src[i] === quote) return i + 1;
-			else i++;
-		}
-		return i;
-	}
-
-	/** Read a template literal body. `keep` decides whether its own text is collected; a nested html template is collected either way. */
-	function scanTemplate(
-		src: string,
-		start: number,
-		out: string[],
-		keep: boolean,
-	): number {
-		let text = '';
-		let i = start;
-		while (i < src.length) {
-			const c = src[i] as string;
-			if (c === '\\') {
-				i += 2;
-				continue;
-			}
-			if (c === '`') {
-				if (keep) out.push(text);
-				return i + 1;
-			}
-			if (c === '$' && src[i + 1] === '{') {
-				text += EXPR;
-				i = scanExpr(src, i + 2, out);
-				continue;
-			}
-			text += c;
-			i++;
-		}
-		if (keep) out.push(text);
-		return i;
-	}
-
-	/** Skip one `${...}`, recursing into any html template inside it so a mapped row is scanned too. */
-	function scanExpr(src: string, start: number, out: string[]): number {
-		let depth = 1;
-		let i = start;
-		while (i < src.length) {
-			const c = src[i] as string;
-			if (c === "'" || c === '"') {
-				i = skipString(src, i);
-				continue;
-			}
-			if (c === '`') {
-				const tagged = src.slice(Math.max(0, i - 4), i) === 'html';
-				i = scanTemplate(src, i + 1, out, tagged);
-				continue;
-			}
-			if (c === '{') depth++;
-			else if (c === '}') {
-				depth--;
-				if (depth === 0) return i + 1;
-			}
-			i++;
-		}
-		return i;
-	}
-
-	/** Source with block comments and whole-line comments blanked, so prose ABOUT a template is never read as one. */
-	function code(src: string): string {
-		return src
-			.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
-			.split('\n')
-			.map((line) => (line.trim().startsWith('//') ? '' : line))
-			.join('\n');
-	}
-
-	/** Every html`` template in a file, interpolations replaced by {@link EXPR}. */
-	function htmlTemplates(src: string): string[] {
-		const out: string[] = [];
-		let i = 0;
-		for (;;) {
-			const at = src.indexOf('html`', i);
-			if (at === -1) return out;
-			i = scanTemplate(src, at + 5, out, true);
-		}
-	}
-
-	/** The words a visitor reads out of one template: its text nodes plus its human-facing attribute values. */
-	function visibleStrings(template: string): string[] {
-		const found: string[] = [];
-		let inTag = false;
-		let buf = '';
-		for (const c of template) {
-			if (c === '<' && !inTag) {
-				found.push(buf);
-				buf = '';
-				inTag = true;
-			} else if (c === '>' && inTag) {
-				for (const m of buf.matchAll(VISIBLE_ATTRS))
-					found.push(m[1] ?? m[2] ?? '');
-				buf = '';
-				inTag = false;
-			} else {
-				buf += c;
-			}
-		}
-		if (!inTag) found.push(buf);
-		return found;
-	}
-
 	test('the scan can see a literal at all', () => {
-		// Not vacuous: the assertion below is an empty-array check, which passes just
-		// as well when the scanner finds nothing. This is the sabotage case inline.
+		// Not vacuous: both assertions below are empty-array checks, which pass just
+		// as well when the scanner finds nothing. This is the sabotage case inline,
+		// and it stands for the library-wide ratchet too: one detector, two readers.
 		const sample = `render() { return html\`<p title="Hi there">Retry \${this.x} \${[1].map((n) => html\`<b>Hidden word</b>\`)}</p>\`; }`;
-		const found = htmlTemplates(sample).flatMap(visibleStrings);
-		// A nested template closes before its parent, so it is collected first. The
-		// guard below reads the whole set, so only membership matters.
-		expect(
-			found
-				.map((s) => s.trim())
-				.filter(Boolean)
-				.sort(),
-		).toEqual(['Hi there', 'Hidden word', 'Retry']);
+		// A nested template closes before its parent, so it is collected first. Both
+		// guards read the whole set, so only membership matters.
+		expect(visibleLiterals(sample).sort()).toEqual([
+			'Hi there',
+			'Hidden word',
+			'Retry',
+		]);
+		// And a translated one is invisible, which is what makes the ratchet a
+		// measure of untranslated copy rather than of copy.
+		const translated = `html\`<p title=\${this.t('Hi there')}>\${this.t('Retry')}</p>\``;
+		expect(visibleLiterals(translated)).toEqual([]);
 	});
 
+	/**
+	 * The two form-path files are held at ZERO by name, on top of the library-wide ratchet.
+	 *
+	 * That is not a duplicate assertion: the ratchet's zero is the ABSENCE of a budget row, so a future agent could buy one of these files a budget and the ratchet would take it. This list cannot be bought off, and its failure reads as "the form is half translated" rather than as a number moving.
+	 */
 	test('no user-visible literal survives in a form-path template', async () => {
 		const offenders: string[] = [];
-		for (const path of FORM_PATH) {
-			for (const template of htmlTemplates(code(await Bun.file(path).text()))) {
-				for (const raw of visibleStrings(template)) {
-					const literal = raw.replaceAll(EXPR, ' ').trim().replace(/\s+/g, ' ');
-					if (!/[A-Za-z]{2,}/.test(literal)) continue;
-					if (LITERAL_BY_DESIGN.has(literal)) continue;
-					offenders.push(`${path}: ${literal}`);
-				}
-			}
-		}
+		for (const path of FORM_PATH)
+			for (const literal of visibleLiterals(await Bun.file(path).text()))
+				offenders.push(`${path}: ${literal}`);
 		expect(
 			offenders,
 			`Hardcoded copy in the form path. Wrap it in this.t(...) and add the English source to src/i18n/chrome-strings.ts and every src/locales/*.ts:\n  ${offenders.join('\n  ')}`,

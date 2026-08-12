@@ -65,6 +65,7 @@
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { registerLocale } from '../i18n/registry.js';
+import './field-labels/ru.js';
 
 export const ru: Record<ChromeString, string> = {
 	'Edit query': 'Изменить запрос',

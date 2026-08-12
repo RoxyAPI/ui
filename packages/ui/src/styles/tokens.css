@@ -34,6 +34,22 @@
  * which is exactly the intent, and leaves the cascade otherwise untouched.
  */
 :where(:root, :host) {
+	/* Native controls follow the theme, and this is the ONLY thing that makes them.
+	 *
+	 * `color-scheme` is a real property, not the `prefers-color-scheme` query above it, and
+	 * without it the browser paints every native control in its LIGHT appearance whatever our
+	 * tokens say. A <select> looks fine closed, because we colour it ourselves, and then opens a
+	 * light popup whose <option> rows inherit our near-white --roxy-fg: white text on white. The
+	 * same omission dims a date or time picker's calendar, the number spinner, the autofill
+	 * highlight and the scrollbar.
+	 *
+	 * It belongs HERE and not on the controls, because a per-control fix is one rule per input
+	 * type per component, forever, and it still cannot reach the popup: that is rendered by the
+	 * OS outside the DOM, so no selector we write applies to it. Declared once per theme trigger,
+	 * beside the tokens, it covers every control in every component and on the host page.
+	 * `color-scheme` is inherited, and these selectors match :host, so each shadow root gets it. */
+	color-scheme: light;
+
 	/* Color: brand */
 	--roxy-primary: #0f172a;
 	--roxy-secondary: #475569;
@@ -136,6 +152,7 @@
 /* Dark theme via system preference */
 @media (prefers-color-scheme: dark) {
 	:where(:root, :host) {
+		color-scheme: dark;
 		--roxy-primary: #f8fafc;
 		--roxy-secondary: #94a3b8;
 		--roxy-accent: #fbbf24;
@@ -184,6 +201,7 @@
 	.light,
 	:host([data-theme="light"])
 ) {
+	color-scheme: light;
 	--roxy-primary: #0f172a;
 	--roxy-secondary: #475569;
 	--roxy-accent: #f59e0b;
@@ -224,6 +242,7 @@
 	.dark,
 	:host([data-theme="dark"])
 ) {
+	color-scheme: dark;
 	--roxy-primary: #f8fafc;
 	--roxy-secondary: #94a3b8;
 	--roxy-accent: #fbbf24;

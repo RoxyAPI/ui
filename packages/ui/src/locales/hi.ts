@@ -87,6 +87,7 @@
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { registerLocale } from '../i18n/registry.js';
+import './field-labels/hi.js';
 
 export const hi: Record<ChromeString, string> = {
 	'Edit query': 'विवरण संपादित करें',

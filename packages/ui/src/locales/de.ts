@@ -69,6 +69,7 @@
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { registerLocale } from '../i18n/registry.js';
+import './field-labels/de.js';
 
 export const de: Record<ChromeString, string> = {
 	'Edit query': 'Abfrage bearbeiten',

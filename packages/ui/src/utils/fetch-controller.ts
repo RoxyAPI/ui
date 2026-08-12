@@ -19,7 +19,9 @@ type FetchHost<T> = ReactiveControllerHost &
 	};
 
 /** Default RoxyAPI v2 origin. A component overrides it per instance via its `base-url` attribute. */
-const DEFAULT_BASE_URL = 'https://roxyapi.com/api/v2';
+/** The public API root. Exported so anything else that must reach the API (the field-label
+ * fetch in `endpoint-form`) uses the SAME origin as every data request instead of a second copy. */
+export const DEFAULT_BASE_URL = 'https://roxyapi.com/api/v2';
 
 /** A single request the controller issues on the component's behalf. */
 export interface RoxyRequest {

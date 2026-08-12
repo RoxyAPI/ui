@@ -63,6 +63,7 @@
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { registerLocale } from '../i18n/registry.js';
+import './field-labels/pt.js';
 
 export const pt: Record<ChromeString, string> = {
 	'Edit query': 'Editar consulta',

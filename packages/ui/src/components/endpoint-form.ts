@@ -3,6 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
+import { fieldLabel, optionLabel } from '../i18n/registry.js';
 import { signGlyph } from '../tokens/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
@@ -116,7 +117,9 @@ function parseArrayValue(raw: string): unknown {
  *
  * **Two languages are in play here and they are different answers.** {@link RoxyLocalizedElement.effectiveLang} is the DISPLAY tag, region included, and it is what every `t()` call and the city search read. {@link RoxyEndpointForm.requestLang} is the WIRE value, region stripped and unsupported languages omitted, and it is what reaches `?lang=`. Swapping them is silent in both directions: the request one demotes every regional visitor, and the display one is a 400.
  *
- * **The words this form writes are translated; the words the SPEC writes are not, with one enumerable exception.** Every field label and option text comes from a field name through `humanize()` or from the operation summary, so it is computed per operation and no catalogue keyed on English source text can reach it. That is the shared field-name-to-label artifact `docs/todo.md` tracks, and it is why a Spanish form still reads `Birth date` over a translated city box. GROUP names are the exception and are catalogued, because the spec has nine of them rather than 909: see {@link RoxyEndpointForm.groupName}.
+ * **Field labels and option text ARE translated now, and they arrive over the network rather than from a catalogue.** They are keyed by the WIRE NAME the spec uses, not by the English text, because that English text is itself computed here by `humanize()`: there is no constant for a source-keyed catalogue to key on, which is why the chrome catalogue could never reach them. {@link RoxyEndpointForm.fieldText} and {@link RoxyEndpointForm.optionText} read a map baked into the per-language payload at build time and published through the same registry the chrome strings use. It rides the `locales/{lang}.js` download a translated page already makes, so it costs no extra request, needs no network at render time, and cannot flash English before correcting itself.
+ *
+ * **`humanize()` remains, as the fallback, and that is what makes this safe.** The payload is cosmetic and never awaited: a form draws immediately, an offline page or a blocked request renders exactly what it rendered before labels existed, and a language with no translation for a given key falls back to English server-side. There is no state in which a missing label breaks a form. Operation SUMMARIES and field DESCRIPTIONS are deliberately NOT in that map: a description is developer-facing reference prose, most of it collapsed behind a disclosure, and the widget already states the same contract language-neutrally through its input type and bounds. GROUP names stay catalogued rather than fetched, because the spec has nine of them: see {@link RoxyEndpointForm.groupName}.
  */
 @customElement('roxy-endpoint-form')
 export class RoxyEndpointForm extends RoxyLocalizedElement {
@@ -647,6 +650,28 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	}
 
 	/**
+	 * The words this form writes over a request field, and the options under it.
+	 *
+	 * @remarks
+	 * `humanize()` is the FALLBACK, not the default, and it stays because it has to: the labels
+	 * arrive over the network and a form must draw before they land, on an offline page, and when
+	 * the request fails. So the worst case is exactly what this form rendered before labels
+	 * existed, and the best case is a translated one, with no state in between where it breaks.
+	 *
+	 * Keyed by WIRE NAME rather than by the English text, because the English text is itself
+	 * computed here by `humanize()`; there is no constant to key on. Same reason the label map is
+	 * a separate key space from the chrome catalogue.
+	 */
+	private fieldText(name: string): string {
+		return fieldLabel(this.requestLang(), name) ?? humanize(name);
+	}
+
+	/** The option text under one field, falling back the same way. */
+	private optionText(field: string, value: string): string {
+		return optionLabel(this.requestLang(), field, value) ?? humanize(value);
+	}
+
+	/**
 	 * Location-select handler bound to a group: fills that group's coordinate keys plus whichever
 	 * timezone field it owns.
 	 *
@@ -788,8 +813,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			// saying `Person 1` over a legend reading `Persona 1` points at nothing.
 			labels.push(
 				f.group
-					? `${this.groupName(f.group)} ${humanize(f.name)}`
-					: humanize(f.name),
+					? `${this.groupName(f.group)} ${this.fieldText(f.name)}`
+					: this.fieldText(f.name),
 			);
 		}
 		for (const g of locGroups) {
@@ -824,7 +849,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const cur = opts.indexOf(this.values[f.key] as string);
 		const active = cur === -1 ? 0 : cur;
 		return html`<div class="field tiles-field">
-			<span class="label" id=${labelId}>${humanize(f.name)}${this.reqMark(f)}</span>
+			<span class="label" id=${labelId}>${this.fieldText(f.name)}${this.reqMark(f)}</span>
 			<div
 				class="tiles"
 				role="radiogroup"
@@ -848,7 +873,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 								? html`<span class="tile-glyph" aria-hidden="true">${glyph}</span>`
 								: nothing
 						}
-						<span class="tile-label">${humanize(opt)}</span>
+						<span class="tile-label">${this.optionText(f.name, opt)}</span>
 					</button>`;
 				})}
 			</div>
@@ -859,7 +884,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private renderSelect(f: FieldDef) {
 		const id = `roxy-form-${f.key}`;
 		return html`<div class="field">
-			<label for=${id}>${humanize(f.name)}${this.reqMark(f)}</label>
+			<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>
 			<select
 				id=${id}
 				?required=${f.required}
@@ -871,7 +896,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					(
 						opt,
 					) => html`<option value=${opt} ?selected=${this.values[f.key] === opt}>
-						${humanize(opt)}
+						${this.optionText(f.name, opt)}
 					</option>`,
 				)}
 			</select>
@@ -895,7 +920,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					<span class="knob"></span>
 				</button>
 				<label class="toggle-label" for=${id}
-					>${humanize(f.name)}${this.reqMark(f)}</label
+					>${this.fieldText(f.name)}${this.reqMark(f)}</label
 				>
 			</div>
 			${this.description(f)}
@@ -917,7 +942,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					? String(f.example)
 					: '';
 		return html`<div class="field">
-			<label for=${id}>${humanize(f.name)}${this.reqMark(f)}</label>
+			<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>
 			<input
 				id=${id}
 				type=${f.kind === 'array' ? 'text' : type}
