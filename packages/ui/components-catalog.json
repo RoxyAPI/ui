@@ -16,6 +16,30 @@
           "path": "/astrology/natal-chart"
         }
       ],
+      "parts": [
+        "aspect-grid",
+        "aspects",
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "element-modality",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "panel",
+        "pattern",
+        "patterns",
+        "reading",
+        "readings",
+        "section",
+        "tab",
+        "table",
+        "tablist"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-natal-chart data-endpoint=\"astrology/natal-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-natal-chart>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"natal-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -38,6 +62,23 @@
           "method": "POST",
           "path": "/astrology/synastry"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "inter-aspects",
+        "legend",
+        "loading",
+        "reading",
+        "section",
+        "strengths-challenges",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-synastry-chart data-endpoint=\"astrology/synastry\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-synastry-chart>",
@@ -62,6 +103,16 @@
           "path": "/astrology/natal-chart"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-western-planets-table data-endpoint=\"astrology/natal-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-western-planets-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"western-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -85,6 +136,23 @@
           "path": "/astrology/transits"
         }
       ],
+      "parts": [
+        "aspects",
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "panel",
+        "reading",
+        "section",
+        "tab",
+        "table",
+        "tablist"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transits-table data-endpoint=\"astrology/transits\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-transits-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transits-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -107,6 +175,23 @@
           "method": "POST",
           "path": "/astrology/transit-aspects"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "reading",
+        "readings",
+        "section",
+        "strongest",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transit-wheel data-endpoint=\"astrology/transit-aspects\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-transit-wheel>",
@@ -140,6 +225,22 @@
           "method": "POST",
           "path": "/astrology/aspect-patterns"
         }
+      ],
+      "parts": [
+        "aspects",
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "pattern",
+        "patterns",
+        "reading",
+        "section",
+        "strongest"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-aspects-table data-endpoint=\"astrology/aspects\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-aspects-table>",
@@ -183,6 +284,17 @@
           }
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-moon-phase mode=\"current\" data-endpoint=\"astrology/moon-phase/current\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-moon-phase>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"moon-phase\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -225,6 +337,21 @@
           }
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "key-dates",
+        "loading",
+        "outlook",
+        "section",
+        "sky",
+        "week-by-week"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-horoscope-card period=\"daily\" data-endpoint=\"astrology/horoscope/{sign}/daily\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-horoscope-card>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"horoscope-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -247,6 +374,20 @@
           "method": "POST",
           "path": "/astrology/astrocartography"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "reading",
+        "readings",
+        "section"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-astrocartography-map data-endpoint=\"astrology/astrocartography\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-astrocartography-map>",
@@ -271,6 +412,17 @@
           "path": "/astrology/local-space"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-local-space-compass data-endpoint=\"astrology/local-space\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-local-space-compass>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"local-space-compass\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -293,6 +445,34 @@
           "method": "POST",
           "path": "/astrology/relocation-chart"
         }
+      ],
+      "parts": [
+        "angular-planets",
+        "aspect-grid",
+        "aspects",
+        "attribution",
+        "card",
+        "changes",
+        "chart",
+        "details",
+        "edit-bar",
+        "element-modality",
+        "error",
+        "form",
+        "header",
+        "house-changes",
+        "legend",
+        "loading",
+        "panel",
+        "pattern",
+        "patterns",
+        "reading",
+        "readings",
+        "section",
+        "stack",
+        "tab",
+        "table",
+        "tablist"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-relocation-wheel data-endpoint=\"astrology/relocation-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-relocation-wheel>",
@@ -337,6 +517,20 @@
           "path": "/astrology/arabic-lots"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "readings",
+        "section",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-positions-table data-endpoint=\"astrology/asteroids\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-positions-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"positions-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -365,6 +559,19 @@
           "path": "/vedic-astrology/planetary-positions/monthly"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "changes",
+        "daily",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "section",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ephemeris-table data-endpoint=\"astrology/planets/monthly\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-ephemeris-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ephemeris-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -388,6 +595,18 @@
           "path": "/astrology/fixed-stars"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "conjunctions",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-fixed-stars data-endpoint=\"astrology/fixed-stars\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-fixed-stars>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"fixed-stars\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -410,6 +629,16 @@
           "method": "POST",
           "path": "/astrology/profections"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-profection-card data-endpoint=\"astrology/profections\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-profection-card>",
@@ -453,6 +682,24 @@
           }
         }
       ],
+      "parts": [
+        "aspect-breakdown",
+        "attribution",
+        "breakdown",
+        "card",
+        "details",
+        "edit-bar",
+        "element-balance",
+        "error",
+        "form",
+        "header",
+        "key-aspects",
+        "loading",
+        "reading",
+        "readings",
+        "section",
+        "strengths-challenges"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-compatibility-card mode=\"astrology\" data-endpoint=\"astrology/compatibility-score\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-compatibility-card>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"compatibility-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -475,6 +722,19 @@
           "method": "POST",
           "path": "/vedic-astrology/birth-chart"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "panel",
+        "tab",
+        "tablist"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-kundli data-endpoint=\"vedic-astrology/birth-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-kundli>",
@@ -504,6 +764,20 @@
           "path": "/vedic-astrology/navamsa"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "panel",
+        "tab",
+        "tablist"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-divisional-chart data-endpoint=\"vedic-astrology/divisional-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-divisional-chart>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"divisional-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -526,6 +800,20 @@
           "method": "POST",
           "path": "/vedic-astrology/kp/chart"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "panel",
+        "tab",
+        "table",
+        "tablist"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-chart data-endpoint=\"vedic-astrology/kp/chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-chart>",
@@ -550,6 +838,22 @@
           "path": "/vedic-astrology/birth-chart"
         }
       ],
+      "parts": [
+        "attribution",
+        "bhava-significations",
+        "card",
+        "combustion",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "planetary-war",
+        "readings",
+        "section",
+        "table",
+        "yogas"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-planets-table data-endpoint=\"vedic-astrology/birth-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-planets-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -572,6 +876,16 @@
           "method": "POST",
           "path": "/vedic-astrology/kp/planets"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-planets-table data-endpoint=\"vedic-astrology/kp/planets\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-planets-table>",
@@ -596,6 +910,17 @@
           "path": "/vedic-astrology/kp/ruling-planets"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-ruling-planets data-endpoint=\"vedic-astrology/kp/ruling-planets\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-ruling-planets>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-ruling-planets\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -619,6 +944,20 @@
           "path": "/vedic-astrology/ashtakavarga"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "panel",
+        "tab",
+        "table",
+        "tablist"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ashtakavarga-grid data-endpoint=\"vedic-astrology/ashtakavarga\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-ashtakavarga-grid>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ashtakavarga-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -641,6 +980,18 @@
           "method": "POST",
           "path": "/vedic-astrology/shadbala"
         }
+      ],
+      "parts": [
+        "attribution",
+        "bars",
+        "card",
+        "chart",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-shadbala-table data-endpoint=\"vedic-astrology/shadbala\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-shadbala-table>",
@@ -708,6 +1059,26 @@
           }
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "current",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "frame",
+        "header",
+        "loading",
+        "panel",
+        "reading",
+        "readings",
+        "section",
+        "tab",
+        "tablist",
+        "timeline"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dasha-timeline period=\"major\" data-endpoint=\"vedic-astrology/dasha/major\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dasha-timeline>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dasha-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -730,6 +1101,18 @@
           "method": "POST",
           "path": "/vedic-astrology/compatibility"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-guna-milan data-endpoint=\"vedic-astrology/compatibility\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-guna-milan>",
@@ -765,6 +1148,21 @@
           }
         }
       ],
+      "parts": [
+        "attribution",
+        "auspicious",
+        "balams",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "inauspicious",
+        "loading",
+        "section",
+        "table",
+        "transitions"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-panchang-table detail=\"detailed\" data-endpoint=\"vedic-astrology/panchang/detailed\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-panchang-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"panchang-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -787,6 +1185,19 @@
           "method": "POST",
           "path": "/vedic-astrology/aspects"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "mutual-aspects",
+        "positions",
+        "section",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-aspects data-endpoint=\"vedic-astrology/aspects\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-aspects>",
@@ -811,6 +1222,16 @@
           "path": "/vedic-astrology/panchang/hora"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hora-table data-endpoint=\"vedic-astrology/panchang/hora\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hora-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hora-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -833,6 +1254,16 @@
           "method": "POST",
           "path": "/vedic-astrology/panchang/choghadiya"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-choghadiya-grid data-endpoint=\"vedic-astrology/panchang/choghadiya\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-choghadiya-grid>",
@@ -857,6 +1288,18 @@
           "path": "/vedic-astrology/heliacal"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table",
+        "window"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-heliacal-table data-endpoint=\"vedic-astrology/heliacal\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-heliacal-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"heliacal-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -879,6 +1322,19 @@
           "method": "POST",
           "path": "/vedic-astrology/transit"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "key-transits",
+        "loading",
+        "section",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gochara-table data-endpoint=\"vedic-astrology/transit\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-gochara-table>",
@@ -903,6 +1359,17 @@
           "path": "/vedic-astrology/bhava-bala"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bhava-bala-table data-endpoint=\"vedic-astrology/bhava-bala\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bhava-bala-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bhava-bala-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -925,6 +1392,18 @@
           "method": "POST",
           "path": "/vedic-astrology/bhav-chalit"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "moved",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bhav-chalit-table data-endpoint=\"vedic-astrology/bhav-chalit\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bhav-chalit-table>",
@@ -949,6 +1428,19 @@
           "path": "/vedic-astrology/upagraha"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "section",
+        "sun-based",
+        "table",
+        "time-based"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-upagraha-table data-endpoint=\"vedic-astrology/upagraha\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-upagraha-table>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"upagraha-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -972,6 +1464,17 @@
           "path": "/vedic-astrology/chara-karakas"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-chara-karakas data-endpoint=\"vedic-astrology/chara-karakas\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-chara-karakas>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"chara-karakas\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -994,6 +1497,18 @@
           "method": "POST",
           "path": "/vedic-astrology/arudha"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-arudha-padas data-endpoint=\"vedic-astrology/arudha\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-arudha-padas>",
@@ -1023,6 +1538,20 @@
           "path": "/vedic-astrology/yoga/detect"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "section",
+        "verdict",
+        "verdicts",
+        "yogas"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-yoga-list data-endpoint=\"vedic-astrology/yoga\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-yoga-list>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"yoga-list\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1045,6 +1574,19 @@
           "method": "GET",
           "path": "/vedic-astrology/nakshatras/{id}"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "characteristics",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "remedies",
+        "section"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-nakshatra-card data-endpoint=\"vedic-astrology/nakshatras/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-nakshatra-card>",
@@ -1087,6 +1629,20 @@
             "type": "sadhesati"
           }
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "effects",
+        "error",
+        "exceptions",
+        "form",
+        "header",
+        "loading",
+        "remedies",
+        "section"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dosha-card type=\"manglik\" data-endpoint=\"vedic-astrology/dosha/manglik\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dosha-card>",
@@ -1194,6 +1750,31 @@
           }
         }
       ],
+      "parts": [
+        "attribution",
+        "birth-day-profile",
+        "calculation",
+        "card",
+        "cores",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "karmic-debt",
+        "karmic-lessons",
+        "loading",
+        "lucky-associations",
+        "maturity",
+        "name-letters",
+        "name-numbers",
+        "obstacle-periods",
+        "personal-year",
+        "pinnacles",
+        "reading",
+        "readings",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-numerology-card type=\"life-path\" data-endpoint=\"numerology/life-path\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-numerology-card>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"numerology-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1217,6 +1798,22 @@
           "path": "/tarot/daily"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "panel",
+        "reading",
+        "readings",
+        "section",
+        "tab",
+        "tablist"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-card data-endpoint=\"tarot/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-tarot-card>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1239,6 +1836,17 @@
           "method": "GET",
           "path": "/tarot/cards"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "cards",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "section"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-catalog data-endpoint=\"tarot/cards\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-tarot-catalog>",
@@ -1314,6 +1922,21 @@
           }
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "cards",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "positions",
+        "section",
+        "verdict"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-spread spread=\"three-card\" data-endpoint=\"tarot/spreads/three-card\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-tarot-spread>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-spread\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1336,6 +1959,32 @@
           "method": "POST",
           "path": "/human-design/bodygraph"
         }
+      ],
+      "parts": [
+        "activations",
+        "attribution",
+        "card",
+        "centers",
+        "channels",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "fact",
+        "facts",
+        "form",
+        "header",
+        "keynotes",
+        "layout",
+        "legend",
+        "loading",
+        "panel",
+        "reading",
+        "readings",
+        "section",
+        "tab",
+        "tablist",
+        "themes"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bodygraph data-endpoint=\"human-design/bodygraph\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bodygraph>",
@@ -1365,6 +2014,23 @@
           "path": "/human-design/profile"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "fact",
+        "facts",
+        "form",
+        "header",
+        "keynotes",
+        "lines",
+        "loading",
+        "reading",
+        "readings",
+        "section",
+        "themes"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-type-card data-endpoint=\"human-design/type\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-type-card>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-type-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1387,6 +2053,23 @@
           "method": "POST",
           "path": "/human-design/connection"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "centers",
+        "channels",
+        "edit-bar",
+        "error",
+        "fact",
+        "facts",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "readings",
+        "section",
+        "table"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-connection data-endpoint=\"human-design/connection\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-connection>",
@@ -1411,6 +2094,21 @@
           "path": "/human-design/penta"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "channels",
+        "edit-bar",
+        "error",
+        "fact",
+        "facts",
+        "form",
+        "gates",
+        "header",
+        "legend",
+        "loading",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-penta data-endpoint=\"human-design/penta\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-penta>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-penta\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1433,6 +2131,20 @@
           "method": "POST",
           "path": "/human-design/variables"
         }
+      ],
+      "parts": [
+        "arrows",
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "readings",
+        "section"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-variables data-endpoint=\"human-design/variables\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-variables>",
@@ -1467,6 +2179,18 @@
           "path": "/forecast/transits"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "events",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-forecast-timeline data-endpoint=\"forecast/timeline\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-forecast-timeline>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1489,6 +2213,19 @@
           "method": "POST",
           "path": "/forecast/digest"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "section",
+        "window"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-forecast-digest data-endpoint=\"forecast/digest\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-forecast-digest>",
@@ -1532,6 +2269,23 @@
           }
         }
       ],
+      "parts": [
+        "attribution",
+        "bars",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "reading",
+        "readings",
+        "section",
+        "spotlight"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-biorhythm-chart mode=\"daily\" data-endpoint=\"biorhythm/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-biorhythm-chart>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"biorhythm-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1555,6 +2309,21 @@
           "path": "/iching/hexagrams/random"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "changing-lines",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "readings",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hexagram data-endpoint=\"iching/hexagrams/random\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hexagram>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hexagram\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1577,6 +2346,21 @@
           "method": "GET",
           "path": "/crystals/{id}"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "keywords",
+        "loading",
+        "meaning",
+        "pairs-with",
+        "section"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-card data-endpoint=\"crystals/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-crystal-card>",
@@ -1611,6 +2395,17 @@
           "path": "/crystals/zodiac/{sign}"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "crystals",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-grid data-endpoint=\"crystals/chakra/{chakra}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-crystal-grid>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1633,6 +2428,15 @@
           "method": "GET",
           "path": "/dreams/symbols/{id}"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dream-card data-endpoint=\"dreams/symbols/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dream-card>",
@@ -1657,6 +2461,17 @@
           "path": "/dreams/symbols"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "section",
+        "symbols"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dream-search data-endpoint=\"dreams/symbols\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dream-search>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dream-search\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1680,6 +2495,20 @@
           "path": "/angel-numbers/numbers/{number}"
         }
       ],
+      "parts": [
+        "action-steps",
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "readings",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-angel-number-card data-endpoint=\"angel-numbers/numbers/{number}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-angel-number-card>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"angel-number-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1702,6 +2531,22 @@
           "method": "GET",
           "path": "/angel-numbers/lookup"
         }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "context",
+        "details",
+        "digit-root",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "known-meaning",
+        "loading",
+        "reading",
+        "readings",
+        "section"
       ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-angel-number-lookup data-endpoint=\"angel-numbers/lookup\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-angel-number-lookup>",
@@ -1766,6 +2611,17 @@
           "path": "/vedic-astrology/avasthas/{id}"
         }
       ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "section"
+      ],
       "snippets": {
         "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-reference-card data-endpoint=\"astrology/signs/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-reference-card>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"reference-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -1783,6 +2639,13 @@
       "renders": "Schema-driven form, emits roxy-submit",
       "endpointLabel": "Any endpoint, from the spec",
       "endpoints": [],
+      "parts": [
+        "attribution",
+        "edit-bar",
+        "error",
+        "form",
+        "loading"
+      ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.1/assets/previews/endpoint-form-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.1/assets/previews/endpoint-form-dark.webp"
@@ -1796,6 +2659,13 @@
       "renders": "Debounced city search input, emits roxy-location-select",
       "endpointLabel": "GET /location/search",
       "endpoints": [],
+      "parts": [
+        "attribution",
+        "edit-bar",
+        "error",
+        "form",
+        "loading"
+      ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.1/assets/previews/location-search-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.1/assets/previews/location-search-dark.webp"
@@ -1809,6 +2679,17 @@
       "renders": "Generic fallback renderer for unknown shapes",
       "endpointLabel": "Any response shape",
       "endpoints": [],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "table"
+      ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.1/assets/previews/data-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.1/assets/previews/data-dark.webp"

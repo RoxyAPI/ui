@@ -6,52 +6,67 @@
  *
  * Keyed by the English source string as it appears at the call site, so this file diffs directly against the component that renders it and no key vocabulary has to be kept in sync with the copy.
  *
- * **Every elision is routed around, because the brand rule forbids apostrophes.** French forces `l'orbe` and `l'apex` the moment either takes an article, so both are written as bare labels (`orbe`, `apex`), which is also how the sources use them beside a value. The same rule is what drops the article in `à partir du degré Ascendant`: `depuis l'Ascendant` is the natural phrasing and is unusable here. Any future entry has to be phrased the same way rather than reaching for the apostrophe.
+ * Every entry below is attested in live French astrology copy rather than machine translated. What follows is the reasoning a maintainer needs; the attestation itself is recorded internally.
  *
- * **`roue` is the only wheel noun in this file, deliberately.** French astrology software says `double roue` (Auréas) and the French astrology web says `double carte` (Astrotheme) for the same drawing; both are attested, and forking to `carte` inside one component would leave the library with two nouns for one thing. Nothing about `double roue` is canonical the way `bi-wheel` is in English, so this is a consistency choice rather than a term of art.
+ * **Every elision is routed around, because the brand rule forbids apostrophes.** French forces `l'orbe` and `l'apex` the moment either takes an article, so both are written as bare labels (`orbe`, `apex`), which is also how they appear beside a value. The same rule drops the article in `à partir du degré Ascendant`, where `depuis l'Ascendant` is the natural phrasing and is unusable here. Any future entry has to be phrased the same way rather than reaching for the apostrophe.
  *
- * **`Aspects composés` replaced `Configurations du thème` on 2026-08-09, and the Spanish fix for the same string does NOT transfer here.** The Spanish entry back-translated to "chart SETTINGS", so a reader took the block for a preferences panel and looked for a way to switch it off; Spanish resolved it with `Figuras planetarias`. In French that answer is actively wrong: `figures` and `dessins planétaires` name the whole-chart shapes (Bol, Seau, Éclaboussure, Locomotive), one level up from the chips in this block. French sorts our exact set under `aspects composés`, and both sources say so beside our own list: astrotheme.fr, `certains groupes isolés de planètes créent parfois des configurations spéciales : c est ce que l on appelle les aspects composés`, and autourdelalune, `l étude du dessin planétaire ainsi que celle des aspects composés`. `Configurations planétaires` is attested for the same figures and was the runner-up; it lost for keeping the `configuration` stem, which in French software is exactly the settings word (`panneau de configuration`, `configuration des thèmes`), and that stem is what made the Spanish entry misread.
+ * **`roue` is the only wheel noun in this file, deliberately.** French says both `double roue` and `double carte` for the same drawing; both are attested, and forking to `carte` inside one component would leave the library with two nouns for one thing. Nothing about `double roue` is canonical the way `bi-wheel` is in English, so this is a consistency choice rather than a term of art.
  *
- * **`le thème` was removed from the out-of-sign tooltip in the same pass, and it was a second live mistranslation rather than a style fix.** French astrology reserves `le thème` for the birth chart itself, so `le thème demeure donc mais agit plus faiblement` read as "the birth chart persists but acts more weakly", which is nonsense. The English `theme` meant the pattern character. `qui reste donc valable` now refers unambiguously to `la configuration`.
+ * **`Aspects composés` replaced `Configurations du thème` on 2026-08-09, and the Spanish fix for the same string does NOT transfer here.** In French, `figures` and `dessins planétaires` name the whole-chart shapes (Bol, Seau, Éclaboussure, Locomotive), one level up from the chips in this block. French sorts our exact set under `aspects composés`. `Configurations planétaires` is attested for the same figures and was the runner-up; it lost for keeping the `configuration` stem, which in French software is exactly the settings word.
  *
- * **`Dissonants` replaced `Tendus` and `Durée` replaced `Période`.** astresnet.org states the register directly, in a sentence about the aspect colour code: `aujourd hui c est le terme d harmonique, de dissonant, qui emporte l adhésion de la communauté astrologique`. `Tendus` is real French but pairs badly with `Neutres`, since the conjunction is defined as `ni harmonique ni tendue`, so a legend carrying both reads as overlapping. `Période` was not wrong either, but the field is a duration (`how long this transit influence lasts`), and `Période` names WHICH span is active rather than HOW LONG it lasts.
+ * **`le thème` was removed from the out-of-sign tooltip in the same pass, and it was a live mistranslation rather than a style fix.** French reserves `le thème` for the birth chart itself, so `le thème demeure donc mais agit plus faiblement` read as "the birth chart persists but acts more weakly", which is nonsense. The English `theme` meant the pattern character. `qui reste donc valable` now refers unambiguously to `la configuration`.
  *
- * `Card` for the cardinal column is ours, not a convention. Every French source that presents a modality breakdown spells all three out in full, including one whose entire subject is the distribution table (`Signes fixes = 25 pts`, `Signes cardinaux = 12,5 pts`, `Signes mutables = 9 pts`). `Car` was rejected because it is a high-frequency French conjunction and a common noun; `Fixe` needs no truncation at all.
+ * **`Dissonants` replaced `Tendus` and `Durée` replaced `Période`.** `Tendus` is real French but pairs badly with `Neutres`, since the conjunction is defined as `ni harmonique ni tendue`, so a legend carrying both reads as overlapping. `Période` was not wrong either, but the field is a duration, and `Période` names WHICH span is active rather than HOW LONG it lasts.
  *
- * Rejected against sources, so nobody restores them: `Applicatif`/`Séparatif` for applying and separating (the obvious calque, found on no French astrology source; the specialist glossaries and Auréas both print `appliquant`/`séparant`), `bi-roue` (an invented calque with zero attestation), `anneau` for a chart ring (forces the banned elision and is not the French word for this), `pointe` alone for a cusp (a real synonym but ambiguous out of context, where `cuspide` is not), `Maison en transit` for the transited house (it reverses the semantics and says the HOUSE is transiting), and `corps céleste` for a body (correct, but long for a column header and it breaks continuity with `astres` in the natal catalogue).
+ * `Card` for the cardinal column is ours, not a convention: French sources spell all three modalities out in full. `Car` was rejected because it is a high-frequency French conjunction and a common noun; `Fixe` needs no truncation at all.
+ *
+ * Rejected, so nobody restores them: `Applicatif`/`Séparatif` for applying and separating (the obvious calque, found on no French astrology source, which prints `appliquant`/`séparant`), `bi-roue` (an invented calque with zero attestation), `anneau` for a chart ring (forces the banned elision and is not the French word for this), `pointe` alone for a cusp (a real synonym but ambiguous out of context, where `cuspide` is not), `Maison en transit` for the transited house (it reverses the semantics and says the HOUSE is transiting), and `corps céleste` for a body (correct, but long for a column header and it breaks continuity with `astres`).
  *
  * Two entries sit in front of an API-returned body name, so they are the noun forms `Transit` and `Natal` rather than the attested adjective `transitante`, which French places after the noun and which the component cannot compose. The tooltip therefore reads `Transit Mars carré Natal Venus`, which is the T. and N. convention French chart software already uses.
  *
  * `Impact`, `Timing` and `Guidance` have no French astrological vocabulary behind them at all: they are report-layout labels, so `Effets`, `Période` and `Conseils` are plain French. `Datation` is the technical French word for the timing dimension if a more expert register is ever wanted.
  *
- * **The 54 Human Design entries added 2026-08-09 lean on a second, higher-authority source: `packages/human-design/src/locales/fr.ts` in the API repo, itself sourced from humandesign.fr, human-design-france.com and Jovian Archive France.** Where a chrome label sits over a value the API already translates (`Type`, the four circuit names, the nine centre names, `Personality`/`Design` as chart sides), the two files were read side by side so the label and the value it captions never name different concepts. Live sources beyond that file are cited below per cluster.
+ * ## Human Design
  *
- * **`Type`, `Aura`, `Design`, `Bodygraph`, `Activations`, `Variables`, `Base`, `Direction` and `Cognition` ship byte-identical to their English source, each independently attested rather than assumed identical.** humain-design.fr headers a table `**Type** **et** **Stratégie**`; three independent practitioner sites (alinemaurer.com, virginiepetitjean.fr, sacree-merline.fr) write `l'aura`/`aura` unmodified for a type's energy field; the API locale's own comment records that `Base` is deliberately unchanged (`Base Réactive, Base Objective` is the natural French) and timetowakeup.net's PHS page confirms it independently, `chaque Ton a 5 Bases`; sandrinecalmel.fr titles its guide `du BodyGraph` and humain-design.fr and humandesignhub.app both keep `bodygraph` lower case in running prose rather than translating to `schéma corporel`, which this file follows (capitalized only as the card title, lower case inside a sentence, matching the API locale's own usage); the API locale uses `L'activation dominante` for a bare planetary hit, which is the same word `Activations` names as a section heading; and astrologiesiderale.com titles a glossary page `Quelles sont les 6 cognitions du DH ?`, matching the API locale's own `cognitionMeanings` values (`Odorat`, `Goût`, `Vision extérieure`, `Vision intérieure`, `Ressenti`, `Toucher`) term for term. `Direction` is the ordinary French word humandesignhub.app already uses for the G Center's function (`il oriente identité, direction et amour`), reused here for the arrow's own direction.
+ * **The API is the higher-authority source and was read first.** Where a chrome label sits over a value the API already translates (`Type`, the four circuit names, the nine centre names, `Personality`/`Design` as chart sides), the two were read side by side so the label and the value it captions never name different concepts.
  *
- * **`Incarnation cross` is `Incarnation en croix`, not the attested `croix d'incarnation`, because the register gate forbids the apostrophe that phrase cannot avoid.** Every live source checked (geneticmatrix.com, elisasorci.fr, timetowakeup.net, crea-matieres.ch, astrologiesiderale.com) uses the elided form universally and none offers an alternative, so this is not a community-attested rendering: it borrows the ordinary French idiom `en croix` (as in `les bras en croix`) to keep both words without the elision, and it wants a native Human Design reader's sign-off before it is treated as settled.
+ * **`Type`, `Aura`, `Design`, `Bodygraph`, `Activations`, `Variables`, `Base`, `Direction` and `Cognition` ship byte-identical to their English source, each independently attested rather than assumed identical.** `bodygraph` stays lower case inside a sentence and capitalised only as the card title, matching the API's own usage. `Direction` is the ordinary French word already used for the G Center's function, reused here for the arrow's own direction.
  *
- * **`{{circuit}} circuit` becomes `Circuit {{circuit}}` and `I Ching hexagram {{number}}` becomes `Hexagramme {{number}} du Yi-King`, both reordered against the English word order.** sandrinecalmel.fr, emmanuellesimonet.com and elyflyprocessus.wordpress.com all write `Circuit Individuel`, `Circuit Tribal` and `Circuit Collectif`, noun before adjective, never the reverse; designhumainpourtous.fr and timetowakeup.net's navigation both spell the divination text `Yi-King`, hyphenated, which this file follows for the hexagram footnote.
+ * **`Incarnation cross` is `Incarnation en croix`, not the attested `croix d'incarnation`, because the register gate forbids the apostrophe that phrase cannot avoid.** Every live source uses the elided form and none offers an alternative, so this is not a community-attested rendering: it borrows the ordinary French idiom `en croix` to keep both words without the elision, and it wants a native Human Design reader's sign-off before it is treated as settled.
  *
- * **`Non-Soi` replaces a literal `Not-Self` calque.** wombloom.fr titles its explainer `Signature et Non-Soi en Design Humain` and marytyson.fr repeats `le non-soi` throughout a full article on the concept, so `Not-self: {{value}}` is `Non-Soi : {{value}}` and `Not-self question` is `Question du Non-Soi` (the `du` elides cleanly, since `Non-Soi` starts on a consonant). The motor/awareness centre chips follow humandesignhub.app's own section headers, `### Centres moteurs` and `### Centres de conscience`, giving `Moteur` and `Conscience`.
+ * **`{{circuit}} circuit` becomes `Circuit {{circuit}}` and `I Ching hexagram {{number}}` becomes `Hexagramme {{number}} du Yi-King`, both reordered against the English word order**, following French noun-before-adjective order and the hyphenated spelling of the divination text.
  *
- * **`Human Design` itself is rendered `Design Humain`** in the three strings that name the product rather than a chart part (`Aucune donnée de Design Humain`, `Bodygraph du Design Humain`, `Variables du Design Humain`), matching the name every French Human Design site read this session uses for itself (humain-design.fr, designhumainpourtous.fr, wombloom.fr, timetowakeup.net) rather than leaving the system name in English.
+ * **`Non-Soi` replaces a literal `Not-Self` calque**, so `Not-self: {{value}}` is `Non-Soi : {{value}}` and `Not-self question` is `Question du Non-Soi` (the `du` elides cleanly, since `Non-Soi` starts on a consonant). The motor and awareness centre chips take `Moteur` and `Conscience`.
  *
- * **The two low-confidence warnings and the knife-edge string were rewritten around the same elision the rest of this file already routes around.** A literal `proche d'une limite` and `Vérifiez l'heure de naissance exacte` each force an apostrophe, so both became telegraphic labels instead, `heure de naissance en limite de couleur ou de ton` and `Heure de naissance exacte à vérifier`, the same technique lines 9 and 15 already use for `orbe` and `apex`. `Knife-edge` is the attested French idiom `sur le fil du rasoir` rather than an invented literal calque.
+ * **`Human Design` itself is rendered `Design Humain`** in the three strings that name the product rather than a chart part, matching the name French Human Design writing uses for itself rather than leaving the system name in English.
  *
- * **`Ligne Personnalité` and `Ligne Design` have no attested source as a fixed compact label.** The underlying concept, the conscious line in black versus the unconscious line in red, is well attested (elisasorci.fr, alinemaurer.com) but not this exact compact tile pairing, so the two are built compositionally from `Ligne` and the already-attested side names `Personnalité`/`Design` and want a native Human Design reader's pass. `Chart sides` (`Côtés du thème`) is not compositional in the same risky sense: it reuses `côté`, the API locale's own word for a chart side (`Le côté conscient`, `Le côté inconscient`), over `thème`, which both the API locale and this file already use for the whole chart. *
+ * **The two low-confidence warnings and the knife-edge string were rewritten around the same elision the rest of this file routes around.** A literal `proche d'une limite` and `Vérifiez l'heure de naissance exacte` each force an apostrophe, so both became telegraphic labels instead, the same technique already used for `orbe` and `apex`. `Knife-edge` takes the attested French idiom `sur le fil du rasoir` rather than an invented literal calque.
+ *
+ * **`Ligne Personnalité` and `Ligne Design` have no attested source as a fixed compact label.** The underlying concept is well attested but not this exact tile pairing, so the two are built compositionally and want a native Human Design reader's pass. `Côtés du thème` is not compositional in the same risky sense: it reuses `côté`, the API's own word for a chart side.
+ *
  * ## Monthly ephemeris
  *
- * **`Éphémérides` is settled by the two authorities above astrology.** The CNRS lexical database gives `ÉPHÉMÉRIDE, subst. fém.` and defines it as `Tables où sont indiquées jour par jour la position des astres et des planètes ... utilisées par les astronomes, les astrologues et les marins` (cnrtl.fr), and the French national ephemeris institute heads its own table `EPHEMERIDES DE POSITION` and writes `Les éphémérides ci-dessus sont approchées` (promenade.imcce.fr), which also pins the feminine plural agreement. **`Efemérides` on fr.astro-seek.com is Spanish leakage in a French build and is not evidence.**
+ * **`Éphémérides` is settled by the two authorities above astrology**, the national lexical database and the national ephemeris institute, which also pins the feminine plural agreement.
  *
- * **`Changements de signe` over `ingrès`.** `Ingrès` is real French astrology vocabulary, attested on astro.com/free/free_chart_f.htm (`des éphémérides pour les éclipses, les ingrès de la Lune`), in dictionnaire-astrologie.com as its own headword, and by the astrologer Nicolas Giraud (`la force du printemps arrive en puissance avec l ingrès du Soleil en Bélier`). It is rejected anyway on two counts: it is insider vocabulary a lay reader does not carry, and its own practitioners disagree about the accent, with `ingrés` in print elsewhere. `Rétrogradations` is a section heading on astroastro.fr.
+ * **`Changements de signe` over `ingrès`.** `Ingrès` is real French astrology vocabulary and is rejected anyway on two counts: it is insider vocabulary a lay reader does not carry, and its own practitioners disagree about the accent.
  *
- * **`Entrée en {{sign}} le {{date}}` substitutes safely for all twelve.** astrotheme writes `son entrée en Balance`, astroastro.fr uses the literal column header `Entre en`, and planeteastrologie.com prints the dated form verbatim: `La Lune entre en Cancer le 9.8.2026 à 7:45 am UTC`. Every French sign name begins with a consonant and `en` never elides, so no exception table is needed. `Positions planétaires` is a table heading on planeteastrologie.com and a section heading on formation-astrologie.com and astrotheme.
+ * **`Entrée en {{sign}} le {{date}}` substitutes safely for all twelve.** Every French sign name begins with a consonant and `en` never elides, so no exception table is needed.
  *
  * `Date` is identical to the English and is the real French word; every French table this was checked against pairs it with `Heure`, never with `Temps`.
  *
- * **The empty state is deliberately generic, and that is a two-part decision.** French elision would make it `Aucune donnée d ephemerides`, and the brand rule banning apostrophes is an ENGLISH typography convention that cannot be applied to a mandatory French elision without producing broken text; and the singular `éphéméride` is everyday French for a tear-off desk calendar, which is exactly the false-friend shape this catalogue exists to avoid. `Aucune donnée disponible` sidesteps both, at the cost of not naming the card. It is the same routing this file already documents for `orbe` and `apex`. If a future string needs an article before a vowel, say so rather than mangling the French.
+ * **The empty state is deliberately generic, and that is a two-part decision.** French elision would make it `Aucune donnée d ephemerides`, and the brand rule banning apostrophes is an ENGLISH typography convention that cannot be applied to a mandatory French elision without producing broken text; and the singular `éphéméride` is everyday French for a tear-off desk calendar, which is exactly the false-friend shape this catalogue exists to avoid. `Aucune donnée disponible` sidesteps both, at the cost of not naming the card. If a future string needs an article before a vowel, say so rather than mangling the French.
  *
  * The empty state and the table caption are COMPOSED rather than lifted; no astrology page publishes either. The vocabulary in both is sourced, the sentence frame is judgement.
+ *
+ * ## Form group names
+ *
+ * **The letter pair is real French and was checked rather than assumed**, so the Human Design pair keeps its letters instead of becoming `Première personne`. The numbered pair takes the same head noun.
+ *
+ * **`Destination` beat `Relocalisation`, and the reason is that one names a PLACE and the other names a technique.** `Relocalisation` is well attested and this file already carries `Thème relocalisé` for the chart itself. It still loses the legend, because the field holds a city and `Lieu de Relocalisation` reads as the location of the relocation process, one abstraction away from what the visitor is being asked for. `Lieu de référence` was rejected for the opposite failure: outside a sequential settings screen it reads as the ORIGINAL place, which is the other fieldset.
+ *
+ * **`Naissance` is bare on purpose while `Données de naissance` keeps the fuller wording**, so the short and full English pair survives, and both slot into this file's existing `Lieu de naissance` and `Ville de naissance` when interpolated. `Pondération des domaines` is the term French weighting UIs use for a percentage split; `Poids des domaines` was rejected because `poids` reads as physical mass.
+ *
+ * `Données de naissance` is the weakest entry here: it renders as `Lieu de Données de naissance`, which stacks two `de` in one label. It is correct and it is heavy, and the only lighter option is to reuse the bare `Naissance` already spent on the relocation birth block. The two fieldsets never appear on the same form, so a native pass may decide the duplication is the better trade.
  */
 
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -250,6 +265,44 @@ export const fr: Record<ChromeString, string> = {
 	// `<roxy-reference-card>`.
 	Reference: 'Référence',
 	'No reference data': 'Aucune donnée de référence',
+
+	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
+	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over
+	// spec field names and are deliberately absent: no catalogue keyed on English source text can
+	// reach a string computed per operation. The GROUP names below are the exception, because the
+	// spec has nine of them rather than 909.
+	'Birth location': 'Lieu de naissance',
+	'{{group}} location': 'Lieu de {{group}}',
+	'City of birth': 'Ville de naissance',
+	'{{group}} city': 'Ville de {{group}}',
+	'Person 1': 'Personne 1',
+	'Person 2': 'Personne 2',
+	'Person A': 'Personne A',
+	'Person B': 'Personne B',
+	'Birth Data': 'Données de naissance',
+	Birth: 'Naissance',
+	Relocation: 'Destination',
+	'Domain Weights': 'Pondération des domaines',
+	'Fills {{fields}}. Pick a city to autofill.':
+		'Remplit {{fields}}. Choisissez une ville pour le remplissage automatique.',
+	Choose: 'Choisir',
+	'Comma separated': 'Séparés par des virgules',
+	Advanced: 'Avancé',
+	'Please complete:': 'Veuillez renseigner :',
+	'Search city': 'Rechercher une ville',
+	'No cities found': 'Aucune ville trouvée',
+	Compare: 'Comparer',
+	Cast: 'Tirer',
+	'Get reading': 'Obtenir une interprétation',
+	Generate: 'Générer',
+	'Schema load failed: {{message}}':
+		'Échec du chargement du schéma : {{message}}',
+	'Endpoint {{method}} {{path}} not found in OpenAPI spec':
+		'Point de terminaison {{method}} {{path}} introuvable dans la spécification OpenAPI',
+	'HTTP error {{status}}': 'Erreur HTTP {{status}}',
+	Retry: 'Réessayer',
+	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
+		'Les composants côté client acceptent uniquement une clé publiable pk_. Utilisez une clé publiable avec une liste des origines autorisées, ou effectuez le rendu côté serveur.',
 };
 
 registerLocale('fr', fr);

@@ -179,13 +179,13 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 	protected renderData(d: GetChoghadiyaResponse) {
 		const { date, dayChoghadiya, nightChoghadiya } = d;
 
-		return html`<div class="wrap">
-			<div class="header">
+		return html`<div class="wrap" part="card">
+			<div class="header" part="header">
 				<h2 class="title">Choghadiya</h2>
 				${date ? html`<p class="subtitle">${formatDate(this.effectiveLang(), date)}</p>` : nothing}
 			</div>
 
-			<div class="cho-grid">
+			<div class="cho-grid" part="table">
 				<section class="period-col" aria-label="Day muhurta periods">
 					<h3 class="period-heading">Day</h3>
 					<div role="list" aria-label="Daytime choghadiya">

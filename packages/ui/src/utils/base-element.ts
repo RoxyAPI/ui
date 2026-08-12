@@ -1,15 +1,7 @@
-import {
-	type CSSResultGroup,
-	html,
-	LitElement,
-	nothing,
-	type PropertyValues,
-} from 'lit';
+import { type CSSResultGroup, html, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { resolveLang } from '../i18n/lang.js';
-import { LocaleController } from '../i18n/locale-controller.js';
-import { translate } from '../i18n/registry.js';
+import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { baseStyles } from './base-styles.js';
 import { buildRequest, FetchController } from './fetch-controller.js';
 import {
@@ -33,6 +25,8 @@ import { MarkupDataController } from './markup-data.js';
  *
  * Two things every subclass inherits for the host page to shape the render from outside the shadow root, with no JavaScript: the `hide-readings` attribute ({@link RoxyDataElement.hideReadings}), and the `part` names on the base's own branches (`form`, `loading`, `error`, `edit-bar`, `attribution`). A component adds `part` to its own structural blocks; the vocabulary is in `docs/authoring.md`.
  *
+ * Translation is inherited rather than defined here: `t()`, `translator` and `effectiveLang()` live on {@link RoxyLocalizedElement}, which the two declared widgets extend as well, so the form a visitor fills and the card it produces read the same catalogue.
+ *
  * @example
  * ```ts
  * @customElement('roxy-dream-card')
@@ -47,7 +41,9 @@ import { MarkupDataController } from './markup-data.js';
  * }
  * ```
  */
-export abstract class RoxyDataElement<T = unknown> extends LitElement {
+export abstract class RoxyDataElement<
+	T = unknown,
+> extends RoxyLocalizedElement {
 	static styles: CSSResultGroup = [baseStyles];
 
 	/** Typed RoxyAPI response. Assigned in JavaScript, hydrated from the roxy-data island, or set by a self-fetch. */
@@ -133,34 +129,8 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		// Controlled mode: hydrate `data` from a direct-child roxy-data island when
 		// no JS property was assigned. Keyless; the server already fetched.
 		new MarkupDataController<T>(this);
-		// Re-render if a chrome-string catalogue lands after this element upgraded.
-		new LocaleController(this);
 		this.fetcher = new FetchController<T>(this);
 	}
-
-	/**
-	 * The chrome string for this element's language, keyed by its own English source text.
-	 *
-	 * @remarks
-	 * Pass the English copy, never a key. With no catalogue registered the source string is returned unchanged, so an English page pays nothing and a language we do not ship degrades to English rather than to a visible key.
-	 *
-	 * Chrome only. A value the API returned (a planet, a sign, an aspect, a house system) is NOT translated here: it is rendered as the response carries it, so the words on the chart and the words in the response can never disagree.
-	 *
-	 * @example
-	 * ```ts
-	 * this.t('Aspect grid');                        // 'Cuadricula de aspectos' under lang="es"
-	 * this.t('{{count}} planets', { count: 12 });   // '12 planetas'
-	 * ```
-	 */
-	protected t(source: string, vars?: Record<string, string | number>): string {
-		return translate(this.effectiveLang(), source, vars);
-	}
-
-	/** {@link RoxyDataElement.t} as a value, bound once, for a shared render helper that has no host of its own and therefore cannot resolve a page language (`utils/hd-reading.ts`). Named `translator` and not `translate` because `HTMLElement.translate` is a real DOM property and shadowing it with a protected member makes every `@customElement` decorator in the library fail to typecheck. */
-	protected readonly translator = (
-		source: string,
-		vars?: Record<string, string | number>,
-	): string => this.t(source, vars);
 
 	protected willUpdate(changed: PropertyValues): void {
 		if (changed.has('publishableKey')) {
@@ -284,15 +254,6 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		);
 	}
 
-	/**
-	 * Site-owner language for this element: the `lang` attribute, the nearest ancestor carrying one, or the document. Protected so a component that composes another can forward it (a child inside this shadow root cannot reach the host page on its own).
-	 *
-	 * Full tag, region included. The truncation to what `?lang=` accepts happens where the request is built, in `<roxy-endpoint-form>`.
-	 */
-	protected effectiveLang(): string | undefined {
-		return resolveLang(this);
-	}
-
 	private onFormSubmit = (e: Event) => {
 		const detail = (e as CustomEvent).detail as {
 			values: Record<string, unknown>;
@@ -352,9 +313,13 @@ export abstract class RoxyDataElement<T = unknown> extends LitElement {
 		></div>`;
 	}
 
-	/** Error state shown when a self-fetch fails. Keeps the form in view so the request can be retried. */
+	/**
+	 * Error state shown when a self-fetch fails. Keeps the form in view so the request can be retried.
+	 *
+	 * The message goes through `t()` because ONE of the messages that reaches here is ours: `KEY_REFUSED_MESSAGE` (`utils/key-guard.ts`), which {@link FetchController} assigns when a site owner pastes a secret key into a browser page, and which `<roxy-location-search>` renders in its own shadow root from the same constant. Translating it in one place and not the other would put two languages on one page. Everything else that lands here is a wire fact (an HTTP status, a browser network error), misses the catalogue and renders unchanged.
+	 */
 	protected renderError(message: string): unknown {
-		const banner = html`<div class="roxy-error" role="alert" part="error">${message}</div>`;
+		const banner = html`<div class="roxy-error" role="alert" part="error">${this.t(message)}</div>`;
 		return this.endpoint ? html`${banner}${this.renderForm()}` : banner;
 	}
 }

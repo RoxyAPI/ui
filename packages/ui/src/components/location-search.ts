@@ -1,5 +1,6 @@
-import { css, html, LitElement, nothing, type PropertyValues } from 'lit';
+import { css, html, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { debounce } from '../utils/debounce.js';
@@ -23,11 +24,17 @@ type CityResult = SearchCitiesResponse['cities'][number];
  *   api-key            optional. Direct call to roxyapi.com when set.
  *   publishable-key    optional. Browser-safe pk_* key with allowed_origins.
  *   endpoint           optional. Override URL (default https://roxyapi.com/api/v2/location/search).
- *   placeholder        optional. Input placeholder.
+ *   placeholder        optional. Input placeholder. Translated when it is the default (see below).
  *   default-value      optional. Pre-filled query.
+ *   lang               optional. Display language. Resolves from the page when absent, EXCEPT
+ *                      inside another component shadow root, which is why the form forwards it.
+ *
+ * The words this box writes (its placeholder, its empty state, its busy label, its refusal
+ * message) read the page language. The CITY NAMES do not: they are the values the location API
+ * returned and are printed as they came back, so the box and the response can never disagree.
  */
 @customElement('roxy-location-search')
-export class RoxyLocationSearch extends LitElement {
+export class RoxyLocationSearch extends RoxyLocalizedElement {
 	static styles = [
 		baseStyles,
 		css`
@@ -150,6 +157,7 @@ export class RoxyLocationSearch extends LitElement {
 	@property({ type: String })
 	endpoint = 'https://roxyapi.com/api/v2/location/search';
 
+	/** Input placeholder. The default is a catalogue entry and renders in the page language; a caller-supplied one is printed as given, because a miss returns the source string unchanged. */
 	@property({ type: String })
 	placeholder = 'Search city';
 
@@ -310,7 +318,9 @@ export class RoxyLocationSearch extends LitElement {
 
 	render() {
 		if (this.keyBlocked) {
-			return html`<div class="roxy-error" role="alert">${KEY_REFUSED_MESSAGE}</div>`;
+			return html`<div class="roxy-error" role="alert">
+				${this.t(KEY_REFUSED_MESSAGE)}
+			</div>`;
 		}
 		return html`<div class="field">
 			<input
@@ -325,7 +335,7 @@ export class RoxyLocationSearch extends LitElement {
 				}
 				aria-autocomplete="list"
 				autocomplete="off"
-				placeholder=${this.placeholder}
+				placeholder=${this.t(this.placeholder)}
 				.value=${this.query}
 				@input=${this.onInput}
 				@keydown=${this.onKeyDown}
@@ -333,7 +343,11 @@ export class RoxyLocationSearch extends LitElement {
 					if (this.results.length > 0) this.isOpen = true;
 				}}
 			/>
-			${this.isLoading ? html`<span class="spinner" role="status" aria-label="Loading"></span>` : nothing}
+			${
+				this.isLoading
+					? html`<span class="spinner" role="status" aria-label=${this.t('Loading')}></span>`
+					: nothing
+			}
 			${
 				this.isOpen
 					? html`<ul
@@ -343,7 +357,7 @@ export class RoxyLocationSearch extends LitElement {
 					>
 						${
 							this.results.length === 0
-								? html`<li class="empty" role="status">No cities found</li>`
+								? html`<li class="empty" role="status">${this.t('No cities found')}</li>`
 								: this.results.map(
 										(city, idx) => html`<li role="presentation">
 										<button

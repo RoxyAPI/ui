@@ -230,8 +230,8 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 	protected renderData(d: AshtakavargaResponse) {
 		const signs = d.signs ?? [];
 
-		return html`<div class="wrap" aria-label="Ashtakavarga grid">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Ashtakavarga grid">
+			<div class="head" part="header">
 				<h2 class="title">Ashtakavarga</h2>
 				${
 					signs.length
@@ -254,6 +254,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 
 			<div
 				id="ashtakavarga-panel-${this.activeTab}"
+				part="panel"
 				role="tabpanel"
 				aria-labelledby="ashtakavarga-tab-${this.activeTab}"
 			>
@@ -308,7 +309,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 	 * cell is good or bad, and in a bindu grid the answer is always "good".
 	 */
 	private renderLegend(note: string) {
-		return html`<div class="legend">
+		return html`<div class="legend" part="legend">
 			<span>Fewer bindus</span>
 			<span class="legend-scale" aria-hidden="true">
 				${[1, 2, 3, 4, 5, 6, 7].map(
@@ -324,7 +325,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 		const sav = this.data?.sarvashtakavarga;
 		if (!sav) return html`<p class="roxy-empty">No sarvashtakavarga data</p>`;
 
-		return html`<div class="overflow-scroll">
+		return html`<div class="overflow-scroll" part="table">
 				<table>
 					<caption class="roxy-sr-only">
 						Sarvashtakavarga: each of the twelve signs and the bindus all planets
@@ -413,7 +414,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 		totals?: SarvaRow,
 	) {
 		if (!rows.length) return html`<p class="roxy-empty">No bindu data</p>`;
-		return html`<div class="overflow-scroll">
+		return html`<div class="overflow-scroll" part="table">
 			<table class="bhinna-table">
 				<caption class="roxy-sr-only">${caption}</caption>
 				<thead>
@@ -457,7 +458,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 		if (!pinda?.length)
 			return html`<p class="roxy-empty">No shodhya pinda data</p>`;
 
-		return html`<div class="overflow-scroll">
+		return html`<div class="overflow-scroll" part="table">
 			<table>
 				<caption class="roxy-sr-only">
 					Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya

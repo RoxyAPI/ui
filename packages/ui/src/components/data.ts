@@ -320,7 +320,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 				${this.t('Nested data omitted')}
 			</div>`;
 		}
-		return html`<div class="roxy-card" aria-label=${this.t('Generic data display')}>
+		return html`<div class="roxy-card" part="card" aria-label=${this.t('Generic data display')}>
 			${this.renderValue(data)}
 		</div>`;
 	}
@@ -377,6 +377,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 		const table = html`<div
 			class="roxy-table-wrap"
+			part="table"
 			role="group"
 			aria-label=${this.t('Data table')}
 			tabindex="0"
@@ -474,12 +475,12 @@ export class RoxyData extends RoxyDataElement<Json> {
 					/>`
 					: nothing
 			}
-			${titleKey ? html`<h3 class="roxy-title">${obj[titleKey]}</h3>` : nothing}
+			${titleKey ? html`<h3 class="roxy-title" part="header">${obj[titleKey]}</h3>` : nothing}
 			${summaryKey ? html`<p class="roxy-summary">${obj[summaryKey]}</p>` : nothing}
 			${quoteKey ? html`<blockquote class="roxy-quote">${obj[quoteKey]}</blockquote>` : nothing}
 			${
 				rows.length > 0
-					? html`<dl class="roxy-rows">
+					? html`<dl class="roxy-rows" part="details">
 						${rows.map(
 							([k, v]) => html`
 								<dt>${humanize(k)}</dt>
@@ -495,6 +496,9 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 	/**
 	 * A named block of nested data. Collapses into `<details>` once it carries more than {@link DETAILS_KEYS} keys, so one fat object (a 27-nakshatra map, a 12-house table) cannot bury the rest of the card under a wall of rows.
+	 *
+	 * @remarks
+	 * Deliberately carries no `part`. The heading here IS a response key, so the only name this block could take is computed, and `roxy-reference-card` is the one component allowed to derive a part at runtime (`catalog.test.ts` pins it as the only one). A bare `part="section"` is the other tempting option and is worse: the vocabulary pairs `section` with a specific name precisely so `::part(section patterns)` addresses ONE block, and a token that lands identically on every key of every response addresses none of them.
 	 */
 	private renderSection(key: string, value: Json): TemplateResult {
 		const size =

@@ -130,11 +130,11 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 		if (!d.planets) return this.renderEmpty();
 		const rows = this.rows();
 
-		return html`<div class="wrap" aria-label="Western planetary positions" tabindex="0">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Western planetary positions" tabindex="0">
+			<header class="head" part="header">
 				<h2 class="title">Planetary positions</h2>
 			</header>
-			<table role="table">
+			<table role="table" part="table">
 				<caption class="roxy-sr-only">
 					Western planetary positions: each body with its sign, degree, house and motion.
 				</caption>

@@ -142,8 +142,8 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 	protected renderData(d: KpRulingPlanetsResponse) {
 		const significators = d.significators ?? [];
 
-		return html`<div class="wrap" aria-label="KP ruling planets">
-			<header>
+		return html`<div class="wrap" part="card" aria-label="KP ruling planets">
+			<header part="header">
 				<h2 class="title">KP ruling planets</h2>
 				${
 					d.dayLord
@@ -152,7 +152,7 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 				}
 			</header>
 
-			<div class="groups">
+			<div class="groups" part="details">
 				<div class="group">
 					<h3>Moon</h3>
 					<dl>
@@ -175,7 +175,7 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 
 			${
 				d.rulingPlanets?.length
-					? html`<div class="rp-list" role="list" aria-label="Ruling planets by strength">
+					? html`<div class="rp-list" part="details" role="list" aria-label="Ruling planets by strength">
 						<span class="rp-label">Ruling planets</span>
 						${d.rulingPlanets.map(
 							(p, i) =>
@@ -187,7 +187,7 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 
 			${
 				significators.length
-					? html`<table>
+					? html`<table part="table">
 						<caption class="roxy-sr-only">
 							House significators: each ruling planet, the houses it signifies, and what
 							those houses stand for.

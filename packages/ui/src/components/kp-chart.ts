@@ -254,8 +254,8 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 	protected renderData(d: KpChartResponse) {
 		const asc = d.ascendant;
 
-		return html`<div class="wrap" aria-label="KP chart" tabindex="0">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="KP chart" tabindex="0">
+			<header class="head" part="header">
 				<h2 class="title">KP chart</h2>
 				${
 					asc
@@ -291,7 +291,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 				controls: true,
 			})}
 
-			<div id="kp-panel-${this.activeTab}" role="tabpanel" aria-labelledby="kp-tab-${this.activeTab}">
+			<div id="kp-panel-${this.activeTab}" part="panel" role="tabpanel" aria-labelledby="kp-tab-${this.activeTab}">
 				${
 					this.activeTab === 'planets'
 						? this.renderPlanets()
@@ -307,7 +307,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 		const bodies = this.bodies();
 		if (!bodies.length)
 			return html`<p class="roxy-empty" role="status">No planets</p>`;
-		return html`<table role="table">
+		return html`<table part="table" role="table">
 			<caption class="roxy-sr-only">
 				KP planets and nodes: each body with its position, house, nakshatra and pada,
 				star lord, sub lord, sub sub lord and KP number.
@@ -350,7 +350,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 		const themes = this.data?.houseThemes;
 		if (!cusps.length)
 			return html`<p class="roxy-empty" role="status">No cusps</p>`;
-		return html`<table role="table">
+		return html`<table part="table" role="table">
 			<caption class="roxy-sr-only">
 				KP Placidus cusps: each house cusp with what it signifies, its position, sign
 				lord, nakshatra and pada, star lord, sub lord, sub sub lord and KP number.
@@ -410,7 +410,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 							<h3 class="sig-title">House-wise significators</h3>
 							<p class="sig-note">Planets that signify each house, strongest level first.</p>
 						</div>
-						<table role="table">
+						<table part="table" role="table">
 							<caption class="roxy-sr-only">
 								KP house-wise significators: each house, the planets that signify it at
 								levels 1 to 4, and the full strength order.
@@ -442,7 +442,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 							<h3 class="sig-title">Planet-wise significators</h3>
 							<p class="sig-note">Houses each planet signifies, strongest level first.</p>
 						</div>
-						<table role="table">
+						<table part="table" role="table">
 							<caption class="roxy-sr-only">
 								KP planet-wise significators: each planet, the houses it signifies at
 								levels 1 to 4, and the full strength order.
@@ -505,7 +505,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			}
 		}
 		if (labels.size === 0) return nothing;
-		return html`<ul class="legend" aria-label="Significator levels">
+		return html`<ul class="legend" part="legend" aria-label="Significator levels">
 			${[...labels.entries()]
 				.sort((a, b) => a[0] - b[0])
 				.map(([level, label]) => html`<li><b>L${level}</b>${label}</li>`)}

@@ -614,7 +614,9 @@ roxy-natal-chart::part(card) {
 | `section` | Any structural block, paired with a specific name (`section patterns`), so `::part(patterns)` targets that block alone |
 | `readings` | The interpretation accordion |
 | `reading` | One disclosure card inside it |
-| `form`, `loading`, `error`, `attribution` | The built-in states |
+| `form`, `loading`, `error`, `edit-bar`, `attribution` | The built-in states, on every component |
+
+The table is the shared vocabulary, not the whole list. **`components-catalog.json` carries a `parts` array for every component, so you can read the exact names a component answers to instead of guessing or inspecting the DOM.** A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike.
 
 Two notes. Parts reach exactly one shadow root deep, and a component that draws another one re-exports its parts, so `roxy-relocation-wheel::part(readings)` reaches the wheel it nests. And to remove a reading rather than hide it, use `hide-readings` (above): a `display: none` rule still ships the words in the page.
 

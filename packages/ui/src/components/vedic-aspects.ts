@@ -159,14 +159,14 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 			? `${formatDate(this.effectiveLang(), d.datetime)}, ${formatTime(this.effectiveLang(), d.datetime)}`
 			: '';
 
-		return html`<div class="wrap" aria-label="Vedic aspects">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Vedic aspects">
+			<div class="head" part="header">
 				<h2 class="title">Vedic aspects</h2>
 				${when ? html`<p class="subtitle">Chart time ${when}</p>` : nothing}
 			</div>
 			${
 				planets.length > 0
-					? html`<div>
+					? html`<div part="section positions">
 						<p class="section-label">Sidereal positions</p>
 						<div class="mutual">
 							${planets.map(
@@ -181,7 +181,7 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 			}
 			${
 				mutual.length > 0
-					? html`<div>
+					? html`<div part="section mutual-aspects">
 						<p class="section-label">Mutual aspects</p>
 						<div class="mutual">
 							${mutual.map(
@@ -196,7 +196,7 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 			}
 			${
 				aspects.length > 0
-					? html`<div class="overflow-scroll">
+					? html`<div class="overflow-scroll" part="table">
 						<table>
 							<caption class="roxy-sr-only">
 								Vedic planetary aspects: aspecting planet, aspect type, aspected planet,

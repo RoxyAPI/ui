@@ -131,8 +131,8 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 		const grahas = d.grahas ?? [];
 		if (!grahas.length) return this.renderEmpty();
 
-		return html`<div class="wrap" aria-label="Heliacal visibility">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Heliacal visibility">
+			<header class="head" part="header">
 				<h2 class="title">Heliacal rising and setting</h2>
 				<p class="sub">
 					Whether each graha stands far enough from the Sun to be seen, for
@@ -140,7 +140,7 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 					heliacal event.
 				</p>
 			</header>
-			<div class="rows">${grahas.map((g) => this.renderGraha(g))}</div>
+			<div class="rows" part="table">${grahas.map((g) => this.renderGraha(g))}</div>
 		</div>`;
 	}
 
@@ -160,8 +160,8 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 						: nothing
 				}
 			</div>
-			<p class="window">${this.windowLine(g)}</p>
-			<p class="meta">${this.metaLine(g)}</p>
+			<p class="window" part="window">${this.windowLine(g)}</p>
+			<p class="meta" part="details">${this.metaLine(g)}</p>
 		</article>`;
 	}
 

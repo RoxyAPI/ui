@@ -123,8 +123,8 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 		const groups = GROUPS.filter((g) => d[g.key]?.length);
 		if (!groups.length) return this.renderEmpty();
 
-		return html`<div class="wrap" aria-label="Upagraha positions">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Upagraha positions">
+			<header class="head" part="header">
 				<h2 class="title">Upagrahas</h2>
 				${renderFrameCaption(d.frame)}
 			</header>
@@ -133,12 +133,15 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 	}
 
 	private renderGroup(group: (typeof GROUPS)[number], rows: Upagraha[]) {
-		return html`<section>
+		// The part name distinguishes the two groups, so it must be a static
+		// literal per branch rather than interpolated: a computed `part=${...}`
+		// is invisible to the catalog scanner.
+		const body = html`
 			<div class="group-head">
 				<h3 class="group-title">${group.title}</h3>
 				<p class="group-note">${group.note}</p>
 			</div>
-			<div class="scroll" tabindex="0">
+			<div class="scroll" part="table" tabindex="0">
 				<table role="table">
 					<caption class="roxy-sr-only">
 						${group.title} upagrahas: each sub-planet with its rashi, degree in sign,
@@ -173,7 +176,10 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 					</tbody>
 				</table>
 			</div>
-		</section>`;
+		`;
+		return group.key === 'timeBased'
+			? html`<section part="section time-based">${body}</section>`
+			: html`<section part="section sun-based">${body}</section>`;
 	}
 }
 

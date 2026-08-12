@@ -118,7 +118,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 			<roxy-natal-chart
 				heading="Relocation chart"
 				lang=${ifDefined(this.effectiveLang())}
-				exportparts="card, header, tablist, tab, panel, chart, table, aspect-grid, element-modality, legend, details, section, patterns, pattern, readings, reading"
+				exportparts="card, header, tablist, tab, panel, chart, table, aspects, aspect-grid, element-modality, legend, details, section, patterns, pattern, readings, reading"
 				?hide-readings=${this.hideReadings}
 				.data=${data}
 			></roxy-natal-chart>

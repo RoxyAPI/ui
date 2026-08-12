@@ -172,8 +172,8 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 		const karakas = d.karakas ?? [];
 		if (!karakas.length) return this.renderEmpty();
 
-		return html`<div class="wrap" aria-label="Chara karakas">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Chara karakas">
+			<header class="head" part="header">
 				<h2 class="title">Chara karakas</h2>
 				<p class="scheme">
 					<span class="scheme-chip">${d.scheme ?? ''}</span>
@@ -181,11 +181,11 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 				</p>
 				${renderFrameCaption(d.frame)}
 			</header>
-			<div class="leads">
+			<div class="leads" part="details">
 				<div class="lead"><span>Atmakaraka</span><strong>${d.atmakaraka ?? ''}</strong></div>
 				<div class="lead"><span>Darakaraka</span><strong>${d.darakaraka ?? ''}</strong></div>
 			</div>
-			<div class="scroll" tabindex="0">
+			<div class="scroll" part="table" tabindex="0">
 				<table role="table">
 					<caption class="roxy-sr-only">
 						Chara karakas in descending rank: each office, the graha holding it, its rashi,

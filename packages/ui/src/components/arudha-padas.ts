@@ -149,19 +149,19 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 		if (!padas.length) return this.renderEmpty();
 		const exceptions = padas.filter((p) => p.exceptionApplied).length;
 
-		return html`<div class="wrap" aria-label="Arudha padas">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Arudha padas">
+			<header class="head" part="header">
 				<h2 class="title">Arudha padas</h2>
 				${renderFrameCaption(d.frame)}
 			</header>
-			<div class="leads">
+			<div class="leads" part="details">
 				<div class="lead"><span>Lagna</span><strong>${d.lagnaRashi ?? ''}</strong></div>
 				<div class="lead">
 					<span>Arudha Lagna</span><strong>${d.arudhaLagna ?? ''}</strong>
 				</div>
 				<div class="lead"><span>Upapada</span><strong>${d.upapada ?? ''}</strong></div>
 			</div>
-			<div class="scroll" tabindex="0">
+			<div class="scroll" part="table" tabindex="0">
 				<table role="table">
 					<caption class="roxy-sr-only">
 						The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord,
@@ -188,7 +188,7 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 			</div>
 			${
 				exceptions > 0
-					? html`<p class="note">
+					? html`<p class="note" part="legend">
 						<span class="exception">Moved</span> marks a pada that fell in its own bhava or
 						the seventh from it and was moved to the tenth from there, as the classical rule
 						requires. ${exceptions} of ${padas.length} padas here.

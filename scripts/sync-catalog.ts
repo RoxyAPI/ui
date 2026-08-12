@@ -18,6 +18,7 @@ import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
+import { partsForSlug } from './component-parts.js';
 import { widgetSnippets } from './widget-snippets.js';
 
 const OUT_PATH = 'packages/ui/components-catalog.json';
@@ -81,6 +82,11 @@ const components = ROXY_COMPONENTS.map((c) => {
 		// no single endpoint).
 		endpointLabel: c.endpointLabel,
 		endpoints,
+		// The `::part()` names this component exposes, read from its source.
+		// Published so a consumer can hide or restyle one block without guessing
+		// a name, and without a second copy of the vocabulary going stale beside
+		// this one.
+		parts: partsForSlug(c.slug),
 		...snippets,
 		...preview(c.slug),
 	};

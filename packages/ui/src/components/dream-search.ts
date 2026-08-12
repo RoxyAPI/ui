@@ -101,12 +101,12 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 		if (symbols.length === 0) return this.renderEmpty();
 		const total = typeof d.total === 'number' ? d.total : symbols.length;
 
-		return html`<section class="wrap" aria-label="Dream symbols">
-			<header class="head">
+		return html`<section class="wrap" part="card" aria-label="Dream symbols">
+			<header class="head" part="header">
 				<h2 class="title">Dream symbols</h2>
 				<span class="count">${total} match${total === 1 ? '' : 'es'}</span>
 			</header>
-			<ul class="grid">
+			<ul class="grid" part="section symbols">
 				${symbols.map(
 					(s) => html`<li>
 						<button type="button" class="result" @click=${() => this.select(s)}>

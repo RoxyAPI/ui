@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, mock, test } from 'bun:test';
 
 // Registers every element. happy-dom is loaded by preload (bunfig.toml), and
 // Lit reads document and customElements at module load, so setup -> import.
@@ -12,11 +12,19 @@ import {
 	registerLocale,
 	translate,
 } from '../src/i18n/registry.js';
-import { CENTER_GEOMETRY } from '../src/utils/bodygraph-render.js';
-import { lookupKey } from '../src/utils/string.js';
 // Side effect: registers the Spanish catalogue for the translate() assertions
 // below. The per-catalogue tests load every locale from the directory instead.
-import '../src/locales/es.js';
+// The named export is read by the one end-to-end form assertion, so that test
+// cannot drift from the file it is proving.
+import { es } from '../src/locales/es.js';
+import { CENTER_GEOMETRY } from '../src/utils/bodygraph-render.js';
+import {
+	buildFormModel,
+	deriveSubmitLabel,
+	type SpecDoc,
+} from '../src/utils/field-schema.js';
+import { KEY_REFUSED_MESSAGE } from '../src/utils/key-guard.js';
+import { humanize, lookupKey } from '../src/utils/string.js';
 
 const settled = (el: Element): Promise<void> =>
 	(el as unknown as { updateComplete: Promise<void> }).updateComplete;
@@ -259,6 +267,11 @@ describe('shipped locales', () => {
 			// `Persönlichkeitsseite`/`Designseite`); `Bodygraph` is the loanword the
 			// API's own German prose uses sixteen times inside this same card, which
 			// is why `Körpergrafik` was passed over.
+			// The four `Person` group legends are German too: velora-astro.de labels
+			// the two inputs of its own synastry calculator `Geburtsdaten Person 1`
+			// and `Geburtsdaten Person 2`, so the German for this legend is the same
+			// string, not a gap. German is the only one of the seven where that
+			// happens; the other six all translate the head noun.
 			de: [
 				'Aura',
 				'Bodygraph',
@@ -267,6 +280,10 @@ describe('shipped locales', () => {
 				'Fix',
 				'Motor',
 				'Neutral',
+				'Person 1',
+				'Person 2',
+				'Person A',
+				'Person B',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -346,8 +363,12 @@ describe('shipped locales', () => {
 			ru: [],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
 			// is `Toplam`. Turkish Human Design borrows `Aura`, `Bodygraph` and
-			// `Motor` the same way (`Motor merkezler`).
-			tr: ['orb', 'apex', 'Natal', 'Aura', 'Bodygraph', 'Motor'],
+			// `Motor` the same way (`Motor merkezler`). `Relocation` is the same
+			// borrowing and the reason the chart it names already ships as
+			// `Relocation haritası`: `Relokasyon` appears in no Turkish astrology
+			// source, while ayastrolojiakademisi.com prints the English word bare
+			// inside a Turkish title.
+			tr: ['orb', 'apex', 'Natal', 'Aura', 'Bodygraph', 'Motor', 'Relocation'],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
 			const untranslated = Object.entries(catalog)
@@ -1553,5 +1574,577 @@ describe('the Human Design cards read the display half and key on the English on
 			offenders,
 			`These read the API display vocabulary but translate none of their own words, so they render localized values under English headings:\n  ${offenders.join('\n  ')}`,
 		).toEqual([]);
+	});
+});
+
+/**
+ * The FORM path, which had no i18n at all until this landed and no test pressure either.
+ *
+ * @remarks
+ * Both widgets extended `LitElement` directly, so neither had a `t()` to call and neither re-rendered when a deferred catalogue arrived. Every widget that needs birth data mounts one of them, so a Spanish visitor filled an English form and only then reached a translated card. The drift guard above could not see it: it fails on a `t()` literal with no catalogue entry, and zero `t()` calls means zero findings.
+ *
+ * So the guard here is inverted. It reads the two form-path sources and fails on a user-visible string that is NOT translated, which is the failure this feature actually has. Sabotage-verified: restoring any one of the removed literals turns it red on its own.
+ */
+describe('the form path writes no untranslated words', () => {
+	/** The files whose visible copy must be translated. A file joins this list by having its strings catalogued, never by being exempted from it. */
+	const FORM_PATH = [
+		'packages/ui/src/components/endpoint-form.ts',
+		'packages/ui/src/components/location-search.ts',
+	];
+
+	/** Attributes a visitor or a screen reader READS. `class`, `role` and `id` are machine values and are not on it. */
+	const VISIBLE_ATTRS =
+		/\b(?:placeholder|aria-label|aria-placeholder|aria-description|title|alt)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
+
+	/**
+	 * Text allowed to sit in a template as a literal, with the reason.
+	 *
+	 * `UTC` is a unit symbol, identical in all seven languages and printed immediately in front of a signed number, so a catalogue entry would be seven copies of the same three letters plus a way to get the sign onto the wrong side of it.
+	 */
+	const LITERAL_BY_DESIGN = new Set(['UTC']);
+
+	/** Stands in for one `${...}`, so an interpolated slot can never be mistaken for copy. */
+	const EXPR = ' ';
+
+	function skipString(src: string, i: number): number {
+		const quote = src[i] as string;
+		i++;
+		while (i < src.length) {
+			if (src[i] === '\\') i += 2;
+			else if (src[i] === quote) return i + 1;
+			else i++;
+		}
+		return i;
+	}
+
+	/** Read a template literal body. `keep` decides whether its own text is collected; a nested html template is collected either way. */
+	function scanTemplate(
+		src: string,
+		start: number,
+		out: string[],
+		keep: boolean,
+	): number {
+		let text = '';
+		let i = start;
+		while (i < src.length) {
+			const c = src[i] as string;
+			if (c === '\\') {
+				i += 2;
+				continue;
+			}
+			if (c === '`') {
+				if (keep) out.push(text);
+				return i + 1;
+			}
+			if (c === '$' && src[i + 1] === '{') {
+				text += EXPR;
+				i = scanExpr(src, i + 2, out);
+				continue;
+			}
+			text += c;
+			i++;
+		}
+		if (keep) out.push(text);
+		return i;
+	}
+
+	/** Skip one `${...}`, recursing into any html template inside it so a mapped row is scanned too. */
+	function scanExpr(src: string, start: number, out: string[]): number {
+		let depth = 1;
+		let i = start;
+		while (i < src.length) {
+			const c = src[i] as string;
+			if (c === "'" || c === '"') {
+				i = skipString(src, i);
+				continue;
+			}
+			if (c === '`') {
+				const tagged = src.slice(Math.max(0, i - 4), i) === 'html';
+				i = scanTemplate(src, i + 1, out, tagged);
+				continue;
+			}
+			if (c === '{') depth++;
+			else if (c === '}') {
+				depth--;
+				if (depth === 0) return i + 1;
+			}
+			i++;
+		}
+		return i;
+	}
+
+	/** Source with block comments and whole-line comments blanked, so prose ABOUT a template is never read as one. */
+	function code(src: string): string {
+		return src
+			.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+			.split('\n')
+			.map((line) => (line.trim().startsWith('//') ? '' : line))
+			.join('\n');
+	}
+
+	/** Every html`` template in a file, interpolations replaced by {@link EXPR}. */
+	function htmlTemplates(src: string): string[] {
+		const out: string[] = [];
+		let i = 0;
+		for (;;) {
+			const at = src.indexOf('html`', i);
+			if (at === -1) return out;
+			i = scanTemplate(src, at + 5, out, true);
+		}
+	}
+
+	/** The words a visitor reads out of one template: its text nodes plus its human-facing attribute values. */
+	function visibleStrings(template: string): string[] {
+		const found: string[] = [];
+		let inTag = false;
+		let buf = '';
+		for (const c of template) {
+			if (c === '<' && !inTag) {
+				found.push(buf);
+				buf = '';
+				inTag = true;
+			} else if (c === '>' && inTag) {
+				for (const m of buf.matchAll(VISIBLE_ATTRS))
+					found.push(m[1] ?? m[2] ?? '');
+				buf = '';
+				inTag = false;
+			} else {
+				buf += c;
+			}
+		}
+		if (!inTag) found.push(buf);
+		return found;
+	}
+
+	test('the scan can see a literal at all', () => {
+		// Not vacuous: the assertion below is an empty-array check, which passes just
+		// as well when the scanner finds nothing. This is the sabotage case inline.
+		const sample = `render() { return html\`<p title="Hi there">Retry \${this.x} \${[1].map((n) => html\`<b>Hidden word</b>\`)}</p>\`; }`;
+		const found = htmlTemplates(sample).flatMap(visibleStrings);
+		// A nested template closes before its parent, so it is collected first. The
+		// guard below reads the whole set, so only membership matters.
+		expect(
+			found
+				.map((s) => s.trim())
+				.filter(Boolean)
+				.sort(),
+		).toEqual(['Hi there', 'Hidden word', 'Retry']);
+	});
+
+	test('no user-visible literal survives in a form-path template', async () => {
+		const offenders: string[] = [];
+		for (const path of FORM_PATH) {
+			for (const template of htmlTemplates(code(await Bun.file(path).text()))) {
+				for (const raw of visibleStrings(template)) {
+					const literal = raw.replaceAll(EXPR, ' ').trim().replace(/\s+/g, ' ');
+					if (!/[A-Za-z]{2,}/.test(literal)) continue;
+					if (LITERAL_BY_DESIGN.has(literal)) continue;
+					offenders.push(`${path}: ${literal}`);
+				}
+			}
+		}
+		expect(
+			offenders,
+			`Hardcoded copy in the form path. Wrap it in this.t(...) and add the English source to src/i18n/chrome-strings.ts and every src/locales/*.ts:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	/**
+	 * The four submit verbs, which no literal scan can see.
+	 *
+	 * @remarks
+	 * `deriveSubmitLabel` RETURNS the English verb and the form translates the result, because `utils/field-schema.ts` is request-context-free and has no element to resolve a page language from. So the coverage question is not "is this string wrapped" but "does every verb this function can produce have a catalogue entry", and the honest way to ask it is to run the function over the committed spec rather than to restate the four words here.
+	 */
+	test('every submit verb the spec can produce is a catalogue entry', async () => {
+		const spec = (await Bun.file('specs/openapi.json').json()) as {
+			paths: Record<string, unknown>;
+		};
+		const endpoints = Object.keys(spec.paths);
+		expect(endpoints.length).toBeGreaterThan(100);
+		const verbs = new Set(endpoints.map((p) => deriveSubmitLabel(p)));
+		// Not vacuous: the spec has to exercise more than one branch of the map.
+		expect(verbs.size).toBeGreaterThan(1);
+		const missing = [...verbs].filter(
+			(v) => !CHROME_STRINGS.includes(v as never),
+		);
+		expect(
+			missing,
+			`deriveSubmitLabel can return these and no catalogue carries them:\n  ${missing.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	/**
+	 * The group names, which no literal scan can see either, and which the SPEC decides.
+	 *
+	 * @remarks
+	 * `{{group}}` used to interpolate a raw `humanize()` of the wire name, so a Portuguese form read `Local de Natal Chart`. The set is closed, so it is catalogued, but "closed" is a fact about the spec rather than about this library: a tenth object-valued property or a new `xLatitude`/`xLongitude` prefix adds a group name with no catalogue entry, and the form would print it in English on seven translated sites. Deriving the list here rather than restating it is what makes that a red test instead of a customer screenshot.
+	 */
+	test('every group name the spec can produce is carried by all seven catalogues', async () => {
+		const doc = (await Bun.file('specs/openapi.json').json()) as SpecDoc;
+		const schemas = doc.components?.schemas ?? {};
+		const names = new Set<string>();
+		for (const [path, item] of Object.entries(doc.paths)) {
+			for (const [method, op] of Object.entries(item)) {
+				if (!['get', 'post', 'put', 'patch'].includes(method)) continue;
+				for (const f of buildFormModel(op, schemas, path).fields)
+					if (f.group) names.add(humanize(f.group));
+			}
+		}
+		// Not vacuous, and pinned to BOTH shapes a group can come from: an
+		// object-valued body property (`person1`) and a coordinate name PREFIX
+		// (`birthLatitude`), which is the relocation form and is the one a
+		// nesting-only derivation would have missed.
+		expect(names.size).toBeGreaterThanOrEqual(9);
+		expect([...names]).toContain('Person 1');
+		expect([...names]).toContain('Birth');
+
+		const gaps: string[] = [];
+		for (const [lang, catalog] of await shippedCatalogues()) {
+			// Folded, because the catalogue key is `lookupKey` of the English source and
+			// `Natal Chart` is answered by the `Natal chart` heading it folds onto.
+			const covered = new Set(Object.keys(catalog).map(lookupKey));
+			for (const name of names)
+				if (!covered.has(lookupKey(name)))
+					gaps.push(`${lang}.ts has no word for the ${name} group`);
+		}
+		expect(gaps, gaps.join('\n  ')).toEqual([]);
+	});
+
+	/**
+	 * The case fold, which is the whole reason `Natal Chart` is not an entry.
+	 *
+	 * @remarks
+	 * `humanize('natalChart')` capitalises the C and the card heading does not, so the two differ only by case. That is ONE runtime key: the group reads the heading's translation for free, and adding the capitalized twin would not read as a duplicate in review, it would overwrite the heading in every catalogue. The parity test above passes either way, so this is what pins the decision.
+	 */
+	test('the natalChart group reuses the card heading, never a second entry', async () => {
+		expect(CHROME_STRINGS).not.toContain('Natal Chart' as never);
+		for (const [lang, catalog] of await shippedCatalogues()) {
+			const heading = catalog['Natal chart'] as string;
+			expect(translate(lang, 'Natal Chart'), `${lang}.ts`).toBe(heading);
+			expect(
+				translate(lang, 'Natal Chart'),
+				`${lang}.ts fell through to English`,
+			).not.toBe('Natal Chart');
+		}
+	});
+
+	/**
+	 * Key parity for the form path specifically, derived from the sources rather than restated.
+	 *
+	 * @remarks
+	 * The catalogue-wide parity test above already fails on ANY key a locale is short of. This one names the form path, so a failure reads as "the form is half translated in Turkish" instead of "tr.ts is out of step", and it covers the strings that reach a reader with no `t('literal')` call site at all: the four submit verbs and the refusal message the key guard owns.
+	 */
+	test('every form-path string is carried by all seven catalogues', async () => {
+		const CALL = /\bt\('((?:[^'\\]|\\.)*)'/g;
+		// Seeded, not scanned, because these three reach a reader without a `t('literal')` call site the
+		// regex could find: the refusal message the key guard owns, the submit verbs `deriveSubmitLabel`
+		// returns, and `Search city`, which is a `@property` DEFAULT translated at render as
+		// `t(this.placeholder)` so a caller-supplied placeholder still prints as given.
+		const keys = new Set<string>([KEY_REFUSED_MESSAGE, 'Search city']);
+		for (const path of FORM_PATH) {
+			const src = code(await Bun.file(path).text());
+			for (const m of src.matchAll(CALL))
+				keys.add((m[1] as string).replace(/\\'/g, "'"));
+		}
+		for (const verb of ['Compare', 'Cast', 'Get reading', 'Generate'])
+			keys.add(verb);
+		// The measured surface was 21 distinct literals; the guard is that it has not
+		// quietly shrunk back.
+		expect(keys.size).toBeGreaterThanOrEqual(21);
+
+		const gaps: string[] = [];
+		for (const [lang, catalog] of await shippedCatalogues()) {
+			for (const key of keys) {
+				if (!(key in catalog)) gaps.push(`${lang}.ts is missing: ${key}`);
+			}
+		}
+		expect(gaps, gaps.join('\n  ')).toEqual([]);
+	});
+});
+
+/**
+ * The form path on a real render, because a source scan cannot prove the language reaches the element.
+ *
+ * @remarks
+ * A synthetic catalogue rather than the shipped Spanish one, so these assertions pin the MECHANISM and never a translator's wording: the shipped catalogues are already checked for parity, register and script above, and a sourced rewording there must not turn this red. The one exception is the last test, which is the end-to-end proof that a shipped payload reaches a form.
+ */
+describe('a mounted form renders in the page language', () => {
+	/** One operation carrying every branch the form can draw: a suppressed coordinate trio, a required input, an optional select and an optional array. */
+	const MODEL = {
+		title: 'Natal chart',
+		hasLang: true,
+		fields: [
+			{ key: 'latitude', name: 'latitude', kind: 'number', required: true },
+			{ key: 'longitude', name: 'longitude', kind: 'number', required: true },
+			{ key: 'timezone', name: 'timezone', kind: 'text', required: true },
+			{ key: 'birthDate', name: 'birthDate', kind: 'date', required: true },
+			{
+				key: 'houseSystem',
+				name: 'houseSystem',
+				kind: 'select',
+				required: false,
+				enum: ['placidus', 'koch'],
+			},
+			{ key: 'planets', name: 'planets', kind: 'array', required: false },
+		],
+	};
+
+	/** Every form-path key this form can render, mapped to a sentinel no source string could be mistaken for. */
+	const SENTINEL: Record<string, string> = {
+		'Birth location': 'LOC',
+		'City of birth': 'CITY',
+		'Fills {{fields}}. Pick a city to autofill.': 'FILLS {{fields}}',
+		Choose: 'PICK',
+		'Comma separated': 'COMMAS',
+		Advanced: 'MORE',
+		'Please complete:': 'MISSING:',
+		Generate: 'GO',
+		'Search city': 'FINDCITY',
+		'No cities found': 'NOCITIES',
+		Retry: 'AGAIN',
+		'{{group}} location': 'AT {{group}}',
+		'{{group}} city': 'IN {{group}}',
+		'Person 1': 'P1',
+		'Schema load failed: {{message}}': 'BROKEN {{message}}',
+		'HTTP error {{status}}': 'STATUS {{status}}',
+	};
+
+	/**
+	 * The grouped shape, which is where a group name has somewhere to render: a fieldset legend, a location label and a city placeholder, three sites per group.
+	 *
+	 * `natalChart` is here to prove the case fold end to end against a SHIPPED catalogue, and `mysteryBlock` is the tenth group the spec does not have yet, which must degrade to its humanized English rather than to a blank or a key.
+	 */
+	const GROUPED = {
+		title: 'Synastry',
+		hasLang: true,
+		fields: [
+			...['person1', 'natalChart', 'mysteryBlock'].flatMap((group) => [
+				{
+					key: `${group}.latitude`,
+					name: 'latitude',
+					group,
+					kind: 'number',
+					required: true,
+				},
+				{
+					key: `${group}.longitude`,
+					name: 'longitude',
+					group,
+					kind: 'number',
+					required: true,
+				},
+			]),
+		],
+	};
+
+	const originalFetch = globalThis.fetch;
+
+	async function mountForm(model: unknown = MODEL): Promise<Element> {
+		globalThis.fetch = mock(async (url: string | URL) =>
+			String(url).includes('/schemas/')
+				? { ok: true, status: 200, json: async () => model }
+				: { ok: false, status: 404, json: async () => ({}) },
+		) as unknown as typeof fetch;
+		const el = document.createElement('roxy-endpoint-form');
+		el.setAttribute('data-endpoint', 'astrology/natal-chart');
+		document.body.appendChild(el);
+		// Drain the async schema load and the re-renders it triggers.
+		for (let i = 0; i < 6; i++) {
+			await settled(el);
+			await new Promise((r) => setTimeout(r, 0));
+		}
+		return el;
+	}
+
+	beforeEach(() => {
+		registerLocale('zz', SENTINEL);
+	});
+
+	afterEach(() => {
+		globalThis.fetch = originalFetch;
+	});
+
+	test('every word the form writes comes from the catalogue', async () => {
+		document.documentElement.lang = 'zz';
+		const el = await mountForm();
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		const rendered = text(el);
+		expect(rendered).toContain('LOC');
+		expect(rendered).toContain('FILLS latitude, longitude, timezone');
+		expect(rendered).toContain('MORE');
+		expect(rendered).toContain('GO');
+		expect(root.querySelector('option')?.textContent?.trim()).toBe('PICK');
+		expect(
+			root.querySelector('input[type="text"]')?.getAttribute('placeholder'),
+		).toBe('COMMAS');
+		// The English sources are GONE, not merely joined by the sentinels.
+		expect(rendered).not.toContain('Birth location');
+		expect(rendered).not.toContain('Advanced');
+		expect(rendered).not.toContain('Generate');
+		// And the spec-derived half is untouched, which is the documented boundary:
+		// a field label is `humanize()` over a wire name and no catalogue reaches it.
+		expect(rendered).toContain('Birth Date');
+		el.remove();
+	});
+
+	test('the validation banner translates its lead-in and names the location once', async () => {
+		document.documentElement.lang = 'zz';
+		const el = await mountForm();
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		root.querySelector('form')?.dispatchEvent(new Event('submit'));
+		await settled(el);
+		const alert = root.querySelector('.validation-error')?.textContent ?? '';
+		expect(alert).toContain('MISSING:');
+		expect(alert).toContain('LOC');
+		expect(alert).not.toContain('Please complete');
+		el.remove();
+	});
+
+	/**
+	 * The trap that would have made the catalogue look broken. The city search sits INSIDE the form shadow root, and `closest('[lang]')` stops at a shadow boundary, so it reads nothing from the page unless the form hands it the tag.
+	 */
+	test('the city search inside it is localized too, through the forwarded lang', async () => {
+		document.documentElement.lang = 'zz';
+		const el = await mountForm();
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		const search = root.querySelector('roxy-location-search');
+		expect(search).not.toBeNull();
+		await settled(search as Element);
+		const input = (
+			search as unknown as { shadowRoot: ShadowRoot }
+		).shadowRoot.querySelector('input');
+		expect(input?.getAttribute('placeholder')).toBe('CITY');
+		el.remove();
+	});
+
+	test('a standalone city search reads its own placeholder, and a caller one is left alone', async () => {
+		document.documentElement.lang = 'zz';
+		const el = document.createElement('roxy-location-search');
+		document.body.appendChild(el);
+		await settled(el);
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		expect(root.querySelector('input')?.getAttribute('placeholder')).toBe(
+			'FINDCITY',
+		);
+		// A caller-supplied placeholder is theirs: a catalogue miss returns it
+		// unchanged rather than blanking it or rendering a key.
+		el.setAttribute('placeholder', 'Where were you born');
+		await settled(el);
+		expect(root.querySelector('input')?.getAttribute('placeholder')).toBe(
+			'Where were you born',
+		);
+		el.remove();
+	});
+
+	test('the schema-load failure and its retry button translate, and the event does not', async () => {
+		document.documentElement.lang = 'zz';
+		globalThis.fetch = mock(async () => ({
+			ok: false,
+			status: 404,
+			json: async () => ({}),
+		})) as unknown as typeof fetch;
+		const el = document.createElement('roxy-endpoint-form');
+		el.setAttribute('data-endpoint', 'astrology/natal-chart');
+		let detail: { message?: string } | null = null;
+		el.addEventListener('roxy-spec-error', (e) => {
+			detail = (e as CustomEvent).detail as { message?: string };
+		});
+		document.body.appendChild(el);
+		for (let i = 0; i < 6; i++) {
+			await settled(el);
+			await new Promise((r) => setTimeout(r, 0));
+		}
+		const rendered = text(el);
+		expect(rendered).toContain('BROKEN');
+		expect(rendered).toContain('STATUS 404');
+		expect(rendered).toContain('AGAIN');
+		expect(rendered).not.toContain('Schema load failed');
+		// The EVENT keeps the canonical English: a listener is code, and a developer
+		// console is not a localized surface.
+		expect((detail as unknown as { message: string }).message).toBe('HTTP 404');
+		el.remove();
+	});
+
+	test('a refused key is refused in the page language', async () => {
+		document.documentElement.lang = 'zz';
+		registerLocale('zz', { ...SENTINEL, [KEY_REFUSED_MESSAGE]: 'BADKEY' });
+		const el = document.createElement('roxy-location-search');
+		el.setAttribute('publishable-key', 'sk_live_not_publishable');
+		document.body.appendChild(el);
+		await settled(el);
+		expect(text(el)).toContain('BADKEY');
+		el.remove();
+	});
+
+	test('a catalogue that lands after the form mounted still re-renders it', async () => {
+		// Why both widgets needed a LocaleController and not just a t(): a host page
+		// loads the payload as its own script tag, so it can arrive after first
+		// paint, and nothing a site owner can do would fix an element that painted
+		// English and stopped.
+		document.documentElement.lang = 'late';
+		const el = await mountForm();
+		expect(text(el)).toContain('Generate');
+		registerLocale('late', SENTINEL);
+		await settled(el);
+		expect(text(el)).toContain('GO');
+		el.remove();
+	});
+
+	/**
+	 * The group name in all three of its render sites, which is the half `{{group}}` left in English.
+	 */
+	test('a group names its fieldset, its location label and its city box', async () => {
+		document.documentElement.lang = 'zz';
+		const el = await mountForm(GROUPED);
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		const legends = [...root.querySelectorAll('legend')].map((l) =>
+			l.textContent?.trim(),
+		);
+		expect(legends).toContain('P1');
+		expect(legends).not.toContain('Person 1');
+		expect(text(el)).toContain('AT P1');
+		const placeholders = [...root.querySelectorAll('roxy-location-search')].map(
+			(s) => s.getAttribute('placeholder'),
+		);
+		expect(placeholders).toContain('IN P1');
+		el.remove();
+	});
+
+	test('a group the catalogue has no word for degrades to its English name', async () => {
+		// The set is closed TODAY. A tenth group must render as readable English
+		// rather than as a blank legend or a raw `mysteryBlock`, because the spec can
+		// grow one between a release of this library and the next.
+		document.documentElement.lang = 'zz';
+		const el = await mountForm(GROUPED);
+		const rendered = text(el);
+		expect(rendered).toContain('Mystery Block');
+		expect(rendered).toContain('AT Mystery Block');
+		expect(rendered).not.toContain('mysteryBlock');
+		el.remove();
+	});
+
+	test('the natalChart group prints the shipped heading, capital C and all', async () => {
+		// End to end against the real Spanish payload: `humanize` produces
+		// `Natal Chart`, the catalogue carries `Natal chart`, and the fold is what
+		// makes the group read `Carta natal` instead of quietly staying English.
+		document.documentElement.lang = 'es-AR';
+		const el = await mountForm(GROUPED);
+		const rendered = text(el);
+		expect(rendered).toContain(es['Natal chart']);
+		expect(rendered).not.toContain('Natal Chart');
+		el.remove();
+	});
+
+	test('the shipped Spanish catalogue reaches a real form', async () => {
+		// End to end, and the only assertion here that reads a translator decision:
+		// <html lang> to resolveLang to the catalogue to a rendered button.
+		document.documentElement.lang = 'es-AR';
+		const el = await mountForm();
+		const rendered = text(el);
+		expect(rendered).toContain(es['Birth location']);
+		expect(rendered).toContain(es.Generate);
+		expect(rendered).not.toContain('Birth location');
+		expect(rendered).not.toContain('Generate');
+		el.remove();
 	});
 });

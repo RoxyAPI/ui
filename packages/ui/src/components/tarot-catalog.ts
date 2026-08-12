@@ -95,12 +95,12 @@ export class RoxyTarotCatalog extends RoxyDataElement<ListCardsResponse> {
 		const title = this.heading || 'Tarot deck';
 		const total = typeof d.total === 'number' ? d.total : cards.length;
 
-		return html`<section class="wrap" aria-label=${title}>
-			<header class="head">
+		return html`<section class="wrap" part="card" aria-label=${title}>
+			<header class="head" part="header">
 				<h2 class="title">${title}</h2>
 				<span class="count">${total} ${total === 1 ? 'card' : 'cards'}</span>
 			</header>
-			<ul class="grid">
+			<ul class="grid" part="section cards">
 				${cards.map(
 					(c) => html`<li class="tile">
 						${

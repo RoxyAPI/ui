@@ -140,8 +140,8 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 		const moved = grahas.filter((g) => g.moved);
 		const count = d.movedCount ?? moved.length;
 
-		return html`<div class="wrap" aria-label="Bhav chalit">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Bhav chalit">
+			<header class="head" part="header">
 				<h2 class="title">Bhav Chalit</h2>
 				<p class="lede">
 					${
@@ -157,7 +157,7 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 
 			${
 				moved.length
-					? html`<div class="moved-list">
+					? html`<div class="moved-list" part="table moved">
 						${moved.map((g) => this.renderMoved(g, d.houseThemes))}
 					</div>`
 					: nothing
@@ -165,10 +165,10 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 
 			${
 				bhavas.length
-					? html`<details>
+					? html`<details part="details">
 						<summary>Bhava cusps and occupants</summary>
 						<div class="scroll">
-							<table>
+							<table part="table">
 								<thead>
 									<tr>
 										<th>Bhava</th>

@@ -652,7 +652,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		if (bodies.length === 0)
 			return html`<p class="roxy-empty" role="status">${this.t('No planets to grid')}</p>`;
 
-		return html`<div class="grid-scroll" part="table aspect-grid">
+		return html`<div class="grid-scroll" part="section aspects table aspect-grid">
 			<table class="aspect-grid">
 				<caption class="roxy-sr-only">
 					${this.t('Planet by planet aspect grid: the aspect each pair of planets forms, read from the planet naming the row across to the planet naming the column.')}

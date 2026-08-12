@@ -197,8 +197,8 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 	protected renderData(data: LocalSpaceResponse) {
 		const bodies = data.bodies ?? [];
 		const bd = data.birthDetails;
-		return html`<div class="wrap">
-			<header>
+		return html`<div class="wrap" part="card">
+			<header part="header">
 				<h2 class="title">Local space</h2>
 				${
 					bd
@@ -215,6 +215,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 	private renderDial(bodies: Body[]) {
 		return html`<svg
 			viewBox="0 0 ${SIZE} ${SIZE}"
+			part="chart"
 			role="img"
 			aria-label="Local space compass of planetary directions from the birthplace"
 		>
@@ -277,7 +278,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 
 	private renderList(bodies: Body[]) {
 		if (bodies.length === 0) return nothing;
-		return html`<div class="table-scroll"><table class="list">
+		return html`<div class="table-scroll" part="table"><table class="list">
 			<caption class="roxy-sr-only">
 				Local space directions: each body with its compass direction, azimuth,
 				altitude and whether it sits above or below the horizon.

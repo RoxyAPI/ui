@@ -1,7 +1,8 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { apiLang } from '../i18n/lang.js';
+import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { signGlyph } from '../tokens/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
@@ -29,6 +30,28 @@ const SLICE_BASE = `https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION}/
 const specCache = new Map<string, Promise<OpenApiDoc>>();
 
 /**
+ * A spec fetch that came back with a non-2xx status, carrying the STATUS rather than a sentence.
+ *
+ * @remarks
+ * The visible wording is composed by the element, in the element's language, and never here: {@link loadSpec} shares one cached promise across every form on the page, so a message built at throw time would freeze the first mounter's language onto every later one. Same split as everywhere else in this library, the machine value travels and the display copy is made where the reader is.
+ */
+class SpecHttpError extends Error {
+	constructor(readonly status: number) {
+		super(`HTTP ${status}`);
+	}
+}
+
+/** The endpoint is absent from the document that was loaded. Carries the two parts the message names, for the reason {@link SpecHttpError} gives. */
+class SpecMissingOperationError extends Error {
+	constructor(
+		readonly method: string,
+		readonly path: string,
+	) {
+		super(`Endpoint ${method} ${path} not found in OpenAPI spec`);
+	}
+}
+
+/**
  * Drop every cached spec promise.
 
  * @remarks
@@ -45,7 +68,7 @@ async function loadSpec(url: string): Promise<OpenApiDoc> {
 	if (!pending) {
 		pending = fetch(url)
 			.then(async (res) => {
-				if (!res.ok) throw new Error(`HTTP ${res.status}`);
+				if (!res.ok) throw new SpecHttpError(res.status);
 				return (await res.json()) as OpenApiDoc;
 			})
 			.catch((err) => {
@@ -90,9 +113,13 @@ function parseArrayValue(raw: string): unknown {
  * Schema resolution order: an explicit `spec-url` fetches that full spec and digests it (unchanged, the demo path); otherwise the form tries a small version-pinned per-operation slice from the CDN, and on any miss falls back to fetching the production spec. Each input kind is chosen purely from the parameter shape (see {@link ../utils/field-schema.ts}), so a new endpoint gets a working, on-brand form with no per-endpoint code.
  *
  * The visitor-facing `lang` parameter is never rendered: a site owner sets the element `lang` attribute, and the form routes it to the query string on submit. Optional parameters collapse under one Advanced disclosure; a form whose only required field is an enum submits on selection.
+ *
+ * **Two languages are in play here and they are different answers.** {@link RoxyLocalizedElement.effectiveLang} is the DISPLAY tag, region included, and it is what every `t()` call and the city search read. {@link RoxyEndpointForm.requestLang} is the WIRE value, region stripped and unsupported languages omitted, and it is what reaches `?lang=`. Swapping them is silent in both directions: the request one demotes every regional visitor, and the display one is a 400.
+ *
+ * **The words this form writes are translated; the words the SPEC writes are not, with one enumerable exception.** Every field label and option text comes from a field name through `humanize()` or from the operation summary, so it is computed per operation and no catalogue keyed on English source text can reach it. That is the shared field-name-to-label artifact `docs/todo.md` tracks, and it is why a Spanish form still reads `Birth date` over a translated city box. GROUP names are the exception and are catalogued, because the spec has nine of them rather than 909: see {@link RoxyEndpointForm.groupName}.
  */
 @customElement('roxy-endpoint-form')
-export class RoxyEndpointForm extends LitElement {
+export class RoxyEndpointForm extends RoxyLocalizedElement {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
@@ -410,17 +437,34 @@ export class RoxyEndpointForm extends LitElement {
 		try {
 			this.applyModel(await this.resolveModel());
 		} catch (err) {
-			const message = err instanceof Error ? err.message : String(err);
-			this.specError = message;
+			// The banner reads in the page language; the event keeps the canonical
+			// English, because a listener is code and a developer console is not a
+			// localized surface.
+			this.specError = this.specErrorMessage(err);
 			this.loaded = true;
 			this.dispatchEvent(
 				new CustomEvent('roxy-spec-error', {
-					detail: { url: this.specUrl || PROD_SPEC_URL, message },
+					detail: {
+						url: this.specUrl || PROD_SPEC_URL,
+						message: err instanceof Error ? err.message : String(err),
+					},
 					bubbles: true,
 					composed: true,
 				}),
 			);
 		}
+	}
+
+	/** The failure sentence a visitor reads. Composed here rather than at the throw, so the shared spec-cache promise cannot freeze one form's language onto another. A message from anywhere else (a browser network error) is a wire fact and passes through untranslated. */
+	private specErrorMessage(err: unknown): string {
+		if (err instanceof SpecHttpError)
+			return this.t('HTTP error {{status}}', { status: err.status });
+		if (err instanceof SpecMissingOperationError)
+			return this.t('Endpoint {{method}} {{path}} not found in OpenAPI spec', {
+				method: err.method,
+				path: err.path,
+			});
+		return err instanceof Error ? err.message : String(err);
 	}
 
 	/** Resolve the form model: explicit spec-url wins; else a version-pinned slice; else the production spec. */
@@ -437,11 +481,7 @@ export class RoxyEndpointForm extends LitElement {
 		const op = spec.paths?.[path]?.[this.method.toLowerCase()] as
 			| OperationSchema
 			| undefined;
-		if (!op) {
-			throw new Error(
-				`Endpoint ${this.method} ${path} not found in OpenAPI spec`,
-			);
-		}
+		if (!op) throw new SpecMissingOperationError(this.method, path);
 		return buildFormModel(op, spec.components?.schemas ?? {}, this.endpoint);
 	}
 
@@ -591,17 +631,18 @@ export class RoxyEndpointForm extends LitElement {
 		return only.kind === 'tiles' || only.kind === 'select' ? only : null;
 	}
 
+	/** The submit-button label. A caller-supplied one is theirs and is printed verbatim; the derived verb is ours, so it goes through the catalogue. {@link deriveSubmitLabel} returns the canonical English verb, which IS the catalogue key. */
 	private effectiveSubmitLabel(): string {
-		return this.submitLabel || deriveSubmitLabel(this.endpoint);
+		return this.submitLabel || this.t(deriveSubmitLabel(this.endpoint));
 	}
 
 	/**
 	 * The value this form may put on `?lang=`, or undefined to leave the request on the API default.
 	 *
 	 * @remarks
-	 * NOT the raw site language. `?lang=es-AR` is a 400 and `?lang=es` is a 200, and the language now resolves from `<html lang>` rather than only from an attribute a developer typed, so the unfiltered tag reaching the query string would break every regional and every untranslated locale. {@link apiLang} does both narrowings; this method exists so the submit path reads as one call.
+	 * NOT the display language, and the name says so: `effectiveLang()` on the base class is the full display tag every `t()` reads. `?lang=es-AR` is a 400 and `?lang=es` is a 200, and the language resolves from `<html lang>` rather than only from an attribute a developer typed, so the unfiltered tag reaching the query string would break every regional and every untranslated locale. {@link apiLang} does both narrowings; this method exists so the submit path reads as one call.
 	 */
-	private effectiveLang(): string | undefined {
+	private requestLang(): string | undefined {
 		return apiLang(this);
 	}
 
@@ -706,7 +747,7 @@ export class RoxyEndpointForm extends LitElement {
 		// does not. Report them (including a site-owner lang) so a POST with a query
 		// parameter reaches the API correctly instead of being dropped in the body.
 		const queryKeys = this.fields.filter((f) => f.inQuery).map((f) => f.name);
-		const lang = this.effectiveLang();
+		const lang = this.requestLang();
 		if (this.hasLang && lang) {
 			out.lang = lang;
 			queryKeys.push('lang');
@@ -741,12 +782,18 @@ export class RoxyEndpointForm extends LitElement {
 				locGroups.add(f.group);
 				continue;
 			}
+			// The group half translates and the field half cannot, which is not a
+			// half-measure: this names a block the visitor has to go back to, so the word
+			// in the message has to be the word printed on the fieldset legend. A message
+			// saying `Person 1` over a legend reading `Persona 1` points at nothing.
 			labels.push(
-				f.group ? `${humanize(f.group)} ${humanize(f.name)}` : humanize(f.name),
+				f.group
+					? `${this.groupName(f.group)} ${humanize(f.name)}`
+					: humanize(f.name),
 			);
 		}
 		for (const g of locGroups) {
-			labels.push(g ? `${humanize(g)} location` : 'Birth location');
+			labels.push(this.locationLabel(g));
 		}
 		return { keys, labels };
 	}
@@ -819,7 +866,7 @@ export class RoxyEndpointForm extends LitElement {
 				@change=${(e: Event) =>
 					this.setValue(f.key, (e.target as HTMLSelectElement).value)}
 			>
-				<option value="">Choose</option>
+				<option value="">${this.t('Choose')}</option>
 				${(f.enum ?? []).map(
 					(
 						opt,
@@ -865,7 +912,7 @@ export class RoxyEndpointForm extends LitElement {
 					: f.kind;
 		const placeholder =
 			f.kind === 'array'
-				? 'Comma separated'
+				? this.t('Comma separated')
 				: f.example != null
 					? String(f.example)
 					: '';
@@ -917,10 +964,38 @@ export class RoxyEndpointForm extends LitElement {
 		return names.join(', ');
 	}
 
+	/**
+	 * The name of one request group, translated, falling back to the humanized English.
+	 *
+	 * @remarks
+	 * A group name is the one derived label that is also ENUMERABLE. A field label is `humanize()` over one of 909 spec field names, but a group is `humanize()` over the names an object-valued property or a coordinate prefix can take, and the whole spec has nine across 176 operations. So each is a catalogue entry, and the English token that used to sit inside translated prose (`Local de Natal Chart`, `Место (Birth Data)`) is gone. A tenth group appearing in the spec still renders: `t()` returns its source string on a miss, so it degrades to the humanized English rather than to a blank or a key.
+	 *
+	 * **The lookup folds case, and that is what makes `natalChart` work.** `humanize` produces `Natal Chart` while the catalogue carries `Natal chart` for the card heading, and {@link lookupKey} folds both to one key on write and on read, so this reuses the shipped translation. Adding the capitalized twin instead would SILENTLY OVERWRITE that heading in every locale rather than reading as a duplicate, which is why `i18n/chrome-strings.ts` carries no entry for it.
+	 */
+	private groupName(group: string): string {
+		return this.t(humanize(group));
+	}
+
+	/**
+	 * The name of one location block, and of the same block in a validation message, which is why it is a method rather than two literals.
+	 *
+	 * The placeholder carries the group rather than the form concatenating a name in front of a translated noun, so a translator owns the word order: `Person 1 location` is English syntax, and Turkish suffixes the head noun, Hindi takes a genitive, Russian a parenthetical and German a colon. The four shapes are deliberately different and normalizing them breaks three languages.
+	 */
+	private locationLabel(group?: string): string {
+		return group
+			? this.t('{{group}} location', { group: this.groupName(group) })
+			: this.t('Birth location');
+	}
+
+	/**
+	 * One city search standing in for a group's raw coordinates.
+	 *
+	 * `lang` is forwarded EXPLICITLY and that line is load-bearing: the city search lives inside this shadow root, and the `closest('[lang]')` link of the resolution chain stops at a shadow boundary, so without it the dropdown renders its own empty state and its refusal message in English on a fully translated page. The same trap is documented for every composing component in `docs/authoring.md`.
+	 */
 	private locationBlock(group?: string) {
 		return html`<div class="location-block">
 			<label
-				>${group ? `${humanize(group)} location` : 'Birth location'}${
+				>${this.locationLabel(group)}${
 					this.locationRequired(group)
 						? html`<span class="req" aria-hidden="true">*</span>`
 						: nothing
@@ -928,11 +1003,18 @@ export class RoxyEndpointForm extends LitElement {
 			>
 			<roxy-location-search
 				publishable-key=${ifDefined(this.publishableKey)}
+				lang=${ifDefined(this.effectiveLang())}
 				@roxy-location-select=${this.onLocationFor(group)}
-				placeholder=${group ? `${humanize(group)} city` : 'City of birth'}
+				placeholder=${
+					group
+						? this.t('{{group}} city', { group: this.groupName(group) })
+						: this.t('City of birth')
+				}
 			></roxy-location-search>
 			<small class="help">
-				Fills ${this.locationFillList(group)}. Pick a city to autofill.
+				${this.t('Fills {{fields}}. Pick a city to autofill.', {
+					fields: this.locationFillList(group),
+				})}
 			</small>
 		</div>`;
 	}
@@ -942,7 +1024,7 @@ export class RoxyEndpointForm extends LitElement {
 			(f) => f.group === group && this.isRendered(f),
 		);
 		return html`<fieldset class="person-group">
-			<legend>${humanize(group)}</legend>
+			<legend>${this.groupName(group)}</legend>
 			${this.groupHasLocation(group) ? this.locationBlock(group) : nothing}
 			<div class="fields">${fields.map((f) => this.renderField(f))}</div>
 		</fieldset>`;
@@ -954,8 +1036,10 @@ export class RoxyEndpointForm extends LitElement {
 		}
 		if (this.specError) {
 			return html`<div class="spec-error" role="alert">
-				Schema load failed: ${this.specError}
-				<button type="button" class="submit" @click=${this.retryLoadSchema}>Retry</button>
+				${this.t('Schema load failed: {{message}}', { message: this.specError })}
+				<button type="button" class="submit" @click=${this.retryLoadSchema}>
+					${this.t('Retry')}
+				</button>
 			</div>`;
 		}
 
@@ -972,7 +1056,8 @@ export class RoxyEndpointForm extends LitElement {
 			${
 				this.validationErrors.length > 0
 					? html`<div class="validation-error" role="alert">
-							<strong>Please complete:</strong> ${this.validationErrors.join(', ')}
+							<strong>${this.t('Please complete:')}</strong>
+							${this.validationErrors.join(', ')}
 						</div>`
 					: nothing
 			}
@@ -982,7 +1067,7 @@ export class RoxyEndpointForm extends LitElement {
 			${
 				hasAdvanced
 					? html`<details class="advanced">
-							<summary>Advanced${chevron()}</summary>
+							<summary>${this.t('Advanced')}${chevron()}</summary>
 							<div class="fields">${flatOpt.map((f) => this.renderField(f))}</div>
 							${optGroups.map((g) => this.groupCard(g))}
 						</details>`

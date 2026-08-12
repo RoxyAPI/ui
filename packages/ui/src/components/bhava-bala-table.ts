@@ -154,8 +154,8 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 		// compare against each other rather than each against itself.
 		const peak = Math.max(...bhavas.map((b) => b.totalVirupas ?? 0), 1);
 
-		return html`<div class="wrap" aria-label="Bhava bala">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Bhava bala">
+			<header class="head" part="header">
 				<h2 class="title">Bhava Bala</h2>
 				<p class="subtitle">
 					Twelve houses ranked by strength${
@@ -165,11 +165,11 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 				${renderFrameCaption(d.frame)}
 			</header>
 
-			<div class="rows" role="list">
+			<div class="rows" part="table" role="list">
 				${bhavas.map((b) => this.renderBhava(b, peak, d.houseThemes))}
 			</div>
 
-			<div class="legend" aria-label="Component legend">
+			<div class="legend" part="legend" aria-label="Component legend">
 				${COMPONENTS.map(
 					(c) => html`<div class="legend-row">
 						<span class="swatch" style="background: ${c.color}" aria-hidden="true"></span>

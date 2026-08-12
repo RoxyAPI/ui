@@ -84,10 +84,11 @@ export class RoxyKpPlanetsTable extends RoxyDataElement<KpPlanetsResponse> {
 
 		return html`<div
 			class="wrap"
+			part="card"
 			aria-label="KP planets table"
 			tabindex="0"
 		>
-			<header class="head">
+			<header class="head" part="header">
 				<h2 class="title">KP planets</h2>
 				${
 					typeof d.ayanamsa === 'number'
@@ -95,7 +96,7 @@ export class RoxyKpPlanetsTable extends RoxyDataElement<KpPlanetsResponse> {
 						: nothing
 				}
 			</header>
-			<table role="table">
+			<table part="table" role="table">
 				<caption class="roxy-sr-only">
 					KP planets: each planet with its sign, sign lord, nakshatra, star lord, sub
 					lord, sub sub lord and KP number.

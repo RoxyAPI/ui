@@ -186,7 +186,7 @@ async function main() {
 	await writeFile(`${OUT_DIR}/load-ui.ts`, LOAD_UI_TS);
 
 	const exportLines: string[] = [
-		`export { ensureScriptLoaded, ROXY_UI_VERSION } from './load-ui.js';\n\n/**\n * Every response type these components accept, re-exported so you can type your own\n * fetch helper without installing a second package. For example:\n * import type { NatalChartResponse } from '@roxyapi/ui-vue';\n */\nexport type * from './types/index.js';\n`,
+		`export {\n\tensureLocaleLoaded,\n\tensureScriptLoaded,\n\tROXY_UI_LOCALES,\n\tROXY_UI_VERSION,\n} from './load-ui.js';\n\n/**\n * Every response type these components accept, re-exported so you can type your own\n * fetch helper without installing a second package. For example:\n * import type { NatalChartResponse } from '@roxyapi/ui-vue';\n */\nexport type * from './types/index.js';\n`,
 	];
 	for (const { slug, pascal, tag } of ROXY_COMPONENTS) {
 		await writeFile(

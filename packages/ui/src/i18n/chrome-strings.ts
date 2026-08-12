@@ -8,7 +8,7 @@
  *
  * **`Car`, `Fix` and `Mut` are catalogue entries, not a truncation.** The grid used to render its column headers as `modality.slice(0, 3)`, which is a byte operation with no idea of the word: Spanish would have read `Fij`, and Hindi and Russian would have split a matra or a Cyrillic word mid-stem. A translator decides the abbreviation, and the full modality name rides beside it as the column `title` so a reader can expand it.
  *
- * **Scope is the two Western chart wheels, the monthly ephemeris table, the Human Design bodygraph, type and variables cards, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The ephemeris table joined for the first reason and the second at once: it was unbound, so a monthly ephemeris rendered through `<roxy-data>` as `Year 2026 / Month 8 / 31 Rows` on every site in every language. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
+ * **Scope is the FORM PATH (`<roxy-endpoint-form>` and `<roxy-location-search>`), the two Western chart wheels, the monthly ephemeris table, the Human Design bodygraph, type and variables cards, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** The form path is first because it is what a visitor reads first: every widget that needs birth data mounts a form, so an English form stood in front of every translated card in the library. A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The ephemeris table joined for the first reason and the second at once: it was unbound, so a monthly ephemeris rendered through `<roxy-data>` as `Year 2026 / Month 8 / 31 Rows` on every site in every language. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
  *
  * **A component earns its vocabulary by having its chrome here, and the two move in ONE change.** Reading `nameLocalized` under an English heading is worse than reading `name` under one, so a card is either translated or it is not. `<roxy-hd-connection>` and `<roxy-hd-penta>` are deliberately absent: almost all of their chrome is Human Design doctrine the COMPONENT wrote (what an electromagnetic channel is, what the upper triangle of a penta carries), so translating them is a paragraph-level meaning risk of exactly the shape lesson 32 describes, and they stay English end to end until a practitioner pass can source them.
  *
@@ -243,6 +243,90 @@ export const CHROME_STRINGS = [
 	// two are the only words it writes itself.
 	'Reference',
 	'No reference data',
+
+	// The FORM path: `<roxy-endpoint-form>` and the `<roxy-location-search>` it
+	// slots. This is the half of a widget a visitor fills in BEFORE any of the
+	// cards above render, so an English form in front of a Spanish reading was the
+	// most visible half-translated state left in the library.
+	//
+	// What is here is only what the form WRITES, plus the group names below. Every
+	// field label and enum option is `humanize()` over a spec field name, and the
+	// heading is the operation summary, so those are computed per operation and no
+	// catalogue keyed on English source text can reach them. Measured: the 147
+	// entries above resolve 5 of the 83 request-side field names, about 6%. That
+	// is the shared field-name-to-label artifact, not a gap in this list.
+	//
+	// The group name rides INSIDE the two location strings as `{{group}}` rather
+	// than being concatenated in front of them, so a translator owns the word
+	// order: `Person 1 location` is English syntax and most of these languages put
+	// the possessor after the noun.
+	'Birth location',
+	'{{group}} location',
+	'City of birth',
+	'{{group}} city',
+
+	// The group names themselves, which is the one part of a form label that is
+	// derived AND enumerable. Every other label is `humanize()` over one of 909
+	// spec field names; a group is `humanize()` over the handful of names an
+	// object-valued request property or a coordinate PREFIX can have, and the
+	// committed spec has exactly nine across 176 operations. So these are a closed
+	// set a catalogue can carry, and leaving them out left an English token inside
+	// translated prose: `Local de Natal Chart`, `Место (Birth Data)`. A tenth group
+	// still degrades safely, because a catalogue miss returns the humanized English.
+	//
+	// Each renders in three places and a translation has to hold in all three: the
+	// fieldset legend, `{{group}} location` and `{{group}} city`. `Domain Weights`
+	// is the one exception and reaches only the legend, because a group earns a
+	// city search by carrying a latitude and longitude and that one carries neither.
+	//
+	// `Natal Chart` is DELIBERATELY ABSENT and is not an omission. `humanize` gives
+	// it a capital C where the natal card heading above is `Natal chart`, and
+	// `lookupKey` folds both to one key, so the heading already answers for it.
+	// Adding the twin would not read as a duplicate in review: `registerLocale`
+	// normalizes on the way in, so the second entry SILENTLY OVERWRITES the first in
+	// every locale, and the card heading would start printing the group wording.
+	// That is the `harmonious` defect in the note above, and `tests/i18n.test.ts`
+	// fails on the collision as well as on a group name no catalogue can resolve.
+	'Person 1',
+	'Person 2',
+	'Person A',
+	'Person B',
+	'Birth Data',
+	'Birth',
+	'Relocation',
+	'Domain Weights',
+	'Fills {{fields}}. Pick a city to autofill.',
+	'Choose',
+	'Comma separated',
+	'Advanced',
+	'Please complete:',
+	'Search city',
+	'No cities found',
+
+	// The four submit verbs. They are RETURNED by `deriveSubmitLabel()` in
+	// `utils/field-schema.ts` rather than written at a `t()` call site, so the
+	// literal scan cannot see them; `tests/i18n.test.ts` runs that function over
+	// every operation in the committed spec instead and fails on a verb missing
+	// from this list.
+	'Compare',
+	'Cast',
+	'Get reading',
+	'Generate',
+
+	// Form failure states. `{{message}}` is one of the two below or a raw browser
+	// network error, which is a wire fact and stays as the browser worded it.
+	'Schema load failed: {{message}}',
+	'Endpoint {{method}} {{path}} not found in OpenAPI spec',
+	'HTTP error {{status}}',
+	'Retry',
+
+	// The key refusal, shown in place of a widget when a site owner puts a secret
+	// key in a browser page. Two components render this ONE constant
+	// (`utils/key-guard.ts`), so it is translated where each renders and never
+	// copied: `<roxy-location-search>` in its own shadow root, and every data
+	// component through `renderError`. `pk_` is a literal key prefix and stays
+	// verbatim in every language.
+	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

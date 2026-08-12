@@ -264,12 +264,12 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (!d.meta) return this.renderEmpty();
 		const rows = this.orderedRows();
 
-		return html`<div class="wrap" aria-label="Vedic planetary positions">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Vedic planetary positions">
+			<header class="head" part="header">
 				<h2 class="title">Planetary positions</h2>
 				${renderFrameCaption(d.frame)}
 			</header>
-			<div class="scroll" tabindex="0">
+			<div class="scroll" part="table" tabindex="0">
 			<table role="table">
 				<caption class="roxy-sr-only">
 					Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada,
@@ -379,7 +379,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 	private renderCombustion() {
 		const combust = this.data?.combustion ?? [];
 		if (combust.length === 0) return nothing;
-		return html`<details class="panel">
+		return html`<details class="panel" part="section combustion">
 			<summary>
 				Combust grahas<span class="summary-count">${combust.length}</span>${chevron()}
 			</summary>
@@ -400,7 +400,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 	private renderPlanetaryWar() {
 		const wars = this.data?.planetaryWar ?? [];
 		if (wars.length === 0) return nothing;
-		return html`<details class="panel">
+		return html`<details class="panel" part="section planetary-war">
 			<summary>
 				Planetary wars<span class="summary-count">${wars.length}</span>${chevron()}
 			</summary>
@@ -418,12 +418,19 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 	}
 
 	private renderInterpretations() {
+		// The one block on this table that is prose about the result rather than a
+		// measurement of it, which is the line `hide-readings` is drawn on. The
+		// columns, the combustion and planetary-war panels and the yoga list are
+		// all facts and stay. Without this the component rendered a `readings` part
+		// that the attribute did not touch, against a README that promises every
+		// component with a written interpretation acts on it.
+		if (this.hideReadings) return nothing;
 		const interp = this.data?.interpretations ?? {};
 		const entries = this.orderedRows()
 			.map(([name, p]) => [p.graha ?? name, interp[p.graha ?? name]] as const)
 			.filter(([, v]) => v != null);
 		if (entries.length === 0) return nothing;
-		return html`<details class="panel">
+		return html`<details class="panel" part="section readings">
 			<summary>
 				Interpretations<span class="summary-count">${entries.length}</span>${chevron()}
 			</summary>
@@ -445,7 +452,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			(h) => h.name || h.description,
 		);
 		if (houses.length === 0) return nothing;
-		return html`<details class="panel">
+		return html`<details class="panel" part="section bhava-significations">
 			<summary>
 				Bhava significations<span class="summary-count">${houses.length}</span>${chevron()}
 			</summary>
@@ -463,7 +470,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 	private renderYogas() {
 		const yogas = (this.data?.yogas ?? []).filter((y) => y.present);
 		if (yogas.length === 0) return nothing;
-		return html`<details class="panel">
+		return html`<details class="panel" part="section yogas">
 			<summary>
 				Yogas<span class="summary-count">${yogas.length}</span>${chevron()}
 			</summary>

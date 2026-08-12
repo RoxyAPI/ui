@@ -199,12 +199,12 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 
 		const showTimings = this.detail === 'detailed' && detailed !== null;
 
-		return html`<div class="wrap" aria-label="Panchang">
-			<header class="head">
+		return html`<div class="wrap" part="card" aria-label="Panchang">
+			<header class="head" part="header">
 				<h2 class="title">Panchang</h2>
 				<span class="date">${detailed ? formatDate(this.effectiveLang(), detailed.date) : ''}</span>
 			</header>
-			<table>
+			<table part="table">
 				<tbody>
 					${this.limbs(d, detailed).map((l) => this.renderLimbRow(l))}
 					${
@@ -232,8 +232,8 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 			${
 				showTimings
 					? html`
-						<div class="section">Auspicious muhurtas</div>
-						<table>
+						<div class="section" part="section auspicious">Auspicious muhurtas</div>
+						<table part="table auspicious">
 							<tbody>
 								${this.renderPeriodRows([
 									...muhurtas.filter(
@@ -243,8 +243,8 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 								])}
 							</tbody>
 						</table>
-						<div class="section">Inauspicious periods</div>
-						<table>
+						<div class="section" part="section inauspicious">Inauspicious periods</div>
+						<table part="table inauspicious">
 							<tbody>
 								${this.renderPeriodRows([
 									...inauspicious.filter(
@@ -344,8 +344,8 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	private renderTransitions(t: Detailed['transitions'] | undefined) {
 		if (!t) return nothing;
 		return html`
-			<div class="section">Next transitions</div>
-			<table>
+			<div class="section" part="section transitions">Next transitions</div>
+			<table part="table transitions">
 				<tbody>
 					${this.renderTransitionRow('Tithi', t.tithi)}
 					${this.renderTransitionRow('Nakshatra', t.nakshatra)}
@@ -425,8 +425,8 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	private renderBalams(c: Chandrabalam | undefined, t: Tarabalam | undefined) {
 		if (!c && !t) return nothing;
 		return html`
-			<div class="section">Chandrabalam and Tarabalam</div>
-			<table>
+			<div class="section" part="section balams">Chandrabalam and Tarabalam</div>
+			<table part="table balams">
 				<tbody>
 					${
 						c

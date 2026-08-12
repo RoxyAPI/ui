@@ -113,12 +113,12 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 		const night = d.nightHoras ?? [];
 		if (day.length === 0 && night.length === 0) return this.renderEmpty();
 
-		return html`<div class="wrap" aria-label="Hora periods">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Hora periods">
+			<div class="head" part="header">
 				<h2 class="title">Hora</h2>
 				${d.date ? html`<p class="subtitle">${formatDate(this.effectiveLang(), d.date)}</p>` : nothing}
 			</div>
-			<div class="cols">
+			<div class="cols" part="table">
 				${this.renderColumn('Day', day)}
 				${this.renderColumn('Night', night)}
 			</div>

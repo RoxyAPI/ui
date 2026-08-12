@@ -247,18 +247,18 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 			(a, b) => a.relativeRank - b.relativeRank,
 		);
 
-		return html`<div class="wrap" aria-label="Shadbala planetary strength">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Shadbala planetary strength">
+			<div class="head" part="header">
 				<h2 class="title">Shadbala</h2>
 				<p class="subtitle">${sorted.length} planets ranked by strength</p>
 				${renderFrameCaption(d.frame)}
 			</div>
 
-			<div role="list" aria-label="Planet strength bars">
+			<div role="list" part="chart bars" aria-label="Planet strength bars">
 				${sorted.map((p) => this.renderPlanetRow(p))}
 			</div>
 
-			<div class="legend" aria-label="Strength component legend">
+			<div class="legend" part="legend" aria-label="Strength component legend">
 				${BALA_COMPONENTS.map(
 					(b) => html`<div class="legend-row">
 						<span
@@ -270,7 +270,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 					</div>`,
 				)}
 			</div>
-			<p class="footnote">
+			<p class="footnote" part="legend">
 				Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give
 				malefic ones. Both are in virupas and are read together, since a planet can be strong
 				and still deliver hardship.

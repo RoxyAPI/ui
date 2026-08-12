@@ -330,6 +330,8 @@ export function deriveTitle(
 
 /**
  * Outcome-first submit-button label keyed off the endpoint intent. Chart and reading endpoints "Generate", divination endpoints "Cast", comparison endpoints "Compare", and lookup/reading GETs "Get reading". A generic verb beats a bare "Submit" on a widget a visitor never set up.
+ *
+ * Returns the CANONICAL English verb, which is also its catalogue key: the form translates the result rather than this function doing it, because this module is request-context-free and has no element to resolve a page language from. All four verbs live in `i18n/chrome-strings.ts`, and `tests/i18n.test.ts` runs this function over every operation in the committed spec so a fifth verb cannot be added without a catalogue entry.
  */
 export function deriveSubmitLabel(endpoint: string): string {
 	const e = endpoint.toLowerCase();

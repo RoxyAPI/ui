@@ -3,6 +3,11 @@
  * many components on the same page. Skips on the server (no document) so
  * React server components and Next.js SSR work without a flash.
  *
+ * {@link ensureLocaleLoaded} is the other half and is OPT-IN: it loads the label
+ * catalogue for one language from the same release, so a non-English app calls
+ * both. There is one catalogue, shipped by `@roxyapi/ui` and read by every
+ * wrapper, so nothing is restated here.
+ *
  * Defaults to the EXACT @roxyapi/ui release this wrapper was built against, so
  * `@roxyapi/ui-vue@x.y.z` always runs `@roxyapi/ui@x.y.z` and a lockfile actually
  * pins the runtime. It used to default to '@latest', which meant a pinned wrapper
@@ -71,6 +76,91 @@ export function ensureScriptLoaded(
 		document.head.appendChild(existing);
 	});
 	return loaded;
+}
+
+/** Every language a label catalogue ships for. English is absent on purpose: the catalogue key IS the English string, so an English page downloads nothing. */
+export const ROXY_UI_LOCALES = [
+	'de',
+	'es',
+	'fr',
+	'hi',
+	'pt',
+	'ru',
+	'tr',
+] as const;
+
+const localesLoaded = new Map<string, Promise<void>>();
+
+/**
+ * Load the label catalogue for one language, so the components write their own
+ * headings, buttons, empty states and form labels in it.
+ *
+ * Call it once at app entry, beside `ensureScriptLoaded`. The components read the
+ * language from the page (their own `lang` attribute, the nearest ancestor
+ * carrying one, or `<html lang>`), so this call supplies the WORDS and the page
+ * supplies the CHOICE. Loading a catalogue a page never asks for is harmless.
+ *
+ * `es-AR`, `es-MX` and `es-419` all resolve to the `es` catalogue, so pass the
+ * page tag as it stands. English resolves to nothing at all and is not an error:
+ * the catalogue is keyed by the English text, so an English page needs no payload.
+ * A language outside `ROXY_UI_LOCALES` resolves the same way rather than appending
+ * a script tag that 404s.
+ *
+ * `version` and `baseUrl` behave exactly as they do for {@link ensureScriptLoaded},
+ * and passing the same `baseUrl` to both is what an air-gapped or strict-CSP host
+ * needs: copy `node_modules/@roxyapi/ui/dist/cdn/` onto your own origin, which
+ * carries `locales/` beside `roxy-ui.js`.
+ *
+ * @example
+ * ```ts
+ * import { ensureScriptLoaded, ensureLocaleLoaded } from '@roxyapi/ui-react';
+ *
+ * ensureScriptLoaded();
+ * ensureLocaleLoaded(document.documentElement.lang);
+ * ```
+ */
+export function ensureLocaleLoaded(
+	lang: string,
+	version: string = ROXY_UI_VERSION,
+	baseUrl?: string,
+): Promise<void> {
+	if (typeof document === 'undefined') return Promise.resolve();
+	const base = (lang || '').toLowerCase().split('-')[0] ?? '';
+	if (!(ROXY_UI_LOCALES as readonly string[]).includes(base)) {
+		return Promise.resolve();
+	}
+	const existing = localesLoaded.get(base);
+	if (existing) return existing;
+
+	const pending = new Promise<void>((resolve, reject) => {
+		const id = `${SCRIPT_ID}-locale-${base}`;
+		let el = document.getElementById(id) as HTMLScriptElement | null;
+		if (el) {
+			if (el.dataset.loaded === 'true') resolve();
+			else {
+				el.addEventListener('load', () => resolve());
+				el.addEventListener('error', () =>
+					reject(new Error(`roxy-ui locale ${base} load failed`)),
+				);
+			}
+			return;
+		}
+		el = document.createElement('script');
+		el.id = id;
+		el.src = `${baseUrl ?? buildBase(version)}/locales/${base}.js`;
+		el.async = true;
+		el.crossOrigin = 'anonymous';
+		el.addEventListener('load', () => {
+			el!.dataset.loaded = 'true';
+			resolve();
+		});
+		el.addEventListener('error', () =>
+			reject(new Error(`roxy-ui locale ${base} load failed`)),
+		);
+		document.head.appendChild(el);
+	});
+	localesLoaded.set(base, pending);
+	return pending;
 }
 
 // Default export retained for convenience; matches the named export.

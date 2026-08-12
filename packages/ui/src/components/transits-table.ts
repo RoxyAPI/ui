@@ -263,8 +263,8 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 		const aspectCount = transitAspects?.length ?? 0;
 		const tab = this.tab;
 
-		return html`<div class="wrap" aria-label="Transits">
-			<div class="head">
+		return html`<div class="wrap" part="card" aria-label="Transits">
+			<div class="head" part="header">
 				<h2 class="title">Transits</h2>
 				${dateStr ? html`<p class="subtitle">${dateStr}</p>` : nothing}
 			</div>
@@ -286,6 +286,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						})}
 						<div
 							id="transits-panel-${tab}"
+							part="panel"
 							role="tabpanel"
 							aria-labelledby="transits-tab-${tab}"
 						>
@@ -310,7 +311,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	private renderSummaryPills(
 		summary: NonNullable<TransitsResponse['summary']>,
 	) {
-		return html`<div class="summary-pills" role="region" aria-label="Aspect summary">
+		return html`<div class="summary-pills" part="details" role="region" aria-label="Aspect summary">
 			<span class="pill pill--muted">
 				Total: ${summary.totalAspects}
 			</span>
@@ -327,7 +328,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	}
 
 	private renderPlanetsTable(planets: TransitsResponse['transitPlanets']) {
-		return html`<table class="planets-table">
+		return html`<table class="planets-table" part="table">
 			<caption class="roxy-sr-only">
 				Transiting planets: each planet with its current sign, degree and daily speed.
 			</caption>
@@ -376,7 +377,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	private renderAspectsList(
 		aspects: NonNullable<TransitsResponse['transitAspects']>,
 	) {
-		return html`<div role="list" aria-label="Transit aspects">
+		return html`<div part="section aspects" role="list" aria-label="Transit aspects">
 			${aspects.map((a, idx) => {
 				const tGlyph = planetGlyph(a.transitPlanet) ?? '';
 				const nGlyph = planetGlyph(a.natalPlanet) ?? '';
@@ -384,7 +385,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 				const interp = a.interpretation;
 				const type = formatAspectName(a);
 				const status = a.isApplying ? 'Applying' : 'Separating';
-				return html`<details class="aspect-card" role="listitem" name="transit-aspects" ?open=${idx === 0}>
+				return html`<details class="aspect-card" part="reading" role="listitem" name="transit-aspects" ?open=${idx === 0}>
 					<summary>
 						<span aria-hidden="true">${tGlyph}</span>
 						${a.transitPlanet}

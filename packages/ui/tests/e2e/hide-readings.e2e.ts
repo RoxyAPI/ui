@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
 /**
@@ -208,8 +209,36 @@ const HONOURS = [
 	'roxy-tarot-card',
 	'roxy-tarot-spread',
 	'roxy-transit-wheel',
+	'roxy-vedic-planets-table',
 	'roxy-yoga-list',
 ];
+
+/**
+ * The published part vocabulary and this list have to agree, because a component
+ * that names a block `readings` is by definition rendering a written
+ * interpretation, and the README promises every one of those acts on the
+ * attribute.
+ *
+ * @remarks
+ * Cheap, and it has already earned its place: `roxy-vedic-planets-table` drew a
+ * `part="section readings"` full of rashi and nakshatra prose that
+ * `hide-readings` left untouched. Nothing failed, because the behavioural test
+ * below only asks that what DID change is in HONOURS, and a component that
+ * changes nothing satisfies that by doing nothing. Membership was the missing
+ * half.
+ */
+test('every component publishing a readings part is one this list covers', () => {
+	const catalog = JSON.parse(
+		readFileSync('packages/ui/components-catalog.json', 'utf8'),
+	) as { components: Array<{ tag: string; parts: string[] }> };
+	const publishers = catalog.components
+		.filter((c) => c.parts.includes('readings'))
+		.map((c) => c.tag);
+	expect(publishers.length).toBeGreaterThan(10);
+	expect(
+		publishers.filter((t) => !HONOURS.includes(t) && !NO_OP.includes(t)).sort(),
+	).toEqual([]);
+});
 
 /**
  * The one component where the attribute is a documented no-op. `/dreams/symbols/{id}` returns the symbol, its dictionary letter, and the interpretation; dropping the interpretation would leave a heading over nothing, so it is deliberately left alone and said so in the docs.

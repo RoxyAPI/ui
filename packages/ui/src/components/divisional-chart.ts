@@ -95,8 +95,8 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 
 		const { division, vargottama } = d;
 
-		return html`<div class="wrap">
-			<div class="header">
+		return html`<div class="wrap" part="card">
+			<div class="header" part="header">
 				<div>
 					<h2 class="title">
 						D${division.number} ${division.name}
@@ -118,6 +118,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 
 			<div
 				id="kundli-panel-${this.chartStyle}"
+				part="panel"
 				role="tabpanel"
 				tabindex="0"
 				aria-labelledby="kundli-tab-${this.chartStyle}"
@@ -125,6 +126,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 				<svg
 					viewBox="0 0 400 400"
 					preserveAspectRatio="xMidYMid meet"
+					part="chart"
 					role="img"
 					aria-label="D${division.number} ${division.name} divisional chart with twelve sign houses"
 				>
@@ -135,7 +137,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 
 			${
 				vargottama && vargottama.length > 0
-					? html`<div class="vargottama-row" role="list" aria-label="Vargottama planets">
+					? html`<div class="vargottama-row" part="details" role="list" aria-label="Vargottama planets">
 						<span class="vargottama-label">Vargottama:</span>
 						${vargottama.map(
 							(planet) =>

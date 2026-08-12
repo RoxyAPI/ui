@@ -86,8 +86,8 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 			this.chartReference === 'moon' && !this.lagnaOverride
 				? 'Chandra lagna'
 				: 'Vedic kundli';
-		return html`<div class="wrap">
-			<div class="header">
+		return html`<div class="wrap" part="card">
+			<div class="header" part="header">
 				<div>
 					<h2 class="title">${title}</h2>
 					${renderFrameCaption(d.frame)}
@@ -96,6 +96,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 			</div>
 			<div
 				id="kundli-panel-${this.chartStyle}"
+				part="panel"
 				role="tabpanel"
 				tabindex="0"
 				aria-labelledby="kundli-tab-${this.chartStyle}"
@@ -103,6 +104,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 				<svg
 					viewBox="0 0 400 400"
 					preserveAspectRatio="xMidYMid meet"
+					part="chart"
 					role="img"
 					aria-label="Vedic birth chart with twelve sign houses"
 				>
