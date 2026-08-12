@@ -1,5 +1,5 @@
 {
-  "version": "0.27.2",
+  "version": "0.27.3",
   "generated": "scripts/sync-catalog.ts",
   "components": [
     {
@@ -45,8 +45,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"natal-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/natal-chart-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/natal-chart-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/natal-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/natal-chart-dark.webp"
       }
     },
     {
@@ -85,8 +85,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"synastry-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/synastry-chart-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/synastry-chart-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/synastry-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/synastry-chart-dark.webp"
       }
     },
     {
@@ -118,8 +118,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"western-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/western-planets-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/western-planets-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/western-planets-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/western-planets-table-dark.webp"
       }
     },
     {
@@ -158,8 +158,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transits-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/transits-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/transits-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/transits-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/transits-table-dark.webp"
       }
     },
     {
@@ -198,8 +198,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transit-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/transit-wheel-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/transit-wheel-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/transit-wheel-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/transit-wheel-dark.webp"
       }
     },
     {
@@ -247,8 +247,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"aspects-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/aspects-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/aspects-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/aspects-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/aspects-table-dark.webp"
       }
     },
     {
@@ -300,8 +300,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"moon-phase\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/moon-phase-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/moon-phase-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/moon-phase-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/moon-phase-dark.webp"
       }
     },
     {
@@ -357,8 +357,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"horoscope-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/horoscope-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/horoscope-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/horoscope-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/horoscope-card-dark.webp"
       }
     },
     {
@@ -394,8 +394,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"astrocartography-map\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/astrocartography-map-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/astrocartography-map-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/astrocartography-map-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/astrocartography-map-dark.webp"
       }
     },
     {
@@ -428,8 +428,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"local-space-compass\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/local-space-compass-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/local-space-compass-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/local-space-compass-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/local-space-compass-dark.webp"
       }
     },
     {
@@ -479,8 +479,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"relocation-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/relocation-wheel-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/relocation-wheel-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/relocation-wheel-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/relocation-wheel-dark.webp"
       }
     },
     {
@@ -536,8 +536,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"positions-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/positions-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/positions-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/positions-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/positions-table-dark.webp"
       }
     },
     {
@@ -577,8 +577,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ephemeris-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/ephemeris-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/ephemeris-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/ephemeris-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/ephemeris-table-dark.webp"
       }
     },
     {
@@ -612,8 +612,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"fixed-stars\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/fixed-stars-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/fixed-stars-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/fixed-stars-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/fixed-stars-dark.webp"
       }
     },
     {
@@ -645,8 +645,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"profection-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/profection-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/profection-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/profection-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/profection-card-dark.webp"
       }
     },
     {
@@ -705,8 +705,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"compatibility-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/compatibility-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/compatibility-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/compatibility-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/compatibility-card-dark.webp"
       }
     },
     {
@@ -741,8 +741,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-kundli\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/vedic-kundli-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/vedic-kundli-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/vedic-kundli-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/vedic-kundli-dark.webp"
       }
     },
     {
@@ -783,8 +783,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"divisional-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/divisional-chart-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/divisional-chart-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/divisional-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/divisional-chart-dark.webp"
       }
     },
     {
@@ -820,8 +820,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/kp-chart-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/kp-chart-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/kp-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/kp-chart-dark.webp"
       }
     },
     {
@@ -859,8 +859,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/vedic-planets-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/vedic-planets-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/vedic-planets-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/vedic-planets-table-dark.webp"
       }
     },
     {
@@ -892,8 +892,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/kp-planets-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/kp-planets-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/kp-planets-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/kp-planets-table-dark.webp"
       }
     },
     {
@@ -926,8 +926,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-ruling-planets\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/kp-ruling-planets-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/kp-ruling-planets-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/kp-ruling-planets-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/kp-ruling-planets-dark.webp"
       }
     },
     {
@@ -963,8 +963,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ashtakavarga-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/ashtakavarga-grid-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/ashtakavarga-grid-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/ashtakavarga-grid-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/ashtakavarga-grid-dark.webp"
       }
     },
     {
@@ -998,8 +998,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"shadbala-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/shadbala-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/shadbala-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/shadbala-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/shadbala-table-dark.webp"
       }
     },
     {
@@ -1084,8 +1084,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dasha-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dasha-timeline-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dasha-timeline-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dasha-timeline-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dasha-timeline-dark.webp"
       }
     },
     {
@@ -1119,8 +1119,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"guna-milan\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/guna-milan-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/guna-milan-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/guna-milan-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/guna-milan-dark.webp"
       }
     },
     {
@@ -1168,8 +1168,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"panchang-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/panchang-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/panchang-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/panchang-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/panchang-table-dark.webp"
       }
     },
     {
@@ -1204,8 +1204,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-aspects\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/vedic-aspects-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/vedic-aspects-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/vedic-aspects-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/vedic-aspects-dark.webp"
       }
     },
     {
@@ -1237,8 +1237,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hora-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hora-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hora-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hora-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hora-table-dark.webp"
       }
     },
     {
@@ -1270,8 +1270,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"choghadiya-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/choghadiya-grid-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/choghadiya-grid-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/choghadiya-grid-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/choghadiya-grid-dark.webp"
       }
     },
     {
@@ -1305,8 +1305,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"heliacal-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/heliacal-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/heliacal-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/heliacal-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/heliacal-table-dark.webp"
       }
     },
     {
@@ -1341,8 +1341,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"gochara-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/gochara-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/gochara-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/gochara-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/gochara-table-dark.webp"
       }
     },
     {
@@ -1375,8 +1375,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bhava-bala-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/bhava-bala-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/bhava-bala-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/bhava-bala-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/bhava-bala-table-dark.webp"
       }
     },
     {
@@ -1410,8 +1410,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bhav-chalit-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/bhav-chalit-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/bhav-chalit-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/bhav-chalit-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/bhav-chalit-table-dark.webp"
       }
     },
     {
@@ -1446,8 +1446,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"upagraha-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/upagraha-table-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/upagraha-table-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/upagraha-table-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/upagraha-table-dark.webp"
       }
     },
     {
@@ -1480,8 +1480,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"chara-karakas\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/chara-karakas-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/chara-karakas-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/chara-karakas-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/chara-karakas-dark.webp"
       }
     },
     {
@@ -1515,8 +1515,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"arudha-padas\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/arudha-padas-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/arudha-padas-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/arudha-padas-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/arudha-padas-dark.webp"
       }
     },
     {
@@ -1557,8 +1557,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"yoga-list\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/yoga-list-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/yoga-list-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/yoga-list-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/yoga-list-dark.webp"
       }
     },
     {
@@ -1593,8 +1593,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"nakshatra-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/nakshatra-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/nakshatra-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/nakshatra-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/nakshatra-card-dark.webp"
       }
     },
     {
@@ -1649,8 +1649,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dosha-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dosha-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dosha-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dosha-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dosha-card-dark.webp"
       }
     },
     {
@@ -1780,8 +1780,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"numerology-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/numerology-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/numerology-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/numerology-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/numerology-card-dark.webp"
       }
     },
     {
@@ -1819,8 +1819,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/tarot-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/tarot-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/tarot-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/tarot-card-dark.webp"
       }
     },
     {
@@ -1853,8 +1853,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-catalog\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/tarot-catalog-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/tarot-catalog-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/tarot-catalog-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/tarot-catalog-dark.webp"
       }
     },
     {
@@ -1942,8 +1942,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-spread\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/tarot-spread-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/tarot-spread-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/tarot-spread-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/tarot-spread-dark.webp"
       }
     },
     {
@@ -1991,8 +1991,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bodygraph\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/bodygraph-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/bodygraph-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/bodygraph-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/bodygraph-dark.webp"
       }
     },
     {
@@ -2036,8 +2036,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-type-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-type-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-type-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-type-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-type-card-dark.webp"
       }
     },
     {
@@ -2076,8 +2076,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-connection\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-connection-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-connection-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-connection-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-connection-dark.webp"
       }
     },
     {
@@ -2114,8 +2114,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-penta\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-penta-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-penta-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-penta-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-penta-dark.webp"
       }
     },
     {
@@ -2151,8 +2151,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-variables\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-variables-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hd-variables-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-variables-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hd-variables-dark.webp"
       }
     },
     {
@@ -2196,8 +2196,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/forecast-timeline-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/forecast-timeline-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/forecast-timeline-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/forecast-timeline-dark.webp"
       }
     },
     {
@@ -2232,8 +2232,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-digest\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/forecast-digest-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/forecast-digest-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/forecast-digest-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/forecast-digest-dark.webp"
       }
     },
     {
@@ -2291,8 +2291,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"biorhythm-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/biorhythm-chart-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/biorhythm-chart-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/biorhythm-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/biorhythm-chart-dark.webp"
       }
     },
     {
@@ -2329,8 +2329,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hexagram\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hexagram-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/hexagram-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hexagram-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/hexagram-dark.webp"
       }
     },
     {
@@ -2367,8 +2367,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/crystal-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/crystal-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/crystal-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/crystal-card-dark.webp"
       }
     },
     {
@@ -2411,8 +2411,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/crystal-grid-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/crystal-grid-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/crystal-grid-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/crystal-grid-dark.webp"
       }
     },
     {
@@ -2443,8 +2443,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dream-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dream-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dream-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dream-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dream-card-dark.webp"
       }
     },
     {
@@ -2477,8 +2477,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dream-search\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dream-search-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/dream-search-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dream-search-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/dream-search-dark.webp"
       }
     },
     {
@@ -2514,8 +2514,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"angel-number-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/angel-number-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/angel-number-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/angel-number-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/angel-number-card-dark.webp"
       }
     },
     {
@@ -2553,8 +2553,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"angel-number-lookup\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/angel-number-lookup-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/angel-number-lookup-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/angel-number-lookup-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/angel-number-lookup-dark.webp"
       }
     },
     {
@@ -2627,8 +2627,8 @@
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"reference-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
       },
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/reference-card-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/reference-card-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/reference-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/reference-card-dark.webp"
       }
     },
     {
@@ -2647,8 +2647,8 @@
         "loading"
       ],
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/endpoint-form-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/endpoint-form-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/endpoint-form-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/endpoint-form-dark.webp"
       }
     },
     {
@@ -2667,8 +2667,8 @@
         "loading"
       ],
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/location-search-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/location-search-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/location-search-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/location-search-dark.webp"
       }
     },
     {
@@ -2691,8 +2691,8 @@
         "table"
       ],
       "preview": {
-        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/data-light.webp",
-        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.2/assets/previews/data-dark.webp"
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/data-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.27.3/assets/previews/data-dark.webp"
       }
     }
   ]
