@@ -192,6 +192,18 @@
                   "example": false,
                   "description": "Whether the planet is in retrograde motion."
                 },
+                "dignity": {
+                  "type": "string",
+                  "enum": [
+                    "domicile",
+                    "exaltation",
+                    "detriment",
+                    "fall",
+                    "peregrine"
+                  ],
+                  "example": "domicile",
+                  "description": "Essential dignity of this body in the sign it occupies: domicile (the sign it rules, its strongest placement), exaltation (honoured and amplified), detriment (opposite its rulership, where it struggles), fall (opposite its exaltation, where it is weakened), or peregrine (in none of its own dignity signs). Absent for the lunar nodes, Chiron and Black Moon Lilith, which rule no sign and therefore hold no dignity at all, so an absent field and peregrine are different answers. Derived by sign only, so triplicity, bounds and face are not considered. Always English, whatever the lang parameter says, so it stays safe to compare against in code. The four dignity signs behind it are published per body by GET /planet-meanings/{id}."
+                },
                 "interpretation": {
                   "type": "object",
                   "properties": {
@@ -344,7 +356,35 @@
                 "interpretation": {
                   "type": "string",
                   "example": "harmonious",
-                  "description": "Aspect nature: harmonious, challenging, or neutral."
+                  "description": "Aspect nature: harmonious, challenging, or neutral. Always English, whatever the lang parameter says, because it is an identifier to compare and style on. Read aspectInterpretation for the sentence a reader sees."
+                },
+                "aspectInterpretation": {
+                  "type": "object",
+                  "properties": {
+                    "summary": {
+                      "type": "string",
+                      "example": "Your Sun forms a very strong conjunction (0) with Jupiter, currently separating (weakening). This neutral aspect creates Planets and points that form a conjunction are energies that are united. They are blended; therefore...",
+                      "description": "One-sentence read of THIS pair: which two bodies, how tight the aspect is, whether it is applying or separating, and how it is classified. Translated in place, so it arrives in the requested language."
+                    },
+                    "keywords": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "blend",
+                        "difficult",
+                        "unite",
+                        "united"
+                      ],
+                      "description": "Themes this aspect activates between the two bodies. Translated in place, so they arrive in the requested language."
+                    }
+                  },
+                  "required": [
+                    "summary",
+                    "keywords"
+                  ],
+                  "description": "Narrative interpretation of this aspect for this chart. The reference description of the aspect TYPE is not repeated per row, use GET or POST /astrology/aspects for that card."
                 }
               },
               "required": [
@@ -355,7 +395,8 @@
                 "orb",
                 "isApplying",
                 "strength",
-                "interpretation"
+                "interpretation",
+                "aspectInterpretation"
               ]
             },
             "description": "All planetary aspects found in this chart with orbs, strength, and interpretation."
@@ -794,6 +835,16 @@
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+          },
           "houseSystem": {
             "type": "string",
             "enum": [
@@ -1076,7 +1127,7 @@
                 "interpretation": {
                   "type": "string",
                   "example": "harmonious",
-                  "description": "Aspect nature: harmonious, challenging, or neutral."
+                  "description": "Aspect nature for this pair: harmonious, challenging, or neutral. Always English, whatever the lang parameter says, because it is an identifier to compare and style on. This is the field to branch on; meaning.nature is the reference card characterisation of the aspect type and is translated for display."
                 },
                 "meaning": {
                   "type": "object",
@@ -1124,7 +1175,7 @@
                     "nature": {
                       "type": "string",
                       "example": "harmonious",
-                      "description": "Aspect nature classification."
+                      "description": "How this aspect type is characterised in its reference card, in the requested language, exactly like the name, description and keywords beside it. This is a property of the aspect TYPE, so branch on the aspect-level interpretation field instead, which is always English and is the classification applied to this particular pair."
                     }
                   },
                   "required": [
@@ -1579,6 +1630,16 @@
             ],
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
+          },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
           }
         },
         "required": [
@@ -1867,6 +1928,16 @@
             "default": 0,
             "description": "Transit timezone: decimal hours from UTC OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the transit date. Defaults to 0 (UTC).",
             "example": 0
+          },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
           },
           "natalChart": {
             "type": "object",
@@ -2509,7 +2580,7 @@
               "Black Moon Lilith"
             ],
             "example": "Sun",
-            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
           },
           "longitude": {
             "type": "number",
@@ -3221,6 +3292,16 @@
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+          },
           "houseSystem": {
             "type": "string",
             "enum": [
@@ -3433,6 +3514,16 @@
             ],
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
+          },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
           },
           "houseSystem": {
             "type": "string",
@@ -3656,6 +3747,16 @@
             ],
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
+          },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
           },
           "houseSystem": {
             "type": "string",
@@ -3947,6 +4048,16 @@
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+          },
           "targetDate": {
             "type": "string",
             "format": "date",
@@ -4140,6 +4251,16 @@
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+          },
           "targetDate": {
             "type": "string",
             "format": "date",
@@ -4321,6 +4442,16 @@
             ],
             "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
+          },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "mean",
+              "true"
+            ],
+            "default": "true",
+            "example": "true",
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
           },
           "targetDate": {
             "type": "string",
@@ -8774,7 +8905,7 @@
             ],
             "default": "mean",
             "example": "mean",
-            "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
           }
         },
         "required": [
@@ -9647,7 +9778,7 @@
             ],
             "default": "mean",
             "example": "mean",
-            "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
           }
         },
         "required": [
@@ -10452,7 +10583,7 @@
             ],
             "default": "mean",
             "example": "mean",
-            "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
           }
         },
         "required": [
@@ -10601,7 +10732,7 @@
             ],
             "default": "mean",
             "example": "mean",
-            "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
           }
         },
         "required": [
@@ -10826,7 +10957,7 @@
             ],
             "default": "mean",
             "example": "mean",
-            "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
           }
         },
         "required": [
@@ -11389,7 +11520,7 @@
             ],
             "default": "mean",
             "example": "mean",
-            "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+            "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
           }
         },
         "required": [
@@ -16293,6 +16424,16 @@
                     "example": "12:00:00",
                     "description": "Time in 24-hour HH:MM:SS format for precise calculations. Moon moves ~13° per day, so time matters for accurate lunar position. Use 12:00:00 (noon) as default if exact time not needed."
                   },
+                  "nodeType": {
+                    "type": "string",
+                    "enum": [
+                      "mean",
+                      "true"
+                    ],
+                    "default": "true",
+                    "example": "true",
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+                  },
                   "latitude": {
                     "type": "number",
                     "minimum": -90,
@@ -18172,6 +18313,16 @@
                         "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
+                      "nodeType": {
+                        "type": "string",
+                        "enum": [
+                          "mean",
+                          "true"
+                        ],
+                        "default": "true",
+                        "example": "true",
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+                      },
                       "name": {
                         "type": "string",
                         "example": "Alex",
@@ -18228,6 +18379,16 @@
                         ],
                         "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
+                      },
+                      "nodeType": {
+                        "type": "string",
+                        "enum": [
+                          "mean",
+                          "true"
+                        ],
+                        "default": "true",
+                        "example": "true",
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                       },
                       "name": {
                         "type": "string",
@@ -18616,7 +18777,7 @@
                               "nature": {
                                 "type": "string",
                                 "example": "harmonious",
-                                "description": "Aspect nature classification."
+                                "description": "How this aspect type is characterised in its reference card, in the requested language, exactly like the name, description and keywords beside it. Branch on the aspect-level interpretation field instead, which is always English."
                               },
                               "relationshipContext": {
                                 "type": "string",
@@ -20192,6 +20353,16 @@
                         ],
                         "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
+                      },
+                      "nodeType": {
+                        "type": "string",
+                        "enum": [
+                          "mean",
+                          "true"
+                        ],
+                        "default": "true",
+                        "example": "true",
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -20423,7 +20594,7 @@
                               "Black Moon Lilith"
                             ],
                             "example": "Sun",
-                            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+                            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
                           },
                           "longitude": {
                             "type": "number",
@@ -20514,7 +20685,7 @@
                               "Black Moon Lilith"
                             ],
                             "example": "Sun",
-                            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+                            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
                           },
                           "longitude": {
                             "type": "number",
@@ -20674,7 +20845,7 @@
                               "neutral"
                             ],
                             "example": "harmonious",
-                            "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                            "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees."
                           },
                           "planet1Localized": {
                             "type": "string",
@@ -20871,7 +21042,7 @@
                                 "neutral"
                               ],
                               "example": "harmonious",
-                              "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                              "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees."
                             },
                             "planet1Localized": {
                               "type": "string",
@@ -21443,7 +21614,7 @@
                                   "Black Moon Lilith"
                                 ],
                                 "example": "Sun",
-                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
                               },
                               "longitude": {
                                 "type": "number",
@@ -21498,7 +21669,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
                         },
                         "houses": {
                           "type": "array",
@@ -21645,7 +21816,7 @@
                                   "neutral"
                                 ],
                                 "example": "harmonious",
-                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees."
                               }
                             },
                             "required": [
@@ -22266,7 +22437,7 @@
                                   "Black Moon Lilith"
                                 ],
                                 "example": "Sun",
-                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
                               },
                               "longitude": {
                                 "type": "number",
@@ -22321,7 +22492,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
                         },
                         "houses": {
                           "type": "array",
@@ -22468,7 +22639,7 @@
                                   "neutral"
                                 ],
                                 "example": "harmonious",
-                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees."
                               }
                             },
                             "required": [
@@ -22933,6 +23104,16 @@
                         ],
                         "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
+                      },
+                      "nodeType": {
+                        "type": "string",
+                        "enum": [
+                          "mean",
+                          "true"
+                        ],
+                        "default": "true",
+                        "example": "true",
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -22986,6 +23167,16 @@
                         ],
                         "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
+                      },
+                      "nodeType": {
+                        "type": "string",
+                        "enum": [
+                          "mean",
+                          "true"
+                        ],
+                        "default": "true",
+                        "example": "true",
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -23159,7 +23350,7 @@
                               "Black Moon Lilith"
                             ],
                             "example": "Sun",
-                            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+                            "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
                           },
                           "longitude": {
                             "type": "number",
@@ -23434,7 +23625,7 @@
                               "neutral"
                             ],
                             "example": "harmonious",
-                            "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                            "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees."
                           }
                         },
                         "required": [
@@ -23796,6 +23987,16 @@
                         ],
                         "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
+                      },
+                      "nodeType": {
+                        "type": "string",
+                        "enum": [
+                          "mean",
+                          "true"
+                        ],
+                        "default": "true",
+                        "example": "true",
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -23849,6 +24050,16 @@
                         ],
                         "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
+                      },
+                      "nodeType": {
+                        "type": "string",
+                        "enum": [
+                          "mean",
+                          "true"
+                        ],
+                        "default": "true",
+                        "example": "true",
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -26226,7 +26437,7 @@
                                   "Black Moon Lilith"
                                 ],
                                 "example": "Sun",
-                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
                               },
                               "longitude": {
                                 "type": "number",
@@ -26281,7 +26492,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
                         },
                         "houses": {
                           "type": "array",
@@ -26428,7 +26639,7 @@
                                   "neutral"
                                 ],
                                 "example": "harmonious",
-                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees."
                               }
                             },
                             "required": [
@@ -26896,6 +27107,16 @@
                     ],
                     "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                     "example": -5
+                  },
+                  "nodeType": {
+                    "type": "string",
+                    "enum": [
+                      "mean",
+                      "true"
+                    ],
+                    "default": "true",
+                    "example": "true",
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -27817,6 +28038,16 @@
                     ],
                     "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
                     "example": -5
+                  },
+                  "nodeType": {
+                    "type": "string",
+                    "enum": [
+                      "mean",
+                      "true"
+                    ],
+                    "default": "true",
+                    "example": "true",
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is what most Western software reports (Astrolabe, Cafe Astrology, TimePassages), which is why it is the default here; astro-seek and the Steven Forrest evolutionary school use mean, so pass \"mean\" to match those. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -43688,7 +43919,7 @@
                     ],
                     "default": "mean",
                     "example": "mean",
-                    "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
                   }
                 },
                 "required": [
@@ -44045,7 +44276,7 @@
                     ],
                     "default": "mean",
                     "example": "mean",
-                    "description": "Lunar node type for Rahu and Ketu positions. \"mean\" uses the smooth mean node (traditional Vedic astrology default). \"true\" uses the osculating node with perturbation corrections, oscillating up to 1.5 degrees from mean with a 173-day period. Impacts KP sub-lord assignments in narrow boundary cases. Defaults to \"mean\"."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the Rahu and Ketu positions. Mean is the traditional Vedic default and what printed panchangs use; the choice can move a KP sub-lord in narrow boundary cases, where a span can be as small as 0.5 degrees. Defaults to \"mean\"."
                   }
                 },
                 "required": [
@@ -55253,7 +55484,7 @@
                                   "Black Moon Lilith"
                                 ],
                                 "example": "Sun",
-                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee)."
+                                "description": "Body name. One of the 10 classical planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto), the lunar nodes (North Node, South Node), Chiron, or Black Moon Lilith (the mean lunar apogee). The nodes follow the request `nodeType`, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
                               },
                               "longitude": {
                                 "type": "number",
@@ -55308,7 +55539,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
                         },
                         "houses": {
                           "type": "array",
@@ -55455,7 +55686,7 @@
                                   "neutral"
                                 ],
                                 "example": "harmonious",
-                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies."
+                                "description": "Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees."
                               }
                             },
                             "required": [
@@ -55867,7 +56098,7 @@
                     ],
                     "default": "true",
                     "example": "true",
-                    "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -56643,7 +56874,7 @@
                         ],
                         "default": "true",
                         "example": "true",
-                        "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -56706,7 +56937,7 @@
                         ],
                         "default": "true",
                         "example": "true",
-                        "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -57233,7 +57464,7 @@
                           ],
                           "default": "true",
                           "example": "true",
-                          "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                          "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                         }
                       },
                       "required": [
@@ -57752,7 +57983,7 @@
                         ],
                         "default": "true",
                         "example": "true",
-                        "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                        "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                       }
                     },
                     "required": [
@@ -58315,7 +58546,7 @@
                     ],
                     "default": "true",
                     "example": "true",
-                    "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -58728,7 +58959,7 @@
                     ],
                     "default": "true",
                     "example": "true",
-                    "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -59622,7 +59853,7 @@
                     ],
                     "default": "true",
                     "example": "true",
-                    "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -60039,7 +60270,7 @@
                     ],
                     "default": "true",
                     "example": "true",
-                    "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -60774,7 +61005,7 @@
                     ],
                     "default": "true",
                     "example": "true",
-                    "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                   }
                 },
                 "required": [
@@ -61132,7 +61363,7 @@
                     ],
                     "default": "true",
                     "example": "true",
-                    "description": "Lunar node convention for the North and South Node activations. Leave unset (or \"true\") for the standard Human Design chart: \"true\" is the osculating node used by professional Human Design software (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against. Pass \"mean\" to match a calculator that uses the smoothed mean node (the traditional Western-astrology default, common in free chart tools). The two agree on almost every chart; they diverge by up to ~1.75 degrees only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority, or definition. If another calculator shows a different type, it is likely using the mean node: pass \"mean\" to match it."
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice can move a node gate and, rarely, change the completed channels and therefore the type, authority or definition. If another calculator shows a different type, it is almost certainly using the mean node: pass \"mean\" to match it. Defaults to \"true\"."
                   }
                 },
                 "required": [
