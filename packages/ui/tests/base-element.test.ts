@@ -6,7 +6,37 @@ import '../src/components/dream-card.js';
 import {
 	buildRequest,
 	FetchController,
+	readApiError,
 } from '../src/utils/fetch-controller.js';
+
+/**
+ * The shared failure reader. Both client-side fetch boundaries route through it, so the
+ * fallback matters as much as the happy path: a gateway or proxy that fails in front of the
+ * API returns HTML, not `{ error }`, and a reader that assumed JSON would surface nothing at
+ * all for the one class of outage the caller cannot diagnose from the page.
+ */
+describe('readApiError', () => {
+	const res = (body: string, status = 500, type = 'application/json') =>
+		new Response(body, { status, headers: { 'content-type': type } });
+
+	test('prefers the API error string', async () => {
+		expect(await readApiError(res('{"error":"Invalid API key"}', 401))).toBe(
+			'Invalid API key',
+		);
+	});
+
+	test('falls back to the status line on a non-JSON body', async () => {
+		expect(await readApiError(res('<html>502 Bad Gateway</html>', 502))).toBe(
+			'Request failed (502)',
+		);
+	});
+
+	test('falls back when the JSON body carries no error field', async () => {
+		expect(await readApiError(res('{"detail":"nope"}', 500))).toBe(
+			'Request failed (500)',
+		);
+	});
+});
 
 describe('buildRequest', () => {
 	test('substitutes path params and drops them from body/query', () => {

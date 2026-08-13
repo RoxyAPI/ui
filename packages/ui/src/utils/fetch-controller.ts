@@ -23,6 +23,22 @@ type FetchHost<T> = ReactiveControllerHost &
  * fetch in `endpoint-form`) uses the SAME origin as every data request instead of a second copy. */
 export const DEFAULT_BASE_URL = 'https://roxyapi.com/api/v2';
 
+/**
+ * Turn a failed `Response` into the message to show: the API's own `{ error }` string when the body carries one, else the status line.
+ *
+ * @remarks
+ * Exported so every client-side fetch boundary renders the same words for the same failure, the way {@link keyIsRefused} centralizes the key refusal. A boundary that discards the response body cannot tell a rejected request from an empty result, and renders the two identically.
+ */
+export async function readApiError(res: Response): Promise<string> {
+	try {
+		const body = (await res.json()) as { error?: string };
+		if (body?.error) return body.error;
+	} catch {
+		// Non-JSON error body: fall through to the status line.
+	}
+	return `Request failed (${res.status})`;
+}
+
 /** A single request the controller issues on the component's behalf. */
 export interface RoxyRequest {
 	/** Path under the API base, e.g. "/dreams/symbols/water" or "/astrology/natal-chart". */
@@ -90,7 +106,7 @@ export class FetchController<T = unknown> implements ReactiveController {
 						signal: controller.signal,
 					})
 				: await this.callApi(req, controller.signal);
-			if (!res.ok) throw new Error(await this.readError(res));
+			if (!res.ok) throw new Error(await readApiError(res));
 			const json = (await res.json()) as T;
 			if (controller.signal.aborted) return;
 			this.host.data = json;
@@ -126,17 +142,6 @@ export class FetchController<T = unknown> implements ReactiveController {
 		this.host.error = KEY_REFUSED_MESSAGE;
 		dispatchKeyRefusal(this.host);
 		return true;
-	}
-
-	/** Surface the `{ error, code }` message the API returns on failure, falling back to the status code. */
-	private async readError(res: Response): Promise<string> {
-		try {
-			const body = (await res.json()) as { error?: string };
-			if (body?.error) return body.error;
-		} catch {
-			// Non-JSON error body: fall through to the status line.
-		}
-		return `Request failed (${res.status})`;
 	}
 }
 

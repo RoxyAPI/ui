@@ -4,6 +4,7 @@ import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { debounce } from '../utils/debounce.js';
+import { readApiError } from '../utils/fetch-controller.js';
 import {
 	dispatchKeyRefusal,
 	KEY_REFUSED_MESSAGE,
@@ -18,7 +19,10 @@ type CityResult = SearchCitiesResponse['cities'][number];
  * chart endpoint.
  *
  * Behavior: 300ms input debounce, click-outside dismiss, keyboard navigation
- * with arrow keys / Enter / Escape, AbortController on stale requests.
+ * with arrow keys / Enter / Escape, AbortController on stale requests. A search
+ * that fails prints the reason under the field and keeps it there until the
+ * query changes, so a key or quota fault is legible where it happens instead of
+ * surfacing later as a missing field on submit.
  *
  * Attributes:
  *   api-key            optional. Direct call to roxyapi.com when set.
@@ -145,6 +149,11 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
+			.search-error {
+				margin: var(--roxy-space-xs, 0.25rem) 0 0;
+				color: var(--roxy-danger-fg, #991b1b);
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
 		`,
 	];
 
@@ -182,6 +191,10 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 	/** True when a non-publishable key is present, so the search fail-closes: no network call, a visible error, matching {@link FetchController}. */
 	@state()
 	private keyBlocked = false;
+
+	/** Message from the last failed search, or null. Rendered under the field and outliving the dropdown, so a failed request reads as a failure rather than as a city that does not exist. */
+	@state()
+	private error: string | null = null;
 
 	private clickOutsideHandler?: (e: MouseEvent) => void;
 	private abortController?: AbortController;
@@ -249,16 +262,21 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 			const key = this.publishableKey ?? this.apiKey;
 			if (key) headers['X-API-Key'] = key;
 			const res = await fetch(url, { headers, signal: controller.signal });
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			if (!res.ok) throw new Error(await readApiError(res));
 			const json = (await res.json()) as SearchCitiesResponse;
 			if (controller.signal.aborted) return;
+			this.error = null;
 			this.results = json.cities ?? [];
-			this.isOpen = this.results.length > 0;
+			// Open even on zero matches, or the empty state can never render: gating this
+			// on `length > 0` closed the box on an empty result and said nothing at all.
+			this.isOpen = true;
 			this.highlight = this.results.length > 0 ? 0 : -1;
 		} catch (err) {
 			if ((err as { name?: string })?.name === 'AbortError') return;
 			this.results = [];
 			this.isOpen = false;
+			this.highlight = -1;
+			this.error = err instanceof Error ? err.message : String(err);
 		} finally {
 			if (this.abortController === controller) {
 				this.abortController = undefined;
@@ -274,6 +292,7 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 			this.results = [];
 			this.isOpen = false;
 			this.highlight = -1;
+			this.error = null;
 			return;
 		}
 		this.debouncedFetch(value);
@@ -385,7 +404,24 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 					</ul>`
 					: nothing
 			}
-		</div>`;
+		</div>
+		${
+			/*
+			 * Outside `.field` on purpose, so it is not part of the dropdown and does not
+			 * close with it. The click that submits the surrounding form also dismisses
+			 * the dropdown through the click-outside handler, and that is the same moment
+			 * the form reports the field as unfilled, so a reason rendered inside the
+			 * popup would disappear exactly when it becomes worth reading.
+			 *
+			 * Through `t()` for the same reason {@link RoxyDataElement.renderError} does
+			 * it: most of what lands here is a wire fact that misses the catalogue and
+			 * renders unchanged, but one of them is ours, and translating a message on
+			 * one surface and not the other puts two languages on one page.
+			 */
+			this.error
+				? html`<p class="search-error" role="alert">${this.t(this.error)}</p>`
+				: nothing
+		}`;
 	}
 }
 

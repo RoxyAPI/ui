@@ -1005,6 +1005,150 @@ describe('roxy-location-search behavior', () => {
 		expect(event.detail.city).toBe('Mumbai');
 		el.remove();
 	});
+
+	/**
+	 * A rejected search must say why. Discarding the response body made every failure
+	 * identical to a city that does not exist: the box looked like it had taken the typing,
+	 * and the only feedback left was the surrounding form reporting the field as unfilled,
+	 * which names the wrong problem.
+	 */
+	test('a rejected search shows the API reason instead of failing silently', async () => {
+		const originalFetch = globalThis.fetch;
+		globalThis.fetch = (async () => ({
+			ok: false,
+			status: 401,
+			json: async () => ({ error: 'Invalid API key', code: 'invalid_api_key' }),
+		})) as unknown as typeof fetch;
+		try {
+			const el = document.createElement('roxy-location-search');
+			el.setAttribute('publishable-key', 'pk_live_YOUR_KEY');
+			document.body.appendChild(el);
+			await settled(el);
+
+			const root = el.shadowRoot as ShadowRoot;
+			const input = root.querySelector('input') as HTMLInputElement;
+			input.value = 'Manila';
+			input.dispatchEvent(new Event('input'));
+			// 300ms debounce, then the mocked response resolves on the microtask queue.
+			await new Promise((resolve) => setTimeout(resolve, 450));
+			await settled(el);
+
+			const alert = root.querySelector('[role="alert"]');
+			expect(alert?.textContent?.trim()).toBe('Invalid API key');
+			// A failure must never read as an ordinary empty state. Asserted on the
+			// element, not on `shadowRoot.textContent`, which concatenates the stylesheet
+			// (lesson 21).
+			expect(root.querySelector('.empty[role="status"]')).toBeNull();
+
+			// It must OUTLIVE the dropdown. The click that submits the surrounding form
+			// also dismisses the popup through the click-outside handler, and that is the
+			// same moment the form reports the field as unfilled, so a reason that lived
+			// inside the popup would vanish on the click that makes it worth reading.
+			// A plain Event is enough: the click-outside handler reads only composedPath().
+			document.dispatchEvent(new Event('mousedown', { bubbles: true }));
+			await settled(el);
+			expect(root.querySelector('[role="alert"]')?.textContent?.trim()).toBe(
+				'Invalid API key',
+			);
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	/**
+	 * A stale error is its own defect: the site owner fixes the key, the next keystroke
+	 * succeeds, and a message contradicting the list under it would still be on screen.
+	 */
+	test('the error clears once a later search succeeds', async () => {
+		const originalFetch = globalThis.fetch;
+		let fail = true;
+		globalThis.fetch = (async () =>
+			fail
+				? {
+						ok: false,
+						status: 401,
+						json: async () => ({ error: 'Invalid API key' }),
+					}
+				: {
+						ok: true,
+						status: 200,
+						json: async () => ({
+							cities: [
+								{
+									city: 'Manila',
+									country: 'Philippines',
+									latitude: 14.6,
+									longitude: 120.98,
+									timezone: 'Asia/Manila',
+									utcOffset: 8,
+								},
+							],
+						}),
+					}) as unknown as typeof fetch;
+		try {
+			const el = document.createElement('roxy-location-search');
+			el.setAttribute('publishable-key', 'pk_live_ok');
+			document.body.appendChild(el);
+			await settled(el);
+
+			const root = el.shadowRoot as ShadowRoot;
+			const input = root.querySelector('input') as HTMLInputElement;
+			input.value = 'Manila';
+			input.dispatchEvent(new Event('input'));
+			await new Promise((resolve) => setTimeout(resolve, 450));
+			await settled(el);
+			expect(root.querySelector('[role="alert"]')).not.toBeNull();
+
+			fail = false;
+			input.value = 'Manila C';
+			input.dispatchEvent(new Event('input'));
+			await new Promise((resolve) => setTimeout(resolve, 450));
+			await settled(el);
+
+			expect(root.querySelector('[role="alert"]')).toBeNull();
+			expect(root.querySelectorAll('[role="option"]').length).toBe(1);
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	/**
+	 * The sibling half of the same silence. `No cities found` is a catalogued string that was
+	 * unreachable: the success path set `isOpen = results.length > 0`, so a search matching
+	 * nothing closed the box and said nothing, exactly like a failed one. A misspelt city was
+	 * therefore as mute as a rejected request.
+	 */
+	test('a search that genuinely matches nothing still reads as empty, not as an error', async () => {
+		const originalFetch = globalThis.fetch;
+		globalThis.fetch = (async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({ cities: [] }),
+		})) as unknown as typeof fetch;
+		try {
+			const el = document.createElement('roxy-location-search');
+			el.setAttribute('publishable-key', 'pk_live_ok');
+			document.body.appendChild(el);
+			await settled(el);
+
+			const root = el.shadowRoot as ShadowRoot;
+			const input = root.querySelector('input') as HTMLInputElement;
+			input.value = 'Zzzznowhere';
+			input.dispatchEvent(new Event('input'));
+			await new Promise((resolve) => setTimeout(resolve, 450));
+			await settled(el);
+
+			expect(root.querySelector('[role="alert"]')).toBeNull();
+			// Reads as empty, and is actually ON SCREEN rather than behind a closed box.
+			const empty = root.querySelector('.empty[role="status"]');
+			expect(empty?.textContent?.trim()).toBe('No cities found');
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
 });
 
 describe('roxy-endpoint-form behavior', () => {
