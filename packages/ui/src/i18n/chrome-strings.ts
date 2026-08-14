@@ -143,6 +143,7 @@ export const CHROME_STRINGS = [
 	// only word it adds is the verb.
 	'Ephemeris',
 	'No ephemeris data',
+	'Signs in this month',
 	'Sign changes and retrograde periods',
 	'Daily positions',
 	'Date',

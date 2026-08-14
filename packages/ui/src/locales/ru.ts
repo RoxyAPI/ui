@@ -173,6 +173,7 @@ export const ru: Record<ChromeString, string> = {
 
 	Ephemeris: 'Эфемериды',
 	'No ephemeris data': 'Нет данных эфемерид',
+	'Signs in this month': 'Знаки в этом месяце',
 	'Sign changes and retrograde periods': 'Вход в знаки и ретроградные периоды',
 	'Daily positions': 'Положения планет по дням',
 	Date: 'Дата',

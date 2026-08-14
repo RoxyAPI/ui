@@ -193,6 +193,7 @@ export const hi: Record<ChromeString, string> = {
 
 	Ephemeris: 'ग्रह स्थिति',
 	'No ephemeris data': 'ग्रह स्थिति का कोई डेटा नहीं है',
+	'Signs in this month': 'इस माह की राशियाँ',
 	'Sign changes and retrograde periods': 'राशि परिवर्तन और वक्री अवधि',
 	'Daily positions': 'दैनिक ग्रह स्थिति',
 	Date: 'दिनांक',

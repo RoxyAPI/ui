@@ -178,6 +178,7 @@ export const tr: Record<ChromeString, string> = {
 
 	Ephemeris: 'Efemeris',
 	'No ephemeris data': 'Efemeris verisi yok',
+	'Signs in this month': 'Bu ayki burçlar',
 	'Sign changes and retrograde periods': 'Burç değişimleri ve retro dönemleri',
 	'Daily positions': 'Gezegen konumları',
 	Date: 'Tarih',

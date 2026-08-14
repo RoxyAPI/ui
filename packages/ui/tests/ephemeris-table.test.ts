@@ -555,3 +555,104 @@ describe('the month, the dates and the parts', () => {
 		hidden.remove();
 	});
 });
+
+/** The sign key as glyph/label pairs. The two are separate flex items with no text node between them, so reading the row's concatenated text would assert on `♌Leo` and hide which half was wrong. */
+const signKey = (el: Element): Array<{ glyph: string; label: string }> =>
+	[...root(el).querySelectorAll('.signkey-item')].map((li) => {
+		const glyph = (
+			li.querySelector('.signkey-glyph')?.textContent ?? ''
+		).trim();
+		const whole = (li.textContent ?? '').replace(/\s+/g, ' ').trim();
+		return {
+			glyph,
+			// Lit leaves marker nodes around an interpolation, so the label is not
+			// reachable as a named child. Taking the row text minus the glyph reads
+			// exactly what a visitor sees.
+			label: whole.startsWith(glyph) ? whole.slice(glyph.length).trim() : whole,
+		};
+	});
+
+describe('the sign key names the glyphs the table prints', () => {
+	test('one entry per sign present, in zodiacal order rather than first-seen order', async () => {
+		// Mars is listed first and sits in Gemini, which is EARLIER in the zodiac
+		// than the Sun's Leo, so first-seen order and zodiacal order disagree here
+		// and the assertion can tell them apart.
+		const el = await mount(
+			month([
+				{ planet: 'Mars', signs: fill(3, 'Leo') },
+				{ planet: 'Sun', signs: fill(3, 'Gemini') },
+				{ planet: 'Moon', signs: ['Pisces', 'Aries', 'Aries'] },
+			]),
+		);
+		expect(signKey(el)).toEqual([
+			{ glyph: '♈', label: 'Aries' },
+			{ glyph: '♊', label: 'Gemini' },
+			{ glyph: '♌', label: 'Leo' },
+			{ glyph: '♓', label: 'Pisces' },
+		]);
+	});
+
+	test('a sign occupied by several bodies on many days is listed once', async () => {
+		const el = await mount(
+			month([
+				{ planet: 'Sun', signs: fill(10, 'Leo') },
+				{ planet: 'Venus', signs: fill(10, 'Leo') },
+			]),
+		);
+		expect(signKey(el)).toEqual([{ glyph: '♌', label: 'Leo' }]);
+	});
+
+	test('the name is the localized one the response carries, not a second vocabulary', async () => {
+		const el = await mount(
+			month([
+				{
+					planet: 'Sun',
+					signs: ['Leo', 'Leo', 'Virgo'],
+					signsLocalized: { Leo: 'Leo', Virgo: 'Virgo' },
+				},
+				{
+					planet: 'Moon',
+					signs: fill(3, 'Taurus'),
+					signsLocalized: { Taurus: 'Tauro' },
+				},
+			]),
+			'es',
+		);
+		// Spanish renames Taurus and leaves Leo spelled the same, so a fixture that
+		// only checked Leo could pass on an untranslated build.
+		expect(signKey(el)).toEqual([
+			{ glyph: '♉', label: 'Tauro' },
+			{ glyph: '♌', label: 'Leo' },
+			{ glyph: '♍', label: 'Virgo' },
+		]);
+		// The heading comes from the chrome catalogue, not from the response.
+		expect(text(el)).toContain('Signos de este mes');
+	});
+
+	test('it is a legend part, so a page can hide or restyle it', async () => {
+		const el = await mount(month([{ planet: 'Sun', signs: fill(2, 'Leo') }]));
+		const section = root(el).querySelector('[part~="legend"]');
+		expect(section).not.toBeNull();
+		expect(section?.querySelectorAll('.signkey-item').length).toBe(1);
+	});
+
+	test('the glyph is hidden from assistive tech, so the name is read once', async () => {
+		const el = await mount(month([{ planet: 'Sun', signs: fill(2, 'Leo') }]));
+		const glyph = root(el).querySelector('.signkey-glyph');
+		expect(glyph?.getAttribute('aria-hidden')).toBe('true');
+	});
+
+	test('a response whose positions carry no sign renders no key at all', async () => {
+		const data = month([{ planet: 'Sun', signs: fill(2, 'Leo') }]) as {
+			days: Array<{ positions: Array<Record<string, unknown>> }>;
+		};
+		for (const day of data.days) {
+			for (const p of day.positions) delete p.sign;
+		}
+		const el = await mount(data);
+		expect(root(el).querySelector('.signkey')).toBeNull();
+		// The rest of the card still renders, so this is an absent key and not a
+		// component that failed to draw.
+		expect(root(el).querySelector('[part~="daily"]')).not.toBeNull();
+	});
+});

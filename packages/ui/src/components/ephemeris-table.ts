@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { planetGlyph, signGlyph } from '../tokens/index.js';
+import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type {
 	GetMonthlyEphemerisResponse,
 	GetMonthlyTropicalEphemerisResponse,
@@ -75,11 +75,21 @@ interface DayRow {
 	cells: Array<Position | undefined>;
 }
 
+/** One line of the sign key: the glyph the table prints and the name it stands for. */
+interface SignKeyEntry {
+	/** Canonical English sign, the glyph lookup key. */
+	sign: string;
+	/** The sign name a reader sees, in the response language. */
+	label: string;
+	glyph: string;
+}
+
 interface ViewModel {
 	year: number;
 	month: number;
 	bodies: BodyTrack[];
 	rows: DayRow[];
+	signs: SignKeyEntry[];
 }
 
 /**
@@ -223,6 +233,29 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 				text-transform: uppercase;
 				letter-spacing: 0.06em;
 				color: var(--roxy-muted, #71717a);
+			}
+			/* Wraps rather than scrolls: it is a reference a reader scans, and a
+			 * key hidden behind a horizontal scrollbar helps nobody. */
+			.signkey {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 1px 0;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.signkey-item {
+				display: inline-flex;
+				align-items: baseline;
+				gap: 0.3rem;
+				padding: 2px 10px 2px 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				white-space: nowrap;
+			}
+			.signkey-glyph {
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-fg, #0a0a0a);
 			}
 			.tracks {
 				display: grid;
@@ -402,6 +435,7 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 					><span class="basis">${SAMPLE_INSTANT}</span>
 				</p>
 			</header>
+			${this.renderSignKey(vm.signs)}
 			<section part="section changes">
 				<h3>${this.t('Sign changes and retrograde periods')}</h3>
 				<div class="tracks" role="list">
@@ -422,6 +456,34 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 				</div>
 			</section>
 		</div>`;
+	}
+
+	/**
+	 * The glyph-to-name key, above the table it explains.
+	 *
+	 * @remarks
+	 * Every position in this component prints its sign as a glyph, which is how a
+	 * printed ephemeris prints one and is unreadable to somebody still learning
+	 * them. The name rides on each cell's `title`, and a title is a hover: it does
+	 * not exist on touch and it cannot be read down a column. A key that names all
+	 * of them once is the form the page actually needed.
+	 *
+	 * `part="section legend"` rather than a name of its own, because a page hiding
+	 * legends should hide this one too and the vocabulary is shared across every
+	 * component.
+	 */
+	private renderSignKey(signs: SignKeyEntry[]) {
+		if (signs.length === 0) return nothing;
+		return html`<section part="section legend">
+			<h3>${this.t('Signs in this month')}</h3>
+			<ul class="signkey" role="list">
+				${signs.map(
+					(s) => html`<li class="signkey-item">
+						<span class="signkey-glyph" aria-hidden="true">${s.glyph}</span>${s.label}
+					</li>`,
+				)}
+			</ul>
+		</section>`;
 	}
 
 	/** One body across the month: where it started, where it ended, and every change in between. */
@@ -617,7 +679,48 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 			const byName = new Map(day.positions.map((p) => [p.planet, p]));
 			return { date: day.date, cells: bodies.map((b) => byName.get(b.name)) };
 		});
-		return { year: data.year, month: data.month, bodies, rows };
+		return {
+			year: data.year,
+			month: data.month,
+			bodies,
+			rows,
+			signs: this.toSignKey(data),
+		};
+	}
+
+	/**
+	 * The signs this month's table actually prints, in zodiacal order.
+	 *
+	 * @remarks
+	 * Read from the response rather than from the twelve-sign constant, so the key
+	 * explains the glyphs ON THIS PAGE and nothing else. In practice the Moon
+	 * crosses every sign in a month, so a full month lists all twelve anyway; a
+	 * partial range lists only what it contains, which is the point.
+	 *
+	 * The label is the API's own localized sign name, taken the same way every
+	 * other sign name in this component is taken. Translating it here instead
+	 * would put a second vocabulary on the page and let the key disagree with the
+	 * cells it explains.
+	 *
+	 * Ordered by {@link SIGNS_ORDER} because first-seen order is the order the
+	 * bodies happen to sit in on the first of the month, which is meaningless to a
+	 * reader learning the glyphs.
+	 */
+	private toSignKey(data: EphemerisResponse): SignKeyEntry[] {
+		const labels = new Map<string, string>();
+		for (const day of data.days) {
+			for (const p of day.positions) {
+				const key = String(p.sign ?? '').toLowerCase();
+				if (key && !labels.has(key)) labels.set(key, display(p, 'sign'));
+			}
+		}
+		const out: SignKeyEntry[] = [];
+		for (const sign of SIGNS_ORDER) {
+			const label = labels.get(sign.toLowerCase());
+			const glyph = signGlyph(sign);
+			if (label && glyph) out.push({ sign, label, glyph });
+		}
+		return out;
 	}
 }
 

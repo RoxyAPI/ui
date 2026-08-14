@@ -191,6 +191,7 @@ export const es: Record<ChromeString, string> = {
 
 	Ephemeris: 'Efemérides',
 	'No ephemeris data': 'Sin datos de efemérides',
+	'Signs in this month': 'Signos de este mes',
 	'Sign changes and retrograde periods':
 		'Cambios de signo y períodos retrógrados',
 	'Daily positions': 'Posiciones diarias',

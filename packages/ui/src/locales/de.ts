@@ -178,6 +178,7 @@ export const de: Record<ChromeString, string> = {
 
 	Ephemeris: 'Ephemeriden',
 	'No ephemeris data': 'Keine Ephemeridendaten',
+	'Signs in this month': 'Zeichen in diesem Monat',
 	'Sign changes and retrograde periods': 'Zeichenwechsel und Rückläufigkeiten',
 	'Daily positions': 'Tägliche Planetenstände',
 	Date: 'Datum',

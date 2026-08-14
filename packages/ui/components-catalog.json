@@ -568,6 +568,7 @@
         "error",
         "form",
         "header",
+        "legend",
         "loading",
         "section",
         "table"
