@@ -17,6 +17,11 @@ pre-commit:
       # debugging detours saved.
       run: bun run scripts/check-css-backticks.ts
       glob: "packages/ui/src/**/*.ts"
+    brand-grep:
+      # Content gate over every committed file. It runs here rather than at
+      # pre-push because git history is permanent: a comment that should not be
+      # published must never enter it, not merely fail to leave the machine.
+      run: bun run scripts/brand-grep.ts
 
     biome-check:
       glob: "*.{ts,tsx,js,jsx,json}"
@@ -69,9 +74,6 @@ pre-push:
     biome-full:
       run: bun run check
       priority: 3
-    brand-grep:
-      run: bun run scripts/brand-grep.ts
-      priority: 4
     test-unit:
       run: bun run test
       priority: 5
