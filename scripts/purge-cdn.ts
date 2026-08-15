@@ -4,12 +4,11 @@
  *
  * @remarks
  * Publishing to npm is not shipping. `@latest` resolves PER FILE, so a release can be
- * half-live, which is worse than not shipping at all: measured 2026-08-12, twelve hours
- * after 0.27.2 and 0.27.3 published, `dist/cdn/roxy-ui.js` was still served at 0.27.1
- * while `widgets.js`, `locales/*.js` and `components-catalog.json` had all moved. Every
- * hosted embed therefore downloaded a complete 175-key locale catalogue and ran a bundle
- * from before the strings it keys existed, so every widget rendered untranslated in all
- * seven languages while npm looked correct and nothing errored.
+ * half-live, which is worse than not shipping at all: the bundle can still be served at
+ * the previous version while `widgets.js`, `locales/*.js` and `components-catalog.json`
+ * have already moved. A hosted embed then downloads a full locale catalogue and runs a
+ * bundle from before those keys existed, so every widget renders untranslated while npm
+ * reads correct and nothing errors.
  *
  * @remarks
  * This ran as a hand-typed step in a runbook and was missed on two consecutive releases.
@@ -35,7 +34,7 @@ const PKG = '@roxyapi/ui';
 const ALIASES = ['latest', '0'] as const;
 
 /**
- * Assets whose staleness is visible to a customer, DERIVED rather than hand-listed. An
+ * Assets whose staleness is visible to a consumer, DERIVED rather than hand-listed. An
  * eighth language or a fifth theme is covered the day it exists, which is the whole reason
  * this is not a literal array: the last hand-kept copy of this list was a runbook bullet,
  * and it is what went stale.

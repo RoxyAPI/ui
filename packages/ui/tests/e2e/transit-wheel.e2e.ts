@@ -309,7 +309,7 @@ test('a supplied ascendant rotates the wheel and marks the axis', async ({
  * This is the assertion the old docblock would have failed. `/astrology/transit-aspects`
  * returns a real house per body and a `houseSystem`, so the captured sample has
  * to show more than one distinct house number: a column of 1s is what the API
- * used to return and what the component used to refuse to render for that reason.
+ * can return and what the component refuses to render for that reason.
  */
 test('the live response fills the House columns with real, varied houses', async ({
 	page,
@@ -518,7 +518,7 @@ test('cusps carried by the response draw the same ring with no props set', async
 });
 
 /**
- * What the customer is buying: the graphic without the report. The prose leaves
+ * What the page is buying: the graphic without the report. The prose leaves
  * the DOM and the wheel is still fully drawn.
  */
 test('hide-readings removes the interpretations and leaves the wheel drawn', async ({

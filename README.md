@@ -999,7 +999,7 @@ WAI-ARIA 1.2 throughout. Keyboard navigation on every interactive surface. Focus
 <details>
 <summary><strong>Why can my Tailwind classes not reach the chart inside the component?</strong></summary>
 
-Components ship in Shadow DOM for style isolation; Tailwind utilities are scoped to the page tree and stop at the shadow boundary. This is by design: customer styles cannot accidentally bleed into a chart, and component styles cannot leak out. Theme through `--roxy-*` custom properties (they pierce the shadow boundary) on `:root` or per element.
+Components ship in Shadow DOM for style isolation; Tailwind utilities are scoped to the page tree and stop at the shadow boundary. This is by design: page styles cannot accidentally bleed into a chart, and component styles cannot leak out. Theme through `--roxy-*` custom properties (they pierce the shadow boundary) on `:root` or per element.
 </details>
 
 <details>

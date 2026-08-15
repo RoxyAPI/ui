@@ -8,7 +8,7 @@
  *
  * The locale is the DISPLAY locale, the full tag `resolveLang` returns, region included. It is NOT the value that goes on `?lang=`: that one is truncated to a supported two-letter code because the API rejects anything else, and handing THAT to Intl would render every Argentine visitor's dates in Castilian conventions. `es-AR` is exactly the tag Intl wants.
  *
- * It is required rather than optional because the defect it replaces was an omission: `toLocaleDateString(undefined, ...)` means "the locale of whoever is looking", so a Spanish page rendered `Carta natal` above `Jan 15, 1990, 2:30 PM`, and two visitors to the same page saw two different strings. An optional parameter defaults straight back to that. A missing argument is now a typecheck failure at every call site.
+ * It is required rather than optional because the failure it prevents is an omission: `toLocaleDateString(undefined, ...)` means the locale of whoever is looking, so a Spanish page renders `Carta natal` above `Jan 15, 1990, 2:30 PM` and two visitors to one page see two different strings. An optional parameter defaults straight back to that. A missing argument is now a typecheck failure at every call site.
  */
 
 import { capitalize, humanize } from './string.js';
@@ -58,7 +58,7 @@ function intlLocales(locale: string | undefined): string[] {
  *
  * A DATE_ONLY value (`2026-08-01`) is the same wall clock with the time left off, and it is normalised HERE rather than at each call site because leaving it to the caller is a defect that formats correctly for whoever writes the code: the platform parses a bare date as UTC midnight, and Intl then renders that instant in the VIEWER's zone, so every viewer west of Greenwich reads the previous day. Three helpers pinned it inline and {@link formatDateGrain} did not, which nothing caught because its only caller passes full datetimes.
  *
- * Deliberately NOT exported. It used to be, so a component needing a shape these helpers did not offer could pin its own wall clock and call Intl itself, which is how `dasha-timeline` came to hardcode `toLocaleString('en', ...)` and pin every boundary date to English. A shape that is missing is added here, beside the locale handling, not reimplemented in a component.
+ * Deliberately NOT exported. Exporting it lets a component needing a shape these helpers do not offer pin its own wall clock and call Intl itself, which is how a boundary date ends up hardcoded to one locale. A missing shape is added here, beside the locale handling, not reimplemented in a component.
  */
 function resolveDisplayDate(input: string): {
 	d: Date;
@@ -80,7 +80,7 @@ function resolveDisplayDate(input: string): {
  * The clock, in the page locale: `2:30 PM` in English, `14:30` in German.
  *
  * @remarks
- * The hour cycle is the locale's, never ours. It used to be pinned `hour12: true`, which put an AM/PM clock on every page in Europe and Latin America while the embedded form beside it labelled its own input "formato de 24 horas". CLDR already knows which convention each locale reads, including the ones that surprise you (`es` is 24-hour, `es-AR` is 12-hour with `p. m.`), so asserting a cycle here is asserting we know better than the locale data.
+ * The hour cycle is the locale's, never ours. Pinning `hour12: true` puts an AM/PM clock on every page in Europe and Latin America while the embedded form beside it labels its own input "formato de 24 horas". CLDR already knows which convention each locale reads, including the ones that surprise you (`es` is 24-hour, `es-AR` is 12-hour with `p. m.`), so asserting a cycle here is asserting we know better than the locale data.
  */
 export function formatTime(locale: string | undefined, input: unknown): string {
 	if (typeof input !== 'string' || input.length === 0) return '';

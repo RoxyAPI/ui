@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Bundle-size gate. Asserts the gzip/raw budgets the README and CLAUDE.md claim and exits non-zero listing every offender, so a size regression cannot reach a registry. Run after a build (it measures `packages/ui/dist/cdn`).
+ * Bundle-size gate. Asserts the gzip/raw budgets the README publishes and exits non-zero listing every offender, so a size regression cannot reach a registry. Run after a build (it measures `packages/ui/dist/cdn`).
  *
  * @remarks
  * Four budgets, ALL measured GZIPPED, because that is the byte weight a browser downloads over a compressing CDN; the one-tag `widgets.js` reuses {@link WIDGETS_BUDGET_BYTES} so the number lives in exactly one place. {@link findOffenders} is the pure comparison seam the unit test drives with synthetic budgets.

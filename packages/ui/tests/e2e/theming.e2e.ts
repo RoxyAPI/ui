@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
  * @remarks
  * Setting `--roxy-accent` on `:root` must rebrand the entire library, and it must keep doing so in dark mode, whichever of the three dark signals the host uses. Two separate bugs broke that and both shipped.
  *
- * `--roxy-accent-ink` and `--roxy-ring` were hardcoded amber, so one override left the active tab, the conjunction aspect lines and the focus ring two-tone. And the `[data-theme="dark"]` / `.dark` blocks carry class and attribute specificity (0,1,1), which outranks a consumer's plain `:root` (0,1,0), so their brand survived under `prefers-color-scheme` and was silently reverted to amber under the other two dark signals: one override, three different results.
+ * `--roxy-accent-ink` and `--roxy-ring` were hardcoded amber, so one override left the active tab, the conjunction aspect lines and the focus ring two-tone. And the `[data-theme="dark"]` / `.dark` blocks carry class and attribute specificity (0,1,1), which outranks a consumer's plain `:root` (0,1,0), so a brand override survives under `prefers-color-scheme` and reverts to amber under the other two dark signals: one override, three different results.
  *
  * Every library selector is now wrapped in `:where()` (zero specificity) and the two shades derive from the accent, so a consumer declaration always wins and one line is genuinely enough. This test is what keeps that true.
  */
@@ -58,7 +58,7 @@ for (const mode of ['light', 'dark'] as const) {
 		await page.emulateMedia({ colorScheme: mode });
 		await page.goto('/');
 		await page.waitForTimeout(2500);
-		// Exactly what the README tells a customer to write. Nothing else.
+		// Exactly what the README documents. Nothing else.
 		await page.addStyleTag({ content: `:root { --roxy-accent: ${BRAND}; }` });
 		await page.waitForTimeout(800);
 

@@ -48,7 +48,7 @@
  *
  * **`Dirección` for the arrow direction survived two better-looking alternatives.** `Sentido` is disqualified by a collision this catalogue cannot afford, since it is also a name for the cognition Variable and would label the row directly below it; `Orientación` is already spent on `Guidance` in this same file. `Dirección` is what the left and right arrows mechanically are, and the row sits with `Color`, `Tono` and `Cognición`, which forecloses the address reading.
  *
- * Six entries match their English source and are correct that way: `Aura`, `Motor`, `Variables`, `Base`, `Color` and `Bodygraph`. None is an untranslated fallthrough, and inventing a Spanish word for any of them would be the defect.
+ * Six entries match their English source and are correct that way: `Aura`, `Motor`, `Variables`, `Base`, `Color` and `Bodygraph`. None is an untranslated fallthrough, and inventing a Spanish word for any of them would be the error.
  *
  * Four entries are the plainest defensible Spanish rather than sourced vocabulary and want a bilingual practitioner: `En el límite` for the knife-edge warning, deliberately worded off `límite de Color o de Tono` above it so the two agree; `Confianza baja`; `Lados de la carta` for the tab list, where the API's `lado` won because its side descriptions render in the panel underneath; and `Referencia` on the glossary card, which is generic chrome with no Human Design content at all.
  *

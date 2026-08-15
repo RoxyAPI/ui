@@ -318,7 +318,7 @@ describe('tokens', () => {
 		// The whole point of the accessor API: a lookup failure has to be
 		// visible to the caller so it can render the FULL name. The old records
 		// let each call site invent `name.slice(0, 2)` instead, which is how
-		// `No North Node R` and `Bl Black Moon Lilith` shipped to a customer.
+		// `No North Node R` and `Bl Black Moon Lilith` reaching a live chart.
 		for (const get of [
 			planetGlyph,
 			planetAbbr,
@@ -537,7 +537,7 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 		// `formatDateGrain` handed the bare date straight to `new Date()`, which
 		// reads it as UTC midnight, and then let Intl render it in the viewer's
 		// zone, so every grain below `year` showed 31 Jul west of Greenwich. Its
-		// only caller passes full datetimes, so nothing on screen was wrong yet
+		// only caller passes full datetimes, so nothing on screen is affected yet
 		// and nothing would have failed the day one date-only field reached it.
 		const GRAINS = ['year', 'month', 'day', 'time'] as const;
 		const west = 'America/Los_Angeles';
@@ -603,7 +603,7 @@ describe('dates and numbers follow the page locale, not the viewer', () => {
 	});
 
 	test('the hour cycle is the locale, not a hardcoded 12-hour clock', () => {
-		// `hour12: true` used to be pinned for every locale, so a German or
+		// pinning `hour12: true` for every locale gives a German or
 		// Castilian page printed an AM/PM clock beside a form labelled "24 horas".
 		expect(formatTime('de', D)).toBe('14:30');
 		expect(formatTime('es', D)).toBe('14:30');

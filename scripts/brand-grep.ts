@@ -1,11 +1,14 @@
 #!/usr/bin/env bun
 
 /**
- * brand-grep.ts — CI gate for brand-rule and content-rule violations.
+ * brand-grep.ts - CI gate for brand-rule and content-rule violations.
  *
- * Scans a fixed allowlist of public committed files for forbidden phrases,
- * hardcoded counts, and stale URL pinning. Exit 1 on any Sev-1 violation.
- * Category C (stale URL) is a warning only — prints but does not fail.
+ * Categories A, B and C scan an allowlist of public prose (README, AGENTS,
+ * THEMING, the showcase page, examples) for forbidden phrases, hardcoded counts
+ * and stale URL pinning. Category D scans EVERY committed file, because this
+ * repository is public and `src` ships inside the npm tarball with its JSDoc
+ * copied into the published `.d.ts`, so a source comment is published copy.
+ * Exit 1 on any Sev-1 violation; category C is a warning only.
  *
  * Usage:
  *   bun run scripts/brand-grep.ts
@@ -51,6 +54,45 @@ function expandGlobs(): string[] {
 	return results;
 }
 
+/**
+ * Paths whose contents are generated from the API or from another script, so a
+ * match in them is not something an author can fix here. Mirrors the generated
+ * set the repository already maintains.
+ */
+const GENERATED = [
+	/^packages\/ui-(react|vue)\/src\/components\//,
+	/^packages\/ui\/src\/(generated|locales\/field-labels)\//,
+	/^packages\/ui\/components-catalog\.json$/,
+	/^registry\//,
+	/^specs\//,
+	/^apps\/docs\/(manifest|sample-data)\.js$/,
+	/^assets\//,
+	/\.(png|webp|jpe?g|svg|ico|woff2?|lock)$/i,
+];
+
+/** Every committed file category D applies to. Derived, so a new file is covered the day it lands. */
+function collectSourceFiles(): string[] {
+	const out = execSync(`git -C "${ROOT}" ls-files`, { encoding: 'utf8' })
+		.trim()
+		.split('\n')
+		.filter(Boolean);
+	return out.filter(
+		(f) => !GENERATED.some((re) => re.test(f)) && existsSync(join(ROOT, f)),
+	);
+}
+
+/**
+ * Whether a line can carry authored prose. Markdown is prose throughout; every
+ * other format is scanned only where it comments, so a rendered string, a code
+ * sample or a fixture date cannot trip a category D pattern.
+ */
+function isProseLine(rel: string, line: string): boolean {
+	if (/\.(md|txt)$/i.test(rel)) return true;
+	if (/\.(ya?ml)$/i.test(rel)) return /(^|\s)#/.test(line);
+	if (/\.html?$/i.test(rel)) return /<!--/.test(line);
+	return /^\s*(\/\/|\/\*|\*)/.test(line) || /(^|\s)\/\/\s/.test(line);
+}
+
 function collectFiles(): string[] {
 	const all = new Set<string>();
 	for (const p of STATIC_PATHS) {
@@ -68,7 +110,7 @@ function collectFiles(): string[] {
 // ---------------------------------------------------------------------------
 
 interface Pattern {
-	category: 'A' | 'B' | 'C';
+	category: 'A' | 'B' | 'C' | 'D';
 	label: string;
 	test: (line: string, raw: string) => boolean;
 	/** If true, violations produce a warning rather than a hard failure */
@@ -237,6 +279,64 @@ const CATEGORY_B_PATTERNS: Pattern[] = [
 	},
 ];
 
+/**
+ * Category D - anything a reader outside the project should never find in a file
+ * we publish. Applied to comment lines in code and to every line of prose, so a
+ * rendered string or a fixture cannot trip it.
+ */
+const CATEGORY_D_PATTERNS: Pattern[] = [
+	// Named external products. Describe the convention, never the product it was
+	// read from. NASA JPL Horizons is the one attribution this project publishes,
+	// so it is absent here.
+	{
+		category: 'D',
+		label: 'third-party-name',
+		test: ci(
+			/\b(jovian\s+archive|mybodygraph|maia\s+mechanics|genetic\s+matrix|rave\s+bodygraph|drikpanchang|astro-?seek|astro\.com|jhora|humdes|hdkit|sirius)\b/i,
+		),
+	},
+	// The same disclosure without a name attached: a claim measured against some
+	// outside artifact. Catches the construction rather than the product.
+	{
+		category: 'D',
+		label: 'external-comparison',
+		test: ci(
+			/\b(verified|checked|measured|compared|cross-?checked|reconciled|benchmarked)\b[^.]{0,30}?\bagainst\s+(the\s+|a\s+|an\s+)?(?!NASA\b)[a-z-]*\s*(chart|table|ephemeris|calculator|implementation|render|software|tool|site|publication)\b/i,
+		),
+	},
+	// Anything that identifies or recounts a user of the product.
+	{
+		category: 'D',
+		label: 'user-reference',
+		test: ci(/\bcustomers?('s)?\b/i),
+	},
+	// A date next to a verification verb is an internal audit trail. A bare date is
+	// left alone, because a DST boundary or a sample value is a technical fact.
+	{
+		category: 'D',
+		label: 'dated-claim',
+		test: ci(
+			/(?:verified|measured|checked|corrected|captured|confirmed|re-?tested|recounted|sourced|re-?examined|as\\s+of|since|carries|carried)\b[^.]{0,60}?\b20\d\d-\d\d-\d\d\b|\b20\d\d-\d\d-\d\d\b[^.]{0,20}?\b(?:verified|measured|checked|corrected|captured|confirmed|re-?tested|recounted|sourced|re-?examined|as\\s+of|since|carries|carried)\b/i,
+		),
+	},
+	// Narrating what the code used to get wrong.
+	{
+		category: 'D',
+		label: 'defect-narrative',
+		test: ci(
+			/\b(used\s+to\s+(be|do|draw|render|print|read|return|carry|show|interpolate|implement|call|key|resolve)|the\s+defect|silently\s+(dropped|kept|lost|reverted|stopped|broke)|was\s+wrong|shipped\s+(with|for\s+months|green)|before\s+the\s+fix)\b/i,
+		),
+	},
+	// Pointers at files that are not in this repository.
+	{
+		category: 'D',
+		label: 'internal-pointer',
+		test: ci(
+			/\b(CLAUDE\.md|docs\/(lessons|todo|authoring|build-and-release|revamp-design)\.md|maintainer[-\s]internal|main\s+repo)\b/i,
+		),
+	},
+];
+
 const CATEGORY_C_PATTERNS: Pattern[] = [
 	{
 		category: 'C',
@@ -246,10 +346,12 @@ const CATEGORY_C_PATTERNS: Pattern[] = [
 	},
 ];
 
-const ALL_PATTERNS = [
+/** Categories that apply to the public-prose allowlist. */
+const PROSE_PATTERNS = [
 	...CATEGORY_A_PATTERNS,
 	...CATEGORY_B_PATTERNS,
 	...CATEGORY_C_PATTERNS,
+	...CATEGORY_D_PATTERNS,
 ];
 
 // ---------------------------------------------------------------------------
@@ -260,7 +362,7 @@ interface Violation {
 	file: string;
 	line: number;
 	column: number;
-	category: 'A' | 'B' | 'C';
+	category: 'A' | 'B' | 'C' | 'D';
 	label: string;
 	match: string;
 	context: string;
@@ -286,7 +388,14 @@ function extractContext(line: string, match: string, maxLen = 60): string {
 // Ordered extraction regexes — more specific patterns first so the match text
 // displayed in violation output is maximally meaningful.
 const EXTRACTION_RES: RegExp[] = [
-	// Category C (specific multi-char strings — check before generic punctuation)
+	// Category D
+	/\b(jovian\s+archive|mybodygraph|maia\s+mechanics|genetic\s+matrix|rave\s+bodygraph|drikpanchang|astro-?seek|astro\.com|jhora|humdes|hdkit|sirius)\b/i,
+	/\b(verified|checked|measured|compared|cross-?checked|reconciled|benchmarked)\b[^.]{0,30}?\bagainst\s+(the\s+|a\s+|an\s+)?(?!NASA\b)[a-z-]*\s*(chart|table|ephemeris|calculator|implementation|render|software|tool|site|publication)\b/i,
+	/\bcustomers?('s)?\b/i,
+	/(?:verified|measured|checked|corrected|captured|confirmed|re-?tested|recounted|sourced|re-?examined|as\\s+of|since|carries|carried)\b[^.]{0,60}?\b20\d\d-\d\d-\d\d\b|\b20\d\d-\d\d-\d\d\b[^.]{0,20}?\b(?:verified|measured|checked|corrected|captured|confirmed|re-?tested|recounted|sourced|re-?examined|as\\s+of|since|carries|carried)\b/i,
+	/\b(used\s+to\s+(be|do|draw|render|print|read|return|carry|show|interpolate|implement|call|key|resolve)|the\s+defect|silently\s+(dropped|kept|lost|reverted|stopped|broke)|was\s+wrong|shipped\s+(with|for\s+months|green)|before\s+the\s+fix)\b/i,
+	/\b(CLAUDE\.md|docs\/(lessons|todo|authoring|build-and-release|revamp-design)\.md|maintainer[-\s]internal|main\s+repo)\b/i,
+	// Category C (specific multi-char strings, check before generic punctuation)
 	/cdn\.jsdelivr\.net\/gh\/RoxyAPI\/ui@main/i,
 	// Category B
 	/\b(18|19|20)\s+components\b/i,
@@ -328,7 +437,11 @@ function findMatchText(line: string, _pattern: Pattern): string {
 	return line.trim().slice(0, 40);
 }
 
-function scanFile(filePath: string, relPath: string): Violation[] {
+function scanFile(
+	filePath: string,
+	relPath: string,
+	patterns: Pattern[],
+): Violation[] {
 	const content = readFileSync(filePath, 'utf8');
 	const lines = content.split('\n');
 	const violations: Violation[] = [];
@@ -345,9 +458,16 @@ function scanFile(filePath: string, relPath: string): Violation[] {
 			inFencedBlock = !inFencedBlock;
 		}
 
-		for (const pattern of ALL_PATTERNS) {
-			// Category A is skipped inside fenced code blocks
-			if (pattern.category === 'A' && inFencedBlock) continue;
+		for (const pattern of patterns) {
+			// A code sample is quoted, not authored, so neither category reads it
+			if (
+				(pattern.category === 'A' || pattern.category === 'D') &&
+				inFencedBlock
+			) {
+				continue;
+			}
+			// Category D only reads authored prose, never a rendered string
+			if (pattern.category === 'D' && !isProseLine(relPath, raw)) continue;
 
 			if (pattern.test(raw, raw)) {
 				const matchText = findMatchText(raw, pattern);
@@ -401,6 +521,17 @@ Category B (Sev-1 — build fails):
 Category C (Sev-2 — warning only):
   - stale jsDelivr URL (cdn.jsdelivr.net/gh/RoxyAPI/ui@main):
     switch to cdn.jsdelivr.net/npm/@roxyapi/ui@latest or a pinned version tag.
+
+Category D (Sev-1 - build fails, every committed file):
+  This repository is public and src ships inside the npm tarball, with JSDoc
+  copied into the published .d.ts, so a source comment is published copy.
+  - third-party names and external comparisons: describe the convention, never the
+    product or the artifact it was read from.
+  - user references: say what the code does, not who asked for it.
+  - dated claims: a date beside a verification verb is an internal trail; drop it.
+  - defect narratives: document the behaviour that ships, not the one that did not.
+  - internal pointers: never cite a path that is not in this repository.
+  All five belong in the maintainer notes instead.
 `);
 }
 
@@ -408,13 +539,16 @@ Category C (Sev-2 — warning only):
 // Main
 // ---------------------------------------------------------------------------
 
-const files = collectFiles();
+const proseFiles = collectFiles();
+const proseSet = new Set(proseFiles);
+const sourceFiles = collectSourceFiles();
+const files = [...new Set([...proseFiles, ...sourceFiles])];
 const allViolations: Violation[] = [];
 
 for (const rel of files) {
-	const abs = join(ROOT, rel);
-	const vs = scanFile(abs, rel);
-	allViolations.push(...vs);
+	// The prose allowlist takes every rule; everything else takes category D only.
+	const patterns = proseSet.has(rel) ? PROSE_PATTERNS : CATEGORY_D_PATTERNS;
+	allViolations.push(...scanFile(join(ROOT, rel), rel, patterns));
 }
 
 const hardFailures = allViolations.filter((v) => !v.warnOnly);

@@ -937,7 +937,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 							// `?? ''` and never a slice: the full name is printed right
 							// beside the glyph, so a miss must drop the glyph, not invent
 							// one. This is the site that shipped `No North Node R`,
-							// `So South Node R` and `Bl Black Moon Lilith` to a customer.
+							// `So South Node R` and `Bl Black Moon Lilith` on a live chart.
 							const glyph = planetGlyph(value) ?? '';
 							return html`<span class="pill pill--muted">${glyph} ${label} R</span>`;
 						})}
@@ -961,7 +961,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 * @remarks
 	 * The cells are derived from the planet signs, not read from `summary.elementDistribution`, because a 1D distribution cannot fill a cross-tab. That makes the body set the reconciliation risk: the API counts every body it returns (nodes, Chiron, and Black Moon Lilith included), so the grid must too, or the totals here would contradict the dominant-element pill rendered right above it. Hence the totals count placed bodies rather than `planets.length` (an unrecognized sign would otherwise inflate the grand total past the sum of its rows), the caption names the body set, and the dominant row and column are tinted from `summary` so the pill and the grid land on the same cell.
 	 *
-	 * **The seven headers are CHROME, not response vocabulary, and that is what licenses translating them.** The axes are the component's own 4x3 construction, so six of the seven have no field in the response to defer to and the seventh (the dominant pair) would otherwise have been the only translated word in the table. They therefore go through the chrome catalogue like every other heading here, and each catalogue value is pinned to what the API returns for `dominantElementLocalized` / `dominantModalityLocalized` so the tinted pill above the grid and the header on its row cannot read two different words for one element. Verified live on 2026-08-09 against `/astrology/natal-chart?lang=` in all seven languages; `tests/i18n.test.ts` re-asserts the agreement on a render.
+	 * **The seven headers are CHROME, not response vocabulary, and that is what licenses translating them.** The axes are the component's own 4x3 construction, so six of the seven have no field in the response to defer to and the seventh (the dominant pair) would otherwise have been the only translated word in the table. They therefore go through the chrome catalogue like every other heading here, and each catalogue value is pinned to what the API returns for `dominantElementLocalized` / `dominantModalityLocalized` so the tinted pill above the grid and the header on its row cannot read two different words for one element. `tests/i18n.test.ts` re-asserts that agreement on a render.
 	 *
 	 * **The English arrays stay, because they are the CELL KEYS.** `SIGNS_ORDER.indexOf` resolves each sign to an index and the modulo picks the bucket, so the array values are compared and keyed on, never read (lesson 31). Only the header text nodes move.
 	 */

@@ -556,7 +556,7 @@ describe('the month, the dates and the parts', () => {
 	});
 });
 
-/** The sign key as glyph/label pairs. The two are separate flex items with no text node between them, so reading the row's concatenated text would assert on `♌Leo` and hide which half was wrong. */
+/** The sign key as glyph/label pairs. The two are separate flex items with no text node between them, so reading the row's concatenated text would assert on `♌Leo` and hide which half failed. */
 const signKey = (el: Element): Array<{ glyph: string; label: string }> =>
 	[...root(el).querySelectorAll('.signkey-item')].map((li) => {
 		const glyph = (

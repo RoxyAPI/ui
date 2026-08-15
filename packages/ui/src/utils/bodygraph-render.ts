@@ -1,36 +1,34 @@
 import type { TemplateResult } from 'lit';
 import { nothing, svg } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
 
 /**
  * Fixed geometry and renderer for the Human Design bodygraph. The diagram is a
  * standard, invariant layout: nine centers in canonical positions and shapes,
- * wired by 36 channels that each join two gates, with the 64 gates at fixed
- * points on the center edges, all overlaid on a front-facing human silhouette so
+ * wired by 36 channels that each join two gates, with all 64 gates at fixed
+ * points inside their center, all overlaid on a front-facing human silhouette so
  * each center lands on the body part it governs. Only which centers are defined
- * and which channels and gates are active changes per chart, so this module holds
- * the geometry and the {@link RoxyBodygraph} component supplies the live state
- * from the /human-design/bodygraph response.
+ * and which gates are activated changes per chart, so this module holds the
+ * geometry and the `RoxyBodygraph` component supplies the live state from the
+ * /human-design/bodygraph response.
  *
- * @remarks Every point is authored in one normalized 0 to 100 canonical grid (x
- * left to right, y top to bottom) taken from the reference Jovian Archive
- * bodygraph, then scaled into {@link BODYGRAPH_VIEWBOX} by a single transform so
- * the chart and the body share one coordinate space and scale together. The grid
- * is sized so the nine centers fill the figure exactly as in the canonical
- * "nine centers on the human body" diagram: the Head center at the crown, Ajna at
- * the forehead, Throat at the neck, G at the chest, Heart at the right chest,
- * Spleen on the left torso, Solar Plexus on the right torso (its mirror), Sacral
- * at the lower abdomen, and Root at the pelvis. Two structural truths the layout
- * preserves: the Spleen (left) and the Solar Plexus (right) are mirror images at
- * the Sacral height, so the chart is narrow at the top and wide at the bottom;
- * and the Heart sits low and to the right of the G center, above the Solar
- * Plexus. The reference chart spreads the two side centers to the page edge for
- * channel clarity; here they are shifted inward by a fixed amount so they rest on
- * the torso sides inside the figure, with every channel topology preserved. Center shapes follow the canonical orientations (Head triangle
- * up, Ajna triangle down, Throat and Sacral and Root squares, G diamond, Heart
- * triangle pointing right, Spleen triangle pointing right with its base on the
- * far-left edge, Solar Plexus its mirror). The 36 channel gate pairs are the
- * gold-standard set used by the RoxyAPI Human Design engine.
+ * @remarks
+ * Points are authored in a normalized 0 to 100 grid (x left to right, y top to
+ * bottom) and mapped into {@link BODYGRAPH_VIEWBOX} by {@link g}, so the chart and
+ * the silhouette share one coordinate space. The viewBox window is tight to the
+ * drawing rather than square, because the chart is far taller than it is wide and
+ * every unused grid unit costs gate-number size.
+ *
+ * Center shapes hold the canonical orientations: Head triangle up, Ajna triangle
+ * down, Throat and Sacral and Root squares, G diamond, Spleen triangle with its
+ * base on the left edge and apex pointing right, Solar Plexus its mirror, and the
+ * Heart low and right of the G, pointing UP, with 21 at the apex, 51 on the upper
+ * left edge, and 26 and 40 as the two lower corners where the channels to the
+ * Spleen and the Solar Plexus leave.
+ *
+ * `tests/bodygraph.test.ts` holds the layout to that: mirror symmetry across the
+ * two side centers, every other center balanced on {@link AXIS} bar the Heart,
+ * each gate circle inside its own center, no two circles overlapping, and the row
+ * and column order within each center.
  */
 
 export type BodygraphCenterId =
@@ -49,69 +47,86 @@ interface Point {
 	y: number;
 }
 
-/**
- * One center's drawable geometry: its semantic traditional color, the polygon
- * point list of its canonical shape, and the anchor where its name label sits.
- * Shapes are explicit point lists so the triangle and diamond orientations match
- * the canonical diagram exactly. Label anchors sit in the empty margins outside
- * each shape so they never collide with the gate numbers printed on the edges.
- */
+/** Which side of the chart activated a gate. A gate can carry both, and its circle is then split rather than forced to one. */
+export interface GateSides {
+	personality: boolean;
+	design: boolean;
+}
+
+/** One center's drawable geometry, plus the English fallback name for its accessible title when the response carries none. */
 interface CenterGeometry {
 	id: BodygraphCenterId;
 	label: string;
 	color: CenterColor;
 	points: Point[];
-	labelAnchor: Point;
-	labelAlign: 'start' | 'middle' | 'end';
 }
 
 /**
  * Traditional Human Design center color group. A defined center is filled with
  * this semantic color (constant across light and dark, like chart data colors);
- * an open center is left transparent with a thin theme-aware outline. The four
- * groups mirror the canonical scheme: gold for the identity and inspiration
- * centers (Head, G), green for the mental awareness center (Ajna), red for the
- * life-force motors of will and vitality (Heart, Sacral), brown for the
- * pressure, expression, and remaining awareness centers (Throat, Spleen, Solar
- * Plexus, Root).
+ * an open center takes the card surface and an outline, so the wiring passes
+ * behind it and it still reads as a center. The four groups are: gold for the identity and
+ * inspiration centers (Head, G), green for the mental awareness center (Ajna),
+ * red for the life-force motors of will and vitality (Heart, Sacral), brown for
+ * the pressure, expression, and remaining awareness centers (Throat, Spleen,
+ * Solar Plexus, Root).
  */
 export type CenterColor = 'gold' | 'green' | 'red' | 'brown';
 
 /**
- * Viewport mapping from the normalized 0 to 100 grid into the SVG viewBox. The
- * chart proper occupies the inner grid; {@link PAD} is the slim margin (in grid
- * units) the body silhouette extends past the centers on every side, so the head
- * rises just above the Head center, the hips sit just below Root, and the
- * shoulders spread just outside Spleen and Solar Plexus. UNIT scales grid units
- * to viewBox units; the chart keeps its natural narrow-top, wide-bottom shape
- * because x and y share one scale.
+ * The grid window the viewBox covers: wide enough for the silhouette shoulders
+ * (the centers span 18.3 to 81.9) and tall enough for the crown and the hem, with
+ * nothing to spare, since margin here is width the gate numbers do not get. Kept
+ * symmetric about {@link AXIS} so {@link CHART_AXIS_X} is exactly half the viewBox.
  */
-const UNIT = 4;
-const PAD = 9;
-const VIEW_W = (100 + 2 * PAD) * UNIT;
-const VIEW_H = (100 + 2 * PAD) * UNIT;
+const X_MIN = 14;
+const X_MAX = 86;
+const Y_MIN = -4;
+const Y_MAX = 102;
+/** Grid units to viewBox units. One number sets the resolution of every coordinate below. */
+const UNIT = 6;
+const VIEW_W = (X_MAX - X_MIN) * UNIT;
+const VIEW_H = (Y_MAX - Y_MIN) * UNIT;
 
-/** Map a normalized grid point (0 to 100) into viewBox units. */
+/** Map a normalized grid point into viewBox units. */
 function g(x: number, y: number): Point {
-	return { x: (x + PAD) * UNIT, y: (y + PAD) * UNIT };
+	return { x: (x - X_MIN) * UNIT, y: (y - Y_MIN) * UNIT };
 }
 
 /** Chart horizontal center, the axis of symmetry for the body and the side centers. */
 const AXIS = 50;
 
-/** Reflect a normalized grid x across {@link AXIS}, the vertical axis of symmetry. */
+/** Reflect a normalized grid x across {@link AXIS}. */
 const mirrorX = (x: number): number => 2 * AXIS - x;
 
 /**
- * Gate positions authored per center in the normalized 0 to 100 grid, before the
- * mapping through {@link g}. Symmetry is structural, not hand-typed: every center
- * on the central column is authored balanced about {@link AXIS}; the Spleen is
+ * Gate circle radius and number size, in grid units. The radius is bounded by the
+ * closest pair of gates on the chart (Throat 12 and 45, 2.3 grid units apart) and
+ * the number by fitting two digits inside that circle. Exported so the stylesheet
+ * and the overlap test read the geometry rather than restating it.
+ */
+export const GATE_RADIUS = 1.02 * UNIT;
+export const GATE_FONT_SIZE = 1.35 * UNIT;
+
+/**
+ * The three x offsets from {@link AXIS} that every central-column gate sits on.
+ * {@link COL} is the inner column shared by the Head, Ajna, Throat and Sacral and
+ * Root triples and the G's 7/13 and 15/46 pairs; {@link EDGE} is the outer column
+ * of the three square centers; {@link G_EDGE} is the wider pair the G diamond
+ * carries at its waist. Named so the columns cannot drift apart one edit at a time.
+ */
+const COL = 2.87;
+const EDGE = 4.4;
+const G_EDGE = 5.65;
+
+/**
+ * Gate positions authored per center in the normalized grid, before the mapping
+ * through {@link g}. Symmetry is structural, not hand-typed: every center on the
+ * central column is authored as an offset from {@link AXIS}; the Spleen is
  * authored once on the left torso and the Solar Plexus is derived as its exact
  * mirror in {@link buildGatePoints}, so the two side centers can never drift out
- * of alignment. The Heart is the one center the canonical bodygraph places off
- * the axis (low and to the right of the G center, with no left counterpart).
- * Within each center the gates follow the canonical reading order so the numbers
- * print where a printed chart shows them.
+ * of alignment. Within each center the gates follow the canonical reading order
+ * so the numbers print where a printed chart shows them.
  *
  * @remarks Solar Plexus is intentionally empty here and filled by reflecting
  * Spleen; {@link SPLEEN_TO_SOLAR_PLEXUS} pairs each Spleen gate with the Solar
@@ -121,75 +136,75 @@ const GATES_BY_CENTER: Record<
 	BodygraphCenterId,
 	Record<number, [number, number]>
 > = {
-	head: { 64: [45.5, 11.2], 61: [50, 11.2], 63: [54.5, 11.2] },
+	head: { 64: [AXIS - COL, 11.2], 61: [AXIS, 11.2], 63: [AXIS + COL, 11.2] },
 	ajna: {
-		47: [45.3, 18.0],
-		24: [50, 18.0],
-		4: [54.7, 18.0],
-		17: [45.6, 20.6],
-		11: [54.4, 20.6],
-		43: [50, 25.3],
+		47: [AXIS - COL, 18.0],
+		24: [AXIS, 18.0],
+		4: [AXIS + COL, 18.0],
+		17: [AXIS - COL, 20.6],
+		11: [AXIS + COL, 20.6],
+		43: [AXIS, 25.3],
 	},
 	throat: {
-		62: [45.5, 32.3],
-		23: [50, 32.3],
-		56: [54.5, 32.3],
-		16: [42, 34.6],
-		35: [58, 34.6],
-		12: [58, 37.6],
-		20: [42, 40.6],
-		45: [58, 40.6],
-		31: [46, 42.4],
-		8: [50, 42.4],
-		33: [54, 42.4],
+		62: [AXIS - COL, 32.4],
+		23: [AXIS, 32.4],
+		56: [AXIS + COL, 32.4],
+		16: [AXIS - EDGE, 34.7],
+		35: [AXIS + EDGE, 34.7],
+		20: [AXIS - EDGE, 37.3],
+		12: [AXIS + EDGE, 37.3],
+		45: [AXIS + EDGE, 39.6],
+		31: [AXIS - COL, 41.9],
+		8: [AXIS, 41.9],
+		33: [AXIS + COL, 41.9],
 	},
 	g: {
-		1: [50, 47.5],
-		7: [45.6, 50.3],
-		13: [54.4, 50.3],
-		10: [40, 53.3],
-		25: [60, 53.3],
-		15: [45.6, 56.6],
-		46: [54.4, 56.6],
-		2: [50, 59.0],
+		1: [AXIS, 47.7],
+		7: [AXIS - COL, 50.3],
+		13: [AXIS + COL, 50.3],
+		10: [AXIS - G_EDGE, 53.4],
+		25: [AXIS + G_EDGE, 53.4],
+		15: [AXIS - COL, 56.8],
+		46: [AXIS + COL, 56.8],
+		2: [AXIS, 59.2],
 	},
 	heart: {
-		21: [62.5, 58.5],
-		51: [62.5, 61.3],
-		26: [62.5, 64.1],
-		40: [73, 61.3],
+		21: [63.9, 59.5],
+		51: [62.1, 61.3],
+		26: [60.1, 63.3],
+		40: [66.6, 63.3],
 	},
 	spleen: {
-		48: [20, 70.6],
-		57: [24, 72.3],
-		44: [28, 74.0],
-		50: [32, 75.6],
-		32: [28, 77.2],
-		28: [24, 78.9],
-		18: [20, 80.6],
+		48: [20.0, 70.8],
+		57: [22.5, 72.4],
+		44: [25.0, 73.8],
+		50: [27.7, 75.3],
+		32: [25.0, 76.6],
+		28: [22.5, 78.0],
+		18: [20.0, 79.5],
 	},
 	sacral: {
-		5: [45.5, 72.5],
-		14: [50, 72.5],
-		29: [54.5, 72.5],
-		34: [42, 75.6],
-		27: [42, 79.0],
-		59: [58, 79.0],
-		42: [45.5, 81.4],
-		3: [50, 81.4],
-		9: [54.5, 81.4],
+		5: [AXIS - COL, 72.7],
+		14: [AXIS, 72.7],
+		29: [AXIS + COL, 72.7],
+		34: [AXIS - EDGE, 75.4],
+		27: [AXIS - EDGE, 79.0],
+		59: [AXIS + EDGE, 79.0],
+		42: [AXIS - COL, 81.7],
+		3: [AXIS, 81.7],
+		9: [AXIS + COL, 81.7],
 	},
 	'solar-plexus': {},
 	root: {
-		53: [45.5, 89.9],
-		60: [50, 89.9],
-		52: [54.5, 89.9],
-		54: [42, 92.7],
-		19: [58, 92.7],
-		38: [42, 95.3],
-		39: [58, 95.3],
-		58: [42, 98.0],
-		41: [58, 98.0],
+		53: [AXIS - COL, 90.2],
+		60: [AXIS, 90.2],
+		52: [AXIS + COL, 90.2],
+		54: [AXIS - EDGE, 92.6],
+		19: [AXIS + EDGE, 92.6],
+		38: [AXIS - EDGE, 95.3],
+		39: [AXIS + EDGE, 95.3],
+		58: [AXIS - EDGE, 98.1],
+		41: [AXIS + EDGE, 98.1],
 	},
 };
 
@@ -207,9 +222,7 @@ const SPLEEN_TO_SOLAR_PLEXUS: Record<number, number> = {
 /**
  * Assemble the viewBox-space gate anchors and the gate to center index from
  * {@link GATES_BY_CENTER}, filling the Solar Plexus by reflecting the Spleen so
- * the two side centers are guaranteed mirror images. Each gate sits on the
- * canonical edge of its center where its channels connect, so channel lines join
- * gate to gate cleanly and the activated numbers print in their traditional spots.
+ * the two side centers are guaranteed mirror images.
  */
 function buildGatePoints(): {
 	points: Record<number, Point>;
@@ -237,7 +250,7 @@ function buildGatePoints(): {
  * The viewBox-space gate anchors ({@link GATE_POINTS}) and the gate to center
  * index ({@link GATE_CENTER}). Exported so the geometry tests can assert the
  * layout invariants (side-center mirror symmetry, central-column balance, gates
- * inside their centers) without rendering.
+ * inside their centers, circles that never overlap) without rendering.
  */
 export const { points: GATE_POINTS, centerOf: GATE_CENTER } = buildGatePoints();
 
@@ -259,18 +272,21 @@ function squareShape(halfWidth: number, top: number, bottom: number): Point[] {
 	]);
 }
 
+/** Measured half-width of the three square centers (Throat, Sacral, Root), which share one width. */
+const SQUARE_HALF = 5.9;
+
 /** The Spleen triangle (base on the far-left edge, apex pointing right toward center). */
 const SPLEEN_SHAPE: ReadonlyArray<readonly [number, number]> = [
-	[18.4, 68.0],
-	[18.4, 81.8],
-	[34.7, 74.9],
+	[18.3, 68.3],
+	[18.3, 82.0],
+	[30.3, 75.15],
 ];
 
 /**
- * Center shapes in canonical orientation and color, labels anchored in the
- * margins. Central-column centers are built centered on {@link AXIS}; the Solar
- * Plexus shape is the Spleen reflected across the axis, so the side centers stay
- * exact mirrors. The Heart is the deliberate off-axis exception.
+ * Center shapes in canonical orientation and color. Central-column centers are
+ * built centered on {@link AXIS}; the Solar Plexus shape is the Spleen reflected
+ * across the axis, so the side centers stay exact mirrors. The Heart is the
+ * deliberate off-axis exception and points UP, not right.
  */
 export const CENTER_GEOMETRY: readonly CenterGeometry[] = [
 	{
@@ -278,75 +294,59 @@ export const CENTER_GEOMETRY: readonly CenterGeometry[] = [
 		label: 'Head',
 		color: 'gold',
 		points: shape([
-			[40.0, 14.3],
-			[60.0, 14.3],
-			[50.0, 6.0],
+			[43.55, 12.5],
+			[56.45, 12.5],
+			[50.0, 1.7],
 		]),
-		labelAnchor: g(63, 9),
-		labelAlign: 'start',
 	},
 	{
 		id: 'ajna',
 		label: 'Ajna',
 		color: 'green',
 		points: shape([
-			[40.0, 15.6],
-			[60.0, 15.6],
-			[50.0, 27.6],
+			[43.55, 16.5],
+			[56.45, 16.5],
+			[50.0, 27.7],
 		]),
-		labelAnchor: g(62, 21),
-		labelAlign: 'start',
 	},
 	{
 		id: 'throat',
 		label: 'Throat',
 		color: 'brown',
-		points: squareShape(9.5, 30.4, 43.6),
-		labelAnchor: g(83, 34),
-		labelAlign: 'start',
+		points: squareShape(SQUARE_HALF, 31.0, 43.3),
 	},
 	{
 		id: 'g',
 		label: 'G',
 		color: 'gold',
 		points: shape([
-			[50.0, 45.0],
-			[60.7, 53.3],
-			[50.0, 61.6],
-			[39.3, 53.3],
+			[50.0, 45.8],
+			[57.7, 53.6],
+			[50.0, 61.4],
+			[42.3, 53.6],
 		]),
-		labelAnchor: g(13, 51),
-		labelAlign: 'end',
 	},
 	{
 		id: 'heart',
 		label: 'Heart',
 		color: 'red',
 		points: shape([
-			[61.5, 57.0],
-			[76.5, 61.3],
-			[61.5, 65.6],
+			[56.65, 65.23],
+			[64.2, 56.74],
+			[69.75, 65.23],
 		]),
-		labelAnchor: g(85, 56),
-		labelAlign: 'start',
 	},
 	{
 		id: 'spleen',
 		label: 'Spleen',
 		color: 'brown',
 		points: shape(SPLEEN_SHAPE),
-		labelAnchor: g(13, 70),
-		labelAlign: 'end',
 	},
 	{
 		id: 'sacral',
 		label: 'Sacral',
 		color: 'red',
-		points: squareShape(9.5, 70.6, 83.6),
-		// Lower-right, below the Solar Plexus: a left-side leader would clip the
-		// Spleen, which sits at the same height as the Sacral.
-		labelAnchor: g(85, 88),
-		labelAlign: 'start',
+		points: squareShape(SQUARE_HALF, 71.3, 83.1),
 	},
 	{
 		id: 'solar-plexus',
@@ -355,16 +355,12 @@ export const CENTER_GEOMETRY: readonly CenterGeometry[] = [
 		points: shape(
 			SPLEEN_SHAPE.map(([x, y]) => [mirrorX(x), y] as [number, number]),
 		),
-		labelAnchor: g(87, 73),
-		labelAlign: 'start',
 	},
 	{
 		id: 'root',
 		label: 'Root',
 		color: 'brown',
-		points: squareShape(9.5, 87.9, 99.9),
-		labelAnchor: g(50, 103),
-		labelAlign: 'middle',
+		points: squareShape(SQUARE_HALF, 88.5, 99.8),
 	},
 ];
 
@@ -372,8 +368,8 @@ export const CENTER_GEOMETRY: readonly CenterGeometry[] = [
  * The 36 channels as ordered gate pairs. This is the canonical Human Design
  * channel set; a channel is active only when both of its gates are activated,
  * which the live response reports in its `channels` array. The static list lets
- * the renderer draw every channel as a hanging (inactive) line and overlay the
- * active ones, so an open bodygraph still shows its full wiring skeleton.
+ * the renderer draw every channel as an inactive connector and overlay the
+ * activated halves, so an open bodygraph still shows its full wiring skeleton.
  */
 export const CHANNEL_PAIRS: ReadonlyArray<readonly [number, number]> = [
 	[64, 47],
@@ -415,50 +411,40 @@ export const CHANNEL_PAIRS: ReadonlyArray<readonly [number, number]> = [
 ];
 
 /**
- * Front-facing standing figure behind the chart, mirror-symmetric about
- * {@link AXIS}. Authored in the same normalized grid as the centers, so it scales
- * with the chart and frames it as in the canonical "nine centers on the human
- * body" diagram: a rounded head holding the Head center, a short neck at the
- * Throat, shoulders that slope to arms hanging down the outside of the torso so
- * their span frames the Spleen (left) and Solar Plexus (right), a torso that
- * narrows at the waist below the chest, then hips ending at the pelvis just below
- * the Root center. The outline is one closed loop: crown, temple, jaw, neck,
- * shoulder, down the outer arm to the hand beside the hip, in under the hip to
- * the pelvis hem, mirrored back up the left side. The right half is built from
- * cubic beziers and reflected so the figure is exactly symmetric. Drawn first and
- * behind everything so the centers, wiring, and gate numbers stay legible on top.
+ * Front-facing standing figure behind the chart, mirror-symmetric about {@link
+ * AXIS} and authored in the same grid as the centers so the two scale together:
+ * a rounded head holding the Head and Ajna, a short neck at the Throat, shoulders
+ * sloping to arms whose span frames the Spleen and Solar Plexus, then hips ending
+ * just below the Root. The right half is built from cubic beziers and reflected,
+ * so the figure is exactly symmetric. Drawn first; the centers paint over it,
+ * which is what makes an open center read as a cut-out rather than a tint.
  */
 const BODY_PATH = buildBodyPath();
 
 function buildBodyPath(): string {
 	const m = mirrorX;
 	// Right-side outline in grid units (x, y) from the crown down to the
-	// pelvis-right corner: a start point, then triples of (ctrl1, ctrl2, end). A
-	// rounded head hugging the Head and Ajna centers, a narrowed neck, shoulders at
-	// their widest, the outer torso running just past the Spleen and Solar Plexus
-	// (right edges near x 82 at y 74), then waist and hip to a flat pelvis hem. The
-	// left side is the mirror and the hem is a straight line, so the figure reads as
-	// a torso, not a point.
+	// pelvis-right corner: a start point, then triples of (ctrl1, ctrl2, end).
 	const r: Array<[number, number]> = [
-		[50, -2], // crown apex (start)
-		[60, -2], // crown round (ctrl)
-		[60.5, 9], // head side (ctrl)
-		[57, 18], // brow, head holds Head + Ajna (end)
-		[56, 21], // cheek (ctrl)
-		[54, 24], // jaw (ctrl)
-		[52, 27], // neck right, narrowed (end)
+		[50, -3], // crown apex (start)
+		[58, -3], // crown round (ctrl)
+		[59, 8], // head side (ctrl)
+		[56.5, 17], // brow, the head holds Head + Ajna (end)
+		[56, 20], // cheek (ctrl)
+		[53.5, 23.5], // jaw (ctrl)
+		[51.5, 27], // neck right, narrowed to the Ajna apex (end)
 		[54, 28], // neck base (ctrl)
 		[64, 30], // trapezius slope (ctrl)
-		[80, 34], // shoulder / deltoid, the widest point (end)
-		[83.5, 40], // upper torso side (ctrl)
-		[84, 56], // outer torso, frames the side centers (ctrl)
-		[83, 74], // torso side past Spleen / Solar Plexus (end)
-		[82, 84], // waist (ctrl)
-		[76, 92], // hip (ctrl)
+		[79, 35], // shoulder / deltoid, the widest point (end)
+		[83, 42], // upper arm (ctrl)
+		[84, 58], // outer arm, frames the side centers (ctrl)
+		[83, 74], // arm past Spleen / Solar Plexus (end)
+		[83, 86], // waist, held wide enough to contain the side-center bases (ctrl)
+		[76, 93], // hip (ctrl)
 		[68, 97], // hip (end)
 		[64, 99], // toward the pelvis (ctrl)
-		[62, 100], // pelvis (ctrl)
-		[60, 100], // pelvis-right corner (end)
+		[62, 100.5], // pelvis (ctrl)
+		[60, 100.5], // pelvis-right corner (end)
 	];
 	const segs: string[] = [`M ${pt(r[0])}`];
 	// Walk the right side as cubic beziers, three points per segment.
@@ -489,8 +475,14 @@ function polygonPoints(pts: Point[]): string {
 	return pts.map((p) => `${p.x},${p.y}`).join(' ');
 }
 
-function pairKey(a: number, b: number): string {
-	return a < b ? `${a}-${b}` : `${b}-${a}`;
+/**
+ * The class suffix for a side pair: `p` Personality, `d` Design, `pd` a gate both
+ * sides activated. Personality is the dark half of a bodygraph and Design the red
+ * half; a theme cannot use literal black, so Personality follows `--roxy-fg`.
+ */
+function sideClass(s: GateSides): 'p' | 'd' | 'pd' {
+	if (s.personality && s.design) return 'pd';
+	return s.personality ? 'p' : 'd';
 }
 
 /** Render the body silhouette behind the chart. */
@@ -499,18 +491,20 @@ function renderBody(): TemplateResult {
 }
 
 /**
- * Render every channel as a single line joining its two gates, so the wiring
- * always reads as a connected diagram rather than stubs poking out of centers.
- * Each of the 36 channels draws a faint full-length connector; a channel with
- * both gates active is redrawn thick and solid (a defined channel); a channel
- * with only one gate active lights that gate's half toward the midpoint over the
- * connector (a hanging gate). This mirrors how a printed bodygraph colors a full
- * channel only when both gates are active and shows a single hanging gate
- * otherwise, while keeping every connection visible.
+ * Render every channel as a pair of halves meeting at the midpoint, so one
+ * function draws both states a bodygraph distinguishes: both gates activated
+ * reads as one continuous bar, a single activated gate as that gate hanging
+ * halfway out of its center. Each half takes the colour of the gate at ITS end,
+ * so a channel carrying one Personality gate and one Design gate is half dark and
+ * half red rather than forced to one of the two.
+ *
+ * @remarks
+ * A `pd` half is drawn twice, a solid Design line under a dashed Personality one,
+ * for the striped bar a gate both sides activated takes. The inactive connector
+ * is drawn first so the full 36-channel skeleton stays visible on an open chart.
  */
 function renderChannels(
-	activeChannels: Set<string>,
-	activeGates: Set<number>,
+	gateSides: ReadonlyMap<number, GateSides>,
 ): TemplateResult[] {
 	const lines: TemplateResult[] = [];
 	for (const [a, b] of CHANNEL_PAIRS) {
@@ -520,95 +514,32 @@ function renderChannels(
 		lines.push(
 			svg`<line class="bg-channel" x1=${pa.x} y1=${pa.y} x2=${pb.x} y2=${pb.y} />`,
 		);
-		if (activeChannels.has(pairKey(a, b))) {
-			lines.push(
-				svg`<line class="bg-channel on" x1=${pa.x} y1=${pa.y} x2=${pb.x} y2=${pb.y} />`,
-			);
-			continue;
-		}
 		const mid = { x: (pa.x + pb.x) / 2, y: (pa.y + pb.y) / 2 };
-		if (activeGates.has(a)) {
+		for (const [gate, from] of [
+			[a, pa],
+			[b, pb],
+		] as const) {
+			const sides = gateSides.get(gate);
+			if (!sides) continue;
+			const cls = sideClass(sides);
 			lines.push(
-				svg`<line class="bg-half" x1=${pa.x} y1=${pa.y} x2=${mid.x} y2=${mid.y} />`,
+				svg`<line class="bg-half ${cls === 'pd' ? 'd' : cls}" x1=${from.x} y1=${from.y} x2=${mid.x} y2=${mid.y} />`,
 			);
-		}
-		if (activeGates.has(b)) {
-			lines.push(
-				svg`<line class="bg-half" x1=${pb.x} y1=${pb.y} x2=${mid.x} y2=${mid.y} />`,
-			);
+			if (cls === 'pd') {
+				lines.push(
+					svg`<line class="bg-half p stripe" x1=${from.x} y1=${from.y} x2=${mid.x} y2=${mid.y} />`,
+				);
+			}
 		}
 	}
 	return lines;
 }
 
-/** Closest point to `p` on segment `a`-`b`, clamped to the segment ends. */
-function closestPointOnSegment(p: Point, a: Point, b: Point): Point {
-	const dx = b.x - a.x;
-	const dy = b.y - a.y;
-	const len2 = dx * dx + dy * dy;
-	if (len2 === 0) return a;
-	const t = Math.max(
-		0,
-		Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / len2),
-	);
-	return { x: a.x + t * dx, y: a.y + t * dy };
-}
-
-/** Closest point on a closed polygon's perimeter to `p`, where a label leader should land. */
-function closestPointOnPolygon(p: Point, poly: readonly Point[]): Point {
-	let best = poly[0];
-	let bestDist = Number.POSITIVE_INFINITY;
-	for (let i = 0; i < poly.length; i++) {
-		const q = closestPointOnSegment(p, poly[i], poly[(i + 1) % poly.length]);
-		const d = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
-		if (d < bestDist) {
-			bestDist = d;
-			best = q;
-		}
-	}
-	return best;
-}
-
 /**
- * `.bg-center-label` font size and the slimmest margin a label may leave, both in viewBox units, so {@link labelFit} can tell whether a name will still be inside the viewport when it is painted.
- *
- * @remarks
- * The font size is duplicated from the component stylesheet on purpose: the geometry module cannot read a CSS custom property, and a label that overruns is CLIPPED by the outermost `<svg>` viewport rather than overflowing the card, so no layout gate can see it (`tests/e2e/layout.e2e.ts` skips every node with an `ownerSVGElement`). Keep the two in step.
- */
-const LABEL_FONT_PX = 11;
-const LABEL_MARGIN = 4;
-/** Rough advance width per character at {@link LABEL_FONT_PX}, measured against the sans stack for mixed-case Latin. Only ever used to decide whether to compress, never to position anything. */
-const LABEL_CHAR_WIDTH = LABEL_FONT_PX * 0.55;
-
-/**
- * The width to pin a center label to, or `undefined` to let it set naturally.
- *
- * @remarks
- * Every center name comes from the RESPONSE now, so the longest label is a fact about the reader's language rather than about our geometry: `Solar Plexus` is 12 characters and the Russian the API returns for it, `Солнечное сплетение`, is 19. Past the viewport edge the browser simply clips, which reads as a truncated word rather than as a bug, so an over-long name is squeezed into the margin it has instead. Under the limit nothing is emitted at all, so every existing chart is byte-identical.
- */
-function labelFit(
-	label: string,
-	anchor: Point,
-	align: 'start' | 'middle' | 'end',
-): number | undefined {
-	const available =
-		align === 'end'
-			? anchor.x - LABEL_MARGIN
-			: align === 'start'
-				? VIEW_W - anchor.x - LABEL_MARGIN
-				: Math.min(anchor.x, VIEW_W - anchor.x) * 2 - LABEL_MARGIN;
-	const natural = label.length * LABEL_CHAR_WIDTH;
-	return natural > available ? Math.max(available, 0) : undefined;
-}
-
-/**
- * Render the nine center shapes, filled with their semantic color when defined
- * and outlined when open, each with a margin label tied to its shape by a thin
- * leader line so the Heart and every other center is unambiguous regardless of
- * whether it is defined.
- *
- * @remarks
- * The label is the name the RESPONSE gave the center when the caller passed one, so the chart and the accordion under it read the same word in every language. The chart keeps its own English label only for a center the response did not carry. The state word in the tooltip is the caller's for the same reason.
+ * Render the nine center shapes: filled with their semantic color when defined,
+ * filled with the card surface and outlined when open so the wiring and the
+ * silhouette pass behind them. Each carries a `<title>` naming it in the reader's
+ * language, which is both the hover tooltip and the accessible name.
  */
 function renderCenters(
 	defined: Set<BodygraphCenterId>,
@@ -618,52 +549,66 @@ function renderCenters(
 	return CENTER_GEOMETRY.map((c) => {
 		const isDefined = defined.has(c.id);
 		const cls = `bg-center bg-${c.color}${isDefined ? ' defined' : ''}`;
-		const edge = closestPointOnPolygon(c.labelAnchor, c.points);
 		const label = names?.get(c.id) || c.label;
-		const fit = labelFit(label, c.labelAnchor, c.labelAlign);
-		return svg`<g>
-			<line class="bg-leader" x1=${c.labelAnchor.x} y1=${c.labelAnchor.y} x2=${edge.x} y2=${edge.y} />
-			<polygon class=${cls} points=${polygonPoints(c.points)}><title>${label}: ${isDefined ? stateWords.defined : stateWords.open}</title></polygon>
-			<text class="bg-center-label" x=${c.labelAnchor.x} y=${c.labelAnchor.y} text-anchor=${c.labelAlign} dominant-baseline="central" textLength=${ifDefined(fit)} lengthAdjust=${ifDefined(fit === undefined ? undefined : 'spacingAndGlyphs')}>${label}</text>
-		</g>`;
+		return svg`<polygon class=${cls} points=${polygonPoints(c.points)}><title>${label}: ${isDefined ? stateWords.defined : stateWords.open}</title></polygon>`;
 	});
 }
 
+/** A half-disc starting at the top of the circle and sweeping to the bottom. `sweep` 1 is the right half. */
+function halfDisc(p: Point, sweep: 0 | 1): string {
+	return `M ${p.x} ${p.y - GATE_RADIUS} A ${GATE_RADIUS} ${GATE_RADIUS} 0 0 ${sweep} ${p.x} ${p.y + GATE_RADIUS} Z`;
+}
+
 /**
- * Render the activated gate numbers at their fixed points. Numbers sit on top of
- * the filled centers, so a halo (a wider, background-colored stroke under the
- * fill) keeps them legible against any center color in both themes.
+ * Render all 64 gate numbers at their fixed points: an unactivated gate is a named
+ * position on the chart, not an absence, so it draws as an outlined circle with a
+ * muted number while an activated one is a filled disc with a knocked-out number.
+ * A gate both sides activated is split down the middle, Design left and
+ * Personality right, matching the column order of a printed chart.
  */
-function renderGateNumbers(
-	activeGates: Set<number>,
-	titles: Map<number, string>,
+function renderGates(
+	gateSides: ReadonlyMap<number, GateSides>,
+	titles: ReadonlyMap<number, string>,
 ): TemplateResult[] {
 	const out: TemplateResult[] = [];
 	for (const [gate, p] of Object.entries(GATE_POINTS)) {
 		const num = Number(gate);
-		if (!activeGates.has(num)) continue;
+		const sides = gateSides.get(num);
+		const cls = sides ? sideClass(sides) : '';
 		const title = titles.get(num);
-		out.push(
-			svg`<text class="bg-gate" x=${p.x} y=${p.y} text-anchor="middle" dominant-baseline="central">${num}${title ? svg`<title>${title}</title>` : nothing}</text>`,
-		);
+		out.push(svg`<g class="bg-gate-node">
+			${
+				cls === 'pd'
+					? [
+							svg`<path class="bg-gate-dot on d" d=${halfDisc(p, 0)} />`,
+							svg`<path class="bg-gate-dot on p" d=${halfDisc(p, 1)} />`,
+						]
+					: svg`<circle class="bg-gate-dot ${cls && `on ${cls}`}" cx=${p.x} cy=${p.y} r=${GATE_RADIUS} />`
+			}
+			<text class="bg-gate ${sides ? 'on' : ''}" x=${p.x} y=${p.y} text-anchor="middle" dominant-baseline="central">${num}</text>
+			${title ? svg`<title>${title}</title>` : nothing}
+		</g>`);
 	}
 	return out;
 }
 
 export interface BodygraphRenderInput {
 	definedCenters: Set<BodygraphCenterId>;
-	activeChannels: Set<string>;
-	activeGates: Set<number>;
-	gateTitles: Map<number, string>;
-	/** What to write in the margin beside each center, keyed by center id. The response is the authority for its own vocabulary, so this carries `centers[].nameLocalized` where the API sent one and `centers[].name` otherwise; an id with no entry keeps the chart's own English label. */
+	/**
+	 * Which side(s) activated each gate. A gate absent from the map is not
+	 * activated and draws as an outlined position.
+	 *
+	 * @remarks
+	 * The only wiring input. A channel is defined exactly when both of its gates are
+	 * activated, so the response's `channels` array is deliberately not a second
+	 * one: two views of one fact would have nothing keeping them in step.
+	 */
+	gateSides: ReadonlyMap<number, GateSides>;
+	gateTitles: ReadonlyMap<number, string>;
+	/** What to name each center in its `<title>`, keyed by center id. The response is the authority for its own vocabulary, so this carries `centers[].nameLocalized` where the API sent one and `centers[].name` otherwise; an id with no entry keeps the chart's own English label. */
 	centerNames?: ReadonlyMap<BodygraphCenterId, string>;
 	/** The two words a center shape states its state with in its tooltip. Supplied by the caller because only a component can reach a chrome catalogue. */
 	stateWords?: { defined: string; open: string };
-}
-
-/** Build the lookup key for an active channel from its two gate numbers. */
-export function channelKey(a: number, b: number): string {
-	return pairKey(a, b);
 }
 
 export const BODYGRAPH_VIEWBOX = `0 0 ${VIEW_W} ${VIEW_H}`;
@@ -672,20 +617,20 @@ export const BODYGRAPH_VIEWBOX = `0 0 ${VIEW_W} ${VIEW_H}`;
  * Render the full bodygraph SVG inner content for the given live state. The
  * caller wraps it in an `<svg>` with {@link BODYGRAPH_VIEWBOX} and applies its
  * own theming CSS. Draw order: body silhouette under channels under centers
- * under gate numbers, so the body is the backdrop, the wiring sits behind the
- * shapes, and the numbers stay legible on top.
+ * under gates, so the body is the backdrop, the wiring runs behind the shapes,
+ * and every gate circle sits on top of whatever it lands on.
  */
 export function renderBodygraphSvg(
 	input: BodygraphRenderInput,
 ): TemplateResult {
 	return svg`
 		${renderBody()}
-		${renderChannels(input.activeChannels, input.activeGates)}
+		${renderChannels(input.gateSides)}
 		${renderCenters(
 			input.definedCenters,
 			input.centerNames,
 			input.stateWords ?? { defined: 'defined', open: 'open' },
 		)}
-		${renderGateNumbers(input.activeGates, input.gateTitles)}
+		${renderGates(input.gateSides, input.gateTitles)}
 	`;
 }

@@ -19,9 +19,7 @@ import { display } from '../utils/localized.js';
  * The sample instant every position in both responses is calculated for, printed as a literal rather than a translated phrase.
  *
  * @remarks
- * An ephemeris is unusable without its time basis, which is why every published one declares it in the header: the Astrodienst and Sirius tables print `Time Zone: EDT (04:00 East)`, Astro-Seek prints `00:00 [UT/GMT]` and repeats that literal unchanged in all seven of its localized builds. A clock literal is the same in every language, so this needs no catalogue entry and cannot drift from one.
- *
- * Verified against a published midnight-EDT ephemeris for the same month on 2026-08-10: at 04:00 UTC on 2026-08-01 the Sun reads 8°56'55" Leo (128.949°) and this API returns 129.2669° for that date, a difference of 0.318° against the Sun's 0.955°/day, which is exactly the eight hours from 04:00 to 12:00 UTC. Both endpoint descriptions state noon UTC and the arithmetic agrees with them.
+ * An ephemeris is unusable without its time basis, which is why a published one always declares it in the header, as a clock literal rather than a sentence. A clock literal is the same in every language, so this needs no catalogue entry and cannot drift from one. Both endpoint descriptions state noon UTC and the returned longitudes agree with that basis.
  */
 const SAMPLE_INSTANT = '12:00 UTC';
 
@@ -106,9 +104,7 @@ interface ViewModel {
  *
  * **The grid follows the published ephemeris, which is one of the most
  * convention-bound artifacts in astrology and where a deviation reads as
- * amateurish on sight.** Checked on 2026-08-10 against the Sirius-generated
- * ephemeris for this same month published by Cafe Astrology, and against the
- * Astro-Seek monthly ephemeris: days run DOWN the rows with the weekday beside
+ * amateurish on sight.** Days run DOWN the rows with the weekday beside
  * the day number, bodies run ACROSS the columns headed by their glyphs, a cell
  * is `9♌16` with the sign glyph BETWEEN the degree and the minutes rather than a
  * decimal longitude, retrograde is marked in the cell, and the sign changes and

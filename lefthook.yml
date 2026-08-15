@@ -113,7 +113,7 @@ pre-push:
     size-check:
       # Runs after the build-dependent gates (audit priority 7, wrapper-drift
       # priority 9 both run `bun run build`), so dist/cdn is fresh. Asserts the
-      # gzip/raw bundle budgets the README and CLAUDE.md claim.
+      # gzip/raw bundle budgets the README publishes.
       run: bun run size:check
       priority: 10
 

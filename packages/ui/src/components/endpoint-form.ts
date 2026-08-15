@@ -1015,7 +1015,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	/**
 	 * One city search standing in for a group's raw coordinates.
 	 *
-	 * `lang` is forwarded EXPLICITLY and that line is load-bearing: the city search lives inside this shadow root, and the `closest('[lang]')` link of the resolution chain stops at a shadow boundary, so without it the dropdown renders its own empty state and its refusal message in English on a fully translated page. The same trap is documented for every composing component in `docs/authoring.md`.
+	 * `lang` is forwarded EXPLICITLY and that line is load-bearing: the city search lives inside this shadow root, and the `closest('[lang]')` link of the resolution chain stops at a shadow boundary, so without it the dropdown renders its own empty state and its refusal message in English on a fully translated page. Every composing component carries the same obligation.
 	 */
 	private locationBlock(group?: string) {
 		return html`<div class="location-block">

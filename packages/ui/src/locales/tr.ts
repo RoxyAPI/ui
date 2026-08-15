@@ -16,7 +16,7 @@
  *
  * Three concepts have no attested Turkish astrological term: the bi-wheel, its inner and outer rings, and a 0-100 aspect strength score. `çift çember`, `iç halka` / `dış halka` and `güç` are deliberate plain-Turkish coinages built on the settled `harita çemberi`, with `halka` chosen so the ring noun never collides with `çember`, the wheel noun.
  *
- * **Three values were corrected on 2026-08-09 and one earlier claim was overturned.**
+ * **Three values carry a correction and one earlier claim is overturned.**
  *
  * `Uzaklaşan açı` replaced `Ayrılan açı` for the separating aspect, because `Yaklaşan / Uzaklaşan` is the conventional pair across three independent sources. `Ayrılan` is attested but is the minority form and left the pair mismatched.
  *
@@ -32,7 +32,7 @@
  *
  * ## Human Design
  *
- * **The vocabulary is deliberately split.** `aura`, `bodygraph`, `motor`, `aktivasyon` and the type names are LOANWORDS in Turkish Human Design writing, and an invented native replacement for any of them is the defect, not the fix. Everything else is native Turkish, and specifically the vocabulary the Human Design endpoints already return for `?lang=tr`, because these labels print directly above those values: `Tanım` heads `Tekli / Bölünmüş / Üçlü Bölünmüş`, `Otorite` heads the seven authority values, `{{circuit}} devre` takes `Bireysel / Kolektif / Kabilesel`, and `Tanımlı` / `Açık` are the two words the API centre prose itself uses. A label naming a different concept than the value beneath it is exactly what this matching exists to prevent.
+ * **The vocabulary is deliberately split.** `aura`, `bodygraph`, `motor`, `aktivasyon` and the type names are LOANWORDS in Turkish Human Design writing, and an invented native replacement for any of them is the error, not the fix. Everything else is native Turkish, and specifically the vocabulary the Human Design endpoints already return for `?lang=tr`, because these labels print directly above those values: `Tanım` heads `Tekli / Bölünmüş / Üçlü Bölünmüş`, `Otorite` heads the seven authority values, `{{circuit}} devre` takes `Bireysel / Kolektif / Kabilesel`, and `Tanımlı` / `Açık` are the two words the API centre prose itself uses. A label naming a different concept than the value beneath it is exactly what this matching exists to prevent.
  *
  * **`{{circuit}} devre` carries no suffix ON PURPOSE, and it is the agglutination trap in this block.** The API substitutes an ADJECTIVE, so `Bireysel devre` is right and `Bireysel devresi` is wrong; the possessive that `kabile devresi` carries elsewhere is there only because `kabile` is a noun. The same reasoning puts the number AFTER the noun in `Kapı {{gate}}`, `Çizgi {{line}}` and `I Ching heksagramı {{number}}`: the ordinal `{{gate}}. kapı` is the more usual Turkish, but the gate tooltip substitutes `51.5` and would render `51.5. kapı`.
  *

@@ -432,7 +432,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 	/**
 	 * Detect-mode card: the three-way verdict, the classical family, and the evidence behind it.
 	 *
-	 * An outranked card names the family that silenced it (`Outranked by Akriti`) rather than saying only that something did. That is strictly more than the badge used to carry, it is exact rather than parsed out of prose, and it reads the same under any `lang`.
+	 * An outranked card names the family that silenced it (`Outranked by Akriti`) rather than saying only that something did. It is exact rather than parsed out of prose, and it reads the same under any `lang`.
 	 */
 	private renderDetectCard(y: DetectedYoga) {
 		const by = y.present ? undefined : suppressor(y);

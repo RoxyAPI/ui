@@ -314,7 +314,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	}
 
 	/**
-	 * The line readings. Each line carries its oracle statement and, since the 2026-07 API rewrite, a written meaning; the component used to print only the changing-line NUMBERS and drop both, which left a reader with "Changing lines: 3" and no way to know what line 3 was telling them.
+	 * The line readings. Each line carries its oracle statement and, since the 2026-07 API rewrite, a written meaning. Both are rendered: a bare "Changing lines: 3" leaves a reader no way to know what line 3 is telling them.
 	 *
 	 * @remarks
 	 * When lines are moving, only those lines are shown: a cast turns on the moving lines, and listing the other five buries the answer. With no lines moving (a lookup, a random draw, the daily hexagram) all six are shown, because there the hexagram is being read as a reference rather than as an answer to a question.

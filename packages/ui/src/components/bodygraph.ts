@@ -9,7 +9,8 @@ import {
 	type BodygraphCenterId,
 	CENTER_GEOMETRY,
 	type CenterColor,
-	channelKey,
+	GATE_FONT_SIZE,
+	type GateSides,
 	renderBodygraphSvg,
 } from '../utils/bodygraph-render.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
@@ -38,19 +39,35 @@ type ChannelEntry = Bodygraph['channels'][number];
  */
 const LEGEND_COLORS: readonly CenterColor[] = ['gold', 'green', 'brown', 'red'];
 
+/** The activations on each gate, in response order. One gate carries several whenever both sides reach it or two bodies share it, which is the case the chart draws as a split circle. */
+function groupByGate(gates: GateActivation[]): Map<number, GateActivation[]> {
+	const byGate = new Map<number, GateActivation[]>();
+	for (const g of gates) {
+		if (g.gate == null) continue;
+		const bucket = byGate.get(g.gate);
+		if (bucket) bucket.push(g);
+		else byGate.set(g.gate, [g]);
+	}
+	return byGate;
+}
+
 /**
- * Human Design bodygraph. Pass `data` from /human-design/bodygraph. Renders the nine centers in their canonical positions and shapes, filled when defined and outlined when open, the 36 channels as wiring between gates with active channels emphasized, and the activated gate numbers.
+ * Human Design bodygraph. Pass `data` from /human-design/bodygraph. Renders the nine centers in their canonical positions and shapes, filled when defined and surface-filled and outlined when open, the 36 channels as wiring between gates, and ALL 64 gates: outlined where nothing landed, filled where an activation did, and split down the middle where both sides did.
  *
  * @remarks
- * The response carries a full interpretation, not just labels, so the card is laid out in four passes from identity down to detail. Identity sits beside the chart and is always visible: the type, strategy, authority, profile, and definition tiles, the type description as the lead paragraph, the incarnation cross, and the signature and not-self themes. Everything below is progressive disclosure through the shared exclusive-accordion pattern, so only one body of prose is ever open at a time and the card never becomes a wall of text: the reading (strategy, authority, profile, definition, aura, cross), the defined channels grouped by circuit, the nine centers, and the 26 gate activations split by chart side.
+ * The response carries a full interpretation, not just labels, so the card is laid out in four passes from identity down to detail. The chart takes the full card width at every size and identity sits under it, never beside it, because a bodygraph is half again taller than it is wide and is read as a whole. Identity is always visible: the type, strategy, authority, profile, and definition tiles, the type description as the lead paragraph, the incarnation cross, and the signature and not-self themes. Everything below is progressive disclosure through the shared exclusive-accordion pattern, so only one body of prose is ever open at a time and the card never becomes a wall of text: the reading (strategy, authority, profile, definition, aura, cross), the defined channels grouped by circuit, the nine centers, and the 26 gate activations split by chart side.
  *
  * A center returns `notSelfQuestion` whatever its state, but the question describes the conditioning of an OPEN center, so it is rendered only when the center is open. `theme` already tracks the defined or open state and is always shown.
  *
- * **Every name on this card is read twice.** A translated response echoes the display value beside the canonical one (`nameLocalized` next to `name`, `planetLocalized` next to `planet`) and keeps the canonical one English in every language, so the reader gets `display(...)` and the machine keeps the English: `planetGlyph` is keyed on `planet`, the defined-center Set and the channel groups are keyed on `id` and `circuit`, and the tab state is the wire value `personality` or `design`. `docs/authoring.md`, "Vocabulary: the response carries BOTH halves". Two fields have no localized partner and print as sent, each with a note at its site: `incarnationCross.name` and `ichingHexagram.english`.
+ * **Every name on this card is read twice.** A translated response echoes the display value beside the canonical one (`nameLocalized` next to `name`, `planetLocalized` next to `planet`) and keeps the canonical one English in every language, so the reader gets `display(...)` and the machine keeps the English: `planetGlyph` is keyed on `planet`, the defined-center Set and the channel groups are keyed on `id` and `circuit`, and the tab state is the wire value `personality` or `design`. Two fields have no localized partner and print as sent, each with a note at its site: `incarnationCross.name` and `ichingHexagram.english`.
+ *
+ * **Personality is the dark half of a bodygraph and Design the red half, and the binary the reading rests on is drawn, not just labelled.** It comes from `gates[].side`, so nothing extra is requested: a gate circle takes the colour of the side or sides that activated it, and each half of a channel takes the colour of the gate at its own end, which is why a channel joining a Personality gate to a Design gate is half dark and half red. Literal black cannot survive a dark theme, so Personality follows `--roxy-fg` and inverts with it.
  *
  * The chart is theme-driven through `--roxy-*` custom properties on `:host`, so it adopts the host palette in light and dark without runtime color probing.
  *
- * `hide-readings` leaves the chart, the fact tiles, the incarnation cross, the themes and the legend, and drops the reading accordion together with the channels, centers and activations sections. Those three exist to hold the prose behind each disclosure, and the wiring they describe is already drawn in the chart above them: the gate numbers, the lit channels, and the filled centers.
+ * `hide-readings` leaves the chart, the fact tiles, the incarnation cross, the themes and the legend, and drops the reading accordion together with the channels, centers and activations sections. Those three exist to hold the prose behind each disclosure, and the wiring they describe is already drawn in the chart above them: the gate circles, the lit channels, and the filled centers.
+ *
+ * Centre names live in each shape's `<title>`, which is the hover tooltip and the accessible name. No margin labels: they need leader lines across the drawing and no printed bodygraph carries either.
  */
 @customElement('roxy-bodygraph')
 export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
@@ -95,78 +112,81 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
+			/* One column at every width: chart first, identity underneath. A bodygraph
+			 * is read as a whole and is far taller than it is wide, so a side-by-side
+			 * split trades chart size for prose width. */
 			.layout {
 				display: grid;
 				gap: var(--roxy-space-lg, 1.5rem);
 				grid-template-columns: minmax(0, 1fr);
 				align-items: start;
 			}
-			/* The identity column holds prose, so it only splits off once it has room
-			 * to set a readable measure next to the 340px chart. Below that the chart
-			 * and the identity block stack full width. */
-			@container (min-width: 40rem) {
-				.layout {
-					grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
-				}
-			}
 
 			.chart {
 				display: block;
 				width: 100%;
-				max-width: var(--roxy-chart-max-width, 340px);
+				max-width: var(--roxy-chart-max-width, 30rem);
 				height: auto;
 				margin: 0 auto;
 			}
+			/* On a phone the card padding is a sixth of the width 64 gate numbers have to
+			 * share, so below that point the chart bleeds to the card edge to take it
+			 * back. Only the chart moves; the prose keeps its measure. */
+			@container (max-width: 26rem) {
+				.chart {
+					width: calc(100% + 2 * var(--roxy-space-lg, 1.5rem));
+					margin-inline: calc(-1 * var(--roxy-space-lg, 1.5rem));
+				}
+			}
 
-			/* Body silhouette behind the chart. Theme-aware: a soft warm tint in
-			 * light, a muted fill in dark, with a faint outline that follows the
-			 * border token so it reads on either surface. */
+			/* Body silhouette behind the chart, a soft tint that reads on either surface.
+			 * The centers paint over it, so an open center reads as a cut-out. */
 			.bg-body {
 				fill: color-mix(in srgb, var(--roxy-secondary, #475569) 8%, transparent);
 				stroke: var(--roxy-border, #e4e4e7);
 				stroke-width: 1;
 			}
 
-			/* Every channel is drawn as one line joining its two gates, so the
-			 * wiring always reads as a connected diagram. The faint base shows the
-			 * full 36-channel skeleton; .on thickens it when both gates are active
-			 * (a defined channel); .bg-half lights a single gate's hanging end. */
+			/* Every channel is one connector joining its two gates, each half repainted in
+			 * the colour of the gate at its own end. Both halves lit is a defined channel,
+			 * one half is a hanging gate; neither is asked for separately. */
 			.bg-channel {
-				stroke: var(--roxy-secondary, #475569);
-				stroke-width: 1.6;
-				opacity: 0.3;
-			}
-			.bg-channel.on {
-				stroke-width: 3.4;
+				stroke: var(--roxy-border, #e4e4e7);
+				stroke-width: 5;
 				stroke-linecap: round;
-				opacity: 1;
 			}
 			.bg-half {
-				stroke: var(--roxy-secondary, #475569);
-				stroke-width: 3.2;
+				stroke-width: 5;
 				stroke-linecap: round;
-				opacity: 0.9;
 			}
-			/* Thin leaders connect each center's margin label to its shape so the
-			 * Heart and every other center is identifiable at a glance. */
-			.bg-leader {
-				stroke: var(--roxy-muted, #71717a);
-				stroke-width: 1;
-				opacity: 0.5;
+			/* Personality is the dark half of a bodygraph and Design the red half. Literal
+			 * black cannot survive a dark theme, so Personality follows the foreground
+			 * token; Design reuses the danger red, already tuned for contrast against the
+			 * surface in both themes. */
+			.bg-half.p {
+				stroke: var(--roxy-fg, #0a0a0a);
+			}
+			.bg-half.d {
+				stroke: var(--roxy-danger, #dc2626);
+			}
+			/* A gate BOTH sides activated is one bar in two colours: the Design stroke
+			 * with the Personality stroke dashed over it. */
+			.bg-half.stripe {
+				stroke-linecap: butt;
+				stroke-dasharray: 7 7;
 			}
 
-			/* Centers carry the traditional Human Design semantic colors when
-			 * defined. These stay constant across light and dark, like chart data
-			 * colors. Open centers are transparent with a thin theme-aware outline.
-			 * The defined gate-cluster colors are chosen for >= 4.5:1 contrast with
-			 * the white gate-number halo in both themes. */
+			/* Centers carry the traditional Human Design semantic colors when defined,
+			 * constant across light and dark like chart data colors. An open center takes
+			 * the card surface rather than transparent, so the wiring and the silhouette
+			 * pass behind it as they do on a printed chart. */
 			.bg-center {
-				fill: transparent;
+				fill: var(--roxy-surface, #fff);
 				stroke: var(--roxy-secondary, #475569);
 				stroke-width: 1.8;
 			}
 			.bg-center.defined {
-				stroke: rgba(0, 0, 0, 0.45);
+				stroke: color-mix(in srgb, var(--roxy-fg, #0a0a0a) 45%, transparent);
 			}
 			.bg-center.bg-gold.defined {
 				fill: #e0a200;
@@ -180,24 +200,33 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			.bg-center.bg-brown.defined {
 				fill: #76502f;
 			}
-			.bg-center-label {
-				fill: var(--roxy-muted, #71717a);
-				font-size: 11px;
-				font-family: var(--roxy-font-sans);
+
+			/* All 64 gates are drawn: an unactivated gate is a named position, not an
+			 * absence. Unactivated is an outlined disc in the surface colour, which also
+			 * masks the wiring under it; activated is filled and knocks its number out in
+			 * the surface colour, so it reads on whatever center it lands on. */
+			.bg-gate-dot {
+				fill: var(--roxy-surface, #fff);
+				stroke: var(--roxy-border, #e4e4e7);
+				stroke-width: 1;
 			}
-			/* Gate numbers sit on filled centers, so a halo (white stroke painted
-			 * under the fill via paint-order) keeps them legible on any color. The
-			 * size is tuned to the canonical gate spacing (the closest gates sit ~18
-			 * viewBox units apart) so two-digit numbers never touch. */
-			.bg-gate {
+			.bg-gate-dot.on {
+				stroke: none;
+			}
+			.bg-gate-dot.on.p {
 				fill: var(--roxy-fg, #0a0a0a);
-				font-size: 8px;
+			}
+			.bg-gate-dot.on.d {
+				fill: var(--roxy-danger, #dc2626);
+			}
+			.bg-gate {
+				fill: var(--roxy-muted, #71717a);
+				font-size: ${GATE_FONT_SIZE}px;
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
-				paint-order: stroke;
-				stroke: var(--roxy-bg, #fff);
-				stroke-width: 1.6px;
-				stroke-linejoin: round;
+			}
+			.bg-gate.on {
+				fill: var(--roxy-surface, #fff);
 			}
 
 			.summary {
@@ -222,12 +251,16 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				color: var(--roxy-muted, #71717a);
 			}
-			/* Spans the row so the color key reads as "these are the colors a center
-			 * takes when defined", not a claim about this chart. Without it a red
-			 * Heart swatch reads as contradicting an open (outlined) Heart. */
-			.legend-caption {
+			/* A legend line that owns its own row. The centre-colour caption needs it so
+			 * the key reads as the colours a centre takes when defined rather than a claim
+			 * about this chart; the activation key needs it so the two halves of the
+			 * binary sit together instead of wrapping apart. */
+			.legend-row {
 				flex-basis: 100%;
 				color: var(--roxy-muted, #71717a);
+			}
+			.legend-row .swatch:not(:first-child) {
+				margin-left: var(--roxy-space-md, 1rem);
 			}
 			.legend .swatch {
 				display: inline-block;
@@ -242,7 +275,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			 * the legend reads as a key, not decoration. Open uses the open-center
 			 * outline only. */
 			.legend .swatch.defined {
-				border-color: rgba(0, 0, 0, 0.45);
+				border-color: color-mix(in srgb, var(--roxy-fg, #0a0a0a) 45%, transparent);
 			}
 			.legend .swatch.bg-gold {
 				background: #e0a200;
@@ -255,6 +288,18 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			}
 			.legend .swatch.bg-brown {
 				background: #76502f;
+			}
+			/* The activation key, drawn in the same colours as the gate circles and the
+			 * channel halves so the legend stays a key and not a second palette. */
+			.legend .swatch.side {
+				border-radius: var(--roxy-radius-full, 9999px);
+				border-color: transparent;
+			}
+			.legend .swatch.side.p {
+				background: var(--roxy-fg, #0a0a0a);
+			}
+			.legend .swatch.side.d {
+				background: var(--roxy-danger, #dc2626);
 			}
 
 			.group {
@@ -325,17 +370,20 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		const definedCenters = new Set<BodygraphCenterId>(
 			centers.filter((c) => c.defined).map((c) => c.id as BodygraphCenterId),
 		);
-		const activeGates = new Set<number>(
-			(d.gates ?? []).map((g) => g.gate).filter((n): n is number => n != null),
+		const byGate = groupByGate(d.gates ?? []);
+		const gateSides = new Map<number, GateSides>(
+			[...byGate].map(([gate, list]) => [
+				gate,
+				{
+					personality: list.some((g) => g.side === 'personality'),
+					design: list.some((g) => g.side === 'design'),
+				},
+			]),
 		);
-		const activeChannels = new Set<string>(
-			(d.channels ?? []).map((c) => channelKey(c.gateA, c.gateB)),
-		);
-		const gateTitles = this.buildGateTitles(d.gates ?? []);
-		// The chart reads the same names the accordion below it does, so a Spanish
-		// card cannot draw `Head` in the margin over `Cabeza` in the disclosure. The
-		// SET above is still keyed on `id`, which is the machine value and stays
-		// `solar-plexus` in every language.
+		const gateTitles = this.buildGateTitles(byGate);
+		// The chart reads the same names the accordion does, so one card cannot name a
+		// centre two ways. The set above stays keyed on `id`, the machine value, which
+		// is `solar-plexus` in every language.
 		const centerNames = new Map<BodygraphCenterId, string>(
 			centers.map((c) => [c.id as BodygraphCenterId, display(c, 'name')]),
 		);
@@ -379,8 +427,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 					</desc>
 					${renderBodygraphSvg({
 						definedCenters,
-						activeChannels,
-						activeGates,
+						gateSides,
 						gateTitles,
 						centerNames,
 						stateWords: { defined: this.t('Defined'), open: this.t('Open') },
@@ -395,18 +442,34 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		</div>`;
 	}
 
-	private buildGateTitles(gates: GateActivation[]): Map<number, string> {
+	/** The hover and accessible text for one gate circle, naming every activation on it rather than one. */
+	private buildGateTitles(
+		byGate: ReadonlyMap<number, GateActivation[]>,
+	): Map<number, string> {
 		const titles = new Map<number, string>();
-		for (const g of gates) {
-			if (g.gate == null) continue;
-			const parts: string[] = [this.t('Gate {{gate}}', { gate: g.gate })];
-			if (g.line != null) parts[0] += `.${g.line}`;
-			const gateName = display(g, 'gateName');
-			if (gateName) parts.push(gateName);
-			const glyph = this.gateGlyph(g);
-			if (glyph)
-				parts.push(`${glyph} ${sideWord(g.side, this.translator)}`.trim());
-			titles.set(g.gate, parts.join(' · '));
+		for (const [gate, list] of byGate) {
+			// The line belongs to the activation, not the gate: two bodies on one gate
+			// routinely land on different lines, so each carries its own `gate.line` the
+			// way a printed planet column prints it.
+			const bodies = list.map((g) =>
+				[
+					this.gateGlyph(g),
+					`${gate}${g.line != null ? `.${g.line}` : ''}`,
+					sideWord(g.side, this.translator),
+				]
+					.filter(Boolean)
+					.join(' '),
+			);
+			titles.set(
+				gate,
+				[
+					this.t('Gate {{gate}}', { gate }),
+					display(list[0], 'gateName'),
+					...bodies,
+				]
+					.filter(Boolean)
+					.join(' · '),
+			);
 		}
 		return titles;
 	}
@@ -463,7 +526,15 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		</div>`;
 	}
 
-	/** The color key, built from the chart geometry and named with the response vocabulary, so the four rows can never claim a color the chart does not draw and never name a center in a different language from the accordion. */
+	/**
+	 * The chart key: what an activation colour means, then what a centre colour means.
+	 *
+	 * @remarks
+	 * The centre rows are built from the chart geometry and named with the response
+	 * vocabulary, so they can never claim a colour the chart does not draw and never
+	 * name a centre in a different language from the accordion. The activation row
+	 * leads because it is the half a reader cannot guess.
+	 */
 	private renderLegend(centerNames: ReadonlyMap<BodygraphCenterId, string>) {
 		const named = LEGEND_COLORS.map(
 			(color) =>
@@ -475,7 +546,11 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				] as const,
 		);
 		return html`<div class="legend" part="legend">
-			<span class="legend-caption">${this.t('Center colors when defined. Open centers are outlined.')}</span>
+			<span class="legend-row">
+				<span class="swatch side p"></span>${this.t('Personality')}
+				<span class="swatch side d"></span>${this.t('Design')}
+			</span>
+			<span class="legend-row">${this.t('Center colors when defined. Open centers are outlined.')}</span>
 			${named.map(
 				([color, names]) =>
 					html`<span><span class="swatch bg-${color} defined"></span>${names}</span>`,

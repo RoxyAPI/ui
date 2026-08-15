@@ -135,7 +135,7 @@ const byName = (list: Body[]): Map<string, Body> => {
  * **The response carries real houses, and it did not always.** Every body comes
  * back with a `house` read against the NATAL cusps (a transiting body reports the
  * natal house it is currently passing through) plus a top-level `houseSystem`.
- * Verified live on 2026-08-08: the fourteen natal house numbers reconcile body
+ * The fourteen natal house numbers reconcile body
  * for body with /astrology/natal-chart for the same birth data, and requesting
  * `whole-sign` moves them. An earlier revision of the API did return `1` for
  * every body, and the comment saying so outlived the fix and went on justifying a

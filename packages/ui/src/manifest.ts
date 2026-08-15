@@ -30,7 +30,7 @@ export interface RoxyComponent {
 	topic: string;
 	/**
 	 * True when the component does not consume a typed RoxyAPI response from a
-	 * customer server route. Three cases today:
+	 * consumer server route. Three cases today:
 	 *   - <roxy-data>: pure renderer, accepts any shape, no fetch.
 	 *   - <roxy-location-search>: calls /location/search itself via publishable key.
 	 *   - <roxy-endpoint-form>: introspects the OpenAPI spec, emits roxy-submit.

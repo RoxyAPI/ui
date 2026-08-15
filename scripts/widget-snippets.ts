@@ -2,9 +2,7 @@
  * THE canonical copy-paste snippets for an endpoint-bound component, generated once and read by every surface that shows them.
  *
  * @remarks
- * There used to be two implementations of this: `embedSnippet()` in the demo's `components-manifest.js` and a second one in the roxyapi.com `/widgets` page. Same job, same inputs, and they drifted. The demo shipped the practitioner theme commented out and labelled optional; `/widgets` emitted the `<link>` live, so a site owner copying from the marketing page silently got a restyle they never asked for and nothing on the page said it was a choice.
- *
- * The fix is that the snippet is DATA, produced here and carried in `components-catalog.json`, which is already the cross-repo contract. Consumers render the string; they do not rebuild it. A change to the snippet form therefore reaches the demo, `/widgets` and any future consumer from one edit.
+ * The snippet is DATA, produced here and carried in `components-catalog.json`, which is already the cross-repo contract. Consumers render the string; they do not rebuild it. A change to the snippet form therefore reaches the demo, `/widgets` and any future consumer from one edit.
  *
  * Keep this dependency-free and string-only: it is imported by build scripts and its output is serialized into a published JSON artifact.
  */

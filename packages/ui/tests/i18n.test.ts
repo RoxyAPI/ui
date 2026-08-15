@@ -662,7 +662,7 @@ describe('every localized call site is a string the catalogues carry', () => {
  * @remarks
  * The forward scan reads `t('...')` call sites, so a component that writes `<h2>Transits</h2>` straight into its template has zero findings and ships English in all seven languages. Every gate agreed it was fine: the literal is valid TypeScript, the render is correct, the catalogues are complete, and the component simply never asks for a translation. `transits-table` was the proof, measuring as fully English on a page whose natal chart beside it was fully Spanish.
  *
- * So this is the same inverted scan the form path has carried since 2026-08-12, pointed at the whole library and read through a RATCHET rather than a gate. Measured 2026-08-13: **645 untranslated literals across 55 files**, which is a translation programme and not a commit. The budget freezes that debt where it stands and closes the door behind it, which is the part that matters: a component added tomorrow is not in the table, so its budget is zero and its first hardcoded word is a red test.
+ * So this is the same inverted scan the form path carries, pointed at the whole library and read through a RATCHET rather than a gate. The measured total is a translation programme and not a commit. The budget freezes that debt where it stands and closes the door behind it, which is the part that matters: a component added tomorrow is not in the table, so its budget is zero and its first hardcoded word is a red test.
  *
  * @remarks The detector is `visibleLiterals`, shared with the form-path guard at the bottom of this file. It reads text nodes and human-facing attributes out of every `html` and `svg` template, and anything routed through `t()` is invisible to it for free, because an interpolation collapses before the text is read.
  *
@@ -670,7 +670,7 @@ describe('every localized call site is a string the catalogues carry', () => {
  */
 describe('a component may not write its own words, and the debt only shrinks', () => {
 	/**
-	 * Frozen debt, measured 2026-08-13. Path under `src` to the number of user-visible literals that component still writes itself.
+	 * Frozen debt. Path under `src` to the number of user-visible literals that component still writes itself.
 	 *
 	 * **A file absent from this table must have ZERO, and that is the whole point of the guard.** A number here may only go DOWN, and lowering it is the bookkeeping that puts the repair in the diff: paying a file off and leaving its row stale would let the debt creep back up under a budget nobody re-read. Delete the row when it reaches zero.
 	 *
@@ -746,7 +746,7 @@ describe('a component may not write its own words, and the debt only shrinks', (
 
 	test('no file writes more untranslated copy than its frozen budget', async () => {
 		const measured = await measure();
-		// Not vacuous in the direction that matters: a detector that silently stopped
+		// Not vacuous in the direction that matters: a detector that stopped
 		// finding anything reports every budgeted file as improved and fails below.
 		expect((await sourceFiles()).length).toBeGreaterThan(60);
 
@@ -934,10 +934,10 @@ describe('a component renders its chrome in the page language', () => {
 	});
 
 	/**
-	 * `<roxy-data>`, which shipped with ZERO `t()` calls while it was recorded everywhere as done.
+	 * `<roxy-data>`, which is easy to record as done while it still holds zero `t()` calls.
 	 *
 	 * @remarks
-	 * It is the generic fallback every unbound endpoint renders through, so it is the component a Spanish site is most likely to be looking at, and it was the WORST case rather than a missing nicety: `foldLocalized` already runs inside its `suppress()` funnel, so it was printing `Sol` and `Piscis` under `Yes`, `No` and `31 rows` in English. Spanish values under English chrome is the state `docs/authoring.md` says is worse than all-English, and this component had been in it since the fold landed.
+	 * It is the generic fallback every unbound endpoint renders through, so it is the component a Spanish site is most likely to be looking at, and it was the WORST case rather than a missing nicety: `foldLocalized` already runs inside its `suppress()` funnel, so it can print `Sol` and `Piscis` under `Yes`, `No` and `31 rows` in English. Translated values under English chrome is the state that reads worse than all-English.
 	 *
 	 * What is NOT asserted here, because it cannot be fixed here: the column HEADINGS. They come from the wire field name through `humanize()`, so they are derived rather than literal and no catalogue keyed on English source text can reach them. That is the shared field-name-to-label artifact `<roxy-endpoint-form>` needs too.
 	 */
@@ -991,7 +991,7 @@ describe('a component renders its chrome in the page language', () => {
 	});
 
 	/**
-	 * The transit wheel, which is the second half of the practitioner card and shipped with ZERO `t()` calls while the natal chart beside it had 32. A Spanish agency selling a Spanish natal card over an English transit wheel is the exact half-translated state this whole feature exists to remove.
+	 * The transit wheel, the second half of the practitioner card. A Spanish natal card over an English transit wheel is the half-translated state this feature exists to remove.
 	 */
 	test('the transit wheel reads Spanish from the page language alone', async () => {
 		document.documentElement.lang = 'es-AR';
@@ -1221,7 +1221,7 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 	 * The cross-tab axes are the one vocabulary the CATALOGUE owns, and this is the assertion that keeps that safe.
 	 *
 	 * @remarks
-	 * The 4x3 grid is the component's own construction, so six of its seven headers have no field in the response to defer to and the seventh, the dominant pair, would have been the only translated word in the table. They were left English for that reason and a Spanish customer circled the grid and wrote TRANSLATE on it.
+	 * The 4x3 grid is the component's own construction, so six of its seven headers have no field in the response to defer to and the seventh, the dominant pair, would have been the only translated word in the table. Left English, they are the one block on a translated card that still reads English.
 	 *
 	 * Translating them re-opens exactly one risk: the dominant element and modality DO come back localized, they are rendered as a pill directly above this grid, and the grid tints the matching row and column. So the catalogue and the API have to say the same word or one card reads `Elemento dominante: Agua` over a row headed something else. This test renders both and asserts they meet.
 	 */
@@ -1263,7 +1263,7 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 	 * Every catalogue against the words the API itself returns, not just the Spanish one on a render.
 	 *
 	 * @remarks
-	 * Captured live from `/astrology/natal-chart?lang=` on 2026-08-09, one chart per dominant pair, plus `/astrology/signs?lang=` for the elements. A hardcoded table rather than a live call, for the reason the oracles cross into `gold-standard`: the NUMBERS travel, the dependency does not. Re-run those two endpoints if a value here is ever disputed.
+	 * Captured live from `/astrology/natal-chart?lang=`, one chart per dominant pair, plus `/astrology/signs?lang=` for the elements. A hardcoded table rather than a live call, for the reason the oracles cross into `gold-standard`: the NUMBERS travel, the dependency does not. Re-run those two endpoints if a value here is ever disputed.
 	 */
 	test('every catalogue names the elements and modalities the way the API does', async () => {
 		const API_VOCAB: Record<string, Record<string, string>> = {
@@ -1494,11 +1494,11 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
  * Human Design, the second domain to serve both halves, and the one where the change was a REPAIR rather than a feature.
  *
  * @remarks
- * All eleven Human Design operations stopped translating their machine identifiers in place on 2026-08-09 and began echoing the display copy beside them instead. That fixed two real defects here: `PLANET_GLYPH` is keyed on the canonical English body, so an activation row used to print the bare word where the glyph belongs on every translated page, and the bodygraph SVG paints its own centre labels, so the chart said `Head` while the accordion under it said `Cabeza`. It also left this card reading English vocabulary until the components were told which copy is which, which is what these tests pin.
+ * All eleven Human Design operations keep their machine identifiers English and echo the display copy beside them. Two things depend on the components reading the right half: `PLANET_GLYPH` is keyed on the canonical English body, so a translated activation row prints the bare word where the glyph belongs if the lookup follows the display copy, and the bodygraph SVG paints its own centre names, so the chart and the accordion under it can name one centre two ways. These tests pin both.
  *
  * Asserted per SITE, never once per card: a body draws its glyph in the chart tooltip and in its activation row, and a centre name appears in the chart margin, in the colour legend and in its disclosure, so a single whole-card `toContain` is satisfied by any one of them (lesson 31).
  *
- * The vocabulary below is what `/human-design/bodygraph?lang=es` and `?lang=ru` returned on 2026-08-09, captured live rather than invented, so a fixture cannot drift into asserting a translation the API does not serve.
+ * The vocabulary below is what `/human-design/bodygraph?lang=es` and `?lang=ru` return, captured live rather than invented, so a fixture cannot drift into asserting a translation the API does not serve.
  */
 describe('the Human Design cards read the display half and key on the English one', () => {
 	const CENTERS: ReadonlyArray<readonly [string, string, string, boolean]> = [
@@ -1643,6 +1643,10 @@ describe('the Human Design cards read the display half and key on the English on
 			(g) => CENTERS.find(([id]) => id === g.id)?.[which] ?? '',
 		);
 
+	/** What the chart calls each centre. The name lives in the shape's `<title>`, which reads `Name: State`, so the state word is trimmed off the end. */
+	const chartCentreNames = (root: ShadowRoot): string[] =>
+		textsAt(root, '.bg-center title').map((t) => t.replace(/: [^:]*$/, ''));
+
 	test('the bodygraph prints the localized body, centre, channel and gate names', async () => {
 		const el = await mount('roxy-bodygraph', HD_BOTH, 'es-AR');
 		const rendered = text(el);
@@ -1667,7 +1671,7 @@ describe('the Human Design cards read the display half and key on the English on
 	test('and every glyph still resolves, because the lookup stayed on the English body', async () => {
 		// The load-bearing assertion. `planetGlyph` is keyed on the canonical name,
 		// so pointing it at `planetLocalized` draws a chart with no glyphs on it, in
-		// Spanish only, which is exactly the defect the API change repaired.
+		// Spanish only, which is exactly what keying on the canonical half prevents.
 		const el = await mount('roxy-bodygraph', HD_BOTH, 'es-AR');
 		const root = shadow(el);
 		expect(textsAt(root, '.interp-card .glyph')).toEqual(['☉']);
@@ -1684,22 +1688,21 @@ describe('the Human Design cards read the display half and key on the English on
 		expect(text(el)).toContain('Tierra');
 		expect(text(el)).not.toContain('Earth');
 		// The chart tooltip pairs the glyph with the localized gate name.
-		const gateTitle = [...shadow(el).querySelectorAll('.bg-gate title')].map(
-			(n) => n.textContent ?? '',
-		);
+		const gateTitle = [
+			...shadow(el).querySelectorAll('.bg-gate-node title'),
+		].map((n) => n.textContent ?? '');
 		expect(
 			gateTitle.some((t) => t.includes('Misterio') && t.includes('☉')),
 		).toBe(true);
 		el.remove();
 	});
 
-	test('the chart margin, the colour legend and the accordion name a centre the same way', async () => {
-		// The defect that made this necessary: the SVG paints its own labels, so a
-		// Spanish card read `Head` on the chart against `Cabeza` in the disclosure
-		// directly below it. Asserted at all three sites.
+	test('the chart, the colour legend and the accordion name a centre the same way', async () => {
+		// The SVG paints its own text, so a centre can be named two ways on one card.
+		// Asserted at all three sites; the chart's is each shape's accessible name.
 		const el = await mount('roxy-bodygraph', HD_BOTH, 'es-AR');
 		const root = shadow(el);
-		expect(textsAt(root, '.bg-center-label')).toEqual(chartOrder(2));
+		expect(chartCentreNames(root)).toEqual(chartOrder(2));
 		expect(textsAt(root, '.legend span')).toContain('Cabeza, Centro G');
 		expect(textsAt(root, '.legend span')).toContain(
 			'Garganta, Bazo, Plexo Solar, Raíz',
@@ -1713,28 +1716,9 @@ describe('the Human Design cards read the display half and key on the English on
 		el.remove();
 	});
 
-	test('a centre name too long for the margin is compressed, never clipped', async () => {
-		// `Солнечное сплетение` is what the API returns for ru, 19 characters against
-		// the 12 of `Solar Plexus`, and the outermost `<svg>` clips at the viewport,
-		// so an overrun reads as a truncated word and no layout gate can see it
-		// (`layout.e2e.ts` skips every node inside an SVG).
-		const long = {
-			...HD_BOTH,
-			centers: HD_BOTH.centers.map((c) =>
-				c.id === 'solar-plexus'
-					? { ...c, nameLocalized: 'Солнечное сплетение' }
-					: c,
-			),
-		};
-		const el = await mount('roxy-bodygraph', long, 'ru');
-		const labels = [...shadow(el).querySelectorAll('.bg-center-label')];
-		const squeezed = labels.filter((n) => n.hasAttribute('textLength'));
-		expect(squeezed.map((n) => n.textContent?.trim())).toEqual([
-			'Солнечное сплетение',
-		]);
-		expect(squeezed[0]?.getAttribute('lengthAdjust')).toBe('spacingAndGlyphs');
-		el.remove();
-	});
+	// The chart paints no centre name, so no translated name can overrun it and there
+	// is nothing to fit here. A translated name's width is the card's problem, which
+	// `layout.e2e.ts` measures for every component.
 
 	test('an English bodygraph, which carries no localized field, is unchanged', async () => {
 		const el = await mount('roxy-bodygraph', HD_ENGLISH);
@@ -1743,7 +1727,7 @@ describe('the Human Design cards read the display half and key on the English on
 		expect(rendered).toContain('Generator');
 		expect(rendered).toContain('Rhythm');
 		expect(rendered).toContain('Mystery');
-		expect(textsAt(root, '.bg-center-label')).toEqual(chartOrder(1));
+		expect(chartCentreNames(root)).toEqual(chartOrder(1));
 		expect(textsAt(root, '.interp-card .glyph')).toEqual(['☉']);
 		// The one name the API never localizes prints as sent in both languages.
 		expect(rendered).toContain('Left Angle Cross of the Clarion');
@@ -1871,7 +1855,7 @@ describe('the Human Design cards read the display half and key on the English on
 	 * The rule that keeps the two halves of this feature from separating again.
 	 *
 	 * @remarks
-	 * A component that prints `nameLocalized` under headings it never translated renders Spanish data under English chrome, which `docs/authoring.md` calls worse than consistent English. That is a judgement no type can carry, so it is a source scan: reading `utils/localized.js` obliges a component to have chrome of its own. It is why `roxy-hd-connection` and `roxy-hd-penta` are untouched, and why touching them means translating their chrome in the same change.
+	 * A component that prints `nameLocalized` under headings it never translated renders translated data under English chrome, which reads worse than consistent English. That is a judgement no type can carry, so it is a source scan: reading `utils/localized.js` obliges a component to have chrome of its own. It is why `roxy-hd-connection` and `roxy-hd-penta` are untouched, and why touching them means translating their chrome in the same change.
 	 */
 	test('no component reads the localized vocabulary without chrome of its own', async () => {
 		const base = 'packages/ui/src/components';
@@ -1966,7 +1950,7 @@ describe('the form path writes no untranslated words', () => {
 	 * The group names, which no literal scan can see either, and which the SPEC decides.
 	 *
 	 * @remarks
-	 * `{{group}}` used to interpolate a raw `humanize()` of the wire name, so a Portuguese form read `Local de Natal Chart`. The set is closed, so it is catalogued, but "closed" is a fact about the spec rather than about this library: a tenth object-valued property or a new `xLatitude`/`xLongitude` prefix adds a group name with no catalogue entry, and the form would print it in English on seven translated sites. Deriving the list here rather than restating it is what makes that a red test instead of a customer screenshot.
+	 * Interpolating a raw `humanize()` of the wire name into `{{group}}` gives a Portuguese form reading `Local de Natal Chart`. The set is closed, so it is catalogued, but "closed" is a fact about the spec rather than about this library: a tenth object-valued property or a new `xLatitude`/`xLongitude` prefix adds a group name with no catalogue entry, and the form would print it in English on seven translated sites. Deriving the list here rather than restating it is what makes that a red test instead of a live surprise.
 	 */
 	test('every group name the spec can produce is carried by all seven catalogues', async () => {
 		const doc = (await Bun.file('specs/openapi.json').json()) as SpecDoc;

@@ -1326,7 +1326,7 @@ describe('roxy-data folds a localized field into the field it translates', () =>
 });
 
 /**
- * `roxy-data` and the WordPress plugin's `GenericRenderer.php` render the SAME responses for the same visitor: this component when JavaScript runs, the PHP renderer when it does not. `roxy-data` used to print everything the API returned, so a WordPress reading card showed the derivation math, the schema discriminator and the pagination counters whenever JS was ON, and hid them when JS was OFF. The JS path, which is the path almost every visitor takes, was the worse one.
+ * `roxy-data` and the WordPress plugin's `GenericRenderer.php` render the SAME responses for the same visitor: this component when JavaScript runs, the PHP renderer when it does not. Printing everything the API returns shows a WordPress reading card the derivation math, the schema discriminator and the pagination counters whenever JS is ON, and hides them when JS is OFF, which makes the JS path, the path almost every visitor takes, the worse one.
  *
  * The payload below is the real shape of `/numerology/life-path`, verified live.
  */
@@ -4655,7 +4655,7 @@ describe('hide-readings', () => {
 	 * directions.
 	 *
 	 * @remarks
-	 * A live customer read this block as an interpretation that `hide-readings`
+	 * This block reads as an interpretation that `hide-readings`
 	 * should have taken away, and the block does keep its labels. That is the
 	 * documented contract rather than a miss: a T-Square is a geometric fact about
 	 * where the bodies sit, so the figure, the element and modality it pivots on,

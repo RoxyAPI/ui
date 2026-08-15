@@ -188,7 +188,7 @@ jobs:
           # ANNOTATED ones, so this pushes the commit and silently drops the tag. Tagging
           # actually happens server-side in the `action-gh-release` step below, via
           # `tag_name`, which is why every tag on this remote is lightweight (no `^{}`
-          # dereference line in `git ls-remote --tags`). Verified 2026-08-05 after the same
+          # dereference line in `git ls-remote --tags`). Confirmed after the same
           # two lines were found losing every tag in a sibling repo that has no Release step.
           # So do NOT remove `action-gh-release` or replace it with a plain `git push`
           # believing this covers tagging. Cleanup tracked; not touched on a release day.
@@ -252,12 +252,10 @@ jobs:
         uses: actions/deploy-pages@v5
 
   # Publishing to npm is NOT shipping. `@latest` resolves per FILE, so a release can go
-  # half-live and stay that way silently: on 2026-08-12, twelve hours after 0.27.2 and
-  # 0.27.3 published, the CDN still served `roxy-ui.js` at 0.27.1 while the locale
-  # catalogues had already moved, so every hosted embed ran a bundle older than the strings
-  # it was loading and rendered untranslated in all seven languages. npm looked correct
-  # throughout and nothing errored. It was a hand-typed runbook step, and it was missed on
-  # two consecutive releases, so it is automated.
+  # half-live and stay that way silently: the CDN can still serve the bundle at an older
+  # version while the locale catalogues have already moved, which leaves a hosted embed
+  # running code older than the strings it loads. npm reads correct throughout and nothing
+  # errors, so the purge is automated rather than left to a hand-typed step.
   #
   # It is a SEPARATE JOB, and deliberately not a step at the end of `release`. The purge can
   # only run after `npm publish`, but a CDN hiccup must never strand the release: as a step

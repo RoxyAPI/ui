@@ -5,7 +5,7 @@
  * **The key IS the canonical English string**, folded through {@link lookupKey}. There is no invented key vocabulary to keep in sync with the copy, which is the same rule the glyph tables in `tokens/index.ts` follow (they key off the exact value the API returns). Two consequences that are the whole point:
  *
  * - **English costs zero bytes.** A miss returns the source string, so the English build ships no catalogue at all, and a site that never loads a locale payload is byte-identical to one built before this file existed.
- * - **A missing translation degrades to English, never to a key.** The failure mode of a keyed catalogue is a raw `natal.tabs.wheel` rendered at a customer; here the worst case is the English word.
+ * - **A missing translation degrades to English, never to a key.** The failure mode of a keyed catalogue is a raw `natal.tabs.wheel` on the page; here the worst case is the English word.
  *
  * **The registry lives on `globalThis`, not in module scope, because it has to.** Every `dist/cdn/components/*.js` is a self-contained IIFE with its own copy of this module, so a `Map` here would be invisible to the second component on the page. One global object, written by the locale payload and read by every bundle, is what makes `dist/cdn/locales/es.js` a single download that translates all of them.
  *

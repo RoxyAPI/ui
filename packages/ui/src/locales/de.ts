@@ -12,7 +12,7 @@
  *
  * **`Apex` is a false friend and stays banned.** German astrology already has an Apex, the direction of the solar system's motion near 2 degrees Capricorn, and it is not the focal planet of a figure.
  *
- * **The focal planet is `Fokus`, corrected 2026-08-09 from `Spitze`.** `Spitze` was defensible German and was ALSO this file's word for a house cusp (`Spitze des ersten Hauses`), so one file was asking a reader to hold two senses of it. `Brennpunkt` is the same concept at ten characters if the chip ever has room.
+ * **The focal planet is `Fokus`, not `Spitze`.** `Spitze` is defensible German but is ALSO this file's word for a house cusp (`Spitze des ersten Hauses`), so one file was asking a reader to hold two senses of it. `Brennpunkt` is the same concept at ten characters if the chip ever has room.
  *
  * `Aspekttabelle` beats `Aspektarium` for the grid on transparency rather than correctness: both are real, and only one needs no gloss.
  *

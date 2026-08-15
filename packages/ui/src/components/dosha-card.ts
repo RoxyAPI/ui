@@ -240,7 +240,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 		if (!d.effects || this.hideReadings) return nothing;
 		// Effects mix flat string fields (marriage, career...) with a nested map
 		// (Sadhesati effects.phases: { Rising, Peak, Setting }). Render both; the
-		// old string-only filter silently dropped the phase-specific effects, which
+		// a string-only filter would drop the phase-specific effects, which
 		// are the substance of a Sade Sati reading.
 		const sections: unknown[] = [];
 		for (const [key, value] of Object.entries(

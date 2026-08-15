@@ -958,7 +958,7 @@ describe('roxy-transit-wheel', () => {
 	});
 
 	/**
-	 * The reason this component exists for the customer buying it: the graphic
+	 * The reason this component exists on the page: the graphic
 	 * without the report. Every word of prose leaves the DOM and every number,
 	 * glyph and line stays.
 	 */

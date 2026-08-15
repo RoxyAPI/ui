@@ -4,9 +4,9 @@
  * consistent.
  *
  * @remarks
- * **Every table here is keyed by {@link lookupKey} and read ONLY through the accessor beside it.** The raw records are deliberately not exported: a component that indexes a record directly has to guess the key convention, and a guessed spelling is what shipped `No North Node R`, `So South Node R` and `Bl Black Moon Lilith` into a live customer's natal chart. The API returns `North Node` with a space; the table was keyed `North node`, the spelling {@link capitalize} happens to produce, so every call site that forgot to call `capitalize` first missed the table.
+ * **Every table here is keyed by {@link lookupKey} and read ONLY through the accessor beside it.** The raw records are deliberately not exported: a component that indexes a record directly has to guess the key convention, and a guessed spelling renders `No North Node R`, `So South Node R` and `Bl Black Moon Lilith` on a live chart. The API returns `North Node` with a space, while {@link capitalize} produces `North node`, so a call site that indexes without normalising misses the table.
  *
- * **A miss returns `undefined`, never a manufactured abbreviation.** The old `?? name.slice(0, 2)` fallback is what made the defect survive review: a failed lookup renders as a plausible two-letter code that reads exactly like an intentional abbreviation, so nothing about the output says "this is broken". A caller that can omit the glyph should omit it (`?? ''`); a caller that must show something falls back to the FULL name, which is visibly wrong at the size these slots are drawn.
+ * **A miss returns `undefined`, never a manufactured abbreviation.** A `?? name.slice(0, 2)` fallback renders a failed lookup as a plausible two-letter code that reads exactly like an intentional abbreviation, so nothing about the output says it is broken. A caller that can omit the glyph should omit it (`?? ''`); a caller that must show something falls back to the FULL name, which is visibly wrong at the size these slots are drawn.
  *
  * `tests/tokens.test.ts` resolves every body, sign and aspect name the committed spec can emit against these tables, so a vocabulary the API gains cannot ship unglyphed.
  */

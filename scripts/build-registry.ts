@@ -2,7 +2,7 @@
 /**
  * Emit shadcn registry JSON entries. Output to registry/{name}.json. Each
  * entry ships a small React wrapper (.tsx) that re-exports the component
- * from @roxyapi/ui-react so the customer ends up with a starter file they
+ * from @roxyapi/ui-react so the consumer ends up with a starter file they
  * own and can customize.
  *
  * Install path:
@@ -154,8 +154,8 @@ export default ${pascal};
 const GENERIC_SDK_HINT =
 	'const { data } = await roxy.someDomain.someMethod({ body: await req.json() });';
 
-// SDK method names verified against @roxyapi/sdk v1.x sdk.gen.d.ts on
-// 2026-05-10. Update when the SDK renames a method.
+// SDK method names track @roxyapi/sdk v1.x `sdk.gen.d.ts`. Update when the SDK
+// renames a method.
 const SDK_USAGE_HINT: Record<string, string> = {
 	'natal-chart':
 		'const { data } = await roxy.astrology.generateNatalChart({ body: await req.json() });',
@@ -211,7 +211,7 @@ const SDK_USAGE_HINT: Record<string, string> = {
 
 const GENERIC_SELF_FETCHING_WIRING = `This component handles its own data flow. No server route is required.`;
 
-// Wiring docs for the three self-fetching components. Customer integration
+// Wiring docs for the three self-fetching components. Consumer integration
 // path is different for each: data is a pure renderer, location-search calls
 // /location/search directly with a publishable key, endpoint-form emits a
 // roxy-submit event the consumer handles.
@@ -276,7 +276,7 @@ async function main() {
 			title: pascal,
 			description,
 			// @roxyapi/sdk is referenced in the JSDoc only, not imported by the
-			// wrapper file. Customers add it themselves when they implement the
+			// wrapper file. Consumers add it themselves when they implement the
 			// route handler. Listing it here would force the SDK install once
 			// per component (npm dedupes, but the package.json gets noisy).
 			dependencies: ['@roxyapi/ui-react'],

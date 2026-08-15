@@ -21,9 +21,12 @@ const SHOT_URL = `${PREVIEW_BASE_URL}/shot.html`;
 const THEMES = ['light', 'dark'] as const;
 
 /**
- * Per-slug presentation tuning. `scale` multiplies the mounted component (top-anchored, so it grows into the bottom bleed) when a component renders too small to fill the stage. Presentation only: the stage stays 600x400, so the output is always 1200x800.
+ * Per-slug presentation tuning. `scale` multiplies the mounted component (top-anchored, so it grows into the bottom bleed) when a component renders too small to fill the stage, or SHRINKS one that is too tall for its own tile to be recognisable. Presentation only: the stage stays 600x400, so the output is always 1200x800.
  */
 const OVERRIDES: Record<string, { scale?: number }> = {
+	// Half again taller than it is wide, so at 1x the tile frames only the crown. A
+	// thumbnail has to be recognisable at rail size rather than legible.
+	bodygraph: { scale: 0.5 },
 	// Compact single-value cards read as lost in the stage at 1x; lift them so the
 	// render fills the frame and still bleeds off the bottom.
 	'moon-phase': { scale: 1.15 },

@@ -2,7 +2,7 @@
  * Resolve a crystal colour keyword to a paintable CSS colour.
  *
  * @remarks
- * Two thirds of the 92 colour values the crystals API serves are COMPOUNDS ("blue-green", "pale brass-yellow", "deep brownish red"), and a compound is never a valid CSS colour, so painting the raw string leaves the swatch blank. Both crystal components used to carry their own copy that merely lowercased and stripped spaces, which turns "apple green" into `applegreen` and blanks just the same. One resolver now serves both.
+ * Two thirds of the 92 colour values the crystals API serves are COMPOUNDS ("blue-green", "pale brass-yellow", "deep brownish red"), and a compound is never a valid CSS colour, so painting the raw string leaves the swatch blank. Lowercasing and stripping spaces is not enough either, since that turns "apple green" into `applegreen` and blanks just the same. One resolver serves both crystal components.
  */
 
 /**

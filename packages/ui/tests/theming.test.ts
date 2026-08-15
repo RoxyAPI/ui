@@ -105,7 +105,7 @@ describe('theming contract', () => {
 	test('every library selector has ZERO specificity via :where()', () => {
 		// Without this, `:root.dark` and `[data-theme="dark"]` (0,1,1) outrank a
 		// consumer's plain `:root` (0,1,0), so their brand accent survived under
-		// prefers-color-scheme and was silently reverted to amber under the other two
+		// prefers-color-scheme and reverts to amber under the other two
 		// dark signals: one override, three different results.
 		expect(TOKENS_CSS).toContain(':where(:root, :host)');
 		expect(TOKENS_CSS).toMatch(/:where\(\s*:root\[data-theme="dark"\]/);

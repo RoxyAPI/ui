@@ -367,7 +367,7 @@ npm install @roxyapi/ui
 	};
 	// The README a package SHIPS must name that package. Every wrapper used to ship
 	// the umbrella README, titled "# @roxyapi/ui" with an npm badge pointing at the
-	// wrong package, so a customer who opened @roxyapi/ui-vue on npm read the docs
+	// wrong package, so a reader who opened @roxyapi/ui-vue on npm got the docs
 	// for a package they had not installed.
 	const pkgName: Record<string, string> = {
 		'packages/ui': '@roxyapi/ui',

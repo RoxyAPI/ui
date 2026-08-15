@@ -21,7 +21,7 @@ import { API_LANGUAGES } from '../generated/api-languages.js';
  * 3. `document.documentElement.lang`, which is what makes this work on a real CMS with no markup change at all: WordPress emits `<html lang="es-AR">` on every page of a Spanish site,
  * 4. nothing, which the callers read as English.
  *
- * Only link 1 used to be implemented, so a component on a fully Spanish page rendered English chrome and there was no way to fix it except hand-editing every embed.
+ * All four links matter: with only the first, a component on a fully Spanish page renders English chrome and the only remedy is hand-editing every embed.
  *
  * `navigator.language` is deliberately NOT in the chain. It is the VISITOR's preference, not the site's: it fragments the API cache across every locale a visitor might carry and silently serves two people different content from the same URL.
  *

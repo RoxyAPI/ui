@@ -12,7 +12,7 @@ import { lookupKey } from '../src/utils/string.js';
  * Glyph coverage, derived from the committed spec rather than from a list somebody keeps.
  *
  * @remarks
- * The defect this exists to stop shipped live: `PLANET_GLYPH` was keyed `North node`, the spelling `capitalize` happens to produce, while the API returns `North Node`. Every call site that reached the table without first calling `capitalize` missed, fell through to `name.slice(0, 2)`, and drew `No North Node R`, `So South Node R` and `Bl Black Moon Lilith` in the retrograde row of a customer's natal chart. Nothing failed: the fabricated code reads exactly like a deliberate abbreviation.
+ * What this stops: a table keyed `North node`, the spelling `capitalize` produces, against an API that returns `North Node`. Every call site reaching the table without normalising misses, falls through to `name.slice(0, 2)`, and draws `No North Node R`, `So South Node R` and `Bl Black Moon Lilith` in the retrograde row of a live chart. Nothing fails: the fabricated code reads exactly like a deliberate abbreviation.
  *
  * Same shape as the sidereal-frame guard in `bindings.test.ts` and for the same reason (lesson 23): a coverage requirement policed by a hand-kept list of qualifying values will miss the next value the API adds. This scans every `enum` and `example` array in the spec, classifies each by whether it is a planet, sign or aspect vocabulary, and requires every member to resolve. A fourteenth body added upstream fails here on the next spec refresh.
  */

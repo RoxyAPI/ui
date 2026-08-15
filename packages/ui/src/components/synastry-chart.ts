@@ -19,7 +19,7 @@ import { capitalize } from '../utils/string.js';
  * A planet as the synastry response now returns it.
  *
  * @remarks
- * Was `NatalChartResponse['planets'][number]`, because `/astrology/synastry` did not return positions and a caller had to merge two natal responses in by hand. The endpoint returns them as of 2026-07-26, so the wheel is drawable from ONE call. The synastry shape is the plotting subset (no `interpretation`, `speed` or `latitude`); the wheel only ever read `name`, `longitude` and `isRetrograde`, so nothing is lost.
+ * Was `NatalChartResponse['planets'][number]`, because `/astrology/synastry` did not return positions and a caller had to merge two natal responses in by hand. The endpoint returns them, so the wheel is drawable from ONE call. The synastry shape is the plotting subset (no `interpretation`, `speed` or `latitude`); the wheel only ever read `name`, `longitude` and `isRetrograde`, so nothing is lost.
  */
 type PlanetEntry = CalculateSynastryResponse['person1']['planets'][number];
 type InterAspect = CalculateSynastryResponse['interAspects'][number];

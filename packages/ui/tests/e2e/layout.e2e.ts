@@ -101,7 +101,7 @@ for (const vp of WIDTHS) {
  * The same three widths, asked of the DOCUMENT rather than of each host.
  *
  * @remarks
- * The check above measures a card against its own host, which is the defect it was
+ * The check above measures a card against its own host, which is the shape it was
  * written for and is structurally blind to the one an embedder hits first: a page
  * that scrolls sideways passes it as long as every card is individually contained.
  * The showcase constrains its demo cards, so a component that blows out a BARE

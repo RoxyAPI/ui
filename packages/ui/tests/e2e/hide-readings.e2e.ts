@@ -305,7 +305,7 @@ test('hide-readings does something on every component that promises it, and noth
 	).toEqual([]);
 
 	// Nothing else moved: a component that starts honouring the attribute has to
-	// be written into HONOURS and into the docs, not discovered by a customer.
+	// be written into HONOURS and into the docs, not discovered at runtime.
 	expect([...changed].filter((t) => !HONOURS.includes(t)).sort()).toEqual([]);
 
 	// And the documented no-op really is one.
