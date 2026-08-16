@@ -635,6 +635,13 @@
                 "example": 27.24,
                 "description": "Absolute ecliptic longitude of the Part of Fortune (0-360)."
               },
+              "house": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12,
+                "example": 8,
+                "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
+              },
               "sect": {
                 "type": "string",
                 "enum": [
@@ -654,6 +661,7 @@
               "sign",
               "degree",
               "longitude",
+              "house",
               "sect"
             ],
             "description": "Part of Fortune (Lot of Fortune). A point derived from the Ascendant and the two luminaries that marks an area of ease, vitality, and material wellbeing in the chart."
@@ -680,6 +688,13 @@
                 "example": 162.9,
                 "description": "Absolute ecliptic longitude of the Vertex (0-360)."
               },
+              "house": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12,
+                "example": 6,
+                "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
+              },
               "signLocalized": {
                 "type": "string",
                 "example": "Cáncer",
@@ -689,7 +704,8 @@
             "required": [
               "sign",
               "degree",
-              "longitude"
+              "longitude",
+              "house"
             ],
             "description": "Vertex. The western intersection of the prime vertical with the ecliptic, often read as a point of fated encounters and turning-point relationships. The opposite point is the Anti-Vertex."
           },
@@ -2078,13 +2094,13 @@
                   "properties": {
                     "longitude": {
                       "type": "number",
-                      "example": -71.23,
-                      "description": "Constant geographic longitude of this vertical meridian line in decimal degrees. The body culminates (MC) or anti-culminates (IC) along it, so plot it as a straight north to south line."
+                      "example": -111.0142,
+                      "description": "Constant geographic longitude of this vertical meridian line in decimal degrees. The body culminates (MC) along it, so plot it as a straight north to south line."
                     },
                     "interpretation": {
                       "type": "string",
                       "example": "Your Sun Midheaven line runs through places where Self-awareness and ego comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
-                      "description": "Plain language meaning of this meridian planetary line for relocation, suitable for chart reports and AI agents."
+                      "description": "Plain language meaning of this Midheaven planetary line for relocation, suitable for chart reports and AI agents."
                     }
                   },
                   "required": [
@@ -2098,13 +2114,13 @@
                   "properties": {
                     "longitude": {
                       "type": "number",
-                      "example": -71.23,
-                      "description": "Constant geographic longitude of this vertical meridian line in decimal degrees. The body culminates (MC) or anti-culminates (IC) along it, so plot it as a straight north to south line."
+                      "example": 68.9858,
+                      "description": "Constant geographic longitude of this vertical meridian line in decimal degrees. The body anti-culminates (IC) along it, so plot it as a straight north to south line."
                     },
                     "interpretation": {
                       "type": "string",
-                      "example": "Your Sun Midheaven line runs through places where Self-awareness and ego comes forward in your public life, career, and reputation. Living or working along this line tends to push this part of you into the spotlight.",
-                      "description": "Plain language meaning of this meridian planetary line for relocation, suitable for chart reports and AI agents."
+                      "example": "Your Sun Imum Coeli line runs through places where Self-awareness and ego settles into your home, family, and inner foundations. This line deepens your sense of roots and private life.",
+                      "description": "Plain language meaning of this Imum Coeli planetary line for relocation, suitable for chart reports and AI agents."
                     }
                   },
                   "required": [
@@ -2128,8 +2144,8 @@
                           },
                           "longitude": {
                             "type": "number",
-                            "example": -71.42,
-                            "description": "Geographic longitude in decimal degrees where the body sits exactly on the horizon at this latitude."
+                            "example": 139.7118,
+                            "description": "Geographic longitude in decimal degrees where the body sits exactly on the eastern (rising) horizon at this latitude."
                           }
                         },
                         "required": [
@@ -2137,20 +2153,20 @@
                           "longitude"
                         ]
                       },
-                      "description": "Sampled geographic points tracing this rising or setting line from 70 South to 70 North. Join them in latitude order to draw the curved planetary line on a world map."
+                      "description": "Sampled geographic points tracing this rising line from 70 South to 70 North. Join them in latitude order to draw the curved planetary line on a world map."
                     },
                     "circumpolarBeyond": {
                       "type": [
                         "number",
                         "null"
                       ],
-                      "example": 66.56,
+                      "example": 68.5262,
                       "description": "Absolute latitude in degrees beyond which the body never crosses the horizon, so the line has no points past it. Null when the line spans the full sampled range."
                     },
                     "interpretation": {
                       "type": "string",
                       "example": "Your Sun Ascendant line runs through places where Self-awareness and ego colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
-                      "description": "Plain language meaning of this rising or setting planetary line for relocation, suitable for chart reports and AI agents."
+                      "description": "Plain language meaning of this rising (Ascendant) planetary line for relocation, suitable for chart reports and AI agents."
                     }
                   },
                   "required": [
@@ -2175,8 +2191,8 @@
                           },
                           "longitude": {
                             "type": "number",
-                            "example": -71.42,
-                            "description": "Geographic longitude in decimal degrees where the body sits exactly on the horizon at this latitude."
+                            "example": -1.7402,
+                            "description": "Geographic longitude in decimal degrees where the body sits exactly on the western (setting) horizon at this latitude."
                           }
                         },
                         "required": [
@@ -2184,20 +2200,20 @@
                           "longitude"
                         ]
                       },
-                      "description": "Sampled geographic points tracing this rising or setting line from 70 South to 70 North. Join them in latitude order to draw the curved planetary line on a world map."
+                      "description": "Sampled geographic points tracing this setting line from 70 South to 70 North. Join them in latitude order to draw the curved planetary line on a world map."
                     },
                     "circumpolarBeyond": {
                       "type": [
                         "number",
                         "null"
                       ],
-                      "example": 66.56,
+                      "example": 68.5262,
                       "description": "Absolute latitude in degrees beyond which the body never crosses the horizon, so the line has no points past it. Null when the line spans the full sampled range."
                     },
                     "interpretation": {
                       "type": "string",
-                      "example": "Your Sun Ascendant line runs through places where Self-awareness and ego colors your identity, vitality, and how you first come across to others. This part of you feels switched on here.",
-                      "description": "Plain language meaning of this rising or setting planetary line for relocation, suitable for chart reports and AI agents."
+                      "example": "Your Sun Descendant line runs through places where Self-awareness and ego shapes your close relationships, partnerships, and the people you attract. Connection themes stand out along this line.",
+                      "description": "Plain language meaning of this setting (Descendant) planetary line for relocation, suitable for chart reports and AI agents."
                     }
                   },
                   "required": [
@@ -2435,6 +2451,13 @@
                 "example": 162.9,
                 "description": "Absolute ecliptic longitude of the Vertex (0-360)."
               },
+              "house": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12,
+                "example": 6,
+                "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
+              },
               "signLocalized": {
                 "type": "string",
                 "example": "Sagitario",
@@ -2444,7 +2467,8 @@
             "required": [
               "sign",
               "degree",
-              "longitude"
+              "longitude",
+              "house"
             ],
             "description": "Relocated Vertex. The western prime-vertical and ecliptic intersection at the new place, read as a point of fated encounters."
           },
@@ -13998,42 +14022,41 @@
                   "type": "string"
                 },
                 "example": [
-                  "new beginnings",
-                  "innocence",
-                  "spontaneity",
-                  "free spirit",
-                  "potential"
+                  "recklessness",
+                  "hesitation",
+                  "naivety",
+                  "fear of the unknown"
                 ],
                 "description": "Key themes and concepts for this card in the given orientation (upright or reversed). Used for quick tarot reference and divination summaries."
               },
               "description": {
                 "type": "string",
-                "example": "Numbered zero, The Fool stands at the threshold of the Major Arcana as pure, unwritten potential. In the Rider-Waite-Smith image, a young traveller pauses at the edge of a high cliff, gazing into the open sky rather than the drop below, a white rose of innocence in one hand and a light bag of belongings slung from a wand over the shoulder.",
+                "example": "Reversed, The Fool turns its open potential in two opposite directions, and the surrounding cards usually reveal which one applies. In the first, the leap becomes recklessness. The traveller ignores the dog at the heels and the cliff at the toe, acting on impulse without regard for consequence and mistaking carelessness for freedom.",
                 "description": "Full narrative interpretation of the card in this orientation. Covers symbolism, life lessons, and guidance for the querent."
               },
               "love": {
                 "type": "string",
-                "example": "A new romance or a fresh chapter in an existing bond is opening. The card favours openness to unexpected connection and a spirit of play over caution.",
+                "example": "Hesitation or carelessness is unsettling matters of the heart. There may be a reluctance to commit and open up for fear of being hurt, or a tendency to rush in without seeing a partner clearly.",
                 "description": "Love and relationship interpretation for this orientation. Covers romantic partnerships, dating, emotional connections, and matters of the heart."
               },
               "career": {
                 "type": "string",
-                "example": "This is a threshold moment for work: a new role, a new venture, or a bold pivot into unfamiliar territory. The Fool rewards initiative and original thinking, and it can breathe fresh energy into stale projects.",
+                "example": "Fear of the unknown may be keeping you fixed in an unfulfilling role, or impulsive moves may be made at work without thinking them through.",
                 "description": "Career and professional interpretation for this orientation. Covers workplace dynamics, job transitions, ambition, and vocational purpose."
               },
               "finances": {
                 "type": "string",
-                "example": "Financial openings appear, sometimes from unexpected directions, and the mood is expansive and exploratory. Spending tends toward experience, learning, and adventure.",
+                "example": "Impulsive spending, unrealistic optimism, or schemes that sound too good to be true are the hazards here.",
                 "description": "Financial interpretation for this orientation. Covers money management, investments, material prosperity, and abundance mindset."
               },
               "health": {
                 "type": "string",
-                "example": "Renewed vitality and a fresh start are indicated, well suited to a new routine, an unfamiliar sport, or simply more time outdoors and in motion.",
+                "example": "Carelessness or risky habits may be catching up with the body, or anxiety may be holding back a needed change.",
                 "description": "Health and wellbeing interpretation for this orientation. Covers physical vitality, mental health, energy levels, and self-care guidance."
               },
               "spirituality": {
                 "type": "string",
-                "example": "A spiritual journey is beginning, marked by openness, wonder, and a beginners willingness to learn.",
+                "example": "Spiritual momentum has either scattered into undiscerning enthusiasm or stalled into hesitation.",
                 "description": "Spiritual interpretation for this orientation. Covers personal growth, inner wisdom, soul purpose, and metaphysical development."
               }
             },
@@ -14041,20 +14064,6 @@
               "keywords",
               "description"
             ],
-            "example": {
-              "keywords": [
-                "recklessness",
-                "hesitation",
-                "naivety",
-                "fear of the unknown"
-              ],
-              "description": "Reversed, The Fool turns its open potential in two opposite directions, and the surrounding cards usually reveal which one applies. In the first, the leap becomes recklessness.",
-              "love": "Hesitation or carelessness is unsettling matters of the heart. There may be a reluctance to commit and open up for fear of being hurt, or a tendency to rush in without seeing a partner clearly.",
-              "career": "Fear of the unknown may be keeping you fixed in an unfulfilling role, or impulsive moves may be made at work without thinking them through.",
-              "finances": "Impulsive spending, unrealistic optimism, or schemes that sound too good to be true are the hazards here.",
-              "health": "Carelessness or risky habits may be catching up with the body, or anxiety may be holding back a needed change.",
-              "spirituality": "Spiritual momentum has either scattered into undiscerning enthusiasm or stalled into hesitation."
-            },
             "description": "Complete reversed (inverted) interpretation including description, keywords, and guidance across love, career, finances, health, and spirituality domains. Reversed cards carry modified or blocked energy."
           },
           "imageUrl": {
@@ -22145,6 +22154,13 @@
                               "example": 27.24,
                               "description": "Absolute ecliptic longitude of the Part of Fortune (0-360)."
                             },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 8,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
+                            },
                             "sect": {
                               "type": "string",
                               "enum": [
@@ -22159,6 +22175,7 @@
                             "sign",
                             "degree",
                             "longitude",
+                            "house",
                             "sect"
                           ],
                           "description": "Part of Fortune (Lot of Fortune). A point derived from the Ascendant and the two luminaries that marks an area of ease, vitality, and material wellbeing in the chart."
@@ -22184,12 +22201,20 @@
                               "maximum": 360,
                               "example": 162.9,
                               "description": "Absolute ecliptic longitude of the Vertex (0-360)."
+                            },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 6,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
                             }
                           },
                           "required": [
                             "sign",
                             "degree",
-                            "longitude"
+                            "longitude",
+                            "house"
                           ],
                           "description": "Vertex. The western intersection of the prime vertical with the ecliptic, often read as a point of fated encounters and turning-point relationships. The opposite point is the Anti-Vertex."
                         }
@@ -22968,6 +22993,13 @@
                               "example": 27.24,
                               "description": "Absolute ecliptic longitude of the Part of Fortune (0-360)."
                             },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 8,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
+                            },
                             "sect": {
                               "type": "string",
                               "enum": [
@@ -22982,6 +23014,7 @@
                             "sign",
                             "degree",
                             "longitude",
+                            "house",
                             "sect"
                           ],
                           "description": "Part of Fortune (Lot of Fortune). A point derived from the Ascendant and the two luminaries that marks an area of ease, vitality, and material wellbeing in the chart."
@@ -23007,12 +23040,20 @@
                               "maximum": 360,
                               "example": 162.9,
                               "description": "Absolute ecliptic longitude of the Vertex (0-360)."
+                            },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 6,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
                             }
                           },
                           "required": [
                             "sign",
                             "degree",
-                            "longitude"
+                            "longitude",
+                            "house"
                           ],
                           "description": "Vertex. The western intersection of the prime vertical with the ecliptic, often read as a point of fated encounters and turning-point relationships. The opposite point is the Anti-Vertex."
                         }
@@ -23317,7 +23358,7 @@
           "Western Astrology"
         ],
         "summary": "Composite Chart - Midpoint relationship chart with interpretations",
-        "description": "Generate a composite chart by calculating midpoints between two natal charts. The composite chart represents the relationship as a single entity, showing its core identity, emotional bond, communication style, and growth direction. Returns composite planetary positions, house cusps, Ascendant, Midheaven, aspects, and relationship interpretation. Composite chart API, midpoint chart calculator, relationship astrology, couple chart analysis.",
+        "description": "Generate a composite chart by calculating midpoints between two natal charts. The composite chart represents the relationship as a single entity, showing its core identity, emotional bond, communication style, and growth direction. Uses the midpoint method: planets, angles and house cusps are each the midpoint of the two natal values, so the Ascendant always sits on the first cusp. Returns composite planetary positions, house cusps, Ascendant, Midheaven, aspects, and relationship interpretation. Composite chart API, midpoint chart calculator, relationship astrology, couple chart analysis.",
         "security": [
           {
             "apiKey": []
@@ -23769,7 +23810,7 @@
                           "longitude"
                         ]
                       },
-                      "description": "Composite house cusps. Each house represents shared life areas in the relationship."
+                      "description": "Composite house cusps, each the midpoint of the two natal cusps. Each house represents shared life areas in the relationship."
                     },
                     "compositeAscendant": {
                       "type": "object",
@@ -24652,17 +24693,17 @@
                           "properties": {
                             "person1Sign": {
                               "type": "string",
-                              "example": "gemini",
+                              "example": "Taurus",
                               "description": "Person 1 sign for this planet."
                             },
                             "person2Sign": {
                               "type": "string",
-                              "example": "pisces",
+                              "example": "Scorpio",
                               "description": "Person 2 sign for this planet."
                             },
                             "description": {
                               "type": "string",
-                              "example": "Gemini and Pisces combine air and water core energy. Thought meets feeling. Air brings objectivity and perspective while Water brings emotional depth and intuition. Honoring both rational and emotional ways of knowing strengthens this bond. Your modalities (mutable and mutable) add another layer: Highly adaptable and flexible. Both adjust easily to change. Creating shared structure and follow-through together prevents drift and keeps momentum alive.",
+                              "example": "Taurus and Scorpio combine earth and water core energy. Naturally nurturing and fertile. Water nourishes steady growth while Earth provides a stable container. This combination creates deep security and emotional safety. Your modalities (fixed and fixed) add another layer: Deeply committed and determined. Shared resolve can move mountains, though finding room for compromise keeps the relationship from becoming a standoff.",
                               "description": "Narrative analysis of how these two signs interact through this planet."
                             }
                           },
@@ -24678,17 +24719,17 @@
                           "properties": {
                             "person1Sign": {
                               "type": "string",
-                              "example": "gemini",
+                              "example": "Aquarius",
                               "description": "Person 1 sign for this planet."
                             },
                             "person2Sign": {
                               "type": "string",
-                              "example": "pisces",
+                              "example": "Pisces",
                               "description": "Person 2 sign for this planet."
                             },
                             "description": {
                               "type": "string",
-                              "example": "Gemini and Pisces combine air and water core energy. Thought meets feeling. Air brings objectivity and perspective while Water brings emotional depth and intuition. Honoring both rational and emotional ways of knowing strengthens this bond. Your modalities (mutable and mutable) add another layer: Highly adaptable and flexible. Both adjust easily to change. Creating shared structure and follow-through together prevents drift and keeps momentum alive.",
+                              "example": "Aquarius Moon and Pisces Moon bring together air and water emotional natures. Thought meets feeling. Air brings objectivity and perspective while Water brings emotional depth and intuition. Honoring both rational and emotional ways of knowing strengthens this bond.",
                               "description": "Narrative analysis of how these two signs interact through this planet."
                             }
                           },
@@ -24704,17 +24745,17 @@
                           "properties": {
                             "person1Sign": {
                               "type": "string",
-                              "example": "gemini",
+                              "example": "Aries",
                               "description": "Person 1 sign for this planet."
                             },
                             "person2Sign": {
                               "type": "string",
-                              "example": "pisces",
+                              "example": "Scorpio",
                               "description": "Person 2 sign for this planet."
                             },
                             "description": {
                               "type": "string",
-                              "example": "Gemini and Pisces combine air and water core energy. Thought meets feeling. Air brings objectivity and perspective while Water brings emotional depth and intuition. Honoring both rational and emotional ways of knowing strengthens this bond. Your modalities (mutable and mutable) add another layer: Highly adaptable and flexible. Both adjust easily to change. Creating shared structure and follow-through together prevents drift and keeps momentum alive.",
+                              "example": "Venus in Aries and Venus in Scorpio blend fire and water love styles. Passion meets emotional depth. This powerful chemistry creates transformation when balanced. Directness and sensitivity learn from each other, forging a connection that is both warm and soulful.",
                               "description": "Narrative analysis of how these two signs interact through this planet."
                             }
                           },
@@ -24730,17 +24771,17 @@
                           "properties": {
                             "person1Sign": {
                               "type": "string",
-                              "example": "gemini",
+                              "example": "Gemini",
                               "description": "Person 1 sign for this planet."
                             },
                             "person2Sign": {
                               "type": "string",
-                              "example": "pisces",
+                              "example": "Sagittarius",
                               "description": "Person 2 sign for this planet."
                             },
                             "description": {
                               "type": "string",
-                              "example": "Gemini and Pisces combine air and water core energy. Thought meets feeling. Air brings objectivity and perspective while Water brings emotional depth and intuition. Honoring both rational and emotional ways of knowing strengthens this bond. Your modalities (mutable and mutable) add another layer: Highly adaptable and flexible. Both adjust easily to change. Creating shared structure and follow-through together prevents drift and keeps momentum alive.",
+                              "example": "Mars in Gemini and Mars in Sagittarius combine air and fire approaches to desire and conflict. Highly energizing and dynamic. Air fuels Fire with ideas and enthusiasm, creating an intellectually stimulating and active connection full of momentum.",
                               "description": "Narrative analysis of how these two signs interact through this planet."
                             }
                           },
@@ -26968,6 +27009,13 @@
                               "example": 27.24,
                               "description": "Absolute ecliptic longitude of the Part of Fortune (0-360)."
                             },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 8,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
+                            },
                             "sect": {
                               "type": "string",
                               "enum": [
@@ -26982,6 +27030,7 @@
                             "sign",
                             "degree",
                             "longitude",
+                            "house",
                             "sect"
                           ],
                           "description": "Part of Fortune (Lot of Fortune). A point derived from the Ascendant and the two luminaries that marks an area of ease, vitality, and material wellbeing in the chart."
@@ -27007,12 +27056,20 @@
                               "maximum": 360,
                               "example": 162.9,
                               "description": "Absolute ecliptic longitude of the Vertex (0-360)."
+                            },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 6,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
                             }
                           },
                           "required": [
                             "sign",
                             "degree",
-                            "longitude"
+                            "longitude",
+                            "house"
                           ],
                           "description": "Vertex. The western intersection of the prime vertical with the ecliptic, often read as a point of fated encounters and turning-point relationships. The opposite point is the Anti-Vertex."
                         }
@@ -57568,6 +57625,13 @@
                               "example": 27.24,
                               "description": "Absolute ecliptic longitude of the Part of Fortune (0-360)."
                             },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 8,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
+                            },
                             "sect": {
                               "type": "string",
                               "enum": [
@@ -57582,6 +57646,7 @@
                             "sign",
                             "degree",
                             "longitude",
+                            "house",
                             "sect"
                           ],
                           "description": "Part of Fortune (Lot of Fortune). A point derived from the Ascendant and the two luminaries that marks an area of ease, vitality, and material wellbeing in the chart."
@@ -57607,12 +57672,20 @@
                               "maximum": 360,
                               "example": 162.9,
                               "description": "Absolute ecliptic longitude of the Vertex (0-360)."
+                            },
+                            "house": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 12,
+                              "example": 6,
+                              "description": "House containing this point, resolved against the same cusps as `planets[].house` and using the requested house system. Read this field rather than inferring a house from the sign: the two disagree whenever a house spans more than one sign, which is most of the time outside Whole Sign."
                             }
                           },
                           "required": [
                             "sign",
                             "degree",
-                            "longitude"
+                            "longitude",
+                            "house"
                           ],
                           "description": "Vertex. The western intersection of the prime vertical with the ecliptic, often read as a point of fated encounters and turning-point relationships. The opposite point is the Anti-Vertex."
                         }
@@ -63273,12 +63346,17 @@
                               "planet": {
                                 "type": "string",
                                 "example": "Sun",
-                                "description": "Activating body whose substructure feeds this arrow. Determination and Motivation come from the Sun, Environment and Perspective from the North Node."
+                                "description": "Activating body whose substructure feeds this arrow. Determination and Motivation come from the Sun, Environment and Perspective from the North Node. Always English, whatever the lang parameter says, so it stays safe to compare against in code and to key a glyph table on. Use planetLocalized for anything a reader sees."
+                              },
+                              "planetLocalized": {
+                                "type": "string",
+                                "example": "Sol",
+                                "description": "Activating body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                               },
                               "side": {
                                 "type": "string",
                                 "example": "design",
-                                "description": "Chart side of the activation. Determination and Environment come from the design side, Perspective and Motivation from the personality side."
+                                "description": "Chart side of the activation. Determination and Environment come from the design side, Perspective and Motivation from the personality side. Always English, whatever the lang parameter says, so it stays safe to compare against in code."
                               }
                             },
                             "required": [
