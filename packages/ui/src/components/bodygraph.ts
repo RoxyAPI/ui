@@ -9,10 +9,10 @@ import {
 	type BodygraphCenterId,
 	CENTER_GEOMETRY,
 	type CenterColor,
-	GATE_FONT_SIZE,
-	type GateSides,
+	type GateSources,
 	renderBodygraphSvg,
 } from '../utils/bodygraph-render.js';
+import { bodygraphChartStyles } from '../utils/bodygraph-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	hdReadingStyles,
@@ -81,6 +81,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		disclosureStyles,
 		interpAccordionStyles,
 		hdReadingStyles,
+		bodygraphChartStyles,
 		css`
 			.wrap {
 				width: 100%;
@@ -122,111 +123,15 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				align-items: start;
 			}
 
-			.chart {
-				display: block;
-				width: 100%;
-				max-width: var(--roxy-chart-max-width, 30rem);
-				height: auto;
-				margin: 0 auto;
-			}
-			/* On a phone the card padding is a sixth of the width 64 gate numbers have to
-			 * share, so below that point the chart bleeds to the card edge to take it
-			 * back. Only the chart moves; the prose keeps its measure. */
-			@container (max-width: 26rem) {
-				.chart {
-					width: calc(100% + 2 * var(--roxy-space-lg, 1.5rem));
-					margin-inline: calc(-1 * var(--roxy-space-lg, 1.5rem));
-				}
-			}
-
-			/* Body silhouette behind the chart, a soft tint that reads on either surface.
-			 * The centers paint over it, so an open center reads as a cut-out. */
-			.bg-body {
-				fill: color-mix(in srgb, var(--roxy-secondary, #475569) 8%, transparent);
-				stroke: var(--roxy-border, #e4e4e7);
-				stroke-width: 1;
-			}
-
-			/* Every channel is one connector joining its two gates, each half repainted in
-			 * the colour of the gate at its own end. Both halves lit is a defined channel,
-			 * one half is a hanging gate; neither is asked for separately. */
-			.bg-channel {
-				stroke: var(--roxy-border, #e4e4e7);
-				stroke-width: 5;
-				stroke-linecap: round;
-			}
-			.bg-half {
-				stroke-width: 5;
-				stroke-linecap: round;
-			}
-			/* Personality is the dark half of a bodygraph and Design the red half. Literal
-			 * black cannot survive a dark theme, so Personality follows the foreground
-			 * token; Design reuses the danger red, already tuned for contrast against the
-			 * surface in both themes. */
-			.bg-half.p {
-				stroke: var(--roxy-fg, #0a0a0a);
-			}
-			.bg-half.d {
-				stroke: var(--roxy-danger, #dc2626);
-			}
-			/* A gate BOTH sides activated is one bar in two colours: the Design stroke
-			 * with the Personality stroke dashed over it. */
-			.bg-half.stripe {
-				stroke-linecap: butt;
-				stroke-dasharray: 7 7;
-			}
-
-			/* Centers carry the traditional Human Design semantic colors when defined,
-			 * constant across light and dark like chart data colors. An open center takes
-			 * the card surface rather than transparent, so the wiring and the silhouette
-			 * pass behind it as they do on a printed chart. */
-			.bg-center {
-				fill: var(--roxy-surface, #fff);
-				stroke: var(--roxy-secondary, #475569);
-				stroke-width: 1.8;
-			}
-			.bg-center.defined {
-				stroke: color-mix(in srgb, var(--roxy-fg, #0a0a0a) 45%, transparent);
-			}
-			.bg-center.bg-gold.defined {
-				fill: #e0a200;
-			}
-			.bg-center.bg-green.defined {
-				fill: #2f8f00;
-			}
-			.bg-center.bg-red.defined {
-				fill: #c41f1f;
-			}
-			.bg-center.bg-brown.defined {
-				fill: #76502f;
-			}
-
-			/* All 64 gates are drawn: an unactivated gate is a named position, not an
-			 * absence. Unactivated is an outlined disc in the surface colour, which also
-			 * masks the wiring under it; activated is filled and knocks its number out in
-			 * the surface colour, so it reads on whatever center it lands on. */
-			.bg-gate-dot {
-				fill: var(--roxy-surface, #fff);
-				stroke: var(--roxy-border, #e4e4e7);
-				stroke-width: 1;
-			}
-			.bg-gate-dot.on {
-				stroke: none;
-			}
-			.bg-gate-dot.on.p {
-				fill: var(--roxy-fg, #0a0a0a);
-			}
-			.bg-gate-dot.on.d {
-				fill: var(--roxy-danger, #dc2626);
-			}
-			.bg-gate {
-				fill: var(--roxy-muted, #71717a);
-				font-size: ${GATE_FONT_SIZE}px;
-				font-weight: 600;
-				font-family: var(--roxy-font-sans);
-			}
-			.bg-gate.on {
-				fill: var(--roxy-surface, #fff);
+			/* Personality is the dark half of a bodygraph and Design the red half, the
+			 * two colours everything the renderer marks reads from. Literal black cannot
+			 * survive a dark theme, so Personality follows the foreground token; Design
+			 * reuses the danger red, already tuned for contrast against the surface in
+			 * both themes. Design takes the left half of a split circle, matching the
+			 * column order of a printed chart. */
+			.wrap {
+				--src-left: var(--roxy-danger, #dc2626);
+				--src-right: var(--roxy-fg, #0a0a0a);
 			}
 
 			.summary {
@@ -244,13 +149,6 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				color: var(--roxy-muted, #71717a);
 				font-variant-numeric: tabular-nums;
 			}
-			.legend {
-				display: flex;
-				flex-wrap: wrap;
-				gap: var(--roxy-space-sm, 0.5rem) var(--roxy-space-md, 1rem);
-				font-size: var(--roxy-text-xs, 0.75rem);
-				color: var(--roxy-muted, #71717a);
-			}
 			/* A legend line that owns its own row. The centre-colour caption needs it so
 			 * the key reads as the colours a centre takes when defined rather than a claim
 			 * about this chart; the activation key needs it so the two halves of the
@@ -262,44 +160,11 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			.legend-row .swatch:not(:first-child) {
 				margin-left: var(--roxy-space-md, 1rem);
 			}
-			.legend .swatch {
-				display: inline-block;
-				width: 10px;
-				height: 10px;
-				border-radius: 2px;
-				margin-right: 4px;
-				vertical-align: middle;
-				border: 1px solid var(--roxy-secondary, #475569);
-			}
 			/* Defined-center swatches use the same semantic colors as the chart so
 			 * the legend reads as a key, not decoration. Open uses the open-center
 			 * outline only. */
 			.legend .swatch.defined {
 				border-color: color-mix(in srgb, var(--roxy-fg, #0a0a0a) 45%, transparent);
-			}
-			.legend .swatch.bg-gold {
-				background: #e0a200;
-			}
-			.legend .swatch.bg-green {
-				background: #2f8f00;
-			}
-			.legend .swatch.bg-red {
-				background: #c41f1f;
-			}
-			.legend .swatch.bg-brown {
-				background: #76502f;
-			}
-			/* The activation key, drawn in the same colours as the gate circles and the
-			 * channel halves so the legend stays a key and not a second palette. */
-			.legend .swatch.side {
-				border-radius: var(--roxy-radius-full, 9999px);
-				border-color: transparent;
-			}
-			.legend .swatch.side.p {
-				background: var(--roxy-fg, #0a0a0a);
-			}
-			.legend .swatch.side.d {
-				background: var(--roxy-danger, #dc2626);
 			}
 
 			.group {
@@ -371,12 +236,14 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 			centers.filter((c) => c.defined).map((c) => c.id as BodygraphCenterId),
 		);
 		const byGate = groupByGate(d.gates ?? []);
-		const gateSides = new Map<number, GateSides>(
+		// Design is the left half of a split circle and Personality the right, which
+		// is the column order a printed chart prints them in.
+		const gateSources = new Map<number, GateSources>(
 			[...byGate].map(([gate, list]) => [
 				gate,
 				{
-					personality: list.some((g) => g.side === 'personality'),
-					design: list.some((g) => g.side === 'design'),
+					left: list.some((g) => g.side === 'design'),
+					right: list.some((g) => g.side === 'personality'),
 				},
 			]),
 		);
@@ -427,7 +294,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 					</desc>
 					${renderBodygraphSvg({
 						definedCenters,
-						gateSides,
+						gateSources,
 						gateTitles,
 						centerNames,
 						stateWords: { defined: this.t('Defined'), open: this.t('Open') },
@@ -436,7 +303,7 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				${this.renderSummary(d, centerNames)}
 			</div>
 			${this.renderReading(d)}
-			${this.renderChannels(d.channels ?? [])}
+			${this.renderChannels(d.channels ?? [], centerNames)}
 			${this.renderCenters(centers)}
 			${this.renderActivations(d)}
 		</div>`;
@@ -547,8 +414,8 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		);
 		return html`<div class="legend" part="legend">
 			<span class="legend-row">
-				<span class="swatch side p"></span>${this.t('Personality')}
-				<span class="swatch side d"></span>${this.t('Design')}
+				<span class="swatch source src-right"></span>${this.t('Personality')}
+				<span class="swatch source src-left"></span>${this.t('Design')}
 			</span>
 			<span class="legend-row">${this.t('Center colors when defined. Open centers are outlined.')}</span>
 			${named.map(
@@ -601,8 +468,17 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 	 * text for every channel that belongs to it, so it is lifted to the group
 	 * intro instead of repeating inside each row. Groups keep response order, which
 	 * is gate order; no circuit ranking is invented.
+	 *
+	 * @remarks
+	 * The two centres a channel joins are what it DOES, so each row names them as
+	 * chips beside its gates. They read the same names the chart and the centres
+	 * section use, and being names rather than a sentence they need no wording of
+	 * their own in any language.
 	 */
-	private renderChannels(channels: ChannelEntry[]) {
+	private renderChannels(
+		channels: ChannelEntry[],
+		centerNames: ReadonlyMap<BodygraphCenterId, string>,
+	) {
 		if (channels.length === 0 || this.hideReadings) return nothing;
 		const groups = new Map<string, ChannelEntry[]>();
 		for (const c of channels) {
@@ -641,6 +517,14 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 									<span>${display(c, 'name')}</span>
 								</span>
 								${chevron()}
+								<span class="interp-aside">
+									<span class="chips">
+										${(c.centers ?? []).map(
+											(id) =>
+												html`<span class="chip">${centerNames.get(id as BodygraphCenterId) || id}</span>`,
+										)}
+									</span>
+								</span>
 							</summary>
 							<div class="interp-body">
 								${c.description ? html`<p>${c.description}</p>` : nothing}

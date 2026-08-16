@@ -3,6 +3,13 @@ import { customElement } from 'lit/decorators.js';
 import type { CalculateConnectionResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import {
+	BODYGRAPH_VIEWBOX,
+	type BodygraphCenterId,
+	type GateSources,
+	renderBodygraphSvg,
+} from '../utils/bodygraph-render.js';
+import { bodygraphChartStyles } from '../utils/bodygraph-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import { hdReadingStyles, renderHdFacts } from '../utils/hd-reading.js';
 import {
@@ -19,7 +26,7 @@ type CombinedCenter = Connection['centers'][number];
  * Human Design connection chart. Renders /human-design/connection: the composite of two charts as the electromagnetic / compromise / dominance channels they form together, plus the combined definition and a summary. The HD analog of synastry. Each channel row shows its two gates, name, circuit, the relationship dynamic, and which person carries which gate.
  *
  * @remarks
- * The chart answers one question: what exists between these two that does not exist in either of them alone. So the combined centers are the lead, not the channel list. `defined` is the state of the COMBINED bodygraph, `definedBy` names who already defines that center in their own chart, and the gap between the two is the reading: a center that comes back defined with an empty `definedBy` is defined by the connection itself, present when the two are together and absent when they are apart.
+ * The chart answers one question: what exists between these two that does not exist in either of them alone. It leads with the combined bodygraph, drawn on the same geometry a single chart uses with each gate marked for whoever carries it, then the combined centers, then the channel list. `defined` is the state of the COMBINED bodygraph, `definedBy` names who already defines that center in their own chart, and the gap between the two is the reading: a center that comes back defined with an empty `definedBy` is defined by the connection itself, present when the two are together and absent when they are apart.
  *
  * The four dynamics are the taxonomy the summary counts, and a bare count of "Dominance: 2" means nothing to a reader who does not already know the system, so each one carries its definition behind the shared disclosure rather than shipping as a bare label.
  */
@@ -30,6 +37,7 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 		disclosureStyles,
 		interpAccordionStyles,
 		hdReadingStyles,
+		bodygraphChartStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -163,8 +171,93 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 				overflow-x: auto;
 				min-width: 0;
 			}
+			/* The two people, and every mark the chart draws reads from these. Neither
+			 * takes a theme token: the pair has to be told apart from EACH OTHER rather
+			 * than from the page, so both are chart colours held constant across light
+			 * and dark, like the centre colours beside them. Being constant, the ink
+			 * knocked out of them is pinned too. Both clear 5.2:1 against that ink and
+			 * 3:1 against either surface, and blue against orange is the pair that
+			 * survives the common colour deficiencies. */
+			.wrap {
+				--src-left: #1f6fb2;
+				--src-right: #b04e14;
+				--src-ink: #fff;
+			}
 		`,
 	];
+
+	/**
+	 * The combined bodygraph the two charts make together, on the same geometry a
+	 * single chart uses.
+	 *
+	 * @remarks
+	 * A gate is marked for whoever carries it, so a channel each person half owns
+	 * draws in two colours and a channel one person holds outright draws in one.
+	 * That is the electromagnetic and dominance distinction the summary counts,
+	 * shown rather than tallied. Centers take the COMBINED state, which is the
+	 * chart the two of them are when together; who defines one alone is named in
+	 * the centers section, where the badge can say it in words.
+	 */
+	private renderChart(d: Connection) {
+		const gateSources = new Map<number, GateSources>();
+		for (const c of d.channels ?? []) {
+			const left = new Set(c.personAGates ?? []);
+			const right = new Set(c.personBGates ?? []);
+			for (const gate of [c.gateA, c.gateB]) {
+				if (gate == null) continue;
+				const held = gateSources.get(gate) ?? { left: false, right: false };
+				held.left ||= left.has(gate);
+				held.right ||= right.has(gate);
+				gateSources.set(gate, held);
+			}
+		}
+		const definedCenters = new Set<BodygraphCenterId>(
+			(d.centers ?? [])
+				.filter((c) => c.defined)
+				.map((c) => c.id as BodygraphCenterId),
+		);
+		const centerNames = new Map<BodygraphCenterId, string>(
+			(d.centers ?? []).map((c) => [c.id as BodygraphCenterId, c.name]),
+		);
+		const gateTitles = new Map<number, string>();
+		for (const c of d.channels ?? []) {
+			const name = c.name;
+			for (const gate of [c.gateA, c.gateB]) {
+				if (gate == null) continue;
+				const held = gateSources.get(gate);
+				const who = [held?.left && 'A', held?.right && 'B']
+					.filter(Boolean)
+					.join(' + ');
+				gateTitles.set(
+					gate,
+					[`Gate ${gate}`, name, who].filter(Boolean).join(' · '),
+				);
+			}
+		}
+
+		return html`<svg
+			class="chart"
+			part="chart"
+			viewBox=${BODYGRAPH_VIEWBOX}
+			preserveAspectRatio="xMidYMid meet"
+			role="img"
+			aria-label="Combined Human Design bodygraph for two charts, with each gate marked for the person who carries it"
+		>
+			<title>Combined bodygraph</title>
+			${renderBodygraphSvg({
+				definedCenters,
+				gateSources,
+				gateTitles,
+				centerNames,
+				stateWords: { defined: 'Defined', open: 'Open' },
+			})}
+		</svg>
+		<div class="legend" part="legend">
+			<span><span class="swatch source src-left"></span>Person A</span>
+			<span><span class="swatch source src-right"></span>Person B</span>
+			<span><span class="swatch"></span>Open center</span>
+		</div>`;
+	}
 
 	protected renderData(d: Connection) {
 		const channels = d.channels ?? [];
@@ -192,6 +285,7 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 							: undefined,
 				},
 			])}
+			${this.renderChart(d)}
 			${
 				this.hideReadings
 					? nothing

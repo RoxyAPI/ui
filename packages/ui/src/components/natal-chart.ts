@@ -339,14 +339,17 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				color: var(--roxy-fg, #0f172a);
 			}
 
+			/* Ink on a status tint is the -fg token, never the base status colour: the
+			 * base is tuned to read on the surface, and on a tint of itself it lands
+			 * near 3:1. The sibling tables take the same pair. */
 			.pill--success {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 15%, transparent);
-				color: var(--roxy-success, #16a34a);
+				color: var(--roxy-success-fg, #166534);
 			}
 
 			.pill--danger {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 15%, transparent);
-				color: var(--roxy-danger, #dc2626);
+				color: var(--roxy-danger-fg, #991b1b);
 			}
 
 			.pill--muted {

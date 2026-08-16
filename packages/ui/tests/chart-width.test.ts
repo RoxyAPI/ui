@@ -7,18 +7,20 @@ import { readdirSync, readFileSync } from 'node:fs';
  * the overridable `--roxy-chart-max-width` token (never a hardcoded px width on
  * the root). This guards the exact regression a bulk migration introduced once:
  * the token was applied to a table (kp-chart) and a glyph card (hexagram), which
- * froze their width. vedic-kundli and divisional-chart inherit the token from
- * the shared kundli-styles.ts, so they do not name it directly.
+ * froze their width. A card that draws through a shared stylesheet inherits the
+ * token from there and does not name it directly: vedic-kundli and
+ * divisional-chart through kundli-styles.ts, bodygraph and hd-connection through
+ * bodygraph-styles.ts.
  */
 const TOKEN = '--roxy-chart-max-width';
 const ALLOWED = new Set([
 	'components/natal-chart.ts',
 	'components/synastry-chart.ts',
 	'components/transit-wheel.ts',
-	'components/bodygraph.ts',
 	'components/biorhythm-chart.ts',
 	'components/local-space-compass.ts',
 	'utils/kundli-styles.ts',
+	'utils/bodygraph-styles.ts',
 ]);
 
 function uses(rel: string): boolean {

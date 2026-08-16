@@ -190,13 +190,24 @@ test.describe('Roxy UI preview', () => {
 		await page.waitForLoadState('networkidle');
 		// color-contrast runs against the showcase chrome; component shadow DOM
 		// (chart aspect lines, chip fills) carries decorative colors that
-		// false-positive when treated as text.
+		// false-positive when treated as text. The two bodygraph cards join them for
+		// the same reason and it is worth naming, because the numbers look real: a
+		// gate number is painted by `fill` on its own disc, which is a SIBLING shape
+		// rather than an ancestor, so the scan resolves the inherited `color` against
+		// the centre polygon behind the disc and reports a pair the browser never
+		// paints, differently per engine. AxeBuilder takes a frame chain rather than
+		// a shadow selector, so the exclusion cannot be narrowed to the SVG. The
+		// pairs those cards actually paint are asserted from the token file in
+		// `theming.test.ts`, and every token pair in their surrounding prose is the
+		// one fifty other cards are scanned on here.
 		const results = await new AxeBuilder({ page })
 			.exclude('roxy-natal-chart')
 			.exclude('roxy-synastry-chart')
 			.exclude('roxy-vedic-kundli')
 			.exclude('roxy-tarot-card')
 			.exclude('roxy-tarot-spread')
+			.exclude('roxy-bodygraph')
+			.exclude('roxy-hd-connection')
 			.analyze();
 		const blocking = results.violations.filter((v) => v.impact !== 'minor');
 		expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([]);
@@ -227,6 +238,8 @@ test.describe('Roxy UI preview', () => {
 			.exclude('roxy-vedic-kundli')
 			.exclude('roxy-tarot-card')
 			.exclude('roxy-tarot-spread')
+			.exclude('roxy-bodygraph')
+			.exclude('roxy-hd-connection')
 			.analyze();
 		const blocking = results.violations.filter((v) => v.impact !== 'minor');
 		expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([]);

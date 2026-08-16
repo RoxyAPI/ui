@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 
 import { ROXY_UI_TOKENS_CSS } from '../src/styles/tokens-css.js';
 import {
@@ -175,5 +175,106 @@ describe('font-display token', () => {
 		expect(base).toMatch(
 			/font-family:\s*var\(\s*--roxy-font-display,\s*var\(\s*--roxy-font-sans/,
 		);
+	});
+});
+
+/**
+ * Ink on a status tint. `--roxy-success` and its siblings are tuned to read on
+ * the card surface; painted on a tint of themselves they land near 3:1, which is
+ * why the palette carries a `-fg` partner for exactly that case. The failure is
+ * invisible on a screenshot and, when the tint sits behind a disclosure, invisible
+ * to the accessibility pass too, so it is asserted from source instead.
+ */
+describe('status ink is the -fg token wherever a status tint is the background', () => {
+	const STATUS = ['success', 'danger', 'warning', 'info'] as const;
+	/** Every declaration block in a component stylesheet, as its own string. */
+	const blocks = (src: string): string[] => src.match(/\{[^{}]*\}/g) ?? [];
+
+	test('no component paints a status colour on a tint of itself', () => {
+		const offenders: string[] = [];
+		for (const rel of readdirSync('packages/ui/src/components')) {
+			if (!rel.endsWith('.ts') || rel.endsWith('.test.ts')) continue;
+			const src = readFileSync(`packages/ui/src/components/${rel}`, 'utf8');
+			for (const block of blocks(src)) {
+				for (const name of STATUS) {
+					const tinted = new RegExp(
+						`background[^;]*color-mix\\([^;]*--roxy-${name}[,)\\s]`,
+					).test(block);
+					if (!tinted) continue;
+					const ink = /color:\s*var\(\s*(--roxy-[\w-]+)/.exec(block)?.[1];
+					if (ink && !ink.endsWith('-fg')) {
+						offenders.push(`${rel}: ${name} tint painted with ${ink}`);
+					}
+				}
+			}
+		}
+		expect(
+			offenders,
+			`Use the -fg partner for ink on a status tint:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
+	});
+});
+
+/**
+ * Contrast of the chart gate marks, computed from the token file rather than
+ * measured in a browser.
+ *
+ * @remarks
+ * The accessibility pass cannot read these. SVG text is painted by `fill`, and a
+ * gate number sits on its own disc, which is a SIBLING shape rather than an
+ * ancestor; the scan resolves the inherited `color` against the centre polygon
+ * behind the disc instead, so it reports a pair that is never painted, and it
+ * resolves it differently per engine. The values below are the pairs the browser
+ * actually paints, so they are asserted here and the chart is excluded there.
+ */
+describe('gate marks clear AA against the disc they are painted on', () => {
+	const luminance = (hex: string): number => {
+		const h = hex.replace('#', '');
+		const c = [0, 2, 4]
+			.map((i) => Number.parseInt(h.slice(i, i + 2), 16) / 255)
+			.map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));
+		return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+	};
+	const contrast = (a: string, b: string): number => {
+		const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+		return (hi + 0.05) / (lo + 0.05);
+	};
+
+	/** ink, disc, label. Light and dark values as the token file sets them. */
+	const PAIRS: ReadonlyArray<readonly [string, string, string]> = [
+		// Unactivated gate: muted number on a surface disc.
+		['#71717a', '#ffffff', 'light unactivated'],
+		['#a1a1aa', '#18181b', 'dark unactivated'],
+		// Single chart: the two sides, ink knocked out in the surface colour.
+		['#ffffff', '#0a0a0a', 'light personality'],
+		['#ffffff', '#dc2626', 'light design'],
+		['#18181b', '#fafafa', 'dark personality'],
+		['#18181b', '#ef4444', 'dark design'],
+		// Composite chart: constant colours, so the ink is pinned white in both.
+		['#ffffff', '#1f6fb2', 'person A'],
+		['#ffffff', '#b04e14', 'person B'],
+	];
+
+	test('every ink and disc pair clears 4.5:1', () => {
+		const weak = PAIRS.filter(([ink, disc]) => contrast(ink, disc) < 4.5).map(
+			([ink, disc, label]) =>
+				`${label}: ${ink} on ${disc} is ${contrast(ink, disc).toFixed(2)}`,
+		);
+		expect(weak, weak.join('\n')).toEqual([]);
+	});
+
+	test('the pairs are the values the token file actually sets', () => {
+		for (const value of [
+			'#71717a',
+			'#a1a1aa',
+			'#0a0a0a',
+			'#fafafa',
+			'#dc2626',
+			'#ef4444',
+		]) {
+			expect(TOKENS_CSS, `${value} is no longer in tokens.css`).toContain(
+				value,
+			);
+		}
 	});
 });

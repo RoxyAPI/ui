@@ -5169,3 +5169,134 @@ describe('roxy-reference-card folds a localized field into the field it translat
 		el.remove();
 	});
 });
+
+/**
+ * The combined bodygraph a connection chart draws. The geometry is covered by
+ * `bodygraph.test.ts`; what is asserted here is the mapping from the response to
+ * the two sources, which is the whole reading: who carries which gate decides
+ * whether a channel reads as one person holding it outright or as the two of them
+ * completing it together.
+ */
+describe('roxy-hd-connection draws the combined bodygraph', () => {
+	const CONNECTION = {
+		totalChannels: 3,
+		combinedDefinition: 'Single',
+		summary: {
+			electromagnetic: 1,
+			dominance: 1,
+			compromise: 1,
+			companionship: 0,
+		},
+		centers: [
+			{ id: 'sacral', name: 'Sacral', defined: true, definedBy: ['A'] },
+			{ id: 'spleen', name: 'Spleen', defined: true, definedBy: ['B'] },
+			{ id: 'head', name: 'Head', defined: false, definedBy: [] },
+		],
+		channels: [
+			// One gate each: the channel completes only together.
+			{
+				gateA: 27,
+				gateB: 50,
+				name: 'Preservation',
+				circuit: 'Tribal',
+				dynamic: 'Electromagnetic',
+				centers: ['sacral', 'spleen'],
+				personAGates: [27],
+				personBGates: [50],
+			},
+			// One person holds both gates and the other holds neither.
+			{
+				gateA: 3,
+				gateB: 60,
+				name: 'Mutation',
+				circuit: 'Individual',
+				dynamic: 'Dominance',
+				centers: ['sacral', 'root'],
+				personAGates: [3, 60],
+				personBGates: [],
+			},
+			// Both hold gate 15, only A holds gate 5.
+			{
+				gateA: 15,
+				gateB: 5,
+				name: 'Rhythm',
+				circuit: 'Collective',
+				dynamic: 'Compromise',
+				centers: ['g', 'sacral'],
+				personAGates: [15, 5],
+				personBGates: [15],
+			},
+		],
+	};
+
+	const mount = async () => {
+		const el = document.createElement('roxy-hd-connection') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = CONNECTION;
+		await settled(el);
+		return el;
+	};
+
+	const chart = (el: Element) => el.shadowRoot as ShadowRoot;
+
+	/** The mark drawn for one gate: which source classes its circle carries. */
+	const sourcesOf = (root: ShadowRoot, gate: number): string[] => {
+		const node = [...root.querySelectorAll('.bg-gate-node')].find(
+			(g) => g.querySelector('.bg-gate')?.textContent?.trim() === String(gate),
+		);
+		return [...(node?.querySelectorAll('.bg-gate-dot.on') ?? [])].map((n) =>
+			n.classList.contains('src-left')
+				? 'left'
+				: n.classList.contains('src-right')
+					? 'right'
+					: '?',
+		);
+	};
+
+	test('draws every gate, not only the ones the two of them carry', async () => {
+		const el = await mount();
+		expect(chart(el).querySelectorAll('.bg-gate')).toHaveLength(64);
+		el.remove();
+	});
+
+	test('a gate one person holds takes that person, a shared gate takes both', async () => {
+		const el = await mount();
+		const root = chart(el);
+		expect(sourcesOf(root, 27)).toEqual(['left']);
+		expect(sourcesOf(root, 50)).toEqual(['right']);
+		// Held by both, so the circle is split rather than forced to one of them.
+		expect(sourcesOf(root, 15).sort()).toEqual(['left', 'right']);
+		expect(sourcesOf(root, 5)).toEqual(['left']);
+		// A gate in no channel between them is a position on the chart, unmarked.
+		expect(sourcesOf(root, 64)).toEqual([]);
+		el.remove();
+	});
+
+	test('a channel one person holds outright draws in one colour, a shared one in two', async () => {
+		const el = await mount();
+		const root = chart(el);
+		const halves = [...root.querySelectorAll('.bg-half')];
+		const left = halves.filter((n) => n.classList.contains('src-left')).length;
+		const right = halves.filter((n) =>
+			n.classList.contains('src-right'),
+		).length;
+		// 27-50 contributes one half each way; 3-60 two lefts; 15-5 two lefts plus
+		// the striped right half gate 15 adds.
+		expect(left).toBe(5);
+		expect(right).toBe(2);
+		expect(halves.filter((n) => n.classList.contains('stripe'))).toHaveLength(
+			1,
+		);
+		el.remove();
+	});
+
+	test('centers take the combined state', async () => {
+		const el = await mount();
+		const root = chart(el);
+		expect(root.querySelectorAll('.bg-center.defined')).toHaveLength(2);
+		expect(root.querySelectorAll('.bg-center')).toHaveLength(9);
+		el.remove();
+	});
+});

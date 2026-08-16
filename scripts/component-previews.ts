@@ -21,12 +21,18 @@ const SHOT_URL = `${PREVIEW_BASE_URL}/shot.html`;
 const THEMES = ['light', 'dark'] as const;
 
 /**
- * Per-slug presentation tuning. `scale` multiplies the mounted component (top-anchored, so it grows into the bottom bleed) when a component renders too small to fill the stage, or SHRINKS one that is too tall for its own tile to be recognisable. Presentation only: the stage stays 600x400, so the output is always 1200x800.
+ * Per-slug presentation tuning, presentation only: the stage stays 600x400, so the output is always 1200x800.
+ *
+ * `scale` multiplies the mounted component, top-anchored so it grows into the bottom bleed, when a component renders too small to fill the stage.
+ *
+ * `chartWidth` caps the chart alone through the component's own `--roxy-chart-max-width`, for a card whose chart is too tall to frame. **Reach for this rather than a `scale` below 1 on anything containing SVG text.** The stage scale is a CSS transform, and under one the SVG text disappears from the rasterised output while a single glyph is left painted outside the drawing, which reads as a rendering bug on the tile. Capping the chart transforms nothing, so every label stays crisp.
  */
-const OVERRIDES: Record<string, { scale?: number }> = {
-	// Half again taller than it is wide, so at 1x the tile frames only the crown. A
-	// thumbnail has to be recognisable at rail size rather than legible.
-	bodygraph: { scale: 0.5 },
+const OVERRIDES: Record<string, { scale?: number; chartWidth?: string }> = {
+	// A bodygraph is half again taller than it is wide, so at full width these tiles
+	// frame only the crown. A thumbnail has to be recognisable at rail size rather
+	// than legible; the connection card sits lower because of its fact tiles.
+	bodygraph: { chartWidth: '200px' },
+	'hd-connection': { chartWidth: '165px' },
 	// Compact single-value cards read as lost in the stage at 1x; lift them so the
 	// render fills the frame and still bleeds off the bottom.
 	'moon-phase': { scale: 1.15 },
@@ -95,19 +101,24 @@ async function main() {
 		}
 		const selected = ONLY.size ? allSlugs.filter((s) => ONLY.has(s)) : allSlugs;
 
-		// Presentation-only scaling, applied once (identical across themes).
+		// Presentation-only tuning, applied once (identical across themes).
 		for (const slug of selected) {
-			const scale = OVERRIDES[slug]?.scale;
-			if (scale) {
-				await page.evaluate(
-					({ slug, scale }) => {
-						document
-							.querySelector(`#stage-${slug} .stage-mount`)
-							?.setAttribute('style', `--body-scale:${scale}`);
-					},
-					{ slug, scale },
-				);
-			}
+			const { scale, chartWidth } = OVERRIDES[slug] ?? {};
+			if (!scale && !chartWidth) continue;
+			await page.evaluate(
+				({ slug, scale, chartWidth }) => {
+					const style = [
+						scale ? `--body-scale:${scale}` : '',
+						chartWidth ? `--roxy-chart-max-width:${chartWidth}` : '',
+					]
+						.filter(Boolean)
+						.join(';');
+					document
+						.querySelector(`#stage-${slug} .stage-mount`)
+						?.setAttribute('style', style);
+				},
+				{ slug, scale, chartWidth },
+			);
 		}
 
 		for (const theme of THEMES) {

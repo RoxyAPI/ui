@@ -47,10 +47,20 @@ interface Point {
 	y: number;
 }
 
-/** Which side of the chart activated a gate. A gate can carry both, and its circle is then split rather than forced to one. */
-export interface GateSides {
-	personality: boolean;
-	design: boolean;
+/**
+ * Which of the two sources activated a gate. Both is legal and splits the circle
+ * rather than forcing it to one.
+ *
+ * @remarks
+ * The renderer names neither source, because the same drawing serves a single
+ * chart, where they are the two sides of one person, and a composite, where they
+ * are two people. It only decides which half of a split circle each one takes;
+ * the card supplies the meaning and the colour through `--src-left` and
+ * `--src-right`.
+ */
+export interface GateSources {
+	left: boolean;
+	right: boolean;
 }
 
 /** One center's drawable geometry, plus the English fallback name for its accessible title when the response carries none. */
@@ -75,13 +85,15 @@ export type CenterColor = 'gold' | 'green' | 'red' | 'brown';
 
 /**
  * The grid window the viewBox covers: wide enough for the silhouette shoulders
- * (the centers span 18.3 to 81.9) and tall enough for the crown and the hem, with
- * nothing to spare, since margin here is width the gate numbers do not get. Kept
- * symmetric about {@link AXIS} so {@link CHART_AXIS_X} is exactly half the viewBox.
+ * (the centers span 18.3 to 81.9) and tall enough for the hem, with nothing to
+ * spare, since margin here is space the drawing does not get. The topmost element
+ * is the Head apex rather than the silhouette, which is why the crown sits below
+ * it. Kept symmetric about {@link AXIS} so {@link CHART_AXIS_X} is exactly half
+ * the viewBox.
  */
 const X_MIN = 14;
 const X_MAX = 86;
-const Y_MIN = -4;
+const Y_MIN = 0;
 const Y_MAX = 102;
 /** Grid units to viewBox units. One number sets the resolution of every coordinate below. */
 const UNIT = 6;
@@ -426,11 +438,11 @@ function buildBodyPath(): string {
 	// Right-side outline in grid units (x, y) from the crown down to the
 	// pelvis-right corner: a start point, then triples of (ctrl1, ctrl2, end).
 	const r: Array<[number, number]> = [
-		[50, -3], // crown apex (start)
-		[58, -3], // crown round (ctrl)
-		[59, 8], // head side (ctrl)
-		[56.5, 17], // brow, the head holds Head + Ajna (end)
-		[56, 20], // cheek (ctrl)
+		[50, 3], // crown apex (start), below the Head apex so the triangle reads above it
+		[58, 3], // crown round (ctrl)
+		[60, 10], // head side (ctrl)
+		[57, 17.5], // brow, the head holds Head + Ajna (end)
+		[56.5, 20.5], // cheek (ctrl)
 		[53.5, 23.5], // jaw (ctrl)
 		[51.5, 27], // neck right, narrowed to the Ajna apex (end)
 		[54, 28], // neck base (ctrl)
@@ -475,14 +487,10 @@ function polygonPoints(pts: Point[]): string {
 	return pts.map((p) => `${p.x},${p.y}`).join(' ');
 }
 
-/**
- * The class suffix for a side pair: `p` Personality, `d` Design, `pd` a gate both
- * sides activated. Personality is the dark half of a bodygraph and Design the red
- * half; a theme cannot use literal black, so Personality follows `--roxy-fg`.
- */
-function sideClass(s: GateSides): 'p' | 'd' | 'pd' {
-	if (s.personality && s.design) return 'pd';
-	return s.personality ? 'p' : 'd';
+/** The class for a source pair, or `both` when the mark has to carry two colours. */
+function sourceClass(s: GateSources): 'src-left' | 'src-right' | 'both' {
+	if (s.left && s.right) return 'both';
+	return s.left ? 'src-left' : 'src-right';
 }
 
 /** Render the body silhouette behind the chart. */
@@ -504,7 +512,7 @@ function renderBody(): TemplateResult {
  * is drawn first so the full 36-channel skeleton stays visible on an open chart.
  */
 function renderChannels(
-	gateSides: ReadonlyMap<number, GateSides>,
+	gateSources: ReadonlyMap<number, GateSources>,
 ): TemplateResult[] {
 	const lines: TemplateResult[] = [];
 	for (const [a, b] of CHANNEL_PAIRS) {
@@ -519,15 +527,15 @@ function renderChannels(
 			[a, pa],
 			[b, pb],
 		] as const) {
-			const sides = gateSides.get(gate);
-			if (!sides) continue;
-			const cls = sideClass(sides);
+			const sources = gateSources.get(gate);
+			if (!sources) continue;
+			const cls = sourceClass(sources);
 			lines.push(
-				svg`<line class="bg-half ${cls === 'pd' ? 'd' : cls}" x1=${from.x} y1=${from.y} x2=${mid.x} y2=${mid.y} />`,
+				svg`<line class="bg-half ${cls === 'both' ? 'src-left' : cls}" x1=${from.x} y1=${from.y} x2=${mid.x} y2=${mid.y} />`,
 			);
-			if (cls === 'pd') {
+			if (cls === 'both') {
 				lines.push(
-					svg`<line class="bg-half p stripe" x1=${from.x} y1=${from.y} x2=${mid.x} y2=${mid.y} />`,
+					svg`<line class="bg-half src-right stripe" x1=${from.x} y1=${from.y} x2=${mid.x} y2=${mid.y} />`,
 				);
 			}
 		}
@@ -563,29 +571,28 @@ function halfDisc(p: Point, sweep: 0 | 1): string {
  * Render all 64 gate numbers at their fixed points: an unactivated gate is a named
  * position on the chart, not an absence, so it draws as an outlined circle with a
  * muted number while an activated one is a filled disc with a knocked-out number.
- * A gate both sides activated is split down the middle, Design left and
- * Personality right, matching the column order of a printed chart.
+ * A gate both sources activated is split down the middle.
  */
 function renderGates(
-	gateSides: ReadonlyMap<number, GateSides>,
+	gateSources: ReadonlyMap<number, GateSources>,
 	titles: ReadonlyMap<number, string>,
 ): TemplateResult[] {
 	const out: TemplateResult[] = [];
 	for (const [gate, p] of Object.entries(GATE_POINTS)) {
 		const num = Number(gate);
-		const sides = gateSides.get(num);
-		const cls = sides ? sideClass(sides) : '';
+		const sources = gateSources.get(num);
+		const cls = sources ? sourceClass(sources) : '';
 		const title = titles.get(num);
 		out.push(svg`<g class="bg-gate-node">
 			${
-				cls === 'pd'
+				cls === 'both'
 					? [
-							svg`<path class="bg-gate-dot on d" d=${halfDisc(p, 0)} />`,
-							svg`<path class="bg-gate-dot on p" d=${halfDisc(p, 1)} />`,
+							svg`<path class="bg-gate-dot on src-left" d=${halfDisc(p, 0)} />`,
+							svg`<path class="bg-gate-dot on src-right" d=${halfDisc(p, 1)} />`,
 						]
 					: svg`<circle class="bg-gate-dot ${cls && `on ${cls}`}" cx=${p.x} cy=${p.y} r=${GATE_RADIUS} />`
 			}
-			<text class="bg-gate ${sides ? 'on' : ''}" x=${p.x} y=${p.y} text-anchor="middle" dominant-baseline="central">${num}</text>
+			<text class="bg-gate ${sources ? 'on' : ''}" x=${p.x} y=${p.y} text-anchor="middle" dominant-baseline="central">${num}</text>
 			${title ? svg`<title>${title}</title>` : nothing}
 		</g>`);
 	}
@@ -595,15 +602,15 @@ function renderGates(
 export interface BodygraphRenderInput {
 	definedCenters: Set<BodygraphCenterId>;
 	/**
-	 * Which side(s) activated each gate. A gate absent from the map is not
+	 * Which source(s) activated each gate. A gate absent from the map is not
 	 * activated and draws as an outlined position.
 	 *
 	 * @remarks
 	 * The only wiring input. A channel is defined exactly when both of its gates are
-	 * activated, so the response's `channels` array is deliberately not a second
-	 * one: two views of one fact would have nothing keeping them in step.
+	 * activated, so a separate list of channels is deliberately not a second one:
+	 * two views of one fact would have nothing keeping them in step.
 	 */
-	gateSides: ReadonlyMap<number, GateSides>;
+	gateSources: ReadonlyMap<number, GateSources>;
 	gateTitles: ReadonlyMap<number, string>;
 	/** What to name each center in its `<title>`, keyed by center id. The response is the authority for its own vocabulary, so this carries `centers[].nameLocalized` where the API sent one and `centers[].name` otherwise; an id with no entry keeps the chart's own English label. */
 	centerNames?: ReadonlyMap<BodygraphCenterId, string>;
@@ -625,12 +632,12 @@ export function renderBodygraphSvg(
 ): TemplateResult {
 	return svg`
 		${renderBody()}
-		${renderChannels(input.gateSides)}
+		${renderChannels(input.gateSources)}
 		${renderCenters(
 			input.definedCenters,
 			input.centerNames,
 			input.stateWords ?? { defined: 'defined', open: 'open' },
 		)}
-		${renderGates(input.gateSides, input.gateTitles)}
+		${renderGates(input.gateSources, input.gateTitles)}
 	`;
 }
