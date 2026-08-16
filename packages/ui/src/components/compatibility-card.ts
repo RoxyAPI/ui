@@ -388,10 +388,10 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			role="region"
 			aria-label="Aspect breakdown"
 		>
-			${typeof b.total === 'number' ? html`<span class="pill">Total: ${b.total}</span>` : nothing}
-			<span class="pill pill--success">Harmonious: ${b.harmonious}</span>
-			<span class="pill pill--danger">Challenging: ${b.challenging}</span>
-			<span class="pill">Neutral: ${b.neutral}</span>
+			${typeof b.total === 'number' ? html`<span class="pill">${this.t('Total')}: ${b.total}</span>` : nothing}
+			<span class="pill pill--success">${this.t('Harmonious')}: ${b.harmonious}</span>
+			<span class="pill pill--danger">${this.t('Challenging')}: ${b.challenging}</span>
+			<span class="pill">${this.t('Neutral')}: ${b.neutral}</span>
 		</div>`;
 	}
 
@@ -448,8 +448,8 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			<div class="elements">
 				<div class="el-row head">
 					<span></span>
-					<span>Person 1</span>
-					<span>Person 2</span>
+					<span>${this.t('Person 1')}</span>
+					<span>${this.t('Person 2')}</span>
 				</div>
 				${ELEMENTS.map((el) => {
 					const a = p1?.[el] ?? 0;

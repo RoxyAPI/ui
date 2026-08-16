@@ -487,9 +487,7 @@ describe('formatNumber does not eat integer zeros', () => {
 	});
 });
 
-/**
- * A decimal is read, not parsed, so it follows the reader. Nothing in this library renders a decimal in astrological sexagesimal notation, where the question would be arguable: `formatSignPosition` and `formatDegreeInSign` are whole degrees and arcminutes, so every decimal that reaches a reader is a plain quantity (an orb, a strength, a distance).
- */
+/** Every decimal a reader sees is a plain quantity, never sexagesimal notation, so it takes the reader's locale. */
 describe('a decimal follows the reader, not the author', () => {
 	test('the separator is the locale, not the point', () => {
 		expect(formatNumber('en', 2.5, 1)).toBe('2.5');
@@ -509,22 +507,15 @@ describe('a decimal follows the reader, not the author', () => {
 		expect(formatNumber('zz-nonsense', 2.5, 1)).toBe('2.5');
 	});
 
-	/**
-	 * The reason percent is built through `style: 'percent'` rather than by
-	 * appending the sign: where the sign goes is the locale's rule. Turkish puts
-	 * it in front, which no amount of `${n}%` can produce.
-	 */
+	/** Turkish puts the sign in front, which appending it never produces. */
 	test('the percent sign sits where the locale puts it', () => {
 		expect(formatPercent('en', 82.5, 1)).toBe('82.5%');
 		expect(formatPercent('tr', 82.5, 1).startsWith('%')).toBe(true);
-		// French separates the number and the sign; the space is theirs to choose.
 		expect(formatPercent('fr', 82.5, 1)).toMatch(/^82,5\s%$/u);
 	});
 
 	test('a localized decimal never reaches SVG geometry', async () => {
-		// A path coordinate is a machine value: a comma there is the point
-		// separator and the shape collapses. Biorhythm draws its polyline with a
-		// raw toFixed for exactly this reason, so the sweep must not have touched it.
+		// In a path coordinate a decimal comma IS the separator, so the shape collapses.
 		const src = await Bun.file(
 			'packages/ui/src/components/biorhythm-chart.ts',
 		).text();

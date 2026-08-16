@@ -347,10 +347,10 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		// byType is a map, not a list: render the pairs, never the object.
 		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
 		return html`<div class="summary-pills" part="details" role="region" aria-label="Aspect summary">
-			${typeof total === 'number' ? html`<span class="pill pill--muted">Total: ${total}</span>` : nothing}
-			<span class="pill pill--success">Harmonious: ${s.harmonious}</span>
-			<span class="pill pill--danger">Challenging: ${s.challenging}</span>
-			<span class="pill pill--muted">Neutral: ${s.neutral}</span>
+			${typeof total === 'number' ? html`<span class="pill pill--muted">${this.t('Total')}: ${total}</span>` : nothing}
+			<span class="pill pill--success">${this.t('Harmonious')}: ${s.harmonious}</span>
+			<span class="pill pill--danger">${this.t('Challenging')}: ${s.challenging}</span>
+			<span class="pill pill--muted">${this.t('Neutral')}: ${s.neutral}</span>
 			${byType.map(
 				([type, count]) =>
 					html`<span class="pill pill--muted">${formatAspectName({ type })}: ${count}</span>`,
@@ -464,7 +464,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 				${p.modality ? html`<span class="pattern-tag">${p.modality}</span>` : nothing}
 				${
 					p.dissociate
-						? html`<span class="pattern-tag" title="Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.">Dissociate</span>`
+						? html`<span class="pattern-tag" title=${this.t('Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.')}>${this.t('Dissociate')}</span>`
 						: nothing
 				}
 				${typeof p.tightness === 'number' ? html`<span class="pattern-tight">${formatPercent(this.effectiveLang(), p.tightness, 0)} tight</span>` : nothing}
@@ -476,7 +476,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 							const glyph = planetGlyph(name);
 							const isApex = Boolean(p.apex) && name === p.apex;
 							return html`<span class=${isApex ? 'planet-chip apex' : 'planet-chip'}>
-								${glyph ? html`<span aria-hidden="true">${glyph}</span>` : nothing}${name}${isApex ? html`<span class="apex-tag">apex</span>` : nothing}
+								${glyph ? html`<span aria-hidden="true">${glyph}</span>` : nothing}${name}${isApex ? html`<span class="apex-tag">${this.t('apex')}</span>` : nothing}
 							</span>`;
 						})}
 					</div>`

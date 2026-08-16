@@ -442,8 +442,8 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 							${this.renderAscendants(d)}
 						</svg>
 						<div class="legend-row" part="legend">
-							<span><span class="swatch" style="background: var(--roxy-accent)"></span>Person 1</span>
-							<span><span class="swatch" style="background: var(--roxy-info)"></span>Person 2</span>
+							<span><span class="swatch" style="background: var(--roxy-accent)"></span>${this.t('Person 1')}</span>
+							<span><span class="swatch" style="background: var(--roxy-info)"></span>${this.t('Person 2')}</span>
 							<span><span class="swatch" style="background: var(--roxy-success)"></span>harmonious</span>
 							<span><span class="swatch" style="background: var(--roxy-danger)"></span>challenging</span>
 						</div>`
@@ -547,10 +547,10 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
 		if (typeof s.total !== 'number' && byType.length === 0) return nothing;
 		return html`<div class="summary-pills" part="details" role="region" aria-label="Inter-aspect summary">
-			${typeof s.total === 'number' ? html`<span class="pill">Total: ${s.total}</span>` : nothing}
-			<span class="pill pill--success">Harmonious: ${s.harmonious}</span>
-			<span class="pill pill--danger">Challenging: ${s.challenging}</span>
-			<span class="pill">Neutral: ${s.neutral}</span>
+			${typeof s.total === 'number' ? html`<span class="pill">${this.t('Total')}: ${s.total}</span>` : nothing}
+			<span class="pill pill--success">${this.t('Harmonious')}: ${s.harmonious}</span>
+			<span class="pill pill--danger">${this.t('Challenging')}: ${s.challenging}</span>
+			<span class="pill">${this.t('Neutral')}: ${s.neutral}</span>
 			${byType.map(
 				([type, count]) =>
 					html`<span class="pill">${formatAspectName({ type })}: ${count}</span>`,

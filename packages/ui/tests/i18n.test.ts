@@ -683,14 +683,14 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/angel-number-lookup.ts': 11,
 		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 22,
-		'components/aspects-table.ts': 18,
+		'components/aspects-table.ts': 11,
 		'components/astrocartography-map.ts': 9,
 		'components/bhav-chalit-table.ts': 13,
 		'components/bhava-bala-table.ts': 11,
 		'components/biorhythm-chart.ts': 13,
 		'components/chara-karakas.ts': 12,
 		'components/choghadiya-grid.ts': 11,
-		'components/compatibility-card.ts': 11,
+		'components/compatibility-card.ts': 5,
 		'components/crystal-card.ts': 3,
 		'components/dasha-timeline.ts': 9,
 		'components/divisional-chart.ts': 3,
@@ -701,28 +701,28 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/forecast-digest.ts': 5,
 		'components/forecast-timeline.ts': 6,
 		'components/gochara-table.ts': 16,
-		'components/guna-milan.ts': 9,
+		'components/guna-milan.ts': 7,
 		'components/hd-connection.ts': 21,
 		'components/hd-penta.ts': 15,
 		'components/heliacal-table.ts': 11,
 		'components/hexagram.ts': 5,
 		'components/hora-table.ts': 2,
 		'components/horoscope-card.ts': 17,
-		'components/kp-chart.ts': 40,
+		'components/kp-chart.ts': 39,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
-		'components/local-space-compass.ts': 11,
+		'components/local-space-compass.ts': 9,
 		'components/moon-phase.ts': 8,
 		'components/nakshatra-card.ts': 9,
 		'components/numerology-card.ts': 20,
 		'components/panchang-table.ts': 17,
-		'components/positions-table.ts': 7,
+		'components/positions-table.ts': 5,
 		'components/profection-card.ts': 7,
 		'components/relocation-wheel.ts': 6,
 		'components/shadbala-table.ts': 12,
-		'components/synastry-chart.ts': 30,
+		'components/synastry-chart.ts': 24,
 		'components/tarot-spread.ts': 5,
-		'components/transits-table.ts': 19,
+		'components/transits-table.ts': 14,
 		'components/upagraha-table.ts': 9,
 		'components/vedic-aspects.ts': 11,
 		'components/vedic-kundli.ts': 2,
@@ -887,6 +887,25 @@ describe('a component renders its chrome in the page language', () => {
 		document.body.appendChild(el);
 		await settled(el);
 		expect(text(el)).toContain('No data');
+	});
+
+	/** A source string reused by a second component has to READ correctly there, not merely resolve. */
+	test('the aspect breakdown pills read in the page language', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-compatibility-card');
+		(el as unknown as { data: unknown }).data = {
+			overallScore: 72,
+			signCompatibility: { rating: 'Strong' },
+			aspectBreakdown: { total: 12, harmonious: 5, challenging: 4, neutral: 3 },
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const t = text(el);
+		for (const word of ['Armónicos', 'Tensos', 'Neutros']) {
+			expect(t, `${word} missing`).toContain(word);
+		}
+		expect(t).not.toContain('Harmonious');
+		el.remove();
 	});
 
 	test('a decimal a component renders reaches the reader localized', async () => {

@@ -256,16 +256,14 @@ export function formatInteger(
 }
 
 /**
- * A number to at most `dp` decimals, in the reader's notation: `2.5` on an English page, `2,5` on a German or French one. Trailing zeros drop, so `2.50` reads `2.5` and `2.0` reads `2`.
+ * A number to at most `dp` decimals in the reader's notation: `2.5` in English, `2,5` in German.
  *
- * @remarks
- * `maximumFractionDigits` does that trimming itself, on the fractional side only, which is the behaviour to keep: stripping zeros off the rendered STRING eats the integer side whenever there is no decimal separator, turning `100` into `1` at `dp = 0`.
+ * @remarks Trailing zeros drop on the fractional side only, so `100` at `dp = 0` stays `100`.
  *
  * @example
  * ```ts
  * formatNumber('en', 2.5, 1); // '2.5'
  * formatNumber('de', 2.5, 1); // '2,5'
- * formatNumber('en', 100, 0); // '100'
  * ```
  */
 export function formatNumber(
@@ -280,10 +278,9 @@ export function formatNumber(
 }
 
 /**
- * A 0-to-100 value as a percentage in the reader's notation, which sets the separator AND whether a space precedes the sign: `82.5%` in English, `82,5 %` in French.
+ * A 0-to-100 value as a percentage in the reader's notation, which places the sign: `82.5%` in English, `%82,5` in Turkish.
  *
- * @remarks
- * Built with `style: 'percent'` rather than by appending a literal `%`, because that space is the locale's rule and not ours to pick. The style expects a fraction, so a 0-to-100 value is divided first.
+ * @remarks `style: 'percent'` takes a fraction, so the value is divided first.
  */
 export function formatPercent(
 	locale: string | undefined,

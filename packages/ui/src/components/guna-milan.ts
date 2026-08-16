@@ -332,8 +332,8 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 						<thead>
 							<tr>
 								<th scope="col">Koota</th>
-								<th scope="col">Person 1</th>
-								<th scope="col">Person 2</th>
+								<th scope="col">${this.t('Person 1')}</th>
+								<th scope="col">${this.t('Person 2')}</th>
 								<th scope="col" class="bar-col">Progress</th>
 								<th scope="col" class="score">Score</th>
 							</tr>

@@ -261,7 +261,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 
 		return html`<div class="wrap" part="card" aria-label="Transits">
 			<div class="head" part="header">
-				<h2 class="title">Transits</h2>
+				<h2 class="title">${this.t('Transits')}</h2>
 				${dateStr ? html`<p class="subtitle">${dateStr}</p>` : nothing}
 			</div>
 
@@ -309,16 +309,16 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	) {
 		return html`<div class="summary-pills" part="details" role="region" aria-label="Aspect summary">
 			<span class="pill pill--muted">
-				Total: ${summary.totalAspects}
+				${this.t('Total')}: ${summary.totalAspects}
 			</span>
 			<span class="pill pill--success">
-				Harmonious: ${summary.harmonious}
+				${this.t('Harmonious')}: ${summary.harmonious}
 			</span>
 			<span class="pill pill--danger">
-				Challenging: ${summary.challenging}
+				${this.t('Challenging')}: ${summary.challenging}
 			</span>
 			<span class="pill pill--muted">
-				Neutral: ${summary.neutral}
+				${this.t('Neutral')}: ${summary.neutral}
 			</span>
 		</div>`;
 	}

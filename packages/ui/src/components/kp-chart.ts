@@ -310,7 +310,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 			</caption>
 			<thead>
 				<tr>
-					<th scope="col">Body</th>
+					<th scope="col">${this.t('Body')}</th>
 					<th scope="col">Position</th>
 					<th scope="col">House</th>
 					<th scope="col">Nakshatra, pada</th>

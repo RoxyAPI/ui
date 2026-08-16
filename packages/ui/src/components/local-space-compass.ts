@@ -281,8 +281,8 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 			</caption>
 			<thead>
 				<tr>
-					<th scope="col">Body</th>
-					<th scope="col">Direction</th>
+					<th scope="col">${this.t('Body')}</th>
+					<th scope="col">${this.t('Direction')}</th>
 					<th scope="col" class="num">Azimuth</th>
 					<th scope="col" class="num">Altitude</th>
 					<th scope="col">Horizon</th>

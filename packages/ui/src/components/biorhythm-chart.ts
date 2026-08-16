@@ -347,9 +347,8 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 							const v = day[cycle] ?? 0;
 							const x = i * xStep;
 							const y = h / 2 - (v / 100) * (h / 2 - 8);
-							// Raw toFixed on purpose: these are SVG path coordinates, not
-							// copy. A locale-aware decimal comma would be read as the
-							// point separator and the polyline would collapse.
+							// Path coordinates, not copy: a decimal comma here IS the
+							// separator and the polyline collapses.
 							return `${x.toFixed(2)},${y.toFixed(2)}`;
 						})
 						.join(' ');

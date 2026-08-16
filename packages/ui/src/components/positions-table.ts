@@ -215,9 +215,9 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 					</caption>
 					<thead>
 						<tr>
-							<th scope="col">Body</th>
+							<th scope="col">${this.t('Body')}</th>
 							<th scope="col">Position</th>
-							${cols.natal ? html`<th scope="col">Natal</th>` : nothing}
+							${cols.natal ? html`<th scope="col">${this.t('Natal')}</th>` : nothing}
 							${cols.house ? html`<th scope="col" class="num">House</th>` : nothing}
 							${cols.motion ? html`<th scope="col">Motion</th>` : nothing}
 							${cols.formula ? html`<th scope="col">Formula</th>` : nothing}
