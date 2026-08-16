@@ -309,6 +309,16 @@ export const fr: Record<ChromeString, string> = {
 	'Vedic kundli': 'Thème védique',
 	'Vedic birth chart with twelve sign houses':
 		'Thème natal védique à douze maisons de signe',
+	'Angel number': 'Nombre angélique',
+	'Digit root': 'Racine numérique',
+	'Action steps': 'Étapes à suivre',
+	Colors: 'Couleurs',
+	Keywords: 'Mots-clés',
+	'Pairs with': 'À associer avec',
+	Vargottama: 'Vargottama',
+	'Vargottama planets': 'Planètes vargottama',
+	'{{chart}} divisional chart with twelve sign houses':
+		'Thème divisionnel {{chart}} à douze maisons de signe',
 };
 
 registerLocale('fr', fr);

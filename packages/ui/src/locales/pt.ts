@@ -296,6 +296,16 @@ export const pt: Record<ChromeString, string> = {
 	'Vedic kundli': 'Mapa védico',
 	'Vedic birth chart with twelve sign houses':
 		'Mapa natal védico com doze casas por signo',
+	'Angel number': 'Número angelical',
+	'Digit root': 'Raiz digital',
+	'Action steps': 'Passos a seguir',
+	Colors: 'Cores',
+	Keywords: 'Palavras-chave',
+	'Pairs with': 'Combina com',
+	Vargottama: 'Vargottama',
+	'Vargottama planets': 'Planetas vargottama',
+	'{{chart}} divisional chart with twelve sign houses':
+		'Mapa divisional {{chart}} com doze casas por signo',
 };
 
 registerLocale('pt', pt);

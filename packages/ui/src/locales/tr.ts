@@ -305,6 +305,16 @@ export const tr: Record<ChromeString, string> = {
 	'Vedic kundli': 'Vedik doğum haritası',
 	'Vedic birth chart with twelve sign houses':
 		'On iki burç evli Vedik doğum haritası',
+	'Angel number': 'Melek sayısı',
+	'Digit root': 'Kök sayı',
+	'Action steps': 'Adımlar',
+	Colors: 'Renkler',
+	Keywords: 'Anahtar kelimeler',
+	'Pairs with': 'Birlikte kullanılır',
+	Vargottama: 'Vargottama',
+	'Vargottama planets': 'Vargottama gezegenleri',
+	'{{chart}} divisional chart with twelve sign houses':
+		'On iki burç evli {{chart}} bölüm haritası',
 };
 
 registerLocale('tr', tr);

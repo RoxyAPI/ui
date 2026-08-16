@@ -160,11 +160,11 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 		const keywords = d.keywords ?? [];
 		const steps = d.actionSteps ?? [];
 
-		return html`<article class="card" part="card" aria-label=${`Angel number ${d.number ?? ''}`}>
+		return html`<article class="card" part="card" aria-label=${`${this.t('Angel number')} ${d.number ?? ''}`}>
 			<div class="hero" part="header">
 				${d.number ? html`<div class="numeral">${d.number}</div>` : nothing}
 				<div>
-					<p class="label">Angel number</p>
+					<p class="label">${this.t('Angel number')}</p>
 					${d.title ? html`<h2 class="title">${d.title}</h2>` : nothing}
 				</div>
 			</div>
@@ -176,7 +176,7 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 			}
 			<div class="badges" part="details">
 				${d.type ? html`<span class="badge">${d.type}</span>` : nothing}
-				${typeof d.digitRoot === 'number' ? html`<span class="badge">Digit root ${d.digitRoot}</span>` : nothing}
+				${typeof d.digitRoot === 'number' ? html`<span class="badge">${this.t('Digit root')} ${d.digitRoot}</span>` : nothing}
 				${d.energy ? html`<span class=${`badge ${energyClass}`}>${d.energy}</span>` : nothing}
 			</div>
 			${
@@ -191,7 +191,7 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 				// heading and goes whole.
 				steps.length > 0 && !this.hideReadings
 					? html`<div class="steps" part="section action-steps">
-						<h3>Action steps</h3>
+						<h3>${this.t('Action steps')}</h3>
 						<ul>${steps.map((s) => html`<li>${s}</li>`)}</ul>
 					</div>`
 					: nothing

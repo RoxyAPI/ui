@@ -124,7 +124,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 					preserveAspectRatio="xMidYMid meet"
 					part="chart"
 					role="img"
-					aria-label="D${division.number} ${division.name} divisional chart with twelve sign houses"
+					aria-label=${this.t('{{chart}} divisional chart with twelve sign houses', { chart: `D${division.number} ${division.name}` })}
 				>
 					<title>D${division.number} ${division.name}</title>
 					${renderKundliSvg(vm, this.chartStyle)}
@@ -133,8 +133,8 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 
 			${
 				vargottama && vargottama.length > 0
-					? html`<div class="vargottama-row" part="details" role="list" aria-label="Vargottama planets">
-						<span class="vargottama-label">Vargottama:</span>
+					? html`<div class="vargottama-row" part="details" role="list" aria-label=${this.t('Vargottama planets')}>
+						<span class="vargottama-label">${this.t('Vargottama')}:</span>
 						${vargottama.map(
 							(planet) =>
 								html`<span class="vargottama-pill" role="listitem">

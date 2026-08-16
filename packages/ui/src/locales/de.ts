@@ -304,6 +304,16 @@ export const de: Record<ChromeString, string> = {
 	'Vedic kundli': 'Vedisches Geburtshoroskop',
 	'Vedic birth chart with twelve sign houses':
 		'Vedisches Geburtshoroskop mit zwölf Zeichenhäusern',
+	'Angel number': 'Engelszahl',
+	'Digit root': 'Quersumme',
+	'Action steps': 'Handlungsschritte',
+	Colors: 'Farben',
+	Keywords: 'Schlüsselwörter',
+	'Pairs with': 'Passt zu',
+	Vargottama: 'Vargottama',
+	'Vargottama planets': 'Vargottama-Planeten',
+	'{{chart}} divisional chart with twelve sign houses':
+		'Teilungshoroskop {{chart}} mit zwölf Zeichenhäusern',
 };
 
 registerLocale('de', de);

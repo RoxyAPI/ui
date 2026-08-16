@@ -8,7 +8,7 @@
  *
  * **`Car`, `Fix` and `Mut` are catalogue entries, not a truncation.** A `modality.slice(0, 3)` would be a byte operation with no idea of the word: Spanish would read `Fij`, and Hindi and Russian would split a matra or a Cyrillic word mid-stem. A translator decides the abbreviation, and the full modality name rides beside it as the column `title` so a reader can expand it.
  *
- * **Scope is the FORM PATH (`<roxy-endpoint-form>` and `<roxy-location-search>`), the two Western chart wheels, the monthly ephemeris table, the Human Design bodygraph, type and variables cards, the dosha card, the dream symbol card and its search, the hora table, the Vedic rashi chart, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** The form path is first because it is what a visitor reads first: every widget that needs birth data mounts a form, so an English form stood in front of every translated card in the library. A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The ephemeris table joined for the first reason and the second at once: it was unbound, so a monthly ephemeris rendered through `<roxy-data>` as `Year 2026 / Month 8 / 31 Rows` on every site in every language. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
+ * **Scope is the FORM PATH (`<roxy-endpoint-form>` and `<roxy-location-search>`), the two Western chart wheels, the monthly ephemeris table, the Human Design bodygraph, type and variables cards, the dosha card, the dream symbol card and its search, the hora table, the Vedic rashi and divisional charts, the angel number and crystal cards, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** The form path is first because it is what a visitor reads first: every widget that needs birth data mounts a form, so an English form stood in front of every translated card in the library. A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The ephemeris table joined for the first reason and the second at once: it was unbound, so a monthly ephemeris rendered through `<roxy-data>` as `Year 2026 / Month 8 / 31 Rows` on every site in every language. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
  *
  * **A component earns its vocabulary by having its chrome here, and the two move in ONE change.** Reading `nameLocalized` under an English heading is worse than reading `name` under one, so a card is either translated or it is not. `<roxy-hd-connection>` and `<roxy-hd-penta>` are deliberately absent: almost all of their chrome is Human Design doctrine the COMPONENT wrote (what an electromagnetic channel is, what the upper triangle of a penta carries), so translating them is a paragraph-level meaning risk of exactly the shape lesson 32 describes, and they stay English end to end until a practitioner pass can source them.
  *
@@ -313,6 +313,17 @@ export const CHROME_STRINGS = [
 	'Endpoint {{method}} {{path}} not found in OpenAPI spec',
 	'HTTP error {{status}}',
 	'Retry',
+
+	// Angel number card, crystal card, and the vargottama pills on a divisional chart.
+	'Angel number',
+	'Digit root',
+	'Action steps',
+	'Colors',
+	'Keywords',
+	'Pairs with',
+	'Vargottama',
+	'Vargottama planets',
+	'{{chart}} divisional chart with twelve sign houses',
 
 	// Hora table and the Vedic rashi chart.
 	'Hora',

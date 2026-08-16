@@ -175,7 +175,7 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 				${
 					colors.length
 						? html`<div class="attr">
-							<dt>Colors</dt>
+							<dt>${this.t('Colors')}</dt>
 							<dd>
 								<div class="colors">
 									${colors.map((c) => html`<span class="color"><span class="dot" style=${`background:${cssColor(c)}`}></span>${c}</span>`)}
@@ -191,7 +191,7 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 			${
 				keywords.length && !this.hideReadings
 					? html`<div part="section keywords">
-						<p class="section-label">Keywords</p>
+						<p class="section-label">${this.t('Keywords')}</p>
 						<div class="chips">${keywords.map((k) => html`<span class="chip">${k}</span>`)}</div>
 					</div>`
 					: nothing
@@ -202,7 +202,7 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 			${
 				pairs.length
 					? html`<div part="section pairs-with">
-						<p class="section-label">Pairs with</p>
+						<p class="section-label">${this.t('Pairs with')}</p>
 						<div class="chips">${pairs.map((p) => html`<span class="chip">${String(p).replace(/-/g, ' ')}</span>`)}</div>
 					</div>`
 					: nothing

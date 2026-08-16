@@ -318,6 +318,16 @@ export const hi: Record<ChromeString, string> = {
 	'Vedic kundli': 'वैदिक कुंडली',
 	'Vedic birth chart with twelve sign houses':
 		'बारह राशि भावों वाली वैदिक जन्म कुंडली',
+	'Angel number': 'एंजल नंबर',
+	'Digit root': 'अंक मूल',
+	'Action steps': 'कार्य चरण',
+	Colors: 'रंग',
+	Keywords: 'मुख्य शब्द',
+	'Pairs with': 'साथ में',
+	Vargottama: 'वर्गोत्तम',
+	'Vargottama planets': 'वर्गोत्तम ग्रह',
+	'{{chart}} divisional chart with twelve sign houses':
+		'बारह राशि भावों वाली {{chart}} वर्ग कुंडली',
 };
 
 registerLocale('hi', hi);

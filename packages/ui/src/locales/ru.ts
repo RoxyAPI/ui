@@ -298,6 +298,16 @@ export const ru: Record<ChromeString, string> = {
 	'Vedic kundli': 'Ведическая карта',
 	'Vedic birth chart with twelve sign houses':
 		'Ведическая натальная карта с двенадцатью знаковыми домами',
+	'Angel number': 'Число ангела',
+	'Digit root': 'Цифровой корень',
+	'Action steps': 'Шаги',
+	Colors: 'Цвета',
+	Keywords: 'Ключевые слова',
+	'Pairs with': 'Сочетается с',
+	Vargottama: 'Варготтама',
+	'Vargottama planets': 'Планеты варготтама',
+	'{{chart}} divisional chart with twelve sign houses':
+		'Дробная карта {{chart}} с двенадцатью знаковыми домами',
 };
 
 registerLocale('ru', ru);

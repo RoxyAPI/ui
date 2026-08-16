@@ -473,6 +473,9 @@ describe('shipped locales', () => {
 			// the only one of the seven where that happens; the other six all
 			// translate the head noun.
 			de: [
+				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
+				// language prints the term itself rather than translating it.
+				'Vargottama',
 				// `Hora` is the Sanskrit term for the planetary hour and every language
 				// below prints it unchanged; the reading is the Vedic one, not the
 				// ordinary word for an hour that Spanish and Portuguese also spell this way.
@@ -497,6 +500,9 @@ describe('shipped locales', () => {
 			// `Base` and `Variables` are the Spanish Human Design words, and
 			// `Bodygraph` is the loanword the API's Spanish prose prints.
 			es: [
+				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
+				// language prints the term itself rather than translating it.
+				'Vargottama',
 				// `Hora` is the Sanskrit term for the planetary hour and every language
 				// below prints it unchanged; the reading is the Vedic one, not the
 				// ordinary word for an hour that Spanish and Portuguese also spell this way.
@@ -523,6 +529,9 @@ describe('shipped locales', () => {
 			// `Direction`, `Base`, `Cognition` and `Variables` unchanged, and
 			// `Activations` differs from the English only in a plural it already has.
 			fr: [
+				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
+				// language prints the term itself rather than translating it.
+				'Vargottama',
 				// `Hora` is the Sanskrit term for the planetary hour and every language
 				// below prints it unchanged; the reading is the Vedic one, not the
 				// ordinary word for an hour that Spanish and Portuguese also spell this way.
@@ -564,6 +573,9 @@ describe('shipped locales', () => {
 			// Brazilian usage keeps English precisely to hold it apart from
 			// `Desenho`.
 			pt: [
+				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
+				// language prints the term itself rather than translating it.
+				'Vargottama',
 				// `Hora` is the Sanskrit term for the planetary hour and every language
 				// below prints it unchanged; the reading is the Vedic one, not the
 				// ordinary word for an hour that Spanish and Portuguese also spell this way.
@@ -598,6 +610,7 @@ describe('shipped locales', () => {
 				'Motor',
 				'Relocation',
 				'Hora',
+				'Vargottama',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -709,7 +722,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	 * **One narrow exception, and it is named rather than inferred.** `hd-connection` and `hd-penta` are English end to end BY DECISION, because almost all of their chrome is doctrine the component wrote rather than a label, and a half-translated card reads worse than a consistent English one. A feature added to one of those two raises its number, in the same change that adds the feature and with the copy visible in the diff. Every other file ratchets down only; if a row that is not one of those two goes up, the answer is `t()`.
 	 */
 	const UNTRANSLATED_DEBT: Record<string, number> = {
-		'components/angel-number-card.ts': 3,
 		'components/angel-number-lookup.ts': 11,
 		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 22,
@@ -721,9 +733,7 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/chara-karakas.ts': 12,
 		'components/choghadiya-grid.ts': 11,
 		'components/compatibility-card.ts': 5,
-		'components/crystal-card.ts': 3,
 		'components/dasha-timeline.ts': 9,
-		'components/divisional-chart.ts': 3,
 		'components/fixed-stars.ts': 13,
 		'components/forecast-digest.ts': 5,
 		'components/forecast-timeline.ts': 6,
@@ -972,6 +982,28 @@ describe('a component renders its chrome in the page language', () => {
 		expect(t).toContain('Símbolos oníricos');
 		expect(t).toContain('1 coincidencias');
 		expect(t).not.toContain('match');
+		el.remove();
+	});
+
+	/** The divisional label is the one that interpolates, so the chart name has to survive translation. */
+	test('the divisional chart keeps its chart name inside the translated label', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-divisional-chart');
+		(el as unknown as { data: unknown }).data = {
+			division: { number: 9, name: 'Navamsa', sanskritName: 'Navamsa' },
+			chart: {
+				meta: {
+					Sun: { graha: 'Sun', rashi: 'Leo', longitude: 130.5 },
+				},
+			},
+			vargottama: ['Sun'],
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const label =
+			(el as unknown as { shadowRoot: ShadowRoot }).shadowRoot?.innerHTML ?? '';
+		expect(label).toContain('Carta divisional D9 Navamsa');
+		expect(label).not.toContain('divisional chart with twelve');
 		el.remove();
 	});
 

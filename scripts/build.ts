@@ -119,6 +119,9 @@ async function buildEsm(components: string[], locales: string[]) {
 		target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
 		bundle: true,
 		minify: true,
+		// Emit the characters themselves: escaping non-Latin text to \uXXXX costs
+		// six bytes per character, which lands entirely on the locales that need it most.
+		charset: 'utf8',
 		sourcemap: true,
 		external: ['lit', 'lit/*', '@lit/*'],
 		splitting: false,
@@ -134,6 +137,9 @@ async function buildEsm(components: string[], locales: string[]) {
 		target: ['es2022'],
 		bundle: true,
 		minify: true,
+		// Emit the characters themselves: escaping non-Latin text to \uXXXX costs
+		// six bytes per character, which lands entirely on the locales that need it most.
+		charset: 'utf8',
 		sourcemap: true,
 		external: ['lit', 'lit/*', '@lit/*'],
 		outExtension: { '.js': '.cjs' },
@@ -185,6 +191,9 @@ async function buildCdn(components: string[], locales: string[]) {
 		target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
 		bundle: true,
 		minify: true,
+		// Emit the characters themselves: escaping non-Latin text to \uXXXX costs
+		// six bytes per character, which lands entirely on the locales that need it most.
+		charset: 'utf8',
 		sourcemap: true,
 		plugins: [litTemplateMinify()],
 	});
@@ -204,6 +213,9 @@ async function buildCdn(components: string[], locales: string[]) {
 			target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
 			bundle: true,
 			minify: true,
+			// Emit the characters themselves: escaping non-Latin text to \uXXXX costs
+			// six bytes per character, which lands entirely on the locales that need it most.
+			charset: 'utf8',
 			sourcemap: true,
 			plugins: [litTemplateMinify()],
 		});
@@ -223,6 +235,9 @@ async function buildCdn(components: string[], locales: string[]) {
 			target: ['chrome120', 'firefox120', 'safari17', 'edge120'],
 			bundle: true,
 			minify: true,
+			// Emit the characters themselves: escaping non-Latin text to \uXXXX costs
+			// six bytes per character, which lands entirely on the locales that need it most.
+			charset: 'utf8',
 			sourcemap: true,
 		});
 	}
@@ -423,6 +438,9 @@ async function buildWrapperBundles(opts: {
 	const shared = {
 		bundle: true,
 		minify: true,
+		// Emit the characters themselves: escaping non-Latin text to \uXXXX costs
+		// six bytes per character, which lands entirely on the locales that need it most.
+		charset: 'utf8',
 		sourcemap: true,
 		external: opts.external,
 		jsx: 'automatic',
