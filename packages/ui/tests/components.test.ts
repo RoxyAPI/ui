@@ -1850,6 +1850,12 @@ describe('human design interpretations', () => {
 		el.remove();
 	});
 
+	test('the chart comes before the fact tiles', async () => {
+		const el = await mount('roxy-bodygraph', bodygraph);
+		expect(chartPrecedesFacts(el.shadowRoot as ShadowRoot)).toBe(true);
+		el.remove();
+	});
+
 	test('a circuit description is lifted to its group, never repeated per channel', async () => {
 		const el = await mount('roxy-bodygraph', bodygraph);
 		const text = el.shadowRoot?.textContent ?? '';
@@ -5177,6 +5183,20 @@ describe('roxy-reference-card folds a localized field into the field it translat
  * whether a channel reads as one person holding it outright or as the two of them
  * completing it together.
  */
+/**
+ * A card that owns a chart renders it before its fact tiles: a reader identifies
+ * these cards by the drawing, so the counts read as a summary of what is above
+ * rather than a preamble to it. Both anchors are published part names.
+ */
+function chartPrecedesFacts(root: ShadowRoot): boolean {
+	const chart = root.querySelector('[part~="chart"]');
+	const facts = root.querySelector('[part~="facts"]');
+	if (!chart || !facts) return false;
+	return Boolean(
+		chart.compareDocumentPosition(facts) & Node.DOCUMENT_POSITION_FOLLOWING,
+	);
+}
+
 describe('roxy-hd-connection draws the combined bodygraph', () => {
 	const CONNECTION = {
 		totalChannels: 3,
@@ -5258,6 +5278,12 @@ describe('roxy-hd-connection draws the combined bodygraph', () => {
 	test('draws every gate, not only the ones the two of them carry', async () => {
 		const el = await mount();
 		expect(chart(el).querySelectorAll('.bg-gate')).toHaveLength(64);
+		el.remove();
+	});
+
+	test('the chart comes before the fact tiles', async () => {
+		const el = await mount();
+		expect(chartPrecedesFacts(chart(el))).toBe(true);
 		el.remove();
 	});
 
@@ -5568,6 +5594,12 @@ describe('roxy-hd-penta draws the ladder', () => {
 		// Four of the six complete, two segments each.
 		expect(root.querySelectorAll('.pn-rung.on')).toHaveLength(8);
 		expect(root.querySelectorAll('.pn-rung.core')).toHaveLength(2);
+		el.remove();
+	});
+
+	test('the ladder comes before the fact tiles', async () => {
+		const el = await mount();
+		expect(chartPrecedesFacts(el.shadowRoot as ShadowRoot)).toBe(true);
 		el.remove();
 	});
 

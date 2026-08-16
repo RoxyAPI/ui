@@ -271,6 +271,7 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 				<h2 class="title">Penta</h2>
 				${typeof d.memberCount === 'number' ? html`<span class="count">${d.memberCount} members</span>` : nothing}
 			</header>
+			${this.renderChart(d)}
 			${renderHdFacts([
 				{ label: 'Members', value: d.memberCount?.toString() },
 				{
@@ -301,7 +302,6 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 					value: gaps.length > 0 ? gaps.join(', ') : undefined,
 				},
 			])}
-			${this.renderChart(d)}
 			${
 				// The tiles above count the members, the defined channels, the filled
 				// gates and the gaps; this paragraph is what those counts mean.

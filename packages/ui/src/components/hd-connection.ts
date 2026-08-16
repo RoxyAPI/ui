@@ -269,6 +269,7 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 				<h2 class="title">Connection</h2>
 				${typeof d.totalChannels === 'number' ? html`<span class="count">${d.totalChannels} channels</span>` : nothing}
 			</header>
+			${this.renderChart(d)}
 			${renderHdFacts([
 				{ label: 'Channels', value: d.totalChannels?.toString() },
 				{
@@ -285,7 +286,6 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 							: undefined,
 				},
 			])}
-			${this.renderChart(d)}
 			${
 				this.hideReadings
 					? nothing
