@@ -150,7 +150,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 		// compare against each other rather than each against itself.
 		const peak = Math.max(...bhavas.map((b) => b.totalVirupas ?? 0), 1);
 
-		return html`<div class="wrap" part="card" aria-label="Bhava bala">
+		return html`<div class="wrap" part="card" aria-label="Bhava Bala">
 			<header class="head" part="header">
 				<h2 class="title">Bhava Bala</h2>
 				<p class="subtitle">
@@ -201,7 +201,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 			<div
 				class="bar"
 				role="img"
-				aria-label="Bhava bala ${formatNumber(this.effectiveLang(), b.totalVirupas, 1)} virupas"
+				aria-label="Bhava Bala ${formatNumber(this.effectiveLang(), b.totalVirupas, 1)} virupas"
 			>
 				${COMPONENTS.map((c) => {
 					const v = Math.max(0, (b[c.key] as number | undefined) ?? 0);

@@ -316,7 +316,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 					<th scope="col">Nakshatra, pada</th>
 					<th scope="col">Star lord</th>
 					<th scope="col">Sub lord</th>
-					<th scope="col">Sub sub lord</th>
+					<th scope="col">Sub-sub lord</th>
 					<th scope="col">KP no.</th>
 				</tr>
 			</thead>
@@ -359,7 +359,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 					<th scope="col">Nakshatra, pada</th>
 					<th scope="col">Star lord</th>
 					<th scope="col">Sub lord</th>
-					<th scope="col">Sub sub lord</th>
+					<th scope="col">Sub-sub lord</th>
 					<th scope="col">KP no.</th>
 				</tr>
 			</thead>

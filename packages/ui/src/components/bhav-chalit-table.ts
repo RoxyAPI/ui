@@ -136,7 +136,7 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 		const moved = grahas.filter((g) => g.moved);
 		const count = d.movedCount ?? moved.length;
 
-		return html`<div class="wrap" part="card" aria-label="Bhav chalit">
+		return html`<div class="wrap" part="card" aria-label="Bhav Chalit">
 			<header class="head" part="header">
 				<h2 class="title">Bhav Chalit</h2>
 				<p class="lede">

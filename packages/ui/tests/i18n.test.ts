@@ -743,6 +743,31 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		return out;
 	}
 
+	/**
+	 * One term, one spelling. Matching on hyphens and spaces alone keeps this to the
+	 * drift a reader would call a typo, and leaves sentence-position casing (`Total`
+	 * beside `total`) alone, which is legitimate and would drown it.
+	 */
+	test('no term is written two ways across components', async () => {
+		const spellings = new Map<string, Set<string>>();
+		for (const literals of (await measure()).values()) {
+			for (const l of literals) {
+				const key = l.replaceAll('-', '').replaceAll(' ', '');
+				if (key.length < 4) continue;
+				const seen = spellings.get(key) ?? new Set<string>();
+				seen.add(l);
+				spellings.set(key, seen);
+			}
+		}
+		const clashes = [...spellings.values()]
+			.filter((s) => s.size > 1)
+			.map((s) => [...s].sort().join('  vs  '));
+		expect(
+			clashes,
+			`The same term spelled two ways. Match the spelling the API uses:\n  ${clashes.join('\n  ')}`,
+		).toEqual([]);
+	});
+
 	test('no file writes more untranslated copy than its frozen budget', async () => {
 		const measured = await measure();
 		// Not vacuous in the direction that matters: a detector that stopped

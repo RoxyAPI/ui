@@ -294,7 +294,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 				? `${formatNumber(this.effectiveLang(), p.totalRupas, 2)} / ${formatNumber(this.effectiveLang(), p.minRequired, 2)} R`
 				: '';
 
-		return html`<div class="planet-row" role="listitem" aria-label="${p.planet} shadbala">
+		return html`<div class="planet-row" role="listitem" aria-label="${p.planet} Shadbala">
 			<div class="planet-label">
 				<span class="glyph" aria-hidden="true">${glyph}</span>
 				${p.planet}

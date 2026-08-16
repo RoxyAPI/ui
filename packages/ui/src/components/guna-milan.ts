@@ -310,7 +310,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 						</div>
 					</div>
 				</div>
-				<div class="score-ring" part="chart" role="meter" aria-label="Guna milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
+				<div class="score-ring" part="chart" role="meter" aria-label="Guna Milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
 					<svg viewBox="0 0 100 100" aria-hidden="true">
 						<circle class="ring-track" cx="50" cy="50" r="45" fill="none" stroke="${trackColor}" stroke-width="8"/>
 						<circle class="ring-fill" cx="50" cy="50" r="45" fill="none" stroke="${fillColor}" stroke-width="8"
