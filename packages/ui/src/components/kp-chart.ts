@@ -247,10 +247,6 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 		return rows;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No KP chart data</div>`;
-	}
-
 	protected renderData(d: KpChartResponse) {
 		const asc = d.ascendant;
 

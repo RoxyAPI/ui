@@ -679,59 +679,56 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	 * **One narrow exception, and it is named rather than inferred.** `hd-connection` and `hd-penta` are English end to end BY DECISION, because almost all of their chrome is doctrine the component wrote rather than a label, and a half-translated card reads worse than a consistent English one. A feature added to one of those two raises its number, in the same change that adds the feature and with the copy visible in the diff. Every other file ratchets down only; if a row that is not one of those two goes up, the answer is `t()`.
 	 */
 	const UNTRANSLATED_DEBT: Record<string, number> = {
-		'components/angel-number-card.ts': 4,
-		'components/angel-number-lookup.ts': 12,
-		'components/arudha-padas.ts': 18,
-		'components/ashtakavarga-grid.ts': 23,
-		'components/aspects-table.ts': 19,
-		'components/astrocartography-map.ts': 10,
-		'components/bhav-chalit-table.ts': 14,
-		'components/bhava-bala-table.ts': 12,
-		'components/biorhythm-chart.ts': 14,
-		'components/chara-karakas.ts': 13,
-		'components/choghadiya-grid.ts': 12,
-		'components/compatibility-card.ts': 12,
-		'components/crystal-card.ts': 4,
-		'components/crystal-grid.ts': 1,
-		'components/dasha-timeline.ts': 10,
-		'components/divisional-chart.ts': 4,
-		'components/dosha-card.ts': 4,
-		'components/dream-card.ts': 2,
-		'components/dream-search.ts': 4,
-		'components/fixed-stars.ts': 14,
-		'components/forecast-digest.ts': 6,
-		'components/forecast-timeline.ts': 7,
-		'components/gochara-table.ts': 17,
-		'components/guna-milan.ts': 10,
-		'components/hd-connection.ts': 22,
-		'components/hd-penta.ts': 16,
-		'components/heliacal-table.ts': 12,
-		'components/hexagram.ts': 6,
-		'components/hora-table.ts': 3,
-		'components/horoscope-card.ts': 18,
-		'components/kp-chart.ts': 41,
-		'components/kp-planets-table.ts': 13,
-		'components/kp-ruling-planets.ts': 19,
-		'components/local-space-compass.ts': 12,
-		'components/moon-phase.ts': 9,
-		'components/nakshatra-card.ts': 10,
-		'components/numerology-card.ts': 21,
-		'components/panchang-table.ts': 18,
-		'components/positions-table.ts': 8,
-		'components/profection-card.ts': 8,
-		'components/relocation-wheel.ts': 7,
-		'components/shadbala-table.ts': 13,
-		'components/synastry-chart.ts': 31,
-		'components/tarot-card.ts': 1,
-		'components/tarot-catalog.ts': 1,
-		'components/tarot-spread.ts': 6,
-		'components/transits-table.ts': 20,
-		'components/upagraha-table.ts': 10,
-		'components/vedic-aspects.ts': 12,
-		'components/vedic-kundli.ts': 3,
-		'components/vedic-planets-table.ts': 29,
-		'components/western-planets-table.ts': 10,
-		'components/yoga-list.ts': 22,
+		'components/angel-number-card.ts': 3,
+		'components/angel-number-lookup.ts': 11,
+		'components/arudha-padas.ts': 17,
+		'components/ashtakavarga-grid.ts': 22,
+		'components/aspects-table.ts': 18,
+		'components/astrocartography-map.ts': 9,
+		'components/bhav-chalit-table.ts': 13,
+		'components/bhava-bala-table.ts': 11,
+		'components/biorhythm-chart.ts': 13,
+		'components/chara-karakas.ts': 12,
+		'components/choghadiya-grid.ts': 11,
+		'components/compatibility-card.ts': 11,
+		'components/crystal-card.ts': 3,
+		'components/dasha-timeline.ts': 9,
+		'components/divisional-chart.ts': 3,
+		'components/dosha-card.ts': 3,
+		'components/dream-card.ts': 1,
+		'components/dream-search.ts': 3,
+		'components/fixed-stars.ts': 13,
+		'components/forecast-digest.ts': 5,
+		'components/forecast-timeline.ts': 6,
+		'components/gochara-table.ts': 16,
+		'components/guna-milan.ts': 9,
+		'components/hd-connection.ts': 21,
+		'components/hd-penta.ts': 15,
+		'components/heliacal-table.ts': 11,
+		'components/hexagram.ts': 5,
+		'components/hora-table.ts': 2,
+		'components/horoscope-card.ts': 17,
+		'components/kp-chart.ts': 40,
+		'components/kp-planets-table.ts': 12,
+		'components/kp-ruling-planets.ts': 18,
+		'components/local-space-compass.ts': 11,
+		'components/moon-phase.ts': 8,
+		'components/nakshatra-card.ts': 9,
+		'components/numerology-card.ts': 20,
+		'components/panchang-table.ts': 17,
+		'components/positions-table.ts': 7,
+		'components/profection-card.ts': 7,
+		'components/relocation-wheel.ts': 6,
+		'components/shadbala-table.ts': 12,
+		'components/synastry-chart.ts': 30,
+		'components/tarot-spread.ts': 5,
+		'components/transits-table.ts': 19,
+		'components/upagraha-table.ts': 9,
+		'components/vedic-aspects.ts': 11,
+		'components/vedic-kundli.ts': 2,
+		'components/vedic-planets-table.ts': 28,
+		'components/western-planets-table.ts': 9,
+		'components/yoga-list.ts': 21,
 		'utils/frame.ts': 2,
 		'utils/kundli-render.ts': 3,
 	};
@@ -882,14 +879,14 @@ describe('a component renders its chrome in the page language', () => {
 		document.body.appendChild(el);
 		await settled(el);
 		// No data yet: the empty state is the first thing a fresh tag paints.
-		expect(text(el)).toContain('Sin datos de la carta');
+		expect(text(el)).toContain('Sin datos');
 	});
 
 	test('the same component with no page language stays English', async () => {
 		const el = document.createElement('roxy-natal-chart');
 		document.body.appendChild(el);
 		await settled(el);
-		expect(text(el)).toContain('No chart data');
+		expect(text(el)).toContain('No data');
 	});
 
 	test('the default heading translates, which no static scan can prove', async () => {
@@ -932,7 +929,7 @@ describe('a component renders its chrome in the page language', () => {
 		el.setAttribute('lang', 'en');
 		document.body.appendChild(el);
 		await settled(el);
-		expect(text(el)).toContain('No chart data');
+		expect(text(el)).toContain('No data');
 	});
 
 	/**
@@ -1000,7 +997,7 @@ describe('a component renders its chrome in the page language', () => {
 		const el = document.createElement('roxy-transit-wheel');
 		document.body.appendChild(el);
 		await settled(el);
-		expect(text(el)).toContain('Sin datos de tránsitos');
+		expect(text(el)).toContain('Sin datos');
 		el.remove();
 	});
 

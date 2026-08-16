@@ -601,10 +601,6 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return 180 + origin - longitude;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">${this.t('No transit data')}</div>`;
-	}
-
 	protected renderData(d: CalculateTransitAspectsResponse) {
 		const natal = d.natalPlanets ?? [];
 		const transit = d.transitPlanets ?? [];

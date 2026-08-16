@@ -98,7 +98,6 @@ export const hi: Record<ChromeString, string> = {
 
 	'Natal chart': 'जन्म कुंडली',
 	'Relocation chart': 'स्थानांतरित जन्म कुंडली',
-	'No chart data': 'कुंडली का कोई डेटा नहीं है',
 	Wheel: 'कुंडली चक्र',
 	'Aspect grid': 'दृष्टि तालिका',
 	'Natal chart views': 'जन्म कुंडली के दृश्य',
@@ -153,7 +152,6 @@ export const hi: Record<ChromeString, string> = {
 	'Planet readings': 'ग्रह फलादेश',
 
 	Transits: 'गोचर',
-	'No transit data': 'गोचर का कोई डेटा नहीं है',
 	'Aspects to the natal chart: {{count}}': 'जन्म कुंडली पर दृष्टियाँ: {{count}}',
 	'Natal and transit bi-wheel': 'जन्म और गोचर का दोहरा चक्र',
 	'Bi-wheel with natal bodies on the inner ring and transiting bodies on the outer ring':
@@ -192,7 +190,6 @@ export const hi: Record<ChromeString, string> = {
 	Guidance: 'मार्गदर्शन',
 
 	Ephemeris: 'ग्रह स्थिति',
-	'No ephemeris data': 'ग्रह स्थिति का कोई डेटा नहीं है',
 	'Signs in this month': 'इस माह की राशियाँ',
 	'Sign changes and retrograde periods': 'राशि परिवर्तन और वक्री अवधि',
 	'Daily positions': 'दैनिक ग्रह स्थिति',
@@ -227,7 +224,6 @@ export const hi: Record<ChromeString, string> = {
 	Design: 'डिज़ाइन',
 
 	Bodygraph: 'बॉडीग्राफ',
-	'No bodygraph data': 'बॉडीग्राफ का कोई डेटा नहीं है',
 	'Human Design bodygraph': 'ह्यूमन डिज़ाइन बॉडीग्राफ',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
 		'नौ केंद्रों, चैनलों और सक्रिय गेटों सहित ह्यूमन डिज़ाइन बॉडीग्राफ, एक मानव छायाकृति पर बना हुआ',
@@ -253,13 +249,11 @@ export const hi: Record<ChromeString, string> = {
 	'Gate {{gate}}': 'गेट {{gate}}',
 	'I Ching hexagram {{number}}': 'आई चिंग हेक्साग्राम {{number}}',
 
-	'No Human Design data': 'ह्यूमन डिज़ाइन का कोई डेटा नहीं है',
 	'Personality line': 'पर्सनैलिटी रेखा',
 	'Design line': 'डिज़ाइन रेखा',
 	Lines: 'रेखाएँ',
 
 	Variables: 'वेरिएबल',
-	'No variables data': 'वेरिएबल का कोई डेटा नहीं है',
 	'Human Design variables': 'ह्यूमन डिज़ाइन वेरिएबल',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
 		'कम विश्वसनीयता: जन्म समय किसी कलर या टोन की सीमा के निकट है। सटीक जन्म समय की पुष्टि करें।',
@@ -276,7 +270,6 @@ export const hi: Record<ChromeString, string> = {
 	Cognition: 'संज्ञान',
 
 	Reference: 'संदर्भ',
-	'No reference data': 'संदर्भ का कोई डेटा नहीं है',
 
 	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
 	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over

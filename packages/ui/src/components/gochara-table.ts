@@ -158,10 +158,6 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No transit data</div>`;
-	}
-
 	protected renderData(d: CalculateTransitResponse) {
 		const planets = d.transitingPlanets ?? [];
 		if (!planets.length) return this.renderEmpty();

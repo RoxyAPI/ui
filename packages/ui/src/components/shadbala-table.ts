@@ -236,10 +236,6 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No shadbala data</div>`;
-	}
-
 	protected renderData(d: ShadbalaResponse) {
 		if (!d.planets?.length) return this.renderEmpty();
 

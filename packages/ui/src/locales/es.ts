@@ -90,7 +90,6 @@ export const es: Record<ChromeString, string> = {
 
 	'Natal chart': 'Carta natal',
 	'Relocation chart': 'Carta de relocalización',
-	'No chart data': 'Sin datos de la carta',
 	Wheel: 'Rueda',
 	'Aspect grid': 'Cuadrícula de aspectos',
 	'Natal chart views': 'Vistas de la carta natal',
@@ -146,7 +145,6 @@ export const es: Record<ChromeString, string> = {
 	'Planet readings': 'Lecturas planetarias',
 
 	Transits: 'Tránsitos',
-	'No transit data': 'Sin datos de tránsitos',
 	'Aspects to the natal chart: {{count}}':
 		'Aspectos a la carta natal: {{count}}',
 	'Natal and transit bi-wheel': 'Rueda doble natal y de tránsitos',
@@ -190,7 +188,6 @@ export const es: Record<ChromeString, string> = {
 	Guidance: 'Orientación',
 
 	Ephemeris: 'Efemérides',
-	'No ephemeris data': 'Sin datos de efemérides',
 	'Signs in this month': 'Signos de este mes',
 	'Sign changes and retrograde periods':
 		'Cambios de signo y períodos retrógrados',
@@ -226,7 +223,6 @@ export const es: Record<ChromeString, string> = {
 	Design: 'Diseño',
 
 	Bodygraph: 'Bodygraph',
-	'No bodygraph data': 'Sin datos del bodygraph',
 	'Human Design bodygraph': 'Bodygraph de Diseño Humano',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
 		'Bodygraph de Diseño Humano con nueve centros, canales y puertas activadas superpuestos sobre una silueta humana',
@@ -252,13 +248,11 @@ export const es: Record<ChromeString, string> = {
 	'Gate {{gate}}': 'Puerta {{gate}}',
 	'I Ching hexagram {{number}}': 'Hexagrama {{number}} del I Ching',
 
-	'No Human Design data': 'Sin datos de Diseño Humano',
 	'Personality line': 'Línea de Personalidad',
 	'Design line': 'Línea de Diseño',
 	Lines: 'Líneas',
 
 	Variables: 'Variables',
-	'No variables data': 'Sin datos de las Variables',
 	'Human Design variables': 'Variables de Diseño Humano',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
 		'Confianza baja: una hora de nacimiento cercana a un límite de Color o de Tono. Verifica la hora exacta de nacimiento.',
@@ -275,7 +269,6 @@ export const es: Record<ChromeString, string> = {
 	Cognition: 'Cognición',
 
 	Reference: 'Referencia',
-	'No reference data': 'Sin datos de referencia',
 
 	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
 	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over

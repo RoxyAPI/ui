@@ -150,10 +150,6 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No fixed star data</div>`;
-	}
-
 	protected renderData(data: FixedStarsResponse) {
 		const conjunctions = data.conjunctions ?? [];
 		const stars = data.stars ?? [];

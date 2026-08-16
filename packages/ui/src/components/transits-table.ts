@@ -239,10 +239,6 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	@state()
 	private tab: 'positions' | 'aspects' = 'positions';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No transits data</div>`;
-	}
-
 	protected renderData(d: TransitsResponse) {
 		if (!d.transitPlanets?.length) return this.renderEmpty();
 

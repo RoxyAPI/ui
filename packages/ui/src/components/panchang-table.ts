@@ -158,10 +158,6 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	@property({ type: String, reflect: true })
 	detail: 'basic' | 'detailed' = 'detailed';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No panchang data</div>`;
-	}
-
 	protected renderData(d: PanchangData) {
 		const detailed = 'sunrise' in d ? d : null;
 		const basic = 'sunLongitude' in d ? d : null;

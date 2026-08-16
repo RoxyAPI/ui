@@ -115,10 +115,6 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No upagraha data</div>`;
-	}
-
 	protected renderData(d: UpagrahaResponse) {
 		const groups = GROUPS.filter((g) => d[g.key]?.length);
 		if (!groups.length) return this.renderEmpty();

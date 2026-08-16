@@ -123,10 +123,6 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No heliacal data</div>`;
-	}
-
 	protected renderData(d: HeliacalResponse) {
 		const grahas = d.grahas ?? [];
 		if (!grahas.length) return this.renderEmpty();

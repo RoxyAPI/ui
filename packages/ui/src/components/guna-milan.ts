@@ -256,10 +256,6 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No Guna Milan data</div>`;
-	}
-
 	protected renderData(d: CompatibilityResponse) {
 		const breakdown = (d.breakdown ?? []).filter(
 			(b) => b?.category !== undefined,

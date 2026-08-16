@@ -133,10 +133,6 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No profection data</div>`;
-	}
-
 	protected renderData(data: ProfectionsResponse) {
 		const sGlyph = signGlyph(data.profectedSign);
 		const lordGlyph = planetGlyph(data.lordOfYear);

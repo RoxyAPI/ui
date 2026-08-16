@@ -104,10 +104,6 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No hora data</div>`;
-	}
-
 	protected renderData(d: GetHoraResponse) {
 		const day = d.dayHoras ?? [];
 		const night = d.nightHoras ?? [];

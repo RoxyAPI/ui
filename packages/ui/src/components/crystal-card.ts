@@ -144,10 +144,6 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No crystal data</div>`;
-	}
-
 	protected renderData(d: GetCrystalResponse) {
 		const colors = d.colors ?? [];
 		const keywords = d.keywords ?? [];

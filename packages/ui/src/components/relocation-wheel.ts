@@ -108,10 +108,6 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No relocation data</div>`;
-	}
-
 	protected renderData(data: RelocationChartResponse) {
 		const c = data.changes;
 		return html`<div class="stack" part="stack">

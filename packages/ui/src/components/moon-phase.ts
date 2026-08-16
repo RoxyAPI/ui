@@ -120,10 +120,6 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 	@property({ type: String, reflect: true })
 	mode: 'current' | 'upcoming' | 'calendar' = 'current';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No moon phase data</div>`;
-	}
-
 	protected renderData(d: MoonPhaseData) {
 		const list: MoonListEntry[] =
 			'phases' in d ? d.phases : 'calendar' in d ? d.calendar : [];

@@ -249,10 +249,6 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 		return {};
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No compatibility data</div>`;
-	}
-
 	protected renderData(d: CompatibilityData) {
 		const score = d.overallScore;
 		const breakdown = this.getBreakdown();

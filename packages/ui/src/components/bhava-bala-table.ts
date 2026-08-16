@@ -142,10 +142,6 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No bhava bala data</div>`;
-	}
-
 	protected renderData(d: BhavaBalaResponse) {
 		const bhavas = d.bhavas ?? [];
 		if (!bhavas.length) return this.renderEmpty();

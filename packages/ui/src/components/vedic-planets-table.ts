@@ -256,10 +256,6 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		return rows;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No chart data</div>`;
-	}
-
 	protected renderData(d: BirthChartResponse) {
 		if (!d.meta) return this.renderEmpty();
 		const rows = this.orderedRows();

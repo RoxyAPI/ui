@@ -84,10 +84,6 @@ export class RoxyTarotCatalog extends RoxyDataElement<ListCardsResponse> {
 	@property({ type: String, reflect: true })
 	heading = '';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No cards</div>`;
-	}
-
 	protected renderData(d: ListCardsResponse) {
 		const cards = d.cards ?? [];
 		if (cards.length === 0) return this.renderEmpty();

@@ -415,10 +415,6 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 			)}
 		</div>`;
 	}
-
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No penta data</div>`;
-	}
 }
 
 /**

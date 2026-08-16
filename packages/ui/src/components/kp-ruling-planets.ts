@@ -135,10 +135,6 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No ruling planets data</div>`;
-	}
-
 	protected renderData(d: KpRulingPlanetsResponse) {
 		const significators = d.significators ?? [];
 

@@ -265,10 +265,6 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 		</article>`;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">${this.t('No reference data')}</div>`;
-	}
-
 	private deriveTitle(rec: Record<string, unknown>): string {
 		for (const key of TITLE_KEYS) {
 			if (typeof rec[key] === 'string') return rec[key] as string;

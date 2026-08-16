@@ -223,10 +223,6 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 	@state()
 	activeTab: Tab = 'sarva';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No ashtakavarga data</div>`;
-	}
-
 	protected renderData(d: AshtakavargaResponse) {
 		const signs = d.signs ?? [];
 

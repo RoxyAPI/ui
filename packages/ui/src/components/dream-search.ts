@@ -92,10 +92,6 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No symbols match</div>`;
-	}
-
 	protected renderData(d: SearchDreamSymbolsResponse) {
 		const symbols = d.symbols ?? [];
 		if (symbols.length === 0) return this.renderEmpty();

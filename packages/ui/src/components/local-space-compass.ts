@@ -190,10 +190,6 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No local space data</div>`;
-	}
-
 	protected renderData(data: LocalSpaceResponse) {
 		const bodies = data.bodies ?? [];
 		const bd = data.birthDetails;

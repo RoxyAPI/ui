@@ -199,10 +199,6 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 		</article>`;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No angel number</div>`;
-	}
-
 	private renderSections(d: NonNullable<GetAngelNumberResponse>) {
 		return this.renderInterpretation(
 			buildMeaningSections(d.meaning, d.biblical, d.shadow),

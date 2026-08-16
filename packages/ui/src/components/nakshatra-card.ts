@@ -148,10 +148,6 @@ export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 			}
 		</article>`;
 	}
-
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No nakshatra data</div>`;
-	}
 }
 
 declare global {

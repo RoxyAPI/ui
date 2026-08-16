@@ -187,10 +187,6 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	@property({ type: String })
 	heading = '';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No positions data</div>`;
-	}
-
 	protected renderData(data: PositionsResponse) {
 		const vm = this.toViewModel(data);
 		const cols = vm.cols;

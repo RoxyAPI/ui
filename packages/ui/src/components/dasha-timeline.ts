@@ -325,10 +325,6 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	@state()
 	private view: 'timeline' | 'readings' | 'frame' = 'timeline';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No dasha data</div>`;
-	}
-
 	protected renderData(d: DashaData) {
 		const periods = this.collectPeriods(d);
 		const maxYears = periods.length

@@ -82,7 +82,6 @@ export const tr: Record<ChromeString, string> = {
 
 	'Natal chart': 'Doğum haritası',
 	'Relocation chart': 'Relocation haritası',
-	'No chart data': 'Harita verisi yok',
 	Wheel: 'Harita çemberi',
 	'Aspect grid': 'Açı tablosu',
 	'Natal chart views': 'Doğum haritası görünümleri',
@@ -137,7 +136,6 @@ export const tr: Record<ChromeString, string> = {
 	'Planet readings': 'Gezegen yorumları',
 
 	Transits: 'Transitler',
-	'No transit data': 'Transit verisi yok',
 	'Aspects to the natal chart: {{count}}':
 		'Doğum haritasına yapılan açılar: {{count}}',
 	'Natal and transit bi-wheel': 'Natal ve transit çift çemberi',
@@ -177,7 +175,6 @@ export const tr: Record<ChromeString, string> = {
 	Guidance: 'Öneri',
 
 	Ephemeris: 'Efemeris',
-	'No ephemeris data': 'Efemeris verisi yok',
 	'Signs in this month': 'Bu ayki burçlar',
 	'Sign changes and retrograde periods': 'Burç değişimleri ve retro dönemleri',
 	'Daily positions': 'Gezegen konumları',
@@ -212,7 +209,6 @@ export const tr: Record<ChromeString, string> = {
 	Design: 'Tasarım',
 
 	Bodygraph: 'Bodygraph',
-	'No bodygraph data': 'Bodygraph verisi yok',
 	'Human Design bodygraph': 'İnsan Tasarımı bodygraph',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
 		'Bir insan silueti üzerine yerleştirilmiş dokuz merkez, kanal ve aktif kapı ile İnsan Tasarımı bodygraph',
@@ -238,13 +234,11 @@ export const tr: Record<ChromeString, string> = {
 	'Gate {{gate}}': 'Kapı {{gate}}',
 	'I Ching hexagram {{number}}': 'I Ching heksagramı {{number}}',
 
-	'No Human Design data': 'İnsan Tasarımı verisi yok',
 	'Personality line': 'Kişilik çizgisi',
 	'Design line': 'Tasarım çizgisi',
 	Lines: 'Çizgiler',
 
 	Variables: 'Değişkenler',
-	'No variables data': 'Değişken verisi yok',
 	'Human Design variables': 'İnsan Tasarımı değişkenleri',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
 		'Düşük güven: doğum saati bir Renk ya da Ton sınırına yakın. Tam doğum saatini doğrulayın.',
@@ -261,7 +255,6 @@ export const tr: Record<ChromeString, string> = {
 	Cognition: 'Biliş',
 
 	Reference: 'Referans',
-	'No reference data': 'Referans verisi yok',
 
 	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
 	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over

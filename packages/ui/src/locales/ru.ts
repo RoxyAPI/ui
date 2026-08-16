@@ -76,7 +76,6 @@ export const ru: Record<ChromeString, string> = {
 
 	'Natal chart': 'Натальная карта',
 	'Relocation chart': 'Карта релокации',
-	'No chart data': 'Нет данных карты',
 	Wheel: 'Круг карты',
 	'Aspect grid': 'Таблица аспектов',
 	'Natal chart views': 'Виды натальной карты',
@@ -131,7 +130,6 @@ export const ru: Record<ChromeString, string> = {
 	'Planet readings': 'Трактовки планет',
 
 	Transits: 'Транзиты',
-	'No transit data': 'Нет данных о транзитах',
 	'Aspects to the natal chart: {{count}}':
 		'Аспектов к натальной карте: {{count}}',
 	'Natal and transit bi-wheel': 'Двойная карта: натал и транзит',
@@ -172,7 +170,6 @@ export const ru: Record<ChromeString, string> = {
 	Guidance: 'Рекомендации',
 
 	Ephemeris: 'Эфемериды',
-	'No ephemeris data': 'Нет данных эфемерид',
 	'Signs in this month': 'Знаки в этом месяце',
 	'Sign changes and retrograde periods': 'Вход в знаки и ретроградные периоды',
 	'Daily positions': 'Положения планет по дням',
@@ -207,7 +204,6 @@ export const ru: Record<ChromeString, string> = {
 	Design: 'Дизайн',
 
 	Bodygraph: 'Бодиграф',
-	'No bodygraph data': 'Нет данных бодиграфа',
 	'Human Design bodygraph': 'Бодиграф Дизайна Человека',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
 		'Бодиграф Дизайна Человека с девятью центрами, каналами и активированными воротами на силуэте человека',
@@ -233,13 +229,11 @@ export const ru: Record<ChromeString, string> = {
 	'Gate {{gate}}': 'Ворота {{gate}}',
 	'I Ching hexagram {{number}}': 'Гексаграмма И-цзин {{number}}',
 
-	'No Human Design data': 'Нет данных Дизайна Человека',
 	'Personality line': 'Линия Личности',
 	'Design line': 'Линия Дизайна',
 	Lines: 'Линии',
 
 	Variables: 'Переменные',
-	'No variables data': 'Нет данных о переменных',
 	'Human Design variables': 'Переменные Дизайна Человека',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
 		'Низкая достоверность: время рождения близко к границе цвета или тона. Уточните точное время рождения.',
@@ -256,7 +250,6 @@ export const ru: Record<ChromeString, string> = {
 	Cognition: 'Когниция',
 
 	Reference: 'Справочник',
-	'No reference data': 'Нет данных справочника',
 
 	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
 	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over

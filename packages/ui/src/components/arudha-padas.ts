@@ -140,10 +140,6 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No arudha pada data</div>`;
-	}
-
 	protected renderData(d: ArudhaResponse) {
 		const padas = d.padas ?? [];
 		if (!padas.length) return this.renderEmpty();

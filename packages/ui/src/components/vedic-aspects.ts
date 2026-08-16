@@ -146,10 +146,6 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No aspect data</div>`;
-	}
-
 	protected renderData(d: CalculateDrishtiResponse) {
 		const aspects = d.aspects ?? [];
 		const mutual = d.mutualAspects ?? [];

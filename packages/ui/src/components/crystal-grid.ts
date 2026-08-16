@@ -106,10 +106,6 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 	@property({ type: String, reflect: true })
 	heading = '';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No crystals</div>`;
-	}
-
 	protected renderData(d: CrystalGridData) {
 		const crystals = d.crystals ?? [];
 		if (crystals.length === 0) return this.renderEmpty();

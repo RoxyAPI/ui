@@ -147,10 +147,6 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No digest data</div>`;
-	}
-
 	protected renderData(d: GenerateDigestResponse) {
 		const windows = d.windows ?? [];
 		if (windows.length === 0) return this.renderEmpty();

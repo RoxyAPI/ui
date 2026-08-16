@@ -138,10 +138,6 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 	@property({ type: String, reflect: true })
 	type: 'manglik' | 'kalsarpa' | 'sadhesati' | string = 'manglik';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No dosha data</div>`;
-	}
-
 	protected renderData(d: DoshaData) {
 		const present = !!d.present;
 		const label = DOSHA_LABELS[this.type] ?? this.type;

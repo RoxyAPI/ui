@@ -226,10 +226,6 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">${this.t('No bodygraph data')}</div>`;
-	}
-
 	protected renderData(d: Bodygraph) {
 		const centers = d.centers ?? [];
 		const definedCenters = new Set<BodygraphCenterId>(

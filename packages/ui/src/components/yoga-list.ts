@@ -454,10 +454,6 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		</div>`;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No yoga data</div>`;
-	}
-
 	protected renderData(d: YogaListData) {
 		const lc = this.filter.toLowerCase();
 

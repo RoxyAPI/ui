@@ -75,10 +75,6 @@ export class RoxyKpPlanetsTable extends RoxyDataElement<KpPlanetsResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No KP data</div>`;
-	}
-
 	protected renderData(d: KpPlanetsResponse) {
 		const planets = d.planets ?? [];
 

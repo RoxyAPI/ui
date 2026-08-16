@@ -241,7 +241,7 @@ describe('roxy-transit-wheel', () => {
 		const el = document.createElement('roxy-transit-wheel');
 		document.body.appendChild(el);
 		await settled(el);
-		expect(text(el)).toContain('No transit data');
+		expect(text(el)).toContain('No data');
 		el.remove();
 	});
 

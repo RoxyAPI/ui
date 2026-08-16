@@ -164,10 +164,6 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No chara karaka data</div>`;
-	}
-
 	protected renderData(d: CharaKarakaResponse) {
 		const karakas = d.karakas ?? [];
 		if (!karakas.length) return this.renderEmpty();

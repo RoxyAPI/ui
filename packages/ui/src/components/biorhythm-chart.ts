@@ -233,10 +233,6 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 	@property({ type: String, reflect: true })
 	mode: 'daily' | 'forecast' | 'critical-days' = 'daily';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No biorhythm data</div>`;
-	}
-
 	protected renderData(d: BiorhythmData) {
 		if (this.mode === 'critical-days' && 'criticalDays' in d) {
 			return this.renderCritical(d as GetCriticalDaysResponse);

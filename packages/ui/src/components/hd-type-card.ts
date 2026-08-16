@@ -69,10 +69,6 @@ export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">${this.t('No Human Design data')}</div>`;
-	}
-
 	protected renderData(d: HdIdentity) {
 		return isTypeShape(d) ? this.renderType(d) : this.renderProfile(d);
 	}

@@ -195,10 +195,6 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		return { hex: d as Hexagram };
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No hexagram data</div>`;
-	}
-
 	protected renderData() {
 		const resolved = this.resolveHexagram();
 		if (!resolved) return this.renderEmpty();

@@ -85,10 +85,6 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 		return toKundliViewModel(this.data.chart.meta, label);
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No divisional chart data</div>`;
-	}
-
 	protected renderData(d: DivisionalChartResponse) {
 		const vm = this.viewModel();
 		if (!vm) return this.renderEmpty();

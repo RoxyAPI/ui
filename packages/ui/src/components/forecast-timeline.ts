@@ -223,10 +223,6 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No forecast data</div>`;
-	}
-
 	protected renderData(d: ForecastTimelineData) {
 		const events = d.events ?? [];
 		const grouped = this.groupByDate(events);

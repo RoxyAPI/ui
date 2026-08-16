@@ -286,10 +286,6 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No aspect data</div>`;
-	}
-
 	protected renderData(d: AspectsData) {
 		const aspects = 'aspects' in d ? (d.aspects ?? []) : [];
 		const patterns = 'patterns' in d ? (d.patterns ?? []) : [];

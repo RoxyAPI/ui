@@ -201,10 +201,6 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No astrocartography data</div>`;
-	}
-
 	protected renderData(data: AstrocartographyResponse) {
 		const lines = data.lines ?? [];
 		const bd = data.birthDetails;

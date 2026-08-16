@@ -1895,7 +1895,7 @@ describe('human design interpretations', () => {
 		const text = el.shadowRoot?.textContent ?? '';
 		expect(text).toContain('Projector');
 		expect(text).not.toContain('undefined');
-		expect(text).not.toContain('No bodygraph data');
+		expect(text).not.toContain('No data');
 		el.remove();
 	});
 
@@ -1941,7 +1941,7 @@ describe('human design interpretations', () => {
 			expect(text).toContain(prose);
 		}
 		expect(text).not.toContain('undefined');
-		expect(text).not.toContain('No Human Design data');
+		expect(text).not.toContain('No data');
 		el.remove();
 	});
 
@@ -1955,7 +1955,7 @@ describe('human design interpretations', () => {
 		// in this response, so the card cannot claim one.
 		expect(text).not.toContain('Strategy');
 		expect(text).not.toContain('undefined');
-		expect(text).not.toContain('No Human Design data');
+		expect(text).not.toContain('No data');
 		el.remove();
 	});
 

@@ -75,10 +75,6 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 		this.chartStyle = next;
 	};
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No kundli data</div>`;
-	}
-
 	protected renderData(d: BirthChartResponse) {
 		const vm = this.viewModel();
 		if (!vm) return this.renderEmpty();

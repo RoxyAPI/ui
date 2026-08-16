@@ -543,10 +543,6 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		return 180 + this.getAscendant() - lon;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">${this.t('No chart data')}</div>`;
-	}
-
 	protected renderData(data: WheelChart) {
 		const planets = this.getPlanets();
 		const aspects = data.aspects ?? [];

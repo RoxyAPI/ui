@@ -128,10 +128,6 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No bhav chalit data</div>`;
-	}
-
 	protected renderData(d: BhavChalitResponse) {
 		const grahas = d.grahas ?? [];
 		const bhavas = d.bhavas ?? [];

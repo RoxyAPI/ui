@@ -34,7 +34,6 @@ export const CHROME_STRINGS = [
 	// a visible chip have to say so instead of asserting twelve houses.
 	'Natal chart',
 	'Relocation chart',
-	'No chart data',
 	'Wheel',
 	'Aspect grid',
 	'Natal chart views',
@@ -94,7 +93,6 @@ export const CHROME_STRINGS = [
 	// cusp chips are also the sentences the SVG description is built from, so the
 	// picture and its accessible text can never claim different orientations.
 	'Transits',
-	'No transit data',
 	'Aspects to the natal chart: {{count}}',
 	'Natal and transit bi-wheel',
 	'Bi-wheel with natal bodies on the inner ring and transiting bodies on the outer ring',
@@ -142,7 +140,6 @@ export const CHROME_STRINGS = [
 	// chip whose visible text is already the localized sign and the date, so the
 	// only word it adds is the verb.
 	'Ephemeris',
-	'No ephemeris data',
 	'Signs in this month',
 	'Sign changes and retrograde periods',
 	'Daily positions',
@@ -195,7 +192,6 @@ export const CHROME_STRINGS = [
 	// wire and the colour legend is assembled from the same names the accordion
 	// prints.
 	'Bodygraph',
-	'No bodygraph data',
 	'Human Design bodygraph',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette',
 	'Nine energy centers in their canonical positions over a human silhouette, each filled with its traditional color when defined and outlined when open, wired by channels between activated gates.',
@@ -218,7 +214,6 @@ export const CHROME_STRINGS = [
 	'I Ching hexagram {{number}}',
 
 	// `<roxy-hd-type-card>`, on top of the shared identity block above.
-	'No Human Design data',
 	'Personality line',
 	'Design line',
 	'Lines',
@@ -227,7 +222,6 @@ export const CHROME_STRINGS = [
 	// positions and every Color, Direction, Base and Cognition VALUE come back
 	// localized, so only the words the card writes around them are here.
 	'Variables',
-	'No variables data',
 	'Human Design variables',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.',
 	'Low confidence: a birth time near a color or tone boundary (within {{margin}}°). Verify the exact birth time.',
@@ -243,7 +237,6 @@ export const CHROME_STRINGS = [
 	// derives every field label from the wire name through `humanize()`, so these
 	// two are the only words it writes itself.
 	'Reference',
-	'No reference data',
 
 	// The FORM path: `<roxy-endpoint-form>` and the `<roxy-location-search>` it
 	// slots. This is the half of a widget a visitor fills in BEFORE any of the

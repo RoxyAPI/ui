@@ -23,7 +23,7 @@ import { MarkupDataController } from './markup-data.js';
  *
  * Self-fetch needs `<roxy-endpoint-form>` (and `<roxy-location-search>`) registered. The CDN bundle and the full `@roxyapi/ui` entry register everything; per-component ESM consumers that want self-fetch import the form component too.
  *
- * Two things every subclass inherits for the host page to shape the render from outside the shadow root, with no JavaScript: the `hide-readings` attribute ({@link RoxyDataElement.hideReadings}), and the `part` names on the base's own branches (`form`, `loading`, `error`, `edit-bar`, `attribution`). A component adds `part` to its own structural blocks, drawn from the published part vocabulary.
+ * Two things every subclass inherits for the host page to shape the render from outside the shadow root, with no JavaScript: the `hide-readings` attribute ({@link RoxyDataElement.hideReadings}), and the `part` names on the base's own branches (`form`, `loading`, `error`, `empty`, `edit-bar`, `attribution`). A component adds `part` to its own structural blocks, drawn from the published part vocabulary.
  *
  * Translation is inherited rather than defined here: `t()`, `translator` and `effectiveLang()` live on {@link RoxyLocalizedElement}, which the two declared widgets extend as well, so the form a visitor fills and the card it produces read the same catalogue.
  *
@@ -34,9 +34,6 @@ import { MarkupDataController } from './markup-data.js';
  *   static styles = [baseStyles, css`.card { … }`];
  *   protected renderData(d: GetDreamSymbolResponse) {
  *     return html`<article class="card">…</article>`;
- *   }
- *   protected renderEmpty() {
- *     return html`<div class="roxy-empty" role="status">No dream symbol</div>`;
  *   }
  * }
  * ```
@@ -347,9 +344,9 @@ export abstract class RoxyDataElement<
 		}
 	}
 
-	/** Terminal empty state. Subclasses override for a domain-specific message. */
+	/** Terminal empty state: one translated message for every component, addressable as `::part(empty)`. Override only where an empty state must DO something a message cannot. */
 	protected renderEmpty(): unknown {
-		return html`<div class="roxy-empty" role="status">${this.t('No data')}</div>`;
+		return html`<div class="roxy-empty" role="status" part="empty">${this.t('No data')}</div>`;
 	}
 
 	/** Loading placeholder shown during a self-fetch. */

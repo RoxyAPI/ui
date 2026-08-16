@@ -290,10 +290,6 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		return this.renderNumberCard(d as NumberCardData, headerLabel);
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No numerology data</div>`;
-	}
-
 	private renderNumberCard(d: NumberCardData, headerLabel: string) {
 		const readings = !this.hideReadings;
 		return html`<article class="card" part="card" aria-label=${headerLabel}>

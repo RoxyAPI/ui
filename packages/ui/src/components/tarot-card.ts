@@ -123,10 +123,6 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 	@state()
 	private orientation: 'upright' | 'reversed' = 'upright';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No tarot data</div>`;
-	}
-
 	protected renderData(d: TarotData) {
 		if ('card' in d) return this.renderDailyCard(d);
 		return this.renderFullCard(d);

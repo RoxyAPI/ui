@@ -438,7 +438,7 @@ describe('the chrome reads in the page language', () => {
 		const el = document.createElement('roxy-ephemeris-table');
 		document.body.appendChild(el);
 		await settled(el);
-		expect(text(el)).toContain('Sin datos de efemérides');
+		expect(text(el)).toContain('Sin datos');
 		el.remove();
 	});
 
@@ -446,7 +446,7 @@ describe('the chrome reads in the page language', () => {
 		const el = document.createElement('roxy-ephemeris-table');
 		document.body.appendChild(el);
 		await settled(el);
-		expect(text(el)).toContain('No ephemeris data');
+		expect(text(el)).toContain('No data');
 		el.remove();
 	});
 
@@ -461,7 +461,7 @@ describe('the chrome reads in the page language', () => {
 
 	test('a days array the response sent empty falls back to the empty state', async () => {
 		const el = await mount({ year: 2026, month: 8, days: [] });
-		expect(text(el)).toContain('No ephemeris data');
+		expect(text(el)).toContain('No data');
 		el.remove();
 	});
 });

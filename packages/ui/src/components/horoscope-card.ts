@@ -283,10 +283,6 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 	@property({ type: String, reflect: true })
 	period: 'daily' | 'weekly' | 'monthly' = 'daily';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No horoscope data</div>`;
-	}
-
 	protected renderData(d: HoroscopeData) {
 		const sign = d.sign ?? '';
 		const glyph = signGlyph(sign) ?? '';

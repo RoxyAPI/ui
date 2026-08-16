@@ -122,10 +122,6 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 		return rows;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No chart data</div>`;
-	}
-
 	protected renderData(d: NatalChartResponse) {
 		if (!d.planets) return this.renderEmpty();
 		const rows = this.rows();

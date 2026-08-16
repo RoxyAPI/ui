@@ -415,10 +415,6 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 	@property({ type: String })
 	heading = 'Ephemeris';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">${this.t('No ephemeris data')}</div>`;
-	}
-
 	protected renderData(data: EphemerisResponse) {
 		if (!data.days?.length) return this.renderEmpty();
 		const vm = this.toViewModel(data);

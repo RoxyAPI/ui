@@ -74,7 +74,6 @@ export const pt: Record<ChromeString, string> = {
 
 	'Natal chart': 'Mapa natal',
 	'Relocation chart': 'Mapa de relocação',
-	'No chart data': 'Sem dados do mapa',
 	Wheel: 'Roda',
 	'Aspect grid': 'Tabela de aspectos',
 	'Natal chart views': 'Visões do mapa natal',
@@ -129,7 +128,6 @@ export const pt: Record<ChromeString, string> = {
 	'Planet readings': 'Interpretações dos planetas',
 
 	Transits: 'Trânsitos',
-	'No transit data': 'Sem dados de trânsitos',
 	'Aspects to the natal chart: {{count}}': 'Aspectos ao mapa natal: {{count}}',
 	'Natal and transit bi-wheel': 'Roda do mapa natal e dos trânsitos',
 	'Bi-wheel with natal bodies on the inner ring and transiting bodies on the outer ring':
@@ -170,7 +168,6 @@ export const pt: Record<ChromeString, string> = {
 	Guidance: 'Orientação',
 
 	Ephemeris: 'Efemérides',
-	'No ephemeris data': 'Sem dados de efemérides',
 	'Signs in this month': 'Signos deste mês',
 	'Sign changes and retrograde periods': 'Mudanças de signo e retrogradações',
 	'Daily positions': 'Posições diárias dos planetas',
@@ -205,7 +202,6 @@ export const pt: Record<ChromeString, string> = {
 	Design: 'Design',
 
 	Bodygraph: 'Bodygraph',
-	'No bodygraph data': 'Sem dados do bodygraph',
 	'Human Design bodygraph': 'Bodygraph de Human Design',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
 		'Bodygraph de Human Design com nove centros, canais e portões ativados sobre uma silhueta humana',
@@ -231,13 +227,11 @@ export const pt: Record<ChromeString, string> = {
 	'Gate {{gate}}': 'Portão {{gate}}',
 	'I Ching hexagram {{number}}': 'Hexagrama do I Ching {{number}}',
 
-	'No Human Design data': 'Sem dados de Human Design',
 	'Personality line': 'Linha da personalidade',
 	'Design line': 'Linha do design',
 	Lines: 'Linhas',
 
 	Variables: 'Variáveis',
-	'No variables data': 'Sem dados de variáveis',
 	'Human Design variables': 'Variáveis de Human Design',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
 		'Baixa confiança: um horário de nascimento próximo de um limite de cor ou tom. Verifique o horário exato de nascimento.',
@@ -254,7 +248,6 @@ export const pt: Record<ChromeString, string> = {
 	Cognition: 'Cognição',
 
 	Reference: 'Referência',
-	'No reference data': 'Sem dados de referência',
 
 	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
 	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over

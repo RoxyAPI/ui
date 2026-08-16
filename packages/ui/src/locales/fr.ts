@@ -82,7 +82,6 @@ export const fr: Record<ChromeString, string> = {
 
 	'Natal chart': 'Thème natal',
 	'Relocation chart': 'Thème relocalisé',
-	'No chart data': 'Aucune donnée de thème',
 	Wheel: 'Roue',
 	'Aspect grid': 'Grille des aspects',
 	'Natal chart views': 'Vues du thème natal',
@@ -137,7 +136,6 @@ export const fr: Record<ChromeString, string> = {
 	'Planet readings': 'Interprétations des planètes',
 
 	Transits: 'Transits',
-	'No transit data': 'Aucune donnée de transit',
 	'Aspects to the natal chart: {{count}}': 'Aspects au thème natal : {{count}}',
 	'Natal and transit bi-wheel': 'Double roue du thème natal et des transits',
 	'Bi-wheel with natal bodies on the inner ring and transiting bodies on the outer ring':
@@ -176,7 +174,6 @@ export const fr: Record<ChromeString, string> = {
 	Guidance: 'Conseils',
 
 	Ephemeris: 'Éphémérides',
-	'No ephemeris data': 'Aucune donnée disponible',
 	'Signs in this month': 'Signes de ce mois',
 	'Sign changes and retrograde periods':
 		'Changements de signe et rétrogradations',
@@ -214,7 +211,6 @@ export const fr: Record<ChromeString, string> = {
 
 	// `<roxy-bodygraph>`.
 	Bodygraph: 'Bodygraph',
-	'No bodygraph data': 'Aucune donnée de bodygraph',
 	'Human Design bodygraph': 'Bodygraph du Design Humain',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
 		'Bodygraph du Design Humain avec neuf centres, canaux et portes activées superposés à une silhouette humaine',
@@ -241,14 +237,12 @@ export const fr: Record<ChromeString, string> = {
 	'I Ching hexagram {{number}}': 'Hexagramme {{number}} du Yi-King',
 
 	// `<roxy-hd-type-card>`, on top of the shared identity block above.
-	'No Human Design data': 'Aucune donnée de Design Humain',
 	'Personality line': 'Ligne Personnalité',
 	'Design line': 'Ligne Design',
 	Lines: 'Lignes',
 
 	// `<roxy-hd-variables>`.
 	Variables: 'Variables',
-	'No variables data': 'Aucune donnée de variables',
 	'Human Design variables': 'Variables du Design Humain',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
 		'Confiance faible : heure de naissance en limite de couleur ou de ton. Heure de naissance exacte à vérifier.',
@@ -266,7 +260,6 @@ export const fr: Record<ChromeString, string> = {
 
 	// `<roxy-reference-card>`.
 	Reference: 'Référence',
-	'No reference data': 'Aucune donnée de référence',
 
 	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
 	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over

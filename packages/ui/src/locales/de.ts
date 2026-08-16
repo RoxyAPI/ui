@@ -80,7 +80,6 @@ export const de: Record<ChromeString, string> = {
 
 	'Natal chart': 'Geburtshoroskop',
 	'Relocation chart': 'Relokationshoroskop',
-	'No chart data': 'Keine Horoskopdaten',
 	Wheel: 'Horoskopgrafik',
 	'Aspect grid': 'Aspekttabelle',
 	'Natal chart views': 'Ansichten des Geburtshoroskops',
@@ -135,7 +134,6 @@ export const de: Record<ChromeString, string> = {
 	'Planet readings': 'Planetendeutungen',
 
 	Transits: 'Transite',
-	'No transit data': 'Keine Transitdaten',
 	'Aspects to the natal chart: {{count}}':
 		'Aspekte zum Geburtshoroskop: {{count}}',
 	'Natal and transit bi-wheel':
@@ -177,7 +175,6 @@ export const de: Record<ChromeString, string> = {
 	Guidance: 'Empfehlung',
 
 	Ephemeris: 'Ephemeriden',
-	'No ephemeris data': 'Keine Ephemeridendaten',
 	'Signs in this month': 'Zeichen in diesem Monat',
 	'Sign changes and retrograde periods': 'Zeichenwechsel und Rückläufigkeiten',
 	'Daily positions': 'Tägliche Planetenstände',
@@ -212,7 +209,6 @@ export const de: Record<ChromeString, string> = {
 	Design: 'Design',
 
 	Bodygraph: 'Bodygraph',
-	'No bodygraph data': 'Keine Bodygraph-Daten',
 	'Human Design bodygraph': 'Human-Design-Bodygraph',
 	'Human Design bodygraph with nine centers, channels, and activated gates overlaid on a human silhouette':
 		'Human-Design-Bodygraph mit neun Zentren, Kanälen und aktivierten Toren über einer menschlichen Silhouette',
@@ -238,13 +234,11 @@ export const de: Record<ChromeString, string> = {
 	'Gate {{gate}}': 'Tor {{gate}}',
 	'I Ching hexagram {{number}}': 'I-Ging-Hexagramm {{number}}',
 
-	'No Human Design data': 'Keine Human-Design-Daten',
 	'Personality line': 'Persönlichkeitslinie',
 	'Design line': 'Designlinie',
 	Lines: 'Linien',
 
 	Variables: 'Variablen',
-	'No variables data': 'Keine Variablendaten',
 	'Human Design variables': 'Human-Design-Variablen',
 	'Low confidence: a birth time near a color or tone boundary. Verify the exact birth time.':
 		'Geringe Sicherheit: eine Geburtszeit nahe einer Farb- oder Tongrenze. Überprüfen Sie die genaue Geburtszeit.',
@@ -261,7 +255,6 @@ export const de: Record<ChromeString, string> = {
 	Cognition: 'Kognition',
 
 	Reference: 'Lexikon',
-	'No reference data': 'Keine Lexikondaten',
 
 	// The FORM path (`<roxy-endpoint-form>` and the `<roxy-location-search>` it slots). What a
 	// visitor reads BEFORE any card renders. Field labels and enum options are `humanize()` over

@@ -81,10 +81,6 @@ export class RoxyDreamCard extends RoxyDataElement<GetDreamSymbolResponse> {
 			${d.meaning ? html`<p class="meaning">${d.meaning}</p>` : nothing}
 		</article>`;
 	}
-
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No dream symbol</div>`;
-	}
 }
 
 declare global {

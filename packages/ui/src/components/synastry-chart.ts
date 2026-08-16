@@ -367,10 +367,6 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No synastry data</div>`;
-	}
-
 	protected renderData(d: CalculateSynastryResponse) {
 		const { person1, person2, compatibilityScore, analysis } = d;
 		const interAspects = d.interAspects ?? [];

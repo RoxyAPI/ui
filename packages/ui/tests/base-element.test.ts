@@ -183,7 +183,7 @@ describe('RoxyDataElement render switch', () => {
 		};
 		document.body.appendChild(el);
 		await el.updateComplete;
-		expect(el.shadowRoot?.textContent ?? '').toContain('No dream symbol');
+		expect(el.shadowRoot?.textContent ?? '').toContain('No data');
 		el.remove();
 	});
 });

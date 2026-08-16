@@ -297,10 +297,6 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 			</div>
 		</details>`;
 	}
-
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">${this.t('No variables data')}</div>`;
-	}
 }
 
 /** Canonical bodygraph reading order for the four arrows, so the 2-col grid lays them out by quadrant. Unknown positions sort last. */

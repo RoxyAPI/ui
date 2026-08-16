@@ -172,10 +172,6 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 		</div>`;
 	}
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No choghadiya data</div>`;
-	}
-
 	protected renderData(d: GetChoghadiyaResponse) {
 		const { date, dayChoghadiya, nightChoghadiya } = d;
 

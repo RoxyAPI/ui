@@ -157,10 +157,6 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 		`,
 	];
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No number analysis</div>`;
-	}
-
 	protected renderData(d: AnalyzeNumberSequenceResponse) {
 		const known = d.knownMeaning;
 		const root = d.digitRootMeaning;

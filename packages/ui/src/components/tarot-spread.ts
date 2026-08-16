@@ -206,10 +206,6 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 		| 'yes-no'
 		| 'draw' = 'three-card';
 
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No tarot spread</div>`;
-	}
-
 	protected renderData(d: TarotSpreadData) {
 		const isYesNo = 'answer' in d;
 		const isDrawn = 'cards' in d && !('spread' in d);

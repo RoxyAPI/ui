@@ -433,10 +433,6 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 			</div>
 		</section>`;
 	}
-
-	protected renderEmpty() {
-		return html`<div class="roxy-empty" role="status">No connection data</div>`;
-	}
 }
 
 /** The aside of a dynamic. A zero is stated rather than hidden: no companionship channels is a finding about the pair. */
