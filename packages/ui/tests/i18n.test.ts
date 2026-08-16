@@ -517,6 +517,10 @@ describe('shipped locales', () => {
 			fr: [
 				'Activations ({{count}})',
 				'Air',
+				// `Exceptions` is the French word and the spelling is identical.
+				// French Vedic sources head this section `Exceptions` beside
+				// `Gravité` and `Remèdes`, which are the other two on this card.
+				'Exceptions',
 				// `Date` is the French word and the accent-free spelling is a
 				// coincidence; every French table it was checked against pairs it with
 				// `Heure`, never with `Temps`.
@@ -694,7 +698,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/crystal-card.ts': 3,
 		'components/dasha-timeline.ts': 9,
 		'components/divisional-chart.ts': 3,
-		'components/dosha-card.ts': 3,
 		'components/dream-card.ts': 1,
 		'components/dream-search.ts': 3,
 		'components/fixed-stars.ts': 13,
@@ -930,6 +933,26 @@ describe('a component renders its chrome in the page language', () => {
 			expect(t, `${word} missing`).toContain(word);
 		}
 		expect(t).not.toContain('Harmonious');
+		el.remove();
+	});
+
+	test('the dosha card renders every heading it writes in the page language', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-dosha-card');
+		(el as unknown as { data: unknown }).data = {
+			dosha: 'Mangal',
+			present: true,
+			severity: 'High',
+			remedies: ['Recite the Hanuman Chalisa on Tuesdays'],
+			exceptions: ['Mars in Aries'],
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const t = text(el);
+		expect(t).toContain('Remedios');
+		expect(t).toContain('Excepciones');
+		expect(t).not.toContain('Remedies');
+		expect(t).not.toContain('Exceptions');
 		el.remove();
 	});
 
@@ -1921,20 +1944,25 @@ describe('the Human Design cards read the display half and key on the English on
 	 * The rule that keeps the two halves of this feature from separating again.
 	 *
 	 * @remarks
-	 * A component that prints `nameLocalized` under headings it never translated renders translated data under English chrome, which reads worse than consistent English. That is a judgement no type can carry, so it is a source scan: reading `utils/localized.js` obliges a component to have chrome of its own. It is why `roxy-hd-connection` and `roxy-hd-penta` are untouched, and why touching them means translating their chrome in the same change.
+	 * A component that prints `nameLocalized` under headings it never translated renders translated data under English chrome, which reads worse than consistent English. That is a judgement no type can carry, so it is a source scan: reading `utils/localized.js` obliges a component to translate ALL of its own words, not merely one of them. It is why `roxy-hd-connection` and `roxy-hd-penta` are untouched, and why touching them means translating their chrome in the same change.
 	 */
-	test('no component reads the localized vocabulary without chrome of its own', async () => {
+	test('a component reading the localized vocabulary leaves no English behind', async () => {
 		const base = 'packages/ui/src/components';
+		const readers: string[] = [];
 		const offenders: string[] = [];
 		for (const file of await readdir(base)) {
 			if (!file.endsWith('.ts') || file.endsWith('.test.ts')) continue;
 			const src = await Bun.file(`${base}/${file}`).text();
 			if (!src.includes('utils/localized.js')) continue;
-			if (!/this\.t\(|this\.translator/.test(src)) offenders.push(file);
+			readers.push(file);
+			const left = visibleLiterals(src);
+			if (left.length) offenders.push(`${file}: ${left.join(' | ')}`);
 		}
+		// Not vacuous: components do read the vocabulary, and every one is held to zero.
+		expect(readers.length).toBeGreaterThan(5);
 		expect(
 			offenders,
-			`These read the API display vocabulary but translate none of their own words, so they render localized values under English headings:\n  ${offenders.join('\n  ')}`,
+			`These read the API display vocabulary and still write English of their own, so a translated page renders localized values under English chrome:\n  ${offenders.join('\n  ')}`,
 		).toEqual([]);
 	});
 });

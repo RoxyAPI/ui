@@ -298,6 +298,9 @@ export const fr: Record<ChromeString, string> = {
 	Retry: 'Réessayer',
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
 		'Les composants côté client acceptent uniquement une clé publiable pk_. Utilisez une clé publiable avec une liste des origines autorisées, ou effectuez le rendu côté serveur.',
+	Severity: 'Gravité',
+	Remedies: 'Remèdes',
+	Exceptions: 'Exceptions',
 };
 
 registerLocale('fr', fr);

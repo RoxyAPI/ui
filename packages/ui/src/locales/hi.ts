@@ -307,6 +307,9 @@ export const hi: Record<ChromeString, string> = {
 	Retry: 'फिर से कोशिश करें',
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
 		'क्लाइंट-साइड कंपोनेंट केवल pk_ प्रकाशन योग्य कुंजी स्वीकार करते हैं। ओरिजिन अनुमति सूची वाली pk_ कुंजी का उपयोग करें, या सर्वर पर रेंडर करें।',
+	Severity: 'तीव्रता',
+	Remedies: 'उपाय',
+	Exceptions: 'अपवाद',
 };
 
 registerLocale('hi', hi);

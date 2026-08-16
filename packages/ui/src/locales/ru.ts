@@ -287,6 +287,9 @@ export const ru: Record<ChromeString, string> = {
 	Retry: 'Повторить',
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
 		'Клиентские компоненты принимают только публикуемый ключ pk_. Используйте публикуемый ключ со списком разрешённых источников или серверный рендеринг.',
+	Severity: 'Степень',
+	Remedies: 'Средства',
+	Exceptions: 'Исключения',
 };
 
 registerLocale('ru', ru);

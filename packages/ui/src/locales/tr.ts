@@ -8,6 +8,8 @@
  *
  * Turkish puts the percent sign BEFORE the number; `formatPercent` places it, so no entry here spells it. The brand rule forbids apostrophes, which Turkish otherwise uses before a suffix on a foreign word, so several entries are shaped around it: the attribution needs no suffix on `RoxyAPI`, `apex` is a bare unsuffixed chip, and the Ascendant is `Yükselen` rather than the loanword, because `Ascendant` would force `Ascendant'tan` in the two equal-sector strings. If that string ever has to inflect in running text, switch to `odak gezegen`, which is the native form and takes suffixes cleanly.
  *
+ * `Öneriler` rather than `Çareler` for the dosha remedies: Turkish Vedic writing labels remedial measures as recommendations (`Guclendirme Onerileri`, `cozum onerileri`), and `care` reads medical.
+ *
  * Every entry below is attested in live Turkish astrology copy rather than machine translated. What follows is the reasoning a maintainer needs; the attestation itself is recorded internally.
  *
  * Four terms here are English loanwords on purpose, not gaps: `relocation`, `orb`, `apex` and `natal` are what Turkish astrologers actually write (`natal harita`, `natal gezegenlerle`). `Relokasyon` in particular appears in NO Turkish astrology source and reads as a mistranslation.
@@ -292,6 +294,9 @@ export const tr: Record<ChromeString, string> = {
 	Retry: 'Yeniden dene',
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
 		'İstemci tarafı bileşenler yalnızca pk_ ön ekli yayınlanabilir anahtar kabul eder. Köken izin listesi olan bir yayınlanabilir anahtar kullanın ya da sunucu tarafında oluşturun.',
+	Severity: 'Şiddet',
+	Remedies: 'Öneriler',
+	Exceptions: 'İstisnalar',
 };
 
 registerLocale('tr', tr);

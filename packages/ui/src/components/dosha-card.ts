@@ -189,7 +189,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 						aria-valuemin="0"
 						aria-valuemax="3"
 						aria-valuenow="${tier}"
-						aria-label="Severity ${d.severity}"
+						aria-label="${this.t('Severity')} ${d.severity}"
 					>
 						<span class="severity-fill" style="width: ${pct}%; background: ${barColor};"></span>
 					</div>`
@@ -207,7 +207,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 				// so each list goes with its own heading rather than leaving one behind.
 				d.remedies && d.remedies.length > 0 && !this.hideReadings
 					? html`<div part="section remedies">
-						<h3>Remedies</h3>
+						<h3>${this.t('Remedies')}</h3>
 						<ul>
 							${d.remedies.map((r) => html`<li>${r}</li>`)}
 						</ul>
@@ -220,7 +220,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 				d.exceptions.length > 0 &&
 				!this.hideReadings
 					? html`<div part="section exceptions">
-					<h3>Exceptions</h3>
+					<h3>${this.t('Exceptions')}</h3>
 					<ul>
 						${d.exceptions.map((r) => html`<li>${r}</li>`)}
 					</ul>
