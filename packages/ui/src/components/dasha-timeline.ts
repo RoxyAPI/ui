@@ -466,13 +466,14 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		if ('moonLongitude' in d && typeof d.moonLongitude === 'number') {
 			rows.push([
 				'Moon longitude',
-				`${formatNumber(d.moonLongitude, 3)}\u00b0 sidereal`,
+				`${formatNumber(this.effectiveLang(), d.moonLongitude, 3)}\u00b0 sidereal`,
 			]);
 		}
 		if ('ayanamsaType' in d && d.ayanamsaType) {
 			rows.push([
 				'Ayanamsa',
 				formatAyanamsa(
+					this.effectiveLang(),
 					d.ayanamsaType,
 					'ayanamsa' in d ? d.ayanamsa : undefined,
 				),
@@ -538,7 +539,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			: '';
 		return html`<p class="parent">
 			Inside the <strong>${p.planet}</strong> ${parent.label}${span ? `, ${span}` : ''}
-			${typeof p.durationYears === 'number' ? `(${formatDuration(p.durationYears)})` : ''}.
+			${typeof p.durationYears === 'number' ? `(${formatDuration(this.effectiveLang(), p.durationYears)})` : ''}.
 			${
 				began
 					? html`<br />It began ${began}, before birth, so only the sub-periods running
@@ -718,13 +719,14 @@ const DAYS_PER_YEAR = 365.25;
  * @remarks
  * Every level was printed in years, which is right for a mahadasha and useless below it: a sookshma read "0.5 years" where a reader wants days, and a prana read "0 years" because rounding a period shorter than seven hours to one decimal place of a year is zero. The unit has to follow the level.
  */
-function formatDuration(years: number): string {
-	if (years >= 1) return `${formatNumber(years, 1)} years`;
+function formatDuration(locale: string | undefined, years: number): string {
+	if (years >= 1) return `${formatNumber(locale, years, 1)} years`;
 	const days = years * DAYS_PER_YEAR;
-	if (days >= 1) return `${formatNumber(days, days >= 10 ? 0 : 1)} days`;
+	if (days >= 1)
+		return `${formatNumber(locale, days, days >= 10 ? 0 : 1)} days`;
 	const hours = days * 24;
-	if (hours >= 1) return `${formatNumber(hours, 1)} hours`;
-	return `${formatNumber(hours * 60, 0)} minutes`;
+	if (hours >= 1) return `${formatNumber(locale, hours, 1)} hours`;
+	return `${formatNumber(locale, hours * 60, 0)} minutes`;
 }
 
 /**

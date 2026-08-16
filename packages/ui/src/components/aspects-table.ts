@@ -9,7 +9,12 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
-import { formatAspectName, formatDate, formatNumber } from '../utils/format.js';
+import {
+	formatAspectName,
+	formatDate,
+	formatNumber,
+	formatPercent,
+} from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
 
 /**
@@ -23,18 +28,6 @@ type AspectsData =
 type PatternEntry = NonNullable<
 	DetectAspectPatternsResponse['patterns']
 >[number];
-
-/**
- * Round a 0-100 score for display.
- *
- * @remarks
- * Not `formatNumber(v, 0)`: that helper strips trailing zeros from the formatted string, so a strength of 100 renders as "1" and 90 as "9". Kept local until `utils/format.ts` is fixed.
- */
-function score(v: unknown): string {
-	return typeof v === 'number' && Number.isFinite(v)
-		? String(Math.round(v))
-		: '';
-}
 
 /**
  * One line naming the orb budget and the body set a pattern run used, so a reader can reproduce the detection. Built as a string, not a template: interpolating the clauses in markup leaves a space before the comma.
@@ -382,7 +375,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			<span aria-hidden="true" class="glyph">${g1}</span>${s.planet1}
 			<span class="nature-badge ${nature}">${formatAspectName(s)}</span>
 			<span aria-hidden="true" class="glyph">${g2}</span>${s.planet2}
-			<span class="meta">${s.isApplying ? 'Applying' : 'Separating'} · orb ${formatNumber(s.orb, 2)}° · str ${score(s.strength)}</span>
+			<span class="meta">${s.isApplying ? 'Applying' : 'Separating'} · orb ${formatNumber(this.effectiveLang(), s.orb, 2)}° · str ${formatNumber(this.effectiveLang(), s.strength, 0)}</span>
 		</div>`;
 	}
 
@@ -405,7 +398,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const header = html`<span aria-hidden="true" class="glyph">${g1}</span>${a.planet1}
 			<span class="nature-badge ${nature}">${type}</span>
 			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
-			<span class="meta">${status} · orb ${formatNumber(a.orb, 2)}° · str ${score(a.strength)}</span>`;
+			<span class="meta">${status} · orb ${formatNumber(this.effectiveLang(), a.orb, 2)}° · str ${formatNumber(this.effectiveLang(), a.strength, 0)}</span>`;
 		// The header is the aspect itself (both bodies, the type, applying or
 		// separating, orb and strength) and is never a reading, so an aspect the
 		// API sent no meaning for already renders flat. Hiding the readings reuses
@@ -474,7 +467,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 						? html`<span class="pattern-tag" title="Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.">Dissociate</span>`
 						: nothing
 				}
-				${typeof p.tightness === 'number' ? html`<span class="pattern-tight">${Math.round(p.tightness)}% tight</span>` : nothing}
+				${typeof p.tightness === 'number' ? html`<span class="pattern-tight">${formatPercent(this.effectiveLang(), p.tightness, 0)} tight</span>` : nothing}
 			</div>
 			${
 				ordered.length

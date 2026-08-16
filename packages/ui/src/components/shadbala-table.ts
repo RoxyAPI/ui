@@ -247,7 +247,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 			<div class="head" part="header">
 				<h2 class="title">Shadbala</h2>
 				<p class="subtitle">${sorted.length} planets ranked by strength</p>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</div>
 
 			<div role="list" part="chart bars" aria-label="Planet strength bars">
@@ -289,8 +289,9 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 		const badgeLabel = isAdequate ? 'adequate' : 'weak';
 
 		const rupasStr =
-			formatNumber(p.totalRupas, 2) && formatNumber(p.minRequired, 2)
-				? `${formatNumber(p.totalRupas, 2)} / ${formatNumber(p.minRequired, 2)} R`
+			formatNumber(this.effectiveLang(), p.totalRupas, 2) &&
+			formatNumber(this.effectiveLang(), p.minRequired, 2)
+				? `${formatNumber(this.effectiveLang(), p.totalRupas, 2)} / ${formatNumber(this.effectiveLang(), p.minRequired, 2)} R`
 				: '';
 
 		return html`<div class="planet-row" role="listitem" aria-label="${p.planet} shadbala">
@@ -310,7 +311,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 									return html`<div
 									class="bar-segment"
 									style="flex-grow: ${grow}; background: ${b.color};"
-									title="${b.label}: ${formatNumber(v, 1)}"
+									title="${b.label}: ${formatNumber(this.effectiveLang(), v, 1)}"
 								></div>`;
 								})
 							: nothing
@@ -335,8 +336,8 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 		const ishta = typeof p.ishtaPhala === 'number' ? p.ishtaPhala : 0;
 		const kashta = typeof p.kashtaPhala === 'number' ? p.kashtaPhala : 0;
 		if (ishta + kashta <= 0) return nothing;
-		const ishtaStr = formatNumber(ishta, 1) || '0';
-		const kashtaStr = formatNumber(kashta, 1) || '0';
+		const ishtaStr = formatNumber(this.effectiveLang(), ishta, 1) || '0';
+		const kashtaStr = formatNumber(this.effectiveLang(), kashta, 1) || '0';
 		return html`<div
 				class="phala"
 				role="img"

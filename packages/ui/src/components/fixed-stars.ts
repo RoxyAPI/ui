@@ -158,7 +158,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 				<h2 class="title">Fixed stars</h2>
 				${
 					typeof data.orb === 'number'
-						? html`<span class="badge"><b>Orb</b> ${formatNumber(data.orb, 1)}°</span>`
+						? html`<span class="badge"><b>Orb</b> ${formatNumber(this.effectiveLang(), data.orb, 1)}°</span>`
 						: nothing
 				}
 			</header>
@@ -182,7 +182,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 									<span class="interp-lead"><span class="point">${c.point}</span> conjunct ${c.star}</span>
 									${chevron()}
 									<span class="interp-aside">
-										<small>orb ${formatNumber(c.orb, 2)}°</small>
+										<small>orb ${formatNumber(this.effectiveLang(), c.orb, 2)}°</small>
 									</span>
 								</summary>
 								${
@@ -223,7 +223,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 							return html`<tr>
 								<td>${s.name}</td>
 								<td>${g ? html`<span class="sg">${g}</span>` : nothing}${formatDegreeInSign(s.degree)} ${s.sign}</td>
-								<td class="num">${formatNumber(s.magnitude, 1)}</td>
+								<td class="num">${formatNumber(this.effectiveLang(), s.magnitude, 1)}</td>
 								<td>${s.nature}</td>
 								<td>
 									<div class="kw">${(s.keywords ?? []).map((k) => html`<span>${k}</span>`)}</div>

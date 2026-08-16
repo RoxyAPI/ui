@@ -8,7 +8,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatDate, formatNumber } from '../utils/format.js';
+import { formatDate, formatNumber, formatPercent } from '../utils/format.js';
 
 type MoonPhaseData =
 	| GetCurrentMoonPhaseResponse
@@ -158,7 +158,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 					typeof d.illumination === 'number'
 						? html`<div>
 							<span>Illumination</span>
-							<strong>${formatIllumination(d.illumination)}</strong>
+							<strong>${formatPercent(this.effectiveLang(), d.illumination <= 1 ? d.illumination * 100 : d.illumination, 0)}</strong>
 						</div>`
 						: nothing
 				}
@@ -166,7 +166,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 					typeof d.age === 'number'
 						? html`<div>
 							<span>Age</span>
-							<strong>${formatNumber(d.age, 1)} days</strong>
+							<strong>${formatNumber(this.effectiveLang(), d.age, 1)} days</strong>
 						</div>`
 						: nothing
 				}
@@ -182,7 +182,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 					typeof d.distance === 'number'
 						? html`<div>
 							<span>Distance</span>
-							<strong>${(d.distance / 1000).toFixed(0)}k km</strong>
+							<strong>${formatNumber(this.effectiveLang(), d.distance / 1000, 0)}k km</strong>
 						</div>`
 						: nothing
 				}
@@ -222,11 +222,6 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
  */
 function phaseEmoji(phase: string | undefined): string {
 	return moonPhaseEmoji(phase) ?? '🌙';
-}
-
-function formatIllumination(v: number): string {
-	const pct = v <= 1 ? v * 100 : v;
-	return `${Math.round(pct)}%`;
 }
 
 declare global {

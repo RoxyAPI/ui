@@ -102,14 +102,6 @@ const degLabel = (longitude: number): string => {
 	return `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
 };
 
-/**
- * Round a 0-100 score for display. Not `formatNumber(v, 0)`, which strips
- * trailing zeros from the formatted string and would render a strength of 100
- * as "1". Same local helper, and the same reason, as `roxy-aspects-table`.
- */
-const score = (v: unknown): string =>
-	typeof v === 'number' && Number.isFinite(v) ? String(Math.round(v)) : '';
-
 /** Bodies keyed by their canonical ENGLISH name, so an aspect or a table row can find a longitude without rescanning the array. The API keeps `name` English in every language for exactly this, and keying on `nameLocalized` would resolve nothing on a translated page. */
 const byName = (list: Body[]): Map<string, Body> => {
 	const m = new Map<string, Body>();
@@ -886,7 +878,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				this.toAngle(n.longitude),
 			);
 			const name = normalizeAspect(a);
-			const orb = formatNumber(a.orb, 1);
+			const orb = formatNumber(this.effectiveLang(), a.orb, 1);
 			return svg`<line class=${`aspect ${ASPECT_CLASS[name] ?? 'aspect-other'}`} x1=${from.x} y1=${from.y} x2=${to.x} y2=${to.y}><title>${this.t('Transiting')} ${display(a, 'planet1')} ${display(a, 'type', name)} ${this.t('Natal')} ${display(a, 'planet2')}${orb ? ` (${this.t('orb')} ${orb}°)` : ''}</title></line>`;
 		});
 	}
@@ -978,7 +970,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			<span aria-hidden="true" class="glyph">${glyphFor(s.planet1, transiting)}</span>${this.t('Transiting')} ${transiting}
 			<span class="nature-badge ${(s.interpretation ?? 'neutral').toLowerCase()}">${display(s, 'type', formatAspectName(s))}</span>
 			<span aria-hidden="true" class="glyph">${glyphFor(s.planet2, natal)}</span>${this.t('Natal')} ${natal}
-			<span class="meta">${s.isApplying ? this.t('Applying') : this.t('Separating')} · ${this.t('orb')} ${formatNumber(s.orb, 2)}° · ${this.t('strength')} ${score(s.strength)}</span>
+			<span class="meta">${s.isApplying ? this.t('Applying') : this.t('Separating')} · ${this.t('orb')} ${formatNumber(this.effectiveLang(), s.orb, 2)}° · ${this.t('strength')} ${formatNumber(this.effectiveLang(), s.strength, 0)}</span>
 		</div>`;
 	}
 
@@ -1068,7 +1060,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				const natal = display(a, 'planet2');
 				return {
 					label: `${glyphFor(a.planet1, transiting)} ${transiting} ${display(a, 'type', formatAspectName(a))} ${glyphFor(a.planet2, natal)} ${natal}`,
-					aside: `${this.t('orb')} ${formatNumber(a.orb, 2)}° · ${this.t('strength')} ${score(a.strength)}`,
+					aside: `${this.t('orb')} ${formatNumber(this.effectiveLang(), a.orb, 2)}° · ${this.t('strength')} ${formatNumber(this.effectiveLang(), a.strength, 0)}`,
 					body: t.summary,
 					extra: html`${t.impact ? html`<p><strong>${this.t('Impact')}:</strong> ${t.impact}</p>` : nothing}
 					${t.timing ? html`<p><strong>${this.t('Timing')}:</strong> ${t.timing}</p>` : nothing}

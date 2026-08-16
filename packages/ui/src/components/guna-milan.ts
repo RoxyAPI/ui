@@ -282,12 +282,12 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 				<div class="score-info">
 					<div class="score-bar" part="details">
 						<div>
-							<span class="total">${formatNumber(d.total, 1)}</span>
+							<span class="total">${formatNumber(this.effectiveLang(), d.total, 1)}</span>
 							<span class="over"> / ${d.maxScore}</span>
 							${
 								typeof d.percentage === 'number'
 									? html`<small style="margin-left: 0.5rem; color: var(--roxy-muted)">
-										${formatPercent(d.percentage, 1)}
+										${formatPercent(this.effectiveLang(), d.percentage, 1)}
 									</small>`
 									: nothing
 							}
@@ -355,7 +355,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 											<span style="width: ${pct}%"></span>
 										</div>
 									</td>
-									<td class="score">${formatNumber(score, 1)} / ${maxScore}</td>
+									<td class="score">${formatNumber(this.effectiveLang(), score, 1)} / ${maxScore}</td>
 								</tr>`;
 							})}
 						</tbody>
@@ -373,7 +373,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 					</div>`
 					: nothing
 			}
-			${renderFrameCaption(d.frame)}
+			${renderFrameCaption(this.effectiveLang(), d.frame)}
 		</article>`;
 	}
 }

@@ -83,7 +83,7 @@ export const CHROME_STRINGS = [
 	'Chart patterns',
 	'Dissociate',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.',
-	'{{percent}}% tight',
+	'{{percent}} tight',
 	'apex',
 
 	// Natal chart: readings.

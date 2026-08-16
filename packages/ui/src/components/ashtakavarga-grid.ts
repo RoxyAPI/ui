@@ -234,7 +234,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 						? html`<p class="subtitle">${signs.length} signs</p>`
 						: nothing
 				}
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</div>
 
 			${renderTablist({

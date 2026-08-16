@@ -458,32 +458,78 @@ describe('utils/markup-data', () => {
  */
 describe('formatNumber does not eat integer zeros', () => {
 	test('integers survive at dp 0', () => {
-		expect(formatNumber(100, 0)).toBe('100');
-		expect(formatNumber(90, 0)).toBe('90');
-		expect(formatNumber(20, 0)).toBe('20');
-		expect(formatNumber(10, 0)).toBe('10');
+		expect(formatNumber('en', 100, 0)).toBe('100');
+		expect(formatNumber('en', 90, 0)).toBe('90');
+		expect(formatNumber('en', 20, 0)).toBe('20');
+		expect(formatNumber('en', 10, 0)).toBe('10');
 	});
 
 	test('zero renders as zero, not as an empty string', () => {
-		expect(formatNumber(0, 0)).toBe('0');
-		expect(formatNumber(0, 2)).toBe('0');
+		expect(formatNumber('en', 0, 0)).toBe('0');
+		expect(formatNumber('en', 0, 2)).toBe('0');
 	});
 
 	test('trailing zeros still go, but only after the decimal point', () => {
-		expect(formatNumber(2.5, 1)).toBe('2.5');
-		expect(formatNumber(2.0, 1)).toBe('2');
-		expect(formatNumber(2.5, 2)).toBe('2.5');
-		expect(formatNumber(10.0, 1)).toBe('10');
-		expect(formatNumber(100.5, 1)).toBe('100.5');
+		expect(formatNumber('en', 2.5, 1)).toBe('2.5');
+		expect(formatNumber('en', 2.0, 1)).toBe('2');
+		expect(formatNumber('en', 2.5, 2)).toBe('2.5');
+		expect(formatNumber('en', 10.0, 1)).toBe('10');
+		expect(formatNumber('en', 100.5, 1)).toBe('100.5');
 	});
 
 	test('percent inherits the fix', () => {
-		expect(formatPercent(100, 0)).toBe('100%');
+		expect(formatPercent('en', 100, 0)).toBe('100%');
 	});
 
 	test('non-numbers stay empty', () => {
-		expect(formatNumber(undefined, 0)).toBe('');
-		expect(formatNumber(Number.NaN, 0)).toBe('');
+		expect(formatNumber('en', undefined, 0)).toBe('');
+		expect(formatNumber('en', Number.NaN, 0)).toBe('');
+	});
+});
+
+/**
+ * A decimal is read, not parsed, so it follows the reader. Nothing in this library renders a decimal in astrological sexagesimal notation, where the question would be arguable: `formatSignPosition` and `formatDegreeInSign` are whole degrees and arcminutes, so every decimal that reaches a reader is a plain quantity (an orb, a strength, a distance).
+ */
+describe('a decimal follows the reader, not the author', () => {
+	test('the separator is the locale, not the point', () => {
+		expect(formatNumber('en', 2.5, 1)).toBe('2.5');
+		expect(formatNumber('de', 2.5, 1)).toBe('2,5');
+		expect(formatNumber('fr', 2.5, 1)).toBe('2,5');
+		// Hindi writes the decimal point, so a translated page is not a comma page.
+		expect(formatNumber('hi', 2.5, 1)).toBe('2.5');
+	});
+
+	test('grouping follows it too', () => {
+		expect(formatNumber('en', 12345.6, 1)).toBe('12,345.6');
+		expect(formatNumber('de', 12345.6, 1)).toBe('12.345,6');
+	});
+
+	test('an unknown or absent locale falls back to English, never to the runtime', () => {
+		expect(formatNumber(undefined, 2.5, 1)).toBe('2.5');
+		expect(formatNumber('zz-nonsense', 2.5, 1)).toBe('2.5');
+	});
+
+	/**
+	 * The reason percent is built through `style: 'percent'` rather than by
+	 * appending the sign: where the sign goes is the locale's rule. Turkish puts
+	 * it in front, which no amount of `${n}%` can produce.
+	 */
+	test('the percent sign sits where the locale puts it', () => {
+		expect(formatPercent('en', 82.5, 1)).toBe('82.5%');
+		expect(formatPercent('tr', 82.5, 1).startsWith('%')).toBe(true);
+		// French separates the number and the sign; the space is theirs to choose.
+		expect(formatPercent('fr', 82.5, 1)).toMatch(/^82,5\s%$/u);
+	});
+
+	test('a localized decimal never reaches SVG geometry', async () => {
+		// A path coordinate is a machine value: a comma there is the point
+		// separator and the shape collapses. Biorhythm draws its polyline with a
+		// raw toFixed for exactly this reason, so the sweep must not have touched it.
+		const src = await Bun.file(
+			'packages/ui/src/components/biorhythm-chart.ts',
+		).text();
+		expect(src).toContain('toFixed(2)');
+		expect(src).not.toContain('formatNumber(this.effectiveLang(), x,');
 	});
 });
 
@@ -770,13 +816,13 @@ describe('shared display formatters', () => {
 	});
 
 	test('formatAyanamsa keeps KP uppercase and degrades unknown frames', () => {
-		expect(formatAyanamsa('kp-newcomb', 23.6214)).toBe(
+		expect(formatAyanamsa('en', 'kp-newcomb', 23.6214)).toBe(
 			'KP Newcomb (23.62\u00b0)',
 		);
-		expect(formatAyanamsa('lahiri', 23.72)).toBe('Lahiri (23.72\u00b0)');
-		expect(formatAyanamsa('lahiri')).toBe('Lahiri');
-		expect(formatAyanamsa('raman', 22.5)).toBe('B.V. Raman (22.5\u00b0)');
-		expect(formatAyanamsa('raman-something')).toBe('Raman something');
+		expect(formatAyanamsa('en', 'lahiri', 23.72)).toBe('Lahiri (23.72\u00b0)');
+		expect(formatAyanamsa('en', 'lahiri')).toBe('Lahiri');
+		expect(formatAyanamsa('en', 'raman', 22.5)).toBe('B.V. Raman (22.5\u00b0)');
+		expect(formatAyanamsa('en', 'raman-something')).toBe('Raman something');
 	});
 
 	test('formatWithSanskrit only appends a Sanskrit form that actually differs', () => {

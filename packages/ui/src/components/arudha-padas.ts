@@ -148,7 +148,7 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 		return html`<div class="wrap" part="card" aria-label="Arudha padas">
 			<header class="head" part="header">
 				<h2 class="title">Arudha padas</h2>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</header>
 			<div class="leads" part="details">
 				<div class="lead"><span>Lagna</span><strong>${d.lagnaRashi ?? ''}</strong></div>

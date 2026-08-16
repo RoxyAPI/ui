@@ -124,7 +124,7 @@ export const ru: Record<ChromeString, string> = {
 	Dissociate: 'Через знак',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.':
 		'Через знак: одна или несколько планет выходят за стихию или крест фигуры, поэтому тема сохраняется, но действует слабее.',
-	'{{percent}}% tight': 'точность {{percent}}%',
+	'{{percent}} tight': 'точность {{percent}}',
 	apex: 'вершина',
 
 	'Planet readings': 'Трактовки планет',

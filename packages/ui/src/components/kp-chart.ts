@@ -269,7 +269,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 				${
 					typeof d.meta?.ayanamsa === 'number'
 						? html`<div class="ayan">
-							Ayanamsa: ${formatAyanamsa(d.meta.ayanamsaType, d.meta.ayanamsa)}
+							Ayanamsa: ${formatAyanamsa(this.effectiveLang(), d.meta.ayanamsaType, d.meta.ayanamsa)}
 							${d.meta.houseSystem ? html`· ${d.meta.houseSystem} houses` : nothing}
 						</div>`
 						: nothing

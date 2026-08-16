@@ -175,7 +175,7 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 					<span class="scheme-chip">${d.scheme ?? ''}</span>
 					${d.scheme ? (SCHEMES[d.scheme] ?? '') : ''}
 				</p>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</header>
 			<div class="leads" part="details">
 				<div class="lead"><span>Atmakaraka</span><strong>${d.atmakaraka ?? ''}</strong></div>
@@ -219,9 +219,9 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 			<td>
 				${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${k.rashi ?? ''}
 			</td>
-			<td class="num">${formatNumber(k.degreeInRashi, 2)}</td>
+			<td class="num">${formatNumber(this.effectiveLang(), k.degreeInRashi, 2)}</td>
 			<td class="num">
-				${formatNumber(k.rankingDegree, 2)}
+				${formatNumber(this.effectiveLang(), k.rankingDegree, 2)}
 				${k.isReversed ? html`<span class="reversed">measured from the end of the sign</span>` : nothing}
 			</td>
 			<td class="meaning">

@@ -9,7 +9,11 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatNumber, normalizeAspect } from '../utils/format.js';
+import {
+	formatNumber,
+	formatPercent,
+	normalizeAspect,
+} from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -365,7 +369,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 						<div>
 							<h3>Key aspects</h3>
 							<ul class="key-aspects">
-								${keyAspects.slice(0, 6).map((a) => html`<li>${formatAspect(a, readings)}</li>`)}
+								${keyAspects.slice(0, 6).map((a) => html`<li>${formatAspect(this.effectiveLang(), a, readings)}</li>`)}
 							</ul>
 						</div>
 					</div>`
@@ -489,7 +493,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				if (!core) continue;
 				sections.push({
 					label,
-					aside: `${core.person1} and ${core.person2} · ${formatNumber(core.compatibility, 0)}%`,
+					aside: `${core.person1} and ${core.person2} · ${formatPercent(this.effectiveLang(), core.compatibility, 0)}`,
 					body: core.description ?? '',
 				});
 			}
@@ -499,7 +503,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				if (!cycle) continue;
 				sections.push({
 					label: capitalize(name),
-					aside: `${formatNumber(cycle.alignment, 0)}% in step · ${humanize(cycle.phase ?? '')}`,
+					aside: `${formatPercent(this.effectiveLang(), cycle.alignment, 0)} in step · ${humanize(cycle.phase ?? '')}`,
 					body: cycle.description ?? '',
 				});
 			}
@@ -525,11 +529,17 @@ type KeyAspect = CalculateCompatibilityResponse extends {
 	: never;
 
 /** "Sun trine Moon (orb 2.4°)", with the written reading of the contact appended unless the host asked for the data alone. */
-function formatAspect(a: KeyAspect, withReading: boolean): string {
+function formatAspect(
+	locale: string | undefined,
+	a: KeyAspect,
+	withReading: boolean,
+): string {
 	// Lowercase on purpose: this lands mid-sentence as "Sun trine Moon".
 	const aspect = normalizeAspect(a);
 	const orb =
-		typeof a.orb === 'number' ? ` (orb ${formatNumber(a.orb, 1)}°)` : '';
+		typeof a.orb === 'number'
+			? ` (orb ${formatNumber(locale, a.orb, 1)}°)`
+			: '';
 	const head = [a.planet1, aspect, a.planet2].filter(Boolean).join(' ');
 	return a.description && withReading
 		? `${head}${orb} · ${a.description}`

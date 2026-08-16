@@ -359,10 +359,10 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 								${p.sign}
 							</div>
 						</td>
-						<td class="num">${formatNumber(p.degree, 2)}</td>
+						<td class="num">${formatNumber(this.effectiveLang(), p.degree, 2)}</td>
 						<td class="speed">
 							<span class="speed-arrow" aria-hidden="true">${speedArrow}</span>
-							${formatNumber(Math.abs(p.speed), 2)}&deg;/day
+							${formatNumber(this.effectiveLang(), Math.abs(p.speed), 2)}&deg;/day
 						</td>
 					</tr>`;
 				})}
@@ -389,7 +389,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						<span aria-hidden="true">${nGlyph}</span>
 						${a.natalPlanet}
 						<span class="meta">
-							${status} · orb ${formatNumber(a.orb, 2)}° · strength ${formatNumber(a.strength, 1)}
+							${status} · orb ${formatNumber(this.effectiveLang(), a.orb, 2)}° · strength ${formatNumber(this.effectiveLang(), a.strength, 1)}
 						</span>
 						${chevron()}
 					</summary>

@@ -9,6 +9,7 @@ import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import {
 	formatDate,
+	formatPercent,
 	formatTime,
 	formatTimeRange,
 	formatWithSanskrit,
@@ -277,7 +278,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 					t?.deity ? `Deity ${t.deity}` : undefined,
 					t?.element,
 					typeof t?.percent === 'number'
-						? `${Math.round(t.percent)}% elapsed`
+						? `${formatPercent(this.effectiveLang(), t.percent, 0)} elapsed`
 						: undefined,
 				),
 			},

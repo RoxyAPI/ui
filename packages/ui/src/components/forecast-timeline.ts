@@ -324,7 +324,10 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 		const aspectSym = aspect
 			? (aspectSymbol(e.aspect) ?? formatAspectName({ type: e.aspect }))
 			: '';
-		const orb = typeof e.orb === 'number' ? formatNumber(e.orb, 1) : '';
+		const orb =
+			typeof e.orb === 'number'
+				? formatNumber(this.effectiveLang(), e.orb, 1)
+				: '';
 		const qualifier = this.typeQualifier(e);
 
 		if (aspect && target) {

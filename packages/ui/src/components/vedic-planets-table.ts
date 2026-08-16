@@ -263,7 +263,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		return html`<div class="wrap" part="card" aria-label="Vedic planetary positions">
 			<header class="head" part="header">
 				<h2 class="title">Planetary positions</h2>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</header>
 			<div class="scroll" part="table" tabindex="0">
 			<table role="table">
@@ -382,8 +382,8 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			<div class="panel-body">
 				${combust.map((c) => {
 					const glyph = planetGlyph(c.planet) ?? '';
-					const dist = formatNumber(c.distanceFromSun, 2);
-					const orb = formatNumber(c.orb, 1);
+					const dist = formatNumber(this.effectiveLang(), c.distanceFromSun, 2);
+					const orb = formatNumber(this.effectiveLang(), c.orb, 1);
 					return html`<div class="condition">
 						<span class="planet">${glyph ? `${glyph} ` : ''}${c.planet}</span>
 						<span class="detail">${dist} deg from Sun, within ${orb} deg orb</span>
@@ -402,7 +402,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			</summary>
 			<div class="panel-body">
 				${wars.map((w) => {
-					const dist = formatNumber(w.distance, 2);
+					const dist = formatNumber(this.effectiveLang(), w.distance, 2);
 					return html`<div class="condition">
 						<span class="planet">${w.planet1} vs ${w.planet2}</span>
 						<span class="detail">${dist} deg apart</span>

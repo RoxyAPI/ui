@@ -139,7 +139,7 @@ export const es: Record<ChromeString, string> = {
 	Dissociate: 'Disociada',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.':
 		'Fuera de signo: uno o más planetas quedan fuera del elemento o la modalidad de la figura, así que el tema se mantiene pero actúa más débil.',
-	'{{percent}}% tight': '{{percent}}% de exactitud',
+	'{{percent}} tight': '{{percent}} de exactitud',
 	apex: 'foco',
 
 	'Planet readings': 'Lecturas planetarias',

@@ -251,7 +251,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				cols.motion
 					? html`<td>${
 							r.speed != null
-								? html`${formatNumber(r.speed, 3)}°/day${r.isRetrograde ? html` <span class="retro">℞</span>` : nothing}`
+								? html`${formatNumber(this.effectiveLang(), r.speed, 3)}°/day${r.isRetrograde ? html` <span class="retro">℞</span>` : nothing}`
 								: html`&mdash;`
 						}</td>`
 					: nothing
@@ -331,7 +331,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 			return {
 				title: 'Solar arc directions',
 				badges: [
-					{ label: 'Arc', value: `${formatNumber(data.solarArc, 2)}°` },
+					{
+						label: 'Arc',
+						value: `${formatNumber(this.effectiveLang(), data.solarArc, 2)}°`,
+					},
 					{
 						label: 'Directed to',
 						value: formatDate(this.effectiveLang(), data.targetDate),
@@ -392,7 +395,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				},
 				{
 					label: 'Elapsed',
-					value: `${formatNumber(data.elapsedYears, 1)} yrs`,
+					value: `${formatNumber(this.effectiveLang(), data.elapsedYears, 1)} yrs`,
 				},
 			],
 			summary: data.summary,

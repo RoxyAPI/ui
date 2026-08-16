@@ -24,6 +24,7 @@ import {
 	formatAspectName,
 	formatDateTime,
 	formatNumber,
+	formatPercent,
 	normalizeAspect,
 } from '../utils/format.js';
 import {
@@ -696,7 +697,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 								const sym =
 									aspectSymbol(name) ?? display(a, 'type', formatAspectName(a));
 								const cls = ASPECT_CLASS[name] ?? 'aspect-other';
-								const orb = formatNumber(a.orb, 1);
+								const orb = formatNumber(this.effectiveLang(), a.orb, 1);
 								return html`<td class=${`cell ${cls}`} title=${`${row.label} ${display(a, 'type', name)} ${col.label}${orb ? ` (${this.t('orb')} ${orb}°)` : ''}`}>
 									<span class="asp">${sym}</span>
 								</td>`;
@@ -1151,10 +1152,10 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						: nothing
 				}
 				${
-					// Math.round, not formatNumber(x, 0): that helper strips trailing
+					// Math.round, not formatNumber(this.effectiveLang(), x, 0): that helper strips trailing
 					// zeros, so a 100% tight pattern renders as "1%".
 					typeof p.tightness === 'number'
-						? html`<span class="pattern-tight">${this.t('{{percent}}% tight', { percent: Math.round(p.tightness) })}</span>`
+						? html`<span class="pattern-tight">${this.t('{{percent}} tight', { percent: formatPercent(this.effectiveLang(), p.tightness, 0) })}</span>`
 						: nothing
 				}
 			</div>
@@ -1183,7 +1184,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			.map((p) => {
 				const interp = p.interpretation!;
 				const glyph = planetGlyph(p.name) ?? '';
-				const deg = formatNumber(p.degree ?? 0, 1);
+				const deg = formatNumber(this.effectiveLang(), p.degree ?? 0, 1);
 				const label = display(p, 'name');
 				const lead = interp.summary || interp.detailed || '';
 				// `detailed` only becomes a second paragraph when `summary` already
@@ -1237,7 +1238,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			);
 			const aspectName = normalizeAspect(a);
 			const aspectClass = ASPECT_CLASS[aspectName] ?? 'aspect-other';
-			const orbLabel = formatNumber(a.orb, 1);
+			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);
 			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${display(a, 'planet1')} ${display(a, 'type', aspectName)} ${display(a, 'planet2')}${orbLabel ? ` (${this.t('orb')} ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}

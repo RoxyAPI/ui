@@ -581,7 +581,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 
 	private formatScalar(value: Scalar): string {
 		if (typeof value === 'number') {
-			return formatNumber(value, 2) || String(value);
+			return formatNumber(this.effectiveLang(), value, 2) || String(value);
 		}
 		if (typeof value === 'boolean') return value ? this.t('Yes') : this.t('No');
 		if (ISO_DATE.test(value)) {

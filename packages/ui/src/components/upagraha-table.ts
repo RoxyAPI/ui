@@ -122,7 +122,7 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 		return html`<div class="wrap" part="card" aria-label="Upagraha positions">
 			<header class="head" part="header">
 				<h2 class="title">Upagrahas</h2>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</header>
 			${groups.map((g) => this.renderGroup(g, d[g.key]))}
 		</div>`;
@@ -164,7 +164,7 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 								<td class="num">
 									${typeof u.longitude === 'number' ? formatSignPosition(u.longitude) : ''}
 								</td>
-								<td class="num">${formatNumber(u.longitude, 2)}</td>
+								<td class="num">${formatNumber(this.effectiveLang(), u.longitude, 2)}</td>
 								<td>${u.nakshatra ?? ''}</td>
 								<td class="num">${u.nakshatraPada ?? ''}</td>
 							</tr>`;

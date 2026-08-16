@@ -148,7 +148,7 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 								house between the Rashi chart and the unequal Sripati cusps.`
 					}
 				</p>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</header>
 
 			${
@@ -207,10 +207,10 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 		return html`<tr>
 			<td class="num">${b.house}</td>
 			<td>${b.rashi}</td>
-			<td class="num">${formatNumber(b.start, 2)}&deg;</td>
-			<td class="num">${formatNumber(b.madhya, 2)}&deg;</td>
-			<td class="num">${formatNumber(b.end, 2)}&deg;</td>
-			<td class="num">${formatNumber(b.span, 2)}&deg;</td>
+			<td class="num">${formatNumber(this.effectiveLang(), b.start, 2)}&deg;</td>
+			<td class="num">${formatNumber(this.effectiveLang(), b.madhya, 2)}&deg;</td>
+			<td class="num">${formatNumber(this.effectiveLang(), b.end, 2)}&deg;</td>
+			<td class="num">${formatNumber(this.effectiveLang(), b.span, 2)}&deg;</td>
 			<td class="occupants">${occupants || '—'}</td>
 		</tr>`;
 	}

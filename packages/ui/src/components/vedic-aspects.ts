@@ -214,9 +214,9 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 										<td><span class="kind">${a.aspectType}</span></td>
 										<td>${a.aspectedPlanet}</td>
 										<td>
-											${typeof a.strength === 'number' ? html`<span class="bar" style="width:${Math.max(4, Math.min(100, a.strength) * 0.4)}px"></span><span class="num">${formatNumber(a.strength, 0)}</span>` : nothing}
+											${typeof a.strength === 'number' ? html`<span class="bar" style="width:${Math.max(4, Math.min(100, a.strength) * 0.4)}px"></span><span class="num">${formatNumber(this.effectiveLang(), a.strength, 0)}</span>` : nothing}
 										</td>
-										<td class="num">${typeof a.orb === 'number' ? `${formatNumber(a.orb, 2)}°` : ''}</td>
+										<td class="num">${typeof a.orb === 'number' ? `${formatNumber(this.effectiveLang(), a.orb, 2)}°` : ''}</td>
 									</tr>`,
 								)}
 							</tbody>

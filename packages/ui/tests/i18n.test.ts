@@ -889,6 +889,29 @@ describe('a component renders its chrome in the page language', () => {
 		expect(text(el)).toContain('No data');
 	});
 
+	test('a decimal a component renders reaches the reader localized', async () => {
+		// The helper being locale-aware proves nothing on its own: the locale has to
+		// travel from the page, through the component, into the call. Render it.
+		document.documentElement.lang = 'de-DE';
+		const el = document.createElement('roxy-moon-phase');
+		(el as unknown as { data: unknown }).data = {
+			phase: 'waxing_crescent',
+			illumination: 42.5,
+			age: 12.5,
+			distance: 384400,
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const t = text(el);
+		// The decimal separator is the reader's.
+		expect(t).toContain('12,5');
+		expect(t).not.toContain('12.5');
+		// And German separates the number from the percent sign, which is the
+		// locale's rule rather than a string this component holds.
+		expect(t).toMatch(/43\s%/u);
+		el.remove();
+	});
+
 	test('the default heading translates, which no static scan can prove', async () => {
 		// `this.t(this.heading)` is a dynamic call, so the `t(...)` literal scan
 		// above cannot see the default. Render it instead.

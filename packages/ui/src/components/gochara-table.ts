@@ -224,7 +224,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 								(a) =>
 									`${formatAspectName({ type: a.aspectType })} natal ${a.natalPlanet}${
 										typeof a.orb === 'number'
-											? ` (${formatNumber(a.orb, 1)}°)`
+											? ` (${formatNumber(this.effectiveLang(), a.orb, 1)}°)`
 											: ''
 									}`,
 							)
@@ -267,8 +267,8 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 					typeof k.startDegree === 'number' && typeof k.endDegree === 'number'
 						? html`, spanning
 							<span class="num"
-								>${formatNumber(k.startDegree, 2)}&deg; to
-								${formatNumber(k.endDegree, 2)}&deg;</span
+								>${formatNumber(this.effectiveLang(), k.startDegree, 2)}&deg; to
+								${formatNumber(this.effectiveLang(), k.endDegree, 2)}&deg;</span
 							>
 							of the sign`
 						: ''

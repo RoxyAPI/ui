@@ -8,7 +8,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatDate, formatDateRange } from '../utils/format.js';
+import { formatDate, formatDateRange, formatPercent } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -274,7 +274,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 						<p class="label">Spotlight cycle</p>
 						<div class="lead">
 							<strong>${spot.cycle}</strong>
-							${typeof spot.value === 'number' ? html`<span class="energy">${spot.value}%</span>` : nothing}
+							${typeof spot.value === 'number' ? html`<span class="energy">${formatPercent(this.effectiveLang(), spot.value, 0)}</span>` : nothing}
 							${spot.phase ? html`<span class="phase">${humanize(spot.phase)}</span>` : nothing}
 						</div>
 						${
@@ -299,7 +299,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 								style="width: ${pct}%; background: ${color}"
 							></span>
 						</span>
-						<span class="value">${Math.round(v * 100)}%</span>
+						<span class="value">${formatPercent(this.effectiveLang(), v * 100, 0)}</span>
 					</div>`;
 				})}
 			</div>
@@ -347,6 +347,9 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 							const v = day[cycle] ?? 0;
 							const x = i * xStep;
 							const y = h / 2 - (v / 100) * (h / 2 - 8);
+							// Raw toFixed on purpose: these are SVG path coordinates, not
+							// copy. A locale-aware decimal comma would be read as the
+							// point separator and the polyline would collapse.
 							return `${x.toFixed(2)},${y.toFixed(2)}`;
 						})
 						.join(' ');

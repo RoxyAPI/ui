@@ -171,7 +171,7 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 				<span class=${`badge ${present ? 'present' : 'absent'}`}>
 					${present ? 'Present' : 'Absent'}
 				</span>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</header>
 			${
 				'type' in d && d.type

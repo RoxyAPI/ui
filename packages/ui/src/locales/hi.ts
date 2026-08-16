@@ -146,7 +146,7 @@ export const hi: Record<ChromeString, string> = {
 	Dissociate: 'राशि से बाहर',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.':
 		'राशि से बाहर: एक या अधिक ग्रह संरचना के तत्व या गुण से बाहर हैं, इसलिए इसका मूल असर वही रहता है पर कम प्रबल रहता है।',
-	'{{percent}}% tight': '{{percent}}% निकट',
+	'{{percent}} tight': '{{percent}} निकट',
 	apex: 'शीर्ष',
 
 	'Planet readings': 'ग्रह फलादेश',

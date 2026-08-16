@@ -198,12 +198,12 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 				: 'an evening graha, read after sunset';
 		const at = g.nextEvent ?? g.lastEvent;
 		const shifts = at && at.kalamsa !== g.kalamsa;
-		return html`<span class="num">${formatNumber(g.timeDegrees, 2)}&deg;</span>
+		return html`<span class="num">${formatNumber(this.effectiveLang(), g.timeDegrees, 2)}&deg;</span>
 		of time from the Sun against a limit of
-		<span class="num">${formatNumber(g.kalamsa, 0)}&deg;</span>${
+		<span class="num">${formatNumber(this.effectiveLang(), g.kalamsa, 0)}&deg;</span>${
 			shifts
 				? html`, becoming
-					<span class="num">${formatNumber(at.kalamsa, 0)}&deg;</span> at that
+					<span class="num">${formatNumber(this.effectiveLang(), at.kalamsa, 0)}&deg;</span> at that
 					event`
 				: ''
 		} &middot; ${side}`;

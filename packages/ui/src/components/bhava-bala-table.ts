@@ -158,7 +158,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 						d.houseSystem ? html` on the ${d.houseSystem} frame` : nothing
 					}
 				</p>
-				${renderFrameCaption(d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame)}
 			</header>
 
 			<div class="rows" part="table" role="list">
@@ -190,7 +190,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 				<span class="rashi">${b.rashi}</span>
 				${b.lord ? html`<span class="lord">lord ${b.lord}</span>` : nothing}
 				<span class="total">
-					${formatNumber(b.totalRupas, 2)} rupas
+					${formatNumber(this.effectiveLang(), b.totalRupas, 2)} rupas
 					${
 						typeof b.rank === 'number'
 							? html`<span class="rank">#${b.rank}</span>`
@@ -201,7 +201,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 			<div
 				class="bar"
 				role="img"
-				aria-label="Bhava bala ${formatNumber(b.totalVirupas, 1)} virupas"
+				aria-label="Bhava bala ${formatNumber(this.effectiveLang(), b.totalVirupas, 1)} virupas"
 			>
 				${COMPONENTS.map((c) => {
 					const v = Math.max(0, (b[c.key] as number | undefined) ?? 0);
@@ -209,7 +209,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 						? html`<span
 								class="seg"
 								style="width: ${(v / peak) * 100}%; background: ${c.color}"
-								title="${c.label} ${formatNumber(v, 1)} virupas"
+								title="${c.label} ${formatNumber(this.effectiveLang(), v, 1)} virupas"
 							></span>`
 						: nothing;
 				})}

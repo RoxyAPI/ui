@@ -86,7 +86,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 			<div class="header" part="header">
 				<div>
 					<h2 class="title">${title}</h2>
-					${renderFrameCaption(d.frame)}
+					${renderFrameCaption(this.effectiveLang(), d.frame)}
 				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
 			</div>

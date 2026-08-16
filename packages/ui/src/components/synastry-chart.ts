@@ -514,7 +514,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				[
 					'Asc',
 					p.ascendant
-						? `${p.ascendant.sign} ${formatNumber(p.ascendant.degree, 0)}°`
+						? `${p.ascendant.sign} ${formatNumber(this.effectiveLang(), p.ascendant.degree, 0)}°`
 						: '',
 				],
 			];
@@ -572,7 +572,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
 		</span>`;
 		const aside = html`<span class="interp-aside">
-			<small>orb ${formatNumber(a.orb, 2)}° · str ${formatNumber(a.strength, 0)}</small>
+			<small>orb ${formatNumber(this.effectiveLang(), a.orb, 2)}° · str ${formatNumber(this.effectiveLang(), a.strength, 0)}</small>
 		</span>`;
 		// The header is the contact itself (both bodies, the aspect, orb and
 		// strength) and is never a reading, so a card with nothing to disclose
@@ -719,7 +719,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			const inn = polarToCartesian(CENTER, CENTER, P2_R + 8, this.toAngle(l2));
 			const aspectName = normalizeAspect(a);
 			const cls = ASPECT_CLASS[aspectName] ?? 'aspect-other';
-			const orbLabel = formatNumber(a.orb, 1);
+			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);
 			return svg`<line class=${`aspect ${cls}`} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
@@ -745,8 +745,8 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 						<td>${a.planet1}</td>
 						<td>${a.planet2}</td>
 						<td>${formatAspectName(a)}</td>
-						<td class="orb">${formatNumber(a.orb, 1)}</td>
-						<td>${formatNumber(a.strength, 0)}</td>
+						<td class="orb">${formatNumber(this.effectiveLang(), a.orb, 1)}</td>
+						<td>${formatNumber(this.effectiveLang(), a.strength, 0)}</td>
 					</tr>`,
 				)}
 			</tbody>

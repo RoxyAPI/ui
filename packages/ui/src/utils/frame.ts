@@ -1,6 +1,6 @@
 import type { TemplateResult } from 'lit';
 import { css, html, nothing } from 'lit';
-import { formatAyanamsa } from './format.js';
+import { formatAyanamsa, formatNumber } from './format.js';
 
 /**
  * The sidereal frame a Vedic response was computed in.
@@ -42,20 +42,21 @@ export const frameCaptionStyles = css`
  * ```ts
  * static styles = [baseStyles, frameCaptionStyles, css`...`];
  * // in renderData:
- * ${renderFrameCaption(d.frame)}
+ * ${renderFrameCaption(this.effectiveLang(), d.frame)}
  * ```
  */
 export function renderFrameCaption(
+	locale: string | undefined,
 	frame: SiderealFrame | undefined,
 ): TemplateResult | typeof nothing {
 	if (!frame?.ayanamsa) return nothing;
-	const label = formatAyanamsa(frame.ayanamsa);
+	const label = formatAyanamsa(locale, frame.ayanamsa);
 	if (!label) return nothing;
 	return html`<p class="roxy-frame">
 		Sidereal frame: ${label}${
 			typeof frame.ayanamsaDegrees === 'number'
 				? html`, <span class="roxy-frame-deg"
-						>${frame.ayanamsaDegrees.toFixed(4)}&deg;</span
+						>${formatNumber(locale, frame.ayanamsaDegrees, 4)}&deg;</span
 					>
 					subtracted`
 				: nothing

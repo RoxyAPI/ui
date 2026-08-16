@@ -489,7 +489,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 						<h2 class="title">Detected yogas</h2>
 						<span class="count">${presentCount} of ${detected.length} present</span>
 					</div>
-					${renderFrameCaption((d as DetectYogasResponse).frame)}
+					${renderFrameCaption(this.effectiveLang(), (d as DetectYogasResponse).frame)}
 					<div class="search-wrap">
 						<input
 							class="search"

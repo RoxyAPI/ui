@@ -88,7 +88,7 @@ export class RoxyKpPlanetsTable extends RoxyDataElement<KpPlanetsResponse> {
 				<h2 class="title">KP planets</h2>
 				${
 					typeof d.ayanamsa === 'number'
-						? html`<span class="ayanamsa">Ayanamsa: ${formatNumber(d.ayanamsa, 2)}°</span>`
+						? html`<span class="ayanamsa">Ayanamsa: ${formatNumber(this.effectiveLang(), d.ayanamsa, 2)}°</span>`
 						: nothing
 				}
 			</header>

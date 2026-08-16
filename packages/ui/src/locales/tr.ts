@@ -6,7 +6,7 @@
  *
  * Keyed by the English source string as it appears at the call site, so this file diffs directly against the component that renders it and no key vocabulary has to be kept in sync with the copy.
  *
- * Turkish puts the percent sign BEFORE the number, so `{{percent}}% tight` is written `%{{percent}}`. The brand rule forbids apostrophes, which Turkish otherwise uses before a suffix on a foreign word, so several entries are shaped around it: the attribution needs no suffix on `RoxyAPI`, `apex` is a bare unsuffixed chip, and the Ascendant is `Yükselen` rather than the loanword, because `Ascendant` would force `Ascendant'tan` in the two equal-sector strings. If that string ever has to inflect in running text, switch to `odak gezegen`, which is the native form and takes suffixes cleanly.
+ * Turkish puts the percent sign BEFORE the number; `formatPercent` places it, so no entry here spells it. The brand rule forbids apostrophes, which Turkish otherwise uses before a suffix on a foreign word, so several entries are shaped around it: the attribution needs no suffix on `RoxyAPI`, `apex` is a bare unsuffixed chip, and the Ascendant is `Yükselen` rather than the loanword, because `Ascendant` would force `Ascendant'tan` in the two equal-sector strings. If that string ever has to inflect in running text, switch to `odak gezegen`, which is the native form and takes suffixes cleanly.
  *
  * Every entry below is attested in live Turkish astrology copy rather than machine translated. What follows is the reasoning a maintainer needs; the attestation itself is recorded internally.
  *
@@ -130,7 +130,7 @@ export const tr: Record<ChromeString, string> = {
 	Dissociate: 'Burç dışı',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.':
 		'Burç dışı: bir veya daha fazla gezegen kalıbın elementi ya da niteliği dışında kalır, tema korunur ama daha zayıf işler.',
-	'{{percent}}% tight': '%{{percent}} kesinlik',
+	'{{percent}} tight': '{{percent}} kesinlik',
 	apex: 'apex',
 
 	'Planet readings': 'Gezegen yorumları',

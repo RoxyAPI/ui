@@ -148,7 +148,9 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 						const glyph = planetGlyph(r.name) ?? '';
 						const sGlyph = signGlyph(r.sign) ?? '';
 						const speed =
-							typeof r.speed === 'number' ? formatNumber(r.speed, 3) : '';
+							typeof r.speed === 'number'
+								? formatNumber(this.effectiveLang(), r.speed, 3)
+								: '';
 						return html`<tr class=${r.isPoint ? 'point' : ''}>
 							<td class="body">
 								${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${r.name}

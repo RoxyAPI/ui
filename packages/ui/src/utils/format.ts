@@ -256,28 +256,45 @@ export function formatInteger(
 }
 
 /**
- * Format a number, dropping trailing zeros in the FRACTIONAL part only: `2.50` becomes `2.5`, `2.0` becomes `2`, and `100` stays `100`.
+ * A number to at most `dp` decimals, in the reader's notation: `2.5` on an English page, `2,5` on a German or French one. Trailing zeros drop, so `2.50` reads `2.5` and `2.0` reads `2`.
  *
  * @remarks
- * Guard on the decimal point, and never strip from the integer side. A naive `.replace(/\.?0+$/, '')` over the whole string eats zeros off the INTEGER whenever there is no decimal point, so at `dp = 0` it turns `100` into `1`, `90` into `9` and `0` into the empty string.
+ * `maximumFractionDigits` does that trimming itself, on the fractional side only, which is the behaviour to keep: stripping zeros off the rendered STRING eats the integer side whenever there is no decimal separator, turning `100` into `1` at `dp = 0`.
  *
  * @example
  * ```ts
- * formatNumber(100, 0); // '100'
- * formatNumber(2.5, 1); // '2.5'
- * formatNumber(2, 1);   // '2'
- * formatNumber(0, 0);   // '0'
+ * formatNumber('en', 2.5, 1); // '2.5'
+ * formatNumber('de', 2.5, 1); // '2,5'
+ * formatNumber('en', 100, 0); // '100'
  * ```
  */
-export function formatNumber(value: unknown, dp = 1): string {
+export function formatNumber(
+	locale: string | undefined,
+	value: unknown,
+	dp = 1,
+): string {
 	if (typeof value !== 'number' || !Number.isFinite(value)) return '';
-	const fixed = value.toFixed(dp);
-	return fixed.includes('.') ? fixed.replace(/\.?0+$/, '') : fixed;
+	return value.toLocaleString(intlLocales(locale), {
+		maximumFractionDigits: dp,
+	});
 }
 
-export function formatPercent(value: unknown, dp = 1): string {
-	const n = formatNumber(value, dp);
-	return n ? `${n}%` : '';
+/**
+ * A 0-to-100 value as a percentage in the reader's notation, which sets the separator AND whether a space precedes the sign: `82.5%` in English, `82,5 %` in French.
+ *
+ * @remarks
+ * Built with `style: 'percent'` rather than by appending a literal `%`, because that space is the locale's rule and not ours to pick. The style expects a fraction, so a 0-to-100 value is divided first.
+ */
+export function formatPercent(
+	locale: string | undefined,
+	value: unknown,
+	dp = 1,
+): string {
+	if (typeof value !== 'number' || !Number.isFinite(value)) return '';
+	return (value / 100).toLocaleString(intlLocales(locale), {
+		style: 'percent',
+		maximumFractionDigits: dp,
+	});
 }
 
 /**
@@ -330,11 +347,17 @@ export const AYANAMSA_LABEL: Record<string, string> = {
 	custom: 'Custom',
 };
 
-export function formatAyanamsa(type: unknown, degrees?: unknown): string {
+export function formatAyanamsa(
+	locale: string | undefined,
+	type: unknown,
+	degrees?: unknown,
+): string {
 	const label =
 		typeof type === 'string' ? (AYANAMSA_LABEL[type] ?? humanize(type)) : '';
 	const deg =
-		typeof degrees === 'number' ? `${formatNumber(degrees, 2)}\u00b0` : '';
+		typeof degrees === 'number'
+			? `${formatNumber(locale, degrees, 2)}\u00b0`
+			: '';
 	if (label && deg) return `${label} (${deg})`;
 	return label || deg;
 }

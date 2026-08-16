@@ -217,7 +217,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 		return html`<div class="event" role="listitem">
 			<span class="event-date">${formatDate(this.effectiveLang(), e.date)}</span>
 			<span class="event-desc">${label}</span>
-			<span class="sig" role="img" aria-label="significance ${formatNumber(sig, 0)} of 100">
+			<span class="sig" role="img" aria-label="significance ${formatNumber(this.effectiveLang(), sig, 0)} of 100">
 				<span class="sig-fill ${e.domain}" style="width:${Math.max(0, Math.min(100, sig))}%"></span>
 			</span>
 		</div>`;
