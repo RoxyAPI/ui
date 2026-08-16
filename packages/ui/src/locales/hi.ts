@@ -310,6 +310,14 @@ export const hi: Record<ChromeString, string> = {
 	Severity: 'तीव्रता',
 	Remedies: 'उपाय',
 	Exceptions: 'अपवाद',
+	'Dream symbol': 'स्वप्न प्रतीक',
+	'Dream symbols': 'स्वप्न प्रतीक',
+	'{{count}} matches': 'परिणाम: {{count}}',
+	Hora: 'होरा',
+	'Hora periods': 'होरा मुहूर्त',
+	'Vedic kundli': 'वैदिक कुंडली',
+	'Vedic birth chart with twelve sign houses':
+		'बारह राशि भावों वाली वैदिक जन्म कुंडली',
 };
 
 registerLocale('hi', hi);

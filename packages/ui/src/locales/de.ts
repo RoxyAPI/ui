@@ -296,6 +296,14 @@ export const de: Record<ChromeString, string> = {
 	Severity: 'Schweregrad',
 	Remedies: 'Abhilfen',
 	Exceptions: 'Ausnahmen',
+	'Dream symbol': 'Traumsymbol',
+	'Dream symbols': 'Traumsymbole',
+	'{{count}} matches': '{{count}} Treffer',
+	Hora: 'Hora',
+	'Hora periods': 'Planetenstunden',
+	'Vedic kundli': 'Vedisches Geburtshoroskop',
+	'Vedic birth chart with twelve sign houses':
+		'Vedisches Geburtshoroskop mit zwölf Zeichenhäusern',
 };
 
 registerLocale('de', de);

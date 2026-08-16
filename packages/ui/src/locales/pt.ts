@@ -288,6 +288,14 @@ export const pt: Record<ChromeString, string> = {
 	Severity: 'Gravidade',
 	Remedies: 'Remédios',
 	Exceptions: 'Exceções',
+	'Dream symbol': 'Símbolo onírico',
+	'Dream symbols': 'Símbolos oníricos',
+	'{{count}} matches': '{{count}} correspondências',
+	Hora: 'Hora',
+	'Hora periods': 'Horas planetárias',
+	'Vedic kundli': 'Mapa védico',
+	'Vedic birth chart with twelve sign houses':
+		'Mapa natal védico com doze casas por signo',
 };
 
 registerLocale('pt', pt);

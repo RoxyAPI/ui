@@ -290,6 +290,14 @@ export const ru: Record<ChromeString, string> = {
 	Severity: 'Степень',
 	Remedies: 'Средства',
 	Exceptions: 'Исключения',
+	'Dream symbol': 'Символ сна',
+	'Dream symbols': 'Символы сна',
+	'{{count}} matches': 'совпадений: {{count}}',
+	Hora: 'Хора',
+	'Hora periods': 'Планетные часы',
+	'Vedic kundli': 'Ведическая карта',
+	'Vedic birth chart with twelve sign houses':
+		'Ведическая натальная карта с двенадцатью знаковыми домами',
 };
 
 registerLocale('ru', ru);

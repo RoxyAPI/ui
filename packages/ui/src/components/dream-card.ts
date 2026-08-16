@@ -70,11 +70,11 @@ export class RoxyDreamCard extends RoxyDataElement<GetDreamSymbolResponse> {
 	];
 
 	protected renderData(d: GetDreamSymbolResponse) {
-		return html`<article class="card" part="card" aria-label=${d.name ?? 'Dream symbol'}>
+		return html`<article class="card" part="card" aria-label=${d.name ?? this.t('Dream symbol')}>
 			<header class="head" part="header">
 				${d.letter ? html`<span class="letter" aria-hidden="true">${d.letter}</span>` : nothing}
 				<div>
-					<p class="label">Dream symbol</p>
+					<p class="label">${this.t('Dream symbol')}</p>
 					${d.name ? html`<h2 class="name">${d.name}</h2>` : nothing}
 				</div>
 			</header>

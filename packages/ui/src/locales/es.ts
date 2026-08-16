@@ -309,6 +309,14 @@ export const es: Record<ChromeString, string> = {
 	Severity: 'Gravedad',
 	Remedies: 'Remedios',
 	Exceptions: 'Excepciones',
+	'Dream symbol': 'Símbolo onírico',
+	'Dream symbols': 'Símbolos oníricos',
+	'{{count}} matches': '{{count}} coincidencias',
+	Hora: 'Hora',
+	'Hora periods': 'Horas planetarias',
+	'Vedic kundli': 'Carta védica',
+	'Vedic birth chart with twelve sign houses':
+		'Carta natal védica con doce casas por signo',
 };
 
 registerLocale('es', es);

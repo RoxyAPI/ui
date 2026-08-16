@@ -473,6 +473,10 @@ describe('shipped locales', () => {
 			// string, not a gap. German is the only one of the seven where that
 			// happens; the other six all translate the head noun.
 			de: [
+				// `Hora` is the Sanskrit term for the planetary hour and every language
+				// below prints it unchanged; the reading is the Vedic one, not the
+				// ordinary word for an hour that Spanish and Portuguese also spell this way.
+				'Hora',
 				'Aura',
 				'Bodygraph',
 				'Definition',
@@ -493,6 +497,10 @@ describe('shipped locales', () => {
 			// `Base` and `Variables` are the Spanish Human Design words, and
 			// `Bodygraph` is the loanword the API's Spanish prose prints.
 			es: [
+				// `Hora` is the Sanskrit term for the planetary hour and every language
+				// below prints it unchanged; the reading is the Vedic one, not the
+				// ordinary word for an hour that Spanish and Portuguese also spell this way.
+				'Hora',
 				'Aura',
 				'Base',
 				'Bodygraph',
@@ -515,6 +523,10 @@ describe('shipped locales', () => {
 			// `Direction`, `Base`, `Cognition` and `Variables` unchanged, and
 			// `Activations` differs from the English only in a plural it already has.
 			fr: [
+				// `Hora` is the Sanskrit term for the planetary hour and every language
+				// below prints it unchanged; the reading is the Vedic one, not the
+				// ordinary word for an hour that Spanish and Portuguese also spell this way.
+				'Hora',
 				'Activations ({{count}})',
 				'Air',
 				// `Exceptions` is the French word and the spelling is identical.
@@ -552,6 +564,10 @@ describe('shipped locales', () => {
 			// Brazilian usage keeps English precisely to hold it apart from
 			// `Desenho`.
 			pt: [
+				// `Hora` is the Sanskrit term for the planetary hour and every language
+				// below prints it unchanged; the reading is the Vedic one, not the
+				// ordinary word for an hour that Spanish and Portuguese also spell this way.
+				'Hora',
 				'Aura',
 				'Base',
 				'Bodygraph',
@@ -572,7 +588,17 @@ describe('shipped locales', () => {
 			// `Relocation haritası`: `Relokasyon` appears in no Turkish astrology
 			// source, while ayastrolojiakademisi.com prints the English word bare
 			// inside a Turkish title.
-			tr: ['orb', 'apex', 'Natal', 'Aura', 'Bodygraph', 'Motor', 'Relocation'],
+			// `Hora` as above: the Sanskrit term, printed unchanged.
+			tr: [
+				'orb',
+				'apex',
+				'Natal',
+				'Aura',
+				'Bodygraph',
+				'Motor',
+				'Relocation',
+				'Hora',
+			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
 			const untranslated = Object.entries(catalog)
@@ -698,8 +724,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/crystal-card.ts': 3,
 		'components/dasha-timeline.ts': 9,
 		'components/divisional-chart.ts': 3,
-		'components/dream-card.ts': 1,
-		'components/dream-search.ts': 3,
 		'components/fixed-stars.ts': 13,
 		'components/forecast-digest.ts': 5,
 		'components/forecast-timeline.ts': 6,
@@ -709,7 +733,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/hd-penta.ts': 15,
 		'components/heliacal-table.ts': 11,
 		'components/hexagram.ts': 5,
-		'components/hora-table.ts': 2,
 		'components/horoscope-card.ts': 17,
 		'components/kp-chart.ts': 39,
 		'components/kp-planets-table.ts': 12,
@@ -728,7 +751,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/transits-table.ts': 14,
 		'components/upagraha-table.ts': 9,
 		'components/vedic-aspects.ts': 11,
-		'components/vedic-kundli.ts': 2,
 		'components/vedic-planets-table.ts': 28,
 		'components/western-planets-table.ts': 9,
 		'components/yoga-list.ts': 21,
@@ -933,6 +955,23 @@ describe('a component renders its chrome in the page language', () => {
 			expect(t, `${word} missing`).toContain(word);
 		}
 		expect(t).not.toContain('Harmonious');
+		el.remove();
+	});
+
+	/** The count line used to build an English plural by appending `es`, which no other language does. */
+	test('the dream search count reads in the page language', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-dream-search');
+		(el as unknown as { data: unknown }).data = {
+			symbols: [{ id: '1', name: 'Water', letter: 'W' }],
+			total: 1,
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const t = text(el);
+		expect(t).toContain('Símbolos oníricos');
+		expect(t).toContain('1 coincidencias');
+		expect(t).not.toContain('match');
 		el.remove();
 	});
 

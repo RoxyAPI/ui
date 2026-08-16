@@ -297,6 +297,14 @@ export const tr: Record<ChromeString, string> = {
 	Severity: 'Şiddet',
 	Remedies: 'Öneriler',
 	Exceptions: 'İstisnalar',
+	'Dream symbol': 'Rüya sembolü',
+	'Dream symbols': 'Rüya sembolleri',
+	'{{count}} matches': '{{count}} sonuç',
+	Hora: 'Hora',
+	'Hora periods': 'Gezegen saatleri',
+	'Vedic kundli': 'Vedik doğum haritası',
+	'Vedic birth chart with twelve sign houses':
+		'On iki burç evli Vedik doğum haritası',
 };
 
 registerLocale('tr', tr);
