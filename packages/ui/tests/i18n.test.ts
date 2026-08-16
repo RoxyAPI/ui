@@ -467,11 +467,11 @@ describe('shipped locales', () => {
 			// `Persönlichkeitsseite`/`Designseite`); `Bodygraph` is the loanword the
 			// API's own German prose uses sixteen times inside this same card, which
 			// is why `Körpergrafik` was passed over.
-			// The four `Person` group legends are German too: velora-astro.de labels
-			// the two inputs of its own synastry calculator `Geburtsdaten Person 1`
-			// and `Geburtsdaten Person 2`, so the German for this legend is the same
-			// string, not a gap. German is the only one of the seven where that
-			// happens; the other six all translate the head noun.
+			// The four `Person` group legends are German too: German synastry forms
+			// label their two inputs `Geburtsdaten Person 1` and `Geburtsdaten
+			// Person 2`, so the German here is the same string, not a gap. German is
+			// the only one of the seven where that happens; the other six all
+			// translate the head noun.
 			de: [
 				// `Hora` is the Sanskrit term for the planetary hour and every language
 				// below prints it unchanged; the reading is the Vedic one, not the
@@ -586,8 +586,8 @@ describe('shipped locales', () => {
 			// `Motor` the same way (`Motor merkezler`). `Relocation` is the same
 			// borrowing and the reason the chart it names already ships as
 			// `Relocation haritası`: `Relokasyon` appears in no Turkish astrology
-			// source, while ayastrolojiakademisi.com prints the English word bare
-			// inside a Turkish title.
+			// source, while Turkish academies print the English word bare inside a
+			// Turkish title.
 			// `Hora` as above: the Sanskrit term, printed unchanged.
 			tr: [
 				'orb',

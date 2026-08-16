@@ -117,6 +117,53 @@ interface Pattern {
 	warnOnly?: boolean;
 }
 
+const TLDS = 'com|net|org|de|fr|es|it|co|io|app|dev|ai|in|tr|ru|br|pt';
+/** The host of a written URL. A reserved or made-up TLD is not a site anyone visits, so it never matches. */
+const URL_HOST = new RegExp(
+	`https?://((?:[a-z0-9-]+\\.)+(?:${TLDS}))(?![a-z])`,
+	'gi',
+);
+/** A bare hostname in prose, never a path segment or half of a hyphenated word. */
+const BARE_HOST = new RegExp(
+	`(?<![\\w/-])((?:[a-z0-9]+(?:-[a-z0-9]+)*\\.)+(?:${TLDS}))(?![\\w-])`,
+	'gi',
+);
+
+/** Ours, plus the toolchain and standards bodies this project legitimately cites. Keyed by registrable domain, so any subdomain of one is covered. */
+const OWN_DOMAINS = new Set([
+	'roxyapi.com',
+	'roxystudio.app',
+	'jsdelivr.net',
+	'npmjs.com',
+	'github.com',
+	'githubusercontent.com',
+	'github.io',
+	'shields.io',
+	'unpkg.com',
+	'schema.org',
+	'json-schema.org',
+	'openapis.org',
+	'apisjson.org',
+	'w3.org',
+	'lit.dev',
+	'biomejs.dev',
+	'playwright.dev',
+	'shadcn.com',
+	'googleapis.com',
+	'gstatic.com',
+	'anthropic.com',
+]);
+
+/** Every host a line names, each reduced to its registrable domain. */
+function hostsIn(line: string): string[] {
+	const found: string[] = [];
+	for (const m of line.matchAll(URL_HOST)) found.push(m[1] ?? '');
+	for (const m of line.matchAll(BARE_HOST)) found.push(m[1] ?? '');
+	return found
+		.map((h) => h.toLowerCase().split('.').slice(-2).join('.'))
+		.filter(Boolean);
+}
+
 // Helper: build a simple case-insensitive regex test
 function ci(re: RegExp): (line: string) => boolean {
 	const r = new RegExp(
@@ -294,6 +341,14 @@ const CATEGORY_D_PATTERNS: Pattern[] = [
 		test: ci(
 			/\b(jovian\s+archive|mybodygraph|maia\s+mechanics|genetic\s+matrix|rave\s+bodygraph|drikpanchang|astro-?seek|astro\.com|jhora|humdes|hdkit|sirius)\b/i,
 		),
+	},
+	// Any outside site, named by its host. A wordlist only knows the products
+	// somebody thought to list; this holds for the ones nobody did, and the
+	// allowlist is the only part to maintain.
+	{
+		category: 'D',
+		label: 'third-party-domain',
+		test: (line: string) => hostsIn(line).some((h) => !OWN_DOMAINS.has(h)),
 	},
 	// The same disclosure without a name attached: a claim measured against some
 	// outside artifact. Catches the construction rather than the product.
