@@ -11,6 +11,8 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
 	arcMidpoint,
+	arcSeparation,
+	fanOut,
 	longitudeToSignPosition,
 	normalizeLongitude,
 	oppositePoint,
@@ -57,6 +59,17 @@ const HOUSE_R = 120;
 const PLANET_R = 96;
 const ANGLE_TICK_R = 178;
 const ANGLE_LABEL_R = 196;
+/**
+ * How wide each mark on the wheel is, in user units, so {@link arcSeparation}
+ * can turn it into the degrees of arc that mark needs at its own radius. These
+ * are type metrics rather than shared constants: the glyph width tracks the
+ * `.planet-glyph` font size, the degree allowance the `.planet-deg` one, and the
+ * angle label the widest of `ASC`, `DSC`, `MC`, `IC`, `PoF` and `Vtx` plus the
+ * gap that keeps two of them apart.
+ */
+const GLYPH_WIDTH = 14;
+const DEG_LABEL_WIDTH = 15;
+const ANGLE_LABEL_WIDTH = 28;
 
 /**
  * The chart shape the wheel actually renders.
@@ -700,41 +713,81 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		</div>`;
 	}
 
+	/**
+	 * The angle marks, fanned so two of them never print over each other.
+	 *
+	 * @remarks
+	 * Part of Fortune and the Vertex land wherever the chart puts them, and either
+	 * can fall within a couple of degrees of an axis, which is close enough for two
+	 * three-letter labels on one ring to become a single unreadable mash. They go
+	 * through the same {@link fanOut} the bodies do, so a crowded label steps
+	 * aside while its TICK stays at the true longitude and a leader joins the two.
+	 * The ring has about fourteen user units of margin left inside the viewBox, so
+	 * a crowded label cannot be pushed outward; it moves along the ring instead.
+	 */
 	private renderAngles() {
 		const asc = this.getAscendant();
 		const mc = this.getMidheaven();
 		// ASC/DESC and MC/IC are exact axes; DESC and IC are the opposite points.
-		const items = [
-			this.renderAngleMark(asc, 'ASC'),
-			this.renderAngleMark(oppositePoint(asc), 'DSC'),
+		const marks: Array<{ longitude: number; label: string }> = [
+			{ longitude: asc, label: 'ASC' },
+			{ longitude: oppositePoint(asc), label: 'DSC' },
 		];
 		if (mc !== null) {
-			items.push(this.renderAngleMark(mc, 'MC'));
-			items.push(this.renderAngleMark(oppositePoint(mc), 'IC'));
+			marks.push({ longitude: mc, label: 'MC' });
+			marks.push({ longitude: oppositePoint(mc), label: 'IC' });
 		}
 		const pof = this.data?.partOfFortune?.longitude;
 		if (typeof pof === 'number') {
-			items.push(this.renderAngleMark(normalizeLongitude(pof), 'PoF'));
+			marks.push({ longitude: normalizeLongitude(pof), label: 'PoF' });
 		}
 		const vertex = this.data?.vertex?.longitude;
 		if (typeof vertex === 'number') {
-			items.push(this.renderAngleMark(normalizeLongitude(vertex), 'Vtx'));
+			marks.push({ longitude: normalizeLongitude(vertex), label: 'Vtx' });
 		}
-		return items;
+		return fanOut(
+			marks,
+			(m) => m.longitude,
+			arcSeparation(ANGLE_LABEL_WIDTH, ANGLE_LABEL_R),
+		).map(({ item, longitude, displayLongitude }) =>
+			this.renderAngleMark(longitude, displayLongitude, item.label),
+		);
 	}
 
-	private renderAngleMark(longitude: number, label: string) {
-		// Tick AND label share the same angle so the label sits right at the
-		// tip of the arrow, where a practitioner expects to find it. The label
-		// halo at radius ANGLE_LABEL_R is clear of the wheel rim, so there is
-		// no overlap with house dividers despite the shared angle.
+	private renderAngleMark(
+		longitude: number,
+		displayLongitude: number,
+		label: string,
+	) {
+		// The tick is the claim about position, so it stays at the true longitude;
+		// the label is only a name for it and may step aside. A leader appears only
+		// when the two part company, so an uncrowded chart draws exactly what it
+		// drew before.
 		const angle = this.toAngle(longitude);
+		const labelAngle = this.toAngle(displayLongitude);
 		const tickInner = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
 		const tickOuter = polarToCartesian(CENTER, CENTER, ANGLE_TICK_R, angle);
-		const labelPos = polarToCartesian(CENTER, CENTER, ANGLE_LABEL_R, angle);
+		const labelPos = polarToCartesian(
+			CENTER,
+			CENTER,
+			ANGLE_LABEL_R,
+			labelAngle,
+		);
+		const moved = Math.abs(displayLongitude - longitude) > 0.5;
+		const leaderEnd = polarToCartesian(
+			CENTER,
+			CENTER,
+			ANGLE_LABEL_R - 8,
+			labelAngle,
+		);
 		return svg`
 			<g>
 				<line class="angle-tick" x1=${tickInner.x} y1=${tickInner.y} x2=${tickOuter.x} y2=${tickOuter.y} />
+				${
+					moved
+						? svg`<line class="angle-tick" x1=${tickOuter.x} y1=${tickOuter.y} x2=${leaderEnd.x} y2=${leaderEnd.y} />`
+						: nothing
+				}
 				<text class="angle-marker" x=${labelPos.x} y=${labelPos.y} text-anchor="middle" dominant-baseline="central">${label}</text>
 			</g>
 		`;
@@ -830,45 +883,28 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		});
 	}
 
+	/**
+	 * The bodies, fanned so a stellium stays readable.
+	 *
+	 * @remarks
+	 * Conjunctions inside a few degrees are the norm rather than the exception, so
+	 * every glyph is pushed forward only as far as it takes to clear its neighbour
+	 * and a leader runs back to the body's TRUE longitude on the rim. The
+	 * separation is derived from the radius each mark is drawn at rather than
+	 * fixed, so the degree label, which sits on a tighter ring than the glyph and
+	 * is the wider of the two, is what decides the spacing.
+	 */
 	private renderPlanets(planets: PlanetEntry[]) {
-		// Stellium-aware angular fan-out. Conjunctions within 8° are the norm
-		// in professional natal charts (Sun-Mercury-Venus cluster, outer-planet
-		// stacks). To keep every glyph legible without losing precision, sort
-		// by longitude and push later members forward in angle until they
-		// clear a minimum separation, then draw a thin leader line from each
-		// displaced glyph back to the planet's true position on the outer
-		// rim. Conventional approach used by professional Western natal
-		// software; preserves both readability and astronomical accuracy.
-		const MIN_SEPARATION = 7;
-		type Placed = {
-			p: PlanetEntry;
-			trueLon: number;
-			displayLon: number;
-		};
-		const sorted: Placed[] = planets
-			.filter((p) => Number.isFinite(p.longitude))
-			.map((p) => ({
-				p,
-				trueLon: normalizeLongitude(p.longitude),
-				displayLon: normalizeLongitude(p.longitude),
-			}))
-			.sort((a, b) => a.trueLon - b.trueLon);
-		// Forward sweep: clamp each to at least prev + MIN_SEPARATION.
-		for (let i = 1; i < sorted.length; i++) {
-			const prev = sorted[i - 1];
-			const cur = sorted[i];
-			if (!prev || !cur) continue;
-			const wanted = prev.displayLon + MIN_SEPARATION;
-			if (cur.displayLon < wanted) cur.displayLon = wanted;
-		}
-		// If the cluster overshot 360°, slide everything back equally so the
-		// stack stays anchored near the original longitudes.
-		const last = sorted[sorted.length - 1];
-		if (last && last.displayLon > 360) {
-			const shift = last.displayLon - 360;
-			for (const s of sorted) s.displayLon -= shift;
-		}
-		return sorted.map(({ p, trueLon, displayLon }) => {
+		const separation = Math.max(
+			arcSeparation(GLYPH_WIDTH, PLANET_R),
+			arcSeparation(DEG_LABEL_WIDTH, PLANET_R - 13),
+		);
+		return fanOut(planets, (p) => p.longitude, separation).map((placed) => {
+			const {
+				item: p,
+				longitude: trueLon,
+				displayLongitude: displayLon,
+			} = placed;
 			const trueAngle = this.toAngle(trueLon);
 			const displayAngle = this.toAngle(displayLon);
 			const glyphPos = polarToCartesian(CENTER, CENTER, PLANET_R, displayAngle);

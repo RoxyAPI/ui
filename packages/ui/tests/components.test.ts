@@ -5300,3 +5300,109 @@ describe('roxy-hd-connection draws the combined bodygraph', () => {
 		el.remove();
 	});
 });
+
+/**
+ * The angle marks on the natal wheel, which are the labels a reader looks at
+ * first and the ones with no fixed spacing of their own.
+ *
+ * @remarks
+ * ASC and DSC are always opposite, and so are MC and IC, so those four can never
+ * crowd. Part of Fortune and the Vertex land wherever the chart puts them, and
+ * either can fall a degree or two from an axis. Positions are read from the `x`
+ * and `y` attributes the renderer writes rather than from a measured box, so the
+ * invariant holds without a browser and cannot be masked by a font that happens
+ * to be narrow.
+ */
+describe('natal wheel angle labels never print over each other', () => {
+	const base = {
+		planets: [{ name: 'Sun', longitude: 10, sign: 'Aries', degree: 10 }],
+		houses: [],
+		aspects: [],
+	};
+
+	const mountWheel = async (ascendant: number, extras: object) => {
+		const el = document.createElement('roxy-natal-chart') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = { ...base, ascendant: { longitude: ascendant }, ...extras };
+		await settled(el);
+		return el;
+	};
+
+	/** Every angle label as the point the renderer placed it at. */
+	const marks = (el: Element) =>
+		[...(el.shadowRoot?.querySelectorAll('.angle-marker') ?? [])].map((t) => ({
+			label: t.textContent?.trim() ?? '',
+			x: Number(t.getAttribute('x')),
+			y: Number(t.getAttribute('y')),
+		}));
+
+	/**
+	 * The closest two labels come to each other. The renderer fans them to clear
+	 * the widest label, so anything at or above that width is safe whichever way
+	 * round the ring the pair happens to sit.
+	 */
+	const closest = (el: Element): { gap: number; pair: string } => {
+		const m = marks(el);
+		let gap = Number.POSITIVE_INFINITY;
+		let pair = '';
+		for (let i = 0; i < m.length; i++) {
+			for (let j = i + 1; j < m.length; j++) {
+				const d = Math.hypot(m[i].x - m[j].x, m[i].y - m[j].y);
+				if (d < gap) {
+					gap = d;
+					pair = `${m[i].label}/${m[j].label}`;
+				}
+			}
+		}
+		return { gap, pair };
+	};
+
+	test('Part of Fortune landing on the Ascendant is moved clear of it', async () => {
+		const el = await mountWheel(85.7, {
+			midheaven: { longitude: 355.7 },
+			partOfFortune: { longitude: 87.7 },
+			vertex: { longitude: 200 },
+		});
+		// The fan sorts by longitude, so assert the SET rather than the order: which
+		// order they land in the DOM is not something a reader can see.
+		expect(
+			marks(el)
+				.map((m) => m.label)
+				.sort(),
+		).toEqual(['ASC', 'DSC', 'IC', 'MC', 'PoF', 'Vtx']);
+		const { gap, pair } = closest(el);
+		expect(gap, `${pair} only ${gap.toFixed(1)} apart`).toBeGreaterThanOrEqual(
+			27,
+		);
+		el.remove();
+	});
+
+	test('three marks inside a couple of degrees all clear each other', async () => {
+		const el = await mountWheel(200, {
+			midheaven: { longitude: 110 },
+			partOfFortune: { longitude: 201.5 },
+			vertex: { longitude: 199 },
+		});
+		const { gap, pair } = closest(el);
+		expect(gap, `${pair} only ${gap.toFixed(1)} apart`).toBeGreaterThanOrEqual(
+			27,
+		);
+		el.remove();
+	});
+
+	test('an uncrowded chart is not fanned at all', async () => {
+		// Nothing within the separation, so every label stays on its own tick and a
+		// chart that never needed the fan draws exactly what it drew before.
+		const el = await mountWheel(0, {
+			midheaven: { longitude: 270 },
+			partOfFortune: { longitude: 135 },
+			vertex: { longitude: 45 },
+		});
+		const leaders = el.shadowRoot?.querySelectorAll('.angle-tick') ?? [];
+		// One tick per mark and no leader among them.
+		expect(leaders.length).toBe(marks(el).length);
+		el.remove();
+	});
+});

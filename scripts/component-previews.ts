@@ -31,6 +31,9 @@ const OVERRIDES: Record<string, { scale?: number; chartWidth?: string }> = {
 	// A bodygraph is half again taller than it is wide, so at full width these tiles
 	// frame only the crown. A thumbnail has to be recognisable at rail size rather
 	// than legible; the connection card sits lower because of its fact tiles.
+	// The natal chart is the lead example on every surface, so its tile should show
+	// the wheel rather than the header above it.
+	'natal-chart': { chartWidth: '210px' },
 	bodygraph: { chartWidth: '200px' },
 	'hd-connection': { chartWidth: '165px' },
 	// Compact single-value cards read as lost in the stage at 1x; lift them so the
