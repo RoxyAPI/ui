@@ -107,7 +107,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 							? html`<p class="significance">${division.significance}</p>`
 							: nothing
 					}
-					${renderFrameCaption(this.effectiveLang(), d.frame)}
+					${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
 			</div>

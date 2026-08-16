@@ -263,7 +263,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		return html`<div class="wrap" part="card" aria-label="Vedic planetary positions">
 			<header class="head" part="header">
 				<h2 class="title">Planetary positions</h2>
-				${renderFrameCaption(this.effectiveLang(), d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			<div class="scroll" part="table" tabindex="0">
 			<table role="table">

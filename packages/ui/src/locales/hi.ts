@@ -328,6 +328,11 @@ export const hi: Record<ChromeString, string> = {
 	'Vargottama planets': 'वर्गोत्तम ग्रह',
 	'{{chart}} divisional chart with twelve sign houses':
 		'बारह राशि भावों वाली {{chart}} वर्ग कुंडली',
+	'Sidereal frame: {{frame}}': 'निरयण पद्धति: {{frame}}',
+	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
+		'निरयण पद्धति: {{frame}}, {{degrees}}° घटाया गया',
+	Day: 'दिन',
+	Night: 'रात',
 };
 
 registerLocale('hi', hi);

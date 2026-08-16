@@ -315,6 +315,11 @@ export const tr: Record<ChromeString, string> = {
 	'Vargottama planets': 'Vargottama gezegenleri',
 	'{{chart}} divisional chart with twelve sign houses':
 		'On iki burç evli {{chart}} bölüm haritası',
+	'Sidereal frame: {{frame}}': 'Sideral çerçeve: {{frame}}',
+	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
+		'Sideral çerçeve: {{frame}}, {{degrees}}° çıkarıldı',
+	Day: 'Gündüz',
+	Night: 'Gece',
 };
 
 registerLocale('tr', tr);

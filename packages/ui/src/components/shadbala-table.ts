@@ -247,7 +247,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 			<div class="head" part="header">
 				<h2 class="title">Shadbala</h2>
 				<p class="subtitle">${sorted.length} planets ranked by strength</p>
-				${renderFrameCaption(this.effectiveLang(), d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</div>
 
 			<div role="list" part="chart bars" aria-label="Planet strength bars">

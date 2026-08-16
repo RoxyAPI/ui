@@ -122,7 +122,7 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 		return html`<div class="wrap" part="card" aria-label="Upagraha positions">
 			<header class="head" part="header">
 				<h2 class="title">Upagrahas</h2>
-				${renderFrameCaption(this.effectiveLang(), d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			${groups.map((g) => this.renderGroup(g, d[g.key]))}
 		</div>`;

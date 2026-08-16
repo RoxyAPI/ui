@@ -373,7 +373,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 					</div>`
 					: nothing
 			}
-			${renderFrameCaption(this.effectiveLang(), d.frame)}
+			${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 		</article>`;
 	}
 }

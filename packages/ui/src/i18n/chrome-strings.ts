@@ -325,6 +325,12 @@ export const CHROME_STRINGS = [
 	'Vargottama planets',
 	'{{chart}} divisional chart with twelve sign houses',
 
+	// The sidereal frame caption, shared by every Vedic card that carries a frame.
+	'Sidereal frame: {{frame}}',
+	'Sidereal frame: {{frame}}, {{degrees}}° subtracted',
+	'Day',
+	'Night',
+
 	// Hora table and the Vedic rashi chart.
 	'Hora',
 	'Hora periods',

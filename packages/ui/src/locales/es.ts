@@ -327,6 +327,11 @@ export const es: Record<ChromeString, string> = {
 	'Vargottama planets': 'Planetas vargottama',
 	'{{chart}} divisional chart with twelve sign houses':
 		'Carta divisional {{chart}} con doce casas por signo',
+	'Sidereal frame: {{frame}}': 'Marco sideral: {{frame}}',
+	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
+		'Marco sideral: {{frame}}, {{degrees}}° restados',
+	Day: 'Día',
+	Night: 'Noche',
 };
 
 registerLocale('es', es);

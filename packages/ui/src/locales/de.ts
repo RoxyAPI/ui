@@ -314,6 +314,11 @@ export const de: Record<ChromeString, string> = {
 	'Vargottama planets': 'Vargottama-Planeten',
 	'{{chart}} divisional chart with twelve sign houses':
 		'Teilungshoroskop {{chart}} mit zwölf Zeichenhäusern',
+	'Sidereal frame: {{frame}}': 'Siderischer Rahmen: {{frame}}',
+	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
+		'Siderischer Rahmen: {{frame}}, {{degrees}}° abgezogen',
+	Day: 'Tag',
+	Night: 'Nacht',
 };
 
 registerLocale('de', de);

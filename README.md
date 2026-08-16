@@ -820,7 +820,7 @@ Two things are separate on purpose. The catalogue is the wording this library wr
 
 Dates, times and numbers follow the page as well, in the conventions that language actually uses: a Spanish page reads `15 ene 1990`, an Argentine one `15 de ene de 1990`, a German one `15. Jan. 1990, 14:30`. The hour cycle comes from the language, not from us, so nobody gets a 12-hour clock on a page that writes 24. This needs no catalogue and no attribute: it follows the same `lang` your page already declares.
 
-A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt`, `ru`, `tr`. Each covers `<roxy-natal-chart>`, `<roxy-transit-wheel>`, `<roxy-ephemeris-table>`, `<roxy-data>`, `<roxy-bodygraph>`, `<roxy-hd-type-card>`, `<roxy-hd-variables>`, `<roxy-reference-card>` and the shared chrome every component inherits; the remaining components render English labels until their catalogue entries land. Every term in every catalogue is sourced from named astrology references in that language rather than translated word for word, because the words a practitioner reads are the product.
+A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt`, `ru`, `tr`. Coverage grows card by card, and a card is either translated or it is not, so a component reads its own labels in your language or renders them in English, never a mixture. Every term in every catalogue is sourced from named astrology references in that language rather than translated word for word, because the words a practitioner reads are the product.
 
 ## Reliability
 

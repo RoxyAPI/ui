@@ -148,7 +148,7 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 								house between the Rashi chart and the unequal Sripati cusps.`
 					}
 				</p>
-				${renderFrameCaption(this.effectiveLang(), d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 
 			${

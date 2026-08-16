@@ -158,7 +158,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 						d.houseSystem ? html` on the ${d.houseSystem} frame` : nothing
 					}
 				</p>
-				${renderFrameCaption(this.effectiveLang(), d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 
 			<div class="rows" part="table" role="list">

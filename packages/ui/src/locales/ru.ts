@@ -308,6 +308,11 @@ export const ru: Record<ChromeString, string> = {
 	'Vargottama planets': 'Планеты варготтама',
 	'{{chart}} divisional chart with twelve sign houses':
 		'Дробная карта {{chart}} с двенадцатью знаковыми домами',
+	'Sidereal frame: {{frame}}': 'Сидерическая система: {{frame}}',
+	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
+		'Сидерическая система: {{frame}}, вычтено {{degrees}}°',
+	Day: 'День',
+	Night: 'Ночь',
 };
 
 registerLocale('ru', ru);

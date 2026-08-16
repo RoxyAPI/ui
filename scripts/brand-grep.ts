@@ -164,6 +164,24 @@ function hostsIn(line: string): string[] {
 		.filter(Boolean);
 }
 
+/** `verified against <Name>`: the shape a sourcing note takes when it names an outside product. */
+const COMPARED_AGAINST_NAME =
+	/\b(?:verified|checked|measured|compared|cross-?checked|reconciled|benchmarked|sourced)\b[^.]{0,24}?\bagainst\s+(?:the\s+|a\s+|an\s+)?((?:[A-Z][a-zA-Z0-9-]+)(?:\s+[A-Z][a-zA-Z0-9-]+)*)/g;
+
+/** Named here so "against the Portuguese the endpoints return" reads as a language, not a product. */
+const LANGUAGES = new Set([
+	'English',
+	'German',
+	'Spanish',
+	'French',
+	'Hindi',
+	'Portuguese',
+	'Russian',
+	'Turkish',
+	'Brazilian',
+	'Sanskrit',
+]);
+
 // Helper: build a simple case-insensitive regex test
 function ci(re: RegExp): (line: string) => boolean {
 	const r = new RegExp(
@@ -358,6 +376,22 @@ const CATEGORY_D_PATTERNS: Pattern[] = [
 		test: ci(
 			/\b(verified|checked|measured|compared|cross-?checked|reconciled|benchmarked)\b[^.]{0,30}?\bagainst\s+(the\s+|a\s+|an\s+)?(?!NASA\b)[a-z-]*\s*(chart|table|ephemeris|calculator|implementation|render|software|tool|site|publication)\b/i,
 		),
+	},
+	// The same construction with a NAME after it rather than a noun. A wordlist can
+	// only hold products somebody listed; this holds for the ones nobody did.
+	// NASA JPL Horizons is the one attribution this project publishes, and a
+	// language is a language rather than a product.
+	{
+		category: 'D',
+		label: 'external-comparison',
+		test: (line: string) => {
+			for (const m of line.matchAll(COMPARED_AGAINST_NAME)) {
+				const name = m[1] ?? '';
+				if (name.startsWith('NASA') || LANGUAGES.has(name)) continue;
+				return true;
+			}
+			return false;
+		},
 	},
 	// Anything that identifies or recounts a user of the product.
 	{

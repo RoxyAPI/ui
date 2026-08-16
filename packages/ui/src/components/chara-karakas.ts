@@ -175,7 +175,7 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 					<span class="scheme-chip">${d.scheme ?? ''}</span>
 					${d.scheme ? (SCHEMES[d.scheme] ?? '') : ''}
 				</p>
-				${renderFrameCaption(this.effectiveLang(), d.frame)}
+				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			<div class="leads" part="details">
 				<div class="lead"><span>Atmakaraka</span><strong>${d.atmakaraka ?? ''}</strong></div>

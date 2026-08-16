@@ -1,6 +1,7 @@
 import type { TemplateResult } from 'lit';
 import { css, html, nothing } from 'lit';
 import { formatAyanamsa, formatNumber } from './format.js';
+import type { Translate } from './hd-reading.js';
 
 /**
  * The sidereal frame a Vedic response was computed in.
@@ -42,24 +43,31 @@ export const frameCaptionStyles = css`
  * ```ts
  * static styles = [baseStyles, frameCaptionStyles, css`...`];
  * // in renderData:
- * ${renderFrameCaption(this.effectiveLang(), d.frame)}
+ * ${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
  * ```
  */
 export function renderFrameCaption(
 	locale: string | undefined,
 	frame: SiderealFrame | undefined,
+	t: Translate,
 ): TemplateResult | typeof nothing {
 	if (!frame?.ayanamsa) return nothing;
 	const label = formatAyanamsa(locale, frame.ayanamsa);
 	if (!label) return nothing;
+	// Two whole sentences rather than a stem plus a fragment, so each language
+	// orders the frame and the offset the way its own grammar wants.
+	const degrees =
+		typeof frame.ayanamsaDegrees === 'number'
+			? formatNumber(locale, frame.ayanamsaDegrees, 4)
+			: undefined;
 	return html`<p class="roxy-frame">
-		Sidereal frame: ${label}${
-			typeof frame.ayanamsaDegrees === 'number'
-				? html`, <span class="roxy-frame-deg"
-						>${formatNumber(locale, frame.ayanamsaDegrees, 4)}&deg;</span
-					>
-					subtracted`
-				: nothing
+		${
+			degrees === undefined
+				? t('Sidereal frame: {{frame}}', { frame: label })
+				: t('Sidereal frame: {{frame}}, {{degrees}}° subtracted', {
+						frame: label,
+						degrees,
+					})
 		}
 	</p>`;
 }

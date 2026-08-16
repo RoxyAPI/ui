@@ -115,8 +115,8 @@ export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
 				${d.date ? html`<p class="subtitle">${formatDate(this.effectiveLang(), d.date)}</p>` : nothing}
 			</div>
 			<div class="cols" part="table">
-				${this.renderColumn('Day', day)}
-				${this.renderColumn('Night', night)}
+				${this.renderColumn(this.t('Day'), day)}
+				${this.renderColumn(this.t('Night'), night)}
 			</div>
 		</div>`;
 	}
