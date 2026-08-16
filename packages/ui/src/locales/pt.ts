@@ -311,6 +311,16 @@ export const pt: Record<ChromeString, string> = {
 		'Referencial sideral: {{frame}}, {{degrees}}° subtraídos',
 	Day: 'Dia',
 	Night: 'Noite',
+	Planet: 'Planeta',
+	Hardness: 'Dureza',
+	Vibration: 'Vibração',
+	Birthstone: 'Pedra de nascimento',
+	Chakras: 'Chakras',
+	Zodiac: 'Signo zodiacal',
+	Elements: 'Elementos',
+	Spiritual: 'Espiritual',
+	Emotional: 'Emocional',
+	Physical: 'Físico',
 };
 
 registerLocale('pt', pt);

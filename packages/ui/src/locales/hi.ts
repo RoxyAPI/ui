@@ -333,6 +333,16 @@ export const hi: Record<ChromeString, string> = {
 		'निरयण पद्धति: {{frame}}, {{degrees}}° घटाया गया',
 	Day: 'दिन',
 	Night: 'रात',
+	Planet: 'ग्रह',
+	Hardness: 'कठोरता',
+	Vibration: 'कंपन',
+	Birthstone: 'जन्म रत्न',
+	Chakras: 'चक्र',
+	Zodiac: 'राशि',
+	Elements: 'तत्व',
+	Spiritual: 'आध्यात्मिक',
+	Emotional: 'भावनात्मक',
+	Physical: 'शारीरिक',
 };
 
 registerLocale('hi', hi);

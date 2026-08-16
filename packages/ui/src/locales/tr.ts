@@ -320,6 +320,16 @@ export const tr: Record<ChromeString, string> = {
 		'Sideral çerçeve: {{frame}}, {{degrees}}° çıkarıldı',
 	Day: 'Gündüz',
 	Night: 'Gece',
+	Planet: 'Gezegen',
+	Hardness: 'Sertlik',
+	Vibration: 'Titreşim',
+	Birthstone: 'Doğum taşı',
+	Chakras: 'Çakralar',
+	Zodiac: 'Burç',
+	Elements: 'Elementler',
+	Spiritual: 'Ruhsal',
+	Emotional: 'Duygusal',
+	Physical: 'Fiziksel',
 };
 
 registerLocale('tr', tr);

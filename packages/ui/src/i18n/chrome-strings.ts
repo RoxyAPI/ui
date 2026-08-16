@@ -337,6 +337,18 @@ export const CHROME_STRINGS = [
 	'Vedic kundli',
 	'Vedic birth chart with twelve sign houses',
 
+	// Crystal card attributes and the three meaning headings.
+	'Planet',
+	'Hardness',
+	'Vibration',
+	'Birthstone',
+	'Chakras',
+	'Zodiac',
+	'Elements',
+	'Spiritual',
+	'Emotional',
+	'Physical',
+
 	// Dream symbols: the single-symbol card and the search results beside it.
 	'Dream symbol',
 	'Dream symbols',

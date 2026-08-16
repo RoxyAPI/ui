@@ -165,13 +165,13 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 			</div>
 
 			<dl class="attrs" part="details">
-				${this.attr('Planet', d.planet)}
-				${this.attr('Hardness', typeof d.hardness === 'number' ? `${d.hardness} Mohs` : undefined)}
-				${this.attr('Vibration', d.numericalVibration)}
-				${this.attr('Birthstone', month)}
-				${this.list('Chakras', d.chakras)}
-				${this.list('Zodiac', d.zodiacSigns)}
-				${this.list('Elements', d.elements)}
+				${this.attr(this.t('Planet'), d.planet)}
+				${this.attr(this.t('Hardness'), typeof d.hardness === 'number' ? `${d.hardness} Mohs` : undefined)}
+				${this.attr(this.t('Vibration'), d.numericalVibration)}
+				${this.attr(this.t('Birthstone'), month)}
+				${this.list(this.t('Chakras'), d.chakras)}
+				${this.list(this.t('Zodiac'), d.zodiacSigns)}
+				${this.list(this.t('Elements'), d.elements)}
 				${
 					colors.length
 						? html`<div class="attr">
@@ -225,9 +225,9 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 		// than leaving Spiritual, Emotional and Physical over nothing.
 		if (!m || this.hideReadings) return nothing;
 		const rows: Array<[string, string | null | undefined]> = [
-			['Spiritual', m.spiritual],
-			['Emotional', m.emotional],
-			['Physical', m.physical],
+			[this.t('Spiritual'), m.spiritual],
+			[this.t('Emotional'), m.emotional],
+			[this.t('Physical'), m.physical],
 		];
 		const present = rows.filter(([, v]) => Boolean(v));
 		if (present.length === 0) return nothing;

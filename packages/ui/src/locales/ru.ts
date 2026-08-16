@@ -313,6 +313,16 @@ export const ru: Record<ChromeString, string> = {
 		'Сидерическая система: {{frame}}, вычтено {{degrees}}°',
 	Day: 'День',
 	Night: 'Ночь',
+	Planet: 'Планета',
+	Hardness: 'Твёрдость',
+	Vibration: 'Вибрация',
+	Birthstone: 'Камень рождения',
+	Chakras: 'Чакры',
+	Zodiac: 'Знак зодиака',
+	Elements: 'Стихии',
+	Spiritual: 'Духовное',
+	Emotional: 'Эмоциональное',
+	Physical: 'Физическое',
 };
 
 registerLocale('ru', ru);

@@ -507,6 +507,10 @@ describe('shipped locales', () => {
 			// the only one of the seven where that happens; the other six all
 			// translate the head noun.
 			de: [
+				// `Emotional` is the German word.
+				'Emotional',
+				// `Planet` is the German word.
+				'Planet',
 				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
 				// language prints the term itself rather than translating it.
 				'Vargottama',
@@ -534,6 +538,8 @@ describe('shipped locales', () => {
 			// `Base` and `Variables` are the Spanish Human Design words, and
 			// `Bodygraph` is the loanword the API's Spanish prose prints.
 			es: [
+				// `Chakras` is the Spanish spelling of the Sanskrit term.
+				'Chakras',
 				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
 				// language prints the term itself rather than translating it.
 				'Vargottama',
@@ -563,6 +569,9 @@ describe('shipped locales', () => {
 			// `Direction`, `Base`, `Cognition` and `Variables` unchanged, and
 			// `Activations` differs from the English only in a plural it already has.
 			fr: [
+				// `Chakras` and `Vibration` are the French words unchanged.
+				'Chakras',
+				'Vibration',
 				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
 				// language prints the term itself rather than translating it.
 				'Vargottama',
@@ -607,6 +616,8 @@ describe('shipped locales', () => {
 			// Brazilian usage keeps English precisely to hold it apart from
 			// `Desenho`.
 			pt: [
+				// `Chakras` is the Portuguese spelling of the Sanskrit term.
+				'Chakras',
 				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
 				// language prints the term itself rather than translating it.
 				'Vargottama',
@@ -770,7 +781,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/chara-karakas.ts': 12,
 		'components/choghadiya-grid.ts': 11,
 		'components/compatibility-card.ts': 5,
-		'components/crystal-card.ts': 7,
 		'components/dasha-timeline.ts': 9,
 		'components/fixed-stars.ts': 13,
 		'components/forecast-digest.ts': 5,

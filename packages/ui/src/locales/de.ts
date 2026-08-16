@@ -319,6 +319,16 @@ export const de: Record<ChromeString, string> = {
 		'Siderischer Rahmen: {{frame}}, {{degrees}}° abgezogen',
 	Day: 'Tag',
 	Night: 'Nacht',
+	Planet: 'Planet',
+	Hardness: 'Härte',
+	Vibration: 'Schwingung',
+	Birthstone: 'Geburtsstein',
+	Chakras: 'Chakren',
+	Zodiac: 'Sternzeichen',
+	Elements: 'Elemente',
+	Spiritual: 'Spirituell',
+	Emotional: 'Emotional',
+	Physical: 'Körperlich',
 };
 
 registerLocale('de', de);
