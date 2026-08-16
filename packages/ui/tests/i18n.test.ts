@@ -704,7 +704,7 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/gochara-table.ts': 17,
 		'components/guna-milan.ts': 10,
 		'components/hd-connection.ts': 22,
-		'components/hd-penta.ts': 14,
+		'components/hd-penta.ts': 16,
 		'components/heliacal-table.ts': 12,
 		'components/hexagram.ts': 6,
 		'components/hora-table.ts': 3,

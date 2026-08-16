@@ -21,6 +21,7 @@ const ALLOWED = new Set([
 	'components/local-space-compass.ts',
 	'utils/kundli-styles.ts',
 	'utils/bodygraph-styles.ts',
+	'components/hd-penta.ts',
 ]);
 
 function uses(rel: string): boolean {

@@ -4,6 +4,11 @@ import type { CalculatePentaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { hdReadingStyles, renderHdFacts } from '../utils/hd-reading.js';
+import {
+	PENTA_VIEWBOX,
+	type PentaRung,
+	renderPentaSvg,
+} from '../utils/penta-render.js';
 
 type Penta = CalculatePentaResponse;
 type PentaChannel = Penta['channels'][number];
@@ -15,6 +20,8 @@ type PentaGate = Penta['gates'][number];
  * @remarks
  * The penta is the only Human Design chart whose subject is a group rather than a person, so every row answers "who supplies this" as well as "is it there". The response reports that as zero-based indices into the member list that was sent, which is the one thing a card must not print raw: members are lettered instead, A for the first member sent, and the footnote says so.
  *
+ * The ladder above them is the same data drawn: three bars for the Throat, the G and the Sacral, the six channels as rungs between them, solid where the group completes one and dashed where it does not, with each gate lettered for whoever holds it.
+ *
  * Read in two passes. The channels are the functions the group performs, and a channel is a defined Strength only when both of its gates are held somewhere in the group, so the attribution line under each one shows which member carries which end. The twelve gates below are the same data seen per role, and they are where a gap shows up as itself: a gate held by nobody, which the summary also counts.
  *
  * Every word of prose on this card is written here rather than returned by the endpoint, and that changes nothing about the line: the lead, the two triangle notes, the gates note and the Core footnote are the written report on the chart, so `hide-readings` takes them the same way `roxy-hd-connection` takes its own. What stays is the whole penta: the fact tiles, both triangle headings, every channel with its gates, circuit, defined and core badges and its per-member attribution, and every gate row with its gap badge. The member-lettering footnote stays with them, because it is the legend those attributions are read through and the rows are undecodable without it.
@@ -25,6 +32,78 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 		baseStyles,
 		hdReadingStyles,
 		css`
+			/* The ladder. Sizing matches the other charts so a card carrying both reads
+			 * as one drawing surface. */
+			.chart {
+				display: block;
+				width: 100%;
+				max-width: var(--roxy-chart-max-width, 22rem);
+				height: auto;
+				margin: 0 auto;
+			}
+			.pn-bar {
+				fill: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, transparent);
+				stroke: var(--roxy-accent-ink, #b45309);
+				stroke-width: 1.5;
+			}
+			.pn-bar-label {
+				fill: var(--roxy-fg, #0a0a0a);
+				font-size: 15px;
+				font-weight: var(--roxy-weight-bold, 600);
+				font-family: var(--roxy-font-sans);
+			}
+			/* A rung the group does not complete is dashed, which is the same language
+			 * the rows below use for a gap. */
+			.pn-rung {
+				stroke: var(--roxy-border, #e4e4e7);
+				stroke-width: 6;
+				stroke-dasharray: 6 6;
+			}
+			.pn-rung.on {
+				stroke: var(--roxy-accent-ink, #b45309);
+				stroke-dasharray: none;
+			}
+			.pn-rung.on.core {
+				stroke-width: 9;
+			}
+			.pn-name {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 12px;
+				font-family: var(--roxy-font-sans);
+			}
+			.pn-name.on {
+				fill: var(--roxy-fg, #0a0a0a);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.pn-gate-dot {
+				fill: var(--roxy-surface, #fff);
+				stroke: var(--roxy-border, #e4e4e7);
+				stroke-width: 1.5;
+				stroke-dasharray: 4 4;
+			}
+			.pn-gate-dot.on {
+				stroke: var(--roxy-accent-ink, #b45309);
+				stroke-dasharray: none;
+			}
+			.pn-gate {
+				fill: var(--roxy-muted, #71717a);
+				font-size: 13px;
+				font-weight: var(--roxy-weight-bold, 600);
+				font-family: var(--roxy-font-sans);
+			}
+			.pn-gate.on {
+				fill: var(--roxy-fg, #0a0a0a);
+			}
+			.pn-badge {
+				fill: var(--roxy-accent-ink, #b45309);
+			}
+			.pn-badge-text {
+				fill: var(--roxy-surface, #fff);
+				font-size: 9px;
+				font-weight: var(--roxy-weight-bold, 600);
+				font-family: var(--roxy-font-sans);
+			}
+
 			.wrap {
 				background: var(--roxy-surface, #fff);
 				color: var(--roxy-fg, #0a0a0a);
@@ -146,6 +225,40 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 		`,
 	];
 
+	/** The ladder: the six rungs and who holds each gate, drawn from the same data the rows below read. */
+	private renderChart(d: Penta) {
+		const rungs: PentaRung[] = (d.channels ?? [])
+			.filter((c) => c.gateA != null && c.gateB != null)
+			.map((c) => ({
+				gateA: c.gateA,
+				gateB: c.gateB,
+				name: c.name ?? '',
+				defined: c.defined === true,
+				isCore: c.isCore === true,
+			}));
+		if (rungs.length === 0) return nothing;
+		const holders = new Map<number, readonly number[]>(
+			(d.gates ?? [])
+				.filter((g) => g.gate != null)
+				.map((g) => [g.gate, g.heldBy ?? []]),
+		);
+		return html`<svg
+			class="chart"
+			part="chart"
+			viewBox=${PENTA_VIEWBOX}
+			preserveAspectRatio="xMidYMid meet"
+			role="img"
+			aria-label="Penta ladder: the Throat, G and Sacral with the six penta channels between them, each marked defined or open and lettered with the members holding its gates"
+		>
+			<title>Penta</title>
+			${renderPentaSvg({
+				rungs,
+				holders,
+				letterFor: memberLetter,
+			})}
+		</svg>`;
+	}
+
 	protected renderData(d: Penta) {
 		const channels = d.channels ?? [];
 		const gates = d.gates ?? [];
@@ -188,6 +301,7 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 					value: gaps.length > 0 ? gaps.join(', ') : undefined,
 				},
 			])}
+			${this.renderChart(d)}
 			${
 				// The tiles above count the members, the defined channels, the filled
 				// gates and the gaps; this paragraph is what those counts mean.
@@ -312,8 +426,11 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
  */
 const MEMBER_LETTERS = 'ABCDE';
 
+/** How a member index is named anywhere on the card, so a badge on the ladder and an attribution line under a channel cannot letter the same member differently. */
+const memberLetter = (i: number): string => MEMBER_LETTERS[i] ?? String(i + 1);
+
 function members(indices: number[] | undefined): string {
-	const held = (indices ?? []).map((i) => MEMBER_LETTERS[i] ?? String(i + 1));
+	const held = (indices ?? []).map(memberLetter);
 	return held.length > 0 ? held.join(', ') : 'nobody';
 }
 

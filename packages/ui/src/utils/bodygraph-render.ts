@@ -2,33 +2,10 @@ import type { TemplateResult } from 'lit';
 import { nothing, svg } from 'lit';
 
 /**
- * Fixed geometry and renderer for the Human Design bodygraph. The diagram is a
- * standard, invariant layout: nine centers in canonical positions and shapes,
- * wired by 36 channels that each join two gates, with all 64 gates at fixed
- * points inside their center, all overlaid on a front-facing human silhouette so
- * each center lands on the body part it governs. Only which centers are defined
- * and which gates are activated changes per chart, so this module holds the
- * geometry and the `RoxyBodygraph` component supplies the live state from the
- * /human-design/bodygraph response.
+ * Fixed geometry and renderer for the Human Design bodygraph: nine centers, 36 channels, all 64 gates, over a front-facing silhouette. Only which centers are defined and which gates are activated changes per chart.
  *
  * @remarks
- * Points are authored in a normalized 0 to 100 grid (x left to right, y top to
- * bottom) and mapped into {@link BODYGRAPH_VIEWBOX} by {@link g}, so the chart and
- * the silhouette share one coordinate space. The viewBox window is tight to the
- * drawing rather than square, because the chart is far taller than it is wide and
- * every unused grid unit costs gate-number size.
- *
- * Center shapes hold the canonical orientations: Head triangle up, Ajna triangle
- * down, Throat and Sacral and Root squares, G diamond, Spleen triangle with its
- * base on the left edge and apex pointing right, Solar Plexus its mirror, and the
- * Heart low and right of the G, pointing UP, with 21 at the apex, 51 on the upper
- * left edge, and 26 and 40 as the two lower corners where the channels to the
- * Spleen and the Solar Plexus leave.
- *
- * `tests/bodygraph.test.ts` holds the layout to that: mirror symmetry across the
- * two side centers, every other center balanced on {@link AXIS} bar the Heart,
- * each gate circle inside its own center, no two circles overlapping, and the row
- * and column order within each center.
+ * Points are authored in a 0 to 100 grid and mapped into {@link BODYGRAPH_VIEWBOX} by {@link g}, so the chart and the silhouette share one space. The window is tight to the drawing rather than square, because every unused grid unit costs gate-number size. `tests/bodygraph.test.ts` holds the layout to the canonical shapes, orientations and row order.
  */
 
 export type BodygraphCenterId =
@@ -47,17 +24,7 @@ interface Point {
 	y: number;
 }
 
-/**
- * Which of the two sources activated a gate. Both is legal and splits the circle
- * rather than forcing it to one.
- *
- * @remarks
- * The renderer names neither source, because the same drawing serves a single
- * chart, where they are the two sides of one person, and a composite, where they
- * are two people. It only decides which half of a split circle each one takes;
- * the card supplies the meaning and the colour through `--src-left` and
- * `--src-right`.
- */
+/** Which of the two sources activated a gate; both splits the circle. The renderer names neither, so one card reads them as the two sides of a person and another as two people. */
 export interface GateSources {
 	left: boolean;
 	right: boolean;
@@ -71,26 +38,10 @@ interface CenterGeometry {
 	points: Point[];
 }
 
-/**
- * Traditional Human Design center color group. A defined center is filled with
- * this semantic color (constant across light and dark, like chart data colors);
- * an open center takes the card surface and an outline, so the wiring passes
- * behind it and it still reads as a center. The four groups are: gold for the identity and
- * inspiration centers (Head, G), green for the mental awareness center (Ajna),
- * red for the life-force motors of will and vitality (Heart, Sacral), brown for
- * the pressure, expression, and remaining awareness centers (Throat, Spleen,
- * Solar Plexus, Root).
- */
+/** Traditional center color group: gold for Head and G, green for Ajna, red for the Heart and Sacral motors, brown for the rest. A defined center is filled with it; an open one takes the card surface so the wiring passes behind. */
 export type CenterColor = 'gold' | 'green' | 'red' | 'brown';
 
-/**
- * The grid window the viewBox covers: wide enough for the silhouette shoulders
- * (the centers span 18.3 to 81.9) and tall enough for the hem, with nothing to
- * spare, since margin here is space the drawing does not get. The topmost element
- * is the Head apex rather than the silhouette, which is why the crown sits below
- * it. Kept symmetric about {@link AXIS} so {@link CHART_AXIS_X} is exactly half
- * the viewBox.
- */
+/** The grid window the viewBox covers, with nothing to spare: margin here is space the drawing does not get. Symmetric about {@link AXIS}, and the topmost element is the Head apex rather than the silhouette. */
 const X_MIN = 14;
 const X_MAX = 86;
 const Y_MIN = 0;
@@ -111,39 +62,16 @@ const AXIS = 50;
 /** Reflect a normalized grid x across {@link AXIS}. */
 const mirrorX = (x: number): number => 2 * AXIS - x;
 
-/**
- * Gate circle radius and number size, in grid units. The radius is bounded by the
- * closest pair of gates on the chart (Throat 12 and 45, 2.3 grid units apart) and
- * the number by fitting two digits inside that circle. Exported so the stylesheet
- * and the overlap test read the geometry rather than restating it.
- */
+/** Gate circle and number size, in grid units. Bounded by the closest pair on the chart (Throat 12 and 45, 2.3 apart) and by fitting two digits inside the circle. */
 export const GATE_RADIUS = 1.02 * UNIT;
 export const GATE_FONT_SIZE = 1.35 * UNIT;
 
-/**
- * The three x offsets from {@link AXIS} that every central-column gate sits on.
- * {@link COL} is the inner column shared by the Head, Ajna, Throat and Sacral and
- * Root triples and the G's 7/13 and 15/46 pairs; {@link EDGE} is the outer column
- * of the three square centers; {@link G_EDGE} is the wider pair the G diamond
- * carries at its waist. Named so the columns cannot drift apart one edit at a time.
- */
+/** The three x offsets from {@link AXIS} a central-column gate sits on: the inner triples, the outer column of the square centers, and the G's wider waist pair. Named so they cannot drift apart one edit at a time. */
 const COL = 2.87;
 const EDGE = 4.4;
 const G_EDGE = 5.65;
 
-/**
- * Gate positions authored per center in the normalized grid, before the mapping
- * through {@link g}. Symmetry is structural, not hand-typed: every center on the
- * central column is authored as an offset from {@link AXIS}; the Spleen is
- * authored once on the left torso and the Solar Plexus is derived as its exact
- * mirror in {@link buildGatePoints}, so the two side centers can never drift out
- * of alignment. Within each center the gates follow the canonical reading order
- * so the numbers print where a printed chart shows them.
- *
- * @remarks Solar Plexus is intentionally empty here and filled by reflecting
- * Spleen; {@link SPLEEN_TO_SOLAR_PLEXUS} pairs each Spleen gate with the Solar
- * Plexus gate at its mirror position (base-top to base-top, apex to apex).
- */
+/** Gate positions per center, in canonical reading order. Symmetry is structural rather than typed: the central column is authored as offsets from {@link AXIS}, and the Solar Plexus is left empty and filled by reflecting the Spleen in {@link buildGatePoints}. */
 const GATES_BY_CENTER: Record<
 	BodygraphCenterId,
 	Record<number, [number, number]>
@@ -231,11 +159,7 @@ const SPLEEN_TO_SOLAR_PLEXUS: Record<number, number> = {
 	18: 30,
 };
 
-/**
- * Assemble the viewBox-space gate anchors and the gate to center index from
- * {@link GATES_BY_CENTER}, filling the Solar Plexus by reflecting the Spleen so
- * the two side centers are guaranteed mirror images.
- */
+/** Gate anchors and the gate-to-center index, filling the Solar Plexus by reflecting the Spleen so the two can never drift apart. */
 function buildGatePoints(): {
 	points: Record<number, Point>;
 	centerOf: Record<number, BodygraphCenterId>;
@@ -601,15 +525,7 @@ function renderGates(
 
 export interface BodygraphRenderInput {
 	definedCenters: Set<BodygraphCenterId>;
-	/**
-	 * Which source(s) activated each gate. A gate absent from the map is not
-	 * activated and draws as an outlined position.
-	 *
-	 * @remarks
-	 * The only wiring input. A channel is defined exactly when both of its gates are
-	 * activated, so a separate list of channels is deliberately not a second one:
-	 * two views of one fact would have nothing keeping them in step.
-	 */
+	/** Which source(s) activated each gate; absent means unactivated. The only wiring input, because a channel is defined exactly when both of its gates are. */
 	gateSources: ReadonlyMap<number, GateSources>;
 	gateTitles: ReadonlyMap<number, string>;
 	/** What to name each center in its `<title>`, keyed by center id. The response is the authority for its own vocabulary, so this carries `centers[].nameLocalized` where the API sent one and `centers[].name` otherwise; an id with no entry keeps the chart's own English label. */

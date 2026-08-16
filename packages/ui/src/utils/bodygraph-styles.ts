@@ -2,20 +2,10 @@ import { css } from 'lit';
 import { GATE_FONT_SIZE } from './bodygraph-render.js';
 
 /**
- * The stylesheet for anything drawn by `renderBodygraphSvg`, so a second chart on
- * the same geometry cannot fork the first one's appearance.
+ * The stylesheet for anything `renderBodygraphSvg` draws, so a second chart on the same geometry cannot fork the first one's appearance.
  *
  * @remarks
- * The renderer marks each gate and each channel half with the SOURCE that
- * activated it, `src-left` or `src-right`, and names neither. A card supplies the
- * meaning by declaring `--src-left` and `--src-right` on its own root: a single
- * chart reads them as the two sides of one person, a composite as the two people.
- * Everything that consumes those two colours lives here, so a card sets two
- * declarations and nothing else. Each has to clear 4.5:1 against the ink knocked
- * out of it and 3:1 against the card surface, in both themes.
- *
- * A card also owns its own `.wrap`, its layout and its legend copy; only the
- * drawing is shared.
+ * The renderer marks each gate and channel half `src-left` or `src-right` and names neither, so a card supplies the meaning by declaring those two colours on its own root and nothing else. Each must clear 4.5:1 against the ink knocked out of it and 3:1 against the card surface, in both themes. A card still owns its `.wrap`, its layout and its legend copy.
  */
 export const bodygraphChartStyles = css`
 	.chart {

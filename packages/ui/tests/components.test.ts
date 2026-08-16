@@ -5406,3 +5406,190 @@ describe('natal wheel angle labels never print over each other', () => {
 		el.remove();
 	});
 });
+
+/** The penta ladder: three bars, six rungs, and the gate that takes each end. */
+describe('roxy-hd-penta draws the ladder', () => {
+	const PENTA = {
+		memberCount: 3,
+		channels: [
+			// Upper: the Throat gate takes the top of the rung.
+			{
+				gateA: 7,
+				gateB: 31,
+				name: 'The Alpha',
+				position: 'upper',
+				isCore: false,
+				defined: true,
+				gateAHeldBy: [0],
+				gateBHeldBy: [2],
+			},
+			{
+				gateA: 1,
+				gateB: 8,
+				name: 'Inspiration',
+				position: 'upper',
+				isCore: false,
+				defined: false,
+				gateAHeldBy: [0],
+				gateBHeldBy: [],
+			},
+			{
+				gateA: 13,
+				gateB: 33,
+				name: 'The Prodigal',
+				position: 'upper',
+				isCore: false,
+				defined: true,
+				gateAHeldBy: [1],
+				gateBHeldBy: [2],
+			},
+			// Lower: the G gate takes the top.
+			{
+				gateA: 15,
+				gateB: 5,
+				name: 'Rhythm',
+				position: 'lower',
+				isCore: false,
+				defined: true,
+				gateAHeldBy: [0],
+				gateBHeldBy: [1],
+			},
+			{
+				gateA: 2,
+				gateB: 14,
+				name: 'The Beat',
+				position: 'lower',
+				isCore: true,
+				defined: true,
+				gateAHeldBy: [2],
+				gateBHeldBy: [2],
+			},
+			{
+				gateA: 46,
+				gateB: 29,
+				name: 'Discovery',
+				position: 'lower',
+				isCore: false,
+				defined: false,
+				gateAHeldBy: [1],
+				gateBHeldBy: [],
+			},
+		],
+		gates: [
+			{ gate: 31, filled: true, heldBy: [2] },
+			{ gate: 7, filled: true, heldBy: [0] },
+			{ gate: 8, filled: false, heldBy: [] },
+			{ gate: 1, filled: true, heldBy: [0] },
+			{ gate: 33, filled: true, heldBy: [2] },
+			{ gate: 13, filled: true, heldBy: [1] },
+			{ gate: 15, filled: true, heldBy: [0] },
+			{ gate: 5, filled: true, heldBy: [1] },
+			{ gate: 2, filled: true, heldBy: [2] },
+			{ gate: 14, filled: true, heldBy: [2] },
+			{ gate: 46, filled: true, heldBy: [1] },
+			{ gate: 29, filled: false, heldBy: [] },
+		],
+		summary: {
+			definedChannels: 4,
+			filledGates: 10,
+			gapGates: [8, 29],
+			coreDefined: true,
+		},
+	};
+
+	const mount = async () => {
+		const el = document.createElement('roxy-hd-penta') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = PENTA;
+		await settled(el);
+		return el;
+	};
+
+	/** Each gate circle as the point the renderer placed it at. */
+	const gateAt = (root: ShadowRoot, gate: number) => {
+		const t = [...root.querySelectorAll('.pn-gate')].find(
+			(n) => n.textContent?.trim() === String(gate),
+		);
+		return t
+			? { y: Number(t.getAttribute('y')), on: t.classList.contains('on') }
+			: null;
+	};
+
+	test('three bars and six rungs, named in response order', async () => {
+		const el = await mount();
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.querySelectorAll('.pn-bar')).toHaveLength(3);
+		// Two segments per rung, so the name is not printed over the bar.
+		expect(root.querySelectorAll('.pn-rung')).toHaveLength(12);
+		expect(
+			[...root.querySelectorAll('.pn-name')].map((n) => n.textContent),
+		).toEqual([
+			'The Alpha',
+			'Inspiration',
+			'The Prodigal',
+			'Rhythm',
+			'The Beat',
+			'Discovery',
+		]);
+		el.remove();
+	});
+
+	test('the higher centre takes the top of every rung', async () => {
+		// Read from the gate-to-centre map rather than the order a pair is listed in,
+		// so a response that swaps gateA and gateB still draws the right way up.
+		const el = await mount();
+		const root = el.shadowRoot as ShadowRoot;
+		for (const [top, bottom] of [
+			[31, 7],
+			[8, 1],
+			[33, 13],
+			[15, 5],
+			[2, 14],
+			[46, 29],
+		]) {
+			const a = gateAt(root, top);
+			const b = gateAt(root, bottom);
+			expect(a && b, `gate ${top} or ${bottom} missing`).toBeTruthy();
+			expect(a?.y, `gate ${top} should sit above ${bottom}`).toBeLessThan(
+				b?.y ?? 0,
+			);
+		}
+		el.remove();
+	});
+
+	test('a gate nobody holds is drawn open, and its rung with it', async () => {
+		const el = await mount();
+		const root = el.shadowRoot as ShadowRoot;
+		expect(gateAt(root, 8)?.on).toBe(false);
+		expect(gateAt(root, 29)?.on).toBe(false);
+		expect(gateAt(root, 31)?.on).toBe(true);
+		// Four of the six complete, two segments each.
+		expect(root.querySelectorAll('.pn-rung.on')).toHaveLength(8);
+		expect(root.querySelectorAll('.pn-rung.core')).toHaveLength(2);
+		el.remove();
+	});
+
+	test('every holder is lettered on its gate, by its position in the member list', async () => {
+		const el = await mount();
+		const root = el.shadowRoot as ShadowRoot;
+		const total = PENTA.gates.reduce((n, g) => n + g.heldBy.length, 0);
+		expect(root.querySelectorAll('.pn-badge')).toHaveLength(total);
+		// The letter names the member at that index, so the badge and the attribution
+		// line under the channel below name the same person.
+		const lettersOn = (gate: number) => {
+			const t = [...root.querySelectorAll('.pn-gate')].find(
+				(n) => n.textContent?.trim() === String(gate),
+			);
+			return [
+				...(t?.closest('g')?.querySelectorAll('.pn-badge-text') ?? []),
+			].map((n) => n.textContent?.trim());
+		};
+		expect(lettersOn(7)).toEqual(['A']);
+		expect(lettersOn(13)).toEqual(['B']);
+		expect(lettersOn(31)).toEqual(['C']);
+		expect(lettersOn(8)).toEqual([]);
+		el.remove();
+	});
+});
