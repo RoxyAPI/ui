@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 /**
- * Headless Chrome walks every component section in the docs preview and
- * fails on any drift symptom: literal "[object Object]", "undefined", "NaN",
- * or "No X data" empty states. Run before screenshots and on every push.
+ * Headless Chrome walks every component section in the docs preview and fails on
+ * any drift symptom: literal "[object Object]", "undefined", "NaN", or a rendered
+ * empty state. Run before screenshots and on every push.
  */
 
 import { chromium, type Page } from '@playwright/test';
@@ -16,21 +16,19 @@ const FORBIDDEN: Array<{ pattern: RegExp; label: string }> = [
 	},
 	{ pattern: /\bundefined\b/, label: 'literal "undefined" leaked into UI' },
 	{ pattern: /^\s*NaN\s*$/m, label: 'NaN value rendered' },
-	{
-		pattern: /\bNo .{1,40} data\b/i,
-		label: 'empty state — component received null or wrong-shape data',
-	},
-	{
-		pattern:
-			/\bNo (chart|tarot|numerology|moon|synastry|panchang|dasha|dosha|biorhythm|kundli|kp|guna|hexagram) (data|spread|reading)?\b/i,
-		label: 'component-specific empty state',
-	},
 ];
+
+/**
+ * The empty state is found by its published part rather than by its words: one
+ * `::part(empty)` covers every component, in every language, and a copy edit
+ * cannot quietly blind this scan the way a wordlist can.
+ */
+const EMPTY_PART = '[part~="empty"]';
 
 async function audit(
 	page: Page,
 ): Promise<{ section: string; issues: string[] }[]> {
-	return page.evaluate(() => {
+	return page.evaluate((emptyPart: string) => {
 		// Sections are derived from the SAME demo manifest the page renders from
 		// (window.ROXY_UI_DEMOS), so the audit can never silently drift behind a
 		// newly added component. Plus ssr-markup, the one markup-hydration demo
@@ -50,26 +48,42 @@ async function audit(
 				findings.push({ section: sec.id, issues });
 				continue;
 			}
+			const roots: (Element | ShadowRoot)[] = [];
 			const text = (() => {
 				const parts: string[] = [];
 				const visit = (root: Element | ShadowRoot) => {
 					const sr = (root as Element & { shadowRoot?: ShadowRoot | null })
 						.shadowRoot;
-					if (sr) parts.push(sr.textContent ?? '');
-					else parts.push(root.textContent ?? '');
+					if (sr) {
+						parts.push(sr.textContent ?? '');
+						roots.push(sr);
+					} else {
+						parts.push(root.textContent ?? '');
+						roots.push(root);
+					}
 					root.querySelectorAll('*').forEach((el) => {
 						const inner = (el as Element & { shadowRoot?: ShadowRoot | null })
 							.shadowRoot;
-						if (inner) parts.push(inner.textContent ?? '');
+						if (inner) {
+							parts.push(inner.textContent ?? '');
+							roots.push(inner);
+						}
 					});
 				};
 				visit(host);
 				return parts.join('\n');
 			})();
+			// A demo card always supplies data, so a rendered empty state means the
+			// component got null or a shape it could not read.
+			if (roots.some((r) => r.querySelector(emptyPart))) {
+				issues.push(
+					'empty state — component received null or wrong-shape data',
+				);
+			}
 			findings.push({ section: sec.id, issues, text } as never);
 		}
 		return findings as never;
-	});
+	}, EMPTY_PART);
 }
 
 /**
