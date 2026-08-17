@@ -817,6 +817,55 @@ export const ru: Record<ChromeString, string> = {
 	'Readings ({{count}})': 'Толкования ({{count}})',
 	Intellectual: 'Интеллектуальный',
 	Intuitive: 'Интуитивный',
+	'Vedic planetary positions': 'Ведические положения планет',
+	'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.':
+		'Ведические положения планет: каждая граха с раши, градусом, накшатрой, падой, управителем накшатры, домом, состоянием во всех трёх системах авастха и попятностью. Джаградади и Диптади читаются по достоинству в знаке, которого нет у узлов и лагны, поэтому эти две ячейки пусты в строках Раху, Кету и лагны. Уран, Нептун и Плутон появляются только по запросу и не управляют знаками, поэтому в их строках пусты все ячейки авастхи и дома.',
+	'Nak. lord': 'Упр. накш.',
+	Baladi: 'Балади',
+	Jagradadi: 'Джаградади',
+	Deeptadi: 'Диптади',
+	'Baladi: the five age states, set by degree within the sign':
+		'Балади: пять возрастных состояний, по градусу внутри знака',
+	'Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only':
+		'Джаградади: три состояния бодрствования, по достоинству в знаке. Только семь классических грах',
+	'Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only':
+		'Диптади: девять состояний расположения, по достоинству в знаке. Только семь классических грах',
+	Retro: 'Ретро',
+	'Combust grahas': 'Сожжённые грахи',
+	'{{distance}} deg from Sun, within {{orb}} deg orb':
+		'{{distance}} градусов от Солнца, в пределах орбиса {{orb}} градусов',
+	'Planetary wars': 'Планетные войны',
+	'{{first}} vs {{second}}': '{{first}} против {{second}}',
+	'{{distance}} deg apart': '{{distance}} градусов между ними',
+	'{{graha}} wins': 'побеждает {{graha}}',
+	Interpretations: 'Толкования',
+	'Rashi.': 'Раши.',
+	'Nakshatra.': 'Накшатра.',
+	'Bhava significations': 'Значения бхав',
+	Yogas: 'Йоги',
+	Ashtakavarga: 'Аштакаварга',
+	'Ashtakavarga grid': 'Сетка аштакаварги',
+	'Ashtakavarga views': 'Виды аштакаварги',
+	Sarvashtakavarga: 'Сарваштакаварга',
+	Bhinnashtakavarga: 'Бхиннаштакаварга',
+	Reduced: 'Сокращённая',
+	'Reduced SAV': 'Сокращённая САВ',
+	'Shodhya Pinda': 'Шодхья Пинда',
+	'{{count}} signs': 'знаков: {{count}}',
+	'Fewer bindus': 'Меньше бинду',
+	'More bindus': 'Больше бинду',
+	Bindus: 'Бинду',
+	'Rashi Pinda': 'Раши Пинда',
+	'Graha Pinda': 'Граха Пинда',
+	'No sarvashtakavarga data': 'Нет данных сарваштакаварги',
+	'No bhinnashtakavarga data': 'Нет данных бхиннаштакаварги',
+	'No reduced ashtakavarga data': 'Нет данных сокращённой аштакаварги',
+	'No bindu data': 'Нет данных по бинду',
+	'No shodhya pinda data': 'Нет данных шодхья пинды',
+	'Sarvashtakavarga: each of the twelve signs and the bindus all planets contribute to it, with a grand total.':
+		'Сарваштакаварга: каждый из двенадцати знаков и бинду, которые дают ему все планеты, с общим итогом.',
+	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
+		'Шодхья Пинда: каждая планета со значениями силы Раши Пинда, Граха Пинда и Шодхья Пинда.',
 };
 
 registerLocale('ru', ru);

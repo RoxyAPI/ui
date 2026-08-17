@@ -927,6 +927,53 @@ export const CHROME_STRINGS = [
 	// pair already above.
 	'Intellectual',
 	'Intuitive',
+
+	// The Vedic positions grid: the three avastha columns with the line that says what
+	// each is read from, and the blocks under the table.
+	'Vedic planetary positions',
+	'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.',
+	'Nak. lord',
+	'Baladi',
+	'Jagradadi',
+	'Deeptadi',
+	'Baladi: the five age states, set by degree within the sign',
+	'Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only',
+	'Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only',
+	'Retro',
+	'Combust grahas',
+	'{{distance}} deg from Sun, within {{orb}} deg orb',
+	'Planetary wars',
+	'{{first}} vs {{second}}',
+	'{{distance}} deg apart',
+	'{{graha}} wins',
+	'Interpretations',
+	'Rashi.',
+	'Nakshatra.',
+	'Bhava significations',
+	'Yogas',
+
+	// Ashtakavarga: the four views, the two captions and the grid legend.
+	'Ashtakavarga',
+	'Ashtakavarga grid',
+	'Ashtakavarga views',
+	'Sarvashtakavarga',
+	'Bhinnashtakavarga',
+	'Reduced',
+	'Reduced SAV',
+	'Shodhya Pinda',
+	'{{count}} signs',
+	'Fewer bindus',
+	'More bindus',
+	'Bindus',
+	'Rashi Pinda',
+	'Graha Pinda',
+	'No sarvashtakavarga data',
+	'No bhinnashtakavarga data',
+	'No reduced ashtakavarga data',
+	'No bindu data',
+	'No shodhya pinda data',
+	'Sarvashtakavarga: each of the twelve signs and the bindus all planets contribute to it, with a grand total.',
+	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

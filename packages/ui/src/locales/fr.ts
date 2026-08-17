@@ -831,6 +831,55 @@ export const fr: Record<ChromeString, string> = {
 	'Readings ({{count}})': 'Lectures ({{count}})',
 	Intellectual: 'Intellectuel',
 	Intuitive: 'Intuitif',
+	'Vedic planetary positions': 'Positions planétaires védiques',
+	'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.':
+		'Positions planétaires védiques: chaque graha avec son rashi, son degré, son nakshatra, son pada, le maître du nakshatra, la maison, son état dans les trois systèmes avastha et la rétrogradation. Jagradadi et Deeptadi se lisent à partir de la dignité par signe, que les noeuds et le Lagna ne possèdent pas, donc ces deux cellules restent vides sur les lignes Rahu, Ketu et Lagna. Uranus, Neptune et Pluton figurent seulement sur demande et ne gouvernent aucun signe, donc toutes les cellules avastha et de maison restent vides sur leurs lignes.',
+	'Nak. lord': 'Maître nak.',
+	Baladi: 'Baladi',
+	Jagradadi: 'Jagradadi',
+	Deeptadi: 'Deeptadi',
+	'Baladi: the five age states, set by degree within the sign':
+		'Baladi: les cinq états liés à la maturité, fixés par le degré dans le signe',
+	'Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only':
+		'Jagradadi: les trois états de veille, fixés par la dignité du signe. Les sept grahas classiques seulement',
+	'Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only':
+		'Deeptadi: les neuf états de disposition, fixés par la dignité du signe. Les sept grahas classiques seulement',
+	Retro: 'Rétro',
+	'Combust grahas': 'Grahas combustes',
+	'{{distance}} deg from Sun, within {{orb}} deg orb':
+		'{{distance}} degrés du Soleil, dans un orbe de {{orb}} degrés',
+	'Planetary wars': 'Guerres planétaires',
+	'{{first}} vs {{second}}': '{{first}} contre {{second}}',
+	'{{distance}} deg apart': '{{distance}} degrés de distance',
+	'{{graha}} wins': '{{graha}} gagne',
+	Interpretations: 'Interprétations',
+	'Rashi.': 'Rashi.',
+	'Nakshatra.': 'Nakshatra.',
+	'Bhava significations': 'Significations des bhavas',
+	Yogas: 'Yogas',
+	Ashtakavarga: 'Ashtakavarga',
+	'Ashtakavarga grid': 'Grille ashtakavarga',
+	'Ashtakavarga views': 'Vues ashtakavarga',
+	Sarvashtakavarga: 'Sarvashtakavarga',
+	Bhinnashtakavarga: 'Bhinnashtakavarga',
+	Reduced: 'Réduit',
+	'Reduced SAV': 'SAV réduit',
+	'Shodhya Pinda': 'Shodhya Pinda',
+	'{{count}} signs': '{{count}} signes',
+	'Fewer bindus': 'Moins de bindus',
+	'More bindus': 'Plus de bindus',
+	Bindus: 'Bindus',
+	'Rashi Pinda': 'Rashi Pinda',
+	'Graha Pinda': 'Graha Pinda',
+	'No sarvashtakavarga data': 'Aucune donnée de sarvashtakavarga',
+	'No bhinnashtakavarga data': 'Aucune donnée de bhinnashtakavarga',
+	'No reduced ashtakavarga data': 'Aucune donnée pour ashtakavarga réduit',
+	'No bindu data': 'Aucune donnée de bindus',
+	'No shodhya pinda data': 'Aucune donnée de shodhya pinda',
+	'Sarvashtakavarga: each of the twelve signs and the bindus all planets contribute to it, with a grand total.':
+		'Sarvashtakavarga: chacun des douze signes et les bindus que toutes les planètes lui apportent, avec un total général.',
+	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
+		'Shodhya Pinda: chaque planète avec ses scores de force Rashi Pinda, Graha Pinda et Shodhya Pinda.',
 };
 
 registerLocale('fr', fr);

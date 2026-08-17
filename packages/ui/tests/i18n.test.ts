@@ -557,6 +557,8 @@ describe('shipped locales', () => {
 		// Sanskrit panchang limbs, which print as themselves wherever the script
 		// allows. A language that abbreviates an axis natively is simply absent
 		// from that entry, which is why Russian carries `Асц` and German `AC`.
+		// The avastha systems, the ashtakavarga views and the pinda scores are the
+		// same Sanskrit family, and the two label prefixes keep their full stop.
 		// The eight bala components and the two table names are Sanskrit and print as
 		// themselves wherever the script is Latin, and the units they are measured in
 		// (rupas, virupas) ride along with them in the Romance three.
@@ -675,6 +677,19 @@ describe('shipped locales', () => {
 				'Sookshma',
 				'Vimshottari Mahadasha',
 				'{{planet}} {{level}}',
+				'Ashtakavarga',
+				'Baladi',
+				'Bhinnashtakavarga',
+				'Bindus',
+				'Deeptadi',
+				'Graha Pinda',
+				'Jagradadi',
+				'Nakshatra.',
+				'Rashi Pinda',
+				'Rashi.',
+				'Sarvashtakavarga',
+				'Shodhya Pinda',
+				'Yogas',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -781,6 +796,20 @@ describe('shipped locales', () => {
 				'Pratyantardasha',
 				'Sookshma',
 				'{{planet}} {{level}}',
+				'Ashtakavarga',
+				'Baladi',
+				'Bhinnashtakavarga',
+				'Bindus',
+				'Deeptadi',
+				'Graha Pinda',
+				'Jagradadi',
+				'Nakshatra.',
+				'Rashi Pinda',
+				'Rashi.',
+				'Retro',
+				'Sarvashtakavarga',
+				'Shodhya Pinda',
+				'Yogas',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -923,6 +952,19 @@ describe('shipped locales', () => {
 				'Pratyantardasha',
 				'Sookshma',
 				'{{planet}} {{level}}',
+				'Ashtakavarga',
+				'Baladi',
+				'Bhinnashtakavarga',
+				'Bindus',
+				'Deeptadi',
+				'Graha Pinda',
+				'Jagradadi',
+				'Nakshatra.',
+				'Rashi Pinda',
+				'Rashi.',
+				'Sarvashtakavarga',
+				'Shodhya Pinda',
+				'Yogas',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -1025,6 +1067,20 @@ describe('shipped locales', () => {
 				'Pratyantardasha',
 				'Sookshma',
 				'{{planet}} {{level}}',
+				'Ashtakavarga',
+				'Baladi',
+				'Bhinnashtakavarga',
+				'Bindus',
+				'Deeptadi',
+				'Graha Pinda',
+				'Jagradadi',
+				'Nakshatra.',
+				'Rashi Pinda',
+				'Rashi.',
+				'Retro',
+				'Sarvashtakavarga',
+				'Shodhya Pinda',
+				'Yogas',
 			],
 			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -1108,6 +1164,17 @@ describe('shipped locales', () => {
 				'Sookshma',
 				'Vimshottari Mahadasha',
 				'{{planet}} {{level}}',
+				'Ashtakavarga',
+				'Baladi',
+				'Bhinnashtakavarga',
+				'Deeptadi',
+				'Graha Pinda',
+				'Jagradadi',
+				'Nakshatra.',
+				'Rashi Pinda',
+				'Rashi.',
+				'Sarvashtakavarga',
+				'Shodhya Pinda',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1171,6 +1238,28 @@ describe('shipped locales', () => {
 				`${lang}.ts entries with no ${lang === 'hi' ? 'Devanagari' : 'Cyrillic'} character (transliterated, or left in English)`,
 			).toEqual([]);
 		}
+	});
+
+	test('the Cyrillic catalogue uses only Russian letters', async () => {
+		// Cyrillic is written by more than one language, so a transliteration can
+		// land on a letter that is perfectly good Ukrainian and simply not Russian.
+		// Every other check passes: the script is Cyrillic, the key is right, and
+		// no reader of the catalogue would spot it. The alphabet is a closed set of
+		// 33 letters, so the rule needs nothing maintained.
+		const RUSSIAN = /^[а-яёА-ЯЁ]+$/;
+		const [ru] = (await shippedCatalogues()).filter(([lang]) => lang === 'ru');
+		if (!ru) throw new Error('ru catalogue not found');
+		const offenders = Object.entries(ru[1])
+			.filter(([, translated]) =>
+				(translated.match(/\p{Script=Cyrillic}+/gu) ?? []).some(
+					(run) => !RUSSIAN.test(run),
+				),
+			)
+			.map(([source, translated]) => `${source} -> ${translated}`);
+		expect(
+			offenders,
+			'ru.ts values containing a Cyrillic letter outside the Russian alphabet',
+		).toEqual([]);
 	});
 
 	test('a non-Latin catalogue carries no stray Latin word', async () => {
@@ -1274,14 +1363,12 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	// lookup is invisible to any scan, so the record holding it is typed
 	// `ChromeString` and the compiler owns that half.
 	const UNTRANSLATED_DEBT: Record<string, number> = {
-		'components/ashtakavarga-grid.ts': 27,
 		'components/hd-connection.ts': 30,
 		'components/hd-penta.ts': 27,
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
 		'components/synastry-chart.ts': 24,
-		'components/vedic-planets-table.ts': 28,
 		'components/yoga-list.ts': 27,
 	};
 

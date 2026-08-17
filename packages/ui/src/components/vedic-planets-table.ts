@@ -260,46 +260,43 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (!d.meta) return this.renderEmpty();
 		const rows = this.orderedRows();
 
-		return html`<div class="wrap" part="card" aria-label="Vedic planetary positions">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Vedic planetary positions')}>
 			<header class="head" part="header">
-				<h2 class="title">Planetary positions</h2>
+				<h2 class="title">${this.t('Planetary positions')}</h2>
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			<div class="scroll" part="table" tabindex="0">
 			<table role="table">
 				<caption class="roxy-sr-only">
-					Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada,
-					nakshatra lord, house, its state in all three avastha systems, and retrograde
-					state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and
-					the Lagna do not have, so those two cells are blank on the Rahu, Ketu and
-					Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no
-					sign, so every avastha and house cell is blank on their rows too.
+					${this.t(
+						'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.',
+					)}
 				</caption>
 				<thead>
 					<tr>
-						<th scope="col">Graha</th>
-						<th scope="col">Rashi</th>
-						<th scope="col">Degree</th>
-						<th scope="col">Nakshatra</th>
-						<th scope="col">Pada</th>
-						<th scope="col">Nak. lord</th>
-						<th scope="col">House</th>
-						<th scope="col" title="Baladi: the five age states, set by degree within the sign">
-							Baladi
+						<th scope="col">${this.t('Graha')}</th>
+						<th scope="col">${this.t('Rashi')}</th>
+						<th scope="col">${this.t('Degree')}</th>
+						<th scope="col">${this.t('Nakshatra')}</th>
+						<th scope="col">${this.t('Pada')}</th>
+						<th scope="col">${this.t('Nak. lord')}</th>
+						<th scope="col">${this.t('House')}</th>
+						<th scope="col" title=${this.t('Baladi: the five age states, set by degree within the sign')}>
+							${this.t('Baladi')}
 						</th>
 						<th
 							scope="col"
-							title="Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only"
+							title=${this.t('Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only')}
 						>
-							Jagradadi
+							${this.t('Jagradadi')}
 						</th>
 						<th
 							scope="col"
-							title="Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only"
+							title=${this.t('Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only')}
 						>
-							Deeptadi
+							${this.t('Deeptadi')}
 						</th>
-						<th scope="col">Retro</th>
+						<th scope="col">${this.t('Retro')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -377,7 +374,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (combust.length === 0) return nothing;
 		return html`<details class="panel" part="section combustion">
 			<summary>
-				Combust grahas<span class="summary-count">${combust.length}</span>${chevron()}
+				${this.t('Combust grahas')}<span class="summary-count">${combust.length}</span>${chevron()}
 			</summary>
 			<div class="panel-body">
 				${combust.map((c) => {
@@ -386,7 +383,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 					const orb = formatNumber(this.effectiveLang(), c.orb, 1);
 					return html`<div class="condition">
 						<span class="planet">${glyph ? `${glyph} ` : ''}${c.planet}</span>
-						<span class="detail">${dist} deg from Sun, within ${orb} deg orb</span>
+						<span class="detail">${this.t('{{distance}} deg from Sun, within {{orb}} deg orb', { distance: dist, orb })}</span>
 					</div>`;
 				})}
 			</div>
@@ -398,15 +395,15 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (wars.length === 0) return nothing;
 		return html`<details class="panel" part="section planetary-war">
 			<summary>
-				Planetary wars<span class="summary-count">${wars.length}</span>${chevron()}
+				${this.t('Planetary wars')}<span class="summary-count">${wars.length}</span>${chevron()}
 			</summary>
 			<div class="panel-body">
 				${wars.map((w) => {
 					const dist = formatNumber(this.effectiveLang(), w.distance, 2);
 					return html`<div class="condition">
-						<span class="planet">${w.planet1} vs ${w.planet2}</span>
-						<span class="detail">${dist} deg apart</span>
-						<span class="winner">${w.winner} wins</span>
+						<span class="planet">${this.t('{{first}} vs {{second}}', { first: w.planet1, second: w.planet2 })}</span>
+						<span class="detail">${this.t('{{distance}} deg apart', { distance: dist })}</span>
+						<span class="winner">${this.t('{{graha}} wins', { graha: w.winner })}</span>
 					</div>`;
 				})}
 			</div>
@@ -428,15 +425,15 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (entries.length === 0) return nothing;
 		return html`<details class="panel" part="section readings">
 			<summary>
-				Interpretations<span class="summary-count">${entries.length}</span>${chevron()}
+				${this.t('Interpretations')}<span class="summary-count">${entries.length}</span>${chevron()}
 			</summary>
 			<div class="panel-body">
 				${entries.map(([name, v]) => {
 					const glyph = planetGlyph(name) ?? '';
 					return html`<div class="interp">
 						<span class="planet">${glyph ? `${glyph} ` : ''}${name}</span>
-						${v.rashi ? html`<p><span class="label">Rashi.</span> ${v.rashi}</p>` : nothing}
-						${v.nakshatra ? html`<p><span class="label">Nakshatra.</span> ${v.nakshatra}</p>` : nothing}
+						${v.rashi ? html`<p><span class="label">${this.t('Rashi.')}</span> ${v.rashi}</p>` : nothing}
+						${v.nakshatra ? html`<p><span class="label">${this.t('Nakshatra.')}</span> ${v.nakshatra}</p>` : nothing}
 					</div>`;
 				})}
 			</div>
@@ -450,7 +447,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (houses.length === 0) return nothing;
 		return html`<details class="panel" part="section bhava-significations">
 			<summary>
-				Bhava significations<span class="summary-count">${houses.length}</span>${chevron()}
+				${this.t('Bhava significations')}<span class="summary-count">${houses.length}</span>${chevron()}
 			</summary>
 			<div class="panel-body">
 				${houses.map(
@@ -468,7 +465,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (yogas.length === 0) return nothing;
 		return html`<details class="panel" part="section yogas">
 			<summary>
-				Yogas<span class="summary-count">${yogas.length}</span>${chevron()}
+				${this.t('Yogas')}<span class="summary-count">${yogas.length}</span>${chevron()}
 			</summary>
 			<div class="panel-body">
 				${yogas.map(

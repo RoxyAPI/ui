@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { signGlyph } from '../tokens/index.js';
 import type { AshtakavargaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -13,11 +14,12 @@ import {
 
 type Tab = 'sarva' | 'bhinna' | 'reduced' | 'pinda';
 
-const TABS: ReadonlyArray<TablistItem<Tab>> = [
-	{ id: 'sarva', label: 'Sarvashtakavarga' },
-	{ id: 'bhinna', label: 'Bhinnashtakavarga' },
-	{ id: 'reduced', label: 'Reduced' },
-	{ id: 'pinda', label: 'Shodhya Pinda' },
+/** Tab order, each id beside the English SOURCE its label is looked up by. */
+const TABS: ReadonlyArray<{ id: Tab; source: ChromeString }> = [
+	{ id: 'sarva', source: 'Sarvashtakavarga' },
+	{ id: 'bhinna', source: 'Bhinnashtakavarga' },
+	{ id: 'reduced', source: 'Reduced' },
+	{ id: 'pinda', source: 'Shodhya Pinda' },
 ];
 
 type Signs = AshtakavargaResponse['signs'];
@@ -226,24 +228,24 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 	protected renderData(d: AshtakavargaResponse) {
 		const signs = d.signs ?? [];
 
-		return html`<div class="wrap" part="card" aria-label="Ashtakavarga grid">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Ashtakavarga grid')}>
 			<div class="head" part="header">
-				<h2 class="title">Ashtakavarga</h2>
+				<h2 class="title">${this.t('Ashtakavarga')}</h2>
 				${
 					signs.length
-						? html`<p class="subtitle">${signs.length} signs</p>`
+						? html`<p class="subtitle">${this.t('{{count}} signs', { count: signs.length })}</p>`
 						: nothing
 				}
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</div>
 
 			${renderTablist({
-				items: TABS,
+				items: TABS.map(({ id, source }) => ({ id, label: this.t(source) })),
 				active: this.activeTab,
 				onSelect: (id) => {
 					this.activeTab = id;
 				},
-				label: 'Ashtakavarga views',
+				label: this.t('Ashtakavarga views'),
 				idPrefix: 'ashtakavarga',
 				controls: true,
 			})}
@@ -306,31 +308,33 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 	 */
 	private renderLegend(note: string) {
 		return html`<div class="legend" part="legend">
-			<span>Fewer bindus</span>
+			<span>${this.t('Fewer bindus')}</span>
 			<span class="legend-scale" aria-hidden="true">
 				${[1, 2, 3, 4, 5, 6, 7].map(
 					(t) => html`<span class="legend-swatch tier-${t}"></span>`,
 				)}
 			</span>
-			<span>More bindus</span>
+			<span>${this.t('More bindus')}</span>
 			<span class="legend-note">${note}</span>
 		</div>`;
 	}
 
 	private renderSarva(signs: Signs) {
 		const sav = this.data?.sarvashtakavarga;
-		if (!sav) return html`<p class="roxy-empty">No sarvashtakavarga data</p>`;
+		if (!sav)
+			return html`<p class="roxy-empty">${this.t('No sarvashtakavarga data')}</p>`;
 
 		return html`<div class="overflow-scroll" part="table">
 				<table>
 					<caption class="roxy-sr-only">
-						Sarvashtakavarga: each of the twelve signs and the bindus all planets
-						contribute to it, with a grand total.
+						${this.t(
+							'Sarvashtakavarga: each of the twelve signs and the bindus all planets contribute to it, with a grand total.',
+						)}
 					</caption>
 					<thead>
 						<tr>
-							<th scope="col">Sign</th>
-							<th scope="col">Bindus</th>
+							<th scope="col">${this.t('Sign')}</th>
+							<th scope="col">${this.t('Bindus')}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -349,7 +353,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 					</tbody>
 					<tfoot>
 						<tr class="total-row">
-							<td>Total</td>
+							<td>${this.t('Total')}</td>
 							<td>${sav.total}</td>
 						</tr>
 					</tfoot>
@@ -363,7 +367,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 	private renderBhinna(signs: Signs) {
 		const bhinna = this.data?.bhinnashtakavarga;
 		if (!bhinna?.length)
-			return html`<p class="roxy-empty">No bhinnashtakavarga data</p>`;
+			return html`<p class="roxy-empty">${this.t('No bhinnashtakavarga data')}</p>`;
 
 		return html`${this.renderBinduGrid(
 			signs,
@@ -384,7 +388,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 		const reduced = this.data?.reducedBhinnashtakavarga;
 		const rsav = this.data?.reducedSarvashtakavarga;
 		if (!reduced?.length && !rsav)
-			return html`<p class="roxy-empty">No reduced ashtakavarga data</p>`;
+			return html`<p class="roxy-empty">${this.t('No reduced ashtakavarga data')}</p>`;
 
 		return html`${this.renderBinduGrid(
 			signs,
@@ -409,17 +413,18 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 		caption: string,
 		totals?: SarvaRow,
 	) {
-		if (!rows.length) return html`<p class="roxy-empty">No bindu data</p>`;
+		if (!rows.length)
+			return html`<p class="roxy-empty">${this.t('No bindu data')}</p>`;
 		return html`<div class="overflow-scroll" part="table">
 			<table class="bhinna-table">
 				<caption class="roxy-sr-only">${caption}</caption>
 				<thead>
 					<tr>
-						<th scope="col">Planet</th>
+						<th scope="col">${this.t('Planet')}</th>
 						${signs.map(
 							(s) => html`<th scope="col" title=${s}>${signGlyph(s) ?? s}</th>`,
 						)}
-						<th scope="col">Total</th>
+						<th scope="col">${this.t('Total')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -438,7 +443,7 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 					totals
 						? html`<tfoot>
 							<tr class="total-row">
-								<td>Reduced SAV</td>
+								<td>${this.t('Reduced SAV')}</td>
 								${signs.map((_, i) => html`<td>${totals.bindus[i] ?? 0}</td>`)}
 								<td>${totals.total}</td>
 							</tr>
@@ -452,20 +457,21 @@ export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> 
 	private renderPinda() {
 		const pinda = this.data?.shodhyaPinda;
 		if (!pinda?.length)
-			return html`<p class="roxy-empty">No shodhya pinda data</p>`;
+			return html`<p class="roxy-empty">${this.t('No shodhya pinda data')}</p>`;
 
 		return html`<div class="overflow-scroll" part="table">
 			<table>
 				<caption class="roxy-sr-only">
-					Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya
-					Pinda strength scores.
+					${this.t(
+						'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.',
+					)}
 				</caption>
 				<thead>
 					<tr>
-						<th scope="col">Planet</th>
-						<th scope="col">Rashi Pinda</th>
-						<th scope="col">Graha Pinda</th>
-						<th scope="col">Shodhya Pinda</th>
+						<th scope="col">${this.t('Planet')}</th>
+						<th scope="col">${this.t('Rashi Pinda')}</th>
+						<th scope="col">${this.t('Graha Pinda')}</th>
+						<th scope="col">${this.t('Shodhya Pinda')}</th>
 					</tr>
 				</thead>
 				<tbody>

@@ -836,6 +836,55 @@ export const hi: Record<ChromeString, string> = {
 	'Readings ({{count}})': 'व्याख्याएँ ({{count}})',
 	Intellectual: 'बौद्धिक',
 	Intuitive: 'सहज',
+	'Vedic planetary positions': 'वैदिक ग्रह स्थितियाँ',
+	'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.':
+		'वैदिक ग्रह स्थितियाँ: प्रत्येक ग्रह की राशि, अंश, नक्षत्र, पाद, नक्षत्र स्वामी, भाव, तीनों अवस्था पद्धतियों में उसकी दशा, और वक्री स्थिति। जाग्रदादि और दीप्तादि राशि बल से पढ़े जाते हैं, जो छाया ग्रहों और लग्न के पास नहीं है, इसलिए राहु, केतु और लग्न की पंक्तियों में ये दो खाने रिक्त रहते हैं। यूरेनस, नेपच्यून और प्लूटो केवल माँगे जाने पर आते हैं और किसी राशि के स्वामी नहीं, इसलिए उनकी पंक्तियों में हर अवस्था और भाव खाना भी रिक्त है।',
+	'Nak. lord': 'नक्ष. स्वामी',
+	Baladi: 'बालादि',
+	Jagradadi: 'जाग्रदादि',
+	Deeptadi: 'दीप्तादि',
+	'Baladi: the five age states, set by degree within the sign':
+		'बालादि: राशि में अंश से निर्धारित पाँच आयु अवस्थाएँ',
+	'Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only':
+		'जाग्रदादि: राशि बल से निर्धारित तीन जाग्रत अवस्थाएँ। केवल सात शास्त्रीय ग्रह',
+	'Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only':
+		'दीप्तादि: राशि बल से निर्धारित नौ स्वभाव अवस्थाएँ। केवल सात शास्त्रीय ग्रह',
+	Retro: 'वक्री',
+	'Combust grahas': 'अस्त ग्रह',
+	'{{distance}} deg from Sun, within {{orb}} deg orb':
+		'सूर्य से {{distance}} अंश, {{orb}} अंश ओर्ब के भीतर',
+	'Planetary wars': 'ग्रह युद्ध',
+	'{{first}} vs {{second}}': '{{first}} बनाम {{second}}',
+	'{{distance}} deg apart': '{{distance}} अंश की दूरी',
+	'{{graha}} wins': '{{graha}} जीतता है',
+	Interpretations: 'व्याख्याएँ',
+	'Rashi.': 'राशि।',
+	'Nakshatra.': 'नक्षत्र।',
+	'Bhava significations': 'भाव फल',
+	Yogas: 'योग',
+	Ashtakavarga: 'अष्टकवर्ग',
+	'Ashtakavarga grid': 'अष्टकवर्ग सारणी',
+	'Ashtakavarga views': 'अष्टकवर्ग दृश्य',
+	Sarvashtakavarga: 'सर्वाष्टकवर्ग',
+	Bhinnashtakavarga: 'भिन्नाष्टकवर्ग',
+	Reduced: 'संक्षिप्त',
+	'Reduced SAV': 'संक्षिप्त SAV',
+	'Shodhya Pinda': 'शोध्य पिंड',
+	'{{count}} signs': '{{count}} राशियाँ',
+	'Fewer bindus': 'कम बिंदु',
+	'More bindus': 'अधिक बिंदु',
+	Bindus: 'बिंदु',
+	'Rashi Pinda': 'राशि पिंड',
+	'Graha Pinda': 'ग्रह पिंड',
+	'No sarvashtakavarga data': 'सर्वाष्टकवर्ग डेटा नहीं',
+	'No bhinnashtakavarga data': 'भिन्नाष्टकवर्ग डेटा नहीं',
+	'No reduced ashtakavarga data': 'संक्षिप्त अष्टकवर्ग डेटा नहीं',
+	'No bindu data': 'बिंदु डेटा नहीं',
+	'No shodhya pinda data': 'शोध्य पिंड डेटा नहीं',
+	'Sarvashtakavarga: each of the twelve signs and the bindus all planets contribute to it, with a grand total.':
+		'सर्वाष्टकवर्ग: बारह राशियों में से प्रत्येक और सभी ग्रहों द्वारा दिए गए बिंदु, कुल योग सहित।',
+	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
+		'शोध्य पिंड: प्रत्येक ग्रह के राशि पिंड, ग्रह पिंड और शोध्य पिंड बल अंक।',
 };
 
 registerLocale('hi', hi);

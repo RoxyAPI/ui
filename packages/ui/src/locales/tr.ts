@@ -824,6 +824,55 @@ export const tr: Record<ChromeString, string> = {
 	'Readings ({{count}})': 'Yorumlar ({{count}})',
 	Intellectual: 'Zihinsel',
 	Intuitive: 'Sezgisel',
+	'Vedic planetary positions': 'Vedik gezegen konumları',
+	'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.':
+		'Vedik gezegen konumları: her graha rashisi, derecesi, nakshatrası, padası, nakshatra yöneticisi, evi, üç avastha sistemindeki durumu ve geri hareketiyle. Jagradadi ve Deeptadi burç onurundan okunur, düğümlerde ve Lagnada bu yoktur, bu yüzden Rahu, Ketu ve Lagna satırlarında o iki hücre boştur. Uranüs, Neptün ve Plüton yalnızca istenirse görünür ve hiçbir burcu yönetmez, bu yüzden onların satırlarında da tüm avastha ve ev hücreleri boştur.',
+	'Nak. lord': 'Nak. yöneticisi',
+	Baladi: 'Baladi',
+	Jagradadi: 'Jagradadi',
+	Deeptadi: 'Deeptadi',
+	'Baladi: the five age states, set by degree within the sign':
+		'Baladi: burç içindeki dereceye göre belirlenen beş yaş durumu',
+	'Jagradadi: the three waking states, set by sign dignity. The seven classical grahas only':
+		'Jagradadi: burç onuruna göre belirlenen üç uyanıklık durumu. Yalnızca yedi klasik graha',
+	'Deeptadi: the nine dispositional states, set by sign dignity. The seven classical grahas only':
+		'Deeptadi: burç onuruna göre belirlenen dokuz mizaç durumu. Yalnızca yedi klasik graha',
+	Retro: 'Geri',
+	'Combust grahas': 'Yanık grahalar',
+	'{{distance}} deg from Sun, within {{orb}} deg orb':
+		'Güneşten {{distance}} derece, {{orb}} derecelik orb içinde',
+	'Planetary wars': 'Gezegen savaşları',
+	'{{first}} vs {{second}}': '{{first}} ile {{second}}',
+	'{{distance}} deg apart': '{{distance}} derece ayrı',
+	'{{graha}} wins': '{{graha}} kazanır',
+	Interpretations: 'Yorumlar',
+	'Rashi.': 'Rashi.',
+	'Nakshatra.': 'Nakshatra.',
+	'Bhava significations': 'Bhava anlamları',
+	Yogas: 'Yogalar',
+	Ashtakavarga: 'Ashtakavarga',
+	'Ashtakavarga grid': 'Ashtakavarga ızgarası',
+	'Ashtakavarga views': 'Ashtakavarga görünümleri',
+	Sarvashtakavarga: 'Sarvashtakavarga',
+	Bhinnashtakavarga: 'Bhinnashtakavarga',
+	Reduced: 'İndirgenmiş',
+	'Reduced SAV': 'İndirgenmiş SAV',
+	'Shodhya Pinda': 'Shodhya Pinda',
+	'{{count}} signs': '{{count}} burç',
+	'Fewer bindus': 'Daha az bindu',
+	'More bindus': 'Daha çok bindu',
+	Bindus: 'Bindular',
+	'Rashi Pinda': 'Rashi Pinda',
+	'Graha Pinda': 'Graha Pinda',
+	'No sarvashtakavarga data': 'Sarvashtakavarga verisi yok',
+	'No bhinnashtakavarga data': 'Bhinnashtakavarga verisi yok',
+	'No reduced ashtakavarga data': 'İndirgenmiş ashtakavarga verisi yok',
+	'No bindu data': 'Bindu verisi yok',
+	'No shodhya pinda data': 'Shodhya pinda verisi yok',
+	'Sarvashtakavarga: each of the twelve signs and the bindus all planets contribute to it, with a grand total.':
+		'Sarvashtakavarga: on iki burcun her biri ve tüm gezegenlerin ona kattığı bindular, genel toplamla.',
+	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
+		'Shodhya Pinda: her gezegen Rashi Pinda, Graha Pinda ve Shodhya Pinda güç puanlarıyla.',
 };
 
 registerLocale('tr', tr);
