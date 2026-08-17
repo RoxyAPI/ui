@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 178+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 178+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 per month for 50K requests, up to 3M requests, with custom volume above that.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
+    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 180+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 180+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 per month for 50K requests, up to 3M requests, with custom volume above that.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
     "contact": {
       "name": "RoxyAPI Support",
       "url": "https://roxyapi.com/contact"
@@ -13823,7 +13823,7 @@
           "id": {
             "type": "string",
             "example": "fool",
-            "description": "Unique card identifier in kebab-case (e.g. fool, ace-of-cups, queen-of-swords)."
+            "description": "Unique card identifier in kebab-case, with no leading article on Major Arcana (e.g. fool, star, ace-of-cups, queen-of-swords). This is the canonical form, whatever spelling was requested."
           },
           "name": {
             "type": "string",
@@ -13875,7 +13875,7 @@
           "id": {
             "type": "string",
             "example": "fool",
-            "description": "Unique card identifier in kebab-case (e.g. fool, ace-of-cups, queen-of-swords)."
+            "description": "Unique card identifier in kebab-case, with no leading article on Major Arcana (e.g. fool, star, ace-of-cups, queen-of-swords). This is the canonical form, whatever spelling was requested."
           },
           "name": {
             "type": "string",
@@ -15998,10 +15998,10 @@
             "schema": {
               "type": "string",
               "example": "sun",
-              "description": "Planet ID (lowercase, e.g., sun, moon, mercury) or display name (case-insensitive, e.g., Sun, MOON)."
+              "description": "Planet ID (lowercase, e.g., sun, moon, mercury) or display name (case-insensitive, e.g., Sun, MOON). Spaces, hyphens and underscores are interchangeable, so the two lunar nodes answer to north-node and south-node as well as to their ids north node and south node, and Black Moon Lilith answers to black-moon-lilith as well as to lilith."
             },
             "required": true,
-            "description": "Planet ID (lowercase, e.g., sun, moon, mercury) or display name (case-insensitive, e.g., Sun, MOON).",
+            "description": "Planet ID (lowercase, e.g., sun, moon, mercury) or display name (case-insensitive, e.g., Sun, MOON). Spaces, hyphens and underscores are interchangeable, so the two lunar nodes answer to north-node and south-node as well as to their ids north node and south node, and Black Moon Lilith answers to black-moon-lilith as well as to lilith.",
             "name": "id",
             "in": "path"
           },
@@ -20016,6 +20016,432 @@
         }
       }
     },
+    "/astrology/aspects/monthly": {
+      "post": {
+        "operationId": "getMonthlyTropicalAspects",
+        "tags": [
+          "Western Astrology"
+        ],
+        "summary": "Monthly Aspects - Tropical aspect calendar for an entire month",
+        "description": "Get every planetary aspect that perfects during a given month, across the 13 non-lunar Western bodies: the Sun and Mercury through Pluto, both lunar nodes, Chiron and Black Moon Lilith. Detects nine aspects, five major (conjunction, sextile, square, trine, opposition) and four minor (semi-sextile, semi-square, sesquiquadrate, quincunx), each with its own traditional orb, and returns the exact date and time of closest approach in your timezone along with the nature of the aspect. Calculated on tropical longitudes. The Moon is excluded because it forms hundreds of aspects a month and belongs in a daily view rather than a monthly one. Omit year and month to get the month in progress, so a published calendar stays current without a redeploy. Essential for monthly forecast copy, transit calendars, electional timing, and newsletter automation. Monthly aspect calendar API, exact aspect times, planetary aspect ephemeris, transit timing. Verified against NASA JPL Horizons.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "minimum": 1900,
+                    "maximum": 2100,
+                    "example": 2026,
+                    "description": "Year for the aspect calendar (1900-2100). Defaults to the current year (UTC)."
+                  },
+                  "month": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12,
+                    "example": 3,
+                    "description": "Month number (1-12). Defaults to the current month (UTC)."
+                  },
+                  "timezone": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": -14,
+                        "maximum": 14
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "default": 0,
+                    "description": "Timezone offset from UTC in hours. Event dates and times are reported in this zone, which is what makes a published calendar read correctly for its audience. Defaults to 0 (UTC).",
+                    "example": -5
+                  },
+                  "nodeType": {
+                    "type": "string",
+                    "enum": [
+                      "mean",
+                      "true"
+                    ],
+                    "default": "true",
+                    "example": "true",
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is the osculating node and the default, because it is what most Western chart software reports; mean is the smoothed node preferred by several evolutionary schools, so pass \"mean\" to match one. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Monthly aspect calendar calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "year": {
+                      "type": "number",
+                      "example": 2026,
+                      "description": "Year of the calendar. Echoes the year requested, or the current UTC year when it was omitted."
+                    },
+                    "month": {
+                      "type": "number",
+                      "example": 3,
+                      "description": "Month of the calendar. Echoes the month requested, or the current UTC month when it was omitted."
+                    },
+                    "timezone": {
+                      "type": "number",
+                      "example": -5,
+                      "description": "Timezone the event dates and times are reported in. Echoes the request."
+                    },
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "planet1": {
+                            "type": "string",
+                            "example": "Mars",
+                            "description": "First body forming the aspect. Always canonical English whatever the lang parameter says, so it stays safe to compare against in code. Use planet1Localized for anything a reader sees."
+                          },
+                          "planet1Localized": {
+                            "type": "string",
+                            "example": "Marte",
+                            "description": "First body in the requested language. Present only when lang is supplied."
+                          },
+                          "planet2": {
+                            "type": "string",
+                            "example": "Saturn",
+                            "description": "Second body forming the aspect. Always canonical English."
+                          },
+                          "planet2Localized": {
+                            "type": "string",
+                            "example": "Saturno",
+                            "description": "Second body in the requested language. Present only when lang is supplied."
+                          },
+                          "aspect": {
+                            "type": "string",
+                            "example": "square",
+                            "description": "Aspect type, canonical English. One of conjunction (0 deg), semi-sextile (30 deg), semi-square (45 deg), sextile (60 deg), square (90 deg), trine (120 deg), sesquiquadrate (135 deg), quincunx (150 deg), opposition (180 deg)."
+                          },
+                          "aspectLocalized": {
+                            "type": "string",
+                            "example": "Cuadratura",
+                            "description": "Aspect name in the requested language. Present only when lang is supplied."
+                          },
+                          "nature": {
+                            "type": "string",
+                            "example": "challenging",
+                            "description": "Whether the aspect is harmonious, challenging or neutral. Canonical English, so a calendar can colour or filter on it directly. natureLocalized carries the reader-facing form."
+                          },
+                          "natureLocalized": {
+                            "type": "string",
+                            "example": "desafiante",
+                            "description": "Nature in the requested language. Present only when lang is supplied."
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "2026-03-15",
+                            "description": "Date the aspect is closest to exact, in the requested timezone (YYYY-MM-DD)."
+                          },
+                          "time": {
+                            "type": "string",
+                            "example": "14:32",
+                            "description": "Time the aspect is closest to exact, in the requested timezone (HH:MM)."
+                          },
+                          "datetime": {
+                            "type": "string",
+                            "example": "2026-03-15T14:32",
+                            "description": "Combined timestamp of closest approach, in the requested timezone."
+                          },
+                          "orb": {
+                            "type": "number",
+                            "example": 0.02,
+                            "description": "Distance from exact in degrees at the reported instant. Effectively zero for an aspect that perfects inside the month, and larger only where the pair turns before reaching exact."
+                          },
+                          "separation": {
+                            "type": "number",
+                            "example": 89.98,
+                            "description": "Actual angular separation between the two bodies in degrees at the reported instant, measured the short way round the circle."
+                          },
+                          "planet1Longitude": {
+                            "type": "number",
+                            "example": 15.4821,
+                            "description": "Tropical ecliptic longitude of the first body at the reported instant."
+                          },
+                          "planet2Longitude": {
+                            "type": "number",
+                            "example": 105.4632,
+                            "description": "Tropical ecliptic longitude of the second body at the reported instant."
+                          }
+                        },
+                        "required": [
+                          "planet1",
+                          "planet2",
+                          "aspect",
+                          "nature",
+                          "date",
+                          "time",
+                          "datetime",
+                          "orb",
+                          "separation",
+                          "planet1Longitude",
+                          "planet2Longitude"
+                        ]
+                      },
+                      "description": "Every aspect event in the month, in chronological order across all body pairs."
+                    }
+                  },
+                  "required": [
+                    "year",
+                    "month",
+                    "timezone",
+                    "events"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/astrology/aspect-patterns": {
       "post": {
         "operationId": "detectAspectPatterns",
@@ -20356,6 +20782,443 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TransitsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/astrology/transits/monthly": {
+      "post": {
+        "tags": [
+          "Western Astrology"
+        ],
+        "summary": "Monthly Transits - Tropical sign ingresses for an entire month",
+        "operationId": "getMonthlyTropicalTransits",
+        "description": "Get every tropical sign change for a given month, for all 14 Western bodies: the Sun through Pluto, both lunar nodes, Chiron and Black Moon Lilith. Returns the starting sign of each body on the first of the month and then each ingress with its exact date and time in your timezone. Omit year and month to get the month in progress, so a published transit calendar stays current without a redeploy. Essential for transit calendars, monthly forecast copy, retrograde and ingress tracking, and newsletter automation. Monthly transit API, planetary ingress calendar, sign change dates, tropical transit table. Verified against NASA JPL Horizons, with the four cardinal ingresses cross-checked against published equinox and solstice times.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "minimum": 1900,
+                    "maximum": 2100,
+                    "example": 2026,
+                    "description": "Year for the monthly transit table (1900-2100). Defaults to the current year (UTC)."
+                  },
+                  "month": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12,
+                    "example": 3,
+                    "description": "Month number (1-12). Defaults to the current month (UTC)."
+                  },
+                  "timezone": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": -14,
+                        "maximum": 14
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "default": 0,
+                    "description": "Timezone offset from UTC in hours. Ingress dates and times are reported in this zone, which is what makes a published calendar read correctly for its audience. Defaults to 0 (UTC).",
+                    "example": -5
+                  },
+                  "nodeType": {
+                    "type": "string",
+                    "enum": [
+                      "mean",
+                      "true"
+                    ],
+                    "default": "true",
+                    "example": "true",
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is the osculating node and the default, because it is what most Western chart software reports; mean is the smoothed node preferred by several evolutionary schools, so pass \"mean\" to match one. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Monthly transit table calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "year": {
+                      "type": "number",
+                      "example": 2026,
+                      "description": "Year of the table. Echoes the year requested, or the current UTC year when it was omitted."
+                    },
+                    "month": {
+                      "type": "number",
+                      "example": 3,
+                      "description": "Month of the table. Echoes the month requested, or the current UTC month when it was omitted."
+                    },
+                    "timezone": {
+                      "type": "number",
+                      "example": -5,
+                      "description": "Timezone the ingress dates and times are reported in. Echoes the request."
+                    },
+                    "startingPositions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "planet": {
+                            "type": "string",
+                            "example": "Sun",
+                            "description": "Body name, canonical English."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Sol",
+                            "description": "Body name in the requested language."
+                          },
+                          "sign": {
+                            "type": "string",
+                            "example": "Aquarius",
+                            "description": "Tropical sign the body occupies at the start of the month."
+                          },
+                          "signLocalized": {
+                            "type": "string",
+                            "example": "Acuario",
+                            "description": "Sign in the requested language."
+                          },
+                          "longitude": {
+                            "type": "number",
+                            "example": 311.4823,
+                            "description": "Tropical ecliptic longitude in degrees at 00:00 UTC on the first of the month."
+                          }
+                        },
+                        "required": [
+                          "planet",
+                          "sign",
+                          "longitude"
+                        ]
+                      },
+                      "description": "Where every body stands as the month opens, so a calendar can show the run-in as well as the changes."
+                    },
+                    "transitEvents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "planet": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "Body that changes sign during the month. One of the 14 Western bodies. Always canonical English whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "Body name in the requested language. Present only when lang is supplied."
+                          },
+                          "fromSign": {
+                            "type": "string",
+                            "example": "Aquarius",
+                            "description": "Tropical sign the body leaves. Canonical English."
+                          },
+                          "fromSignLocalized": {
+                            "type": "string",
+                            "example": "Acuario",
+                            "description": "Sign left, in the requested language. Present only when lang is supplied."
+                          },
+                          "toSign": {
+                            "type": "string",
+                            "example": "Pisces",
+                            "description": "Tropical sign the body enters. Canonical English."
+                          },
+                          "toSignLocalized": {
+                            "type": "string",
+                            "example": "Piscis",
+                            "description": "Sign entered, in the requested language. Present only when lang is supplied."
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "2026-03-02",
+                            "description": "Date of the ingress in the requested timezone (YYYY-MM-DD)."
+                          },
+                          "time": {
+                            "type": "string",
+                            "example": "00:56",
+                            "description": "Time of the ingress in the requested timezone (HH:MM)."
+                          },
+                          "datetime": {
+                            "type": "string",
+                            "example": "2026-03-02T00:56",
+                            "description": "Combined ingress timestamp in the requested timezone."
+                          },
+                          "isRetrograde": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether the body was retrograde at the moment it crossed. A retrograde ingress is the body re-entering a sign it already left, which is why the same body can appear more than once in a month."
+                          }
+                        },
+                        "required": [
+                          "planet",
+                          "fromSign",
+                          "toSign",
+                          "date",
+                          "time",
+                          "datetime",
+                          "isRetrograde"
+                        ]
+                      },
+                      "description": "Every sign change in the month, in chronological order across all bodies. Empty only for a month in which nothing changes sign, which cannot happen while the Moon is included."
+                    }
+                  },
+                  "required": [
+                    "year",
+                    "month",
+                    "timezone",
+                    "startingPositions",
+                    "transitEvents"
+                  ]
                 }
               }
             }
@@ -73839,7 +74702,7 @@
           "Tarot"
         ],
         "summary": "Get detailed tarot card information",
-        "description": "Retrieve comprehensive details for a specific tarot card from the traditional Rider-Waite-Smith deck including complete upright meanings (card drawn normally) and reversed meanings (inverted/upside down interpretations for nuanced guidance). Each card provides keywords for quick reference, full interpretations (400+ words each for upright and reversed orientations), and guidance across life domains: love and relationships, career and professional growth, finances and material success, health and wellbeing, spirituality and personal development. Major Arcana cards (0-21) reveal deep spiritual lessons and life-changing themes. Minor Arcana cards (Ace through King in Cups, Wands, Swords, Pentacles) address practical daily situations and specific challenges. Use card ID in kebab-case format: Major Arcana like \"fool\", \"magician\", \"death\", \"tower\", or Minor Arcana like \"ace-of-cups\", \"seven-of-wands\", \"queen-of-swords\", \"king-of-pentacles\". Essential for detailed tarot study, reading interpretations, divination apps, fortune-telling platforms, spiritual guidance tools, and professional tarot learning applications.",
+        "description": "Retrieve comprehensive details for a specific tarot card from the traditional Rider-Waite-Smith deck including complete upright meanings (card drawn normally) and reversed meanings (inverted/upside down interpretations for nuanced guidance). Each card provides keywords for quick reference, full interpretations (400+ words each for upright and reversed orientations), and guidance across life domains: love and relationships, career and professional growth, finances and material success, health and wellbeing, spirituality and personal development. Major Arcana cards (0-21) reveal deep spiritual lessons and life-changing themes. Minor Arcana cards (Ace through King in Cups, Wands, Swords, Pentacles) address practical daily situations and specific challenges. Use card ID in kebab-case format: Major Arcana like \"fool\", \"magician\", \"death\", \"tower\", or Minor Arcana like \"ace-of-cups\", \"seven-of-wands\", \"queen-of-swords\", \"king-of-pentacles\". Major Arcana IDs carry no leading article, though one is accepted, so \"the-star\" and \"star\" both return The Star. Essential for detailed tarot study, reading interpretations, divination apps, fortune-telling platforms, spiritual guidance tools, and professional tarot learning applications.",
         "security": [
           {
             "apiKey": []
@@ -73850,10 +74713,10 @@
             "schema": {
               "type": "string",
               "example": "fool",
-              "description": "Unique card identifier in kebab-case. Major arcana: \"fool\", \"magician\", \"death\", etc. Minor arcana: \"ace-of-cups\", \"seven-of-wands\", \"queen-of-swords\", \"king-of-pentacles\", etc."
+              "description": "Card identifier. Major arcana: \"fool\", \"magician\", \"death\". Minor arcana: \"ace-of-cups\", \"seven-of-wands\", \"queen-of-swords\", \"king-of-pentacles\". Casing and separators are flexible, so \"Fool\" and \"ACE_OF_CUPS\" both resolve, and a leading definite article is optional, so \"the-star\" resolves to \"star\". The canonical form, and the one every response echoes, is kebab-case with no article."
             },
             "required": true,
-            "description": "Unique card identifier in kebab-case. Major arcana: \"fool\", \"magician\", \"death\", etc. Minor arcana: \"ace-of-cups\", \"seven-of-wands\", \"queen-of-swords\", \"king-of-pentacles\", etc.",
+            "description": "Card identifier. Major arcana: \"fool\", \"magician\", \"death\". Minor arcana: \"ace-of-cups\", \"seven-of-wands\", \"queen-of-swords\", \"king-of-pentacles\". Casing and separators are flexible, so \"Fool\" and \"ACE_OF_CUPS\" both resolve, and a leading definite article is optional, so \"the-star\" resolves to \"star\". The canonical form, and the one every response echoes, is kebab-case with no article.",
             "name": "id",
             "in": "path"
           },
