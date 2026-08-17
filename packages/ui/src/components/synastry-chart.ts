@@ -273,18 +273,6 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			.asp-name.challenging {
 				color: var(--roxy-danger-fg, #991b1b);
 			}
-			.interp-keywords {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.25rem;
-			}
-			.interp-keywords .kw {
-				padding: 1px 8px;
-				border-radius: var(--roxy-radius-full, 9999px);
-				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-				color: var(--roxy-fg, #0a0a0a);
-				font-size: var(--roxy-text-xs, 0.75rem);
-			}
 			.context {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);

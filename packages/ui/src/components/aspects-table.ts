@@ -15,7 +15,10 @@ import {
 	formatNumber,
 	formatPercent,
 } from '../utils/format.js';
-import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import {
+	interpAccordionStyles,
+	renderReadingDetail,
+} from '../utils/interp-accordion.js';
 
 /**
  * Natal + transit aspect grid with chart-pattern detection. Renders three endpoints that share an aspects/patterns shape: /astrology/aspects (natal aspects + patterns + a harmonious/challenging summary), /astrology/transit-aspects (transiting-to-natal aspects with timing guidance), and /astrology/aspect-patterns (patterns only: grand trines, t-squares, stelliums, yods, kites). Each aspect row shows the two bodies, the aspect type coloured by nature, its orb and strength, and an expandable interpretation; patterns render as labelled cards listing the planets they bind, apex first.
@@ -145,19 +148,6 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 				gap: 0.5em;
 				font-size: var(--roxy-text-sm, 0.875rem);
 				font-weight: 500;
-			}
-			.interp-keywords {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.25rem;
-				margin-top: 0.5rem;
-			}
-			.kw {
-				padding: 1px 8px;
-				border-radius: 9999px;
-				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-				color: var(--roxy-fg, #0a0a0a);
-				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 			.glyph {
 				font-size: 1.1em;
@@ -423,12 +413,10 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		>,
 	) {
 		const text = m.description?.short ?? m.description?.long;
-		return html`${text ? html`<p>${text}</p>` : nothing}
-			${
-				m.keywords?.length
-					? html`<div class="interp-keywords">${m.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
-					: nothing
-			}`;
+		return renderReadingDetail(
+			{ summary: text, keywords: m.keywords },
+			this.translator,
+		);
 	}
 
 	private renderTransit(
@@ -438,15 +426,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			>[number]['transitInterpretation']
 		>,
 	) {
-		return html`${t.summary ? html`<p>${t.summary}</p>` : nothing}
-			${t.impact ? html`<p><strong>Impact:</strong> ${t.impact}</p>` : nothing}
-			${t.timing ? html`<p><strong>Timing:</strong> ${t.timing}</p>` : nothing}
-			${t.guidance ? html`<p><strong>Guidance:</strong> ${t.guidance}</p>` : nothing}
-			${
-				t.keywords?.length
-					? html`<div class="interp-keywords">${t.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
-					: nothing
-			}`;
+		return renderReadingDetail(t, this.translator);
 	}
 
 	/**

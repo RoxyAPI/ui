@@ -452,18 +452,6 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				margin-left: 0.25rem;
 			}
 
-			.interp-keywords {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.25rem;
-			}
-			.interp-keywords .kw {
-				padding: 1px 8px;
-				border-radius: var(--roxy-radius-full, 9999px);
-				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-				color: var(--roxy-fg, #0a0a0a);
-				font-size: var(--roxy-text-xs, 0.75rem);
-			}
 		`,
 	];
 

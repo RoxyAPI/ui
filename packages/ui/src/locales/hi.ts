@@ -603,6 +603,9 @@ export const hi: Record<ChromeString, string> = {
 	'No nighttime periods': 'रात के लिए कोई अवधि नहीं',
 	Now: 'अभी',
 	'Time range': 'समय अवधि',
+	'Impact:': 'प्रभाव:',
+	'Timing:': 'अवधि:',
+	'Guidance:': 'सलाह:',
 };
 
 registerLocale('hi', hi);

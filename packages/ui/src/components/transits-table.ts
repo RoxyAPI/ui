@@ -11,6 +11,7 @@ import {
 	formatNumber,
 	formatTime,
 } from '../utils/format.js';
+import { renderReadingDetail } from '../utils/interp-accordion.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 /**
@@ -394,17 +395,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						${chevron()}
 					</summary>
 					<div class="interp-body">
-						${interp?.summary ? html`<p>${interp.summary}</p>` : nothing}
-						${interp?.impact ? html`<p><strong>Impact:</strong> ${interp.impact}</p>` : nothing}
-						${interp?.timing ? html`<p><strong>Timing:</strong> ${interp.timing}</p>` : nothing}
-						${interp?.guidance ? html`<p><strong>Guidance:</strong> ${interp.guidance}</p>` : nothing}
-						${
-							interp?.keywords?.length
-								? html`<div class="interp-keywords">
-										${interp.keywords.map((k) => html`<span class="kw">${k}</span>`)}
-									</div>`
-								: nothing
-						}
+						${renderReadingDetail(interp, this.translator)}
 					</div>
 				</details>`;
 			})}

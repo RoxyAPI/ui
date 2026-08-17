@@ -589,6 +589,9 @@ export const tr: Record<ChromeString, string> = {
 	'No nighttime periods': 'Gece dönemi yok',
 	Now: 'Şimdi',
 	'Time range': 'Zaman aralığı',
+	'Impact:': 'Etki:',
+	'Timing:': 'Süre:',
+	'Guidance:': 'Öneri:',
 };
 
 registerLocale('tr', tr);

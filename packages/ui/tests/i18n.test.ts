@@ -763,6 +763,7 @@ describe('shipped locales', () => {
 				'NE',
 				'S',
 				'SE',
+				'Impact:',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -1006,7 +1007,7 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/angel-number-lookup.ts': 11,
 		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 27,
-		'components/aspects-table.ts': 11,
+		'components/aspects-table.ts': 8,
 		'components/bhav-chalit-table.ts': 13,
 		'components/bhava-bala-table.ts': 14,
 		'components/biorhythm-chart.ts': 20,
@@ -1023,7 +1024,7 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-ruling-planets.ts': 18,
 		'components/shadbala-table.ts': 18,
 		'components/synastry-chart.ts': 24,
-		'components/transits-table.ts': 16,
+		'components/transits-table.ts': 13,
 		'components/vedic-planets-table.ts': 28,
 		'components/yoga-list.ts': 27,
 	};

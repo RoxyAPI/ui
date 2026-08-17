@@ -583,6 +583,9 @@ export const ru: Record<ChromeString, string> = {
 	'No nighttime periods': 'Нет ночных периодов',
 	Now: 'Сейчас',
 	'Time range': 'Временной интервал',
+	'Impact:': 'Влияние:',
+	'Timing:': 'Длительность:',
+	'Guidance:': 'Совет:',
 };
 
 registerLocale('ru', ru);

@@ -670,6 +670,12 @@ export const CHROME_STRINGS = [
 	'No nighttime periods',
 	'Now',
 	'Time range',
+
+	// The three labelled lines of a reading, rendered once for every card that
+	// shows one.
+	'Impact:',
+	'Timing:',
+	'Guidance:',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

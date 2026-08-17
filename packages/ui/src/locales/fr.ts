@@ -595,6 +595,9 @@ export const fr: Record<ChromeString, string> = {
 	'No nighttime periods': 'Aucune période de nuit',
 	Now: 'Maintenant',
 	'Time range': 'Plage horaire',
+	'Impact:': 'Impact:',
+	'Timing:': 'Durée:',
+	'Guidance:': 'Conseil:',
 };
 
 registerLocale('fr', fr);

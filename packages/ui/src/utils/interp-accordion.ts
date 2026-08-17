@@ -10,7 +10,9 @@
  */
 
 import { css, html, nothing } from 'lit';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { chevron } from './disclosure.js';
+import type { Translate } from './hd-reading.js';
 
 /** One row: the label, the short value shown as the aside, and the interpretation body. `extra` renders under the body for a section that carries more than prose. */
 export interface InterpSection {
@@ -114,7 +116,47 @@ export const interpAccordionStyles = css`
 	.interp-body p {
 		margin: 0;
 	}
+	/* No margin-top. The body above is a grid and already gaps its children, so a
+	 * margin here would space the chips twice as far as every other row. */
+	.interp-keywords {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+	}
+	.interp-keywords .kw {
+		padding: 1px 8px;
+		border-radius: var(--roxy-radius-full, 9999px);
+		background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+		color: var(--roxy-fg, #0a0a0a);
+		font-size: var(--roxy-text-xs, 0.75rem);
+	}
 `;
+
+/** The prose an endpoint returns ABOUT one contact: a summary, up to three labelled lines, and the keyword chips under them. Every field is optional, so a narrower response renders fewer rows rather than empty ones. */
+export interface ReadingDetail {
+	summary?: string;
+	impact?: string;
+	timing?: string;
+	guidance?: string;
+	keywords?: readonly string[];
+}
+
+/** Render one {@link ReadingDetail}. The three labels are copy, so this takes the translator, and they are typed {@link ChromeString} because the lookup is one indirection from the call: a scan of `t(...)` sites cannot follow that, and the compiler can. */
+export function renderReadingDetail(
+	d: ReadingDetail | undefined,
+	t: Translate,
+) {
+	if (!d) return nothing;
+	const line = (label: ChromeString, value: string | undefined) =>
+		value ? html`<p><strong>${t(label)}</strong> ${value}</p>` : nothing;
+	return html`${d.summary ? html`<p>${d.summary}</p>` : nothing}
+		${line('Impact:', d.impact)}${line('Timing:', d.timing)}${line('Guidance:', d.guidance)}
+		${
+			d.keywords?.length
+				? html`<div class="interp-keywords">${d.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
+				: nothing
+		}`;
+}
 
 /**
  * Render the accordion. Sections with no body are dropped, so a caller can pass the full set and let a narrower response render only what it carries. `name` groups the `<details>` exclusively, so opening one closes the last.

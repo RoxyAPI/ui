@@ -602,6 +602,9 @@ export const es: Record<ChromeString, string> = {
 	'No nighttime periods': 'Sin periodos nocturnos',
 	Now: 'Ahora',
 	'Time range': 'Intervalo horario',
+	'Impact:': 'Impacto:',
+	'Timing:': 'Duración:',
+	'Guidance:': 'Consejo:',
 };
 
 registerLocale('es', es);
