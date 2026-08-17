@@ -176,7 +176,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 			: [];
 
 		const auspiciousWindows: Array<[string, PanchangTime]> = detailed
-			? this.expandWindows('Amrit Kalam', detailed.amritKalam)
+			? this.expandWindows(this.t('Amrit Kalam'), detailed.amritKalam)
 			: [];
 
 		const inauspicious: Array<[string, PanchangTime | undefined]> = detailed
@@ -189,16 +189,16 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 
 		const inauspiciousWindows: Array<[string, PanchangTime]> = detailed
 			? [
-					...this.expandWindows('Dur Muhurta', detailed.durMuhurta),
-					...this.expandWindows('Varjyam', detailed.varjyam),
+					...this.expandWindows(this.t('Dur Muhurta'), detailed.durMuhurta),
+					...this.expandWindows(this.t('Varjyam'), detailed.varjyam),
 				]
 			: [];
 
 		const showTimings = this.detail === 'detailed' && detailed !== null;
 
-		return html`<div class="wrap" part="card" aria-label="Panchang">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Panchang')}>
 			<header class="head" part="header">
-				<h2 class="title">Panchang</h2>
+				<h2 class="title">${this.t('Panchang')}</h2>
 				<span class="date">${detailed ? formatDate(this.effectiveLang(), detailed.date) : ''}</span>
 			</header>
 			<table part="table">
@@ -207,19 +207,19 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 					${
 						detailed
 							? html`
-								${this.renderRow('Sunrise', formatTime(this.effectiveLang(), detailed.sunrise))}
-								${this.renderRow('Sunset', formatTime(this.effectiveLang(), detailed.sunset))}
-								${this.renderRow('Moonrise', formatTime(this.effectiveLang(), detailed.moonrise))}
-								${this.renderRow('Moonset', formatTime(this.effectiveLang(), detailed.moonset))}
-								${this.renderRow('Moon sign', this.formatRashi(detailed.moonSign))}
-								${this.renderRow('Sun sign', this.formatRashi(detailed.sunSign))}
-								${this.renderRow('Sun nakshatra', this.formatSunNakshatra(detailed.sunNakshatra))}
-								${this.renderRow('Hora', this.formatHora(detailed.hora))}
+								${this.renderRow(this.t('Sunrise'), formatTime(this.effectiveLang(), detailed.sunrise))}
+								${this.renderRow(this.t('Sunset'), formatTime(this.effectiveLang(), detailed.sunset))}
+								${this.renderRow(this.t('Moonrise'), formatTime(this.effectiveLang(), detailed.moonrise))}
+								${this.renderRow(this.t('Moonset'), formatTime(this.effectiveLang(), detailed.moonset))}
+								${this.renderRow(this.t('Moon sign'), this.formatRashi(detailed.moonSign))}
+								${this.renderRow(this.t('Sun sign'), this.formatRashi(detailed.sunSign))}
+								${this.renderRow(this.t('Sun nakshatra'), this.formatSunNakshatra(detailed.sunNakshatra))}
+								${this.renderRow(this.t('Hora'), this.formatHora(detailed.hora))}
 							`
 							: basic
 								? html`
-									${this.renderRow('Sun', this.formatLongitude(basic.sunLongitude))}
-									${this.renderRow('Moon', this.formatLongitude(basic.moonLongitude))}
+									${this.renderRow(this.t('Sun'), this.formatLongitude(basic.sunLongitude))}
+									${this.renderRow(this.t('Moon'), this.formatLongitude(basic.moonLongitude))}
 								`
 								: nothing
 					}
@@ -229,7 +229,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 			${
 				showTimings
 					? html`
-						<div class="section" part="section auspicious">Auspicious muhurtas</div>
+						<div class="section" part="section auspicious">${this.t('Auspicious muhurtas')}</div>
 						<table part="table auspicious">
 							<tbody>
 								${this.renderPeriodRows([
@@ -240,7 +240,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 								])}
 							</tbody>
 						</table>
-						<div class="section" part="section inauspicious">Inauspicious periods</div>
+						<div class="section" part="section inauspicious">${this.t('Inauspicious periods')}</div>
 						<table part="table inauspicious">
 							<tbody>
 								${this.renderPeriodRows([
@@ -271,7 +271,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		const k = d.karana;
 		const rows: Limb[] = [
 			{
-				label: 'Tithi',
+				label: this.t('Tithi'),
 				value: name(t?.name, t?.paksha ? `${t.paksha} paksha` : undefined),
 				meta: meta(
 					t?.rulingPlanet ? `Ruled by ${t.rulingPlanet}` : undefined,
@@ -283,7 +283,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 				),
 			},
 			{
-				label: 'Nakshatra',
+				label: this.t('Nakshatra'),
 				value: name(
 					n?.name,
 					typeof n?.pada === 'number' ? `pada ${n.pada}` : undefined,
@@ -296,12 +296,12 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 				),
 			},
 			{
-				label: 'Yoga',
+				label: this.t('Yoga'),
 				value: y?.name ?? '',
 				meta: y?.characteristics ?? '',
 			},
 			{
-				label: 'Karana',
+				label: this.t('Karana'),
 				value: name(k?.name, k?.type),
 				meta: k?.characteristics ?? '',
 			},
@@ -341,13 +341,13 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	private renderTransitions(t: Detailed['transitions'] | undefined) {
 		if (!t) return nothing;
 		return html`
-			<div class="section" part="section transitions">Next transitions</div>
+			<div class="section" part="section transitions">${this.t('Next transitions')}</div>
 			<table part="table transitions">
 				<tbody>
-					${this.renderTransitionRow('Tithi', t.tithi)}
-					${this.renderTransitionRow('Nakshatra', t.nakshatra)}
-					${this.renderTransitionRow('Yoga', t.yoga)}
-					${this.renderTransitionRow('Karana', t.karana)}
+					${this.renderTransitionRow(this.t('Tithi'), t.tithi)}
+					${this.renderTransitionRow(this.t('Nakshatra'), t.nakshatra)}
+					${this.renderTransitionRow(this.t('Yoga'), t.yoga)}
+					${this.renderTransitionRow(this.t('Karana'), t.karana)}
 					${this.renderMoonSignRow(t.moonSign)}
 				</tbody>
 			</table>
@@ -387,9 +387,9 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		if (!b) return nothing;
 		const span = this.formatSpan(b.startsAt, b.endsAt);
 		return html`<tr>
-			<th>Bhadra (Vishti)</th>
+			<th>${this.t('Bhadra (Vishti)')}</th>
 			<td>
-				${b.active && span ? span : html`<span class="quiet">None today</span>`}
+				${b.active && span ? span : html`<span class="quiet">${this.t('None today')}</span>`}
 			</td>
 		</tr>`;
 	}
@@ -402,14 +402,14 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		if (!p) return nothing;
 		const span = this.formatSpan(p.startsAt, p.endsAt);
 		return html`<tr>
-			<th>Panchaka</th>
+			<th>${this.t('Panchaka')}</th>
 			<td>
 				${
 					p.active
 						? html`${p.type ? `${p.type} Panchaka` : 'Panchaka'}${
 								span ? html`<small>${span}</small>` : nothing
 							}`
-						: html`<span class="quiet">None today</span>`
+						: html`<span class="quiet">${this.t('None today')}</span>`
 				}
 			</td>
 		</tr>`;
@@ -422,26 +422,26 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	private renderBalams(c: Chandrabalam | undefined, t: Tarabalam | undefined) {
 		if (!c && !t) return nothing;
 		return html`
-			<div class="section" part="section balams">Chandrabalam and Tarabalam</div>
+			<div class="section" part="section balams">${this.t('Chandrabalam and Tarabalam')}</div>
 			<table part="table balams">
 				<tbody>
 					${
 						c
 							? html`<tr>
-									<th>Favorable Moon signs</th>
+									<th>${this.t('Favorable Moon signs')}</th>
 									<td>${this.renderChips(c.favorableRashis, 'good')}</td>
 								</tr>
-								${this.renderRow('Ashtama Chandra rashi', c.ashtamaChandraRashi ?? '')}`
+								${this.renderRow(this.t('Ashtama Chandra rashi'), c.ashtamaChandraRashi ?? '')}`
 							: nothing
 					}
 					${
 						t
 							? html`<tr>
-									<th>Favorable birth nakshatras</th>
+									<th>${this.t('Favorable birth nakshatras')}</th>
 									<td>${this.renderChips(t.favorableNakshatras, 'good')}</td>
 								</tr>
 								<tr>
-									<th>Unfavorable birth nakshatras</th>
+									<th>${this.t('Unfavorable birth nakshatras')}</th>
 									<td>${this.renderChips(t.unfavorableNakshatras, 'bad')}</td>
 								</tr>`
 							: nothing
@@ -452,7 +452,8 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 	}
 
 	private renderChips(items: string[] | undefined, tone: 'good' | 'bad') {
-		if (!items?.length) return html`<span class="quiet">None</span>`;
+		if (!items?.length)
+			return html`<span class="quiet">${this.t('None')}</span>`;
 		return html`<div class="chips">
 			${items.map((i) => html`<span class="chip ${tone}">${i}</span>`)}
 		</div>`;
@@ -463,21 +464,40 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		t: { endsAt?: string; next?: string; nextPada?: number } | undefined,
 	) {
 		if (!t?.endsAt) return nothing;
-		const next = t.next
-			? ` to ${t.next}${typeof t.nextPada === 'number' ? ` pada ${t.nextPada}` : ''}`
-			: '';
+		const time = formatTime(this.effectiveLang(), t.endsAt);
+		// One whole sentence per shape, so each language orders the parts its own way.
+		const body = !t.next
+			? this.t('ends {{time}}', { time })
+			: typeof t.nextPada === 'number'
+				? this.t('ends {{time}} to {{next}} pada {{pada}}', {
+						time,
+						next: t.next,
+						pada: t.nextPada,
+					})
+				: this.t('ends {{time}} to {{next}}', { time, next: t.next });
 		return html`<tr>
 			<th>${label}</th>
-			<td>ends ${formatTime(this.effectiveLang(), t.endsAt)}${next}</td>
+			<td>${body}</td>
 		</tr>`;
 	}
 
 	private renderMoonSignRow(m: MoonSignTransition | undefined) {
 		if (!m?.changesAt) return nothing;
 		return html`<tr>
-			<th>Moon sign</th>
+			<th>${this.t('Moon sign')}</th>
 			<td>
-				${m.current ?? ''} until ${formatTime(this.effectiveLang(), m.changesAt)}${m.next ? `, then ${m.next}` : ''}
+				${
+					m.next
+						? this.t('{{sign}} until {{time}}, then {{next}}', {
+								sign: m.current ?? '',
+								time: formatTime(this.effectiveLang(), m.changesAt),
+								next: m.next,
+							})
+						: this.t('{{sign}} until {{time}}', {
+								sign: m.current ?? '',
+								time: formatTime(this.effectiveLang(), m.changesAt),
+							})
+				}
 			</td>
 		</tr>`;
 	}
@@ -494,7 +514,10 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		if (!range || !start || !end) return range;
 		return start.slice(0, 10) === end.slice(0, 10)
 			? range
-			: `${range} (ends ${formatDate(this.effectiveLang(), end)})`;
+			: this.t('{{range}} (ends {{date}})', {
+					range,
+					date: formatDate(this.effectiveLang(), end),
+				});
 	}
 
 	/** "English (Sanskrit)" label for the Moon or Sun rashi at sunrise. */

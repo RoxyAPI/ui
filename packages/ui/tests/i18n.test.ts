@@ -507,6 +507,18 @@ describe('shipped locales', () => {
 			// the only one of the seven where that happens; the other six all
 			// translate the head noun.
 			de: [
+				// The panchang terms are Sanskrit and print as themselves; a panchang
+				// in this language names its five limbs with these same words.
+				'Amrit Kalam',
+				'Bhadra (Vishti)',
+				'Dur Muhurta',
+				'Karana',
+				'Nakshatra',
+				'Panchaka',
+				'Panchang',
+				'Tithi',
+				'Varjyam',
+				'Yoga',
 				// `Element` is the German word.
 				'Element',
 				// `Emotional` is the German word.
@@ -540,6 +552,19 @@ describe('shipped locales', () => {
 			// `Base` and `Variables` are the Spanish Human Design words, and
 			// `Bodygraph` is the loanword the API's Spanish prose prints.
 			es: [
+				// The panchang terms are Sanskrit and print as themselves; a panchang
+				// in this language names its five limbs with these same words.
+				'Amrit Kalam',
+				'Bhadra (Vishti)',
+				'Dur Muhurta',
+				'Karana',
+				'Nakshatra',
+				'Panchaka',
+				'Panchang',
+				'Tithi',
+				'Varjyam',
+				'Yoga',
+				'Ashtama Chandra rashi',
 				// `Compatible` and `Incompatible` are the Spanish words unchanged.
 				'Compatible',
 				'Incompatible',
@@ -574,6 +599,22 @@ describe('shipped locales', () => {
 			// `Direction`, `Base`, `Cognition` and `Variables` unchanged, and
 			// `Activations` differs from the English only in a plural it already has.
 			fr: [
+				// `Expression` is the French word; the fuller phrase needs an elision
+				// this register does not allow, so the bare label stands.
+				'Expression',
+				// The panchang terms are Sanskrit and print as themselves; a panchang
+				// in this language names its five limbs with these same words.
+				'Amrit Kalam',
+				'Bhadra (Vishti)',
+				'Dur Muhurta',
+				'Karana',
+				'Nakshatra',
+				'Panchaka',
+				'Panchang',
+				'Tithi',
+				'Varjyam',
+				'Yoga',
+				'Ashtama Chandra rashi',
 				// `Compatible` and `Incompatible` are the French words unchanged.
 				'Compatible',
 				'Incompatible',
@@ -624,6 +665,19 @@ describe('shipped locales', () => {
 			// Brazilian usage keeps English precisely to hold it apart from
 			// `Desenho`.
 			pt: [
+				// The panchang terms are Sanskrit and print as themselves; a panchang
+				// in this language names its five limbs with these same words.
+				'Amrit Kalam',
+				'Bhadra (Vishti)',
+				'Dur Muhurta',
+				'Karana',
+				'Nakshatra',
+				'Panchaka',
+				'Panchang',
+				'Tithi',
+				'Varjyam',
+				'Yoga',
+				'Ashtama Chandra rashi',
 				// `Chakras` is the Portuguese spelling of the Sanskrit term.
 				'Chakras',
 				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
@@ -655,6 +709,19 @@ describe('shipped locales', () => {
 			// Turkish title.
 			// `Hora` as above: the Sanskrit term, printed unchanged.
 			tr: [
+				// The panchang terms are Sanskrit and print as themselves; a panchang
+				// in this language names its five limbs with these same words.
+				'Amrit Kalam',
+				'Bhadra (Vishti)',
+				'Dur Muhurta',
+				'Karana',
+				'Nakshatra',
+				'Panchaka',
+				'Panchang',
+				'Tithi',
+				'Varjyam',
+				'Yoga',
+				'Ashtama Chandra rashi',
 				'orb',
 				'apex',
 				'Natal',
@@ -808,7 +875,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/local-space-compass.ts': 9,
 		'components/moon-phase.ts': 8,
 		'components/nakshatra-card.ts': 9,
-		'components/panchang-table.ts': 35,
 		'components/positions-table.ts': 5,
 		'components/profection-card.ts': 7,
 		'components/relocation-wheel.ts': 6,
