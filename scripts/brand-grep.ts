@@ -155,6 +155,17 @@ const OWN_DOMAINS = new Set([
 ]);
 
 /** Every host a line names, each reduced to its registrable domain. */
+/**
+ * Package directories this repository owns, read from git rather than listed, so adding one needs no edit here
+ * and any FOREIGN `packages/<name>/` path is a pointer at a repo the reader cannot open.
+ */
+const OWN_PACKAGES = new Set(
+	execSync('git ls-files packages', { cwd: ROOT, encoding: 'utf8' })
+		.split('\n')
+		.map((line) => line.split('/')[1])
+		.filter((name): name is string => Boolean(name)),
+);
+
 function hostsIn(line: string): string[] {
 	const found: string[] = [];
 	for (const m of line.matchAll(URL_HOST)) found.push(m[1] ?? '');
@@ -416,12 +427,45 @@ const CATEGORY_D_PATTERNS: Pattern[] = [
 			/\b(used\s+to\s+(be|do|draw|render|print|read|return|carry|show|interpolate|implement|call|key|resolve)|the\s+defect|silently\s+(dropped|kept|lost|reverted|stopped|broke)|was\s+wrong|shipped\s+(with|for\s+months|green)|before\s+the\s+fix)\b/i,
 		),
 	},
-	// Pointers at files that are not in this repository.
+	// Pointers at files the reader cannot open. Derived rather than listed: the wordlist this replaced named five
+	// maintainer docs and had already fallen behind by one, which is the same failure mode the third-party-domain
+	// rule above calls out. Every doc in this tree is written for maintainers, so any of them counts.
 	{
 		category: 'D',
 		label: 'internal-pointer',
+		test: (line: string) => {
+			for (const m of line.matchAll(/\bpackages\/([a-z][a-z0-9-]*)\//gi)) {
+				if (!OWN_PACKAGES.has((m[1] ?? '').toLowerCase())) return true;
+			}
+			return /\b(CLAUDE\.md|docs\/[a-z][a-z0-9-]*\.md|app\/src\/|~\/per\/|maintainer[-\s]internal|main\s+repo)\b/i.test(
+				line,
+			);
+		},
+	},
+	// Administrative surfaces. Naming one discloses the path it is meant to hide.
+	{
+		category: 'D',
+		label: 'admin-surface',
 		test: ci(
-			/\b(CLAUDE\.md|docs\/(lessons|todo|authoring|build-and-release|revamp-design)\.md|maintainer[-\s]internal|main\s+repo)\b/i,
+			/(^|[^a-z0-9])\/hq\b|\broxy-hq\b|\badmin\s+(route|panel|dashboard)\b/i,
+		),
+	},
+	// Commercial and discoverability strategy. Sell the outcome, never the playbook. Deliberately whole phrases:
+	// a bare acronym false-positives on ordinary words (the Spanish `Apogeo` contains `geo`).
+	{
+		category: 'D',
+		label: 'internal-strategy',
+		test: ci(
+			/\bmoney\s+(api|endpoint|angle)\b|\bapis\s+that\s+sell\b|\bconversion\s+endpoint\b|\bcitation\s+gravity\b|\bdistribution\s+playbook\b|\bbreadth\s+edge\b|\bso\s+(that\s+)?[^.]{0,40}?\b(ai|llms?|agents?|search\s+engines?|chatgpt|perplexity)\b[^.]{0,40}?\b(cite|cites|recommend|recommends|surface|surfaces|index|indexes|rank|ranks)\b/i,
+		),
+	},
+	// How access is GRANTED or metered, which is a bypass recipe. The benefit may be stated ("a free tier is
+	// available"); the mechanism may not.
+	{
+		category: 'D',
+		label: 'auth-mechanics',
+		test: ci(
+			/\b(omit|omitting|without|missing|absent)\b[^.]{0,40}?\b(api[-\s]?key|x-api-key|credential|bearer\s+token)\b|\b(quota|allowance|free\s+tier|rate\s+limit)\b[^.]{0,40}?\b(resets?|is\s+counted|decrements?|per\s+(ip|key|minute))\b/i,
 		),
 	},
 ];
@@ -619,14 +663,25 @@ Category D (Sev-1 - build fails, every committed file):
   - user references: say what the code does, not who asked for it.
   - dated claims: a date beside a verification verb is an internal trail; drop it.
   - defect narratives: document the behaviour that ships, not the one that did not.
-  - internal pointers: never cite a path that is not in this repository.
-  All five belong in the maintainer notes instead.
+  - internal pointers: never cite a path a reader of this repository cannot open.
+  - admin surfaces: naming one discloses the path it is meant to hide.
+  - internal strategy: sell the outcome, never the playbook.
+  - auth mechanics: state the benefit ("a free tier is available"), never how access is
+    granted or metered, which is a bypass recipe.
+  All of them belong in the maintainer notes instead.
 `);
 }
 
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
+
+// `--explain` answers before anything is scanned, because the clean-tree path exits zero and guidance is most
+// often wanted on a tree that is already green.
+if (EXPLAIN) {
+	explain();
+	process.exit(0);
+}
 
 const proseFiles = collectFiles();
 const proseSet = new Set(proseFiles);
@@ -672,9 +727,5 @@ console.log(
 console.log(
 	'\nFix or run `bun run scripts/brand-grep.ts --explain` for guidance.',
 );
-
-if (EXPLAIN) {
-	explain();
-}
 
 process.exit(hardFailures.length > 0 ? 1 : 0);
