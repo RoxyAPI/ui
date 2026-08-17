@@ -241,6 +241,53 @@
 	lightBtn?.addEventListener('click', () => applyTheme('light'));
 	darkBtn?.addEventListener('click', () => applyTheme('dark'));
 
+	// Language: the same switch a host page makes by setting <html lang>, plus the
+	// one payload that carries the words. English needs no payload, because the
+	// catalogue key IS the English source.
+	const langSelect = document.getElementById('lang-select');
+	const loadedLocales = new Set();
+	function localeName(code) {
+		try {
+			return new Intl.DisplayNames([code], { type: 'language' }).of(code);
+		} catch {
+			return code;
+		}
+	}
+	function loadLocale(code) {
+		if (code === 'en' || loadedLocales.has(code)) return;
+		loadedLocales.add(code);
+		const el = document.createElement('script');
+		el.src = `dist/cdn/locales/${code}.js`;
+		el.defer = true;
+		document.head.append(el);
+	}
+	function applyLang(code) {
+		document.documentElement.lang = code;
+		loadLocale(code);
+		if (langSelect) langSelect.value = code;
+		try {
+			localStorage.setItem('roxy-ui-lang', code);
+		} catch {}
+	}
+	if (langSelect) {
+		// Derived from the payloads the build actually emitted, so a new language is
+		// one file and this picker gains it with no edit.
+		for (const code of window.ROXY_LOCALES ?? []) {
+			const opt = document.createElement('option');
+			opt.value = code;
+			opt.textContent = localeName(code);
+			langSelect.append(opt);
+		}
+		let initial = 'en';
+		try {
+			const stored = localStorage.getItem('roxy-ui-lang');
+			if (stored === 'en' || (window.ROXY_LOCALES ?? []).includes(stored))
+				initial = stored;
+		} catch {}
+		applyLang(initial);
+		langSelect.addEventListener('change', () => applyLang(langSelect.value));
+	}
+
 	// Iframe protocol:
 	//   1. On load, this page posts { type: 'roxy-ui-ready' } so the parent can
 	//      respond with its current theme.

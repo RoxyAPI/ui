@@ -686,7 +686,18 @@
 				<button id="theme-dark" type="button" class="btn btn--xs btn--ghost" aria-pressed="false">Dark</button>
 			</div>
 			<button type="button" class="btn btn--xs btn--ghost" data-dialog-open="customize-dialog">Customize colors</button>
+			<div class="toolbar-group" role="group" aria-label="Language">
+				<label for="lang-select" style="font-size: 0.8125rem; color: var(--roxy-muted);">Language</label>
+				<select id="lang-select" style="padding: 0.3rem 0.5rem; border: 1px solid var(--roxy-border); border-radius: 6px; background: var(--roxy-bg); color: var(--roxy-fg); font: inherit; font-size: 0.8125rem;">
+					<option value="en">English</option>
+				</select>
+			</div>
 		</div>
+		<p style="color: var(--roxy-muted); font-size: 0.8125rem; margin: 0.5rem 0 0;">
+			The language control translates what the components write. The sample data
+			stays English because it is a fixed fixture; a live response carries its own
+			<code>?lang=</code> values.
+		</p>
 
 		<nav class="filter-tabs" id="filter-tabs" role="group" aria-label="Filter components by domain"></nav>
 

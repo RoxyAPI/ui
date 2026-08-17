@@ -154,7 +154,6 @@ const OWN_DOMAINS = new Set([
 	'anthropic.com',
 ]);
 
-/** Every host a line names, each reduced to its registrable domain. */
 /**
  * Package directories this repository owns, read from git rather than listed, so adding one needs no edit here
  * and any FOREIGN `packages/<name>/` path is a pointer at a repo the reader cannot open.
@@ -166,6 +165,7 @@ const OWN_PACKAGES = new Set(
 		.filter((name): name is string => Boolean(name)),
 );
 
+/** Every host a line names, each reduced to its registrable domain. */
 function hostsIn(line: string): string[] {
 	const found: string[] = [];
 	for (const m of line.matchAll(URL_HOST)) found.push(m[1] ?? '');
