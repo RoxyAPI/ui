@@ -710,6 +710,51 @@ export const CHROME_STRINGS = [
 	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event',
 	'a morning graha, read before sunrise',
 	'an evening graha, read after sunset',
+
+	// The aspect list: its three accessible names, the configuration heading, and the
+	// one line under each contact. Written as a whole sentence because the status,
+	// the orb and the strength do not keep this order in every language.
+	'Aspects',
+	'Aspect list',
+	'Aspect summary',
+	'Patterns',
+	'{{status}} · orb {{orb}}° · str {{strength}}',
+
+	// Angel number lookup: the analysed sequence, its pattern flags, the three
+	// energy classifications the spec defines, and the section labels under them.
+	'Number analysis',
+	'{{count}} digits',
+	'{{count}} unique',
+	'Digit root {{n}}',
+	'Palindrome',
+	'Repeating',
+	'Positive energy',
+	'Neutral energy',
+	'Cautionary energy',
+	'Where you saw it',
+	'Known angel number',
+	'What to do next',
+	'Foundational digit root',
+	'Foundational digit root ({{n}})',
+
+	// Two-state labels chosen by a ternary, and the aspect card heading beside
+	// them. Both branches are copy, so both are catalogued.
+	'Aspect patterns',
+	'Above',
+	'Below',
+	'Active',
+	'Not yet active',
+	'Present',
+	'Absent',
+	'Current phase',
+	'Not compatible',
+
+	// The relocation ascendant line. Both branches name the sign, so the summary
+	// beside it can never contradict them.
+	'Ascendant moves to {{sign}}',
+	'Ascendant stays in {{sign}}',
+	'Ascendant changes sign',
+	'Ascendant keeps its sign',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

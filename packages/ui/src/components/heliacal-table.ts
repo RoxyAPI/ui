@@ -170,27 +170,29 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 		const next = g.nextEvent;
 		const last = g.lastEvent;
 		if (next) {
-			return html`${this.t(
+			const vars = {
+				event: this.t(NEXT_EVENT_WORD[next.type]),
+				where:
+					next.horizon === 'east'
+						? this.t('in the east')
+						: this.t('in the west'),
+				when: formatDateTime(this.effectiveLang(), next.datetime),
+			};
+			return html`${
 				g.visible
-					? 'Visible until it {{event}} {{where}} on {{when}}'
-					: 'Invisible until it {{event}} {{where}} on {{when}}',
-				{
-					event: this.t(NEXT_EVENT_WORD[next.type]),
-					where: this.t(
-						next.horizon === 'east' ? 'in the east' : 'in the west',
-					),
-					when: formatDateTime(this.effectiveLang(), next.datetime),
-				},
-			)}`;
+					? this.t('Visible until it {{event}} {{where}} on {{when}}', vars)
+					: this.t('Invisible until it {{event}} {{where}} on {{when}}', vars)
+			}`;
 		}
 		if (last) {
 			return html`${this.t(
 				'{{event}} {{where}} on {{when}}, with no further event inside the search window',
 				{
 					event: this.t(EVENT_WORD[last.type]),
-					where: this.t(
-						last.horizon === 'east' ? 'in the east' : 'in the west',
-					),
+					where:
+						last.horizon === 'east'
+							? this.t('in the east')
+							: this.t('in the west'),
 					when: formatDateTime(this.effectiveLang(), last.datetime),
 				},
 			)}`;
@@ -209,11 +211,10 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 	 * The differing-limit note is derived by COMPARING the two numbers the response carries, never by naming which grahas have a retrograde variant. Only Mercury and Venus do: ix.7-8 gives them 12 or 14 and 8 or 10, while Jupiter, Saturn, Mars and the Moon each have one limit whatever their motion. Tying the note to retrograde motion instead would claim a variant limit for a retrograde Jupiter, which does not exist, and a practitioner reads that as the component not knowing the rule. Comparing the data cannot make that mistake and needs no copy of the table.
 	 */
 	private metaLine(g: Graha) {
-		const side = this.t(
+		const side =
 			g.horizon === 'east'
-				? 'a morning graha, read before sunrise'
-				: 'an evening graha, read after sunset',
-		);
+				? this.t('a morning graha, read before sunrise')
+				: this.t('an evening graha, read after sunset');
 		const at = g.nextEvent ?? g.lastEvent;
 		const shifts = at && at.kalamsa !== g.kalamsa;
 		const vars = {
@@ -223,12 +224,17 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 		};
 		// Two whole sentences rather than a stem and an appended clause: the shift
 		// only applies to Mercury and Venus, and a fragment cannot be translated.
-		return html`${this.t(
+		return html`${
 			shifts
-				? '{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event'
-				: '{{degrees}}° of time from the Sun against a limit of {{limit}}°',
-			vars,
-		)} &middot; ${side}`;
+				? this.t(
+						'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event',
+						vars,
+					)
+				: this.t(
+						'{{degrees}}° of time from the Sun against a limit of {{limit}}°',
+						vars,
+					)
+		} &middot; ${side}`;
 	}
 }
 

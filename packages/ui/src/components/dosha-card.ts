@@ -169,14 +169,14 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 			<header class="head" part="header">
 				<h2 class="title">${label}</h2>
 				<span class=${`badge ${present ? 'present' : 'absent'}`}>
-					${present ? 'Present' : 'Absent'}
+					${present ? this.t('Present') : this.t('Absent')}
 				</span>
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			${
 				'type' in d && d.type
 					? html`<p class="subtype">
-						<span class="subtype-label">${this.type === 'sadhesati' ? 'Current phase' : 'Type'}</span>${d.type}
+						<span class="subtype-label">${this.type === 'sadhesati' ? this.t('Current phase') : this.t('Type')}</span>${d.type}
 					</p>`
 					: nothing
 			}

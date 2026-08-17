@@ -1,11 +1,19 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { AnalyzeNumberSequenceResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
+
+/** Response energy classification to the English SOURCE its badge is looked up by. The three the spec defines; an unknown value falls back to the neutral wording rather than printing a machine token. */
+const ENERGY_LABEL: Record<string, ChromeString> = {
+	positive: 'Positive energy',
+	neutral: 'Neutral energy',
+	cautionary: 'Cautionary energy',
+};
 
 /**
  * Angel number lookup card. Renders /angel-numbers/lookup: the analysed sequence with its pattern classification (type, digit count, unique digits, palindrome, repeating), the context note when the caller said where the number was seen, the known angel-number meaning when the sequence is in the database, and the foundational digit-root meaning that interprets any sequence. Built for synchronicity trackers where users enter arbitrary numbers.
@@ -160,7 +168,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 	protected renderData(d: AnalyzeNumberSequenceResponse) {
 		const known = d.knownMeaning;
 		const root = d.digitRootMeaning;
-		const heading = known?.title ?? 'Number analysis';
+		const heading = known?.title ?? this.t('Number analysis');
 		const steps = known?.actionSteps ?? [];
 
 		return html`<article
@@ -171,25 +179,25 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 			<div class="hero" part="header">
 				${d.number ? html`<div class="numeral">${d.number}</div>` : nothing}
 				<div>
-					${known?.title ? html`<p class="label">Number analysis</p>` : nothing}
+					${known?.title ? html`<p class="label">${this.t('Number analysis')}</p>` : nothing}
 					<h2 class="title">${heading}</h2>
 				</div>
 			</div>
 			<div class="badges" part="details">
 				${d.type ? html`<span class="badge">${d.type}</span>` : nothing}
-				${typeof d.digits === 'number' ? html`<span class="badge">${d.digits} digits</span>` : nothing}
-				${typeof d.uniqueDigits === 'number' ? html`<span class="badge">${d.uniqueDigits} unique</span>` : nothing}
-				${typeof d.digitRoot === 'number' ? html`<span class="badge">Digit root ${d.digitRoot}</span>` : nothing}
-				${d.isPalindrome ? html`<span class="badge flag">Palindrome</span>` : nothing}
-				${d.isRepeating ? html`<span class="badge flag">Repeating</span>` : nothing}
-				${known?.energy ? html`<span class=${`badge energy-${known.energy}`}>${known.energy} energy</span>` : nothing}
+				${typeof d.digits === 'number' ? html`<span class="badge">${this.t('{{count}} digits', { count: d.digits })}</span>` : nothing}
+				${typeof d.uniqueDigits === 'number' ? html`<span class="badge">${this.t('{{count}} unique', { count: d.uniqueDigits })}</span>` : nothing}
+				${typeof d.digitRoot === 'number' ? html`<span class="badge">${this.t('Digit root {{n}}', { n: d.digitRoot })}</span>` : nothing}
+				${d.isPalindrome ? html`<span class="badge flag">${this.t('Palindrome')}</span>` : nothing}
+				${d.isRepeating ? html`<span class="badge flag">${this.t('Repeating')}</span>` : nothing}
+				${known?.energy ? html`<span class=${`badge energy-${known.energy}`}>${this.t(ENERGY_LABEL[known.energy] ?? 'Neutral energy')}</span>` : nothing}
 			</div>
 			${
 				// The caller's own note about where the number was seen, echoed back.
 				// Not an interpretation, so it survives hide-readings.
 				d.contextNote
 					? html`<div class="context" part="section context">
-						<p class="label">Where you saw it</p>
+						<p class="label">${this.t('Where you saw it')}</p>
 						<p>${d.contextNote}</p>
 					</div>`
 					: nothing
@@ -202,7 +210,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 				// goes rather than leaving a heading over nothing.
 				known && !this.hideReadings
 					? html`<div class="section" part="section known-meaning">
-						<p class="label">Known angel number</p>
+						<p class="label">${this.t('Known angel number')}</p>
 						${known.coreMessage ? html`<p>${known.coreMessage}</p>` : nothing}
 						${
 							known.keywords && known.keywords.length > 0
@@ -213,7 +221,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 						${known.affirmation ? html`<p><em>${known.affirmation}</em></p>` : nothing}
 						${
 							steps.length > 0
-								? html`<p class="label">What to do next</p>
+								? html`<p class="label">${this.t('What to do next')}</p>
 									<ol class="steps">${steps.map((s) => html`<li>${s}</li>`)}</ol>`
 								: nothing
 						}
@@ -223,7 +231,11 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 			${
 				root && !this.hideReadings
 					? html`<div class="section" part="section digit-root">
-						<p class="label">Foundational digit root${root.number ? ` (${root.number})` : ''}</p>
+						<p class="label">${
+							root.number
+								? this.t('Foundational digit root ({{n}})', { n: root.number })
+								: this.t('Foundational digit root')
+						}</p>
 						${root.title ? html`<h3>${root.title}</h3>` : nothing}
 						${root.coreMessage ? html`<p>${root.coreMessage}</p>` : nothing}
 						${!known ? this.renderRootMeaning(root) : nothing}

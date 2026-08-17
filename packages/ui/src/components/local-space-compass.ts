@@ -308,7 +308,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 						<td class="num">${b.altitude > 0 ? '+' : ''}${Math.round(b.altitude)}°</td>
 						<td>
 							<span class=${`horizon-pill ${below ? 'down' : 'up'}`}>
-								${below ? 'Below' : 'Above'}
+								${below ? this.t('Below') : this.t('Above')}
 							</span>
 						</td>
 					</tr>`;

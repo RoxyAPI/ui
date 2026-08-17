@@ -296,7 +296,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 							${
 								typeof d.isCompatible === 'boolean'
 									? html`<span class="verdict ${d.isCompatible ? 'yes' : 'no'}">
-										${d.isCompatible ? 'Compatible' : 'Not compatible'}
+										${d.isCompatible ? this.t('Compatible') : this.t('Not compatible')}
 									</span>`
 									: nothing
 							}

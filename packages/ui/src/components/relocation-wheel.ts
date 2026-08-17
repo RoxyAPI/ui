@@ -145,10 +145,16 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 									// cannot tell which one is wrong. Neither was: the sign is
 									// Gemini either way. Stating it reconciles the two.
 									data.ascendant?.sign
-										? `Ascendant ${c.ascendantSignChanged ? 'moves to' : 'stays in'} ${data.ascendant.sign}`
+										? c.ascendantSignChanged
+											? this.t('Ascendant moves to {{sign}}', {
+													sign: data.ascendant.sign,
+												})
+											: this.t('Ascendant stays in {{sign}}', {
+													sign: data.ascendant.sign,
+												})
 										: c.ascendantSignChanged
-											? 'Ascendant changes sign'
-											: 'Ascendant keeps its sign'
+											? this.t('Ascendant changes sign')
+											: this.t('Ascendant keeps its sign')
 								}
 							</span>`
 							: nothing

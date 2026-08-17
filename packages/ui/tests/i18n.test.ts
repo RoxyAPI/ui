@@ -216,6 +216,19 @@ function markupTemplates(src: string): string[] {
 	return out;
 }
 
+/** The raw source of every markup template, concatenated. The ternary scan reads THIS rather than the whole file, because that shape is only INVISIBLE inside an interpolation: the same ternary as a plain function argument is an ordinary expression, and where it feeds a `ChromeString` parameter the compiler already checks it. */
+function markupSource(src: string): string {
+	const spans: string[] = [];
+	for (let i = 0; i < src.length; i++) {
+		if (src[i] === '`' && isMarkupTag(src, i)) {
+			const end = scanTemplate(src, i + 1, [], false);
+			spans.push(src.slice(i + 1, end));
+			i = end - 1;
+		}
+	}
+	return spans.join('\n');
+}
+
 /** An element whose text content is a machine language rather than copy. */
 const OPAQUE_TAG = /^\s*(?:style|script)\b/i;
 
@@ -259,6 +272,16 @@ const HELPER_ARG = /\bthis\.([a-zA-Z][a-zA-Z0-9]*)\(\s*'([A-Z][^']{1,48})'/g;
  */
 const RECORD_COPY =
 	/(?:^|[\s{,(])(?:label|title|note|caption|summary|placeholder|hint)\s*:\s*'([A-Z][^']+)'/g;
+
+/**
+ * A two-state label picked by a ternary, e.g. `${below ? 'Below' : 'Above'}`.
+ *
+ * @remarks
+ * The markup scanner cannot reach these: an interpolation collapses to one placeholder before its text is read, so both branches are invisible however plainly they are copy. Measured across the library the shape is unambiguous, with no machine values in it, because a class name or an id is chosen by a ternary on the CLASS attribute rather than in a text node.
+ *
+ * The translated form is `cond ? t('A') : t('B')`, one call per branch, which this pattern no longer matches. Writing it as `t(cond ? 'A' : 'B')` instead would satisfy a reader and still be wrong: the forward scan matches `t('` literally, so a ternary INSIDE the call hides both strings from the check that they are catalogued at all.
+ */
+const TERNARY_COPY = /\?\s*'([A-Z][^']{1,60})'\s*:\s*'([^']{0,60})'/g;
 
 /** Platform and framework calls whose first argument is a selector or a key, never copy. */
 const NOT_COPY = new Set([
@@ -310,6 +333,16 @@ function visibleLiterals(src: string): string[] {
 		const literal = (m[1] ?? '').trim();
 		if (LITERAL_BY_DESIGN.has(literal)) continue;
 		found.push(literal);
+	}
+	// And both halves of a two-state label, which sit inside an interpolation and
+	// so collapse before the markup scan reads any text.
+	for (const m of markupSource(code(src)).matchAll(TERNARY_COPY)) {
+		for (const literal of [m[1], m[2]]) {
+			const value = (literal ?? '').trim();
+			if (!value || LITERAL_BY_DESIGN.has(value)) continue;
+			if (!/[A-Za-z]{2,}/.test(value)) continue;
+			found.push(value);
+		}
 	}
 	return found;
 }
@@ -779,6 +812,9 @@ describe('shipped locales', () => {
 				'Graha',
 				'Invisible',
 				'Visible',
+				'Aspects',
+				'Palindrome',
+				'Absent',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -1026,25 +1062,23 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	// lookup is invisible to any scan, so the record holding it is typed
 	// `ChromeString` and the compiler owns that half.
 	const UNTRANSLATED_DEBT: Record<string, number> = {
-		'components/angel-number-lookup.ts': 11,
 		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 27,
-		'components/aspects-table.ts': 8,
 		'components/bhav-chalit-table.ts': 13,
 		'components/bhava-bala-table.ts': 14,
 		'components/biorhythm-chart.ts': 20,
-		'components/dasha-timeline.ts': 16,
+		'components/dasha-timeline.ts': 18,
 		'components/fixed-stars.ts': 13,
 		'components/gochara-table.ts': 16,
-		'components/hd-connection.ts': 28,
-		'components/hd-penta.ts': 23,
+		'components/hd-connection.ts': 30,
+		'components/hd-penta.ts': 27,
 		'components/horoscope-card.ts': 17,
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
 		'components/shadbala-table.ts': 18,
 		'components/synastry-chart.ts': 24,
-		'components/transits-table.ts': 13,
+		'components/transits-table.ts': 15,
 		'components/vedic-planets-table.ts': 28,
 		'components/yoga-list.ts': 27,
 	};

@@ -435,7 +435,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${
 				maturity
 					? html`<dl class="attrs" part="details maturity">
-						${this.attr(this.t('Maturity'), maturity.isActive ? 'Active' : 'Not yet active')}
+						${this.attr(this.t('Maturity'), maturity.isActive ? this.t('Active') : this.t('Not yet active'))}
 						${this.attr(this.t('Current age'), maturity.currentAge)}
 						${this.attr(this.t('Activates'), maturity.activationRange)}
 					</dl>`

@@ -283,9 +283,9 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		);
 		const options = 'options' in d ? d.options : undefined;
 
-		return html`<div class="wrap" part="card" aria-label="Aspects">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Aspects')}>
 			<div class="head" part="header">
-				<h2 class="title">${aspects.length === 0 ? 'Aspect patterns' : 'Aspects'}</h2>
+				<h2 class="title">${aspects.length === 0 ? this.t('Aspect patterns') : this.t('Aspects')}</h2>
 				${
 					aspects.length > 0 || date
 						? html`<p class="subtitle">
@@ -305,7 +305,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			${summary && 'strongest' in summary && summary.strongest ? this.renderStrongest(summary.strongest) : nothing}
 			${
 				aspects.length > 0
-					? html`<div role="list" part="section aspects" aria-label="Aspect list">
+					? html`<div role="list" part="section aspects" aria-label=${this.t('Aspect list')}>
 						${aspects.map((a, i) => this.renderAspect(a, i))}
 					</div>`
 					: nothing
@@ -313,7 +313,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			${
 				patterns.length > 0
 					? html`<div part="section patterns">
-						<p class="section-label">Patterns</p>
+						<p class="section-label">${this.t('Patterns')}</p>
 						${[...patterns]
 							.sort(
 								(a, b) =>
@@ -336,7 +336,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const total = 'totalAspects' in s ? s.totalAspects : s.total;
 		// byType is a map, not a list: render the pairs, never the object.
 		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
-		return html`<div class="summary-pills" part="details" role="region" aria-label="Aspect summary">
+		return html`<div class="summary-pills" part="details" role="region" aria-label=${this.t('Aspect summary')}>
 			${typeof total === 'number' ? html`<span class="pill pill--muted">${this.t('Total')}: ${total}</span>` : nothing}
 			<span class="pill pill--success">${this.t('Harmonious')}: ${s.harmonious}</span>
 			<span class="pill pill--danger">${this.t('Challenging')}: ${s.challenging}</span>
@@ -361,11 +361,18 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const g2 = planetGlyph(s.planet2) ?? '';
 		const nature = (s.interpretation ?? 'neutral').toLowerCase();
 		return html`<div class="strongest" part="details strongest">
-			<span class="label">Strongest</span>
+			<span class="label">${this.t('Strongest')}</span>
 			<span aria-hidden="true" class="glyph">${g1}</span>${s.planet1}
 			<span class="nature-badge ${nature}">${formatAspectName(s)}</span>
 			<span aria-hidden="true" class="glyph">${g2}</span>${s.planet2}
-			<span class="meta">${s.isApplying ? 'Applying' : 'Separating'} · orb ${formatNumber(this.effectiveLang(), s.orb, 2)}° · str ${formatNumber(this.effectiveLang(), s.strength, 0)}</span>
+			<span class="meta">${this.t(
+				'{{status}} · orb {{orb}}° · str {{strength}}',
+				{
+					status: s.isApplying ? this.t('Applying') : this.t('Separating'),
+					orb: formatNumber(this.effectiveLang(), s.orb, 2),
+					strength: formatNumber(this.effectiveLang(), s.strength, 0),
+				},
+			)}</span>
 		</div>`;
 	}
 
@@ -379,7 +386,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const g2 = planetGlyph(a.planet2) ?? '';
 		const nature = (a.interpretation ?? 'neutral').toLowerCase();
 		const type = formatAspectName(a);
-		const status = a.isApplying ? 'Applying' : 'Separating';
+		const status = a.isApplying ? this.t('Applying') : this.t('Separating');
 		// Natal aspects carry `meaning` (static aspect lore); transits carry `transitInterpretation` (timed guidance).
 		const meaning = 'meaning' in a ? a.meaning : undefined;
 		const transit =
@@ -388,7 +395,14 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const header = html`<span aria-hidden="true" class="glyph">${g1}</span>${a.planet1}
 			<span class="nature-badge ${nature}">${type}</span>
 			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
-			<span class="meta">${status} · orb ${formatNumber(this.effectiveLang(), a.orb, 2)}° · str ${formatNumber(this.effectiveLang(), a.strength, 0)}</span>`;
+			<span class="meta">${this.t(
+				'{{status}} · orb {{orb}}° · str {{strength}}',
+				{
+					status,
+					orb: formatNumber(this.effectiveLang(), a.orb, 2),
+					strength: formatNumber(this.effectiveLang(), a.strength, 0),
+				},
+			)}</span>`;
 		// The header is the aspect itself (both bodies, the type, applying or
 		// separating, orb and strength) and is never a reading, so an aspect the
 		// API sent no meaning for already renders flat. Hiding the readings reuses
@@ -447,7 +461,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 						? html`<span class="pattern-tag" title=${this.t('Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.')}>${this.t('Dissociate')}</span>`
 						: nothing
 				}
-				${typeof p.tightness === 'number' ? html`<span class="pattern-tight">${formatPercent(this.effectiveLang(), p.tightness, 0)} tight</span>` : nothing}
+				${typeof p.tightness === 'number' ? html`<span class="pattern-tight">${this.t('{{percent}} tight', { percent: formatPercent(this.effectiveLang(), p.tightness, 0) })}</span>` : nothing}
 			</div>
 			${
 				ordered.length

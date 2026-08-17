@@ -890,7 +890,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			const outer = polarToCartesian(CENTER, CENTER, AXIS_LABEL_R, angle);
 			return svg`<g>
 				<line class="axis-tick" x1=${inner.x} y1=${inner.y} x2=${outer.x} y2=${outer.y} />
-				<text class="axis-label" x=${outer.x} y=${outer.y} text-anchor="middle" dominant-baseline="central">${i === 0 ? 'ASC' : 'DSC'}</text>
+				<text class="axis-label" x=${outer.x} y=${outer.y} text-anchor="middle" dominant-baseline="central">${i === 0 ? this.t('ASC') : this.t('DSC')}</text>
 			</g>`;
 		});
 	}
