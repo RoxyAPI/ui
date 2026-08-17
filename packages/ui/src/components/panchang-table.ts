@@ -308,7 +308,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 		];
 		if (detailed?.vara) {
 			rows.push({
-				label: 'Vara',
+				label: this.t('Vara'),
 				value: formatWithSanskrit(
 					detailed.vara.name,
 					detailed.vara.sanskritName,

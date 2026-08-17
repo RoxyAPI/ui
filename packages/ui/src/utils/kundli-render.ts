@@ -1,7 +1,9 @@
 import type { TemplateResult } from 'lit';
 import { nothing, svg } from 'lit';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetAbbr, SIGNS_ORDER, signAbbr } from '../tokens/index.js';
 import { longitudeToSignPosition } from './degree.js';
+import type { Translate } from './hd-reading.js';
 import { capitalize } from './string.js';
 import { renderTablist } from './tablist.js';
 
@@ -65,10 +67,11 @@ export interface KundliViewModel {
  */
 export type ChartStyle = 'south' | 'north' | 'east';
 
-const CHART_STYLES: ReadonlyArray<{ id: ChartStyle; label: string }> = [
-	{ id: 'north', label: 'North' },
-	{ id: 'south', label: 'South' },
-	{ id: 'east', label: 'East' },
+/** Tab order for the style switcher, each id beside the English source its label is looked up by. One ordered list rather than an order and a lookup, so a style cannot exist in one and not the other, and `source` is typed {@link ChromeString} so the compiler rejects a tab no catalogue carries. */
+const CHART_STYLES: ReadonlyArray<{ id: ChartStyle; source: ChromeString }> = [
+	{ id: 'north', source: 'North' },
+	{ id: 'south', source: 'South' },
+	{ id: 'east', source: 'East' },
 ];
 
 const RETRO_MARK = 'ʳ';
@@ -120,11 +123,11 @@ function grahaLabel(p: PlacedGraha, cellSign: string): string {
  * the original reference, nakshatra and pada, avastha, and the retrograde
  * flag. Surfaces on hover or long-press without crowding the cell.
  */
-function grahaTitle(p: PlacedGraha, cellSign: string): string {
+function grahaTitle(p: PlacedGraha, cellSign: string, t: Translate): string {
 	const parts: string[] = [capitalize(p.graha)];
 	const divisional = isDivisionalPlacement(p, cellSign);
 	if (divisional) {
-		parts.push(`in ${cellSign}`);
+		parts.push(t('in {{sign}}', { sign: cellSign }));
 	}
 	if (typeof p.longitude === 'number' && Number.isFinite(p.longitude)) {
 		const sp = longitudeToSignPosition(p.longitude);
@@ -136,11 +139,13 @@ function grahaTitle(p: PlacedGraha, cellSign: string): string {
 		);
 	}
 	if (p.nakshatra?.name) {
-		const pada = p.nakshatra.pada ? ` pada ${p.nakshatra.pada}` : '';
+		const pada = p.nakshatra.pada
+			? ` ${t('pada {{n}}', { n: p.nakshatra.pada })}`
+			: '';
 		parts.push(`${p.nakshatra.name}${pada}`);
 	}
 	if (p.awastha) parts.push(p.awastha);
-	if (p.isRetrograde) parts.push('retrograde');
+	if (p.isRetrograde) parts.push(t('retrograde'));
 	return parts.join(' · ');
 }
 
@@ -156,6 +161,7 @@ function renderPlanetStack(
 	cx: number,
 	baseY: number,
 	lineHeight: number,
+	t: Translate,
 ): TemplateResult[] {
 	const startY = baseY - ((planets.length - 1) * lineHeight) / 2;
 	return planets.map((p, j) => {
@@ -163,7 +169,7 @@ function renderPlanetStack(
 		return svg`<text class="planet-text" x=${cx} y=${yPos} text-anchor="middle" dominant-baseline="central">${grahaLabel(
 			p,
 			cellSign,
-		)}<title>${grahaTitle(p, cellSign)}</title></text>`;
+		)}<title>${grahaTitle(p, cellSign, t)}</title></text>`;
 	});
 }
 
@@ -305,6 +311,7 @@ function renderSouthCell(
 	planets: PlacedGraha[],
 	isLagna: boolean,
 	houseNum: number,
+	t: Translate,
 ): TemplateResult {
 	const r = southCellRect(sign);
 	const cx = r.x + r.w / 2;
@@ -332,15 +339,15 @@ function renderSouthCell(
 			}
 			${
 				isLagna
-					? svg`<text class="lagna-marker" x=${cx} y=${r.y + 26} text-anchor="middle" dominant-baseline="central">Asc</text>`
+					? svg`<text class="lagna-marker" x=${cx} y=${r.y + 26} text-anchor="middle" dominant-baseline="central">${t('ASC')}</text>`
 					: nothing
 			}
-			${planets.length ? renderPlanetStack(planets, sign, cx, cy + 4, 14) : nothing}
+			${planets.length ? renderPlanetStack(planets, sign, cx, cy + 4, 14, t) : nothing}
 		</g>
 	`;
 }
 
-function renderSouthSvg(vm: KundliViewModel): TemplateResult {
+function renderSouthSvg(vm: KundliViewModel, t: Translate): TemplateResult {
 	const lagnaKey = vm.lagnaSign.toLowerCase();
 	return svg`
 		${renderSouthFrame(vm.divisionLabel)}
@@ -350,6 +357,7 @@ function renderSouthSvg(vm: KundliViewModel): TemplateResult {
 				vm.placements[sign.toLowerCase()] ?? [],
 				sign.toLowerCase() === lagnaKey,
 				houseNumberInSign(sign, vm.lagnaSign),
+				t,
 			),
 		)}
 	`;
@@ -459,6 +467,7 @@ function renderNorthCell(
 	sign: string,
 	planets: PlacedGraha[],
 	isLagna: boolean,
+	t: Translate,
 ): TemplateResult {
 	const c = NORTH_HOUSE_CENTERS[houseNum];
 	if (!c) return svg``;
@@ -479,15 +488,15 @@ function renderNorthCell(
 			<text class="rashi-num" x=${c.x} y=${c.y - rashiOffsetY} text-anchor="middle" dominant-baseline="central">${rashiLabel}</text>
 			${
 				isLagna
-					? svg`<text class="lagna-marker" x=${c.x} y=${c.y - ascOffsetY} text-anchor="middle" dominant-baseline="central">Asc</text>`
+					? svg`<text class="lagna-marker" x=${c.x} y=${c.y - ascOffsetY} text-anchor="middle" dominant-baseline="central">${t('ASC')}</text>`
 					: nothing
 			}
-			${planets.length ? renderPlanetStack(planets, sign, c.x, c.y + 8, 12) : nothing}
+			${planets.length ? renderPlanetStack(planets, sign, c.x, c.y + 8, 12, t) : nothing}
 		</g>
 	`;
 }
 
-function renderNorthSvg(vm: KundliViewModel): TemplateResult {
+function renderNorthSvg(vm: KundliViewModel, t: Translate): TemplateResult {
 	const lagnaSign = vm.lagnaSign || 'Aries';
 	return svg`
 		${renderNorthFrame(vm.divisionLabel)}
@@ -501,6 +510,7 @@ function renderNorthSvg(vm: KundliViewModel): TemplateResult {
 				sign,
 				vm.placements[sign.toLowerCase()] ?? [],
 				houseNum === 1,
+				t,
 			);
 		})}
 	`;
@@ -646,6 +656,7 @@ function renderEastCell(
 	planets: PlacedGraha[],
 	isLagna: boolean,
 	houseNum: number,
+	t: Translate,
 ): TemplateResult {
 	const cell = EAST_CELLS[sign];
 	if (!cell) return svg``;
@@ -667,15 +678,15 @@ function renderEastCell(
 			}
 			${
 				isLagna
-					? svg`<text class="lagna-marker" x=${cen.x} y=${cen.y - 30} text-anchor="middle" dominant-baseline="central">Asc</text>`
+					? svg`<text class="lagna-marker" x=${cen.x} y=${cen.y - 30} text-anchor="middle" dominant-baseline="central">${t('ASC')}</text>`
 					: nothing
 			}
-			${planets.length ? renderPlanetStack(planets, sign, cen.x, cen.y + 4, 12) : nothing}
+			${planets.length ? renderPlanetStack(planets, sign, cen.x, cen.y + 4, 12, t) : nothing}
 		</g>
 	`;
 }
 
-function renderEastSvg(vm: KundliViewModel): TemplateResult {
+function renderEastSvg(vm: KundliViewModel, t: Translate): TemplateResult {
 	const lagnaKey = vm.lagnaSign.toLowerCase();
 	return svg`
 		${renderEastFrame(vm.divisionLabel)}
@@ -685,6 +696,7 @@ function renderEastSvg(vm: KundliViewModel): TemplateResult {
 				vm.placements[sign.toLowerCase()] ?? [],
 				sign.toLowerCase() === lagnaKey,
 				houseNumberInSign(sign, vm.lagnaSign),
+				t,
 			),
 		)}
 	`;
@@ -702,14 +714,15 @@ function renderEastSvg(vm: KundliViewModel): TemplateResult {
 export function renderKundliSvg(
 	vm: KundliViewModel,
 	style: ChartStyle,
+	t: Translate,
 ): TemplateResult {
 	switch (style) {
 		case 'north':
-			return renderNorthSvg(vm);
+			return renderNorthSvg(vm, t);
 		case 'east':
-			return renderEastSvg(vm);
+			return renderEastSvg(vm, t);
 		default:
-			return renderSouthSvg(vm);
+			return renderSouthSvg(vm, t);
 	}
 }
 
@@ -725,12 +738,13 @@ export function renderKundliSvg(
 export function renderKundliStyleTablist(
 	active: ChartStyle,
 	setStyle: (next: ChartStyle) => void,
+	t: Translate,
 ): TemplateResult {
 	return renderTablist({
-		items: CHART_STYLES,
+		items: CHART_STYLES.map(({ id, source }) => ({ id, label: t(source) })),
 		active,
 		onSelect: setStyle,
-		label: 'Kundli style',
+		label: t('Kundli style'),
 		idPrefix: 'kundli',
 		// The chart SVG below is the panel these tabs swap. Callers MUST wrap it in
 		// `<div role="tabpanel" id="kundli-panel-${style}">`, otherwise the buttons

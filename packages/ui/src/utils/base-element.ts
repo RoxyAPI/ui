@@ -1,6 +1,7 @@
 import { type CSSResultGroup, html, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { baseStyles } from './base-styles.js';
 import { buildRequest, FetchController } from './fetch-controller.js';
@@ -221,17 +222,19 @@ export abstract class RoxyDataElement<
 	 * The gate lives on the base rather than in each component because the property does, and a plain render function cannot read component state. One call site per accordion, one place that decides whether prose renders, and the section it emits carries the same `readings` part in every component.
 	 *
 	 * Prose that is NOT in an accordion (a summary paragraph, a per-item interpretation) is still the component's own to gate, since only the component knows which of its blocks are readings.
+	 *
+	 * @param heading - English source copy, translated here. Typed as {@link ChromeString} so the compiler, not a reviewer, rejects a heading no catalogue carries.
 	 */
 	protected renderInterpretation(
 		sections: InterpSection[],
 		name: string,
-		heading?: string,
+		heading?: ChromeString,
 	): unknown {
 		if (this.hideReadings) return nothing;
-		// The default heading is localized HERE rather than in the accordion:
-		// that is a plain render function with no host, so it cannot read a
-		// language, and this is the one call site every component routes through.
-		return renderInterpAccordion(sections, name, heading ?? this.t('Reading'));
+		// Localized HERE rather than in the accordion: that is a plain render
+		// function with no host, so it cannot read a language, and this is the one
+		// call site every component routes through.
+		return renderInterpAccordion(sections, name, this.t(heading ?? 'Reading'));
 	}
 
 	/**

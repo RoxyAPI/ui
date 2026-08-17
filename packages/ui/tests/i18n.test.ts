@@ -102,12 +102,22 @@ const VISIBLE_ATTRS =
  * `UTC` is a unit symbol, identical in all seven languages and printed immediately in front of a signed number, so a catalogue entry would be seven copies of the same three letters plus a way to get the sign onto the wrong side of it.
  *
  * The three wire identifiers are the `<code>` spans in the synastry missing-planets notice. An endpoint path and two response field names are what a developer types into their own request, so translating them would break the thing the notice is telling them to look at. The sentence AROUND them is prose and is still counted.
+ *
+ * The nine centre names are the FALLBACK half of a value the response already localizes: the bodygraph reads each centre's name from the payload and drops back to the geometry table only when it is absent. Cataloguing them would be a second translation of a fact the API already owns, which is the one thing the chrome list refuses to do, and it is why they are declared once beside the shape rather than per call site.
  */
 const LITERAL_BY_DESIGN = new Set([
 	'UTC',
 	'/astrology/synastry',
 	'person1.planets',
 	'person2.planets',
+	'Head',
+	'Ajna',
+	'Throat',
+	'Heart',
+	'Spleen',
+	'Sacral',
+	'Solar Plexus',
+	'Root',
 ]);
 
 /** Stands in for one `${...}`, so an interpolated slot can never be mistaken for copy. */
@@ -242,6 +252,14 @@ function visibleStrings(template: string): string[] {
 /** A prose string handed to one of the component's own helpers, e.g. `this.attr('Hardness', ...)`. */
 const HELPER_ARG = /\bthis\.([a-zA-Z][a-zA-Z0-9]*)\(\s*'([A-Z][^']{1,48})'/g;
 
+/**
+ * A copy-bearing property of an options or lookup record, e.g. `{ label: 'Transit views' }` or the `note` on a section descriptor.
+ *
+ * These property NAMES are copy by definition, which is what makes the rule precise where a blanket scan of string literals is not: a selector, an id or a lookup key is never called a label, a note or a caption, so the shape carries no machine values to filter out. `heading` is deliberately absent because `manifest.ts` uses it for build metadata that no visitor reads.
+ */
+const RECORD_COPY =
+	/(?:^|[\s{,(])(?:label|title|note|caption|summary|placeholder|hint)\s*:\s*'([A-Z][^']+)'/g;
+
 /** Platform and framework calls whose first argument is a selector or a key, never copy. */
 const NOT_COPY = new Set([
 	'querySelector',
@@ -282,6 +300,14 @@ function visibleLiterals(src: string): string[] {
 		if (NOT_COPY.has(fn)) continue;
 		// An all-caps token is an id or an enum key, not something anybody reads.
 		if (!/[a-z]/.test(literal)) continue;
+		if (LITERAL_BY_DESIGN.has(literal)) continue;
+		found.push(literal);
+	}
+	// And copy declared in a record rather than written at the point of render,
+	// which is the same blind spot one indirection further out: a tab label or a
+	// section note sits in a module-level table that no markup scan ever reaches.
+	for (const m of code(src).matchAll(RECORD_COPY)) {
+		const literal = (m[1] ?? '').trim();
 		if (LITERAL_BY_DESIGN.has(literal)) continue;
 		found.push(literal);
 	}
@@ -492,6 +518,12 @@ describe('shipped locales', () => {
 		// most languages print its vocabulary as a loanword, so `Aura`, `Bodygraph`
 		// and `Motor` recur below with a source behind each rather than a shrug. Each
 		// locale file names the source for its own entries.
+		// Two families recur across every language below and are noted once here
+		// rather than seven times: the chart-axis tokens (`ASC`, `MC`, `IC`, `Vtx`),
+		// which stay Latin in the astrological writing of all seven, and the
+		// Sanskrit panchang limbs, which print as themselves wherever the script
+		// allows. A language that abbreviates an axis natively is simply absent
+		// from that entry, which is why Russian carries `Асц` and German `AC`.
 		const IDENTICAL_BY_DESIGN: Record<string, string[]> = {
 			// `Neutral` is the German word too; `Total` is `Gesamt`. German takes
 			// `Radix` for the natal ring label, so it is NOT on this list. `Fix` is
@@ -546,6 +578,11 @@ describe('shipped locales', () => {
 				'Person 2',
 				'Person A',
 				'Person B',
+				'IC',
+				'MC',
+				'Vara',
+				'Vtx',
+				'in {{sign}}',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -593,6 +630,13 @@ describe('shipped locales', () => {
 				'No',
 				'Total',
 				'Variables',
+				'ASC',
+				'DSC',
+				'IC',
+				'MC',
+				'Vara',
+				'Vtx',
+				'pada {{n}}',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -665,8 +709,15 @@ describe('shipped locales', () => {
 				'apex',
 				'illustration',
 				'{{count}} aspects',
+				'ASC',
+				'Arc',
+				'Ascendant',
+				'MC',
+				'Vara',
+				'Vtx',
+				'pada {{n}}',
 			],
-			hi: [],
+			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
 			// `Mutável` at three characters, which lands on the English set;
 			// `Cardinal` is the full Portuguese word. `Aura`, `Bodygraph` and `Motor`
@@ -709,8 +760,15 @@ describe('shipped locales', () => {
 				'Mut',
 				'Natal',
 				'Total',
+				'ASC',
+				'DSC',
+				'IC',
+				'MC',
+				'Vara',
+				'Vtx',
+				'pada {{n}}',
 			],
-			ru: [],
+			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
 			// is `Toplam`. Turkish Human Design borrows `Aura`, `Bodygraph` and
 			// `Motor` the same way (`Motor merkezler`). `Relocation` is the same
@@ -747,6 +805,13 @@ describe('shipped locales', () => {
 				'orb {{value}}°',
 				// `Element` is the Turkish word too.
 				'Element',
+				'ASC',
+				'DSC',
+				'IC',
+				'MC',
+				'Vara',
+				'Vtx',
+				'pada {{n}}',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -783,11 +848,21 @@ describe('shipped locales', () => {
 			hi: /\p{Script=Devanagari}/u,
 			ru: /\p{Script=Cyrillic}/u,
 		};
+		// One exemption, stated structurally rather than as a list of words: a source
+		// of four bare letters or fewer is a chart-axis token (`ASC`, `MC`, `IC`,
+		// `Vtx`), not prose. Those stay Latin in the astrological writing of all
+		// seven languages, exactly as `UTC` does, so demanding Devanagari there
+		// would force an abbreviation no reader uses. A language that DOES
+		// abbreviate natively still may, and Russian carries `Асц` and `Дсц`.
+		const AXIS_TOKEN = /^[A-Za-z]{2,4}$/;
 		for (const [lang, catalog] of await shippedCatalogues()) {
 			const script = SCRIPT[lang];
 			if (!script) continue;
 			const wrongScript = Object.entries(catalog)
-				.filter(([, translated]) => !script.test(translated))
+				.filter(
+					([source, translated]) =>
+						!AXIS_TOKEN.test(source) && !script.test(translated),
+				)
 				.map(([source]) => source);
 			expect(
 				wrongScript,
@@ -857,41 +932,42 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	 *
 	 * **One narrow exception, and it is named rather than inferred.** `hd-connection` and `hd-penta` are English end to end BY DECISION, because almost all of their chrome is doctrine the component wrote rather than a label, and a half-translated card reads worse than a consistent English one. A feature added to one of those two raises its number, in the same change that adds the feature and with the copy visible in the diff. Every other file ratchets down only; if a row that is not one of those two goes up, the answer is `t()`.
 	 */
-	// `hd-penta` 18 and `panchang-table` 32 are a re-baseline, not a regression:
-	// the scan now reads copy handed to a render helper as an argument, which it
-	// could not see before, so both numbers are what they always were.
+	// Eleven rows are a re-baseline rather than a regression: the scan now reads
+	// copy declared in a record as well as copy written at the point of render, so
+	// those numbers are what they always were. Copy reached through a DYNAMIC
+	// lookup is invisible to any scan, so the record holding it is typed
+	// `ChromeString` and the compiler owns that half.
 	const UNTRANSLATED_DEBT: Record<string, number> = {
 		'components/angel-number-lookup.ts': 11,
 		'components/arudha-padas.ts': 17,
-		'components/ashtakavarga-grid.ts': 22,
+		'components/ashtakavarga-grid.ts': 27,
 		'components/aspects-table.ts': 11,
 		'components/astrocartography-map.ts': 9,
 		'components/bhav-chalit-table.ts': 13,
-		'components/bhava-bala-table.ts': 11,
+		'components/bhava-bala-table.ts': 14,
 		'components/biorhythm-chart.ts': 20,
 		'components/chara-karakas.ts': 12,
 		'components/choghadiya-grid.ts': 11,
-		'components/dasha-timeline.ts': 9,
+		'components/dasha-timeline.ts': 16,
 		'components/fixed-stars.ts': 13,
 		'components/gochara-table.ts': 16,
-		'components/hd-connection.ts': 21,
-		'components/hd-penta.ts': 18,
+		'components/hd-connection.ts': 28,
+		'components/hd-penta.ts': 23,
 		'components/heliacal-table.ts': 11,
 		'components/horoscope-card.ts': 17,
-		'components/kp-chart.ts': 39,
+		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
-		'components/local-space-compass.ts': 9,
+		'components/local-space-compass.ts': 13,
 		'components/nakshatra-card.ts': 9,
-		'components/shadbala-table.ts': 12,
+		'components/shadbala-table.ts': 18,
 		'components/synastry-chart.ts': 24,
-		'components/transits-table.ts': 14,
-		'components/upagraha-table.ts': 9,
+		'components/transits-table.ts': 16,
+		'components/upagraha-table.ts': 13,
 		'components/vedic-aspects.ts': 11,
 		'components/vedic-planets-table.ts': 28,
 		'components/western-planets-table.ts': 9,
-		'components/yoga-list.ts': 21,
-		'utils/kundli-render.ts': 3,
+		'components/yoga-list.ts': 27,
 	};
 
 	/** Path to the literals it writes, keyed the way the budget is. */

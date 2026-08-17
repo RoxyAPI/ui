@@ -1075,7 +1075,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return this.renderInterpretation(
 			sections,
 			'transit-aspect-readings',
-			this.t('Transit readings'),
+			'Transit readings',
 		);
 	}
 }

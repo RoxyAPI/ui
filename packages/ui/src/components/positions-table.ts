@@ -291,9 +291,9 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	private toViewModel(data: PositionsResponse): ViewModel {
 		if ('asteroids' in data) {
 			return {
-				title: 'Asteroids',
+				title: this.t('Asteroids'),
 				badges: data.houseSystem
-					? [{ label: 'Houses', value: data.houseSystem }]
+					? [{ label: this.t('Houses'), value: data.houseSystem }]
 					: [],
 				summary: data.summary,
 				cols: { house: true, motion: true, formula: false, natal: false },
@@ -310,14 +310,16 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		}
 		if ('lilith' in data) {
 			return {
-				title: 'Black Moon Lilith',
+				title: this.t('Black Moon Lilith'),
 				badges: data.houseSystem
-					? [{ label: 'Houses', value: data.houseSystem }]
+					? [{ label: this.t('Houses'), value: data.houseSystem }]
 					: [],
 				summary: data.summary,
 				cols: { house: true, motion: true, formula: false, natal: false },
 				rows: data.lilith.map((l) => ({
-					label: `${capitalize(l.variant)} apogee`,
+					label: this.t('{{variant}} apogee', {
+						variant: capitalize(l.variant),
+					}),
 					sign: l.sign,
 					degree: l.degree,
 					house: l.house,
@@ -329,14 +331,14 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		}
 		if ('directed' in data) {
 			return {
-				title: 'Solar arc directions',
+				title: this.t('Solar arc directions'),
 				badges: [
 					{
-						label: 'Arc',
+						label: this.t('Arc'),
 						value: `${formatNumber(this.effectiveLang(), data.solarArc, 2)}°`,
 					},
 					{
-						label: 'Directed to',
+						label: this.t('Directed to'),
 						value: formatDate(this.effectiveLang(), data.targetDate),
 					},
 				],
@@ -353,9 +355,9 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		}
 		if ('lots' in data) {
 			return {
-				title: 'Arabic lots',
+				title: this.t('Arabic lots'),
 				badges: data.sect
-					? [{ label: 'Sect', value: capitalize(data.sect) }]
+					? [{ label: this.t('Sect'), value: capitalize(data.sect) }]
 					: [],
 				summary: data.summary,
 				cols: { house: false, motion: false, formula: true, natal: false },
@@ -372,7 +374,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		const angleRows: Row[] = [];
 		if (data.ascendant) {
 			angleRows.push({
-				label: 'Ascendant',
+				label: this.t('Ascendant'),
 				sign: data.ascendant.sign,
 				degree: data.ascendant.degree,
 				isAngle: true,
@@ -380,22 +382,24 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		}
 		if (data.midheaven) {
 			angleRows.push({
-				label: 'Midheaven',
+				label: this.t('Midheaven'),
 				sign: data.midheaven.sign,
 				degree: data.midheaven.degree,
 				isAngle: true,
 			});
 		}
 		return {
-			title: 'Secondary progressions',
+			title: this.t('Secondary progressions'),
 			badges: [
 				{
-					label: 'Progressed to',
+					label: this.t('Progressed to'),
 					value: formatDate(this.effectiveLang(), data.targetDate),
 				},
 				{
-					label: 'Elapsed',
-					value: `${formatNumber(this.effectiveLang(), data.elapsedYears, 1)} yrs`,
+					label: this.t('Elapsed'),
+					value: this.t('{{years}} yrs', {
+						years: formatNumber(this.effectiveLang(), data.elapsedYears, 1),
+					}),
 				},
 			],
 			summary: data.summary,

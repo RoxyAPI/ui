@@ -500,6 +500,86 @@ export const CHROME_STRINGS = [
 	// component through `renderError`. `pk_` is a literal key prefix and stays
 	// verbatim in every language.
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.',
+
+	// Western chart axes drawn on the natal wheel. Short by necessity: the label ring
+	// has a fixed width, so each one is the abbreviation that language's own charts
+	// print, not a shortened translation of the full name.
+	'ASC',
+	'DSC',
+	'MC',
+	'IC',
+	'PoF',
+	'Vtx',
+
+	// Kundli chart: the style switcher and the two words the SVG writes into a cell
+	// tooltip. The regional names are compass directions, translated as such.
+	'Kundli style',
+	'North',
+	'South',
+	'East',
+	'in {{sign}}',
+	'pada {{n}}',
+
+	// Panchang: the weekday limb. Sanskrit, and it prints as itself wherever the
+	// script allows.
+	'Vara',
+
+	// Tarot: the card fallback name and the upright / reversed switch above it.
+	'Tarot card',
+	'Upright',
+	'Reversed',
+	'Card orientation',
+
+	// Numerology: the three letter positions of a name, and the section headings the
+	// card writes over readings the response returns.
+	'Cornerstone',
+	'Capstone',
+	'First vowel',
+	'Core numbers',
+	'Lessons',
+	'Debts',
+	'Life phases',
+	'Obstacle periods',
+	'Letter analysis',
+	'Opportunities',
+
+	// The shared positions table: five response shapes through one component, so each
+	// title names the shape and the badges beside it name what that shape was cast for.
+	'Asteroids',
+	'Houses',
+	'Black Moon Lilith',
+	'{{variant}} apogee',
+	'Solar arc directions',
+	'Arc',
+	'Directed to',
+	'Arabic lots',
+	'Sect',
+	'Ascendant',
+	'Midheaven',
+	'Secondary progressions',
+	'Progressed to',
+	'Elapsed',
+	'{{years}} yrs',
+
+	// Angel numbers: the two readings that sit outside the life-area group.
+	'Biblical',
+	'Shadow',
+
+	// Accordion headings. Every component that overrides the default routes its
+	// heading through the base, so these are one vocabulary rather than one per card.
+	'Readings',
+	'Advisories',
+	'Sign compatibility',
+	'Breakdown',
+	'Changing lines',
+	'Dynamics',
+
+	// The four life areas an angel-number reading is split into, beside the
+	// `Spiritual` one already above.
+	'Love',
+	'Career',
+	'Money',
+	'Twin flame',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

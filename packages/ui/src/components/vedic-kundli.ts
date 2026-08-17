@@ -88,7 +88,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 					<h2 class="title">${title}</h2>
 					${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 				</div>
-				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
+				${renderKundliStyleTablist(this.chartStyle, this.setStyle, this.translator)}
 			</div>
 			<div
 				id="kundli-panel-${this.chartStyle}"
@@ -105,7 +105,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 					aria-label=${this.t('Vedic birth chart with twelve sign houses')}
 				>
 					<title>${this.t('Vedic kundli')}</title>
-					${renderKundliSvg(vm, this.chartStyle)}
+					${renderKundliSvg(vm, this.chartStyle, this.translator)}
 				</svg>
 			</div>
 		</div>`;

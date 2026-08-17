@@ -240,7 +240,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 		shadow?: string,
 	) {
 		return this.renderInterpretation(
-			buildMeaningSections(meaning, biblical, shadow),
+			buildMeaningSections(this.translator, meaning, biblical, shadow),
 			name,
 			'Reading',
 		);

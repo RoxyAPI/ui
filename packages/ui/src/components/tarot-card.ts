@@ -182,7 +182,7 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 		return html`<article
 			class="card"
 			part="card"
-			aria-label=${d.name ?? 'Tarot card'}
+			aria-label=${d.name ?? this.t('Tarot card')}
 		>
 			${this.renderImage(d.imageUrl, d.name, reversed)}
 			<div part="header">
@@ -200,14 +200,14 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 				<h2 class="title">${d.name ?? 'Tarot card'}</h2>
 				${renderTablist({
 					items: [
-						{ id: 'upright', label: 'Upright' },
-						{ id: 'reversed', label: 'Reversed' },
+						{ id: 'upright', label: this.t('Upright') },
+						{ id: 'reversed', label: this.t('Reversed') },
 					],
 					active: this.orientation,
 					onSelect: (id) => {
 						this.orientation = id;
 					},
-					label: 'Card orientation',
+					label: this.t('Card orientation'),
 					idPrefix: 'tarot',
 					controls: true,
 				})}

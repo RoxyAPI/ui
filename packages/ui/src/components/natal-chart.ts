@@ -727,20 +727,23 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		const mc = this.getMidheaven();
 		// ASC/DESC and MC/IC are exact axes; DESC and IC are the opposite points.
 		const marks: Array<{ longitude: number; label: string }> = [
-			{ longitude: asc, label: 'ASC' },
-			{ longitude: oppositePoint(asc), label: 'DSC' },
+			{ longitude: asc, label: this.t('ASC') },
+			{ longitude: oppositePoint(asc), label: this.t('DSC') },
 		];
 		if (mc !== null) {
-			marks.push({ longitude: mc, label: 'MC' });
-			marks.push({ longitude: oppositePoint(mc), label: 'IC' });
+			marks.push({ longitude: mc, label: this.t('MC') });
+			marks.push({ longitude: oppositePoint(mc), label: this.t('IC') });
 		}
 		const pof = this.data?.partOfFortune?.longitude;
 		if (typeof pof === 'number') {
-			marks.push({ longitude: normalizeLongitude(pof), label: 'PoF' });
+			marks.push({ longitude: normalizeLongitude(pof), label: this.t('PoF') });
 		}
 		const vertex = this.data?.vertex?.longitude;
 		if (typeof vertex === 'number') {
-			marks.push({ longitude: normalizeLongitude(vertex), label: 'Vtx' });
+			marks.push({
+				longitude: normalizeLongitude(vertex),
+				label: this.t('Vtx'),
+			});
 		}
 		return fanOut(
 			marks,
@@ -1206,7 +1209,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		return this.renderInterpretation(
 			sections,
 			'natal-planet-readings',
-			this.t('Planet readings'),
+			'Planet readings',
 		);
 	}
 

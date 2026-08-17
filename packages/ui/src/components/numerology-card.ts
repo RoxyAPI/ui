@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	CalculateBirthDayResponse,
 	CalculateExpressionResponse,
@@ -373,7 +374,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				readings
 					? this.renderLists(
 							['Opportunities', d.opportunities],
-							[this.t('Challenges'), d.challenges],
+							['Challenges', d.challenges],
 						)
 					: nothing
 			}
@@ -569,7 +570,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 						readings
 							? this.renderLists(
 									['Opportunities', year.opportunities],
-									[this.t('Challenges'), year.challenges],
+									['Challenges', year.challenges],
 								)
 							: nothing
 					}
@@ -617,7 +618,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							body: p.meaning?.description ?? '',
 							extra: this.renderLists(
 								['Opportunities', p.meaning?.opportunities],
-								[this.t('Challenges'), p.meaning?.challenges],
+								['Challenges', p.meaning?.challenges],
 							),
 						})),
 						'numerology-pinnacles',
@@ -716,7 +717,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 					${this.renderInterpretation(
 						[
 							{
-								label: 'Cornerstone',
+								label: this.t('Cornerstone'),
 								aside: letterAside(
 									letters.cornerstone?.letter,
 									letters.cornerstone?.number,
@@ -724,7 +725,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								body: letters.cornerstone?.meaning ?? '',
 							},
 							{
-								label: 'Capstone',
+								label: this.t('Capstone'),
 								aside: letterAside(
 									letters.capstone?.letter,
 									letters.capstone?.number,
@@ -732,7 +733,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								body: letters.capstone?.meaning ?? '',
 							},
 							{
-								label: 'First vowel',
+								label: this.t('First vowel'),
 								aside: letterAside(letters.firstVowel?.letter),
 								body: letters.firstVowel?.meaning ?? '',
 							},
@@ -787,14 +788,14 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 	 * `h3`, not `h4`. This renders at the TOP level of the single-number card, where the only heading above it is the `h2` title, so an `h4` skips a level and fails the axe `heading-order` rule. Inside a chart section or an accordion body the heading above is already an `h3`, and a repeated level is fine: the rule flags skips, not repeats.
 	 */
 	private renderLists(
-		...lists: Array<[string, ReadonlyArray<string> | undefined]>
+		...lists: Array<[ChromeString, ReadonlyArray<string> | undefined]>
 	) {
 		const shown = lists.filter(([, items]) => items && items.length > 0);
 		if (shown.length === 0) return nothing;
 		return html`<div class="lists">
 			${shown.map(
 				([label, items]) => html`<div>
-					<h3>${label}</h3>
+					<h3>${this.t(label)}</h3>
 					<ul>
 						${(items ?? []).map((item) => html`<li>${item}</li>`)}
 					</ul>

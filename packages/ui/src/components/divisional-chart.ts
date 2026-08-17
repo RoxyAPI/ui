@@ -109,7 +109,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 					}
 					${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 				</div>
-				${renderKundliStyleTablist(this.chartStyle, this.setStyle)}
+				${renderKundliStyleTablist(this.chartStyle, this.setStyle, this.translator)}
 			</div>
 
 			<div
@@ -127,7 +127,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 					aria-label=${this.t('{{chart}} divisional chart with twelve sign houses', { chart: `D${division.number} ${division.name}` })}
 				>
 					<title>D${division.number} ${division.name}</title>
-					${renderKundliSvg(vm, this.chartStyle)}
+					${renderKundliSvg(vm, this.chartStyle, this.translator)}
 				</svg>
 			</div>
 

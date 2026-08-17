@@ -201,7 +201,7 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 
 	private renderSections(d: NonNullable<GetAngelNumberResponse>) {
 		return this.renderInterpretation(
-			buildMeaningSections(d.meaning, d.biblical, d.shadow),
+			buildMeaningSections(this.translator, d.meaning, d.biblical, d.shadow),
 			'angel-meaning',
 			'Reading',
 		);
