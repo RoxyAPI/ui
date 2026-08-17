@@ -119,7 +119,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 				.data=${data}
 			></roxy-natal-chart>
 			<section class="changes" part="card changes">
-				<h3 class="title">What changes at this location</h3>
+				<h3 class="title">${this.t('What changes at this location')}</h3>
 				<div class="move" part="details">
 					${
 						typeof c?.distanceKm === 'number'
@@ -164,7 +164,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 				${
 					c?.angularPlanets?.length
 						? html`<div part="section angular-planets">
-							<p class="block-label">Angular planets here</p>
+							<p class="block-label">${this.t('Angular planets here')}</p>
 							<div class="chips">
 								${c.angularPlanets.map((p) => html`<span class="chip">${glyphFor(p)} ${p}</span>`)}
 							</div>
@@ -172,16 +172,16 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 						: nothing
 				}
 				<div part="section house-changes">
-					<p class="block-label">Planets that change house</p>
+					<p class="block-label">${this.t('Planets that change house')}</p>
 					${
 						c?.planetsChangedHouse?.length
 							? html`<ul class="moves-list">
 								${c.planetsChangedHouse.map(
 									(m: HouseChange) =>
-										html`<li>${glyphFor(m.planet)} ${m.planet}: house ${m.natalHouse} <span class="arrow">to</span> ${m.relocatedHouse}</li>`,
+										html`<li>${glyphFor(m.planet)} ${this.t('{{planet}}: house {{from}} to {{to}}', { planet: m.planet, from: m.natalHouse, to: m.relocatedHouse })}</li>`,
 								)}
 							</ul>`
-							: html`<p class="empty-note">No planet changes house at this location.</p>`
+							: html`<p class="empty-note">${this.t('No planet changes house at this location.')}</p>`
 					}
 				</div>
 			</section>

@@ -230,13 +230,13 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 			events.some((e) => e.domain === dom),
 		);
 
-		return html`<div class="wrap" part="card" aria-label="Forecast timeline">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Forecast timeline')}>
 			<header class="head" part="header">
-				<h2 class="title">Forecast timeline</h2>
+				<h2 class="title">${this.t('Forecast timeline')}</h2>
 				${
 					d.startDate && d.endDate
 						? html`<div class="range">
-							${formatDate(this.effectiveLang(), d.startDate)} - ${formatDate(this.effectiveLang(), d.endDate)} · ${d.count ?? events.length} events
+							${formatDate(this.effectiveLang(), d.startDate)} - ${formatDate(this.effectiveLang(), d.endDate)} · ${this.t('{{count}} events', { count: d.count ?? events.length })}
 						</div>`
 						: nothing
 				}
@@ -256,7 +256,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 					? html`<div class="days" part="section events" role="list">
 						${grouped.map(([date, dayEvents]) => this.renderDay(date, dayEvents))}
 					</div>`
-					: html`<p class="roxy-empty" role="status">No events in this window</p>`
+					: html`<p class="roxy-empty" role="status">${this.t('No events in this window')}</p>`
 			}
 		</div>`;
 	}
@@ -299,7 +299,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 						? html`<p class="event-desc">${e.description}</p>`
 						: nothing
 				}
-				<div class="sig" title="Significance ${width} of 100">
+				<div class="sig" title=${this.t('significance {{value}} of 100', { value: width })}>
 					<span class="sig-track">
 						<span class="sig-fill sig-fill-${e.domain}" style="width: ${width}%"></span>
 					</span>
@@ -333,7 +333,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 		if (aspect && target) {
 			return html`<strong>${body}</strong>
 				<span class=${aspectClass}>${aspectSym}</span>
-				<strong>${target}</strong>${orb ? html` <span class="kind">orb ${orb}°</span>` : nothing}`;
+				<strong>${target}</strong>${orb ? html` <span class="kind">${this.t('orb {{value}}°', { value: orb })}</span>` : nothing}`;
 		}
 		return html`<strong>${body || humanize(e.type ?? '')}</strong>${
 			qualifier ? html` <span class="kind">${qualifier}</span>` : nothing

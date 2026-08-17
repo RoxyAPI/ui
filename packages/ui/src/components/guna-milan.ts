@@ -277,7 +277,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 		const dashFill = pct * 2.827;
 		const dashGap = (100 - pct) * 2.827;
 
-		return html`<article class="card" part="card" aria-label="Guna Milan score">
+		return html`<article class="card" part="card" aria-label=${this.t('Guna Milan score')}>
 			<div class="score-header" part="header">
 				<div class="score-info">
 					<div class="score-bar" part="details">
@@ -310,7 +310,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 						</div>
 					</div>
 				</div>
-				<div class="score-ring" part="chart" role="meter" aria-label="Guna Milan score" aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
+				<div class="score-ring" part="chart" role="meter" aria-label=${this.t('Guna Milan score')} aria-valuemin="0" aria-valuemax="36" aria-valuenow="${score}">
 					<svg viewBox="0 0 100 100" aria-hidden="true">
 						<circle class="ring-track" cx="50" cy="50" r="45" fill="none" stroke="${trackColor}" stroke-width="8"/>
 						<circle class="ring-fill" cx="50" cy="50" r="45" fill="none" stroke="${fillColor}" stroke-width="8"
@@ -326,16 +326,15 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 				breakdown.length > 0
 					? html`<div class="table-scroll" part="table"><table>
 						<caption class="roxy-sr-only">
-							Guna Milan breakdown: each koota with the classification of person 1 and
-							person 2, and the score it earned out of its maximum.
+							${this.t('Guna Milan breakdown: each koota with the classification of person 1 and person 2, and the score it earned out of its maximum.')}
 						</caption>
 						<thead>
 							<tr>
-								<th scope="col">Koota</th>
+								<th scope="col">${this.t('Koota')}</th>
 								<th scope="col">${this.t('Person 1')}</th>
 								<th scope="col">${this.t('Person 2')}</th>
-								<th scope="col" class="bar-col">Progress</th>
-								<th scope="col" class="score">Score</th>
+								<th scope="col" class="bar-col">${this.t('Progress')}</th>
+								<th scope="col" class="score">${this.t('Score')}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -368,7 +367,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 						${d.doshas?.map((x) => html`<span class="dosha">${x}</span>`)}
 						${d.doshaCancellations?.map(
 							(x) =>
-								html`<span class="cancel" title=${x.reason}>${x.dosha} cancelled</span>`,
+								html`<span class="cancel" title=${x.reason}>${this.t('{{dosha}} cancelled', { dosha: x.dosha })}</span>`,
 						)}
 					</div>`
 					: nothing

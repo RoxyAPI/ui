@@ -139,26 +139,26 @@ export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
 		const lordNatalGlyph = signGlyph(data.lordNatalPosition?.sign);
 		return html`<div class="wrap" part="card">
 			<header part="header">
-				<h2 class="title">Annual profection</h2>
-				${data.targetDate ? html`<span class="badge"><b>For</b> ${formatDate(this.effectiveLang(), data.targetDate)}</span>` : nothing}
+				<h2 class="title">${this.t('Annual profection')}</h2>
+				${data.targetDate ? html`<span class="badge"><b>${this.t('For')}</b> ${formatDate(this.effectiveLang(), data.targetDate)}</span>` : nothing}
 			</header>
 			<div class="focus" part="details">
 				<div class="age">
 					<span class="n">${data.age}</span>
-					<span class="l">Age</span>
+					<span class="l">${this.t('Age')}</span>
 				</div>
-				<span class="arrow">activates</span>
+				<span class="arrow">${this.t('Activates')}</span>
 				<div class="house">
-					<span class="h">House ${data.profectedHouse}</span>
+					<span class="h">${this.t('House')} ${data.profectedHouse}</span>
 					<span class="sign">${sGlyph ? html`<span class="sg">${sGlyph}</span>` : nothing}${data.profectedSign}</span>
 				</div>
 			</div>
 			<div class="lord" part="details">
-				<span class="label">Lord of the year</span>
+				<span class="label">${this.t('Lord of the year')}</span>
 				<span class="value">${lordGlyph ? html`${lordGlyph} ` : nothing}${data.lordOfYear}</span>
 				${
 					data.lordNatalPosition
-						? html`<span class="sub">natal ${lordNatalGlyph ? html`<span>${lordNatalGlyph}</span> ` : nothing}${data.lordNatalPosition.sign} · house ${data.lordNatalPosition.house}</span>`
+						? html`<span class="sub">${this.t('Natal')} ${lordNatalGlyph ? html`<span>${lordNatalGlyph}</span> ` : nothing}${this.t('{{sign}} · house {{house}}', { sign: data.lordNatalPosition.sign, house: data.lordNatalPosition.house })}</span>`
 						: nothing
 				}
 			</div>

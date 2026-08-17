@@ -129,7 +129,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 			return html`<article
 				class="card"
 				part="card"
-				aria-label="Moon phase calendar"
+				aria-label=${this.t('Moon phase calendar')}
 			>
 				<h2 class="label" part="header">${month ?? 'Moon phases'} ${year ?? ''}</h2>
 				<div class="list" part="table" role="list">
@@ -145,7 +145,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 		// The API ships the exact phase emoji in meaning.symbol; prefer it and fall
 		// back to the name-derived glyph for the list endpoints that omit meaning.
 		const emoji = d.meaning?.symbol || phaseEmoji(d.phase);
-		return html`<article class="card" part="card" aria-label="Current moon phase">
+		return html`<article class="card" part="card" aria-label=${this.t('Current moon phase')}>
 			<div class="hero" part="header">
 				<span class="emoji" aria-hidden="true">${emoji}</span>
 				<div>
@@ -157,7 +157,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 				${
 					typeof d.illumination === 'number'
 						? html`<div>
-							<span>Illumination</span>
+							<span>${this.t('Illumination')}</span>
 							<strong>${formatPercent(this.effectiveLang(), d.illumination <= 1 ? d.illumination * 100 : d.illumination, 0)}</strong>
 						</div>`
 						: nothing
@@ -165,15 +165,15 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 				${
 					typeof d.age === 'number'
 						? html`<div>
-							<span>Age</span>
-							<strong>${formatNumber(this.effectiveLang(), d.age, 1)} days</strong>
+							<span>${this.t('Age')}</span>
+							<strong>${this.t('{{count}} days', { count: formatNumber(this.effectiveLang(), d.age, 1) })}</strong>
 						</div>`
 						: nothing
 				}
 				${
 					d.sign
 						? html`<div>
-							<span>Sign</span>
+							<span>${this.t('Sign')}</span>
 							<strong>${d.sign}</strong>
 						</div>`
 						: nothing
@@ -181,8 +181,8 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 				${
 					typeof d.distance === 'number'
 						? html`<div>
-							<span>Distance</span>
-							<strong>${formatNumber(this.effectiveLang(), d.distance / 1000, 0)}k km</strong>
+							<span>${this.t('Distance')}</span>
+							<strong>${this.t('{{value}}k km', { value: formatNumber(this.effectiveLang(), d.distance / 1000, 0) })}</strong>
 						</div>`
 						: nothing
 				}

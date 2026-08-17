@@ -434,6 +434,35 @@ export const fr: Record<ChromeString, string> = {
 	'Crystals for {{sign}}': 'Cristaux pour {{sign}}',
 	'{{month}} birthstones': 'Pierres de naissance de {{month}}',
 	Crystals: 'Cristaux',
+	'Forecast timeline': 'Chronologie des prévisions',
+	'No events in this window': 'Aucun événement sur cette période',
+	'orb {{value}}°': 'orbe {{value}}°',
+	'Guna Milan score': 'Score de Guna Milan',
+	Koota: 'Koota',
+	Progress: 'Progression',
+	Score: 'Points',
+	'{{dosha}} cancelled': '{{dosha}} annulé',
+	'Moon phase calendar': 'Calendrier des phases lunaires',
+	'Current moon phase': 'Phase lunaire actuelle',
+	Illumination: 'Illumination',
+	Age: 'Âge',
+	Sign: 'Signe',
+	Distance: 'Distance',
+	'{{count}} days': '{{count}} jours',
+	'{{value}}k km': '{{value}} mille km',
+	'Annual profection': 'Profection annuelle',
+	For: 'Pour',
+	'Lord of the year': 'Maître de année',
+	'What changes at this location': 'Ce qui change en ce lieu',
+	'Angular planets here': 'Planètes angulaires ici',
+	'Planets that change house': 'Planètes changeant de maison',
+	'No planet changes house at this location.':
+		'Aucune planète ne change de maison en ce lieu.',
+	'Guna Milan breakdown: each koota with the classification of person 1 and person 2, and the score it earned out of its maximum.':
+		'Détail du Guna Milan : chaque koota avec le classement de la personne 1 et de la personne 2 et les points obtenus sur le maximum.',
+	'{{sign}} · house {{house}}': '{{sign}} · maison {{house}}',
+	'{{planet}}: house {{from}} to {{to}}':
+		'{{planet}} : maison {{from}} vers {{to}}',
 };
 
 registerLocale('fr', fr);
