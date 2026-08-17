@@ -690,6 +690,9 @@ describe('shipped locales', () => {
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'Yogas',
+				'Person {{n}}',
+				'Planet 1',
+				'Planet 2',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -810,6 +813,7 @@ describe('shipped locales', () => {
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'Yogas',
+				'ASC{{n}}',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -965,8 +969,9 @@ describe('shipped locales', () => {
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'Yogas',
+				'ASC{{n}}',
 			],
-			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
+			hi: ['ASC', 'ASC{{n}}', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
 			// `Mutável` at three characters, which lands on the English set;
 			// `Cardinal` is the full Portuguese word. `Aura`, `Bodygraph` and `Motor`
@@ -1081,6 +1086,7 @@ describe('shipped locales', () => {
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'Yogas',
+				'ASC{{n}}',
 			],
 			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -1175,6 +1181,7 @@ describe('shipped locales', () => {
 				'Rashi.',
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
+				'ASC{{n}}',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1228,7 +1235,7 @@ describe('shipped locales', () => {
 			const wrongScript = Object.entries(catalog)
 				.filter(
 					([source, translated]) =>
-						!AXIS_TOKEN.test(source) &&
+						!AXIS_TOKEN.test(source.replace(/\{\{\w+\}\}/g, '')) &&
 						!ONLY_SLOTS(source) &&
 						!script.test(translated),
 				)
@@ -1368,8 +1375,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
-		'components/synastry-chart.ts': 24,
-		'components/yoga-list.ts': 27,
 	};
 
 	/** Path to the literals it writes, keyed the way the budget is. */

@@ -866,6 +866,44 @@ export const ru: Record<ChromeString, string> = {
 		'Сарваштакаварга: каждый из двенадцати знаков и бинду, которые дают ему все планеты, с общим итогом.',
 	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
 		'Шодхья Пинда: каждая планета со значениями силы Раши Пинда, Граха Пинда и Шодхья Пинда.',
+	'Detected yogas': 'Обнаруженные йоги',
+	'Yoga catalog': 'Каталог йог',
+	'Yoga results': 'Результаты по йогам',
+	'No yoga data': 'Нет данных по йогам',
+	'No yogas match your search.': 'Ни одна йога не подходит под запрос.',
+	'Filter yogas...': 'Фильтр йог...',
+	'Filter detected yogas by name': 'Фильтровать обнаруженные йоги по названию',
+	'Filter yoga list by name': 'Фильтровать список йог по названию',
+	'{{count}} of {{total}} present': '{{count}} из {{total}} присутствуют',
+	'{{count}} total': 'всего: {{count}}',
+	'Classical family': 'Классическое семейство',
+	Effects: 'Действие',
+	'Every classical condition is satisfied by this chart.':
+		'В этой карте выполнено каждое классическое условие.',
+	'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.':
+		'Правило сработало, но более сильное семейство подавляет его по классическим нормам старшинства. На каждой карточке указано семейство, получившее приоритет.',
+	'At least one classical condition fails. Read the evidence for which.':
+		'Хотя бы одно классическое условие не выполнено. В обоснованиях видно какое.',
+	Synastry: 'Синастрия',
+	'Synastry compatibility chart': 'Карта совместимости синастрии',
+	'Synastry dual wheel': 'Двойное колесо синастрии',
+	'Dual chart wheel comparing two natal charts':
+		'Двойное колесо, сравнивающее две натальные карты',
+	'Synastry response missing planet positions.':
+		'В ответе синастрии нет положений планет.',
+	'A current {{endpoint}} response carries {{first}} and {{second}}, and the inter-aspect readings below still work without them.':
+		'Актуальный ответ {{endpoint}} содержит {{first}} и {{second}}, а толкования межаспектов ниже работают и без них.',
+	'Inter-aspects': 'Межаспекты',
+	'Inter-aspect summary': 'Сводка межаспектов',
+	'In this pairing': 'В этой паре',
+	'All {{count}} inter-aspects': 'Все межаспекты: {{count}}',
+	'orb {{orb}}° · str {{strength}}': 'орбис {{orb}}° · сила {{strength}}',
+	'ASC{{n}}': 'Асц{{n}}',
+	'Person {{n}}': 'Человек {{n}}',
+	'Planet 1': 'Планета 1',
+	'Planet 2': 'Планета 2',
+	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
+		'Аспекты между картами: планета из карты 1, планета из карты 2, аспект между ними, орбис в градусах и сила.',
 };
 
 registerLocale('ru', ru);

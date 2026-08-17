@@ -974,6 +974,43 @@ export const CHROME_STRINGS = [
 	'No shodhya pinda data',
 	'Sarvashtakavarga: each of the twelve signs and the bindus all planets contribute to it, with a grand total.',
 	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.',
+
+	// Yoga catalogue and detection: the three verdict groups with the line that says
+	// what each one means, the filter box, and the counts beside the heading.
+	'Detected yogas',
+	'Yoga catalog',
+	'Yoga results',
+	'No yoga data',
+	'No yogas match your search.',
+	'Filter yogas...',
+	'Filter detected yogas by name',
+	'Filter yoga list by name',
+	'{{count}} of {{total}} present',
+	'{{count}} total',
+	'Classical family',
+	'Effects',
+	'Every classical condition is satisfied by this chart.',
+	'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.',
+	'At least one classical condition fails. Read the evidence for which.',
+
+	// Synastry: the dual wheel, its legend, the notice when a response carries no
+	// positions, and the inter-aspect table under it.
+	'Synastry',
+	'Synastry compatibility chart',
+	'Synastry dual wheel',
+	'Dual chart wheel comparing two natal charts',
+	'Synastry response missing planet positions.',
+	'A current {{endpoint}} response carries {{first}} and {{second}}, and the inter-aspect readings below still work without them.',
+	'Inter-aspects',
+	'Inter-aspect summary',
+	'In this pairing',
+	'All {{count}} inter-aspects',
+	'orb {{orb}}° · str {{strength}}',
+	'ASC{{n}}',
+	'Person {{n}}',
+	'Planet 1',
+	'Planet 2',
+	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

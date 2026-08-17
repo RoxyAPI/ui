@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	DetectYogasResponse,
 	GetYogaResponse,
@@ -57,21 +58,24 @@ function familyRank(y: FamilyBearing): number {
 const VERDICTS = [
 	{
 		id: 'present',
-		label: 'Present',
+		source: 'Present' as ChromeString,
 		open: true,
-		note: 'Every classical condition is satisfied by this chart.',
+		noteSource:
+			'Every classical condition is satisfied by this chart.' as ChromeString,
 	},
 	{
 		id: 'outranked',
-		label: 'Outranked',
+		source: 'Outranked' as ChromeString,
 		open: true,
-		note: 'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.',
+		noteSource:
+			'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.' as ChromeString,
 	},
 	{
 		id: 'absent',
-		label: 'Not present',
+		source: 'Not present' as ChromeString,
 		open: false,
-		note: 'At least one classical condition fails. Read the evidence for which.',
+		noteSource:
+			'At least one classical condition fails. Read the evidence for which.' as ChromeString,
 	},
 ] as const;
 
@@ -373,10 +377,10 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 		const ordered = [...yogas].sort((a, b) => familyRank(a) - familyRank(b));
 		return html`<details class="group" part="section verdict" ?open=${verdict.open || !!this.filter}>
 			<summary class="group-summary">
-				<span class="group-label">${verdict.label}</span>
+				<span class="group-label">${this.t(verdict.source)}</span>
 				<span class="group-count">${yogas.length}</span>
 			</summary>
-			<p class="group-note">${verdict.note}</p>
+			<p class="group-note">${this.t(verdict.noteSource)}</p>
 			<div class="detail-grid">${ordered.map((y) => this.renderDetectCard(y))}</div>
 		</details>`;
 	}
@@ -393,7 +397,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 	 */
 	private renderFamilyChip(y: FamilyBearing) {
 		return y.family
-			? html`<span class="family-chip" title="Classical family">
+			? html`<span class="family-chip" title=${this.t('Classical family')}>
 				${capitalize(y.family)}
 			</span>`
 			: nothing;
@@ -424,7 +428,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 	private renderEffects(result: string | undefined) {
 		if (!result || this.hideReadings) return nothing;
 		return html`<details part="reading">
-			<summary>Effects</summary>
+			<summary>${this.t('Effects')}</summary>
 			<div class="result-body">${result}</div>
 		</details>`;
 	}
@@ -486,16 +490,16 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 					detected.filter((y) => y.present).length;
 				return html`<div class="wrap" part="card">
 					<div class="head" part="header">
-						<h2 class="title">Detected yogas</h2>
-						<span class="count">${presentCount} of ${detected.length} present</span>
+						<h2 class="title">${this.t('Detected yogas')}</h2>
+						<span class="count">${this.t('{{count}} of {{total}} present', { count: presentCount, total: detected.length })}</span>
 					</div>
 					${renderFrameCaption(this.effectiveLang(), (d as DetectYogasResponse).frame, this.translator)}
 					<div class="search-wrap">
 						<input
 							class="search"
 							type="search"
-							placeholder="Filter yogas..."
-							aria-label="Filter detected yogas by name"
+							placeholder=${this.t('Filter yogas...')}
+							aria-label=${this.t('Filter detected yogas by name')}
 							.value=${this.filter}
 							@input=${this.handleInput}
 						/>
@@ -505,7 +509,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 						part="section verdicts"
 						role="region"
 						aria-live="polite"
-						aria-label="Detected yogas"
+						aria-label=${this.t('Detected yogas')}
 					>
 						${
 							filtered.length > 0
@@ -515,7 +519,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 											filtered.filter((y) => this.verdictOf(y) === v.id),
 										),
 									)
-								: html`<p class="no-results">No yogas match your search.</p>`
+								: html`<p class="no-results">${this.t('No yogas match your search.')}</p>`
 						}
 					</div>
 				</div>`;
@@ -531,10 +535,10 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 				const total = (d as ListYogasResponse).total;
 				return html`<div class="wrap" part="card">
 					<div class="head" part="header">
-						<h2 class="title">Yoga catalog</h2>
+						<h2 class="title">${this.t('Yoga catalog')}</h2>
 						${
 							total !== undefined
-								? html`<span class="count">${total} total</span>`
+								? html`<span class="count">${this.t('{{count}} total', { count: total })}</span>`
 								: nothing
 						}
 					</div>
@@ -542,8 +546,8 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 						<input
 							class="search"
 							type="search"
-							placeholder="Filter yogas..."
-							aria-label="Filter yoga list by name"
+							placeholder=${this.t('Filter yogas...')}
+							aria-label=${this.t('Filter yoga list by name')}
 							.value=${this.filter}
 							@input=${this.handleInput}
 						/>
@@ -553,12 +557,12 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 						part="section yogas"
 						role="region"
 						aria-live="polite"
-						aria-label="Yoga results"
+						aria-label=${this.t('Yoga results')}
 					>
 						${
 							filtered.length > 0
 								? filtered.map((y) => this.renderDetailCard(y))
-								: html`<p class="no-results">No yogas match your search.</p>`
+								: html`<p class="no-results">${this.t('No yogas match your search.')}</p>`
 						}
 					</div>
 				</div>`;
@@ -572,10 +576,10 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 			const total = (d as ListYogasResponse).total;
 			return html`<div class="wrap" part="card">
 				<div class="head" part="header">
-					<h2 class="title">Yoga catalog</h2>
+					<h2 class="title">${this.t('Yoga catalog')}</h2>
 					${
 						total !== undefined
-							? html`<span class="count">${total} total</span>`
+							? html`<span class="count">${this.t('{{count}} total', { count: total })}</span>`
 							: nothing
 					}
 				</div>
@@ -583,8 +587,8 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 					<input
 						class="search"
 						type="search"
-						placeholder="Filter yogas..."
-						aria-label="Filter yoga list by name"
+						placeholder=${this.t('Filter yogas...')}
+						aria-label=${this.t('Filter yoga list by name')}
 						.value=${this.filter}
 						@input=${this.handleInput}
 					/>
@@ -594,7 +598,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 					part="section yogas"
 					role="region"
 					aria-live="polite"
-					aria-label="Yoga results"
+					aria-label=${this.t('Yoga results')}
 				>
 					${
 						filtered.length > 0
@@ -603,13 +607,13 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 									${y.name}
 								</div>`,
 								)
-							: html`<p class="no-results">No yogas match your search.</p>`
+							: html`<p class="no-results">${this.t('No yogas match your search.')}</p>`
 					}
 				</div>
 			</div>`;
 		}
 
-		return html`<div class="roxy-empty" role="status">No yoga data</div>`;
+		return html`<div class="roxy-empty" role="status">${this.t('No yoga data')}</div>`;
 	}
 }
 

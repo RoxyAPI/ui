@@ -885,6 +885,44 @@ export const hi: Record<ChromeString, string> = {
 		'सर्वाष्टकवर्ग: बारह राशियों में से प्रत्येक और सभी ग्रहों द्वारा दिए गए बिंदु, कुल योग सहित।',
 	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
 		'शोध्य पिंड: प्रत्येक ग्रह के राशि पिंड, ग्रह पिंड और शोध्य पिंड बल अंक।',
+	'Detected yogas': 'पहचाने गए योग',
+	'Yoga catalog': 'योग सूची',
+	'Yoga results': 'योग परिणाम',
+	'No yoga data': 'योग डेटा नहीं',
+	'No yogas match your search.': 'आपकी खोज से कोई योग मेल नहीं खाता।',
+	'Filter yogas...': 'योग छाँटें...',
+	'Filter detected yogas by name': 'पहचाने गए योग नाम से छाँटें',
+	'Filter yoga list by name': 'योग सूची नाम से छाँटें',
+	'{{count}} of {{total}} present': '{{total}} में से {{count}} उपस्थित',
+	'{{count}} total': 'कुल {{count}}',
+	'Classical family': 'शास्त्रीय वर्ग',
+	Effects: 'फल',
+	'Every classical condition is satisfied by this chart.':
+		'इस कुंडली में प्रत्येक शास्त्रीय शर्त पूरी होती है।',
+	'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.':
+		'नियम लगा, परंतु शास्त्रीय प्राथमिकता के अनुसार एक प्रबल वर्ग उसे शांत कर देता है। प्रत्येक कार्ड उस वर्ग का नाम देता है जिसे प्राथमिकता मिली।',
+	'At least one classical condition fails. Read the evidence for which.':
+		'कम से कम एक शास्त्रीय शर्त पूरी नहीं होती। प्रमाण बताते हैं कि कौन सी।',
+	Synastry: 'संबंध कुंडली',
+	'Synastry compatibility chart': 'संबंध अनुकूलता कुंडली',
+	'Synastry dual wheel': 'संबंध द्वि चक्र',
+	'Dual chart wheel comparing two natal charts':
+		'दो जन्म कुंडलियों की तुलना करता द्वि चक्र',
+	'Synastry response missing planet positions.':
+		'संबंध कुंडली उत्तर में ग्रह स्थितियाँ नहीं हैं।',
+	'A current {{endpoint}} response carries {{first}} and {{second}}, and the inter-aspect readings below still work without them.':
+		'वर्तमान {{endpoint}} उत्तर में {{first}} और {{second}} होते हैं, और नीचे की पारस्परिक दृष्टि व्याख्याएँ उनके बिना भी काम करती हैं।',
+	'Inter-aspects': 'पारस्परिक दृष्टियाँ',
+	'Inter-aspect summary': 'पारस्परिक दृष्टि सारांश',
+	'In this pairing': 'इस जोड़ी में',
+	'All {{count}} inter-aspects': 'सभी {{count}} पारस्परिक दृष्टियाँ',
+	'orb {{orb}}° · str {{strength}}': 'ऑर्ब {{orb}}° · बल {{strength}}',
+	'ASC{{n}}': 'ASC{{n}}',
+	'Person {{n}}': 'व्यक्ति {{n}}',
+	'Planet 1': 'ग्रह 1',
+	'Planet 2': 'ग्रह 2',
+	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
+		'कुंडलियों के बीच दृष्टियाँ: कुंडली 1 का ग्रह, कुंडली 2 का ग्रह, उनके बीच दृष्टि, अंश में ओर्ब और बल।',
 };
 
 registerLocale('hi', hi);

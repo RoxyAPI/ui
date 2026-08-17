@@ -875,6 +875,44 @@ export const de: Record<ChromeString, string> = {
 		'Sarvashtakavarga: jedes der zwölf Zeichen und die Bindus, die alle Planeten dazu beitragen, mit einer Gesamtsumme.',
 	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
 		'Shodhya Pinda: jeder Planet mit seinen Stärkewerten für Rashi Pinda, Graha Pinda und Shodhya Pinda.',
+	'Detected yogas': 'Erkannte Yogas',
+	'Yoga catalog': 'Yoga-Katalog',
+	'Yoga results': 'Yoga-Ergebnisse',
+	'No yoga data': 'Keine Yoga-Daten',
+	'No yogas match your search.': 'Keine Yogas entsprechen Ihrer Suche.',
+	'Filter yogas...': 'Yogas filtern...',
+	'Filter detected yogas by name': 'Erkannte Yogas nach Namen filtern',
+	'Filter yoga list by name': 'Yoga-Liste nach Namen filtern',
+	'{{count}} of {{total}} present': '{{count}} von {{total}} vorhanden',
+	'{{count}} total': '{{count}} insgesamt',
+	'Classical family': 'Klassische Familie',
+	Effects: 'Wirkungen',
+	'Every classical condition is satisfied by this chart.':
+		'Jede klassische Bedingung ist in diesem Horoskop erfüllt.',
+	'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.':
+		'Die Regel traf zu, doch eine stärkere Familie hebt sie nach den klassischen Vorrangregeln auf. Jede Karte nennt die Familie, die Vorrang hatte.',
+	'At least one classical condition fails. Read the evidence for which.':
+		'Mindestens eine klassische Bedingung ist nicht erfüllt. Die Belege zeigen, welche.',
+	Synastry: 'Synastrie',
+	'Synastry compatibility chart': 'Synastrie-Kompatibilitätshoroskop',
+	'Synastry dual wheel': 'Synastrie-Doppelrad',
+	'Dual chart wheel comparing two natal charts':
+		'Doppelrad, das zwei Geburtshoroskope vergleicht',
+	'Synastry response missing planet positions.':
+		'In der Synastrie-Antwort fehlen die Planetenpositionen.',
+	'A current {{endpoint}} response carries {{first}} and {{second}}, and the inter-aspect readings below still work without them.':
+		'Eine aktuelle {{endpoint}}-Antwort enthält {{first}} und {{second}}, und die Interaspekt-Deutungen unten funktionieren auch ohne sie.',
+	'Inter-aspects': 'Interaspekte',
+	'Inter-aspect summary': 'Interaspekt-Übersicht',
+	'In this pairing': 'In dieser Verbindung',
+	'All {{count}} inter-aspects': 'Alle {{count}} Interaspekte',
+	'orb {{orb}}° · str {{strength}}': 'Orbis {{orb}}° · Stärke {{strength}}',
+	'ASC{{n}}': 'AC{{n}}',
+	'Person {{n}}': 'Person {{n}}',
+	'Planet 1': 'Planet 1',
+	'Planet 2': 'Planet 2',
+	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
+		'Aspekte zwischen den Horoskopen: der Planet aus Horoskop 1, der Planet aus Horoskop 2, der Aspekt zwischen ihnen, der Orbis in Grad und die Stärke.',
 };
 
 registerLocale('de', de);

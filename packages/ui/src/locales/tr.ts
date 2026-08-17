@@ -873,6 +873,44 @@ export const tr: Record<ChromeString, string> = {
 		'Sarvashtakavarga: on iki burcun her biri ve tüm gezegenlerin ona kattığı bindular, genel toplamla.',
 	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
 		'Shodhya Pinda: her gezegen Rashi Pinda, Graha Pinda ve Shodhya Pinda güç puanlarıyla.',
+	'Detected yogas': 'Tespit edilen yogalar',
+	'Yoga catalog': 'Yoga kataloğu',
+	'Yoga results': 'Yoga sonuçları',
+	'No yoga data': 'Yoga verisi yok',
+	'No yogas match your search.': 'Aramanızla eşleşen yoga yok.',
+	'Filter yogas...': 'Yogaları filtrele...',
+	'Filter detected yogas by name': 'Tespit edilen yogaları ada göre filtrele',
+	'Filter yoga list by name': 'Yoga listesini ada göre filtrele',
+	'{{count}} of {{total}} present': '{{total}} yogadan {{count}} tanesi var',
+	'{{count}} total': 'toplam {{count}}',
+	'Classical family': 'Klasik aile',
+	Effects: 'Etkiler',
+	'Every classical condition is satisfied by this chart.':
+		'Bu harita klasik koşulların hepsini karşılıyor.',
+	'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.':
+		'Kural sağlandı, ancak klasik öncelik normlarına göre daha güçlü bir aile onu susturuyor. Her kart önceliği alan aileyi belirtir.',
+	'At least one classical condition fails. Read the evidence for which.':
+		'En az bir klasik koşul sağlanmıyor. Hangisi olduğu kanıtlarda görülür.',
+	Synastry: 'Sinastri',
+	'Synastry compatibility chart': 'Sinastri uyum haritası',
+	'Synastry dual wheel': 'Sinastri çift çarkı',
+	'Dual chart wheel comparing two natal charts':
+		'İki doğum haritasını karşılaştıran çift çark',
+	'Synastry response missing planet positions.':
+		'Sinastri yanıtında gezegen konumları yok.',
+	'A current {{endpoint}} response carries {{first}} and {{second}}, and the inter-aspect readings below still work without them.':
+		'Güncel bir {{endpoint}} yanıtı {{first}} ve {{second}} taşır, aşağıdaki karşılıklı açı yorumları onlarsız da çalışır.',
+	'Inter-aspects': 'Karşılıklı açılar',
+	'Inter-aspect summary': 'Karşılıklı açı özeti',
+	'In this pairing': 'Bu eşleşmede',
+	'All {{count}} inter-aspects': '{{count}} karşılıklı açının tümü',
+	'orb {{orb}}° · str {{strength}}': 'orb {{orb}}° · güç {{strength}}',
+	'ASC{{n}}': 'ASC{{n}}',
+	'Person {{n}}': 'Kişi {{n}}',
+	'Planet 1': 'Gezegen 1',
+	'Planet 2': 'Gezegen 2',
+	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
+		'Haritalar arası açılar: harita 1 gezegeni, harita 2 gezegeni, aralarındaki açı, derece cinsinden orb ve güç.',
 };
 
 registerLocale('tr', tr);

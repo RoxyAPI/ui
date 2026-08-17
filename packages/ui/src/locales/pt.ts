@@ -867,6 +867,44 @@ export const pt: Record<ChromeString, string> = {
 		'Sarvashtakavarga: cada um dos doze signos e os bindus que todos os planetas lhe dão, com um total geral.',
 	'Shodhya Pinda: each planet with its Rashi Pinda, Graha Pinda and Shodhya Pinda strength scores.':
 		'Shodhya Pinda: cada planeta com as suas pontuações de força de Rashi Pinda, Graha Pinda e Shodhya Pinda.',
+	'Detected yogas': 'Yogas detetados',
+	'Yoga catalog': 'Catálogo de yogas',
+	'Yoga results': 'Resultados de yogas',
+	'No yoga data': 'Sem dados de yogas',
+	'No yogas match your search.': 'Nenhum yoga corresponde à sua pesquisa.',
+	'Filter yogas...': 'Filtrar yogas...',
+	'Filter detected yogas by name': 'Filtrar por nome os yogas detetados',
+	'Filter yoga list by name': 'Filtrar a lista de yogas por nome',
+	'{{count}} of {{total}} present': '{{count}} de {{total}} presentes',
+	'{{count}} total': '{{count}} no total',
+	'Classical family': 'Família clássica',
+	Effects: 'Efeitos',
+	'Every classical condition is satisfied by this chart.':
+		'Este mapa cumpre todas as condições clássicas.',
+	'The rule matched, but a stronger family silences it under the classical precedence norms. Each card names the family that took precedence.':
+		'A regra aplicou-se, mas uma família mais forte silencia-a segundo as normas clássicas de precedência. Cada cartão indica a família que teve precedência.',
+	'At least one classical condition fails. Read the evidence for which.':
+		'Pelo menos uma condição clássica falha. A evidência indica qual.',
+	Synastry: 'Sinastria',
+	'Synastry compatibility chart': 'Mapa de compatibilidade de sinastria',
+	'Synastry dual wheel': 'Roda dupla de sinastria',
+	'Dual chart wheel comparing two natal charts':
+		'Roda dupla que compara dois mapas natais',
+	'Synastry response missing planet positions.':
+		'A resposta de sinastria não traz as posições planetárias.',
+	'A current {{endpoint}} response carries {{first}} and {{second}}, and the inter-aspect readings below still work without them.':
+		'Uma resposta atual de {{endpoint}} traz {{first}} e {{second}}, e as leituras de interaspetos abaixo funcionam na mesma sem elas.',
+	'Inter-aspects': 'Interaspetos',
+	'Inter-aspect summary': 'Resumo dos interaspetos',
+	'In this pairing': 'Neste par',
+	'All {{count}} inter-aspects': 'Os {{count}} interaspetos',
+	'orb {{orb}}° · str {{strength}}': 'orbe {{orb}}° · força {{strength}}',
+	'ASC{{n}}': 'ASC{{n}}',
+	'Person {{n}}': 'Pessoa {{n}}',
+	'Planet 1': 'Planeta 1',
+	'Planet 2': 'Planeta 2',
+	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
+		'Aspetos entre mapas: o planeta do mapa 1, o planeta do mapa 2, o aspeto entre eles, o orbe em graus e a força.',
 };
 
 registerLocale('pt', pt);
