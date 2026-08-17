@@ -507,6 +507,8 @@ describe('shipped locales', () => {
 			// the only one of the seven where that happens; the other six all
 			// translate the head noun.
 			de: [
+				// `Element` is the German word.
+				'Element',
 				// `Emotional` is the German word.
 				'Emotional',
 				// `Planet` is the German word.
@@ -538,6 +540,9 @@ describe('shipped locales', () => {
 			// `Base` and `Variables` are the Spanish Human Design words, and
 			// `Bodygraph` is the loanword the API's Spanish prose prints.
 			es: [
+				// `Compatible` and `Incompatible` are the Spanish words unchanged.
+				'Compatible',
+				'Incompatible',
 				// `Chakras` is the Spanish spelling of the Sanskrit term.
 				'Chakras',
 				// `Vargottama` is Sanskrit (varga, division; uttama, best) and every
@@ -569,6 +574,9 @@ describe('shipped locales', () => {
 			// `Direction`, `Base`, `Cognition` and `Variables` unchanged, and
 			// `Activations` differs from the English only in a plural it already has.
 			fr: [
+				// `Compatible` and `Incompatible` are the French words unchanged.
+				'Compatible',
+				'Incompatible',
 				// `Chakras` and `Vibration` are the French words unchanged.
 				'Chakras',
 				'Vibration',
@@ -656,6 +664,8 @@ describe('shipped locales', () => {
 				'Relocation',
 				'Hora',
 				'Vargottama',
+				// `Element` is the Turkish word too.
+				'Element',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -798,7 +808,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/local-space-compass.ts': 9,
 		'components/moon-phase.ts': 8,
 		'components/nakshatra-card.ts': 9,
-		'components/numerology-card.ts': 35,
 		'components/panchang-table.ts': 35,
 		'components/positions-table.ts': 5,
 		'components/profection-card.ts': 7,

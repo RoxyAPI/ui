@@ -278,7 +278,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		| 'chart' = 'life-path';
 
 	protected renderData(d: NumerologyData) {
-		const headerLabel = LABELS[this.type] ?? this.type;
+		const headerLabel = this.t(LABELS[this.type] ?? this.type);
 		if ('coreNumbers' in d) return this.renderChart(d, headerLabel);
 		// Period reads share a number+theme+body shape but differ in field names;
 		// check the most specific key first (a personal-day response also carries
@@ -301,7 +301,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				// it are the reading of that fact.
 				d.hasKarmicDebt && d.karmicDebtNumber
 					? html`<div class="karmic" part="section karmic-debt">
-						Karmic debt ${d.karmicDebtNumber}.
+						${this.t('Karmic debt')} ${d.karmicDebtNumber}.
 						${readings ? karmicDebtText(d.karmicDebtMeaning) : ''}
 					</div>`
 					: nothing
@@ -330,13 +330,13 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${this.renderHero(headerLabel, d.personalDay, d.theme)}
 			${d.guidance && !this.hideReadings ? html`<p class="meaning">${d.guidance}</p>` : nothing}
 			<dl class="attrs" part="details">
-				${this.attr('Date', formatDate(this.effectiveLang(), d.targetDate))}
+				${this.attr(this.t('Date'), formatDate(this.effectiveLang(), d.targetDate))}
 				${this.attr(
-					'Personal month',
+					this.t('Personal month'),
 					joinCycle(d.personalMonth, d.personalMonthTheme),
 				)}
 				${this.attr(
-					'Personal year',
+					this.t('Personal year'),
 					joinCycle(d.personalYear, d.personalYearTheme),
 				)}
 			</dl>
@@ -351,9 +351,9 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${this.renderHero(headerLabel, d.personalMonth, d.theme)}
 			${d.focus && !this.hideReadings ? html`<p class="meaning">${d.focus}</p>` : nothing}
 			<dl class="attrs" part="details">
-				${this.attr('Calendar month', d.calendarMonth)}
+				${this.attr(this.t('Calendar month'), d.calendarMonth)}
 				${this.attr(
-					'Personal year',
+					this.t('Personal year'),
 					joinCycle(d.personalYear, d.personalYearTheme),
 				)}
 			</dl>
@@ -373,7 +373,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 				readings
 					? this.renderLists(
 							['Opportunities', d.opportunities],
-							['Challenges', d.challenges],
+							[this.t('Challenges'), d.challenges],
 						)
 					: nothing
 			}
@@ -407,7 +407,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 									<strong>${v.number ?? ''}</strong>
 								</div>
 								${v.meaning?.title ? html`<span class="core-title">${v.meaning.title}</span>` : nothing}
-								${isMaster(v.number, v.type) ? html`<span class="master">Master ${v.number}</span>` : nothing}
+								${isMaster(v.number, v.type) ? html`<span class="master">${this.t('Master')} ${v.number}</span>` : nothing}
 							</div>`,
 						)}
 					</div>`
@@ -434,16 +434,16 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${
 				maturity
 					? html`<dl class="attrs" part="details maturity">
-						${this.attr('Maturity', maturity.isActive ? 'Active' : 'Not yet active')}
-						${this.attr('Current age', maturity.currentAge)}
-						${this.attr('Activates', maturity.activationRange)}
+						${this.attr(this.t('Maturity'), maturity.isActive ? 'Active' : 'Not yet active')}
+						${this.attr(this.t('Current age'), maturity.currentAge)}
+						${this.attr(this.t('Activates'), maturity.activationRange)}
 					</dl>`
 					: nothing
 			}
 			${
 				profile
 					? html`<section class="sub" part="section birth-day-profile">
-						<h3>Birth day profile</h3>
+						<h3>${this.t('Birth day profile')}</h3>
 						${
 							profile.title
 								? html`<h4 class="sub-title">
@@ -460,15 +460,15 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			${
 				lucky
 					? html`<section class="sub" part="section lucky-associations">
-						<h3>Lucky associations</h3>
+						<h3>${this.t('Lucky associations')}</h3>
 						<dl class="attrs">
-							${this.attr('Day', lucky.day)}
-							${this.attr('Element', lucky.element)}
-							${this.attr('Ruling planet', lucky.rulingPlanet)}
-							${this.attr('Colors', lucky.colors?.join(', '))}
-							${this.attr('Gemstones', lucky.gemstones?.join(', '))}
-							${this.attr('Compatible', lucky.compatibleNumbers?.join(', '))}
-							${this.attr('Incompatible', lucky.incompatibleNumbers?.join(', '))}
+							${this.attr(this.t('Day'), lucky.day)}
+							${this.attr(this.t('Element'), lucky.element)}
+							${this.attr(this.t('Ruling planet'), lucky.rulingPlanet)}
+							${this.attr(this.t('Colors'), lucky.colors?.join(', '))}
+							${this.attr(this.t('Gemstones'), lucky.gemstones?.join(', '))}
+							${this.attr(this.t('Compatible'), lucky.compatibleNumbers?.join(', '))}
+							${this.attr(this.t('Incompatible'), lucky.incompatibleNumbers?.join(', '))}
 						</dl>
 					</section>`
 					: nothing
@@ -492,13 +492,13 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		return html`${
 			lessons
 				? html`<section class="sub" part="section karmic-lessons">
-					<h3>Karmic lessons</h3>
+					<h3>${this.t('Karmic lessons')}</h3>
 					${
 						lessons.missingNumbers?.length
 							? html`<div class="chips">
-								${lessons.missingNumbers.map((n) => html`<span>Missing ${n}</span>`)}
+								${lessons.missingNumbers.map((n) => html`<span>${this.t('Missing')} ${n}</span>`)}
 							</div>`
-							: html`<p>No numbers are missing from the birth name.</p>`
+							: html`<p>${this.t('No numbers are missing from the birth name.')}</p>`
 					}
 					${
 						present.length > 0
@@ -513,7 +513,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							aside: l.number != null ? `${l.number}` : '',
 							body: l.description ?? '',
 							extra: l.howToOvercome
-								? html`<p><strong>How to overcome.</strong> ${l.howToOvercome}</p>`
+								? html`<p><strong>${this.t('How to overcome')}.</strong> ${l.howToOvercome}</p>`
 								: nothing,
 						})),
 						'numerology-karmic-lessons',
@@ -524,25 +524,25 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		}${
 			debt?.hasKarmicDebt
 				? html`<section class="sub" part="section karmic-debt">
-					<h3>Karmic debt</h3>
+					<h3>${this.t('Karmic debt')}</h3>
 					${
 						debt.debtNumbers?.length
 							? html`<div class="chips">
-								${debt.debtNumbers.map((n) => html`<span>Debt ${n}</span>`)}
+								${debt.debtNumbers.map((n) => html`<span>${this.t('Debt')} ${n}</span>`)}
 							</div>`
 							: nothing
 					}
 					${this.renderInterpretation(
 						(debt.meanings ?? []).map((m) => ({
-							label: `Karmic debt ${m.number}`,
+							label: `${this.t('Karmic debt')} ${m.number}`,
 							body: m.description ?? '',
 							extra: html`${
 								m.challenge
-									? html`<p><strong>Challenge.</strong> ${m.challenge}</p>`
+									? html`<p><strong>${this.t('Challenge')}.</strong> ${m.challenge}</p>`
 									: nothing
 							}${
 								m.resolution
-									? html`<p><strong>Resolution.</strong> ${m.resolution}</p>`
+									? html`<p><strong>${this.t('Resolution')}.</strong> ${m.resolution}</p>`
 									: nothing
 							}`,
 						})),
@@ -554,7 +554,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		}${
 			year
 				? html`<section class="sub" part="section personal-year">
-					<h3>Personal year</h3>
+					<h3>${this.t('Personal year')}</h3>
 					<h4 class="sub-title">
 						${[
 							year.personalYear != null ? `${year.personalYear}` : '',
@@ -569,7 +569,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 						readings
 							? this.renderLists(
 									['Opportunities', year.opportunities],
-									['Challenges', year.challenges],
+									[this.t('Challenges'), year.challenges],
 								)
 							: nothing
 					}
@@ -581,8 +581,8 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							? html`<p>
 								<strong>${[
 									year.personalMonth.personalMonth != null
-										? `Personal month ${year.personalMonth.personalMonth}`
-										: 'Personal month',
+										? `${this.t('Personal month')} ${year.personalMonth.personalMonth}`
+										: this.t('Personal month'),
 									year.personalMonth.theme ?? '',
 								]
 									.filter(Boolean)
@@ -599,7 +599,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			// empty block.
 			ins.pinnacles?.length && readings
 				? html`<section class="sub" part="section pinnacles">
-					<h3>Pinnacles</h3>
+					<h3>${this.t('Pinnacles')}</h3>
 					${this.renderInterpretation(
 						ins.pinnacles.map((p) => ({
 							label: [
@@ -617,7 +617,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							body: p.meaning?.description ?? '',
 							extra: this.renderLists(
 								['Opportunities', p.meaning?.opportunities],
-								['Challenges', p.meaning?.challenges],
+								[this.t('Challenges'), p.meaning?.challenges],
 							),
 						})),
 						'numerology-pinnacles',
@@ -628,7 +628,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		}${
 			ins.challenges?.length && readings
 				? html`<section class="sub" part="section obstacle-periods">
-					<h3>Challenges</h3>
+					<h3>${this.t('Challenges')}</h3>
 					${this.renderInterpretation(
 						ins.challenges.map((c) => ({
 							label: [
@@ -646,11 +646,11 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 							body: c.meaning?.description ?? '',
 							extra: html`${
 								c.meaning?.lesson
-									? html`<p><strong>Lesson.</strong> ${c.meaning.lesson}</p>`
+									? html`<p><strong>${this.t('Lesson')}.</strong> ${c.meaning.lesson}</p>`
 									: nothing
 							}${
 								c.meaning?.howToOvercome
-									? html`<p><strong>How to overcome.</strong> ${c.meaning.howToOvercome}</p>`
+									? html`<p><strong>${this.t('How to overcome')}.</strong> ${c.meaning.howToOvercome}</p>`
 									: nothing
 							}`,
 						})),
@@ -662,7 +662,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		}${
 			passion || subconscious
 				? html`<section class="sub" part="section name-numbers">
-					<h3>Name numbers</h3>
+					<h3>${this.t('Name numbers')}</h3>
 					${
 						passion
 							? html`<div>
@@ -712,7 +712,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 		}${
 			letters && readings
 				? html`<section class="sub" part="section name-letters">
-					<h3>Name letters</h3>
+					<h3>${this.t('Name letters')}</h3>
 					${this.renderInterpretation(
 						[
 							{
@@ -757,7 +757,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 			<div>
 				<p class="label">${headerLabel}</p>
 				${title ? html`<h2 class="title">${title}</h2>` : nothing}
-				${master ? html`<span class="master">Master number</span>` : nothing}
+				${master ? html`<span class="master">${this.t('Master number')}</span>` : nothing}
 			</div>
 		</div>`;
 	}
@@ -818,8 +818,8 @@ const LABELS: Record<string, string> = {
 	maturity: 'Maturity',
 	daily: 'Daily Number',
 	'personal-day': 'Personal Day',
-	'personal-month': 'Personal Month',
-	'personal-year': 'Personal Year',
+	'personal-month': 'Personal month',
+	'personal-year': 'Personal year',
 	chart: 'Numerology chart',
 };
 

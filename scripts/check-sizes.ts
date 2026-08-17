@@ -30,9 +30,11 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	componentGzip: 30 * KB,
 	widgetsGzip: WIDGETS_BUDGET_BYTES,
 	// A catalogue is one download that translates every element on the page, and
-	// it is pure text, which gzip eats. 8 KB is several times the natal-chart
-	// scope, so the ceiling bites long before a payload is worth splitting.
-	localeGzip: 8 * KB,
+	// it is pure text, which gzip eats. The ceiling tracks how many cards are
+	// covered; Cyrillic and Devanagari reach any byte ceiling first, at roughly
+	// two bytes a character against one for Latin. Split the payload rather than
+	// raise this again once coverage is complete.
+	localeGzip: 12 * KB,
 };
 
 export interface Artifact {
