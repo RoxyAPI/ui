@@ -2147,7 +2147,7 @@ describe('roxy-dasha-timeline drill-down levels', () => {
 			},
 			'antara',
 		);
-		expect(text(el)).toContain('Pratyantardashas in Venus Antardasha');
+		expect(text(el)).toContain('Pratyantardasha periods in Venus Antardasha');
 		el.remove();
 	});
 
@@ -2172,7 +2172,7 @@ describe('roxy-dasha-timeline drill-down levels', () => {
 			},
 			'sookshma',
 		);
-		expect(text(el)).toContain('Sookshmas in Rahu Pratyantardasha');
+		expect(text(el)).toContain('Sookshma periods in Rahu Pratyantardasha');
 		el.remove();
 	});
 
@@ -2267,7 +2267,7 @@ describe('roxy-dasha-timeline drill-down levels', () => {
 			'prana',
 		);
 		const t = text(el);
-		expect(t).toContain('Pranas in Jupiter Sookshma');
+		expect(t).toContain('Prana periods in Jupiter Sookshma');
 		// Every ancestor lord, or a reader at the fifth level cannot tell which
 		// branch of the chart the list belongs to.
 		expect(t).toContain('Saturn › Venus › Rahu › Jupiter');
@@ -2862,7 +2862,7 @@ describe('roxy-dasha-timeline heads correctly with no period attribute', () => {
 				},
 			],
 		});
-		expect(heading(el)).toBe('Pratyantardashas in Venus Antardasha');
+		expect(heading(el)).toBe('Pratyantardasha periods in Venus Antardasha');
 		el.remove();
 	});
 

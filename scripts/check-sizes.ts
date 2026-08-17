@@ -34,13 +34,18 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// covered; Cyrillic and Devanagari reach any byte ceiling first, at roughly
 	// two bytes a character against one for Latin.
 	//
-	// Set to where FULL coverage lands, measured rather than guessed: a string
-	// costs about nine gzipped bytes, and `ru` read 11.1 KB with 468 still
-	// untranslated, so the last card lands near 15 KB. Hitting this is therefore
-	// the signal that coverage is DONE and the payload should be split rather
-	// than raised. Split on the chrome catalogue: the API field labels are about
-	// a sixth of the source and separating them buys almost nothing.
-	localeGzip: 16 * KB,
+	// Set to where full coverage lands, re-measured: 605 entries put `ru` at
+	// 15.5 KB, and the 144 still to come are long sentences rather than column
+	// headers, so the landing point is near 19 KB. An earlier estimate of nine
+	// bytes a string was drawn from short labels and undershot by half.
+	//
+	// This is a coverage tracker, not a performance limit: the payload is one
+	// cached download per site, and an English site fetches none of it. When
+	// this trips with nothing left to translate, SPLIT rather than raise again,
+	// and split the chrome catalogue by domain so a page embedding one card
+	// stops paying for twelve. Not the API field labels: those are about a
+	// sixth of the source, measured, and separating them buys almost nothing.
+	localeGzip: 20 * KB,
 };
 
 export interface Artifact {

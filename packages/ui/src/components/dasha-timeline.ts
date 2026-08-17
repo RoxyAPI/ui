@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GetCurrentDashaResponse,
 	GetMajorDashasResponse,
@@ -45,7 +46,7 @@ type Remaining = GetCurrentDashaResponse['remainingInMahadasha'];
  * routes are `period="sub"`, and only the payload says whether the list is
  * antardashas, pratyantardashas or sookshma dashas.
  */
-function levelOf(d: DashaData): string {
+function levelOf(d: DashaData): ChromeString {
 	// Deepest level first, matching parentOf. No response carries two of these
 	// keys today, so the order is not yet load-bearing; it is the order that stays
 	// correct when a level is added, since a shallower key that a deeper payload
@@ -60,15 +61,15 @@ function levelOf(d: DashaData): string {
 /** The parent period a drill-down response hangs off, with the level it sits at. */
 function parentOf(
 	d: DashaData,
-): { label: string; period: DashaPeriod } | undefined {
+): { source: ChromeString; period: DashaPeriod } | undefined {
 	if ('sookshmaPeriod' in d && d.sookshmaPeriod)
-		return { label: 'Sookshma', period: d.sookshmaPeriod };
+		return { source: 'Sookshma', period: d.sookshmaPeriod };
 	if ('pratyantardashaPeriod' in d && d.pratyantardashaPeriod)
-		return { label: 'Pratyantardasha', period: d.pratyantardashaPeriod };
+		return { source: 'Pratyantardasha', period: d.pratyantardashaPeriod };
 	if ('antardashaPeriod' in d && d.antardashaPeriod)
-		return { label: 'Antardasha', period: d.antardashaPeriod };
+		return { source: 'Antardasha', period: d.antardashaPeriod };
 	if ('mahadashaPeriod' in d && d.mahadashaPeriod)
-		return { label: 'Mahadasha', period: d.mahadashaPeriod };
+		return { source: 'Mahadasha', period: d.mahadashaPeriod };
 	return undefined;
 }
 
@@ -347,22 +348,27 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		// card became a single column of periods, prose and provenance, and the
 		// dates (the reason anyone opens it) were pushed below the fold.
 		const tabs = [
-			{ id: 'timeline' as const, label: 'Timeline' },
+			{ id: 'timeline' as const, label: this.t('Timeline') },
 			...(readings.length
-				? [{ id: 'readings' as const, label: `Readings (${readings.length})` }]
+				? [
+						{
+							id: 'readings' as const,
+							label: this.t('Readings ({{count}})', { count: readings.length }),
+						},
+					]
 				: []),
 			// "Chart details", never "Chart": this panel is the sidereal frame the
 			// dates came from, not a wheel. A reader who clicks a tab labelled Chart
 			// expects to see one drawn.
 			...(frame.length
-				? [{ id: 'frame' as const, label: 'Chart details' }]
+				? [{ id: 'frame' as const, label: this.t('Chart details') }]
 				: []),
 		];
 		// A tab that no longer exists (data changed under a selection) must not
 		// blank the card, so fall back to the first.
 		const view = tabs.some((t) => t.id === this.view) ? this.view : 'timeline';
 
-		return html`<div class="wrap" part="card" aria-label="Dasha timeline">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Dasha timeline')}>
 			<header class="head" part="header">
 				<h2 class="title">${this.heading(d)}</h2>
 				${this.renderLordChain(d)}
@@ -377,7 +383,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 							onSelect: (v) => {
 								this.view = v;
 							},
-							label: 'Dasha views',
+							label: this.t('Dasha views'),
 							idPrefix: 'roxy-dasha',
 							controls: true,
 						})
@@ -403,15 +409,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 							}`
 						: nothing
 				}
-				${
-					view === 'readings'
-						? this.renderInterpretation(
-								readings,
-								'roxy-dasha',
-								readings.length === 1 ? 'Reading' : 'Readings',
-							)
-						: nothing
-				}
+				${view === 'readings' ? this.renderReadings(readings) : nothing}
 				${view === 'frame' ? this.renderFrame(frame) : nothing}
 			</div>
 		</div>`;
@@ -436,8 +434,14 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		}
 		if ('nakshatraName' in d && d.nakshatraName) {
 			return html`<div class="nakshatra">
-				Moon nakshatra: ${d.nakshatraName}
-				${'nakshatraLord' in d && d.nakshatraLord ? html`(lord ${d.nakshatraLord})` : nothing}
+				${
+					'nakshatraLord' in d && d.nakshatraLord
+						? this.t('Moon nakshatra: {{name}} (lord {{lord}})', {
+								name: d.nakshatraName,
+								lord: d.nakshatraLord,
+							})
+						: this.t('Moon nakshatra: {{name}}', { name: d.nakshatraName })
+				}
 			</div>`;
 		}
 		return nothing;
@@ -510,14 +514,31 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	 * self-identifying (it carries a parent period), so the markup does not need
 	 * to be told.
 	 */
+	/** The accordion for this view. Singular or plural by count, decided here rather than inside the template so the two sources are ordinary arguments the compiler checks. */
+	private renderReadings(readings: InterpSection[]) {
+		return this.renderInterpretation(
+			readings,
+			'roxy-dasha',
+			readings.length === 1 ? 'Reading' : 'Readings',
+		);
+	}
+
 	private heading(d: DashaData): string {
 		const parent = parentOf(d);
 		if (parent) {
-			return `${levelOf(d)}s in ${parent.period.planet} ${parent.label}`;
+			// One whole sentence: an English plural formed by appending an s is a
+			// letter no other language adds in the same place.
+			return this.t('{{level}} periods in {{planet}} {{parent}}', {
+				level: this.t(levelOf(d)),
+				planet: parent.period.planet,
+				parent: this.t(parent.source),
+			});
 		}
-		if ('mahadashas' in d) return 'Vimshottari Mahadasha';
-		if ('mahadasha' in d) return 'Active dashas';
-		return this.period === 'major' ? 'Vimshottari Mahadasha' : 'Active dashas';
+		if ('mahadashas' in d) return this.t('Vimshottari Mahadasha');
+		if ('mahadasha' in d) return this.t('Active dashas');
+		return this.period === 'major'
+			? this.t('Vimshottari Mahadasha')
+			: this.t('Active dashas');
 	}
 
 	/**
@@ -538,12 +559,21 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			? formatDate(this.effectiveLang(), p.nominalStartDate)
 			: '';
 		return html`<p class="parent">
-			Inside the <strong>${p.planet}</strong> ${parent.label}${span ? `, ${span}` : ''}
-			${typeof p.durationYears === 'number' ? `(${formatDuration(this.effectiveLang(), p.durationYears)})` : ''}.
+			${this.t('Inside the {{planet}} {{level}}{{span}}{{duration}}.', {
+				planet: p.planet,
+				level: this.t(parent.source),
+				span: span ? `, ${span}` : '',
+				duration:
+					typeof p.durationYears === 'number'
+						? ` (${formatDuration(this.effectiveLang(), p.durationYears)})`
+						: '',
+			})}
 			${
 				began
-					? html`<br />It began ${began}, before birth, so only the sub-periods running
-						after the birth date are listed.`
+					? html`<br />${this.t(
+							'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.',
+							{ date: began },
+						)}`
 					: nothing
 			}
 		</p>`;
@@ -561,7 +591,10 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 		const parent = parentOf(d);
 		if (parent?.period.interpretation) {
 			sections.push({
-				label: `${parent.period.planet} ${parent.label}`,
+				label: this.t('{{planet}} {{level}}', {
+					planet: parent.period.planet,
+					level: this.t(parent.source),
+				}),
 				aside: formatSpan(this.effectiveLang(), parent.period),
 				body: parent.period.interpretation,
 			});
@@ -579,9 +612,12 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				if (!period?.interpretation) continue;
 				const left = formatBalance(remaining);
 				sections.push({
-					label: `${period.planet} ${label}`,
+					label: this.t('{{planet}} {{level}}', {
+						planet: period.planet,
+						level: this.t(label),
+					}),
 					aside: left
-						? `${left} left`
+						? this.t('{{balance}} left', { balance: left })
 						: formatSpan(this.effectiveLang(), period),
 					body: period.interpretation,
 				});
@@ -615,10 +651,10 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				const left = formatBalance(remaining);
 				const houses = periodHouseWords(period.significators, d.houseThemes);
 				return html`<div>
-					<span>${label}</span>
+					<span>${this.t(label)}</span>
 					<strong>${period.planet}</strong>
-					${left ? html`<small>${left} left</small>` : nothing}
-					${houses ? html`<small class="houses">Signifies ${houses}</small>` : nothing}
+					${left ? html`<small>${this.t('{{balance}} left', { balance: left })}</small>` : nothing}
+					${houses ? html`<small class="houses">${this.t('Signifies {{houses}}', { houses })}</small>` : nothing}
 				</div>`;
 			})}
 		</div>`;
@@ -688,7 +724,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			aria-current=${current ? 'time' : 'false'}
 		>
 			<span>
-				<strong>${p.planet}</strong>${current ? html`<span class="now-badge">Now</span>` : nothing}
+				<strong>${p.planet}</strong>${current ? html`<span class="now-badge">${this.t('Now')}</span>` : nothing}
 			</span>
 			<span class=${trackClass}>
 				<span class="bar-fill" style="width: ${width}%"></span>
@@ -706,7 +742,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				${p.startDate ? formatDateGrain(this.effectiveLang(), p.startDate, grain) : ''}
 				${p.endDate ? html`- ${formatDateGrain(this.effectiveLang(), p.endDate, grain)}` : ''}
 			</span>
-			${houses ? html`<span class="houses">Signifies ${houses}</span>` : nothing}
+			${houses ? html`<span class="houses">${this.t('Signifies {{houses}}', { houses })}</span>` : nothing}
 		</div>`;
 	}
 }

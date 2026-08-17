@@ -882,6 +882,51 @@ export const CHROME_STRINGS = [
 	'Lagna',
 	'Arudha Lagna',
 	'Upapada',
+
+	// Vimshottari levels, Sanskrit, and the lines the timeline builds from them.
+	'Mahadasha',
+	'Antardasha',
+	'Pratyantardasha',
+	'Sookshma',
+	'Prana',
+	'Dasha timeline',
+	'Timeline',
+	'Chart details',
+	'Dasha views',
+	'Vimshottari Mahadasha',
+	'Active dashas',
+	'{{level}} periods in {{planet}} {{parent}}',
+	'{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.',
+	'Moon nakshatra: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})',
+	'{{balance}} left',
+	'Signifies {{houses}}',
+
+	// Biorhythm: the daily card, the forecast window and the critical days it flags.
+	'Biorhythm',
+	'Daily biorhythm',
+	'Biorhythm forecast',
+	'Forecast',
+	'No forecast',
+	'Biorhythm cycle lines across the forecast window',
+	'Spotlight cycle',
+	'critical day',
+	'Critical days',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.',
+	'Best day',
+	'Worst day',
+	'Average energy',
+	'Events',
+	'Double days',
+	'Triple day',
+	'Readings ({{count}})',
+
+	// The two forecast cycles the legend names beyond the physical and emotional
+	// pair already above.
+	'Intellectual',
+	'Intuitive',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

@@ -774,6 +774,50 @@ export const pt: Record<ChromeString, string> = {
 	Lagna: 'Lagna',
 	'Arudha Lagna': 'Arudha Lagna',
 	Upapada: 'Upapada',
+	Mahadasha: 'Mahadasha',
+	Antardasha: 'Antardasha',
+	Pratyantardasha: 'Pratyantardasha',
+	Sookshma: 'Sookshma',
+	Prana: 'Prana',
+	'Dasha timeline': 'Linha temporal de dashas',
+	Timeline: 'Linha temporal',
+	'Chart details': 'Detalhes do mapa',
+	'Dasha views': 'Vistas de dashas',
+	'Vimshottari Mahadasha': 'Mahadasha Vimshottari',
+	'Active dashas': 'Dashas ativas',
+	'{{level}} periods in {{planet}} {{parent}}':
+		'Períodos {{level}} em {{planet}} {{parent}}',
+	'{{planet}} {{level}}': '{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.':
+		'Dentro da {{level}} de {{planet}}{{span}}{{duration}}.',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.':
+		'Começou em {{date}}, antes do nascimento, por isso só se listam os subperíodos posteriores à data de nascimento.',
+	'Moon nakshatra: {{name}}': 'Nakshatra da Lua: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})':
+		'Nakshatra da Lua: {{name}} (regente {{lord}})',
+	'{{balance}} left': 'faltam {{balance}}',
+	'Signifies {{houses}}': 'Significa {{houses}}',
+	Biorhythm: 'Biorritmo',
+	'Daily biorhythm': 'Biorritmo diário',
+	'Biorhythm forecast': 'Previsão de biorritmo',
+	Forecast: 'Previsão',
+	'No forecast': 'Sem previsão',
+	'Biorhythm cycle lines across the forecast window':
+		'Linhas dos ciclos de biorritmo na janela de previsão',
+	'Spotlight cycle': 'Ciclo em destaque',
+	'critical day': 'dia crítico',
+	'Critical days': 'Dias críticos',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.':
+		'Dois ou mais ciclos cruzam o zero em {{dates}}. Convém redobrar o cuidado nesses dias.',
+	'Best day': 'Melhor dia',
+	'Worst day': 'Pior dia',
+	'Average energy': 'Energia média',
+	Events: 'Eventos',
+	'Double days': 'Dias duplos',
+	'Triple day': 'Dia triplo',
+	'Readings ({{count}})': 'Leituras ({{count}})',
+	Intellectual: 'Intelectual',
+	Intuitive: 'Intuitivo',
 };
 
 registerLocale('pt', pt);

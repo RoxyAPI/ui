@@ -780,6 +780,50 @@ export const tr: Record<ChromeString, string> = {
 	Lagna: 'Lagna',
 	'Arudha Lagna': 'Arudha Lagna',
 	Upapada: 'Upapada',
+	Mahadasha: 'Mahadasha',
+	Antardasha: 'Antardasha',
+	Pratyantardasha: 'Pratyantardasha',
+	Sookshma: 'Sookshma',
+	Prana: 'Prana',
+	'Dasha timeline': 'Dasha zaman çizelgesi',
+	Timeline: 'Zaman çizelgesi',
+	'Chart details': 'Harita ayrıntıları',
+	'Dasha views': 'Dasha görünümleri',
+	'Vimshottari Mahadasha': 'Vimshottari Mahadasha',
+	'Active dashas': 'Etkin dashalar',
+	'{{level}} periods in {{planet}} {{parent}}':
+		'{{planet}} {{parent}} içindeki {{level}} dönemleri',
+	'{{planet}} {{level}}': '{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.':
+		'{{planet}} {{level}} içinde{{span}}{{duration}}.',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.':
+		'{{date}} tarihinde, doğumdan önce başladı, bu yüzden yalnızca doğum tarihinden sonraki alt dönemler listelenir.',
+	'Moon nakshatra: {{name}}': 'Ay nakshatrası: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})':
+		'Ay nakshatrası: {{name}} (yönetici {{lord}})',
+	'{{balance}} left': '{{balance}} kaldı',
+	'Signifies {{houses}}': '{{houses}} anlamına gelir',
+	Biorhythm: 'Biyoritim',
+	'Daily biorhythm': 'Günlük biyoritim',
+	'Biorhythm forecast': 'Biyoritim tahmini',
+	Forecast: 'Tahmin',
+	'No forecast': 'Tahmin yok',
+	'Biorhythm cycle lines across the forecast window':
+		'Tahmin penceresi boyunca biyoritim döngü çizgileri',
+	'Spotlight cycle': 'Öne çıkan döngü',
+	'critical day': 'kritik gün',
+	'Critical days': 'Kritik günler',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.':
+		'{{dates}} tarihlerinde iki veya daha fazla döngü sıfırı geçiyor. Bu günlerde daha dikkatli olun.',
+	'Best day': 'En iyi gün',
+	'Worst day': 'En kötü gün',
+	'Average energy': 'Ortalama enerji',
+	Events: 'Olaylar',
+	'Double days': 'Çift günler',
+	'Triple day': 'Üçlü gün',
+	'Readings ({{count}})': 'Yorumlar ({{count}})',
+	Intellectual: 'Zihinsel',
+	Intuitive: 'Sezgisel',
 };
 
 registerLocale('tr', tr);

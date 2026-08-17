@@ -794,6 +794,50 @@ export const es: Record<ChromeString, string> = {
 	Lagna: 'Lagna',
 	'Arudha Lagna': 'Arudha Lagna',
 	Upapada: 'Upapada',
+	Mahadasha: 'Mahadasha',
+	Antardasha: 'Antardasha',
+	Pratyantardasha: 'Pratyantardasha',
+	Sookshma: 'Sookshma',
+	Prana: 'Prana',
+	'Dasha timeline': 'Línea temporal de dashas',
+	Timeline: 'Línea temporal',
+	'Chart details': 'Detalles de la carta',
+	'Dasha views': 'Vistas de dashas',
+	'Vimshottari Mahadasha': 'Mahadasha Vimshottari',
+	'Active dashas': 'Dashas activas',
+	'{{level}} periods in {{planet}} {{parent}}':
+		'Periodos {{level}} en {{planet}} {{parent}}',
+	'{{planet}} {{level}}': '{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.':
+		'Dentro de la {{level}} de {{planet}}{{span}}{{duration}}.',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.':
+		'Comenzó el {{date}}, antes del nacimiento, por eso solo se listan los subperiodos posteriores a la fecha de nacimiento.',
+	'Moon nakshatra: {{name}}': 'Nakshatra de la Luna: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})':
+		'Nakshatra de la Luna: {{name}} (regente {{lord}})',
+	'{{balance}} left': 'quedan {{balance}}',
+	'Signifies {{houses}}': 'Significa {{houses}}',
+	Biorhythm: 'Biorritmo',
+	'Daily biorhythm': 'Biorritmo diario',
+	'Biorhythm forecast': 'Pronóstico de biorritmo',
+	Forecast: 'Pronóstico',
+	'No forecast': 'Sin pronóstico',
+	'Biorhythm cycle lines across the forecast window':
+		'Líneas de los ciclos de biorritmo en la ventana de pronóstico',
+	'Spotlight cycle': 'Ciclo destacado',
+	'critical day': 'día crítico',
+	'Critical days': 'Días críticos',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.':
+		'Dos o más ciclos cruzan el cero el {{dates}}. Conviene extremar el cuidado esos días.',
+	'Best day': 'Mejor día',
+	'Worst day': 'Peor día',
+	'Average energy': 'Energía media',
+	Events: 'Eventos',
+	'Double days': 'Días dobles',
+	'Triple day': 'Día triple',
+	'Readings ({{count}})': 'Lecturas ({{count}})',
+	Intellectual: 'Intelectual',
+	Intuitive: 'Intuitivo',
 };
 
 registerLocale('es', es);

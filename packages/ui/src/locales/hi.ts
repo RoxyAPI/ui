@@ -792,6 +792,50 @@ export const hi: Record<ChromeString, string> = {
 	Lagna: 'लग्न',
 	'Arudha Lagna': 'अरुढ़ लग्न',
 	Upapada: 'उपपद',
+	Mahadasha: 'महादशा',
+	Antardasha: 'अंतर्दशा',
+	Pratyantardasha: 'प्रत्यंतर्दशा',
+	Sookshma: 'सूक्ष्म',
+	Prana: 'प्राण',
+	'Dasha timeline': 'दशा कालक्रम',
+	Timeline: 'कालक्रम',
+	'Chart details': 'कुंडली विवरण',
+	'Dasha views': 'दशा दृश्य',
+	'Vimshottari Mahadasha': 'विंशोत्तरी महादशा',
+	'Active dashas': 'सक्रिय दशाएँ',
+	'{{level}} periods in {{planet}} {{parent}}':
+		'{{planet}} {{parent}} में {{level}} अवधियाँ',
+	'{{planet}} {{level}}': '{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.':
+		'{{planet}} {{level}} के भीतर{{span}}{{duration}}।',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.':
+		'यह {{date}} को, जन्म से पहले आरंभ हुई, इसलिए केवल जन्म तिथि के बाद चलने वाली उप अवधियाँ दी गई हैं।',
+	'Moon nakshatra: {{name}}': 'चंद्र नक्षत्र: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})':
+		'चंद्र नक्षत्र: {{name}} (स्वामी {{lord}})',
+	'{{balance}} left': '{{balance}} शेष',
+	'Signifies {{houses}}': '{{houses}} का सूचक',
+	Biorhythm: 'जैव लय',
+	'Daily biorhythm': 'दैनिक जैव लय',
+	'Biorhythm forecast': 'जैव लय पूर्वानुमान',
+	Forecast: 'पूर्वानुमान',
+	'No forecast': 'कोई पूर्वानुमान नहीं',
+	'Biorhythm cycle lines across the forecast window':
+		'पूर्वानुमान अवधि में जैव लय चक्र रेखाएँ',
+	'Spotlight cycle': 'मुख्य चक्र',
+	'critical day': 'संकट दिवस',
+	'Critical days': 'संकट दिवस',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.':
+		'{{dates}} को दो या अधिक चक्र शून्य पार करते हैं। इन तिथियों पर विशेष सावधानी रखें।',
+	'Best day': 'सर्वोत्तम दिन',
+	'Worst day': 'सबसे कठिन दिन',
+	'Average energy': 'औसत ऊर्जा',
+	Events: 'घटनाएँ',
+	'Double days': 'द्विक दिवस',
+	'Triple day': 'त्रिक दिवस',
+	'Readings ({{count}})': 'व्याख्याएँ ({{count}})',
+	Intellectual: 'बौद्धिक',
+	Intuitive: 'सहज',
 };
 
 registerLocale('hi', hi);

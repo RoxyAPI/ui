@@ -782,6 +782,50 @@ export const de: Record<ChromeString, string> = {
 	Lagna: 'Lagna',
 	'Arudha Lagna': 'Arudha Lagna',
 	Upapada: 'Upapada',
+	Mahadasha: 'Mahadasha',
+	Antardasha: 'Antardasha',
+	Pratyantardasha: 'Pratyantardasha',
+	Sookshma: 'Sookshma',
+	Prana: 'Prana',
+	'Dasha timeline': 'Dasha-Zeitleiste',
+	Timeline: 'Zeitleiste',
+	'Chart details': 'Horoskopdetails',
+	'Dasha views': 'Dasha-Ansichten',
+	'Vimshottari Mahadasha': 'Vimshottari Mahadasha',
+	'Active dashas': 'Aktive Dashas',
+	'{{level}} periods in {{planet}} {{parent}}':
+		'{{level}}-Perioden in {{planet}} {{parent}}',
+	'{{planet}} {{level}}': '{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.':
+		'In der {{planet}}-{{level}}{{span}}{{duration}}.',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.':
+		'Sie begann am {{date}}, vor der Geburt, daher sind nur die Unterperioden nach dem Geburtsdatum aufgeführt.',
+	'Moon nakshatra: {{name}}': 'Mond-Nakshatra: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})':
+		'Mond-Nakshatra: {{name}} (Herrscher {{lord}})',
+	'{{balance}} left': '{{balance}} verbleibend',
+	'Signifies {{houses}}': 'Bezeichnet {{houses}}',
+	Biorhythm: 'Biorhythmus',
+	'Daily biorhythm': 'Täglicher Biorhythmus',
+	'Biorhythm forecast': 'Biorhythmus-Prognose',
+	Forecast: 'Prognose',
+	'No forecast': 'Keine Prognose',
+	'Biorhythm cycle lines across the forecast window':
+		'Biorhythmus-Kurven über den Prognosezeitraum',
+	'Spotlight cycle': 'Hervorgehobener Zyklus',
+	'critical day': 'kritischer Tag',
+	'Critical days': 'Kritische Tage',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.':
+		'Zwei oder mehr Zyklen kreuzen die Null am {{dates}}. An diesen Tagen ist besondere Vorsicht angebracht.',
+	'Best day': 'Bester Tag',
+	'Worst day': 'Schlechtester Tag',
+	'Average energy': 'Durchschnittliche Energie',
+	Events: 'Ereignisse',
+	'Double days': 'Doppeltage',
+	'Triple day': 'Dreifachtag',
+	'Readings ({{count}})': 'Deutungen ({{count}})',
+	Intellectual: 'Intellektuell',
+	Intuitive: 'Intuitiv',
 };
 
 registerLocale('de', de);

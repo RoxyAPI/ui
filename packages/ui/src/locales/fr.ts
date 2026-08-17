@@ -787,6 +787,50 @@ export const fr: Record<ChromeString, string> = {
 	Lagna: 'Lagna',
 	'Arudha Lagna': 'Arudha Lagna',
 	Upapada: 'Upapada',
+	Mahadasha: 'Mahadasha',
+	Antardasha: 'Antardasha',
+	Pratyantardasha: 'Pratyantardasha',
+	Sookshma: 'Sookshma',
+	Prana: 'Prana',
+	'Dasha timeline': 'Chronologie des dashas',
+	Timeline: 'Chronologie',
+	'Chart details': 'Détails du thème',
+	'Dasha views': 'Vues des dashas',
+	'Vimshottari Mahadasha': 'Mahadasha Vimshottari',
+	'Active dashas': 'Dashas actives',
+	'{{level}} periods in {{planet}} {{parent}}':
+		'Périodes {{level}} dans {{planet}} {{parent}}',
+	'{{planet}} {{level}}': '{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.':
+		'Dans la {{level}} de {{planet}}{{span}}{{duration}}.',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.':
+		'Elle a commencé le {{date}}, avant la naissance, donc seules les sous-périodes postérieures à la date de naissance sont listées.',
+	'Moon nakshatra: {{name}}': 'Nakshatra de la Lune: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})':
+		'Nakshatra de la Lune: {{name}} (maître {{lord}})',
+	'{{balance}} left': '{{balance}} restant',
+	'Signifies {{houses}}': 'Signifie {{houses}}',
+	Biorhythm: 'Biorythme',
+	'Daily biorhythm': 'Biorythme quotidien',
+	'Biorhythm forecast': 'Prévision de biorythme',
+	Forecast: 'Prévision',
+	'No forecast': 'Aucune prévision',
+	'Biorhythm cycle lines across the forecast window':
+		'Courbes des cycles de biorythme sur la fenêtre de prévision',
+	'Spotlight cycle': 'Cycle mis en avant',
+	'critical day': 'jour critique',
+	'Critical days': 'Jours critiques',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.':
+		'Deux cycles ou plus croisent le zéro le {{dates}}. Redoublez de prudence ces jours-là.',
+	'Best day': 'Meilleur jour',
+	'Worst day': 'Pire jour',
+	'Average energy': 'Énergie moyenne',
+	Events: 'Événements',
+	'Double days': 'Jours doubles',
+	'Triple day': 'Jour triple',
+	'Readings ({{count}})': 'Lectures ({{count}})',
+	Intellectual: 'Intellectuel',
+	Intuitive: 'Intuitif',
 };
 
 registerLocale('fr', fr);

@@ -773,6 +773,50 @@ export const ru: Record<ChromeString, string> = {
 	Lagna: 'Лагна',
 	'Arudha Lagna': 'Арудха лагна',
 	Upapada: 'Упапада',
+	Mahadasha: 'Махадаша',
+	Antardasha: 'Антардаша',
+	Pratyantardasha: 'Пратьянтардаша',
+	Sookshma: 'Сукшма',
+	Prana: 'Прана',
+	'Dasha timeline': 'Хронология даш',
+	Timeline: 'Хронология',
+	'Chart details': 'Детали карты',
+	'Dasha views': 'Виды даш',
+	'Vimshottari Mahadasha': 'Вимшоттари махадаша',
+	'Active dashas': 'Активные даши',
+	'{{level}} periods in {{planet}} {{parent}}':
+		'Периоды {{level}} в {{planet}} {{parent}}',
+	'{{planet}} {{level}}': '{{planet}} {{level}}',
+	'Inside the {{planet}} {{level}}{{span}}{{duration}}.':
+		'Внутри {{level}} {{planet}}{{span}}{{duration}}.',
+	'It began {{date}}, before birth, so only the sub-periods running after the birth date are listed.':
+		'Она началась {{date}}, до рождения, поэтому перечислены только подпериоды после даты рождения.',
+	'Moon nakshatra: {{name}}': 'Накшатра Луны: {{name}}',
+	'Moon nakshatra: {{name}} (lord {{lord}})':
+		'Накшатра Луны: {{name}} (управитель {{lord}})',
+	'{{balance}} left': 'осталось {{balance}}',
+	'Signifies {{houses}}': 'Обозначает {{houses}}',
+	Biorhythm: 'Биоритм',
+	'Daily biorhythm': 'Дневной биоритм',
+	'Biorhythm forecast': 'Прогноз биоритма',
+	Forecast: 'Прогноз',
+	'No forecast': 'Прогноза нет',
+	'Biorhythm cycle lines across the forecast window':
+		'Кривые циклов биоритма на всём окне прогноза',
+	'Spotlight cycle': 'Выделенный цикл',
+	'critical day': 'критический день',
+	'Critical days': 'Критические дни',
+	'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.':
+		'Два и более цикла пересекают ноль {{dates}}. В эти дни стоит быть особенно внимательным.',
+	'Best day': 'Лучший день',
+	'Worst day': 'Худший день',
+	'Average energy': 'Средняя энергия',
+	Events: 'События',
+	'Double days': 'Двойные дни',
+	'Triple day': 'Тройной день',
+	'Readings ({{count}})': 'Толкования ({{count}})',
+	Intellectual: 'Интеллектуальный',
+	Intuitive: 'Интуитивный',
 };
 
 registerLocale('ru', ru);

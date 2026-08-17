@@ -1,5 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GetCriticalDaysResponse,
 	GetDailyBiorhythmResponse,
@@ -40,6 +41,14 @@ const FORECAST_CYCLES = [
 	'intellectual',
 	'intuitive',
 ] as const;
+
+/** Response key to the English SOURCE its legend entry is looked up by. The key indexes the payload and stays lower case; the label a reader sees does not. */
+const CYCLE_LABEL: Record<(typeof FORECAST_CYCLES)[number], ChromeString> = {
+	physical: 'Physical',
+	emotional: 'Emotional',
+	intellectual: 'Intellectual',
+	intuitive: 'Intuitive',
+};
 
 /**
  * Biorhythm chart. Renders /biorhythm/{daily,forecast,critical-days}.
@@ -252,14 +261,14 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		});
 		const spot = d.spotlight;
 
-		return html`<section class="wrap" part="card" aria-label="Daily biorhythm">
+		return html`<section class="wrap" part="card" aria-label=${this.t('Daily biorhythm')}>
 			<header class="head" part="header">
-				<h2 class="title">Biorhythm</h2>
+				<h2 class="title">${this.t('Biorhythm')}</h2>
 				<div class="head-meta">
 					${d.overallPhase ? html`<span class="phase">${humanize(d.overallPhase)}</span>` : nothing}
 					${
 						typeof d.energyRating === 'number'
-							? html`<span class="energy">Energy ${d.energyRating}/10</span>`
+							? html`<span class="energy">${this.t('Energy {{value}}/10', { value: d.energyRating })}</span>`
 							: nothing
 					}
 				</div>
@@ -271,9 +280,9 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 						part="details spotlight"
 						style=${`border-left-color: ${CYCLE_COLOR[spot.cycle] ?? 'var(--roxy-accent, #f59e0b)'}`}
 					>
-						<p class="label">Spotlight cycle</p>
+						<p class="label">${this.t('Spotlight cycle')}</p>
 						<div class="lead">
-							<strong>${spot.cycle}</strong>
+							<strong>${humanize(spot.cycle)}</strong>
 							${typeof spot.value === 'number' ? html`<span class="energy">${formatPercent(this.effectiveLang(), spot.value, 0)}</span>` : nothing}
 							${spot.phase ? html`<span class="phase">${humanize(spot.phase)}</span>` : nothing}
 						</div>
@@ -315,24 +324,24 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 	private renderForecast(d: GetForecastResponse) {
 		const days = d.days ?? [];
 		if (days.length === 0)
-			return html`<div class="roxy-empty" role="status">No forecast</div>`;
+			return html`<div class="roxy-empty" role="status">${this.t('No forecast')}</div>`;
 		const w = 600;
 		const h = 160;
 		const xStep = w / Math.max(days.length - 1, 1);
 		const s = d.summary;
 
-		return html`<section class="wrap" part="card" aria-label="Biorhythm forecast">
+		return html`<section class="wrap" part="card" aria-label=${this.t('Biorhythm forecast')}>
 			<header class="head" part="header">
-				<h2 class="title">Forecast</h2>
+				<h2 class="title">${this.t('Forecast')}</h2>
 				<span class="energy">${formatDateRange(this.effectiveLang(), d.startDate, d.endDate)}</span>
 			</header>
 			<svg
 				viewBox="0 0 ${w} ${h}"
 				part="chart"
 				role="img"
-				aria-label="Biorhythm cycle lines across the forecast window"
+				aria-label=${this.t('Biorhythm cycle lines across the forecast window')}
 			>
-				<title>Biorhythm forecast</title>
+				<title>${this.t('Biorhythm forecast')}</title>
 				<line
 					x1="0"
 					y1=${h / 2}
@@ -376,24 +385,24 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			<div class="legend" part="legend">
 				${FORECAST_CYCLES.map(
 					(cycle) => html`<span class="key">
-						<span class="dot" style=${`background: ${CYCLE_COLOR[cycle]}`}></span>${cycle}
+						<span class="dot" style=${`background: ${CYCLE_COLOR[cycle]}`}></span>${this.t(CYCLE_LABEL[cycle])}
 					</span>`,
 				)}
-				<span class="key"><span class="dot critical"></span>critical day</span>
+				<span class="key"><span class="dot critical"></span>${this.t('critical day')}</span>
 			</div>
 			${
 				s
 					? html`<dl class="stats" part="details">
-						${this.stat('Best day', formatDate(this.effectiveLang(), s.bestDay))}
-						${this.stat('Worst day', formatDate(this.effectiveLang(), s.worstDay))}
+						${this.stat(this.t('Best day'), formatDate(this.effectiveLang(), s.bestDay))}
+						${this.stat(this.t('Worst day'), formatDate(this.effectiveLang(), s.worstDay))}
 						${this.stat(
-							'Average energy',
+							this.t('Average energy'),
 							typeof s.averageEnergy === 'number'
 								? `${s.averageEnergy}/10`
 								: '',
 						)}
 						${this.stat(
-							'Critical days',
+							this.t('Critical days'),
 							typeof s.criticalDayCount === 'number'
 								? `${s.criticalDayCount}`
 								: '',
@@ -426,16 +435,16 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			</p>`,
 		}));
 
-		return html`<section class="wrap" part="card" aria-label="Critical days">
+		return html`<section class="wrap" part="card" aria-label=${this.t('Critical days')}>
 			<header class="head" part="header">
-				<h2 class="title">Critical days</h2>
+				<h2 class="title">${this.t('Critical days')}</h2>
 				<span class="energy">${formatDateRange(this.effectiveLang(), d.startDate, d.endDate)}</span>
 			</header>
 			<dl class="stats" part="details">
-				${this.stat('Events', typeof d.totalCriticalDays === 'number' ? `${d.totalCriticalDays}` : '')}
-				${this.stat('Double days', doubles.length ? `${doubles.length}` : '0')}
+				${this.stat(this.t('Events'), typeof d.totalCriticalDays === 'number' ? `${d.totalCriticalDays}` : '')}
+				${this.stat(this.t('Double days'), doubles.length ? `${doubles.length}` : '0')}
 				${this.stat(
-					'Triple day',
+					this.t('Triple day'),
 					d.tripleCriticalDay
 						? formatDate(this.effectiveLang(), d.tripleCriticalDay)
 						: 'None in range',
@@ -444,7 +453,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			${
 				doubles.length > 0
 					? html`<p class="crit-note">
-						Two or more cycles cross zero on ${doubles.map((x) => formatDate(this.effectiveLang(), x) || x).join(', ')}. Take extra care on these dates.
+						${this.t('Two or more cycles cross zero on {{dates}}. Take extra care on these dates.', { dates: doubles.map((x) => formatDate(this.effectiveLang(), x) || x).join(', ') })}
 					</p>`
 					: nothing
 			}

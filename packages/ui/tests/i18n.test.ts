@@ -563,6 +563,8 @@ describe('shipped locales', () => {
 		// A handful of Latin-script cognates genuinely coincide on top of those two
 		// families: `Symbol` in German, `Aspect` in French, `Longitude` in French and
 		// Portuguese, and `Mantras:` wherever the script is Latin.
+		// `{{planet}} {{level}}` is every language: the entry exists to carry the
+		// ORDER of two slots, so there is no word in it to translate.
 		// The compass initials coincide wherever the direction starts with the same
 		// letter, which is why each language keeps only the ones that DIVERGE:
 		// German swaps E for `O` (Ost), the Romance three swap W for `O` (Oeste,
@@ -666,6 +668,13 @@ describe('shipped locales', () => {
 				'Lagna',
 				'Phase',
 				'Upapada',
+				'Antardasha',
+				'Mahadasha',
+				'Prana',
+				'Pratyantardasha',
+				'Sookshma',
+				'Vimshottari Mahadasha',
+				'{{planet}} {{level}}',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -766,6 +775,12 @@ describe('shipped locales', () => {
 				'Arudha padas',
 				'Lagna',
 				'Upapada',
+				'Antardasha',
+				'Mahadasha',
+				'Prana',
+				'Pratyantardasha',
+				'Sookshma',
+				'{{planet}} {{level}}',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -902,8 +917,14 @@ describe('shipped locales', () => {
 				'Lagna',
 				'Phase',
 				'Upapada',
+				'Antardasha',
+				'Mahadasha',
+				'Prana',
+				'Pratyantardasha',
+				'Sookshma',
+				'{{planet}} {{level}}',
 			],
-			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
+			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
 			// `Mutável` at three characters, which lands on the English set;
 			// `Cardinal` is the full Portuguese word. `Aura`, `Bodygraph` and `Motor`
@@ -998,8 +1019,14 @@ describe('shipped locales', () => {
 				'Arudha padas',
 				'Lagna',
 				'Upapada',
+				'Antardasha',
+				'Mahadasha',
+				'Prana',
+				'Pratyantardasha',
+				'Sookshma',
+				'{{planet}} {{level}}',
 			],
-			ru: ['IC', 'MC', 'Vtx'],
+			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
 			// is `Toplam`. Turkish Human Design borrows `Aura`, `Bodygraph` and
 			// `Motor` the same way (`Motor merkezler`). `Relocation` is the same
@@ -1074,6 +1101,13 @@ describe('shipped locales', () => {
 				'Lagna',
 				'Pada rashi',
 				'Upapada',
+				'Antardasha',
+				'Mahadasha',
+				'Prana',
+				'Pratyantardasha',
+				'Sookshma',
+				'Vimshottari Mahadasha',
+				'{{planet}} {{level}}',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1117,13 +1151,19 @@ describe('shipped locales', () => {
 		// would force an abbreviation no reader uses. A language that DOES
 		// abbreviate natively still may, and Russian carries `Асц` and `Дсц`.
 		const AXIS_TOKEN = /^[A-Za-z]{2,4}$/;
+		// A source that is only slots and separators has no letters to translate;
+		// what it carries is the ORDER, so there is nothing for a script to be in.
+		const ONLY_SLOTS = (source: string) =>
+			!/[A-Za-z]/.test(source.replace(/\{\{\w+\}\}/g, ''));
 		for (const [lang, catalog] of await shippedCatalogues()) {
 			const script = SCRIPT[lang];
 			if (!script) continue;
 			const wrongScript = Object.entries(catalog)
 				.filter(
 					([source, translated]) =>
-						!AXIS_TOKEN.test(source) && !script.test(translated),
+						!AXIS_TOKEN.test(source) &&
+						!ONLY_SLOTS(source) &&
+						!script.test(translated),
 				)
 				.map(([source]) => source);
 			expect(
@@ -1235,8 +1275,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	// `ChromeString` and the compiler owns that half.
 	const UNTRANSLATED_DEBT: Record<string, number> = {
 		'components/ashtakavarga-grid.ts': 27,
-		'components/biorhythm-chart.ts': 20,
-		'components/dasha-timeline.ts': 18,
 		'components/hd-connection.ts': 30,
 		'components/hd-penta.ts': 27,
 		'components/kp-chart.ts': 43,
