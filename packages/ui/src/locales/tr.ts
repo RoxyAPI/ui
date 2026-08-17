@@ -548,6 +548,47 @@ export const tr: Record<ChromeString, string> = {
 	'Mantras:': 'Mantralar:',
 	'Gemstones:': 'Taşlar:',
 	'Rituals:': 'Ritüeller:',
+	N: 'K',
+	NE: 'KD',
+	E: 'D',
+	SE: 'GD',
+	S: 'G',
+	SW: 'GB',
+	W: 'B',
+	NW: 'KB',
+	'Local space': 'Yerel uzay',
+	'Local space compass': 'Yerel uzay pusulası',
+	'Local space compass of planetary directions from the birthplace':
+		'Doğum yerinden gezegen yönlerini gösteren yerel uzay pusulası',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.':
+		'Doğum yerine ortalanmış bir pusula. Her gök cismi, kuzeyden saat yönünde kendi azimutunu gösteren bir çizgidir. Ufkun altındaki cisimler soluklaştırılır.',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.':
+		'Yerel uzay yönleri: her gök cismi pusula yönü, azimutu, yüksekliği ve ufkun üstünde mi altında mı olduğuyla.',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}':
+		'{{planet}} {{direction}} {{azimuth}}° yükseklik {{altitude}}',
+	Azimuth: 'Azimut',
+	Altitude: 'Yükseklik',
+	Horizon: 'Ufuk',
+	Astrocartography: 'Astrokartografi',
+	'Astrocartography world map': 'Astrokartografi dünya haritası',
+	'World map of planetary astrocartography lines':
+		'Gezegen astrokartografi hatlarının dünya haritası',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
+		'Eşdikdörtgen dünya haritası. Her gök cisminin bir Gökyüzü ortası ve Ayakucu meridyeni ile eğri bir Yükselen ve Alçalan hattı vardır, cisme göre renklendirilir.',
+	Birthplace: 'Doğum yeri',
+	'{{planet}} {{angle}} line': '{{planet}} {{angle}} hattı',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
+		'Düz çizgiler Yükselen ve Gökyüzü ortası, kesikli olanlar Alçalan ve Ayakucudur.',
+	'Planetary lines': 'Gezegen hatları',
+	Choghadiya: 'Choghadiya',
+	'Day muhurta periods': 'Gündüz muhurta dönemleri',
+	'Daytime choghadiya': 'Gündüz choghadiyası',
+	'No daytime periods': 'Gündüz dönemi yok',
+	'Night muhurta periods': 'Gece muhurta dönemleri',
+	'Nighttime choghadiya': 'Gece choghadiyası',
+	'No nighttime periods': 'Gece dönemi yok',
+	Now: 'Şimdi',
+	'Time range': 'Zaman aralığı',
 };
 
 registerLocale('tr', tr);

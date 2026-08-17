@@ -624,6 +624,52 @@ export const CHROME_STRINGS = [
 	'Mantras:',
 	'Gemstones:',
 	'Rituals:',
+
+	// The compass rose, all eight principal points. Cardinal initials are the ones a
+	// language actually prints, so German reads O for Ost and Turkish K for Kuzey.
+	'N',
+	'NE',
+	'E',
+	'SE',
+	'S',
+	'SW',
+	'W',
+	'NW',
+
+	// Local space: the card, the compass description a screen reader hears, the
+	// per-body tooltip, and the three columns beside the direction.
+	'Local space',
+	'Local space compass',
+	'Local space compass of planetary directions from the birthplace',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}',
+	'Azimuth',
+	'Altitude',
+	'Horizon',
+
+	// Astrocartography: the card, the map a screen reader hears described, the
+	// per-line tooltip, and the legend under it.
+	'Astrocartography',
+	'Astrocartography world map',
+	'World map of planetary astrocartography lines',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.',
+	'Birthplace',
+	'{{planet}} {{angle}} line',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.',
+	'Planetary lines',
+
+	// Choghadiya: the card, its day and night columns with the accessible name of
+	// each list, and the two labels on a period tile.
+	'Choghadiya',
+	'Day muhurta periods',
+	'Daytime choghadiya',
+	'No daytime periods',
+	'Night muhurta periods',
+	'Nighttime choghadiya',
+	'No nighttime periods',
+	'Now',
+	'Time range',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

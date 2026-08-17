@@ -1,5 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -53,11 +54,12 @@ function toSegments(points: GeoPoint[]): string[] {
 	return segments.filter((s) => s.length > 1).map((s) => s.join(' '));
 }
 
-const ANGLE_LABEL: Record<string, string> = {
+/** Response angle key to the English SOURCE its label is looked up by. The same four tokens the natal wheel draws, so one chart cannot call an axis `AC` while the other calls it `ASC`. */
+const ANGLE_LABEL: Record<string, ChromeString> = {
 	mc: 'MC',
 	ic: 'IC',
-	ascendant: 'AC',
-	descendant: 'DC',
+	ascendant: 'ASC',
+	descendant: 'DSC',
 };
 
 /**
@@ -206,7 +208,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 		const bd = data.birthDetails;
 		return html`<div class="wrap" part="card">
 			<header part="header">
-				<h2 class="title">Astrocartography</h2>
+				<h2 class="title">${this.t('Astrocartography')}</h2>
 				${
 					bd
 						? html`<div class="meta">
@@ -237,12 +239,13 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 			viewBox="0 0 ${W} ${H}"
 			part="chart"
 			role="img"
-			aria-label="World map of planetary astrocartography lines"
+			aria-label=${this.t('World map of planetary astrocartography lines')}
 		>
-			<title>Astrocartography world map</title>
+			<title>${this.t('Astrocartography world map')}</title>
 			<desc>
-				Equirectangular world map. Each body has a Midheaven and Imum Coeli
-				meridian and a curved Ascendant and Descendant line, colored per body.
+				${this.t(
+					'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.',
+				)}
 			</desc>
 			<rect class="map-frame" x="0" y="0" width=${W} height=${H} />
 			<path class="land" d=${WORLD_LAND_PATH} fill-rule="evenodd" />
@@ -250,7 +253,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 			${lines.map((l, i) => this.renderBodyLines(l, i))}
 			${
 				bd
-					? svg`<text class="birthplace" x=${lonToX(bd.longitude)} y=${latToY(bd.latitude)} text-anchor="middle" dominant-baseline="central"><title>Birthplace</title>★</text>`
+					? svg`<text class="birthplace" x=${lonToX(bd.longitude)} y=${latToY(bd.latitude)} text-anchor="middle" dominant-baseline="central"><title>${this.t('Birthplace')}</title>★</text>`
 					: nothing
 			}
 		</svg>`;
@@ -342,7 +345,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 		// body never stack their glyphs at the same point.
 		const labelY = angle === 'ic' ? H - 7 : 9;
 		return svg`<g>
-			<line class=${`acg-line${dashed ? ' dashed' : ''}`} stroke=${color} x1=${x} y1="0" x2=${x} y2=${H}><title>${planet} ${ANGLE_LABEL[angle]} line</title></line>
+			<line class=${`acg-line${dashed ? ' dashed' : ''}`} stroke=${color} x1=${x} y1="0" x2=${x} y2=${H}><title>${this.t('{{planet}} {{angle}} line', { planet, angle: this.t(ANGLE_LABEL[angle] ?? 'MC') })}</title></line>
 			<text class="acg-glyph" fill=${color} x=${x} y=${labelY} text-anchor="middle" dominant-baseline="central">${glyph}</text>
 		</g>`;
 	}
@@ -365,7 +368,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 		return svg`<g>
 			${segments.map(
 				(pts) =>
-					svg`<polyline class=${`acg-line${dashed ? ' dashed' : ''}`} stroke=${color} points=${pts}><title>${planet} ${ANGLE_LABEL[angle]} line</title></polyline>`,
+					svg`<polyline class=${`acg-line${dashed ? ' dashed' : ''}`} stroke=${color} points=${pts}><title>${this.t('{{planet}} {{angle}} line', { planet, angle: this.t(ANGLE_LABEL[angle] ?? 'MC') })}</title></polyline>`,
 			)}
 			<text class="acg-glyph" fill=${color} x=${lonToX(anchor.longitude)} y=${latToY(anchor.latitude)} text-anchor="middle" dominant-baseline="central">${glyph}</text>
 		</g>`;
@@ -381,7 +384,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 					${l.symbol ? html`${l.symbol} ` : nothing}${l.planet}
 				</span>`;
 			})}
-			<span class="legend-note">Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.</span>
+			<span class="legend-note">${this.t('Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.')}</span>
 		</div>`;
 	}
 
@@ -393,7 +396,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 	private renderInterpretations(lines: LineSet[]) {
 		if (lines.length === 0 || this.hideReadings) return nothing;
 		return html`<section class="block" part="section readings">
-			<h3>Planetary lines</h3>
+			<h3>${this.t('Planetary lines')}</h3>
 			${lines.map((l, i) => {
 				const color = planetColor(l.planet, i);
 				const rows: Array<[string, string]> = [

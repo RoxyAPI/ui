@@ -1,5 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { LocalSpaceResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -23,15 +24,16 @@ function azimuthPoint(az: number, r: number): { x: number; y: number } {
 	return { x: CENTER + r * Math.sin(rad), y: CENTER - r * Math.cos(rad) };
 }
 
-const PRINCIPAL = [
-	{ az: 0, label: 'N' },
-	{ az: 45, label: 'NE' },
-	{ az: 90, label: 'E' },
-	{ az: 135, label: 'SE' },
-	{ az: 180, label: 'S' },
-	{ az: 225, label: 'SW' },
-	{ az: 270, label: 'W' },
-	{ az: 315, label: 'NW' },
+/** The eight principal points of the rose, each with the English SOURCE its label is looked up by. All eight move together: a rose that translated only the corners would read half in one script. */
+const PRINCIPAL: ReadonlyArray<{ az: number; source: ChromeString }> = [
+	{ az: 0, source: 'N' },
+	{ az: 45, source: 'NE' },
+	{ az: 90, source: 'E' },
+	{ az: 135, source: 'SE' },
+	{ az: 180, source: 'S' },
+	{ az: 225, source: 'SW' },
+	{ az: 270, source: 'W' },
+	{ az: 315, source: 'NW' },
 ];
 
 /**
@@ -195,7 +197,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 		const bd = data.birthDetails;
 		return html`<div class="wrap" part="card">
 			<header part="header">
-				<h2 class="title">Local space</h2>
+				<h2 class="title">${this.t('Local space')}</h2>
 				${
 					bd
 						? html`<div class="meta">${formatDateTime(this.effectiveLang(), bd.date, bd.time)}</div>`
@@ -213,12 +215,13 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 			viewBox="0 0 ${SIZE} ${SIZE}"
 			part="chart"
 			role="img"
-			aria-label="Local space compass of planetary directions from the birthplace"
+			aria-label=${this.t('Local space compass of planetary directions from the birthplace')}
 		>
-			<title>Local space compass</title>
+			<title>${this.t('Local space compass')}</title>
 			<desc>
-				A compass centered on the birthplace. Each body is a line pointing to
-				its azimuth, clockwise from north. Bodies below the horizon are dimmed.
+				${this.t(
+					'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.',
+				)}
 			</desc>
 			<circle class="dial-fill" cx=${CENTER} cy=${CENTER} r=${RIM} />
 			<circle class="dial" cx=${CENTER} cy=${CENTER} r=${RIM * 0.66} stroke-width="0.5" />
@@ -244,10 +247,10 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 		const ns2 = azimuthPoint(180, RIM);
 		const ew1 = azimuthPoint(90, RIM);
 		const ew2 = azimuthPoint(270, RIM);
-		const labels = PRINCIPAL.map(({ az, label }) => {
+		const labels = PRINCIPAL.map(({ az, source }) => {
 			const pos = azimuthPoint(az, TICK_LABEL_R);
 			const cardinal = az % 90 === 0;
-			return svg`<text class=${`compass-label${cardinal ? ' cardinal' : ''}`} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${label}</text>`;
+			return svg`<text class=${`compass-label${cardinal ? ' cardinal' : ''}`} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${this.t(source)}</text>`;
 		});
 		return svg`
 			<line class="cardinal-axis" x1=${ns1.x} y1=${ns1.y} x2=${ns2.x} y2=${ns2.y} />
@@ -266,7 +269,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 			const glyph = b.symbol || planetGlyph(b.planet) || b.planet;
 			const altLabel = `${b.altitude > 0 ? '+' : ''}${Math.round(b.altitude)}°`;
 			return svg`<g>
-				<line class=${`spoke${below ? ' below' : ''}`} stroke=${color} x1=${CENTER} y1=${CENTER} x2=${end.x} y2=${end.y}><title>${b.planet} ${b.compassDirection} ${Math.round(b.azimuth)}° altitude ${altLabel}</title></line>
+				<line class=${`spoke${below ? ' below' : ''}`} stroke=${color} x1=${CENTER} y1=${CENTER} x2=${end.x} y2=${end.y}><title>${this.t('{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}', { planet: b.planet, direction: b.compassDirection, azimuth: Math.round(b.azimuth), altitude: altLabel })}</title></line>
 				<text class=${`body-glyph${below ? ' below' : ''}`} fill=${color} x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central">${glyph}</text>
 			</g>`;
 		});
@@ -276,16 +279,17 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 		if (bodies.length === 0) return nothing;
 		return html`<div class="table-scroll" part="table"><table class="list">
 			<caption class="roxy-sr-only">
-				Local space directions: each body with its compass direction, azimuth,
-				altitude and whether it sits above or below the horizon.
+				${this.t(
+					'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.',
+				)}
 			</caption>
 			<thead>
 				<tr>
 					<th scope="col">${this.t('Body')}</th>
 					<th scope="col">${this.t('Direction')}</th>
-					<th scope="col" class="num">Azimuth</th>
-					<th scope="col" class="num">Altitude</th>
-					<th scope="col">Horizon</th>
+					<th scope="col" class="num">${this.t('Azimuth')}</th>
+					<th scope="col" class="num">${this.t('Altitude')}</th>
+					<th scope="col">${this.t('Horizon')}</th>
 				</tr>
 			</thead>
 			<tbody>

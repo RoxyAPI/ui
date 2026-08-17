@@ -32,9 +32,15 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// A catalogue is one download that translates every element on the page, and
 	// it is pure text, which gzip eats. The ceiling tracks how many cards are
 	// covered; Cyrillic and Devanagari reach any byte ceiling first, at roughly
-	// two bytes a character against one for Latin. Split the payload rather than
-	// raise this again once coverage is complete.
-	localeGzip: 12 * KB,
+	// two bytes a character against one for Latin.
+	//
+	// Set to where FULL coverage lands, measured rather than guessed: a string
+	// costs about nine gzipped bytes, and `ru` read 11.1 KB with 468 still
+	// untranslated, so the last card lands near 15 KB. Hitting this is therefore
+	// the signal that coverage is DONE and the payload should be split rather
+	// than raised. Split on the chrome catalogue: the API field labels are about
+	// a sixth of the source and separating them buys almost nothing.
+	localeGzip: 16 * KB,
 };
 
 export interface Artifact {

@@ -554,6 +554,47 @@ export const fr: Record<ChromeString, string> = {
 	'Mantras:': 'Mantras:',
 	'Gemstones:': 'Pierres:',
 	'Rituals:': 'Rituels:',
+	N: 'N',
+	NE: 'NE',
+	E: 'E',
+	SE: 'SE',
+	S: 'S',
+	SW: 'SO',
+	W: 'O',
+	NW: 'NO',
+	'Local space': 'Espace local',
+	'Local space compass': 'Boussole en espace local',
+	'Local space compass of planetary directions from the birthplace':
+		'Boussole en espace local des directions planétaires depuis le lieu de naissance',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.':
+		'Une boussole centrée sur le lieu de naissance. Chaque corps est une ligne pointant vers son azimut, dans le sens horaire depuis le nord. Les corps sous le plan horizontal sont atténués.',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.':
+		'Directions en espace local: chaque corps avec sa direction, son azimut, sa hauteur et sa position au-dessus ou au-dessous du plan horizontal.',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}':
+		'{{planet}} {{direction}} {{azimuth}}° hauteur {{altitude}}',
+	Azimuth: 'Azimut',
+	Altitude: 'Hauteur',
+	Horizon: 'Horizon',
+	Astrocartography: 'Astrocartographie',
+	'Astrocartography world map': 'Carte du monde astrocartographique',
+	'World map of planetary astrocartography lines':
+		'Carte du monde des lignes planétaires en astrocartographie',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
+		'Carte du monde équirectangulaire. Chaque corps a un méridien de Milieu du Ciel et de Fond du Ciel, plus une ligne courbe Ascendant et Descendant, colorée par corps.',
+	Birthplace: 'Lieu de naissance',
+	'{{planet}} {{angle}} line': 'Ligne {{angle}} de {{planet}}',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
+		'Les lignes pleines marquent Ascendant et Milieu du Ciel, les pointillées Descendant et Fond du Ciel.',
+	'Planetary lines': 'Lignes planétaires',
+	Choghadiya: 'Choghadiya',
+	'Day muhurta periods': 'Périodes muhurta du jour',
+	'Daytime choghadiya': 'Choghadiya de jour',
+	'No daytime periods': 'Aucune période de jour',
+	'Night muhurta periods': 'Périodes muhurta de la nuit',
+	'Nighttime choghadiya': 'Choghadiya de nuit',
+	'No nighttime periods': 'Aucune période de nuit',
+	Now: 'Maintenant',
+	'Time range': 'Plage horaire',
 };
 
 registerLocale('fr', fr);

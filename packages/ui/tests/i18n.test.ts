@@ -527,6 +527,10 @@ describe('shipped locales', () => {
 		// A handful of Latin-script cognates genuinely coincide on top of those two
 		// families: `Symbol` in German, `Aspect` in French, `Longitude` in French and
 		// Portuguese, and `Mantras:` wherever the script is Latin.
+		// The compass initials coincide wherever the direction starts with the same
+		// letter, which is why each language keeps only the ones that DIVERGE:
+		// German swaps E for `O` (Ost), the Romance three swap W for `O` (Oeste,
+		// Ouest, Oeste), and Turkish redraws all eight from Kuzey, Doğu and Güney.
 		const IDENTICAL_BY_DESIGN: Record<string, string[]> = {
 			// `Neutral` is the German word too; `Total` is `Gesamt`. German takes
 			// `Radix` for the natal ring label, so it is NOT on this list. `Fix` is
@@ -593,6 +597,12 @@ describe('shipped locales', () => {
 				'Symbol',
 				'Upagraha',
 				'Upagrahas',
+				'Choghadiya',
+				'N',
+				'NW',
+				'S',
+				'SW',
+				'W',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -653,6 +663,12 @@ describe('shipped locales', () => {
 				'Rashi',
 				'Upagraha',
 				'Upagrahas',
+				'Choghadiya',
+				'E',
+				'N',
+				'NE',
+				'S',
+				'SE',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -740,6 +756,13 @@ describe('shipped locales', () => {
 				'Rashi',
 				'Upagraha',
 				'Upagrahas',
+				'Choghadiya',
+				'E',
+				'Horizon',
+				'N',
+				'NE',
+				'S',
+				'SE',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -798,6 +821,12 @@ describe('shipped locales', () => {
 				'Rashi',
 				'Upagraha',
 				'Upagrahas',
+				'Choghadiya',
+				'E',
+				'N',
+				'NE',
+				'S',
+				'SE',
 			],
 			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -847,6 +876,7 @@ describe('shipped locales', () => {
 				'Pada',
 				'Rashi',
 				'Upagraha',
+				'Choghadiya',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -977,12 +1007,10 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 27,
 		'components/aspects-table.ts': 11,
-		'components/astrocartography-map.ts': 9,
 		'components/bhav-chalit-table.ts': 13,
 		'components/bhava-bala-table.ts': 14,
 		'components/biorhythm-chart.ts': 20,
 		'components/chara-karakas.ts': 12,
-		'components/choghadiya-grid.ts': 11,
 		'components/dasha-timeline.ts': 16,
 		'components/fixed-stars.ts': 13,
 		'components/gochara-table.ts': 16,
@@ -993,7 +1021,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
-		'components/local-space-compass.ts': 13,
 		'components/shadbala-table.ts': 18,
 		'components/synastry-chart.ts': 24,
 		'components/transits-table.ts': 16,

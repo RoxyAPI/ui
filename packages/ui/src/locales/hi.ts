@@ -562,6 +562,47 @@ export const hi: Record<ChromeString, string> = {
 	'Mantras:': 'मंत्र:',
 	'Gemstones:': 'रत्न:',
 	'Rituals:': 'अनुष्ठान:',
+	N: 'उ',
+	NE: 'उ-पू',
+	E: 'पू',
+	SE: 'द-पू',
+	S: 'द',
+	SW: 'द-प',
+	W: 'प',
+	NW: 'उ-प',
+	'Local space': 'स्थानीय दिशा',
+	'Local space compass': 'स्थानीय दिशा कम्पास',
+	'Local space compass of planetary directions from the birthplace':
+		'जन्म स्थान से ग्रह दिशाओं का स्थानीय कम्पास',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.':
+		'जन्म स्थान पर केंद्रित कम्पास। प्रत्येक पिंड उत्तर से घड़ी की दिशा में अपने दिगंश की ओर एक रेखा है। क्षितिज से नीचे के पिंड धुंधले हैं।',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.':
+		'स्थानीय दिशाएँ: प्रत्येक पिंड की कम्पास दिशा, दिगंश, उन्नतांश, और वह क्षितिज से ऊपर है या नीचे।',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}':
+		'{{planet}} {{direction}} {{azimuth}}° उन्नतांश {{altitude}}',
+	Azimuth: 'दिगंश',
+	Altitude: 'उन्नतांश',
+	Horizon: 'क्षितिज',
+	Astrocartography: 'ज्योतिष मानचित्रण',
+	'Astrocartography world map': 'ज्योतिष मानचित्रण विश्व मानचित्र',
+	'World map of planetary astrocartography lines':
+		'ग्रह ज्योतिष रेखाओं का विश्व मानचित्र',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
+		'समआयत विश्व मानचित्र। प्रत्येक पिंड की मध्य आकाश और पाताल याम्योत्तर तथा वक्र लग्न और अस्त रेखा है, पिंड अनुसार रंगीन।',
+	Birthplace: 'जन्म स्थान',
+	'{{planet}} {{angle}} line': '{{planet}} {{angle}} रेखा',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
+		'ठोस रेखाएँ लग्न और मध्य आकाश हैं, बिंदुदार अस्त और पाताल हैं।',
+	'Planetary lines': 'ग्रह रेखाएँ',
+	Choghadiya: 'चौघड़िया',
+	'Day muhurta periods': 'दिन के मुहूर्त',
+	'Daytime choghadiya': 'दिन का चौघड़िया',
+	'No daytime periods': 'दिन के लिए कोई अवधि नहीं',
+	'Night muhurta periods': 'रात के मुहूर्त',
+	'Nighttime choghadiya': 'रात का चौघड़िया',
+	'No nighttime periods': 'रात के लिए कोई अवधि नहीं',
+	Now: 'अभी',
+	'Time range': 'समय अवधि',
 };
 
 registerLocale('hi', hi);

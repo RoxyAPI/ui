@@ -561,6 +561,47 @@ export const es: Record<ChromeString, string> = {
 	'Mantras:': 'Mantras:',
 	'Gemstones:': 'Gemas:',
 	'Rituals:': 'Rituales:',
+	N: 'N',
+	NE: 'NE',
+	E: 'E',
+	SE: 'SE',
+	S: 'S',
+	SW: 'SO',
+	W: 'O',
+	NW: 'NO',
+	'Local space': 'Espacio local',
+	'Local space compass': 'Brújula de espacio local',
+	'Local space compass of planetary directions from the birthplace':
+		'Brújula de espacio local con las direcciones planetarias desde el lugar de nacimiento',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.':
+		'Una brújula centrada en el lugar de nacimiento. Cada cuerpo es una línea que apunta a su acimut, en sentido horario desde el norte. Los cuerpos bajo el horizonte se atenúan.',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.':
+		'Direcciones de espacio local: cada cuerpo con su dirección, acimut, altura y si está sobre o bajo el horizonte.',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}':
+		'{{planet}} {{direction}} {{azimuth}}° altura {{altitude}}',
+	Azimuth: 'Acimut',
+	Altitude: 'Altura',
+	Horizon: 'Horizonte',
+	Astrocartography: 'Astrocartografía',
+	'Astrocartography world map': 'Mapamundi de astrocartografía',
+	'World map of planetary astrocartography lines':
+		'Mapamundi de las líneas planetarias de astrocartografía',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
+		'Mapamundi equirrectangular. Cada cuerpo tiene un meridiano de Mediocielo y Fondocielo y una línea curva de Ascendente y Descendente, coloreada por cuerpo.',
+	Birthplace: 'Lugar de nacimiento',
+	'{{planet}} {{angle}} line': 'Línea {{angle}} de {{planet}}',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
+		'Las líneas continuas son el Ascendente y el Mediocielo, las discontinuas el Descendente y el Fondocielo.',
+	'Planetary lines': 'Líneas planetarias',
+	Choghadiya: 'Choghadiya',
+	'Day muhurta periods': 'Periodos muhurta del día',
+	'Daytime choghadiya': 'Choghadiya diurno',
+	'No daytime periods': 'Sin periodos diurnos',
+	'Night muhurta periods': 'Periodos muhurta de la noche',
+	'Nighttime choghadiya': 'Choghadiya nocturno',
+	'No nighttime periods': 'Sin periodos nocturnos',
+	Now: 'Ahora',
+	'Time range': 'Intervalo horario',
 };
 
 registerLocale('es', es);

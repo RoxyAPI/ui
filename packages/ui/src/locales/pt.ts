@@ -541,6 +541,47 @@ export const pt: Record<ChromeString, string> = {
 	'Mantras:': 'Mantras:',
 	'Gemstones:': 'Gemas:',
 	'Rituals:': 'Rituais:',
+	N: 'N',
+	NE: 'NE',
+	E: 'E',
+	SE: 'SE',
+	S: 'S',
+	SW: 'SO',
+	W: 'O',
+	NW: 'NO',
+	'Local space': 'Espaço local',
+	'Local space compass': 'Bússola de espaço local',
+	'Local space compass of planetary directions from the birthplace':
+		'Bússola de espaço local com as direções planetárias a partir do local de nascimento',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.':
+		'Uma bússola centrada no local de nascimento. Cada corpo é uma linha que aponta para o seu azimute, no sentido horário a partir do norte. Os corpos abaixo do horizonte ficam esbatidos.',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.':
+		'Direções de espaço local: cada corpo com a sua direção, azimute, altura e se está acima ou abaixo do horizonte.',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}':
+		'{{planet}} {{direction}} {{azimuth}}° altura {{altitude}}',
+	Azimuth: 'Azimute',
+	Altitude: 'Altura',
+	Horizon: 'Horizonte',
+	Astrocartography: 'Astrocartografia',
+	'Astrocartography world map': 'Mapa-múndi de astrocartografia',
+	'World map of planetary astrocartography lines':
+		'Mapa-múndi das linhas planetárias de astrocartografia',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
+		'Mapa-múndi equirretangular. Cada corpo tem um meridiano de Meio do Céu e Fundo do Céu e uma linha curva de Ascendente e Descendente, colorida por corpo.',
+	Birthplace: 'Local de nascimento',
+	'{{planet}} {{angle}} line': 'Linha {{angle}} de {{planet}}',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
+		'As linhas contínuas são o Ascendente e o Meio do Céu, as tracejadas o Descendente e o Fundo do Céu.',
+	'Planetary lines': 'Linhas planetárias',
+	Choghadiya: 'Choghadiya',
+	'Day muhurta periods': 'Períodos muhurta do dia',
+	'Daytime choghadiya': 'Choghadiya diurno',
+	'No daytime periods': 'Sem períodos diurnos',
+	'Night muhurta periods': 'Períodos muhurta da noite',
+	'Nighttime choghadiya': 'Choghadiya noturno',
+	'No nighttime periods': 'Sem períodos noturnos',
+	Now: 'Agora',
+	'Time range': 'Intervalo de tempo',
 };
 
 registerLocale('pt', pt);

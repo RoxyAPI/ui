@@ -542,6 +542,47 @@ export const ru: Record<ChromeString, string> = {
 	'Mantras:': 'Мантры:',
 	'Gemstones:': 'Камни:',
 	'Rituals:': 'Ритуалы:',
+	N: 'С',
+	NE: 'СВ',
+	E: 'В',
+	SE: 'ЮВ',
+	S: 'Ю',
+	SW: 'ЮЗ',
+	W: 'З',
+	NW: 'СЗ',
+	'Local space': 'Локальное пространство',
+	'Local space compass': 'Компас локального пространства',
+	'Local space compass of planetary directions from the birthplace':
+		'Компас локального пространства с направлениями планет от места рождения',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.':
+		'Компас с центром в месте рождения. Каждое тело это линия к своему азимуту, по часовой стрелке от севера. Тела под горизонтом затемнены.',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.':
+		'Направления локального пространства: каждое тело с направлением по компасу, азимутом, высотой и положением над или под горизонтом.',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}':
+		'{{planet}} {{direction}} {{azimuth}}° высота {{altitude}}',
+	Azimuth: 'Азимут',
+	Altitude: 'Высота',
+	Horizon: 'Горизонт',
+	Astrocartography: 'Астрокартография',
+	'Astrocartography world map': 'Мировая карта астрокартографии',
+	'World map of planetary astrocartography lines':
+		'Мировая карта планетных линий астрокартографии',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
+		'Равнопромежуточная мировая карта. У каждого тела есть меридиан Середины неба и Глубины неба и изогнутая линия Асцендента и Десцендента, окрашенная по телу.',
+	Birthplace: 'Место рождения',
+	'{{planet}} {{angle}} line': 'Линия {{angle}} для {{planet}}',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
+		'Сплошные линии это Асцендент и Середина неба, пунктирные Десцендент и Глубина неба.',
+	'Planetary lines': 'Планетные линии',
+	Choghadiya: 'Чогхадия',
+	'Day muhurta periods': 'Дневные периоды мухурты',
+	'Daytime choghadiya': 'Дневная чогхадия',
+	'No daytime periods': 'Нет дневных периодов',
+	'Night muhurta periods': 'Ночные периоды мухурты',
+	'Nighttime choghadiya': 'Ночная чогхадия',
+	'No nighttime periods': 'Нет ночных периодов',
+	Now: 'Сейчас',
+	'Time range': 'Временной интервал',
 };
 
 registerLocale('ru', ru);

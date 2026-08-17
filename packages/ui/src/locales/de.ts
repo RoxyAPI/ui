@@ -549,6 +549,47 @@ export const de: Record<ChromeString, string> = {
 	'Mantras:': 'Mantras:',
 	'Gemstones:': 'Edelsteine:',
 	'Rituals:': 'Rituale:',
+	N: 'N',
+	NE: 'NO',
+	E: 'O',
+	SE: 'SO',
+	S: 'S',
+	SW: 'SW',
+	W: 'W',
+	NW: 'NW',
+	'Local space': 'Lokaler Raum',
+	'Local space compass': 'Lokalraum-Kompass',
+	'Local space compass of planetary directions from the birthplace':
+		'Lokalraum-Kompass der Planetenrichtungen vom Geburtsort aus',
+	'A compass centered on the birthplace. Each body is a line pointing to its azimuth, clockwise from north. Bodies below the horizon are dimmed.':
+		'Ein Kompass mit dem Geburtsort im Zentrum. Jeder Himmelskörper ist eine Linie zu seinem Azimut, im Uhrzeigersinn ab Norden. Körper unter dem Horizont sind gedimmt.',
+	'Local space directions: each body with its compass direction, azimuth, altitude and whether it sits above or below the horizon.':
+		'Lokalraum-Richtungen: jeder Himmelskörper mit Kompassrichtung, Azimut, Höhe und Lage über oder unter dem Horizont.',
+	'{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}':
+		'{{planet}} {{direction}} {{azimuth}}° Höhe {{altitude}}',
+	Azimuth: 'Azimut',
+	Altitude: 'Höhe',
+	Horizon: 'Horizont',
+	Astrocartography: 'Astrokartografie',
+	'Astrocartography world map': 'Astrokartografie-Weltkarte',
+	'World map of planetary astrocartography lines':
+		'Weltkarte der planetaren Astrokartografie-Linien',
+	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
+		'Plattkarte der Welt. Jeder Himmelskörper hat einen Meridian für Himmelsmitte und Himmelstiefe sowie eine gebogene Aszendenten- und Deszendentenlinie, je Körper eingefärbt.',
+	Birthplace: 'Geburtsort',
+	'{{planet}} {{angle}} line': '{{planet}}-{{angle}}-Linie',
+	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
+		'Durchgezogene Linien sind Aszendent und Himmelsmitte, gestrichelte sind Deszendent und Himmelstiefe.',
+	'Planetary lines': 'Planetenlinien',
+	Choghadiya: 'Choghadiya',
+	'Day muhurta periods': 'Muhurta-Zeiten am Tag',
+	'Daytime choghadiya': 'Choghadiya am Tag',
+	'No daytime periods': 'Keine Zeiten am Tag',
+	'Night muhurta periods': 'Muhurta-Zeiten in der Nacht',
+	'Nighttime choghadiya': 'Choghadiya in der Nacht',
+	'No nighttime periods': 'Keine Zeiten in der Nacht',
+	Now: 'Jetzt',
+	'Time range': 'Zeitspanne',
 };
 
 registerLocale('de', de);

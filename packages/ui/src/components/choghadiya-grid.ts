@@ -162,9 +162,9 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 			aria-current=${current ? 'time' : 'false'}
 		>
 			<span class="tile-name">
-				${period.name}${current ? html`<span class="now-badge">Now</span>` : nothing}
+				${period.name}${current ? html`<span class="now-badge">${this.t('Now')}</span>` : nothing}
 			</span>
-			<span class="tile-time" aria-label="Time range">${timeRange}</span>
+			<span class="tile-time" aria-label=${this.t('Time range')}>${timeRange}</span>
 			<span class="tile-lord">
 				${lordGlyph ? html`<span aria-hidden="true">${lordGlyph}</span>` : nothing}
 				${period.lord}
@@ -177,29 +177,29 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 
 		return html`<div class="wrap" part="card">
 			<div class="header" part="header">
-				<h2 class="title">Choghadiya</h2>
+				<h2 class="title">${this.t('Choghadiya')}</h2>
 				${date ? html`<p class="subtitle">${formatDate(this.effectiveLang(), date)}</p>` : nothing}
 			</div>
 
 			<div class="cho-grid" part="table">
-				<section class="period-col" aria-label="Day muhurta periods">
-					<h3 class="period-heading">Day</h3>
-					<div role="list" aria-label="Daytime choghadiya">
+				<section class="period-col" aria-label=${this.t('Day muhurta periods')}>
+					<h3 class="period-heading">${this.t('Day')}</h3>
+					<div role="list" aria-label=${this.t('Daytime choghadiya')}>
 						${
 							dayChoghadiya && dayChoghadiya.length > 0
 								? dayChoghadiya.map((p) => this.renderTile(p))
-								: html`<p class="roxy-empty" role="status">No daytime periods</p>`
+								: html`<p class="roxy-empty" role="status">${this.t('No daytime periods')}</p>`
 						}
 					</div>
 				</section>
 
-				<section class="period-col" aria-label="Night muhurta periods">
-					<h3 class="period-heading">Night</h3>
-					<div role="list" aria-label="Nighttime choghadiya">
+				<section class="period-col" aria-label=${this.t('Night muhurta periods')}>
+					<h3 class="period-heading">${this.t('Night')}</h3>
+					<div role="list" aria-label=${this.t('Nighttime choghadiya')}>
 						${
 							nightChoghadiya && nightChoghadiya.length > 0
 								? nightChoghadiya.map((p) => this.renderTile(p))
-								: html`<p class="roxy-empty" role="status">No nighttime periods</p>`
+								: html`<p class="roxy-empty" role="status">${this.t('No nighttime periods')}</p>`
 						}
 					</div>
 				</section>
