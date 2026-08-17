@@ -593,6 +593,44 @@ export const de: Record<ChromeString, string> = {
 	'Impact:': 'Wirkung:',
 	'Timing:': 'Zeitraum:',
 	'Guidance:': 'Empfehlung:',
+	'Chara karakas': 'Chara Karakas',
+	Atmakaraka: 'Atmakaraka',
+	Darakaraka: 'Darakaraka',
+	'Chara karakas in descending rank: each office, the graha holding it, its rashi, the degree it holds, the degree that earned the office, and what the office is read for.':
+		'Chara Karakas in absteigendem Rang: jedes Amt, der Graha, der es hält, sein Rashi, der gehaltene Grad, der Grad, der das Amt verdient hat, und wofür das Amt gelesen wird.',
+	Office: 'Amt',
+	Graha: 'Graha',
+	'Ranked on': 'Gereiht nach',
+	'Read for': 'Gelesen für',
+	'measured from the end of the sign': 'vom Ende des Zeichens gemessen',
+	'Heliacal visibility': 'Heliakische Sichtbarkeit',
+	'Heliacal rising and setting': 'Heliakischer Auf- und Untergang',
+	'Whether each graha stands far enough from the Sun to be seen, for {{date}}. The Sun and the nodes never appear here: they have no heliacal event.':
+		'Ob jeder Graha weit genug von der Sonne steht, um gesehen zu werden, für {{date}}. Sonne und Knoten erscheinen hier nie: sie haben kein heliakisches Ereignis.',
+	Visible: 'Sichtbar',
+	Invisible: 'Unsichtbar',
+	rises: 'aufgeht',
+	sets: 'untergeht',
+	Rose: 'Aufgegangen',
+	Set: 'Untergegangen',
+	'in the east': 'im Osten',
+	'in the west': 'im Westen',
+	'Visible until it {{event}} {{where}} on {{when}}':
+		'Sichtbar, bis sie am {{when}} {{where}} {{event}}',
+	'Invisible until it {{event}} {{where}} on {{when}}':
+		'Unsichtbar, bis sie am {{when}} {{where}} {{event}}',
+	'{{event}} {{where}} on {{when}}, with no further event inside the search window':
+		'{{event}} {{where}} am {{when}}, ohne weiteres Ereignis im Suchfenster',
+	'No rising or setting inside the search window, which is normal for a graha far from the Sun':
+		'Kein Auf- oder Untergang im Suchfenster, was für einen Graha weit von der Sonne normal ist',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°':
+		'{{degrees}}° Zeit von der Sonne gegen eine Grenze von {{limit}}°',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event':
+		'{{degrees}}° Zeit von der Sonne gegen eine Grenze von {{limit}}°, die bei diesem Ereignis {{shifted}}° wird',
+	'a morning graha, read before sunrise':
+		'ein Morgengraha, vor Sonnenaufgang gelesen',
+	'an evening graha, read after sunset':
+		'ein Abendgraha, nach Sonnenuntergang gelesen',
 };
 
 registerLocale('de', de);

@@ -605,6 +605,44 @@ export const es: Record<ChromeString, string> = {
 	'Impact:': 'Impacto:',
 	'Timing:': 'Duración:',
 	'Guidance:': 'Consejo:',
+	'Chara karakas': 'Chara karakas',
+	Atmakaraka: 'Atmakaraka',
+	Darakaraka: 'Darakaraka',
+	'Chara karakas in descending rank: each office, the graha holding it, its rashi, the degree it holds, the degree that earned the office, and what the office is read for.':
+		'Chara karakas en rango descendente: cada cargo, el graha que lo ocupa, su rashi, el grado que ocupa, el grado que le valió el cargo y para qué se lee.',
+	Office: 'Cargo',
+	Graha: 'Graha',
+	'Ranked on': 'Ordenado por',
+	'Read for': 'Se lee para',
+	'measured from the end of the sign': 'medido desde el final del signo',
+	'Heliacal visibility': 'Visibilidad heliacal',
+	'Heliacal rising and setting': 'Orto y ocaso heliacal',
+	'Whether each graha stands far enough from the Sun to be seen, for {{date}}. The Sun and the nodes never appear here: they have no heliacal event.':
+		'Si cada graha está lo bastante lejos del Sol para verse, para {{date}}. El Sol y los nodos nunca aparecen aquí: no tienen evento heliacal.',
+	Visible: 'Visible',
+	Invisible: 'Invisible',
+	rises: 'sale',
+	sets: 'se pone',
+	Rose: 'Salió',
+	Set: 'Se puso',
+	'in the east': 'por el este',
+	'in the west': 'por el oeste',
+	'Visible until it {{event}} {{where}} on {{when}}':
+		'Visible hasta que {{event}} {{where}} el {{when}}',
+	'Invisible until it {{event}} {{where}} on {{when}}':
+		'Invisible hasta que {{event}} {{where}} el {{when}}',
+	'{{event}} {{where}} on {{when}}, with no further event inside the search window':
+		'{{event}} {{where}} el {{when}}, sin más eventos dentro de la ventana de búsqueda',
+	'No rising or setting inside the search window, which is normal for a graha far from the Sun':
+		'Sin orto ni ocaso dentro de la ventana de búsqueda, lo que es normal en un graha lejos del Sol',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°':
+		'{{degrees}}° de tiempo desde el Sol frente a un límite de {{limit}}°',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event':
+		'{{degrees}}° de tiempo desde el Sol frente a un límite de {{limit}}°, que pasa a {{shifted}}° en ese evento',
+	'a morning graha, read before sunrise':
+		'un graha matutino, se lee antes del amanecer',
+	'an evening graha, read after sunset':
+		'un graha vespertino, se lee tras el ocaso',
 };
 
 registerLocale('es', es);

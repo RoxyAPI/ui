@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { HeliacalResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -10,13 +11,13 @@ type Graha = HeliacalResponse['grahas'][number];
 type Event = NonNullable<Graha['lastEvent']>;
 
 /** Udaya is the graha re-emerging from the Sun rays, asta is it disappearing into them. Sanskrit keys, never translated by the API, so the display word is ours to choose. */
-const EVENT_WORD: Record<Event['type'], string> = {
+const EVENT_WORD: Record<Event['type'], ChromeString> = {
 	udaya: 'Rose',
 	asta: 'Set',
 };
 
 /** Forward-looking form of the same two events, for the NEXT event rather than the last one. */
-const NEXT_EVENT_WORD: Record<Event['type'], string> = {
+const NEXT_EVENT_WORD: Record<Event['type'], ChromeString> = {
 	udaya: 'rises',
 	asta: 'sets',
 };
@@ -127,13 +128,14 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 		const grahas = d.grahas ?? [];
 		if (!grahas.length) return this.renderEmpty();
 
-		return html`<div class="wrap" part="card" aria-label="Heliacal visibility">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Heliacal visibility')}>
 			<header class="head" part="header">
-				<h2 class="title">Heliacal rising and setting</h2>
+				<h2 class="title">${this.t('Heliacal rising and setting')}</h2>
 				<p class="sub">
-					Whether each graha stands far enough from the Sun to be seen, for
-					${d.date}. The Sun and the nodes never appear here: they have no
-					heliacal event.
+					${this.t(
+						'Whether each graha stands far enough from the Sun to be seen, for {{date}}. The Sun and the nodes never appear here: they have no heliacal event.',
+						{ date: d.date },
+					)}
 				</p>
 			</header>
 			<div class="rows" part="table">${grahas.map((g) => this.renderGraha(g))}</div>
@@ -148,11 +150,11 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 					${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${g.graha}
 				</span>
 				<span class="state ${g.visible ? 'visible' : 'invisible'}">
-					${g.visible ? 'Visible' : 'Invisible'}
+					${g.visible ? this.t('Visible') : this.t('Invisible')}
 				</span>
 				${
 					g.retrograde
-						? html`<span class="retro" title="retrograde">R</span>`
+						? html`<span class="retro" title=${this.t('retrograde')}>R</span>`
 						: nothing
 				}
 			</div>
@@ -168,19 +170,34 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 		const next = g.nextEvent;
 		const last = g.lastEvent;
 		if (next) {
-			const verb = NEXT_EVENT_WORD[next.type];
-			const where = next.horizon === 'east' ? 'in the east' : 'in the west';
-			return html`${g.visible ? 'Visible until it' : 'Invisible until it'} ${verb}
-			${where} on <strong>${formatDateTime(this.effectiveLang(), next.datetime)}</strong>`;
+			return html`${this.t(
+				g.visible
+					? 'Visible until it {{event}} {{where}} on {{when}}'
+					: 'Invisible until it {{event}} {{where}} on {{when}}',
+				{
+					event: this.t(NEXT_EVENT_WORD[next.type]),
+					where: this.t(
+						next.horizon === 'east' ? 'in the east' : 'in the west',
+					),
+					when: formatDateTime(this.effectiveLang(), next.datetime),
+				},
+			)}`;
 		}
 		if (last) {
-			return html`${EVENT_WORD[last.type]}
-			${last.horizon === 'east' ? 'in the east' : 'in the west'} on
-			<strong>${formatDateTime(this.effectiveLang(), last.datetime)}</strong>, with no further event
-			inside the search window`;
+			return html`${this.t(
+				'{{event}} {{where}} on {{when}}, with no further event inside the search window',
+				{
+					event: this.t(EVENT_WORD[last.type]),
+					where: this.t(
+						last.horizon === 'east' ? 'in the east' : 'in the west',
+					),
+					when: formatDateTime(this.effectiveLang(), last.datetime),
+				},
+			)}`;
 		}
-		return html`No rising or setting inside the search window, which is normal for
-		a graha far from the Sun`;
+		return html`${this.t(
+			'No rising or setting inside the search window, which is normal for a graha far from the Sun',
+		)}`;
 	}
 
 	/**
@@ -192,21 +209,26 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 	 * The differing-limit note is derived by COMPARING the two numbers the response carries, never by naming which grahas have a retrograde variant. Only Mercury and Venus do: ix.7-8 gives them 12 or 14 and 8 or 10, while Jupiter, Saturn, Mars and the Moon each have one limit whatever their motion. Tying the note to retrograde motion instead would claim a variant limit for a retrograde Jupiter, which does not exist, and a practitioner reads that as the component not knowing the rule. Comparing the data cannot make that mistake and needs no copy of the table.
 	 */
 	private metaLine(g: Graha) {
-		const side =
+		const side = this.t(
 			g.horizon === 'east'
 				? 'a morning graha, read before sunrise'
-				: 'an evening graha, read after sunset';
+				: 'an evening graha, read after sunset',
+		);
 		const at = g.nextEvent ?? g.lastEvent;
 		const shifts = at && at.kalamsa !== g.kalamsa;
-		return html`<span class="num">${formatNumber(this.effectiveLang(), g.timeDegrees, 2)}&deg;</span>
-		of time from the Sun against a limit of
-		<span class="num">${formatNumber(this.effectiveLang(), g.kalamsa, 0)}&deg;</span>${
+		const vars = {
+			degrees: formatNumber(this.effectiveLang(), g.timeDegrees, 2),
+			limit: formatNumber(this.effectiveLang(), g.kalamsa, 0),
+			shifted: shifts ? formatNumber(this.effectiveLang(), at.kalamsa, 0) : '',
+		};
+		// Two whole sentences rather than a stem and an appended clause: the shift
+		// only applies to Mercury and Venus, and a fragment cannot be translated.
+		return html`${this.t(
 			shifts
-				? html`, becoming
-					<span class="num">${formatNumber(this.effectiveLang(), at.kalamsa, 0)}&deg;</span> at that
-					event`
-				: ''
-		} &middot; ${side}`;
+				? '{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event'
+				: '{{degrees}}° of time from the Sun against a limit of {{limit}}°',
+			vars,
+		)} &middot; ${side}`;
 	}
 }
 

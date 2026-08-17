@@ -603,6 +603,9 @@ describe('shipped locales', () => {
 				'S',
 				'SW',
 				'W',
+				'Atmakaraka',
+				'Darakaraka',
+				'Graha',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -669,6 +672,12 @@ describe('shipped locales', () => {
 				'NE',
 				'S',
 				'SE',
+				'Atmakaraka',
+				'Chara karakas',
+				'Darakaraka',
+				'Graha',
+				'Invisible',
+				'Visible',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -764,6 +773,12 @@ describe('shipped locales', () => {
 				'S',
 				'SE',
 				'Impact:',
+				'Atmakaraka',
+				'Chara karakas',
+				'Darakaraka',
+				'Graha',
+				'Invisible',
+				'Visible',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -828,6 +843,10 @@ describe('shipped locales', () => {
 				'NE',
 				'S',
 				'SE',
+				'Atmakaraka',
+				'Chara karakas',
+				'Darakaraka',
+				'Graha',
 			],
 			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -878,6 +897,9 @@ describe('shipped locales', () => {
 				'Rashi',
 				'Upagraha',
 				'Choghadiya',
+				'Atmakaraka',
+				'Darakaraka',
+				'Graha',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1011,13 +1033,11 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/bhav-chalit-table.ts': 13,
 		'components/bhava-bala-table.ts': 14,
 		'components/biorhythm-chart.ts': 20,
-		'components/chara-karakas.ts': 12,
 		'components/dasha-timeline.ts': 16,
 		'components/fixed-stars.ts': 13,
 		'components/gochara-table.ts': 16,
 		'components/hd-connection.ts': 28,
 		'components/hd-penta.ts': 23,
-		'components/heliacal-table.ts': 11,
 		'components/horoscope-card.ts': 17,
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,

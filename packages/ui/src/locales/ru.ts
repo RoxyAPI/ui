@@ -586,6 +586,43 @@ export const ru: Record<ChromeString, string> = {
 	'Impact:': 'Влияние:',
 	'Timing:': 'Длительность:',
 	'Guidance:': 'Совет:',
+	'Chara karakas': 'Чара караки',
+	Atmakaraka: 'Атмакарака',
+	Darakaraka: 'Даракарака',
+	'Chara karakas in descending rank: each office, the graha holding it, its rashi, the degree it holds, the degree that earned the office, and what the office is read for.':
+		'Чара караки в порядке убывания: каждая должность, граха, её занимающая, раши, градус, градус, давший должность, и что по ней читают.',
+	Office: 'Должность',
+	Graha: 'Граха',
+	'Ranked on': 'Ранг по',
+	'Read for': 'Читается для',
+	'measured from the end of the sign': 'отсчитано от конца знака',
+	'Heliacal visibility': 'Гелиакическая видимость',
+	'Heliacal rising and setting': 'Гелиакический восход и заход',
+	'Whether each graha stands far enough from the Sun to be seen, for {{date}}. The Sun and the nodes never appear here: they have no heliacal event.':
+		'Достаточно ли каждая граха удалена от Солнца, чтобы быть видимой, на {{date}}. Солнце и узлы здесь не появляются: у них нет гелиакического явления.',
+	Visible: 'Видима',
+	Invisible: 'Невидима',
+	rises: 'взойдёт',
+	sets: 'зайдёт',
+	Rose: 'Взошла',
+	Set: 'Зашла',
+	'in the east': 'на востоке',
+	'in the west': 'на западе',
+	'Visible until it {{event}} {{where}} on {{when}}':
+		'Видима, пока {{when}} не {{event}} {{where}}',
+	'Invisible until it {{event}} {{where}} on {{when}}':
+		'Невидима, пока {{when}} не {{event}} {{where}}',
+	'{{event}} {{where}} on {{when}}, with no further event inside the search window':
+		'{{event}} {{where}} {{when}}, других явлений в окне поиска нет',
+	'No rising or setting inside the search window, which is normal for a graha far from the Sun':
+		'Ни восхода, ни захода в окне поиска, что нормально для грахи, далёкой от Солнца',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°':
+		'{{degrees}}° времени от Солнца при пределе {{limit}}°',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event':
+		'{{degrees}}° времени от Солнца при пределе {{limit}}°, который в этом явлении становится {{shifted}}°',
+	'a morning graha, read before sunrise': 'утренняя граха, читается до восхода',
+	'an evening graha, read after sunset':
+		'вечерняя граха, читается после захода',
 };
 
 registerLocale('ru', ru);

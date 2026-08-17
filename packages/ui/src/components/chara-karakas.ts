@@ -168,9 +168,9 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 		const karakas = d.karakas ?? [];
 		if (!karakas.length) return this.renderEmpty();
 
-		return html`<div class="wrap" part="card" aria-label="Chara karakas">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Chara karakas')}>
 			<header class="head" part="header">
-				<h2 class="title">Chara karakas</h2>
+				<h2 class="title">${this.t('Chara karakas')}</h2>
 				<p class="scheme">
 					<span class="scheme-chip">${d.scheme ?? ''}</span>
 					${d.scheme ? (SCHEMES[d.scheme] ?? '') : ''}
@@ -178,24 +178,24 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			<div class="leads" part="details">
-				<div class="lead"><span>Atmakaraka</span><strong>${d.atmakaraka ?? ''}</strong></div>
-				<div class="lead"><span>Darakaraka</span><strong>${d.darakaraka ?? ''}</strong></div>
+				<div class="lead"><span>${this.t('Atmakaraka')}</span><strong>${d.atmakaraka ?? ''}</strong></div>
+				<div class="lead"><span>${this.t('Darakaraka')}</span><strong>${d.darakaraka ?? ''}</strong></div>
 			</div>
 			<div class="scroll" part="table" tabindex="0">
 				<table role="table">
 					<caption class="roxy-sr-only">
-						Chara karakas in descending rank: each office, the graha holding it, its rashi,
-						the degree it holds, the degree that earned the office, and what the office is
-						read for.
+						${this.t(
+							'Chara karakas in descending rank: each office, the graha holding it, its rashi, the degree it holds, the degree that earned the office, and what the office is read for.',
+						)}
 					</caption>
 					<thead>
 						<tr>
-							<th scope="col">Office</th>
-							<th scope="col">Graha</th>
-							<th scope="col">Rashi</th>
-							<th scope="col">Degree</th>
-							<th scope="col">Ranked on</th>
-							<th scope="col">Read for</th>
+							<th scope="col">${this.t('Office')}</th>
+							<th scope="col">${this.t('Graha')}</th>
+							<th scope="col">${this.t('Rashi')}</th>
+							<th scope="col">${this.t('Degree')}</th>
+							<th scope="col">${this.t('Ranked on')}</th>
+							<th scope="col">${this.t('Read for')}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -222,7 +222,7 @@ export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
 			<td class="num">${formatNumber(this.effectiveLang(), k.degreeInRashi, 2)}</td>
 			<td class="num">
 				${formatNumber(this.effectiveLang(), k.rankingDegree, 2)}
-				${k.isReversed ? html`<span class="reversed">measured from the end of the sign</span>` : nothing}
+				${k.isReversed ? html`<span class="reversed">${this.t('measured from the end of the sign')}</span>` : nothing}
 			</td>
 			<td class="meaning">
 				<strong>${k.meaning ?? ''}</strong>

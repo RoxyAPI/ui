@@ -592,6 +592,44 @@ export const tr: Record<ChromeString, string> = {
 	'Impact:': 'Etki:',
 	'Timing:': 'Süre:',
 	'Guidance:': 'Öneri:',
+	'Chara karakas': 'Chara karakalar',
+	Atmakaraka: 'Atmakaraka',
+	Darakaraka: 'Darakaraka',
+	'Chara karakas in descending rank: each office, the graha holding it, its rashi, the degree it holds, the degree that earned the office, and what the office is read for.':
+		'Azalan sıraya göre chara karakalar: her görev, onu tutan graha, rashisi, tuttuğu derece, görevi kazandıran derece ve görevin ne için okunduğu.',
+	Office: 'Görev',
+	Graha: 'Graha',
+	'Ranked on': 'Sıralama ölçütü',
+	'Read for': 'Okunduğu konu',
+	'measured from the end of the sign': 'burcun sonundan ölçülür',
+	'Heliacal visibility': 'Helyakal görünürlük',
+	'Heliacal rising and setting': 'Helyakal doğuş ve batış',
+	'Whether each graha stands far enough from the Sun to be seen, for {{date}}. The Sun and the nodes never appear here: they have no heliacal event.':
+		'Her grahanın görülebilecek kadar Güneşten uzak olup olmadığı, {{date}} için. Güneş ve düğümler burada hiç yer almaz: helyakal olayları yoktur.',
+	Visible: 'Görünür',
+	Invisible: 'Görünmez',
+	rises: 'doğana',
+	sets: 'batana',
+	Rose: 'Doğdu',
+	Set: 'Battı',
+	'in the east': 'doğuda',
+	'in the west': 'batıda',
+	'Visible until it {{event}} {{where}} on {{when}}':
+		'{{when}} tarihinde {{where}} {{event}} kadar görünür',
+	'Invisible until it {{event}} {{where}} on {{when}}':
+		'{{when}} tarihinde {{where}} {{event}} kadar görünmez',
+	'{{event}} {{where}} on {{when}}, with no further event inside the search window':
+		'{{when}} tarihinde {{where}} {{event}}, arama penceresinde başka olay yok',
+	'No rising or setting inside the search window, which is normal for a graha far from the Sun':
+		'Arama penceresinde doğuş veya batış yok, bu Güneşten uzak bir graha için normaldir',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°':
+		'Güneşten {{degrees}}° zaman, {{limit}}° sınırına karşı',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event':
+		'Güneşten {{degrees}}° zaman, {{limit}}° sınırına karşı, bu olayda {{shifted}}° olur',
+	'a morning graha, read before sunrise':
+		'sabah grahası, gün doğumundan önce okunur',
+	'an evening graha, read after sunset':
+		'akşam grahası, gün batımından sonra okunur',
 };
 
 registerLocale('tr', tr);

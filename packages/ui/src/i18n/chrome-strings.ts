@@ -676,6 +676,40 @@ export const CHROME_STRINGS = [
 	'Impact:',
 	'Timing:',
 	'Guidance:',
+
+	// Chara karakas: the card, the two offices it leads with, and the six columns.
+	'Chara karakas',
+	'Atmakaraka',
+	'Darakaraka',
+	'Chara karakas in descending rank: each office, the graha holding it, its rashi, the degree it holds, the degree that earned the office, and what the office is read for.',
+	'Office',
+	'Graha',
+	'Ranked on',
+	'Read for',
+	'measured from the end of the sign',
+
+	// Heliacal visibility. The window and the measurement are whole sentences with
+	// slots rather than a stem plus fragments, so each language orders the event,
+	// the horizon and the date its own way.
+	'Heliacal visibility',
+	'Heliacal rising and setting',
+	'Whether each graha stands far enough from the Sun to be seen, for {{date}}. The Sun and the nodes never appear here: they have no heliacal event.',
+	'Visible',
+	'Invisible',
+	'rises',
+	'sets',
+	'Rose',
+	'Set',
+	'in the east',
+	'in the west',
+	'Visible until it {{event}} {{where}} on {{when}}',
+	'Invisible until it {{event}} {{where}} on {{when}}',
+	'{{event}} {{where}} on {{when}}, with no further event inside the search window',
+	'No rising or setting inside the search window, which is normal for a graha far from the Sun',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event',
+	'a morning graha, read before sunrise',
+	'an evening graha, read after sunset',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

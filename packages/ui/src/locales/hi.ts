@@ -606,6 +606,42 @@ export const hi: Record<ChromeString, string> = {
 	'Impact:': 'प्रभाव:',
 	'Timing:': 'अवधि:',
 	'Guidance:': 'सलाह:',
+	'Chara karakas': 'चर कारक',
+	Atmakaraka: 'आत्मकारक',
+	Darakaraka: 'दाराकारक',
+	'Chara karakas in descending rank: each office, the graha holding it, its rashi, the degree it holds, the degree that earned the office, and what the office is read for.':
+		'अवरोही क्रम में चर कारक: प्रत्येक पद, उसे धारण करने वाला ग्रह, उसकी राशि, धारित अंश, पद दिलाने वाला अंश, और पद किसके लिए पढ़ा जाता है।',
+	Office: 'पद',
+	Graha: 'ग्रह',
+	'Ranked on': 'क्रम आधार',
+	'Read for': 'किसके लिए',
+	'measured from the end of the sign': 'राशि के अंत से मापा गया',
+	'Heliacal visibility': 'उदय अस्त दृश्यता',
+	'Heliacal rising and setting': 'हेलियाकल उदय और अस्त',
+	'Whether each graha stands far enough from the Sun to be seen, for {{date}}. The Sun and the nodes never appear here: they have no heliacal event.':
+		'क्या प्रत्येक ग्रह दिखने के लिए सूर्य से पर्याप्त दूर है, {{date}} के लिए। सूर्य और छाया ग्रह यहाँ कभी नहीं आते: उनका कोई उदय अस्त नहीं होता।',
+	Visible: 'दृश्य',
+	Invisible: 'अदृश्य',
+	rises: 'उदय हो',
+	sets: 'अस्त हो',
+	Rose: 'उदय हुआ',
+	Set: 'अस्त हुआ',
+	'in the east': 'पूर्व में',
+	'in the west': 'पश्चिम में',
+	'Visible until it {{event}} {{where}} on {{when}}':
+		'{{when}} को {{where}} {{event}} जाने तक दृश्य',
+	'Invisible until it {{event}} {{where}} on {{when}}':
+		'{{when}} को {{where}} {{event}} जाने तक अदृश्य',
+	'{{event}} {{where}} on {{when}}, with no further event inside the search window':
+		'{{when}} को {{where}} {{event}}, खोज अवधि में आगे कोई घटना नहीं',
+	'No rising or setting inside the search window, which is normal for a graha far from the Sun':
+		'खोज अवधि में कोई उदय या अस्त नहीं, जो सूर्य से दूर ग्रह के लिए सामान्य है',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°':
+		'सूर्य से {{degrees}}° काल, सीमा {{limit}}° के सापेक्ष',
+	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event':
+		'सूर्य से {{degrees}}° काल, सीमा {{limit}}°, जो उस घटना पर {{shifted}}° हो जाती है',
+	'a morning graha, read before sunrise': 'प्रातः ग्रह, सूर्योदय से पहले पढ़ा जाता है',
+	'an evening graha, read after sunset': 'सायं ग्रह, सूर्यास्त के बाद पढ़ा जाता है',
 };
 
 registerLocale('hi', hi);
