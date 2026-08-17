@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { ShadbalaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -20,19 +21,19 @@ const BALA_COMPONENTS: Array<{
 		| 'naisargikaBala'
 		| 'drikBala'
 	>;
-	label: string;
+	source: ChromeString;
 	color: string;
 }> = [
-	{ key: 'sthanaBala', label: 'Sthana', color: 'var(--roxy-info, #0284c7)' },
-	{ key: 'digBala', label: 'Dig', color: 'var(--roxy-success, #16a34a)' },
-	{ key: 'kalaBala', label: 'Kala', color: 'var(--roxy-warning, #ea580c)' },
-	{ key: 'chestaBala', label: 'Chesta', color: 'var(--roxy-accent, #f59e0b)' },
+	{ key: 'sthanaBala', source: 'Sthana', color: 'var(--roxy-info, #0284c7)' },
+	{ key: 'digBala', source: 'Dig', color: 'var(--roxy-success, #16a34a)' },
+	{ key: 'kalaBala', source: 'Kala', color: 'var(--roxy-warning, #ea580c)' },
+	{ key: 'chestaBala', source: 'Chesta', color: 'var(--roxy-accent, #f59e0b)' },
 	{
 		key: 'naisargikaBala',
-		label: 'Naisargika',
+		source: 'Naisargika',
 		color: 'var(--roxy-secondary, #475569)',
 	},
-	{ key: 'drikBala', label: 'Drik', color: 'var(--roxy-danger, #dc2626)' },
+	{ key: 'drikBala', source: 'Drik', color: 'var(--roxy-danger, #dc2626)' },
 ];
 
 /**
@@ -243,18 +244,18 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 			(a, b) => a.relativeRank - b.relativeRank,
 		);
 
-		return html`<div class="wrap" part="card" aria-label="Shadbala planetary strength">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Shadbala planetary strength')}>
 			<div class="head" part="header">
-				<h2 class="title">Shadbala</h2>
-				<p class="subtitle">${sorted.length} planets ranked by strength</p>
+				<h2 class="title">${this.t('Shadbala')}</h2>
+				<p class="subtitle">${this.t('{{count}} planets ranked by strength', { count: sorted.length })}</p>
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</div>
 
-			<div role="list" part="chart bars" aria-label="Planet strength bars">
+			<div role="list" part="chart bars" aria-label=${this.t('Planet strength bars')}>
 				${sorted.map((p) => this.renderPlanetRow(p))}
 			</div>
 
-			<div class="legend" part="legend" aria-label="Strength component legend">
+			<div class="legend" part="legend" aria-label=${this.t('Strength component legend')}>
 				${BALA_COMPONENTS.map(
 					(b) => html`<div class="legend-row">
 						<span
@@ -262,14 +263,14 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 							style="background: ${b.color}"
 							aria-hidden="true"
 						></span>
-						${b.label}
+						${this.t('{{component}} Bala', { component: this.t(b.source) })}
 					</div>`,
 				)}
 			</div>
 			<p class="footnote" part="legend">
-				Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give
-				malefic ones. Both are in virupas and are read together, since a planet can be strong
-				and still deliver hardship.
+				${this.t(
+					'Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give malefic ones. Both are in virupas and are read together, since a planet can be strong and still deliver hardship.',
+				)}
 			</p>
 		</div>`;
 	}
@@ -294,14 +295,14 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 				? `${formatNumber(this.effectiveLang(), p.totalRupas, 2)} / ${formatNumber(this.effectiveLang(), p.minRequired, 2)} R`
 				: '';
 
-		return html`<div class="planet-row" role="listitem" aria-label="${p.planet} Shadbala">
+		return html`<div class="planet-row" role="listitem" aria-label=${this.t('{{planet}} Shadbala', { planet: p.planet })}>
 			<div class="planet-label">
 				<span class="glyph" aria-hidden="true">${glyph}</span>
 				${p.planet}
-				<span class="rank-badge" aria-label="rank ${p.relativeRank}">#${p.relativeRank}</span>
+				<span class="rank-badge" aria-label=${this.t('rank {{n}}', { n: p.relativeRank })}>#${p.relativeRank}</span>
 			</div>
 			<div class="bar-wrap">
-				<div class="bar" role="img" aria-label="Strength components for ${p.planet}">
+				<div class="bar" role="img" aria-label=${this.t('Strength components for {{planet}}', { planet: p.planet })}>
 					${
 						total > 0
 							? BALA_COMPONENTS.map((b, i) => {
@@ -311,7 +312,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 									return html`<div
 									class="bar-segment"
 									style="flex-grow: ${grow}; background: ${b.color};"
-									title="${b.label}: ${formatNumber(this.effectiveLang(), v, 1)}"
+									title=${this.t('{{component}} {{value}} virupas', { component: this.t(b.source), value: formatNumber(this.effectiveLang(), v, 1) })}
 								></div>`;
 								})
 							: nothing
@@ -341,14 +342,14 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 		return html`<div
 				class="phala"
 				role="img"
-				aria-label="Ishta Phala ${ishtaStr}, Kashta Phala ${kashtaStr} virupas"
+				aria-label=${this.t('Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas', { ishta: ishtaStr, kashta: kashtaStr })}
 			>
 				<span class="phala-ishta" style="flex-grow: ${ishta}"></span>
 				<span class="phala-kashta" style="flex-grow: ${kashta}"></span>
 			</div>
 			<div class="phala-label">
-				<span>Ishta ${ishtaStr}</span>
-				<span>Kashta ${kashtaStr}</span>
+				<span>${this.t('Ishta {{value}}', { value: ishtaStr })}</span>
+				<span>${this.t('Kashta {{value}}', { value: kashtaStr })}</span>
 			</div>`;
 	}
 }

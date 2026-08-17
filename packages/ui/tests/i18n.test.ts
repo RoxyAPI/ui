@@ -557,6 +557,9 @@ describe('shipped locales', () => {
 		// Sanskrit panchang limbs, which print as themselves wherever the script
 		// allows. A language that abbreviates an axis natively is simply absent
 		// from that entry, which is why Russian carries `Асц` and German `AC`.
+		// The eight bala components and the two table names are Sanskrit and print as
+		// themselves wherever the script is Latin, and the units they are measured in
+		// (rupas, virupas) ride along with them in the Romance three.
 		// A handful of Latin-script cognates genuinely coincide on top of those two
 		// families: `Symbol` in German, `Aspect` in French, `Longitude` in French and
 		// Portuguese, and `Mantras:` wherever the script is Latin.
@@ -644,6 +647,20 @@ describe('shipped locales', () => {
 				'Grahas',
 				'Mag',
 				'Madhya',
+				'Bhava Bala',
+				'Bhavadhipati',
+				'Chesta',
+				'Dig',
+				'Drik',
+				'Drishti',
+				'Ishta {{value}}',
+				'Kala',
+				'Kashta {{value}}',
+				'Naisargika',
+				'Shadbala',
+				'Sthana',
+				'{{component}} Bala',
+				'{{planet}} Shadbala',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -721,6 +738,24 @@ describe('shipped locales', () => {
 				'Grahas',
 				'Mag',
 				'Madhya',
+				'Bhava Bala',
+				'Bhava Bala {{value}} virupas',
+				'Bhavadhipati',
+				'Chesta',
+				'Dig',
+				'Drik',
+				'Drishti',
+				'Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas',
+				'Ishta {{value}}',
+				'Kala',
+				'Kashta {{value}}',
+				'Naisargika',
+				'Shadbala',
+				'Sthana',
+				'{{component}} Bala',
+				'{{component}} {{value}} virupas',
+				'{{planet}} Shadbala',
+				'{{value}} rupas',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -831,6 +866,24 @@ describe('shipped locales', () => {
 				'Mag',
 				'Madhya',
 				'Nature',
+				'Bhava Bala',
+				'Bhava Bala {{value}} virupas',
+				'Bhavadhipati',
+				'Chesta',
+				'Dig',
+				'Drik',
+				'Drishti',
+				'Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas',
+				'Ishta {{value}}',
+				'Kala',
+				'Kashta {{value}}',
+				'Naisargika',
+				'Shadbala',
+				'Sthana',
+				'{{component}} Bala',
+				'{{component}} {{value}} virupas',
+				'{{planet}} Shadbala',
+				'{{value}} rupas',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -904,6 +957,24 @@ describe('shipped locales', () => {
 				'Grahas',
 				'Mag',
 				'Madhya',
+				'Bhava Bala',
+				'Bhava Bala {{value}} virupas',
+				'Bhavadhipati',
+				'Chesta',
+				'Dig',
+				'Drik',
+				'Drishti',
+				'Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas',
+				'Ishta {{value}}',
+				'Kala',
+				'Kashta {{value}}',
+				'Naisargika',
+				'Shadbala',
+				'Sthana',
+				'{{component}} Bala',
+				'{{component}} {{value}} virupas',
+				'{{planet}} Shadbala',
+				'{{value}} rupas',
 			],
 			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -960,6 +1031,20 @@ describe('shipped locales', () => {
 				'Bhav Chalit',
 				'Bhava',
 				'Madhya',
+				'Bhava Bala',
+				'Bhavadhipati',
+				'Chesta',
+				'Dig',
+				'Drik',
+				'Drishti',
+				'Ishta {{value}}',
+				'Kala',
+				'Kashta {{value}}',
+				'Naisargika',
+				'Shadbala',
+				'Sthana',
+				'{{component}} Bala',
+				'{{planet}} Shadbala',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1015,6 +1100,38 @@ describe('shipped locales', () => {
 			expect(
 				wrongScript,
 				`${lang}.ts entries with no ${lang === 'hi' ? 'Devanagari' : 'Cyrillic'} character (transliterated, or left in English)`,
+			).toEqual([]);
+		}
+	});
+
+	test('a non-Latin catalogue carries no stray Latin word', async () => {
+		// The script test above proves the native script is PRESENT. It cannot see a
+		// value that is half-transliterated, which is what a scripted edit produces
+		// when it rewrites only part of a word.
+		//
+		// The rule needs no allowlist: a Latin run is legitimate only where the
+		// English source uses that same word, which covers a brand name and a
+		// protocol acronym and nothing else. A half-rewritten word fails it, because
+		// the leftover is a fragment of a source word rather than the word.
+		const SCRIPT: Record<string, RegExp> = {
+			hi: /\p{Script=Devanagari}/u,
+			ru: /\p{Script=Cyrillic}/u,
+		};
+		for (const [lang, catalog] of await shippedCatalogues()) {
+			const script = SCRIPT[lang];
+			if (!script) continue;
+			const offenders: string[] = [];
+			for (const [source, translated] of Object.entries(catalog)) {
+				const body = translated.replace(/\{\{\w+\}\}/g, '');
+				if (!script.test(body)) continue;
+				const allowed = new Set(source.match(/[A-Za-z]{3,}/g) ?? []);
+				for (const run of body.match(/[A-Za-z]{3,}/g) ?? []) {
+					if (!allowed.has(run)) offenders.push(`${source} -> ${translated}`);
+				}
+			}
+			expect(
+				offenders,
+				`${lang}.ts values carrying a Latin word the English source does not use`,
 			).toEqual([]);
 		}
 	});
@@ -1088,7 +1205,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	const UNTRANSLATED_DEBT: Record<string, number> = {
 		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 27,
-		'components/bhava-bala-table.ts': 14,
 		'components/biorhythm-chart.ts': 20,
 		'components/dasha-timeline.ts': 18,
 		'components/gochara-table.ts': 16,
@@ -1098,7 +1214,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
-		'components/shadbala-table.ts': 18,
 		'components/synastry-chart.ts': 24,
 		'components/transits-table.ts': 15,
 		'components/vedic-planets-table.ts': 28,

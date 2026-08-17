@@ -781,6 +781,45 @@ export const CHROME_STRINGS = [
 	'Star',
 	'Mag',
 	'Nature',
+
+	// The eight bala components the two strength tables name. Sanskrit technical
+	// terms, so they print as themselves wherever the script is Latin.
+	'Bhavadhipati',
+	'Dig',
+	'Drishti',
+	'Sthana',
+	'Kala',
+	'Chesta',
+	'Naisargika',
+	'Drik',
+
+	// Bhava Bala: the card, the line that says what the ranking is cast on, and the
+	// per-row labels a screen reader hears.
+	'Bhava Bala',
+	'Twelve houses ranked by strength',
+	'Twelve houses ranked by strength on the {{system}} frame',
+	'Component legend',
+	'{{component}} Bala',
+	'lord {{graha}}',
+	'{{value}} rupas',
+	'Bhava Bala {{value}} virupas',
+	'{{component}} {{value}} virupas',
+
+	// Shadbala: the card, the ranked bars, and the Ishta against Kashta pair beneath
+	// each planet.
+	'Shadbala',
+	'Shadbala planetary strength',
+	'{{count}} planets ranked by strength',
+	'Planet strength bars',
+	'Strength component legend',
+	'Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give malefic ones. Both are in virupas and are read together, since a planet can be strong and still deliver hardship.',
+	'{{planet}} Shadbala',
+	'rank {{n}}',
+	'Strength components for {{planet}}',
+	'Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas',
+	'Ishta {{value}}',
+	'Kashta {{value}}',
+	'House {{n}}',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

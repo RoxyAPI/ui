@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { BhavaBalaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -12,19 +13,23 @@ type Bhava = BhavaBalaResponse['bhavas'][number];
 /**
  * The three components that sum to the total, in the order the tradition states them. Each is a FIELD on the response, so this list names what to read and never holds a value.
  */
-const COMPONENTS = [
+const COMPONENTS: ReadonlyArray<{
+	key: keyof Bhava;
+	source: ChromeString;
+	color: string;
+}> = [
 	{
 		key: 'bhavadhipatiBala',
-		label: 'Bhavadhipati',
+		source: 'Bhavadhipati',
 		color: 'var(--roxy-accent, #f59e0b)',
 	},
-	{ key: 'digBala', label: 'Dig', color: 'var(--roxy-info, #0284c7)' },
+	{ key: 'digBala', source: 'Dig', color: 'var(--roxy-info, #0284c7)' },
 	{
 		key: 'drishtiBala',
-		label: 'Drishti',
+		source: 'Drishti',
 		color: 'var(--roxy-success, #16a34a)',
 	},
-] as const;
+];
 
 /**
  * Bhava Bala: the strength of each of the twelve houses, ranked, with the three classical components that make up the total.
@@ -150,12 +155,17 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 		// compare against each other rather than each against itself.
 		const peak = Math.max(...bhavas.map((b) => b.totalVirupas ?? 0), 1);
 
-		return html`<div class="wrap" part="card" aria-label="Bhava Bala">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Bhava Bala')}>
 			<header class="head" part="header">
-				<h2 class="title">Bhava Bala</h2>
+				<h2 class="title">${this.t('Bhava Bala')}</h2>
 				<p class="subtitle">
-					Twelve houses ranked by strength${
-						d.houseSystem ? html` on the ${d.houseSystem} frame` : nothing
+					${
+						d.houseSystem
+							? this.t(
+									'Twelve houses ranked by strength on the {{system}} frame',
+									{ system: d.houseSystem },
+								)
+							: this.t('Twelve houses ranked by strength')
 					}
 				</p>
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
@@ -165,11 +175,11 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 				${bhavas.map((b) => this.renderBhava(b, peak, d.houseThemes))}
 			</div>
 
-			<div class="legend" part="legend" aria-label="Component legend">
+			<div class="legend" part="legend" aria-label=${this.t('Component legend')}>
 				${COMPONENTS.map(
 					(c) => html`<div class="legend-row">
 						<span class="swatch" style="background: ${c.color}" aria-hidden="true"></span>
-						${c.label} Bala
+						${this.t('{{component}} Bala', { component: this.t(c.source) })}
 					</div>`,
 				)}
 			</div>
@@ -186,11 +196,11 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 
 		return html`<article class="row" role="listitem">
 			<div class="row-top">
-				<span class="house">House ${b.house}</span>
+				<span class="house">${this.t('House {{n}}', { n: b.house })}</span>
 				<span class="rashi">${b.rashi}</span>
-				${b.lord ? html`<span class="lord">lord ${b.lord}</span>` : nothing}
+				${b.lord ? html`<span class="lord">${this.t('lord {{graha}}', { graha: b.lord })}</span>` : nothing}
 				<span class="total">
-					${formatNumber(this.effectiveLang(), b.totalRupas, 2)} rupas
+					${this.t('{{value}} rupas', { value: formatNumber(this.effectiveLang(), b.totalRupas, 2) })}
 					${
 						typeof b.rank === 'number'
 							? html`<span class="rank">#${b.rank}</span>`
@@ -201,7 +211,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 			<div
 				class="bar"
 				role="img"
-				aria-label="Bhava Bala ${formatNumber(this.effectiveLang(), b.totalVirupas, 1)} virupas"
+				aria-label=${this.t('Bhava Bala {{value}} virupas', { value: formatNumber(this.effectiveLang(), b.totalVirupas, 1) })}
 			>
 				${COMPONENTS.map((c) => {
 					const v = Math.max(0, (b[c.key] as number | undefined) ?? 0);
@@ -209,7 +219,7 @@ export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
 						? html`<span
 								class="seg"
 								style="width: ${(v / peak) * 100}%; background: ${c.color}"
-								title="${c.label} ${formatNumber(this.effectiveLang(), v, 1)} virupas"
+								title=${this.t('{{component}} {{value}} virupas', { component: this.t(c.source), value: formatNumber(this.effectiveLang(), v, 1) })}
 							></span>`
 						: nothing;
 				})}

@@ -681,6 +681,40 @@ export const pt: Record<ChromeString, string> = {
 	Star: 'Estrela',
 	Mag: 'Mag',
 	Nature: 'Natureza',
+	Bhavadhipati: 'Bhavadhipati',
+	Dig: 'Dig',
+	Drishti: 'Drishti',
+	Sthana: 'Sthana',
+	Kala: 'Kala',
+	Chesta: 'Chesta',
+	Naisargika: 'Naisargika',
+	Drik: 'Drik',
+	'Bhava Bala': 'Bhava Bala',
+	'Twelve houses ranked by strength': 'Doze casas ordenadas por força',
+	'Twelve houses ranked by strength on the {{system}} frame':
+		'Doze casas ordenadas por força no sistema {{system}}',
+	'Component legend': 'Legenda das componentes',
+	'{{component}} Bala': '{{component}} Bala',
+	'lord {{graha}}': 'regente {{graha}}',
+	'{{value}} rupas': '{{value}} rupas',
+	'Bhava Bala {{value}} virupas': 'Bhava Bala {{value}} virupas',
+	'{{component}} {{value}} virupas': '{{component}} {{value}} virupas',
+	Shadbala: 'Shadbala',
+	'Shadbala planetary strength': 'Força planetária Shadbala',
+	'{{count}} planets ranked by strength':
+		'{{count}} planetas ordenados por força',
+	'Planet strength bars': 'Barras de força planetária',
+	'Strength component legend': 'Legenda das componentes de força',
+	'Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give malefic ones. Both are in virupas and are read together, since a planet can be strong and still deliver hardship.':
+		'Ishta Phala é a capacidade de dar resultados benéficos, Kashta Phala a de dar resultados maléficos. Ambos vão em virupas e leem-se juntos, pois um planeta pode ser forte e ainda assim trazer dureza.',
+	'{{planet}} Shadbala': '{{planet}} Shadbala',
+	'rank {{n}}': 'posição {{n}}',
+	'Strength components for {{planet}}': 'Componentes de força de {{planet}}',
+	'Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas':
+		'Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas',
+	'Ishta {{value}}': 'Ishta {{value}}',
+	'Kashta {{value}}': 'Kashta {{value}}',
+	'House {{n}}': 'Casa {{n}}',
 };
 
 registerLocale('pt', pt);
