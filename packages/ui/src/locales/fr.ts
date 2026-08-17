@@ -728,6 +728,37 @@ export const fr: Record<ChromeString, string> = {
 	'Ishta {{value}}': 'Ishta {{value}}',
 	'Kashta {{value}}': 'Kashta {{value}}',
 	'House {{n}}': 'Maison {{n}}',
+	Positions: 'Positions',
+	'Aspects ({{count}})': 'Aspects ({{count}})',
+	'Transit views': 'Vues des transits',
+	'Transit aspects': 'Aspects de transit',
+	Speed: 'Vitesse',
+	Gochara: 'Gochara',
+	'Gochara transits': 'Transits gochara',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
+		'Où chaque graha transite le {{when}}, lu face au thème natal du {{birth}}.',
+	'Key transits': 'Transits clés',
+	'natal house {{n}}': 'maison natale {{n}}',
+	'{{aspect}} natal {{planet}}': '{{aspect}} au {{planet}} natal',
+	'{{aspect}} natal {{planet}} ({{orb}}°)':
+		'{{aspect}} au {{planet}} natal ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}': 'Kaksha {{n}} sur {{total}}',
+	'Kaksha {{n}} of {{total}} within the current sign':
+		'Kaksha {{n}} sur {{total}} dans le signe actuel',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}':
+		'Kaksha {{n}} sur {{total}}, gouvernée par {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} sur {{total}}, de {{start}}° à {{end}}° du signe',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} sur {{total}}, gouvernée par {{graha}}, de {{start}}° à {{end}}° du signe',
+	'this kaksha lord gave bindu': 'ce maître de kaksha a donné un bindu',
+	'this kaksha lord gave no bindu': 'ce maître de kaksha est resté sans bindu',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign':
+		'ce maître de kaksha a donné un bindu, {{count}} sur {{total}} dans ce signe',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign':
+		'ce maître de kaksha est resté sans bindu, {{count}} sur {{total}} dans ce signe',
+	'Transiting planets: each planet with its current sign, degree and daily speed.':
+		'Planètes en transit: chaque planète avec son signe actuel, son degré et son mouvement quotidien.',
 };
 
 registerLocale('fr', fr);

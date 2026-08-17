@@ -735,6 +735,37 @@ export const es: Record<ChromeString, string> = {
 	'Ishta {{value}}': 'Ishta {{value}}',
 	'Kashta {{value}}': 'Kashta {{value}}',
 	'House {{n}}': 'Casa {{n}}',
+	Positions: 'Posiciones',
+	'Aspects ({{count}})': 'Aspectos ({{count}})',
+	'Transit views': 'Vistas de tránsitos',
+	'Transit aspects': 'Aspectos de tránsito',
+	Speed: 'Velocidad',
+	Gochara: 'Gochara',
+	'Gochara transits': 'Tránsitos gochara',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
+		'Dónde transita cada graha el {{when}}, leído frente a la carta natal del {{birth}}.',
+	'Key transits': 'Tránsitos clave',
+	'natal house {{n}}': 'casa natal {{n}}',
+	'{{aspect}} natal {{planet}}': '{{aspect}} con {{planet}} natal',
+	'{{aspect}} natal {{planet}} ({{orb}}°)':
+		'{{aspect}} con {{planet}} natal ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}': 'Kaksha {{n}} de {{total}}',
+	'Kaksha {{n}} of {{total}} within the current sign':
+		'Kaksha {{n}} de {{total}} dentro del signo actual',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}':
+		'Kaksha {{n}} de {{total}}, regida por {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} de {{total}}, de {{start}}° a {{end}}° del signo',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} de {{total}}, regida por {{graha}}, de {{start}}° a {{end}}° del signo',
+	'this kaksha lord gave bindu': 'este regente de kaksha dio bindu',
+	'this kaksha lord gave no bindu': 'este regente de kaksha no dio bindu',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign':
+		'este regente de kaksha dio bindu, {{count}} de {{total}} en este signo',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign':
+		'este regente de kaksha no dio bindu, {{count}} de {{total}} en este signo',
+	'Transiting planets: each planet with its current sign, degree and daily speed.':
+		'Planetas en tránsito: cada planeta con su signo actual, grado y movimiento diario.',
 };
 
 registerLocale('es', es);

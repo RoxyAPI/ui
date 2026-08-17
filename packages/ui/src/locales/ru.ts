@@ -714,6 +714,37 @@ export const ru: Record<ChromeString, string> = {
 	'Ishta {{value}}': 'Ишта {{value}}',
 	'Kashta {{value}}': 'Кашта {{value}}',
 	'House {{n}}': 'Дом {{n}}',
+	Positions: 'Положения',
+	'Aspects ({{count}})': 'Аспекты ({{count}})',
+	'Transit views': 'Виды транзитов',
+	'Transit aspects': 'Транзитные аспекты',
+	Speed: 'Скорость',
+	Gochara: 'Гочара',
+	'Gochara transits': 'Транзиты гочара',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
+		'Где каждая граха транзитирует {{when}}, в сопоставлении с натальной картой от {{birth}}.',
+	'Key transits': 'Ключевые транзиты',
+	'natal house {{n}}': 'натальный дом {{n}}',
+	'{{aspect}} natal {{planet}}': '{{aspect}} к натальной {{planet}}',
+	'{{aspect}} natal {{planet}} ({{orb}}°)':
+		'{{aspect}} к натальной {{planet}} ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}': 'Какша {{n}} из {{total}}',
+	'Kaksha {{n}} of {{total}} within the current sign':
+		'Какша {{n}} из {{total}} в текущем знаке',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}':
+		'Какша {{n}} из {{total}}, управитель {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign':
+		'Какша {{n}} из {{total}}, от {{start}}° до {{end}}° знака',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign':
+		'Какша {{n}} из {{total}}, управитель {{graha}}, от {{start}}° до {{end}}° знака',
+	'this kaksha lord gave bindu': 'управитель этой какши дал бинду',
+	'this kaksha lord gave no bindu': 'управитель этой какши не дал бинду',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign':
+		'управитель этой какши дал бинду, {{count}} из {{total}} в этом знаке',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign':
+		'управитель этой какши не дал бинду, {{count}} из {{total}} в этом знаке',
+	'Transiting planets: each planet with its current sign, degree and daily speed.':
+		'Транзитные планеты: каждая планета со знаком, градусом и суточным движением.',
 };
 
 registerLocale('ru', ru);

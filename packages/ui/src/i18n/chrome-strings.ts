@@ -820,6 +820,34 @@ export const CHROME_STRINGS = [
 	'Ishta {{value}}',
 	'Kashta {{value}}',
 	'House {{n}}',
+
+	// Transit table: the two views, the aspect list, and the speed column.
+	'Positions',
+	'Aspects ({{count}})',
+	'Transit views',
+	'Transit aspects',
+	'Speed',
+
+	// Gochara: the card, the line that says what it is cast against, and the per-graha
+	// detail. The kaksha line is one WHOLE clause per branch, never a stem with
+	// pieces appended, because the tail is optional three times over.
+	'Gochara',
+	'Gochara transits',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.',
+	'Key transits',
+	'natal house {{n}}',
+	'{{aspect}} natal {{planet}}',
+	'{{aspect}} natal {{planet}} ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}',
+	'Kaksha {{n}} of {{total}} within the current sign',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign',
+	'this kaksha lord gave bindu',
+	'this kaksha lord gave no bindu',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign',
+	'Transiting planets: each planet with its current sign, degree and daily speed.',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

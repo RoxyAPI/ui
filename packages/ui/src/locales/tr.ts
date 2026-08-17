@@ -721,6 +721,37 @@ export const tr: Record<ChromeString, string> = {
 	'Ishta {{value}}': 'Ishta {{value}}',
 	'Kashta {{value}}': 'Kashta {{value}}',
 	'House {{n}}': '{{n}}. ev',
+	Positions: 'Konumlar',
+	'Aspects ({{count}})': 'Açılar ({{count}})',
+	'Transit views': 'Transit görünümleri',
+	'Transit aspects': 'Transit açıları',
+	Speed: 'Hız',
+	Gochara: 'Gochara',
+	'Gochara transits': 'Gochara transitleri',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
+		'Her grahanın {{when}} tarihindeki transiti, {{birth}} doğum haritasına karşı okunur.',
+	'Key transits': 'Önemli transitler',
+	'natal house {{n}}': 'natal {{n}}. ev',
+	'{{aspect}} natal {{planet}}': 'natal {{planet}} ile {{aspect}}',
+	'{{aspect}} natal {{planet}} ({{orb}}°)':
+		'natal {{planet}} ile {{aspect}} ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}': '{{total}} kakshadan {{n}}',
+	'Kaksha {{n}} of {{total}} within the current sign':
+		'Mevcut burçta {{total}} kakshadan {{n}}',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}':
+		'{{total}} kakshadan {{n}}, yöneticisi {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign':
+		'{{total}} kakshadan {{n}}, burcun {{start}}° ile {{end}}° arası',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign':
+		'{{total}} kakshadan {{n}}, yöneticisi {{graha}}, burcun {{start}}° ile {{end}}° arası',
+	'this kaksha lord gave bindu': 'bu kaksha yöneticisi bindu verdi',
+	'this kaksha lord gave no bindu': 'bu kaksha yöneticisi bindu vermedi',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign':
+		'bu kaksha yöneticisi bindu verdi, bu burçta {{total}} içinde {{count}}',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign':
+		'bu kaksha yöneticisi bindu vermedi, bu burçta {{total}} içinde {{count}}',
+	'Transiting planets: each planet with its current sign, degree and daily speed.':
+		'Transit gezegenler: her gezegen mevcut burcu, derecesi ve günlük hareketiyle.',
 };
 
 registerLocale('tr', tr);

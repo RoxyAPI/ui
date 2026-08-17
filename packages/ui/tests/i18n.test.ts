@@ -661,6 +661,7 @@ describe('shipped locales', () => {
 				'Sthana',
 				'{{component}} Bala',
 				'{{planet}} Shadbala',
+				'Gochara',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -756,6 +757,7 @@ describe('shipped locales', () => {
 				'{{component}} {{value}} virupas',
 				'{{planet}} Shadbala',
 				'{{value}} rupas',
+				'Gochara',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -884,6 +886,9 @@ describe('shipped locales', () => {
 				'{{component}} {{value}} virupas',
 				'{{planet}} Shadbala',
 				'{{value}} rupas',
+				'Aspects ({{count}})',
+				'Gochara',
+				'Positions',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -975,6 +980,7 @@ describe('shipped locales', () => {
 				'{{component}} {{value}} virupas',
 				'{{planet}} Shadbala',
 				'{{value}} rupas',
+				'Gochara',
 			],
 			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -1045,6 +1051,7 @@ describe('shipped locales', () => {
 				'Sthana',
 				'{{component}} Bala',
 				'{{planet}} Shadbala',
+				'Gochara',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1155,7 +1162,9 @@ describe('every localized call site is a string the catalogues carry', () => {
 	test('no t(...) literal is absent from CHROME_STRINGS', async () => {
 		const known = new Set<string>(CHROME_STRINGS);
 		// `t('...')` and `this.t('...')`, single-quoted, which is what biome enforces.
-		const CALL = /\bt\('((?:[^'\\]|\\.)*)'/g;
+		// `\s*` after the paren, because the formatter puts a long string on its own
+		// line and a pattern anchored to the quote silently skips every one of those.
+		const CALL = /\bt\(\s*'((?:[^'\\]|\\.)*)'/g;
 		const missing: string[] = [];
 		for (const dir of ['components', 'utils']) {
 			const base = `packages/ui/src/${dir}`;
@@ -1207,7 +1216,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/ashtakavarga-grid.ts': 27,
 		'components/biorhythm-chart.ts': 20,
 		'components/dasha-timeline.ts': 18,
-		'components/gochara-table.ts': 16,
 		'components/hd-connection.ts': 30,
 		'components/hd-penta.ts': 27,
 		'components/horoscope-card.ts': 17,
@@ -1215,7 +1223,6 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
 		'components/synastry-chart.ts': 24,
-		'components/transits-table.ts': 15,
 		'components/vedic-planets-table.ts': 28,
 		'components/yoga-list.ts': 27,
 	};
@@ -2625,7 +2632,9 @@ describe('the form path writes no untranslated words', () => {
 	 * The catalogue-wide parity test above already fails on ANY key a locale is short of. This one names the form path, so a failure reads as "the form is half translated in Turkish" instead of "tr.ts is out of step", and it covers the strings that reach a reader with no `t('literal')` call site at all: the four submit verbs and the refusal message the key guard owns.
 	 */
 	test('every form-path string is carried by all seven catalogues', async () => {
-		const CALL = /\bt\('((?:[^'\\]|\\.)*)'/g;
+		// `\s*` after the paren, because the formatter puts a long string on its own
+		// line and a pattern anchored to the quote silently skips every one of those.
+		const CALL = /\bt\(\s*'((?:[^'\\]|\\.)*)'/g;
 		// Seeded, not scanned, because these three reach a reader without a `t('literal')` call site the
 		// regex could find: the refusal message the key guard owns, the submit verbs `deriveSubmitLabel`
 		// returns, and `Search city`, which is a `@property` DEFAULT translated at render as

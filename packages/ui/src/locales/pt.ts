@@ -715,6 +715,37 @@ export const pt: Record<ChromeString, string> = {
 	'Ishta {{value}}': 'Ishta {{value}}',
 	'Kashta {{value}}': 'Kashta {{value}}',
 	'House {{n}}': 'Casa {{n}}',
+	Positions: 'Posições',
+	'Aspects ({{count}})': 'Aspectos ({{count}})',
+	'Transit views': 'Vistas de trânsitos',
+	'Transit aspects': 'Aspectos de trânsito',
+	Speed: 'Velocidade',
+	Gochara: 'Gochara',
+	'Gochara transits': 'Trânsitos gochara',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
+		'Onde cada graha transita em {{when}}, lido face ao mapa natal de {{birth}}.',
+	'Key transits': 'Trânsitos principais',
+	'natal house {{n}}': 'casa natal {{n}}',
+	'{{aspect}} natal {{planet}}': '{{aspect}} com {{planet}} natal',
+	'{{aspect}} natal {{planet}} ({{orb}}°)':
+		'{{aspect}} com {{planet}} natal ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}': 'Kaksha {{n}} de {{total}}',
+	'Kaksha {{n}} of {{total}} within the current sign':
+		'Kaksha {{n}} de {{total}} dentro do signo atual',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}':
+		'Kaksha {{n}} de {{total}}, regida por {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} de {{total}}, de {{start}}° a {{end}}° do signo',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} de {{total}}, regida por {{graha}}, de {{start}}° a {{end}}° do signo',
+	'this kaksha lord gave bindu': 'este regente de kaksha deu bindu',
+	'this kaksha lord gave no bindu': 'este regente de kaksha não deu bindu',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign':
+		'este regente de kaksha deu bindu, {{count}} de {{total}} neste signo',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign':
+		'este regente de kaksha não deu bindu, {{count}} de {{total}} neste signo',
+	'Transiting planets: each planet with its current sign, degree and daily speed.':
+		'Planetas em trânsito: cada planeta com o seu signo atual, grau e movimento diário.',
 };
 
 registerLocale('pt', pt);

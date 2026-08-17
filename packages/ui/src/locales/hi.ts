@@ -733,6 +733,37 @@ export const hi: Record<ChromeString, string> = {
 	'Ishta {{value}}': 'इष्ट {{value}}',
 	'Kashta {{value}}': 'कष्ट {{value}}',
 	'House {{n}}': 'भाव {{n}}',
+	Positions: 'स्थितियाँ',
+	'Aspects ({{count}})': 'दृष्टियाँ ({{count}})',
+	'Transit views': 'गोचर दृश्य',
+	'Transit aspects': 'गोचर दृष्टियाँ',
+	Speed: 'गति',
+	Gochara: 'गोचर',
+	'Gochara transits': 'गोचर संचार',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
+		'{{when}} को प्रत्येक ग्रह कहाँ गोचर करता है, {{birth}} की जन्म कुंडली के सापेक्ष।',
+	'Key transits': 'मुख्य गोचर',
+	'natal house {{n}}': 'जन्म भाव {{n}}',
+	'{{aspect}} natal {{planet}}': 'जन्म {{planet}} से {{aspect}}',
+	'{{aspect}} natal {{planet}} ({{orb}}°)':
+		'जन्म {{planet}} से {{aspect}} ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}': '{{total}} में से कक्षा {{n}}',
+	'Kaksha {{n}} of {{total}} within the current sign':
+		'वर्तमान राशि में {{total}} में से कक्षा {{n}}',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}':
+		'{{total}} में से कक्षा {{n}}, स्वामी {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign':
+		'{{total}} में से कक्षा {{n}}, राशि के {{start}}° से {{end}}° तक',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign':
+		'{{total}} में से कक्षा {{n}}, स्वामी {{graha}}, राशि के {{start}}° से {{end}}° तक',
+	'this kaksha lord gave bindu': 'इस कक्षा स्वामी ने बिंदु दिया',
+	'this kaksha lord gave no bindu': 'इस कक्षा स्वामी ने बिंदु नहीं दिया',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign':
+		'इस कक्षा स्वामी ने बिंदु दिया, इस राशि में {{total}} में से {{count}}',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign':
+		'इस कक्षा स्वामी ने बिंदु नहीं दिया, इस राशि में {{total}} में से {{count}}',
+	'Transiting planets: each planet with its current sign, degree and daily speed.':
+		'गोचर ग्रह: प्रत्येक ग्रह की वर्तमान राशि, अंश और दैनिक गति।',
 };
 
 registerLocale('hi', hi);

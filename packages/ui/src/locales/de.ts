@@ -723,6 +723,37 @@ export const de: Record<ChromeString, string> = {
 	'Ishta {{value}}': 'Ishta {{value}}',
 	'Kashta {{value}}': 'Kashta {{value}}',
 	'House {{n}}': 'Haus {{n}}',
+	Positions: 'Positionen',
+	'Aspects ({{count}})': 'Aspekte ({{count}})',
+	'Transit views': 'Transit-Ansichten',
+	'Transit aspects': 'Transit-Aspekte',
+	Speed: 'Geschwindigkeit',
+	Gochara: 'Gochara',
+	'Gochara transits': 'Gochara-Transite',
+	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
+		'Wo jeder Graha am {{when}} transitiert, gelesen gegen das Geburtshoroskop vom {{birth}}.',
+	'Key transits': 'Wichtige Transite',
+	'natal house {{n}}': 'Radixhaus {{n}}',
+	'{{aspect}} natal {{planet}}': '{{aspect}} Radix-{{planet}}',
+	'{{aspect}} natal {{planet}} ({{orb}}°)':
+		'{{aspect}} Radix-{{planet}} ({{orb}}°)',
+	'Kaksha {{n}} of {{total}}': 'Kaksha {{n}} von {{total}}',
+	'Kaksha {{n}} of {{total}} within the current sign':
+		'Kaksha {{n}} von {{total}} im aktuellen Zeichen',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}':
+		'Kaksha {{n}} von {{total}}, beherrscht von {{graha}}',
+	'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} von {{total}}, von {{start}}° bis {{end}}° des Zeichens',
+	'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign':
+		'Kaksha {{n}} von {{total}}, beherrscht von {{graha}}, von {{start}}° bis {{end}}° des Zeichens',
+	'this kaksha lord gave bindu': 'dieser Kaksha-Herrscher gab einen Bindu',
+	'this kaksha lord gave no bindu': 'dieser Kaksha-Herrscher gab keinen Bindu',
+	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign':
+		'dieser Kaksha-Herrscher gab einen Bindu, {{count}} von {{total}} in diesem Zeichen',
+	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign':
+		'dieser Kaksha-Herrscher gab keinen Bindu, {{count}} von {{total}} in diesem Zeichen',
+	'Transiting planets: each planet with its current sign, degree and daily speed.':
+		'Transitierende Planeten: jeder Planet mit aktuellem Zeichen, Grad und Tagesbewegung.',
 };
 
 registerLocale('de', de);

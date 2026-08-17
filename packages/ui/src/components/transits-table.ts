@@ -260,7 +260,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 		const aspectCount = transitAspects?.length ?? 0;
 		const tab = this.tab;
 
-		return html`<div class="wrap" part="card" aria-label="Transits">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Transits')}>
 			<div class="head" part="header">
 				<h2 class="title">${this.t('Transits')}</h2>
 				${dateStr ? html`<p class="subtitle">${dateStr}</p>` : nothing}
@@ -270,14 +270,17 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 				aspectCount > 0
 					? html`${renderTablist({
 							items: [
-								{ id: 'positions', label: 'Positions' },
-								{ id: 'aspects', label: `Aspects (${aspectCount})` },
+								{ id: 'positions', label: this.t('Positions') },
+								{
+									id: 'aspects',
+									label: this.t('Aspects ({{count}})', { count: aspectCount }),
+								},
 							],
 							active: tab,
 							onSelect: (v) => {
 								this.tab = v;
 							},
-							label: 'Transit views',
+							label: this.t('Transit views'),
 							idPrefix: 'transits',
 							controls: true,
 						})}
@@ -308,7 +311,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	private renderSummaryPills(
 		summary: NonNullable<TransitsResponse['summary']>,
 	) {
-		return html`<div class="summary-pills" part="details" role="region" aria-label="Aspect summary">
+		return html`<div class="summary-pills" part="details" role="region" aria-label=${this.t('Aspect summary')}>
 			<span class="pill pill--muted">
 				${this.t('Total')}: ${summary.totalAspects}
 			</span>
@@ -327,14 +330,16 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	private renderPlanetsTable(planets: TransitsResponse['transitPlanets']) {
 		return html`<table class="planets-table" part="table">
 			<caption class="roxy-sr-only">
-				Transiting planets: each planet with its current sign, degree and daily speed.
+				${this.t(
+					'Transiting planets: each planet with its current sign, degree and daily speed.',
+				)}
 			</caption>
 			<thead>
 				<tr>
-					<th scope="col">Planet</th>
-					<th scope="col">Sign</th>
-					<th scope="col">Degree</th>
-					<th scope="col">Speed</th>
+					<th scope="col">${this.t('Planet')}</th>
+					<th scope="col">${this.t('Sign')}</th>
+					<th scope="col">${this.t('Degree')}</th>
+					<th scope="col">${this.t('Speed')}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -349,7 +354,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 								${p.name}
 								${
 									p.isRetrograde
-										? html`<span class="retro-badge" aria-label="retrograde">R</span>`
+										? html`<span class="retro-badge" aria-label=${this.t('retrograde')}>R</span>`
 										: nothing
 								}
 							</div>
@@ -363,7 +368,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						<td class="num">${formatNumber(this.effectiveLang(), p.degree, 2)}</td>
 						<td class="speed">
 							<span class="speed-arrow" aria-hidden="true">${speedArrow}</span>
-							${formatNumber(this.effectiveLang(), Math.abs(p.speed), 2)}&deg;/day
+							${formatNumber(this.effectiveLang(), Math.abs(p.speed), 2)}${this.t('°/day')}
 						</td>
 					</tr>`;
 				})}
@@ -374,14 +379,14 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 	private renderAspectsList(
 		aspects: NonNullable<TransitsResponse['transitAspects']>,
 	) {
-		return html`<div part="section aspects" role="list" aria-label="Transit aspects">
+		return html`<div part="section aspects" role="list" aria-label=${this.t('Transit aspects')}>
 			${aspects.map((a, idx) => {
 				const tGlyph = planetGlyph(a.transitPlanet) ?? '';
 				const nGlyph = planetGlyph(a.natalPlanet) ?? '';
 				const nature = (a.nature ?? 'neutral').toLowerCase();
 				const interp = a.interpretation;
 				const type = formatAspectName(a);
-				const status = a.isApplying ? 'Applying' : 'Separating';
+				const status = a.isApplying ? this.t('Applying') : this.t('Separating');
 				return html`<details class="aspect-card" part="reading" role="listitem" name="transit-aspects" ?open=${idx === 0}>
 					<summary>
 						<span aria-hidden="true">${tGlyph}</span>
@@ -390,7 +395,11 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						<span aria-hidden="true">${nGlyph}</span>
 						${a.natalPlanet}
 						<span class="meta">
-							${status} · orb ${formatNumber(this.effectiveLang(), a.orb, 2)}° · strength ${formatNumber(this.effectiveLang(), a.strength, 1)}
+							${this.t('{{status}} · orb {{orb}}° · str {{strength}}', {
+								status,
+								orb: formatNumber(this.effectiveLang(), a.orb, 2),
+								strength: formatNumber(this.effectiveLang(), a.strength, 1),
+							})}
 						</span>
 						${chevron()}
 					</summary>

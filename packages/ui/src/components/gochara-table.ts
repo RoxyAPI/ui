@@ -163,26 +163,30 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 		if (!planets.length) return this.renderEmpty();
 		const key = d.keyTransits ?? [];
 
-		return html`<div class="wrap" part="card" aria-label="Gochara transits">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Gochara transits')}>
 			<header class="head" part="header">
-				<h2 class="title">Gochara</h2>
+				<h2 class="title">${this.t('Gochara')}</h2>
 				<p class="sub">
-					Where each graha transits at
-					<strong>${formatDateTime(this.effectiveLang(), d.transitDatetime)}</strong>, read against the
-					natal chart of ${formatDateTime(this.effectiveLang(), d.birthDatetime)}.
+					${this.t(
+						'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.',
+						{
+							when: formatDateTime(this.effectiveLang(), d.transitDatetime),
+							birth: formatDateTime(this.effectiveLang(), d.birthDatetime),
+						},
+					)}
 				</p>
 			</header>
 			<div part="table">${planets.map((p) => this.renderPlanet(p))}</div>
 			${
 				key.length && !this.hideReadings
 					? html`<section class="key" part="section key-transits">
-						<h3 class="key-title">Key transits</h3>
+						<h3 class="key-title">${this.t('Key transits')}</h3>
 						${key.map(
 							(k) => html`<p class="key-item">
 								${k.description}
 								${
 									typeof k.natalHouse === 'number'
-										? html`<span class="meta"> &middot; natal house ${k.natalHouse}</span>`
+										? html`<span class="meta"> &middot; ${this.t('natal house {{n}}', { n: k.natalHouse })}</span>`
 										: nothing
 								}
 							</p>`,
@@ -211,7 +215,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 				</span>
 				${
 					typeof p.natalHouse === 'number'
-						? html`<span class="house">natal house ${p.natalHouse}</span>`
+						? html`<span class="house">${this.t('natal house {{n}}', { n: p.natalHouse })}</span>`
 						: nothing
 				}
 			</div>
@@ -220,13 +224,17 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 				aspects.length
 					? html`<p class="aspects">
 						${aspects
-							.map(
-								(a) =>
-									`${formatAspectName({ type: a.aspectType })} natal ${a.natalPlanet}${
-										typeof a.orb === 'number'
-											? ` (${formatNumber(this.effectiveLang(), a.orb, 1)}°)`
-											: ''
-									}`,
+							.map((a) =>
+								typeof a.orb === 'number'
+									? this.t('{{aspect}} natal {{planet}} ({{orb}}°)', {
+											aspect: formatAspectName({ type: a.aspectType }),
+											planet: a.natalPlanet,
+											orb: formatNumber(this.effectiveLang(), a.orb, 1),
+										})
+									: this.t('{{aspect}} natal {{planet}}', {
+											aspect: formatAspectName({ type: a.aspectType }),
+											planet: a.natalPlanet,
+										}),
 							)
 							.join(' · ')}
 					</p>`
@@ -246,11 +254,67 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 		const here = k.number;
 		const verdict = k.bindu === true ? 'yes' : k.bindu === false ? 'no' : '';
 
+		const total = KAKSHA_COUNT;
+		const head =
+			k.lord &&
+			typeof k.startDegree === 'number' &&
+			typeof k.endDegree === 'number'
+				? this.t(
+						'Kaksha {{n}} of {{total}}, ruled by {{graha}}, spanning {{start}}° to {{end}}° of the sign',
+						{
+							n: here,
+							total,
+							graha: k.lord,
+							start: formatNumber(this.effectiveLang(), k.startDegree, 2),
+							end: formatNumber(this.effectiveLang(), k.endDegree, 2),
+						},
+					)
+				: k.lord
+					? this.t('Kaksha {{n}} of {{total}}, ruled by {{graha}}', {
+							n: here,
+							total,
+							graha: k.lord,
+						})
+					: typeof k.startDegree === 'number' && typeof k.endDegree === 'number'
+						? this.t(
+								'Kaksha {{n}} of {{total}}, spanning {{start}}° to {{end}}° of the sign',
+								{
+									n: here,
+									total,
+									start: formatNumber(this.effectiveLang(), k.startDegree, 2),
+									end: formatNumber(this.effectiveLang(), k.endDegree, 2),
+								},
+							)
+						: this.t('Kaksha {{n}} of {{total}}', { n: here, total });
+
+		const gave =
+			k.bindu === null || k.bindu === undefined
+				? ''
+				: typeof k.binduCount === 'number'
+					? k.bindu
+						? this.t(
+								'this kaksha lord gave bindu, {{count}} of {{total}} in this sign',
+								{ count: k.binduCount, total },
+							)
+						: this.t(
+								'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign',
+								{ count: k.binduCount, total },
+							)
+					: k.bindu
+						? this.t('this kaksha lord gave bindu')
+						: this.t('this kaksha lord gave no bindu');
+
 		return html`<div
 				class="kaksha-bar"
 				part="chart"
 				role="img"
-				aria-label="Kaksha ${here} of ${KAKSHA_COUNT} within ${''}the current sign"
+				aria-label=${this.t(
+					'Kaksha {{n}} of {{total}} within the current sign',
+					{
+						n: here,
+						total,
+					},
+				)}
 			>
 				${Array.from(
 					{ length: KAKSHA_COUNT },
@@ -260,30 +324,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 						></span>`,
 				)}
 			</div>
-			<p class="meta">
-				Kaksha <span class="num">${here}</span> of ${KAKSHA_COUNT}${
-					k.lord ? html`, ruled by ${k.lord}` : ''
-				}${
-					typeof k.startDegree === 'number' && typeof k.endDegree === 'number'
-						? html`, spanning
-							<span class="num"
-								>${formatNumber(this.effectiveLang(), k.startDegree, 2)}&deg; to
-								${formatNumber(this.effectiveLang(), k.endDegree, 2)}&deg;</span
-							>
-							of the sign`
-						: ''
-				}${
-					k.bindu === null || k.bindu === undefined
-						? ''
-						: html`&nbsp;&middot; this kaksha lord
-							${k.bindu ? 'gave' : 'gave no'} bindu${
-								typeof k.binduCount === 'number'
-									? html`, <span class="num">${k.binduCount}</span> of
-										${KAKSHA_COUNT} in this sign`
-									: ''
-							}`
-				}
-			</p>`;
+			<p class="meta">${gave ? `${head} · ${gave}` : head}</p>`;
 	}
 }
 
