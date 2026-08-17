@@ -568,7 +568,6 @@ export const pt: Record<ChromeString, string> = {
 		'Mapa-múndi das linhas planetárias de astrocartografia',
 	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
 		'Mapa-múndi equirretangular. Cada corpo tem um meridiano de Meio do Céu e Fundo do Céu e uma linha curva de Ascendente e Descendente, colorida por corpo.',
-	Birthplace: 'Local de nascimento',
 	'{{planet}} {{angle}} line': 'Linha {{angle}} de {{planet}}',
 	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
 		'As linhas contínuas são o Ascendente e o Meio do Céu, as tracejadas o Descendente e o Fundo do Céu.',
@@ -643,7 +642,6 @@ export const pt: Record<ChromeString, string> = {
 	'What to do next': 'O que fazer a seguir',
 	'Foundational digit root': 'Raiz digital de base',
 	'Foundational digit root ({{n}})': 'Raiz digital de base ({{n}})',
-	'Aspect patterns': 'Figuras de aspectos',
 	Above: 'Acima',
 	Below: 'Abaixo',
 	Active: 'Ativo',

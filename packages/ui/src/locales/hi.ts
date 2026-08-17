@@ -589,7 +589,6 @@ export const hi: Record<ChromeString, string> = {
 		'ग्रह ज्योतिष रेखाओं का विश्व मानचित्र',
 	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
 		'समआयत विश्व मानचित्र। प्रत्येक पिंड की मध्य आकाश और पाताल याम्योत्तर तथा वक्र लग्न और अस्त रेखा है, पिंड अनुसार रंगीन।',
-	Birthplace: 'जन्म स्थान',
 	'{{planet}} {{angle}} line': '{{planet}} {{angle}} रेखा',
 	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
 		'ठोस रेखाएँ लग्न और मध्य आकाश हैं, बिंदुदार अस्त और पाताल हैं।',
@@ -662,7 +661,6 @@ export const hi: Record<ChromeString, string> = {
 	'What to do next': 'आगे क्या करें',
 	'Foundational digit root': 'आधारभूत अंक मूल',
 	'Foundational digit root ({{n}})': 'आधारभूत अंक मूल ({{n}})',
-	'Aspect patterns': 'दृष्टि विन्यास',
 	Above: 'क्षितिज के ऊपर',
 	Below: 'क्षितिज के नीचे',
 	Active: 'सक्रिय',

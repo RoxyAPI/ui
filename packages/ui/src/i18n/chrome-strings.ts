@@ -654,7 +654,6 @@ export const CHROME_STRINGS = [
 	'Astrocartography world map',
 	'World map of planetary astrocartography lines',
 	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.',
-	'Birthplace',
 	'{{planet}} {{angle}} line',
 	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.',
 	'Planetary lines',
@@ -739,7 +738,6 @@ export const CHROME_STRINGS = [
 
 	// Two-state labels chosen by a ternary, and the aspect card heading beside
 	// them. Both branches are copy, so both are catalogued.
-	'Aspect patterns',
 	'Above',
 	'Below',
 	'Active',

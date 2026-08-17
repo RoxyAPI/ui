@@ -575,7 +575,6 @@ export const tr: Record<ChromeString, string> = {
 		'Gezegen astrokartografi hatlarının dünya haritası',
 	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
 		'Eşdikdörtgen dünya haritası. Her gök cisminin bir Gökyüzü ortası ve Ayakucu meridyeni ile eğri bir Yükselen ve Alçalan hattı vardır, cisme göre renklendirilir.',
-	Birthplace: 'Doğum yeri',
 	'{{planet}} {{angle}} line': '{{planet}} {{angle}} hattı',
 	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
 		'Düz çizgiler Yükselen ve Gökyüzü ortası, kesikli olanlar Alçalan ve Ayakucudur.',
@@ -650,7 +649,6 @@ export const tr: Record<ChromeString, string> = {
 	'What to do next': 'Sırada ne var',
 	'Foundational digit root': 'Temel basamak kökü',
 	'Foundational digit root ({{n}})': 'Temel basamak kökü ({{n}})',
-	'Aspect patterns': 'Açı desenleri',
 	Above: 'Ufkun üstünde',
 	Below: 'Ufkun altında',
 	Active: 'Etkin',

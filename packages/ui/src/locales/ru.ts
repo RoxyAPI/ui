@@ -569,7 +569,6 @@ export const ru: Record<ChromeString, string> = {
 		'Мировая карта планетных линий астрокартографии',
 	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
 		'Равнопромежуточная мировая карта. У каждого тела есть меридиан Середины неба и Глубины неба и изогнутая линия Асцендента и Десцендента, окрашенная по телу.',
-	Birthplace: 'Место рождения',
 	'{{planet}} {{angle}} line': 'Линия {{angle}} для {{planet}}',
 	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
 		'Сплошные линии это Асцендент и Середина неба, пунктирные Десцендент и Глубина неба.',
@@ -643,7 +642,6 @@ export const ru: Record<ChromeString, string> = {
 	'What to do next': 'Что делать дальше',
 	'Foundational digit root': 'Базовый цифровой корень',
 	'Foundational digit root ({{n}})': 'Базовый цифровой корень ({{n}})',
-	'Aspect patterns': 'Аспектные конфигурации',
 	Above: 'Над горизонтом',
 	Below: 'Под горизонтом',
 	Active: 'Активен',

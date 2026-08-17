@@ -581,7 +581,6 @@ export const fr: Record<ChromeString, string> = {
 		'Carte du monde des lignes planétaires en astrocartographie',
 	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
 		'Carte du monde équirectangulaire. Chaque corps a un méridien de Milieu du Ciel et de Fond du Ciel, plus une ligne courbe Ascendant et Descendant, colorée par corps.',
-	Birthplace: 'Lieu de naissance',
 	'{{planet}} {{angle}} line': 'Ligne {{angle}} de {{planet}}',
 	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
 		'Les lignes pleines marquent Ascendant et Milieu du Ciel, les pointillées Descendant et Fond du Ciel.',
@@ -656,7 +655,6 @@ export const fr: Record<ChromeString, string> = {
 	'What to do next': 'Que faire ensuite',
 	'Foundational digit root': 'Racine numérique de base',
 	'Foundational digit root ({{n}})': 'Racine numérique de base ({{n}})',
-	'Aspect patterns': 'Figures planétaires',
 	Above: 'Au-dessus',
 	Below: 'Au-dessous',
 	Active: 'Actif',

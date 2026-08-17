@@ -164,7 +164,7 @@ export function renderReadingDetail(
 export function renderInterpAccordion(
 	sections: InterpSection[],
 	name: string,
-	heading = 'Reading',
+	heading: string,
 ) {
 	const shown = sections.filter((s) => Boolean(s.body));
 	if (shown.length === 0) return nothing;

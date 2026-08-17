@@ -285,7 +285,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 
 		return html`<div class="wrap" part="card" aria-label=${this.t('Aspects')}>
 			<div class="head" part="header">
-				<h2 class="title">${aspects.length === 0 ? this.t('Aspect patterns') : this.t('Aspects')}</h2>
+				<h2 class="title">${aspects.length === 0 ? this.t('Chart patterns') : this.t('Aspects')}</h2>
 				${
 					aspects.length > 0 || date
 						? html`<p class="subtitle">

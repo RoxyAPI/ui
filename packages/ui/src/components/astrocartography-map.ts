@@ -253,7 +253,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 			${lines.map((l, i) => this.renderBodyLines(l, i))}
 			${
 				bd
-					? svg`<text class="birthplace" x=${lonToX(bd.longitude)} y=${latToY(bd.latitude)} text-anchor="middle" dominant-baseline="central"><title>${this.t('Birthplace')}</title>★</text>`
+					? svg`<text class="birthplace" x=${lonToX(bd.longitude)} y=${latToY(bd.latitude)} text-anchor="middle" dominant-baseline="central"><title>${this.t('Birth location')}</title>★</text>`
 					: nothing
 			}
 		</svg>`;

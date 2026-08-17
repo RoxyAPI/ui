@@ -100,16 +100,12 @@ const VISIBLE_ATTRS =
  * Text allowed to sit in a template as a literal, with the reason. Keep it SHORT: an entry here is copy no visitor will ever read in their own language.
  *
  * `UTC` is a unit symbol, identical in all seven languages and printed immediately in front of a signed number, so a catalogue entry would be seven copies of the same three letters plus a way to get the sign onto the wrong side of it.
- *
- * The three wire identifiers are the `<code>` spans in the synastry missing-planets notice. An endpoint path and two response field names are what a developer types into their own request, so translating them would break the thing the notice is telling them to look at. The sentence AROUND them is prose and is still counted.
+
  *
  * The nine centre names are the FALLBACK half of a value the response already localizes: the bodygraph reads each centre's name from the payload and drops back to the geometry table only when it is absent. Cataloguing them would be a second translation of a fact the API already owns, which is the one thing the chrome list refuses to do, and it is why they are declared once beside the shape rather than per call site.
  */
 const LITERAL_BY_DESIGN = new Set([
 	'UTC',
-	'/astrology/synastry',
-	'person1.planets',
-	'person2.planets',
 	'Head',
 	'Ajna',
 	'Throat',

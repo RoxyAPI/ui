@@ -576,7 +576,6 @@ export const de: Record<ChromeString, string> = {
 		'Weltkarte der planetaren Astrokartografie-Linien',
 	'Equirectangular world map. Each body has a Midheaven and Imum Coeli meridian and a curved Ascendant and Descendant line, colored per body.':
 		'Plattkarte der Welt. Jeder Himmelskörper hat einen Meridian für Himmelsmitte und Himmelstiefe sowie eine gebogene Aszendenten- und Deszendentenlinie, je Körper eingefärbt.',
-	Birthplace: 'Geburtsort',
 	'{{planet}} {{angle}} line': '{{planet}}-{{angle}}-Linie',
 	'Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.':
 		'Durchgezogene Linien sind Aszendent und Himmelsmitte, gestrichelte sind Deszendent und Himmelstiefe.',
@@ -651,7 +650,6 @@ export const de: Record<ChromeString, string> = {
 	'What to do next': 'Was als Nächstes zu tun ist',
 	'Foundational digit root': 'Grundlegende Quersumme',
 	'Foundational digit root ({{n}})': 'Grundlegende Quersumme ({{n}})',
-	'Aspect patterns': 'Aspektfiguren',
 	Above: 'Über dem Horizont',
 	Below: 'Unter dem Horizont',
 	Active: 'Aktiv',
