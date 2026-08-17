@@ -337,6 +337,34 @@ export const CHROME_STRINGS = [
 	'Vedic kundli',
 	'Vedic birth chart with twelve sign houses',
 
+	// Compatibility, forecast digest, hexagram, positions table and tarot spread.
+	'Strengths',
+	'Key aspects',
+	'Aspect breakdown',
+	'Element balance',
+	'Forecast digest',
+	'No notable events.',
+	'{{count}} events',
+	'significance {{value}} of 100',
+	'I Ching hexagram',
+	'Upper',
+	'Lower',
+	'Changing lines: {{lines}}.',
+	'Becomes hexagram {{number}} {{name}}.',
+	'Position',
+	'House',
+	'Motion',
+	'Formula',
+	'°/day',
+	'Tarot spread',
+	'(reversed)',
+	'{{arcana}} arcana',
+	'{{chakra}} chakra crystals',
+	'{{element}} element crystals',
+	'Crystals for {{sign}}',
+	'{{month}} birthstones',
+	'Crystals',
+
 	// Panchang table. The Sanskrit terms print as themselves in most languages;
 	// `Sun` and `Moon` label a longitude the response gives as a number, so both
 	// are pinned to the name the API returns for that body in each language.

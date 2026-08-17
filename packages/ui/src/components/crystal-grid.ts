@@ -142,12 +142,17 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 	}
 
 	private deriveHeading(d: CrystalGridData): string {
-		if ('chakra' in d && d.chakra) return `${d.chakra} chakra crystals`;
-		if ('element' in d && d.element) return `${d.element} element crystals`;
-		if ('sign' in d && d.sign) return `Crystals for ${d.sign}`;
+		if ('chakra' in d && d.chakra)
+			return this.t('{{chakra}} chakra crystals', { chakra: d.chakra });
+		if ('element' in d && d.element)
+			return this.t('{{element}} element crystals', { element: d.element });
+		if ('sign' in d && d.sign)
+			return this.t('Crystals for {{sign}}', { sign: d.sign });
 		if ('month' in d && typeof d.month === 'number')
-			return `${monthName(this.effectiveLang(), d.month)} birthstones`.trim();
-		return 'Crystals';
+			return this.t('{{month}} birthstones', {
+				month: monthName(this.effectiveLang(), d.month),
+			});
+		return this.t('Crystals');
 	}
 }
 

@@ -242,7 +242,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 			? answer.toLowerCase().replace(/[^a-z]/g, '')
 			: '';
 
-		return html`<article class="wrap" part="card" aria-label="Tarot spread">
+		return html`<article class="wrap" part="card" aria-label=${this.t('Tarot spread')}>
 			<header class="head" part="header">
 				<h2 class="title">${spreadLabel}</h2>
 				${question ? html`<span class="question">"${question}"</span>` : nothing}
@@ -264,9 +264,9 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 							</div>
 							<p class="name">
 								${verdictCard?.name ?? ''}
-								${verdictCard?.reversed ? html`<small>(reversed)</small>` : nothing}
+								${verdictCard?.reversed ? html`<small>${this.t('(reversed)')}</small>` : nothing}
 							</p>
-							${verdictCard?.arcana ? html`<p class="arcana">${verdictCard.arcana} arcana</p>` : nothing}
+							${verdictCard?.arcana ? html`<p class="arcana">${this.t('{{arcana}} arcana', { arcana: verdictCard.arcana })}</p>` : nothing}
 						</div>
 						<div class="meta" part="details">
 							<div>
@@ -307,7 +307,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 								</div>
 								<p class="name">
 									${p.card?.name ?? ''}
-									${p.card?.reversed ? html`<small>(reversed)</small>` : nothing}
+									${p.card?.reversed ? html`<small>${this.t('(reversed)')}</small>` : nothing}
 								</p>
 								${p.interpretation && !this.hideReadings ? html`<p class="interp">${p.interpretation}</p>` : nothing}
 							</div>`,
@@ -333,7 +333,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 								</div>
 								<p class="name">
 									${c.name ?? ''}
-									${c.reversed ? html`<small>(reversed)</small>` : nothing}
+									${c.reversed ? html`<small>${this.t('(reversed)')}</small>` : nothing}
 								</p>
 								${c.meaning && !this.hideReadings ? html`<p class="interp">${c.meaning}</p>` : nothing}
 							</div>`,

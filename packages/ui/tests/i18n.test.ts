@@ -507,6 +507,8 @@ describe('shipped locales', () => {
 			// the only one of the seven where that happens; the other six all
 			// translate the head noun.
 			de: [
+				// `Position` is the German word.
+				'Position',
 				// The panchang terms are Sanskrit and print as themselves; a panchang
 				// in this language names its five limbs with these same words.
 				'Amrit Kalam',
@@ -599,6 +601,8 @@ describe('shipped locales', () => {
 			// `Direction`, `Base`, `Cognition` and `Variables` unchanged, and
 			// `Activations` differs from the English only in a plural it already has.
 			fr: [
+				// `Position` is the French word.
+				'Position',
 				// `Expression` is the French word; the fuller phrase needs an elision
 				// this register does not allow, so the bare label stands.
 				'Expression',
@@ -857,17 +861,14 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/biorhythm-chart.ts': 20,
 		'components/chara-karakas.ts': 12,
 		'components/choghadiya-grid.ts': 11,
-		'components/compatibility-card.ts': 5,
 		'components/dasha-timeline.ts': 9,
 		'components/fixed-stars.ts': 13,
-		'components/forecast-digest.ts': 5,
 		'components/forecast-timeline.ts': 6,
 		'components/gochara-table.ts': 16,
 		'components/guna-milan.ts': 7,
 		'components/hd-connection.ts': 21,
 		'components/hd-penta.ts': 18,
 		'components/heliacal-table.ts': 11,
-		'components/hexagram.ts': 5,
 		'components/horoscope-card.ts': 17,
 		'components/kp-chart.ts': 39,
 		'components/kp-planets-table.ts': 12,
@@ -875,12 +876,10 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/local-space-compass.ts': 9,
 		'components/moon-phase.ts': 8,
 		'components/nakshatra-card.ts': 9,
-		'components/positions-table.ts': 5,
 		'components/profection-card.ts': 7,
 		'components/relocation-wheel.ts': 6,
 		'components/shadbala-table.ts': 12,
 		'components/synastry-chart.ts': 24,
-		'components/tarot-spread.ts': 5,
 		'components/transits-table.ts': 14,
 		'components/upagraha-table.ts': 9,
 		'components/vedic-aspects.ts': 11,

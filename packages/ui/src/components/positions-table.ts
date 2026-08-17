@@ -216,11 +216,11 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 					<thead>
 						<tr>
 							<th scope="col">${this.t('Body')}</th>
-							<th scope="col">Position</th>
+							<th scope="col">${this.t('Position')}</th>
 							${cols.natal ? html`<th scope="col">${this.t('Natal')}</th>` : nothing}
-							${cols.house ? html`<th scope="col" class="num">House</th>` : nothing}
-							${cols.motion ? html`<th scope="col">Motion</th>` : nothing}
-							${cols.formula ? html`<th scope="col">Formula</th>` : nothing}
+							${cols.house ? html`<th scope="col" class="num">${this.t('House')}</th>` : nothing}
+							${cols.motion ? html`<th scope="col">${this.t('Motion')}</th>` : nothing}
+							${cols.formula ? html`<th scope="col">${this.t('Formula')}</th>` : nothing}
 						</tr>
 					</thead>
 					<tbody>
@@ -251,7 +251,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				cols.motion
 					? html`<td>${
 							r.speed != null
-								? html`${formatNumber(this.effectiveLang(), r.speed, 3)}°/day${r.isRetrograde ? html` <span class="retro">℞</span>` : nothing}`
+								? html`${formatNumber(this.effectiveLang(), r.speed, 3)}${this.t('°/day')}${r.isRetrograde ? html` <span class="retro">℞</span>` : nothing}`
 								: html`&mdash;`
 						}</td>`
 					: nothing

@@ -211,7 +211,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 
 		const readings = !this.hideReadings;
 
-		return html`<article class="card" part="card" aria-label="I Ching hexagram">
+		return html`<article class="card" part="card" aria-label=${this.t('I Ching hexagram')}>
 			<div class="glyphs" part="chart">
 				${h.symbol ? html`<div class="symbol">${h.symbol}</div>` : nothing}
 				<div class="lines" aria-hidden="true">
@@ -256,7 +256,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 					${
 						h.upperTrigram
 							? html`<div>
-								Upper
+								${this.t('Upper')}
 								<span class="tri-glyph"
 									>${trigramGlyph(h.upperTrigram) ?? ''}</span
 								>${h.upperTrigram}
@@ -266,7 +266,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 					${
 						h.lowerTrigram
 							? html`<div>
-								Lower
+								${this.t('Lower')}
 								<span class="tri-glyph"
 									>${trigramGlyph(h.lowerTrigram) ?? ''}</span
 								>${h.lowerTrigram}
@@ -292,13 +292,17 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				${
 					changing.size > 0
 						? html`<div class="changing" part="section changing-lines">
-							Changing lines: ${Array.from(changing)
-								.sort((a, b) => a - b)
-								.join(', ')}.
+							${this.t('Changing lines: {{lines}}.', {
+								lines: Array.from(changing)
+									.sort((a, b) => a - b)
+									.join(', '),
+							})}
 							${
 								resultingHexagram?.english
-									? html` Becomes hexagram ${resultingHexagram.number}
-										${resultingHexagram.english}.`
+									? html` ${this.t('Becomes hexagram {{number}} {{name}}.', {
+											number: resultingHexagram.number,
+											name: resultingHexagram.english,
+										})}`
 									: nothing
 							}
 						</div>`

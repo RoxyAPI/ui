@@ -415,6 +415,33 @@ export const es: Record<ChromeString, string> = {
 	'ends {{time}} to {{next}}': 'termina {{time}}, luego {{next}}',
 	'ends {{time}} to {{next}} pada {{pada}}':
 		'termina {{time}}, luego {{next}} pada {{pada}}',
+	Strengths: 'Fortalezas',
+	'Key aspects': 'Aspectos clave',
+	'Aspect breakdown': 'Balance de aspectos',
+	'Element balance': 'Balance de elementos',
+	'Forecast digest': 'Resumen de pronóstico',
+	'No notable events.': 'Sin eventos destacados.',
+	'{{count}} events': '{{count}} eventos',
+	'significance {{value}} of 100': 'significancia {{value}} de 100',
+	'I Ching hexagram': 'Hexagrama del I Ching',
+	Position: 'Posición',
+	House: 'Casa',
+	Motion: 'Movimiento',
+	Formula: 'Fórmula',
+	'°/day': '°/día',
+	'Tarot spread': 'Tirada de tarot',
+	'(reversed)': '(invertida)',
+	'{{arcana}} arcana': 'Arcanos {{arcana}}',
+	Upper: 'Superior',
+	Lower: 'Inferior',
+	'Changing lines: {{lines}}.': 'Líneas mutantes: {{lines}}.',
+	'Becomes hexagram {{number}} {{name}}.':
+		'Se convierte en el hexagrama {{number}} {{name}}.',
+	'{{chakra}} chakra crystals': 'Cristales del chakra {{chakra}}',
+	'{{element}} element crystals': 'Cristales del elemento {{element}}',
+	'Crystals for {{sign}}': 'Cristales para {{sign}}',
+	'{{month}} birthstones': 'Piedras de nacimiento de {{month}}',
+	Crystals: 'Cristales',
 };
 
 registerLocale('es', es);

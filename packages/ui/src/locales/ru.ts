@@ -396,6 +396,33 @@ export const ru: Record<ChromeString, string> = {
 	'ends {{time}} to {{next}}': 'заканчивается {{time}}, затем {{next}}',
 	'ends {{time}} to {{next}} pada {{pada}}':
 		'заканчивается {{time}}, затем {{next}} пада {{pada}}',
+	Strengths: 'Сильные стороны',
+	'Key aspects': 'Ключевые аспекты',
+	'Aspect breakdown': 'Баланс аспектов',
+	'Element balance': 'Баланс стихий',
+	'Forecast digest': 'Сводка прогноза',
+	'No notable events.': 'Заметных событий нет.',
+	'{{count}} events': 'событий: {{count}}',
+	'significance {{value}} of 100': 'значимость {{value}} из 100',
+	'I Ching hexagram': 'Гексаграмма И Цзин',
+	Position: 'Положение',
+	House: 'Дом',
+	Motion: 'Движение',
+	Formula: 'Формула',
+	'°/day': '°/день',
+	'Tarot spread': 'Расклад Таро',
+	'(reversed)': '(перевёрнутая)',
+	'{{arcana}} arcana': 'Арканы {{arcana}}',
+	Upper: 'Верхняя',
+	Lower: 'Нижняя',
+	'Changing lines: {{lines}}.': 'Меняющиеся линии: {{lines}}.',
+	'Becomes hexagram {{number}} {{name}}.':
+		'Становится гексаграммой {{number}} {{name}}.',
+	'{{chakra}} chakra crystals': 'Кристаллы чакры {{chakra}}',
+	'{{element}} element crystals': 'Кристаллы стихии {{element}}',
+	'Crystals for {{sign}}': 'Кристаллы для {{sign}}',
+	'{{month}} birthstones': 'Камни рождения: {{month}}',
+	Crystals: 'Кристаллы',
 };
 
 registerLocale('ru', ru);

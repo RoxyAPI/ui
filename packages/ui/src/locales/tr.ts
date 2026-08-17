@@ -402,6 +402,33 @@ export const tr: Record<ChromeString, string> = {
 	'ends {{time}} to {{next}}': '{{time}} biter, sonra {{next}}',
 	'ends {{time}} to {{next}} pada {{pada}}':
 		'{{time}} biter, sonra {{next}} pada {{pada}}',
+	Strengths: 'Güçlü yönler',
+	'Key aspects': 'Önemli açılar',
+	'Aspect breakdown': 'Açı dengesi',
+	'Element balance': 'Element dengesi',
+	'Forecast digest': 'Tahmin özeti',
+	'No notable events.': 'Kayda değer olay yok.',
+	'{{count}} events': '{{count}} olay',
+	'significance {{value}} of 100': 'önem {{value}} / 100',
+	'I Ching hexagram': 'I Ching heksagramı',
+	Position: 'Konum',
+	House: 'Ev',
+	Motion: 'Günlük hareket',
+	Formula: 'Formül',
+	'°/day': '°/gün',
+	'Tarot spread': 'Tarot açılımı',
+	'(reversed)': '(ters)',
+	'{{arcana}} arcana': '{{arcana}} arkana',
+	Upper: 'Üst',
+	Lower: 'Alt',
+	'Changing lines: {{lines}}.': 'Değişen çizgiler: {{lines}}.',
+	'Becomes hexagram {{number}} {{name}}.':
+		'{{number}} {{name}} heksagramına dönüşür.',
+	'{{chakra}} chakra crystals': '{{chakra}} çakra kristalleri',
+	'{{element}} element crystals': '{{element}} element kristalleri',
+	'Crystals for {{sign}}': '{{sign}} için kristaller',
+	'{{month}} birthstones': '{{month}} doğum taşları',
+	Crystals: 'Kristaller',
 };
 
 registerLocale('tr', tr);

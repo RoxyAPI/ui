@@ -343,7 +343,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 						${
 							strengths?.length
 								? html`<div>
-									<h3>Strengths</h3>
+									<h3>${this.t('Strengths')}</h3>
 									<ul>
 										${strengths.map((s) => html`<li>${s}</li>`)}
 									</ul>
@@ -353,7 +353,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 						${
 							challenges?.length
 								? html`<div>
-									<h3>Challenges</h3>
+									<h3>${this.t('Challenges')}</h3>
 									<ul>
 										${challenges.map((s) => html`<li>${s}</li>`)}
 									</ul>
@@ -367,7 +367,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				keyAspects?.length
 					? html`<div class="lists" part="section key-aspects">
 						<div>
-							<h3>Key aspects</h3>
+							<h3>${this.t('Key aspects')}</h3>
 							<ul class="key-aspects">
 								${keyAspects.slice(0, 6).map((a) => html`<li>${formatAspect(this.effectiveLang(), a, readings)}</li>`)}
 							</ul>
@@ -386,7 +386,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			class="pills"
 			part="details aspect-breakdown"
 			role="region"
-			aria-label="Aspect breakdown"
+			aria-label=${this.t('Aspect breakdown')}
 		>
 			${typeof b.total === 'number' ? html`<span class="pill">${this.t('Total')}: ${b.total}</span>` : nothing}
 			<span class="pill pill--success">${this.t('Harmonious')}: ${b.harmonious}</span>
@@ -444,7 +444,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 		);
 		const shared = eb.sharedElement?.toLowerCase();
 		return html`<section class="block" part="section element-balance">
-			<h3>Element balance</h3>
+			<h3>${this.t('Element balance')}</h3>
 			<div class="elements">
 				<div class="el-row head">
 					<span></span>

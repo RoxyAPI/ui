@@ -157,9 +157,9 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 			.filter(Boolean)
 			.join(' – ');
 
-		return html`<div class="wrap" part="card" aria-label="Forecast digest">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Forecast digest')}>
 			<div class="head" part="header">
-				<h2 class="title">Forecast digest</h2>
+				<h2 class="title">${this.t('Forecast digest')}</h2>
 				${range ? html`<p class="subtitle">${range}</p>` : nothing}
 			</div>
 			${windows.map((w) => this.renderWindow(w))}
@@ -184,7 +184,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 		return html`<section class="window" part="section window">
 			<div class="window-head" part="details">
 				<span class="window-label">${this.windowLabel(w.days)}</span>
-				<span class="window-count">${w.count ?? 0} event${w.count === 1 ? '' : 's'}</span>
+				<span class="window-count">${this.t('{{count}} events', { count: w.count ?? 0 })}</span>
 			</div>
 			${
 				domains.length > 0
@@ -200,7 +200,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 			${
 				top.length > 0
 					? html`<div role="list">${top.map((e) => this.renderEvent(e))}</div>`
-					: html`<p class="quiet">No notable events.</p>`
+					: html`<p class="quiet">${this.t('No notable events.')}</p>`
 			}
 		</section>`;
 	}
@@ -217,7 +217,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 		return html`<div class="event" role="listitem">
 			<span class="event-date">${formatDate(this.effectiveLang(), e.date)}</span>
 			<span class="event-desc">${label}</span>
-			<span class="sig" role="img" aria-label="significance ${formatNumber(this.effectiveLang(), sig, 0)} of 100">
+			<span class="sig" role="img" aria-label=${this.t('significance {{value}} of 100', { value: formatNumber(this.effectiveLang(), sig, 0) })}>
 				<span class="sig-fill ${e.domain}" style="width:${Math.max(0, Math.min(100, sig))}%"></span>
 			</span>
 		</div>`;

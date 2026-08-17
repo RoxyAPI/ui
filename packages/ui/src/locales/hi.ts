@@ -416,6 +416,33 @@ export const hi: Record<ChromeString, string> = {
 	'ends {{time}} to {{next}}': '{{time}} पर समाप्त, फिर {{next}}',
 	'ends {{time}} to {{next}} pada {{pada}}':
 		'{{time}} पर समाप्त, फिर {{next}} पाद {{pada}}',
+	Strengths: 'शक्तियाँ',
+	'Key aspects': 'मुख्य दृष्टियाँ',
+	'Aspect breakdown': 'दृष्टि संतुलन',
+	'Element balance': 'तत्व संतुलन',
+	'Forecast digest': 'पूर्वानुमान सारांश',
+	'No notable events.': 'कोई उल्लेखनीय घटना नहीं।',
+	'{{count}} events': '{{count}} घटनाएँ',
+	'significance {{value}} of 100': 'महत्व {{value}} में से 100',
+	'I Ching hexagram': 'आई चिंग हेक्साग्राम',
+	Position: 'स्थिति',
+	House: 'भाव',
+	Motion: 'गति',
+	Formula: 'सूत्र',
+	'°/day': '°/दिन',
+	'Tarot spread': 'टैरो प्रसार',
+	'(reversed)': '(उल्टा)',
+	'{{arcana}} arcana': '{{arcana}} अर्चना',
+	Upper: 'ऊपरी',
+	Lower: 'निचला',
+	'Changing lines: {{lines}}.': 'परिवर्तनशील रेखाएँ: {{lines}}।',
+	'Becomes hexagram {{number}} {{name}}.':
+		'हेक्साग्राम {{number}} {{name}} बनता है।',
+	'{{chakra}} chakra crystals': '{{chakra}} चक्र क्रिस्टल',
+	'{{element}} element crystals': '{{element}} तत्व क्रिस्टल',
+	'Crystals for {{sign}}': '{{sign}} के लिए क्रिस्टल',
+	'{{month}} birthstones': '{{month}} के जन्म रत्न',
+	Crystals: 'क्रिस्टल',
 };
 
 registerLocale('hi', hi);
