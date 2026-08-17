@@ -145,36 +145,35 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 		if (!padas.length) return this.renderEmpty();
 		const exceptions = padas.filter((p) => p.exceptionApplied).length;
 
-		return html`<div class="wrap" part="card" aria-label="Arudha padas">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Arudha padas')}>
 			<header class="head" part="header">
-				<h2 class="title">Arudha padas</h2>
+				<h2 class="title">${this.t('Arudha padas')}</h2>
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			<div class="leads" part="details">
-				<div class="lead"><span>Lagna</span><strong>${d.lagnaRashi ?? ''}</strong></div>
+				<div class="lead"><span>${this.t('Lagna')}</span><strong>${d.lagnaRashi ?? ''}</strong></div>
 				<div class="lead">
-					<span>Arudha Lagna</span><strong>${d.arudhaLagna ?? ''}</strong>
+					<span>${this.t('Arudha Lagna')}</span><strong>${d.arudhaLagna ?? ''}</strong>
 				</div>
-				<div class="lead"><span>Upapada</span><strong>${d.upapada ?? ''}</strong></div>
+				<div class="lead"><span>${this.t('Upapada')}</span><strong>${d.upapada ?? ''}</strong></div>
 			</div>
 			<div class="scroll" part="table" tabindex="0">
 				<table role="table">
 					<caption class="roxy-sr-only">
-						The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord,
-						the sign the lord occupies, the sign the pada falls in, which house from the
-						Lagna that is, whether the classical exception was applied, and what the pada is
-						read for.
+						${this.t(
+							'The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord, the sign the lord occupies, the sign the pada falls in, which house from the Lagna that is, whether the classical exception was applied, and what the pada is read for.',
+						)}
 					</caption>
 					<thead>
 						<tr>
-							<th scope="col">Pada</th>
-							<th scope="col">Bhava</th>
-							<th scope="col">Bhava rashi</th>
-							<th scope="col">Lord</th>
-							<th scope="col">Lord rashi</th>
-							<th scope="col">Pada rashi</th>
-							<th scope="col">From Lagna</th>
-							<th scope="col">Read for</th>
+							<th scope="col">${this.t('Pada')}</th>
+							<th scope="col">${this.t('Bhava')}</th>
+							<th scope="col">${this.t('Bhava rashi')}</th>
+							<th scope="col">${this.t('Lord')}</th>
+							<th scope="col">${this.t('Lord rashi')}</th>
+							<th scope="col">${this.t('Pada rashi')}</th>
+							<th scope="col">${this.t('From Lagna')}</th>
+							<th scope="col">${this.t('Read for')}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -185,9 +184,11 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 			${
 				exceptions > 0
 					? html`<p class="note" part="legend">
-						<span class="exception">Moved</span> marks a pada that fell in its own bhava or
-						the seventh from it and was moved to the tenth from there, as the classical rule
-						requires. ${exceptions} of ${padas.length} padas here.
+						<span class="exception">${this.t('Moved')}</span>
+						${this.t(
+							'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.',
+							{ count: exceptions, total: padas.length },
+						)}
 					</p>`
 					: nothing
 			}
@@ -210,7 +211,7 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 			<td>${cell(p.lordRashi)}</td>
 			<td>
 				${cell(p.rashi)}
-				${p.exceptionApplied ? html`<span class="exception">Moved</span>` : nothing}
+				${p.exceptionApplied ? html`<span class="exception">${this.t('Moved')}</span>` : nothing}
 			</td>
 			<td class="num">${p.houseFromLagna ?? ''}</td>
 			<td class="meaning">

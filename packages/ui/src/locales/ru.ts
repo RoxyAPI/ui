@@ -745,6 +745,34 @@ export const ru: Record<ChromeString, string> = {
 		'управитель этой какши не дал бинду, {{count}} из {{total}} в этом знаке',
 	'Transiting planets: each planet with its current sign, degree and daily speed.':
 		'Транзитные планеты: каждая планета со знаком, градусом и суточным движением.',
+	'Energy {{value}}/10': 'Энергия {{value}}/10',
+	'Energy {{value}} of 10': 'Энергия {{value}} из 10',
+	Health: 'Здоровье',
+	Finance: 'Финансы',
+	Advice: 'Совет',
+	'Lucky number': 'Счастливое число',
+	'Lucky numbers': 'Счастливые числа',
+	'Lucky color': 'Счастливый цвет',
+	'Lucky days': 'Счастливые дни',
+	'Best with': 'Лучше всего с',
+	Phase: 'Фаза',
+	'Active transits': 'Активные транзиты',
+	'Week by week': 'Неделя за неделей',
+	'Week {{n}}': 'Неделя {{n}}',
+	'Key dates': 'Ключевые даты',
+	'Arudha padas': 'Арудха пады',
+	Moved: 'Смещён',
+	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
+		'отмечает паду, попавшую в свою же бхаву или в седьмую от неё и смещённую в десятую оттуда, как требует классическое правило. Здесь {{count}} из {{total}} пад.',
+	'The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord, the sign the lord occupies, the sign the pada falls in, which house from the Lagna that is, whether the classical exception was applied, and what the pada is read for.':
+		'Двенадцать арудха пад: каждая пада с её бхавой, знаком бхавы и его управителем, знаком управителя, знаком самой пады, номером дома от лагны, применялось ли классическое исключение, и что по ней читают.',
+	'Bhava rashi': 'Раши бхавы',
+	'Lord rashi': 'Раши управителя',
+	'Pada rashi': 'Раши пады',
+	'From Lagna': 'От лагны',
+	Lagna: 'Лагна',
+	'Arudha Lagna': 'Арудха лагна',
+	Upapada: 'Упапада',
 };
 
 registerLocale('ru', ru);

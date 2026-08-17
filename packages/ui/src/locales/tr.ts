@@ -752,6 +752,34 @@ export const tr: Record<ChromeString, string> = {
 		'bu kaksha yöneticisi bindu vermedi, bu burçta {{total}} içinde {{count}}',
 	'Transiting planets: each planet with its current sign, degree and daily speed.':
 		'Transit gezegenler: her gezegen mevcut burcu, derecesi ve günlük hareketiyle.',
+	'Energy {{value}}/10': 'Enerji {{value}}/10',
+	'Energy {{value}} of 10': '10 üzerinden {{value}} enerji',
+	Health: 'Sağlık',
+	Finance: 'Finans',
+	Advice: 'Öneri',
+	'Lucky number': 'Şans sayısı',
+	'Lucky numbers': 'Şans sayıları',
+	'Lucky color': 'Şans rengi',
+	'Lucky days': 'Şanslı günler',
+	'Best with': 'En uyumlu',
+	Phase: 'Evre',
+	'Active transits': 'Etkin transitler',
+	'Week by week': 'Hafta hafta',
+	'Week {{n}}': '{{n}}. hafta',
+	'Key dates': 'Önemli tarihler',
+	'Arudha padas': 'Arudha padalar',
+	Moved: 'Kaydırıldı',
+	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
+		'kendi bhavasına ya da ondan yedinciye düşen ve klasik kuralın gerektirdiği gibi oradan onuncuya kaydırılan bir padayı gösterir. Burada {{total}} padadan {{count}} tanesi.',
+	'The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord, the sign the lord occupies, the sign the pada falls in, which house from the Lagna that is, whether the classical exception was applied, and what the pada is read for.':
+		'On iki Arudha pada: her pada bhavasıyla, bhava burcu ve yöneticisiyle, yöneticinin bulunduğu burçla, padanın düştüğü burçla, Lagnadan kaçıncı ev olduğuyla, klasik istisnanın uygulanıp uygulanmadığıyla ve padanın ne için okunduğuyla.',
+	'Bhava rashi': 'Bhava rashi',
+	'Lord rashi': 'Yönetici rashi',
+	'Pada rashi': 'Pada rashi',
+	'From Lagna': 'Lagnadan',
+	Lagna: 'Lagna',
+	'Arudha Lagna': 'Arudha Lagna',
+	Upapada: 'Upapada',
 };
 
 registerLocale('tr', tr);

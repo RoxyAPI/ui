@@ -759,6 +759,34 @@ export const fr: Record<ChromeString, string> = {
 		'ce maître de kaksha est resté sans bindu, {{count}} sur {{total}} dans ce signe',
 	'Transiting planets: each planet with its current sign, degree and daily speed.':
 		'Planètes en transit: chaque planète avec son signe actuel, son degré et son mouvement quotidien.',
+	'Energy {{value}}/10': 'Énergie {{value}}/10',
+	'Energy {{value}} of 10': 'Énergie {{value}} sur 10',
+	Health: 'Santé',
+	Finance: 'Finances',
+	Advice: 'Conseil',
+	'Lucky number': 'Nombre porte-bonheur',
+	'Lucky numbers': 'Nombres porte-bonheur',
+	'Lucky color': 'Couleur porte-bonheur',
+	'Lucky days': 'Jours favorables',
+	'Best with': 'En affinité avec',
+	Phase: 'Phase',
+	'Active transits': 'Transits actifs',
+	'Week by week': 'Semaine par semaine',
+	'Week {{n}}': 'Semaine {{n}}',
+	'Key dates': 'Dates clés',
+	'Arudha padas': 'Arudha padas',
+	Moved: 'Déplacé',
+	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
+		'signale un pada tombé dans son propre bhava ou dans le septième depuis celui-ci et déplacé vers le dixième depuis là, comme le veut la règle classique. Ici {{count}} padas sur {{total}}.',
+	'The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord, the sign the lord occupies, the sign the pada falls in, which house from the Lagna that is, whether the classical exception was applied, and what the pada is read for.':
+		'Les douze Arudha padas: chaque pada avec son bhava, le signe du bhava et son maître, le signe occupé par le maître, le signe du pada, la maison depuis le Lagna, si la règle classique a joué, et ce que le pada indique.',
+	'Bhava rashi': 'Rashi du bhava',
+	'Lord rashi': 'Rashi du maître',
+	'Pada rashi': 'Rashi du pada',
+	'From Lagna': 'Depuis le Lagna',
+	Lagna: 'Lagna',
+	'Arudha Lagna': 'Arudha Lagna',
+	Upapada: 'Upapada',
 };
 
 registerLocale('fr', fr);

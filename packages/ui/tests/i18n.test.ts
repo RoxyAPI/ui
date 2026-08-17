@@ -662,6 +662,10 @@ describe('shipped locales', () => {
 				'{{component}} Bala',
 				'{{planet}} Shadbala',
 				'Gochara',
+				'Arudha Lagna',
+				'Lagna',
+				'Phase',
+				'Upapada',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -758,6 +762,10 @@ describe('shipped locales', () => {
 				'{{planet}} Shadbala',
 				'{{value}} rupas',
 				'Gochara',
+				'Arudha Lagna',
+				'Arudha padas',
+				'Lagna',
+				'Upapada',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -889,6 +897,11 @@ describe('shipped locales', () => {
 				'Aspects ({{count}})',
 				'Gochara',
 				'Positions',
+				'Arudha Lagna',
+				'Arudha padas',
+				'Lagna',
+				'Phase',
+				'Upapada',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -981,6 +994,10 @@ describe('shipped locales', () => {
 				'{{planet}} Shadbala',
 				'{{value}} rupas',
 				'Gochara',
+				'Arudha Lagna',
+				'Arudha padas',
+				'Lagna',
+				'Upapada',
 			],
 			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -1052,6 +1069,11 @@ describe('shipped locales', () => {
 				'{{component}} Bala',
 				'{{planet}} Shadbala',
 				'Gochara',
+				'Arudha Lagna',
+				'Bhava rashi',
+				'Lagna',
+				'Pada rashi',
+				'Upapada',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1212,13 +1234,11 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	// lookup is invisible to any scan, so the record holding it is typed
 	// `ChromeString` and the compiler owns that half.
 	const UNTRANSLATED_DEBT: Record<string, number> = {
-		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 27,
 		'components/biorhythm-chart.ts': 20,
 		'components/dasha-timeline.ts': 18,
 		'components/hd-connection.ts': 30,
 		'components/hd-penta.ts': 27,
-		'components/horoscope-card.ts': 17,
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,

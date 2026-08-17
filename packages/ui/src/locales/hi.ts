@@ -764,6 +764,34 @@ export const hi: Record<ChromeString, string> = {
 		'इस कक्षा स्वामी ने बिंदु नहीं दिया, इस राशि में {{total}} में से {{count}}',
 	'Transiting planets: each planet with its current sign, degree and daily speed.':
 		'गोचर ग्रह: प्रत्येक ग्रह की वर्तमान राशि, अंश और दैनिक गति।',
+	'Energy {{value}}/10': 'ऊर्जा {{value}}/10',
+	'Energy {{value}} of 10': '10 में से ऊर्जा {{value}}',
+	Health: 'स्वास्थ्य',
+	Finance: 'वित्त',
+	Advice: 'सलाह',
+	'Lucky number': 'शुभ अंक',
+	'Lucky numbers': 'शुभ अंक',
+	'Lucky color': 'शुभ रंग',
+	'Lucky days': 'शुभ दिन',
+	'Best with': 'सर्वाधिक अनुकूल',
+	Phase: 'कला',
+	'Active transits': 'सक्रिय गोचर',
+	'Week by week': 'सप्ताह दर सप्ताह',
+	'Week {{n}}': 'सप्ताह {{n}}',
+	'Key dates': 'मुख्य तिथियाँ',
+	'Arudha padas': 'अरुढ़ पद',
+	Moved: 'स्थानांतरित',
+	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
+		'उस पद को दर्शाता है जो अपने ही भाव में या उससे सातवें में पड़ा और शास्त्रीय नियम के अनुसार वहाँ से दसवें में स्थानांतरित हुआ। यहाँ {{total}} में से {{count}} पद।',
+	'The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord, the sign the lord occupies, the sign the pada falls in, which house from the Lagna that is, whether the classical exception was applied, and what the pada is read for.':
+		'बारह अरुढ़ पद: प्रत्येक पद अपने भाव, भाव राशि और उसके स्वामी, स्वामी की राशि, पद की राशि, लग्न से कौन सा भाव, शास्त्रीय अपवाद लगा या नहीं, और पद किसके लिए पढ़ा जाता है।',
+	'Bhava rashi': 'भाव राशि',
+	'Lord rashi': 'स्वामी राशि',
+	'Pada rashi': 'पद राशि',
+	'From Lagna': 'लग्न से',
+	Lagna: 'लग्न',
+	'Arudha Lagna': 'अरुढ़ लग्न',
+	Upapada: 'उपपद',
 };
 
 registerLocale('hi', hi);

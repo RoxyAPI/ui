@@ -848,6 +848,40 @@ export const CHROME_STRINGS = [
 	'this kaksha lord gave bindu, {{count}} of {{total}} in this sign',
 	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign',
 	'Transiting planets: each planet with its current sign, degree and daily speed.',
+
+	// Daily horoscope: the energy score, the five life areas it is read across, the
+	// lucky details, and the week and date blocks under them.
+	'Energy {{value}}/10',
+	'Energy {{value}} of 10',
+	'Health',
+	'Finance',
+	'Advice',
+	'Lucky number',
+	'Lucky numbers',
+	'Lucky color',
+	'Lucky days',
+	'Best with',
+	'Phase',
+	'Active transits',
+	'Week by week',
+	'Week {{n}}',
+	'Key dates',
+
+	// Arudha padas: the card, the note that explains the classical exception, and the
+	// eight columns of the table.
+	'Arudha padas',
+	'Moved',
+	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.',
+	'The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord, the sign the lord occupies, the sign the pada falls in, which house from the Lagna that is, whether the classical exception was applied, and what the pada is read for.',
+	'Bhava rashi',
+	'Lord rashi',
+	'Pada rashi',
+	'From Lagna',
+
+	// The two padas a reading starts from, beside the Lagna they are measured from.
+	'Lagna',
+	'Arudha Lagna',
+	'Upapada',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

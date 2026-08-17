@@ -746,6 +746,34 @@ export const pt: Record<ChromeString, string> = {
 		'este regente de kaksha não deu bindu, {{count}} de {{total}} neste signo',
 	'Transiting planets: each planet with its current sign, degree and daily speed.':
 		'Planetas em trânsito: cada planeta com o seu signo atual, grau e movimento diário.',
+	'Energy {{value}}/10': 'Energia {{value}}/10',
+	'Energy {{value}} of 10': 'Energia {{value}} de 10',
+	Health: 'Saúde',
+	Finance: 'Finanças',
+	Advice: 'Conselho',
+	'Lucky number': 'Número da sorte',
+	'Lucky numbers': 'Números da sorte',
+	'Lucky color': 'Cor da sorte',
+	'Lucky days': 'Dias de sorte',
+	'Best with': 'Melhor com',
+	Phase: 'Fase',
+	'Active transits': 'Trânsitos ativos',
+	'Week by week': 'Semana a semana',
+	'Week {{n}}': 'Semana {{n}}',
+	'Key dates': 'Datas principais',
+	'Arudha padas': 'Arudha padas',
+	Moved: 'Deslocado',
+	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
+		'assinala um pada que caía no seu próprio bhava ou no sétimo a partir dele e foi deslocado para o décimo a partir daí, como exige a regra clássica. Aqui {{count}} de {{total}} padas.',
+	'The twelve Arudha padas: each pada with its bhava, the bhava sign and its lord, the sign the lord occupies, the sign the pada falls in, which house from the Lagna that is, whether the classical exception was applied, and what the pada is read for.':
+		'Os doze Arudha padas: cada pada com o seu bhava, o signo do bhava e o seu regente, o signo que o regente ocupa, o signo em que o pada cai, que casa desde o Lagna é, se a exceção clássica se aplicou, e para que se lê o pada.',
+	'Bhava rashi': 'Rashi do bhava',
+	'Lord rashi': 'Rashi do regente',
+	'Pada rashi': 'Rashi do pada',
+	'From Lagna': 'Desde o Lagna',
+	Lagna: 'Lagna',
+	'Arudha Lagna': 'Arudha Lagna',
+	Upapada: 'Upapada',
 };
 
 registerLocale('pt', pt);

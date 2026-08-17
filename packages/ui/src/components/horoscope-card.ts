@@ -310,8 +310,8 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				</div>
 				${
 					energy !== null
-						? html`<span class="energy" part="details" aria-label=${`Energy ${energy} of 10`}>
-							Energy ${energy}/10
+						? html`<span class="energy" part="details" aria-label=${this.t('Energy {{value}} of 10', { value: energy })}>
+							${this.t('Energy {{value}}/10', { value: energy })}
 							<span class="energy-bar"
 								><span style="width: ${(energy / 10) * 100}%"></span
 							></span>
@@ -338,7 +338,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					${
 						d.love
 							? html`<div class="section">
-								<h3>Love</h3>
+								<h3>${this.t('Love')}</h3>
 								<p>${d.love}</p>
 							</div>`
 							: nothing
@@ -346,7 +346,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					${
 						d.career
 							? html`<div class="section">
-								<h3>Career</h3>
+								<h3>${this.t('Career')}</h3>
 								<p>${d.career}</p>
 							</div>`
 							: nothing
@@ -354,7 +354,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					${
 						d.health
 							? html`<div class="section">
-								<h3>Health</h3>
+								<h3>${this.t('Health')}</h3>
 								<p>${d.health}</p>
 							</div>`
 							: nothing
@@ -362,7 +362,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					${
 						d.finance
 							? html`<div class="section">
-								<h3>Finance</h3>
+								<h3>${this.t('Finance')}</h3>
 								<p>${d.finance}</p>
 							</div>`
 							: nothing
@@ -370,7 +370,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					${
 						'advice' in d && d.advice
 							? html`<div class="section">
-								<h3>Advice</h3>
+								<h3>${this.t('Advice')}</h3>
 								<p>${d.advice}</p>
 							</div>`
 							: nothing
@@ -402,18 +402,18 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				return html`<div class="lucky" part="details">
 						${
 							luckyNumber !== undefined
-								? html`<span>Lucky number <strong>${luckyNumber}</strong></span>`
+								? html`<span>${this.t('Lucky number')} <strong>${luckyNumber}</strong></span>`
 								: nothing
 						}
 						${
 							luckyColor
-								? html`<span>Lucky color <strong>${luckyColor}</strong></span>`
+								? html`<span>${this.t('Lucky color')} <strong>${luckyColor}</strong></span>`
 								: nothing
 						}
 						${
 							luckyNumbers.length
 								? html`<span
-									>Lucky numbers
+									>${this.t('Lucky numbers')}
 									<strong>${luckyNumbers.join(', ')}</strong></span
 								>`
 								: nothing
@@ -421,14 +421,14 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 						${
 							luckyDays.length
 								? html`<span
-									>Lucky days <strong>${luckyDays.join(', ')}</strong></span
+									>${this.t('Lucky days')} <strong>${luckyDays.join(', ')}</strong></span
 								>`
 								: nothing
 						}
 						${
 							compatibleSigns.length
 								? html`<span class="compat-wrap">
-									Best with
+									${this.t('Best with')}
 									<span class="compat"
 										>${compatibleSigns.map(
 											(s) => html`<span>${s}</span>`,
@@ -458,14 +458,14 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 						${
 							moonSign
 								? html`<span
-									><span class="lbl">Moon</span>
+									><span class="lbl">${this.t('Moon')}</span>
 									<span aria-hidden="true">${glyph}</span> <b>${moonSign}</b></span
 								>`
 								: nothing
 						}
 						${
 							moonPhase
-								? html`<span><span class="lbl">Phase</span> <b>${moonPhase}</b></span>`
+								? html`<span><span class="lbl">${this.t('Phase')}</span> <b>${moonPhase}</b></span>`
 								: nothing
 						}
 					</div>`
@@ -473,7 +473,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			}
 			${
 				transits.length
-					? html`<ul class="transits" aria-label="Active transits">
+					? html`<ul class="transits" aria-label=${this.t('Active transits')}>
 						${transits.map((t) => html`<li>${t}</li>`)}
 					</ul>`
 					: nothing
@@ -491,11 +491,11 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			// under its own heading and goes whole.
 			weeks.length && !this.hideReadings
 				? html`<section part="section week-by-week">
-					<h3 class="block-title">Week by week</h3>
+					<h3 class="block-title">${this.t('Week by week')}</h3>
 					<div class="weeks">
 						${weeks.map(
 							(w) => html`<div class="week">
-								<span class="week-no">Week ${w.week}</span>
+								<span class="week-no">${this.t('Week {{n}}', { n: w.week })}</span>
 								<div>
 									<div class="week-focus">${w.focus}</div>
 									${w.advice ? html`<p class="week-advice">${w.advice}</p>` : nothing}
@@ -511,7 +511,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			// read of it, so it stays.
 			keyDates.length
 				? html`<section part="section key-dates">
-					<h3 class="block-title">Key dates</h3>
+					<h3 class="block-title">${this.t('Key dates')}</h3>
 					<dl class="dates">
 						${keyDates.map(
 							(k) => html`<div class="date-row">
