@@ -698,7 +698,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 									aspectSymbol(name) ?? display(a, 'type', formatAspectName(a));
 								const cls = ASPECT_CLASS[name] ?? 'aspect-other';
 								const orb = formatNumber(this.effectiveLang(), a.orb, 1);
-								return html`<td class=${`cell ${cls}`} title=${`${row.label} ${display(a, 'type', name)} ${col.label}${orb ? ` (${this.t('orb')} ${orb}°)` : ''}`}>
+								return html`<td class=${`cell ${cls}`} title=${`${row.label} ${display(a, 'type', name)} ${col.label}${orb ? ` (${this.t('Orb')} ${orb}°)` : ''}`}>
 									<span class="asp">${sym}</span>
 								</td>`;
 							})}
@@ -1242,7 +1242,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			const aspectName = normalizeAspect(a);
 			const aspectClass = ASPECT_CLASS[aspectName] ?? 'aspect-other';
 			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);
-			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${display(a, 'planet1')} ${display(a, 'type', aspectName)} ${display(a, 'planet2')}${orbLabel ? ` (${this.t('orb')} ${orbLabel}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${display(a, 'planet1')} ${display(a, 'type', aspectName)} ${display(a, 'planet2')}${orbLabel ? ` (${this.t('Orb')} ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
 }

@@ -97,7 +97,6 @@ export const ru: Record<ChromeString, string> = {
 	'No planets to grid': 'Нет планет для таблицы',
 	'Planet by planet aspect grid: the aspect each pair of planets forms, read from the planet naming the row across to the planet naming the column.':
 		'Таблица аспектов планета за планетой: аспект каждой пары планет читается от планеты в строке к планете в столбце.',
-	orb: 'орбис',
 
 	'Dominant element': 'Преобладающая стихия',
 	'Dominant modality': 'Преобладающий крест',
@@ -154,7 +153,6 @@ export const ru: Record<ChromeString, string> = {
 	Transiting: 'Транзит',
 	Applying: 'Сходящийся',
 	Separating: 'Расходящийся',
-	strength: 'сила',
 
 	'Every body with its natal position and its position on the transit date, each as a zodiac sign and a degree.':
 		'Каждый объект с его натальным положением и положением на дату транзита, оба указаны знаком зодиака и градусом.',
@@ -505,6 +503,45 @@ export const ru: Record<ChromeString, string> = {
 	Career: 'Карьера',
 	Money: 'Деньги',
 	'Twin flame': 'Близнецовое пламя',
+	'Western planetary positions': 'Западные положения планет',
+	'Planetary positions': 'Положения планет',
+	'Western planetary positions: each body with its sign, degree, house and motion.':
+		'Западные положения планет: каждое тело со знаком, градусом, домом и движением.',
+	Degree: 'Градус',
+	'Vedic aspects': 'Ведические аспекты',
+	'Chart time {{when}}': 'Время карты {{when}}',
+	'Sidereal positions': 'Сидерические положения',
+	'Mutual aspects': 'Взаимные аспекты',
+	'Vedic planetary aspects: aspecting planet, aspect type, aspected planet, strength and orb.':
+		'Ведические планетные аспекты: аспектирующая планета, тип аспекта, аспектируемая планета, сила и орбис.',
+	From: 'От',
+	Aspect: 'Аспект',
+	To: 'К',
+	Strength: 'Сила',
+	Orb: 'Орбис',
+	'Upagraha positions': 'Положения упаграх',
+	Upagrahas: 'Упаграхи',
+	Upagraha: 'Упаграха',
+	'{{group}} upagrahas: each sub-planet with its rashi, degree in sign, sidereal longitude, and nakshatra with pada.':
+		'Упаграхи {{group}}: каждая подпланета с раши, градусом в знаке, сидерической долготой и накшатрой с падой.',
+	'Time based': 'По времени',
+	'From the eightfold division of the day or night, so these depend on the birth time, the place and the weekday.':
+		'Из восьмичастного деления дня или ночи, поэтому они зависят от времени рождения, места и дня недели.',
+	'Sun based': 'По Солнцу',
+	'The Dhuma group, derived by fixed arc from the Sun. Dhuma is the Sun plus 133 degrees 20 minutes, and each of the rest follows from the one before it.':
+		'Группа Дхума, полученная фиксированной дугой от Солнца. Дхума это Солнце плюс 133 градуса 20 минут, и каждая следующая следует из предыдущей.',
+	Rashi: 'Раши',
+	Longitude: 'Долгота',
+	Pada: 'Пада',
+	'Nakshatra {{name}}': 'Накшатра {{name}}',
+	'Nakshatra {{number}} of 27': 'Накшатра {{number}} из 27',
+	Lord: 'Управитель',
+	Deity: 'Божество',
+	Symbol: 'Символ',
+	Characteristics: 'Характеристики',
+	'Mantras:': 'Мантры:',
+	'Gemstones:': 'Камни:',
+	'Rituals:': 'Ритуалы:',
 };
 
 registerLocale('ru', ru);

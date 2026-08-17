@@ -106,21 +106,21 @@ export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 	protected renderData(n: NakshatraResponse) {
 		const remedies = n.remedies;
 
-		return html`<article class="wrap" part="card" aria-label=${`Nakshatra ${n.name}`}>
+		return html`<article class="wrap" part="card" aria-label=${this.t('Nakshatra {{name}}', { name: n.name })}>
 			<header class="head" part="header">
 				<h2 class="name">${n.name}</h2>
 				${
 					typeof n.number === 'number'
-						? html`<span class="number">Nakshatra ${n.number} of 27</span>`
+						? html`<span class="number">${this.t('Nakshatra {{number}} of 27', { number: n.number })}</span>`
 						: nothing
 				}
 				${n.range ? html`<span class="range">${n.range}</span>` : nothing}
 			</header>
 
 			<dl class="facts" part="details">
-				${n.lord ? html`<div class="fact"><dt>Lord</dt><dd>${n.lord}</dd></div>` : nothing}
-				${n.deity ? html`<div class="fact"><dt>Deity</dt><dd>${n.deity}</dd></div>` : nothing}
-				${n.symbol ? html`<div class="fact"><dt>Symbol</dt><dd>${n.symbol}</dd></div>` : nothing}
+				${n.lord ? html`<div class="fact"><dt>${this.t('Lord')}</dt><dd>${n.lord}</dd></div>` : nothing}
+				${n.deity ? html`<div class="fact"><dt>${this.t('Deity')}</dt><dd>${n.deity}</dd></div>` : nothing}
+				${n.symbol ? html`<div class="fact"><dt>${this.t('Symbol')}</dt><dd>${n.symbol}</dd></div>` : nothing}
 			</dl>
 
 			${
@@ -128,7 +128,7 @@ export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 				// what a native of it is said to be like.
 				n.characteristics && !this.hideReadings
 					? html`<div class="section" part="section characteristics">
-						<h3>Characteristics</h3>
+						<h3>${this.t('Characteristics')}</h3>
 						<p>${n.characteristics}</p>
 					</div>`
 					: nothing
@@ -137,11 +137,11 @@ export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
 			${
 				remedies && !this.hideReadings
 					? html`<div class="section" part="section remedies">
-						<h3>Remedies</h3>
+						<h3>${this.t('Remedies')}</h3>
 						<div class="remedies">
-							${remedies.mantras ? html`<div class="remedy"><strong>Mantras:</strong> ${remedies.mantras}</div>` : nothing}
-							${remedies.gemstones ? html`<div class="remedy"><strong>Gemstones:</strong> ${remedies.gemstones}</div>` : nothing}
-							${remedies.rituals ? html`<div class="remedy"><strong>Rituals:</strong> ${remedies.rituals}</div>` : nothing}
+							${remedies.mantras ? html`<div class="remedy"><strong>${this.t('Mantras:')}</strong> ${remedies.mantras}</div>` : nothing}
+							${remedies.gemstones ? html`<div class="remedy"><strong>${this.t('Gemstones:')}</strong> ${remedies.gemstones}</div>` : nothing}
+							${remedies.rituals ? html`<div class="remedy"><strong>${this.t('Rituals:')}</strong> ${remedies.rituals}</div>` : nothing}
 						</div>
 					</div>`
 					: nothing

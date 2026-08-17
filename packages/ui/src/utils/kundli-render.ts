@@ -83,6 +83,11 @@ const RETRO_MARK = 'ʳ';
  * divisional sign. In that case the degree-within-sign is not meaningful and
  * must be hidden from the in-cell label.
  */
+/** Position of a sign in the zodiac order, or -1. Takes a plain string because it reads API values: `SIGNS_ORDER` is a literal tuple, so `indexOf` would not accept one. */
+function signIndex(sign: string): number {
+	return SIGNS_ORDER.findIndex((s) => s === sign);
+}
+
 function isDivisionalPlacement(p: PlacedGraha, cellSign: string): boolean {
 	if (typeof p.longitude !== 'number' || !Number.isFinite(p.longitude)) {
 		return false;
@@ -300,8 +305,8 @@ function renderSouthFrame(divisionLabel?: string): TemplateResult {
  * the Lagna sign is unknown so the caller can skip rendering the badge.
  */
 function houseNumberInSign(sign: string, lagnaSign: string): number {
-	const lagnaIdx = SIGNS_ORDER.findIndex((s) => s === lagnaSign);
-	const signIdx = SIGNS_ORDER.findIndex((s) => s === sign);
+	const lagnaIdx = signIndex(lagnaSign);
+	const signIdx = signIndex(sign);
 	if (lagnaIdx === -1 || signIdx === -1) return 0;
 	return ((signIdx - lagnaIdx + 12) % 12) + 1;
 }
@@ -441,7 +446,7 @@ const NORTH_HOUSE_CENTERS: Record<number, { x: number; y: number }> = {
  * zodiac in order.
  */
 function rashiInHouse(houseNum: number, lagnaSign: string): number {
-	const lagnaIdx = SIGNS_ORDER.findIndex((s) => s === lagnaSign);
+	const lagnaIdx = signIndex(lagnaSign);
 	if (lagnaIdx === -1) return houseNum;
 	return ((lagnaIdx + houseNum - 1) % 12) + 1;
 }

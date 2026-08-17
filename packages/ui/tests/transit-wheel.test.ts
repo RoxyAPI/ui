@@ -892,8 +892,8 @@ describe('roxy-transit-wheel', () => {
 		expect(body).toContain('Opposition: 2');
 		expect(body).not.toContain('[object Object]');
 		expect(body).toContain('Strongest');
-		// strength 100, not the "1" a trailing-zero-stripping formatter would give.
-		expect(body).toContain('strength 100');
+		// 100, not the "1" a trailing-zero-stripping formatter would give.
+		expect(body).toContain('Strength 100');
 		expect(body).toContain('Applying');
 		el.remove();
 	});

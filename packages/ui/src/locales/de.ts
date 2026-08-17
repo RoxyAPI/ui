@@ -101,7 +101,6 @@ export const de: Record<ChromeString, string> = {
 	'No planets to grid': 'Keine Planeten für die Tabelle',
 	'Planet by planet aspect grid: the aspect each pair of planets forms, read from the planet naming the row across to the planet naming the column.':
 		'Aspekttabelle Planet für Planet: der Aspekt, den jedes Planetenpaar bildet, gelesen vom Planeten der Zeile zum Planeten der Spalte.',
-	orb: 'Orbis',
 
 	'Dominant element': 'Dominantes Element',
 	'Dominant modality': 'Dominante Qualität',
@@ -159,7 +158,6 @@ export const de: Record<ChromeString, string> = {
 	Transiting: 'Transit',
 	Applying: 'Applikativ',
 	Separating: 'Separativ',
-	strength: 'Stärke',
 
 	'Every body with its natal position and its position on the transit date, each as a zodiac sign and a degree.':
 		'Jeder Himmelskörper mit seiner Radixposition und seiner Position am Transitdatum, jeweils als Tierkreiszeichen und Grad.',
@@ -512,6 +510,45 @@ export const de: Record<ChromeString, string> = {
 	Career: 'Beruf',
 	Money: 'Geld',
 	'Twin flame': 'Dualseele',
+	'Western planetary positions': 'Westliche Planetenpositionen',
+	'Planetary positions': 'Planetenpositionen',
+	'Western planetary positions: each body with its sign, degree, house and motion.':
+		'Westliche Planetenpositionen: jeder Himmelskörper mit Zeichen, Grad, Haus und Bewegung.',
+	Degree: 'Grad',
+	'Vedic aspects': 'Vedische Aspekte',
+	'Chart time {{when}}': 'Horoskopzeit {{when}}',
+	'Sidereal positions': 'Siderische Positionen',
+	'Mutual aspects': 'Gegenseitige Aspekte',
+	'Vedic planetary aspects: aspecting planet, aspect type, aspected planet, strength and orb.':
+		'Vedische Planetenaspekte: aspektierender Planet, Aspektart, aspektierter Planet, Stärke und Orbis.',
+	From: 'Von',
+	Aspect: 'Aspekt',
+	To: 'Auf',
+	Strength: 'Stärke',
+	Orb: 'Orbis',
+	'Upagraha positions': 'Upagraha-Positionen',
+	Upagrahas: 'Upagrahas',
+	Upagraha: 'Upagraha',
+	'{{group}} upagrahas: each sub-planet with its rashi, degree in sign, sidereal longitude, and nakshatra with pada.':
+		'Upagrahas {{group}}: jeder Nebenplanet mit Rashi, Grad im Zeichen, siderischer Länge und Nakshatra mit Pada.',
+	'Time based': 'Zeitbasiert',
+	'From the eightfold division of the day or night, so these depend on the birth time, the place and the weekday.':
+		'Aus der achtfachen Teilung des Tages oder der Nacht, daher hängen sie von Geburtszeit, Ort und Wochentag ab.',
+	'Sun based': 'Sonnenbasiert',
+	'The Dhuma group, derived by fixed arc from the Sun. Dhuma is the Sun plus 133 degrees 20 minutes, and each of the rest follows from the one before it.':
+		'Die Dhuma-Gruppe, aus einem festen Bogen ab der Sonne abgeleitet. Dhuma ist die Sonne plus 133 Grad 20 Minuten, und jeder weitere folgt aus dem vorhergehenden.',
+	Rashi: 'Rashi',
+	Longitude: 'Länge',
+	Pada: 'Pada',
+	'Nakshatra {{name}}': 'Nakshatra {{name}}',
+	'Nakshatra {{number}} of 27': 'Nakshatra {{number}} von 27',
+	Lord: 'Herrscher',
+	Deity: 'Gottheit',
+	Symbol: 'Symbol',
+	Characteristics: 'Eigenschaften',
+	'Mantras:': 'Mantras:',
+	'Gemstones:': 'Edelsteine:',
+	'Rituals:': 'Rituale:',
 };
 
 registerLocale('de', de);

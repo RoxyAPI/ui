@@ -105,7 +105,6 @@ export const tr: Record<ChromeString, string> = {
 	'No planets to grid': 'Tabloya alınacak gezegen yok',
 	'Planet by planet aspect grid: the aspect each pair of planets forms, read from the planet naming the row across to the planet naming the column.':
 		'Gezegenden gezegene açı tablosu: her gezegen çiftinin kurduğu açı, satırdaki gezegenden sütundaki gezegene doğru okunur.',
-	orb: 'orb',
 
 	'Dominant element': 'Baskın element',
 	'Dominant modality': 'Baskın nitelik',
@@ -161,7 +160,6 @@ export const tr: Record<ChromeString, string> = {
 	Transiting: 'Transit',
 	Applying: 'Yaklaşan açı',
 	Separating: 'Uzaklaşan açı',
-	strength: 'güç',
 
 	'Every body with its natal position and its position on the transit date, each as a zodiac sign and a degree.':
 		'Her gök cisminin natal konumu ve transit tarihindeki konumu, her biri burç ve derece olarak.',
@@ -511,6 +509,45 @@ export const tr: Record<ChromeString, string> = {
 	Career: 'Kariyer',
 	Money: 'Para',
 	'Twin flame': 'İkiz alev',
+	'Western planetary positions': 'Batı gezegen konumları',
+	'Planetary positions': 'Gezegen konumları',
+	'Western planetary positions: each body with its sign, degree, house and motion.':
+		'Batı gezegen konumları: her gök cismi burcu, derecesi, evi ve hareketiyle.',
+	Degree: 'Derece',
+	'Vedic aspects': 'Vedik açılar',
+	'Chart time {{when}}': 'Harita zamanı {{when}}',
+	'Sidereal positions': 'Sidereal konumlar',
+	'Mutual aspects': 'Karşılıklı açılar',
+	'Vedic planetary aspects: aspecting planet, aspect type, aspected planet, strength and orb.':
+		'Vedik gezegen açıları: açı yapan gezegen, açı türü, açı alan gezegen, güç ve orb.',
+	From: 'Kimden',
+	Aspect: 'Açı',
+	To: 'Kime',
+	Strength: 'Güç',
+	Orb: 'Orb',
+	'Upagraha positions': 'Upagraha konumları',
+	Upagrahas: 'Upagrahalar',
+	Upagraha: 'Upagraha',
+	'{{group}} upagrahas: each sub-planet with its rashi, degree in sign, sidereal longitude, and nakshatra with pada.':
+		'Upagrahalar {{group}}: her alt gezegen rashi, burçtaki derecesi, sidereal boylamı ve pada ile nakshatrasıyla.',
+	'Time based': 'Zamana dayalı',
+	'From the eightfold division of the day or night, so these depend on the birth time, the place and the weekday.':
+		'Gündüzün veya gecenin sekize bölünmesinden gelir, bu yüzden doğum saatine, yere ve haftanın gününe bağlıdır.',
+	'Sun based': 'Güneşe dayalı',
+	'The Dhuma group, derived by fixed arc from the Sun. Dhuma is the Sun plus 133 degrees 20 minutes, and each of the rest follows from the one before it.':
+		'Güneşten sabit yayla türetilen Dhuma grubu. Dhuma, Güneş artı 133 derece 20 dakikadır ve geri kalanların her biri bir öncekinden gelir.',
+	Rashi: 'Rashi',
+	Longitude: 'Boylam',
+	Pada: 'Pada',
+	'Nakshatra {{name}}': 'Nakshatra {{name}}',
+	'Nakshatra {{number}} of 27': '27 nakshatradan {{number}}',
+	Lord: 'Yönetici',
+	Deity: 'Tanrısal güç',
+	Symbol: 'Sembol',
+	Characteristics: 'Özellikler',
+	'Mantras:': 'Mantralar:',
+	'Gemstones:': 'Taşlar:',
+	'Rituals:': 'Ritüeller:',
 };
 
 registerLocale('tr', tr);

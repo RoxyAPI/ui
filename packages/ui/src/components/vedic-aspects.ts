@@ -155,15 +155,15 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 			? `${formatDate(this.effectiveLang(), d.datetime)}, ${formatTime(this.effectiveLang(), d.datetime)}`
 			: '';
 
-		return html`<div class="wrap" part="card" aria-label="Vedic aspects">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Vedic aspects')}>
 			<div class="head" part="header">
-				<h2 class="title">Vedic aspects</h2>
-				${when ? html`<p class="subtitle">Chart time ${when}</p>` : nothing}
+				<h2 class="title">${this.t('Vedic aspects')}</h2>
+				${when ? html`<p class="subtitle">${this.t('Chart time {{when}}', { when })}</p>` : nothing}
 			</div>
 			${
 				planets.length > 0
 					? html`<div part="section positions">
-						<p class="section-label">Sidereal positions</p>
+						<p class="section-label">${this.t('Sidereal positions')}</p>
 						<div class="mutual">
 							${planets.map(
 								(p) => html`<span class="position">
@@ -178,7 +178,7 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 			${
 				mutual.length > 0
 					? html`<div part="section mutual-aspects">
-						<p class="section-label">Mutual aspects</p>
+						<p class="section-label">${this.t('Mutual aspects')}</p>
 						<div class="mutual">
 							${mutual.map(
 								(m) => html`<span class="mutual-pill">
@@ -195,16 +195,15 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 					? html`<div class="overflow-scroll" part="table">
 						<table>
 							<caption class="roxy-sr-only">
-								Vedic planetary aspects: aspecting planet, aspect type, aspected planet,
-								strength and orb.
+								${this.t('Vedic planetary aspects: aspecting planet, aspect type, aspected planet, strength and orb.')}
 							</caption>
 							<thead>
 								<tr>
-									<th scope="col">From</th>
-									<th scope="col">Aspect</th>
-									<th scope="col">To</th>
-									<th scope="col">Strength</th>
-									<th scope="col">Orb</th>
+									<th scope="col">${this.t('From')}</th>
+									<th scope="col">${this.t('Aspect')}</th>
+									<th scope="col">${this.t('To')}</th>
+									<th scope="col">${this.t('Strength')}</th>
+									<th scope="col">${this.t('Orb')}</th>
 								</tr>
 							</thead>
 							<tbody>

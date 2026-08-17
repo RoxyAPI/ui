@@ -126,21 +126,21 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 		if (!d.planets) return this.renderEmpty();
 		const rows = this.rows();
 
-		return html`<div class="wrap" part="card" aria-label="Western planetary positions" tabindex="0">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Western planetary positions')} tabindex="0">
 			<header class="head" part="header">
-				<h2 class="title">Planetary positions</h2>
+				<h2 class="title">${this.t('Planetary positions')}</h2>
 			</header>
 			<table role="table" part="table">
 				<caption class="roxy-sr-only">
-					Western planetary positions: each body with its sign, degree, house and motion.
+					${this.t('Western planetary positions: each body with its sign, degree, house and motion.')}
 				</caption>
 				<thead>
 					<tr>
-						<th scope="col">Body</th>
-						<th scope="col">Sign</th>
-						<th scope="col">Degree</th>
-						<th scope="col">House</th>
-						<th scope="col">Motion</th>
+						<th scope="col">${this.t('Body')}</th>
+						<th scope="col">${this.t('Sign')}</th>
+						<th scope="col">${this.t('Degree')}</th>
+						<th scope="col">${this.t('House')}</th>
+						<th scope="col">${this.t('Motion')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -163,7 +163,7 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 							</td>
 							<td class="num">${typeof r.house === 'number' ? r.house : ''}</td>
 							<td class="num">
-								${speed ? html`${speed}°/day` : nothing}
+								${speed ? html`${speed}${this.t('°/day')}` : nothing}
 								${r.isRetrograde ? html`<span class="retro"> ℞</span>` : nothing}
 							</td>
 						</tr>`;

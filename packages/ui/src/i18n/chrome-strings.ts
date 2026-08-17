@@ -52,7 +52,6 @@ export const CHROME_STRINGS = [
 	// Natal chart: aspect grid.
 	'No planets to grid',
 	'Planet by planet aspect grid: the aspect each pair of planets forms, read from the planet naming the row across to the planet naming the column.',
-	'orb',
 
 	// Natal chart: balance details.
 	'Dominant element',
@@ -117,7 +116,6 @@ export const CHROME_STRINGS = [
 	'Transiting',
 	'Applying',
 	'Separating',
-	'strength',
 
 	// Transit bi-wheel: positions table.
 	'Every body with its natal position and its position on the transit date, each as a zodiac sign and a degree.',
@@ -580,6 +578,52 @@ export const CHROME_STRINGS = [
 	'Career',
 	'Money',
 	'Twin flame',
+
+	// The Western positions grid: the card name, the heading over it, and the columns
+	// a reader scans. `Degree` is shared with the Vedic tables below.
+	'Western planetary positions',
+	'Planetary positions',
+	'Western planetary positions: each body with its sign, degree, house and motion.',
+	'Degree',
+
+	// Vedic drishti: the card, the two section labels above the pills, and the five
+	// columns of the aspect table.
+	'Vedic aspects',
+	'Chart time {{when}}',
+	'Sidereal positions',
+	'Mutual aspects',
+	'Vedic planetary aspects: aspecting planet, aspect type, aspected planet, strength and orb.',
+	'From',
+	'Aspect',
+	'To',
+	'Strength',
+	'Orb',
+
+	// Upagrahas: the card, its two classical groups with the line that says what each
+	// group is derived from, and the columns.
+	'Upagraha positions',
+	'Upagrahas',
+	'Upagraha',
+	'{{group}} upagrahas: each sub-planet with its rashi, degree in sign, sidereal longitude, and nakshatra with pada.',
+	'Time based',
+	'From the eightfold division of the day or night, so these depend on the birth time, the place and the weekday.',
+	'Sun based',
+	'The Dhuma group, derived by fixed arc from the Sun. Dhuma is the Sun plus 133 degrees 20 minutes, and each of the rest follows from the one before it.',
+	'Rashi',
+	'Longitude',
+	'Pada',
+
+	// The nakshatra card: its accessible name, the mansion counter, the three facts a
+	// mansion is identified by, and the remedy lines under them.
+	'Nakshatra {{name}}',
+	'Nakshatra {{number}} of 27',
+	'Lord',
+	'Deity',
+	'Symbol',
+	'Characteristics',
+	'Mantras:',
+	'Gemstones:',
+	'Rituals:',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

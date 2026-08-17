@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { signGlyph } from '../tokens/index.js';
 import type { UpagrahaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -13,18 +14,24 @@ type Upagraha = UpagrahaResponse['timeBased'][number];
 /**
  * The two groups the response ships, each with the line a reader needs to know what it is looking at. Time-based positions depend on birth time, place and weekday; the Dhuma group is pure arithmetic from the Sun.
  */
-const GROUPS = [
+const GROUPS: ReadonlyArray<{
+	key: 'timeBased' | 'sunBased';
+	titleSource: ChromeString;
+	noteSource: ChromeString;
+}> = [
 	{
 		key: 'timeBased',
-		title: 'Time based',
-		note: 'From the eightfold division of the day or night, so these depend on the birth time, the place and the weekday.',
+		titleSource: 'Time based',
+		noteSource:
+			'From the eightfold division of the day or night, so these depend on the birth time, the place and the weekday.',
 	},
 	{
 		key: 'sunBased',
-		title: 'Sun based',
-		note: 'The Dhuma group, derived by fixed arc from the Sun. Dhuma is the Sun plus 133 degrees 20 minutes, and each of the rest follows from the one before it.',
+		titleSource: 'Sun based',
+		noteSource:
+			'The Dhuma group, derived by fixed arc from the Sun. Dhuma is the Sun plus 133 degrees 20 minutes, and each of the rest follows from the one before it.',
 	},
-] as const;
+];
 
 /**
  * Upagraha positions. Renders /vedic-astrology/upagraha: the eleven upagrahas (shadowy sub-planets) in the two groups the tradition separates them into, each with its sidereal longitude, rashi, degree in sign, and nakshatra with pada.
@@ -119,9 +126,9 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 		const groups = GROUPS.filter((g) => d[g.key]?.length);
 		if (!groups.length) return this.renderEmpty();
 
-		return html`<div class="wrap" part="card" aria-label="Upagraha positions">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Upagraha positions')}>
 			<header class="head" part="header">
-				<h2 class="title">Upagrahas</h2>
+				<h2 class="title">${this.t('Upagrahas')}</h2>
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			${groups.map((g) => this.renderGroup(g, d[g.key]))}
@@ -134,23 +141,25 @@ export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
 		// is invisible to the catalog scanner.
 		const body = html`
 			<div class="group-head">
-				<h3 class="group-title">${group.title}</h3>
-				<p class="group-note">${group.note}</p>
+				<h3 class="group-title">${this.t(group.titleSource)}</h3>
+				<p class="group-note">${this.t(group.noteSource)}</p>
 			</div>
 			<div class="scroll" part="table" tabindex="0">
 				<table role="table">
 					<caption class="roxy-sr-only">
-						${group.title} upagrahas: each sub-planet with its rashi, degree in sign,
-						sidereal longitude, and nakshatra with pada.
+						${this.t(
+							'{{group}} upagrahas: each sub-planet with its rashi, degree in sign, sidereal longitude, and nakshatra with pada.',
+							{ group: this.t(group.titleSource) },
+						)}
 					</caption>
 					<thead>
 						<tr>
-							<th scope="col">Upagraha</th>
-							<th scope="col">Rashi</th>
-							<th scope="col">Degree</th>
-							<th scope="col">Longitude</th>
-							<th scope="col">Nakshatra</th>
-							<th scope="col">Pada</th>
+							<th scope="col">${this.t('Upagraha')}</th>
+							<th scope="col">${this.t('Rashi')}</th>
+							<th scope="col">${this.t('Degree')}</th>
+							<th scope="col">${this.t('Longitude')}</th>
+							<th scope="col">${this.t('Nakshatra')}</th>
+							<th scope="col">${this.t('Pada')}</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -524,6 +524,9 @@ describe('shipped locales', () => {
 		// Sanskrit panchang limbs, which print as themselves wherever the script
 		// allows. A language that abbreviates an axis natively is simply absent
 		// from that entry, which is why Russian carries `Асц` and German `AC`.
+		// A handful of Latin-script cognates genuinely coincide on top of those two
+		// families: `Symbol` in German, `Aspect` in French, `Longitude` in French and
+		// Portuguese, and `Mantras:` wherever the script is Latin.
 		const IDENTICAL_BY_DESIGN: Record<string, string[]> = {
 			// `Neutral` is the German word too; `Total` is `Gesamt`. German takes
 			// `Radix` for the natal ring label, so it is NOT on this list. `Fix` is
@@ -583,6 +586,13 @@ describe('shipped locales', () => {
 				'Vara',
 				'Vtx',
 				'in {{sign}}',
+				'Mantras:',
+				'Nakshatra {{name}}',
+				'Pada',
+				'Rashi',
+				'Symbol',
+				'Upagraha',
+				'Upagrahas',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -637,6 +647,12 @@ describe('shipped locales', () => {
 				'Vara',
 				'Vtx',
 				'pada {{n}}',
+				'Mantras:',
+				'Nakshatra {{name}}',
+				'Pada',
+				'Rashi',
+				'Upagraha',
+				'Upagrahas',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -716,6 +732,14 @@ describe('shipped locales', () => {
 				'Vara',
 				'Vtx',
 				'pada {{n}}',
+				'Aspect',
+				'Longitude',
+				'Mantras:',
+				'Nakshatra {{name}}',
+				'Pada',
+				'Rashi',
+				'Upagraha',
+				'Upagrahas',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -767,6 +791,13 @@ describe('shipped locales', () => {
 				'Vara',
 				'Vtx',
 				'pada {{n}}',
+				'Longitude',
+				'Mantras:',
+				'Nakshatra {{name}}',
+				'Pada',
+				'Rashi',
+				'Upagraha',
+				'Upagrahas',
 			],
 			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -792,7 +823,7 @@ describe('shipped locales', () => {
 				'Varjyam',
 				'Yoga',
 				'Ashtama Chandra rashi',
-				'orb',
+				'Orb',
 				'apex',
 				'Natal',
 				'Aura',
@@ -812,6 +843,10 @@ describe('shipped locales', () => {
 				'Vara',
 				'Vtx',
 				'pada {{n}}',
+				'Nakshatra {{name}}',
+				'Pada',
+				'Rashi',
+				'Upagraha',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -959,14 +994,10 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
 		'components/local-space-compass.ts': 13,
-		'components/nakshatra-card.ts': 9,
 		'components/shadbala-table.ts': 18,
 		'components/synastry-chart.ts': 24,
 		'components/transits-table.ts': 16,
-		'components/upagraha-table.ts': 13,
-		'components/vedic-aspects.ts': 11,
 		'components/vedic-planets-table.ts': 28,
-		'components/western-planets-table.ts': 9,
 		'components/yoga-list.ts': 27,
 	};
 

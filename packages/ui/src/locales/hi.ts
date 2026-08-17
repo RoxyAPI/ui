@@ -119,7 +119,6 @@ export const hi: Record<ChromeString, string> = {
 	'No planets to grid': 'तालिका के लिए कोई ग्रह नहीं है',
 	'Planet by planet aspect grid: the aspect each pair of planets forms, read from the planet naming the row across to the planet naming the column.':
 		'ग्रह दर ग्रह दृष्टि तालिका: हर ग्रह युग्म जो दृष्टि बनाता है, वह पंक्ति वाले ग्रह से स्तंभ वाले ग्रह तक पढ़ी जाती है।',
-	orb: 'ऑर्ब',
 
 	'Dominant element': 'प्रमुख तत्व',
 	'Dominant modality': 'प्रमुख गुण',
@@ -174,7 +173,6 @@ export const hi: Record<ChromeString, string> = {
 	Transiting: 'गोचर',
 	Applying: 'निकट आती',
 	Separating: 'दूर जाती',
-	strength: 'बल',
 
 	'Every body with its natal position and its position on the transit date, each as a zodiac sign and a degree.':
 		'हर ग्रह की जन्म स्थिति और गोचर दिनांक पर उसकी स्थिति, दोनों राशि और अंश में।',
@@ -525,6 +523,45 @@ export const hi: Record<ChromeString, string> = {
 	Career: 'करियर',
 	Money: 'धन',
 	'Twin flame': 'ट्विन फ्लेम',
+	'Western planetary positions': 'पाश्चात्य ग्रह स्थितियाँ',
+	'Planetary positions': 'ग्रह स्थितियाँ',
+	'Western planetary positions: each body with its sign, degree, house and motion.':
+		'पाश्चात्य ग्रह स्थितियाँ: प्रत्येक पिंड की राशि, अंश, भाव और गति।',
+	Degree: 'अंश',
+	'Vedic aspects': 'वैदिक दृष्टियाँ',
+	'Chart time {{when}}': 'कुंडली समय {{when}}',
+	'Sidereal positions': 'निरयण स्थितियाँ',
+	'Mutual aspects': 'परस्पर दृष्टियाँ',
+	'Vedic planetary aspects: aspecting planet, aspect type, aspected planet, strength and orb.':
+		'वैदिक ग्रह दृष्टियाँ: दृष्टि देने वाला ग्रह, दृष्टि प्रकार, दृष्ट ग्रह, बल और ओर्ब।',
+	From: 'से',
+	Aspect: 'दृष्टि',
+	To: 'को',
+	Strength: 'बल',
+	Orb: 'ओर्ब',
+	'Upagraha positions': 'उपग्रह स्थितियाँ',
+	Upagrahas: 'उपग्रह',
+	Upagraha: 'उपग्रह',
+	'{{group}} upagrahas: each sub-planet with its rashi, degree in sign, sidereal longitude, and nakshatra with pada.':
+		'{{group}} उपग्रह: प्रत्येक उपग्रह की राशि, राशि में अंश, निरयण देशांतर, और पाद सहित नक्षत्र।',
+	'Time based': 'काल आधारित',
+	'From the eightfold division of the day or night, so these depend on the birth time, the place and the weekday.':
+		'दिन या रात के आठ भागों से निकले, इसलिए ये जन्म समय, स्थान और वार पर निर्भर हैं।',
+	'Sun based': 'सूर्य आधारित',
+	'The Dhuma group, derived by fixed arc from the Sun. Dhuma is the Sun plus 133 degrees 20 minutes, and each of the rest follows from the one before it.':
+		'धूमा समूह, सूर्य से स्थिर चाप द्वारा व्युत्पन्न। धूमा सूर्य में 133 अंश 20 कला जोड़कर मिलता है, और शेष प्रत्येक पिछले से निकलता है।',
+	Rashi: 'राशि',
+	Longitude: 'देशांतर',
+	Pada: 'पाद',
+	'Nakshatra {{name}}': 'नक्षत्र {{name}}',
+	'Nakshatra {{number}} of 27': '27 में से नक्षत्र {{number}}',
+	Lord: 'स्वामी',
+	Deity: 'देवता',
+	Symbol: 'प्रतीक',
+	Characteristics: 'विशेषताएँ',
+	'Mantras:': 'मंत्र:',
+	'Gemstones:': 'रत्न:',
+	'Rituals:': 'अनुष्ठान:',
 };
 
 registerLocale('hi', hi);

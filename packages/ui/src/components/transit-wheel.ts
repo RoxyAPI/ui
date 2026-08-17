@@ -879,7 +879,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			);
 			const name = normalizeAspect(a);
 			const orb = formatNumber(this.effectiveLang(), a.orb, 1);
-			return svg`<line class=${`aspect ${ASPECT_CLASS[name] ?? 'aspect-other'}`} x1=${from.x} y1=${from.y} x2=${to.x} y2=${to.y}><title>${this.t('Transiting')} ${display(a, 'planet1')} ${display(a, 'type', name)} ${this.t('Natal')} ${display(a, 'planet2')}${orb ? ` (${this.t('orb')} ${orb}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${ASPECT_CLASS[name] ?? 'aspect-other'}`} x1=${from.x} y1=${from.y} x2=${to.x} y2=${to.y}><title>${this.t('Transiting')} ${display(a, 'planet1')} ${display(a, 'type', name)} ${this.t('Natal')} ${display(a, 'planet2')}${orb ? ` (${this.t('Orb')} ${orb}°)` : ''}</title></line>`;
 		});
 	}
 
@@ -970,7 +970,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			<span aria-hidden="true" class="glyph">${glyphFor(s.planet1, transiting)}</span>${this.t('Transiting')} ${transiting}
 			<span class="nature-badge ${(s.interpretation ?? 'neutral').toLowerCase()}">${display(s, 'type', formatAspectName(s))}</span>
 			<span aria-hidden="true" class="glyph">${glyphFor(s.planet2, natal)}</span>${this.t('Natal')} ${natal}
-			<span class="meta">${s.isApplying ? this.t('Applying') : this.t('Separating')} · ${this.t('orb')} ${formatNumber(this.effectiveLang(), s.orb, 2)}° · ${this.t('strength')} ${formatNumber(this.effectiveLang(), s.strength, 0)}</span>
+			<span class="meta">${s.isApplying ? this.t('Applying') : this.t('Separating')} · ${this.t('Orb')} ${formatNumber(this.effectiveLang(), s.orb, 2)}° · ${this.t('Strength')} ${formatNumber(this.effectiveLang(), s.strength, 0)}</span>
 		</div>`;
 	}
 
@@ -1060,7 +1060,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				const natal = display(a, 'planet2');
 				return {
 					label: `${glyphFor(a.planet1, transiting)} ${transiting} ${display(a, 'type', formatAspectName(a))} ${glyphFor(a.planet2, natal)} ${natal}`,
-					aside: `${this.t('orb')} ${formatNumber(this.effectiveLang(), a.orb, 2)}° · ${this.t('strength')} ${formatNumber(this.effectiveLang(), a.strength, 0)}`,
+					aside: `${this.t('Orb')} ${formatNumber(this.effectiveLang(), a.orb, 2)}° · ${this.t('Strength')} ${formatNumber(this.effectiveLang(), a.strength, 0)}`,
 					body: t.summary,
 					extra: html`${t.impact ? html`<p><strong>${this.t('Impact')}:</strong> ${t.impact}</p>` : nothing}
 					${t.timing ? html`<p><strong>${this.t('Timing')}:</strong> ${t.timing}</p>` : nothing}
