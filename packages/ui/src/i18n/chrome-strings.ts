@@ -755,6 +755,32 @@ export const CHROME_STRINGS = [
 	'Ascendant stays in {{sign}}',
 	'Ascendant changes sign',
 	'Ascendant keeps its sign',
+
+	// Bhav Chalit: the lede that answers the one question the card is opened for, the
+	// per-graha shift line, and the cusp table under them.
+	'Bhav Chalit',
+	'No graha changes house. The Rashi chart and the Chalit chart agree, which is a normal result rather than a missing reading.',
+	'{{count}} of {{total}} grahas change house between the Rashi chart and the unequal Sripati cusps.',
+	'house {{from}} in the Rashi chart, house {{to}} here',
+	'Bhava cusps and occupants',
+	'Bhava',
+	'Start',
+	'Madhya',
+	'End',
+	'Span',
+	'Grahas',
+
+	// Fixed stars: the orb the search ran at, each contact, and the catalogue table
+	// under it.
+	'Fixed stars',
+	'Conjunctions to the chart',
+	'{{point}} conjunct {{star}}',
+	'No star sits within the orb of a natal point.',
+	'Star catalog ({{count}})',
+	'Precessed positions for the chart date',
+	'Star',
+	'Mag',
+	'Nature',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

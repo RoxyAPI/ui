@@ -675,6 +675,31 @@ export const hi: Record<ChromeString, string> = {
 	'Ascendant stays in {{sign}}': 'लग्न {{sign}} में ही रहता है',
 	'Ascendant changes sign': 'लग्न राशि बदलता है',
 	'Ascendant keeps its sign': 'लग्न अपनी राशि रखता है',
+	'Bhav Chalit': 'भाव चलित',
+	'No graha changes house. The Rashi chart and the Chalit chart agree, which is a normal result rather than a missing reading.':
+		'कोई ग्रह भाव नहीं बदलता। राशि चक्र और चलित चक्र सहमत हैं, यह सामान्य परिणाम है, कोई छूटा हुआ फल नहीं।',
+	'{{count}} of {{total}} grahas change house between the Rashi chart and the unequal Sripati cusps.':
+		'{{total}} में से {{count}} ग्रह राशि चक्र और असमान श्रीपति संधियों के बीच भाव बदलते हैं।',
+	'house {{from}} in the Rashi chart, house {{to}} here':
+		'राशि चक्र में भाव {{from}}, यहाँ भाव {{to}}',
+	'Bhava cusps and occupants': 'भाव संधि और स्थित ग्रह',
+	Bhava: 'भाव',
+	Start: 'आरंभ',
+	Madhya: 'मध्य',
+	End: 'अंत',
+	Span: 'विस्तार',
+	Grahas: 'ग्रह',
+	'Fixed stars': 'स्थिर तारे',
+	'Conjunctions to the chart': 'कुंडली से युति',
+	'{{point}} conjunct {{star}}': '{{point}} की {{star}} से युति',
+	'No star sits within the orb of a natal point.':
+		'कोई तारा जन्म बिंदु के ओर्ब के भीतर नहीं है।',
+	'Star catalog ({{count}})': 'तारा सूची ({{count}})',
+	'Precessed positions for the chart date':
+		'कुंडली तिथि के लिए अयन-संशोधित स्थितियाँ',
+	Star: 'तारा',
+	Mag: 'कांति',
+	Nature: 'प्रकृति',
 };
 
 registerLocale('hi', hi);

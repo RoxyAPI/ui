@@ -663,6 +663,31 @@ export const tr: Record<ChromeString, string> = {
 	'Ascendant stays in {{sign}}': 'Yükselen {{sign}} burcunda kalır',
 	'Ascendant changes sign': 'Yükselen burç değiştirir',
 	'Ascendant keeps its sign': 'Yükselen burcunu korur',
+	'Bhav Chalit': 'Bhav Chalit',
+	'No graha changes house. The Rashi chart and the Chalit chart agree, which is a normal result rather than a missing reading.':
+		'Hiçbir graha ev değiştirmiyor. Rashi haritası ile Chalit haritası uyuşuyor, bu eksik bir yorum değil normal bir sonuçtur.',
+	'{{count}} of {{total}} grahas change house between the Rashi chart and the unequal Sripati cusps.':
+		'{{total}} grahadan {{count}} tanesi Rashi haritası ile eşit olmayan Sripati başlangıçları arasında ev değiştiriyor.',
+	'house {{from}} in the Rashi chart, house {{to}} here':
+		'Rashi haritasında {{from}}. ev, burada {{to}}. ev',
+	'Bhava cusps and occupants': 'Bhava başlangıçları ve içindekiler',
+	Bhava: 'Bhava',
+	Start: 'Başlangıç',
+	Madhya: 'Madhya',
+	End: 'Bitiş',
+	Span: 'Genişlik',
+	Grahas: 'Grahalar',
+	'Fixed stars': 'Sabit yıldızlar',
+	'Conjunctions to the chart': 'Haritaya kavuşumlar',
+	'{{point}} conjunct {{star}}': '{{point}} ile {{star}} kavuşumu',
+	'No star sits within the orb of a natal point.':
+		'Hiçbir yıldız natal bir noktanın orbu içinde değil.',
+	'Star catalog ({{count}})': 'Yıldız kataloğu ({{count}})',
+	'Precessed positions for the chart date':
+		'Harita tarihine göre presesyonlu konumlar',
+	Star: 'Yıldız',
+	Mag: 'Kad',
+	Nature: 'Doğa',
 };
 
 registerLocale('tr', tr);

@@ -155,10 +155,10 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 		const stars = data.stars ?? [];
 		return html`<div class="wrap" part="card">
 			<header part="header">
-				<h2 class="title">Fixed stars</h2>
+				<h2 class="title">${this.t('Fixed stars')}</h2>
 				${
 					typeof data.orb === 'number'
-						? html`<span class="badge"><b>Orb</b> ${formatNumber(this.effectiveLang(), data.orb, 1)}°</span>`
+						? html`<span class="badge"><b>${this.t('Orb')}</b> ${formatNumber(this.effectiveLang(), data.orb, 1)}°</span>`
 						: nothing
 				}
 			</header>
@@ -172,17 +172,17 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 			${
 				conjunctions.length
 					? html`<section part="section conjunctions">
-						<p class="subhead">Conjunctions to the chart</p>
+						<p class="subhead">${this.t('Conjunctions to the chart')}</p>
 						${conjunctions.map(
 							(
 								c,
 								i,
 							) => html`<details class="interp-card" part="reading" name="fixed-star-contacts" ?open=${i === 0}>
 								<summary>
-									<span class="interp-lead"><span class="point">${c.point}</span> conjunct ${c.star}</span>
+									<span class="interp-lead">${this.t('{{point}} conjunct {{star}}', { point: c.point, star: c.star })}</span>
 									${chevron()}
 									<span class="interp-aside">
-										<small>orb ${formatNumber(this.effectiveLang(), c.orb, 2)}°</small>
+										<small>${this.t('orb {{value}}°', { value: formatNumber(this.effectiveLang(), c.orb, 2) })}</small>
 									</span>
 								</summary>
 								${
@@ -196,7 +196,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 							</details>`,
 						)}
 					</section>`
-					: html`<p class="empty-note">No star sits within the orb of a natal point.</p>`
+					: html`<p class="empty-note">${this.t('No star sits within the orb of a natal point.')}</p>`
 			}
 			${stars.length ? this.renderCatalog(stars) : nothing}
 		</div>`;
@@ -204,17 +204,17 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 
 	private renderCatalog(stars: Star[]) {
 		return html`<details class="catalog">
-			<summary>${chevron()} Star catalog (${stars.length})</summary>
+			<summary>${chevron()} ${this.t('Star catalog ({{count}})', { count: stars.length })}</summary>
 			<div class="scroll">
 				<table>
-					<caption class="subhead">Precessed positions for the chart date</caption>
+					<caption class="subhead">${this.t('Precessed positions for the chart date')}</caption>
 					<thead>
 						<tr>
-							<th scope="col">Star</th>
-							<th scope="col">Position</th>
-							<th scope="col" class="num">Mag</th>
-							<th scope="col">Nature</th>
-							<th scope="col">Keywords</th>
+							<th scope="col">${this.t('Star')}</th>
+							<th scope="col">${this.t('Position')}</th>
+							<th scope="col" class="num">${this.t('Mag')}</th>
+							<th scope="col">${this.t('Nature')}</th>
+							<th scope="col">${this.t('Keywords')}</th>
 						</tr>
 					</thead>
 					<tbody>

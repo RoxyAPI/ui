@@ -656,6 +656,31 @@ export const ru: Record<ChromeString, string> = {
 	'Ascendant stays in {{sign}}': 'Асцендент остаётся в {{sign}}',
 	'Ascendant changes sign': 'Асцендент меняет знак',
 	'Ascendant keeps its sign': 'Асцендент сохраняет знак',
+	'Bhav Chalit': 'Бхав Чалит',
+	'No graha changes house. The Rashi chart and the Chalit chart agree, which is a normal result rather than a missing reading.':
+		'Ни одна граха не меняет дом. Карта раши и карта чалит совпадают, это нормальный результат, а не пропущенное толкование.',
+	'{{count}} of {{total}} grahas change house between the Rashi chart and the unequal Sripati cusps.':
+		'{{count}} из {{total}} грах меняют дом между картой раши и неравными куспидами Шрипати.',
+	'house {{from}} in the Rashi chart, house {{to}} here':
+		'дом {{from}} в карте раши, здесь дом {{to}}',
+	'Bhava cusps and occupants': 'Куспиды бхав и занимающие их грахи',
+	Bhava: 'Бхава',
+	Start: 'Начало',
+	Madhya: 'Мадхья',
+	End: 'Конец',
+	Span: 'Протяжённость',
+	Grahas: 'Грахи',
+	'Fixed stars': 'Неподвижные звёзды',
+	'Conjunctions to the chart': 'Соединения с картой',
+	'{{point}} conjunct {{star}}': '{{point}} в соединении с {{star}}',
+	'No star sits within the orb of a natal point.':
+		'Ни одна звезда не попадает в орбис натальной точки.',
+	'Star catalog ({{count}})': 'Каталог звёзд ({{count}})',
+	'Precessed positions for the chart date':
+		'Прецессированные положения на дату карты',
+	Star: 'Звезда',
+	Mag: 'Вел',
+	Nature: 'Природа',
 };
 
 registerLocale('ru', ru);

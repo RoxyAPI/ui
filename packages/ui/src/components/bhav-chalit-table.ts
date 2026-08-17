@@ -136,16 +136,19 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 		const moved = grahas.filter((g) => g.moved);
 		const count = d.movedCount ?? moved.length;
 
-		return html`<div class="wrap" part="card" aria-label="Bhav Chalit">
+		return html`<div class="wrap" part="card" aria-label=${this.t('Bhav Chalit')}>
 			<header class="head" part="header">
-				<h2 class="title">Bhav Chalit</h2>
+				<h2 class="title">${this.t('Bhav Chalit')}</h2>
 				<p class="lede">
 					${
 						count === 0
-							? html`No graha changes house. The Rashi chart and the Chalit chart
-								agree, which is a normal result rather than a missing reading.`
-							: html`<strong>${count}</strong> of ${grahas.length} grahas change
-								house between the Rashi chart and the unequal Sripati cusps.`
+							? this.t(
+									'No graha changes house. The Rashi chart and the Chalit chart agree, which is a normal result rather than a missing reading.',
+								)
+							: this.t(
+									'{{count}} of {{total}} grahas change house between the Rashi chart and the unequal Sripati cusps.',
+									{ count, total: grahas.length },
+								)
 					}
 				</p>
 				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
@@ -162,18 +165,18 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 			${
 				bhavas.length
 					? html`<details part="details">
-						<summary>Bhava cusps and occupants</summary>
+						<summary>${this.t('Bhava cusps and occupants')}</summary>
 						<div class="scroll">
 							<table part="table">
 								<thead>
 									<tr>
-										<th>Bhava</th>
-										<th>Rashi</th>
-										<th>Start</th>
-										<th>Madhya</th>
-										<th>End</th>
-										<th>Span</th>
-										<th>Grahas</th>
+										<th>${this.t('Bhava')}</th>
+										<th>${this.t('Rashi')}</th>
+										<th>${this.t('Start')}</th>
+										<th>${this.t('Madhya')}</th>
+										<th>${this.t('End')}</th>
+										<th>${this.t('Span')}</th>
+										<th>${this.t('Grahas')}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -196,7 +199,10 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 				${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${g.graha}
 			</span>
 			<span class="shift">
-				house ${g.rashiHouse} in the Rashi chart, house ${g.bhava} here
+				${this.t('house {{from}} in the Rashi chart, house {{to}} here', {
+					from: g.rashiHouse ?? '',
+					to: g.bhava ?? '',
+				})}
 			</span>
 			${words ? html`<span class="themes">${words}</span>` : nothing}
 		</div>`;

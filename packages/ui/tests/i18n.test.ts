@@ -639,6 +639,11 @@ describe('shipped locales', () => {
 				'Atmakaraka',
 				'Darakaraka',
 				'Graha',
+				'Bhav Chalit',
+				'Bhava',
+				'Grahas',
+				'Mag',
+				'Madhya',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -711,6 +716,11 @@ describe('shipped locales', () => {
 				'Graha',
 				'Invisible',
 				'Visible',
+				'Bhav Chalit',
+				'Bhava',
+				'Grahas',
+				'Mag',
+				'Madhya',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -815,6 +825,12 @@ describe('shipped locales', () => {
 				'Aspects',
 				'Palindrome',
 				'Absent',
+				'Bhav Chalit',
+				'Bhava',
+				'Grahas',
+				'Mag',
+				'Madhya',
+				'Nature',
 			],
 			hi: ['ASC', 'DSC', 'IC', 'MC', 'Vtx'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -883,6 +899,11 @@ describe('shipped locales', () => {
 				'Chara karakas',
 				'Darakaraka',
 				'Graha',
+				'Bhav Chalit',
+				'Bhava',
+				'Grahas',
+				'Mag',
+				'Madhya',
 			],
 			ru: ['IC', 'MC', 'Vtx'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -936,6 +957,9 @@ describe('shipped locales', () => {
 				'Atmakaraka',
 				'Darakaraka',
 				'Graha',
+				'Bhav Chalit',
+				'Bhava',
+				'Madhya',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1064,11 +1088,9 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	const UNTRANSLATED_DEBT: Record<string, number> = {
 		'components/arudha-padas.ts': 17,
 		'components/ashtakavarga-grid.ts': 27,
-		'components/bhav-chalit-table.ts': 13,
 		'components/bhava-bala-table.ts': 14,
 		'components/biorhythm-chart.ts': 20,
 		'components/dasha-timeline.ts': 18,
-		'components/fixed-stars.ts': 13,
 		'components/gochara-table.ts': 16,
 		'components/hd-connection.ts': 30,
 		'components/hd-penta.ts': 27,

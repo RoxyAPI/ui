@@ -656,6 +656,31 @@ export const pt: Record<ChromeString, string> = {
 	'Ascendant stays in {{sign}}': 'O Ascendente permanece em {{sign}}',
 	'Ascendant changes sign': 'O Ascendente muda de signo',
 	'Ascendant keeps its sign': 'O Ascendente mantém o seu signo',
+	'Bhav Chalit': 'Bhav Chalit',
+	'No graha changes house. The Rashi chart and the Chalit chart agree, which is a normal result rather than a missing reading.':
+		'Nenhum graha muda de casa. O mapa Rashi e o mapa Chalit concordam, o que é um resultado normal e não uma leitura em falta.',
+	'{{count}} of {{total}} grahas change house between the Rashi chart and the unequal Sripati cusps.':
+		'{{count}} de {{total}} grahas mudam de casa entre o mapa Rashi e as cúspides desiguais de Sripati.',
+	'house {{from}} in the Rashi chart, house {{to}} here':
+		'casa {{from}} no mapa Rashi, casa {{to}} aqui',
+	'Bhava cusps and occupants': 'Cúspides de bhava e ocupantes',
+	Bhava: 'Bhava',
+	Start: 'Início',
+	Madhya: 'Madhya',
+	End: 'Fim',
+	Span: 'Amplitude',
+	Grahas: 'Grahas',
+	'Fixed stars': 'Estrelas fixas',
+	'Conjunctions to the chart': 'Conjunções com o mapa',
+	'{{point}} conjunct {{star}}': '{{point}} em conjunção com {{star}}',
+	'No star sits within the orb of a natal point.':
+		'Nenhuma estrela fica dentro do orbe de um ponto natal.',
+	'Star catalog ({{count}})': 'Catálogo de estrelas ({{count}})',
+	'Precessed positions for the chart date':
+		'Posições precessadas para a data do mapa',
+	Star: 'Estrela',
+	Mag: 'Mag',
+	Nature: 'Natureza',
 };
 
 registerLocale('pt', pt);
