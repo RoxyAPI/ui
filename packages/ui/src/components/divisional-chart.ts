@@ -8,9 +8,11 @@ import { distinctSanskrit } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
 	type ChartStyle,
+	hasLagna,
 	type KundliViewModel,
 	renderKundliStyleTablist,
 	renderKundliSvg,
+	renderMissingLagnaNote,
 	toKundliViewModel,
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
@@ -108,6 +110,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 							: nothing
 					}
 					${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
+					${hasLagna(vm) ? nothing : renderMissingLagnaNote(this.translator)}
 				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle, this.translator)}
 			</div>

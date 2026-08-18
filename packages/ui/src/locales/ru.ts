@@ -294,6 +294,9 @@ export const ru: Record<ChromeString, string> = {
 	Hora: 'Хора',
 	'Hora periods': 'Планетные часы',
 	'Vedic kundli': 'Ведическая карта',
+	'Chandra lagna': 'Чандра лагна',
+	'No ascendant in this chart, so the houses are not numbered.':
+		'В этой карте нет асцендента, поэтому дома не пронумерованы.',
 	'Vedic birth chart with twelve sign houses':
 		'Ведическая натальная карта с двенадцатью знаковыми домами',
 	'Angel number': 'Число ангела',
@@ -722,7 +725,10 @@ export const ru: Record<ChromeString, string> = {
 	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
 		'Где каждая граха транзитирует {{when}}, в сопоставлении с натальной картой от {{birth}}.',
 	'Key transits': 'Ключевые транзиты',
-	'natal house {{n}}': 'натальный дом {{n}}',
+	'Gochara houses are counted from the natal Moon in {{sign}}.':
+		'Дома гочары отсчитываются от натальной Луны в знаке {{sign}}.',
+	'house {{n}} from the Moon': 'дом {{n}} от Луны',
+	'house {{n}} from the Lagna': 'дом {{n}} от лагны',
 	'{{aspect}} natal {{planet}}': '{{aspect}} к натальной {{planet}}',
 	'{{aspect}} natal {{planet}} ({{orb}}°)':
 		'{{aspect}} к натальной {{planet}} ({{orb}}°)',

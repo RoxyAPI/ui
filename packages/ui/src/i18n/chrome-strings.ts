@@ -333,7 +333,11 @@ export const CHROME_STRINGS = [
 	'Hora',
 	'Hora periods',
 	'Vedic kundli',
+	'Chandra lagna',
 	'Vedic birth chart with twelve sign houses',
+	// A chart with no ascendant cannot be drawn house-fixed, so the sign-fixed one
+	// is drawn and this says why rather than leaving the switch looking broken.
+	'No ascendant in this chart, so the houses are not numbered.',
 
 	// Forecast timeline, guna milan, moon phase, profection and relocation.
 	'Forecast timeline',
@@ -826,14 +830,18 @@ export const CHROME_STRINGS = [
 	'Transit aspects',
 	'Speed',
 
-	// Gochara: the card, the line that says what it is cast against, and the per-graha
-	// detail. The kaksha line is one WHOLE clause per branch, never a stem with
+	// Gochara: the card, the two lines that say what it is cast against, and the
+	// per-graha detail. Both house readings are named in full rather than one being
+	// bare, since a number labelled only "house" is the one thing a reader cannot
+	// check. The kaksha line is one WHOLE clause per branch, never a stem with
 	// pieces appended, because the tail is optional three times over.
 	'Gochara',
 	'Gochara transits',
 	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.',
+	'Gochara houses are counted from the natal Moon in {{sign}}.',
 	'Key transits',
-	'natal house {{n}}',
+	'house {{n}} from the Moon',
+	'house {{n}} from the Lagna',
 	'{{aspect}} natal {{planet}}',
 	'{{aspect}} natal {{planet}} ({{orb}}°)',
 	'Kaksha {{n}} of {{total}}',

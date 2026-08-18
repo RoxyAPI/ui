@@ -313,6 +313,9 @@ export const es: Record<ChromeString, string> = {
 	Hora: 'Hora',
 	'Hora periods': 'Horas planetarias',
 	'Vedic kundli': 'Carta védica',
+	'Chandra lagna': 'Chandra lagna',
+	'No ascendant in this chart, so the houses are not numbered.':
+		'Esta carta no tiene ascendente, por lo que las casas no están numeradas.',
 	'Vedic birth chart with twelve sign houses':
 		'Carta natal védica con doce casas por signo',
 	'Angel number': 'Número angelical',
@@ -743,7 +746,10 @@ export const es: Record<ChromeString, string> = {
 	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
 		'Dónde transita cada graha el {{when}}, leído frente a la carta natal del {{birth}}.',
 	'Key transits': 'Tránsitos clave',
-	'natal house {{n}}': 'casa natal {{n}}',
+	'Gochara houses are counted from the natal Moon in {{sign}}.':
+		'Las casas de Gochara se cuentan desde la Luna natal en {{sign}}.',
+	'house {{n}} from the Moon': 'casa {{n}} desde la Luna',
+	'house {{n}} from the Lagna': 'casa {{n}} desde el Lagna',
 	'{{aspect}} natal {{planet}}': '{{aspect}} con {{planet}} natal',
 	'{{aspect}} natal {{planet}} ({{orb}}°)':
 		'{{aspect}} con {{planet}} natal ({{orb}}°)',

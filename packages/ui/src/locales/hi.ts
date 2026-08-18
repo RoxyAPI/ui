@@ -314,6 +314,9 @@ export const hi: Record<ChromeString, string> = {
 	Hora: 'होरा',
 	'Hora periods': 'होरा मुहूर्त',
 	'Vedic kundli': 'वैदिक कुंडली',
+	'Chandra lagna': 'चंद्र लग्न',
+	'No ascendant in this chart, so the houses are not numbered.':
+		'इस चार्ट में लग्न नहीं है, इसलिए भाव क्रमांकित नहीं हैं।',
 	'Vedic birth chart with twelve sign houses':
 		'बारह राशि भावों वाली वैदिक जन्म कुंडली',
 	'Angel number': 'एंजल नंबर',
@@ -741,7 +744,10 @@ export const hi: Record<ChromeString, string> = {
 	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
 		'{{when}} को प्रत्येक ग्रह कहाँ गोचर करता है, {{birth}} की जन्म कुंडली के सापेक्ष।',
 	'Key transits': 'मुख्य गोचर',
-	'natal house {{n}}': 'जन्म भाव {{n}}',
+	'Gochara houses are counted from the natal Moon in {{sign}}.':
+		'गोचर भाव {{sign}} में स्थित जन्म चंद्र से गिने जाते हैं।',
+	'house {{n}} from the Moon': 'चंद्र से भाव {{n}}',
+	'house {{n}} from the Lagna': 'लग्न से भाव {{n}}',
 	'{{aspect}} natal {{planet}}': 'जन्म {{planet}} से {{aspect}}',
 	'{{aspect}} natal {{planet}} ({{orb}}°)':
 		'जन्म {{planet}} से {{aspect}} ({{orb}}°)',

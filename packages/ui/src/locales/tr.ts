@@ -301,6 +301,9 @@ export const tr: Record<ChromeString, string> = {
 	Hora: 'Hora',
 	'Hora periods': 'Gezegen saatleri',
 	'Vedic kundli': 'Vedik doğum haritası',
+	'Chandra lagna': 'Chandra lagna',
+	'No ascendant in this chart, so the houses are not numbered.':
+		'Bu haritada yükselen yok, bu nedenle evler numaralandırılmamıştır.',
 	'Vedic birth chart with twelve sign houses':
 		'On iki burç evli Vedik doğum haritası',
 	'Angel number': 'Melek sayısı',
@@ -729,7 +732,10 @@ export const tr: Record<ChromeString, string> = {
 	'Where each graha transits at {{when}}, read against the natal chart of {{birth}}.':
 		'Her grahanın {{when}} tarihindeki transiti, {{birth}} doğum haritasına karşı okunur.',
 	'Key transits': 'Önemli transitler',
-	'natal house {{n}}': 'natal {{n}}. ev',
+	'Gochara houses are counted from the natal Moon in {{sign}}.':
+		'Gochara evleri {{sign}} burcundaki natal Aydan sayılır.',
+	'house {{n}} from the Moon': 'Aydan {{n}}. ev',
+	'house {{n}} from the Lagna': 'Lagnadan {{n}}. ev',
 	'{{aspect}} natal {{planet}}': 'natal {{planet}} ile {{aspect}}',
 	'{{aspect}} natal {{planet}} ({{orb}}°)':
 		'natal {{planet}} ile {{aspect}} ({{orb}}°)',

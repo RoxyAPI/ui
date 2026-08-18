@@ -663,6 +663,7 @@ describe('shipped locales', () => {
 				'{{planet}} Shadbala',
 				'Gochara',
 				'Arudha Lagna',
+				'Chandra lagna',
 				'Lagna',
 				'Phase',
 				'Upapada',
@@ -786,6 +787,7 @@ describe('shipped locales', () => {
 				'{{value}} rupas',
 				'Gochara',
 				'Arudha Lagna',
+				'Chandra lagna',
 				'Arudha padas',
 				'Lagna',
 				'Upapada',
@@ -942,6 +944,7 @@ describe('shipped locales', () => {
 				'Gochara',
 				'Positions',
 				'Arudha Lagna',
+				'Chandra lagna',
 				'Arudha padas',
 				'Lagna',
 				'Phase',
@@ -1059,6 +1062,7 @@ describe('shipped locales', () => {
 				'{{value}} rupas',
 				'Gochara',
 				'Arudha Lagna',
+				'Chandra lagna',
 				'Arudha padas',
 				'Lagna',
 				'Upapada',
@@ -1155,6 +1159,7 @@ describe('shipped locales', () => {
 				'{{planet}} Shadbala',
 				'Gochara',
 				'Arudha Lagna',
+				'Chandra lagna',
 				'Bhava rashi',
 				'Lagna',
 				'Pada rashi',
@@ -1425,6 +1430,28 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		expect(
 			regressions,
 			`Copy a visitor reads, written straight into a template, so it renders English in all seven languages. Wrap each one in this.t(...) and add the English source to src/i18n/chrome-strings.ts and every src/locales/*.ts. A file absent from UNTRANSLATED_DEBT must carry NONE, which is what makes a new component start out localized:\n  ${regressions.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	test('no two-state label is translated on one branch and not the other', async () => {
+		// The one ternary shape no scoping is needed for. TERNARY_COPY is held to
+		// markup because a ternary elsewhere is usually picking a class or an id;
+		// here the author has already called the expression copy by translating the
+		// other branch, so a bare literal facing a t(...) is unambiguous wherever it
+		// sits. Measured across the library at zero, which is what makes it a rule
+		// rather than a budget: the shape reaches a heading no markup scan can see.
+		const HALF_TRANSLATED =
+			/\?\s*(?:'([^']{2,90})'\s*:\s*(?:this\.)?t\(|(?:this\.)?t\((?:[^()]|\([^()]*\))*\)\s*:\s*'([^']{2,90})')/g;
+		const offenders: string[] = [];
+		for (const path of await sourceFiles()) {
+			const src = code(await Bun.file(path).text());
+			for (const m of src.matchAll(HALF_TRANSLATED)) {
+				offenders.push(`${path.slice(SRC.length + 1)}: ${m[1] ?? m[2]}`);
+			}
+		}
+		expect(
+			offenders,
+			`One branch of a two-state label is translated and the other ships English, so the card reads half in the visitor language:\n  ${offenders.join('\n  ')}`,
 		).toEqual([]);
 	});
 

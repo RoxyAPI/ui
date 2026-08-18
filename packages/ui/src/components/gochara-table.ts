@@ -13,6 +13,7 @@ import {
 	formatDateTime,
 	formatNumber,
 } from '../utils/format.js';
+import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 
 type Transiting = CalculateTransitResponse['transitingPlanets'][number];
 type Kaksha = Transiting['kaksha'];
@@ -26,6 +27,10 @@ const KAKSHA_COUNT = 8;
  * @remarks
  * This renders `POST /vedic-astrology/transit`, the SINGULAR Vedic operation, which is a different response from the Western `calculateTransits` that {@link RoxyTransitsTable} renders. The two are not interchangeable: the Western one carries `transitPlanets` with speed and retrograde flags, this one carries `natalHouse`, `aspectsToNatal` and `kaksha`.
  *
+ * **Gochara is reckoned from the natal Moon: the house from Janma Rashi leads each row and the house from the Lagna sits beside it**, because a transit chart drawn over the birth chart shows the Lagna reading and a reader comparing the two has to see which number is which.
+ *
+ * **Drishti and the degree-based aspects are both listed and each is labelled**, since Parashari jyotish has no sextile, square or trine and a Vedic card printing only the Western vocabulary would teach a reading the tradition does not make.
+ *
  * **Kaksha is drawn as a POSITION WITHIN THE SIGN, never as a verdict chip.** The sign says where a graha is; the kaksha says whether the sub-four-degree stretch it currently occupies is one its own Bhinnashtakavarga supports. What a practitioner reads off it is how long until the verdict turns, and a single chip throws that away: a graha two thirds through an unsupported kaksha is a different situation from one that just entered it. The eight-segment bar answers both at a glance.
  *
  * The eight kaksha lords run in a fixed order from the start of every sign, and this component deliberately holds NO copy of that order. Only the CURRENT kaksha is labelled, from the `lord` the response carries. A local table would be a second source of truth for data the API owns, and it would sit in a public repo.
@@ -38,6 +43,7 @@ const KAKSHA_COUNT = 8;
 export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> {
 	static styles = [
 		baseStyles,
+		frameCaptionStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -96,6 +102,19 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 				padding: 0.1rem 0.45rem;
 				border-radius: var(--roxy-radius-sm, 4px);
 				border: 1px solid var(--roxy-border, #e4e4e7);
+			}
+			/* The Moon reading is the Gochara verdict, so it carries the accent edge;
+			 * the Lagna reading stays muted beside it. Colour is the emphasis and the
+			 * words carry the distinction, so neither chip depends on the other. */
+			.house.moon {
+				border-color: var(--roxy-accent, #f59e0b);
+			}
+			.house.lagna {
+				color: var(--roxy-muted, #71717a);
+			}
+			.contact-label {
+				font-weight: var(--roxy-weight-bold, 600);
+				margin-right: 0.35em;
 			}
 			/* Eight segments, one per kaksha, in sign order. The current one is filled
 			 * and tinted by its verdict; the rest stay neutral because the response
@@ -162,6 +181,9 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 		const planets = d.transitingPlanets ?? [];
 		if (!planets.length) return this.renderEmpty();
 		const key = d.keyTransits ?? [];
+		// Janma Rashi, named so the house numbers below are readable without a
+		// second request. The response says the reference is the Moon entry.
+		const moonSign = d.natalPlanets?.find((p) => p.name === 'Moon')?.sign;
 
 		return html`<div class="wrap" part="card" aria-label=${this.t('Gochara transits')}>
 			<header class="head" part="header">
@@ -175,22 +197,21 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 						},
 					)}
 				</p>
+				${
+					moonSign
+						? html`<p class="sub">
+							${this.t('Gochara houses are counted from the natal Moon in {{sign}}.', { sign: moonSign })}
+						</p>`
+						: nothing
+				}
+				${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 			</header>
 			<div part="table">${planets.map((p) => this.renderPlanet(p))}</div>
 			${
 				key.length && !this.hideReadings
 					? html`<section class="key" part="section key-transits">
 						<h3 class="key-title">${this.t('Key transits')}</h3>
-						${key.map(
-							(k) => html`<p class="key-item">
-								${k.description}
-								${
-									typeof k.natalHouse === 'number'
-										? html`<span class="meta"> &middot; ${this.t('natal house {{n}}', { n: k.natalHouse })}</span>`
-										: nothing
-								}
-							</p>`,
-						)}
+						${key.map((k) => html`<p class="key-item">${k.description}</p>`)}
 					</section>`
 					: nothing
 			}
@@ -203,7 +224,6 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 			typeof p.longitude === 'number'
 				? longitudeToSignPosition(p.longitude)
 				: undefined;
-		const aspects = p.aspectsToNatal ?? [];
 
 		return html`<article class="row">
 			<div class="row-top">
@@ -214,33 +234,47 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 					${p.sign}${pos ? html` ${formatDegreeInSign(pos.degree)}` : nothing}
 				</span>
 				${
+					typeof p.houseFromMoon === 'number'
+						? html`<span class="house moon">${this.t('house {{n}} from the Moon', { n: p.houseFromMoon })}</span>`
+						: nothing
+				}
+				${
 					typeof p.natalHouse === 'number'
-						? html`<span class="house">${this.t('natal house {{n}}', { n: p.natalHouse })}</span>`
+						? html`<span class="house lagna">${this.t('house {{n}} from the Lagna', { n: p.natalHouse })}</span>`
 						: nothing
 				}
 			</div>
 			${this.renderKaksha(p.kaksha)}
-			${
-				aspects.length
-					? html`<p class="aspects">
-						${aspects
-							.map((a) =>
-								typeof a.orb === 'number'
-									? this.t('{{aspect}} natal {{planet}} ({{orb}}°)', {
-											aspect: formatAspectName({ type: a.aspectType }),
-											planet: a.natalPlanet,
-											orb: formatNumber(this.effectiveLang(), a.orb, 1),
-										})
-									: this.t('{{aspect}} natal {{planet}}', {
-											aspect: formatAspectName({ type: a.aspectType }),
-											planet: a.natalPlanet,
-										}),
-							)
-							.join(' · ')}
-					</p>`
-					: nothing
-			}
+			${this.renderContacts(this.t('Drishti'), p.drishtiToNatal)}
+			${this.renderContacts(this.t('Aspects'), p.aspectsToNatal)}
 		</article>`;
+	}
+
+	/** One labelled contact list. Drishti and the degree-based aspects carry the same three fields, so both read through here and the label is what tells them apart. Translated by the caller, so the label stays where a catalogue scan can see it. */
+	private renderContacts(
+		label: string,
+		items:
+			| readonly { natalPlanet: string; aspectType: string; orb: number }[]
+			| undefined,
+	) {
+		if (!items?.length) return nothing;
+		return html`<p class="aspects">
+			<span class="contact-label">${label}</span>
+			${items
+				.map((a) =>
+					typeof a.orb === 'number'
+						? this.t('{{aspect}} natal {{planet}} ({{orb}}°)', {
+								aspect: formatAspectName({ type: a.aspectType }),
+								planet: a.natalPlanet,
+								orb: formatNumber(this.effectiveLang(), a.orb, 1),
+							})
+						: this.t('{{aspect}} natal {{planet}}', {
+								aspect: formatAspectName({ type: a.aspectType }),
+								planet: a.natalPlanet,
+							}),
+				)
+				.join(' · ')}
+		</p>`;
 	}
 
 	/**

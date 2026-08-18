@@ -6,11 +6,7 @@ import type { AshtakavargaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
-import {
-	renderTablist,
-	type TablistItem,
-	tablistStyles,
-} from '../utils/tablist.js';
+import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 type Tab = 'sarva' | 'bhinna' | 'reduced' | 'pinda';
 

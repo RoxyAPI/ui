@@ -4150,14 +4150,21 @@ describe('hide-readings', () => {
 			name: 'roxy-gochara-table',
 			tag: 'roxy-gochara-table',
 			data: {
+				frame: { ayanamsa: 'lahiri', ayanamsaDegrees: 24.2 },
 				transitDatetime: '2026-08-07T09:00:00Z',
 				birthDatetime: '1990-01-01T09:00:00Z',
+				// Moon in Virgo against a Taurus Lagna, so the two house readings
+				// differ and hide-readings has to keep both.
+				natalPlanets: [
+					{ name: 'Moon', longitude: 155.2, sign: 'Virgo', house: 5 },
+				],
 				transitingPlanets: [
 					{
 						name: 'Saturn',
 						longitude: 310.5,
 						sign: 'Aquarius',
 						natalHouse: 10,
+						houseFromMoon: 6,
 						kaksha: {
 							number: 3,
 							lord: 'Venus',
@@ -4168,6 +4175,14 @@ describe('hide-readings', () => {
 						},
 						aspectsToNatal: [
 							{ aspectType: 'conjunction', natalPlanet: 'Sun', orb: 4.6 },
+						],
+						drishtiToNatal: [
+							{
+								aspectType: '3rd',
+								natalPlanet: 'Sun',
+								strength: 100,
+								orb: 4.6,
+							},
 						],
 					},
 				],
@@ -4186,7 +4201,8 @@ describe('hide-readings', () => {
 				'Gochara',
 				'Saturn',
 				'Aquarius',
-				'natal house 10',
+				'house 6 from the Moon',
+				'house 10 from the Lagna',
 				'Kaksha',
 				'ruled by Venus',
 				'gave bindu',

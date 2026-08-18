@@ -1,5 +1,5 @@
 import type { TemplateResult } from 'lit';
-import { nothing, svg } from 'lit';
+import { html, nothing, svg } from 'lit';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetAbbr, SIGNS_ORDER, signAbbr } from '../tokens/index.js';
 import { longitudeToSignPosition } from './degree.js';
@@ -76,6 +76,11 @@ const CHART_STYLES: ReadonlyArray<{ id: ChartStyle; source: ChromeString }> = [
 
 const RETRO_MARK = 'ʳ';
 
+/** Position of a sign in the zodiac order, or -1. Takes a plain string because it reads API values: `SIGNS_ORDER` is a literal tuple, so `indexOf` would not accept one. */
+function signIndex(sign: string): number {
+	return SIGNS_ORDER.findIndex((s) => s === sign);
+}
+
 /**
  * True when the placed graha's longitude maps to a sign other than the cell
  * it occupies. The API preserves the D1 sidereal longitude on every chart, so
@@ -83,11 +88,6 @@ const RETRO_MARK = 'ʳ';
  * divisional sign. In that case the degree-within-sign is not meaningful and
  * must be hidden from the in-cell label.
  */
-/** Position of a sign in the zodiac order, or -1. Takes a plain string because it reads API values: `SIGNS_ORDER` is a literal tuple, so `indexOf` would not accept one. */
-function signIndex(sign: string): number {
-	return SIGNS_ORDER.findIndex((s) => s === sign);
-}
-
 function isDivisionalPlacement(p: PlacedGraha, cellSign: string): boolean {
 	if (typeof p.longitude !== 'number' || !Number.isFinite(p.longitude)) {
 		return false;
@@ -440,17 +440,6 @@ const NORTH_HOUSE_CENTERS: Record<number, { x: number; y: number }> = {
 	12: centroidOf([NORTH_VERTICES.tr, NORTH_VERTICES.top, NORTH_VERTICES.trMid]),
 };
 
-/**
- * Rashi number (1..12, Aries=1) occupying the given house when the Lagna sits
- * in `lagnaSign`. House 1 is the Lagna sign; subsequent houses follow the
- * zodiac in order.
- */
-function rashiInHouse(houseNum: number, lagnaSign: string): number {
-	const lagnaIdx = signIndex(lagnaSign);
-	if (lagnaIdx === -1) return houseNum;
-	return ((lagnaIdx + houseNum - 1) % 12) + 1;
-}
-
 function renderNorthFrame(divisionLabel?: string): TemplateResult {
 	const { tl, tr, br, bl, top, right, bottom, left } = NORTH_VERTICES;
 	return svg`
@@ -502,16 +491,17 @@ function renderNorthCell(
 }
 
 function renderNorthSvg(vm: KundliViewModel, t: Translate): TemplateResult {
-	const lagnaSign = vm.lagnaSign || 'Aries';
 	return svg`
 		${renderNorthFrame(vm.divisionLabel)}
-		${Array.from({ length: 12 }, (_, i) => {
-			const houseNum = i + 1;
-			const rashiNum = rashiInHouse(houseNum, lagnaSign);
-			const sign = SIGNS_ORDER[rashiNum - 1] ?? 'Aries';
+		${SIGNS_ORDER.map((sign, i) => {
+			// Walking the signs rather than the houses answers both questions the
+			// cell needs from the one house count the sign-fixed styles already use:
+			// which house this sign falls in, and therefore which rashi that house
+			// carries. Cells are positioned by house, so emission order is free.
+			const houseNum = houseNumberInSign(sign, vm.lagnaSign);
 			return renderNorthCell(
 				houseNum,
-				rashiNum,
+				i + 1,
 				sign,
 				vm.placements[sign.toLowerCase()] ?? [],
 				houseNum === 1,
@@ -711,6 +701,18 @@ function renderEastSvg(vm: KundliViewModel, t: Translate): TemplateResult {
 // Public entry point
 // ---------------------------------------------------------------------------
 
+/** True when the chart carries an ascendant the house-fixed north layout can be anchored to. The one place that question is answered, so the renderer and the caller showing {@link renderMissingLagnaNote} can never disagree about it. */
+export function hasLagna(vm: KundliViewModel): boolean {
+	return signIndex(vm.lagnaSign) !== -1;
+}
+
+/** One line saying a chart arrived with no ascendant, so houses go unnumbered and the sign-fixed layout is drawn. Uses the shared caption class, so a caller already rendering the frame caption needs no extra styles. */
+export function renderMissingLagnaNote(t: Translate): TemplateResult {
+	return html`<p class="roxy-frame">
+		${t('No ascendant in this chart, so the houses are not numbered.')}
+	</p>`;
+}
+
 /**
  * Render the kundli body for the requested style. Returns the SVG inner
  * content; the caller wraps it in an `<svg>` element with the canonical
@@ -721,6 +723,12 @@ export function renderKundliSvg(
 	style: ChartStyle,
 	t: Translate,
 ): TemplateResult {
+	// The north layout is house-fixed: every cell IS a house and the rashi it
+	// carries is counted from the Lagna. With no ascendant there is nothing to
+	// anchor that rotation to, and assuming one draws a complete, plausible chart
+	// of a different nativity. The sign-fixed layout needs no ascendant, so it is
+	// drawn instead and {@link renderMissingLagnaNote} says why.
+	if (style === 'north' && !hasLagna(vm)) return renderSouthSvg(vm, t);
 	switch (style) {
 		case 'north':
 			return renderNorthSvg(vm, t);
