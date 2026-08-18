@@ -317,6 +317,12 @@ export const hi: Record<ChromeString, string> = {
 	'Chandra lagna': 'चंद्र लग्न',
 	'No ascendant in this chart, so the houses are not numbered.':
 		'इस चार्ट में लग्न नहीं है, इसलिए भाव क्रमांकित नहीं हैं।',
+	combust: 'अस्तंगत',
+	'planetary war': 'ग्रह युद्ध',
+	'planetary war with {{graha}}': '{{graha}} से ग्रह युद्ध',
+	'planetary war with {{graha}}, won by {{winner}}':
+		'{{graha}} से ग्रह युद्ध, विजयी {{winner}}',
+	'nakshatra lord {{graha}}': 'नक्षत्र स्वामी {{graha}}',
 	'Vedic birth chart with twelve sign houses':
 		'बारह राशि भावों वाली वैदिक जन्म कुंडली',
 	'Angel number': 'एंजल नंबर',
@@ -528,8 +534,9 @@ export const hi: Record<ChromeString, string> = {
 	'Twin flame': 'ट्विन फ्लेम',
 	'Western planetary positions': 'पाश्चात्य ग्रह स्थितियाँ',
 	'Planetary positions': 'ग्रह स्थितियाँ',
-	'Western planetary positions: each body with its sign, degree, house and motion.':
-		'पाश्चात्य ग्रह स्थितियाँ: प्रत्येक पिंड की राशि, अंश, भाव और गति।',
+	'Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.':
+		'पाश्चात्य ग्रह स्थितियां: प्रत्येक पिंड की राशि, अंश, भाव, मूल गरिमा और गति। राहु केतु, काइरन और लिलिथ किसी राशि के स्वामी नहीं हैं, इसलिए उनकी गरिमा कोष्ठिका रिक्त रहती है।',
+	Dignity: 'गरिमा',
 	Degree: 'अंश',
 	'Vedic aspects': 'वैदिक दृष्टियाँ',
 	'Chart time {{when}}': 'कुंडली समय {{when}}',

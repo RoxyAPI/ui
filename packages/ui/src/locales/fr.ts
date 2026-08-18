@@ -308,6 +308,12 @@ export const fr: Record<ChromeString, string> = {
 	'Chandra lagna': 'Chandra lagna',
 	'No ascendant in this chart, so the houses are not numbered.':
 		'Aucun ascendant dans ce thème, donc les maisons ne sont pas numérotées.',
+	combust: 'combuste',
+	'planetary war': 'guerre planétaire',
+	'planetary war with {{graha}}': 'guerre planétaire avec {{graha}}',
+	'planetary war with {{graha}}, won by {{winner}}':
+		'guerre planétaire avec {{graha}}, remportée par {{winner}}',
+	'nakshatra lord {{graha}}': 'maître du nakshatra {{graha}}',
 	'Vedic birth chart with twelve sign houses':
 		'Thème natal védique à douze maisons de signe',
 	'Angel number': 'Nombre angélique',
@@ -520,8 +526,9 @@ export const fr: Record<ChromeString, string> = {
 	'Twin flame': 'Flamme jumelle',
 	'Western planetary positions': 'Positions planétaires occidentales',
 	'Planetary positions': 'Positions planétaires',
-	'Western planetary positions: each body with its sign, degree, house and motion.':
-		'Positions planétaires occidentales: chaque corps avec son signe, son degré, sa maison et son mouvement.',
+	'Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.':
+		'Positions planétaires occidentales: chaque corps avec son signe, son degré, sa maison, sa dignité essentielle et son mouvement. La cellule de dignité reste vide pour les noeuds lunaires, Chiron et Lilith, qui ne gouvernent aucun signe et ne possèdent donc aucune dignité.',
+	Dignity: 'Dignité',
 	Degree: 'Degré',
 	'Vedic aspects': 'Aspects védiques',
 	'Chart time {{when}}': 'Heure du thème {{when}}',

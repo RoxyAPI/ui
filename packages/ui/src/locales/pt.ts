@@ -295,6 +295,12 @@ export const pt: Record<ChromeString, string> = {
 	'Chandra lagna': 'Chandra lagna',
 	'No ascendant in this chart, so the houses are not numbered.':
 		'Este mapa não tem ascendente, portanto as casas não são numeradas.',
+	combust: 'combusto',
+	'planetary war': 'guerra planetária',
+	'planetary war with {{graha}}': 'guerra planetária com {{graha}}',
+	'planetary war with {{graha}}, won by {{winner}}':
+		'guerra planetária com {{graha}}, vencida por {{winner}}',
+	'nakshatra lord {{graha}}': 'regente do nakshatra {{graha}}',
 	'Vedic birth chart with twelve sign houses':
 		'Mapa natal védico com doze casas por signo',
 	'Angel number': 'Número angelical',
@@ -507,8 +513,9 @@ export const pt: Record<ChromeString, string> = {
 	'Twin flame': 'Chama gêmea',
 	'Western planetary positions': 'Posições planetárias ocidentais',
 	'Planetary positions': 'Posições planetárias',
-	'Western planetary positions: each body with its sign, degree, house and motion.':
-		'Posições planetárias ocidentais: cada corpo com o seu signo, grau, casa e movimento.',
+	'Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.':
+		'Posições planetárias ocidentais: cada corpo com o seu signo, grau, casa, dignidade essencial e movimento. A célula de dignidade fica vazia para os nodos lunares, Quíron e Lilith, que não regem signo algum e por isso não têm dignidade.',
+	Dignity: 'Dignidade',
 	Degree: 'Grau',
 	'Vedic aspects': 'Aspectos védicos',
 	'Chart time {{when}}': 'Hora do mapa {{when}}',

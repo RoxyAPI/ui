@@ -6,6 +6,7 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
+import { capitalize } from '../utils/string.js';
 
 /** A body or point row, normalized so planets and the four angles share a table. */
 interface BodyRow {
@@ -15,6 +16,8 @@ interface BodyRow {
 	house?: number;
 	speed?: number;
 	isRetrograde?: boolean;
+	/** Essential dignity by sign. Absent for the nodes, Chiron and Lilith, which rule no sign, and an absent value is a different answer from `peregrine`, so the cell stays blank rather than reading as the neutral state. */
+	dignity?: string;
 	/** True for the chart angles (ASC, MC, Part of Fortune, Vertex). */
 	isPoint?: boolean;
 }
@@ -103,6 +106,7 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 			house: p.house,
 			speed: p.speed,
 			isRetrograde: p.isRetrograde,
+			dignity: p.dignity,
 		}));
 		for (const [name, point] of [
 			['Ascendant', d.ascendant],
@@ -132,7 +136,7 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 			</header>
 			<table role="table" part="table">
 				<caption class="roxy-sr-only">
-					${this.t('Western planetary positions: each body with its sign, degree, house and motion.')}
+					${this.t('Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.')}
 				</caption>
 				<thead>
 					<tr>
@@ -140,6 +144,7 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 						<th scope="col">${this.t('Sign')}</th>
 						<th scope="col">${this.t('Degree')}</th>
 						<th scope="col">${this.t('House')}</th>
+						<th scope="col">${this.t('Dignity')}</th>
 						<th scope="col">${this.t('Motion')}</th>
 					</tr>
 				</thead>
@@ -162,6 +167,7 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 								${typeof r.longitude === 'number' ? formatSignPosition(r.longitude) : ''}
 							</td>
 							<td class="num">${typeof r.house === 'number' ? r.house : ''}</td>
+							<td class="dignity">${r.dignity ? capitalize(r.dignity) : ''}</td>
 							<td class="num">
 								${speed ? html`${speed}${this.t('°/day')}` : nothing}
 								${r.isRetrograde ? html`<span class="retro"> ℞</span>` : nothing}

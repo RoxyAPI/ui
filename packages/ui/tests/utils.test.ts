@@ -190,7 +190,7 @@ describe('utils/kundli-render', () => {
 	});
 
 	test('toKundliViewModel propagates the division label', () => {
-		const vm = toKundliViewModel({}, 'D9 Navamsa');
+		const vm = toKundliViewModel({}, { divisionLabel: 'D9 Navamsa' });
 		expect(vm.divisionLabel).toBe('D9 Navamsa');
 	});
 

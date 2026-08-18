@@ -338,6 +338,13 @@ export const CHROME_STRINGS = [
 	// A chart with no ascendant cannot be drawn house-fixed, so the sign-fixed one
 	// is drawn and this says why rather than leaving the switch looking broken.
 	'No ascendant in this chart, so the houses are not numbered.',
+	// Graha states the chart marks: one superscript each, the words in the tooltip
+	// and a key under the chart listing only the marks a given chart uses.
+	'combust',
+	'planetary war',
+	'planetary war with {{graha}}',
+	'planetary war with {{graha}}, won by {{winner}}',
+	'nakshatra lord {{graha}}',
 
 	// Forecast timeline, guna milan, moon phase, profection and relocation.
 	'Forecast timeline',
@@ -587,7 +594,8 @@ export const CHROME_STRINGS = [
 	// a reader scans. `Degree` is shared with the Vedic tables below.
 	'Western planetary positions',
 	'Planetary positions',
-	'Western planetary positions: each body with its sign, degree, house and motion.',
+	'Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.',
+	'Dignity',
 	'Degree',
 
 	// Vedic drishti: the card, the two section labels above the pills, and the five

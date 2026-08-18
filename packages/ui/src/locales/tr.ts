@@ -304,6 +304,12 @@ export const tr: Record<ChromeString, string> = {
 	'Chandra lagna': 'Chandra lagna',
 	'No ascendant in this chart, so the houses are not numbered.':
 		'Bu haritada yükselen yok, bu nedenle evler numaralandırılmamıştır.',
+	combust: 'yanık',
+	'planetary war': 'gezegen savaşı',
+	'planetary war with {{graha}}': '{{graha}} ile gezegen savaşı',
+	'planetary war with {{graha}}, won by {{winner}}':
+		'{{graha}} ile gezegen savaşı, kazanan {{winner}}',
+	'nakshatra lord {{graha}}': 'nakshatra yöneticisi {{graha}}',
 	'Vedic birth chart with twelve sign houses':
 		'On iki burç evli Vedik doğum haritası',
 	'Angel number': 'Melek sayısı',
@@ -514,8 +520,9 @@ export const tr: Record<ChromeString, string> = {
 	'Twin flame': 'İkiz alev',
 	'Western planetary positions': 'Batı gezegen konumları',
 	'Planetary positions': 'Gezegen konumları',
-	'Western planetary positions: each body with its sign, degree, house and motion.':
-		'Batı gezegen konumları: her gök cismi burcu, derecesi, evi ve hareketiyle.',
+	'Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.':
+		'Batı gezegen konumları: her gök cismi burcu, derecesi, evi, esas onuru ve hareketi ile. Ay düğümleri, Chiron ve Lilith bir burcu yönetmediği için onur hücresi boş kalır.',
+	Dignity: 'Onur',
 	Degree: 'Derece',
 	'Vedic aspects': 'Vedik açılar',
 	'Chart time {{when}}': 'Harita zamanı {{when}}',

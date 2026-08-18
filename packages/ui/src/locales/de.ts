@@ -303,6 +303,12 @@ export const de: Record<ChromeString, string> = {
 	'Chandra lagna': 'Chandra lagna',
 	'No ascendant in this chart, so the houses are not numbered.':
 		'Kein Aszendent in diesem Chart, daher sind die Häuser nicht nummeriert.',
+	combust: 'verbrannt',
+	'planetary war': 'Planetenkrieg',
+	'planetary war with {{graha}}': 'Planetenkrieg mit {{graha}}',
+	'planetary war with {{graha}}, won by {{winner}}':
+		'Planetenkrieg mit {{graha}}, gewonnen von {{winner}}',
+	'nakshatra lord {{graha}}': 'Nakshatra-Herr {{graha}}',
 	'Vedic birth chart with twelve sign houses':
 		'Vedisches Geburtshoroskop mit zwölf Zeichenhäusern',
 	'Angel number': 'Engelszahl',
@@ -515,8 +521,9 @@ export const de: Record<ChromeString, string> = {
 	'Twin flame': 'Dualseele',
 	'Western planetary positions': 'Westliche Planetenpositionen',
 	'Planetary positions': 'Planetenpositionen',
-	'Western planetary positions: each body with its sign, degree, house and motion.':
-		'Westliche Planetenpositionen: jeder Himmelskörper mit Zeichen, Grad, Haus und Bewegung.',
+	'Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.':
+		'Westliche Planetenpositionen: jeder Körper mit Zeichen, Grad, Haus, essentieller Würde und Bewegung. Die Würde-Zelle bleibt leer für die Mondknoten, Chiron und Lilith, die kein Zeichen beherrschen und daher keine Würde besitzen.',
+	Dignity: 'Würde',
 	Degree: 'Grad',
 	'Vedic aspects': 'Vedische Aspekte',
 	'Chart time {{when}}': 'Horoskopzeit {{when}}',

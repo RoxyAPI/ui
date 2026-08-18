@@ -297,6 +297,12 @@ export const ru: Record<ChromeString, string> = {
 	'Chandra lagna': 'Чандра лагна',
 	'No ascendant in this chart, so the houses are not numbered.':
 		'В этой карте нет асцендента, поэтому дома не пронумерованы.',
+	combust: 'сожжённый',
+	'planetary war': 'планетарная война',
+	'planetary war with {{graha}}': 'планетарная война с {{graha}}',
+	'planetary war with {{graha}}, won by {{winner}}':
+		'планетарная война с {{graha}}, победил {{winner}}',
+	'nakshatra lord {{graha}}': 'управитель накшатры {{graha}}',
 	'Vedic birth chart with twelve sign houses':
 		'Ведическая натальная карта с двенадцатью знаковыми домами',
 	'Angel number': 'Число ангела',
@@ -508,8 +514,9 @@ export const ru: Record<ChromeString, string> = {
 	'Twin flame': 'Близнецовое пламя',
 	'Western planetary positions': 'Западные положения планет',
 	'Planetary positions': 'Положения планет',
-	'Western planetary positions: each body with its sign, degree, house and motion.':
-		'Западные положения планет: каждое тело со знаком, градусом, домом и движением.',
+	'Western planetary positions: each body with its sign, degree, house, essential dignity and motion. The dignity cell is blank for the lunar nodes, Chiron and Lilith, which rule no sign and therefore hold no dignity at all.':
+		'Западные положения планет: каждое тело со знаком, градусом, домом, эссенциальным достоинством и движением. Ячейка достоинства пуста для лунных узлов, Хирона и Лилит, которые не управляют знаком и потому не имеют достоинства.',
+	Dignity: 'Достоинство',
 	Degree: 'Градус',
 	'Vedic aspects': 'Ведические аспекты',
 	'Chart time {{when}}': 'Время карты {{when}}',

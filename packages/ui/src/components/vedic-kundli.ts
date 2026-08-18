@@ -8,6 +8,7 @@ import {
 	type ChartStyle,
 	hasLagna,
 	type KundliViewModel,
+	renderGrahaMarkLegend,
 	renderKundliStyleTablist,
 	renderKundliSvg,
 	renderMissingLagnaNote,
@@ -66,11 +67,11 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 
 	private viewModel(): KundliViewModel | null {
 		if (!this.data?.meta) return null;
-		return toKundliViewModel(
-			this.data.meta,
-			'D1 Rashi',
-			this.resolveReference(),
-		);
+		return toKundliViewModel(this.data.meta, {
+			divisionLabel: 'D1 Rashi',
+			lagnaOverride: this.resolveReference(),
+			states: this.data,
+		});
 	}
 
 	private setStyle = (next: ChartStyle) => {
@@ -90,6 +91,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 					<h2 class="title">${title}</h2>
 					${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 					${hasLagna(vm) ? nothing : renderMissingLagnaNote(this.translator)}
+					${renderGrahaMarkLegend(vm, this.translator)}
 				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle, this.translator)}
 			</div>

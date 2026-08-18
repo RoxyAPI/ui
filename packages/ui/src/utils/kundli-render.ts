@@ -44,6 +44,22 @@ export interface PlacedGraha {
 	nakshatra?: { name?: string; pada?: number; lord?: string };
 	isRetrograde?: boolean;
 	awastha?: string;
+	/** Deeptadi avastha, the nine dispositional states. Rendered as the response sends it, like {@link PlacedGraha.awastha}. */
+	deeptadi?: string;
+	/** Within its combustion orb of the Sun (astangata). */
+	combust?: boolean;
+	/** Graha yuddha: the opponent within one degree, and which of the pair won. */
+	war?: { opponent: string; winner?: string };
+}
+
+/** The two chart-wide state lists a D1 response carries beside `meta`. Divisional charts have neither, so both are optional. */
+export interface GrahaStates {
+	combustion?: ReadonlyArray<{ planet?: string }>;
+	planetaryWar?: ReadonlyArray<{
+		planet1?: string;
+		planet2?: string;
+		winner?: string;
+	}>;
 }
 
 /**
@@ -74,7 +90,10 @@ const CHART_STYLES: ReadonlyArray<{ id: ChartStyle; source: ChromeString }> = [
 	{ id: 'east', source: 'East' },
 ];
 
+/** Superscript state marks on a graha label. A cell is small, so each state that changes how a graha is READ gets one character and the tooltip carries the words. */
 const RETRO_MARK = 'ʳ';
+const COMBUST_MARK = 'ᶜ';
+const WAR_MARK = 'ʷ';
 
 /** Position of a sign in the zodiac order, or -1. Takes a plain string because it reads API values: `SIGNS_ORDER` is a literal tuple, so `indexOf` would not accept one. */
 function signIndex(sign: string): number {
@@ -109,7 +128,7 @@ function isDivisionalPlacement(p: PlacedGraha, cellSign: string): boolean {
  */
 function grahaLabel(p: PlacedGraha, cellSign: string): string {
 	const abbr = planetAbbr(p.graha) ?? p.graha;
-	const retro = p.isRetrograde ? RETRO_MARK : '';
+	const retro = `${p.isRetrograde ? RETRO_MARK : ''}${p.combust ? COMBUST_MARK : ''}${p.war ? WAR_MARK : ''}`;
 	if (
 		typeof p.longitude !== 'number' ||
 		!Number.isFinite(p.longitude) ||
@@ -149,7 +168,24 @@ function grahaTitle(p: PlacedGraha, cellSign: string, t: Translate): string {
 			: '';
 		parts.push(`${p.nakshatra.name}${pada}`);
 	}
+	// The nakshatra lord is what a dasha is read from, so a chart that names the
+	// nakshatra and withholds its lord stops one step short of the reading.
+	if (p.nakshatra?.lord) {
+		parts.push(t('nakshatra lord {{graha}}', { graha: p.nakshatra.lord }));
+	}
 	if (p.awastha) parts.push(p.awastha);
+	if (p.deeptadi) parts.push(p.deeptadi);
+	if (p.combust) parts.push(t('combust'));
+	if (p.war) {
+		parts.push(
+			p.war.winner
+				? t('planetary war with {{graha}}, won by {{winner}}', {
+						graha: p.war.opponent,
+						winner: p.war.winner,
+					})
+				: t('planetary war with {{graha}}', { graha: p.war.opponent }),
+		);
+	}
 	if (p.isRetrograde) parts.push(t('retrograde'));
 	return parts.join(' · ');
 }
@@ -185,8 +221,7 @@ function renderPlanetStack(
  * sets `lagnaSign`; it is not bucketed as a placed planet.
  *
  * @param meta - Graha-keyed map; missing rashi entries are skipped.
- * @param divisionLabel - Optional title written inside the chart centre.
- * @param lagnaOverride - Optional rashi/sign name (case-insensitive, e.g. `"cancer"`) that replaces the `meta.Lagna`-derived ascendant. Drives the Chandra Lagna (Moon-as-ascendant) and other reference-point views: the `meta` of a `/birth-chart` response always carries the Janma Lagna as its `Lagna` key, so this is the only way to pivot the houses without a second request. Ignored when it does not resolve to a known sign.
+ * @param options - `divisionLabel` titles the chart centre. `lagnaOverride` is a rashi/sign name (case-insensitive, e.g. `"cancer"`) replacing the `meta.Lagna`-derived ascendant, which drives the Chandra Lagna and other reference-point views: the `meta` of a `/birth-chart` response always carries the Janma Lagna as its `Lagna` key, so this is the only way to pivot the houses without a second request, and it is ignored when it does not resolve to a known sign. `states` folds the chart-wide combustion and graha-yuddha lists onto the grahas they name, because both arrive beside `meta` rather than inside it and a cell can only mark what its own entry carries.
  */
 export function toKundliViewModel(
 	meta: Record<
@@ -198,11 +233,31 @@ export function toKundliViewModel(
 			nakshatra?: { name?: string; pada?: number; lord?: string };
 			isRetrograde?: boolean;
 			awastha?: string;
+			deeptadi?: string;
 		}
 	>,
-	divisionLabel?: string,
-	lagnaOverride?: string,
+	options: {
+		divisionLabel?: string;
+		lagnaOverride?: string;
+		states?: GrahaStates;
+	} = {},
 ): KundliViewModel {
+	const { divisionLabel, lagnaOverride, states } = options;
+	const combust = new Set(
+		(states?.combustion ?? []).map((c) => (c.planet ?? '').toLowerCase()),
+	);
+	const wars = new Map<string, { opponent: string; winner?: string }>();
+	for (const w of states?.planetaryWar ?? []) {
+		if (!w.planet1 || !w.planet2) continue;
+		wars.set(w.planet1.toLowerCase(), {
+			opponent: w.planet2,
+			winner: w.winner,
+		});
+		wars.set(w.planet2.toLowerCase(), {
+			opponent: w.planet1,
+			winner: w.winner,
+		});
+	}
 	const placements: Record<string, PlacedGraha[]> = {};
 	for (const sign of SIGNS_ORDER) placements[sign.toLowerCase()] = [];
 	const override = lagnaOverride
@@ -218,12 +273,17 @@ export function toKundliViewModel(
 			continue;
 		}
 		if (!rashiKey || !(rashiKey in placements)) continue;
+		const graha = pos.graha ?? name;
+		const key = graha.toLowerCase();
 		placements[rashiKey]?.push({
-			graha: pos.graha ?? name,
+			graha,
 			longitude: pos.longitude,
 			nakshatra: pos.nakshatra,
 			isRetrograde: pos.isRetrograde,
 			awastha: pos.awastha,
+			deeptadi: pos.deeptadi,
+			combust: combust.has(key) || undefined,
+			war: wars.get(key),
 		});
 	}
 	return { lagnaSign, placements, divisionLabel };
@@ -704,6 +764,26 @@ function renderEastSvg(vm: KundliViewModel, t: Translate): TemplateResult {
 /** True when the chart carries an ascendant the house-fixed north layout can be anchored to. The one place that question is answered, so the renderer and the caller showing {@link renderMissingLagnaNote} can never disagree about it. */
 export function hasLagna(vm: KundliViewModel): boolean {
 	return signIndex(vm.lagnaSign) !== -1;
+}
+
+/** Key for each mark, listing only the ones this chart actually uses so a legend never explains a symbol nobody can see. Uses the shared caption class, like {@link renderMissingLagnaNote}. */
+export function renderGrahaMarkLegend(
+	vm: KundliViewModel,
+	t: Translate,
+): TemplateResult | typeof nothing {
+	const placed = Object.values(vm.placements).flat();
+	const keys: string[] = [];
+	if (placed.some((p) => p.isRetrograde)) {
+		keys.push(`${RETRO_MARK} ${t('retrograde')}`);
+	}
+	if (placed.some((p) => p.combust)) {
+		keys.push(`${COMBUST_MARK} ${t('combust')}`);
+	}
+	if (placed.some((p) => p.war)) {
+		keys.push(`${WAR_MARK} ${t('planetary war')}`);
+	}
+	if (keys.length === 0) return nothing;
+	return html`<p class="roxy-frame">${keys.join(' · ')}</p>`;
 }
 
 /** One line saying a chart arrived with no ascendant, so houses go unnumbered and the sign-fixed layout is drawn. Uses the shared caption class, so a caller already rendering the frame caption needs no extra styles. */

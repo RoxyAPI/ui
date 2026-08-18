@@ -10,6 +10,7 @@ import {
 	type ChartStyle,
 	hasLagna,
 	type KundliViewModel,
+	renderGrahaMarkLegend,
 	renderKundliStyleTablist,
 	renderKundliSvg,
 	renderMissingLagnaNote,
@@ -84,7 +85,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 		if (!this.data?.chart?.meta) return null;
 		const { division } = this.data;
 		const label = `D${division.number} ${division.name}`;
-		return toKundliViewModel(this.data.chart.meta, label);
+		return toKundliViewModel(this.data.chart.meta, { divisionLabel: label });
 	}
 
 	protected renderData(d: DivisionalChartResponse) {
@@ -111,6 +112,7 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 					}
 					${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
 					${hasLagna(vm) ? nothing : renderMissingLagnaNote(this.translator)}
+					${renderGrahaMarkLegend(vm, this.translator)}
 				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle, this.translator)}
 			</div>
