@@ -1,6 +1,6 @@
 {
   "name": "@roxyapi/ui-react",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "description": "React components for the RoxyAPI catalog. Drop-in charts, tables, cards, forms for astrology, tarot, numerology, biorhythm, I Ching, and more. One key, beautiful in 30 minutes.",
   "type": "module",
   "main": "./dist/index.cjs",
