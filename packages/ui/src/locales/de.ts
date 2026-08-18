@@ -913,6 +913,8 @@ export const de: Record<ChromeString, string> = {
 	'orb {{orb}}° · str {{strength}}': 'Orbis {{orb}}° · Stärke {{strength}}',
 	'ASC{{n}}': 'AC{{n}}',
 	'Person {{n}}': 'Person {{n}}',
+	'Score {{score}} of 100': 'Wert {{score}} von 100',
+	'Sign sectors, not houses': 'Zeichensektoren, keine Häuser',
 	'Planet 1': 'Planet 1',
 	'Planet 2': 'Planet 2',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':

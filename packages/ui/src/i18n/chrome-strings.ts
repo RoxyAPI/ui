@@ -1014,6 +1014,10 @@ export const CHROME_STRINGS = [
 	'orb {{orb}}° · str {{strength}}',
 	'ASC{{n}}',
 	'Person {{n}}',
+	'Score {{score}} of 100',
+	// The wheel is divided by sign, so the legend says so: twelve spokes read as
+	// house cusps to anyone used to a house wheel.
+	'Sign sectors, not houses',
 	'Planet 1',
 	'Planet 2',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.',

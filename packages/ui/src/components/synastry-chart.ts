@@ -165,6 +165,12 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				color: var(--roxy-muted, #71717a);
 				margin-top: calc(var(--roxy-space-xs, 0.25rem) * -1);
 			}
+			/* The wheel divides by SIGN. Twelve spokes read as house cusps to anyone
+			 * used to a house wheel, so the legend states what they are rather than
+			 * leaving the drawing to imply houses this response does not carry. */
+			.legend-row .caveat {
+				font-style: italic;
+			}
 			.legend-row .swatch {
 				display: inline-block;
 				width: 8px;
@@ -388,7 +394,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				<h2 class="title">${this.t('Synastry')}</h2>
 				${
 					typeof score === 'number'
-						? html`<span class="score" aria-label=${`Score ${score} of 100`}
+						? html`<span class="score" aria-label=${this.t('Score {{score}} of 100', { score })}
 							>${score} / 100</span
 						>`
 						: nothing
@@ -435,6 +441,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 							<span><span class="swatch" style="background: var(--roxy-info)"></span>${this.t('Person 2')}</span>
 							<span><span class="swatch" style="background: var(--roxy-success)"></span>${this.t('Harmonious')}</span>
 							<span><span class="swatch" style="background: var(--roxy-danger)"></span>${this.t('Challenging')}</span>
+							<span class="caveat">${this.t('Sign sectors, not houses')}</span>
 						</div>`
 					: html`<div class="missing-planets" role="status">
 						${this.t('Synastry response missing planet positions.')}
@@ -650,7 +657,14 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			const sp = longitudeToSignPosition(p.longitude);
 			const retro = p.isRetrograde === true;
 			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
-			const tooltip = `${p.name}${retro ? ' retrograde' : ''} - ${degLabel} ${sp.sign}`;
+			// The house each planet holds in its OWN chart, which the response
+			// already carries. It is not the cross-chart overlay: that asks which of
+			// the other person's houses this planet falls in, and no field answers it.
+			const house =
+				typeof p.house === 'number'
+					? ` · ${this.t('House {{n}}', { n: p.house })}`
+					: '';
+			const tooltip = `${p.name}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel} ${sp.sign}${house}`;
 			return svg`<g>
 				<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${tooltip}</title>${glyph}<tspan class="person-tag" dy="-0.55em" dx="0.15em">${personIndex}</tspan></text>
 				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${sp.degree}°${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>

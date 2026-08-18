@@ -923,6 +923,8 @@ export const hi: Record<ChromeString, string> = {
 	'orb {{orb}}° · str {{strength}}': 'ऑर्ब {{orb}}° · बल {{strength}}',
 	'ASC{{n}}': 'ASC{{n}}',
 	'Person {{n}}': 'व्यक्ति {{n}}',
+	'Score {{score}} of 100': 'स्कोर {{score}} में से 100',
+	'Sign sectors, not houses': 'राशि खंड, भाव नहीं',
 	'Planet 1': 'ग्रह 1',
 	'Planet 2': 'ग्रह 2',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
