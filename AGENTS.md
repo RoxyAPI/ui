@@ -85,6 +85,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
 | `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
 | `<roxy-heliacal-table>` | Vedic | POST /vedic-astrology/heliacal | Udaya and asta windows for the six visible grahas, the calculation behind Guru Asta and Shukra Asta |
+| `<roxy-vedic-daily>` | Vedic | POST /vedic-astrology/daily | Composed Vedic daily reading with the classical rule behind every graha state, the Tara and Chandrabala windows in full, and all three sidereal frames named |
 | `<roxy-gochara-table>` | Vedic | POST /vedic-astrology/transit | Vedic gochara with aspects to the natal chart and the Gochara Kaksha reading drawn as a position within the sign |
 | `<roxy-bhava-bala-table>` | Vedic | POST /vedic-astrology/bhava-bala | House strength in rupas and virupas, ranked, with Bhavadhipati, Dig and Drishti Bala shown as proportions of the total |
 | `<roxy-bhav-chalit-table>` | Vedic | POST /vedic-astrology/bhav-chalit | The Chalit chart against the Rashi chart, leading with how many grahas move and which, plus the unequal bhava spans |
