@@ -11,7 +11,10 @@ import {
 	formatNumber,
 	formatTime,
 } from '../utils/format.js';
-import { renderReadingDetail } from '../utils/interp-accordion.js';
+import {
+	readingDetailStyles,
+	renderReadingDetail,
+} from '../utils/interp-accordion.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 /**
@@ -25,6 +28,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 		baseStyles,
 		tablistStyles,
 		disclosureStyles,
+		readingDetailStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -200,19 +204,6 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 			}
 			.aspect-card .interp-body p {
 				margin: 0 0 var(--roxy-space-xs, 0.25rem);
-			}
-			.interp-keywords {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.25rem;
-				margin-top: 0.5rem;
-			}
-			.interp-keywords .kw {
-				padding: 1px 8px;
-				border-radius: 9999px;
-				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-				color: var(--roxy-accent-ink, #b45309);
-				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 			.nature-badge {
 				display: inline-block;

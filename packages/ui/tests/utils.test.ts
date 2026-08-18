@@ -1016,3 +1016,44 @@ describe('utils/aspect-line', () => {
 		expect(aspectLineStyle({ strength: Number.NaN })).toBeUndefined();
 	});
 });
+
+describe('utils/interp-accordion', () => {
+	/**
+	 * A component that renders the shared reading body must ship the styles for it.
+	 *
+	 * @remarks
+	 * The markup and its CSS live in one module precisely so they cannot drift, but nothing stops a caller from importing only the renderer: the chips then arrive unstyled, which reads as a design choice rather than a defect and no snapshot, axe pass or layout gate reports it. That is how one card ended up with a hand-copied copy of these rules that had drifted in two ways.
+	 */
+	test('every caller of renderReadingDetail ships its styles', async () => {
+		const { readdir } = await import('node:fs/promises');
+		const dir = 'packages/ui/src/components';
+		const offenders: string[] = [];
+		let callers = 0;
+		for (const file of await readdir(dir)) {
+			if (!file.endsWith('.ts') || file.endsWith('.test.ts')) continue;
+			const src = await Bun.file(`${dir}/${file}`).text();
+			if (!src.includes('renderReadingDetail(')) continue;
+			callers++;
+			// Read the `static styles` array itself, never the whole file: the import
+			// line alone satisfies a file-wide search, so a component that imports the
+			// styles and forgets to LIST them would pass while rendering unstyled.
+			const open = src.indexOf('static styles = [');
+			const styles =
+				open === -1 ? '' : src.slice(open, src.indexOf('\n\t];', open));
+			// Either the body styles alone, or the accordion sheet that embeds them.
+			if (
+				!styles.includes('readingDetailStyles') &&
+				!styles.includes('interpAccordionStyles')
+			) {
+				offenders.push(file);
+			}
+		}
+		// Not vacuous: a rename that stopped matching would report zero callers and
+		// pass, which is the shape this whole file exists to refuse.
+		expect(callers).toBeGreaterThan(0);
+		expect(
+			offenders,
+			`These render the shared reading body but ship none of its CSS, so their keyword chips arrive unstyled:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
+	});
+});

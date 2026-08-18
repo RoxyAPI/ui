@@ -4,7 +4,7 @@
  * @remarks
  * Exclusive by construction (`<details name>`), so a card grows by at most one open section and never becomes a wall of text. Callers pass their own group `name` so two accordions on one page do not fight over which section is open.
  *
- * This lives here rather than in a component because the same accordion is the right shape wherever an endpoint returns a labelled reading: the Human Design bodygraph and type card use it for strategy, authority, and aura; `roxy-hexagram` uses it for the changing lines. The CSS was copy-pasted into six components before 2026-07 and had already drifted (`.interp-body` had five distinct definitions), which is the drift this exists to stop. Migrate the remaining copies to it when they are next touched.
+ * This lives here rather than in a component because the same accordion is the right shape wherever an endpoint returns a labelled reading: the Human Design bodygraph and type card use it for strategy, authority, and aura; `roxy-hexagram` uses it for the changing lines. A card that draws its own disclosure, because its summary carries more than a label and an aside, still renders the shared body and imports {@link readingDetailStyles} for it rather than restating those rules.
  *
  * **Call it through `RoxyDataElement.renderInterpretation`, never directly.** That method is where `hide-readings` is honoured, so a direct call renders prose a host asked to be left out. The section it emits carries `part="section readings"` and each row `part="reading"`, which is what makes the readings of EVERY component addressable under one name from outside the shadow root.
  */
@@ -21,6 +21,29 @@ export interface InterpSection {
 	body: string;
 	extra?: unknown;
 }
+
+/**
+ * Styles for the markup {@link renderReadingDetail} emits. Import this wherever that helper is called; {@link interpAccordionStyles} already embeds it, so an accordion caller needs only the one.
+ *
+ * @remarks
+ * Separate from the accordion shell because the two are needed independently: a card can draw its own disclosure and still render the shared reading body, and hand-copying these rules is how the chip colour and spacing drifted apart across five components.
+ *
+ * No margin-top on the chip row. The body above already spaces its children, so a margin here would set the chips twice as far out as every other row.
+ */
+export const readingDetailStyles = css`
+	.interp-keywords {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+	}
+	.interp-keywords .kw {
+		padding: 1px 8px;
+		border-radius: var(--roxy-radius-full, 9999px);
+		background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
+		color: var(--roxy-fg, #0a0a0a);
+		font-size: var(--roxy-text-xs, 0.75rem);
+	}
+`;
 
 export const interpAccordionStyles = css`
 	.block {
@@ -116,20 +139,7 @@ export const interpAccordionStyles = css`
 	.interp-body p {
 		margin: 0;
 	}
-	/* No margin-top. The body above is a grid and already gaps its children, so a
-	 * margin here would space the chips twice as far as every other row. */
-	.interp-keywords {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.25rem;
-	}
-	.interp-keywords .kw {
-		padding: 1px 8px;
-		border-radius: var(--roxy-radius-full, 9999px);
-		background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 14%, transparent);
-		color: var(--roxy-fg, #0a0a0a);
-		font-size: var(--roxy-text-xs, 0.75rem);
-	}
+	${readingDetailStyles}
 `;
 
 /** The prose an endpoint returns ABOUT one contact: a summary, up to three labelled lines, and the keyword chips under them. Every field is optional, so a narrower response renders fewer rows rather than empty ones. */
