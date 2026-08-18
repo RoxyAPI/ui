@@ -55,12 +55,24 @@ function assets(): string[] {
 		.filter((f) => f.endsWith('.css'))
 		.map((f) => `dist/styles/themes/${f}`);
 
+	// One bundle per component, derived the same way the locales are: an embedder
+	// that loads a single tag fetches only its own file, so leaving these out
+	// purged the bundle nobody imports and left the ones they do.
+	const components = readdirSync('packages/ui/src/components')
+		.filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))
+		.map((f) => `dist/cdn/components/${f.replace(/\.ts$/, '.js')}`);
+
 	return [
+		// `package.json` is how a consumer and every tool reads which version
+		// `@latest` resolves to, so a stale one reports the previous release while
+		// the code beside it is current.
+		'package.json',
 		'dist/cdn/roxy-ui.js',
 		'dist/cdn/widgets.js',
 		'dist/manifest.json',
 		'dist/styles/tokens.css',
 		'components-catalog.json',
+		...components,
 		...themes,
 		...locales,
 	];
