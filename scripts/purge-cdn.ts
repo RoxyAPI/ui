@@ -78,16 +78,48 @@ function assets(): string[] {
 	];
 }
 
-async function purge(alias: string, asset: string): Promise<void> {
+/**
+ * Purge one path and report whether the request was actually APPLIED.
+ *
+ * @remarks
+ * The purge API answers `200 {"status":"finished"}` even when it did nothing, and states the
+ * truth one level down as `paths[path].throttled`. Reading only the status code counts a
+ * refused purge as a done one, which is how a run can report success against a stale edge.
+ */
+async function purge(
+	alias: string,
+	asset: string,
+): Promise<{ path: string; resetSeconds: number } | null> {
+	const path = `/npm/${PKG}@${alias}/${asset}`;
 	try {
-		await fetch(`https://purge.jsdelivr.net/npm/${PKG}@${alias}/${asset}`, {
+		const res = await fetch(`https://purge.jsdelivr.net${path}`, {
 			signal: AbortSignal.timeout(20_000),
 		});
+		const body = (await res.json()) as {
+			paths?: Record<string, { throttled?: boolean; throttlingReset?: number }>;
+		};
+		const entry = body.paths?.[path];
+		return entry?.throttled
+			? { path, resetSeconds: entry.throttlingReset ?? 0 }
+			: null;
 	} catch {
 		// A purge that fails to send is not fatal on its own; the verify pass below is
-		// what decides, and it retries. Swallowing here keeps one flaky request from
-		// failing a release that is otherwise fine.
+		// what decides. Swallowing here keeps one flaky request from failing a release
+		// that is otherwise fine.
+		return null;
 	}
+}
+
+/** Run `jobs` a few at a time. The purge API is rate-limited, so firing every path at once spends the budget on a burst and gets most of them refused. */
+async function inBatches<T>(
+	jobs: (() => Promise<T>)[],
+	size = 8,
+): Promise<T[]> {
+	const out: T[] = [];
+	for (let i = 0; i < jobs.length; i += size) {
+		out.push(...(await Promise.all(jobs.slice(i, i + size).map((j) => j()))));
+	}
+	return out;
 }
 
 /** The version jsDelivr is actually serving for one asset, or null if it cannot be read. */
@@ -117,7 +149,28 @@ const list = assets();
 console.log(
 	`Purging ${list.length} asset(s) x ${ALIASES.length} alias(es) for ${PKG}@${expected}`,
 );
-await Promise.all(ALIASES.flatMap((a) => list.map((asset) => purge(a, asset))));
+/**
+ * Purged ONCE, not on every poll.
+ *
+ * @remarks
+ * Re-purging each path every five seconds for two minutes sent roughly twenty-four requests per
+ * path, and the API answers a spent budget with `throttled` rather than an error. The retry loop
+ * meant to rescue a slow edge was itself what got the purges refused, so the wider the asset list
+ * grew the more reliably it failed. Reading the edge is not rate-limited; asking to purge it is.
+ */
+const throttled = (
+	await inBatches(
+		ALIASES.flatMap((a) => list.map((asset) => () => purge(a, asset))),
+	)
+).filter((t): t is { path: string; resetSeconds: number } => t !== null);
+
+if (throttled.length > 0) {
+	const longest = Math.max(...throttled.map((t) => t.resetSeconds));
+	console.warn(
+		`\n${throttled.length} of ${list.length * ALIASES.length} purge request(s) were throttled. ` +
+			`Those paths keep serving the previous version until the window resets, in up to ${Math.ceil(longest / 60)} minute(s).`,
+	);
+}
 
 // The edge takes a moment to refill. Poll rather than sleeping a fixed guess: a release
 // should not fail because one region was slow, and it must not pass because we did not look.
@@ -140,9 +193,6 @@ while (Date.now() - started < DEADLINE_MS) {
 	stale = checks.filter((c): c is string => c !== null);
 	if (stale.length === 0) break;
 	await Bun.sleep(5_000);
-	await Promise.all(
-		ALIASES.flatMap((a) => list.map((asset) => purge(a, asset))),
-	);
 }
 
 if (stale.length > 0) {
@@ -153,7 +203,10 @@ if (stale.length > 0) {
 	console.error(
 		'\nThe release is NOT live. npm has the new version and the CDN does not, which is the ' +
 			'shape that shipped an untranslated bundle to every embed for twelve hours. ' +
-			'Re-run this script; if it keeps failing, purge by hand and check status.jsdelivr.com.',
+			(throttled.length > 0
+				? 'The purge requests above were throttled, so re-running now will not help: wait for the ' +
+					'window named above, then run `bun run purge:cdn` again.'
+				: 'Re-run this script; if it keeps failing, purge by hand and check status.jsdelivr.com.'),
 	);
 	process.exit(1);
 }
