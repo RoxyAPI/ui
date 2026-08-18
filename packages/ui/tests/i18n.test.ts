@@ -2370,6 +2370,35 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		el.remove();
 		document.documentElement.lang = '';
 	});
+
+	test('the positions table prints one sign, not a translated one beside a derived one', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-western-planets-table');
+		(el as HTMLElement & { data: unknown }).data = NATAL_BOTH;
+		document.body.appendChild(el);
+		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		const root = el.shadowRoot as ShadowRoot;
+
+		const row = root.querySelector('tbody tr') as HTMLElement;
+		const cells = [...row.querySelectorAll('td')].map(
+			(c) => c.textContent?.trim() ?? '',
+		);
+		const [body, sign, degree] = cells as [string, string, string];
+
+		expect(body).toContain('Sol');
+		expect(sign).toContain('Piscis');
+		// The degree label carries a sign NAME too, and it used to come from a local
+		// table while the cell beside it came from the response. One row, two
+		// languages, and both perfectly readable on their own.
+		expect(degree).toContain('Piscis');
+		expect(degree).not.toContain('Pisces');
+
+		// The glyph is keyed on the English value and still resolves, which is the
+		// half that must not follow the reader.
+		expect(sign).toContain('♓');
+		el.remove();
+		document.documentElement.lang = '';
+	});
 });
 
 /**

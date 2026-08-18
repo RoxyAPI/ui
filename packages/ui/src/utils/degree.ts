@@ -43,10 +43,17 @@ export function longitudeToSignPosition(longitude: number): SignPosition {
 	};
 }
 
-/** Compact display string like "12° Leo 34'". Used in chart labels. */
-export function formatSignPosition(longitude: number): string {
+/**
+ * Compact display string like `12° Leo 34'`, for a chart label.
+ *
+ * @param signLabel - The sign NAME to print. Pass the one the response carried whenever there is one: the degree and minute here are arithmetic on the longitude and always correct, but the sign is a name, and deriving it from a local table means the label can disagree with the sign printed beside it the moment a response answers in another language. Omitted, it falls back to the derived English name, which is right only while the caller has nothing better.
+ */
+export function formatSignPosition(
+	longitude: number,
+	signLabel?: string,
+): string {
 	const { sign, degree, minute } = longitudeToSignPosition(longitude);
-	return `${degree}° ${sign} ${String(minute).padStart(2, '0')}'`;
+	return `${degree}° ${signLabel || sign} ${String(minute).padStart(2, '0')}'`;
 }
 
 /**

@@ -6,12 +6,18 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
+import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
 
 /** A body or point row, normalized so planets and the four angles share a table. */
 interface BodyRow {
+	/** Canonical English name. Keyed on by the glyph table, so it never localizes. */
 	name: string;
+	/** The name a reader sees. Same as {@link BodyRow.name} until the response carries a translation. */
+	label: string;
 	sign?: string;
+	/** The sign a reader sees, for the same reason. */
+	signLabel?: string;
 	longitude?: number;
 	house?: number;
 	speed?: number;
@@ -101,7 +107,9 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 		if (!d) return [];
 		const rows: BodyRow[] = (d.planets ?? []).map((p) => ({
 			name: p.name,
+			label: display(p, 'name'),
 			sign: p.sign,
+			signLabel: display(p, 'sign'),
 			longitude: p.longitude,
 			house: p.house,
 			speed: p.speed,
@@ -116,8 +124,13 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 		] as const) {
 			if (point) {
 				rows.push({
+					// The four point names are copy this component writes, and two of the
+					// four have no catalogue entry yet, so all four stay English together
+					// rather than the table reading half in one language.
 					name,
+					label: name,
 					sign: point.sign,
+					signLabel: display(point, 'sign'),
 					longitude: point.longitude,
 					isPoint: true,
 				});
@@ -158,13 +171,13 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 								: '';
 						return html`<tr class=${r.isPoint ? 'point' : ''}>
 							<td class="body">
-								${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${r.name}
+								${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${r.label}
 							</td>
 							<td>
-								${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${r.sign ?? ''}
+								${sGlyph ? html`<span class="glyph">${sGlyph}</span>` : nothing}${r.signLabel ?? ''}
 							</td>
 							<td class="num">
-								${typeof r.longitude === 'number' ? formatSignPosition(r.longitude) : ''}
+								${typeof r.longitude === 'number' ? formatSignPosition(r.longitude, r.signLabel) : ''}
 							</td>
 							<td class="num">${typeof r.house === 'number' ? r.house : ''}</td>
 							<td class="dignity">${r.dignity ? capitalize(r.dignity) : ''}</td>
