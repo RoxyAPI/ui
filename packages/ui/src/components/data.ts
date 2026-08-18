@@ -4,7 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatNumber, formatTime } from '../utils/format.js';
-import { foldLocalized } from '../utils/localized.js';
+import { displayField, foldLocalized } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
 
 /**
@@ -386,7 +386,8 @@ export class RoxyData extends RoxyDataElement<Json> {
 				<thead>
 					<tr>
 						${keys.map(
-							(k) => html`<th class=${colClass(k)}>${humanize(k)}</th>`,
+							(k) =>
+								html`<th class=${colClass(k)}>${displayField(this.effectiveLang(), k)}</th>`,
 						)}
 					</tr>
 				</thead>
@@ -483,7 +484,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 					? html`<dl class="roxy-rows" part="details">
 						${rows.map(
 							([k, v]) => html`
-								<dt>${humanize(k)}</dt>
+								<dt>${displayField(this.effectiveLang(), k)}</dt>
 								<dd>${this.renderField(v, k)}</dd>
 							`,
 						)}
@@ -508,7 +509,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 					: Object.keys(value).length
 				: 0;
 		const body = this.renderField(value, key);
-		const heading = humanize(key);
+		const heading = displayField(this.effectiveLang(), key);
 		// Past depth 1 a section folds shut by default. A real /numerology/chart response
 		// rendered every level open and grew to a 29,933px-tall element, about thirty
 		// screens of correct but unusable output. The reader opens what they want.

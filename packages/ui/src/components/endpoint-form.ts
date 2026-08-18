@@ -3,7 +3,6 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
-import { fieldLabel, optionLabel } from '../i18n/registry.js';
 import { signGlyph } from '../tokens/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
@@ -19,6 +18,7 @@ import {
 	type OperationSchema,
 	sliceFileName,
 } from '../utils/field-schema.js';
+import { displayField, displayOption } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
 import { ROXY_UI_VERSION } from '../version.js';
 
@@ -663,12 +663,12 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * a separate key space from the chrome catalogue.
 	 */
 	private fieldText(name: string): string {
-		return fieldLabel(this.requestLang(), name) ?? humanize(name);
+		return displayField(this.requestLang(), name);
 	}
 
 	/** The option text under one field, falling back the same way. */
 	private optionText(field: string, value: string): string {
-		return optionLabel(this.requestLang(), field, value) ?? humanize(value);
+		return displayOption(this.requestLang(), field, value);
 	}
 
 	/**

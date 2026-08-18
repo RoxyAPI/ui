@@ -13,7 +13,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { foldLocalized } from '../utils/localized.js';
+import { displayField, foldLocalized } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
 
 /**
@@ -235,7 +235,7 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 				readings
 					? prose.map(
 							([key, text]) => html`<p class="prose">
-						<span class="prose-label">${humanize(key)}</span>${text}
+						<span class="prose-label">${displayField(this.effectiveLang(), key)}</span>${text}
 					</p>`,
 						)
 					: nothing
@@ -246,7 +246,7 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 						<dl class="facts">
 							${facts.map(
 								([key, value]) => html`<div class="fact">
-									<dt>${humanize(key)}</dt>
+									<dt>${displayField(this.effectiveLang(), key)}</dt>
 									<dd>${value}</dd>
 								</div>`,
 							)}
@@ -258,7 +258,7 @@ export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
 				isProse && !readings
 					? nothing
 					: html`<div class="list" part="section ${partName(key)}">
-					<h3>${humanize(key)}</h3>
+					<h3>${displayField(this.effectiveLang(), key)}</h3>
 					<div class="chips">${items.map((i) => html`<span>${i}</span>`)}</div>
 				</div>`,
 			)}

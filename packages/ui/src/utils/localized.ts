@@ -9,6 +9,30 @@
  * These two helpers exist so that rule lives in one place rather than as a `??` at every call site, and so an English response, where the localized field simply is not there, degrades by construction instead of by remembering. Both take the KEY of the canonical field and derive its partner, so a mistyped key or a field that is not a display string is a compile error rather than a silent empty string.
  */
 
+import { fieldLabel, optionLabel } from '../i18n/registry.js';
+import { humanize } from './string.js';
+
+/**
+ * The label for a field NAME, which is a different problem from a field VALUE.
+ *
+ * @remarks
+ * A catalogue keyed on English source text cannot reach a name computed per response, so these read the published field-label payload instead and fall back to {@link humanize}, which is exactly what every caller printed before one existed. A name the payload does not carry therefore renders as it always did rather than as a gap.
+ *
+ * Here rather than in each component because three of them need the identical pairing: the form that asks for a field, and the two generic renderers that label what came back.
+ */
+export function displayField(lang: string | undefined, name: string): string {
+	return fieldLabel(lang, name) ?? humanize(name);
+}
+
+/** The label for one selectable VALUE of a field, same fallback rule. */
+export function displayOption(
+	lang: string | undefined,
+	field: string,
+	value: string,
+): string {
+	return optionLabel(lang, field, value) ?? humanize(value);
+}
+
 /** The one naming convention every helper here derives from. Ratified by the API and spreading to more operations, so it is matched as a convention and never as a list of field names. */
 const LOCALIZED = 'Localized';
 

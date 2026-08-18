@@ -1751,7 +1751,7 @@ describe('a component renders its chrome in the page language', () => {
 	 * @remarks
 	 * It is the generic fallback every unbound endpoint renders through, so it is the component a Spanish site is most likely to be looking at, and it was the WORST case rather than a missing nicety: `foldLocalized` already runs inside its `suppress()` funnel, so it can print `Sol` and `Piscis` under `Yes`, `No` and `31 rows` in English. Translated values under English chrome is the state that reads worse than all-English.
 	 *
-	 * What is NOT asserted here, because it cannot be fixed here: the column HEADINGS. They come from the wire field name through `humanize()`, so they are derived rather than literal and no catalogue keyed on English source text can reach them. That is the shared field-name-to-label artifact `<roxy-endpoint-form>` needs too.
+	 * The column HEADINGS are asserted too, which they could not be while they came from the wire name through `humanize()` alone. They now read the published field-label payload first and fall back to `humanize` for a name it does not carry, so a heading is translated where the payload knows it and unchanged everywhere else.
 	 */
 	test('the generic fallback reads Spanish, chrome and values together', async () => {
 		document.documentElement.lang = 'es-AR';
@@ -1773,6 +1773,11 @@ describe('a component renders its chrome in the page language', () => {
 		const rendered = text(el);
 		expect(rendered).toContain('14 filas');
 		expect(rendered).not.toContain('14 rows');
+		// The heading of a column the field-label payload knows is translated; one
+		// it does not know still humanizes, so nothing regresses to a raw wire name.
+		expect(rendered).toContain('Planeta');
+		expect(rendered).not.toContain('Planet<');
+		expect(rendered).toContain('Is Retrograde');
 		expect(
 			root.querySelector('.roxy-table-wrap')?.getAttribute('aria-label'),
 		).toBe('Tabla de datos');
