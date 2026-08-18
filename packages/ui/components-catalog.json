@@ -2704,12 +2704,18 @@
       "endpointLabel": "Any endpoint, from the spec",
       "endpoints": [],
       "parts": [
+        "advanced",
         "attribution",
         "edit-bar",
         "empty",
         "error",
+        "field",
         "form",
-        "loading"
+        "group",
+        "loading",
+        "submit",
+        "title",
+        "validation-error"
       ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.30.0/assets/previews/endpoint-form-light.webp",
@@ -2730,7 +2736,10 @@
         "empty",
         "error",
         "form",
-        "loading"
+        "input",
+        "loading",
+        "option",
+        "results"
       ],
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.30.0/assets/previews/location-search-light.webp",

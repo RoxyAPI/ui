@@ -37,6 +37,30 @@ describe('published part vocabulary', () => {
 		}
 	});
 
+	test('every component publishes a part of its OWN, not just the inherited ones', () => {
+		// Six parts arrive from the shared base whether a component asks or not, so
+		// a component that adds none of its own is reachable at its loading and
+		// error states and opaque everywhere else: a host can hide the whole card
+		// or nothing inside it. Two of the widgets were in exactly that state.
+		//
+		// The floor is DERIVED as the set every component shares rather than
+		// written out, so a part added to or dropped from the base moves it here
+		// automatically and this test never needs editing to stay true.
+		const sets = components.map((c) => new Set(c.parts ?? []));
+		const shared = [...(sets[0] ?? new Set<string>())].filter((name) =>
+			sets.every((s) => s.has(name)),
+		);
+		expect(shared.length).toBeGreaterThan(0);
+
+		const opaque = components
+			.filter((c) => (c.parts ?? []).every((p) => shared.includes(p)))
+			.map((c) => c.tag);
+		expect(
+			opaque,
+			`These publish only the inherited parts, so nothing inside them can be reached with ::part():\n  ${opaque.join('\n  ')}`,
+		).toEqual([]);
+	});
+
 	test('the committed catalog matches a fresh scan of source', () => {
 		// The failure this exists for: a part renamed in a component, the catalog
 		// not regenerated, and a consumer pinning a version whose contract no

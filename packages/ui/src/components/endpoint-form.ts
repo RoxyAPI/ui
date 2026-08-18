@@ -883,7 +883,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 	private renderSelect(f: FieldDef) {
 		const id = `roxy-form-${f.key}`;
-		return html`<div class="field">
+		return html`<div part="field" class="field">
 			<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>
 			<select
 				id=${id}
@@ -907,7 +907,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private renderToggle(f: FieldDef) {
 		const id = `roxy-form-${f.key}`;
 		const checked = this.values[f.key] === true;
-		return html`<div class="field">
+		return html`<div part="field" class="field">
 			<div class="toggle-row">
 				<button
 					type="button"
@@ -941,7 +941,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				: f.example != null
 					? String(f.example)
 					: '';
-		return html`<div class="field">
+		return html`<div part="field" class="field">
 			<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>
 			<input
 				id=${id}
@@ -1048,7 +1048,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const fields = this.fields.filter(
 			(f) => f.group === group && this.isRendered(f),
 		);
-		return html`<fieldset class="person-group">
+		return html`<fieldset part="group" class="person-group">
 			<legend>${this.groupName(group)}</legend>
 			${this.groupHasLocation(group) ? this.locationBlock(group) : nothing}
 			<div class="fields">${fields.map((f) => this.renderField(f))}</div>
@@ -1077,10 +1077,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const hasAdvanced = flatOpt.length > 0 || optGroups.length > 0;
 
 		return html`<form @submit=${this.onSubmit}>
-			<h2 class="title">${this.formTitle}</h2>
+			<h2 part="title" class="title">${this.formTitle}</h2>
 			${
 				this.validationErrors.length > 0
-					? html`<div class="validation-error" role="alert">
+					? html`<div part="validation-error" class="validation-error" role="alert">
 							<strong>${this.t('Please complete:')}</strong>
 							${this.validationErrors.join(', ')}
 						</div>`
@@ -1091,7 +1091,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			${reqGroups.map((g) => this.groupCard(g))}
 			${
 				hasAdvanced
-					? html`<details class="advanced">
+					? html`<details part="advanced" class="advanced">
 							<summary>${this.t('Advanced')}${chevron()}</summary>
 							<div class="fields">${flatOpt.map((f) => this.renderField(f))}</div>
 							${optGroups.map((g) => this.groupCard(g))}
@@ -1101,7 +1101,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			${
 				this.singleEnumField
 					? nothing
-					: html`<button class="submit" type="submit">${this.effectiveSubmitLabel()}</button>`
+					: html`<button part="submit" class="submit" type="submit">${this.effectiveSubmitLabel()}</button>`
 			}
 		</form>`;
 	}

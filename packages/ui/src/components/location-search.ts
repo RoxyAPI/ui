@@ -343,6 +343,7 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 		}
 		return html`<div class="field">
 			<input
+				part="input"
 				type="text"
 				role="combobox"
 				aria-expanded=${this.isOpen ? 'true' : 'false'}
@@ -371,6 +372,7 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 				this.isOpen
 					? html`<ul
 						id="roxy-location-listbox"
+						part="results"
 						class="results"
 						role="listbox"
 					>
@@ -381,6 +383,7 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 										(city, idx) => html`<li role="presentation">
 										<button
 											type="button"
+											part="option"
 											class="option"
 											role="option"
 											id=${`roxy-location-option-${idx}`}
