@@ -1,4 +1,4 @@
-import { html, nothing } from 'lit';
+import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -6,12 +6,10 @@ import { baseStyles } from '../utils/base-styles.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
 	type ChartStyle,
-	hasLagna,
 	type KundliViewModel,
-	renderGrahaMarkLegend,
+	renderKundliCaptions,
 	renderKundliStyleTablist,
 	renderKundliSvg,
-	renderMissingLagnaNote,
 	toKundliViewModel,
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
@@ -90,8 +88,7 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 				<div>
 					<h2 class="title">${title}</h2>
 					${renderFrameCaption(this.effectiveLang(), d.frame, this.translator)}
-					${hasLagna(vm) ? nothing : renderMissingLagnaNote(this.translator)}
-					${renderGrahaMarkLegend(vm, this.translator)}
+					${renderKundliCaptions(vm, this.translator)}
 				</div>
 				${renderKundliStyleTablist(this.chartStyle, this.setStyle, this.translator)}
 			</div>

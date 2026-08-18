@@ -95,9 +95,9 @@ const RETRO_MARK = 'ʳ';
 const COMBUST_MARK = 'ᶜ';
 const WAR_MARK = 'ʷ';
 
-/** Position of a sign in the zodiac order, or -1. Takes a plain string because it reads API values: `SIGNS_ORDER` is a literal tuple, so `indexOf` would not accept one. */
+/** Position of a sign in the zodiac order, or -1. Takes a plain string because it reads API values, and widens the literal tuple to match so the lookup is a plain `indexOf`. */
 function signIndex(sign: string): number {
-	return SIGNS_ORDER.findIndex((s) => s === sign);
+	return (SIGNS_ORDER as readonly string[]).indexOf(sign);
 }
 
 /**
@@ -766,8 +766,8 @@ export function hasLagna(vm: KundliViewModel): boolean {
 	return signIndex(vm.lagnaSign) !== -1;
 }
 
-/** Key for each mark, listing only the ones this chart actually uses so a legend never explains a symbol nobody can see. Uses the shared caption class, like {@link renderMissingLagnaNote}. */
-export function renderGrahaMarkLegend(
+/** Key for each mark, listing only the ones this chart actually uses so a legend never explains a symbol nobody can see. */
+function renderGrahaMarkLegend(
 	vm: KundliViewModel,
 	t: Translate,
 ): TemplateResult | typeof nothing {
@@ -786,11 +786,28 @@ export function renderGrahaMarkLegend(
 	return html`<p class="roxy-frame">${keys.join(' · ')}</p>`;
 }
 
-/** One line saying a chart arrived with no ascendant, so houses go unnumbered and the sign-fixed layout is drawn. Uses the shared caption class, so a caller already rendering the frame caption needs no extra styles. */
-export function renderMissingLagnaNote(t: Translate): TemplateResult {
+/** One line saying a chart arrived with no ascendant, so houses go unnumbered and the sign-fixed layout is drawn. */
+function renderMissingLagnaNote(t: Translate): TemplateResult {
 	return html`<p class="roxy-frame">
 		${t('No ascendant in this chart, so the houses are not numbered.')}
 	</p>`;
+}
+
+/**
+ * Every caption that belongs under a kundli: why the layout changed when no ascendant arrived, and the key to the state marks the cells carry.
+ *
+ * @remarks
+ * One entry point rather than two, because both callers need the identical set and a caller that rendered only one of them would explain the marks on a chart whose layout had silently changed, or the reverse. Uses the shared frame-caption class, so a component already showing the sidereal frame needs no extra styles.
+ */
+export function renderKundliCaptions(
+	vm: KundliViewModel,
+	t: Translate,
+): TemplateResult[] {
+	const out: TemplateResult[] = [];
+	if (!hasLagna(vm)) out.push(renderMissingLagnaNote(t));
+	const legend = renderGrahaMarkLegend(vm, t);
+	if (legend !== nothing) out.push(legend);
+	return out;
 }
 
 /**
