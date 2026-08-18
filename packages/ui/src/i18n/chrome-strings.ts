@@ -863,6 +863,41 @@ export const CHROME_STRINGS = [
 	'this kaksha lord gave no bindu, {{count}} of {{total}} in this sign',
 	'Transiting planets: each planet with its current sign, degree and daily speed.',
 
+	// Vedic daily: the verdict band and the six graha states behind it, the windows
+	// the Moon opens and closes inside one day, and the finance connections. The
+	// state and band words are looked up through records keyed by the response
+	// enums, so a value added upstream fails to compile rather than printing raw.
+	'Vedic daily',
+	'Vedic daily reading',
+	'{{supportive}} of {{evaluated}} grahas support this day',
+	'Born with the Moon in {{rashi}}, nakshatra {{nakshatra}}',
+	'{{component}} unavailable: {{reason}}',
+	'Paksha',
+	'until {{time}}',
+	'Grahas today',
+	'Each transiting graha with its sign, the house it occupies from the natal Moon, its bindus, its kaksha and the state the classical rules give it.',
+	'Kaksha',
+	'State',
+	'Favourable',
+	'Underdelivered',
+	'Obstructed',
+	'Void',
+	'Aggravated',
+	'Unfavourable',
+	'Very strong',
+	'Strong',
+	'Moderate',
+	'Weak',
+	'Tara and Chandrabala',
+	'Moon in {{sign}}, house {{n}}',
+	'Ashtama Chandra',
+	'Drivers',
+	'Cautions',
+	'{{positive}} positive against {{negative}} negative',
+	'level {{level}} {{grade}}',
+	'Dasha',
+	', governs {{sections}}',
+
 	// Daily horoscope: the energy score, the five life areas it is read across, the
 	// lucky details, and the week and date blocks under them.
 	'Energy {{value}}/10',

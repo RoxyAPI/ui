@@ -100,6 +100,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'ashtakavarga-grid': 'AshtakavargaResponse',
 	'shadbala-table': 'ShadbalaResponse',
 	'heliacal-table': 'HeliacalResponse',
+	'vedic-daily': 'GetVedicDailyReadingResponse',
 	'gochara-table': 'CalculateTransitResponse',
 	'bhava-bala-table': 'BhavaBalaResponse',
 	'bhav-chalit-table': 'BhavChalitResponse',

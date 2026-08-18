@@ -342,6 +342,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Vedic"
   },
   {
+    "pascal": "RoxyVedicDaily",
+    "tag": "roxy-vedic-daily",
+    "slug": "vedic-daily",
+    "heading": "Vedic daily",
+    "description": "One native, one day: the verdict band, every graha state behind it, the Moon windows and the finance area",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/daily",
+    "docsSummary": "Composed Vedic daily reading with the classical rule behind every graha state, the Tara and Chandrabala windows in full, and all three sidereal frames named",
+    "topic": "Vedic"
+  },
+  {
     "pascal": "RoxyGocharaTable",
     "tag": "roxy-gochara-table",
     "slug": "gochara-table",
@@ -1478,6 +1489,13 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "path": "/vedic-astrology/aspects"
     }
   ],
+  "roxy-vedic-daily": [
+    {
+      "operationId": "getVedicDailyReading",
+      "method": "POST",
+      "path": "/vedic-astrology/daily"
+    }
+  ],
   "roxy-vedic-kundli": [
     {
       "operationId": "generateBirthChart",
@@ -1730,6 +1748,10 @@ window.ROXY_WIDGET_SNIPPETS = {
   "roxy-heliacal-table": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-heliacal-table data-endpoint=\"vedic-astrology/heliacal\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-heliacal-table>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"heliacal-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-vedic-daily": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-daily data-endpoint=\"vedic-astrology/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-daily>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-daily\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
   "roxy-gochara-table": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gochara-table data-endpoint=\"vedic-astrology/transit\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-gochara-table>",

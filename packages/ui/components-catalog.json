@@ -1342,6 +1342,49 @@
       }
     },
     {
+      "tag": "roxy-vedic-daily",
+      "pascal": "RoxyVedicDaily",
+      "slug": "vedic-daily",
+      "domain": "Vedic",
+      "renders": "Composed Vedic daily reading with the classical rule behind every graha state, the Tara and Chandrabala windows in full, and all three sidereal frames named",
+      "endpointLabel": "POST /vedic-astrology/daily",
+      "endpoints": [
+        {
+          "operationId": "getVedicDailyReading",
+          "method": "POST",
+          "path": "/vedic-astrology/daily"
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "dasha",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "finance",
+        "form",
+        "frame",
+        "grahas",
+        "header",
+        "legend",
+        "loading",
+        "panchanga",
+        "section",
+        "table",
+        "windows"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-daily data-endpoint=\"vedic-astrology/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-daily>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-daily\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.30.0/assets/previews/vedic-daily-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.30.0/assets/previews/vedic-daily-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-gochara-table",
       "pascal": "RoxyGocharaTable",
       "slug": "gochara-table",

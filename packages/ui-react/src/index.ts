@@ -223,6 +223,10 @@ export {
 	type RoxyVedicAspectsProps,
 } from './components/vedic-aspects.js';
 export {
+	RoxyVedicDaily,
+	type RoxyVedicDailyProps,
+} from './components/vedic-daily.js';
+export {
 	RoxyVedicKundli,
 	type RoxyVedicKundliProps,
 } from './components/vedic-kundli.js';

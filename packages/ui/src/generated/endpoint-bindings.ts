@@ -795,6 +795,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/vedic-astrology/aspects',
 		},
 	],
+	'roxy-vedic-daily': [
+		{
+			operationId: 'getVedicDailyReading',
+			method: 'POST',
+			path: '/vedic-astrology/daily',
+		},
+	],
 	'roxy-vedic-kundli': [
 		{
 			operationId: 'generateBirthChart',

@@ -50,6 +50,7 @@ const TARGETS: Target[] = [
 	{ id: 'kp-ruling', label: 'kp-ruling-planets' },
 	{ id: 'upagraha', label: 'upagraha-table' },
 	{ id: 'heliacal', label: 'heliacal-table' },
+	{ id: 'vedic-daily', label: 'vedic-daily' },
 	{ id: 'gochara', label: 'gochara-table' },
 	{ id: 'bhava-bala', label: 'bhava-bala-table' },
 	{ id: 'bhav-chalit', label: 'bhav-chalit-table' },

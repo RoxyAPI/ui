@@ -428,6 +428,19 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Vedic',
 	},
 	{
+		pascal: 'RoxyVedicDaily',
+		tag: 'roxy-vedic-daily',
+		slug: 'vedic-daily',
+		heading: 'Vedic daily',
+		description:
+			'One native, one day: the verdict band, every graha state behind it, the Moon windows and the finance area',
+		docsLabel: 'Vedic',
+		endpointLabel: 'POST /vedic-astrology/daily',
+		docsSummary:
+			'Composed Vedic daily reading with the classical rule behind every graha state, the Tara and Chandrabala windows in full, and all three sidereal frames named',
+		topic: 'Vedic',
+	},
+	{
 		pascal: 'RoxyGocharaTable',
 		tag: 'roxy-gochara-table',
 		slug: 'gochara-table',

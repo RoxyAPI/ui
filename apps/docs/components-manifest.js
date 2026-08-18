@@ -546,6 +546,21 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'vedic-daily',
+		tag: 'roxy-vedic-daily',
+		seoLine: 'Composed Vedic daily reading: verdict band, graha states, Moon windows and finance',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getVedicDailyReading({
+    body: {
+      birthDate: '${PERSON1.date}',
+      birthTime: '${PERSON1.time}',
+      latitude: ${PERSON1.latitude},
+      longitude: ${PERSON1.longitude},
+      timezone: '${PERSON1.timezone}',
+      date: '2026-02-03',
+    },
+  });`,
+	}),
+	entry({
 		id: 'gochara',
 		tag: 'roxy-gochara-table',
 		seoLine: 'Vedic gochara transits with the Ashtakavarga kaksha verdict',

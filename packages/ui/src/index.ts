@@ -79,6 +79,7 @@ export { RoxyTransitsTable } from './components/transits-table.js';
 export { RoxyUpagrahaTable } from './components/upagraha-table.js';
 // Vedic astrology
 export { RoxyVedicAspects } from './components/vedic-aspects.js';
+export { RoxyVedicDaily } from './components/vedic-daily.js';
 export { RoxyVedicKundli } from './components/vedic-kundli.js';
 export { RoxyVedicPlanetsTable } from './components/vedic-planets-table.js';
 export { RoxyWesternPlanetsTable } from './components/western-planets-table.js';

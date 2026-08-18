@@ -132,6 +132,10 @@
       "description": "Whether each graha stands far enough from the Sun to be seen, with the date it next rises or sets"
     },
     {
+      "name": "roxy-vedic-daily",
+      "description": "One native, one day: the verdict band, every graha state behind it, the Moon windows and the finance area"
+    },
+    {
       "name": "roxy-gochara-table",
       "description": "Where each graha transits now, the natal house it falls in, and the Ashtakavarga-qualified kaksha verdict"
     },

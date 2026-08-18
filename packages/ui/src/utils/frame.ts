@@ -71,3 +71,48 @@ export function renderFrameCaption(
 		}
 	</p>`;
 }
+
+/** One frame in a response computed across several: the frame itself, the instant it was read at, and the sections it decided. */
+export interface GoverningFrame extends SiderealFrame {
+	at?: string;
+	governs?: readonly string[];
+}
+
+/**
+ * Every frame a multi-frame response was computed in, one line each.
+ *
+ * @remarks
+ * Separate from {@link renderFrameCaption} rather than a widening of it, because the two answer different questions: one chart cast in one frame needs the frame NAMED, while a response assembled from several needs each frame tied to the part of the answer it decided. Collapsing these to a single caption would print one ayanamsa over sections two others produced, which is the provenance failure the caption exists to prevent.
+ *
+ * The label comes from {@link formatAyanamsa}, the same source the single-frame caption reads, so a frame added upstream reads the same in both.
+ */
+export function renderFrameProvenance(
+	locale: string | undefined,
+	frames: Record<string, GoverningFrame | undefined> | undefined,
+	t: Translate,
+): TemplateResult | typeof nothing {
+	const rows = Object.values(frames ?? {}).filter((f): f is GoverningFrame =>
+		Boolean(f?.ayanamsa),
+	);
+	if (rows.length === 0) return nothing;
+	return html`<div class="roxy-frame">
+		${rows.map((f) => {
+			const label = formatAyanamsa(locale, f.ayanamsa);
+			const degrees =
+				typeof f.ayanamsaDegrees === 'number'
+					? formatNumber(locale, f.ayanamsaDegrees, 4)
+					: undefined;
+			const governs = f.governs?.length ? f.governs.join(', ') : '';
+			return html`<p class="roxy-frame">
+				${
+					degrees === undefined
+						? t('Sidereal frame: {{frame}}', { frame: label })
+						: t('Sidereal frame: {{frame}}, {{degrees}}° subtracted', {
+								frame: label,
+								degrees,
+							})
+				}${governs ? t(', governs {{sections}}', { sections: governs }) : ''}
+			</p>`;
+		})}
+	</div>`;
+}

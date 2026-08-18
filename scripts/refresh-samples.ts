@@ -380,6 +380,18 @@ async function main() {
 		// committed previews have to render the same sky on every recapture, and the
 		// same pair is hardcoded in the demo card's sdkCall so the snippet
 		// reproduces the picture beside it.
+		// A fixed `date`, not today's default, so the card and its committed preview
+		// render the same day on every recapture.
+		run('vedic-daily', () =>
+			rawPost('vedic-astrology/daily', {
+				birthDate: PERSON1.date,
+				birthTime: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+				date: '2026-02-03',
+			}),
+		),
 		run('transit-wheel', () =>
 			roxy.astrology.calculateTransitAspects({
 				body: {
