@@ -15,6 +15,7 @@ import {
 	normalizeAspect,
 } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
 
 /**
@@ -491,17 +492,21 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 	) {
 		const card = (p: SynastryPerson | undefined, index: 1 | 2) => {
 			if (!p) return nothing;
-			const big: Array<[ChromeString, string]> = [
-				['Sun', p.sunSign ?? ''],
-				['Moon', p.moonSign ?? ''],
+			// Three columns, not two: the sign the GLYPH is keyed on stays English
+			// whatever the page language, and only the third is read.
+			const asc = p.ascendant;
+			const big: Array<[ChromeString, string, string]> = [
+				['Sun', p.sunSign ?? '', display(p, 'sunSign')],
+				['Moon', p.moonSign ?? '', display(p, 'moonSign')],
 				[
 					'ASC',
-					p.ascendant
-						? `${p.ascendant.sign} ${formatNumber(this.effectiveLang(), p.ascendant.degree, 0)}°`
+					asc?.sign ?? '',
+					asc
+						? `${display(asc, 'sign')} ${formatNumber(this.effectiveLang(), asc.degree, 0)}°`
 						: '',
 				],
 			];
-			const shown = big.filter(([, value]) => value);
+			const shown = big.filter(([, , text]) => text);
 			if (shown.length === 0) return nothing;
 			return html`<div class="person">
 				<span class="person-name">
@@ -510,10 +515,10 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				</span>
 				<div class="big-three">
 					${shown.map(
-						([label, value]) => html`<span>
+						([label, sign, text]) => html`<span>
 							<span class="lbl">${this.t(label)}</span>
-							<span aria-hidden="true">${signGlyph(value.split(' ')[0]) ?? ''}</span>
-							${value}
+							<span aria-hidden="true">${signGlyph(sign) ?? ''}</span>
+							${text}
 						</span>`,
 					)}
 				</div>
@@ -550,9 +555,9 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		const nature = (a.interpretation ?? 'neutral').toLowerCase();
 		const meaning = a.meaning;
 		const lead = html`<span class="interp-lead">
-			<span aria-hidden="true" class="glyph">${g1}</span>${a.planet1}
-			<span class="asp-name ${nature}">${formatAspectName(a)}</span>
-			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
+			<span aria-hidden="true" class="glyph">${g1}</span>${display(a, 'planet1')}
+			<span class="asp-name ${nature}">${display(a, 'type', formatAspectName(a))}</span>
+			<span aria-hidden="true" class="glyph">${g2}</span>${display(a, 'planet2')}
 		</span>`;
 		const aside = html`<span class="interp-aside">
 			<small>${this.t('orb {{orb}}° · str {{strength}}', { orb: formatNumber(this.effectiveLang(), a.orb, 2), strength: formatNumber(this.effectiveLang(), a.strength, 0) })}</small>
@@ -635,7 +640,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				radius + degOffset,
 				angle,
 			);
-			const glyph = planetGlyph(p.name) ?? p.name;
+			const glyph = planetGlyph(p.name) ?? display(p, 'name');
 			const sp = longitudeToSignPosition(p.longitude);
 			const retro = p.isRetrograde === true;
 			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
@@ -644,7 +649,9 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				typeof p.house === 'number'
 					? ` · ${this.t('House {{n}}', { n: p.house })}`
 					: '';
-			const tooltip = `${p.name}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel} ${sp.sign}${house}`;
+			// The sign comes from the response rather than from the longitude, so the
+			// tooltip cannot disagree with the sign the API assigned.
+			const tooltip = `${display(p, 'name')}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel} ${display(p, 'sign')}${house}`;
 			return svg`<g>
 				<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${tooltip}</title>${glyph}<tspan class="person-tag" dy="-0.55em" dx="0.15em">${personIndex}</tspan></text>
 				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${sp.degree}°${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
@@ -708,7 +715,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			const aspectName = normalizeAspect(a);
 			const cls = ASPECT_CLASS[aspectName] ?? 'aspect-other';
 			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);
-			return svg`<line class=${`aspect ${cls}`} style=${aspectLineStyle(a)} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${cls}`} style=${aspectLineStyle(a)} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${display(a, 'planet1')} ${display(a, 'type', formatAspectName(a))} ${display(a, 'planet2')}${orbLabel ? ` (${this.t('Orb')} ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
 
@@ -731,9 +738,9 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			<tbody>
 				${aspects.map(
 					(a) => html`<tr>
-						<td>${a.planet1}</td>
-						<td>${a.planet2}</td>
-						<td>${formatAspectName(a)}</td>
+						<td>${display(a, 'planet1')}</td>
+						<td>${display(a, 'planet2')}</td>
+						<td>${display(a, 'type', formatAspectName(a))}</td>
 						<td class="orb">${formatNumber(this.effectiveLang(), a.orb, 1)}</td>
 						<td>${formatNumber(this.effectiveLang(), a.strength, 0)}</td>
 					</tr>`,

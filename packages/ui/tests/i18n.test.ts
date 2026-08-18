@@ -2280,6 +2280,96 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		expect(rendered).toContain('Trine');
 		el.remove();
 	});
+
+	/** A synastry pair carrying both halves of every field the bi-wheel prints. */
+	const SYNASTRY_BOTH = {
+		person1: {
+			name: 'A',
+			ascendant: { sign: 'Leo', signLocalized: 'Leo', degree: 12 },
+			sunSign: 'Pisces',
+			sunSignLocalized: 'Piscis',
+			moonSign: 'Cancer',
+			moonSignLocalized: 'Cáncer',
+			planets: [
+				{
+					name: 'Sun',
+					nameLocalized: 'Sol',
+					longitude: 345.5,
+					sign: 'Pisces',
+					signLocalized: 'Piscis',
+					degree: 15.5,
+					house: 3,
+					houseInOtherChart: 7,
+					isRetrograde: false,
+				},
+			],
+		},
+		person2: {
+			name: 'B',
+			ascendant: { sign: 'Cancer', signLocalized: 'Cáncer', degree: 4 },
+			sunSign: 'Cancer',
+			sunSignLocalized: 'Cáncer',
+			moonSign: 'Pisces',
+			moonSignLocalized: 'Piscis',
+			planets: [
+				{
+					name: 'Mars',
+					nameLocalized: 'Marte',
+					longitude: 105.5,
+					sign: 'Cancer',
+					signLocalized: 'Cáncer',
+					degree: 15.5,
+					house: 1,
+					houseInOtherChart: 11,
+					isRetrograde: true,
+				},
+			],
+		},
+		compatibilityScore: 70,
+		interAspects: [
+			{
+				planet1: 'Sun',
+				planet1Localized: 'Sol',
+				planet2: 'Mars',
+				planet2Localized: 'Marte',
+				type: 'TRINE',
+				typeLocalized: 'Trígono',
+				orb: 1.2,
+				strength: 80,
+			},
+		],
+		summary: { total: 1, harmonious: 1, challenging: 0, neutral: 0 },
+	};
+
+	test('the synastry bi-wheel prints the display half and keys on the English one', async () => {
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-synastry-chart');
+		(el as HTMLElement & { data: unknown }).data = SYNASTRY_BOTH;
+		document.body.appendChild(el);
+		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		const root = el.shadowRoot as ShadowRoot;
+		const rendered = root.textContent ?? '';
+
+		// Every vocabulary a reader meets on this card: the big-three signs, the
+		// planet names in the ring tooltips, and both the reading and the catalogue.
+		expect(rendered).toContain('Piscis');
+		expect(rendered).toContain('Marte');
+		expect(rendered).toContain('Trígono');
+		expect(rendered).not.toContain('Trine');
+
+		// And the lookups did NOT move with them. Asserted at the SITE, never across
+		// the card: the zodiac ring draws all twelve sign glyphs from a local list,
+		// so a whole-card search for one is satisfied by the ring even when the big
+		// three have lost theirs entirely.
+		const bigThree = root.querySelector('.big-three')?.textContent ?? '';
+		expect(bigThree).toContain('♓');
+		expect(bigThree).toContain('Piscis');
+		expect(root.querySelector('line.aspect')?.getAttribute('class')).toContain(
+			'aspect-trine',
+		);
+		el.remove();
+		document.documentElement.lang = '';
+	});
 });
 
 /**
