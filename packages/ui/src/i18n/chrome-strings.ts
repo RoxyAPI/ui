@@ -565,6 +565,8 @@ export const CHROME_STRINGS = [
 	'Sect',
 	'Ascendant',
 	'Midheaven',
+	'Part of Fortune',
+	'Vertex',
 	'Secondary progressions',
 	'Progressed to',
 	'Elapsed',

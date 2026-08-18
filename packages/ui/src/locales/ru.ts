@@ -496,6 +496,8 @@ export const ru: Record<ChromeString, string> = {
 	Sect: 'Секта',
 	Ascendant: 'Асцендент',
 	Midheaven: 'Середина неба',
+	'Part of Fortune': 'Жребий Фортуны',
+	Vertex: 'Вертекс',
 	'Secondary progressions': 'Вторичные прогрессии',
 	'Progressed to': 'Прогрессия на',
 	Elapsed: 'Прошло',

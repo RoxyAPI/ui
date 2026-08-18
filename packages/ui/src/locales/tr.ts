@@ -502,6 +502,8 @@ export const tr: Record<ChromeString, string> = {
 	Sect: 'Sekt',
 	Ascendant: 'Yükselen',
 	Midheaven: 'Gökyüzü ortası',
+	'Part of Fortune': 'Şans Noktası',
+	Vertex: 'Vertex',
 	'Secondary progressions': 'İkincil ilerletmeler',
 	'Progressed to': 'İlerletme tarihi',
 	Elapsed: 'Geçen süre',

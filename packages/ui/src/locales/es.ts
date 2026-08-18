@@ -515,6 +515,8 @@ export const es: Record<ChromeString, string> = {
 	Sect: 'Secta',
 	Ascendant: 'Ascendente',
 	Midheaven: 'Mediocielo',
+	'Part of Fortune': 'Parte de la Fortuna',
+	Vertex: 'Vertex',
 	'Secondary progressions': 'Progresiones secundarias',
 	'Progressed to': 'Progresado a',
 	Elapsed: 'Transcurrido',

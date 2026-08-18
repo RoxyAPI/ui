@@ -503,6 +503,8 @@ export const de: Record<ChromeString, string> = {
 	Sect: 'Sekte',
 	Ascendant: 'Aszendent',
 	Midheaven: 'Himmelsmitte',
+	'Part of Fortune': 'Glückspunkt',
+	Vertex: 'Vertex',
 	'Secondary progressions': 'Sekundärdirektionen',
 	'Progressed to': 'Progression auf',
 	Elapsed: 'Verstrichen',

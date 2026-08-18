@@ -594,6 +594,7 @@ describe('shipped locales', () => {
 				'Dasha',
 				'Kaksha',
 				'Karana',
+				'Vertex',
 				'Paksha',
 				'Nakshatra',
 				'Panchaka',
@@ -713,6 +714,7 @@ describe('shipped locales', () => {
 				'Dasha',
 				'Kaksha',
 				'Karana',
+				'Vertex',
 				'Paksha',
 				'Nakshatra',
 				'Panchaka',
@@ -848,6 +850,7 @@ describe('shipped locales', () => {
 				'Dasha',
 				'Kaksha',
 				'Karana',
+				'Vertex',
 				'Paksha',
 				'Nakshatra',
 				'Panchaka',
@@ -1001,6 +1004,7 @@ describe('shipped locales', () => {
 				'Dasha',
 				'Kaksha',
 				'Karana',
+				'Vertex',
 				'Paksha',
 				'Nakshatra',
 				'Panchaka',
@@ -1124,6 +1128,7 @@ describe('shipped locales', () => {
 				'Dasha',
 				'Kaksha',
 				'Karana',
+				'Vertex',
 				'Paksha',
 				'Nakshatra',
 				'Panchaka',
@@ -2392,6 +2397,52 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		expect(root.querySelector('line.aspect')?.getAttribute('class')).toContain(
 			'aspect-trine',
 		);
+		el.remove();
+		document.documentElement.lang = '';
+	});
+
+	test('the four chart points read in the page language too', async () => {
+		// They are copy the component writes rather than values the response names,
+		// so they translate through the catalogue. All four move together: a table
+		// that translated two of them would read half in one language.
+		document.documentElement.lang = 'es-AR';
+		const el = document.createElement('roxy-western-planets-table');
+		(el as HTMLElement & { data: unknown }).data = {
+			planets: [],
+			ascendant: {
+				sign: 'Leo',
+				signLocalized: 'Leo',
+				degree: 1,
+				longitude: 121,
+			},
+			midheaven: {
+				sign: 'Aries',
+				signLocalized: 'Aries',
+				degree: 2,
+				longitude: 2,
+			},
+			partOfFortune: {
+				sign: 'Libra',
+				signLocalized: 'Libra',
+				degree: 3,
+				longitude: 183,
+			},
+			vertex: {
+				sign: 'Virgo',
+				signLocalized: 'Virgo',
+				degree: 4,
+				longitude: 154,
+			},
+		};
+		document.body.appendChild(el);
+		await (el as unknown as { updateComplete: Promise<void> }).updateComplete;
+		const rendered = (el.shadowRoot as ShadowRoot).textContent ?? '';
+
+		expect(rendered).toContain(es.Ascendant);
+		expect(rendered).toContain(es.Midheaven);
+		expect(rendered).toContain(es['Part of Fortune']);
+		expect(rendered).toContain(es.Vertex);
+		expect(rendered).not.toContain('Part of Fortune');
 		el.remove();
 		document.documentElement.lang = '';
 	});

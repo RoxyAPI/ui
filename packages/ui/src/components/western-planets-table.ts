@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -116,19 +117,22 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 			isRetrograde: p.isRetrograde,
 			dignity: p.dignity,
 		}));
-		for (const [name, point] of [
+		// The four chart points are copy this component writes rather than values the
+		// response names, so each is typed to its catalogue source and the compiler
+		// rejects one no catalogue carries.
+		const points: ReadonlyArray<
+			readonly [ChromeString, { sign?: string; longitude?: number } | undefined]
+		> = [
 			['Ascendant', d.ascendant],
 			['Midheaven', d.midheaven],
 			['Part of Fortune', d.partOfFortune],
 			['Vertex', d.vertex],
-		] as const) {
+		];
+		for (const [name, point] of points) {
 			if (point) {
 				rows.push({
-					// The four point names are copy this component writes, and two of the
-					// four have no catalogue entry yet, so all four stay English together
-					// rather than the table reading half in one language.
 					name,
-					label: name,
+					label: this.t(name),
 					sign: point.sign,
 					signLabel: display(point, 'sign'),
 					longitude: point.longitude,

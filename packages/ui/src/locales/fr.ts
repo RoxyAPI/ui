@@ -508,6 +508,8 @@ export const fr: Record<ChromeString, string> = {
 	Sect: 'Secte',
 	Ascendant: 'Ascendant',
 	Midheaven: 'Milieu du Ciel',
+	'Part of Fortune': 'Part de Fortune',
+	Vertex: 'Vertex',
 	'Secondary progressions': 'Progressions secondaires',
 	'Progressed to': 'Progressé au',
 	Elapsed: 'Écoulé',

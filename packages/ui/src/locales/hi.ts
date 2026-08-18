@@ -42,7 +42,7 @@
  *
  * **`ऑर्ब` was examined and kept.** It is a bare transliteration that means little to a Hindi reader, and the honest alternative, `अंश अंतर`, is equally unattested. A transliterated loanword is a legitimate strategy for a Western technical term Jyotisha does not model, and it is what `tr.ts` does with `orb` on sourced grounds. Revisit with a practitioner, not with another coinage.
  *
- * **Twelve entries in this file are unattested, not five:** `दृष्टि संरचनाएँ`, `स्थानांतरित जन्म कुंडली`, `{{percent}}% निकट`, `राशि से बाहर`, `ऑर्ब`, `शीर्ष`, `निकट आती` / `दूर जाती`, `दोहरा चक्र`, `वलय`, `भाव संधि`, `कुंडली चक्र`, and the three cross-tab abbreviations. One carries a specific question for the practitioner: whether a bare `शीर्ष` pulls the `शीर्षोदय` sign classification.
+ * **Thirteen entries in this file are unattested, not five:** `दृष्टि संरचनाएँ`, `स्थानांतरित जन्म कुंडली`, `{{percent}}% निकट`, `राशि से बाहर`, `ऑर्ब`, `शीर्ष`, `निकट आती` / `दूर जाती`, `दोहरा चक्र`, `वलय`, `भाव संधि`, `कुंडली चक्र`, `वर्टेक्स`, and the three cross-tab abbreviations. `वर्टेक्स` is a transliteration on the same grounds as `ऑर्ब`: the Vertex is a Western point Jyotisha does not model, and searching Hindi astrology writing for it returns the concept described in English rather than a Hindi name for it. Every other language uses the Latin word unchanged, and Russian transliterates it, so a transliteration is what the term does everywhere it travels. One carries a specific question for the practitioner: whether a bare `शीर्ष` pulls the `शीर्षोदय` sign classification.
  *
  * ## Human Design
  *
@@ -516,6 +516,8 @@ export const hi: Record<ChromeString, string> = {
 	Sect: 'पक्ष',
 	Ascendant: 'लग्न',
 	Midheaven: 'मध्य आकाश',
+	'Part of Fortune': 'भाग्य बिंदु',
+	Vertex: 'वर्टेक्स',
 	'Secondary progressions': 'द्वितीयक प्रगति',
 	'Progressed to': 'प्रगति तिथि',
 	Elapsed: 'बीता समय',
