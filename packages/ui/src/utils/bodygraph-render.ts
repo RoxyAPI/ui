@@ -36,6 +36,8 @@ interface CenterGeometry {
 	label: string;
 	color: CenterColor;
 	points: Point[];
+	/** Where the centre name sits, when the shape's middle is taken by a gate number. Defaults to the centroid. */
+	labelAt?: Point;
 }
 
 /** Traditional center color group: gold for Head and G, green for Ajna, red for the Heart and Sacral motors, brown for the rest. A defined center is filled with it; an open one takes the card surface so the wiring passes behind. */
@@ -65,6 +67,8 @@ const mirrorX = (x: number): number => 2 * AXIS - x;
 /** Gate circle and number size, in grid units. Bounded by the closest pair on the chart (Throat 12 and 45, 2.3 apart) and by fitting two digits inside the circle. */
 export const GATE_RADIUS = 1.02 * UNIT;
 export const GATE_FONT_SIZE = 1.35 * UNIT;
+/** The centre name behind the numbers. Smaller than a gate number so it reads as ground rather than as another value. */
+export const CENTER_NAME_FONT_SIZE = 1.15 * UNIT;
 
 /** The three x offsets from {@link AXIS} a central-column gate sits on: the inner triples, the outer column of the square centers, and the G's wider waist pair. Named so they cannot drift apart one edit at a time. */
 const COL = 2.87;
@@ -478,12 +482,76 @@ function renderCenters(
 	names: ReadonlyMap<BodygraphCenterId, string> | undefined,
 	stateWords: { defined: string; open: string },
 ): TemplateResult[] {
-	return CENTER_GEOMETRY.map((c) => {
+	return CENTER_GEOMETRY.flatMap((c) => {
 		const isDefined = defined.has(c.id);
 		const cls = `bg-center bg-${c.color}${isDefined ? ' defined' : ''}`;
 		const label = names?.get(c.id) || c.label;
-		return svg`<polygon class=${cls} points=${polygonPoints(c.points)}><title>${label}: ${isDefined ? stateWords.defined : stateWords.open}</title></polygon>`;
+		const at = c.labelAt ?? centroid(c.points);
+		return [
+			svg`<polygon class=${cls} points=${polygonPoints(c.points)}><title>${label}: ${isDefined ? stateWords.defined : stateWords.open}</title></polygon>`,
+			// Drawn with the shapes, so the gate numbers paint over it. Hidden from
+			// the accessibility tree because the polygon `<title>` above already
+			// names this centre, and announcing it twice is worse than once.
+			renderCenterName(label, at, isDefined, c.points),
+		];
 	});
+}
+
+/**
+ * The centre name as ground behind the gate numbers.
+ *
+ * @remarks
+ * A multi-word name stacks one word per line rather than running past the shape: the two side triangles taper to a point, so `Solar Plexus` on one line overruns its own outline while `SOLAR` over `PLEXUS` sits inside it. Splitting on whitespace is one rule for every language rather than a width measured per label, and a name that is one long word in some language simply stays one line.
+ */
+function renderCenterName(
+	label: string,
+	at: Point,
+	isDefined: boolean,
+	points: readonly Point[],
+): TemplateResult {
+	const words = label.split(/\s+/).filter(Boolean);
+	const longest = words.reduce((n, w) => Math.max(n, w.length), 0);
+	// Shrink to the room the shape actually has at this height rather than
+	// trusting one size to fit every name: the side centres taper to a point, and
+	// a translated name is a different length in every language.
+	const room = widthAt(points, at.y) * 0.86;
+	const size = Math.min(
+		CENTER_NAME_FONT_SIZE,
+		room / Math.max(1, longest * UPPERCASE_EM),
+	);
+	const step = size * 1.05;
+	const top = at.y - (step * (words.length - 1)) / 2;
+	return svg`<text class="bg-center-name ${isDefined ? 'defined' : ''}" style=${`font-size:${size}px`} x=${at.x} y=${at.y} text-anchor="middle" dominant-baseline="central" aria-hidden="true">${words.map(
+		(w, i) => svg`<tspan x=${at.x} y=${top + i * step}>${w}</tspan>`,
+	)}</text>`;
+}
+
+/** Advance width of one uppercase character at the label weight, as a fraction of the font size. Approximate on purpose: it only has to keep a name inside its own outline, and it is applied with room to spare. */
+const UPPERCASE_EM = 0.66;
+
+/** Horizontal span of a convex polygon at height `y`: how much room a line of text has there. */
+function widthAt(points: readonly Point[], y: number): number {
+	const xs: number[] = [];
+	for (let i = 0; i < points.length; i++) {
+		const a = points[i] as Point;
+		const b = points[(i + 1) % points.length] as Point;
+		if (a.y === b.y) continue;
+		const lo = Math.min(a.y, b.y);
+		const hi = Math.max(a.y, b.y);
+		if (y < lo || y > hi) continue;
+		xs.push(a.x + ((y - a.y) / (b.y - a.y)) * (b.x - a.x));
+	}
+	if (xs.length < 2) return 0;
+	return Math.max(...xs) - Math.min(...xs);
+}
+
+/** Average of a shape's vertices: the visual middle of every centre this chart draws, all of which are convex. */
+function centroid(points: readonly Point[]): Point {
+	const n = points.length || 1;
+	return {
+		x: points.reduce((t, p) => t + p.x, 0) / n,
+		y: points.reduce((t, p) => t + p.y, 0) / n,
+	};
 }
 
 /** A half-disc starting at the top of the circle and sweeping to the bottom. `sweep` 1 is the right half. */

@@ -229,3 +229,35 @@ test('a component renders no part name the catalog does not publish', async ({
 
 	expect(surprises).toEqual([]);
 });
+
+/**
+ * Every centre name stays inside the shape it names.
+ *
+ * @remarks
+ * The names are ground behind the gate numbers, so a name wider than its own outline reads as text spilling onto the chart rather than as a label. It cannot be checked without a browser: the width depends on the rendered font, and the names come from the response, so a translation is a different length in every language. The renderer shrinks a name to the room the shape has at that height, and this is the assertion that makes that non-vacuous.
+ */
+test('no centre name spills outside the centre it names', async ({ page }) => {
+	await showcase(page);
+	const spills = await page.evaluate(() => {
+		const root = document.querySelector('roxy-bodygraph')?.shadowRoot;
+		if (!root) return ['roxy-bodygraph did not mount'];
+		const polys = [...root.querySelectorAll('polygon')].filter((n) =>
+			n.querySelector('title'),
+		);
+		const names = [...root.querySelectorAll('.bg-center-name')];
+		if (names.length !== polys.length) {
+			return [`${names.length} names against ${polys.length} centres`];
+		}
+		const out: string[] = [];
+		names.forEach((t, i) => {
+			const a = (t as SVGGraphicsElement).getBBox();
+			const b = (polys[i] as SVGGraphicsElement).getBBox();
+			// Half a unit of slack for the antialiased edge of the outline itself.
+			if (a.x < b.x - 0.5 || a.x + a.width > b.x + b.width + 0.5) {
+				out.push(`${t.textContent?.trim()} is wider than its centre`);
+			}
+		});
+		return out;
+	});
+	expect(spills).toEqual([]);
+});

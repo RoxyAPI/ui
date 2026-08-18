@@ -1,5 +1,5 @@
 import { css } from 'lit';
-import { GATE_FONT_SIZE } from './bodygraph-render.js';
+import { CENTER_NAME_FONT_SIZE, GATE_FONT_SIZE } from './bodygraph-render.js';
 
 /**
  * The stylesheet for anything `renderBodygraphSvg` draws, so a second chart on the same geometry cannot fork the first one's appearance.
@@ -105,6 +105,22 @@ export const bodygraphChartStyles = css`
 	}
 	.bg-gate-dot.on {
 		stroke: none;
+	}
+	/* The centre name, drawn as ground behind the gate numbers. Muted enough to
+	 * sit under them and never compete, and it takes the knocked-out ink on a
+	 * filled centre so it stays readable on the saturated fills. */
+	.bg-center-name {
+		fill: var(--roxy-muted, #71717a);
+		opacity: 0.5;
+		font-size: ${CENTER_NAME_FONT_SIZE}px;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		pointer-events: none;
+	}
+	.bg-center-name.defined {
+		fill: var(--roxy-surface, #fff);
+		opacity: 0.62;
 	}
 	.bg-gate {
 		fill: var(--roxy-muted, #71717a);
