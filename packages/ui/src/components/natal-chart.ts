@@ -7,6 +7,7 @@ import {
 	signGlyph,
 } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
+import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
@@ -116,6 +117,7 @@ export type WheelChart = Omit<NatalChartResponse, ChartExtras> &
 export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	static styles = [
 		baseStyles,
+		aspectLineStyles,
 		tablistStyles,
 		disclosureStyles,
 		interpAccordionStyles,
@@ -228,26 +230,6 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				stroke: var(--roxy-secondary, #475569);
 			}
 
-			.aspect {
-				stroke-width: 0.8;
-				fill: none;
-				opacity: 0.55;
-			}
-			.aspect-trine,
-			.aspect-sextile {
-				stroke: var(--roxy-success, #16a34a);
-			}
-			.aspect-square,
-			.aspect-opposition {
-				stroke: var(--roxy-danger, #dc2626);
-			}
-			.aspect-conjunction {
-				stroke: var(--roxy-accent-ink, #b45309);
-			}
-			.aspect-other {
-				stroke: var(--roxy-muted, #71717a);
-				opacity: 0.4;
-			}
 
 			.angle-marker {
 				fill: var(--roxy-accent-ink, #b45309);
@@ -1230,7 +1212,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			const aspectName = normalizeAspect(a);
 			const aspectClass = ASPECT_CLASS[aspectName] ?? 'aspect-other';
 			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);
-			return svg`<line class=${`aspect ${aspectClass}`} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${display(a, 'planet1')} ${display(a, 'type', aspectName)} ${display(a, 'planet2')}${orbLabel ? ` (${this.t('Orb')} ${orbLabel}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${aspectClass}`} style=${aspectLineStyle(a)} x1=${p1.x} y1=${p1.y} x2=${p2.x} y2=${p2.y}><title>${display(a, 'planet1')} ${display(a, 'type', aspectName)} ${display(a, 'planet2')}${orbLabel ? ` (${this.t('Orb')} ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
 }

@@ -108,6 +108,7 @@ const measure = (sel: string) => {
 			y2: n.y2.baseVal.value,
 			cls: n.getAttribute('class') ?? '',
 			title: n.querySelector('title')?.textContent ?? '',
+			weight: n.getAttribute('style') ?? '',
 		}),
 	);
 	const cusps = [
@@ -171,6 +172,14 @@ test('draws both rings and an aspect line for every returned transit', async ({
 		for (const v of [l.x1, l.y1, l.x2, l.y2])
 			expect(Number.isFinite(v)).toBe(true);
 	}
+	// Orb has to reach the DRAWING, not just the tooltip. A wheel that weights
+	// every contact the same throws away the tightness the response computed, and
+	// the tooltip text alone would satisfy every other assertion here.
+	const weights = new Set(m.lines.map((l) => l.weight));
+	expect(weights.size).toBeGreaterThan(1);
+	for (const w of weights)
+		expect(w).toMatch(/opacity:[\d.]+;stroke-width:[\d.]+/);
+
 	expect(m.hasLegend).toBe(true);
 	expect(m.hasTable).toBe(true);
 });

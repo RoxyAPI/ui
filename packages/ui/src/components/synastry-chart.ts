@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type { CalculateSynastryResponse } from '../types/index.js';
+import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
@@ -45,6 +46,7 @@ const P2_R = 96;
 export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse> {
 	static styles = [
 		baseStyles,
+		aspectLineStyles,
 		disclosureStyles,
 		interpAccordionStyles,
 		css`
@@ -136,26 +138,6 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				font-weight: 700;
 				font-family: var(--roxy-font-sans);
 				letter-spacing: 0.04em;
-			}
-			.aspect {
-				stroke-width: 0.8;
-				fill: none;
-				opacity: 0.5;
-			}
-			.aspect-trine,
-			.aspect-sextile {
-				stroke: var(--roxy-success, #16a34a);
-			}
-			.aspect-square,
-			.aspect-opposition {
-				stroke: var(--roxy-danger, #dc2626);
-			}
-			.aspect-conjunction {
-				stroke: var(--roxy-accent-ink, #b45309);
-			}
-			.aspect-other {
-				stroke: var(--roxy-muted, #71717a);
-				opacity: 0.35;
 			}
 			.legend-row {
 				display: flex;
@@ -726,7 +708,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			const aspectName = normalizeAspect(a);
 			const cls = ASPECT_CLASS[aspectName] ?? 'aspect-other';
 			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);
-			return svg`<line class=${`aspect ${cls}`} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${cls}`} style=${aspectLineStyle(a)} x1=${out.x} y1=${out.y} x2=${inn.x} y2=${inn.y}><title>${a.planet1} ${aspectName} ${a.planet2}${orbLabel ? ` (orb ${orbLabel}°)` : ''}</title></line>`;
 		});
 	}
 

@@ -5,6 +5,7 @@ import type {
 	CalculateTransitAspectsResponse,
 	NatalChartResponse,
 } from '../types/index.js';
+import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import {
@@ -156,6 +157,7 @@ const byName = (list: Body[]): Map<string, Body> => {
 export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsResponse> {
 	static styles = [
 		baseStyles,
+		aspectLineStyles,
 		disclosureStyles,
 		interpAccordionStyles,
 		css`
@@ -288,26 +290,6 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				letter-spacing: 0.04em;
 			}
 
-			.aspect {
-				stroke-width: 0.8;
-				fill: none;
-				opacity: 0.55;
-			}
-			.aspect-trine,
-			.aspect-sextile {
-				stroke: var(--roxy-success, #16a34a);
-			}
-			.aspect-square,
-			.aspect-opposition {
-				stroke: var(--roxy-danger, #dc2626);
-			}
-			.aspect-conjunction {
-				stroke: var(--roxy-accent-ink, #b45309);
-			}
-			.aspect-other {
-				stroke: var(--roxy-muted, #71717a);
-				opacity: 0.4;
-			}
 
 			.swatch {
 				display: inline-block;
@@ -867,7 +849,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			);
 			const name = normalizeAspect(a);
 			const orb = formatNumber(this.effectiveLang(), a.orb, 1);
-			return svg`<line class=${`aspect ${ASPECT_CLASS[name] ?? 'aspect-other'}`} x1=${from.x} y1=${from.y} x2=${to.x} y2=${to.y}><title>${this.t('Transiting')} ${display(a, 'planet1')} ${display(a, 'type', name)} ${this.t('Natal')} ${display(a, 'planet2')}${orb ? ` (${this.t('Orb')} ${orb}°)` : ''}</title></line>`;
+			return svg`<line class=${`aspect ${ASPECT_CLASS[name] ?? 'aspect-other'}`} style=${aspectLineStyle(a)} x1=${from.x} y1=${from.y} x2=${to.x} y2=${to.y}><title>${this.t('Transiting')} ${display(a, 'planet1')} ${display(a, 'type', name)} ${this.t('Natal')} ${display(a, 'planet2')}${orb ? ` (${this.t('Orb')} ${orb}°)` : ''}</title></line>`;
 		});
 	}
 

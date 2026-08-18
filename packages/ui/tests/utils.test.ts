@@ -9,6 +9,7 @@ import {
 	signGlyph,
 	trigramGlyph,
 } from '../src/tokens/index.js';
+import { aspectLineStyle } from '../src/utils/aspect-line.js';
 import { debounce } from '../src/utils/debounce.js';
 import {
 	arcMidpoint,
@@ -975,5 +976,43 @@ describe('the localized half of a response, and the English half beside it', () 
 		expect(foldLocalized({ sign: 'Cancer', signLocalized: null })).toEqual({
 			sign: 'Cancer',
 		});
+	});
+});
+
+describe('utils/aspect-line', () => {
+	/** The two numbers a rendered line actually carries. */
+	const parse = (style: string | undefined) => {
+		const opacity = Number(/opacity:([\d.]+)/.exec(style ?? '')?.[1]);
+		const width = Number(/stroke-width:([\d.]+)/.exec(style ?? '')?.[1]);
+		return { opacity, width };
+	};
+
+	test('a tighter aspect draws heavier than a wider one', () => {
+		const tight = parse(aspectLineStyle({ strength: 95 }));
+		const wide = parse(aspectLineStyle({ strength: 10 }));
+		expect(tight.opacity).toBeGreaterThan(wide.opacity);
+		expect(tight.width).toBeGreaterThan(wide.width);
+	});
+
+	test('the weakest aspect is still drawn', () => {
+		// A wide aspect is weak, not absent. An invisible line reads as a contact
+		// the chart never found, which is a different claim from a faint one.
+		const { opacity, width } = parse(aspectLineStyle({ strength: 0 }));
+		expect(opacity).toBeGreaterThan(0.2);
+		expect(width).toBeGreaterThan(0.3);
+	});
+
+	test('strength outside 0-100 is clamped rather than trusted', () => {
+		expect(parse(aspectLineStyle({ strength: 400 }))).toEqual(
+			parse(aspectLineStyle({ strength: 100 })),
+		);
+		expect(parse(aspectLineStyle({ strength: -50 }))).toEqual(
+			parse(aspectLineStyle({ strength: 0 })),
+		);
+	});
+
+	test('no strength means no inline weight, so the shared default stands', () => {
+		expect(aspectLineStyle({})).toBeUndefined();
+		expect(aspectLineStyle({ strength: Number.NaN })).toBeUndefined();
 	});
 });
