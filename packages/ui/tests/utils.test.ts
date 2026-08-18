@@ -1024,7 +1024,7 @@ describe('utils/interp-accordion', () => {
 	 * @remarks
 	 * The markup and its CSS live in one module precisely so they cannot drift, but nothing stops a caller from importing only the renderer: the chips then arrive unstyled, which reads as a design choice rather than a defect and no snapshot, axe pass or layout gate reports it. That is how one card ended up with a hand-copied copy of these rules that had drifted in two ways.
 	 */
-	test('every caller of renderReadingDetail ships its styles', async () => {
+	test('every caller of the shared reading renderers ships their styles', async () => {
 		const { readdir } = await import('node:fs/promises');
 		const dir = 'packages/ui/src/components';
 		const offenders: string[] = [];
@@ -1032,7 +1032,14 @@ describe('utils/interp-accordion', () => {
 		for (const file of await readdir(dir)) {
 			if (!file.endsWith('.ts') || file.endsWith('.test.ts')) continue;
 			const src = await Bun.file(`${dir}/${file}`).text();
-			if (!src.includes('renderReadingDetail(')) continue;
+			// Either helper emits `.interp-keywords`, so either one obliges the caller
+			// to ship the styles for it.
+			if (
+				!src.includes('renderReadingDetail(') &&
+				!src.includes('renderKeywordChips(')
+			) {
+				continue;
+			}
 			callers++;
 			// Read the `static styles` array itself, never the whole file: the import
 			// line alone satisfies a file-wide search, so a component that imports the

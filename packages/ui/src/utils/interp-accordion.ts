@@ -142,6 +142,12 @@ export const interpAccordionStyles = css`
 	${readingDetailStyles}
 `;
 
+/** The keyword chips a reading carries, or nothing. One renderer because four components drew the identical row, and the markup has to match {@link readingDetailStyles}, which is the pairing that drifts when it is copied. */
+export function renderKeywordChips(keywords: readonly string[] | undefined) {
+	if (!keywords?.length) return nothing;
+	return html`<div class="interp-keywords">${keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`;
+}
+
 /** The prose an endpoint returns ABOUT one contact: a summary, up to three labelled lines, and the keyword chips under them. Every field is optional, so a narrower response renders fewer rows rather than empty ones. */
 export interface ReadingDetail {
 	summary?: string;
@@ -161,11 +167,7 @@ export function renderReadingDetail(
 		value ? html`<p><strong>${t(label)}</strong> ${value}</p>` : nothing;
 	return html`${d.summary ? html`<p>${d.summary}</p>` : nothing}
 		${line('Impact:', d.impact)}${line('Timing:', d.timing)}${line('Guidance:', d.guidance)}
-		${
-			d.keywords?.length
-				? html`<div class="interp-keywords">${d.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
-				: nothing
-		}`;
+		${renderKeywordChips(d.keywords)}`;
 }
 
 /**

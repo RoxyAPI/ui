@@ -14,7 +14,10 @@ import {
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
-import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import {
+	interpAccordionStyles,
+	renderKeywordChips,
+} from '../utils/interp-accordion.js';
 import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
 
@@ -583,11 +586,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 						: nothing
 				}
 				${meaning.description?.short ? html`<p>${meaning.description.short}</p>` : nothing}
-				${
-					meaning.keywords?.length
-						? html`<div class="interp-keywords">${meaning.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
-						: nothing
-				}
+				${renderKeywordChips(meaning.keywords)}
 			</div>
 		</details>`;
 	}

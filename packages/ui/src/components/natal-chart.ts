@@ -31,6 +31,7 @@ import {
 import {
 	type InterpSection,
 	interpAccordionStyles,
+	renderKeywordChips,
 } from '../utils/interp-accordion.js';
 import { display, displayList } from '../utils/localized.js';
 import { capitalize, lookupKey } from '../utils/string.js';
@@ -1169,11 +1170,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					aside: [display(p, 'sign'), deg].filter(Boolean).join(' '),
 					body: lead,
 					extra: html`${detail ? html`<p>${detail}</p>` : nothing}
-					${
-						interp.keywords?.length
-							? html`<div class="interp-keywords">${interp.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
-							: nothing
-					}`,
+					${renderKeywordChips(interp.keywords)}`,
 				};
 			});
 		return this.renderInterpretation(

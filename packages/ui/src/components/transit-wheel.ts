@@ -28,6 +28,7 @@ import {
 import {
 	type InterpSection,
 	interpAccordionStyles,
+	renderKeywordChips,
 } from '../utils/interp-accordion.js';
 import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
@@ -1035,11 +1036,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 					extra: html`${t.impact ? html`<p><strong>${this.t('Impact')}:</strong> ${t.impact}</p>` : nothing}
 					${t.timing ? html`<p><strong>${this.t('Timing')}:</strong> ${t.timing}</p>` : nothing}
 					${t.guidance ? html`<p><strong>${this.t('Guidance')}:</strong> ${t.guidance}</p>` : nothing}
-					${
-						t.keywords?.length
-							? html`<div class="interp-keywords">${t.keywords.map((k) => html`<span class="kw">${k}</span>`)}</div>`
-							: nothing
-					}`,
+					${renderKeywordChips(t.keywords)}`,
 				};
 			});
 		return this.renderInterpretation(
