@@ -24,12 +24,20 @@
  */
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { API_LANGUAGES } from '../packages/ui/src/generated/api-languages.js';
 
 const API_BASE = process.env.ROXY_API_BASE ?? 'https://roxyapi.com/api/v2';
 const OUT_DIR = 'packages/ui/src/locales/field-labels';
 
-/** Mirrors the locale files that exist; English is deliberately absent (it needs no payload). */
-const LANGS = ['de', 'es', 'fr', 'hi', 'pt', 'ru', 'tr'] as const;
+/**
+ * Derived from the spec, never mirrored by hand. English is absent because it needs no payload.
+ *
+ * @remarks
+ * A hand-kept copy is checked against itself, and the language somebody forgets to add to it is
+ * the one that then ships with unlabelled fields and no error anywhere (lesson 23). `lang` on the
+ * spec is the only place the set is decided, so read it from there.
+ */
+const LANGS = API_LANGUAGES.filter((l) => l !== 'en');
 
 interface LabelPayload {
 	fields?: Record<string, string>;
