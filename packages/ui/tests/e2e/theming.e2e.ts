@@ -57,10 +57,21 @@ for (const mode of ['light', 'dark'] as const) {
 	}) => {
 		await page.emulateMedia({ colorScheme: mode });
 		await page.goto('/');
-		await page.waitForTimeout(2500);
+		// Poll the count the probe needs rather than sleeping for it: a fixed wait
+		// is either longer than the page takes or, on a slow run, shorter.
+		await expect
+			.poll(() => page.evaluate(probeAll, AMBER).then((r) => r.components))
+			.toBeGreaterThan(40);
+
 		// Exactly what the README documents. Nothing else.
 		await page.addStyleTag({ content: `:root { --roxy-accent: ${BRAND}; }` });
-		await page.waitForTimeout(800);
+		// The override reaches the shadow trees a frame after the tag lands, so poll
+		// the exact number the assertion reads. A run where it never reaches zero
+		// times out and fails, which is the same signal a sleep gave, without
+		// guessing how long a frame takes on the slowest machine in CI.
+		await expect
+			.poll(() => page.evaluate(probeAll, AMBER).then((r) => r.stale))
+			.toBe(0);
 
 		const r = await page.evaluate(probeAll, AMBER);
 		expect(r.components).toBeGreaterThan(40);
@@ -72,13 +83,17 @@ for (const mode of ['light', 'dark'] as const) {
 for (const signal of ['class', 'attribute'] as const) {
 	test(`the override survives the ${signal} dark signal`, async ({ page }) => {
 		await page.goto('/');
-		await page.waitForTimeout(2500);
+		await expect
+			.poll(() => page.evaluate(probeAll, AMBER).then((r) => r.components))
+			.toBeGreaterThan(40);
 		await page.addStyleTag({ content: `:root { --roxy-accent: ${BRAND}; }` });
 		await page.evaluate((s) => {
 			if (s === 'class') document.documentElement.classList.add('dark');
 			else document.documentElement.setAttribute('data-theme', 'dark');
 		}, signal);
-		await page.waitForTimeout(800);
+		await expect
+			.poll(() => page.evaluate(probeAll, AMBER).then((r) => r.stale))
+			.toBe(0);
 
 		const seen = await page.evaluate(() =>
 			getComputedStyle(document.documentElement)
