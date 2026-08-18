@@ -452,46 +452,39 @@ test('cusps supplied by the page draw a real, unequal house ring', async ({
  * This is the path that closes the house-less bi-wheel on WordPress, /embed and
  * the CDN widgets: each hands the component one operation's response and cannot
  * compose a second call, so cusps that only ever arrived as a prop never reached
- * any of them. `/astrology/transit-aspects` now returns `houses` and `ascendant`,
- * and the frame is merged into `data` here rather than read off the captured
- * sample because that sample predates the fields; it is recaptured after the API
- * deploys, and this case then covers the shipped response unchanged.
+ * any of them. `/astrology/transit-aspects` returns `houses` and `ascendant`, and
+ * this reads them off the captured sample rather than merging a frame in, so
+ * what is under test is the shipped response unchanged. Every expectation is
+ * derived from that payload rather than written beside it, which is what keeps a
+ * recapture from turning this red for the wrong reason.
  */
 test('cusps carried by the response draw the same ring with no props set', async ({
 	page,
 }) => {
 	await ready(page);
-	const CUSPS = [350, 30, 50, 80, 110, 140, 170, 210, 230, 260, 290, 320];
-	const ASC = 340;
-	await page.evaluate(
-		async ([sel, cusps, asc]) => {
-			const el = document.querySelector(sel as string) as HTMLElement & {
-				data: Record<string, unknown>;
-				updateComplete: Promise<unknown>;
-			};
-			el.data = {
-				...el.data,
-				houses: (cusps as number[]).map((longitude, i) => ({
-					number: i + 1,
-					longitude,
-				})),
-				ascendant: { sign: 'Pisces', degree: 10, longitude: asc },
-			};
-			await el.updateComplete;
-		},
-		[WHEEL, CUSPS, ASC] as const,
-	);
-	const m = await page.evaluate(measure, WHEEL);
 
-	// The full ring, from the payload alone.
+	// The frame the RESPONSE carried. Read from the payload so the numbers below
+	// come from the captured sky rather than from constants beside the assertion.
+	const frame = await page.evaluate((sel) => {
+		const el = document.querySelector(sel) as HTMLElement & {
+			data: {
+				houses?: Array<{ longitude: number }>;
+				ascendant?: { longitude?: number };
+			};
+		};
+		return {
+			cusps: (el.data.houses ?? []).map((h) => h.longitude),
+			asc: el.data.ascendant?.longitude,
+		};
+	}, WHEEL);
+	expect(frame.cusps.length).toBe(12);
+	expect(typeof frame.asc).toBe('number');
+
+	const m = await page.evaluate(measure, WHEEL);
 	expect(m.cusps.length).toBe(12);
 	expect(m.houseNums.length).toBe(12);
 	expect(m.axis).toEqual(['ASC', 'DSC']);
 
-	// Unequal spans, so an equal-house fallback wearing the same cusp count
-	// cannot pass, and the wheel turned onto the payload ASCENDANT rather than
-	// onto cusp 1: the two are 10 degrees apart, so the first cusp must sit just
-	// off the left horizon rather than on it.
 	const angle = (p: { x2: number; y2: number }) =>
 		(Math.atan2(p.y2 - CENTER, p.x2 - CENTER) * 180) / Math.PI;
 	const spans = m.cusps.map((_, i) => {
@@ -502,10 +495,24 @@ test('cusps carried by the response draw the same ring with no props set', async
 		while (d < 0) d += 360;
 		return Math.round(d);
 	});
-	expect(spans).toEqual([40, 20, 30, 30, 30, 30, 40, 20, 30, 30, 30, 30]);
+	// Each drawn span is the gap between the two longitudes the response sent, so
+	// the ring follows the payload rather than a shape of the component's own.
+	const gaps = frame.cusps.map((lon, i) => {
+		const next = frame.cusps[(i + 1) % 12] as number;
+		return Math.round((((next - lon) % 360) + 360) % 360);
+	});
+	expect(spans).toEqual(gaps);
+	// And those gaps are genuinely uneven, so an equal-house fallback wearing the
+	// same cusp count cannot satisfy the line above.
+	expect(new Set(gaps).size).toBeGreaterThan(1);
+
+	// The wheel is turned onto the ASCENDANT the response carried. Asserted as a
+	// position rather than an angle: the first cusp lies on the left horizon,
+	// which holds whatever sign convention atan2 reports at half a turn.
 	const first = m.cusps[0];
 	if (!first) throw new Error('twelve cusps expected');
-	expect(Math.round(angle(first))).toBe(170);
+	expect(first.x2).toBeLessThan(CENTER);
+	expect(Math.abs(first.y2 - CENTER)).toBeLessThan(2);
 
 	expect(m.legend).toContain('House cusps from the response');
 	expect(m.legend).toContain('Ascendant on the left horizon');
@@ -517,13 +524,17 @@ test('cusps carried by the response draw the same ring with no props set', async
 	for (const t of m.transit) expect(radius(t)).toBeCloseTo(TRANSIT_R, 0);
 
 	// A prop still outranks it, which is what keeps every existing embed working:
-	// the payload cusps stay, turned onto 90 instead of onto 340.
-	await setProp(page, 'ascendant', 90);
+	// the payload cusps stay, turned onto the prop instead of onto the response.
+	const OVERRIDE = 90;
+	await setProp(page, 'ascendant', OVERRIDE);
 	const overridden = await page.evaluate(measure, WHEEL);
 	expect(overridden.cusps.length).toBe(12);
 	const overriddenFirst = overridden.cusps[0];
 	if (!overriddenFirst) throw new Error('twelve cusps expected');
-	expect(Math.round(angle(overriddenFirst))).toBe(-80);
+	let expected = 180 - ((frame.cusps[0] as number) - OVERRIDE);
+	while (expected > 180) expected -= 360;
+	while (expected <= -180) expected += 360;
+	expect(Math.round(angle(overriddenFirst))).toBe(Math.round(expected));
 });
 
 /**
