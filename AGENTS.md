@@ -377,11 +377,14 @@ For a static chart with no picker, fetch in a Server Component and pass `data` t
 
 `<roxy-endpoint-form>` reads the OpenAPI spec and renders the inputs for any endpoint. On `roxy-submit`, POST the validated values to your own route, which calls the SDK with the secret key, then set the returned data on the target component. For an endpoint that needs coordinates, add `publishable-key="pk_live_..."` so the built-in city search can geocode.
 
+The city search is the one request the form issues on its own, while a visitor is still typing. When the page routes RoxyAPI traffic through your own server, give it a route for that search and name it with `location-url` (absolute, or relative to the page). Then the form calls your server for cities too, and no key of any kind reaches the browser. The same attribute works on any component in self-fetch mode, alongside `submit-url`.
+
 ```html
 <roxy-endpoint-form
 	data-endpoint="vedic-astrology/birth-chart"
 	method="POST"
 	submit-label="Generate kundli"
+	location-url="/api/roxy/location/search"
 ></roxy-endpoint-form>
 <roxy-vedic-kundli chart-style="south"></roxy-vedic-kundli>
 

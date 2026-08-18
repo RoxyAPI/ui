@@ -201,6 +201,42 @@ describe('RoxyDataElement uncontrolled mode (self-fetch UI)', () => {
 		expect(el.shadowRoot?.innerHTML ?? '').toContain('roxy-endpoint-form');
 		el.remove();
 	});
+
+	/**
+	 * The form is an internal detail a consumer never places, so every value the form needs
+	 * has to arrive on the component. `location-url` is the one the city search reads, and it
+	 * completes the proxy path: `submit-url` covers the request the form SUBMITS, this covers
+	 * the one the form issues while a visitor is still typing.
+	 */
+	test('location-url is forwarded to the internal form, and is absent when unset', async () => {
+		const mount = async (locationUrl?: string) => {
+			const el = document.createElement('roxy-dream-card') as HTMLElement & {
+				updateComplete: Promise<unknown>;
+			};
+			el.setAttribute('data-endpoint', 'dreams/symbols/{id}');
+			el.setAttribute('method', 'GET');
+			el.setAttribute('submit-url', '/api/roxy/proxy');
+			if (locationUrl != null) el.setAttribute('location-url', locationUrl);
+			document.body.appendChild(el);
+			await el.updateComplete;
+			return el;
+		};
+
+		const proxied = await mount('/api/roxy/location/search');
+		const form = proxied.shadowRoot?.querySelector('roxy-endpoint-form');
+		expect(form?.getAttribute('location-url')).toBe(
+			'/api/roxy/location/search',
+		);
+		proxied.remove();
+
+		const plain = await mount();
+		expect(
+			plain.shadowRoot
+				?.querySelector('roxy-endpoint-form')
+				?.hasAttribute('location-url'),
+		).toBe(false);
+		plain.remove();
+	});
 });
 
 type DreamEl = HTMLElement & {

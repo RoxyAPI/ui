@@ -170,6 +170,18 @@ export const BASE_PROPS: ConfigPropDef[] = [
 		comment: 'Override the API origin for self-hosted or proxied deployments.',
 	},
 	{
+		prop: 'submitUrl',
+		type: 'string',
+		comment:
+			'Your own backend route, which holds the secret key. Self-fetch POSTs `{ path, method, body, query }` there instead of calling RoxyAPI directly and renders the JSON your route returns, so no key of any kind reaches the browser.',
+	},
+	{
+		prop: 'locationUrl',
+		type: 'string',
+		comment:
+			'Where the self-fetch form city search sends its request, absolute or relative to the page. The companion of submitUrl: the city search is a GET the form issues on its own while a visitor types, so a page that routes its API traffic through its own server names that route here as well. Unset, the search calls the public location endpoint.',
+	},
+	{
 		prop: 'specUrl',
 		type: 'string',
 		comment: 'Override the OpenAPI spec URL the self-fetch form introspects.',

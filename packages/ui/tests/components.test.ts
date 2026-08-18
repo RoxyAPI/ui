@@ -1149,6 +1149,78 @@ describe('roxy-location-search behavior', () => {
 			globalThis.fetch = originalFetch;
 		}
 	});
+
+	/**
+	 * A site that routes its API traffic through its own server writes that route the way it
+	 * writes every other route on the page, as a path. The request has to go there, resolved
+	 * against the page rather than rejected for having no origin of its own.
+	 */
+	test('a page-relative endpoint is resolved against the page and called', async () => {
+		const originalFetch = globalThis.fetch;
+		let called = '';
+		globalThis.fetch = (async (input: string | URL) => {
+			called = String(input);
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ cities: [] }),
+			};
+		}) as unknown as typeof fetch;
+		try {
+			const el = document.createElement('roxy-location-search');
+			el.setAttribute('endpoint', '/api/roxy/location/search');
+			document.body.appendChild(el);
+			await settled(el);
+
+			const root = el.shadowRoot as ShadowRoot;
+			const input = root.querySelector('input') as HTMLInputElement;
+			input.value = 'Manila';
+			input.dispatchEvent(new Event('input'));
+			await new Promise((resolve) => setTimeout(resolve, 450));
+			await settled(el);
+
+			expect(called).toBe(
+				'http://localhost:3000/api/roxy/location/search?q=Manila&limit=8',
+			);
+			// The request reached the route, so nothing is reported as a failure.
+			expect(root.querySelector('[role="alert"]')).toBeNull();
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	test('the default endpoint is the public location search', async () => {
+		const originalFetch = globalThis.fetch;
+		let called = '';
+		globalThis.fetch = (async (input: string | URL) => {
+			called = String(input);
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ cities: [] }),
+			};
+		}) as unknown as typeof fetch;
+		try {
+			const el = document.createElement('roxy-location-search');
+			document.body.appendChild(el);
+			await settled(el);
+
+			const root = el.shadowRoot as ShadowRoot;
+			const input = root.querySelector('input') as HTMLInputElement;
+			input.value = 'Manila';
+			input.dispatchEvent(new Event('input'));
+			await new Promise((resolve) => setTimeout(resolve, 450));
+			await settled(el);
+
+			expect(called).toBe(
+				'https://roxyapi.com/api/v2/location/search?q=Manila&limit=8',
+			);
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
 });
 
 describe('roxy-endpoint-form behavior', () => {

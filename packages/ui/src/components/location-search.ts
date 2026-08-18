@@ -4,7 +4,7 @@ import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { debounce } from '../utils/debounce.js';
-import { readApiError } from '../utils/fetch-controller.js';
+import { DEFAULT_BASE_URL, readApiError } from '../utils/fetch-controller.js';
 import {
 	dispatchKeyRefusal,
 	KEY_REFUSED_MESSAGE,
@@ -27,7 +27,9 @@ type CityResult = SearchCitiesResponse['cities'][number];
  * Attributes:
  *   api-key            optional. Direct call to roxyapi.com when set.
  *   publishable-key    optional. Browser-safe pk_* key with allowed_origins.
- *   endpoint           optional. Override URL (default https://roxyapi.com/api/v2/location/search).
+ *   endpoint           optional. Where the search sends its request. Absolute, or relative to the
+ *                      page, so a site that routes API traffic through its own server names that
+ *                      route here. Defaults to the public location endpoint.
  *   placeholder        optional. Input placeholder. Translated when it is the default (see below).
  *   default-value      optional. Pre-filled query.
  *   lang               optional. Display language. Resolves from the page when absent, EXCEPT
@@ -163,8 +165,9 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 	@property({ type: String, attribute: 'publishable-key' })
 	publishableKey?: string;
 
+	/** Where the search sends its request. Built from {@link DEFAULT_BASE_URL} rather than written out again, so this box and every data request name one origin. */
 	@property({ type: String })
-	endpoint = 'https://roxyapi.com/api/v2/location/search';
+	endpoint = `${DEFAULT_BASE_URL}/location/search`;
 
 	/** Input placeholder. The default is a catalogue entry and renders in the page language; a caller-supplied one is printed as given, because a miss returns the source string unchanged. */
 	@property({ type: String })
@@ -245,7 +248,10 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 		this.abortController = controller;
 		this.isLoading = true;
 		try {
-			const url = new URL(this.endpoint);
+			// Resolved against the page, so a same-origin route ("/api/roxy/location/search")
+			// is as valid an endpoint as an absolute URL. A site that proxies its API traffic
+			// writes the first shape, and a bare `new URL()` accepts only the second.
+			const url = new URL(this.endpoint, document.baseURI);
 			url.searchParams.set('q', q);
 			url.searchParams.set('limit', '8');
 			const headers: Record<string, string> = {

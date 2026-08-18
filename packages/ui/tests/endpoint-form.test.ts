@@ -18,6 +18,16 @@ const SIGNS = [
 	'pisces',
 ];
 
+/** The smallest model that makes the form draw a city search: one coordinate pair. */
+const LOCATION_MODEL: FormModel = {
+	title: 'Generate natal chart',
+	hasLang: false,
+	fields: [
+		{ key: 'latitude', name: 'latitude', kind: 'number', required: true },
+		{ key: 'longitude', name: 'longitude', kind: 'number', required: true },
+	],
+};
+
 type FormEl = HTMLElement & { updateComplete: Promise<unknown> };
 
 /** Drain the async loadSchema fetch + Lit re-renders. */
@@ -366,6 +376,58 @@ describe('endpoint-form input registry rendering', () => {
 		expect((detail as unknown as { queryKeys: string[] }).queryKeys).toContain(
 			'lang',
 		);
+		el.remove();
+	});
+
+	/**
+	 * The city search sits inside this shadow root, so a host page cannot reach it to set an
+	 * endpoint on it. The form is therefore the only place the value can be stated, and a page
+	 * that routes its API traffic through its own server needs the search to follow.
+	 */
+	test('location-url reaches the city search inside the shadow root', async () => {
+		const el = await mountForm(LOCATION_MODEL, {
+			'data-endpoint': 'astrology/natal-chart',
+			method: 'POST',
+			'location-url': '/api/roxy/location/search',
+		});
+		const search = (el.shadowRoot as ShadowRoot).querySelector(
+			'roxy-location-search',
+		) as HTMLElement & { endpoint: string };
+		expect(search).not.toBeNull();
+		expect(search.getAttribute('endpoint')).toBe('/api/roxy/location/search');
+		// The attribute is the wire; the property is what the search reads when it fetches.
+		expect(search.endpoint).toBe('/api/roxy/location/search');
+		el.remove();
+	});
+
+	test('omitting location-url leaves the city search on its own endpoint', async () => {
+		const el = await mountForm(LOCATION_MODEL, {
+			'data-endpoint': 'astrology/natal-chart',
+			method: 'POST',
+		});
+		const search = (el.shadowRoot as ShadowRoot).querySelector(
+			'roxy-location-search',
+		) as HTMLElement & { endpoint: string };
+		expect(search).not.toBeNull();
+		// No attribute at all, so nothing overwrites the default the search declares.
+		expect(search.hasAttribute('endpoint')).toBe(false);
+		expect(search.endpoint).toBe('https://roxyapi.com/api/v2/location/search');
+		el.remove();
+	});
+
+	test('an empty location-url is treated as unset, not as an endpoint', async () => {
+		// A template that interpolates a value it does not have writes an empty attribute.
+		// Passing that through would leave the search with an endpoint it cannot resolve.
+		const el = await mountForm(LOCATION_MODEL, {
+			'data-endpoint': 'astrology/natal-chart',
+			method: 'POST',
+			'location-url': '',
+		});
+		const search = (el.shadowRoot as ShadowRoot).querySelector(
+			'roxy-location-search',
+		) as HTMLElement & { endpoint: string };
+		expect(search.hasAttribute('endpoint')).toBe(false);
+		expect(search.endpoint).toBe('https://roxyapi.com/api/v2/location/search');
 		el.remove();
 	});
 

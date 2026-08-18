@@ -72,6 +72,15 @@ export abstract class RoxyDataElement<
 	@property({ type: String, attribute: 'submit-url' })
 	submitUrl?: string;
 
+	/**
+	 * Where the self-fetch form's city search sends its request, absolute or relative to the page.
+	 *
+	 * @remarks
+	 * The companion of {@link RoxyDataElement.submitUrl}, and it is separate because the two requests have different shapes: the proxy route takes one POSTed `{ path, method, body, query }`, while the city search is a GET the search issues on its own while a visitor types. A birth-data form makes both, so a page that routes its API traffic through its own server names that route here as well. It is forwarded to the internal form, which forwards it to the search; unset, the search keeps its own default.
+	 */
+	@property({ type: String, attribute: 'location-url' })
+	locationUrl?: string;
+
 	/** Persist the last self-fetch form values in sessionStorage (keyed by endpoint) and prefill the form on reload. */
 	@property({ type: Boolean })
 	remember = false;
@@ -290,6 +299,7 @@ export abstract class RoxyDataElement<
 			method=${this.method}
 			spec-url=${ifDefined(this.specUrl)}
 			publishable-key=${ifDefined(this.publishableKey)}
+			location-url=${ifDefined(this.locationUrl)}
 			submit-label=${ifDefined(this.submitLabel)}
 			lang=${ifDefined(this.effectiveLang())}
 			.initialValues=${this.formInitialValues()}

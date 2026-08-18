@@ -405,6 +405,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	@property({ type: String, attribute: 'publishable-key' })
 	publishableKey?: string;
 
+	/** Where the slotted city search sends its request, absolute or relative to the page. Set it when the page routes its API traffic through its own server, so the one request this form issues on its own reaches that server too. Unset, the search keeps its own default. */
+	@property({ type: String, attribute: 'location-url' })
+	locationUrl?: string;
+
 	/** Prefill values, keyed by field name (nested per group). Used by `remember` mode and to restore the previous submission. JS property only. */
 	@property({ attribute: false })
 	initialValues?: Record<string, unknown>;
@@ -1016,6 +1020,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * One city search standing in for a group's raw coordinates.
 	 *
 	 * `lang` is forwarded EXPLICITLY and that line is load-bearing: the city search lives inside this shadow root, and the `closest('[lang]')` link of the resolution chain stops at a shadow boundary, so without it the dropdown renders its own empty state and its refusal message in English on a fully translated page. Every composing component carries the same obligation.
+	 *
+	 * `endpoint` is forwarded for the same structural reason as the key. This search is the one request the form issues on its own, it sits inside this shadow root where a host page cannot reach it, and it is the only part of a birth-data form that talks to the API before submit. So a page that routes its API traffic through its own server states that route once, on the form, and it lands here. An unset {@link RoxyEndpointForm.locationUrl} omits the attribute entirely, which leaves the search on its own default.
 	 */
 	private locationBlock(group?: string) {
 		return html`<div class="location-block">
@@ -1027,6 +1033,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				}</label
 			>
 			<roxy-location-search
+				endpoint=${ifDefined(this.locationUrl || undefined)}
 				publishable-key=${ifDefined(this.publishableKey)}
 				lang=${ifDefined(this.effectiveLang())}
 				@roxy-location-select=${this.onLocationFor(group)}

@@ -19,6 +19,10 @@ export interface RoxyVedicKundliProps {
 	publishableKey?: string;
 	/** Override the API origin for self-hosted or proxied deployments. */
 	baseUrl?: string;
+	/** Your own backend route, which holds the secret key. Self-fetch POSTs `{ path, method, body, query }` there instead of calling RoxyAPI directly and renders the JSON your route returns, so no key of any kind reaches the browser. */
+	submitUrl?: string;
+	/** Where the self-fetch form city search sends its request, absolute or relative to the page. The companion of submitUrl: the city search is a GET the form issues on its own while a visitor types, so a page that routes its API traffic through its own server names that route here as well. Unset, the search calls the public location endpoint. */
+	locationUrl?: string;
 	/** Override the OpenAPI spec URL the self-fetch form introspects. */
 	specUrl?: string;
 	/** Response language for self-fetch, forwarded to the API `lang` query parameter (en, tr, de, es, hi, pt, fr, ru). The form never shows a language field; the site owner sets it here. Defaults to English. */
@@ -44,6 +48,8 @@ export const RoxyVedicKundli = defineComponent({
 		method: { type: String as PropType<RoxyVedicKundliProps['method']> },
 		publishableKey: { type: String as PropType<RoxyVedicKundliProps['publishableKey']> },
 		baseUrl: { type: String as PropType<RoxyVedicKundliProps['baseUrl']> },
+		submitUrl: { type: String as PropType<RoxyVedicKundliProps['submitUrl']> },
+		locationUrl: { type: String as PropType<RoxyVedicKundliProps['locationUrl']> },
 		specUrl: { type: String as PropType<RoxyVedicKundliProps['specUrl']> },
 		lang: { type: String as PropType<RoxyVedicKundliProps['lang']> },
 		submitLabel: { type: String as PropType<RoxyVedicKundliProps['submitLabel']> },
@@ -78,6 +84,8 @@ export const RoxyVedicKundli = defineComponent({
 			if (props.method !== undefined) elementProps['.method'] = props.method;
 			if (props.publishableKey !== undefined) elementProps['.publishableKey'] = props.publishableKey;
 			if (props.baseUrl !== undefined) elementProps['.baseUrl'] = props.baseUrl;
+			if (props.submitUrl !== undefined) elementProps['.submitUrl'] = props.submitUrl;
+			if (props.locationUrl !== undefined) elementProps['.locationUrl'] = props.locationUrl;
 			if (props.specUrl !== undefined) elementProps['.specUrl'] = props.specUrl;
 			if (props.lang !== undefined) elementProps['.lang'] = props.lang;
 			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;

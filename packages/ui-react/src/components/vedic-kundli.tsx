@@ -26,6 +26,10 @@ export interface RoxyVedicKundliProps extends ElementAttrs {
 	publishableKey?: string;
 	/** Override the API origin for self-hosted or proxied deployments. */
 	baseUrl?: string;
+	/** Your own backend route, which holds the secret key. Self-fetch POSTs `{ path, method, body, query }` there instead of calling RoxyAPI directly and renders the JSON your route returns, so no key of any kind reaches the browser. */
+	submitUrl?: string;
+	/** Where the self-fetch form city search sends its request, absolute or relative to the page. The companion of submitUrl: the city search is a GET the form issues on its own while a visitor types, so a page that routes its API traffic through its own server names that route here as well. Unset, the search calls the public location endpoint. */
+	locationUrl?: string;
 	/** Override the OpenAPI spec URL the self-fetch form introspects. */
 	specUrl?: string;
 	/** Response language for self-fetch, forwarded to the API `lang` query parameter (en, tr, de, es, hi, pt, fr, ru). The form never shows a language field; the site owner sets it here. Defaults to English. */
@@ -42,7 +46,7 @@ export interface RoxyVedicKundliProps extends ElementAttrs {
 }
 
 export const RoxyVedicKundli = React.forwardRef<HTMLElement | null, RoxyVedicKundliProps>(
-	function RoxyVedicKundli({ data, className, style, chartStyle, chartReference, lagnaOverride, endpoint, method, publishableKey, baseUrl, specUrl, lang, submitLabel, attribution, hideReadings, hideSections, ...rest }, ref) {
+	function RoxyVedicKundli({ data, className, style, chartStyle, chartReference, lagnaOverride, endpoint, method, publishableKey, baseUrl, submitUrl, locationUrl, specUrl, lang, submitLabel, attribution, hideReadings, hideSections, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -122,6 +126,20 @@ export const RoxyVedicKundli = React.forwardRef<HTMLElement | null, RoxyVedicKun
 				(el as unknown as { baseUrl: string }).baseUrl = baseUrl;
 			}
 		}, [baseUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && submitUrl !== undefined) {
+				(el as unknown as { submitUrl: string }).submitUrl = submitUrl;
+			}
+		}, [submitUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && locationUrl !== undefined) {
+				(el as unknown as { locationUrl: string }).locationUrl = locationUrl;
+			}
+		}, [locationUrl, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;
