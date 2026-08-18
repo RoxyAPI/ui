@@ -657,9 +657,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			const sp = longitudeToSignPosition(p.longitude);
 			const retro = p.isRetrograde === true;
 			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
-			// The house each planet holds in its OWN chart, which the response
-			// already carries. It is not the cross-chart overlay: that asks which of
-			// the other person's houses this planet falls in, and no field answers it.
+			// The house each planet holds in its own chart.
 			const house =
 				typeof p.house === 'number'
 					? ` · ${this.t('House {{n}}', { n: p.house })}`

@@ -69,8 +69,8 @@ describe('a chart with no ascendant is never drawn house-fixed', () => {
 
 	test('without one, north draws no rashi numbers and no ascendant marker', async () => {
 		const el = await mount(WITHOUT_LAGNA, 'north');
-		// The failure this guards is the opposite: a full set of twelve numbers
-		// anchored to an assumed Aries, which reads as a complete, correct chart.
+		// A house-fixed layout numbers every cell from the ascendant, so with none
+		// it must number nothing: a full set of twelve reads as a complete chart.
 		expect(rashiNumbers(el)).toEqual([]);
 		expect(text(el)).not.toContain('ASC');
 	});

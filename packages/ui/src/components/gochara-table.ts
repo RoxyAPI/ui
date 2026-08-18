@@ -250,7 +250,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 		</article>`;
 	}
 
-	/** One labelled contact list. Drishti and the degree-based aspects carry the same three fields, so both read through here and the label is what tells them apart. Translated by the caller, so the label stays where a catalogue scan can see it. */
+	/** One labelled contact list. Drishti and the degree-based aspects carry the same three fields, so both read through here and the label is what tells them apart. */
 	private renderContacts(
 		label: string,
 		items:
