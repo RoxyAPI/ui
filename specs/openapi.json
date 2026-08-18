@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 180+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 180+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 per month for 50K requests, up to 3M requests, with custom volume above that.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
+    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 12 domains (astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I-Ching, crystals, dreams, angel numbers, location), 182+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 182+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable (stable — safe to switch on programmatically).\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 per month for 50K requests, up to 3M requests, with custom volume above that.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart) - first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs) - guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp) - connect AI agents\n- [Starter apps](https://roxyapi.com/starters) - clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq) - common questions\n- [Contact](https://roxyapi.com/contact) - support and API key recovery\n",
     "contact": {
       "name": "RoxyAPI Support",
       "url": "https://roxyapi.com/contact"
@@ -18824,7 +18824,12 @@
                               "house": {
                                 "type": "number",
                                 "example": 3,
-                                "description": "House this planet occupies in the person 1 chart (1-12)."
+                                "description": "House this planet occupies in the person 1 chart (1-12). This is the placement in this person OWN chart. For the house overlay a synastry reading is built on, read houseInOtherChart."
+                              },
+                              "houseInOtherChart": {
+                                "type": "number",
+                                "example": 7,
+                                "description": "Which of person 2 houses this planet of person 1 falls into (1-12), counted on that person cusps in the same house system. This is the house OVERLAY, the half of synastry the inter-aspects do not cover: an aspect says two bodies are in relationship, an overlay says which area of the other person life this body lands in. Both people get their own overlay, so person 2 planets carry the reverse reading."
                               },
                               "isRetrograde": {
                                 "type": "boolean",
@@ -18838,6 +18843,7 @@
                               "sign",
                               "degree",
                               "house",
+                              "houseInOtherChart",
                               "isRetrograde"
                             ]
                           },
@@ -18943,7 +18949,12 @@
                               "house": {
                                 "type": "number",
                                 "example": 3,
-                                "description": "House this planet occupies in the person 2 chart (1-12)."
+                                "description": "House this planet occupies in the person 2 chart (1-12). This is the placement in this person OWN chart. For the house overlay a synastry reading is built on, read houseInOtherChart."
+                              },
+                              "houseInOtherChart": {
+                                "type": "number",
+                                "example": 7,
+                                "description": "Which of person 1 houses this planet of person 2 falls into (1-12), counted on that person cusps in the same house system. This is the house OVERLAY, the half of synastry the inter-aspects do not cover: an aspect says two bodies are in relationship, an overlay says which area of the other person life this body lands in. Both people get their own overlay, so person 1 planets carry the reverse reading."
                               },
                               "isRetrograde": {
                                 "type": "boolean",
@@ -18957,6 +18968,7 @@
                               "sign",
                               "degree",
                               "house",
+                              "houseInOtherChart",
                               "isRetrograde"
                             ]
                           },
@@ -22320,6 +22332,804 @@
                     "natalPlanets",
                     "aspects",
                     "summary"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/astrology/parallels/monthly": {
+      "post": {
+        "operationId": "getMonthlyDeclinationParallels",
+        "tags": [
+          "Western Astrology"
+        ],
+        "summary": "Monthly Parallels - Declination contacts for an entire month",
+        "description": "Get every parallel and contraparallel of declination that perfects during a given month, across the 13 non-lunar Western bodies: the Sun and Mercury through Pluto, both lunar nodes, Chiron and Black Moon Lilith. A parallel is two bodies at the same declination and reads much like a conjunction; a contraparallel is equal and opposite declinations and reads much like an opposition. Neither depends on zodiacal distance, so they surface connections an aspect table cannot show, which is why traditional and modern practitioners read them alongside aspects. Declinations are geocentric, matching what an ephemeris publishes. Returns the exact date and time of closest approach in your timezone with both declinations. The Moon is excluded because its declination swings the full range every month and would bury the slow pairs. Omit year and month to get the month in progress, so a published calendar stays current without a redeploy. Essential for declination work, out-of-bounds tracking, monthly forecast copy, and electional timing. Monthly parallel calendar API, declination aspects, contraparallel ephemeris. Verified against NASA JPL Horizons.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "minimum": 1900,
+                    "maximum": 2100,
+                    "example": 2026,
+                    "description": "Year for the declination calendar (1900-2100). Defaults to the current year (UTC)."
+                  },
+                  "month": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12,
+                    "example": 3,
+                    "description": "Month number (1-12). Defaults to the current month (UTC)."
+                  },
+                  "timezone": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": -14,
+                        "maximum": 14
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "default": 0,
+                    "description": "Timezone offset from UTC in hours. Event dates and times are reported in this zone, which is what makes a published calendar read correctly for its audience. Defaults to 0 (UTC).",
+                    "example": -5
+                  },
+                  "orb": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 3,
+                    "default": 1.5,
+                    "example": 1.5,
+                    "description": "How far from exact still counts, in degrees. The traditional orb for a declination contact is tighter than for a zodiacal aspect because declination changes slowly. Defaults to 1.5."
+                  },
+                  "nodeType": {
+                    "type": "string",
+                    "enum": [
+                      "mean",
+                      "true"
+                    ],
+                    "default": "true",
+                    "example": "true",
+                    "description": "Lunar node convention. \"mean\" is the smoothed average node, which always moves retrograde; \"true\" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is the osculating node and the default, because it is what most Western chart software reports; mean is the smoothed node preferred by several evolutionary schools, so pass \"mean\" to match one. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to \"true\"."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Monthly declination calendar calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "year": {
+                      "type": "number",
+                      "example": 2026,
+                      "description": "Year of the calendar. Echoes the year requested, or the current UTC year when it was omitted."
+                    },
+                    "month": {
+                      "type": "number",
+                      "example": 3,
+                      "description": "Month of the calendar. Echoes the month requested, or the current UTC month when it was omitted."
+                    },
+                    "timezone": {
+                      "type": "number",
+                      "example": -5,
+                      "description": "Timezone the event dates and times are reported in. Echoes the request."
+                    },
+                    "orb": {
+                      "type": "number",
+                      "example": 1.5,
+                      "description": "Orb in degrees that was applied. Echoes the request."
+                    },
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "planet1": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "First body in the contact. Always canonical English whatever the lang parameter says, so it stays safe to compare against in code. Use planet1Localized for anything a reader sees."
+                          },
+                          "planet1Localized": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "First body in the requested language. Present only when lang is supplied."
+                          },
+                          "planet2": {
+                            "type": "string",
+                            "example": "Saturn",
+                            "description": "Second body in the contact. Always canonical English."
+                          },
+                          "planet2Localized": {
+                            "type": "string",
+                            "example": "Saturno",
+                            "description": "Second body in the requested language. Present only when lang is supplied."
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "parallel",
+                              "contraparallel"
+                            ],
+                            "example": "parallel",
+                            "description": "parallel means both bodies stand at the same declination, the same distance north or south of the celestial equator, and reads much like a conjunction. contraparallel means equal and opposite declinations, one as far north as the other is south, and reads much like an opposition. Neither depends on how far apart the two bodies are along the zodiac, which is what makes them worth tracking alongside ordinary aspects."
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "2026-03-14",
+                            "description": "Date the contact is closest to exact, in the requested timezone (YYYY-MM-DD)."
+                          },
+                          "time": {
+                            "type": "string",
+                            "example": "09:42",
+                            "description": "Time the contact is closest to exact, in the requested timezone (HH:MM)."
+                          },
+                          "datetime": {
+                            "type": "string",
+                            "example": "2026-03-14T09:42",
+                            "description": "Combined timestamp of closest approach, in the requested timezone."
+                          },
+                          "orb": {
+                            "type": "number",
+                            "example": 0.01,
+                            "description": "Distance from exact in degrees at the reported instant. Effectively zero for a contact that perfects inside the month, and larger only where the pair turns before reaching exact."
+                          },
+                          "declination1": {
+                            "type": "number",
+                            "example": -12.4183,
+                            "description": "Geocentric declination of the first body at the reported instant, in degrees. Positive is north of the celestial equator, negative south."
+                          },
+                          "declination2": {
+                            "type": "number",
+                            "example": -12.4102,
+                            "description": "Geocentric declination of the second body at the reported instant, in degrees."
+                          }
+                        },
+                        "required": [
+                          "planet1",
+                          "planet2",
+                          "type",
+                          "date",
+                          "time",
+                          "datetime",
+                          "orb",
+                          "declination1",
+                          "declination2"
+                        ]
+                      },
+                      "description": "Every declination contact in the month, in chronological order across all body pairs."
+                    }
+                  },
+                  "required": [
+                    "year",
+                    "month",
+                    "timezone",
+                    "orb",
+                    "events"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `issues[]` lists every failed field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "First issue summary."
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "validation_error"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "description": "Every validation failure. Use this to rebuild a valid request.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Dot-separated field path, or \"(root)\" for top-level."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "Zod issue code (invalid_type, too_small, too_big, invalid_string, ...)."
+                          },
+                          "expected": {
+                            "type": "string",
+                            "description": "Expected type for invalid_type."
+                          },
+                          "minimum": {
+                            "description": "Minimum bound for too_small issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "maximum": {
+                            "description": "Maximum bound for too_big issues.",
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "inclusive": {
+                            "type": "boolean"
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Format name for string issues (regex, email, url, uuid)."
+                          },
+                          "pattern": {
+                            "type": "string",
+                            "description": "Regex pattern when format is regex."
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "issues"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
+            "headers": {
+              "Allow": {
+                "description": "Comma-separated list of allowed methods (RFC 9110).",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "enum": [
+                        "method_not_allowed"
+                      ]
+                    },
+                    "allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Allowed HTTP methods for this path. Mirrors the Allow response header."
+                    },
+                    "docs": {
+                      "type": "string",
+                      "description": "Link to the product page for this domain."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code",
+                    "allow"
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Monthly rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message. May change wording."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. Stable identifier."
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/astrology/ecliptic-crossings": {
+      "post": {
+        "operationId": "getPlanetaryNodePassages",
+        "tags": [
+          "Western Astrology"
+        ],
+        "summary": "Ecliptic Crossings - Node passages for a whole year",
+        "description": "Get every moment a body crosses the plane of the ecliptic during a given year, for the 11 Western bodies that leave it: the Moon and Mercury through Pluto, plus Chiron and Black Moon Lilith. A crossing from south to north is an ascending node passage, north to south a descending one. These are the instants a body sits exactly on the ecliptic rather than merely near it, which is what makes an eclipse possible when a lunar crossing coincides with a New or Full Moon, and what practitioners use for node-based timing. Returns the exact date and time in your timezone with the tropical longitude and sign. The Sun and the lunar nodes are excluded because they lie on the plane by definition and so have no nodes of their own. Essential for eclipse-season work, node timing, and astronomical calendars. Ecliptic crossing API, planetary node passage, ascending and descending nodes. Verified against NASA JPL Horizons.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "tr",
+                "de",
+                "es",
+                "hi",
+                "pt",
+                "fr",
+                "ru"
+              ],
+              "default": "en",
+              "example": "en",
+              "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English."
+            },
+            "required": false,
+            "description": "Response language (ISO 639-1). Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en. Languages without translations yet return English.",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "minimum": 1900,
+                    "maximum": 2100,
+                    "example": 2026,
+                    "description": "Year to scan for node passages (1900-2100)."
+                  },
+                  "timezone": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": -14,
+                        "maximum": 14
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "default": 0,
+                    "description": "Timezone offset from UTC in hours. Crossing dates and times are reported in this zone. Defaults to 0 (UTC).",
+                    "example": -5
+                  }
+                },
+                "required": [
+                  "year"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Node passages calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "year": {
+                      "type": "number",
+                      "example": 2026,
+                      "description": "Year that was scanned. Echoes the request."
+                    },
+                    "timezone": {
+                      "type": "number",
+                      "example": -5,
+                      "description": "Timezone the dates and times are reported in. Echoes the request."
+                    },
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "planet": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "Body making the crossing. Always canonical English whatever the lang parameter says, so it stays safe to compare against in code. Use planetLocalized for anything a reader sees."
+                          },
+                          "planetLocalized": {
+                            "type": "string",
+                            "example": "Venus",
+                            "description": "Body name in the requested language. Present only when lang is supplied."
+                          },
+                          "direction": {
+                            "type": "string",
+                            "enum": [
+                              "ascending",
+                              "descending"
+                            ],
+                            "example": "ascending",
+                            "description": "ascending is the crossing from south of the ecliptic to north, at the body north node. descending is the reverse, at its south node."
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "2026-03-14",
+                            "description": "Date of the crossing in the requested timezone (YYYY-MM-DD)."
+                          },
+                          "time": {
+                            "type": "string",
+                            "example": "09:42",
+                            "description": "Time of the crossing in the requested timezone (HH:MM)."
+                          },
+                          "datetime": {
+                            "type": "string",
+                            "example": "2026-03-14T09:42",
+                            "description": "Combined crossing timestamp in the requested timezone."
+                          },
+                          "longitude": {
+                            "type": "number",
+                            "example": 24.7831,
+                            "description": "Tropical ecliptic longitude of the body at the crossing, in degrees. This is the only value in the response that depends on the zodiac frame."
+                          },
+                          "sign": {
+                            "type": "string",
+                            "example": "Aries",
+                            "description": "Tropical sign the body occupies at the crossing. Canonical English."
+                          },
+                          "signLocalized": {
+                            "type": "string",
+                            "example": "Aries",
+                            "description": "Sign in the requested language. Present only when lang is supplied."
+                          }
+                        },
+                        "required": [
+                          "planet",
+                          "direction",
+                          "date",
+                          "time",
+                          "datetime",
+                          "longitude",
+                          "sign"
+                        ]
+                      },
+                      "description": "Every node passage in the year, in chronological order across all bodies. The fast bodies dominate: a slow body can go years or decades between node passages, so an absent planet means it did not cross that year rather than that it was not checked."
+                    }
+                  },
+                  "required": [
+                    "year",
+                    "timezone",
+                    "events"
                   ]
                 }
               }
@@ -40439,7 +41249,7 @@
                                 "null"
                               ],
                               "example": 67,
-                              "description": "Share of the running lords six-house connections that land on the positive group, 0 to 100, rounded. A COUNT, so positive and negative below reproduce it in one division: round(positive / (positive + negative) * 100). Zero when the running lords reach none of the six houses, which is an ABSENCE of connection rather than a negative verdict. Null above latitude 66.56, where the Placidus cusps the KP significators are read from have no solution: the question does not apply there rather than the answer being no, so never render it as zero or as a weak verdict. The natal block beside it is unaffected and still ships, and degraded names areas.finance.score. The two house groups are Krishnamurti Paddhati practice, but the NET is a KP practitioner convention rather than a classical operation: the KP sources that carry these groups use them as a promise test and an avoidance test, never as arithmetic. The groups also vary by author, and the 6th house is the live disagreement, since some KP authors place it on the POSITIVE side as service income and salary, the exact opposite of the assignment used here. This is a six house net and it is NOT the focus=finance lens, which re-reads all twelve bhavas in money vocabulary and moves no number. The two are orthogonal and both ship."
+                              "description": "Share of the running lords six-house connections that land on the positive group, 0 to 100, rounded. A COUNT, so positive and negative below reproduce it in one division: round(positive / (positive + negative) * 100). Zero when the running lords reach none of the six houses, which is an ABSENCE of connection rather than a negative verdict. Null above latitude 66.56, where the Placidus cusps the KP significators are read from have no solution: the question does not apply there rather than the answer being no, so never render it as zero or as a weak verdict. The natal block beside it is unaffected and still ships, and degraded names areas.finance.score. The two house groups are Krishnamurti Paddhati practice, but the NET is a KP practitioner convention rather than a classical operation: the KP sources that carry these groups use them as a promise test and an avoidance test, never as arithmetic. The groups also vary by author, and TWO houses are live disagreements rather than one. The 6th: some KP authors place it on the POSITIVE side as service income and salary, the exact opposite of the assignment used here. The 5th: it is named as a speculative GAIN house in the same KP sources that elsewhere call it a negation house, reading it as the 12th from the 6th and therefore loss of earning capacity, and both readings appear in one publication. The 1st is treated as a negation house by some authors on the same logic, as the 12th from the 2nd, and is not on either side here. This is a six house net and it is NOT the focus=finance lens, which re-reads all twelve bhavas in money vocabulary and moves no number. The two are orthogonal and both ship."
                             },
                             "band": {
                               "type": [
@@ -40652,7 +41462,7 @@
                             "cautions",
                             "natal"
                           ],
-                          "description": "The finance area: the positive house group 2, 5, 11 netted against the negative group 6, 8, 12, read off the lords of the running dasha, bhukti and antara, because that is the KP rule for when a matter fructifies, plus the natal basis the day is read against. ALWAYS AN OBJECT. Above latitude 66.56 the six netted members are null, because the Placidus cusps behind the significators have no solution there, while natal is still populated because it is a property of the birth chart and needs no cusps; the reading also still carries its gochara, panchanga and dasha and names the omission in degraded. The two house groups are Krishnamurti Paddhati practice, but the NET is a KP practitioner convention rather than a classical operation: the KP sources that carry these groups use them as a promise test and an avoidance test, never as arithmetic. The groups also vary by author, and the 6th house is the live disagreement, since some KP authors place it on the POSITIVE side as service income and salary, the exact opposite of the assignment used here. This is a six house net and it is NOT the focus=finance lens, which re-reads all twelve bhavas in money vocabulary and moves no number. The two are orthogonal and both ship."
+                          "description": "The finance area: the positive house group 2, 5, 11 netted against the negative group 6, 8, 12, read off the lords of the running dasha, bhukti and antara, because that is the KP rule for when a matter fructifies, plus the natal basis the day is read against. ALWAYS AN OBJECT. Above latitude 66.56 the six netted members are null, because the Placidus cusps behind the significators have no solution there, while natal is still populated because it is a property of the birth chart and needs no cusps; the reading also still carries its gochara, panchanga and dasha and names the omission in degraded. The two house groups are Krishnamurti Paddhati practice, but the NET is a KP practitioner convention rather than a classical operation: the KP sources that carry these groups use them as a promise test and an avoidance test, never as arithmetic. The groups also vary by author, and TWO houses are live disagreements rather than one. The 6th: some KP authors place it on the POSITIVE side as service income and salary, the exact opposite of the assignment used here. The 5th: it is named as a speculative GAIN house in the same KP sources that elsewhere call it a negation house, reading it as the 12th from the 6th and therefore loss of earning capacity, and both readings appear in one publication. The 1st is treated as a negation house by some authors on the same logic, as the 12th from the 2nd, and is not on either side here. This is a six house net and it is NOT the focus=finance lens, which re-reads all twelve bhavas in money vocabulary and moves no number. The two are orthogonal and both ship."
                         }
                       },
                       "required": [
@@ -77812,8 +78622,18 @@
                           },
                           "phase": {
                             "type": "string",
+                            "enum": [
+                              "peak",
+                              "high",
+                              "rising",
+                              "critical_ascending",
+                              "critical_descending",
+                              "falling",
+                              "low",
+                              "trough"
+                            ],
                             "example": "high",
-                            "description": "Current phase of the cycle. One of: peak, high, rising, critical_ascending, critical_descending, falling, low, trough."
+                            "description": "Current phase of the cycle. One of: peak, high, rising, critical_ascending, critical_descending, falling, low, trough. Canonical English whatever the lang parameter says, so it stays safe to compare against in code; phaseLabel carries the reader-facing form and IS translated."
                           },
                           "phaseLabel": {
                             "type": "string",
@@ -77842,8 +78662,14 @@
                           },
                           "trend": {
                             "type": "string",
+                            "enum": [
+                              "rising",
+                              "falling",
+                              "peaking",
+                              "bottoming"
+                            ],
                             "example": "rising",
-                            "description": "Short-term direction of the cycle. One of: rising, falling, peaking, bottoming."
+                            "description": "Short-term direction of the cycle, which is its SLOPE rather than its band, so it moves independently of phase. One of: rising, falling, peaking, bottoming. Canonical English, like phase."
                           },
                           "interpretation": {
                             "type": "string",
@@ -77873,8 +78699,14 @@
                     },
                     "overallPhase": {
                       "type": "string",
+                      "enum": [
+                        "high_energy",
+                        "mixed",
+                        "recovery",
+                        "critical"
+                      ],
                       "example": "high_energy",
-                      "description": "Summary phase label. One of: high_energy, mixed, recovery, critical."
+                      "description": "Summary phase across every cycle for the day. One of: high_energy, mixed, recovery, critical."
                     },
                     "interpretation": {
                       "type": "string",
@@ -77893,16 +78725,35 @@
                         "properties": {
                           "cycle": {
                             "type": "string",
+                            "enum": [
+                              "physical",
+                              "emotional",
+                              "intellectual",
+                              "intuitive",
+                              "aesthetic",
+                              "awareness",
+                              "spiritual",
+                              "passion",
+                              "mastery",
+                              "wisdom"
+                            ],
                             "example": "physical",
                             "description": "Which cycle is at or near zero crossing."
                           },
                           "type": {
                             "type": "string",
+                            "enum": [
+                              "zero_crossing"
+                            ],
                             "example": "zero_crossing",
-                            "description": "Alert type. zero_crossing when a cycle crosses zero, approaching_critical when within 1 day of zero."
+                            "description": "Alert type. One of: zero_crossing. Raised once for the whole critical band, when the cycle sits within 9 points of zero in either direction."
                           },
                           "direction": {
                             "type": "string",
+                            "enum": [
+                              "ascending",
+                              "descending"
+                            ],
                             "example": "ascending",
                             "description": "Whether the cycle is rising through zero (ascending) or falling through zero (descending)."
                           },
@@ -78677,8 +79528,13 @@
                           },
                           "cycle": {
                             "type": "string",
+                            "enum": [
+                              "physical",
+                              "emotional",
+                              "intellectual"
+                            ],
                             "example": "physical",
-                            "description": "Which primary cycle crosses zero on this date."
+                            "description": "Which primary cycle crosses zero on this date. One of: physical, emotional, intellectual. Only the three primary cycles are scanned; the secondary and composite cycles are not."
                           },
                           "period": {
                             "type": "number",
@@ -78687,13 +79543,22 @@
                           },
                           "direction": {
                             "type": "string",
+                            "enum": [
+                              "ascending",
+                              "descending"
+                            ],
                             "example": "ascending",
                             "description": "Whether the cycle is rising through zero (ascending) or falling through zero (descending)."
                           },
                           "severity": {
                             "type": "string",
+                            "enum": [
+                              "single",
+                              "double",
+                              "triple"
+                            ],
                             "example": "single",
-                            "description": "How many primary cycles are critical on this date. single, double, or triple."
+                            "description": "How many primary cycles are critical on this date. One of: single, double, triple."
                           },
                           "advisory": {
                             "type": "string",
@@ -79114,8 +79979,14 @@
                           },
                           "phase": {
                             "type": "string",
+                            "enum": [
+                              "in_sync",
+                              "complementary",
+                              "neutral",
+                              "opposing"
+                            ],
                             "example": "in_sync",
-                            "description": "Alignment phase. One of: in_sync, complementary, neutral, opposing."
+                            "description": "How the two people's cycles sit against each other. One of: in_sync, complementary, neutral, opposing. This is a PAIR alignment and shares no values with the single-person cycle phase."
                           },
                           "description": {
                             "type": "string",
@@ -79510,6 +80381,16 @@
                           },
                           "phase": {
                             "type": "string",
+                            "enum": [
+                              "peak",
+                              "high",
+                              "rising",
+                              "critical_ascending",
+                              "critical_descending",
+                              "falling",
+                              "low",
+                              "trough"
+                            ],
                             "example": "high",
                             "description": "Current phase identifier."
                           },
@@ -79535,6 +80416,12 @@
                           },
                           "trend": {
                             "type": "string",
+                            "enum": [
+                              "rising",
+                              "falling",
+                              "peaking",
+                              "bottoming"
+                            ],
                             "example": "rising",
                             "description": "Short-term direction: rising, falling, peaking, or bottoming."
                           }
@@ -79861,16 +80748,27 @@
                     },
                     "overallPhase": {
                       "type": "string",
+                      "enum": [
+                        "high_energy",
+                        "mixed",
+                        "recovery",
+                        "critical"
+                      ],
                       "example": "high_energy",
-                      "description": "Summary phase. One of: high_energy, mixed, recovery, critical."
+                      "description": "Summary phase across every cycle for the day. One of: high_energy, mixed, recovery, critical."
                     },
                     "spotlight": {
                       "type": "object",
                       "properties": {
                         "cycle": {
                           "type": "string",
+                          "enum": [
+                            "physical",
+                            "emotional",
+                            "intellectual"
+                          ],
                           "example": "emotional",
-                          "description": "Which primary cycle is featured as the daily spotlight."
+                          "description": "Which primary cycle is featured as the daily spotlight. One of: physical, emotional, intellectual."
                         },
                         "value": {
                           "type": "number",
@@ -79879,6 +80777,16 @@
                         },
                         "phase": {
                           "type": "string",
+                          "enum": [
+                            "peak",
+                            "high",
+                            "rising",
+                            "critical_ascending",
+                            "critical_descending",
+                            "falling",
+                            "low",
+                            "trough"
+                          ],
                           "example": "high",
                           "description": "Current phase of the spotlight cycle."
                         },

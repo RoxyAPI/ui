@@ -574,7 +574,7 @@ async function main() {
 	console.log('Formatting codegen output...');
 	try {
 		execSync(
-			'bunx biome check --write packages/ui-react/src packages/ui-vue/src packages/ui/src/generated registry apps/docs/manifest.js',
+			'bunx biome check --write packages/ui-react/src packages/ui-vue/src packages/ui/src/generated packages/ui/src/locales/field-labels registry apps/docs/manifest.js',
 			{ stdio: 'inherit' },
 		);
 	} catch (err) {

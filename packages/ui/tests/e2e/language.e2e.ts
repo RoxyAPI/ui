@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
 /**
@@ -9,8 +10,14 @@ import { expect, test } from '@playwright/test';
  * So this drives the same switch a host page makes: set the page language, load the one payload, and read what the components render. The showcase control is the subject rather than a fixture, so the demo everybody looks at is also the thing under test.
  */
 
-/** A card whose heading is translated in every shipped language, so the assertion needs no per-language table. */
-const SUBJECT = 'roxy-panchang-table';
+/** A card whose heading differs from its English source in EVERY shipped language, so each case can assert the change without a per-language table. A Sanskrit-titled card is the wrong subject here: several catalogues print those names as themselves by design, and a heading that is legitimately unchanged is indistinguishable from a payload that never arrived. */
+const SUBJECT = 'roxy-natal-chart';
+
+/** The payloads the build emits, read from the directory the build reads, so a new language is covered without this file being edited. Checked against what the page actually offers, so the two cannot drift apart. */
+const SHIPPED = readdirSync('packages/ui/src/locales', { withFileTypes: true })
+	.filter((e) => e.isFile() && e.name.endsWith('.ts'))
+	.map((e) => e.name.replace(/\.ts$/, ''))
+	.sort();
 
 const headingOf = (tag: string) =>
 	document
@@ -33,6 +40,9 @@ test('the control offers exactly the payloads the build emitted', async ({
 	// English first and always, then one option per shipped payload. A hardcoded
 	// list would drift the moment a language is added; this cannot.
 	expect(values).toEqual(['en', ...shipped]);
+	// And the payloads on disk are the ones the page knows about, so the list the
+	// case below walks cannot drift from the list the control offers.
+	expect(shipped).toEqual(SHIPPED);
 
 	// Every option is named in its OWN language, which is what a reader picks by.
 	const labels = await page.$$eval('#lang-select option', (o) =>
@@ -45,31 +55,33 @@ test('the control offers exactly the payloads the build emitted', async ({
 test('switching the control translates what the components write', async ({
 	page,
 }) => {
+	// Seven payload fetches on one page load, budgeted explicitly because the work
+	// is real. A case per language would name the failure by itself, but it also
+	// reloads the whole showcase seven times per browser for the same coverage, so
+	// the language is carried in the assertion message instead.
+	test.setTimeout(120_000);
 	await page.goto('/');
 	const english = await page.evaluate(headingOf, SUBJECT);
 	expect(english.length).toBeGreaterThan(0);
 
-	const shipped = await page.evaluate(
-		() => (window as unknown as { ROXY_LOCALES?: string[] }).ROXY_LOCALES ?? [],
-	);
-	const seen = new Map<string, string>();
-	for (const lang of shipped) {
+	for (const lang of SHIPPED) {
 		await page.selectOption('#lang-select', lang);
 		await expect
 			.poll(() => page.evaluate(() => document.documentElement.lang))
 			.toBe(lang);
-		// The payload is a separate request, so the render lands after it does.
+		// The payload is a separate request, so the render lands after it does, and
+		// a heading still reading English means it never arrived.
 		await expect
-			.poll(() => page.evaluate(headingOf, SUBJECT), { timeout: 5000 })
-			.not.toBe('');
-		seen.set(lang, await page.evaluate(headingOf, SUBJECT));
+			.poll(() => page.evaluate(headingOf, SUBJECT), {
+				// A fetch and a re-render, which under a loaded machine takes longer
+				// than the 5s this would otherwise default to. It still fails fast on a
+				// payload that never arrives, since that never resolves at all.
+				timeout: 15_000,
+				message: `the ${lang} payload never replaced the English heading`,
+			})
+			.not.toBe(english);
 	}
-
-	// At least one language must differ from English, or the payload never
-	// arrived and every assertion above would still pass on the fallback.
-	expect([...seen.values()].some((v) => v !== english)).toBe(true);
 });
-
 test('English loads no payload, because the key is the English source', async ({
 	page,
 }) => {
