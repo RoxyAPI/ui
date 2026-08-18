@@ -3,6 +3,8 @@ import { afterEach, describe, expect, mock, test } from 'bun:test';
 // Registers roxy-dream-card, a concrete RoxyDataElement subclass used here to
 // exercise the base in both modes. happy-dom is loaded by preload (bunfig.toml).
 import '../src/components/dream-card.js';
+import { BASE_PROPS } from '../../../scripts/wrapper-meta.js';
+import { RoxyDataElement } from '../src/utils/base-element.js';
 import {
 	buildRequest,
 	FetchController,
@@ -439,5 +441,28 @@ describe('RoxyDataElement attribution credit', () => {
 		expect(snippet).not.toMatch(/'/);
 		expect(snippet).not.toMatch(/\s--\s/);
 		el.remove();
+	});
+});
+
+/**
+ * Every attribute the base class publishes is public API, so it has to reach the React and Vue
+ * wrappers too. Those props come from one hand-edited list, and a property added here but not
+ * there is invisible to framework consumers with nothing to signal it: the wrappers regenerate
+ * byte-identical, so the drift gate stays green. Reactive state sets `attribute: false` and is
+ * absent by the same rule rather than by exception.
+ */
+describe('RoxyDataElement attributes reach the generated wrappers', () => {
+	test('every attributed base property is declared in BASE_PROPS', () => {
+		const listed = new Set(BASE_PROPS.map((p) => p.prop));
+		const published = [...RoxyDataElement.elementProperties.entries()]
+			.filter(([, options]) => options.attribute !== false)
+			.map(([name]) => String(name));
+
+		// Lit fills elementProperties on finalize; an empty map would pass every
+		// assertion below without checking anything.
+		expect(published.length).toBeGreaterThan(0);
+		for (const name of published) {
+			expect(listed.has(name), `${name} is missing from BASE_PROPS`).toBe(true);
+		}
 	});
 });

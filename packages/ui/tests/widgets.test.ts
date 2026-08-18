@@ -205,6 +205,35 @@ describe('widgets.js mount paths', () => {
 		);
 	});
 
+	/**
+	 * The one-tag embed is the surface with no build step, so a page that keeps its keys on its
+	 * own server has only these attributes to say so. Both halves of a birth-data form have to
+	 * follow: the submitted request and the city search the form issues while a visitor types.
+	 */
+	test('the proxy routes reach the element and are never sent as request parameters', async () => {
+		const map = await buildWidgetMap();
+		const calls = mockFetch({});
+
+		const w = await runWidgets(map, [
+			{
+				slug: 'natal-chart',
+				attrs: {
+					'data-submit-url': '/api/roxy/proxy',
+					'data-location-url': '/api/roxy/location/search',
+				},
+			},
+		]);
+
+		// No key on the page, so the bootstrap issues nothing itself and hands off to form mode.
+		expect(calls.filter(keyed).length).toBe(0);
+		const el = child(w, 'w0');
+		expect(el?.getAttribute('submit-url')).toBe('/api/roxy/proxy');
+		expect(el?.getAttribute('location-url')).toBe('/api/roxy/location/search');
+		// A route is a destination, so it must not be mistaken for a value to send.
+		expect(el?.getAttribute('submitUrl')).toBeNull();
+		expect(el?.getAttribute('locationUrl')).toBeNull();
+	});
+
 	test('data-attribution="off" suppresses the credit on an auto-mount', async () => {
 		const map = await buildWidgetMap();
 		mockFetch({ sign: 'leo' });

@@ -199,6 +199,12 @@ export const BASE_PROPS: ConfigPropDef[] = [
 			'Override the self-fetch form submit-button label. Empty derives an outcome-first label from the endpoint (Get reading, Generate, Compare, Cast).',
 	},
 	{
+		prop: 'remember',
+		type: 'boolean',
+		comment:
+			'Persist the last self-fetch form values in sessionStorage, keyed by endpoint, and prefill the form when the visitor returns. Off by default.',
+	},
+	{
 		prop: 'attribution',
 		type: 'string',
 		comment:

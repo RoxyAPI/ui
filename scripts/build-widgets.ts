@@ -193,14 +193,20 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 		});
 	}
 
+	// Routes on the host page that answer the component's own requests. They name a
+	// destination rather than a value to send, so they are forwarded to the element
+	// and never collected as request parameters.
+	var PROXY_ATTRS = ['submit-url', 'location-url'];
+	var SKIP = { 'data-roxy-widget': 1, 'data-roxy-mounted': 1, 'data-publishable-key': 1, 'data-attribution': 1, 'data-submit-label': 1 };
+	PROXY_ATTRS.forEach(function (k) { SKIP['data-' + k] = 1; });
+
 	// data-* attributes as camelCase keys, minus the control attributes that are
 	// not request parameters (the widget name, the key, and the display toggles).
 	function collectAttrs(el) {
-		var skip = { 'data-roxy-widget': 1, 'data-roxy-mounted': 1, 'data-publishable-key': 1, 'data-attribution': 1, 'data-submit-label': 1 };
 		var out = {};
 		for (var i = 0; i < el.attributes.length; i++) {
 			var a = el.attributes[i];
-			if (a.name.indexOf('data-') === 0 && !skip[a.name]) {
+			if (a.name.indexOf('data-') === 0 && !SKIP[a.name]) {
 				out[a.name.slice(5).replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); })] = a.value;
 			}
 		}
@@ -256,6 +262,10 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 				element.setAttribute('data-endpoint', variant.p.replace(/^\\//, ''));
 				element.setAttribute('method', method);
 				if (pk) element.setAttribute('publishable-key', pk);
+				PROXY_ATTRS.forEach(function (k) {
+					var v = host.getAttribute('data-' + k);
+					if (v) element.setAttribute(k, v);
+				});
 				host.innerHTML = '';
 				host.appendChild(element);
 				return;
