@@ -1,5 +1,12 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test';
-import type { FormModel } from '../src/utils/field-schema.js';
+import spec from '../../../specs/openapi.json';
+import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
+import {
+	buildFormModel,
+	type FormModel,
+	type OpenApiSchema,
+	type OperationSchema,
+} from '../src/utils/field-schema.js';
 // Registers roxy-endpoint-form (and roxy-location-search it slots).
 import '../src/index.js';
 
@@ -449,5 +456,75 @@ describe('endpoint-form input registry rendering', () => {
 			'Draw my chart',
 		);
 		el.remove();
+	});
+});
+
+/**
+ * Every endpoint a component is bound to has to be submittable from the form that component
+ * renders. A required parameter with no way to supply it ships as a reading nobody can request,
+ * and it fails silently: the component mounts, the form draws, and only the submit is impossible.
+ *
+ * @remarks
+ * This walks the real bindings through the real spec and mounts the real form, so it holds for
+ * endpoints added later with no edit here. A required field passes on one of three grounds: it
+ * renders an input of its own, the city search fills it, or the form supplies the value itself.
+ * Anything else is a parameter the visitor is asked for and given no way to enter.
+ */
+describe('every bound endpoint can be submitted from its form', () => {
+	/** Filled by the form on submit rather than entered, so no input is expected. */
+	const SELF_SUPPLIED = new Set(['seed']);
+	/** Written by the city search, which stands in for the whole trio. */
+	const BY_CITY_SEARCH = new Set(['latitude', 'longitude', 'timezone']);
+
+	const operation = (path: string, method: string) =>
+		(
+			spec.paths as unknown as Record<
+				string,
+				Record<string, OperationSchema | undefined> | undefined
+			>
+		)?.[path]?.[method.toLowerCase()];
+
+	test('no required parameter is left without a way to enter it', async () => {
+		const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+			string,
+			OpenApiSchema
+		>;
+		const unreachable: string[] = [];
+		let checked = 0;
+
+		for (const [tag, bindings] of Object.entries(ENDPOINT_BINDINGS)) {
+			for (const b of bindings) {
+				const op = operation(b.path, b.method);
+				if (!op) continue;
+				const model = buildFormModel(op, schemas, b.path.replace(/^\//, ''));
+				const required = model.fields.filter((f) => f.required);
+				if (!required.length) continue;
+
+				const el = await mountForm(model, {
+					'data-endpoint': b.path.replace(/^\//, ''),
+					method: b.method.toUpperCase(),
+				});
+				const root = el.shadowRoot as ShadowRoot;
+				const hasCitySearch = !!root.querySelector('roxy-location-search');
+
+				for (const f of required) {
+					const rendered =
+						!!root.getElementById(`roxy-form-${f.key}`) ||
+						!!root.getElementById(`roxy-form-${f.key}-label`);
+					const covered =
+						rendered ||
+						SELF_SUPPLIED.has(f.name) ||
+						(hasCitySearch && BY_CITY_SEARCH.has(f.name));
+					if (!covered)
+						unreachable.push(`${tag} ${b.method} ${b.path} -> ${f.key}`);
+				}
+				checked++;
+				el.remove();
+			}
+		}
+
+		// A binding list that stopped resolving would pass every assertion above.
+		expect(checked).toBeGreaterThan(50);
+		expect(unreachable).toEqual([]);
 	});
 });

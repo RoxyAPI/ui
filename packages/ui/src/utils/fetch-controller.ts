@@ -121,7 +121,10 @@ export class FetchController<T = unknown> implements ReactiveController {
 
 	/** Direct call against RoxyAPI with the publishable key (the no-backend path). */
 	private callApi(req: RoxyRequest, signal: AbortSignal): Promise<Response> {
-		const url = new URL(`${this.baseUrl}${req.path}`);
+		// Resolved against the page, so a same-origin base ("/api/roxy") is as valid as an
+		// absolute one. Every route a host page can name resolves the same way, and a bare
+		// `new URL()` would reject the relative shape with an opaque "Invalid URL".
+		const url = new URL(`${this.baseUrl}${req.path}`, document.baseURI);
 		for (const [k, v] of Object.entries(req.query ?? {})) {
 			if (v != null) url.searchParams.set(k, String(v));
 		}

@@ -131,6 +131,32 @@ describe('FetchController security and state machine', () => {
 		);
 	});
 
+	/**
+	 * base-url is documented for proxied deployments, and a same-origin proxy is written the way
+	 * every other route on the page is written, as a path. This is what makes the three routes a
+	 * host can name behave alike: submit-url and location-url already took either shape, while a
+	 * bare `new URL()` rejected the relative one here with an opaque "Invalid URL".
+	 */
+	test('a page-relative base-url is resolved against the page', async () => {
+		const fetchMock = mock(async (_url: string | URL) => ({
+			ok: true,
+			status: 200,
+			json: async () => ({}),
+		}));
+		globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+		const host = new FakeHost<unknown>();
+		const fc = new FetchController(host as never);
+		fc.baseUrl = '/api/roxy';
+		fc.publishableKey = 'pk_test_abc';
+		await fc.run({ path: '/dreams/symbols/water', method: 'GET' });
+
+		expect(host.error).toBeNull();
+		expect(String(fetchMock.mock.calls[0]?.[0])).toBe(
+			'http://localhost:3000/api/roxy/dreams/symbols/water',
+		);
+	});
+
 	test('sends a pk_ key in X-API-Key and populates data on success', async () => {
 		const fetchMock = mock(
 			async (_url: string, _init?: { headers: Record<string, string> }) => ({

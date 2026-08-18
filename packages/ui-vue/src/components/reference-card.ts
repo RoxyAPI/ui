@@ -11,7 +11,7 @@ export interface RoxyReferenceCardProps {
 	method?: 'GET' | 'POST';
 	/** Browser-safe publishable key (pk_) for self-fetch. A secret key is refused client-side and never sent. */
 	publishableKey?: string;
-	/** Override the API origin for self-hosted or proxied deployments. */
+	/** Override the API origin for self-hosted or proxied deployments. Absolute, or relative to the page for a same-origin route. */
 	baseUrl?: string;
 	/** Your own backend route, which holds the secret key. Self-fetch POSTs `{ path, method, body, query }` there instead of calling RoxyAPI directly and renders the JSON your route returns, so no key of any kind reaches the browser. */
 	submitUrl?: string;

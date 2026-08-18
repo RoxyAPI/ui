@@ -167,7 +167,8 @@ export const BASE_PROPS: ConfigPropDef[] = [
 	{
 		prop: 'baseUrl',
 		type: 'string',
-		comment: 'Override the API origin for self-hosted or proxied deployments.',
+		comment:
+			'Override the API origin for self-hosted or proxied deployments. Absolute, or relative to the page for a same-origin route.',
 	},
 	{
 		prop: 'submitUrl',

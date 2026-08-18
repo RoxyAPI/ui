@@ -60,7 +60,7 @@ export abstract class RoxyDataElement<
 	@property({ type: String, attribute: 'publishable-key' })
 	publishableKey?: string;
 
-	/** Override the API origin for self-hosted or proxied deployments. */
+	/** Override the API origin for self-hosted or proxied deployments. Absolute, or relative to the page for a same-origin route. */
 	@property({ type: String, attribute: 'base-url' })
 	baseUrl?: string;
 
