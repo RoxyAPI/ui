@@ -673,9 +673,9 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 						: nothing
 				}
 				${
-					// The hexagram field is literally named `english` and the API returns
-					// it English in every language, so it prints as sent rather than being
-					// looked up somewhere else.
+					// The hexagram name arrives already in the response language and is
+					// display text only (the machine key is `number`), so it prints as
+					// sent rather than being looked up somewhere else.
 					hex?.number
 						? html`<p class="footnote">${this.t('I Ching hexagram {{number}}', { number: hex.number })}${hex.english ? `, ${hex.english}` : ''}</p>`
 						: nothing
