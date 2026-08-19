@@ -145,15 +145,6 @@ export const baseStyles = css`
 		font-size: var(--roxy-text-sm, 0.875rem);
 	}
 
-	/* Opt-in component backdrop. A component that paints content directly (table,
-	 * grid, prose) adds this to its root so it sits on an owned, theme-aware
-	 * surface rather than inheriting the page background, which may not match the
-	 * resolved token theme and would render text on a same-tone background. */
-	.roxy-surface {
-		background: var(--roxy-surface, #fff);
-		color: var(--roxy-fg, #0a0a0a);
-	}
-
 	:host(:focus-within) .roxy-card {
 		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 		outline-offset: 2px;

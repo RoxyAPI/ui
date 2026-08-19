@@ -5,6 +5,8 @@ import { describe, expect, test } from 'bun:test';
 // so the order matters: setup -> import.
 import '../src/index.js';
 import { FAMILY_ORDER } from '../src/components/yoga-list.js';
+import { ROXY_COMPONENTS } from '../src/manifest.js';
+import { baseStyles } from '../src/utils/base-styles.js';
 
 /** `updateComplete` lives on LitElement, not on the `HTMLElement` that `createElement` returns, and every call site was reaching it through the same double cast. One helper, one place to change. */
 const settled = (el: Element): Promise<void> =>
@@ -5711,5 +5713,26 @@ describe('roxy-hd-penta draws the ladder', () => {
 		expect(lettersOn(31)).toEqual(['C']);
 		expect(lettersOn(8)).toEqual([]);
 		el.remove();
+	});
+});
+
+describe('component surfaces', () => {
+	// A component renders inside whatever container the page gives it, so its own
+	// root paints the surface instead of inheriting the page background. Shared
+	// base styles are excluded: they reach every component and would pass this
+	// for a component that paints nothing of its own.
+	test('every component paints a surface in its own styles', () => {
+		const unpainted = ROXY_COMPONENTS.filter((c) => {
+			const ctor = customElements.get(c.tag) as unknown as {
+				elementStyles?: ReadonlyArray<{ cssText: string }>;
+			};
+			const own = (ctor?.elementStyles ?? [])
+				.map((sheet) => sheet.cssText)
+				.filter((text) => text !== baseStyles.cssText);
+			return !/background:\s*var\(--roxy-(surface|bg)/.test(own.join('\n'));
+		}).map((c) => c.tag);
+
+		expect(ROXY_COMPONENTS.length).toBeGreaterThan(50);
+		expect(unpainted).toEqual([]);
 	});
 });
