@@ -209,8 +209,10 @@ describe('widgets.js mount paths', () => {
 	 * The one-tag embed is the surface with no build step, so a page that keeps its keys on its
 	 * own server has only these attributes to say so. Both halves of a birth-data form have to
 	 * follow: the submitted request and the city search the form issues while a visitor types.
+	 * The context a page attaches to the submitted one travels the same way, and must be kept out
+	 * of the parameters for the same reason: it configures the wire, it is not a value to send.
 	 */
-	test('the proxy routes reach the element and are never sent as request parameters', async () => {
+	test('the proxied wire attributes reach the element and are never sent as request parameters', async () => {
 		const map = await buildWidgetMap();
 		const calls = mockFetch({});
 
@@ -220,6 +222,7 @@ describe('widgets.js mount paths', () => {
 				attrs: {
 					'data-submit-url': '/api/roxy/proxy',
 					'data-location-url': '/api/roxy/location/search',
+					'data-submit-context': '{"token":"opaque-value"}',
 				},
 			},
 		]);
@@ -229,9 +232,11 @@ describe('widgets.js mount paths', () => {
 		const el = child(w, 'w0');
 		expect(el?.getAttribute('submit-url')).toBe('/api/roxy/proxy');
 		expect(el?.getAttribute('location-url')).toBe('/api/roxy/location/search');
+		expect(el?.getAttribute('submit-context')).toBe('{"token":"opaque-value"}');
 		// A route is a destination, so it must not be mistaken for a value to send.
 		expect(el?.getAttribute('submitUrl')).toBeNull();
 		expect(el?.getAttribute('locationUrl')).toBeNull();
+		expect(el?.getAttribute('submitContext')).toBeNull();
 	});
 
 	test('data-attribution="off" suppresses the credit on an auto-mount', async () => {

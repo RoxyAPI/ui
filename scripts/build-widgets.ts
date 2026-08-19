@@ -193,10 +193,11 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 		});
 	}
 
-	// Routes on the host page that answer the component's own requests. They name a
-	// destination rather than a value to send, so they are forwarded to the element
-	// and never collected as request parameters.
-	var PROXY_ATTRS = ['submit-url', 'location-url'];
+	// The proxied wire: the two routes on the host page that answer the component's
+	// own requests, plus the context the page attaches to the submitted one. Each
+	// configures that wire rather than carrying a value the endpoint takes, so they
+	// are forwarded to the element and never collected as request parameters.
+	var PROXY_ATTRS = ['submit-url', 'location-url', 'submit-context'];
 	var SKIP = { 'data-roxy-widget': 1, 'data-roxy-mounted': 1, 'data-publishable-key': 1, 'data-attribution': 1, 'data-submit-label': 1 };
 	PROXY_ATTRS.forEach(function (k) { SKIP['data-' + k] = 1; });
 

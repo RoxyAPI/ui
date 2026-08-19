@@ -70,6 +70,13 @@ export class FetchController<T = unknown> implements ReactiveController {
 	 * Consumer backend route that holds the secret key. When set, the request is POSTed here as `{ path, method, body, query }` instead of called against RoxyAPI directly, so no key (publishable or secret) is sent from the browser. This is the canonical path for server-rendered hosts (WordPress); the backend proxies the request with its own `sk_` key and returns the JSON response.
 	 */
 	submitUrl?: string;
+	/**
+	 * Object the host page attaches to the proxied request, carried beside it as `context`. Set by the host from its `submit-context` attribute, and shapeless on purpose: this passes it through and reads no key of it, so what it holds is for the page and its own route to agree on.
+	 *
+	 * @remarks
+	 * Only the {@link FetchController.submitUrl} path can carry it, because that is the only body this code writes. A direct call sends the request the endpoint declares and nothing beside it.
+	 */
+	submitContext?: Record<string, unknown>;
 
 	constructor(host: FetchHost<T>) {
 		this.host = host;
@@ -102,7 +109,7 @@ export class FetchController<T = unknown> implements ReactiveController {
 							Accept: 'application/json',
 							'Content-Type': 'application/json',
 						},
-						body: JSON.stringify(req),
+						body: this.proxyBody(req),
 						signal: controller.signal,
 					})
 				: await this.callApi(req, controller.signal);
@@ -117,6 +124,18 @@ export class FetchController<T = unknown> implements ReactiveController {
 			if (this.abort === controller) this.abort = undefined;
 			if (!controller.signal.aborted) this.host.loading = false;
 		}
+	}
+
+	/**
+	 * The body of a proxied POST: the request, plus {@link FetchController.submitContext} under `context` when the host set one.
+	 *
+	 * @remarks
+	 * The context is appended rather than declared on {@link RoxyRequest}, so with none set the payload is the request object itself and every route already written against it keeps receiving the same four keys in the same order. A `null` or an empty object would be a fifth key such a route never agreed to read.
+	 */
+	private proxyBody(req: RoxyRequest): string {
+		return JSON.stringify(
+			this.submitContext ? { ...req, context: this.submitContext } : req,
+		);
 	}
 
 	/** Direct call against RoxyAPI with the publishable key (the no-backend path). */

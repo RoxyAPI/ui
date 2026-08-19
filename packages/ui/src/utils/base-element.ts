@@ -1,4 +1,10 @@
-import { type CSSResultGroup, html, nothing, type PropertyValues } from 'lit';
+import {
+	type ComplexAttributeConverter,
+	type CSSResultGroup,
+	html,
+	nothing,
+	type PropertyValues,
+} from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
@@ -10,6 +16,32 @@ import {
 	renderInterpAccordion,
 } from './interp-accordion.js';
 import { MarkupDataController } from './markup-data.js';
+
+/**
+ * Read the `submit-context` attribute into the object a proxied submit carries.
+ *
+ * @remarks
+ * Hand-written rather than `type: Object`, which resolves malformed JSON to `null` in silence: a page whose context never left has nothing to look at, and the route it was meant for reports only that the value it expected is not there. One warning covers both refusals (unparseable, or parsed to something that is not an object) because both leave the request without a context, which is the fact worth reading.
+ */
+const submitContextConverter: ComplexAttributeConverter<
+	Record<string, unknown> | undefined
+> = {
+	fromAttribute: (value) => {
+		if (value == null) return undefined;
+		try {
+			const parsed: unknown = JSON.parse(value);
+			if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+				return parsed as Record<string, unknown>;
+			}
+		} catch {
+			// Both refusals share the warning below.
+		}
+		console.warn(
+			'[roxy-ui] submit-context must be a JSON object; sending the request without it.',
+		);
+		return undefined;
+	},
+};
 
 /**
  * Shared base for every data-driven Roxy component. Consolidates the things every component used to repeat by hand and adds the self-contained, drop-in behavior: controlled-mode hydration, an opt-in self-fetch (form, request, loading, error, empty), the typed `data` slot, and the render switch. A subclass implements one method, {@link RoxyDataElement.renderData}.
@@ -71,6 +103,26 @@ export abstract class RoxyDataElement<
 	/** Consumer backend route that proxies the request (holds the secret key). When set, self-fetch POSTs the request here instead of calling RoxyAPI directly, so no key reaches the browser. The server-rendered (WordPress) path. */
 	@property({ type: String, attribute: 'submit-url' })
 	submitUrl?: string;
+
+	/**
+	 * Data the host page chooses, as a JSON object, sent to the {@link RoxyDataElement.submitUrl} route as `context` beside the request. The place a page attaches its own verification data to a proxied submission.
+	 *
+	 * @remarks
+	 * Shapeless by design and never read here: the component parses the attribute, hands the object to the request, and leaves every key of it to the page and the route that answers it. Nothing is sent when it is unset, when the JSON does not parse, and when it parses to anything but an object, so a route written before this existed goes on receiving exactly the request it always did.
+	 *
+	 * It rides the proxy path only. A direct call with a `publishable-key` sends what the endpoint declares, so setting this without a `submit-url` does nothing.
+	 *
+	 * @example
+	 * ```html
+	 * <roxy-natal-chart
+	 *   data-endpoint="astrology/natal-chart"
+	 *   submit-url="/api/roxy/proxy"
+	 *   submit-context='{"token":"..."}'
+	 * ></roxy-natal-chart>
+	 * ```
+	 */
+	@property({ attribute: 'submit-context', converter: submitContextConverter })
+	submitContext?: Record<string, unknown>;
 
 	/**
 	 * Where the self-fetch form's city search sends its request, absolute or relative to the page.
@@ -167,6 +219,9 @@ export abstract class RoxyDataElement<
 		}
 		if (changed.has('submitUrl')) {
 			this.fetcher.submitUrl = this.submitUrl;
+		}
+		if (changed.has('submitContext')) {
+			this.fetcher.submitContext = this.submitContext;
 		}
 	}
 

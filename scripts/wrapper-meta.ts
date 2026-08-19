@@ -177,6 +177,12 @@ export const BASE_PROPS: ConfigPropDef[] = [
 			'Your own backend route, which holds the secret key. Self-fetch POSTs `{ path, method, body, query }` there instead of calling RoxyAPI directly and renders the JSON your route returns, so no key of any kind reaches the browser.',
 	},
 	{
+		prop: 'submitContext',
+		type: 'Record<string, unknown>',
+		comment:
+			'An object of your own, sent to your submitUrl route as `context` beside the request, so a page can attach its own verification data to a proxied submission. Passed through untouched and never read by the component: what it holds is for your page and your route to agree on. Unset, nothing is added and the route receives the request exactly as before. Rides the submitUrl path only; a direct call sends what the endpoint declares.',
+	},
+	{
 		prop: 'locationUrl',
 		type: 'string',
 		comment:

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, mock, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, mock, test } from 'bun:test';
 
 // Registers roxy-dream-card, a concrete RoxyDataElement subclass used here to
 // exercise the base in both modes. happy-dom is loaded by preload (bunfig.toml).
@@ -198,6 +198,83 @@ describe('FetchController security and state machine', () => {
 	});
 });
 
+/**
+ * The proxied POST body is a contract with a route somebody else wrote, so the payload is asserted
+ * as the STRING it puts on the wire rather than as a parsed object. A request with no context has
+ * to serialize exactly as it always has, down to the key order, because a route is free to read it
+ * however it likes; a context has to arrive whole, and only on the path whose body this code writes.
+ */
+describe('FetchController proxied submit payload', () => {
+	const originalFetch = globalThis.fetch;
+	afterEach(() => {
+		globalThis.fetch = originalFetch;
+	});
+
+	const REQ = {
+		path: '/astrology/natal-chart',
+		method: 'POST' as const,
+		query: { lang: 'de' },
+		body: { date: '1990-01-15' },
+	};
+
+	/** One submit through a `submit-url`, returning the request the controller issued. */
+	async function proxied(
+		context?: Record<string, unknown>,
+	): Promise<{ url: string; body: string }> {
+		const calls: { url: string; body: string }[] = [];
+		globalThis.fetch = mock(
+			async (url: string | URL, init?: { body?: string }) => {
+				calls.push({ url: String(url), body: String(init?.body) });
+				return { ok: true, status: 200, json: async () => ({}) };
+			},
+		) as unknown as typeof fetch;
+
+		const fc = new FetchController(new FakeHost<unknown>() as never);
+		fc.submitUrl = '/api/roxy/proxy';
+		fc.submitContext = context;
+		await fc.run(REQ);
+		return calls[0] as { url: string; body: string };
+	}
+
+	test('no context posts the request byte for byte as before', async () => {
+		const { url, body } = await proxied();
+		expect(url).toBe('/api/roxy/proxy');
+		expect(body).toBe(
+			'{"path":"/astrology/natal-chart","method":"POST","query":{"lang":"de"},"body":{"date":"1990-01-15"}}',
+		);
+		expect(body).toBe(JSON.stringify(REQ));
+	});
+
+	test('a context rides beside the request, whole and appended last', async () => {
+		const context = {
+			token: 'opaque-value',
+			issuedAt: 1750000000,
+			nested: { source: 'host-page', flags: [1, 2] },
+		};
+		const { body } = await proxied(context);
+		expect(JSON.parse(body)).toEqual({ ...REQ, context });
+		// Appended rather than merged: every byte a route already parses is where it was.
+		expect(body.startsWith(JSON.stringify(REQ).slice(0, -1))).toBe(true);
+	});
+
+	test('a direct call carries no context, even when one is set', async () => {
+		const calls: { body?: string }[] = [];
+		globalThis.fetch = mock(
+			async (_url: string | URL, init?: { body?: string }) => {
+				calls.push({ body: init?.body });
+				return { ok: true, status: 200, json: async () => ({}) };
+			},
+		) as unknown as typeof fetch;
+
+		const fc = new FetchController(new FakeHost<unknown>() as never);
+		fc.publishableKey = 'pk_test_abc';
+		fc.submitContext = { token: 'opaque-value' };
+		await fc.run(REQ);
+
+		expect(calls[0]?.body).toBe(JSON.stringify(REQ.body));
+	});
+});
+
 // The roxy-data island read path (hydrate, JS-property-wins, marker-class,
 // malformed JSON) is unit-tested against a stub host in utils.test.ts, and the
 // real-browser island -> render mount lives in the e2e spec. happy-dom cannot
@@ -264,6 +341,62 @@ describe('RoxyDataElement uncontrolled mode (self-fetch UI)', () => {
 				?.hasAttribute('location-url'),
 		).toBe(false);
 		plain.remove();
+	});
+});
+
+/**
+ * `submit-context` is the one attribute here whose value is an object, so the markup path is where
+ * it can go wrong: a page writes JSON into an attribute and has no way to see that the element
+ * refused it. Anything that is not an object leaves no context AND says so, because the alternative
+ * is a proxy route reporting a missing value while the page believes it sent one.
+ */
+describe('RoxyDataElement submit-context', () => {
+	const originalWarn = console.warn;
+	let warnings: string[] = [];
+
+	beforeEach(() => {
+		warnings = [];
+		console.warn = (...args: unknown[]) => {
+			warnings.push(args.map(String).join(' '));
+		};
+	});
+	afterEach(() => {
+		console.warn = originalWarn;
+	});
+
+	/** Mount a dream card carrying a raw `submit-context` attribute and read back the parsed property. */
+	async function context(raw: string): Promise<unknown> {
+		const el = document.createElement('roxy-dream-card') as HTMLElement & {
+			updateComplete: Promise<unknown>;
+			submitContext?: unknown;
+		};
+		el.setAttribute('submit-url', '/api/roxy/proxy');
+		el.setAttribute('submit-context', raw);
+		document.body.appendChild(el);
+		await el.updateComplete;
+		const value = el.submitContext;
+		el.remove();
+		return value;
+	}
+
+	test('a JSON object attribute becomes the object the request carries', async () => {
+		expect(await context('{"token":"opaque-value","tries":2}')).toEqual({
+			token: 'opaque-value',
+			tries: 2,
+		});
+		expect(warnings).toEqual([]);
+	});
+
+	test('malformed JSON leaves no context and warns', async () => {
+		expect(await context('{token: opaque-value')).toBeUndefined();
+		expect(warnings.length).toBe(1);
+		expect(warnings[0]).toContain('submit-context');
+	});
+
+	test('valid JSON that is not an object leaves no context and warns', async () => {
+		expect(await context('["opaque-value"]')).toBeUndefined();
+		expect(await context('"opaque-value"')).toBeUndefined();
+		expect(warnings.length).toBe(2);
 	});
 });
 

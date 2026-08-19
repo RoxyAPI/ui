@@ -36,14 +36,19 @@ test('both requests of a proxied birth-data form leave at the host origin', asyn
 }) => {
 	const host: string[] = [];
 	const direct: string[] = [];
+	let submitted: Record<string, unknown> | undefined;
 
 	await page.route('**/api/roxy/location/search*', async (route) => {
 		host.push(`GET ${new URL(route.request().url()).pathname}`);
 		await route.fulfill({ json: CITIES });
 	});
 	await page.route('**/api/roxy/proxy', async (route) => {
-		const body = route.request().postDataJSON() as { path?: string };
+		const body = route.request().postDataJSON() as {
+			path?: string;
+			context?: Record<string, unknown>;
+		};
 		host.push(`POST ${body?.path}`);
+		submitted = body;
 		await route.fulfill({ json: {} });
 	});
 	// A request straight to the API is the failure this guards: on a proxied page it means a
@@ -62,6 +67,8 @@ test('both requests of a proxied birth-data form leave at the host origin', asyn
 		el.setAttribute('spec-url', './openapi.json');
 		el.setAttribute('submit-url', '/api/roxy/proxy');
 		el.setAttribute('location-url', '/api/roxy/location/search');
+		// The host page attaches its own data to the submission it proxies.
+		el.setAttribute('submit-context', '{"token":"opaque-value"}');
 		document.body.prepend(el);
 	});
 
@@ -93,4 +100,7 @@ test('both requests of a proxied birth-data form leave at the host origin', asyn
 		'POST /astrology/natal-chart',
 	]);
 	expect(direct).toEqual([]);
+	// The context arrives whole, beside the request rather than inside it.
+	expect(submitted?.context).toEqual({ token: 'opaque-value' });
+	expect(submitted?.body).not.toHaveProperty('token');
 });

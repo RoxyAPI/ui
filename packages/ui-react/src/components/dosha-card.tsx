@@ -24,6 +24,8 @@ export interface RoxyDoshaCardProps extends ElementAttrs {
 	baseUrl?: string;
 	/** Your own backend route, which holds the secret key. Self-fetch POSTs `{ path, method, body, query }` there instead of calling RoxyAPI directly and renders the JSON your route returns, so no key of any kind reaches the browser. */
 	submitUrl?: string;
+	/** An object of your own, sent to your submitUrl route as `context` beside the request, so a page can attach its own verification data to a proxied submission. Passed through untouched and never read by the component: what it holds is for your page and your route to agree on. Unset, nothing is added and the route receives the request exactly as before. Rides the submitUrl path only; a direct call sends what the endpoint declares. */
+	submitContext?: Record<string, unknown>;
 	/** Where the self-fetch form city search sends its request, absolute or relative to the page. The companion of submitUrl: the city search is a GET the form issues on its own while a visitor types, so a page that routes its API traffic through its own server names that route here as well. Unset, the search calls the public location endpoint. */
 	locationUrl?: string;
 	/** Override the OpenAPI spec URL the self-fetch form introspects. */
@@ -44,7 +46,7 @@ export interface RoxyDoshaCardProps extends ElementAttrs {
 }
 
 export const RoxyDoshaCard = React.forwardRef<HTMLElement | null, RoxyDoshaCardProps>(
-	function RoxyDoshaCard({ data, className, style, type, endpoint, method, publishableKey, baseUrl, submitUrl, locationUrl, specUrl, lang, submitLabel, remember, attribution, hideReadings, hideSections, ...rest }, ref) {
+	function RoxyDoshaCard({ data, className, style, type, endpoint, method, publishableKey, baseUrl, submitUrl, submitContext, locationUrl, specUrl, lang, submitLabel, remember, attribution, hideReadings, hideSections, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -117,6 +119,13 @@ export const RoxyDoshaCard = React.forwardRef<HTMLElement | null, RoxyDoshaCardP
 				(el as unknown as { submitUrl: string }).submitUrl = submitUrl;
 			}
 		}, [submitUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && submitContext !== undefined) {
+				(el as unknown as { submitContext: Record<string, unknown> }).submitContext = submitContext;
+			}
+		}, [submitContext, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;
