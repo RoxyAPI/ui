@@ -627,7 +627,7 @@ That table is the shared vocabulary, not the whole list. **`components-catalog.j
 
 ## Domain ordering
 
-When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, forecast, human design, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers. Location is utility, not a selling domain. The `domain` field in `components-catalog.json` carries the same names, so sort by this list rather than by whatever order you discovered components in.
+When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, forecast, human design, Chinese astrology, feng shui, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers. Sort by this list and skip any domain the catalog does not carry a component for. Location is utility, not a selling domain. The `domain` field in `components-catalog.json` carries the same names, so sort by this list rather than by whatever order you discovered components in.
 
 ## What not to ship
 
