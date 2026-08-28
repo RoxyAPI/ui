@@ -106,6 +106,12 @@ async function main() {
 	);
 
 	const PERSON1 = { date: '1990-01-15', time: '14:30:00', ...newYork };
+	// One fixed almanac day, so the captured sample, the snippet beside it on the
+	// demo card and the preview image all describe the same day. Chosen because it
+	// carries BOTH lists: an almanac day can legitimately favour nothing and avoid
+	// nothing, and one of those renders the block this card is built around as an
+	// empty space nobody would notice was missing.
+	const ALMANAC_DAY = '2026-09-08';
 	const PERSON2 = { date: '1992-06-20', time: '09:15:00', ...london };
 
 	/**
@@ -136,8 +142,80 @@ async function main() {
 		run('horoscope', () =>
 			roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } }),
 		),
+		run('bazi', () =>
+			roxy.chineseAstrology.generateBaziChart({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					timezone: PERSON1.timezone,
+				},
+			}),
+		),
+		run('luck-pillars', () =>
+			roxy.chineseAstrology.calculateLuckPillars({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					timezone: PERSON1.timezone,
+					gender: 'male',
+				},
+			}),
+		),
+		run('zodiac-sign', () =>
+			roxy.chineseAstrology.calculateZodiacAnimal({
+				body: { date: PERSON1.date },
+			}),
+		),
+		run('zodiac-animal', () =>
+			roxy.chineseAstrology.getZodiacAnimal({ path: { id: 'horse' } }),
+		),
+		run('zodiac-daily', () =>
+			roxy.chineseAstrology.getDailyZodiacReading({ path: { id: 'horse' } }),
+		),
+		run('zodiac-compat', () =>
+			roxy.chineseAstrology.getZodiacCompatibility({
+				path: { sign1: 'horse', sign2: 'tiger' },
+			}),
+		),
+		run('almanac-day', () =>
+			roxy.chineseAstrology.getAlmanacDay({ path: { date: ALMANAC_DAY } }),
+		),
+		run('almanac-auspicious', () =>
+			roxy.chineseAstrology.lookupAuspiciousDays({
+				body: {
+					activity: 'wedding',
+					startDate: '2026-09-01',
+					endDate: '2026-10-31',
+				},
+			}),
+		),
+		run('kua', () =>
+			roxy.fengShui.calculateKuaNumber({
+				body: { date: PERSON1.date, gender: 'female' },
+			}),
+		),
+		run('mansions', () =>
+			roxy.fengShui.generateEightMansions({
+				body: { date: PERSON1.date, gender: 'female' },
+			}),
+		),
+		run('flying-star', () =>
+			roxy.fengShui.generateFlyingStarChart({
+				body: { facingDegrees: 175, period: 9 },
+			}),
+		),
+		run('flying-star-annual', () =>
+			roxy.fengShui.getAnnualFlyingStars({ path: { year: 2026 } }),
+		),
+		run('horoscope-weekly', () =>
+			roxy.astrology.getWeeklyHoroscope({ path: { sign: 'aries' } }),
+		),
 		run('horoscope-monthly', () =>
 			roxy.astrology.getMonthlyHoroscope({ path: { sign: 'aries' } }),
+		),
+		// Yearly has no SDK method yet, so it goes through the raw GET.
+		run('horoscope-yearly', () =>
+			roxy.astrology.getYearlyHoroscope({ path: { sign: 'aries' } }),
 		),
 		run('synastry', () =>
 			roxy.astrology.calculateSynastry({

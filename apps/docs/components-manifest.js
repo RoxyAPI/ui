@@ -342,9 +342,22 @@ window.ROXY_UI_DEMOS = [
 	entry({
 		id: 'horoscope',
 		tag: 'roxy-horoscope-card',
-		seoLine: 'Daily horoscope card for any zodiac sign',
+		heading: 'Daily horoscope',
+		seoLine:
+			'Daily horoscope card for any zodiac sign, with the dated sky events the reading is built on',
 		attrs: ' period="daily"',
 		sdkCall: `  const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });`,
+	}),
+	// The second card pins the topic-section shape, so the showcase and the audit
+	// cover both halves of a reading the endpoint returns twice.
+	entry({
+		id: 'horoscope-weekly',
+		tag: 'roxy-horoscope-card',
+		heading: 'Weekly horoscope',
+		seoLine:
+			'Week-level horoscope split by love, career, health and finance, over the events the week turns on',
+		attrs: ' period="weekly" layout="sections"',
+		sdkCall: `  const { data } = await roxy.astrology.getWeeklyHoroscope({ path: { sign: 'aries' } });`,
 	}),
 	entry({
 		id: 'horoscope-monthly',
@@ -354,6 +367,15 @@ window.ROXY_UI_DEMOS = [
 			'Month-level horoscope with a week-by-week breakdown, key lunar dates and one takeaway for the month',
 		attrs: ' period="monthly"',
 		sdkCall: `  const { data } = await roxy.astrology.getMonthlyHoroscope({ path: { sign: 'aries' } });`,
+	}),
+	entry({
+		id: 'horoscope-yearly',
+		tag: 'roxy-horoscope-card',
+		heading: 'Yearly horoscope',
+		seoLine:
+			'Year-ahead horoscope with the slow-body themes, twelve key periods, eclipses, retrogrades and the best month per life area',
+		attrs: ' period="yearly"',
+		sdkCall: `  const { data } = await roxy.astrology.getYearlyHoroscope({ path: { sign: 'aries' } });`,
 	}),
 	entry({
 		id: 'compat',
@@ -798,6 +820,125 @@ window.ROXY_UI_DEMOS = [
       birthData: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, timezone: PERSON1.timezone, latitude: PERSON1.latitude, longitude: PERSON1.longitude }, null, 2).replace(/\n/g, '\n      ')},
       startDate: '2026-06-19',
     },
+  });`,
+	}),
+	entry({
+		id: 'bazi',
+		tag: 'roxy-bazi-chart',
+		seoLine:
+			'BaZi four pillars chart with hidden stems, Ten Gods, element balance and interactions',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.generateBaziChart({
+    body: {
+      date: '${PERSON1.date}',
+      time: '${PERSON1.time}',
+      timezone: '${PERSON1.timezone}',
+    },
+  });`,
+	}),
+	entry({
+		id: 'luck-pillars',
+		tag: 'roxy-luck-pillars',
+		seoLine:
+			'BaZi luck pillars: the ten-year stretches a chart is read through, with ages and years',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.calculateLuckPillars({
+    body: {
+      date: '${'1990-01-15'}',
+      time: '${'14:30:00'}',
+      timezone: 'America/New_York',
+      gender: 'male',
+    },
+  });`,
+	}),
+	entry({
+		id: 'zodiac-sign',
+		tag: 'roxy-zodiac-card',
+		seoLine: 'The Chinese zodiac animal a birth date falls in, with its element and pillar',
+		attrs: ' mode="sign"',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.calculateZodiacAnimal({
+    body: { date: '1990-01-15' },
+  });`,
+	}),
+	entry({
+		id: 'zodiac-animal',
+		tag: 'roxy-zodiac-card',
+		heading: 'Zodiac animal',
+		seoLine:
+			'One Chinese zodiac animal in full: traits, trine, secret friend, clash and harm partners',
+		attrs: ' mode="animal"',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.getZodiacAnimal({ path: { id: 'horse' } });`,
+	}),
+	entry({
+		id: 'zodiac-daily',
+		tag: 'roxy-zodiac-card',
+		heading: 'Zodiac daily reading',
+		seoLine: 'Today read for one Chinese zodiac animal, with the day pillar behind it',
+		attrs: ' mode="daily"',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.getDailyZodiacReading({ path: { id: 'horse' } });`,
+	}),
+	entry({
+		id: 'zodiac-compat',
+		tag: 'roxy-zodiac-card',
+		heading: 'Zodiac compatibility',
+		seoLine: 'Two Chinese zodiac animals scored, with the named relationship between them',
+		attrs: ' mode="compatibility"',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.getZodiacCompatibility({
+    path: { sign1: 'horse', sign2: 'tiger' },
+  });`,
+	}),
+	entry({
+		id: 'almanac-day',
+		tag: 'roxy-almanac-day',
+		seoLine:
+			'Chinese almanac day: the day officer, what it favours and avoids, and the animal it clashes with',
+		attrs: ' mode="day"',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.getAlmanacDay({ path: { date: '2026-09-08' } });`,
+	}),
+	entry({
+		id: 'almanac-auspicious',
+		tag: 'roxy-almanac-day',
+		heading: 'Auspicious days',
+		seoLine: 'The days in a window that favour one activity, from the Chinese almanac',
+		attrs: ' mode="auspicious"',
+		sdkCall: `  const { data } = await roxy.chineseAstrology.lookupAuspiciousDays({
+    body: { activity: 'wedding', startDate: '2026-09-01', endDate: '2026-10-31' },
+  });`,
+	}),
+	entry({
+		id: 'flying-star',
+		tag: 'roxy-flying-star-chart',
+		seoLine:
+			'Xuan Kong flying star plate with the mountain, water, period and base star of each palace',
+		attrs: ' mode="natal"',
+		sdkCall: `  const { data } = await roxy.fengShui.generateFlyingStarChart({
+    body: { facingDegrees: 175, period: 9 },
+  });`,
+	}),
+	entry({
+		id: 'flying-star-annual',
+		tag: 'roxy-flying-star-chart',
+		heading: 'Annual flying stars',
+		seoLine: 'The year of stars over a building, one per compass sector',
+		attrs: ' mode="annual"',
+		sdkCall: `  const { data } = await roxy.fengShui.getAnnualFlyingStars({ path: { year: 2026 } });`,
+	}),
+	entry({
+		id: 'kua',
+		tag: 'roxy-kua-card',
+		seoLine: 'Kua number and its trigram, with the eight favourable and unfavourable directions',
+		attrs: ' mode="kua"',
+		sdkCall: `  const { data } = await roxy.fengShui.calculateKuaNumber({
+    body: { date: '1990-01-15', gender: 'female' },
+  });`,
+	}),
+	entry({
+		id: 'mansions',
+		tag: 'roxy-kua-card',
+		heading: 'Eight mansions',
+		seoLine:
+			'The full Eight Mansions map: every compass sector ranked, with a reading and the best and worst named',
+		attrs: ' mode="mansions"',
+		sdkCall: `  const { data } = await roxy.fengShui.generateEightMansions({
+    body: { date: '1990-01-15', gender: 'female' },
   });`,
 	}),
 	entry({

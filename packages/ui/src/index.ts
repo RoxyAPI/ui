@@ -5,6 +5,8 @@
  *   import '@roxyapi/ui/components/natal-chart';
  */
 
+// Chinese astrology
+export { RoxyAlmanacDay } from './components/almanac-day.js';
 // Angel numbers
 export { RoxyAngelNumberCard } from './components/angel-number-card.js';
 export { RoxyAngelNumberLookup } from './components/angel-number-lookup.js';
@@ -13,6 +15,8 @@ export { RoxyAshtakavargaGrid } from './components/ashtakavarga-grid.js';
 // Western astrology
 export { RoxyAspectsTable } from './components/aspects-table.js';
 export { RoxyAstrocartographyMap } from './components/astrocartography-map.js';
+// Chinese astrology
+export { RoxyBaziChart } from './components/bazi-chart.js';
 export { RoxyBhavChalitTable } from './components/bhav-chalit-table.js';
 export { RoxyBhavaBalaTable } from './components/bhava-bala-table.js';
 // Biorhythm
@@ -37,6 +41,8 @@ export { RoxyDreamSearch } from './components/dream-search.js';
 export { RoxyEndpointForm } from './components/endpoint-form.js';
 export { RoxyEphemerisTable } from './components/ephemeris-table.js';
 export { RoxyFixedStars } from './components/fixed-stars.js';
+// Feng shui
+export { RoxyFlyingStarChart } from './components/flying-star-chart.js';
 // Forecast
 export { RoxyForecastDigest } from './components/forecast-digest.js';
 export { RoxyForecastTimeline } from './components/forecast-timeline.js';
@@ -55,8 +61,10 @@ export { RoxyHoroscopeCard } from './components/horoscope-card.js';
 export { RoxyKpChart } from './components/kp-chart.js';
 export { RoxyKpPlanetsTable } from './components/kp-planets-table.js';
 export { RoxyKpRulingPlanets } from './components/kp-ruling-planets.js';
+export { RoxyKuaCard } from './components/kua-card.js';
 export { RoxyLocalSpaceCompass } from './components/local-space-compass.js';
 export { RoxyLocationSearch } from './components/location-search.js';
+export { RoxyLuckPillars } from './components/luck-pillars.js';
 export { RoxyMoonPhase } from './components/moon-phase.js';
 export { RoxyNakshatraCard } from './components/nakshatra-card.js';
 // Western astrology
@@ -84,6 +92,7 @@ export { RoxyVedicKundli } from './components/vedic-kundli.js';
 export { RoxyVedicPlanetsTable } from './components/vedic-planets-table.js';
 export { RoxyWesternPlanetsTable } from './components/western-planets-table.js';
 export { RoxyYogaList } from './components/yoga-list.js';
+export { RoxyZodiacCard } from './components/zodiac-card.js';
 
 // SSR helpers for the server-rendered hydration path (Pattern 7). Safe writers
 // for the inline <script class="roxy-data"> the MarkupDataController reads.

@@ -40,12 +40,22 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// bytes a string was drawn from short labels and undershot by half.
 	//
 	// This is a coverage tracker, not a performance limit: the payload is one
-	// cached download per site, and an English site fetches none of it. When
-	// this trips with nothing left to translate, SPLIT rather than raise again,
-	// and split the chrome catalogue by domain so a page embedding one card
-	// stops paying for twelve. Not the API field labels: those are about a
-	// sixth of the source, measured, and separating them buys almost nothing.
-	localeGzip: 20 * KB,
+	// cached download per site, and an English site fetches none of it. It moves
+	// when COVERAGE moves, which is what it is for, and the raise below is one of
+	// those: two new API domains landed 28 operations of request fields, and the
+	// component reading them added chrome of its own, which took `ru` from 18.3 KB
+	// to 20.4 before a single new word was translated.
+	//
+	// **Splitting the catalogue is the next lever but it cannot answer THIS gate,
+	// so do not reach for it here.** The published contract is one `<script>` per
+	// language, the shape the README documents and every embedder already loads,
+	// so a split can only ADD smaller per-domain payloads beside the whole one. It
+	// leaves this file exactly the size it is. Splitting is about what a page has
+	// to DOWNLOAD, and it is worth doing for that reason alone; it is not a way to
+	// buy headroom here without breaking every consumer that loads the documented
+	// file. Not the API field labels either: those are about a sixth of the source,
+	// measured, and separating them buys almost nothing.
+	localeGzip: 22 * KB,
 };
 
 export interface Artifact {

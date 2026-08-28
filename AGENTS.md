@@ -8,7 +8,7 @@ Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component typ
 
 ## Identity
 
-Roxy UI is the official web component library for the RoxyAPI catalog. Components and helpers cover Western astrology, Vedic astrology, numerology, tarot, Human Design, forecast, biorhythm, I Ching, crystals, dreams, angel numbers, with the location helper for geocoding. New endpoints regenerate component types automatically.
+Roxy UI is the official web component library for the RoxyAPI catalog. Components and helpers cover Western astrology, Vedic astrology, forecast, Human Design, Chinese astrology, feng shui, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers, with the location helper for geocoding. New endpoints regenerate component types automatically.
 
 ## Decision tree for picking a component
 
@@ -18,7 +18,7 @@ Map the natural-language request to a component first; fall back to the table be
 
 | If the user says... | Render |
 |---|---|
-| "daily horoscope for `{sign}`", "weekly horoscope", "monthly horoscope" | `<roxy-horoscope-card>` |
+| "daily horoscope for `{sign}`", "weekly horoscope", "monthly horoscope", "year ahead", "yearly horoscope" | `<roxy-horoscope-card>` with `period="daily"`, `"weekly"`, `"monthly"` or `"yearly"`. Every period carries the reading twice, whole as one column and split into six topic sections, and `layout` picks which one renders. Yearly also carries the themes, key periods, eclipses, retrogrades and best months of the year |
 | "birth chart", "natal chart", "Western chart", "show me my planets" | `<roxy-natal-chart>` |
 | "match two birth charts", "compare us in Western astrology", "synastry" | `<roxy-synastry-chart>` |
 | "kundli", "Vedic chart", "rashi chart", "South/North Indian chart" | `<roxy-vedic-kundli>` |
@@ -37,6 +37,12 @@ Map the natural-language request to a component first; fall back to the table be
 | "forecast", "what is coming up", "upcoming transits and events", "timeline of my year" | `<roxy-forecast-timeline>` |
 | "biorhythm", "physical/emotional/intellectual cycle", "critical days" | `<roxy-biorhythm-chart>` |
 | "I Ching", "hexagram", "cast the coins", "Book of Changes" | `<roxy-hexagram>` |
+| "BaZi", "four pillars", "my Chinese birth chart", "what is my Day Master", "eight characters" | `<roxy-bazi-chart>` |
+| "luck pillars", "Da Yun", "my ten year cycles", "when does my luck change" | `<roxy-luck-pillars>` |
+| "Chinese zodiac", "what animal am I", "year of the {animal}", "my Chinese sign today", "are {animal} and {animal} compatible" | `<roxy-zodiac-card>` (`mode="sign"` for a birth date, `"animal"` for one animal in full, `"daily"` for today, `"compatibility"` for a pair) |
+| "Chinese almanac", "Tong Shu", "is {date} a good day", "pick a wedding date", "auspicious days for {activity}" | `<roxy-almanac-day>` (`mode="day"`, `"month"`, or `"auspicious"` for a date search) |
+| "Kua number", "eight mansions", "Ba Zhai", "my best direction", "which way should my desk face" | `<roxy-kua-card>` (`mode="kua"` for the number, `"mansions"` for the full map) |
+| "flying stars", "Xuan Kong", "the stars in my house", "annual stars for {year}", "period 9 chart" | `<roxy-flying-star-chart>` (`mode="natal"` for a building, `mode="annual"` for one year over it) |
 | "moon phase", "moon calendar", "next full moon", "current moon" | `<roxy-moon-phase>` |
 | "what does my dream mean", "dream symbol", "dream dictionary", "I dreamt of {symbol}" | `<roxy-dream-card>` |
 | "angel number {n}", "meaning of 111 / 222 / 1111", "I keep seeing this number" | `<roxy-angel-number-card>` |
@@ -61,7 +67,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-transit-wheel>` | Western | POST /astrology/transit-aspects | Natal chart on the inner ring, transiting bodies on the outer ring, aspect lines between them |
 | `<roxy-aspects-table>` | Western | POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns | Aspect rows coloured by nature with orb and strength, plus detected chart patterns |
 | `<roxy-moon-phase>` | Western | GET /astrology/moon-phase/{current,upcoming,calendar/...} | Moon phase card and calendar |
-| `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly} | Daily, weekly, or monthly horoscope card |
+| `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly,yearly} | Daily, weekly, monthly, or yearly horoscope card |
 | `<roxy-astrocartography-map>` | Western | POST /astrology/astrocartography | World map of planetary MC, IC, Ascendant, and Descendant lines with per-line interpretations |
 | `<roxy-local-space-compass>` | Western | POST /astrology/local-space | Compass dial of planetary azimuth lines from the birthplace, dimmed below the horizon |
 | `<roxy-relocation-wheel>` | Western | POST /astrology/relocation-chart | Relocated chart wheel plus the move geometry, angular planets, and planets that change house |
@@ -106,6 +112,12 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction, color, tone, and base, plus a reading per arrow grouped by layer and the cognition |
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/{timeline,significant-dates,transits} | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
+| `<roxy-bazi-chart>` | Chinese | POST /chinese-astrology/bazi/chart | Year, month, day and hour pillars in hanzi with hidden stems, Ten Gods, Na Yin, element balance and interactions |
+| `<roxy-luck-pillars>` | Chinese | POST /chinese-astrology/bazi/luck-pillars | Ten-year luck pillars as a strip with ages and years, the annual pillars, and the direction and start age behind them |
+| `<roxy-zodiac-card>` | Chinese | POST /chinese-astrology/zodiac/sign, GET /chinese-astrology/zodiac/{animals/{id},{id}/daily,compatibility/{sign1}/{sign2}} | The animal for a date, one animal in full, a daily reading, or a pair scored |
+| `<roxy-almanac-day>` | Chinese | GET /chinese-astrology/calendar/{day/{date},monthly}, POST /chinese-astrology/calendar/auspicious-days | Day officer, favours and avoids, clash animal and pillars, as one day, a month, or a date search |
+| `<roxy-flying-star-chart>` | Feng Shui | POST /feng-shui/flying-stars/natal, GET /feng-shui/flying-stars/annual/{year} | Nine-palace flying star plate with the mountain, period and water star per palace, the facing and sitting mountains and the structure |
+| `<roxy-kua-card>` | Feng Shui | POST /feng-shui/kua, POST /feng-shui/eight-mansions | Kua number and trigram over the eight-sector direction map, favourable and unfavourable sectors ranked |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
@@ -214,7 +226,7 @@ Several components select a view, mode, or chart layout in addition to `data`. T
 <RoxyPanchangTable data={panchang} detail="detailed" />
 ```
 
-The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period`, `RoxyMoonPhase` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` and `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`, `RoxyHexagram` `mode`. Outside React and Vue, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
+The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period` and `layout`, `RoxyMoonPhase` `mode`, `RoxyZodiacCard` `mode`, `RoxyKuaCard` `mode`, `RoxyAlmanacDay` `mode`, `RoxyFlyingStarChart` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` and `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`, `RoxyHexagram` `mode`. Outside React and Vue, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
 
 ### 6c. Vue and Nuxt
 
@@ -421,7 +433,7 @@ That single element renders a schema-driven form (a zodiac/enum tile picker, a b
 
 In React, the same props are typed: `<RoxyNatalChart endpoint="astrology/natal-chart" publishableKey={process.env.NEXT_PUBLIC_ROXY_PK} />`.
 
-**Three optional attributes on the self-fetch element.** `lang` sets the response language (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`): put it on the element (`<roxy-horoscope-card lang="de" ...>`) and the form routes it to the `?lang=` query on submit, so visitors never see a language field. `submit-label` overrides the derived button label. `attribution` renders a small "Spiritual data by RoxyAPI" credit under the result: off by default, and the one-tag script below turns it on unless you set `data-attribution="off"`. None of these apply in controlled mode.
+**Three optional attributes on the self-fetch element.** `lang` sets the response language (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`, `zh-Hans`, `zh-Hant`): put it on the element (`<roxy-horoscope-card lang="de" ...>`) and the form routes it to the `?lang=` query on submit, so visitors never see a language field. `submit-label` overrides the derived button label. `attribution` renders a small "Spiritual data by RoxyAPI" credit under the result: off by default, and the one-tag script below turns it on unless you set `data-attribution="off"`. None of these apply in controlled mode.
 
 **One tag, no element wiring.** For the simplest embed, load `dist/cdn/widgets.js` and drop a `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`. The script mounts the matching component from a generated slug map: with every path parameter supplied as a `data-*` attribute (`data-sign`, `data-id`) it fetches on mount, otherwise it renders the same input form. A second `data-*` attribute picks a variant (`data-period`, `data-mode`, `data-type`, `data-spread`). To keep every key on your own server instead, drop the publishable key and give the tag `data-submit-url` and `data-location-url`: the widget renders the form and routes both its requests there. `data-submit-context` rides along with the submitted one.
 
@@ -503,7 +515,9 @@ This is how the WordPress plugin renders: PHP fetches the response server-side, 
 
 ## Localized responses
 
-Most RoxyAPI endpoints return their interpretation text in eight languages, selected with the `lang` query parameter (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`). Human Design, for example, returns the type, strategy, authority, profile, channel, center, gate, and line readings in the requested language.
+Most RoxyAPI endpoints return their interpretation text in the language you ask for, selected with the `lang` query parameter (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`, `zh-Hans`, `zh-Hant`). Human Design, for example, returns the type, strategy, authority, profile, channel, center, gate, and line readings in the requested language. Coverage varies by domain, and a field with no translation in the language you asked for comes back in English.
+
+Chinese is named by script rather than by language, so `zh-Hant` and `zh-Hans` are the two values to send. A component resolves a regional tag for you: `zh-TW` and `zh-HK` read as traditional, `zh-CN` and `zh-SG` as simplified.
 
 The components hold no copy of their own; they print the prose the response carries. So the language of the response is the language of the render.
 

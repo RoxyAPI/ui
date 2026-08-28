@@ -593,6 +593,21 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 		expect(grain('time')).toBe('Aug 1, 2026, 12:00 AM');
 	});
 
+	test('a bare YYYY-MM names the same month in every viewer timezone', () => {
+		// The same trap as the date-only case one grain coarser: the platform reads
+		// `2026-08` as UTC midnight on the first, so a viewer west of Greenwich was
+		// shown July for a forecast the payload labelled August.
+		const west = 'America/Los_Angeles';
+		const seen = [...ZONES, west].map((tz) =>
+			withTz(tz, () => formatDateGrain('en', '2026-08', 'month')),
+		);
+		expect(new Set(seen).size).toBe(1);
+		expect(seen[0]).toBe('Aug 2026');
+		expect(withTz(west, () => formatDateGrain('es', '2026-08', 'month'))).toBe(
+			'ago 2026',
+		);
+	});
+
 	test('a full datetime still reads as its own wall clock at every grain', () => {
 		const GRAINS = ['year', 'month', 'day', 'time'] as const;
 		const expected = [

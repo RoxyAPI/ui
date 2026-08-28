@@ -288,6 +288,35 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				margin-top: var(--roxy-space-sm, 0.5rem);
 			}
 
+			.overlay-dir {
+				margin-top: var(--roxy-space-md, 1rem);
+			}
+			.overlay-dir:first-of-type {
+				margin-top: 0;
+			}
+			.overlay-dir h4 {
+				margin: 0;
+				display: flex;
+				align-items: baseline;
+				gap: 0.4rem;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.overlay-house {
+				font-variant-numeric: tabular-nums;
+				font-weight: var(--roxy-weight-bold, 600);
+				color: var(--roxy-accent-ink, #b45309);
+			}
+			.own-house {
+				font-variant-numeric: tabular-nums;
+				color: var(--roxy-muted, #71717a);
+			}
+			.retro {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+
 			table {
 				width: 100%;
 				border-collapse: collapse;
@@ -441,6 +470,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 						)}
 					</div>`
 			}
+			${this.renderOverlay(person1, person2)}
 			${this.renderSummaryPills(d.summary)}
 			${
 				// The contact counts above are the data; this paragraph is the read.
@@ -530,6 +560,98 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		const cards = [card(p1, 1), card(p2, 2)].filter((c) => c !== nothing);
 		if (cards.length === 0) return nothing;
 		return html`<div class="people">${cards}</div>`;
+	}
+
+	/**
+	 * The house overlay, both directions: which of the other person's houses each planet falls into.
+	 *
+	 * @remarks
+	 * **This is the half of synastry the inter-aspects do not cover.** An aspect says two bodies are
+	 * in relationship; an overlay says which area of the other person's life a body lands in, which
+	 * is the reading a practitioner gives as "your Venus falls in their seventh". The response
+	 * carries it per planet for both people, so both directions render: they are different readings,
+	 * not one fact seen twice, and showing one would be half the answer.
+	 *
+	 * Each row also keeps the planet's OWN house, because the two are easy to confuse and the
+	 * response is explicit that they are different numbers. Printing the overlay alone would leave a
+	 * reader unable to tell which chart a house number belongs to.
+	 *
+	 * Data, not reading, so `hide-readings` leaves all of it standing.
+	 *
+	 * **The wheel does not draw this and cannot yet**: a synastry response carries each person's
+	 * ascendant but no house cusps, so the ring the overlay is counted against is not in the
+	 * payload, and deriving it would mean assuming a house system the API did not use.
+	 */
+	private renderOverlay(
+		p1: SynastryPerson | undefined,
+		p2: SynastryPerson | undefined,
+	) {
+		if (!p1?.planets?.length || !p2?.planets?.length) return nothing;
+		const name = (p: SynastryPerson | undefined, n: 1 | 2) =>
+			p?.name || this.t('Person {{n}}', { n });
+		const n1 = name(p1, 1);
+		const n2 = name(p2, 2);
+		return html`<section class="block" part="section house-overlay">
+			<h3>${this.t('Houses')}</h3>
+			${this.renderOverlayTable(p1.planets, n1, n2, 1)}
+			${this.renderOverlayTable(p2.planets, n2, n1, 2)}
+		</section>`;
+	}
+
+	/** One direction of the overlay: every planet of `from`, read against the houses of `to`. */
+	private renderOverlayTable(
+		planets: readonly PlanetEntry[],
+		from: string,
+		to: string,
+		index: 1 | 2,
+	) {
+		const rows = planets.filter((p) => typeof p.houseInOtherChart === 'number');
+		if (rows.length === 0) return nothing;
+		const locale = this.effectiveLang();
+		const id = `overlay-${index}`;
+		return html`<div class="overlay-dir">
+			<h4 id=${id}>
+				<span class="person-dot p${index}" aria-hidden="true"></span>
+				${this.t('{{first}} in the houses of {{second}}', {
+					first: from,
+					second: to,
+				})}
+			</h4>
+			<div class="scroll" part="table">
+				<table aria-labelledby=${id}>
+					<thead>
+						<tr>
+							<th scope="col">${this.t('Planet')}</th>
+							<th scope="col">${this.t('Sign')}</th>
+							<th scope="col">${this.t('Degree')}</th>
+							<th scope="col">${this.t('House')}</th>
+							<th scope="col">${this.t('Own house')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						${rows.map(
+							(p) => html`<tr>
+								<td>
+									<span aria-hidden="true">${planetGlyph(p.name) ?? ''}</span>
+									${display(p, 'name')}${
+										p.isRetrograde
+											? html` <span class="retro" title=${this.t('retrograde')}>℞</span>`
+											: nothing
+									}
+								</td>
+								<td>
+									<span aria-hidden="true">${signGlyph(p.sign) ?? ''}</span>
+									${display(p, 'sign')}
+								</td>
+								<td>${formatNumber(locale, p.degree, 0)}°</td>
+								<td class="overlay-house">${p.houseInOtherChart}</td>
+								<td class="own-house">${p.house ?? ''}</td>
+							</tr>`,
+						)}
+					</tbody>
+				</table>
+			</div>
+		</div>`;
 	}
 
 	/** Contact balance for the pair. `byType` is a map, so its pairs are rendered, never the object. */

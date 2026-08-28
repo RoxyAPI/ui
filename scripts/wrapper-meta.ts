@@ -50,7 +50,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'profection-card': 'ProfectionsResponse',
 	'western-planets-table': 'NatalChartResponse',
 	'horoscope-card':
-		'GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse',
+		'GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse | GetYearlyHoroscopeResponse',
 	'synastry-chart':
 		"CalculateSynastryResponse & { person1?: { planets?: NatalChartResponse['planets'] }; person2?: { planets?: NatalChartResponse['planets'] } }",
 	'compatibility-card':
@@ -94,6 +94,15 @@ export const DATA_TYPES: Record<string, string> = {
 	'vedic-aspects': 'CalculateDrishtiResponse',
 	'hora-table': 'GetHoraResponse',
 	'forecast-digest': 'GenerateDigestResponse',
+	'bazi-chart': 'GenerateBaziChartResponse',
+	'luck-pillars': 'CalculateLuckPillarsResponse',
+	'zodiac-card':
+		'CalculateZodiacAnimalResponse | GetZodiacAnimalResponse | GetDailyZodiacReadingResponse | GetZodiacCompatibilityResponse',
+	'kua-card': 'CalculateKuaNumberResponse | GenerateEightMansionsResponse',
+	'almanac-day':
+		'GetAlmanacDayResponse | GetMonthlyAlmanacResponse | LookupAuspiciousDaysResponse',
+	'flying-star-chart':
+		'GenerateFlyingStarChartResponse | GetAnnualFlyingStarsResponse',
 	'crystal-card': 'GetCrystalResponse',
 	'dream-search': 'SearchDreamSymbolsResponse',
 	'divisional-chart': 'DivisionalChartResponse',
@@ -283,9 +292,47 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 	'horoscope-card': [
 		{
 			prop: 'period',
-			type: "'daily' | 'weekly' | 'monthly'",
+			type: "'daily' | 'weekly' | 'monthly' | 'yearly'",
 			comment:
 				'Which horoscope cadence the response is for. Selects the heading and date framing.',
+		},
+		{
+			prop: 'layout',
+			type: "'auto' | 'column' | 'sections'",
+			comment:
+				'Which shape the written reading takes. The endpoint returns the same reading twice, once whole as the column and once split into six topic sections, so exactly one is rendered. Defaults to auto, which prefers the column and falls back to the sections for a response that carries none.',
+		},
+	],
+	'zodiac-card': [
+		{
+			prop: 'mode',
+			type: "'sign' | 'animal' | 'daily' | 'compatibility'",
+			comment:
+				'Which of the four zodiac reads the response is: the animal a date falls in, the reference read of one animal, a daily reading, or the compatibility of a pair.',
+		},
+	],
+	'kua-card': [
+		{
+			prop: 'mode',
+			type: "'kua' | 'mansions'",
+			comment:
+				'Which read the response is: the Kua number alone, or the full Eight Mansions map, which adds a reading per sector and names the best and worst of them.',
+		},
+	],
+	'almanac-day': [
+		{
+			prop: 'mode',
+			type: "'day' | 'month' | 'auspicious'",
+			comment:
+				'Which read the response is: one almanac day as a card, a whole month of them as rows, or the days a search returned for one activity.',
+		},
+	],
+	'flying-star-chart': [
+		{
+			prop: 'mode',
+			type: "'natal' | 'annual'",
+			comment:
+				'Which plate the response is: the natal chart of a building, which carries a mountain and a water star per palace, or one year of stars over it, which carries one.',
 		},
 	],
 	'moon-phase': [

@@ -38,17 +38,58 @@ export function resolveLang(el: HTMLElement): string | undefined {
 }
 
 /**
+ * Which script a Chinese page is written in, read off the region it names.
+ *
+ * @remarks
+ * Chinese is the one language the API keys by SCRIPT rather than by language alone, because `zh`
+ * on its own does not say which of the two a reader can actually read. Real pages almost never
+ * write the script: a Taiwanese site writes `zh-TW` and a mainland site writes `zh-CN`, which is
+ * what the region-to-script correspondence every internationalisation library ships is for.
+ * Without this step both of those degrade to English, which takes the whole Chinese audience off
+ * the domains the API answers in Chinese at all.
+ *
+ * A bare `zh` with neither region nor script resolves to nothing on purpose: guessing a script for
+ * a reader who did not name one picks characters half of them cannot read.
+ */
+const ZH_SCRIPT_BY_REGION: Readonly<Record<string, string>> = {
+	tw: 'hant',
+	hk: 'hant',
+	mo: 'hant',
+	cn: 'hans',
+	sg: 'hans',
+	my: 'hans',
+};
+
+/** The API's own spelling of a tag, matched case-insensitively, or undefined when it serves no such language. */
+function asApiLang(tag: string): string | undefined {
+	const wanted = tag.toLowerCase();
+	return API_LANGUAGES.find((l) => l.toLowerCase() === wanted);
+}
+
+/**
  * The value safe to put on `?lang=`, or `undefined` to leave the request on the API default.
  *
  * @remarks
- * Two narrowings, both of which are load-bearing the moment {@link resolveLang} starts reading `<html lang>`:
+ * Three steps, and the order is load-bearing the moment {@link resolveLang} starts reading `<html lang>`:
  *
- * - **The region is dropped.** A regional tag is a 400, so a Spanish WordPress site would go from English-but-working to broken the day the language chain was completed. `es-AR`, `es-419` and `ES` all send `es`.
- * - **An unsupported language is omitted, not sent.** The chain now surfaces whatever the host page carries, including languages the API does not translate, and an unlisted tag is the same 400. Omitting it degrades to English, which is the behaviour those pages already had.
+ * - **A tag the API serves goes as it is**, matched without regard to case, so `zh-Hant` and `ZH-HANT` both send the spelling the API declares. This comes first because the next step would throw away the very subtag those tags are identified by.
+ * - **Chinese resolves its script**, from an explicit script subtag or from the region ({@link ZH_SCRIPT_BY_REGION}), because that is where the language actually lives.
+ * - **Everything else drops its region.** A regional tag is a 400, so a Spanish WordPress site would go from English-but-working to broken the day the language chain was completed. `es-AR`, `es-419` and `ES` all send `es`.
+ *
+ * **An unsupported language is omitted, not sent.** The chain surfaces whatever the host page carries, including languages the API does not translate, and an unlisted tag is the same 400. Omitting it degrades to English, which is the behaviour those pages already had.
  */
 export function apiLang(el: HTMLElement): string | undefined {
 	const tag = resolveLang(el);
 	if (!tag) return undefined;
-	const base = tag.toLowerCase().split('-')[0] as string;
-	return API_LANGUAGES.includes(base) ? base : undefined;
+	const exact = asApiLang(tag);
+	if (exact) return exact;
+	const parts = tag.toLowerCase().split('-');
+	const base = parts[0] as string;
+	if (base === 'zh') {
+		const script =
+			parts.find((p) => p === 'hans' || p === 'hant') ??
+			ZH_SCRIPT_BY_REGION[parts[1] ?? ''];
+		return script ? asApiLang(`zh-${script}`) : undefined;
+	}
+	return asApiLang(base);
 }

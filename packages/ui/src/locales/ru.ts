@@ -808,6 +808,25 @@ export const ru: Record<ChromeString, string> = {
 	'Week by week': 'Неделя за неделей',
 	'Week {{n}}': 'Неделя {{n}}',
 	'Key dates': 'Ключевые даты',
+	Daily: 'На день',
+	Weekly: 'На неделю',
+	Monthly: 'На месяц',
+	Yearly: 'На год',
+	'Sign ingress': 'Вход в знак',
+	'Retrograde station': 'Разворот',
+	'Lunar phase': 'Фаза Луны',
+	Eclipse: 'Затмение',
+	'Solar season': 'Сезон',
+	'through {{date}}': 'до {{date}}',
+	Themes: 'Темы года',
+	'Key periods': 'Ключевые периоды',
+	Eclipses: 'Затмения',
+	Retrogrades: 'Ретроградные периоды',
+	'Best months': 'Лучшие месяцы',
+	'{{count}} harmonious aspects': 'Гармоничных аспектов: {{count}}',
+	'Year boundary': 'Начало года',
+	'Day boundary': 'Начало суток',
+	'Hour clock': 'Шкала времени',
 	'Arudha padas': 'Арудха пады',
 	Moved: 'Смещён',
 	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
@@ -952,6 +971,13 @@ export const ru: Record<ChromeString, string> = {
 	'Sign sectors, not houses': 'Секторы знаков, не дома',
 	'Planet 1': 'Планета 1',
 	'Planet 2': 'Планета 2',
+	// Russian wants the genitive on the second name, and a placeholder cannot be
+	// inflected, so it renders in the nominative. Correct for an indeclinable name,
+	// mildly off for a declinable one. The same trade is already recorded above for
+	// the house-system line; every fully grammatical alternative puts one of the two
+	// names in subject position, which reverses the reading.
+	'{{first}} in the houses of {{second}}': '{{first}} в домах {{second}}',
+	'Own house': 'Свой дом',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
 		'Аспекты между картами: планета из карты 1, планета из карты 2, аспект между ними, орбис в градусах и сила.',
 };

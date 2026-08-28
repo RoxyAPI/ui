@@ -14,6 +14,8 @@
 import { capitalize, humanize } from './string.js';
 
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+/** A bare `YYYY-MM`, which several payloads use to name the month a forecast covers. */
+const MONTH_ONLY = /^\d{4}-\d{2}$/;
 const BARE_TIME = /^\d{2}:\d{2}(:\d{2})?$/;
 /** An ISO datetime with NO timezone designator: a wall clock, not an instant. */
 const NAIVE_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
@@ -58,6 +60,8 @@ function intlLocales(locale: string | undefined): string[] {
  *
  * A DATE_ONLY value (`2026-08-01`) is the same wall clock with the time left off, and it is normalised HERE rather than at each call site because leaving it to the caller is a defect that formats correctly for whoever writes the code: the platform parses a bare date as UTC midnight, and Intl then renders that instant in the VIEWER's zone, so every viewer west of Greenwich reads the previous day. Three helpers pinned it inline and {@link formatDateGrain} did not, which nothing caught because its only caller passes full datetimes.
  *
+ * A bare `YYYY-MM` is the same case one grain coarser and carries the same trap, so it is normalised to the first of the month here. Without it a monthly forecast labelled `2026-08` renders as July for every viewer west of Greenwich, or as the raw string wherever a caller decided not to risk it.
+ *
  * Deliberately NOT exported. Exporting it lets a component needing a shape these helpers do not offer pin its own wall clock and call Intl itself, which is how a boundary date ends up hardcoded to one locale. A missing shape is added here, beside the locale handling, not reimplemented in a component.
  */
 function resolveDisplayDate(input: string): {
@@ -68,9 +72,11 @@ function resolveDisplayDate(input: string): {
 		? `1970-01-01T${input}`
 		: DATE_ONLY.test(input)
 			? `${input}T00:00:00`
-			: NAIVE_DATETIME.test(input)
-				? input
-				: null;
+			: MONTH_ONLY.test(input)
+				? `${input}-01T00:00:00`
+				: NAIVE_DATETIME.test(input)
+					? input
+					: null;
 	return naive
 		? { d: new Date(`${naive}Z`), timeZone: 'UTC' }
 		: { d: new Date(input) };

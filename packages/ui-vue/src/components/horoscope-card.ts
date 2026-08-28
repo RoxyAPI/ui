@@ -1,12 +1,14 @@
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { GetDailyHoroscopeResponse, GetMonthlyHoroscopeResponse, GetWeeklyHoroscopeResponse } from '../types/index.js';
+import type { GetDailyHoroscopeResponse, GetMonthlyHoroscopeResponse, GetWeeklyHoroscopeResponse, GetYearlyHoroscopeResponse } from '../types/index.js';
 
 export interface RoxyHoroscopeCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse;
+	data?: GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse | GetYearlyHoroscopeResponse;
 	/** Which horoscope cadence the response is for. Selects the heading and date framing. */
-	period?: 'daily' | 'weekly' | 'monthly';
+	period?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+	/** Which shape the written reading takes. The endpoint returns the same reading twice, once whole as the column and once split into six topic sections, so exactly one is rendered. Defaults to auto, which prefers the column and falls back to the sections for a response that carries none. */
+	layout?: 'auto' | 'column' | 'sections';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -42,6 +44,7 @@ export const RoxyHoroscopeCard = defineComponent({
 	props: {
 		data: { type: Object as PropType<RoxyHoroscopeCardProps['data']> },
 		period: { type: String as PropType<RoxyHoroscopeCardProps['period']> },
+		layout: { type: String as PropType<RoxyHoroscopeCardProps['layout']> },
 		endpoint: { type: String as PropType<RoxyHoroscopeCardProps['endpoint']> },
 		method: { type: String as PropType<RoxyHoroscopeCardProps['method']> },
 		publishableKey: { type: String as PropType<RoxyHoroscopeCardProps['publishableKey']> },
@@ -78,6 +81,7 @@ export const RoxyHoroscopeCard = defineComponent({
 			const elementProps: Record<string, unknown> = {};
 			if (props.data !== undefined) elementProps['.data'] = props.data;
 			if (props.period !== undefined) elementProps['.period'] = props.period;
+			if (props.layout !== undefined) elementProps['.layout'] = props.layout;
 			if (props.endpoint !== undefined) elementProps['.endpoint'] = props.endpoint;
 			if (props.method !== undefined) elementProps['.method'] = props.method;
 			if (props.publishableKey !== undefined) elementProps['.publishableKey'] = props.publishableKey;

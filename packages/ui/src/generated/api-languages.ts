@@ -20,4 +20,6 @@ export const API_LANGUAGES: readonly string[] = [
 	'pt',
 	'ru',
 	'tr',
+	'zh-Hans',
+	'zh-Hant',
 ];

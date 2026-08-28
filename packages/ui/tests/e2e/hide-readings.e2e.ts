@@ -177,9 +177,11 @@ test('the readings part answers to the same name in every component that has one
  */
 const HONOURS = [
 	'roxy-angel-number-card',
+	'roxy-almanac-day',
 	'roxy-angel-number-lookup',
 	'roxy-aspects-table',
 	'roxy-astrocartography-map',
+	'roxy-bazi-chart',
 	'roxy-biorhythm-chart',
 	'roxy-bodygraph',
 	'roxy-compatibility-card',
@@ -187,6 +189,7 @@ const HONOURS = [
 	'roxy-dasha-timeline',
 	'roxy-dosha-card',
 	'roxy-fixed-stars',
+	'roxy-flying-star-chart',
 	'roxy-forecast-digest',
 	'roxy-forecast-timeline',
 	'roxy-gochara-table',
@@ -196,7 +199,9 @@ const HONOURS = [
 	'roxy-hd-type-card',
 	'roxy-hd-variables',
 	'roxy-hexagram',
+	'roxy-kua-card',
 	'roxy-horoscope-card',
+	'roxy-luck-pillars',
 	'roxy-moon-phase',
 	'roxy-nakshatra-card',
 	'roxy-natal-chart',
@@ -211,6 +216,7 @@ const HONOURS = [
 	'roxy-transit-wheel',
 	'roxy-vedic-planets-table',
 	'roxy-yoga-list',
+	'roxy-zodiac-card',
 ];
 
 /**

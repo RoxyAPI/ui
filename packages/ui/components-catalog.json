@@ -74,6 +74,7 @@
         "error",
         "form",
         "header",
+        "house-overlay",
         "inter-aspects",
         "legend",
         "loading",
@@ -316,8 +317,8 @@
       "pascal": "RoxyHoroscopeCard",
       "slug": "horoscope-card",
       "domain": "Western",
-      "renders": "Daily, weekly, or monthly horoscope card",
-      "endpointLabel": "GET /astrology/horoscope/{sign}/{daily,weekly,monthly}",
+      "renders": "Daily, weekly, monthly, or yearly horoscope card",
+      "endpointLabel": "GET /astrology/horoscope/{sign}/{daily,weekly,monthly,yearly}",
       "endpoints": [
         {
           "operationId": "getDailyHoroscope",
@@ -342,22 +343,38 @@
           "attrs": {
             "period": "monthly"
           }
+        },
+        {
+          "operationId": "getYearlyHoroscope",
+          "method": "GET",
+          "path": "/astrology/horoscope/{sign}/yearly",
+          "attrs": {
+            "period": "yearly"
+          }
         }
       ],
       "parts": [
         "attribution",
+        "best-periods",
         "card",
+        "column",
         "details",
+        "eclipses",
         "edit-bar",
         "empty",
         "error",
+        "events",
         "form",
         "header",
         "key-dates",
+        "key-periods",
         "loading",
         "outlook",
+        "overview",
+        "retrogrades",
         "section",
         "sky",
+        "themes",
         "week-by-week"
       ],
       "snippets": {
@@ -2332,6 +2349,315 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/forecast-digest-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/forecast-digest-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-bazi-chart",
+      "pascal": "RoxyBaziChart",
+      "slug": "bazi-chart",
+      "domain": "Chinese",
+      "renders": "Year, month, day and hour pillars in hanzi with hidden stems, Ten Gods, Na Yin, element balance and interactions",
+      "endpointLabel": "POST /chinese-astrology/bazi/chart",
+      "endpoints": [
+        {
+          "operationId": "generateBaziChart",
+          "method": "POST",
+          "path": "/chinese-astrology/bazi/chart"
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "day-master",
+        "edit-bar",
+        "elements",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "interactions",
+        "loading",
+        "pillar",
+        "reading",
+        "section",
+        "summary"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bazi-chart data-endpoint=\"chinese-astrology/bazi/chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bazi-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bazi-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/bazi-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/bazi-chart-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-luck-pillars",
+      "pascal": "RoxyLuckPillars",
+      "slug": "luck-pillars",
+      "domain": "Chinese",
+      "renders": "Ten-year luck pillars as a strip with ages and years, the annual pillars, and the direction and start age behind them",
+      "endpointLabel": "POST /chinese-astrology/bazi/luck-pillars",
+      "endpoints": [
+        {
+          "operationId": "calculateLuckPillars",
+          "method": "POST",
+          "path": "/chinese-astrology/bazi/luck-pillars"
+        }
+      ],
+      "parts": [
+        "annual-pillars",
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "pillar",
+        "section",
+        "summary"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-luck-pillars data-endpoint=\"chinese-astrology/bazi/luck-pillars\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-luck-pillars>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"luck-pillars\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/luck-pillars-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/luck-pillars-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-zodiac-card",
+      "pascal": "RoxyZodiacCard",
+      "slug": "zodiac-card",
+      "domain": "Chinese",
+      "renders": "The animal for a date, one animal in full, a daily reading, or a pair scored",
+      "endpointLabel": "POST /chinese-astrology/zodiac/sign, GET /chinese-astrology/zodiac/{animals/{id},{id}/daily,compatibility/{sign1}/{sign2}}",
+      "endpoints": [
+        {
+          "operationId": "calculateZodiacAnimal",
+          "method": "POST",
+          "path": "/chinese-astrology/zodiac/sign",
+          "attrs": {
+            "mode": "sign"
+          }
+        },
+        {
+          "operationId": "getZodiacAnimal",
+          "method": "GET",
+          "path": "/chinese-astrology/zodiac/animals/{id}",
+          "attrs": {
+            "mode": "animal"
+          }
+        },
+        {
+          "operationId": "getDailyZodiacReading",
+          "method": "GET",
+          "path": "/chinese-astrology/zodiac/{id}/daily",
+          "attrs": {
+            "mode": "daily"
+          }
+        },
+        {
+          "operationId": "getZodiacCompatibility",
+          "method": "GET",
+          "path": "/chinese-astrology/zodiac/compatibility/{sign1}/{sign2}",
+          "attrs": {
+            "mode": "compatibility"
+          }
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "interpretation",
+        "list",
+        "loading",
+        "outlook",
+        "overview",
+        "partners",
+        "reading",
+        "section",
+        "summary",
+        "traits",
+        "trine"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-zodiac-card mode=\"sign\" data-endpoint=\"chinese-astrology/zodiac/sign\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-zodiac-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"zodiac-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/zodiac-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/zodiac-card-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-almanac-day",
+      "pascal": "RoxyAlmanacDay",
+      "slug": "almanac-day",
+      "domain": "Chinese",
+      "renders": "Day officer, favours and avoids, clash animal and pillars, as one day, a month, or a date search",
+      "endpointLabel": "GET /chinese-astrology/calendar/{day/{date},monthly}, POST /chinese-astrology/calendar/auspicious-days",
+      "endpoints": [
+        {
+          "operationId": "getAlmanacDay",
+          "method": "GET",
+          "path": "/chinese-astrology/calendar/day/{date}",
+          "attrs": {
+            "mode": "day"
+          }
+        },
+        {
+          "operationId": "getMonthlyAlmanac",
+          "method": "GET",
+          "path": "/chinese-astrology/calendar/monthly",
+          "attrs": {
+            "mode": "month"
+          }
+        },
+        {
+          "operationId": "lookupAuspiciousDays",
+          "method": "POST",
+          "path": "/chinese-astrology/calendar/auspicious-days",
+          "attrs": {
+            "mode": "auspicious"
+          }
+        }
+      ],
+      "parts": [
+        "activities",
+        "attribution",
+        "card",
+        "days",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "section"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-almanac-day mode=\"day\" data-endpoint=\"chinese-astrology/calendar/day/{date}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-almanac-day>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"almanac-day\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/almanac-day-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/almanac-day-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-flying-star-chart",
+      "pascal": "RoxyFlyingStarChart",
+      "slug": "flying-star-chart",
+      "domain": "Feng Shui",
+      "renders": "Nine-palace flying star plate with the mountain, period and water star per palace, the facing and sitting mountains and the structure",
+      "endpointLabel": "POST /feng-shui/flying-stars/natal, GET /feng-shui/flying-stars/annual/{year}",
+      "endpoints": [
+        {
+          "operationId": "generateFlyingStarChart",
+          "method": "POST",
+          "path": "/feng-shui/flying-stars/natal",
+          "attrs": {
+            "mode": "natal"
+          }
+        },
+        {
+          "operationId": "getAnnualFlyingStars",
+          "method": "GET",
+          "path": "/feng-shui/flying-stars/annual/{year}",
+          "attrs": {
+            "mode": "annual"
+          }
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "palaces",
+        "reading",
+        "section",
+        "structure"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-flying-star-chart mode=\"natal\" data-endpoint=\"feng-shui/flying-stars/natal\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-flying-star-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"flying-star-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/flying-star-chart-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/flying-star-chart-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-kua-card",
+      "pascal": "RoxyKuaCard",
+      "slug": "kua-card",
+      "domain": "Feng Shui",
+      "renders": "Kua number and trigram over the eight-sector direction map, favourable and unfavourable sectors ranked",
+      "endpointLabel": "POST /feng-shui/kua, POST /feng-shui/eight-mansions",
+      "endpoints": [
+        {
+          "operationId": "calculateKuaNumber",
+          "method": "POST",
+          "path": "/feng-shui/kua",
+          "attrs": {
+            "mode": "kua"
+          }
+        },
+        {
+          "operationId": "generateEightMansions",
+          "method": "POST",
+          "path": "/feng-shui/eight-mansions",
+          "attrs": {
+            "mode": "mansions"
+          }
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "reading",
+        "section",
+        "sectors"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kua-card mode=\"kua\" data-endpoint=\"feng-shui/kua\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kua-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kua-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/kua-card-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/assets/previews/kua-card-dark.webp"
       }
     },
     {

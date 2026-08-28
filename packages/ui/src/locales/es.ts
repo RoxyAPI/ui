@@ -829,6 +829,25 @@ export const es: Record<ChromeString, string> = {
 	'Week by week': 'Semana a semana',
 	'Week {{n}}': 'Semana {{n}}',
 	'Key dates': 'Fechas clave',
+	Daily: 'Diario',
+	Weekly: 'Semanal',
+	Monthly: 'Mensual',
+	Yearly: 'Anual',
+	'Sign ingress': 'Cambio de signo',
+	'Retrograde station': 'Estación planetaria',
+	'Lunar phase': 'Fase lunar',
+	Eclipse: 'Eclipse',
+	'Solar season': 'Temporada solar',
+	'through {{date}}': 'hasta el {{date}}',
+	Themes: 'Temas del año',
+	'Key periods': 'Períodos clave',
+	Eclipses: 'Eclipses',
+	Retrogrades: 'Retrogradaciones',
+	'Best months': 'Mejores meses',
+	'{{count}} harmonious aspects': '{{count}} aspectos armónicos',
+	'Year boundary': 'Inicio del año',
+	'Day boundary': 'Inicio del día',
+	'Hour clock': 'Referencia horaria',
 	'Arudha padas': 'Arudha padas',
 	Moved: 'Desplazado',
 	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
@@ -973,6 +992,11 @@ export const es: Record<ChromeString, string> = {
 	'Sign sectors, not houses': 'Sectores de signos, no casas',
 	'Planet 1': 'Planeta 1',
 	'Planet 2': 'Planeta 2',
+	'{{first}} in the houses of {{second}}':
+		'{{first}} en las casas de {{second}}',
+	// Inverted for the same reason as the Portuguese: `casa propia` is the fixed
+	// Spanish collocation for owning a home.
+	'Own house': 'Propia casa',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
 		'Aspectos entre cartas: el planeta de la carta 1, el planeta de la carta 2, el aspecto entre ellos, el orbe en grados y la fuerza.',
 };

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-flying-star-chart",
+  "type": "registry:ui",
+  "title": "RoxyFlyingStarChart",
+  "description": "Xuan Kong flying star plate: nine palaces on the compass with the mountain, period and water star of each, the facing and sitting mountains, and the structure the pair produces",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-flying-star-chart.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyFlyingStarChart data={...} />: Xuan Kong flying star plate: nine palaces on the compass with the mountain, period and water star of each, the facing and sitting mountains, and the structure the pair produces.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/flying-star-chart/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyFlyingStarChart as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyFlyingStarChartProps = ComponentProps<typeof Element>;\n\nexport function RoxyFlyingStarChart(props: RoxyFlyingStarChartProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyFlyingStarChart;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/flying-star-chart.tsx"
+    }
+  ]
+}

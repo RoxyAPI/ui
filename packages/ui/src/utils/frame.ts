@@ -72,6 +72,49 @@ export function renderFrameCaption(
 	</p>`;
 }
 
+/**
+ * The school conventions a Chinese-metaphysics response was computed under.
+ *
+ * @remarks
+ * Structural rather than imported from one response type, because every BaZi-family schema carries the same object and the feng-shui ones carry the year rule alone. Each field is optional here so a component can pass `d.conventions` whatever subset its own endpoint echoes.
+ */
+export interface ChineseConventions {
+	dayBoundary?: string;
+	yearBoundary?: string;
+	hourClock?: string;
+}
+
+/**
+ * One line naming the school rules a chart was cast under.
+ *
+ * @remarks
+ * **A sibling of {@link renderFrameCaption}, and it exists for the same reason.** Three splits decide a chart for a birth near a boundary: which instant starts the day, which starts the year, and which clock the hour is read from. Two teachers using different rules get different pillars for the same birth, so a chart printed without saying which rules produced it cannot be reconciled against any other chart, and a reader holding two of them concludes one is wrong rather than that they answer different questions. Echoing them is why the response carries them.
+ *
+ * The VALUES print as the response sent them: each NAMES a rule rather than describing one, and none carries a localized partner. The three labels beside them are plain compositional language rather than terms of art, which is why they are catalogued where the rest of a Chinese-metaphysics card is not.
+ *
+ * Renders nothing for a response that echoes none, so it is safe to call unconditionally.
+ */
+export function renderConventionsCaption(
+	conventions: ChineseConventions | undefined,
+	t: Translate,
+): TemplateResult | typeof nothing {
+	const pairs: Array<[string, string]> = [];
+	if (conventions?.yearBoundary)
+		pairs.push([t('Year boundary'), conventions.yearBoundary]);
+	if (conventions?.dayBoundary)
+		pairs.push([t('Day boundary'), conventions.dayBoundary]);
+	if (conventions?.hourClock)
+		pairs.push([t('Hour clock'), conventions.hourClock]);
+	if (pairs.length === 0) return nothing;
+	return html`<p class="roxy-frame">
+		${pairs.map(
+			([label, value], i) =>
+				html`${i > 0 ? ' · ' : ''}${label}:
+				<span class="roxy-frame-deg">${value}</span>`,
+		)}
+	</p>`;
+}
+
 /** One frame in a response computed across several: the frame itself, the instant it was read at, and the sections it decided. */
 export interface GoverningFrame extends SiderealFrame {
 	at?: string;

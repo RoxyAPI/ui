@@ -177,6 +177,53 @@ Every chart, table, and card adapts to light and dark automatically. Hover any i
 </tr>
 </table>
 
+### Chinese astrology and feng shui
+
+<table>
+<tr>
+<td width="50%"><strong>Four pillars</strong> · <code>&lt;roxy-bazi-chart&gt;</code><br><sub>POST /chinese-astrology/bazi/chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bazi-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bazi-chart-light.png" alt="BaZi four pillars chart, each pillar drawn as a Heavenly Stem over its Earthly Branch in hanzi with the Ten God relation, the stems the branch stores, and the Na Yin, over the five-element balance and the interactions the pillars form">
+</picture>
+</td>
+<td width="50%"><strong>Flying star chart</strong> · <code>&lt;roxy-flying-star-chart&gt;</code><br><sub>POST /feng-shui/flying-stars/natal</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/flying-star-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/flying-star-chart-light.png" alt="Xuan Kong flying star plate, nine palaces on the Chinese compass with south at the top, each carrying its mountain star, period star and water star, over the facing and sitting mountains and the structure they produce">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Chinese zodiac</strong> · <code>&lt;roxy-zodiac-card&gt;</code><br><sub>GET /chinese-astrology/zodiac/animals/&#123;id&#125;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/zodiac-card-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/zodiac-card-light.png" alt="Chinese zodiac animal card with the animal in hanzi, its element and polarity, the double hours it governs, its trine, and its secret friend, clash and harm partners">
+</picture>
+</td>
+<td width="50%"><strong>Kua and eight mansions</strong> · <code>&lt;roxy-kua-card&gt;</code><br><sub>POST /feng-shui/eight-mansions</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kua-card-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kua-card-light.png" alt="Eight Mansions map on the nine-palace grid, four favourable and four unfavourable compass sectors each with its star, rank and life domain, and the Kua number and trigram in the centre">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Luck pillars</strong> · <code>&lt;roxy-luck-pillars&gt;</code><br><sub>POST /chinese-astrology/bazi/luck-pillars</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/luck-pillars-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/luck-pillars-light.png" alt="BaZi luck pillars as a strip of ten-year stretches, each with its stem and branch in hanzi, the Ten God relation, and the ages and years it spans">
+</picture>
+</td>
+<td width="50%"><strong>Chinese almanac</strong> · <code>&lt;roxy-almanac-day&gt;</code><br><sub>GET /chinese-astrology/calendar/day/&#123;date&#125;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/almanac-day-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/almanac-day-light.png" alt="Chinese almanac day with the day officer, what the day favours and what it avoids, the animal it clashes with, and its three pillars and lunar mansion">
+</picture>
+</td>
+</tr>
+</table>
+
 ### Other domains
 
 <table>
@@ -448,57 +495,32 @@ const { data: d9 } = await roxy.vedicAstrology.generateDivisionalChart({
 <RoxyDivisionalChart data={d9} />
 ```
 
-### 3. Numerology (life path, full chart, personal year)
+### 3. Forecast (transits, cross-domain timeline)
 
-Life path, the full chart, and the personal year. The easiest domain to integrate: a name and a birth date are enough, with no birth time and no coordinates.
-
-```tsx
-import { RoxyNumerologyCard } from '@roxyapi/ui-react';
-
-// Life Path. The #1 numerology keyword, every calculator page starts here.
-const { data: lp } = await roxy.numerology.calculateLifePath({
-  body: { year: 1990, month: 1, day: 15 },
-});
-<RoxyNumerologyCard data={lp} type="life-path" />
-
-// Full numerology chart. Premium one-shot: all six core numbers plus karmic, personal year.
-const { data: chart } = await roxy.numerology.generateNumerologyChart({
-  body: { fullName: 'Jane Smith', year: 1990, month: 1, day: 15 },
-});
-<RoxyNumerologyCard data={chart} type="chart" />
-
-// Personal Year. Annual forecast, drives January traffic spikes.
-const { data: pyear } = await roxy.numerology.calculatePersonalYear({
-  body: { month: 1, day: 15, year: 2026 },
-});
-<RoxyNumerologyCard data={pyear} type="personal-year" />
-```
-
-### 4. Tarot (daily card, three-card, Celtic Cross)
-
-Draw a single daily card, a three-card spread, or a full Celtic Cross. The card database is stable reference data, so fetch it once and cache it rather than calling per render.
+One stateless call merges Western transits, Vedic Vimshottari dasha boundaries, and biorhythm critical days into a single significance-scored, time-ordered timeline. Built for forecast feeds, transit alerts, and timing tools. No coordinates needed.
 
 ```tsx
-import { RoxyTarotCard, RoxyTarotSpread } from '@roxyapi/ui-react';
+import { RoxyForecastTimeline } from '@roxyapi/ui-react';
 
-// Daily card. Stickiest tarot feature. Seed per user for deterministic once-per-day behavior.
-const { data: daily } = await roxy.tarot.getDailyCard({ body: { seed: 'user-42' } });
-<RoxyTarotCard data={daily} />
-
-// Three-card past-present-future. Most-drawn spread on every tarot platform.
-const { data: three } = await roxy.tarot.castThreeCard({
-  body: { question: 'My next quarter', seed: 'user-42' },
+// Transit forecast. The demand leader. Western transit-to-natal aspects, sign
+// ingresses, and retrograde stations over the window.
+const { data: transits } = await roxy.forecast.forecastTransits({
+  body: { birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 } },
 });
-<RoxyTarotSpread data={three} />
+<RoxyForecastTimeline data={transits} />
 
-// Celtic Cross. Professional-reader spread. Premium-tier, ten positions.
-const { data: cc } = await roxy.tarot.castCelticCross({
-  body: { question: 'What should I focus on?', seed: 'user-42' },
+// Cross-domain timeline. The same window merged with Vedic dasha boundaries and
+// biorhythm critical days into one significance-scored timeline.
+const { data: timeline } = await roxy.forecast.generateTimeline({
+  body: {
+    birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+    domains: ['western', 'vedic', 'biorhythm'],
+  },
 });
-<RoxyTarotSpread data={cc} />
+<RoxyForecastTimeline data={timeline} />
 ```
 
-### 5. Human Design (bodygraph)
+### 4. Human Design (bodygraph)
 
 A self-knowledge system computed from the same ephemeris as Western astrology, laid over the I Ching gate wheel and nine chakra-style centers. Self-discovery apps, dating and compatibility products, and AI coaching bots render the full bodygraph. No coordinates needed; Human Design uses the birth instant, not the observer location.
 
@@ -525,32 +547,101 @@ const { data: bodygraph } = await roxy.humanDesign.generateBodygraph({
 });
 ```
 
-### 6. Forecast (transits, cross-domain timeline)
+### 5. Chinese astrology (four pillars, luck pillars, zodiac, almanac)
 
-One stateless call merges Western transits, Vedic Vimshottari dasha boundaries, and biorhythm critical days into a single significance-scored, time-ordered timeline. Built for forecast feeds, transit alerts, and timing tools. No coordinates needed.
+The BaZi chart a reading is built on, the ten-year luck pillars that time it, the twelve-animal zodiac, and the almanac people actually consult to pick a date. Fits date-selection tools, Chinese-new-year features and East Asian wellness apps.
 
 ```tsx
-import { RoxyForecastTimeline } from '@roxyapi/ui-react';
+import { RoxyBaziChart, RoxyZodiacCard, RoxyAlmanacDay } from '@roxyapi/ui-react';
 
-// Transit forecast. The demand leader. Western transit-to-natal aspects, sign
-// ingresses, and retrograde stations over the window.
-const { data: transits } = await roxy.forecast.forecastTransits({
-  body: { birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 } },
+// Four pillars. Stem over branch per pillar, hidden stems, Ten Gods, element balance.
+const { data: bazi } = await roxy.chineseAstrology.generateBaziChart({
+  body: { date: '1990-01-15', time: '14:30:00', timezone: 'America/New_York' },
 });
-<RoxyForecastTimeline data={transits} />
+<RoxyBaziChart data={bazi} />
 
-// Cross-domain timeline. The same window merged with Vedic dasha boundaries and
-// biorhythm critical days into one significance-scored timeline.
-const { data: timeline } = await roxy.forecast.generateTimeline({
-  body: {
-    birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
-    domains: ['western', 'vedic', 'biorhythm'],
-  },
+// The animal a birth date falls in, on the classical year boundary.
+const { data: sign } = await roxy.chineseAstrology.calculateZodiacAnimal({
+  body: { date: '1990-01-15' },
 });
-<RoxyForecastTimeline data={timeline} />
+<RoxyZodiacCard data={sign} mode="sign" />
+
+// Almanac day. What the day favours, what it avoids, and the animal it clashes with.
+const { data: day } = await roxy.chineseAstrology.getAlmanacDay({ path: { date: '2026-09-08' } });
+<RoxyAlmanacDay data={day} mode="day" />
 ```
 
-### 7. Biorhythm (daily, forecast)
+### 6. Feng shui (kua number, eight mansions, flying stars)
+
+A person's Kua number and the eight directions it ranks for them, plus the Xuan Kong flying-star plate for a building. Fits home and office consultation tools, property apps and annual-forecast features.
+
+```tsx
+import { RoxyKuaCard, RoxyFlyingStarChart } from '@roxyapi/ui-react';
+
+// Kua number and the full Eight Mansions map, four favourable sectors and four not.
+const { data: mansions } = await roxy.fengShui.generateEightMansions({
+  body: { date: '1990-01-15', gender: 'female' },
+});
+<RoxyKuaCard data={mansions} mode="mansions" />
+
+// Flying star plate for a building, from its facing degrees and construction period.
+const { data: plate } = await roxy.fengShui.generateFlyingStarChart({
+  body: { facingDegrees: 175, period: 9 },
+});
+<RoxyFlyingStarChart data={plate} mode="natal" />
+```
+
+### 7. Numerology (life path, full chart, personal year)
+
+Life path, the full chart, and the personal year. The easiest domain to integrate: a name and a birth date are enough, with no birth time and no coordinates.
+
+```tsx
+import { RoxyNumerologyCard } from '@roxyapi/ui-react';
+
+// Life Path. The #1 numerology keyword, every calculator page starts here.
+const { data: lp } = await roxy.numerology.calculateLifePath({
+  body: { year: 1990, month: 1, day: 15 },
+});
+<RoxyNumerologyCard data={lp} type="life-path" />
+
+// Full numerology chart. Premium one-shot: all six core numbers plus karmic, personal year.
+const { data: chart } = await roxy.numerology.generateNumerologyChart({
+  body: { fullName: 'Jane Smith', year: 1990, month: 1, day: 15 },
+});
+<RoxyNumerologyCard data={chart} type="chart" />
+
+// Personal Year. Annual forecast, drives January traffic spikes.
+const { data: pyear } = await roxy.numerology.calculatePersonalYear({
+  body: { month: 1, day: 15, year: 2026 },
+});
+<RoxyNumerologyCard data={pyear} type="personal-year" />
+```
+
+### 8. Tarot (daily card, three-card, Celtic Cross)
+
+Draw a single daily card, a three-card spread, or a full Celtic Cross. The card database is stable reference data, so fetch it once and cache it rather than calling per render.
+
+```tsx
+import { RoxyTarotCard, RoxyTarotSpread } from '@roxyapi/ui-react';
+
+// Daily card. Stickiest tarot feature. Seed per user for deterministic once-per-day behavior.
+const { data: daily } = await roxy.tarot.getDailyCard({ body: { seed: 'user-42' } });
+<RoxyTarotCard data={daily} />
+
+// Three-card past-present-future. Most-drawn spread on every tarot platform.
+const { data: three } = await roxy.tarot.castThreeCard({
+  body: { question: 'My next quarter', seed: 'user-42' },
+});
+<RoxyTarotSpread data={three} />
+
+// Celtic Cross. Professional-reader spread. Premium-tier, ten positions.
+const { data: cc } = await roxy.tarot.castCelticCross({
+  body: { question: 'What should I focus on?', seed: 'user-42' },
+});
+<RoxyTarotSpread data={cc} />
+```
+
+### 9. Biorhythm (daily, forecast)
 
 Physical, emotional and intellectual cycles from a birth date alone, as a daily reading or a forward forecast with the critical days marked. Fits wellness, productivity, sports and couples apps.
 
@@ -571,7 +662,7 @@ const { data: forecast } = await roxy.biorhythm.getForecast({
 <RoxyBiorhythmChart data={forecast} mode="forecast" />
 ```
 
-### 8. I Ching (cast a reading, hexagram lookup)
+### 10. I Ching (cast a reading, hexagram lookup)
 
 Cast a reading with its changing lines and the hexagram it transforms into, or look up any of the 64 figures directly. Fits meditation apps, decision-making tools and wisdom chatbots.
 
@@ -630,7 +721,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-transit-wheel>` | Western | POST /astrology/transit-aspects | Natal chart on the inner ring, transiting bodies on the outer ring, aspect lines between them |
 | `<roxy-aspects-table>` | Western | POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns | Aspect rows coloured by nature with orb and strength, plus detected chart patterns |
 | `<roxy-moon-phase>` | Western | GET /astrology/moon-phase/{current,upcoming,calendar/...} | Moon phase card and calendar |
-| `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly} | Daily, weekly, or monthly horoscope card |
+| `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly,yearly} | Daily, weekly, monthly, or yearly horoscope card |
 | `<roxy-astrocartography-map>` | Western | POST /astrology/astrocartography | World map of planetary MC, IC, Ascendant, and Descendant lines with per-line interpretations |
 | `<roxy-local-space-compass>` | Western | POST /astrology/local-space | Compass dial of planetary azimuth lines from the birthplace, dimmed below the horizon |
 | `<roxy-relocation-wheel>` | Western | POST /astrology/relocation-chart | Relocated chart wheel plus the move geometry, angular planets, and planets that change house |
@@ -675,6 +766,12 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction, color, tone, and base, plus a reading per arrow grouped by layer and the cognition |
 | `<roxy-forecast-timeline>` | Forecast | POST /forecast/{timeline,significant-dates,transits} | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
 | `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
+| `<roxy-bazi-chart>` | Chinese | POST /chinese-astrology/bazi/chart | Year, month, day and hour pillars in hanzi with hidden stems, Ten Gods, Na Yin, element balance and interactions |
+| `<roxy-luck-pillars>` | Chinese | POST /chinese-astrology/bazi/luck-pillars | Ten-year luck pillars as a strip with ages and years, the annual pillars, and the direction and start age behind them |
+| `<roxy-zodiac-card>` | Chinese | POST /chinese-astrology/zodiac/sign, GET /chinese-astrology/zodiac/{animals/{id},{id}/daily,compatibility/{sign1}/{sign2}} | The animal for a date, one animal in full, a daily reading, or a pair scored |
+| `<roxy-almanac-day>` | Chinese | GET /chinese-astrology/calendar/{day/{date},monthly}, POST /chinese-astrology/calendar/auspicious-days | Day officer, favours and avoids, clash animal and pillars, as one day, a month, or a date search |
+| `<roxy-flying-star-chart>` | Feng Shui | POST /feng-shui/flying-stars/natal, GET /feng-shui/flying-stars/annual/{year} | Nine-palace flying star plate with the mountain, period and water star per palace, the facing and sitting mountains and the structure |
+| `<roxy-kua-card>` | Feng Shui | POST /feng-shui/kua, POST /feng-shui/eight-mansions | Kua number and trigram over the eight-sector direction map, favourable and unfavourable sectors ranked |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
@@ -773,7 +870,7 @@ What each family keeps when you set it:
 
 - Charts and wheels keep the drawing, the legend, the glyphs, every degree and house, and the tab strip.
 - Tables keep every row and column, including the calculated ones (kaksha bindus, koota scores, significance bars, orbs and strengths).
-- Cards keep the header, the badges, the meters and the fact grids: a dosha keeps its present or absent verdict, its phase and its severity; a crystal keeps its Mohs hardness and its attribute grid; a horoscope keeps its energy meter, its Moon placement, the transits behind the reading and its key dates.
+- Cards keep the header, the badges, the meters and the fact grids: a dosha keeps its present or absent verdict, its phase and its severity; a crystal keeps its Mohs hardness and its attribute grid; a horoscope keeps its energy meter, its Moon placement, the transits behind the reading, its key dates, and the dated sky events the reading was built on, each with its exact instant and the house it falls in.
 - Vedic responses keep the sidereal frame caption, so a chart is still reconcilable against another calculator.
 
 What goes: interpretation paragraphs, the reading accordions, keyword chips attached to a reading, remedies and action steps and strengths lists (sentences laid out as bullets), and any section whose only content was one of those, heading included.
@@ -821,7 +918,9 @@ Two things are separate on purpose. The catalogue is the wording this library wr
 
 Dates, times and numbers follow the page as well, in the conventions that language actually uses: a Spanish page reads `15 ene 1990`, an Argentine one `15 de ene de 1990`, a German one `15. Jan. 1990, 14:30`. The hour cycle comes from the language, not from us, so nobody gets a 12-hour clock on a page that writes 24. This needs no catalogue and no attribute: it follows the same `lang` your page already declares.
 
-A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt`, `ru`, `tr`. Coverage grows card by card, and a card is either translated or it is not, so a component reads its own labels in your language or renders them in English, never a mixture. Every term in every catalogue is sourced from named astrology references in that language rather than translated word for word, because the words a practitioner reads are the product.
+A catalogue ships for `de`, `es`, `fr`, `hi`, `pt`, `ru` and `tr`. Coverage grows card by card, and a card is either translated or it is not, so a component reads its own labels in your language or renders them in English, never a mixture. Every term in every catalogue is sourced from named astrology references in that language rather than translated word for word, because the words a practitioner reads are the product.
+
+Chinese is keyed by script rather than by language, so a page declaring `zh-Hant` or `zh-Hans` gets the response in that script from the endpoints that serve it. A regional tag resolves on its own: `zh-TW` and `zh-HK` read as traditional, `zh-CN` and `zh-SG` as simplified. Component labels stay English on those pages, and the response carries the vocabulary.
 
 ## Reliability
 
@@ -830,7 +929,7 @@ A catalogue ships for every language the API serves: `de`, `es`, `fr`, `hi`, `pt
 - Consistent response formats across every domain in the catalog.
 - A11y zero violations enforced in CI.
 - Tight per-component bundle budget enforced in CI.
-- Coverage of the highest-demand endpoints across Western astrology, Vedic astrology, numerology, tarot, Human Design, forecast, biorhythm, I Ching, plus helpers for location search and schema-driven forms.
+- Coverage of the highest-demand endpoints across Western astrology, Vedic astrology, forecast, Human Design, Chinese astrology, feng shui, numerology, tarot, biorhythm, I Ching, plus helpers for location search and schema-driven forms.
 
 ## Built for AI agents
 
@@ -857,7 +956,7 @@ Local preview serves `apps/docs/` on port 3001. Same directory and same paths th
 
 ## Stack and integrations
 
-Roxy UI runs in any framework that supports the DOM: **React, Next.js, Vue, Svelte, Angular, Solid, Astro, Qwik, Hono, Remix, Nuxt, SvelteKit, Lit, plain HTML, WordPress, Shopify themes that allow custom code, and any MCP-compatible AI agent**. Distribution paths: npm, jsDelivr CDN, shadcn registry. Use cases: astrology widgets, kundli matching, daily horoscope, tarot reader, numerology calculator, biorhythm dashboard, I Ching cast, panchang almanac, dasha timeline, moon phase tracker, synastry compatibility, dosha checker.
+Roxy UI runs in any framework that supports the DOM: **React, Next.js, Vue, Svelte, Angular, Solid, Astro, Qwik, Hono, Remix, Nuxt, SvelteKit, Lit, plain HTML, WordPress, Shopify themes that allow custom code, and any MCP-compatible AI agent**. Distribution paths: npm, jsDelivr CDN, shadcn registry. Use cases: astrology widgets, kundli matching, daily horoscope, BaZi four pillars chart, Chinese zodiac readings, feng shui Kua and flying star plates, almanac day picker, tarot reader, numerology calculator, biorhythm dashboard, I Ching cast, panchang almanac, dasha timeline, moon phase tracker, synastry compatibility, dosha checker.
 
 ## FAQ
 

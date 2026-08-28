@@ -437,7 +437,7 @@ export const fr: Record<ChromeString, string> = {
 	'Becomes hexagram {{number}} {{name}}.':
 		'Devient hexagramme {{number}} {{name}}.',
 	'{{chakra}} chakra crystals': 'Cristaux du chakra {{chakra}}',
-	'{{element}} element crystals': 'Cristaux de l element {{element}}',
+	'{{element}} element crystals': "Cristaux de l'élément {{element}}",
 	'Crystals for {{sign}}': 'Cristaux pour {{sign}}',
 	'{{month}} birthstones': 'Pierres de naissance de {{month}}',
 	Crystals: 'Cristaux',
@@ -781,10 +781,10 @@ export const fr: Record<ChromeString, string> = {
 	'{{component}} unavailable: {{reason}}':
 		'{{component}} indisponible: {{reason}}',
 	Paksha: 'Paksha',
-	'until {{time}}': 'jusqu à {{time}}',
+	'until {{time}}': "jusqu'à {{time}}",
 	'Grahas today': 'Grahas du jour',
 	'Each transiting graha with its sign, the house it occupies from the natal Moon, its bindus, its kaksha and the state the classical rules give it.':
-		'Chaque graha en transit avec son signe, la maison occupée depuis la Lune natale, ses bindus, sa kaksha et l état que lui donnent les règles classiques.',
+		"Chaque graha en transit avec son signe, la maison occupée depuis la Lune natale, ses bindus, sa kaksha et l'état que lui donnent les règles classiques.",
 	Kaksha: 'Kaksha',
 	State: 'État',
 	Favourable: 'Favorable',
@@ -822,6 +822,25 @@ export const fr: Record<ChromeString, string> = {
 	'Week by week': 'Semaine par semaine',
 	'Week {{n}}': 'Semaine {{n}}',
 	'Key dates': 'Dates clés',
+	Daily: 'Quotidien',
+	Weekly: 'Hebdomadaire',
+	Monthly: 'Mensuel',
+	Yearly: 'Annuel',
+	'Sign ingress': 'Changement de signe',
+	'Retrograde station': 'Station',
+	'Lunar phase': 'Phase lunaire',
+	Eclipse: 'Éclipse',
+	'Solar season': 'Saison astrologique',
+	'through {{date}}': "jusqu'au {{date}}",
+	Themes: 'Grandes tendances',
+	'Key periods': 'Périodes clés',
+	Eclipses: 'Éclipses',
+	Retrogrades: 'Rétrogradations',
+	'Best months': 'Meilleurs mois',
+	'{{count}} harmonious aspects': '{{count}} aspects harmoniques',
+	'Year boundary': "Début de l'année",
+	'Day boundary': 'Début du jour',
+	'Hour clock': 'Base horaire',
 	'Arudha padas': 'Arudha padas',
 	Moved: 'Déplacé',
 	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
@@ -966,6 +985,9 @@ export const fr: Record<ChromeString, string> = {
 	'Sign sectors, not houses': 'Secteurs de signes, pas de maisons',
 	'Planet 1': 'Planète 1',
 	'Planet 2': 'Planète 2',
+	'{{first}} in the houses of {{second}}':
+		'{{first}} dans les maisons de {{second}}',
+	'Own house': 'Sa maison',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
 		'Aspects entre thèmes: la planète du thème 1, la planète du thème 2, aspect entre elles, orbe en degrés et la force.',
 };

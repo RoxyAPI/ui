@@ -809,6 +809,25 @@ export const pt: Record<ChromeString, string> = {
 	'Week by week': 'Semana a semana',
 	'Week {{n}}': 'Semana {{n}}',
 	'Key dates': 'Datas principais',
+	Daily: 'Diário',
+	Weekly: 'Semanal',
+	Monthly: 'Mensal',
+	Yearly: 'Anual',
+	'Sign ingress': 'Mudança de signo',
+	'Retrograde station': 'Período estacionário',
+	'Lunar phase': 'Fase lunar',
+	Eclipse: 'Eclipse',
+	'Solar season': 'Temporada solar',
+	'through {{date}}': 'até {{date}}',
+	Themes: 'Temas do ano',
+	'Key periods': 'Períodos principais',
+	Eclipses: 'Eclipses',
+	Retrogrades: 'Retrogradações',
+	'Best months': 'Melhores meses',
+	'{{count}} harmonious aspects': '{{count}} aspectos harmônicos',
+	'Year boundary': 'Início do ano',
+	'Day boundary': 'Início do dia',
+	'Hour clock': 'Referência horária',
 	'Arudha padas': 'Arudha padas',
 	Moved: 'Deslocado',
 	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
@@ -953,6 +972,11 @@ export const pt: Record<ChromeString, string> = {
 	'Sign sectors, not houses': 'Setores de signos, não casas',
 	'Planet 1': 'Planeta 1',
 	'Planet 2': 'Planeta 2',
+	'{{first}} in the houses of {{second}}': '{{first}} nas casas de {{second}}',
+	// Inverted on purpose. `Casa própria` is the fixed Portuguese term for home
+	// ownership and mortgage finance, so it reads as a property listing rather than
+	// a chart column.
+	'Own house': 'Própria casa',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
 		'Aspetos entre mapas: o planeta do mapa 1, o planeta do mapa 2, o aspeto entre eles, o orbe em graus e a força.',
 };

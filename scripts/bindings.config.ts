@@ -87,6 +87,9 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	getMonthlyHoroscope: [
 		{ component: 'roxy-horoscope-card', attrs: { period: 'monthly' } },
 	],
+	getYearlyHoroscope: [
+		{ component: 'roxy-horoscope-card', attrs: { period: 'yearly' } },
+	],
 
 	// Vedic astrology
 	generateBirthChart: [
@@ -221,6 +224,44 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	findSignificantDates: [{ component: 'roxy-forecast-timeline' }],
 	forecastTransits: [{ component: 'roxy-forecast-timeline' }],
 	generateDigest: [{ component: 'roxy-forecast-digest' }],
+
+	// Chinese astrology
+	generateBaziChart: [{ component: 'roxy-bazi-chart' }],
+	calculateLuckPillars: [{ component: 'roxy-luck-pillars' }],
+	// One card, four questions about the same twelve animals. Declaration order is
+	// the widget default, so the animal a date falls in leads.
+	calculateZodiacAnimal: [
+		{ component: 'roxy-zodiac-card', attrs: { mode: 'sign' } },
+	],
+	getZodiacAnimal: [
+		{ component: 'roxy-zodiac-card', attrs: { mode: 'animal' } },
+	],
+	getDailyZodiacReading: [
+		{ component: 'roxy-zodiac-card', attrs: { mode: 'daily' } },
+	],
+	getZodiacCompatibility: [
+		{ component: 'roxy-zodiac-card', attrs: { mode: 'compatibility' } },
+	],
+	// The almanac: one day, a month of them, or a search for a date to act on.
+	getAlmanacDay: [{ component: 'roxy-almanac-day', attrs: { mode: 'day' } }],
+	getMonthlyAlmanac: [
+		{ component: 'roxy-almanac-day', attrs: { mode: 'month' } },
+	],
+	lookupAuspiciousDays: [
+		{ component: 'roxy-almanac-day', attrs: { mode: 'auspicious' } },
+	],
+
+	// Feng shui. The natal plate is declared first, so it is the widget default.
+	generateFlyingStarChart: [
+		{ component: 'roxy-flying-star-chart', attrs: { mode: 'natal' } },
+	],
+	getAnnualFlyingStars: [
+		{ component: 'roxy-flying-star-chart', attrs: { mode: 'annual' } },
+	],
+	calculateKuaNumber: [{ component: 'roxy-kua-card', attrs: { mode: 'kua' } }],
+	generateEightMansions: [
+		{ component: 'roxy-kua-card', attrs: { mode: 'mansions' } },
+	],
 
 	// Biorhythm
 	getDailyBiorhythm: [

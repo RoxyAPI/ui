@@ -4456,7 +4456,7 @@ describe('hide-readings', () => {
 			],
 			// The sky strip is the evidence the reading was derived from, so it stays.
 			data_: [
-				'aries daily',
+				'aries Daily',
 				'Energy 8/10',
 				'Libra',
 				'Waxing Gibbous',
@@ -4468,12 +4468,86 @@ describe('hide-readings', () => {
 			readingsSection: false,
 		},
 		{
+			// The other half of a reading the endpoint returns twice: the column goes
+			// whole, and the dated events it was built from all stay.
+			name: 'roxy-horoscope-card (yearly)',
+			tag: 'roxy-horoscope-card',
+			attrs: { period: 'yearly' },
+			data: {
+				sign: 'aries',
+				year: 2026,
+				column: 'ZZREADINGCOLUMN',
+				events: [
+					{
+						type: 'retrograde-station',
+						at: '2026-02-26T08:00:00Z',
+						bodies: ['Mercury'],
+						house: 12,
+					},
+				],
+				themes: [
+					{
+						body: 'Jupiter',
+						sign: 'cancer',
+						house: 4,
+						theme: 'home and emotional foundations',
+						from: '2026-01-01',
+						to: '2026-06-30',
+					},
+				],
+				eclipses: [
+					{
+						date: '2026-02-17',
+						kind: 'annular',
+						house: 11,
+						theme: 'friendships and future goals',
+					},
+				],
+				retrogrades: [
+					{
+						date: '2026-02-26',
+						body: 'Mercury',
+						direction: 'retrograde',
+						house: 12,
+						theme: 'solitude and inner reflection',
+					},
+				],
+				keyPeriods: [
+					{
+						from: '2026-01-23',
+						to: '2026-03-02',
+						body: 'Mars',
+						house: 11,
+						focus: 'friendships and future goals',
+					},
+				],
+				bestPeriods: {
+					love: { from: '2026-08-01', to: '2026-08-31', count: 9 },
+				},
+			},
+			readings: ['ZZREADINGCOLUMN'],
+			data_: [
+				'aries Yearly',
+				'2026',
+				'Retrograde station',
+				'Themes',
+				'Jupiter',
+				'Eclipses',
+				'annular',
+				'Retrogrades',
+				'Key periods',
+				'Best months',
+			],
+			readingsSection: false,
+		},
+		{
 			name: 'roxy-horoscope-card (monthly)',
 			tag: 'roxy-horoscope-card',
 			attrs: { period: 'monthly' },
 			data: {
 				sign: 'aries',
-				month: 'August 2026',
+				// The wire shape, a bare YYYY-MM, which the card formats rather than prints.
+				month: '2026-08',
 				overview: 'ZZREADINGOVERVIEW',
 				weekByWeek: [
 					{ week: 1, focus: 'ZZREADINGFOCUS', advice: 'ZZREADINGWEEKADVICE' },
@@ -4488,8 +4562,8 @@ describe('hide-readings', () => {
 			],
 			// Dated lunations and ingresses are the month's ephemeris.
 			data_: [
-				'aries monthly',
-				'August 2026',
+				'aries Monthly',
+				'Aug 2026',
 				'Key dates',
 				'Full Moon in Aquarius',
 			],

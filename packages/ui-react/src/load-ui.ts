@@ -87,6 +87,8 @@ export const ROXY_UI_LOCALES = [
 	'pt',
 	'ru',
 	'tr',
+	'zh-Hans',
+	'zh-Hant',
 ] as const;
 
 const localesLoaded = new Map<string, Promise<void>>();

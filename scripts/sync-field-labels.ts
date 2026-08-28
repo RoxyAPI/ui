@@ -23,21 +23,36 @@
  * outage must not silently blank a shipped catalogue.
  */
 import { existsSync } from 'node:fs';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { API_LANGUAGES } from '../packages/ui/src/generated/api-languages.js';
 
 const API_BASE = process.env.ROXY_API_BASE ?? 'https://roxyapi.com/api/v2';
-const OUT_DIR = 'packages/ui/src/locales/field-labels';
+const LOCALES_DIR = 'packages/ui/src/locales';
+const OUT_DIR = `${LOCALES_DIR}/field-labels`;
 
 /**
- * Derived from the spec, never mirrored by hand. English is absent because it needs no payload.
+ * Derived twice over, never mirrored by hand: a language the API serves AND ships a chrome
+ * payload for. English is absent because it needs no payload.
  *
  * @remarks
  * A hand-kept copy is checked against itself, and the language somebody forgets to add to it is
  * the one that then ships with unlabelled fields and no error anywhere (lesson 23). `lang` on the
- * spec is the only place the set is decided, so read it from there.
+ * spec is the only place the set of API languages is decided, so read it from there.
+ *
+ * The second half is the directory, because a labels module is imported by its language's chrome
+ * payload and by nothing else: written for a language with no payload it is unreachable code that
+ * ships in the tarball and no build reports. The set the API serves can therefore run ahead of the
+ * set catalogued here, which it does whenever a language lands upstream before its chrome does.
+ * `tests/i18n.test.ts` is what stops that drifting silently: it holds this directory to the
+ * shipped catalogues, and holds the shipped catalogues to the API's own list bar a declared
+ * exception per language.
  */
-const LANGS = API_LANGUAGES.filter((l) => l !== 'en');
+const CATALOGUED = new Set(
+	(await readdir(LOCALES_DIR))
+		.filter((f) => f.endsWith('.ts'))
+		.map((f) => f.replace(/\.ts$/, '')),
+);
+const LANGS = API_LANGUAGES.filter((l) => l !== 'en' && CATALOGUED.has(l));
 
 interface LabelPayload {
 	fields?: Record<string, string>;

@@ -1,4 +1,8 @@
 export {
+	RoxyAlmanacDay,
+	type RoxyAlmanacDayProps,
+} from './components/almanac-day.js';
+export {
 	RoxyAngelNumberCard,
 	type RoxyAngelNumberCardProps,
 } from './components/angel-number-card.js';
@@ -22,6 +26,10 @@ export {
 	RoxyAstrocartographyMap,
 	type RoxyAstrocartographyMapProps,
 } from './components/astrocartography-map.js';
+export {
+	RoxyBaziChart,
+	type RoxyBaziChartProps,
+} from './components/bazi-chart.js';
 export {
 	RoxyBhavChalitTable,
 	type RoxyBhavChalitTableProps,
@@ -92,6 +100,10 @@ export {
 	type RoxyFixedStarsProps,
 } from './components/fixed-stars.js';
 export {
+	RoxyFlyingStarChart,
+	type RoxyFlyingStarChartProps,
+} from './components/flying-star-chart.js';
+export {
 	RoxyForecastDigest,
 	type RoxyForecastDigestProps,
 } from './components/forecast-digest.js';
@@ -142,6 +154,7 @@ export {
 	RoxyKpRulingPlanets,
 	type RoxyKpRulingPlanetsProps,
 } from './components/kp-ruling-planets.js';
+export { RoxyKuaCard, type RoxyKuaCardProps } from './components/kua-card.js';
 export {
 	RoxyLocalSpaceCompass,
 	type RoxyLocalSpaceCompassProps,
@@ -150,6 +163,10 @@ export {
 	RoxyLocationSearch,
 	type RoxyLocationSearchProps,
 } from './components/location-search.js';
+export {
+	RoxyLuckPillars,
+	type RoxyLuckPillarsProps,
+} from './components/luck-pillars.js';
 export {
 	RoxyMoonPhase,
 	type RoxyMoonPhaseProps,
@@ -242,6 +259,10 @@ export {
 	RoxyYogaList,
 	type RoxyYogaListProps,
 } from './components/yoga-list.js';
+export {
+	RoxyZodiacCard,
+	type RoxyZodiacCardProps,
+} from './components/zodiac-card.js';
 export {
 	ensureLocaleLoaded,
 	ensureScriptLoaded,

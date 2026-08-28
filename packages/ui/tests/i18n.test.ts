@@ -413,8 +413,28 @@ describe('the language sent to the API', () => {
 		// same 400 as `?lang=es-AR`, so a Japanese page has to fall back to the
 		// English default rather than fail every request.
 		expect(langOf('ja')).toBeUndefined();
-		expect(langOf('zh-Hans')).toBeUndefined();
 		expect(langOf('en-US')).toBe('en');
+	});
+
+	/**
+	 * Chinese is keyed by SCRIPT, so the region-dropping rule above would delete the one subtag
+	 * that identifies it. Real pages write the region and not the script, so a Taiwanese site
+	 * saying `zh-TW` has to reach `zh-Hant` or its whole audience silently falls back to English.
+	 */
+	test('a Chinese tag keeps its script, and a region resolves to one', () => {
+		expect(langOf('zh-Hans')).toBe('zh-Hans');
+		expect(langOf('ZH-HANT')).toBe('zh-Hant');
+		expect(langOf('zh-TW')).toBe('zh-Hant');
+		expect(langOf('zh-HK')).toBe('zh-Hant');
+		expect(langOf('zh-CN')).toBe('zh-Hans');
+		expect(langOf('zh-Hant-TW')).toBe('zh-Hant');
+	});
+
+	test('a Chinese tag naming neither script nor region is omitted rather than guessed', () => {
+		// Guessing picks characters half the readers of the other script cannot read,
+		// and the API declares no script-neutral Chinese to fall back to.
+		expect(langOf('zh')).toBeUndefined();
+		expect(langOf('zh-XX')).toBeUndefined();
 	});
 
 	test('every tag it can return is one the spec declares', () => {
@@ -510,19 +530,55 @@ async function shippedCatalogues(): Promise<
 	return out;
 }
 
+/**
+ * API languages this library deliberately ships no chrome catalogue for, and why.
+ *
+ * @remarks
+ * The rule the test below enforces is that a catalogue and an API language come in pairs, because
+ * either half alone is a page that is half translated. This list is the one declared exception,
+ * and it is a list rather than a relaxed assertion so a language cannot join it by accident: a new
+ * API language still fails the build until somebody writes down which side of the pair it is on.
+ *
+ * The two Chinese scripts are here because the API serves Chinese on TWO of its domains and
+ * English on the rest, so a full catalogue would put Chinese headings over English prose across
+ * most of the library, which is the same defect this pairing rule exists to prevent, arriving
+ * from the other direction. The shape that fits is a catalogue split by domain, which is a change
+ * to what a page downloads rather than a translation pass.
+ */
+const CHROME_PENDING: readonly string[] = ['zh-Hans', 'zh-Hant'];
+
 describe('shipped locales', () => {
-	test('the shipped set is exactly the languages the API serves content in', async () => {
+	test('a catalogue and an API language come in pairs, save the declared exceptions', async () => {
 		// Anything else is half-translated by construction: a catalogue with no API
 		// language gives localized chrome over English prose, and an API language
 		// with no catalogue gives translated prose under English chrome, which is
 		// the state this whole feature exists to remove. English is the source, so
 		// it needs no catalogue.
 		const shipped = (await shippedCatalogues()).map(([lang]) => lang);
+		const served = API_LANGUAGES.filter((l) => l !== 'en');
 		expect(shipped).toEqual(
-			API_LANGUAGES.filter((l) => l !== 'en')
+			served
+				.filter((l) => !CHROME_PENDING.includes(l))
 				.slice()
 				.sort(),
 		);
+		// Neither half of the exception may rot: an entry naming a language the API
+		// dropped is stale, and one naming a language now shipped is a lie.
+		expect(CHROME_PENDING.filter((l) => !served.includes(l))).toEqual([]);
+		expect(CHROME_PENDING.filter((l) => shipped.includes(l))).toEqual([]);
+	});
+
+	/**
+	 * A field-label module rides its language's chrome payload and is imported by nothing else, so
+	 * one written for a language with no payload is unreachable code that no build would report.
+	 */
+	test('the field-label payloads match the shipped catalogues exactly', async () => {
+		const shipped = (await shippedCatalogues()).map(([lang]) => lang);
+		const labels = (await readdir('packages/ui/src/locales/field-labels'))
+			.filter((f) => f.endsWith('.ts'))
+			.map((f) => f.replace(/\.ts$/, ''))
+			.sort();
+		expect(labels).toEqual(shipped.slice().sort());
 	});
 
 	test('every catalogue carries exactly the English key set', async () => {
@@ -705,6 +761,10 @@ describe('shipped locales', () => {
 			// `Bodygraph` is the loanword the API's Spanish prose prints.
 			es: [
 				'Koota',
+				// `Eclipse` and `Eclipses` are the Spanish words, spelled exactly as
+				// the English. Both are correct translations rather than gaps.
+				'Eclipse',
+				'Eclipses',
 				// The panchang terms are Sanskrit and print as themselves; a panchang
 				// in this language names its five limbs with these same words.
 				'Amrit Kalam',
@@ -995,6 +1055,10 @@ describe('shipped locales', () => {
 			// `Desenho`.
 			pt: [
 				'Koota',
+				// `Eclipse` and `Eclipses` are the Portuguese words as well, spelled
+				// exactly as the English.
+				'Eclipse',
+				'Eclipses',
 				// The panchang terms are Sanskrit and print as themselves; a panchang
 				// in this language names its five limbs with these same words.
 				'Amrit Kalam',
@@ -1327,12 +1391,29 @@ describe('shipped locales', () => {
 		}
 	});
 
+	/**
+	 * French elision is SPELLING, and stripping it ships a misspelling no other check can see.
+	 *
+	 * @remarks
+	 * `l'élément` and `jusqu'à` have no apostrophe-free form: the vowel is dropped and the mark is
+	 * what stands in for it, so a register rule without this carve-out forces a misspelling that
+	 * no other check can see. The exemption is as narrow as the grammar: a
+	 * STRAIGHT apostrophe between two letters, in French alone. A decorative or possessive one has
+	 * a space or a boundary on one side and still fails, the curly form fails everywhere including
+	 * French, and every other language keeps the rule whole, which is what keeps a Turkish suffix
+	 * apostrophe out.
+	 */
 	test('the register holds: no apostrophe, em dash or exclamation mark', async () => {
 		// The brand rule the English copy follows. A translation pass is where it
 		// slips, because the punctuation is idiomatic in most of these languages.
+		const ELISION = /(?<=\p{L})'(?=\p{L})/gu;
 		for (const [lang, catalog] of await shippedCatalogues()) {
 			const offenders = Object.entries(catalog)
-				.filter(([, translated]) => /['’—!]|--/.test(translated))
+				.filter(([, translated]) =>
+					/['’—!]|--/.test(
+						lang === 'fr' ? translated.replace(ELISION, '') : translated,
+					),
+				)
 				.map(([source, translated]) => `${source} -> ${translated}`);
 			expect(offenders, `register violations in ${lang}.ts`).toEqual([]);
 		}
@@ -1401,6 +1482,26 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
+		// The two Chinese-metaphysics cards, English by DECISION and on the same
+		// grounds as the KP rows above rather than as a gap nobody got to. Their
+		// vocabulary was sourced across all seven catalogue languages and could not
+		// be written honestly in every one: two of the seven have no BaZi writing at
+		// all, and the ones that do teach the system through element relationships
+		// without ever coining words for the hidden stems, the Ten Gods or the Na
+		// Yin. Nine in ten apparent sources turned out to be machine translations of
+		// one English original, which is what turned an apparently rich result into
+		// a null one. Three terms failed in every language for a different reason
+		// worth keeping: the hidden-stem ranks and the base star are not named
+		// objects in ANY tradition including the Chinese, so they are modelling
+		// mismatches rather than translation gaps. The one line on each card that IS
+		// translated is drawn by a shared helper rather than by the card. Unblocks on
+		// a practitioner pass per language, not on more searching.
+		'components/bazi-chart.ts': 7,
+		'components/flying-star-chart.ts': 14,
+		'components/almanac-day.ts': 9,
+		'components/kua-card.ts': 15,
+		'components/luck-pillars.ts': 10,
+		'components/zodiac-card.ts': 20,
 	};
 
 	/** Path to the literals it writes, keyed the way the budget is. */

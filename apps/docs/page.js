@@ -9,14 +9,17 @@
 	if (!grid || !filterBar || !Array.isArray(window.ROXY_UI_DEMOS)) return;
 
 	const demos = window.ROXY_UI_DEMOS;
+	// The canonical domain order, never a reordered or shortened version of it.
 	const CATEGORY_ORDER = [
 		'All',
 		'Astrology',
 		'Vedic',
+		'Forecast',
+		'Human Design',
+		'Chinese Astrology',
+		'Feng Shui',
 		'Numerology',
 		'Tarot',
-		'Human Design',
-		'Forecast',
 		'Biorhythm',
 		'I Ching',
 		'Crystals',

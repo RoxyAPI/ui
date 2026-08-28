@@ -827,6 +827,25 @@ export const hi: Record<ChromeString, string> = {
 	'Week by week': 'सप्ताह दर सप्ताह',
 	'Week {{n}}': 'सप्ताह {{n}}',
 	'Key dates': 'मुख्य तिथियाँ',
+	Daily: 'दैनिक',
+	Weekly: 'साप्ताहिक',
+	Monthly: 'मासिक',
+	Yearly: 'वार्षिक',
+	'Sign ingress': 'राशि परिवर्तन',
+	'Retrograde station': 'वक्री मार्गी',
+	'Lunar phase': 'चंद्र कला',
+	Eclipse: 'ग्रहण',
+	'Solar season': 'सूर्य संक्रांति',
+	'through {{date}}': '{{date}} तक',
+	Themes: 'प्रमुख प्रभाव',
+	'Key periods': 'मुख्य अवधियाँ',
+	Eclipses: 'ग्रहण',
+	Retrogrades: 'वक्री और मार्गी',
+	'Best months': 'शुभ माह',
+	'{{count}} harmonious aspects': 'शुभ दृष्टियाँ: {{count}}',
+	'Year boundary': 'वर्ष आरंभ',
+	'Day boundary': 'दिन आरंभ',
+	'Hour clock': 'समय प्रणाली',
 	'Arudha padas': 'अरुढ़ पद',
 	Moved: 'स्थानांतरित',
 	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
@@ -971,6 +990,11 @@ export const hi: Record<ChromeString, string> = {
 	'Sign sectors, not houses': 'राशि खंड, भाव नहीं',
 	'Planet 1': 'ग्रह 1',
 	'Planet 2': 'ग्रह 2',
+	'{{first}} in the houses of {{second}}': '{{first}}, {{second}} के भावों में',
+	// Spelled out rather than a short अपना भाव, which would collide with स्वगृही,
+	// the Jyotisha term for a graha in the rashi it rules. The table scrolls, so the
+	// longer header costs nothing.
+	'Own house': 'अपनी कुंडली का भाव',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
 		'कुंडलियों के बीच दृष्टियाँ: कुंडली 1 का ग्रह, कुंडली 2 का ग्रह, उनके बीच दृष्टि, अंश में ओर्ब और बल।',
 };

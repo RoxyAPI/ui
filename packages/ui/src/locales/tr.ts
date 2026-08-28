@@ -815,6 +815,25 @@ export const tr: Record<ChromeString, string> = {
 	'Week by week': 'Hafta hafta',
 	'Week {{n}}': '{{n}}. hafta',
 	'Key dates': 'Önemli tarihler',
+	Daily: 'Günlük',
+	Weekly: 'Haftalık',
+	Monthly: 'Aylık',
+	Yearly: 'Yıllık',
+	'Sign ingress': 'Burç değişimi',
+	'Retrograde station': 'Durağanlaşma',
+	'Lunar phase': 'Ay evresi',
+	Eclipse: 'Tutulma',
+	'Solar season': 'Güneş sezonu',
+	'through {{date}}': '{{date}} tarihine kadar',
+	Themes: 'Temalar',
+	'Key periods': 'Önemli dönemler',
+	Eclipses: 'Tutulmalar',
+	Retrogrades: 'Retrolar',
+	'Best months': 'En iyi aylar',
+	'{{count}} harmonious aspects': '{{count}} uyumlu açı',
+	'Year boundary': 'Yıl başlangıcı',
+	'Day boundary': 'Gün başlangıcı',
+	'Hour clock': 'Saat sistemi',
 	'Arudha padas': 'Arudha padalar',
 	Moved: 'Kaydırıldı',
 	'marks a pada that fell in its own bhava or the seventh from it and was moved to the tenth from there, as the classical rule requires. {{count}} of {{total}} padas here.':
@@ -959,6 +978,13 @@ export const tr: Record<ChromeString, string> = {
 	'Sign sectors, not houses': 'Burç sektörleri, ev değil',
 	'Planet 1': 'Gezegen 1',
 	'Planet 2': 'Gezegen 2',
+	// An indefinite compound on purpose: the definite form needs a genitive suffix
+	// on the NAME, which would require both an apostrophe and vowel harmony computed
+	// from a runtime value. Dropping it puts every suffix on `ev`, which is the same
+	// manoeuvre recorded above for the sign-ingress line. Possessor first, subject
+	// last, which is also the order Turkish astrology headings actually print.
+	'{{first}} in the houses of {{second}}': '{{second}} evlerinde {{first}}',
+	'Own house': 'Kendi evi',
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.':
 		'Haritalar arası açılar: harita 1 gezegeni, harita 2 gezegeni, aralarındaki açı, derece cinsinden orb ve güç.',
 };

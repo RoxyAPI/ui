@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "roxy-kua-card",
+  "type": "registry:ui",
+  "title": "RoxyKuaCard",
+  "description": "Kua number with its trigram and the Eight Mansions map: all eight compass sectors on the nine-palace grid, each with its star, nature, rank and life domain, and the best and worst of them named",
+  "dependencies": [
+    "@roxyapi/ui-react"
+  ],
+  "registryDependencies": [
+    "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.33.0/registry/theme.json"
+  ],
+  "files": [
+    {
+      "path": "components/roxy-kua-card.tsx",
+      "content": "'use client';\n\n/**\n * <RoxyKuaCard data={...} />: Kua number with its trigram and the Eight Mansions map: all eight compass sectors on the nine-palace grid, each with its star, nature, rank and life domain, and the best and worst of them named.\n *\n * You own this file. Customize freely. The component is re-exported from\n * @roxyapi/ui-react and stays in sync with the published package.\n *\n * Typical wiring (server-side fetch, client-side render):\n *\n * ```ts\n * // app/api/kua-card/route.ts\n * import { createRoxy } from '@roxyapi/sdk';\n * const roxy = createRoxy(process.env.ROXY_API_KEY!);\n * export async function POST(req: Request) {\n *   const { data } = await roxy.someDomain.someMethod({ body: await req.json() });\n *   return Response.json(data);\n * }\n * ```\n *\n * Theme via --roxy-* CSS custom properties on :root (see globals.css).\n */\nimport { RoxyKuaCard as Element } from '@roxyapi/ui-react';\nimport type { ComponentProps } from 'react';\n\nexport type RoxyKuaCardProps = ComponentProps<typeof Element>;\n\nexport function RoxyKuaCard(props: RoxyKuaCardProps) {\n\treturn <Element {...props} />;\n}\n\nexport default RoxyKuaCard;\n",
+      "type": "registry:ui",
+      "target": "~/components/roxy-ui/kua-card.tsx"
+    }
+  ]
+}

@@ -15,6 +15,32 @@ export interface EndpointBinding {
 
 /** Component tag -> every endpoint whose response it renders. */
 export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
+	'roxy-almanac-day': [
+		{
+			operationId: 'getAlmanacDay',
+			method: 'GET',
+			path: '/chinese-astrology/calendar/day/{date}',
+			attrs: {
+				mode: 'day',
+			},
+		},
+		{
+			operationId: 'getMonthlyAlmanac',
+			method: 'GET',
+			path: '/chinese-astrology/calendar/monthly',
+			attrs: {
+				mode: 'month',
+			},
+		},
+		{
+			operationId: 'lookupAuspiciousDays',
+			method: 'POST',
+			path: '/chinese-astrology/calendar/auspicious-days',
+			attrs: {
+				mode: 'auspicious',
+			},
+		},
+	],
 	'roxy-angel-number-card': [
 		{
 			operationId: 'getAngelNumber',
@@ -65,6 +91,13 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'generateAstrocartography',
 			method: 'POST',
 			path: '/astrology/astrocartography',
+		},
+	],
+	'roxy-bazi-chart': [
+		{
+			operationId: 'generateBaziChart',
+			method: 'POST',
+			path: '/chinese-astrology/bazi/chart',
 		},
 	],
 	'roxy-bhav-chalit-table': [
@@ -299,6 +332,24 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/astrology/fixed-stars',
 		},
 	],
+	'roxy-flying-star-chart': [
+		{
+			operationId: 'generateFlyingStarChart',
+			method: 'POST',
+			path: '/feng-shui/flying-stars/natal',
+			attrs: {
+				mode: 'natal',
+			},
+		},
+		{
+			operationId: 'getAnnualFlyingStars',
+			method: 'GET',
+			path: '/feng-shui/flying-stars/annual/{year}',
+			attrs: {
+				mode: 'annual',
+			},
+		},
+	],
 	'roxy-forecast-digest': [
 		{
 			operationId: 'generateDigest',
@@ -416,6 +467,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 				period: 'monthly',
 			},
 		},
+		{
+			operationId: 'getYearlyHoroscope',
+			method: 'GET',
+			path: '/astrology/horoscope/{sign}/yearly',
+			attrs: {
+				period: 'yearly',
+			},
+		},
 	],
 	'roxy-kp-chart': [
 		{
@@ -438,11 +497,36 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/vedic-astrology/kp/ruling-planets',
 		},
 	],
+	'roxy-kua-card': [
+		{
+			operationId: 'calculateKuaNumber',
+			method: 'POST',
+			path: '/feng-shui/kua',
+			attrs: {
+				mode: 'kua',
+			},
+		},
+		{
+			operationId: 'generateEightMansions',
+			method: 'POST',
+			path: '/feng-shui/eight-mansions',
+			attrs: {
+				mode: 'mansions',
+			},
+		},
+	],
 	'roxy-local-space-compass': [
 		{
 			operationId: 'generateLocalSpace',
 			method: 'POST',
 			path: '/astrology/local-space',
+		},
+	],
+	'roxy-luck-pillars': [
+		{
+			operationId: 'calculateLuckPillars',
+			method: 'POST',
+			path: '/chinese-astrology/bazi/luck-pillars',
 		},
 	],
 	'roxy-moon-phase': [
@@ -833,6 +917,40 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			operationId: 'detectYogas',
 			method: 'POST',
 			path: '/vedic-astrology/yoga/detect',
+		},
+	],
+	'roxy-zodiac-card': [
+		{
+			operationId: 'calculateZodiacAnimal',
+			method: 'POST',
+			path: '/chinese-astrology/zodiac/sign',
+			attrs: {
+				mode: 'sign',
+			},
+		},
+		{
+			operationId: 'getZodiacAnimal',
+			method: 'GET',
+			path: '/chinese-astrology/zodiac/animals/{id}',
+			attrs: {
+				mode: 'animal',
+			},
+		},
+		{
+			operationId: 'getDailyZodiacReading',
+			method: 'GET',
+			path: '/chinese-astrology/zodiac/{id}/daily',
+			attrs: {
+				mode: 'daily',
+			},
+		},
+		{
+			operationId: 'getZodiacCompatibility',
+			method: 'GET',
+			path: '/chinese-astrology/zodiac/compatibility/{sign1}/{sign2}',
+			attrs: {
+				mode: 'compatibility',
+			},
 		},
 	],
 };

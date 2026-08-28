@@ -131,12 +131,13 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		pascal: 'RoxyHoroscopeCard',
 		tag: 'roxy-horoscope-card',
 		slug: 'horoscope-card',
-		heading: 'Daily horoscope',
+		heading: 'Horoscope',
 		description:
-			'Daily, weekly, or monthly horoscope card for /astrology/horoscope/...',
+			'Daily, weekly, monthly, or yearly horoscope card for /astrology/horoscope/..., with the column, the dated sky events behind it, and the yearly themes, key periods, eclipses, retrogrades and best months',
 		docsLabel: 'Western',
-		endpointLabel: 'GET /astrology/horoscope/{sign}/{daily,weekly,monthly}',
-		docsSummary: 'Daily, weekly, or monthly horoscope card',
+		endpointLabel:
+			'GET /astrology/horoscope/{sign}/{daily,weekly,monthly,yearly}',
+		docsSummary: 'Daily, weekly, monthly, or yearly horoscope card',
 		topic: 'Astrology',
 	},
 	{
@@ -694,6 +695,87 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		docsSummary:
 			'Per-window event counts, domain breakdown, and the highest-significance events',
 		topic: 'Forecast',
+	},
+	{
+		pascal: 'RoxyBaziChart',
+		tag: 'roxy-bazi-chart',
+		slug: 'bazi-chart',
+		heading: 'Four pillars',
+		description:
+			'BaZi four pillars chart: stem over branch per pillar with the Ten God relation, the stems each branch stores, the Na Yin, the Day Master, the five-element balance and every interaction the pillars form',
+		docsLabel: 'Chinese',
+		endpointLabel: 'POST /chinese-astrology/bazi/chart',
+		docsSummary:
+			'Year, month, day and hour pillars in hanzi with hidden stems, Ten Gods, Na Yin, element balance and interactions',
+		topic: 'Chinese Astrology',
+	},
+	{
+		pascal: 'RoxyLuckPillars',
+		tag: 'roxy-luck-pillars',
+		slug: 'luck-pillars',
+		heading: 'Luck pillars',
+		description:
+			'BaZi luck pillars: the ten-year stretches a chart is read through, each with its stem, branch and Ten God, plus the annual pillars inside them and the direction and starting age the sequence was built from',
+		docsLabel: 'Chinese',
+		endpointLabel: 'POST /chinese-astrology/bazi/luck-pillars',
+		docsSummary:
+			'Ten-year luck pillars as a strip with ages and years, the annual pillars, and the direction and start age behind them',
+		topic: 'Chinese Astrology',
+	},
+	{
+		pascal: 'RoxyZodiacCard',
+		tag: 'roxy-zodiac-card',
+		slug: 'zodiac-card',
+		heading: 'Chinese zodiac',
+		description:
+			'Chinese zodiac card: the animal a date falls in, the reference read of one animal with its trine and partner animals, a daily reading, or the compatibility of a pair',
+		docsLabel: 'Chinese',
+		endpointLabel:
+			'POST /chinese-astrology/zodiac/sign, GET /chinese-astrology/zodiac/{animals/{id},{id}/daily,compatibility/{sign1}/{sign2}}',
+		docsSummary:
+			'The animal for a date, one animal in full, a daily reading, or a pair scored',
+		topic: 'Chinese Astrology',
+	},
+	{
+		pascal: 'RoxyAlmanacDay',
+		tag: 'roxy-almanac-day',
+		slug: 'almanac-day',
+		heading: 'Chinese almanac',
+		description:
+			'Chinese almanac (Tong Shu): the day officer, what the day favours and avoids, the animal it clashes with, its three pillars and lunar mansion, for one day, a whole month, or a search for a date to act on',
+		docsLabel: 'Chinese',
+		endpointLabel:
+			'GET /chinese-astrology/calendar/{day/{date},monthly}, POST /chinese-astrology/calendar/auspicious-days',
+		docsSummary:
+			'Day officer, favours and avoids, clash animal and pillars, as one day, a month, or a date search',
+		topic: 'Chinese Astrology',
+	},
+	{
+		pascal: 'RoxyFlyingStarChart',
+		tag: 'roxy-flying-star-chart',
+		slug: 'flying-star-chart',
+		heading: 'Flying star chart',
+		description:
+			'Xuan Kong flying star plate: nine palaces on the compass with the mountain, period and water star of each, the facing and sitting mountains, and the structure the pair produces',
+		docsLabel: 'Feng Shui',
+		endpointLabel:
+			'POST /feng-shui/flying-stars/natal, GET /feng-shui/flying-stars/annual/{year}',
+		docsSummary:
+			'Nine-palace flying star plate with the mountain, period and water star per palace, the facing and sitting mountains and the structure',
+		topic: 'Feng Shui',
+	},
+	{
+		pascal: 'RoxyKuaCard',
+		tag: 'roxy-kua-card',
+		slug: 'kua-card',
+		heading: 'Kua and eight mansions',
+		description:
+			'Kua number with its trigram and the Eight Mansions map: all eight compass sectors on the nine-palace grid, each with its star, nature, rank and life domain, and the best and worst of them named',
+		docsLabel: 'Feng Shui',
+		endpointLabel: 'POST /feng-shui/kua, POST /feng-shui/eight-mansions',
+		docsSummary:
+			'Kua number and trigram over the eight-sector direction map, favourable and unfavourable sectors ranked',
+		topic: 'Feng Shui',
 	},
 	{
 		pascal: 'RoxyBiorhythmChart',

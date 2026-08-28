@@ -81,11 +81,11 @@ window.ROXY_COMPONENTS = [
     "pascal": "RoxyHoroscopeCard",
     "tag": "roxy-horoscope-card",
     "slug": "horoscope-card",
-    "heading": "Daily horoscope",
-    "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/...",
+    "heading": "Horoscope",
+    "description": "Daily, weekly, monthly, or yearly horoscope card for /astrology/horoscope/..., with the column, the dated sky events behind it, and the yearly themes, key periods, eclipses, retrogrades and best months",
     "docsLabel": "Western",
-    "endpointLabel": "GET /astrology/horoscope/{sign}/{daily,weekly,monthly}",
-    "docsSummary": "Daily, weekly, or monthly horoscope card",
+    "endpointLabel": "GET /astrology/horoscope/{sign}/{daily,weekly,monthly,yearly}",
+    "docsSummary": "Daily, weekly, monthly, or yearly horoscope card",
     "topic": "Astrology"
   },
   {
@@ -573,6 +573,72 @@ window.ROXY_COMPONENTS = [
     "topic": "Forecast"
   },
   {
+    "pascal": "RoxyBaziChart",
+    "tag": "roxy-bazi-chart",
+    "slug": "bazi-chart",
+    "heading": "Four pillars",
+    "description": "BaZi four pillars chart: stem over branch per pillar with the Ten God relation, the stems each branch stores, the Na Yin, the Day Master, the five-element balance and every interaction the pillars form",
+    "docsLabel": "Chinese",
+    "endpointLabel": "POST /chinese-astrology/bazi/chart",
+    "docsSummary": "Year, month, day and hour pillars in hanzi with hidden stems, Ten Gods, Na Yin, element balance and interactions",
+    "topic": "Chinese Astrology"
+  },
+  {
+    "pascal": "RoxyLuckPillars",
+    "tag": "roxy-luck-pillars",
+    "slug": "luck-pillars",
+    "heading": "Luck pillars",
+    "description": "BaZi luck pillars: the ten-year stretches a chart is read through, each with its stem, branch and Ten God, plus the annual pillars inside them and the direction and starting age the sequence was built from",
+    "docsLabel": "Chinese",
+    "endpointLabel": "POST /chinese-astrology/bazi/luck-pillars",
+    "docsSummary": "Ten-year luck pillars as a strip with ages and years, the annual pillars, and the direction and start age behind them",
+    "topic": "Chinese Astrology"
+  },
+  {
+    "pascal": "RoxyZodiacCard",
+    "tag": "roxy-zodiac-card",
+    "slug": "zodiac-card",
+    "heading": "Chinese zodiac",
+    "description": "Chinese zodiac card: the animal a date falls in, the reference read of one animal with its trine and partner animals, a daily reading, or the compatibility of a pair",
+    "docsLabel": "Chinese",
+    "endpointLabel": "POST /chinese-astrology/zodiac/sign, GET /chinese-astrology/zodiac/{animals/{id},{id}/daily,compatibility/{sign1}/{sign2}}",
+    "docsSummary": "The animal for a date, one animal in full, a daily reading, or a pair scored",
+    "topic": "Chinese Astrology"
+  },
+  {
+    "pascal": "RoxyAlmanacDay",
+    "tag": "roxy-almanac-day",
+    "slug": "almanac-day",
+    "heading": "Chinese almanac",
+    "description": "Chinese almanac (Tong Shu): the day officer, what the day favours and avoids, the animal it clashes with, its three pillars and lunar mansion, for one day, a whole month, or a search for a date to act on",
+    "docsLabel": "Chinese",
+    "endpointLabel": "GET /chinese-astrology/calendar/{day/{date},monthly}, POST /chinese-astrology/calendar/auspicious-days",
+    "docsSummary": "Day officer, favours and avoids, clash animal and pillars, as one day, a month, or a date search",
+    "topic": "Chinese Astrology"
+  },
+  {
+    "pascal": "RoxyFlyingStarChart",
+    "tag": "roxy-flying-star-chart",
+    "slug": "flying-star-chart",
+    "heading": "Flying star chart",
+    "description": "Xuan Kong flying star plate: nine palaces on the compass with the mountain, period and water star of each, the facing and sitting mountains, and the structure the pair produces",
+    "docsLabel": "Feng Shui",
+    "endpointLabel": "POST /feng-shui/flying-stars/natal, GET /feng-shui/flying-stars/annual/{year}",
+    "docsSummary": "Nine-palace flying star plate with the mountain, period and water star per palace, the facing and sitting mountains and the structure",
+    "topic": "Feng Shui"
+  },
+  {
+    "pascal": "RoxyKuaCard",
+    "tag": "roxy-kua-card",
+    "slug": "kua-card",
+    "heading": "Kua and eight mansions",
+    "description": "Kua number with its trigram and the Eight Mansions map: all eight compass sectors on the nine-palace grid, each with its star, nature, rank and life domain, and the best and worst of them named",
+    "docsLabel": "Feng Shui",
+    "endpointLabel": "POST /feng-shui/kua, POST /feng-shui/eight-mansions",
+    "docsSummary": "Kua number and trigram over the eight-sector direction map, favourable and unfavourable sectors ranked",
+    "topic": "Feng Shui"
+  },
+  {
     "pascal": "RoxyBiorhythmChart",
     "tag": "roxy-biorhythm-chart",
     "slug": "biorhythm-chart",
@@ -709,6 +775,32 @@ window.ROXY_COMPONENTS = [
   }
 ];
 window.ROXY_ENDPOINT_BINDINGS = {
+  "roxy-almanac-day": [
+    {
+      "operationId": "getAlmanacDay",
+      "method": "GET",
+      "path": "/chinese-astrology/calendar/day/{date}",
+      "attrs": {
+        "mode": "day"
+      }
+    },
+    {
+      "operationId": "getMonthlyAlmanac",
+      "method": "GET",
+      "path": "/chinese-astrology/calendar/monthly",
+      "attrs": {
+        "mode": "month"
+      }
+    },
+    {
+      "operationId": "lookupAuspiciousDays",
+      "method": "POST",
+      "path": "/chinese-astrology/calendar/auspicious-days",
+      "attrs": {
+        "mode": "auspicious"
+      }
+    }
+  ],
   "roxy-angel-number-card": [
     {
       "operationId": "getAngelNumber",
@@ -759,6 +851,13 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "generateAstrocartography",
       "method": "POST",
       "path": "/astrology/astrocartography"
+    }
+  ],
+  "roxy-bazi-chart": [
+    {
+      "operationId": "generateBaziChart",
+      "method": "POST",
+      "path": "/chinese-astrology/bazi/chart"
     }
   ],
   "roxy-bhav-chalit-table": [
@@ -993,6 +1092,24 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "path": "/astrology/fixed-stars"
     }
   ],
+  "roxy-flying-star-chart": [
+    {
+      "operationId": "generateFlyingStarChart",
+      "method": "POST",
+      "path": "/feng-shui/flying-stars/natal",
+      "attrs": {
+        "mode": "natal"
+      }
+    },
+    {
+      "operationId": "getAnnualFlyingStars",
+      "method": "GET",
+      "path": "/feng-shui/flying-stars/annual/{year}",
+      "attrs": {
+        "mode": "annual"
+      }
+    }
+  ],
   "roxy-forecast-digest": [
     {
       "operationId": "generateDigest",
@@ -1109,6 +1226,14 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "attrs": {
         "period": "monthly"
       }
+    },
+    {
+      "operationId": "getYearlyHoroscope",
+      "method": "GET",
+      "path": "/astrology/horoscope/{sign}/yearly",
+      "attrs": {
+        "period": "yearly"
+      }
     }
   ],
   "roxy-kp-chart": [
@@ -1132,11 +1257,36 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "path": "/vedic-astrology/kp/ruling-planets"
     }
   ],
+  "roxy-kua-card": [
+    {
+      "operationId": "calculateKuaNumber",
+      "method": "POST",
+      "path": "/feng-shui/kua",
+      "attrs": {
+        "mode": "kua"
+      }
+    },
+    {
+      "operationId": "generateEightMansions",
+      "method": "POST",
+      "path": "/feng-shui/eight-mansions",
+      "attrs": {
+        "mode": "mansions"
+      }
+    }
+  ],
   "roxy-local-space-compass": [
     {
       "operationId": "generateLocalSpace",
       "method": "POST",
       "path": "/astrology/local-space"
+    }
+  ],
+  "roxy-luck-pillars": [
+    {
+      "operationId": "calculateLuckPillars",
+      "method": "POST",
+      "path": "/chinese-astrology/bazi/luck-pillars"
     }
   ],
   "roxy-moon-phase": [
@@ -1528,6 +1678,40 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "POST",
       "path": "/vedic-astrology/yoga/detect"
     }
+  ],
+  "roxy-zodiac-card": [
+    {
+      "operationId": "calculateZodiacAnimal",
+      "method": "POST",
+      "path": "/chinese-astrology/zodiac/sign",
+      "attrs": {
+        "mode": "sign"
+      }
+    },
+    {
+      "operationId": "getZodiacAnimal",
+      "method": "GET",
+      "path": "/chinese-astrology/zodiac/animals/{id}",
+      "attrs": {
+        "mode": "animal"
+      }
+    },
+    {
+      "operationId": "getDailyZodiacReading",
+      "method": "GET",
+      "path": "/chinese-astrology/zodiac/{id}/daily",
+      "attrs": {
+        "mode": "daily"
+      }
+    },
+    {
+      "operationId": "getZodiacCompatibility",
+      "method": "GET",
+      "path": "/chinese-astrology/zodiac/compatibility/{sign1}/{sign2}",
+      "attrs": {
+        "mode": "compatibility"
+      }
+    }
   ]
 };
 window.ROXY_THEME_PRESETS = {
@@ -1832,6 +2016,30 @@ window.ROXY_WIDGET_SNIPPETS = {
   "roxy-forecast-digest": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-forecast-digest data-endpoint=\"forecast/digest\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-forecast-digest>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-digest\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-bazi-chart": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bazi-chart data-endpoint=\"chinese-astrology/bazi/chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bazi-chart>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bazi-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-luck-pillars": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-luck-pillars data-endpoint=\"chinese-astrology/bazi/luck-pillars\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-luck-pillars>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"luck-pillars\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-zodiac-card": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-zodiac-card mode=\"sign\" data-endpoint=\"chinese-astrology/zodiac/sign\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-zodiac-card>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"zodiac-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-almanac-day": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-almanac-day mode=\"day\" data-endpoint=\"chinese-astrology/calendar/day/{date}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-almanac-day>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"almanac-day\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-flying-star-chart": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-flying-star-chart mode=\"natal\" data-endpoint=\"feng-shui/flying-stars/natal\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-flying-star-chart>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"flying-star-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-kua-card": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kua-card mode=\"kua\" data-endpoint=\"feng-shui/kua\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kua-card>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kua-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
   "roxy-biorhythm-chart": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-biorhythm-chart mode=\"daily\" data-endpoint=\"biorhythm/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-biorhythm-chart>",

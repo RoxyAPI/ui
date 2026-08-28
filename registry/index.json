@@ -37,7 +37,7 @@
     },
     {
       "name": "roxy-horoscope-card",
-      "description": "Daily, weekly, or monthly horoscope card for /astrology/horoscope/..."
+      "description": "Daily, weekly, monthly, or yearly horoscope card for /astrology/horoscope/..., with the column, the dated sky events behind it, and the yearly themes, key periods, eclipses, retrogrades and best months"
     },
     {
       "name": "roxy-astrocartography-map",
@@ -214,6 +214,30 @@
     {
       "name": "roxy-forecast-digest",
       "description": "Rolled-up forecast across the next 24 hours, 7, 30, and 90 days with per-domain breakdown and top events"
+    },
+    {
+      "name": "roxy-bazi-chart",
+      "description": "BaZi four pillars chart: stem over branch per pillar with the Ten God relation, the stems each branch stores, the Na Yin, the Day Master, the five-element balance and every interaction the pillars form"
+    },
+    {
+      "name": "roxy-luck-pillars",
+      "description": "BaZi luck pillars: the ten-year stretches a chart is read through, each with its stem, branch and Ten God, plus the annual pillars inside them and the direction and starting age the sequence was built from"
+    },
+    {
+      "name": "roxy-zodiac-card",
+      "description": "Chinese zodiac card: the animal a date falls in, the reference read of one animal with its trine and partner animals, a daily reading, or the compatibility of a pair"
+    },
+    {
+      "name": "roxy-almanac-day",
+      "description": "Chinese almanac (Tong Shu): the day officer, what the day favours and avoids, the animal it clashes with, its three pillars and lunar mansion, for one day, a whole month, or a search for a date to act on"
+    },
+    {
+      "name": "roxy-flying-star-chart",
+      "description": "Xuan Kong flying star plate: nine palaces on the compass with the mountain, period and water star of each, the facing and sitting mountains, and the structure the pair produces"
+    },
+    {
+      "name": "roxy-kua-card",
+      "description": "Kua number with its trigram and the Eight Mansions map: all eight compass sectors on the nine-palace grid, each with its star, nature, rank and life domain, and the best and worst of them named"
     },
     {
       "name": "roxy-biorhythm-chart",

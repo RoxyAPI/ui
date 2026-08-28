@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { GetDailyHoroscopeResponse, GetMonthlyHoroscopeResponse, GetWeeklyHoroscopeResponse } from '../types/index.js';
+import type { GetDailyHoroscopeResponse, GetMonthlyHoroscopeResponse, GetWeeklyHoroscopeResponse, GetYearlyHoroscopeResponse } from '../types/index.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
@@ -9,11 +9,13 @@ type ElementAttrs = Omit<
 
 export interface RoxyHoroscopeCardProps extends ElementAttrs {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse;
+	data?: GetDailyHoroscopeResponse | GetWeeklyHoroscopeResponse | GetMonthlyHoroscopeResponse | GetYearlyHoroscopeResponse;
 	className?: string;
 	style?: React.CSSProperties;
 	/** Which horoscope cadence the response is for. Selects the heading and date framing. */
-	period?: 'daily' | 'weekly' | 'monthly';
+	period?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+	/** Which shape the written reading takes. The endpoint returns the same reading twice, once whole as the column and once split into six topic sections, so exactly one is rendered. Defaults to auto, which prefers the column and falls back to the sections for a response that carries none. */
+	layout?: 'auto' | 'column' | 'sections';
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */
@@ -46,7 +48,7 @@ export interface RoxyHoroscopeCardProps extends ElementAttrs {
 }
 
 export const RoxyHoroscopeCard = React.forwardRef<HTMLElement | null, RoxyHoroscopeCardProps>(
-	function RoxyHoroscopeCard({ data, className, style, period, endpoint, method, publishableKey, baseUrl, submitUrl, submitContext, locationUrl, specUrl, lang, submitLabel, remember, attribution, hideReadings, hideSections, ...rest }, ref) {
+	function RoxyHoroscopeCard({ data, className, style, period, layout, endpoint, method, publishableKey, baseUrl, submitUrl, submitContext, locationUrl, specUrl, lang, submitLabel, remember, attribution, hideReadings, hideSections, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -81,9 +83,16 @@ export const RoxyHoroscopeCard = React.forwardRef<HTMLElement | null, RoxyHorosc
 		React.useEffect(() => {
 			const el = internal.current;
 			if (el && period !== undefined) {
-				(el as unknown as { period: 'daily' | 'weekly' | 'monthly' }).period = period;
+				(el as unknown as { period: 'daily' | 'weekly' | 'monthly' | 'yearly' }).period = period;
 			}
 		}, [period, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && layout !== undefined) {
+				(el as unknown as { layout: 'auto' | 'column' | 'sections' }).layout = layout;
+			}
+		}, [layout, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

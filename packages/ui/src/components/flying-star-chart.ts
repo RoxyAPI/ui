@@ -1,0 +1,476 @@
+import { css, html, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import type {
+	GenerateFlyingStarChartResponse,
+	GetAnnualFlyingStarsResponse,
+} from '../types/index.js';
+import { RoxyDataElement } from '../utils/base-element.js';
+import { baseStyles } from '../utils/base-styles.js';
+import { formatDate, formatInteger } from '../utils/format.js';
+import { GRID_ORDER } from '../utils/nine-palaces.js';
+import { humanize } from '../utils/string.js';
+
+type FlyingStarData =
+	| GenerateFlyingStarChartResponse
+	| GetAnnualFlyingStarsResponse;
+
+/** Compass label per palace, keyed by the name the response gives it. */
+const PALACE_LABEL: Record<string, string> = {
+	North: 'North',
+	Northeast: 'Northeast',
+	East: 'East',
+	Southeast: 'Southeast',
+	South: 'South',
+	Southwest: 'Southwest',
+	West: 'West',
+	Northwest: 'Northwest',
+	Center: 'Center',
+};
+
+/** True for the natal plate, which carries a mountain and a water star per palace. */
+function isNatal(d: FlyingStarData): d is GenerateFlyingStarChartResponse {
+	return 'mountainCenterStar' in d;
+}
+
+/**
+ * Flying Star (Xuan Kong) plate. Pass `data` from POST /feng-shui/flying-stars/natal, or set
+ * `mode="annual"` and pass GET /feng-shui/flying-stars/annual/{year}.
+ *
+ * @remarks
+ * Nine palaces on the Chinese compass, south at the top, each cell carrying the numbers that
+ * palace holds: the mountain star upper left, the water star upper right and the period star large
+ * in the middle. **Three numbers, never four.** Published plates draw exactly these three, and the
+ * Lo Shu number underneath them is the fixed position of the palace rather than a star that flew
+ * there, so it decides where a cell is DRAWN and is not printed as a number of its own. It also has
+ * no name of its own in any language a reader might want this card in. An annual plate carries one
+ * star per palace, so the cell holds that number alone.
+ *
+ * **This card is English end to end, by decision.** The vocabulary it needs (the mountain and water
+ * stars, the facing and sitting mountains) is the product here, and a sourcing pass across all
+ * seven catalogue languages could not attest it in every one, with nine in ten apparent sources
+ * turning out to be machine translations of a single English original. Inventing the terms in the
+ * one place where the terms ARE the product is the worst outcome available, so the card stays
+ * English until a practitioner in each language can source it, and the response values print as
+ * the response sent them rather than half of them arriving translated under an English heading.
+ *
+ * **The facing and the sitting are the chart.** Two plates built for the same period differ
+ * entirely on which mountain a building faces, so the header names the facing mountain, the sitting
+ * mountain, the measured degrees and whether the reading straddles a boundary, and the structure
+ * the pair produces. A plate printed without them cannot be checked against another consultant.
+ *
+ * `hide-readings` keeps every number, the flight directions and the structure name, and drops the
+ * written meaning of the structure and the per-palace readings.
+ */
+@customElement('roxy-flying-star-chart')
+export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
+	static styles = [
+		baseStyles,
+		css`
+			.card {
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
+				box-shadow: var(--roxy-shadow-sm);
+				display: grid;
+				/* Never an implicit auto column: it floors at min-content, so one long
+				 * unbreakable string widens the track past the padded card. */
+				grid-template-columns: minmax(0, 1fr);
+				gap: var(--roxy-space-md, 1rem);
+			}
+
+			.head {
+				display: flex;
+				align-items: baseline;
+				flex-wrap: wrap;
+				gap: 0.35rem var(--roxy-space-md, 1rem);
+			}
+			.title {
+				margin: 0;
+				font-size: var(--roxy-text-lg, 1.125rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				letter-spacing: var(--roxy-tracking-tight);
+			}
+			.period {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-variant-numeric: tabular-nums;
+			}
+
+			.facts {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.35rem var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-secondary, #475569);
+			}
+			.facts .lbl {
+				color: var(--roxy-muted, #71717a);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				font-weight: var(--roxy-weight-bold, 600);
+				margin-right: 0.35rem;
+			}
+			.facts b {
+				color: var(--roxy-fg, #0a0a0a);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+
+			.plate {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 2px;
+				background: var(--roxy-border, #e4e4e7);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				overflow: hidden;
+				max-width: 26rem;
+			}
+			.palace {
+				background: var(--roxy-surface, #fff);
+				padding: var(--roxy-space-sm, 0.5rem);
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 0.1rem;
+				align-content: start;
+				min-height: 5.5rem;
+			}
+			.palace-center {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 8%, var(--roxy-surface, #fff));
+			}
+			.mountain,
+			.water {
+				font-variant-numeric: tabular-nums;
+				font-size: var(--roxy-text-base, 1rem);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.mountain {
+				text-align: start;
+				color: var(--roxy-info, #2563eb);
+			}
+			.water {
+				text-align: end;
+				color: var(--roxy-accent-ink, #b45309);
+			}
+			.star {
+				grid-column: 1 / -1;
+				text-align: center;
+				font-size: 1.75rem;
+				line-height: 1.1;
+				font-variant-numeric: tabular-nums;
+				color: var(--roxy-fg, #0a0a0a);
+			}
+			.palace-name {
+				grid-column: 1 / -1;
+				text-align: center;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				color: var(--roxy-muted, #71717a);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.combo {
+				grid-column: 1 / -1;
+				text-align: center;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-secondary, #475569);
+			}
+
+			.legend {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.35rem var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+			}
+			.legend .swatch {
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				border-radius: 2px;
+				margin-right: 4px;
+				vertical-align: middle;
+			}
+			.swatch-mountain {
+				background: var(--roxy-info, #2563eb);
+			}
+			.swatch-water {
+				background: var(--roxy-accent, #f59e0b);
+			}
+
+			.block-title {
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+			.rows {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				display: grid;
+			}
+			.row {
+				border-top: 1px solid var(--roxy-border, #e4e4e7);
+				padding-block: var(--roxy-space-sm, 0.5rem);
+				display: grid;
+				grid-template-columns: minmax(5rem, 9rem) minmax(0, 1fr);
+				gap: 0.15rem var(--roxy-space-md, 1rem);
+				align-items: baseline;
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.row:first-child {
+				border-top: 0;
+				padding-top: 0;
+			}
+			.row-name {
+				font-weight: var(--roxy-weight-bold, 600);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+				color: var(--roxy-muted, #71717a);
+			}
+			.row-body p {
+				margin: 0.15rem 0 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-secondary, #475569);
+			}
+			.structure {
+				margin: 0;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				color: var(--roxy-secondary, #475569);
+			}
+		`,
+	];
+
+	/** Which plate the response is: the natal chart of a building, or one year of stars over it. */
+	@property({ type: String, reflect: true })
+	mode: 'natal' | 'annual' = 'natal';
+
+	protected renderData(d: FlyingStarData) {
+		const locale = this.effectiveLang();
+		// The attribute decides which plate is drawn and the shape check narrows the
+		// type under it, so a page that asked for the annual plate never gets the
+		// mountain and water halves of a natal one.
+		const natal = this.mode !== 'annual' && isNatal(d);
+		return html`<article
+			class="card"
+			part="card"
+			aria-labelledby="flying-star-title"
+		>
+			<header class="head" part="header">
+				<h2 class="title" id="flying-star-title">Flying star chart</h2>
+				${
+					isNatal(d)
+						? natal
+							? html`<span class="period"
+								>${`Period ${formatInteger(locale, d.period ?? 0)}`}</span
+							>`
+							: nothing
+						: html`<span class="period">${d.year ?? ''}</span>`
+				}
+			</header>
+
+			${
+				isNatal(d)
+					? natal
+						? this.renderNatalFacts(d, locale)
+						: nothing
+					: this.renderAnnualFacts(d, locale)
+			}
+
+			<div class="plate" part="chart" role="group" aria-label="Flying star chart">
+				${GRID_ORDER.map((name) => this.renderPalace(d, name))}
+			</div>
+
+			${
+				natal
+					? html`<div class="legend" part="legend">
+						<span><span class="swatch swatch-mountain"></span>Mountain star</span>
+						<span><span class="swatch swatch-water"></span>Water star</span>
+						<span>Period star</span>
+					</div>`
+					: nothing
+			}
+
+			${natal && isNatal(d) ? this.renderStructure(d) : nothing}
+			${this.renderPalaceRows(d)}
+		</article>`;
+	}
+
+	/** What decides a natal plate: the mountain it faces, the one it sits on, and the measured degrees. */
+	private renderNatalFacts(
+		d: GenerateFlyingStarChartResponse,
+		locale: string | undefined,
+	) {
+		return html`<div class="facts" part="details">
+			${
+				d.facing
+					? html`<span
+						><span class="lbl">Facing</span>
+						<b>${d.facing.label ?? ''}</b> ${d.facing.direction ?? ''}</span
+					>`
+					: nothing
+			}
+			${
+				d.sitting
+					? html`<span
+						><span class="lbl">Sitting</span>
+						<b>${d.sitting.label ?? ''}</b> ${d.sitting.direction ?? ''}</span
+					>`
+					: nothing
+			}
+			${
+				typeof d.facingDegrees === 'number'
+					? html`<span>${formatInteger(locale, d.facingDegrees)}°</span>`
+					: nothing
+			}
+			${
+				// Which way each plate flew is the step that separates two charts that
+				// otherwise look alike, so it is printed rather than left implied.
+				d.mountainFlight
+					? html`<span
+						><span class="lbl">Mountain star</span> ${d.mountainFlight}</span
+					>`
+					: nothing
+			}
+			${
+				d.waterFlight
+					? html`<span
+						><span class="lbl">Water star</span> ${d.waterFlight}</span
+					>`
+					: nothing
+			}
+			${d.straddling ? html`<span><b>Straddling</b></span>` : nothing}
+		</div>`;
+	}
+
+	/** An annual plate turns on a date rather than on a compass reading. */
+	private renderAnnualFacts(
+		d: GetAnnualFlyingStarsResponse,
+		locale: string | undefined,
+	) {
+		if (!d.changeoverDate && typeof d.centerStar !== 'number') return nothing;
+		return html`<div class="facts" part="details">
+			${
+				typeof d.centerStar === 'number'
+					? html`<span
+						><span class="lbl">Center</span>
+						<b>${formatInteger(locale, d.centerStar)}</b></span
+					>`
+					: nothing
+			}
+			${
+				d.changeoverDate
+					? html`<span>${formatDate(locale, d.changeoverDate)}</span>`
+					: nothing
+			}
+		</div>`;
+	}
+
+	/** One cell of the plate, found by palace name so the drawing order is this component's and not the response's. */
+	private renderPalace(d: FlyingStarData, name: string) {
+		const label = PALACE_LABEL[name];
+		const heading = label ?? humanize(name);
+		const cell = (d.palaces ?? []).find(
+			(p: { palace?: string }) => p.palace === name,
+		);
+		const natal = this.mode !== 'annual' && isNatal(d);
+		if (!cell) {
+			return html`<div class="palace">
+				<span class="palace-name">${heading}</span>
+			</div>`;
+		}
+		const isCenter = name === 'Center';
+		if (natal && isNatal(d)) {
+			const p = cell as GenerateFlyingStarChartResponse['palaces'][number];
+			return html`<div class="palace ${isCenter ? 'palace-center' : ''}">
+				<span class="mountain" title="Mountain star">${p.mountain ?? ''}</span>
+				<span class="water" title="Water star">${p.water ?? ''}</span>
+				<span class="star" title="Period star">${p.period ?? ''}</span>
+				<span class="palace-name">${heading}</span>
+				${
+					p.combination
+						? html`<span class="combo">${p.combination.name ?? ''}</span>`
+						: nothing
+				}
+			</div>`;
+		}
+		const p = cell as GetAnnualFlyingStarsResponse['palaces'][number];
+		return html`<div class="palace ${isCenter ? 'palace-center' : ''}">
+			<span class="star">${p.star ?? ''}</span>
+			<span class="palace-name">${heading}</span>
+			<span class="combo">${p.name ?? ''}</span>
+		</div>`;
+	}
+
+	/** The structure the facing and sitting stars produce, which is the verdict on the plate. */
+	private renderStructure(d: GenerateFlyingStarChartResponse) {
+		const s = d.structure;
+		if (!s?.name) return nothing;
+		return html`<section part="section structure">
+			<h3 class="block-title">${s.name}</h3>
+			${
+				s.meaning && !this.hideReadings
+					? html`<p class="structure" part="reading">${s.meaning}</p>`
+					: nothing
+			}
+		</section>`;
+	}
+
+	/** Every palace again as a list, which is where the words that will not fit in a cell live. */
+	private renderPalaceRows(d: FlyingStarData) {
+		const rows = d.palaces ?? [];
+		if (rows.length === 0) return nothing;
+		const natal = this.mode !== 'annual' && isNatal(d);
+		const bodies = rows.map((cell) => {
+			const label = PALACE_LABEL[cell.palace ?? ''];
+			const heading = label ?? humanize(cell.palace ?? '');
+			if (natal) {
+				const p = cell as GenerateFlyingStarChartResponse['palaces'][number];
+				if (!p.reading && !p.combination) return nothing;
+				return html`<li class="row">
+					<span class="row-name">${heading}</span>
+					<div class="row-body">
+						${p.combination ? html`<span>${p.combination.name ?? ''}</span>` : nothing}
+						${
+							p.reading && !this.hideReadings
+								? html`<p part="reading">${p.reading}</p>`
+								: nothing
+						}
+					</div>
+				</li>`;
+			}
+			const p = cell as GetAnnualFlyingStarsResponse['palaces'][number];
+			return html`<li class="row">
+				<span class="row-name">${heading}</span>
+				<div class="row-body">
+					<span>${p.name ?? ''}</span>
+					${p.element ? html`<span> ${p.element}</span>` : nothing}
+					${
+						!this.hideReadings
+							? html`${p.meaning ? html`<p part="reading">${p.meaning}</p>` : nothing}
+							${p.remedy ? html`<p part="reading">${p.remedy}</p>` : nothing}`
+							: nothing
+					}
+				</div>
+			</li>`;
+		});
+		if (bodies.every((b) => b === nothing)) return nothing;
+		return html`<section part="section palaces">
+			<ul class="rows">
+				${bodies}
+			</ul>
+		</section>`;
+	}
+}
+
+declare global {
+	interface HTMLElementTagNameMap {
+		'roxy-flying-star-chart': RoxyFlyingStarChart;
+	}
+}

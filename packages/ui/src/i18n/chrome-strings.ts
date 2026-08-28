@@ -900,8 +900,15 @@ export const CHROME_STRINGS = [
 	'Dasha',
 	', governs {{sections}}',
 
-	// Daily horoscope: the energy score, the five life areas it is read across, the
-	// lucky details, and the week and date blocks under them.
+	// Horoscope: the four cadences the card titles itself by, the energy score, the
+	// five life areas the reading is split across, the lucky details, and the week and
+	// date blocks under them. The cadences are catalogued because the card titles
+	// itself with one, and a period name taken straight from the attribute value
+	// would be the only English word in an otherwise translated title.
+	'Daily',
+	'Weekly',
+	'Monthly',
+	'Yearly',
 	'Energy {{value}}/10',
 	'Energy {{value}} of 10',
 	'Health',
@@ -917,6 +924,35 @@ export const CHROME_STRINGS = [
 	'Week by week',
 	'Week {{n}}',
 	'Key dates',
+
+	// Horoscope: the dated events a reading is built on. The five kinds beyond
+	// `Aspect` name a closed enum the response carries as a machine value, so the
+	// component is what turns each into a word and the catalogue is what translates
+	// it. `through {{date}}` closes the window an event holds open.
+	'Sign ingress',
+	'Retrograde station',
+	'Lunar phase',
+	'Eclipse',
+	'Solar season',
+	'through {{date}}',
+
+	// Yearly horoscope: the four dated lists and the best-month tiles under them.
+	'Themes',
+	'Key periods',
+	'Eclipses',
+	'Retrogrades',
+	'Best months',
+	'{{count}} harmonious aspects',
+
+	// The school rules a Chinese-metaphysics chart was cast under, which decide it
+	// outright for a birth near a boundary. Labels only, and the rule each names
+	// prints as the response sent it. They are catalogued where the rest of that
+	// card's chrome is not, because all three are plain compositional language
+	// rather than terms of art, and because the caption is drawn by a shared
+	// helper rather than by the card.
+	'Year boundary',
+	'Day boundary',
+	'Hour clock',
 
 	// Arudha padas: the card, the note that explains the classical exception, and the
 	// eight columns of the table.
@@ -1065,6 +1101,14 @@ export const CHROME_STRINGS = [
 	'Sign sectors, not houses',
 	'Planet 1',
 	'Planet 2',
+	// The synastry house overlay: which of the other person's houses each planet
+	// falls into. `Houses`, `Planet`, `Sign`, `Degree`, `House` and `retrograde`
+	// are already carried above; these two are the only words this block adds. The
+	// slots are person NAMES, so the sentence is whole and each language orders the
+	// two the way its own grammar wants.
+	'{{first}} in the houses of {{second}}',
+	'Own house',
+
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.',
 ] as const;
 
