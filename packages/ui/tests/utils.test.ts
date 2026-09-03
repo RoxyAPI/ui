@@ -10,6 +10,7 @@ import {
 	trigramGlyph,
 } from '../src/tokens/index.js';
 import { aspectLineStyle } from '../src/utils/aspect-line.js';
+import { expandCompact } from '../src/utils/compact.js';
 import { debounce } from '../src/utils/debounce.js';
 import {
 	arcMidpoint,
@@ -1077,5 +1078,56 @@ describe('utils/interp-accordion', () => {
 			offenders,
 			`These render the shared reading body but ship none of its CSS, so their keyword chips arrive unstyled:\n  ${offenders.join('\n  ')}`,
 		).toEqual([]);
+	});
+});
+
+/**
+ * The decoder for a compact tool result. Its round trip is the API side's
+ * contract; what is pinned here is the half every existing consumer depends on,
+ * that a response with nothing encoded in it comes back as the same object.
+ */
+describe('utils/compact', () => {
+	test('decodes a columnar array into the objects it encodes', () => {
+		expect(
+			expandCompact<unknown>({ a: { __cols: ['x'], __rows: [[1], [2], [3]] } }),
+		).toEqual({ a: [{ x: 1 }, { x: 2 }, { x: 3 }] });
+	});
+
+	test('decodes at every depth, including a row that holds another', () => {
+		expect(
+			expandCompact<unknown>({
+				__cols: ['id', 'tags'],
+				__rows: [
+					[1, { __cols: ['k'], __rows: [['x'], ['y'], ['z']] }],
+					[2, []],
+					[3, []],
+				],
+			}),
+		).toEqual([
+			{ id: 1, tags: [{ k: 'x' }, { k: 'y' }, { k: 'z' }] },
+			{ id: 2, tags: [] },
+			{ id: 3, tags: [] },
+		]);
+	});
+
+	test('leaves an object that carries the two names beside other fields alone', () => {
+		const payload = { __cols: ['x'], __rows: [[1]], note: 'not encoded' };
+		expect(expandCompact(payload)).toBe(payload);
+	});
+
+	test('returns the SAME reference when nothing is encoded', () => {
+		// The literal every existing render path rests on: a plain response is not
+		// copied, so nothing downstream sees a new object or an extra render.
+		const payload = {
+			sign: 'Aries',
+			bodies: [{ name: 'sun', lon: 79.68 }],
+			meta: { zodiac: 'tropical' },
+		};
+		expect(expandCompact(payload)).toBe(payload);
+		expect(expandCompact(payload).bodies).toBe(payload.bodies);
+		const list = [1, 2, 3];
+		expect(expandCompact(list)).toBe(list);
+		expect(expandCompact(null)).toBeNull();
+		expect(expandCompact('Aries')).toBe('Aries');
 	});
 });

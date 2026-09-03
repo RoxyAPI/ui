@@ -23437,6 +23437,15 @@
         "requestBody": {
           "content": {
             "application/json": {
+              "example": {
+                "birthDate": "1990-07-15",
+                "birthTime": "14:30:00",
+                "returnYear": 2024,
+                "latitude": 40.7128,
+                "longitude": -74.006,
+                "timezone": -5,
+                "houseSystem": "placidus"
+              },
               "schema": {
                 "type": "object",
                 "properties": {
@@ -23506,15 +23515,6 @@
                   "longitude",
                   "timezone"
                 ]
-              },
-              "example": {
-                "birthDate": "1990-07-15",
-                "birthTime": "14:30:00",
-                "returnYear": 2024,
-                "latitude": 40.7128,
-                "longitude": -74.006,
-                "timezone": -5,
-                "houseSystem": "placidus"
               }
             }
           }
@@ -24282,6 +24282,15 @@
         "requestBody": {
           "content": {
             "application/json": {
+              "example": {
+                "birthDate": "1990-07-15",
+                "birthTime": "14:30:00",
+                "returnDate": "2024-08-12",
+                "latitude": 40.7128,
+                "longitude": -74.006,
+                "timezone": -5,
+                "houseSystem": "placidus"
+              },
               "schema": {
                 "type": "object",
                 "properties": {
@@ -24352,15 +24361,6 @@
                   "longitude",
                   "timezone"
                 ]
-              },
-              "example": {
-                "birthDate": "1990-07-15",
-                "birthTime": "14:30:00",
-                "returnDate": "2024-08-12",
-                "latitude": 40.7128,
-                "longitude": -74.006,
-                "timezone": -5,
-                "houseSystem": "placidus"
               }
             }
           }
@@ -25122,6 +25122,23 @@
         "requestBody": {
           "content": {
             "application/json": {
+              "example": {
+                "person1": {
+                  "date": "1990-07-15",
+                  "time": "14:30:00",
+                  "latitude": 40.7128,
+                  "longitude": -74.006,
+                  "timezone": -5
+                },
+                "person2": {
+                  "date": "1992-03-20",
+                  "time": "09:15:00",
+                  "latitude": 34.0522,
+                  "longitude": -118.2437,
+                  "timezone": -8
+                },
+                "houseSystem": "placidus"
+              },
               "schema": {
                 "type": "object",
                 "properties": {
@@ -25268,23 +25285,6 @@
                   "person1",
                   "person2"
                 ]
-              },
-              "example": {
-                "person1": {
-                  "date": "1990-07-15",
-                  "time": "14:30:00",
-                  "latitude": 40.7128,
-                  "longitude": -74.006,
-                  "timezone": -5
-                },
-                "person2": {
-                  "date": "1992-03-20",
-                  "time": "09:15:00",
-                  "latitude": 34.0522,
-                  "longitude": -118.2437,
-                  "timezone": -8
-                },
-                "houseSystem": "placidus"
               }
             }
           }
@@ -26007,6 +26007,22 @@
         "requestBody": {
           "content": {
             "application/json": {
+              "example": {
+                "person1": {
+                  "date": "1990-07-15",
+                  "time": "14:30:00",
+                  "latitude": 40.7128,
+                  "longitude": -74.006,
+                  "timezone": -5
+                },
+                "person2": {
+                  "date": "1992-03-20",
+                  "time": "09:15:00",
+                  "latitude": 34.0522,
+                  "longitude": -118.2437,
+                  "timezone": -8
+                }
+              },
               "schema": {
                 "type": "object",
                 "properties": {
@@ -26141,22 +26157,6 @@
                   "person1",
                   "person2"
                 ]
-              },
-              "example": {
-                "person1": {
-                  "date": "1990-07-15",
-                  "time": "14:30:00",
-                  "latitude": 40.7128,
-                  "longitude": -74.006,
-                  "timezone": -5
-                },
-                "person2": {
-                  "date": "1992-03-20",
-                  "time": "09:15:00",
-                  "latitude": 34.0522,
-                  "longitude": -118.2437,
-                  "timezone": -8
-                }
               }
             }
           }
@@ -27258,7 +27258,7 @@
                     "moonPhase": {
                       "type": "string",
                       "example": "Waning Gibbous Moon",
-                      "description": "Current lunar phase (New Moon, Waxing Crescent, First Quarter, Waxing Gibbous, Full Moon, Waning Gibbous, Last Quarter, Waning Crescent)."
+                      "description": "Display name of the current lunar phase, one of the eight standard phases from New Moon through Waning Crescent. Translates in place with the lang parameter, like the moonSign beside it, so render it directly."
                     },
                     "energyRating": {
                       "type": "number",
@@ -29437,6 +29437,16 @@
         "requestBody": {
           "content": {
             "application/json": {
+              "example": {
+                "birthDate": "1990-07-15",
+                "birthTime": "14:30:00",
+                "planet": "Jupiter",
+                "approximateDate": "2024-08-15",
+                "latitude": 40.7128,
+                "longitude": -74.006,
+                "timezone": -5,
+                "houseSystem": "placidus"
+              },
               "schema": {
                 "type": "object",
                 "properties": {
@@ -29520,16 +29530,6 @@
                   "longitude",
                   "timezone"
                 ]
-              },
-              "example": {
-                "birthDate": "1990-07-15",
-                "birthTime": "14:30:00",
-                "planet": "Jupiter",
-                "approximateDate": "2024-08-15",
-                "latitude": 40.7128,
-                "longitude": -74.006,
-                "timezone": -5,
-                "houseSystem": "placidus"
               }
             }
           }

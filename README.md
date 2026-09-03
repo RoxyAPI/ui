@@ -357,6 +357,40 @@ Always call `/location/search` first. Every chart endpoint expects latitude, lon
 
 > **Timezone format.** RoxyAPI accepts both forms: a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). Pick one and stay consistent. The decimal form is shorter and what `/location/search` returns; examples on this page use it. The IANA form is correct over DST boundaries when historical accuracy matters.
 
+## Render an AI tool result
+
+It ships inside `@roxyapi/ui`, `@roxyapi/ui-react` and `@roxyapi/ui-vue`, so whichever one you already installed has it and there is nothing else to add.
+
+Your model calls a Remote MCP tool at `roxyapi.com/mcp/{domain}` and hands you back a tool name and a JSON string. `componentForTool(name)` turns that name into the component that draws it, so a chat answer shows a real tarot spread or a real chart instead of a wall of fields. It works in any chat UI that lets you render your own markup for a tool result.
+
+```ts
+import { componentForTool } from '@roxyapi/ui';
+
+const found = componentForTool(toolName);
+if (found) {
+	const el = document.createElement(found.tag);
+	for (const [name, value] of Object.entries(found.attrs ?? {})) el.setAttribute(name, value);
+	el.data = JSON.parse(result.content[0].text);
+	container.append(el);
+}
+```
+
+In React, `pascal` is the export name, so a namespace import renders it directly:
+
+```tsx
+import * as RoxyUI from '@roxyapi/ui-react';
+import { componentForTool } from '@roxyapi/ui-react';
+
+export function ToolWidget({ toolName, output }: { toolName: string; output: string }) {
+	const found = componentForTool(toolName);
+	if (!found) return null;
+	const Component = RoxyUI[found.pascal as keyof typeof RoxyUI] as React.ComponentType<{ data: unknown }>;
+	return <Component data={JSON.parse(output)} {...found.attrs} />;
+}
+```
+
+A compact tool result is decoded for you, and a name a host prefixed with its server (`roxy_tarot:post_tarot_daily`) resolves the same as a bare one. Full recipe, with the vendor connectors and the Vercel AI SDK: <https://roxyapi.com/docs/tutorials/ai-chat-widgets>. Runnable page: [examples/vanilla/tool-result.html](examples/vanilla/tool-result.html).
+
 ## Server-rendered, no JavaScript wiring
 
 Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
@@ -992,7 +1026,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Per-component bundles run 13-26 KB gzipped, capped at 30 KB by CI. The full bundle (every component, helpers, base styles, and the inlined design tokens) stays well under the 150 KB CI cap, around 108 KB gzipped today. The React and Vue packages load the runtime on mount, so a route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Every component bundle is under 30 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 150 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>

@@ -562,6 +562,44 @@ export async function emitTypes(outDir: string): Promise<void> {
 	await cp('packages/ui/src/types', `${outDir}/types`, { recursive: true });
 }
 
+/**
+ * The framework-free modules a wrapper package needs to render an AI tool result, copied in at the same relative paths they hold in `packages/ui/src`.
+ *
+ * @remarks
+ * Same reasoning as {@link emitTypes}: a wrapper carries what it needs rather than depending on `@roxyapi/ui`, so one install is fully typed and fully working. The layout is mirrored rather than flattened so each file is a byte copy and no import specifier has to be rewritten on the way in.
+ *
+ * Three files and nothing else. The lookup table is resolved at build time, so neither the endpoint map nor the component manifest is carried here, and the rule that derives a tool name runs in the generator rather than in anything a consumer downloads. Each of these is rewritten on every build, so the wrapper drift gate fails on a hand edit to any of them.
+ */
+const TOOL_HELPERS = [
+	'utils/compact.ts',
+	'utils/tool-component.ts',
+	'generated/tool-components.ts',
+];
+
+/** The index exports {@link TOOL_HELPERS} provides, identical in every package that carries them. */
+export const TOOL_HELPER_EXPORTS = `
+/**
+ * Render the result of an AI tool call: \`componentForTool\` maps the tool name a
+ * model hands back to the component that draws that response, and
+ * \`expandCompact\` decodes a compact result.
+ */
+export { expandCompact } from './utils/compact.js';
+export {
+\tcomponentForTool,
+\ttype ToolComponent,
+} from './utils/tool-component.js';
+`;
+
+/** Copy {@link TOOL_HELPERS} into a wrapper package. */
+export async function emitToolHelpers(outDir: string): Promise<void> {
+	const { cp, mkdir } = await import('node:fs/promises');
+	await mkdir(`${outDir}/utils`, { recursive: true });
+	await mkdir(`${outDir}/generated`, { recursive: true });
+	for (const file of TOOL_HELPERS) {
+		await cp(`packages/ui/src/${file}`, `${outDir}/${file}`);
+	}
+}
+
 export function loadUiSource(opts: {
 	/** Completes "Skips on the server (no document) so ..." in the file header. */
 	ssrNote: string;

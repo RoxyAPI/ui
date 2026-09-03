@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, mock, test } from 'bun:test';
 
 // Registers roxy-dream-card, a concrete RoxyDataElement subclass used here to
 // exercise the base in both modes. happy-dom is loaded by preload (bunfig.toml).
+import '../src/components/data.js';
 import '../src/components/dream-card.js';
 import { BASE_PROPS } from '../../../scripts/wrapper-meta.js';
 import { RoxyDataElement } from '../src/utils/base-element.js';
@@ -289,6 +290,63 @@ describe('RoxyDataElement render switch', () => {
 		document.body.appendChild(el);
 		await el.updateComplete;
 		expect(el.shadowRoot?.textContent ?? '').toContain('No data');
+		el.remove();
+	});
+});
+
+/**
+ * A tool result asked for in compact form arrives with its same-shaped arrays
+ * columnar. The base decodes it so no component and no consumer has to, and the
+ * pass-through case is asserted as a literal: a response with nothing encoded in
+ * it reaches `renderData` as the very object that was assigned, in one update.
+ */
+describe('RoxyDataElement compact results', () => {
+	const mount = async (data: unknown) => {
+		const el = document.createElement('roxy-data') as HTMLElement & {
+			data: unknown;
+			updateComplete: Promise<boolean>;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		const settled = await el.updateComplete;
+		return { el, settled };
+	};
+
+	/** Rendered text with stylesheets left out and nested roots followed: a bare `textContent` asserts on the CSS, and a nested component keeps its content in its own shadow root. */
+	const renderedText = (node: Node): string => {
+		if (node.nodeName === 'STYLE') return '';
+		const inner = (node as Element & { shadowRoot?: ShadowRoot | null })
+			.shadowRoot;
+		const children = [...(inner ? inner.childNodes : []), ...node.childNodes];
+		return children.length === 0
+			? (node.textContent ?? '')
+			: children.map(renderedText).join(' ');
+	};
+
+	test('a columnar payload renders as the rows it encodes', async () => {
+		const { el, settled } = await mount({
+			bodies: { __cols: ['planet'], __rows: [['Sun'], ['Moon'], ['Mars']] },
+		});
+		const nested = el.shadowRoot?.querySelector('roxy-data') as
+			| (HTMLElement & { updateComplete: Promise<boolean> })
+			| null;
+		if (nested) await nested.updateComplete;
+		const text = renderedText(el);
+		expect(text).toContain('Sun');
+		expect(text).toContain('Mars');
+		expect(el.data).toEqual({
+			bodies: [{ planet: 'Sun' }, { planet: 'Moon' }, { planet: 'Mars' }],
+		});
+		// Decoding happens inside the update in progress, so it costs no second one.
+		expect(settled).toBe(true);
+		el.remove();
+	});
+
+	test('a plain payload reaches the render as the SAME object, in one update', async () => {
+		const payload = { sign: 'Aries', meaning: 'Fire' };
+		const { el, settled } = await mount(payload);
+		expect(el.data).toBe(payload);
+		expect(settled).toBe(true);
 		el.remove();
 	});
 });

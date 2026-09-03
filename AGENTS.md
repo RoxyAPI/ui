@@ -441,17 +441,49 @@ In React, the same props are typed: `<RoxyNatalChart endpoint="astrology/natal-c
 
 ### Pattern 5: MCP tool-call response
 
-A remote MCP server at `roxyapi.com/mcp/{domain}` exposes each RoxyAPI endpoint as an MCP tool. The JSON returned by the tool call has the same shape as the SDK response. Pass it straight into the matching component.
+A Remote MCP server at `roxyapi.com/mcp/{domain}` exposes each RoxyAPI endpoint as a tool, named for its method and path: `post_astrology_natal_chart`, `post_tarot_spreads_three_card`, `get_tarot_cards_id`. When your model calls one, the result is a single text content block holding the JSON string, and that JSON is the same shape the SDK returns. So the whole render is: parse it, look up the component, set `data`.
+
+`componentForTool(name)` is the lookup, exported from `@roxyapi/ui`, `@roxyapi/ui-react` and `@roxyapi/ui-vue`. It returns `{ tag, pascal, attrs?, operationId, toolName }` for a tool the library draws, and `undefined` for one it does not. `operationId` names the OpenAPI operation the tool calls, for your logs or for finding the endpoint in the API reference. `attrs` values are always strings: set them as attributes in the DOM, spread them as props in React and Vue.
 
 ```ts
-// Pseudocode for any MCP-aware agent
-const result = await mcp.call('roxyapi.astrology.generate_natal_chart', {
-	date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5,
-});
-document.querySelector('roxy-natal-chart').data = result;
+import { componentForTool } from '@roxyapi/ui';
+
+// `toolName` and `result` are what your model handed back for one tool call.
+const found = componentForTool(toolName);
+if (found) {
+	const el = document.createElement(found.tag);
+	for (const [name, value] of Object.entries(found.attrs ?? {})) el.setAttribute(name, value);
+	el.data = JSON.parse(result.content[0].text);
+	container.append(el);
+}
 ```
 
-No field renames. No glue code. Use the decision tree above to pick the component for any tool.
+In React, `pascal` is the export name, so a namespace import renders it directly:
+
+```tsx
+import * as RoxyUI from '@roxyapi/ui-react';
+import { componentForTool } from '@roxyapi/ui-react';
+
+export function ToolWidget({ toolName, output }: { toolName: string; output: string }) {
+	const found = componentForTool(toolName);
+	if (!found) return null;
+	const Component = RoxyUI[found.pascal as keyof typeof RoxyUI] as React.ComponentType<{ data: unknown }>;
+	return <Component data={JSON.parse(output)} {...found.attrs} />;
+}
+```
+
+Three things the lookup already handles, so you do not have to:
+
+- **A compact result.** Ask a tool for the compact shape and its same-shaped arrays arrive columnar, as `{ "__cols": [names], "__rows": [[values]] }`. Every component decodes that on the way in and renders the same card either way. `expandCompact(value)` is exported too, for the paths that read the JSON before an element does.
+- **A server-prefixed name.** Some hosts prefix the tool name with the server it came from and a colon (`roxy_tarot:post_tarot_daily`). The lookup strips the prefix.
+- **Which component leads.** Three responses are rendered by two components each, and the lookup returns the one that leads with the drawing:
+	- the natal chart response is drawn by both `<roxy-natal-chart>` and `<roxy-western-planets-table>`, the lookup returns `<roxy-natal-chart>`
+	- the transit aspects response is drawn by both `<roxy-transit-wheel>` and `<roxy-aspects-table>`, the lookup returns `<roxy-transit-wheel>`
+	- the Vedic birth chart response is drawn by both `<roxy-vedic-kundli>` and `<roxy-vedic-planets-table>`, the lookup returns `<roxy-vedic-kundli>`
+
+Full recipe, including the vendor connectors and the Vercel AI SDK: <https://roxyapi.com/docs/tutorials/ai-chat-widgets>.
+
+No field renames. No glue code. Use the decision tree above to pick the component for any tool the lookup does not cover.
 
 ### Pattern 6: Next.js RSC streaming
 

@@ -33,7 +33,13 @@
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
-import { emitTypes, loadUiSource, wrapperMeta } from './wrapper-meta.js';
+import {
+	emitToolHelpers,
+	emitTypes,
+	loadUiSource,
+	TOOL_HELPER_EXPORTS,
+	wrapperMeta,
+} from './wrapper-meta.js';
 
 const OUT_DIR = 'packages/ui-vue/src';
 
@@ -182,6 +188,7 @@ async function main() {
 	await mkdir(OUT_DIR, { recursive: true });
 	await mkdir(`${OUT_DIR}/components`, { recursive: true });
 	await emitTypes(OUT_DIR);
+	await emitToolHelpers(OUT_DIR);
 
 	await writeFile(`${OUT_DIR}/load-ui.ts`, LOAD_UI_TS);
 
@@ -203,7 +210,10 @@ async function main() {
 		);
 	}
 
-	await writeFile(`${OUT_DIR}/index.ts`, `${exportLines.join('\n')}\n`);
+	await writeFile(
+		`${OUT_DIR}/index.ts`,
+		`${exportLines.join('\n')}\n${TOOL_HELPER_EXPORTS}`,
+	);
 	console.log(
 		`Generated Vue wrappers for ${ROXY_COMPONENTS.length} components.`,
 	);

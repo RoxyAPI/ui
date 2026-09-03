@@ -10,6 +10,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { baseStyles } from './base-styles.js';
+import { expandCompact } from './compact.js';
 import { buildRequest, FetchController } from './fetch-controller.js';
 import {
 	type InterpSection,
@@ -211,6 +212,16 @@ export abstract class RoxyDataElement<
 	}
 
 	protected willUpdate(changed: PropertyValues): void {
+		// A result asked for in compact form arrives with its same-shaped arrays
+		// columnar, so it is decoded once here and every component goes on
+		// rendering the plain shape. `expandCompact` hands back the same object
+		// when nothing is encoded, so an ordinary response is neither copied nor
+		// re-rendered, and Lit records a property set here inside the update in
+		// progress rather than scheduling another one.
+		if (changed.has('data') && this.data != null) {
+			const expanded = expandCompact(this.data);
+			if (expanded !== this.data) this.data = expanded;
+		}
 		if (changed.has('publishableKey')) {
 			this.fetcher.publishableKey = this.publishableKey;
 		}

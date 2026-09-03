@@ -181,7 +181,8 @@ jobs:
           # dist/ is gitignored: npm publish (above) already shipped it via the
           # package.json `files` allowlist. Commit only source, version bumps,
           # and the committed codegen (registry, manifest, docs tables).
-          git add packages/ registry/ apps/docs/manifest.js README.md AGENTS.md
+          # specs/ rides along so the committed spec and MCP tool list are the ones this codegen was built from; leaving them behind made the next hermetic CI run compare new bindings against an old spec.
+          git add packages/ registry/ apps/docs/manifest.js README.md AGENTS.md specs/
           git commit -m "release: v$VERSION"
           # These two lines are INERT and the tag you see on the remote is not from here.
           # `git tag` makes a LIGHTWEIGHT tag and `git push --follow-tags` pushes only

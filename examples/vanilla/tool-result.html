@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Roxy UI: render an AI tool result</title>
+	<style>
+		body {
+			font-family: system-ui, -apple-system, sans-serif;
+			max-width: 720px;
+			margin: 0 auto;
+			padding: 32px 16px;
+			color: #0a0a0a;
+		}
+		h1 { letter-spacing: -0.02em; }
+		h2 { font-size: 1.1rem; }
+		.note { border: 1px solid #e4e4e7; background: #fafafa; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+		.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff; }
+		code { background: #f4f4f5; padding: 1px 5px; border-radius: 4px; }
+		label { display: block; font-weight: 600; margin-bottom: 6px; }
+		input, textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 8px; border: 1px solid #d4d4d8; border-radius: 8px; }
+		textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85rem; min-height: 180px; }
+		button { font: inherit; font-weight: 600; padding: 9px 16px; border: 0; border-radius: 8px; background: #0a0a0a; color: #fff; cursor: pointer; }
+		.miss { color: #b91c1c; }
+	</style>
+	<script src="../../packages/ui/dist/cdn/roxy-ui.js"></script>
+</head>
+<body>
+	<h1>Render an AI tool result</h1>
+
+	<div class="note">
+		<p>Your model calls a Remote MCP tool at <code>roxyapi.com/mcp/{domain}</code> and hands
+		back a tool name and a JSON string. Paste both below and the page renders the component
+		that draws that response.</p>
+		<p>Tools are named for their method and path, so a three card spread is
+		<code>post_tarot_spreads_three_card</code> and a daily card is <code>post_tarot_daily</code>.
+		A name a host prefixed with its own server works too.</p>
+	</div>
+
+	<div class="card">
+		<label for="tool">Tool name</label>
+		<input id="tool" value="post_tarot_daily" spellcheck="false">
+	</div>
+
+	<div class="card">
+		<label for="output">Tool result JSON</label>
+		<textarea id="output" spellcheck="false">{
+	"date": "2026-08-28",
+	"seed": "roxy-ui-demo-2026-08-28",
+	"card": {
+		"id": "ace-of-cups",
+		"name": "Ace of Cups",
+		"arcana": "minor",
+		"suit": "cups",
+		"number": 1,
+		"position": 1,
+		"reversed": false,
+		"keywords": [
+			"love",
+			"new relationship",
+			"compassion",
+			"emotional opening",
+			"creativity"
+		],
+		"meaning": "As the first card of the suit of Cups, the Ace holds the pure essence of water: love, feeling, intuition, and the inner life before it has taken any particular shape. In the Rider-Waite-Smith image, a hand reaches out of a cloud and offers a single overflowing chalice, from which five streams pour down into a pool of water-lilies, the five streams read as the five senses through which feeling enters experience. A white dove descends with a wafer marked by a cross, lowering it into the cup, and the dew of grace falls on every side. Waite described the scene as the Holy Grail, the vessel of the true heart, and read it as joy, content, abundance, nourishment, and fertility.\n\nIn a reading, the Ace of Cups marks an emotional beginning offered rather than earned: a new love, a deepening tenderness, a wave of compassion, or a surge of creative feeling that wants an outlet. A seed of emotional awareness has been planted, and it may arrive as an attraction, an intuitive knowing, a gift, an encounter, or a synchronistic turn of events. The card favours an open heart, a readiness to give and to receive without guarding the feeling before it has been felt.\n\nThe cup overflows, which is the heart of the symbol. There is more here than can be contained, and the invitation is to let that surplus move outward into connection, art, and care for others rather than holding it in reserve. As with every Ace, this is potential and not yet result. The feeling is genuine, but whether it grows into a lasting bond or a finished creative work depends on how it is met and tended.\n\nWhen the Ace of Cups appears, it favours saying yes to the emotional opening: the new relationship, the renewed intimacy, the creative project entered with feeling rather than calculation. Trust what the heart is reporting, let the affection flow, and allow the wider current of emotional and spiritual life to carry what hesitation would only dam.",
+		"love": "A new love or a fresh outpouring of feeling within an existing bond is beginning. The Ace of Cups is among the warmest love cards in the deck, favouring an open heart ready to give and receive without guarding. A new relationship, a renewed tenderness, an engagement, or even a pregnancy may be indicated. Lead with the feeling rather than holding it back.",
+		"career": "A creatively or emotionally fulfilling chapter of work is opening, often one that engages the heart rather than only the mind. The Ace of Cups favours projects in the arts, healing, teaching, and service, and it rewards bringing genuine feeling into the work. A fresh collaboration or an inspired idea arrives. Let enthusiasm and compassion shape the direction.",
+		"finances": "Emotional fullness spills into material life, and abundance tends to arrive through generosity rather than calculation. The Ace of Cups can mark an unexpected gift, a fortunate turn, or resources that flow from a heartfelt connection. Treat it as a promising opening rather than a guaranteed sum, and let openhandedness rather than grasping set the tone.",
+		"health": "Emotional healing and renewed vitality are flowing, with the heart and the feeling life highlighted. The Ace of Cups favours allowing emotion to move rather than holding it in, since suppressed feeling tends to settle in the body. Rest, tenderness toward yourself, and honest expression support recovery now. Let wellbeing begin from an open rather than a defended heart.",
+		"spirituality": "A spiritual opening is washing through, an outpouring of love and grace that asks only to be received. The Ace of Cups marks heightened intuition and a direct knowing that rises from the heart rather than the intellect. This is a receptive passage, a time to trust feeling as guidance and to let compassion become a practice. Open to the current rather than analysing it.",
+		"imageUrl": "../../apps/docs/img/tarot/minor/ace-of-cups.jpg"
+	},
+	"dailyMessage": "Your card for 2026-08-28: Ace of Cups. love, new relationship, compassion, emotional opening, creativity. As the first card of the suit of Cups, the Ace holds the pure essence of water: love, feeling, intuition, and the inner life before it has taken any particular shape. In the Rider-Waite-Smith image, a..."
+}</textarea>
+	</div>
+
+	<p><button id="render" type="button">Render</button></p>
+
+	<h2>Result</h2>
+	<div class="card" id="result"></div>
+
+	<script>
+		const { componentForTool, expandCompact } = RoxyUI;
+
+		const result = document.getElementById('result');
+
+		document.getElementById('render').addEventListener('click', () => {
+			const name = document.getElementById('tool').value.trim();
+			result.textContent = '';
+
+			const found = componentForTool(name);
+			if (!found) {
+				result.innerHTML = '<p class="miss">No component renders that tool.</p>';
+				return;
+			}
+
+			let data;
+			try {
+				data = JSON.parse(document.getElementById('output').value);
+			} catch (err) {
+				result.innerHTML = `<p class="miss">That is not valid JSON: ${err.message}</p>`;
+				return;
+			}
+
+			const el = document.createElement(found.tag);
+			for (const [attr, value] of Object.entries(found.attrs ?? {})) {
+				el.setAttribute(attr, value);
+			}
+			// Every component decodes a compact result on its own; this page holds the
+			// JSON first, so it decodes before assigning.
+			el.data = expandCompact(data);
+			result.append(el);
+		});
+	</script>
+</body>
+</html>

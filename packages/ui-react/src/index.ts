@@ -275,3 +275,14 @@ export {
  * import type { NatalChartResponse } from '@roxyapi/ui-react';
  */
 export type * from './types/index.js';
+
+/**
+ * Render the result of an AI tool call: `componentForTool` maps the tool name a
+ * model hands back to the component that draws that response, and
+ * `expandCompact` decodes a compact result.
+ */
+export { expandCompact } from './utils/compact.js';
+export {
+	componentForTool,
+	type ToolComponent,
+} from './utils/tool-component.js';

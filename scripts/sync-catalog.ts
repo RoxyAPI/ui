@@ -48,10 +48,13 @@ const preview = (slug: string) =>
 		: {};
 
 const components = ROXY_COMPONENTS.map((c) => {
+	// `toolName` rides along so a consumer holding an MCP tool result can find the
+	// component that draws it without re-deriving the name from the path.
 	const endpoints = (ENDPOINT_BINDINGS[c.tag] ?? []).map((e) => ({
 		operationId: e.operationId,
 		method: e.method,
 		path: e.path,
+		toolName: e.toolName,
 		...(e.attrs ? { attrs: e.attrs } : {}),
 	}));
 	// The canonical copy-paste snippets, built once here so the demo, the

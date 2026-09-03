@@ -780,6 +780,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getAlmanacDay",
       "method": "GET",
       "path": "/chinese-astrology/calendar/day/{date}",
+      "toolName": "get_chinese_astrology_calendar_day_date",
       "attrs": {
         "mode": "day"
       }
@@ -788,6 +789,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getMonthlyAlmanac",
       "method": "GET",
       "path": "/chinese-astrology/calendar/monthly",
+      "toolName": "get_chinese_astrology_calendar_monthly",
       "attrs": {
         "mode": "month"
       }
@@ -796,6 +798,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "lookupAuspiciousDays",
       "method": "POST",
       "path": "/chinese-astrology/calendar/auspicious-days",
+      "toolName": "post_chinese_astrology_calendar_auspicious_days",
       "attrs": {
         "mode": "auspicious"
       }
@@ -805,73 +808,84 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "getAngelNumber",
       "method": "GET",
-      "path": "/angel-numbers/numbers/{number}"
+      "path": "/angel-numbers/numbers/{number}",
+      "toolName": "get_angel_numbers_number"
     }
   ],
   "roxy-angel-number-lookup": [
     {
       "operationId": "analyzeNumberSequence",
       "method": "GET",
-      "path": "/angel-numbers/lookup"
+      "path": "/angel-numbers/lookup",
+      "toolName": "get_angel_numbers_lookup"
     }
   ],
   "roxy-arudha-padas": [
     {
       "operationId": "calculateArudhaPadas",
       "method": "POST",
-      "path": "/vedic-astrology/arudha"
+      "path": "/vedic-astrology/arudha",
+      "toolName": "post_vedic_astrology_arudha"
     }
   ],
   "roxy-ashtakavarga-grid": [
     {
       "operationId": "calculateAshtakavarga",
       "method": "POST",
-      "path": "/vedic-astrology/ashtakavarga"
+      "path": "/vedic-astrology/ashtakavarga",
+      "toolName": "post_vedic_astrology_ashtakavarga"
     }
   ],
   "roxy-aspects-table": [
     {
       "operationId": "calculateAspects",
       "method": "POST",
-      "path": "/astrology/aspects"
+      "path": "/astrology/aspects",
+      "toolName": "post_astrology_aspects"
     },
     {
       "operationId": "calculateTransitAspects",
       "method": "POST",
-      "path": "/astrology/transit-aspects"
+      "path": "/astrology/transit-aspects",
+      "toolName": "post_astrology_transit_aspects"
     },
     {
       "operationId": "detectAspectPatterns",
       "method": "POST",
-      "path": "/astrology/aspect-patterns"
+      "path": "/astrology/aspect-patterns",
+      "toolName": "post_astrology_aspect_patterns"
     }
   ],
   "roxy-astrocartography-map": [
     {
       "operationId": "generateAstrocartography",
       "method": "POST",
-      "path": "/astrology/astrocartography"
+      "path": "/astrology/astrocartography",
+      "toolName": "post_astrology_astrocartography"
     }
   ],
   "roxy-bazi-chart": [
     {
       "operationId": "generateBaziChart",
       "method": "POST",
-      "path": "/chinese-astrology/bazi/chart"
+      "path": "/chinese-astrology/bazi/chart",
+      "toolName": "post_chinese_astrology_bazi_chart"
     }
   ],
   "roxy-bhav-chalit-table": [
     {
       "operationId": "calculateBhavChalit",
       "method": "POST",
-      "path": "/vedic-astrology/bhav-chalit"
+      "path": "/vedic-astrology/bhav-chalit",
+      "toolName": "post_vedic_astrology_bhav_chalit"
     }
   ],
   "roxy-bhava-bala-table": [
     {
       "operationId": "calculateBhavaBala",
       "method": "POST",
-      "path": "/vedic-astrology/bhava-bala"
+      "path": "/vedic-astrology/bhava-bala",
+      "toolName": "post_vedic_astrology_bhava_bala"
     }
   ],
   "roxy-biorhythm-chart": [
@@ -879,6 +893,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getDailyBiorhythm",
       "method": "POST",
       "path": "/biorhythm/daily",
+      "toolName": "post_biorhythm_daily",
       "attrs": {
         "mode": "daily"
       }
@@ -887,6 +902,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getForecast",
       "method": "POST",
       "path": "/biorhythm/forecast",
+      "toolName": "post_biorhythm_forecast",
       "attrs": {
         "mode": "forecast"
       }
@@ -895,6 +911,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getCriticalDays",
       "method": "POST",
       "path": "/biorhythm/critical-days",
+      "toolName": "post_biorhythm_critical_days",
       "attrs": {
         "mode": "critical-days"
       }
@@ -904,21 +921,24 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "generateBodygraph",
       "method": "POST",
-      "path": "/human-design/bodygraph"
+      "path": "/human-design/bodygraph",
+      "toolName": "post_human_design_bodygraph"
     }
   ],
   "roxy-chara-karakas": [
     {
       "operationId": "calculateCharaKarakas",
       "method": "POST",
-      "path": "/vedic-astrology/chara-karakas"
+      "path": "/vedic-astrology/chara-karakas",
+      "toolName": "post_vedic_astrology_chara_karakas"
     }
   ],
   "roxy-choghadiya-grid": [
     {
       "operationId": "getChoghadiya",
       "method": "POST",
-      "path": "/vedic-astrology/panchang/choghadiya"
+      "path": "/vedic-astrology/panchang/choghadiya",
+      "toolName": "post_vedic_astrology_panchang_choghadiya"
     }
   ],
   "roxy-compatibility-card": [
@@ -926,6 +946,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateCompatibility",
       "method": "POST",
       "path": "/astrology/compatibility-score",
+      "toolName": "post_astrology_compatibility_score",
       "attrs": {
         "mode": "astrology"
       }
@@ -934,6 +955,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateNumCompatibility",
       "method": "POST",
       "path": "/numerology/compatibility",
+      "toolName": "post_numerology_compatibility",
       "attrs": {
         "mode": "numerology"
       }
@@ -942,6 +964,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateBioCompatibility",
       "method": "POST",
       "path": "/biorhythm/compatibility",
+      "toolName": "post_biorhythm_compatibility",
       "attrs": {
         "mode": "biorhythm"
       }
@@ -951,24 +974,28 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "getCrystal",
       "method": "GET",
-      "path": "/crystals/{id}"
+      "path": "/crystals/{id}",
+      "toolName": "get_crystals_id"
     }
   ],
   "roxy-crystal-grid": [
     {
       "operationId": "getCrystalsByChakra",
       "method": "GET",
-      "path": "/crystals/chakra/{chakra}"
+      "path": "/crystals/chakra/{chakra}",
+      "toolName": "get_crystals_chakra"
     },
     {
       "operationId": "getCrystalsByElement",
       "method": "GET",
-      "path": "/crystals/element/{element}"
+      "path": "/crystals/element/{element}",
+      "toolName": "get_crystals_element"
     },
     {
       "operationId": "getCrystalsByZodiac",
       "method": "GET",
-      "path": "/crystals/zodiac/{sign}"
+      "path": "/crystals/zodiac/{sign}",
+      "toolName": "get_crystals_zodiac_sign"
     }
   ],
   "roxy-dasha-timeline": [
@@ -976,6 +1003,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getMajorDashas",
       "method": "POST",
       "path": "/vedic-astrology/dasha/major",
+      "toolName": "post_vedic_astrology_dasha_major",
       "attrs": {
         "period": "major"
       }
@@ -984,6 +1012,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getCurrentDasha",
       "method": "POST",
       "path": "/vedic-astrology/dasha/current",
+      "toolName": "post_vedic_astrology_dasha_current",
       "attrs": {
         "period": "current"
       }
@@ -992,6 +1021,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getSubDashas",
       "method": "POST",
       "path": "/vedic-astrology/dasha/sub/{mahadasha}",
+      "toolName": "post_vedic_astrology_dasha_sub_mahadasha",
       "attrs": {
         "period": "sub"
       }
@@ -1000,6 +1030,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getPratyantardashas",
       "method": "POST",
       "path": "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}",
+      "toolName": "post_vedic_astrology_dasha_sub_mahadasha_antardasha",
       "attrs": {
         "period": "antara"
       }
@@ -1008,6 +1039,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getSookshmaDashas",
       "method": "POST",
       "path": "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}",
+      "toolName": "post_vedic_astrology_dasha_sub_mahadasha_antardasha_pratyantardasha",
       "attrs": {
         "period": "sookshma"
       }
@@ -1016,6 +1048,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getPranaDashas",
       "method": "POST",
       "path": "/vedic-astrology/dasha/sub/{mahadasha}/{antardasha}/{pratyantardasha}/{sookshma}",
+      "toolName": "post_vedic_astrology_dasha_sub_mahadasha_antardasha_pratyantardasha_sookshma",
       "attrs": {
         "period": "prana"
       }
@@ -1025,12 +1058,14 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "generateDivisionalChart",
       "method": "POST",
-      "path": "/vedic-astrology/divisional-chart"
+      "path": "/vedic-astrology/divisional-chart",
+      "toolName": "post_vedic_astrology_divisional_chart"
     },
     {
       "operationId": "generateNavamsa",
       "method": "POST",
-      "path": "/vedic-astrology/navamsa"
+      "path": "/vedic-astrology/navamsa",
+      "toolName": "post_vedic_astrology_navamsa"
     }
   ],
   "roxy-dosha-card": [
@@ -1038,6 +1073,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "checkManglikDosha",
       "method": "POST",
       "path": "/vedic-astrology/dosha/manglik",
+      "toolName": "post_vedic_astrology_dosha_manglik",
       "attrs": {
         "type": "manglik"
       }
@@ -1046,6 +1082,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "checkKalsarpaDosha",
       "method": "POST",
       "path": "/vedic-astrology/dosha/kalsarpa",
+      "toolName": "post_vedic_astrology_dosha_kalsarpa",
       "attrs": {
         "type": "kalsarpa"
       }
@@ -1054,6 +1091,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "checkSadhesati",
       "method": "POST",
       "path": "/vedic-astrology/dosha/sadhesati",
+      "toolName": "post_vedic_astrology_dosha_sadhesati",
       "attrs": {
         "type": "sadhesati"
       }
@@ -1063,33 +1101,38 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "getDreamSymbol",
       "method": "GET",
-      "path": "/dreams/symbols/{id}"
+      "path": "/dreams/symbols/{id}",
+      "toolName": "get_dreams_symbols_id"
     }
   ],
   "roxy-dream-search": [
     {
       "operationId": "searchDreamSymbols",
       "method": "GET",
-      "path": "/dreams/symbols"
+      "path": "/dreams/symbols",
+      "toolName": "get_dreams_symbols"
     }
   ],
   "roxy-ephemeris-table": [
     {
       "operationId": "getMonthlyTropicalEphemeris",
       "method": "POST",
-      "path": "/astrology/planets/monthly"
+      "path": "/astrology/planets/monthly",
+      "toolName": "post_astrology_planets_monthly"
     },
     {
       "operationId": "getMonthlyEphemeris",
       "method": "POST",
-      "path": "/vedic-astrology/planetary-positions/monthly"
+      "path": "/vedic-astrology/planetary-positions/monthly",
+      "toolName": "post_vedic_astrology_planetary_positions_monthly"
     }
   ],
   "roxy-fixed-stars": [
     {
       "operationId": "generateFixedStars",
       "method": "POST",
-      "path": "/astrology/fixed-stars"
+      "path": "/astrology/fixed-stars",
+      "toolName": "post_astrology_fixed_stars"
     }
   ],
   "roxy-flying-star-chart": [
@@ -1097,6 +1140,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "generateFlyingStarChart",
       "method": "POST",
       "path": "/feng-shui/flying-stars/natal",
+      "toolName": "post_feng_shui_flying_stars_natal",
       "attrs": {
         "mode": "natal"
       }
@@ -1105,6 +1149,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getAnnualFlyingStars",
       "method": "GET",
       "path": "/feng-shui/flying-stars/annual/{year}",
+      "toolName": "get_feng_shui_flying_stars_annual_year",
       "attrs": {
         "mode": "annual"
       }
@@ -1114,92 +1159,106 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "generateDigest",
       "method": "POST",
-      "path": "/forecast/digest"
+      "path": "/forecast/digest",
+      "toolName": "post_forecast_digest"
     }
   ],
   "roxy-forecast-timeline": [
     {
       "operationId": "generateTimeline",
       "method": "POST",
-      "path": "/forecast/timeline"
+      "path": "/forecast/timeline",
+      "toolName": "post_forecast_timeline"
     },
     {
       "operationId": "findSignificantDates",
       "method": "POST",
-      "path": "/forecast/significant-dates"
+      "path": "/forecast/significant-dates",
+      "toolName": "post_forecast_significant_dates"
     },
     {
       "operationId": "forecastTransits",
       "method": "POST",
-      "path": "/forecast/transits"
+      "path": "/forecast/transits",
+      "toolName": "post_forecast_transits"
     }
   ],
   "roxy-gochara-table": [
     {
       "operationId": "calculateTransit",
       "method": "POST",
-      "path": "/vedic-astrology/transit"
+      "path": "/vedic-astrology/transit",
+      "toolName": "post_vedic_astrology_transit"
     }
   ],
   "roxy-guna-milan": [
     {
       "operationId": "calculateGunMilan",
       "method": "POST",
-      "path": "/vedic-astrology/compatibility"
+      "path": "/vedic-astrology/compatibility",
+      "toolName": "post_vedic_astrology_compatibility"
     }
   ],
   "roxy-hd-connection": [
     {
       "operationId": "calculateConnection",
       "method": "POST",
-      "path": "/human-design/connection"
+      "path": "/human-design/connection",
+      "toolName": "post_human_design_connection"
     }
   ],
   "roxy-hd-penta": [
     {
       "operationId": "calculatePenta",
       "method": "POST",
-      "path": "/human-design/penta"
+      "path": "/human-design/penta",
+      "toolName": "post_human_design_penta"
     }
   ],
   "roxy-hd-type-card": [
     {
       "operationId": "calculateType",
       "method": "POST",
-      "path": "/human-design/type"
+      "path": "/human-design/type",
+      "toolName": "post_human_design_type"
     },
     {
       "operationId": "calculateProfile",
       "method": "POST",
-      "path": "/human-design/profile"
+      "path": "/human-design/profile",
+      "toolName": "post_human_design_profile"
     }
   ],
   "roxy-hd-variables": [
     {
       "operationId": "calculateVariables",
       "method": "POST",
-      "path": "/human-design/variables"
+      "path": "/human-design/variables",
+      "toolName": "post_human_design_variables"
     }
   ],
   "roxy-heliacal-table": [
     {
       "operationId": "getHeliacalVisibility",
       "method": "POST",
-      "path": "/vedic-astrology/heliacal"
+      "path": "/vedic-astrology/heliacal",
+      "toolName": "post_vedic_astrology_heliacal"
     }
   ],
   "roxy-hexagram": [
     {
       "operationId": "getRandomHexagram",
       "method": "GET",
-      "path": "/iching/hexagrams/random"
+      "path": "/iching/hexagrams/random",
+      "toolName": "get_iching_hexagrams_random"
     }
   ],
   "roxy-hora-table": [
     {
       "operationId": "getHora",
       "method": "POST",
-      "path": "/vedic-astrology/panchang/hora"
+      "path": "/vedic-astrology/panchang/hora",
+      "toolName": "post_vedic_astrology_panchang_hora"
     }
   ],
   "roxy-horoscope-card": [
@@ -1207,6 +1266,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getDailyHoroscope",
       "method": "GET",
       "path": "/astrology/horoscope/{sign}/daily",
+      "toolName": "get_astrology_horoscope_sign_daily",
       "attrs": {
         "period": "daily"
       }
@@ -1215,6 +1275,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getWeeklyHoroscope",
       "method": "GET",
       "path": "/astrology/horoscope/{sign}/weekly",
+      "toolName": "get_astrology_horoscope_sign_weekly",
       "attrs": {
         "period": "weekly"
       }
@@ -1223,6 +1284,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getMonthlyHoroscope",
       "method": "GET",
       "path": "/astrology/horoscope/{sign}/monthly",
+      "toolName": "get_astrology_horoscope_sign_monthly",
       "attrs": {
         "period": "monthly"
       }
@@ -1231,6 +1293,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getYearlyHoroscope",
       "method": "GET",
       "path": "/astrology/horoscope/{sign}/yearly",
+      "toolName": "get_astrology_horoscope_sign_yearly",
       "attrs": {
         "period": "yearly"
       }
@@ -1240,21 +1303,24 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "generateKpChart",
       "method": "POST",
-      "path": "/vedic-astrology/kp/chart"
+      "path": "/vedic-astrology/kp/chart",
+      "toolName": "post_vedic_astrology_kp_chart"
     }
   ],
   "roxy-kp-planets-table": [
     {
       "operationId": "getKpPlanets",
       "method": "POST",
-      "path": "/vedic-astrology/kp/planets"
+      "path": "/vedic-astrology/kp/planets",
+      "toolName": "post_vedic_astrology_kp_planets"
     }
   ],
   "roxy-kp-ruling-planets": [
     {
       "operationId": "getKpRulingPlanets",
       "method": "POST",
-      "path": "/vedic-astrology/kp/ruling-planets"
+      "path": "/vedic-astrology/kp/ruling-planets",
+      "toolName": "post_vedic_astrology_kp_ruling_planets"
     }
   ],
   "roxy-kua-card": [
@@ -1262,6 +1328,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateKuaNumber",
       "method": "POST",
       "path": "/feng-shui/kua",
+      "toolName": "post_feng_shui_kua",
       "attrs": {
         "mode": "kua"
       }
@@ -1270,6 +1337,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "generateEightMansions",
       "method": "POST",
       "path": "/feng-shui/eight-mansions",
+      "toolName": "post_feng_shui_eight_mansions",
       "attrs": {
         "mode": "mansions"
       }
@@ -1279,14 +1347,16 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "generateLocalSpace",
       "method": "POST",
-      "path": "/astrology/local-space"
+      "path": "/astrology/local-space",
+      "toolName": "post_astrology_local_space"
     }
   ],
   "roxy-luck-pillars": [
     {
       "operationId": "calculateLuckPillars",
       "method": "POST",
-      "path": "/chinese-astrology/bazi/luck-pillars"
+      "path": "/chinese-astrology/bazi/luck-pillars",
+      "toolName": "post_chinese_astrology_bazi_luck_pillars"
     }
   ],
   "roxy-moon-phase": [
@@ -1294,6 +1364,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getCurrentMoonPhase",
       "method": "GET",
       "path": "/astrology/moon-phase/current",
+      "toolName": "get_astrology_moon_phase_current",
       "attrs": {
         "mode": "current"
       }
@@ -1302,6 +1373,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getUpcomingMoonPhases",
       "method": "GET",
       "path": "/astrology/moon-phase/upcoming",
+      "toolName": "get_astrology_moon_phase_upcoming",
       "attrs": {
         "mode": "upcoming"
       }
@@ -1310,6 +1382,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getMoonCalendar",
       "method": "GET",
       "path": "/astrology/moon-phase/calendar/{year}/{month}",
+      "toolName": "get_astrology_moon_phase_calendar_year_month",
       "attrs": {
         "mode": "calendar"
       }
@@ -1319,14 +1392,16 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "getNakshatra",
       "method": "GET",
-      "path": "/vedic-astrology/nakshatras/{id}"
+      "path": "/vedic-astrology/nakshatras/{id}",
+      "toolName": "get_vedic_astrology_nakshatras_id"
     }
   ],
   "roxy-natal-chart": [
     {
       "operationId": "generateNatalChart",
       "method": "POST",
-      "path": "/astrology/natal-chart"
+      "path": "/astrology/natal-chart",
+      "toolName": "post_astrology_natal_chart"
     }
   ],
   "roxy-numerology-card": [
@@ -1334,6 +1409,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateLifePath",
       "method": "POST",
       "path": "/numerology/life-path",
+      "toolName": "post_numerology_life_path",
       "attrs": {
         "type": "life-path"
       }
@@ -1342,6 +1418,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateExpression",
       "method": "POST",
       "path": "/numerology/expression",
+      "toolName": "post_numerology_expression",
       "attrs": {
         "type": "expression"
       }
@@ -1350,6 +1427,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateSoulUrge",
       "method": "POST",
       "path": "/numerology/soul-urge",
+      "toolName": "post_numerology_soul_urge",
       "attrs": {
         "type": "soul-urge"
       }
@@ -1358,6 +1436,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculatePersonality",
       "method": "POST",
       "path": "/numerology/personality",
+      "toolName": "post_numerology_personality",
       "attrs": {
         "type": "personality"
       }
@@ -1366,6 +1445,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateBirthDay",
       "method": "POST",
       "path": "/numerology/birth-day",
+      "toolName": "post_numerology_birth_day",
       "attrs": {
         "type": "birth-day"
       }
@@ -1374,6 +1454,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateMaturity",
       "method": "POST",
       "path": "/numerology/maturity",
+      "toolName": "post_numerology_maturity",
       "attrs": {
         "type": "maturity"
       }
@@ -1382,6 +1463,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getDailyNumber",
       "method": "POST",
       "path": "/numerology/daily",
+      "toolName": "post_numerology_daily",
       "attrs": {
         "type": "daily"
       }
@@ -1390,6 +1472,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculatePersonalDay",
       "method": "POST",
       "path": "/numerology/personal-day",
+      "toolName": "post_numerology_personal_day",
       "attrs": {
         "type": "personal-day"
       }
@@ -1398,6 +1481,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculatePersonalMonth",
       "method": "POST",
       "path": "/numerology/personal-month",
+      "toolName": "post_numerology_personal_month",
       "attrs": {
         "type": "personal-month"
       }
@@ -1406,6 +1490,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculatePersonalYear",
       "method": "POST",
       "path": "/numerology/personal-year",
+      "toolName": "post_numerology_personal_year",
       "attrs": {
         "type": "personal-year"
       }
@@ -1414,6 +1499,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "generateNumerologyChart",
       "method": "POST",
       "path": "/numerology/chart",
+      "toolName": "post_numerology_chart",
       "attrs": {
         "type": "chart"
       }
@@ -1424,6 +1510,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getDetailedPanchang",
       "method": "POST",
       "path": "/vedic-astrology/panchang/detailed",
+      "toolName": "post_vedic_astrology_panchang_detailed",
       "attrs": {
         "detail": "detailed"
       }
@@ -1432,6 +1519,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getBasicPanchang",
       "method": "POST",
       "path": "/vedic-astrology/panchang/basic",
+      "toolName": "post_vedic_astrology_panchang_basic",
       "attrs": {
         "detail": "basic"
       }
@@ -1441,116 +1529,136 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "generateAsteroids",
       "method": "POST",
-      "path": "/astrology/asteroids"
+      "path": "/astrology/asteroids",
+      "toolName": "post_astrology_asteroids"
     },
     {
       "operationId": "generateLilith",
       "method": "POST",
-      "path": "/astrology/lilith"
+      "path": "/astrology/lilith",
+      "toolName": "post_astrology_lilith"
     },
     {
       "operationId": "generateProgressions",
       "method": "POST",
-      "path": "/astrology/progressions"
+      "path": "/astrology/progressions",
+      "toolName": "post_astrology_progressions"
     },
     {
       "operationId": "generateSolarArc",
       "method": "POST",
-      "path": "/astrology/solar-arc"
+      "path": "/astrology/solar-arc",
+      "toolName": "post_astrology_solar_arc"
     },
     {
       "operationId": "calculateArabicLots",
       "method": "POST",
-      "path": "/astrology/arabic-lots"
+      "path": "/astrology/arabic-lots",
+      "toolName": "post_astrology_arabic_lots"
     }
   ],
   "roxy-profection-card": [
     {
       "operationId": "generateProfections",
       "method": "POST",
-      "path": "/astrology/profections"
+      "path": "/astrology/profections",
+      "toolName": "post_astrology_profections"
     }
   ],
   "roxy-reference-card": [
     {
       "operationId": "getZodiacSign",
       "method": "GET",
-      "path": "/astrology/signs/{id}"
+      "path": "/astrology/signs/{id}",
+      "toolName": "get_astrology_signs_id"
     },
     {
       "operationId": "getPlanetMeaning",
       "method": "GET",
-      "path": "/astrology/planet-meanings/{id}"
+      "path": "/astrology/planet-meanings/{id}",
+      "toolName": "get_astrology_planet_meanings_id"
     },
     {
       "operationId": "getRashi",
       "method": "GET",
-      "path": "/vedic-astrology/rashis/{id}"
+      "path": "/vedic-astrology/rashis/{id}",
+      "toolName": "get_vedic_astrology_rashis_id"
     },
     {
       "operationId": "getTrigram",
       "method": "GET",
-      "path": "/iching/trigrams/{id}"
+      "path": "/iching/trigrams/{id}",
+      "toolName": "get_iching_trigrams_id"
     },
     {
       "operationId": "getGate",
       "method": "GET",
-      "path": "/human-design/gates/{number}"
+      "path": "/human-design/gates/{number}",
+      "toolName": "get_human_design_gates_number"
     },
     {
       "operationId": "getCenter",
       "method": "GET",
-      "path": "/human-design/centers/{id}"
+      "path": "/human-design/centers/{id}",
+      "toolName": "get_human_design_centers_id"
     },
     {
       "operationId": "getNumberMeaning",
       "method": "GET",
-      "path": "/numerology/meanings/{number}"
+      "path": "/numerology/meanings/{number}",
+      "toolName": "get_numerology_meanings_number"
     },
     {
       "operationId": "getCompoundNumber",
       "method": "GET",
-      "path": "/numerology/compound-number/{number}"
+      "path": "/numerology/compound-number/{number}",
+      "toolName": "get_numerology_compound_number"
     },
     {
       "operationId": "getAvastha",
       "method": "GET",
-      "path": "/vedic-astrology/avasthas/{id}"
+      "path": "/vedic-astrology/avasthas/{id}",
+      "toolName": "get_vedic_astrology_avasthas_id"
     }
   ],
   "roxy-relocation-wheel": [
     {
       "operationId": "generateRelocationChart",
       "method": "POST",
-      "path": "/astrology/relocation-chart"
+      "path": "/astrology/relocation-chart",
+      "toolName": "post_astrology_relocation_chart"
     }
   ],
   "roxy-shadbala-table": [
     {
       "operationId": "calculateShadbala",
       "method": "POST",
-      "path": "/vedic-astrology/shadbala"
+      "path": "/vedic-astrology/shadbala",
+      "toolName": "post_vedic_astrology_shadbala"
     }
   ],
   "roxy-synastry-chart": [
     {
       "operationId": "calculateSynastry",
       "method": "POST",
-      "path": "/astrology/synastry"
+      "path": "/astrology/synastry",
+      "toolName": "post_astrology_synastry"
     }
   ],
   "roxy-tarot-card": [
     {
       "operationId": "getDailyCard",
       "method": "POST",
-      "path": "/tarot/daily"
+      "path": "/tarot/daily",
+      "toolName": "post_tarot_daily"
     }
   ],
   "roxy-tarot-catalog": [
     {
       "operationId": "listCards",
       "method": "GET",
-      "path": "/tarot/cards"
+      "path": "/tarot/cards",
+      "toolName": "get_tarot_cards"
     }
   ],
   "roxy-tarot-spread": [
@@ -1558,6 +1666,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "castThreeCard",
       "method": "POST",
       "path": "/tarot/spreads/three-card",
+      "toolName": "post_tarot_spreads_three_card",
       "attrs": {
         "spread": "three-card"
       }
@@ -1566,6 +1675,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "castCelticCross",
       "method": "POST",
       "path": "/tarot/spreads/celtic-cross",
+      "toolName": "post_tarot_spreads_celtic_cross",
       "attrs": {
         "spread": "celtic-cross"
       }
@@ -1574,6 +1684,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "castLoveSpread",
       "method": "POST",
       "path": "/tarot/spreads/love",
+      "toolName": "post_tarot_spreads_love",
       "attrs": {
         "spread": "love"
       }
@@ -1582,6 +1693,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "castCareerSpread",
       "method": "POST",
       "path": "/tarot/spreads/career",
+      "toolName": "post_tarot_spreads_career",
       "attrs": {
         "spread": "career"
       }
@@ -1590,6 +1702,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "castCustomSpread",
       "method": "POST",
       "path": "/tarot/spreads/custom",
+      "toolName": "post_tarot_spreads_custom",
       "attrs": {
         "spread": "custom"
       }
@@ -1598,6 +1711,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "castYesNo",
       "method": "POST",
       "path": "/tarot/yes-no",
+      "toolName": "post_tarot_yes_no",
       "attrs": {
         "spread": "yes-no"
       }
@@ -1606,6 +1720,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "drawCards",
       "method": "POST",
       "path": "/tarot/draw",
+      "toolName": "post_tarot_draw",
       "attrs": {
         "spread": "draw"
       }
@@ -1615,68 +1730,78 @@ window.ROXY_ENDPOINT_BINDINGS = {
     {
       "operationId": "calculateTransitAspects",
       "method": "POST",
-      "path": "/astrology/transit-aspects"
+      "path": "/astrology/transit-aspects",
+      "toolName": "post_astrology_transit_aspects"
     }
   ],
   "roxy-transits-table": [
     {
       "operationId": "calculateTransits",
       "method": "POST",
-      "path": "/astrology/transits"
+      "path": "/astrology/transits",
+      "toolName": "post_astrology_transits"
     }
   ],
   "roxy-upagraha-table": [
     {
       "operationId": "getUpagrahaPositions",
       "method": "POST",
-      "path": "/vedic-astrology/upagraha"
+      "path": "/vedic-astrology/upagraha",
+      "toolName": "post_vedic_astrology_upagraha"
     }
   ],
   "roxy-vedic-aspects": [
     {
       "operationId": "calculateDrishti",
       "method": "POST",
-      "path": "/vedic-astrology/aspects"
+      "path": "/vedic-astrology/aspects",
+      "toolName": "post_vedic_astrology_aspects"
     }
   ],
   "roxy-vedic-daily": [
     {
       "operationId": "getVedicDailyReading",
       "method": "POST",
-      "path": "/vedic-astrology/daily"
+      "path": "/vedic-astrology/daily",
+      "toolName": "post_vedic_astrology_daily"
     }
   ],
   "roxy-vedic-kundli": [
     {
       "operationId": "generateBirthChart",
       "method": "POST",
-      "path": "/vedic-astrology/birth-chart"
+      "path": "/vedic-astrology/birth-chart",
+      "toolName": "post_vedic_astrology_birth_chart"
     }
   ],
   "roxy-vedic-planets-table": [
     {
       "operationId": "generateBirthChart",
       "method": "POST",
-      "path": "/vedic-astrology/birth-chart"
+      "path": "/vedic-astrology/birth-chart",
+      "toolName": "post_vedic_astrology_birth_chart"
     }
   ],
   "roxy-western-planets-table": [
     {
       "operationId": "generateNatalChart",
       "method": "POST",
-      "path": "/astrology/natal-chart"
+      "path": "/astrology/natal-chart",
+      "toolName": "post_astrology_natal_chart"
     }
   ],
   "roxy-yoga-list": [
     {
       "operationId": "listYogas",
       "method": "GET",
-      "path": "/vedic-astrology/yoga"
+      "path": "/vedic-astrology/yoga",
+      "toolName": "get_vedic_astrology_yoga"
     },
     {
       "operationId": "detectYogas",
       "method": "POST",
-      "path": "/vedic-astrology/yoga/detect"
+      "path": "/vedic-astrology/yoga/detect",
+      "toolName": "post_vedic_astrology_yoga_detect"
     }
   ],
   "roxy-zodiac-card": [
@@ -1684,6 +1809,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "calculateZodiacAnimal",
       "method": "POST",
       "path": "/chinese-astrology/zodiac/sign",
+      "toolName": "post_chinese_astrology_zodiac_sign",
       "attrs": {
         "mode": "sign"
       }
@@ -1692,6 +1818,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getZodiacAnimal",
       "method": "GET",
       "path": "/chinese-astrology/zodiac/animals/{id}",
+      "toolName": "get_chinese_astrology_zodiac_animals_id",
       "attrs": {
         "mode": "animal"
       }
@@ -1700,6 +1827,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getDailyZodiacReading",
       "method": "GET",
       "path": "/chinese-astrology/zodiac/{id}/daily",
+      "toolName": "get_chinese_astrology_zodiac_id_daily",
       "attrs": {
         "mode": "daily"
       }
@@ -1708,6 +1836,7 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "operationId": "getZodiacCompatibility",
       "method": "GET",
       "path": "/chinese-astrology/zodiac/compatibility/{sign1}/{sign2}",
+      "toolName": "get_chinese_astrology_zodiac_compatibility_sign1_sign2",
       "attrs": {
         "mode": "compatibility"
       }
