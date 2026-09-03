@@ -16,6 +16,9 @@ const projects = requested?.length
 	? ALL_PROJECTS.filter((p) => requested.includes(p.name))
 	: ALL_PROJECTS;
 
+/** The preview the suite drives. `PORT` moves it, with the same default `scripts/preview.ts` uses, so the gate can run on a machine where 3001 is taken. */
+const PREVIEW_URL = `http://localhost:${process.env.PORT ?? 3001}`;
+
 export default defineConfig({
 	testDir: './packages/ui/tests/e2e',
 	/**
@@ -46,12 +49,12 @@ export default defineConfig({
 	workers: process.env.CI ? 2 : undefined,
 	reporter: process.env.CI ? 'github' : 'list',
 	use: {
-		baseURL: 'http://localhost:3001',
+		baseURL: PREVIEW_URL,
 		trace: 'on-first-retry',
 	},
 	webServer: {
 		command: 'bun run preview',
-		url: 'http://localhost:3001',
+		url: PREVIEW_URL,
 		reuseExistingServer: !process.env.CI,
 		timeout: 30_000,
 	},

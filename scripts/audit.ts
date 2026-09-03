@@ -7,7 +7,8 @@
 
 import { chromium, type Page } from '@playwright/test';
 
-const BASE = 'http://localhost:3001';
+// Same default as scripts/preview.ts; `PORT` moves both together.
+const BASE = `http://localhost:${process.env.PORT ?? 3001}`;
 
 const FORBIDDEN: Array<{ pattern: RegExp; label: string }> = [
 	{

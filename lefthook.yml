@@ -88,7 +88,7 @@ pre-push:
         bun run preview > /tmp/lefthook-preview.log 2>&1 &
         PREVIEW_PID=$!
         for i in $(seq 1 30); do
-          curl -sf http://localhost:3001/ -o /dev/null && break
+          curl -sf "http://localhost:${PORT:-3001}/" -o /dev/null && break
           sleep 1
         done
         bun run audit
