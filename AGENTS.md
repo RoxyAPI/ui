@@ -323,7 +323,7 @@ If you theme dark differently, set it in your dark block too, exactly as you wou
 [data-theme='dark'] { --roxy-accent: #a78bfa; }
 ```
 
-Do not hardcode `--roxy-accent-ink`: you will pin it to one hue and it will stop tracking your brand. Dark mode already works with no wiring, via `prefers-color-scheme`, a `.dark` class, or `[data-theme='dark']` on any ancestor.
+If the page is not white or near black, also set `--roxy-surface`, the card a component paints, to the surface you place it on (and `--roxy-secondary`, the label ink, if your palette is warm): `--roxy-bg` alone leaves the card at its default sheet. Do not hardcode `--roxy-accent-ink`: you will pin it to one hue and it will stop tracking your brand. Dark mode already works with no wiring, via `prefers-color-scheme`, a `.dark` class, or `[data-theme='dark']` on any ancestor.
 
 ## Integration patterns
 

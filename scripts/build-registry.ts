@@ -45,8 +45,16 @@ const THEME_URL = `https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v${VERSION}/registry/t
 const SHADCN_THEME_CSS = {
 	'@layer base': {
 		':root': {
+			// The card a component paints is `--roxy-surface`, read by nearly every
+			// module, so it takes the host card token. `--roxy-bg` is only the field
+			// behind an input and the sheet under a suggestion list, so it takes the
+			// page background. Mapping both to the page puts a stock sheet on a dark
+			// or warm host.
+			'--roxy-surface': 'var(--card, #ffffff)',
 			'--roxy-bg': 'var(--background, #fafafa)',
 			'--roxy-fg': 'var(--foreground, #0a0a0a)',
+			'--roxy-primary': 'var(--foreground, #0f172a)',
+			'--roxy-secondary': 'var(--muted-foreground, #475569)',
 			'--roxy-muted': 'var(--muted-foreground, #71717a)',
 			'--roxy-border': 'var(--border, #e4e4e7)',
 			'--roxy-accent': 'var(--primary, #f59e0b)',
@@ -59,7 +67,11 @@ const SHADCN_THEME_CSS = {
 			'--roxy-danger-fg': 'var(--destructive-foreground, #991b1b)',
 			'--roxy-info': 'var(--chart-1, #2563eb)',
 			'--roxy-info-fg': '#075985',
+			// The host radius scale: shadcn steps its own corners from `--radius`,
+			// so the small mark, the card and the outer panel follow the same ratios.
+			'--roxy-radius-sm': 'calc(var(--radius, 12px) * 0.6)',
 			'--roxy-radius-md': 'var(--radius, 12px)',
+			'--roxy-radius-lg': 'calc(var(--radius, 12px) * 1.4)',
 			'--roxy-shadow-md': '0 4px 12px rgba(0,0,0,0.08)',
 			'--roxy-motion-duration': '200ms',
 		},
@@ -80,7 +92,7 @@ async function emitTheme() {
 		type: 'registry:theme',
 		title: 'Roxy UI theme',
 		description:
-			"CSS variables driving every Roxy UI component. Maps the customer's existing shadcn tokens (--background, --primary, --border, --radius) onto --roxy-* via CSS fallback chain. Override any --roxy-* directly to lock a specific surface.",
+			"CSS variables driving every Roxy UI component. Maps the customer's existing shadcn tokens (--card, --background, --foreground, --muted-foreground, --primary, --border, --radius) onto --roxy-* via CSS fallback chain. Override any --roxy-* directly to lock a specific surface.",
 		css: SHADCN_THEME_CSS,
 	};
 	await writeFile(`${OUT_DIR}/theme.json`, JSON.stringify(entry, null, 2));

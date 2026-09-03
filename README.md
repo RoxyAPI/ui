@@ -54,9 +54,12 @@ Light, dark, your brand. Set `--roxy-accent` on `:root` and every component foll
 
 ```css
 :root {
-  /* Surface */
+  /* Surface. --roxy-surface is the card a component paints, so match it to the
+     surface you place the component on; --roxy-bg is the field behind an input. */
+  --roxy-surface: #ffffff;
   --roxy-bg: #ffffff;
   --roxy-fg: #0a0a0a;
+  --roxy-secondary: #475569;
   --roxy-muted: #71717a;
   --roxy-border: #e4e4e7;
 
@@ -77,8 +80,10 @@ Light, dark, your brand. Set `--roxy-accent` on `:root` and every component foll
 }
 
 [data-theme="dark"] {
+  --roxy-surface: #18181b;
   --roxy-bg: #0a0a0a;
   --roxy-fg: #fafafa;
+  --roxy-secondary: #94a3b8;
   --roxy-muted: #a1a1aa;
   --roxy-border: #27272a;
   /* Only if you want a different accent in dark. Omit it to keep the default. */
@@ -1081,8 +1086,10 @@ For Tailwind v4 users, the shadcn registry installs a CSS bridge that maps your 
 
 ```css
 :root {
+  --roxy-surface: theme(colors.card.DEFAULT);
   --roxy-bg: theme(colors.background);
   --roxy-fg: theme(colors.foreground);
+  --roxy-secondary: theme(colors.muted.foreground);
   --roxy-accent: theme(colors.primary.DEFAULT);
   --roxy-border: theme(colors.border);
 }

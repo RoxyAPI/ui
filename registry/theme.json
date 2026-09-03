@@ -3,12 +3,15 @@
   "name": "theme",
   "type": "registry:theme",
   "title": "Roxy UI theme",
-  "description": "CSS variables driving every Roxy UI component. Maps the customer's existing shadcn tokens (--background, --primary, --border, --radius) onto --roxy-* via CSS fallback chain. Override any --roxy-* directly to lock a specific surface.",
+  "description": "CSS variables driving every Roxy UI component. Maps the customer's existing shadcn tokens (--card, --background, --foreground, --muted-foreground, --primary, --border, --radius) onto --roxy-* via CSS fallback chain. Override any --roxy-* directly to lock a specific surface.",
   "css": {
     "@layer base": {
       ":root": {
+        "--roxy-surface": "var(--card, #ffffff)",
         "--roxy-bg": "var(--background, #fafafa)",
         "--roxy-fg": "var(--foreground, #0a0a0a)",
+        "--roxy-primary": "var(--foreground, #0f172a)",
+        "--roxy-secondary": "var(--muted-foreground, #475569)",
         "--roxy-muted": "var(--muted-foreground, #71717a)",
         "--roxy-border": "var(--border, #e4e4e7)",
         "--roxy-accent": "var(--primary, #f59e0b)",
@@ -21,7 +24,9 @@
         "--roxy-danger-fg": "var(--destructive-foreground, #991b1b)",
         "--roxy-info": "var(--chart-1, #2563eb)",
         "--roxy-info-fg": "#075985",
+        "--roxy-radius-sm": "calc(var(--radius, 12px) * 0.6)",
         "--roxy-radius-md": "var(--radius, 12px)",
+        "--roxy-radius-lg": "calc(var(--radius, 12px) * 1.4)",
         "--roxy-shadow-md": "0 4px 12px rgba(0,0,0,0.08)",
         "--roxy-motion-duration": "200ms"
       },
