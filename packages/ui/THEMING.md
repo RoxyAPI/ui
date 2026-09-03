@@ -8,9 +8,11 @@ Every Roxy UI component reads its colors, fonts, spacing, and motion from a sing
 
 | Variable | Light default | Dark default | Used by |
 |---|---|---|---|
-| `--roxy-bg` | `#ffffff` | `#0a0a0a` | Card and chart backgrounds |
+| `--roxy-bg` | `#ffffff` | `#0a0a0a` | The field behind an input, the sheet under a suggestion list, the ink on a filled button |
+| `--roxy-surface` | `#ffffff` | `#18181b` | The card a component paints. Nearly every component reaches for it, so a re-theme that skips it shows a white or charcoal sheet on the host page |
 | `--roxy-fg` | `#0a0a0a` | `#fafafa` | Body text, headings |
 | `--roxy-primary` | `#0f172a` | `#f8fafc` | Brand base. Also the neutral end of the planet colour scale |
+| `--roxy-secondary` | `#475569` | `#94a3b8` | Secondary ink: form labels, the generic renderer, several chart strokes. Stock slate, so a warm or brand theme that skips it shows cool bluish labels |
 | `--roxy-muted` | `#71717a` | `#a1a1aa` | Secondary text, subheadings |
 | `--roxy-border` | `#e4e4e7` | `#27272a` | Wheel lines, table borders |
 | `--roxy-accent` | `#f59e0b` | `#fbbf24` | Planet glyphs, hexagram lines, focused state |

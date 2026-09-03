@@ -144,6 +144,24 @@ describe('THEMING.md is the token contract and may not drift from tokens.css', (
 		).toEqual([]);
 	});
 
+	test('every colour token has a ROW in the table, not only a mention in prose', async () => {
+		const { light, dark } = await tokensFromCss();
+		const rows = await comparableRows();
+		const HEX = /^#[0-9a-f]{3,8}$/i;
+		const missing = [...light.keys()]
+			.filter(
+				(t) => HEX.test(light.get(t) ?? '') && HEX.test(dark.get(t) ?? ''),
+			)
+			.filter((t) => !rows.has(t))
+			.sort();
+		expect(
+			missing,
+			'A hex-valued token named only in prose or a preset is invisible to a reader scanning ' +
+				'the table, which is how the surface and secondary tokens went unbridged downstream:\n  ' +
+				missing.join('\n  '),
+		).toEqual([]);
+	});
+
 	test('the doc names no token that does not exist', async () => {
 		const { light, dark } = await tokensFromCss();
 		const doc = await documentedTokens();
