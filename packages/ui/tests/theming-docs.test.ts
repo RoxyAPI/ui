@@ -19,79 +19,9 @@
  */
 
 import { describe, expect, test } from 'bun:test';
+import { HEX, TOKENS_CSS, tokensFromCss } from './token-source.js';
 
-const TOKENS_CSS = 'packages/ui/src/styles/tokens.css';
 const THEMING_MD = 'packages/ui/THEMING.md';
-
-/** A `--roxy-*` declaration and its value, e.g. `['--roxy-bg', '#ffffff']`. */
-const DECL = /(--roxy-[a-z0-9-]+)\s*:\s*([^;]+);/g;
-
-/**
- * Tokens as `tokens.css` defines them, split by theme.
- *
- * The light set is everything declared before the first `prefers-color-scheme: dark`
- * block; the dark set is what that block redefines. Later blocks in the file are the
- * explicit `[data-theme]` opt-in and opt-out selectors, which restate the same pairs, so
- * reading the first of each is enough and keeps this parser from having to model the
- * whole cascade.
- */
-async function tokensFromCss(): Promise<{
-	light: Map<string, string>;
-	dark: Map<string, string>;
-}> {
-	// Comments are blanked, not deleted, so every offset below still lines up with the
-	// source. The file's own header prose names `@media (prefers-color-scheme: dark)`
-	// while explaining the cascade, and searching the raw text finds THAT first, which
-	// silently reads the light block as the dark one.
-	const css = (await Bun.file(TOKENS_CSS).text()).replace(
-		/\/\*[\s\S]*?\*\//g,
-		(m) => m.replace(/[^\n]/g, ' '),
-	);
-	const darkAt = css.search(/@media\s*\(\s*prefers-color-scheme:\s*dark\s*\)/);
-	expect(darkAt).toBeGreaterThan(-1);
-
-	const read = (chunk: string) => {
-		const out = new Map<string, string>();
-		for (const [, name, value] of chunk.matchAll(DECL)) {
-			// First declaration wins: a later selector block restating a token is the
-			// same value under a different trigger.
-			if (!out.has(name as string))
-				out.set(name as string, (value as string).trim());
-		}
-		return out;
-	};
-
-	return {
-		light: read(css.slice(0, darkAt)),
-		dark: read(blockAt(css, darkAt)),
-	};
-}
-
-/**
- * The body of the brace-delimited block starting at or after `from`, found by matching
- * braces rather than by searching for a closing pattern.
- *
- * Matching is the point. Locating the end with a literal like `\n}\n}` reads correctly
- * today and silently returns the REST OF THE FILE the moment the formatter changes how
- * those braces are laid out, which would hand the caller the `[data-theme="light"]` block
- * as if it were the dark one and quietly invert every assertion built on it.
- */
-function blockAt(css: string, from: number): string {
-	const open = css.indexOf('{', from);
-	expect(open, 'no block opens after the dark media query').toBeGreaterThan(-1);
-
-	let depth = 0;
-	for (let i = open; i < css.length; i++) {
-		if (css[i] === '{') depth++;
-		else if (css[i] === '}') {
-			depth--;
-			if (depth === 0) return css.slice(open + 1, i);
-		}
-	}
-	throw new Error(
-		'tokens.css has an unbalanced brace after the dark media query',
-	);
-}
 
 /** Every token the doc names anywhere: table row, prose or example. */
 async function documentedTokens(): Promise<Set<string>> {
@@ -117,7 +47,6 @@ async function comparableRows(): Promise<
 > {
 	const md = await Bun.file(THEMING_MD).text();
 	const out = new Map<string, { light: string; dark: string }>();
-	const HEX = /^#[0-9a-f]{3,8}$/i;
 
 	const ROW =
 		/^\|\s*`(--roxy-[a-z0-9-]+)`\s*\|\s*`([^`]+)`\s*\|\s*`([^`]+)`\s*\|/gm;
@@ -147,7 +76,6 @@ describe('THEMING.md is the token contract and may not drift from tokens.css', (
 	test('every colour token has a ROW in the table, not only a mention in prose', async () => {
 		const { light, dark } = await tokensFromCss();
 		const rows = await comparableRows();
-		const HEX = /^#[0-9a-f]{3,8}$/i;
 		const missing = [...light.keys()]
 			.filter(
 				(t) => HEX.test(light.get(t) ?? '') && HEX.test(dark.get(t) ?? ''),
