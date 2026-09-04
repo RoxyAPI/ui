@@ -286,6 +286,9 @@ export const CHROME_STRINGS = [
 	'Birth Data',
 	'Birth',
 	'Relocation',
+	// Vastu request objects: the ground a mandala is projected over, and where its main door sits.
+	'Plot',
+	'Door',
 	'Domain Weights',
 	'Fills {{fields}}. Pick a city to autofill.',
 	'Choose',

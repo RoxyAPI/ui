@@ -272,6 +272,8 @@ export const tr: Record<ChromeString, string> = {
 	'Birth Data': 'Doğum bilgileri',
 	Birth: 'Doğum',
 	Relocation: 'Relocation',
+	Plot: 'Arsa',
+	Door: 'Kapı',
 	'Domain Weights': 'Alan ağırlıkları',
 	'Fills {{fields}}. Pick a city to autofill.':
 		'{{fields}} alanlarını doldurur. Otomatik doldurmak için bir şehir seçin.',

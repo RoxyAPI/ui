@@ -48,6 +48,16 @@
       "post_astrology_transits",
       "post_astrology_transits_monthly"
     ],
+    "/mcp/ayurveda": [
+      "get_ayurveda_daily",
+      "get_ayurveda_doshas",
+      "get_ayurveda_doshas_id",
+      "get_ayurveda_qualities",
+      "get_ayurveda_tastes",
+      "post_ayurveda_constitution",
+      "post_ayurveda_dinacharya",
+      "post_ayurveda_ritucharya"
+    ],
     "/mcp/biorhythm": [
       "post_biorhythm_compatibility",
       "post_biorhythm_critical_days",
@@ -140,10 +150,44 @@
       "post_iching_daily",
       "post_iching_daily_cast"
     ],
+    "/mcp/kabbalah": [
+      "get_kabbalah_ciphers",
+      "get_kabbalah_daily",
+      "get_kabbalah_letters",
+      "get_kabbalah_letters_id",
+      "get_kabbalah_names",
+      "get_kabbalah_names_number",
+      "get_kabbalah_sephirot_id",
+      "get_kabbalah_tree",
+      "post_kabbalah_birth_profile",
+      "post_kabbalah_compatibility",
+      "post_kabbalah_gematria",
+      "post_kabbalah_name_profile"
+    ],
     "/mcp/location": [
       "get_location_countries",
       "get_location_countries_iso2",
       "get_location_search"
+    ],
+    "/mcp/mesoamerican-astrology": [
+      "get_mesoamerican_astrology_aztec_daily",
+      "get_mesoamerican_astrology_aztec_day_signs",
+      "get_mesoamerican_astrology_aztec_day_signs_id",
+      "get_mesoamerican_astrology_aztec_trecenas",
+      "get_mesoamerican_astrology_aztec_trecenas_number",
+      "get_mesoamerican_astrology_mayan_calendar_monthly",
+      "get_mesoamerican_astrology_mayan_daily",
+      "get_mesoamerican_astrology_mayan_day_signs",
+      "get_mesoamerican_astrology_mayan_day_signs_id",
+      "get_mesoamerican_astrology_mayan_haab_months",
+      "get_mesoamerican_astrology_mayan_haab_months_id",
+      "get_mesoamerican_astrology_mayan_trecenas",
+      "get_mesoamerican_astrology_mayan_trecenas_number",
+      "post_mesoamerican_astrology_aztec_tonalpohualli",
+      "post_mesoamerican_astrology_mayan_chart",
+      "post_mesoamerican_astrology_mayan_compatibility",
+      "post_mesoamerican_astrology_mayan_long_count_convert",
+      "post_mesoamerican_astrology_mayan_tzolkin"
     ],
     "/mcp/numerology": [
       "get_numerology_compound_number",
@@ -178,6 +222,18 @@
       "post_tarot_spreads_love",
       "post_tarot_spreads_three_card",
       "post_tarot_yes_no"
+    ],
+    "/mcp/vastu": [
+      "get_vastu_devatas",
+      "get_vastu_devatas_id",
+      "get_vastu_directions",
+      "get_vastu_directions_id",
+      "post_vastu_ayadi",
+      "post_vastu_entrance",
+      "post_vastu_mandala",
+      "post_vastu_plot",
+      "post_vastu_rooms",
+      "post_vastu_timing_griha_pravesh"
     ],
     "/mcp/vedic-astrology": [
       "get_vedic_astrology_avasthas",

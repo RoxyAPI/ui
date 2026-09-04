@@ -46,6 +46,12 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// component reading them added chrome of its own, which took `ru` from 18.3 KB
 	// to 20.4 before a single new word was translated.
 	//
+	// Re-measured at 18 API domains, after four landed 48 operations of request
+	// fields in one deploy: `ru` 22.8 KB, `hi` 21.8 KB, the Latin five
+	// 19.3 to 19.8 KB. Each domain has been costing roughly half a kilobyte per
+	// catalogue, so 26 KB is where coverage lands plus room for the next few, and
+	// it moves again by re-measuring, never by guessing.
+	//
 	// **Splitting the catalogue is the next lever but it cannot answer THIS gate,
 	// so do not reach for it here.** The published contract is one `<script>` per
 	// language, the shape the README documents and every embedder already loads,
@@ -55,7 +61,7 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// buy headroom here without breaking every consumer that loads the documented
 	// file. Not the API field labels either: those are about a sixth of the source,
 	// measured, and separating them buys almost nothing.
-	localeGzip: 22 * KB,
+	localeGzip: 26 * KB,
 };
 
 export interface Artifact {

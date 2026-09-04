@@ -270,6 +270,8 @@ export const de: Record<ChromeString, string> = {
 	'Birth Data': 'Geburtsdaten',
 	Birth: 'Geburt',
 	Relocation: 'Relokation',
+	Plot: 'Grundstück',
+	Door: 'Tür',
 	'Domain Weights': 'Lebensbereichsgewichtung',
 	'Fills {{fields}}. Pick a city to autofill.':
 		'Das füllt {{fields}} aus. Wählen Sie eine Stadt zum automatischen Ausfüllen.',

@@ -285,6 +285,8 @@ export const hi: Record<ChromeString, string> = {
 	'Birth Data': 'जन्म विवरण',
 	Birth: 'जन्म',
 	Relocation: 'गंतव्य',
+	Plot: 'भूखंड',
+	Door: 'द्वार',
 	'Domain Weights': 'क्षेत्रवार भार',
 	'Fills {{fields}}. Pick a city to autofill.':
 		'यह {{fields}} भरता है। अपने आप भरने के लिए शहर चुनें।',

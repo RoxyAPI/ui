@@ -82,6 +82,14 @@ registerFieldLabels('${lang}', {
 
 await mkdir(OUT_DIR, { recursive: true });
 
+// The same hermetic switch `generate.ts` honours for the spec and the MCP tool list: with it set,
+// the committed catalogues are the input, so an install or a CI run never rewrites them from a
+// live API that may have moved. Refreshing them is the release workflow's job, which runs online.
+if (process.env.ROXYAPI_SPEC_FILE) {
+	console.log(`Keeping ${OUT_DIR}/*.ts (offline, ROXYAPI_SPEC_FILE)`);
+	process.exit(0);
+}
+
 let written = 0;
 let kept = 0;
 for (const lang of LANGS) {

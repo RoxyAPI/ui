@@ -265,6 +265,8 @@ export const ru: Record<ChromeString, string> = {
 	'Birth Data': 'Данные рождения',
 	Birth: 'Натал',
 	Relocation: 'Релокация',
+	Plot: 'Участок',
+	Door: 'Дверь',
 	'Domain Weights': 'Веса сфер',
 	'Fills {{fields}}. Pick a city to autofill.':
 		'Заполняет {{fields}}. Выберите город для автозаполнения.',
