@@ -274,6 +274,25 @@ describe('provenance and scope', () => {
 		expect(text(el)).toContain('Lahiri');
 	});
 
+	/**
+	 * `composite.convention` versions the blending rule for a caller comparing two readings months
+	 * apart, and the published field-label payload names neither the field nor its value, so on a card
+	 * it is a developer identifier under a heading a visitor cannot act on. What the convention IS
+	 * reaches the reader as numbers: every factor prints the weight it was given.
+	 */
+	test('the convention identifier is not on the card, and the weights it names are', async () => {
+		const el = await mount(CONSTITUTION);
+		expect(text(el)).not.toContain(CONSTITUTION.composite.convention);
+		const rows = [...root(el).querySelectorAll('[part~="factors"] .row')];
+		expect(rows.length).toBe(CONSTITUTION.factors.length);
+		rows.forEach((row, i) => {
+			const weight = CONSTITUTION.factors[i]?.weight;
+			expect(row.textContent, `weight of factor ${i}`).toContain(
+				String(weight),
+			);
+		});
+	});
+
 	test('the shadbala ranking marks the grahas that reached the cutoff', async () => {
 		const el = await mount(CONSTITUTION);
 		const rows = [...root(el).querySelectorAll('[part~="ranking"] tbody tr')];

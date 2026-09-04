@@ -19,9 +19,10 @@ type CipherValue = NonNullable<Gematria['values']>[number];
  * **Hebrew is written right to left and the letter strip has to be laid out that way, or the
  * breakdown contradicts the word above it.** The response lists letters in string order, so the
  * strip carries `dir="rtl"` and the first letter takes the RIGHTMOST tile. Each tile is `dir="ltr"`
- * inside, because the letter name and its number are Latin and read the other way. Every Hebrew
- * string on the card also carries `lang="he"`, which is what lets a host page pick a Hebrew face for
- * it rather than a Latin fallback.
+ * inside, because the letter name and its number are Latin and read the other way, and `lang="he"`
+ * marks the GLYPH rather than the strip, so a host page picks a Hebrew face for the letter and not
+ * for the transliteration beside it. A final form scores differently under the finals reading, so it
+ * is tinted AND keyed under the strip: a tint with a hover title is no marker on a touch screen.
  *
  * **Every candidate spelling is shown, because that is the whole answer.** A Latin name has more
  * than one defensible Hebrew spelling, one is chosen for the totals, and a calculator that hides the
@@ -133,6 +134,21 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 			.letter.is-final {
+				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, var(--roxy-surface, #fff));
+			}
+			.legend {
+				margin: var(--roxy-space-sm, 0.5rem) 0 0;
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+			}
+			.legend .swatch {
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				border-radius: 2px;
+				margin-right: 4px;
+				vertical-align: middle;
+				border: 1px solid var(--roxy-border, #e4e4e7);
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 12%, var(--roxy-surface, #fff));
 			}
 
@@ -268,7 +284,7 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 		if (rows.length === 0) return nothing;
 		return html`<section part="section letters">
 			<h3 class="block-title">${this.t('Letters')}</h3>
-			<div class="letters" part="chart" dir="rtl" lang="he">
+			<div class="letters" part="chart" dir="rtl">
 				${rows.map(
 					(l) => html`<div
 						class=${`letter${l.isFinal ? ' is-final' : ''}`}
@@ -281,6 +297,15 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 					</div>`,
 				)}
 			</div>
+			${
+				// A tint plus a hover title is no marker at all on a phone, so the key is
+				// drawn whenever a final form is on the strip and never when none is.
+				rows.some((l) => l.isFinal)
+					? html`<p class="legend" part="legend">
+						<span class="swatch"></span>${this.t('Final form')}
+					</p>`
+					: nothing
+			}
 		</section>`;
 	}
 
@@ -294,6 +319,10 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 		// zero and not a blank, so the row is dropped rather than given a number.
 		const rows = (values ?? []).filter((v) => typeof v.value === 'number');
 		if (rows.length === 0) return nothing;
+		// The spec says a second published total is present only where the cipher is
+		// not single valued, so the column is drawn on presence for the same reason a
+		// null cipher is dropped: a column that says nothing on every row is not data.
+		const alternates = rows.some((v) => (v.alternateValues ?? []).length > 0);
 		return html`<section part="section values">
 			<h3 class="block-title">${heading}</h3>
 			<div class="scroll">
@@ -302,7 +331,7 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 						<tr>
 							<th>${this.t('Cipher')}</th>
 							<th>${this.t('Value')}</th>
-							<th>${this.t('Also published')}</th>
+							${alternates ? html`<th>${this.t('Also published')}</th>` : nothing}
 						</tr>
 					</thead>
 					<tbody>
@@ -310,11 +339,15 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 							(v) => html`<tr>
 								<td>${humanize(v.id ?? '')}</td>
 								<td class="num">${formatInteger(locale, v.value)}</td>
-								<td class="num">
-									${(v.alternateValues ?? [])
-										.map((n) => formatInteger(locale, n))
-										.join(', ')}
-								</td>
+								${
+									alternates
+										? html`<td class="num">
+											${(v.alternateValues ?? [])
+												.map((n) => formatInteger(locale, n))
+												.join(', ')}
+										</td>`
+										: nothing
+								}
 							</tr>`,
 						)}
 					</tbody>

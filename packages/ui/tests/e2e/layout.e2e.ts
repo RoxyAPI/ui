@@ -295,3 +295,79 @@ test('no section overflows when its text fields are long', async ({ page }) => {
 	// excluded node cannot mask a real offender further down the same subtree.
 	expect(issues, issues.join('\n')).toEqual([]);
 });
+
+/**
+ * A grid plate is as wide as the card it sits in, at every width.
+ *
+ * @remarks
+ * The checks above ask whether a box overflows. A plate that stops SHORT of its card passes all of
+ * them and is the other half of the same contract: a component is `display: block` and fills its
+ * host, so the consumer sizes the host, and the figure a card is read off spans the card rather than
+ * a width this library picked. A rem cap on a nine-palace plate is invisible to an overflow gate,
+ * to axe and to the preview check, because a smaller box is never a broken box.
+ *
+ * `part="plate"` is the marker, published in `components-catalog.json` like every other part name, so
+ * the walk finds the plates rather than guessing which grids qualify: `part="chart"` also names an
+ * image, a hexagram figure and a score meter, none of which fill anything. The tag list is asserted
+ * in both directions for the same reason `hide-readings` asserts its own: a marker that can be
+ * dropped silently makes the measurement below vacuous, and a new plate joins the rule deliberately.
+ *
+ * Measured against the card CONTENT box, since the card owns the padding the plate sits inside.
+ */
+const PLATE_TAGS = ['roxy-flying-star-chart', 'roxy-kua-card'];
+
+for (const vp of WIDTHS) {
+	test(`every grid plate fills its card at ${vp.label} (${vp.width}px)`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: vp.width, height: vp.height });
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+		await page.waitForTimeout(800);
+
+		const found = await page.evaluate(() => {
+			const demos =
+				(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
+					.ROXY_UI_DEMOS ?? [];
+			const out: { id: string; tag: string; short: number }[] = [];
+			for (const d of demos) {
+				const host = document.getElementById(d.id);
+				const sr = (host as HTMLElement & { shadowRoot?: ShadowRoot | null })
+					?.shadowRoot;
+				if (!sr) continue;
+				for (const el of sr.querySelectorAll('[part~="plate"]')) {
+					const plate = el as HTMLElement;
+					const card = plate.closest('[part~="card"]') as HTMLElement | null;
+					if (!card) {
+						out.push({ id: d.id, tag: 'no card', short: 0 });
+						continue;
+					}
+					const cs = getComputedStyle(card);
+					const inner =
+						card.getBoundingClientRect().width -
+						Number.parseFloat(cs.paddingLeft) -
+						Number.parseFloat(cs.paddingRight) -
+						Number.parseFloat(cs.borderLeftWidth) -
+						Number.parseFloat(cs.borderRightWidth);
+					out.push({
+						id: d.id,
+						tag: (host as HTMLElement).tagName.toLowerCase(),
+						// 1px of tolerance for sub-pixel rounding.
+						short: Math.round(inner - plate.getBoundingClientRect().width),
+					});
+				}
+			}
+			return out;
+		});
+
+		expect(
+			[...new Set(found.map((f) => f.tag))].sort(),
+			`${vp.label}: the set of components publishing part="plate" moved`,
+		).toEqual([...PLATE_TAGS].sort());
+
+		const narrow = found
+			.filter((f) => f.short > 1)
+			.map((f) => `${f.id} (${f.tag}) plate is ${f.short}px short of its card`);
+		expect(narrow, `${vp.label}: ${narrow.join('\n')}`).toEqual([]);
+	});
+}

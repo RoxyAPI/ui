@@ -108,6 +108,9 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 
+			/* No width cap: the plate is the figure this card is read off, so it fills
+			 * the host and the consumer sizes the host. The plate part is the name the
+			 * layout gate measures against the card content box. */
 			.plate {
 				display: grid;
 				grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -116,7 +119,6 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				overflow: hidden;
-				max-width: 30rem;
 			}
 			.sector {
 				background: var(--roxy-surface, #fff);
@@ -303,7 +305,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 				${this.renderBestWorst(d)}
 			</div>
 
-			<div class="plate" part="chart" role="group" aria-label="Eight mansions">
+			<div class="plate" part="chart plate" role="group" aria-label="Eight mansions">
 				${GRID_ORDER.map((name) => this.renderSector(d, name))}
 			</div>
 

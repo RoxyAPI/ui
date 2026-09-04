@@ -23,6 +23,11 @@ type MayanChart = GenerateMayanChartResponse;
  * A closed three-member set of machine identifiers with no localized partner on the response, so the
  * words are the component's own and go through the catalogue. Typed `ChromeString`, which is what
  * keeps a dynamic lookup inside it.
+ *
+ * **The word names the CHARACTER the tradition records for the number, not the number.** Only nine of
+ * the thirteen coefficients carry one, which is why an unbanded day prints no such fact at all rather
+ * than a blank, and the fact is labelled for what it is: a bare adjective under a heading naming the
+ * coefficient reads as the coefficient itself, which is the numeral in the hero.
  */
 const BAND_LABEL: Record<string, ChromeString> = {
 	gentle: 'Gentle',
@@ -297,7 +302,10 @@ export class RoxyMayanDaySign extends RoxyDataElement<MayanData> {
 				}
 				${
 					band
-						? html`<span><span class="lbl">${this.t('Coefficient')}</span><span class="band">${this.t(band)}</span></span>`
+						? html`<span
+							><span class="lbl">${this.t('Character of the number')}</span
+							><span class="band">${this.t(band)}</span></span
+						>`
 						: nothing
 				}
 				${

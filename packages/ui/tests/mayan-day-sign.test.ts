@@ -3,6 +3,16 @@ import { describe, expect, test } from 'bun:test';
 // Importing the index registers every custom element. happy-dom is loaded by
 // preload (bunfig.toml).
 import '../src/index.js';
+import { registerLocale } from '../src/i18n/registry.js';
+
+// A synthetic catalogue, so the band assertions pin the two labels apart rather
+// than a translator's wording: in English the fallback and the catalogue entry
+// are the same word, and only a translated render can tell them apart.
+registerLocale('zz', {
+	Coefficient: 'ZZCOEFFICIENT',
+	'Character of the number': 'ZZCHARACTER',
+	Violent: 'ZZVIOLENT',
+});
 
 const settled = (el: Element): Promise<void> =>
 	(el as unknown as { updateComplete: Promise<void> }).updateComplete;
@@ -146,6 +156,41 @@ describe('the day sign carries all three of its spellings', () => {
 		);
 		expect(header?.querySelector('.title')?.textContent?.trim()).toBe(
 			TZOLKIN.daySignName,
+		);
+	});
+
+	/**
+	 * Only nine of the thirteen coefficients carry a recorded character, and the word names that
+	 * character rather than the coefficient, which is the numeral in the hero. Labelling it
+	 * `Coefficient` reads as though the coefficient itself were the adjective, so the two are asserted
+	 * apart: the band label is its own string and it is NOT the one the reading section carries.
+	 */
+	test('the band is labelled as the character of the number, not as the coefficient', async () => {
+		const el = await mount(TZOLKIN, { lang: 'zz' });
+		const facts = root(el).querySelector('[part~="details"]');
+		expect(facts?.textContent).toContain('ZZCHARACTER');
+		expect(facts?.querySelector('.band')?.textContent?.trim()).toBe(
+			'ZZVIOLENT',
+		);
+		expect(facts?.textContent).not.toContain('ZZCOEFFICIENT');
+		// The reading behind the disclosure is the one thing on the card the
+		// coefficient itself names.
+		const readings = [...root(el).querySelectorAll('[part~="readings"]')]
+			.map((n) => n.textContent)
+			.join('');
+		expect(readings).toContain('ZZCOEFFICIENT');
+	});
+
+	/** An unbanded coefficient carries no recorded character, so the card states none rather than a blank. */
+	test('a coefficient the sources leave unbanded prints no character at all', async () => {
+		const el = await mount({
+			...TZOLKIN,
+			number: 5,
+			reading: { ...TZOLKIN.reading, numberBand: undefined },
+		});
+		expect(root(el).querySelector('.band')).toBeNull();
+		expect(root(el).querySelector('.coefficient')?.textContent?.trim()).toBe(
+			'5',
 		);
 	});
 

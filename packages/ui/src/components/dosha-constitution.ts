@@ -63,14 +63,20 @@ function formatInput(input: string | undefined): string {
  * and kapha are Sanskrit identifiers the API states outright are never translated, so they are
  * vocabulary rather than chrome and nothing here catalogues them.
  *
+ * **`composite.convention` is a version identifier and is not printed.** It names the release of the
+ * blending rule so a caller comparing two readings months apart can tell whether the rule moved, and
+ * the field-label payload publishes no reader-facing name for it, so a card printing it shows a
+ * developer string with no label a visitor can act on. What the convention IS reaches the reader as
+ * numbers instead: every factor prints the weight it was given, and the summary says the weighting is
+ * ours rather than classical.
+ *
  * **`meta.disclaimer` is rendered verbatim and `hide-readings` does not touch it.** It states the
  * scope of everything above it, which is a fact about the response rather than an interpretation of
  * a chart, and a page that drops the reading has more need of it rather than less.
  *
  * The factors are the part a practitioner checks: each names what it read, the humours it carries,
  * the weight it was given and the verse it rests on. The weighting is ours rather than classical,
- * so the composite names the convention it was built under instead of presenting the blend as
- * received doctrine.
+ * which is why the weights are on the card rather than behind it.
  */
 @customElement('roxy-dosha-constitution')
 export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
@@ -292,11 +298,6 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 				${
 					d.moonSign
 						? html`<span><span class="lbl">${this.t('Moon sign')}</span><b>${capitalize(d.moonSign)}</b></span>`
-						: nothing
-				}
-				${
-					c?.convention
-						? html`<span><span class="lbl">${this.t('Convention')}</span>${c.convention}</span>`
 						: nothing
 				}
 			</div>

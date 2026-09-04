@@ -1021,6 +1021,9 @@ export const es: Record<ChromeString, string> = {
 	'Year Bearer': 'Portador del año',
 	'Mayan cross': 'Cruz Maya',
 	'Offset in days': 'Desfase en días',
+	// A feminine head noun, because the three band words below agree with it:
+	// carácter is masculine and would leave Violenta disagreeing with its own label.
+	'Character of the number': 'Naturaleza del número',
 	Gentle: 'Suave',
 	Indifferent: 'Media',
 	Violent: 'Violenta',
@@ -1074,7 +1077,6 @@ export const es: Record<ChromeString, string> = {
 	'Ayurvedic constitution': 'Constitución ayurvédica',
 	Dominant: 'Dominante',
 	Secondary: 'Secundario',
-	Convention: 'Convención',
 	Factors: 'Factores',
 	Weight: 'Peso',
 	'Strongest graha': 'Graha más fuerte',

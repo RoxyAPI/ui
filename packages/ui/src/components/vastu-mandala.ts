@@ -62,8 +62,16 @@ const VERDICT_LABEL: Record<string, ChromeString> = {
 	mixed: 'Mixed',
 };
 
-/** Margin around the grid, in pada units, for the four edge labels. */
-const MARGIN = 0.6;
+/**
+ * Margin around the grid, in pada units.
+ *
+ * @remarks
+ * Half a stroke, so the outermost squares and a door drawn on the edge keep their whole outline. The
+ * compass words sit outside the drawing rather than inside this margin, because SVG text is measured
+ * in USER units: a word inside the viewBox shrinks with the plate and reaches about six CSS pixels on
+ * a phone, and a longer word in another language runs into the grid at every width.
+ */
+const MARGIN = 0.04;
 
 /**
  * Longest devata name a square draws at its natural width.
@@ -72,12 +80,12 @@ const MARGIN = 0.6;
  * `textLength` SETS a width rather than capping one, so applying it to every label stretches the
  * short names across their squares and letter-spaces a three letter name into something nobody reads
  * as a word. It is applied only past the point where a name would otherwise leave its square, which
- * at this font size is around eleven characters; under that the text is drawn as it is.
+ * at this font size is around eight characters; under that the text is drawn as it is.
  */
-const FIT_ABOVE = 10;
+const FIT_ABOVE = 8;
 
 /** Width a squeezed label is compressed into, in pada units: the square minus its padding. */
-const LABEL_WIDTH = 0.86;
+const LABEL_WIDTH = 0.88;
 
 /** The grid as a coordinate system: how many padas a side, and how plot coordinates map onto it. */
 interface PadaGrid {
@@ -221,12 +229,49 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, var(--roxy-surface, #fff));
 			}
 
-			svg {
-				width: 100%;
+			/* The plate keeps a square cap like every other square drawing in the library,
+			 * and the four compass words sit around it in HTML so they hold their size in
+			 * CSS pixels whatever the plate is scaled to, in any language. */
+			.frame {
+				display: grid;
+				grid-template-columns: auto minmax(0, 1fr) auto;
+				grid-template-areas: '. n .' 'w plate e' '. s .';
+				align-items: center;
+				justify-items: center;
+				gap: 0.15rem 0.25rem;
 				max-width: var(--roxy-chart-max-width, 32rem);
+				margin-inline: auto;
+				width: 100%;
+			}
+			.compass {
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				letter-spacing: 0.06em;
+			}
+			.compass-n {
+				grid-area: n;
+			}
+			.compass-s {
+				grid-area: s;
+			}
+			/* Upright the side words would cost the plate a word width on each edge, which
+			 * is a quarter of a phone. Turned, each costs one line height. */
+			.compass-w,
+			.compass-e {
+				writing-mode: vertical-rl;
+			}
+			.compass-w {
+				grid-area: w;
+				rotate: 180deg;
+			}
+			.compass-e {
+				grid-area: e;
+			}
+			svg {
+				grid-area: plate;
+				width: 100%;
 				height: auto;
 				display: block;
-				margin-inline: auto;
 			}
 			.pada {
 				fill: var(--roxy-surface, #fff);
@@ -270,20 +315,27 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 				font-family: var(--roxy-font-sans, system-ui, sans-serif);
 			}
 			.devata {
-				font-size: 0.15px;
+				font-size: 0.19px;
 				text-anchor: middle;
-				dominant-baseline: middle;
 			}
 			.square-no {
-				font-size: 0.12px;
+				font-size: 0.14px;
+				text-anchor: middle;
 				fill: var(--roxy-muted, #71717a);
 			}
-			.edge {
-				font-size: 0.24px;
-				text-anchor: middle;
-				dominant-baseline: middle;
-				fill: var(--roxy-muted, #71717a);
-				letter-spacing: 0.02px;
+			/* A label is a fraction of a pada, so its size on screen is the plate over nine.
+			 * Below this the name lands near four CSS pixels, which is texture and not text,
+			 * so the square carries its NUMBER at a readable size and the list under the
+			 * plate is where the names are read. Every value stays on the card either way. */
+			@container (max-width: 30rem) {
+				.devata {
+					display: none;
+				}
+				.square-no {
+					font-size: 0.34px;
+					dominant-baseline: middle;
+					transform: translateY(0.16px);
+				}
 			}
 
 			.facts {
@@ -302,6 +354,29 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 				margin-right: 0.35rem;
 			}
 			.facts b {
+				color: var(--roxy-fg, #0a0a0a);
+				font-weight: var(--roxy-weight-bold, 600);
+			}
+			.block-title {
+				margin: 0 0 var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-muted, #71717a);
+				font-weight: var(--roxy-weight-bold, 600);
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+			.devatas {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.2rem var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-secondary, #475569);
+				font-variant-numeric: tabular-nums;
+			}
+			.devatas b {
 				color: var(--roxy-fg, #0a0a0a);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
@@ -380,6 +455,7 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 
 			${this.renderGrid(locale, grid, mandala, entrance)}
 			${this.renderLegend(entrance, mandala)}
+			${this.renderDevatas(locale, mandala?.cells)}
 			${this.renderFacts(locale, d, mandala, entrance)}
 			${
 				entrance?.effect && !this.hideReadings
@@ -405,20 +481,27 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 		if (!grid) return nothing;
 		const n = grid.size;
 		const box = `${-MARGIN} ${-MARGIN} ${n + MARGIN * 2} ${n + MARGIN * 2}`;
-		return html`<svg
-			viewBox=${box}
-			part="chart"
-			role="img"
-			aria-label=${this.t('Vastu grid, north at the top and west on the left')}
-		>
-			${(mandala?.cells ?? []).map((c) => this.renderCell(locale, c))}
-			${entrance ? this.renderEmptyGrid(n) : nothing}
-			${entrance ? this.renderDoor(locale, entrance) : nothing}
-			${this.renderVamsa(grid, mandala?.vamsa)}
-			${this.renderBrahmasthan(grid, mandala?.brahmasthan?.polygon)}
-			${this.renderAtimarma(grid, mandala)}
-			${this.renderEdges(locale, n)}
-		</svg>`;
+		return html`<div class="frame">
+			${SIDES.map(
+				(side) =>
+					html`<span class=${`compass compass-${side[0]?.toLowerCase()}`}
+						>${displayOption(locale, 'facing', side)}</span
+					>`,
+			)}
+			<svg
+				viewBox=${box}
+				part="chart"
+				role="img"
+				aria-label=${this.t('Vastu grid, north at the top and west on the left')}
+			>
+				${(mandala?.cells ?? []).map((c) => this.renderCell(locale, c))}
+				${entrance ? this.renderEmptyGrid(n) : nothing}
+				${entrance ? this.renderDoor(locale, entrance) : nothing}
+				${this.renderVamsa(grid, mandala?.vamsa)}
+				${this.renderBrahmasthan(grid, mandala?.brahmasthan?.polygon)}
+				${this.renderAtimarma(grid, mandala)}
+			</svg>
+		</div>`;
 	}
 
 	/** One square of the projection, placed by its own row and column. */
@@ -466,13 +549,13 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 			<rect class=${cls} x=${col} y=${row} width="1" height="1">
 				<title>${title}</title>
 			</rect>
-			<text class="square-no" x=${col + 0.06} y=${row + 0.18}>${formatInteger(locale, square)}</text>
+			<text class="square-no" x=${col + 0.5} y=${row + 0.34}>${formatInteger(locale, square)}</text>
 			${
 				name
 					? svg`<text
 						class="devata"
 						x=${col + 0.5}
-						y=${row + 0.58}
+						y=${row + 0.68}
 						textLength=${ifDefined(squeeze ? LABEL_WIDTH : undefined)}
 						lengthAdjust=${ifDefined(squeeze ? 'spacingAndGlyphs' : undefined)}
 						>${name}</text
@@ -541,19 +624,40 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 			});
 	}
 
-	/** The four compass words around the grid, so the drawing names its own orientation. */
-	private renderEdges(locale: string | undefined, n: number) {
-		const mid = n / 2;
-		const at: Record<(typeof SIDES)[number], [number, number]> = {
-			North: [mid, -MARGIN / 2],
-			East: [n + MARGIN / 2, mid],
-			South: [mid, n + MARGIN / 2],
-			West: [-MARGIN / 2, mid],
-		};
-		return SIDES.map((side) => {
-			const [x, y] = at[side];
-			return svg`<text class="edge" x=${x} y=${y}>${displayOption(locale, 'facing', side)}</text>`;
-		});
+	/**
+	 * Every devata on the projection, with the squares it holds.
+	 *
+	 * @remarks
+	 * The names are the one thing a nine by nine plate cannot draw at a readable size on a phone, and a
+	 * square title is unreachable on a touch screen, so they are listed once here at the card's own text
+	 * size. Grouped by devata, because several hold more than one square and a reader looks a name up
+	 * rather than reading eighty one rows; the squares inside a group ascend, so a number read off the
+	 * plate is found here. The division that names no devatas renders no list.
+	 */
+	private renderDevatas(
+		locale: string | undefined,
+		cells: Mandala['cells'] | undefined,
+	) {
+		const held = new Map<string, number[]>();
+		for (const c of cells ?? []) {
+			if (!c.devataName || c.square == null) continue;
+			held.set(c.devataName, [...(held.get(c.devataName) ?? []), c.square]);
+		}
+		if (held.size === 0) return nothing;
+		return html`<section part="section devatas">
+			<h3 class="block-title">${this.t('Devata')}</h3>
+			<ul class="devatas">
+				${[...held].map(
+					([name, squares]) => html`<li>
+						<b>${name}</b>
+						${squares
+							.sort((a, b) => a - b)
+							.map((n) => formatInteger(locale, n))
+							.join(', ')}
+					</li>`,
+				)}
+			</ul>
+		</section>`;
 	}
 
 	/**

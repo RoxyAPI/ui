@@ -318,6 +318,74 @@ describe('the grid is drawn where the response says, north at the top', () => {
 	});
 });
 
+describe('every devata is readable at any width', () => {
+	/**
+	 * A devata label is a fixed fraction of a pada, so on a phone the name in the square lands near
+	 * four CSS pixels and a square title is unreachable on a touch screen. The list is what keeps the
+	 * names available at the card's own text size, so it has to carry the WHOLE projection: every
+	 * name, and every square under the name that holds it, checked in both directions against the
+	 * response rather than against the drawing.
+	 */
+	test('the list names every devata and every square it holds', async () => {
+		const el = await mount(MANDALA);
+		const items = [...root(el).querySelectorAll('[part~="devatas"] li')];
+		const expected = new Map<string, number[]>();
+		for (const c of MANDALA.cells) {
+			expected.set(c.devataName, [
+				...(expected.get(c.devataName) ?? []),
+				c.square,
+			]);
+		}
+		expect(items.length).toBe(expected.size);
+
+		const listed = new Map<string, number[]>();
+		for (const li of items) {
+			const name = li.querySelector('b')?.textContent?.trim() ?? '';
+			const squares = (li.textContent ?? '')
+				.replace(name, '')
+				.split(',')
+				.map((n) => Number(n.trim()))
+				.filter((n) => Number.isFinite(n));
+			listed.set(name, squares);
+		}
+		for (const [name, squares] of expected) {
+			expect(listed.get(name), `${name} is not listed`).toEqual(
+				[...squares].sort((a, b) => a - b),
+			);
+		}
+		// Every square appears exactly once across the list, so nothing is lost and
+		// nothing is counted twice.
+		const all = [...listed.values()].flat().sort((a, b) => a - b);
+		expect(all).toEqual(
+			MANDALA.cells.map((c) => c.square).sort((a, b) => a - b),
+		);
+	});
+
+	/** The division that names no devatas has nothing to list, and an empty heading is a heading that lies. */
+	test('a projection with no devata names renders no list', async () => {
+		const el = await mount({
+			...MANDALA,
+			cells: MANDALA.cells.map(({ devataName, ...rest }) => rest),
+		});
+		expect(root(el).querySelector('[part~="devatas"]')).toBeNull();
+	});
+
+	/**
+	 * SVG text is measured in USER units, so a compass word inside the viewBox shrinks with the plate
+	 * and a longer word in another language runs into the grid. Outside it, the four words hold their
+	 * size in CSS pixels at every width and in every language.
+	 */
+	test('the compass words sit outside the drawing, not inside the viewBox', async () => {
+		const el = await mount(MANDALA);
+		const svg = root(el).querySelector('svg');
+		expect(svg?.querySelectorAll('text.edge').length ?? 0).toBe(0);
+		const words = [...root(el).querySelectorAll('.frame .compass')].map((n) =>
+			n.textContent?.trim(),
+		);
+		expect(words).toEqual(['North', 'East', 'South', 'West']);
+	});
+});
+
 describe('the overlays land on the squares the response names', () => {
 	/**
 	 * The polygon arrives in PLOT coordinates and the squares arrive as a list of numbers, computed

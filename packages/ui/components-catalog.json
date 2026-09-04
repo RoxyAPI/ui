@@ -1987,6 +1987,7 @@
         "form",
         "header",
         "latin-ciphers",
+        "legend",
         "letters",
         "loading",
         "matches",
@@ -2746,6 +2747,7 @@
         "legend",
         "loading",
         "palaces",
+        "plate",
         "reading",
         "section",
         "structure"
@@ -2798,6 +2800,7 @@
         "header",
         "legend",
         "loading",
+        "plate",
         "reading",
         "section",
         "sectors"
@@ -2894,6 +2897,7 @@
         "card",
         "chart",
         "details",
+        "devatas",
         "edit-bar",
         "empty",
         "error",

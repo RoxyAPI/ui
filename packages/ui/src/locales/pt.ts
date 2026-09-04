@@ -1001,6 +1001,8 @@ export const pt: Record<ChromeString, string> = {
 	'Year Bearer': 'Portador do ano',
 	'Mayan cross': 'Cruz Maia',
 	'Offset in days': 'Diferença em dias',
+	// Feminine, so Suave, Média and Violenta below agree with the label they sit under.
+	'Character of the number': 'Natureza do número',
 	Gentle: 'Suave',
 	Indifferent: 'Média',
 	Violent: 'Violenta',
@@ -1054,7 +1056,6 @@ export const pt: Record<ChromeString, string> = {
 	'Ayurvedic constitution': 'Constituição aiurvédica',
 	Dominant: 'Dominante',
 	Secondary: 'Secundário',
-	Convention: 'Convenção',
 	Factors: 'Fatores',
 	Weight: 'Peso',
 	'Strongest graha': 'Graha mais forte',

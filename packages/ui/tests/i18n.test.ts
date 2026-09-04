@@ -1068,11 +1068,10 @@ describe('shipped locales', () => {
 				'ASC{{n}}',
 				// The four new domains: the Sanskrit terms and the Mesoamerican proper
 				// nouns print as themselves, and `virupas` rides along with them.
-				// `Coefficient`, `Convention`, `Source`, `Substitutions` and `Tradition`
-				// are the French words.
+				// `Coefficient`, `Source`, `Substitutions` and `Tradition` are the French
+				// words.
 				'Brahmasthan',
 				'Coefficient',
-				'Convention',
 				'Devata',
 				'Dhatu',
 				'Haab',

@@ -1116,7 +1116,9 @@ export const CHROME_STRINGS = [
 	// Mesoamerican: the day sign card. The three spellings are labelled rather
 	// than named after their languages, which is how the spec itself describes
 	// them, and the coefficient bands and the four arms of the cross are closed
-	// machine identifiers the response gives no display form for.
+	// machine identifiers the response gives no display form for. `Character of
+	// the number` is what the band words sit under: they name the character the
+	// sources record for the number, and `Coefficient` is the number itself.
 	'Mayan day sign',
 	'Classic spelling',
 	'Highland spelling',
@@ -1134,6 +1136,7 @@ export const CHROME_STRINGS = [
 	'Year Bearer',
 	'Mayan cross',
 	'Offset in days',
+	'Character of the number',
 	'Gentle',
 	'Indifferent',
 	'Violent',
@@ -1188,7 +1191,6 @@ export const CHROME_STRINGS = [
 	'Ayurvedic constitution',
 	'Dominant',
 	'Secondary',
-	'Convention',
 	'Factors',
 	'Weight',
 	'Strongest graha',

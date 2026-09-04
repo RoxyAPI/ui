@@ -129,12 +129,37 @@ describe('the letter breakdown reads the way Hebrew reads', () => {
 		const el = await mount(SHALOM);
 		const strip = root(el).querySelector('.letters');
 		expect(strip?.getAttribute('dir')).toBe('rtl');
-		expect(strip?.getAttribute('lang')).toBe('he');
 		const glyphs = [...root(el).querySelectorAll('.letter .glyph')].map((n) =>
 			n.textContent?.trim(),
 		);
 		expect(glyphs).toEqual(
 			SHALOM.hebrewForms[0]?.letters.map((l) => l.glyph) ?? [],
+		);
+	});
+
+	/**
+	 * The Hebrew tag belongs on the GLYPH and not on the strip around it: a tile holds a Latin
+	 * transliteration and a number, and marking the whole strip Hebrew hands a host page the wrong
+	 * font and a screen reader the wrong language for both.
+	 */
+	test('only the glyph is tagged Hebrew, not the Latin name beside it', async () => {
+		const el = await mount(SHALOM);
+		expect(root(el).querySelector('.letters')?.getAttribute('lang')).toBeNull();
+		const glyphs = [...root(el).querySelectorAll('.letter .glyph')];
+		expect(glyphs.length).toBeGreaterThan(0);
+		for (const g of glyphs) expect(g.getAttribute('lang')).toBe('he');
+		for (const n of root(el).querySelectorAll('.letter .name'))
+			expect(n.getAttribute('lang')).toBeNull();
+	});
+
+	/** Every tile prints what its letter contributed, which is what the totals are checked against. */
+	test('each tile carries the value the response gives that letter', async () => {
+		const el = await mount(SHALOM);
+		const values = [...root(el).querySelectorAll('.letter .num')].map((n) =>
+			Number(n.textContent?.trim()),
+		);
+		expect(values).toEqual(
+			SHALOM.hebrewForms[0]?.letters.map((l) => l.value) ?? [],
 		);
 	});
 
@@ -153,6 +178,35 @@ describe('the letter breakdown reads the way Hebrew reads', () => {
 			SHALOM.hebrewForms[0]?.letters.filter((l) => l.isFinal).length,
 		);
 	});
+
+	/**
+	 * A tint carries no meaning on its own and a hover title reaches nobody on a touch screen, so the
+	 * mark is keyed in text under the strip. Drawn on presence, because a key for a fill nothing on
+	 * the strip carries reads as a missing feature.
+	 */
+	test('the final form has a visible key, and only where the word has one', async () => {
+		const el = await mount(SHALOM);
+		expect(
+			root(el).querySelector('[part~="letters"] [part~="legend"]')?.textContent,
+		).toContain('Final form');
+
+		const noFinal = {
+			...SHALOM,
+			hebrewForms: [
+				{
+					...SHALOM.hebrewForms[0],
+					letters: (SHALOM.hebrewForms[0]?.letters ?? []).map((l) => ({
+						...l,
+						isFinal: false,
+					})),
+				},
+			],
+		};
+		const plain = await mount(noFinal);
+		expect(
+			root(plain).querySelector('[part~="letters"] [part~="legend"]'),
+		).toBeNull();
+	});
 });
 
 describe('the values table', () => {
@@ -169,6 +223,32 @@ describe('the values table', () => {
 		const body = text(el);
 		expect(body).not.toContain('Mispar Mispari');
 		expect(body).toContain('441');
+	});
+
+	/**
+	 * The spec says a second published total is present only where a cipher is not single valued, so a
+	 * response where none is carries a column that says nothing on every row. Drawn on presence, the
+	 * same rule that drops an uncomputed cipher rather than printing a blank.
+	 */
+	test('the alternate-total column is drawn only when a row carries one', async () => {
+		const plain = await mount(SHALOM);
+		const heads = [
+			...root(plain).querySelectorAll('[part~="values"] thead th'),
+		].map((h) => h.textContent?.trim());
+		expect(heads).toEqual(['Cipher', 'Value']);
+
+		const withAlternates = await mount({
+			...SHALOM,
+			values: [
+				{ ...SHALOM.values[0], alternateValues: [445, 450] },
+				...SHALOM.values.slice(1),
+			],
+		});
+		const grown = [
+			...root(withAlternates).querySelectorAll('[part~="values"] thead th'),
+		].map((h) => h.textContent?.trim());
+		expect(grown).toEqual(['Cipher', 'Value', 'Also published']);
+		expect(text(withAlternates)).toContain('445, 450');
 	});
 
 	test('the provenance is stated once for the block rather than on every row', async () => {
