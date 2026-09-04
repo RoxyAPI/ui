@@ -17,7 +17,7 @@ import sharp from 'sharp';
 import { ensureServer, setTheme } from './shot-utils.js';
 
 const OUT_DIR = resolve('assets/screenshots');
-const PORT = 3001;
+const PORT = Number(process.env.PORT ?? 3001);
 const BASE_URL = `http://localhost:${PORT}`;
 
 interface Target {
@@ -84,6 +84,10 @@ const TARGETS: Target[] = [
 	{ id: 'almanac-day', label: 'almanac-day' },
 	{ id: 'flying-star', label: 'flying-star-chart' },
 	{ id: 'kua', label: 'kua-card' },
+	{ id: 'mayan-day', label: 'mayan-day-sign' },
+	{ id: 'vastu-mandala', label: 'vastu-mandala' },
+	{ id: 'gematria', label: 'gematria' },
+	{ id: 'dosha-constitution', label: 'dosha-constitution' },
 	{ id: 'bio', label: 'biorhythm-chart' },
 	{ id: 'hex', label: 'hexagram' },
 	{ id: 'dream', label: 'dream-card' },

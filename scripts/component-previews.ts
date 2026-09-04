@@ -36,6 +36,10 @@ const OVERRIDES: Record<string, { scale?: number; chartWidth?: string }> = {
 	bodygraph: { chartWidth: '200px' },
 	'hd-connection': { chartWidth: '200px' },
 	'hd-penta': { chartWidth: '175px' },
+	// A nine by nine grid is as tall as it is wide, so the cap is what fits the
+	// whole plate in the stage. Scaling the card instead would take the square
+	// numbers down with it.
+	'vastu-mandala': { chartWidth: '200px' },
 	// Compact single-value cards read as lost in the stage at 1x; lift them so the
 	// render fills the frame and still bleeds off the bottom.
 	'moon-phase': { scale: 1.15 },

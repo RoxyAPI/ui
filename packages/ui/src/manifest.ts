@@ -571,6 +571,19 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Numerology',
 	},
 	{
+		pascal: 'RoxyGematria',
+		tag: 'roxy-gematria',
+		slug: 'gematria',
+		heading: 'Gematria',
+		description:
+			'Gematria calculator that shows its work: every Hebrew spelling the input can take, the value under each cipher with the ones that are not single valued, the per letter breakdown right to left, the two substitution ciphers, the Latin alphabet ciphers and the curated words of equal value',
+		docsLabel: 'Kabbalah',
+		endpointLabel: 'POST /kabbalah/gematria',
+		docsSummary:
+			'Values by cipher, every candidate Hebrew spelling with its per letter breakdown, and equal-value words',
+		topic: 'Kabbalah',
+	},
+	{
 		pascal: 'RoxyTarotCard',
 		tag: 'roxy-tarot-card',
 		slug: 'tarot-card',
@@ -778,6 +791,33 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Feng Shui',
 	},
 	{
+		pascal: 'RoxyMayanDaySign',
+		tag: 'roxy-mayan-day-sign',
+		slug: 'mayan-day-sign',
+		heading: 'Mayan day sign',
+		description:
+			'Tzolkin day sign in all three of its spellings with the coefficient beside it, the trecena it sits in, the keynote, strengths, challenges and guidance, and on the full chart the Haab date, the Long Count, the Calendar Round, the year bearer and the four-fold cross',
+		docsLabel: 'Mesoamerican',
+		endpointLabel:
+			'POST /mesoamerican-astrology/mayan/tzolkin, POST /mesoamerican-astrology/mayan/chart',
+		docsSummary:
+			'Day sign and coefficient with the trecena, the reading, and the Calendar Round on the fuller response',
+		topic: 'Mesoamerican',
+	},
+	{
+		pascal: 'RoxyVastuMandala',
+		tag: 'roxy-vastu-mandala',
+		slug: 'vastu-mandala',
+		heading: 'Vastu mandala',
+		description:
+			'Vastu Purusha Mandala projected over a plot: every pada with the devata holding it, the brahmasthan block, the vamsa diagonals and where they cross, and in the entrance read the square the main door falls on with the verse effect for that pada',
+		docsLabel: 'Vastu',
+		endpointLabel: 'POST /vastu/mandala, POST /vastu/entrance',
+		docsSummary:
+			'Pada grid with a devata per square, the brahmasthan, and the entrance pada lit with its effect',
+		topic: 'Vastu',
+	},
+	{
 		pascal: 'RoxyBiorhythmChart',
 		tag: 'roxy-biorhythm-chart',
 		slug: 'biorhythm-chart',
@@ -787,6 +827,19 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		endpointLabel: 'POST /biorhythm/{daily,forecast,critical-days}',
 		docsSummary: 'Daily bars, forecast cycle lines, critical days',
 		topic: 'Biorhythm',
+	},
+	{
+		pascal: 'RoxyDoshaConstitution',
+		tag: 'roxy-dosha-constitution',
+		slug: 'dosha-constitution',
+		heading: 'Ayurvedic constitution',
+		description:
+			'Ayurvedic constitution read from a birth chart: the three humour shares as one bar, the dominant and secondary humour, the three cited factors behind the blend with their verses, the shadbala ranking the third factor reads, and the scope note the response carries',
+		docsLabel: 'Ayurveda',
+		endpointLabel: 'POST /ayurveda/constitution',
+		docsSummary:
+			'Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it',
+		topic: 'Ayurveda',
 	},
 	{
 		pascal: 'RoxyHexagram',

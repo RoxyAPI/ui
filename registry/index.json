@@ -176,6 +176,10 @@
       "description": "Numerology card for life path, expression, soul urge, personality, personal year, or full chart"
     },
     {
+      "name": "roxy-gematria",
+      "description": "Gematria calculator that shows its work: every Hebrew spelling the input can take, the value under each cipher with the ones that are not single valued, the per letter breakdown right to left, the two substitution ciphers, the Latin alphabet ciphers and the curated words of equal value"
+    },
+    {
       "name": "roxy-tarot-card",
       "description": "Single tarot card with upright/reversed flip animation"
     },
@@ -240,8 +244,20 @@
       "description": "Kua number with its trigram and the Eight Mansions map: all eight compass sectors on the nine-palace grid, each with its star, nature, rank and life domain, and the best and worst of them named"
     },
     {
+      "name": "roxy-mayan-day-sign",
+      "description": "Tzolkin day sign in all three of its spellings with the coefficient beside it, the trecena it sits in, the keynote, strengths, challenges and guidance, and on the full chart the Haab date, the Long Count, the Calendar Round, the year bearer and the four-fold cross"
+    },
+    {
+      "name": "roxy-vastu-mandala",
+      "description": "Vastu Purusha Mandala projected over a plot: every pada with the devata holding it, the brahmasthan block, the vamsa diagonals and where they cross, and in the entrance read the square the main door falls on with the verse effect for that pada"
+    },
+    {
       "name": "roxy-biorhythm-chart",
       "description": "Daily biorhythm bars or multi-day forecast cycle lines"
+    },
+    {
+      "name": "roxy-dosha-constitution",
+      "description": "Ayurvedic constitution read from a birth chart: the three humour shares as one bar, the dominant and secondary humour, the three cited factors behind the blend with their verses, the shadbala ranking the third factor reads, and the scope note the response carries"
     },
     {
       "name": "roxy-hexagram",

@@ -1113,6 +1113,90 @@ export const CHROME_STRINGS = [
 	'Own house',
 
 	'Inter-chart aspects: the planet from chart 1, the planet from chart 2, the aspect between them, the orb in degrees and the strength.',
+	// Mesoamerican: the day sign card. The three spellings are labelled rather
+	// than named after their languages, which is how the spec itself describes
+	// them, and the coefficient bands and the four arms of the cross are closed
+	// machine identifiers the response gives no display form for.
+	'Mayan day sign',
+	'Classic spelling',
+	'Highland spelling',
+	'Coefficient',
+	'Day sign',
+	'Trecena',
+	'Day {{n}} of {{total}}',
+	'Ruling sign',
+	'Correlation',
+	'Haab',
+	'Day of year',
+	'Long Count',
+	'Calendar Round',
+	'Lord of the Night',
+	'Year Bearer',
+	'Mayan cross',
+	'Offset in days',
+	'Gentle',
+	'Indifferent',
+	'Violent',
+	'Center',
+	'Conception arm',
+	'Destiny arm',
+	'Left arm',
+	'Right arm',
+
+	// Vastu: the pada grid, and the entrance read drawn on it. The compass words
+	// are NOT here: they are a request enum the field-label payload already names
+	// in every language, so the grid reads them from there instead.
+	'Vastu mandala',
+	'Vastu grid, north at the top and west on the left',
+	'Entrance pada',
+	'Devata',
+	'Brahmasthan',
+	'Marma',
+	'Crossing points',
+	'Outside the plot',
+	'Door pada',
+	'Recommended padas',
+	'Counted from',
+	'Side',
+	'Perimeter',
+	'Inner ring',
+	'Inner corner',
+	'Mixed',
+
+	// Kabbalah: the gematria calculator. `Cipher` names the method, `Value` the
+	// number it gives, and `Word` the entry in the curated equal-value lexicon.
+	'Gematria',
+	'Cipher',
+	'Cipher values',
+	'Value',
+	'Also published',
+	'Tradition',
+	'Source',
+	'Letters',
+	'Final form',
+	'Spellings',
+	'Chosen',
+	'Substitutions',
+	'Output',
+	'Latin ciphers',
+	'Equal values',
+	'Word',
+	'Meaning',
+
+	// Ayurveda: the constitution card. The three humour names are absent on
+	// purpose, because the API states outright that they are never translated.
+	'Ayurvedic constitution',
+	'Dominant',
+	'Secondary',
+	'Convention',
+	'Factors',
+	'Weight',
+	'Strongest graha',
+	'Rank',
+	'{{value}} virupas',
+	'Humours',
+	'Planetary humours',
+	'Dhatu',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

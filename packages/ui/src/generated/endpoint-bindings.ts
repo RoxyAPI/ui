@@ -342,6 +342,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 	],
+	'roxy-dosha-constitution': [
+		{
+			operationId: 'calculateAyurvedicConstitution',
+			method: 'POST',
+			path: '/ayurveda/constitution',
+			toolName: 'post_ayurveda_constitution',
+		},
+	],
 	'roxy-dream-card': [
 		{
 			operationId: 'getDreamSymbol',
@@ -426,6 +434,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'POST',
 			path: '/forecast/transits',
 			toolName: 'post_forecast_transits',
+		},
+	],
+	'roxy-gematria': [
+		{
+			operationId: 'calculateGematria',
+			method: 'POST',
+			path: '/kabbalah/gematria',
+			toolName: 'post_kabbalah_gematria',
 		},
 	],
 	'roxy-gochara-table': [
@@ -602,6 +618,26 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'POST',
 			path: '/chinese-astrology/bazi/luck-pillars',
 			toolName: 'post_chinese_astrology_bazi_luck_pillars',
+		},
+	],
+	'roxy-mayan-day-sign': [
+		{
+			operationId: 'calculateTzolkin',
+			method: 'POST',
+			path: '/mesoamerican-astrology/mayan/tzolkin',
+			toolName: 'post_mesoamerican_astrology_mayan_tzolkin',
+			attrs: {
+				mode: 'day',
+			},
+		},
+		{
+			operationId: 'generateMayanChart',
+			method: 'POST',
+			path: '/mesoamerican-astrology/mayan/chart',
+			toolName: 'post_mesoamerican_astrology_mayan_chart',
+			attrs: {
+				mode: 'chart',
+			},
 		},
 	],
 	'roxy-moon-phase': [
@@ -993,6 +1029,26 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'POST',
 			path: '/vedic-astrology/upagraha',
 			toolName: 'post_vedic_astrology_upagraha',
+		},
+	],
+	'roxy-vastu-mandala': [
+		{
+			operationId: 'generateMandala',
+			method: 'POST',
+			path: '/vastu/mandala',
+			toolName: 'post_vastu_mandala',
+			attrs: {
+				mode: 'mandala',
+			},
+		},
+		{
+			operationId: 'calculateEntrancePada',
+			method: 'POST',
+			path: '/vastu/entrance',
+			toolName: 'post_vastu_entrance',
+			attrs: {
+				mode: 'entrance',
+			},
 		},
 	],
 	'roxy-vedic-aspects': [

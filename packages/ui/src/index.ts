@@ -34,6 +34,8 @@ export { RoxyDashaTimeline } from './components/dasha-timeline.js';
 export { RoxyData } from './components/data.js';
 export { RoxyDivisionalChart } from './components/divisional-chart.js';
 export { RoxyDoshaCard } from './components/dosha-card.js';
+// Ayurveda
+export { RoxyDoshaConstitution } from './components/dosha-constitution.js';
 // Dreams
 export { RoxyDreamCard } from './components/dream-card.js';
 export { RoxyDreamSearch } from './components/dream-search.js';
@@ -46,6 +48,8 @@ export { RoxyFlyingStarChart } from './components/flying-star-chart.js';
 // Forecast
 export { RoxyForecastDigest } from './components/forecast-digest.js';
 export { RoxyForecastTimeline } from './components/forecast-timeline.js';
+// Kabbalah
+export { RoxyGematria } from './components/gematria.js';
 export { RoxyGocharaTable } from './components/gochara-table.js';
 export { RoxyGunaMilan } from './components/guna-milan.js';
 // Human Design
@@ -65,6 +69,8 @@ export { RoxyKuaCard } from './components/kua-card.js';
 export { RoxyLocalSpaceCompass } from './components/local-space-compass.js';
 export { RoxyLocationSearch } from './components/location-search.js';
 export { RoxyLuckPillars } from './components/luck-pillars.js';
+// Mesoamerican astrology
+export { RoxyMayanDaySign } from './components/mayan-day-sign.js';
 export { RoxyMoonPhase } from './components/moon-phase.js';
 export { RoxyNakshatraCard } from './components/nakshatra-card.js';
 // Western astrology
@@ -86,6 +92,8 @@ export { RoxyTransitWheel } from './components/transit-wheel.js';
 export { RoxyTransitsTable } from './components/transits-table.js';
 export { RoxyUpagrahaTable } from './components/upagraha-table.js';
 // Vedic astrology
+// Vastu
+export { RoxyVastuMandala } from './components/vastu-mandala.js';
 export { RoxyVedicAspects } from './components/vedic-aspects.js';
 export { RoxyVedicDaily } from './components/vedic-daily.js';
 export { RoxyVedicKundli } from './components/vedic-kundli.js';

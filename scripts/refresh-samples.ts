@@ -113,6 +113,20 @@ async function main() {
 	// empty space nobody would notice was missing.
 	const ALMANAC_DAY = '2026-09-08';
 	const PERSON2 = { date: '1992-06-20', time: '09:15:00', ...london };
+	// An L-shaped plot on purpose. A rectangle leaves every square of the mandala
+	// inside the outline, so the out-of-plot fill and the legend entry that names
+	// it would render on no sample and stay unaudited.
+	const VASTU_PLOT = {
+		polygon: [
+			{ x: 0, y: 0 },
+			{ x: 60, y: 0 },
+			{ x: 60, y: 30 },
+			{ x: 30, y: 30 },
+			{ x: 30, y: 45 },
+			{ x: 0, y: 45 },
+		],
+		unit: 'feet' as const,
+	};
 
 	/**
 	 * Shared body for all six Vimshottari levels. `significators` is off by default on the API, and it is the switch that also returns the `houseThemes` map, so without it the timeline renders bare house numbers and neither the significator line nor the house wording is ever exercised by the showcase or the audit.
@@ -197,6 +211,44 @@ async function main() {
 		run('mansions', () =>
 			roxy.fengShui.generateEightMansions({
 				body: { date: PERSON1.date, gender: 'female' },
+			}),
+		),
+		run('mayan-day', () =>
+			roxy.mesoamericanAstrology.calculateTzolkin({
+				body: { date: PERSON1.date },
+			}),
+		),
+		run('mayan-chart', () =>
+			roxy.mesoamericanAstrology.generateMayanChart({
+				body: { date: PERSON1.date },
+			}),
+		),
+		run('vastu-mandala', () =>
+			roxy.vastu.generateMandala({
+				body: { plot: VASTU_PLOT, grid: '81-pada' },
+			}),
+		),
+		run('vastu-entrance', () =>
+			roxy.vastu.calculateEntrancePada({
+				body: { plot: VASTU_PLOT, facing: 'East', doorPosition: 0.45 },
+			}),
+		),
+		// Two spellings and a lexicon match on one input, which is what makes the
+		// candidate-spelling block and the equal-value table render at all.
+		run('gematria', () =>
+			roxy.kabbalah.calculateGematria({
+				body: { text: 'Shalom', latinCiphers: true },
+			}),
+		),
+		run('dosha-constitution', () =>
+			roxy.ayurveda.calculateAyurvedicConstitution({
+				body: {
+					date: PERSON1.date,
+					time: PERSON1.time,
+					latitude: PERSON1.latitude,
+					longitude: PERSON1.longitude,
+					timezone: PERSON1.timezone,
+				},
 			}),
 		),
 		run('flying-star', () =>

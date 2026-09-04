@@ -83091,13 +83091,13 @@
                     "type": "string",
                     "enum": [
                       "gmt-584283",
-                      "martinez-hernando-584281",
+                      "martinez-hernandez-584281",
                       "astronomical-584285",
                       "martin-skidmore-584286"
                     ],
                     "default": "gmt-584283",
                     "example": "gmt-584283",
-                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando."
+                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández."
                   }
                 },
                 "required": [
@@ -83524,13 +83524,13 @@
                     "type": "string",
                     "enum": [
                       "gmt-584283",
-                      "martinez-hernando-584281",
+                      "martinez-hernandez-584281",
                       "astronomical-584285",
                       "martin-skidmore-584286"
                     ],
                     "default": "gmt-584283",
                     "example": "gmt-584283",
-                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando."
+                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández."
                   },
                   "yearBearerSystem": {
                     "type": "string",
@@ -84211,13 +84211,13 @@
                     "type": "string",
                     "enum": [
                       "gmt-584283",
-                      "martinez-hernando-584281",
+                      "martinez-hernandez-584281",
                       "astronomical-584285",
                       "martin-skidmore-584286"
                     ],
                     "default": "gmt-584283",
                     "example": "gmt-584283",
-                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando."
+                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández."
                   }
                 }
               }
@@ -84558,16 +84558,16 @@
               "type": "string",
               "enum": [
                 "gmt-584283",
-                "martinez-hernando-584281",
+                "martinez-hernandez-584281",
                 "astronomical-584285",
                 "martin-skidmore-584286"
               ],
               "default": "gmt-584283",
               "example": "gmt-584283",
-              "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando."
+              "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández."
             },
             "required": false,
-            "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando.",
+            "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández.",
             "name": "correlation",
             "in": "query"
           }
@@ -85004,16 +85004,16 @@
               "type": "string",
               "enum": [
                 "gmt-584283",
-                "martinez-hernando-584281",
+                "martinez-hernandez-584281",
                 "astronomical-584285",
                 "martin-skidmore-584286"
               ],
               "default": "gmt-584283",
               "example": "gmt-584283",
-              "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando."
+              "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández."
             },
             "required": false,
-            "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando.",
+            "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández.",
             "name": "correlation",
             "in": "query"
           }
@@ -85408,13 +85408,13 @@
                     "type": "string",
                     "enum": [
                       "gmt-584283",
-                      "martinez-hernando-584281",
+                      "martinez-hernandez-584281",
                       "astronomical-584285",
                       "martin-skidmore-584286"
                     ],
                     "default": "gmt-584283",
                     "example": "gmt-584283",
-                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernando-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is attributed to Martinez and Hernando, printed in the literature as Martinéz-Hernando."
+                    "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández."
                   },
                   "directionScheme": {
                     "type": "string",

@@ -102,6 +102,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
 | `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |
 | `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
+| `<roxy-gematria>` | Kabbalah | POST /kabbalah/gematria | Values by cipher, every candidate Hebrew spelling with its per letter breakdown, and equal-value words |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
@@ -118,7 +119,10 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-almanac-day>` | Chinese | GET /chinese-astrology/calendar/{day/{date},monthly}, POST /chinese-astrology/calendar/auspicious-days | Day officer, favours and avoids, clash animal and pillars, as one day, a month, or a date search |
 | `<roxy-flying-star-chart>` | Feng Shui | POST /feng-shui/flying-stars/natal, GET /feng-shui/flying-stars/annual/{year} | Nine-palace flying star plate with the mountain, period and water star per palace, the facing and sitting mountains and the structure |
 | `<roxy-kua-card>` | Feng Shui | POST /feng-shui/kua, POST /feng-shui/eight-mansions | Kua number and trigram over the eight-sector direction map, favourable and unfavourable sectors ranked |
+| `<roxy-mayan-day-sign>` | Mesoamerican | POST /mesoamerican-astrology/mayan/tzolkin, POST /mesoamerican-astrology/mayan/chart | Day sign and coefficient with the trecena, the reading, and the Calendar Round on the fuller response |
+| `<roxy-vastu-mandala>` | Vastu | POST /vastu/mandala, POST /vastu/entrance | Pada grid with a devata per square, the brahmasthan, and the entrance pada lit with its effect |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
+| `<roxy-dosha-constitution>` | Ayurveda | POST /ayurveda/constitution | Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
 | `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |

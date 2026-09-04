@@ -463,6 +463,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Numerology"
   },
   {
+    "pascal": "RoxyGematria",
+    "tag": "roxy-gematria",
+    "slug": "gematria",
+    "heading": "Gematria",
+    "description": "Gematria calculator that shows its work: every Hebrew spelling the input can take, the value under each cipher with the ones that are not single valued, the per letter breakdown right to left, the two substitution ciphers, the Latin alphabet ciphers and the curated words of equal value",
+    "docsLabel": "Kabbalah",
+    "endpointLabel": "POST /kabbalah/gematria",
+    "docsSummary": "Values by cipher, every candidate Hebrew spelling with its per letter breakdown, and equal-value words",
+    "topic": "Kabbalah"
+  },
+  {
     "pascal": "RoxyTarotCard",
     "tag": "roxy-tarot-card",
     "slug": "tarot-card",
@@ -639,6 +650,28 @@ window.ROXY_COMPONENTS = [
     "topic": "Feng Shui"
   },
   {
+    "pascal": "RoxyMayanDaySign",
+    "tag": "roxy-mayan-day-sign",
+    "slug": "mayan-day-sign",
+    "heading": "Mayan day sign",
+    "description": "Tzolkin day sign in all three of its spellings with the coefficient beside it, the trecena it sits in, the keynote, strengths, challenges and guidance, and on the full chart the Haab date, the Long Count, the Calendar Round, the year bearer and the four-fold cross",
+    "docsLabel": "Mesoamerican",
+    "endpointLabel": "POST /mesoamerican-astrology/mayan/tzolkin, POST /mesoamerican-astrology/mayan/chart",
+    "docsSummary": "Day sign and coefficient with the trecena, the reading, and the Calendar Round on the fuller response",
+    "topic": "Mesoamerican"
+  },
+  {
+    "pascal": "RoxyVastuMandala",
+    "tag": "roxy-vastu-mandala",
+    "slug": "vastu-mandala",
+    "heading": "Vastu mandala",
+    "description": "Vastu Purusha Mandala projected over a plot: every pada with the devata holding it, the brahmasthan block, the vamsa diagonals and where they cross, and in the entrance read the square the main door falls on with the verse effect for that pada",
+    "docsLabel": "Vastu",
+    "endpointLabel": "POST /vastu/mandala, POST /vastu/entrance",
+    "docsSummary": "Pada grid with a devata per square, the brahmasthan, and the entrance pada lit with its effect",
+    "topic": "Vastu"
+  },
+  {
     "pascal": "RoxyBiorhythmChart",
     "tag": "roxy-biorhythm-chart",
     "slug": "biorhythm-chart",
@@ -648,6 +681,17 @@ window.ROXY_COMPONENTS = [
     "endpointLabel": "POST /biorhythm/{daily,forecast,critical-days}",
     "docsSummary": "Daily bars, forecast cycle lines, critical days",
     "topic": "Biorhythm"
+  },
+  {
+    "pascal": "RoxyDoshaConstitution",
+    "tag": "roxy-dosha-constitution",
+    "slug": "dosha-constitution",
+    "heading": "Ayurvedic constitution",
+    "description": "Ayurvedic constitution read from a birth chart: the three humour shares as one bar, the dominant and secondary humour, the three cited factors behind the blend with their verses, the shadbala ranking the third factor reads, and the scope note the response carries",
+    "docsLabel": "Ayurveda",
+    "endpointLabel": "POST /ayurveda/constitution",
+    "docsSummary": "Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it",
+    "topic": "Ayurveda"
   },
   {
     "pascal": "RoxyHexagram",
@@ -1097,6 +1141,14 @@ window.ROXY_ENDPOINT_BINDINGS = {
       }
     }
   ],
+  "roxy-dosha-constitution": [
+    {
+      "operationId": "calculateAyurvedicConstitution",
+      "method": "POST",
+      "path": "/ayurveda/constitution",
+      "toolName": "post_ayurveda_constitution"
+    }
+  ],
   "roxy-dream-card": [
     {
       "operationId": "getDreamSymbol",
@@ -1181,6 +1233,14 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "POST",
       "path": "/forecast/transits",
       "toolName": "post_forecast_transits"
+    }
+  ],
+  "roxy-gematria": [
+    {
+      "operationId": "calculateGematria",
+      "method": "POST",
+      "path": "/kabbalah/gematria",
+      "toolName": "post_kabbalah_gematria"
     }
   ],
   "roxy-gochara-table": [
@@ -1357,6 +1417,26 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "POST",
       "path": "/chinese-astrology/bazi/luck-pillars",
       "toolName": "post_chinese_astrology_bazi_luck_pillars"
+    }
+  ],
+  "roxy-mayan-day-sign": [
+    {
+      "operationId": "calculateTzolkin",
+      "method": "POST",
+      "path": "/mesoamerican-astrology/mayan/tzolkin",
+      "toolName": "post_mesoamerican_astrology_mayan_tzolkin",
+      "attrs": {
+        "mode": "day"
+      }
+    },
+    {
+      "operationId": "generateMayanChart",
+      "method": "POST",
+      "path": "/mesoamerican-astrology/mayan/chart",
+      "toolName": "post_mesoamerican_astrology_mayan_chart",
+      "attrs": {
+        "mode": "chart"
+      }
     }
   ],
   "roxy-moon-phase": [
@@ -1750,6 +1830,26 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "toolName": "post_vedic_astrology_upagraha"
     }
   ],
+  "roxy-vastu-mandala": [
+    {
+      "operationId": "generateMandala",
+      "method": "POST",
+      "path": "/vastu/mandala",
+      "toolName": "post_vastu_mandala",
+      "attrs": {
+        "mode": "mandala"
+      }
+    },
+    {
+      "operationId": "calculateEntrancePada",
+      "method": "POST",
+      "path": "/vastu/entrance",
+      "toolName": "post_vastu_entrance",
+      "attrs": {
+        "mode": "entrance"
+      }
+    }
+  ],
   "roxy-vedic-aspects": [
     {
       "operationId": "calculateDrishti",
@@ -2106,6 +2206,10 @@ window.ROXY_WIDGET_SNIPPETS = {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-numerology-card type=\"life-path\" data-endpoint=\"numerology/life-path\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-numerology-card>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"numerology-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
+  "roxy-gematria": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gematria data-endpoint=\"kabbalah/gematria\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-gematria>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"gematria\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
   "roxy-tarot-card": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-card data-endpoint=\"tarot/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-tarot-card>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
@@ -2170,9 +2274,21 @@ window.ROXY_WIDGET_SNIPPETS = {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kua-card mode=\"kua\" data-endpoint=\"feng-shui/kua\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kua-card>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kua-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
+  "roxy-mayan-day-sign": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-mayan-day-sign mode=\"day\" data-endpoint=\"mesoamerican-astrology/mayan/tzolkin\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-mayan-day-sign>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"mayan-day-sign\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-vastu-mandala": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vastu-mandala mode=\"mandala\" data-endpoint=\"vastu/mandala\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vastu-mandala>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vastu-mandala\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
   "roxy-biorhythm-chart": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-biorhythm-chart mode=\"daily\" data-endpoint=\"biorhythm/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-biorhythm-chart>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"biorhythm-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-dosha-constitution": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dosha-constitution data-endpoint=\"ayurveda/constitution\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dosha-constitution>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dosha-constitution\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
   "roxy-hexagram": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hexagram data-endpoint=\"iching/hexagrams/random\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hexagram>",

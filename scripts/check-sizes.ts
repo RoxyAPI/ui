@@ -26,7 +26,18 @@ export interface SizeBudgets {
 }
 
 export const DEFAULT_BUDGETS: SizeBudgets = {
-	fullGzip: 150 * KB,
+	// The whole library in one file, which is what the copy-paste script tag
+	// downloads. Like the locale ceiling below it, this is a COVERAGE tracker
+	// rather than a performance limit, and it moves by re-measuring when coverage
+	// moves. A page that wants one card imports the per-component bundle instead,
+	// and that budget is the one that constrains a single widget.
+	//
+	// Re-measured after four editorial components landed for four new domains:
+	// 146.7 KB before them, 154.7 KB after, so a card of this shape costs about
+	// two kilobytes gzipped. The ceiling is set where that measurement lands plus
+	// room for the next few, and it is raised the same way: build, read the
+	// number, write down what moved it. Never raise it to make a run pass.
+	fullGzip: 165 * KB,
 	componentGzip: 30 * KB,
 	widgetsGzip: WIDGETS_BUDGET_BYTES,
 	// A catalogue is one download that translates every element on the page, and

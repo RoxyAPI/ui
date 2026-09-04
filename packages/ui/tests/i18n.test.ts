@@ -751,6 +751,18 @@ describe('shipped locales', () => {
 				'Person {{n}}',
 				'Planet 1',
 				'Planet 2',
+				// The four new domains. Every Sanskrit term (Devata, Brahma, Brahmasthan,
+				// Marma, Dhatu) prints as itself wherever the script is Latin, which is the
+				// same family as the panchang limbs above. `Haab` and `Trecena` are the
+				// Mesoamerican proper nouns, carried as data in every language.
+				// `Tradition` is the German word.
+				'Brahmasthan',
+				'Devata',
+				'Dhatu',
+				'Haab',
+				'Marma',
+				'Tradition',
+				'Trecena',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -882,6 +894,16 @@ describe('shipped locales', () => {
 				'Shodhya Pinda',
 				'Yogas',
 				'ASC{{n}}',
+				// The four new domains: the Sanskrit terms and the Mesoamerican proper
+				// nouns print as themselves, and `virupas` rides along with them as the
+				// unit the strength is measured in.
+				'Brahmasthan',
+				'Devata',
+				'Dhatu',
+				'Haab',
+				'Marma',
+				'Trecena',
+				'{{value}} virupas',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -1044,6 +1066,21 @@ describe('shipped locales', () => {
 				'Shodhya Pinda',
 				'Yogas',
 				'ASC{{n}}',
+				// The four new domains: the Sanskrit terms and the Mesoamerican proper
+				// nouns print as themselves, and `virupas` rides along with them.
+				// `Coefficient`, `Convention`, `Source`, `Substitutions` and `Tradition`
+				// are the French words.
+				'Brahmasthan',
+				'Coefficient',
+				'Convention',
+				'Devata',
+				'Dhatu',
+				'Haab',
+				'Marma',
+				'Source',
+				'Substitutions',
+				'Tradition',
+				'{{value}} virupas',
 			],
 			hi: ['ASC', 'ASC{{n}}', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -1171,6 +1208,16 @@ describe('shipped locales', () => {
 				'Shodhya Pinda',
 				'Yogas',
 				'ASC{{n}}',
+				// The four new domains: the Sanskrit terms and the Mesoamerican proper
+				// nouns print as themselves, `virupas` rides along with them, and
+				// `Gematria` is the Portuguese spelling of the word.
+				'Brahmasthan',
+				'Devata',
+				'Dhatu',
+				'Gematria',
+				'Haab',
+				'Marma',
+				'{{value}} virupas',
 			],
 			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -1272,6 +1319,19 @@ describe('shipped locales', () => {
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'ASC{{n}}',
+				// The four new domains: the Sanskrit terms and the Mesoamerican proper
+				// nouns print as themselves, and `Gematria` is the Turkish spelling.
+				// `Calendar Round` is the one NULL RESULT in this pass: Turkish
+				// Mayanist writing describes the 52 year cycle rather than naming it, so
+				// no term was found to adopt and the English source stands until one is.
+				'Brahmasthan',
+				'Calendar Round',
+				'Devata',
+				'Dhatu',
+				'Gematria',
+				'Haab',
+				'Marma',
+				'Trecena',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {

@@ -80,6 +80,10 @@ export {
 	type RoxyDoshaCardProps,
 } from './components/dosha-card.js';
 export {
+	RoxyDoshaConstitution,
+	type RoxyDoshaConstitutionProps,
+} from './components/dosha-constitution.js';
+export {
 	RoxyDreamCard,
 	type RoxyDreamCardProps,
 } from './components/dream-card.js';
@@ -111,6 +115,7 @@ export {
 	RoxyForecastTimeline,
 	type RoxyForecastTimelineProps,
 } from './components/forecast-timeline.js';
+export { RoxyGematria, type RoxyGematriaProps } from './components/gematria.js';
 export {
 	RoxyGocharaTable,
 	type RoxyGocharaTableProps,
@@ -167,6 +172,10 @@ export {
 	RoxyLuckPillars,
 	type RoxyLuckPillarsProps,
 } from './components/luck-pillars.js';
+export {
+	RoxyMayanDaySign,
+	type RoxyMayanDaySignProps,
+} from './components/mayan-day-sign.js';
 export {
 	RoxyMoonPhase,
 	type RoxyMoonPhaseProps,
@@ -235,6 +244,10 @@ export {
 	RoxyUpagrahaTable,
 	type RoxyUpagrahaTableProps,
 } from './components/upagraha-table.js';
+export {
+	RoxyVastuMandala,
+	type RoxyVastuMandalaProps,
+} from './components/vastu-mandala.js';
 export {
 	RoxyVedicAspects,
 	type RoxyVedicAspectsProps,

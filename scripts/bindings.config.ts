@@ -263,6 +263,30 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 		{ component: 'roxy-kua-card', attrs: { mode: 'mansions' } },
 	],
 
+	// Mesoamerican astrology. The day sign leads, so it is the widget default; the
+	// Calendar Round chart is the same card with the second calendar on it.
+	calculateTzolkin: [
+		{ component: 'roxy-mayan-day-sign', attrs: { mode: 'day' } },
+	],
+	generateMayanChart: [
+		{ component: 'roxy-mayan-day-sign', attrs: { mode: 'chart' } },
+	],
+
+	// Vastu. The projected grid leads; the entrance read draws the same grid with
+	// the door square lit.
+	generateMandala: [
+		{ component: 'roxy-vastu-mandala', attrs: { mode: 'mandala' } },
+	],
+	calculateEntrancePada: [
+		{ component: 'roxy-vastu-mandala', attrs: { mode: 'entrance' } },
+	],
+
+	// Kabbalah
+	calculateGematria: [{ component: 'roxy-gematria' }],
+
+	// Ayurveda
+	calculateAyurvedicConstitution: [{ component: 'roxy-dosha-constitution' }],
+
 	// Biorhythm
 	getDailyBiorhythm: [
 		{ component: 'roxy-biorhythm-chart', attrs: { mode: 'daily' } },

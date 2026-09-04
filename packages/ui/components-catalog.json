@@ -1963,6 +1963,49 @@
       }
     },
     {
+      "tag": "roxy-gematria",
+      "pascal": "RoxyGematria",
+      "slug": "gematria",
+      "domain": "Kabbalah",
+      "renders": "Values by cipher, every candidate Hebrew spelling with its per letter breakdown, and equal-value words",
+      "endpointLabel": "POST /kabbalah/gematria",
+      "endpoints": [
+        {
+          "operationId": "calculateGematria",
+          "method": "POST",
+          "path": "/kabbalah/gematria",
+          "toolName": "post_kabbalah_gematria"
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "latin-ciphers",
+        "letters",
+        "loading",
+        "matches",
+        "reading",
+        "section",
+        "spellings",
+        "substitutions",
+        "values"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gematria data-endpoint=\"kabbalah/gematria\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-gematria>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"gematria\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/gematria-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/gematria-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-tarot-card",
       "pascal": "RoxyTarotCard",
       "slug": "tarot-card",
@@ -2769,6 +2812,109 @@
       }
     },
     {
+      "tag": "roxy-mayan-day-sign",
+      "pascal": "RoxyMayanDaySign",
+      "slug": "mayan-day-sign",
+      "domain": "Mesoamerican",
+      "renders": "Day sign and coefficient with the trecena, the reading, and the Calendar Round on the fuller response",
+      "endpointLabel": "POST /mesoamerican-astrology/mayan/tzolkin, POST /mesoamerican-astrology/mayan/chart",
+      "endpoints": [
+        {
+          "operationId": "calculateTzolkin",
+          "method": "POST",
+          "path": "/mesoamerican-astrology/mayan/tzolkin",
+          "toolName": "post_mesoamerican_astrology_mayan_tzolkin",
+          "attrs": {
+            "mode": "day"
+          }
+        },
+        {
+          "operationId": "generateMayanChart",
+          "method": "POST",
+          "path": "/mesoamerican-astrology/mayan/chart",
+          "toolName": "post_mesoamerican_astrology_mayan_chart",
+          "attrs": {
+            "mode": "chart"
+          }
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "cross",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "loading",
+        "reading",
+        "readings",
+        "section"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-mayan-day-sign mode=\"day\" data-endpoint=\"mesoamerican-astrology/mayan/tzolkin\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-mayan-day-sign>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"mayan-day-sign\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/mayan-day-sign-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/mayan-day-sign-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-vastu-mandala",
+      "pascal": "RoxyVastuMandala",
+      "slug": "vastu-mandala",
+      "domain": "Vastu",
+      "renders": "Pada grid with a devata per square, the brahmasthan, and the entrance pada lit with its effect",
+      "endpointLabel": "POST /vastu/mandala, POST /vastu/entrance",
+      "endpoints": [
+        {
+          "operationId": "generateMandala",
+          "method": "POST",
+          "path": "/vastu/mandala",
+          "toolName": "post_vastu_mandala",
+          "attrs": {
+            "mode": "mandala"
+          }
+        },
+        {
+          "operationId": "calculateEntrancePada",
+          "method": "POST",
+          "path": "/vastu/entrance",
+          "toolName": "post_vastu_entrance",
+          "attrs": {
+            "mode": "entrance"
+          }
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "legend",
+        "loading",
+        "reading",
+        "section",
+        "sources"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vastu-mandala mode=\"mandala\" data-endpoint=\"vastu/mandala\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vastu-mandala>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vastu-mandala\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/vastu-mandala-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/vastu-mandala-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-biorhythm-chart",
       "pascal": "RoxyBiorhythmChart",
       "slug": "biorhythm-chart",
@@ -2829,6 +2975,48 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/biorhythm-chart-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/biorhythm-chart-dark.webp"
+      }
+    },
+    {
+      "tag": "roxy-dosha-constitution",
+      "pascal": "RoxyDoshaConstitution",
+      "slug": "dosha-constitution",
+      "domain": "Ayurveda",
+      "renders": "Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it",
+      "endpointLabel": "POST /ayurveda/constitution",
+      "endpoints": [
+        {
+          "operationId": "calculateAyurvedicConstitution",
+          "method": "POST",
+          "path": "/ayurveda/constitution",
+          "toolName": "post_ayurveda_constitution"
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "chart",
+        "details",
+        "disclaimer",
+        "edit-bar",
+        "empty",
+        "error",
+        "factors",
+        "form",
+        "header",
+        "loading",
+        "planet-humours",
+        "ranking",
+        "readings",
+        "section"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dosha-constitution data-endpoint=\"ayurveda/constitution\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dosha-constitution>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dosha-constitution\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/dosha-constitution-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.36.0/assets/previews/dosha-constitution-dark.webp"
       }
     },
     {

@@ -476,6 +476,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 			type: 'chart',
 		},
 	},
+	post_kabbalah_gematria: {
+		tag: 'roxy-gematria',
+		pascal: 'RoxyGematria',
+		operationId: 'calculateGematria',
+	},
 	post_tarot_daily: {
 		tag: 'roxy-tarot-card',
 		pascal: 'RoxyTarotCard',
@@ -690,6 +695,38 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 			mode: 'mansions',
 		},
 	},
+	post_mesoamerican_astrology_mayan_tzolkin: {
+		tag: 'roxy-mayan-day-sign',
+		pascal: 'RoxyMayanDaySign',
+		operationId: 'calculateTzolkin',
+		attrs: {
+			mode: 'day',
+		},
+	},
+	post_mesoamerican_astrology_mayan_chart: {
+		tag: 'roxy-mayan-day-sign',
+		pascal: 'RoxyMayanDaySign',
+		operationId: 'generateMayanChart',
+		attrs: {
+			mode: 'chart',
+		},
+	},
+	post_vastu_mandala: {
+		tag: 'roxy-vastu-mandala',
+		pascal: 'RoxyVastuMandala',
+		operationId: 'generateMandala',
+		attrs: {
+			mode: 'mandala',
+		},
+	},
+	post_vastu_entrance: {
+		tag: 'roxy-vastu-mandala',
+		pascal: 'RoxyVastuMandala',
+		operationId: 'calculateEntrancePada',
+		attrs: {
+			mode: 'entrance',
+		},
+	},
 	post_biorhythm_daily: {
 		tag: 'roxy-biorhythm-chart',
 		pascal: 'RoxyBiorhythmChart',
@@ -713,6 +750,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		attrs: {
 			mode: 'critical-days',
 		},
+	},
+	post_ayurveda_constitution: {
+		tag: 'roxy-dosha-constitution',
+		pascal: 'RoxyDoshaConstitution',
+		operationId: 'calculateAyurvedicConstitution',
 	},
 	get_iching_hexagrams_random: {
 		tag: 'roxy-hexagram',

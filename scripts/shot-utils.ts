@@ -1,10 +1,12 @@
 #!/usr/bin/env bun
 /**
- * Shared Playwright capture harness for the render pipelines that shoot the local preview server: {@link file://./screenshots.ts | screenshots.ts} (per-component README assets) and {@link file://./component-previews.ts | component-previews.ts} (catalog preview composites). Both start the same `scripts/preview.ts` server on :3001 and toggle the same `data-theme` light/dark signal, so those two helpers live here instead of being copied per script.
+ * Shared Playwright capture harness for the render pipelines that shoot the local preview server: {@link file://./screenshots.ts | screenshots.ts} (per-component README assets) and {@link file://./component-previews.ts | component-previews.ts} (catalog preview composites). Both start the same `scripts/preview.ts` server and toggle the same `data-theme` light/dark signal, so those two helpers live here instead of being copied per script.
+ *
+ * The port follows `PORT`, the same variable the server itself reads and the same one the Playwright config takes its base URL from, so one variable moves the server, the probe and every capture together. A machine where the default is already taken runs the whole chain by setting it.
  */
 import type { Page } from '@playwright/test';
 
-export const PREVIEW_PORT = 3001;
+export const PREVIEW_PORT = Number(process.env.PORT ?? 3001);
 export const PREVIEW_BASE_URL = `http://localhost:${PREVIEW_PORT}`;
 
 /**

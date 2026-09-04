@@ -99,6 +99,10 @@ export const DATA_TYPES: Record<string, string> = {
 	'zodiac-card':
 		'CalculateZodiacAnimalResponse | GetZodiacAnimalResponse | GetDailyZodiacReadingResponse | GetZodiacCompatibilityResponse',
 	'kua-card': 'CalculateKuaNumberResponse | GenerateEightMansionsResponse',
+	'mayan-day-sign': 'CalculateTzolkinResponse | GenerateMayanChartResponse',
+	'vastu-mandala': 'GenerateMandalaResponse | CalculateEntrancePadaResponse',
+	gematria: 'CalculateGematriaResponse',
+	'dosha-constitution': 'CalculateAyurvedicConstitutionResponse',
 	'almanac-day':
 		'GetAlmanacDayResponse | GetMonthlyAlmanacResponse | LookupAuspiciousDaysResponse',
 	'flying-star-chart':
@@ -317,6 +321,22 @@ export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
 			type: "'kua' | 'mansions'",
 			comment:
 				'Which read the response is: the Kua number alone, or the full Eight Mansions map, which adds a reading per sector and names the best and worst of them.',
+		},
+	],
+	'mayan-day-sign': [
+		{
+			prop: 'mode',
+			type: "'day' | 'chart'",
+			comment:
+				'Which read the response is: the Tzolkin day sign alone, or the full Calendar Round chart, which adds the Haab date, the Long Count, the year bearer and the four-fold cross.',
+		},
+	],
+	'vastu-mandala': [
+		{
+			prop: 'mode',
+			type: "'mandala' | 'entrance'",
+			comment:
+				'Which read the response is: the projected pada grid with a devata on every square, or the entrance read, which lights the square the main door falls on.',
 		},
 	],
 	'almanac-day': [

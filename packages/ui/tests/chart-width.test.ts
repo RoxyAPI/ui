@@ -22,6 +22,7 @@ const ALLOWED = new Set([
 	'utils/kundli-styles.ts',
 	'utils/bodygraph-styles.ts',
 	'components/hd-penta.ts',
+	'components/vastu-mandala.ts',
 ]);
 
 function uses(rel: string): boolean {

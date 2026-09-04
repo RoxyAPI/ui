@@ -44,6 +44,23 @@ const DASHA_BODY = {
  */
 const EPHEMERIS_MONTH = { year: 2026, month: 8 };
 
+/**
+ * The ground both Vastu cards are read over. L-shaped rather than rectangular on purpose: a
+ * rectangle leaves every square of the mandala inside the outline, so the out-of-plot fill and the
+ * legend entry that names it would render on no card. Keep in sync with scripts/refresh-samples.ts.
+ */
+const VASTU_PLOT = {
+	polygon: [
+		{ x: 0, y: 0 },
+		{ x: 60, y: 0 },
+		{ x: 60, y: 30 },
+		{ x: 30, y: 30 },
+		{ x: 30, y: 45 },
+		{ x: 0, y: 45 },
+	],
+	unit: 'feet',
+};
+
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
 const UI_CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
 // Must match PK_PLACEHOLDER in scripts/widget-snippets.ts, which produces the snippets.
@@ -939,6 +956,73 @@ window.ROXY_UI_DEMOS = [
 		attrs: ' mode="mansions"',
 		sdkCall: `  const { data } = await roxy.fengShui.generateEightMansions({
     body: { date: '1990-01-15', gender: 'female' },
+  });`,
+	}),
+	entry({
+		id: 'mayan-day',
+		tag: 'roxy-mayan-day-sign',
+		seoLine:
+			'Mayan day sign with its coefficient, the trecena it sits in and the nawal reading',
+		attrs: ' mode="day"',
+		sdkCall: `  const { data } = await roxy.mesoamericanAstrology.calculateTzolkin({
+    body: { date: '${PERSON1.date}' },
+  });`,
+	}),
+	entry({
+		id: 'mayan-chart',
+		tag: 'roxy-mayan-day-sign',
+		heading: 'Mayan calendar round',
+		seoLine:
+			'The full Maya chart: Tzolkin and Haab dates, the Long Count, the year bearer and the four-fold cross',
+		attrs: ' mode="chart"',
+		sdkCall: `  const { data } = await roxy.mesoamericanAstrology.generateMayanChart({
+    body: { date: '${PERSON1.date}' },
+  });`,
+	}),
+	entry({
+		id: 'vastu-mandala',
+		tag: 'roxy-vastu-mandala',
+		seoLine:
+			'Vastu Purusha Mandala over a plot, every pada with the devata holding it and the brahmasthan marked',
+		attrs: ' mode="mandala"',
+		sdkCall: `  const { data } = await roxy.vastu.generateMandala({
+    body: {
+      plot: ${JSON.stringify(VASTU_PLOT, null, 2).replace(/\n/g, '\n      ')},
+      grid: '81-pada',
+    },
+  });`,
+	}),
+	entry({
+		id: 'vastu-entrance',
+		tag: 'roxy-vastu-mandala',
+		heading: 'Vastu entrance pada',
+		seoLine:
+			'The pada a main door falls on, with the verse effect for that square and the favourable padas beside it',
+		attrs: ' mode="entrance"',
+		sdkCall: `  const { data } = await roxy.vastu.calculateEntrancePada({
+    body: {
+      plot: ${JSON.stringify(VASTU_PLOT, null, 2).replace(/\n/g, '\n      ')},
+      facing: 'East',
+      doorPosition: 0.45,
+    },
+  });`,
+	}),
+	entry({
+		id: 'gematria',
+		tag: 'roxy-gematria',
+		seoLine:
+			'Gematria calculator showing every Hebrew spelling, the value under each cipher and the words of equal value',
+		sdkCall: `  const { data } = await roxy.kabbalah.calculateGematria({
+    body: { text: 'Shalom', latinCiphers: true },
+  });`,
+	}),
+	entry({
+		id: 'dosha-constitution',
+		tag: 'roxy-dosha-constitution',
+		seoLine:
+			'Ayurvedic constitution from a birth chart, the three humour shares with the cited factors behind them',
+		sdkCall: `  const { data } = await roxy.ayurveda.calculateAyurvedicConstitution({
+    body: ${JSON.stringify({ date: PERSON1.date, time: PERSON1.time, latitude: PERSON1.latitude, longitude: PERSON1.longitude, timezone: PERSON1.timezone }, null, 2).replace(/\n/g, '\n    ')},
   });`,
 	}),
 	entry({
