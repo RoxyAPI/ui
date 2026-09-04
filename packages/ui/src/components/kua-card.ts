@@ -146,13 +146,6 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 			.sector-self {
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 10%, var(--roxy-surface, #fff));
 			}
-			.sector-name {
-				font-size: var(--roxy-text-xs, 0.75rem);
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-				color: var(--roxy-muted, #71717a);
-				font-weight: var(--roxy-weight-bold, 600);
-			}
 			.star-name {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				font-weight: var(--roxy-weight-bold, 600);
@@ -186,6 +179,63 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 				font-size: 1.5rem;
 				line-height: 1.1;
 				color: var(--roxy-accent-ink, #b45309);
+			}
+
+			/* Below 30rem a 3x3 cell cannot hold a sector name, a star, a domain phrase
+			 * and a rank at once in every shipped language: German and Hindi both write
+			 * more of these four than English does. The eight sectors read as a
+			 * full-width list instead, in the same plate order, with the same
+			 * favourable/unfavourable tint (that rule is unconditional above and needs
+			 * no repeating here). The centre is not a sector and drops out rather than
+			 * becoming a ninth row: the Kua number and the trigram it names are already
+			 * the card's own heading and its first fact, so nothing is lost by it.
+			 * The flying-star plate keeps its 3x3 at this width on purpose, because its
+			 * cells hold three short numbers rather than this much prose. */
+			@container (max-width: 30rem) {
+				.plate {
+					display: block;
+					background: var(--roxy-surface, #fff);
+				}
+				.sector.centre {
+					display: none;
+				}
+				.sector {
+					display: grid;
+					grid-template-columns: minmax(0, 1fr) auto;
+					grid-template-areas:
+						'name rank'
+						'star hanzi'
+						'domain domain';
+					column-gap: var(--roxy-space-sm, 0.5rem);
+					row-gap: 0.15rem;
+					align-content: start;
+					min-height: auto;
+					text-align: left;
+					border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				}
+				.sector:last-child {
+					border-bottom: 0;
+				}
+				.sector-name {
+					grid-area: name;
+					align-self: center;
+				}
+				.rank {
+					grid-area: rank;
+					align-self: center;
+					text-align: right;
+					white-space: nowrap;
+				}
+				.star-name {
+					grid-area: star;
+				}
+				.star-hanzi {
+					grid-area: hanzi;
+					text-align: right;
+				}
+				.domain {
+					grid-area: domain;
+				}
 			}
 
 			.legend {

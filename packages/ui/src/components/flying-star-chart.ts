@@ -166,11 +166,6 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 			.palace-name {
 				grid-column: 1 / -1;
 				text-align: center;
-				font-size: var(--roxy-text-xs, 0.75rem);
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-				color: var(--roxy-muted, #71717a);
-				font-weight: var(--roxy-weight-bold, 600);
 			}
 			.combo {
 				grid-column: 1 / -1;

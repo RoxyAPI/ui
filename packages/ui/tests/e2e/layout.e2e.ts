@@ -373,77 +373,114 @@ for (const vp of WIDTHS) {
 }
 
 /**
- * A plate cell's own heading never overflows the cell, in the language that spells the compass
- * longest.
+ * Every element inside a plate cell fits the cell, in the two languages that spell it longest.
  *
  * @remarks
  * The plate-fill check above asks whether the PLATE fills its card; this asks the opposite question
- * one level in, whether a HEADING inside one of the plate's own cells fills only its cell. Neither
- * test can stand in for the other: a heading can overflow its cell while the plate itself still sits
+ * one level in, whether the CONTENTS of one of the plate's own cells stay inside it. Neither test
+ * can stand in for the other: a cell's children can overflow it while the plate itself still sits
  * flush with the card, because a grid cell's own box does not grow past its track just because the
- * text inside it wants to. That is exactly what shipped: `roxy-kua-card` and
- * `roxy-flying-star-chart` clipped `SOUTHWEST` and `NORTHWEST` at phone width in English, and every
- * catalogue language spells at least one compass word longer than the English source does.
+ * text inside it wants to. That is exactly what shipped twice over: `roxy-kua-card` and
+ * `roxy-flying-star-chart` first clipped `SOUTHWEST` and `NORTHWEST` at phone width, and once that
+ * heading was fixed, the same cell was still cropping the domain phrase and the rank underneath it,
+ * because a heading fitting its cell says nothing about the sibling elements below it.
  *
- * German is the language under test because it is the shipped catalogue's longest compass spelling
- * (`Südwesten`, `Nordwesten`), so a regression here fails on the language most likely to expose it
- * first; `class="plate-heading"` (`utils/plate-heading.ts`) is shared by both components for exactly
- * this reason, so the fix and this guard both live in one place rather than two. The measurement is
- * `scrollWidth` against `clientWidth` on the heading element itself: an element wider than its own
- * box scrolls even though nothing asked it to, which is what "the text does not fit" means in the
- * DOM, and it is true whether the overflow renders as a clip or a scrollbar the plate's own
- * `overflow: hidden` happens to hide. Sabotage-verified by reinstating a fixed cell width narrow
- * enough to force it: re-narrowing turns this from a pass to a fail without touching the heading
- * text itself, which is what proves the assertion is reading the box and not the word.
+ * So this reads every element the cell actually has, not one name of it: `scrollWidth` against
+ * `clientWidth` catches an element wider than its OWN box (the heading case), and the bounding-rect
+ * comparison against the CELL catches one that fits itself but still spills past the cell it sits
+ * in (a wide child centered or absolutely offset inside a narrower parent, which the first check
+ * alone cannot see). A "cell" is a direct child of the `part="plate"` element, which is exactly the
+ * `roxy-flying-star-chart` 3x3 grid cell and the `roxy-kua-card` row it stacks into below 30rem;
+ * the walk does not care which shape produced it.
+ *
+ * German and Hindi are both under test because they are this catalogue's longest compass spellings
+ * on two different scripts and two different wrapping rules (Latin with no break at all, Devanagari
+ * with a hyphen); a check run in only one script could pass on an accident of that script's own
+ * average glyph width. Sabotage-verified by reinstating a fixed, narrow cell width: re-narrowing
+ * turns this from a pass to a fail without touching any text, which is what proves the assertion
+ * reads the box rather than the word.
  */
-test('no plate-cell heading overflows its own cell at phone width (375px), in German', async ({
-	page,
-}) => {
-	await page.setViewportSize({ width: 375, height: 900 });
-	await page.goto('/');
-	await page.waitForLoadState('networkidle');
-	await page.selectOption('#lang-select', 'de');
-	await expect
-		.poll(() => page.evaluate(() => document.documentElement.lang))
-		.toBe('de');
-	// A payload fetch and a re-render, same margin `language.e2e.ts` gives it.
-	await page.waitForTimeout(1000);
+const PLATE_LANGS = ['de', 'hi'];
 
-	const found = await page.evaluate(() => {
-		const demos =
-			(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
-				.ROXY_UI_DEMOS ?? [];
-		const out: string[] = [];
-		const tags = new Set<string>();
-		for (const d of demos) {
-			const host = document.getElementById(d.id);
-			const sr = (host as HTMLElement & { shadowRoot?: ShadowRoot | null })
-				?.shadowRoot;
-			if (!sr) continue;
-			for (const plate of sr.querySelectorAll('[part~="plate"]')) {
-				tags.add((host as HTMLElement).tagName.toLowerCase());
-				for (const el of plate.querySelectorAll('.plate-heading')) {
-					const h = el as HTMLElement;
-					// 1px of tolerance for sub-pixel rounding, the same margin the
-					// plate-fill check above gives itself.
-					const over = h.scrollWidth - h.clientWidth;
-					if (over > 1) {
-						out.push(
-							`${d.id} (${(host as HTMLElement).tagName.toLowerCase()}): "${h.textContent?.trim()}" is ${over}px wider than its cell`,
-						);
+for (const lang of PLATE_LANGS) {
+	test(`every element inside a plate cell stays inside it at phone width (375px), in ${lang}`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: 375, height: 900 });
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+		await page.selectOption('#lang-select', lang);
+		await expect
+			.poll(() => page.evaluate(() => document.documentElement.lang))
+			.toBe(lang);
+		// A payload fetch and a re-render, same margin `language.e2e.ts` gives it.
+		await page.waitForTimeout(1000);
+
+		const found = await page.evaluate(() => {
+			const demos =
+				(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
+					.ROXY_UI_DEMOS ?? [];
+			const out: string[] = [];
+			const tags = new Set<string>();
+			// 1px of tolerance for sub-pixel rounding, the same margin the plate-fill
+			// check above gives itself.
+			const TOLERANCE = 1;
+			for (const d of demos) {
+				const host = document.getElementById(d.id);
+				const sr = (host as HTMLElement & { shadowRoot?: ShadowRoot | null })
+					?.shadowRoot;
+				if (!sr) continue;
+				const tag = (host as HTMLElement).tagName.toLowerCase();
+				for (const plate of sr.querySelectorAll('[part~="plate"]')) {
+					tags.add(tag);
+					// A cell is a direct child of the plate: one grid cell in the 3x3
+					// shape, one row once a plate stacks. Cells hidden by their own
+					// container query (display: none, the kua centre below 30rem) carry
+					// a zero rect and are skipped rather than measured as a false empty.
+					for (const cell of Array.from(plate.children)) {
+						const cellEl = cell as HTMLElement;
+						const cellRect = cellEl.getBoundingClientRect();
+						if (cellRect.width === 0 && cellRect.height === 0) continue;
+						const walk = (node: Element) => {
+							for (const child of Array.from(node.children)) {
+								const el = child as HTMLElement;
+								const label = `${d.id} (${tag}): "${el.textContent?.trim()}"`;
+								const selfOverflow = el.scrollWidth - el.clientWidth;
+								if (selfOverflow > TOLERANCE) {
+									out.push(
+										`${label} is ${selfOverflow}px wider than its own box`,
+									);
+								}
+								const elRect = el.getBoundingClientRect();
+								const leftSpill = cellRect.left - elRect.left;
+								const rightSpill = elRect.right - cellRect.right;
+								if (leftSpill > TOLERANCE) {
+									out.push(
+										`${label} sits ${Math.round(leftSpill)}px left of its cell`,
+									);
+								}
+								if (rightSpill > TOLERANCE) {
+									out.push(
+										`${label} sits ${Math.round(rightSpill)}px right of its cell`,
+									);
+								}
+								walk(el);
+							}
+						};
+						walk(cellEl);
 					}
 				}
 			}
-		}
-		return { out, tags: [...tags].sort() };
-	});
+			return { out, tags: [...tags].sort() };
+		});
 
-	// Not vacuous: the walk actually found headings to measure on both plate
-	// components, so an empty result means every one of them fit rather than
-	// meaning the selector matched nothing.
-	expect(
-		found.tags,
-		'the set of components this walk actually measured',
-	).toEqual([...PLATE_TAGS].sort());
-	expect(found.out, found.out.join('\n')).toEqual([]);
-});
+		// Not vacuous: the walk actually found plates to measure on both plate
+		// components, so an empty result means every one of them fit rather than
+		// meaning the selector matched nothing.
+		expect(
+			found.tags,
+			'the set of components this walk actually measured',
+		).toEqual([...PLATE_TAGS].sort());
+		expect(found.out, found.out.join('\n')).toEqual([]);
+	});
+}
