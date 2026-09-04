@@ -260,6 +260,34 @@ Every chart, table, and card adapts to light and dark automatically. Hover any i
 </picture>
 </td>
 </tr>
+<tr>
+<td width="50%"><strong>Mayan day sign</strong> · <code>&lt;roxy-mayan-day-sign&gt;</code><br><sub>POST /mesoamerican-astrology/mayan/tzolkin</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/mayan-day-sign-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/mayan-day-sign-light.png" alt="Tzolkin day sign card with the coefficient and the trecena it falls in, and the composed nawal reading">
+</picture>
+</td>
+<td width="50%"><strong>Vastu mandala</strong> · <code>&lt;roxy-vastu-mandala&gt;</code><br><sub>POST /vastu/mandala</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vastu-mandala-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vastu-mandala-light.png" alt="Vastu Purusha Mandala pada grid with a devata on every square and the brahmasthan at the centre">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Gematria</strong> · <code>&lt;roxy-gematria&gt;</code><br><sub>POST /kabbalah/gematria</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/gematria-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/gematria-light.png" alt="Gematria calculator with values by cipher, every candidate Hebrew spelling and its per letter breakdown">
+</picture>
+</td>
+<td width="50%"><strong>Ayurvedic constitution</strong> · <code>&lt;roxy-dosha-constitution&gt;</code><br><sub>POST /ayurveda/constitution</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dosha-constitution-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dosha-constitution-light.png" alt="Ayurvedic constitution bar with vata, pitta and kapha shares, the dominant humour, and the cited classical factors behind the blend">
+</picture>
+</td>
+</tr>
 </table>
 
 Tables, cards, forms, and helper components in the [live demo](https://roxyapi.github.io/ui/).
@@ -630,7 +658,47 @@ const { data: plate } = await roxy.fengShui.generateFlyingStarChart({
 <RoxyFlyingStarChart data={plate} mode="natal" />
 ```
 
-### 7. Numerology (life path, full chart, personal year)
+### 7. Mesoamerican astrology (Tzolkin day sign, Calendar Round)
+
+The 260-day Tzolkin day sign and trecena for any date, plus the full Calendar Round: Haab date, Long Count and year bearer, across four correlation constants. Fits Mayan-zodiac calculators, day-sign lookup tools and Mesoamerican-calendar content.
+
+```tsx
+import { RoxyMayanDaySign } from '@roxyapi/ui-react';
+
+// Tzolkin day sign. The lead query: day sign, coefficient, the trecena it falls in, and the composed nawal reading.
+const { data: day } = await roxy.mesoamericanAstrology.calculateTzolkin({
+  body: { date: '1990-01-15' },
+});
+<RoxyMayanDaySign data={day} mode="day" />
+
+// Calendar Round. The fuller chart: Tzolkin and Haab dates, the Long Count, and the year bearer.
+const { data: chart } = await roxy.mesoamericanAstrology.generateMayanChart({
+  body: { date: '1990-01-15' },
+});
+<RoxyMayanDaySign data={chart} mode="chart" />
+```
+
+### 8. Vastu (Purusha Mandala, entrance pada)
+
+The 81-pada Vastu Purusha Mandala projected over any plot shape, and the entrance pada a main door falls on with its verse effect. Fits Vastu consultation tools, floor-plan apps and entrance-direction calculators.
+
+```tsx
+import { RoxyVastuMandala } from '@roxyapi/ui-react';
+
+// Vastu Purusha Mandala. Every pada over the plot, with the devata holding it and the brahmasthan marked.
+const { data: mandala } = await roxy.vastu.generateMandala({
+  body: { plot: { width: 30, depth: 40, unit: 'feet' } },
+});
+<RoxyVastuMandala data={mandala} mode="mandala" />
+
+// Entrance pada. Which of the 32 perimeter padas the main door falls on, and the verse effect for it.
+const { data: entrance } = await roxy.vastu.calculateEntrancePada({
+  body: { plot: { width: 30, depth: 40, unit: 'feet' }, facing: 'East', doorPosition: 0.4 },
+});
+<RoxyVastuMandala data={entrance} mode="entrance" />
+```
+
+### 9. Numerology (life path, full chart, personal year)
 
 Life path, the full chart, and the personal year. The easiest domain to integrate: a name and a birth date are enough, with no birth time and no coordinates.
 
@@ -656,7 +724,21 @@ const { data: pyear } = await roxy.numerology.calculatePersonalYear({
 <RoxyNumerologyCard data={pyear} type="personal-year" />
 ```
 
-### 8. Tarot (daily card, three-card, Celtic Cross)
+### 10. Kabbalah (gematria)
+
+Gematria for a Latin or Hebrew name: every candidate Hebrew spelling, the value under each cipher, and the words that share it. Fits name-numerology tools, Hebrew-calendar apps and Kabbalah content.
+
+```tsx
+import { RoxyGematria } from '@roxyapi/ui-react';
+
+// Gematria. Every candidate Hebrew spelling of a Latin name, the value under each cipher, and equal-value words.
+const { data: gematria } = await roxy.kabbalah.calculateGematria({
+  body: { text: 'Sarah', latinCiphers: true },
+});
+<RoxyGematria data={gematria} />
+```
+
+### 11. Tarot (daily card, three-card, Celtic Cross)
 
 Draw a single daily card, a three-card spread, or a full Celtic Cross. The card database is stable reference data, so fetch it once and cache it rather than calling per render.
 
@@ -680,7 +762,7 @@ const { data: cc } = await roxy.tarot.castCelticCross({
 <RoxyTarotSpread data={cc} />
 ```
 
-### 9. Biorhythm (daily, forecast)
+### 12. Biorhythm (daily, forecast)
 
 Physical, emotional and intellectual cycles from a birth date alone, as a daily reading or a forward forecast with the critical days marked. Fits wellness, productivity, sports and couples apps.
 
@@ -701,7 +783,21 @@ const { data: forecast } = await roxy.biorhythm.getForecast({
 <RoxyBiorhythmChart data={forecast} mode="forecast" />
 ```
 
-### 10. I Ching (cast a reading, hexagram lookup)
+### 13. Ayurveda (dosha constitution)
+
+The three-humour constitution computed from a birth chart: vata, pitta and kapha shares as one blend, with the classical factors and verse citations behind it. Fits wellness apps, Ayurveda consultation tools and birth-chart products adding a dosha reading.
+
+```tsx
+import { RoxyDoshaConstitution } from '@roxyapi/ui-react';
+
+// Ayurvedic constitution. Vata, pitta and kapha shares from the birth chart, with the cited factors behind the blend.
+const { data: constitution } = await roxy.ayurveda.calculateAyurvedicConstitution({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyDoshaConstitution data={constitution} />
+```
+
+### 14. I Ching (cast a reading, hexagram lookup)
 
 Cast a reading with its changing lines and the hexagram it transforms into, or look up any of the 64 figures directly. Fits meditation apps, decision-making tools and wisdom chatbots.
 
@@ -1035,7 +1131,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Every component bundle is under 30 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 150 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Every component bundle is under 30 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 165 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>

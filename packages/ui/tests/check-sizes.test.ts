@@ -46,3 +46,19 @@ describe('size gate against the real build', () => {
 		expect(findOffenders(absurd).length).toBe(absurd.length);
 	});
 });
+
+describe('size gate vs README', () => {
+	/**
+	 * The full-bundle ceiling is restated in prose for a human reader, so it can drift from
+	 * {@link DEFAULT_BUDGETS.fullGzip} silently the next time this file is re-measured. Pin it here
+	 * so a future budget change is a red test instead of a stale README sentence.
+	 */
+	test('the published full-bundle ceiling matches the budget', async () => {
+		const readme = await Bun.file('README.md').text();
+		const match = readme.match(
+			/full bundle \([^)]*\) is under (\d+) KB gzipped/,
+		);
+		expect(match).not.toBeNull();
+		expect(Number(match?.[1]) * 1024).toBe(DEFAULT_BUDGETS.fullGzip);
+	});
+});
