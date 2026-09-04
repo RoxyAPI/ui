@@ -226,8 +226,47 @@ describe('the factors carry their citations', () => {
 		const rows = [...root(el).querySelectorAll('[part~="factors"] .row')];
 		expect(rows.length).toBe(CONSTITUTION.factors.length);
 		const body = text(el);
-		expect(body).toContain('Mercury Jupiter');
+		expect(body).toContain('Mercury');
+		expect(body).toContain('Jupiter');
 		expect(body).toContain('Kapha');
+	});
+
+	/**
+	 * The strongest-graha factor packs its grahas into ONE space separated string, so printing it as
+	 * it arrives reads as a typo rather than as a list. The conjunction is a fact about the reader's
+	 * language, which is why it is asserted in two of them: the space form must appear in neither.
+	 */
+	test('a factor that read several grahas joins them the way the language joins a list', async () => {
+		const en = await mount(CONSTITUTION);
+		expect(text(en)).toContain('Mercury and Jupiter');
+		expect(text(en)).not.toContain('Mercury Jupiter');
+
+		const de = await mount(CONSTITUTION, { lang: 'de' });
+		expect(text(de)).toContain('Mercury und Jupiter');
+		expect(text(de)).not.toContain('Mercury Jupiter');
+	});
+
+	/**
+	 * A source note is a recorded conflict between editions or a stated limit on the citation: an
+	 * editor consults it, a practitioner does not, and three of them under three factors is most of
+	 * the card. The citation LINE is what makes the value checkable, so it stays on screen and the
+	 * paragraph opens on demand. `hide-readings` keeps both, because provenance is not a reading.
+	 */
+	test('the citation line is on screen and its note is behind a disclosure', async () => {
+		const cases: Record<string, string>[] = [{}, { 'hide-readings': '' }];
+		for (const attrs of cases) {
+			const el = await mount(CONSTITUTION, attrs);
+			const cite = root(el).querySelector('[part~="factors"] .cite');
+			expect(cite?.querySelector('p')?.textContent).toContain('Brihat Jataka');
+			const note = cite?.querySelector('details');
+			expect(note, 'the note is not behind a disclosure').not.toBeNull();
+			expect(note?.querySelector('summary')?.textContent).toContain(
+				'Note on the source',
+			);
+			expect(note?.querySelector('p')?.textContent).toContain('ZZFACTORNOTE');
+			// A disclosure that ships open is the paragraph again, with a control on it.
+			expect(note?.hasAttribute('open')).toBe(false);
+		}
 	});
 
 	/**

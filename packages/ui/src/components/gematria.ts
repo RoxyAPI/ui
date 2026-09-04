@@ -6,6 +6,7 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatInteger } from '../utils/format.js';
 import { displayField, displayOption } from '../utils/localized.js';
+import { stackedTableStyles } from '../utils/stacked-table.js';
 import { humanize } from '../utils/string.js';
 
 type Gematria = CalculateGematriaResponse;
@@ -42,6 +43,7 @@ type CipherValue = NonNullable<Gematria['values']>[number];
 export class RoxyGematria extends RoxyDataElement<Gematria> {
 	static styles = [
 		baseStyles,
+		stackedTableStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -475,7 +477,7 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 		return html`<section part="section latin-ciphers">
 			<h3 class="block-title">${this.t('Latin ciphers')}</h3>
 			<div class="scroll">
-				<table>
+				<table class="stacked">
 					<thead>
 						<tr>
 							<th>${this.t('Cipher')}</th>
@@ -486,12 +488,12 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 					<tbody>
 						${table.map(
 							(r) => html`<tr>
-								<td>
+								<td data-label=${this.t('Cipher')}>
 									${humanize(r.id ?? '')}
 									${r.lineage ? html`<p class="lineage">${r.lineage}</p>` : nothing}
 								</td>
-								<td class="num">${formatInteger(locale, r.value)}</td>
-								<td>${humanize(r.tradition ?? '')}</td>
+								<td class="num" data-label=${this.t('Value')}>${formatInteger(locale, r.value)}</td>
+								<td data-label=${this.t('Tradition')}>${humanize(r.tradition ?? '')}</td>
 							</tr>`,
 						)}
 					</tbody>
@@ -510,7 +512,7 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 		return html`<section part="section matches">
 			<h3 class="block-title">${this.t('Equal values')}</h3>
 			<div class="scroll">
-				<table>
+				<table class="stacked">
 					<thead>
 						<tr>
 							<th>${this.t('Word')}</th>
@@ -521,11 +523,11 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 					<tbody>
 						${table.map(
 							(m) => html`<tr>
-								<td>
+								<td data-label=${this.t('Word')}>
 									<span lang="he" dir="rtl">${m.hebrew ?? ''}</span>
 									<span class="roman"> ${m.romanization ?? ''}</span>
 								</td>
-								<td>
+								<td data-label=${this.t('Meaning')}>
 									${m.meaning ?? ''}
 									${
 										m.note && !this.hideReadings
@@ -533,7 +535,7 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 											: nothing
 									}
 								</td>
-								<td class="num">${formatInteger(locale, m.value)}</td>
+								<td class="num" data-label=${this.t('Value')}>${formatInteger(locale, m.value)}</td>
 							</tr>`,
 						)}
 					</tbody>

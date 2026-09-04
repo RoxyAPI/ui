@@ -10,6 +10,8 @@ import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatInteger } from '../utils/format.js';
 import type { InterpSection } from '../utils/interp-accordion.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import { displayOption } from '../utils/localized.js';
+import { stackedTableStyles } from '../utils/stacked-table.js';
 import { humanize } from '../utils/string.js';
 
 type MayanData = CalculateTzolkinResponse | GenerateMayanChartResponse;
@@ -89,6 +91,7 @@ export class RoxyMayanDaySign extends RoxyDataElement<MayanData> {
 	static styles = [
 		baseStyles,
 		interpAccordionStyles,
+		stackedTableStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -309,8 +312,17 @@ export class RoxyMayanDaySign extends RoxyDataElement<MayanData> {
 						: nothing
 				}
 				${
+					// The constant is a request enum, so the published field-label payload
+					// already names it in the reader's language. The identifier is what a
+					// caller stores and what a printed table is checked against, so it
+					// rides in the title and is what an unlabelled language prints.
 					d.conventions?.correlation
-						? html`<span><span class="lbl">${this.t('Correlation')}</span>${d.conventions.correlation}</span>`
+						? html`<span
+							><span class="lbl">${this.t('Correlation')}</span
+							><span title=${d.conventions.correlation}
+								>${displayOption(locale, 'correlation', d.conventions.correlation, d.conventions.correlation)}</span
+							></span
+						>`
 						: nothing
 				}
 			</div>
@@ -457,7 +469,7 @@ export class RoxyMayanDaySign extends RoxyDataElement<MayanData> {
 		return html`<section part="section cross">
 			<h3 class="block-title">${this.t('Mayan cross')}</h3>
 			<div class="scroll">
-				<table>
+				<table class="stacked">
 					<thead>
 						<tr>
 							<th>${this.t('Position')}</th>
@@ -468,9 +480,9 @@ export class RoxyMayanDaySign extends RoxyDataElement<MayanData> {
 					<tbody>
 						${rows.map(
 							(r) => html`<tr>
-								<td>${this.crossLabel(r.position)}</td>
-								<td class="num">${formatInteger(locale, r.offsetDays)}</td>
-								<td>
+								<td data-label=${this.t('Position')}>${this.crossLabel(r.position)}</td>
+								<td class="num" data-label=${this.t('Offset in days')}>${formatInteger(locale, r.offsetDays)}</td>
+								<td data-label=${this.t('Day sign')}>
 									${formatInteger(locale, r.number)} ${r.daySignName ?? ''}
 									${r.daySignKiche ? html`(${r.daySignKiche})` : nothing}
 									${

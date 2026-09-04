@@ -92,9 +92,9 @@ function codeLines(src: string): Array<[number, string]> {
  * disagree about what a visitor reads.
  * ------------------------------------------------------------------------- */
 
-/** Attributes a visitor or a screen reader READS. `class`, `role` and `id` are machine values and are not on it. */
+/** Attributes a visitor or a screen reader READS. `class`, `role` and `id` are machine values and are not on it. `data-label` is on it because a stacked table PAINTS it, through `content: attr(data-label)`, so it is copy that reaches a reader while being invisible to a text-node scan. */
 const VISIBLE_ATTRS =
-	/\b(?:placeholder|aria-label|aria-placeholder|aria-description|title|alt)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
+	/\b(?:placeholder|aria-label|aria-placeholder|aria-description|title|alt|data-label)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
 
 /**
  * Text allowed to sit in a template as a literal, with the reason. Keep it SHORT: an entry here is copy no visitor will ever read in their own language.
@@ -760,7 +760,6 @@ describe('shipped locales', () => {
 				'Devata',
 				'Dhatu',
 				'Haab',
-				'Marma',
 				'Tradition',
 				'Trecena',
 			],
@@ -901,7 +900,6 @@ describe('shipped locales', () => {
 				'Devata',
 				'Dhatu',
 				'Haab',
-				'Marma',
 				'Trecena',
 				'{{value}} virupas',
 			],
@@ -1075,7 +1073,6 @@ describe('shipped locales', () => {
 				'Devata',
 				'Dhatu',
 				'Haab',
-				'Marma',
 				'Source',
 				'Substitutions',
 				'Tradition',
@@ -1215,7 +1212,6 @@ describe('shipped locales', () => {
 				'Dhatu',
 				'Gematria',
 				'Haab',
-				'Marma',
 				'{{value}} virupas',
 			],
 			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
@@ -1329,7 +1325,6 @@ describe('shipped locales', () => {
 				'Dhatu',
 				'Gematria',
 				'Haab',
-				'Marma',
 				'Trecena',
 			],
 		};
@@ -1702,7 +1697,12 @@ describe('locale formatting cannot escape the sanctioned utility', () => {
 		const offenders: string[] = [];
 		for (const [n, line] of codeLines(src)) {
 			for (const m of line.matchAll(new RegExp(RAW_INTL, 'g'))) {
-				const after = line.slice(m.index + m[0].length).trimStart();
+				// The first argument, read from the opening paren rather than from the end
+				// of the match: a `toLocale*` match already ends on it, while a constructor
+				// match ends mid-identifier (`Intl.L` of `Intl.ListFormat`), so measuring
+				// from the match would exempt every `Intl.X` call there is.
+				const open = line.indexOf('(', m.index);
+				const after = open === -1 ? '' : line.slice(open + 1).trimStart();
 				// A call broken across lines by the formatter puts the argument on the
 				// next line, which is still the locale helper and nothing else.
 				if (after === '' || after.startsWith('intlLocales(')) continue;

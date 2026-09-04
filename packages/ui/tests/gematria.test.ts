@@ -258,6 +258,40 @@ describe('the values table', () => {
 	});
 });
 
+describe('a table carrying prose stacks on a narrow card', () => {
+	/**
+	 * The Latin ciphers carry a lineage sentence and the equal-value words carry a tradition note, so
+	 * a third of a 250 pixel card is what the sentence gets and it renders as a column of one word
+	 * lines. Below the breakpoint each row stacks under its own headings, which is what `data-label`
+	 * carries; the tables with no prose column keep their columns, because they fit.
+	 */
+	test('every prose table declares its stacked headings, and no other does', async () => {
+		const el = await mount(SHALOM);
+		const stacked = new Set(['latin-ciphers', 'matches']);
+		for (const section of root(el).querySelectorAll('[part~="section"]')) {
+			const table = section.querySelector('table');
+			if (!table) continue;
+			const name = (section.getAttribute('part') ?? '')
+				.split(/\s+/)
+				.find((n) => n !== 'section');
+			const isStacked = table.classList.contains('stacked');
+			expect(isStacked, `${name} stacked`).toBe(stacked.has(name ?? ''));
+			if (!isStacked) continue;
+			const heads = [...table.querySelectorAll('thead th')].map((n) =>
+				n.textContent?.trim(),
+			);
+			for (const row of table.querySelectorAll('tbody tr')) {
+				expect(
+					[...row.querySelectorAll('td')].map((n) =>
+						n.getAttribute('data-label'),
+					),
+					`${name}: a stacked cell with no heading`,
+				).toEqual(heads);
+			}
+		}
+	});
+});
+
 describe('every candidate spelling is shown', () => {
 	test('both spellings render and the chosen one is marked', async () => {
 		const el = await mount(SHALOM);

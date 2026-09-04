@@ -361,6 +361,26 @@ describe('every devata is readable at any width', () => {
 		);
 	});
 
+	/**
+	 * Both figures are areas in the square of the plot unit and they are two different quantities: one
+	 * is the whole central block, the other is ONE of eighty one marma spots. Printed as bare numbers
+	 * under the bare terms they read as counts, and a card that swapped them would pass every other
+	 * check here, so each is pinned to the field it comes from.
+	 */
+	test('the two area figures are labelled apart and read from their own fields', async () => {
+		const el = await mount(MANDALA);
+		const facts = [
+			...root(el).querySelectorAll('[part~="details"] span'),
+		].filter((n) => n.querySelector('.lbl'));
+		const labelled = (needle: string) =>
+			facts.find((n) => (n.textContent ?? '').includes(needle));
+		const brahma = labelled('Brahmasthan area');
+		const marma = labelled('Area of one marma');
+		expect(brahma?.textContent).toContain(String(MANDALA.brahmasthan.area));
+		expect(marma?.textContent).toContain(String(MANDALA.marma.areaEach));
+		expect(brahma).not.toBe(marma);
+	});
+
 	/** The division that names no devatas has nothing to list, and an empty heading is a heading that lies. */
 	test('a projection with no devata names renders no list', async () => {
 		const el = await mount({

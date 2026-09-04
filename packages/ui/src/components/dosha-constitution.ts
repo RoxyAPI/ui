@@ -5,7 +5,13 @@ import type { CalculateAyurvedicConstitutionResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { citationLine } from '../utils/citation.js';
-import { formatInteger, formatNumber, formatPercent } from '../utils/format.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import {
+	formatInteger,
+	formatList,
+	formatNumber,
+	formatPercent,
+} from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { capitalize, humanize } from '../utils/string.js';
 
@@ -37,16 +43,26 @@ function formatType(type: string): string {
 }
 
 /**
- * What a factor read: one sign id, or the space-separated grahas that reached the strength cutoff.
+ * What a factor read: one sign id, or the grahas that reached the strength cutoff.
  *
  * @remarks
  * Both come back canonical English with no localized partner on this response, so they print as the
  * API sent them with the case a reader expects. A sign name has a translated form on other
  * operations and deliberately none here; looking it up in another response to close that would be a
  * second translation of the same fact.
+ *
+ * The strongest-graha factor packs its grahas into ONE space separated string, so a bare print reads
+ * as a typo (`Mercury Jupiter`). The list is joined the way the reader's language joins one, which is
+ * a fact about the language rather than about the chart.
  */
-function formatInput(input: string | undefined): string {
-	return (input ?? '').split(' ').filter(Boolean).map(capitalize).join(' ');
+function formatInput(
+	locale: string | undefined,
+	input: string | undefined,
+): string {
+	return formatList(
+		locale,
+		(input ?? '').split(' ').filter(Boolean).map(capitalize),
+	);
 }
 
 /**
@@ -83,6 +99,7 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,
+		disclosureStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -219,8 +236,19 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 				color: var(--roxy-muted, #71717a);
 				line-height: var(--roxy-leading-normal, 1.5);
 			}
-			.cite .note {
-				display: block;
+			.cite p {
+				margin: 0;
+			}
+			.cite .note summary {
+				display: flex;
+				align-items: center;
+				gap: 0.25rem;
+				cursor: pointer;
+				width: fit-content;
+				color: var(--roxy-secondary, #475569);
+			}
+			.cite .note p {
+				margin: 0.15rem 0 0;
 			}
 
 			.scroll {
@@ -376,7 +404,7 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 					(f) => html`<li class="row">
 						<span class="row-name">${this.factorLabel(f.id)}</span>
 						<div>
-							<span>${formatInput(f.input)}</span>
+							<span>${formatInput(locale, f.input)}</span>
 							${
 								f.doshas?.length
 									? html` · ${f.doshas.map((h) => capitalize(h)).join(', ')}`
@@ -408,14 +436,26 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 	 * A `note` here is a recorded conflict between two editions or a stated limit on what the
 	 * citation covers. It is provenance rather than interpretation, so `hide-readings` keeps it: a
 	 * page showing the calculation without the report still has to say what the calculation rests on.
+	 *
+	 * **It is also editorial rather than practical, and it is a paragraph.** Three of them under three
+	 * factors is most of the card, above the reading, for a fact a reader consults once and an editor
+	 * consults often. So the citation LINE stays on screen, which is what makes the value checkable,
+	 * and the paragraph behind it opens on demand.
 	 */
 	private renderCitation(source: Citation | undefined) {
 		const line = citationLine(source ?? {});
 		if (!line) return nothing;
-		return html`<p class="cite">
-			<span class="lbl">${this.t('Source')}</span>${line}
-			${source?.note ? html`<span class="note">${source.note}</span>` : nothing}
-		</p>`;
+		return html`<div class="cite">
+			<p><span class="lbl">${this.t('Source')}</span>${line}</p>
+			${
+				source?.note
+					? html`<details class="note">
+						<summary>${this.t('Note on the source')}${chevron()}</summary>
+						<p>${source.note}</p>
+					</details>`
+					: nothing
+			}
+		</div>`;
 	}
 
 	/** The seven grahas by shadbala, with the ones that reached the cutoff marked. */

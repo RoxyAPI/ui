@@ -262,6 +262,35 @@ export function formatInteger(
 }
 
 /**
+ * A list of names joined the way the reader's language joins one: `Mercury and Jupiter`, `Mercury und Jupiter`, `Меркурий и Юпитер`.
+ *
+ * @remarks
+ * Several responses pack a list into one space separated string, which reads as a typo once it is
+ * printed beside other values. The conjunction, the serial comma and the spacing are all CLDR's, and
+ * they differ per language, which is exactly why this cannot be a `join(', ')` at a call site.
+ *
+ * Empty entries are dropped, so a trailing separator in the wire value cannot produce a dangling
+ * conjunction, and a single entry comes back as itself.
+ *
+ * @example
+ * ```ts
+ * formatList('en', ['Mercury', 'Jupiter']); // 'Mercury and Jupiter'
+ * formatList('de', ['Mercury', 'Jupiter']); // 'Mercury und Jupiter'
+ * ```
+ */
+export function formatList(
+	locale: string | undefined,
+	items: readonly string[],
+): string {
+	const parts = items.filter(Boolean);
+	if (parts.length < 2) return parts[0] ?? '';
+	return new Intl.ListFormat(intlLocales(locale), {
+		style: 'long',
+		type: 'conjunction',
+	}).format(parts);
+}
+
+/**
  * A number to at most `dp` decimals in the reader's notation: `2.5` in English, `2,5` in German.
  *
  * @remarks Trailing zeros drop on the fractional side only, so `100` at `dp = 0` stays `100`.

@@ -756,9 +756,13 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 					: nothing
 			}
 			${
+				// Both figures are areas in the SQUARE of the plot unit, so the label has
+				// to say so or 300 beside 4.17 reads as two counts. The unit itself is a
+				// request field the response does not echo, so the reader supplies it: it
+				// is the one they sent, and naming a default here would be a guess.
 				mandala?.brahmasthan?.area != null
 					? html`<span
-						><span class="lbl">${this.t('Brahmasthan')}</span
+						><span class="lbl">${this.t('Brahmasthan area')}</span
 						><b>${formatNumber(locale, mandala.brahmasthan.area, 2)}</b></span
 					>`
 					: nothing
@@ -766,7 +770,7 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 			${
 				mandala?.marma?.areaEach != null
 					? html`<span
-						><span class="lbl">${this.t('Marma')}</span
+						><span class="lbl">${this.t('Area of one marma')}</span
 						>${formatNumber(locale, mandala.marma.areaEach, 2)}</span
 					>`
 					: nothing

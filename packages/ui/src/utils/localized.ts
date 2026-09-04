@@ -24,13 +24,22 @@ export function displayField(lang: string | undefined, name: string): string {
 	return fieldLabel(lang, name) ?? humanize(name);
 }
 
-/** The label for one selectable VALUE of a field, same fallback rule. */
+/**
+ * The label for one selectable VALUE of a field, same fallback rule.
+ *
+ * @param fallback - What to print where the payload carries no label, INSTEAD of the humanized value.
+ * The default suits a word (`81-pada` reads as `81 pada`) and not an identifier that carries a number
+ * a reader checks against a published table: `humanize` turns `gmt-584283` into `Gmt 584283`, which
+ * is neither the label nor the identifier. Pass the raw value for those, so an English page prints
+ * what a caller stores and a translated one prints the published word.
+ */
 export function displayOption(
 	lang: string | undefined,
 	field: string,
 	value: string,
+	fallback?: string,
 ): string {
-	return optionLabel(lang, field, value) ?? humanize(value);
+	return optionLabel(lang, field, value) ?? fallback ?? humanize(value);
 }
 
 /** The one naming convention every helper here derives from. Ratified by the API and spreading to more operations, so it is matched as a convention and never as a list of field names. */

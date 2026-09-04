@@ -3,7 +3,7 @@ import { describe, expect, test } from 'bun:test';
 // Importing the index registers every custom element. happy-dom is loaded by
 // preload (bunfig.toml).
 import '../src/index.js';
-import { registerLocale } from '../src/i18n/registry.js';
+import { registerFieldLabels, registerLocale } from '../src/i18n/registry.js';
 
 // A synthetic catalogue, so the band assertions pin the two labels apart rather
 // than a translator's wording: in English the fallback and the catalogue entry
@@ -201,10 +201,55 @@ describe('the day sign carries all three of its spellings', () => {
 		expect(body).toContain(TZOLKIN.trecena.rulingSignName);
 	});
 
-	/** The correlation decides every value in the response, so it prints as the identifier a caller stores. */
-	test('the correlation prints as the identifier the response gives', async () => {
-		const el = await mount(TZOLKIN);
-		expect(text(el)).toContain('gmt-584283');
+	/**
+	 * The constant decides every value in the response, so it is on the card either way: as the word
+	 * the field-label payload publishes where there is one, and as the identifier a caller stores
+	 * where there is not. Never as a humanized identifier, which is `Gmt 584283` and is neither.
+	 */
+	test('the correlation reads the published word, with the identifier behind it', async () => {
+		const plain = await mount(TZOLKIN);
+		expect(text(plain)).toContain('gmt-584283');
+		expect(text(plain)).not.toContain('Gmt 584283');
+
+		registerFieldLabels('zz', {
+			fields: {},
+			enums: { 'correlation.gmt-584283': 'ZZGMT' },
+		});
+		const labelled = await mount(TZOLKIN, { lang: 'zz' });
+		expect(text(labelled)).toContain('ZZGMT');
+		expect(text(labelled)).not.toContain('Gmt 584283');
+		// The identifier is what a printed table is checked against, so it stays
+		// reachable rather than being replaced by the word.
+		expect(
+			[...root(labelled).querySelectorAll('[title]')].map((n) =>
+				n.getAttribute('title'),
+			),
+		).toContain('gmt-584283');
+	});
+});
+
+describe('the four-fold cross reads on a phone', () => {
+	/**
+	 * Every arm carries a sentence, and three columns cannot hold one on a 250 pixel card: the prose
+	 * column gets a third of it and renders as a stack of one word lines. Below the breakpoint the row
+	 * stacks instead, each cell under its own heading, which is what the `data-label` carries. The
+	 * heading is painted from that attribute, so it is translated copy and goes through the catalogue
+	 * like any other string.
+	 */
+	test('every cross cell carries the heading its stacked row prints', async () => {
+		const el = await mount(CHART, { mode: 'chart' });
+		const table = root(el).querySelector('[part~="cross"] table');
+		expect(table?.classList.contains('stacked')).toBe(true);
+		const heads = [...(table?.querySelectorAll('thead th') ?? [])].map((n) =>
+			n.textContent?.trim(),
+		);
+		expect(heads.length).toBe(3);
+		for (const row of table?.querySelectorAll('tbody tr') ?? []) {
+			const labels = [...row.querySelectorAll('td')].map((n) =>
+				n.getAttribute('data-label'),
+			);
+			expect(labels, 'a stacked cell with no heading').toEqual(heads);
+		}
 	});
 });
 
