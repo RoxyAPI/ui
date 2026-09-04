@@ -45,6 +45,11 @@ jobs:
           git diff --exit-code -- specs/openapi.json packages/ui/src/generated packages/ui/components-catalog.json \
             || { echo "::error::Generated bindings or catalog are stale. Run 'bun run build' locally and commit."; exit 1; }
 
+      # The seven field-label catalogues are generated from the live API, not the committed spec,
+      # so the hermetic drift check above cannot see them move. This one asks the API directly.
+      - name: Field-label drift (committed catalogues reproduce from the live API)
+        run: bun run labels:check
+
       # packages/ui-{react,vue}/src is GENERATED from packages/ui. A diff here
       # means generated output was hand-edited; the next build would revert it.
       - name: Wrapper drift (React and Vue wrappers must regenerate identically)

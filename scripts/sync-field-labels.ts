@@ -21,6 +21,15 @@
  * A build with no reachable API keeps whatever is on disk and warns. That matters: the endpoint is
  * newer than this script, so a build running before the API ships must not fail, and a transient
  * outage must not silently blank a shipped catalogue.
+ *
+ * @remarks
+ * `--check` is the drift gate: it regenerates every catalogue from the LIVE endpoint in memory and
+ * fails when a committed module differs, so a label the API changed cannot ship stale from here.
+ * It ignores the hermetic flag on purpose (drift is by definition between the live API and the
+ * tree), and an unreachable API is a failure rather than a pass, because a check that passes when
+ * it cannot check is the non-hermetic build with a hermetic name all over again. Output is
+ * formatted through biome before writing or comparing, so the tree never shows a pure reformat as
+ * a change and the comparison is byte-exact against what the hook would have committed.
  */
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
@@ -80,6 +89,61 @@ registerFieldLabels('${lang}', {
 `;
 }
 
+const CHECK = process.argv.includes('--check');
+
+/** The generated text as biome commits it, so a diff is content and never formatting. */
+function formatted(path: string, text: string): string {
+	const run = Bun.spawnSync(
+		['bun', 'x', 'biome', 'format', `--stdin-file-path=${path}`],
+		{
+			stdin: Buffer.from(text),
+		},
+	);
+	if (run.exitCode !== 0)
+		throw new Error(`biome format failed: ${run.stderr.toString()}`);
+	return run.stdout.toString();
+}
+
+async function fetchLabels(lang: string): Promise<LabelPayload> {
+	const res = await fetch(`${API_BASE}/languages/field-labels?lang=${lang}`, {
+		signal: AbortSignal.timeout(20_000),
+	});
+	if (!res.ok) throw new Error(`HTTP ${res.status}`);
+	const body = (await res.json()) as LabelPayload;
+	if (!body.fields || Object.keys(body.fields).length === 0) {
+		throw new Error('payload carried no fields');
+	}
+	return body;
+}
+
+if (CHECK) {
+	const drifted: string[] = [];
+	for (const lang of LANGS) {
+		const out = `${OUT_DIR}/${lang}.ts`;
+		let expected: string;
+		try {
+			expected = formatted(out, emit(lang, await fetchLabels(lang)));
+		} catch (err) {
+			console.error(
+				`${lang}: ${err instanceof Error ? err.message : String(err)}`,
+			);
+			process.exit(1);
+		}
+		const committed = existsSync(out) ? await Bun.file(out).text() : '';
+		if (committed !== expected) drifted.push(lang);
+	}
+	if (drifted.length > 0) {
+		console.error(
+			`Field labels drifted from the live API: ${drifted.join(', ')}. Run 'bun run labels:sync' and commit.`,
+		);
+		process.exit(1);
+	}
+	console.log(
+		`Field labels match the live API across ${LANGS.length} language(s).`,
+	);
+	process.exit(0);
+}
+
 await mkdir(OUT_DIR, { recursive: true });
 
 // The same hermetic switch `generate.ts` honours for the spec and the MCP tool list: with it set,
@@ -95,15 +159,7 @@ let kept = 0;
 for (const lang of LANGS) {
 	const out = `${OUT_DIR}/${lang}.ts`;
 	try {
-		const res = await fetch(`${API_BASE}/languages/field-labels?lang=${lang}`, {
-			signal: AbortSignal.timeout(20_000),
-		});
-		if (!res.ok) throw new Error(`HTTP ${res.status}`);
-		const body = (await res.json()) as LabelPayload;
-		if (!body.fields || Object.keys(body.fields).length === 0) {
-			throw new Error('payload carried no fields');
-		}
-		await writeFile(out, emit(lang, body));
+		await writeFile(out, formatted(out, emit(lang, await fetchLabels(lang))));
 		written++;
 	} catch (err) {
 		const detail = err instanceof Error ? err.message : String(err);
@@ -113,7 +169,10 @@ for (const lang of LANGS) {
 		} else {
 			// No payload and nothing on disk. Emit an empty registration so the import in
 			// `locales/${lang}.ts` still resolves and the form falls back to humanize().
-			await writeFile(out, emit(lang, { fields: {}, enums: {} }));
+			await writeFile(
+				out,
+				formatted(out, emit(lang, { fields: {}, enums: {} })),
+			);
 			console.warn(
 				`  ${lang}: ${detail} — wrote an EMPTY catalogue (form falls back)`,
 			);

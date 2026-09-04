@@ -68,9 +68,14 @@ pre-push:
         git diff --exit-code -- specs/openapi.json packages/ui/src/generated packages/ui/components-catalog.json \
           || { echo "Generated bindings or catalog drifted from the committed spec. Run 'bun run build' and commit."; exit 1; }
       priority: 1
+    labels-drift:
+      # The label catalogues come from the live API, not the committed spec, so spec-drift above
+      # cannot see them move. Online by design; fails when the API is unreachable.
+      run: bun run labels:check
+      priority: 2
     typecheck:
       run: bun run typecheck
-      priority: 2
+      priority: 3
     biome-full:
       run: bun run check
       priority: 3

@@ -24,6 +24,7 @@
 		"version:sync": "bun run scripts/sync-version.ts",
 		"tokens:sync": "bun run scripts/sync-tokens.ts",
 		"labels:sync": "bun run scripts/sync-field-labels.ts",
+		"labels:check": "bun run scripts/sync-field-labels.ts --check",
 		"themes:sync": "bun run scripts/sync-themes.ts",
 		"manifest:sync": "bun run scripts/sync-manifest.ts",
 		"bindings:sync": "bun run scripts/sync-bindings.ts",
