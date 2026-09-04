@@ -481,7 +481,11 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 		if (!grid) return nothing;
 		const n = grid.size;
 		const box = `${-MARGIN} ${-MARGIN} ${n + MARGIN * 2} ${n + MARGIN * 2}`;
-		return html`<div class="frame">
+		// `part="chart"` names the FRAME rather than the drawing inside it: the four
+		// compass words are part of the figure, so a page hiding the chart has to
+		// lose them with it, and the frame is what carries the width cap a consumer
+		// overrides.
+		return html`<div class="frame" part="chart">
 			${SIDES.map(
 				(side) =>
 					html`<span class=${`compass compass-${side[0]?.toLowerCase()}`}
@@ -490,7 +494,6 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 			)}
 			<svg
 				viewBox=${box}
-				part="chart"
 				role="img"
 				aria-label=${this.t('Vastu grid, north at the top and west on the left')}
 			>

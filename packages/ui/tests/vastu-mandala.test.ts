@@ -384,6 +384,19 @@ describe('every devata is readable at any width', () => {
 		);
 		expect(words).toEqual(['North', 'East', 'South', 'West']);
 	});
+
+	/**
+	 * The words are part of the figure, so the chart part has to name the box that holds BOTH: a page
+	 * hiding the chart on the published part name loses the whole drawing rather than the plate alone,
+	 * and the same box is the one carrying the width cap a consumer overrides.
+	 */
+	test('the chart part covers the plate and its compass words together', async () => {
+		const el = await mount(MANDALA);
+		const chart = root(el).querySelector('[part~="chart"]');
+		expect(chart?.querySelector('svg')).not.toBeNull();
+		expect(chart?.querySelectorAll('.compass').length).toBe(4);
+		expect(root(el).querySelector('svg[part]')).toBeNull();
+	});
 });
 
 describe('the overlays land on the squares the response names', () => {
