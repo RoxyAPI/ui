@@ -1066,6 +1066,93 @@ export const ru: Record<ChromeString, string> = {
 	Humours: 'Доши',
 	'Planetary humours': 'Доши грах',
 	Dhatu: 'Дхату',
+
+	// The six Chinese-metaphysics cards: generic calendar words shared by every
+	// Four Pillars heading.
+	Year: 'Год',
+	Month: 'Месяц',
+	Hour: 'Час',
+
+	// BaZi chart.
+	'Four pillars': 'Четыре столпа',
+	'Day Master': 'Господин Дня',
+	'Hidden stems': 'Скрытые небесные стволы',
+	'Na Yin': 'На-Инь',
+	Interactions: 'Взаимодействия',
+
+	// BaZi interaction categories.
+	'Stem combination': 'Союз стволов',
+	'Six combination': 'Шесть гармоний',
+	Trine: 'Три гармонии',
+	Punishment: 'Наказание',
+	'Stem clash': 'Столкновение стволов',
+
+	// How represented a phase is across the eight BaZi characters.
+	Deficient: 'Недостаток',
+	Balanced: 'Сбалансировано',
+	Excess: 'Избыток',
+
+	// The six-value relationship type a daily zodiac reading names.
+	Same: 'Та же ветвь',
+	'Secret friend': 'Шесть гармоний',
+	Harm: 'Шесть вредов',
+	Clash: 'Шесть столкновений',
+
+	// Luck pillars (Da Yun).
+	'Luck pillars': 'Столпы удачи',
+	Starts: 'Начало',
+	'Counted to': 'Отсчитано до',
+	Days: 'Дни',
+	'Annual pillars': 'Годовые столпы',
+	'{{start}} to {{end}}': 'с {{start}} до {{end}}',
+	'{{years}}y {{months}}m': '{{years}} г. {{months}} мес.',
+	Forward: 'Вперёд',
+	Backward: 'Назад',
+
+	// Chinese zodiac card.
+	Branch: 'Ветвь',
+	Polarity: 'Полярность',
+	Pillar: 'Столп',
+	Hours: 'Часы',
+	'Ben Ming Nian': 'Бэнь Мин Нянь',
+	Traits: 'Черты характера',
+	'Shared element': 'Общая стихия',
+	Weaknesses: 'Слабые стороны',
+	Frictions: 'Трения',
+	Excellent: 'Отличный',
+	Workable: 'Приемлемый',
+	Difficult: 'Трудный',
+
+	// Chinese almanac (Tong Shu) day card.
+	Avoiding: 'Избегание',
+	'Lunar {{month}}/{{day}}': 'Лунный {{month}}/{{day}}',
+	'Lunar {{month}}/{{day}} (leap)': 'Лунный {{month}}/{{day}} (високосный)',
+	Favours: 'Благоприятно',
+	Avoids: 'Неблагоприятно',
+	Mansion: 'Обитель',
+	Almanac: 'Альманах',
+
+	// Kua number and Eight Mansions.
+	'{{direction}} group': 'Группа «{{direction}}»',
+	Trigram: 'Триграмма',
+	Role: 'Роль',
+	'Year from {{date}}': 'Год от {{date}}',
+	'Reassigned from {{value}}': 'Переназначено с {{value}}',
+	Kua: 'Куа',
+	'Eight mansions': 'Восемь дворцов',
+	Best: 'Лучший',
+	Worst: 'Худший',
+	Sectors: 'Секторы',
+
+	// Flying Star (Xuan Kong) plate.
+	'Mountain star': 'Звезда горы',
+	'Water star': 'Звезда воды',
+	'Period star': 'Звезда периода',
+	'Flying star chart': 'Карта летящих звёзд',
+	Facing: 'Фасад',
+	Sitting: 'Тыл',
+	Straddling: 'Пограничный',
+	'Period {{n}}': 'Период {{n}}',
 };
 
 registerLocale('ru', ru);

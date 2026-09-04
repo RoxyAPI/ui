@@ -171,10 +171,27 @@ describe('luck pillars', () => {
 	test('the direction, the start age and the term it was counted to all print', async () => {
 		const el = await mount('roxy-luck-pillars', LUCK);
 		const body = text(el);
-		expect(body).toContain('forward');
+		expect(body).toContain('Forward');
 		expect(body).toContain('7y 4m');
 		expect(body).toContain('Beginning of Spring');
 		expect(body).toContain('li-chun');
+	});
+
+	/**
+	 * The wire value for the reverse direction is `reverse`, not `backward`: the
+	 * response prose describes it as running "backward" but the enum itself
+	 * matches `roxy-flying-star-chart`'s own `mountainFlight`/`waterFlight`
+	 * vocabulary. A lookup keyed on the prose word rather than the wire value
+	 * prints the raw enum on every reverse-running chart.
+	 */
+	test('a reverse-running sequence prints the translated word, not the wire value', async () => {
+		const el = await mount('roxy-luck-pillars', {
+			...LUCK,
+			direction: 'reverse',
+		});
+		const body = text(el);
+		expect(body).toContain('Backward');
+		expect(body).not.toContain('reverse');
 	});
 
 	test('hide-readings keeps the strip and the annual pillars and drops the summary', async () => {
@@ -296,7 +313,7 @@ describe('the zodiac card', () => {
 	test('the daily read shows its day relationship and flags the year of its own animal', async () => {
 		const el = await mount('roxy-zodiac-card', DAILY, { mode: 'daily' });
 		const body = text(el);
-		expect(body).toContain('clash');
+		expect(body).toContain('Clash');
 		expect(body).toContain('Ben Ming Nian');
 		expect(body).toContain('ZZREADINGLOVE');
 	});
@@ -326,7 +343,7 @@ describe('the zodiac card', () => {
 			[
 				DAILY,
 				'daily',
-				['clash', 'Ben Ming Nian'],
+				['Clash', 'Ben Ming Nian'],
 				['ZZREADINGOVERVIEW', 'ZZREADINGLOVE', 'ZZREADINGNOTE'],
 			],
 			[
@@ -441,9 +458,9 @@ describe('the almanac card', () => {
 		const el = await mount('roxy-almanac-day', DAY, { mode: 'day' });
 		const body = text(el);
 		expect(body).toContain('Favours');
-		expect(body).toContain('wedding');
+		expect(body).toContain('Wedding');
 		expect(body).toContain('Avoids');
-		expect(body).toContain('burial');
+		expect(body).toContain('Burial');
 	});
 
 	/** Every activity, never the first few: a trimmed list quietly drops the one a reader wanted. */
@@ -491,7 +508,7 @@ describe('the almanac card', () => {
 			'hide-readings': '',
 		});
 		const body = text(el);
-		for (const kept of ['wedding', 'burial', 'horse', 'Open', '甲子', 'Room']) {
+		for (const kept of ['Wedding', 'Burial', 'horse', 'Open', '甲子', 'Room']) {
 			expect(body, `hide-readings removed ${kept}`).toContain(kept);
 		}
 		expect(body).not.toContain('ZZREADINGOFFICER');

@@ -1078,6 +1078,93 @@ export const fr: Record<ChromeString, string> = {
 	Humours: 'Humeurs',
 	'Planetary humours': 'Humeurs des grahas',
 	Dhatu: 'Dhatu',
+
+	// The six Chinese-metaphysics cards: generic calendar words shared by every
+	// Four Pillars heading.
+	Year: 'Année',
+	Month: 'Mois',
+	Hour: 'Heure',
+
+	// BaZi chart.
+	'Four pillars': 'Quatre Piliers',
+	'Day Master': 'Maître du Jour',
+	'Hidden stems': 'Troncs Cachés',
+	'Na Yin': 'Na Yin',
+	Interactions: 'Interactions',
+
+	// BaZi interaction categories.
+	'Stem combination': 'Combinaison des Troncs',
+	'Six combination': 'Six Harmonies',
+	Trine: 'Trigone',
+	Punishment: 'Punition',
+	'Stem clash': 'Choc des Troncs',
+
+	// How represented a phase is across the eight BaZi characters.
+	Deficient: 'Déficient',
+	Balanced: 'Équilibré',
+	Excess: 'Excès',
+
+	// The six-value relationship type a daily zodiac reading names.
+	Same: 'Même Branche',
+	'Secret friend': 'Ami secret',
+	Harm: 'Tort',
+	Clash: 'Choc',
+
+	// Luck pillars (Da Yun).
+	'Luck pillars': 'Piliers de Chance',
+	Starts: 'Débute',
+	'Counted to': "Compté jusqu'à",
+	Days: 'Jours',
+	'Annual pillars': 'Piliers Annuels',
+	'{{start}} to {{end}}': '{{start}} à {{end}}',
+	'{{years}}y {{months}}m': '{{years}}a {{months}}m',
+	Forward: 'En avant',
+	Backward: 'En arrière',
+
+	// Chinese zodiac card.
+	Branch: 'Branche',
+	Polarity: 'Polarité',
+	Pillar: 'Pilier',
+	Hours: 'Heures',
+	'Ben Ming Nian': 'Ben Ming Nian',
+	Traits: 'Traits',
+	'Shared element': 'Élément partagé',
+	Weaknesses: 'Faiblesses',
+	Frictions: 'Frictions',
+	Excellent: 'Excellent',
+	Workable: 'Viable',
+	Difficult: 'Difficile',
+
+	// Chinese almanac (Tong Shu) day card.
+	Avoiding: 'À éviter',
+	'Lunar {{month}}/{{day}}': 'Lunaire {{month}}/{{day}}',
+	'Lunar {{month}}/{{day}} (leap)': 'Lunaire {{month}}/{{day}} (intercalaire)',
+	Favours: 'Favorable',
+	Avoids: 'Déconseillé',
+	Mansion: 'Demeure',
+	Almanac: 'Almanach',
+
+	// Kua number and Eight Mansions.
+	'{{direction}} group': 'Groupe {{direction}}',
+	Trigram: 'Trigramme',
+	Role: 'Rôle',
+	'Year from {{date}}': 'Année depuis {{date}}',
+	'Reassigned from {{value}}': 'Réattribué depuis {{value}}',
+	Kua: 'Kua',
+	'Eight mansions': 'Huit Maisons',
+	Best: 'Meilleur',
+	Worst: 'Pire',
+	Sectors: 'Secteurs',
+
+	// Flying Star (Xuan Kong) plate.
+	'Mountain star': 'Étoile Montagne',
+	'Water star': 'Étoile Eau',
+	'Period star': 'Étoile Période',
+	'Flying star chart': 'Carte des Étoiles Volantes',
+	Facing: 'Façade',
+	Sitting: 'Assise',
+	Straddling: 'Chevauchement',
+	'Period {{n}}': 'Période {{n}}',
 };
 
 registerLocale('fr', fr);

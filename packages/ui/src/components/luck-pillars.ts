@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { CalculateLuckPillarsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -8,6 +9,18 @@ import {
 	frameCaptionStyles,
 	renderConventionsCaption,
 } from '../utils/frame.js';
+import { display, displayOption } from '../utils/localized.js';
+
+/**
+ * Which way the sequence walks the sexagenary cycle, always English on the wire (the spec says so
+ * outright). The wire value is `reverse`, not `backward`, matching `roxy-flying-star-chart`'s own
+ * `mountainFlight`/`waterFlight` vocabulary; the prose description's "run backward" is the English
+ * gloss, not the wire enum, so the catalogue reuses `Backward` for it, the same way that card does.
+ */
+const DIRECTION_LABEL: Record<string, ChromeString> = {
+	forward: 'Forward',
+	reverse: 'Backward',
+};
 
 /**
  * Luck pillars (Da Yun). Pass `data` from POST /chinese-astrology/bazi/luck-pillars.
@@ -28,9 +41,11 @@ import {
  * `hide-readings` keeps the whole strip, the annual pillars and the header facts, and drops the
  * summary paragraph and the per-pillar keynote.
  *
- * **This card is English end to end, by decision, on the same grounds as the other
- * Chinese-metaphysics cards**, with the conventions caption as the one shared-helper line that is
- * translated.
+ * **The vocabulary stays English end to end, by decision; the chrome does not.** The Ten God names
+ * are still unsourced in most catalogue languages, so they print exactly as the response sends
+ * them, but the card heading, its header facts and every value the response DOES localize
+ * (`elementLocalized`, `animalLocalized`, `tenGod.nameLocalized`, plus `gender` and the boundary
+ * term through the published option payload) now go through the catalogue.
  */
 @customElement('roxy-luck-pillars')
 export class RoxyLuckPillars extends RoxyDataElement<CalculateLuckPillarsResponse> {
@@ -175,36 +190,49 @@ export class RoxyLuckPillars extends RoxyDataElement<CalculateLuckPillarsRespons
 		const locale = this.effectiveLang();
 		return html`<article class="card" part="card" aria-labelledby="luck-title">
 			<header class="head" part="header">
-				<h2 class="title" id="luck-title">Luck pillars</h2>
+				<h2 class="title" id="luck-title">${this.t('Luck pillars')}</h2>
 			</header>
 
 			<div class="facts" part="details">
 				${
 					d.direction
-						? html`<span><span class="lbl">Direction</span><b>${d.direction}</b></span>`
+						? html`<span
+							><span class="lbl">${this.t('Direction')}</span
+							><b>${DIRECTION_LABEL[d.direction] ? this.t(DIRECTION_LABEL[d.direction] as ChromeString) : d.direction}</b></span
+						>`
 						: nothing
 				}
 				${
 					typeof d.startAge === 'number'
 						? html`<span
-							><span class="lbl">Starts</span
+							><span class="lbl">${this.t('Starts')}</span
 							><b>${this.ageLabel(locale, d.startAge, d.startAgeMonths)}</b></span
 						>`
 						: nothing
 				}
 				${
 					d.boundaryTerm
-						? html`<span><span class="lbl">Counted to</span>${d.boundaryTerm}</span>`
+						? html`<span
+							><span class="lbl">${this.t('Counted to')}</span
+							>${displayOption(locale, 'boundaryTerm', d.boundaryTerm)}</span
+						>`
 						: nothing
 				}
 				${
 					typeof d.daysToTerm === 'number'
 						? html`<span
-							><span class="lbl">Days</span>${formatInteger(locale, d.daysToTerm)}</span
+							><span class="lbl">${this.t('Days')}</span>${formatInteger(locale, d.daysToTerm)}</span
 						>`
 						: nothing
 				}
-				${d.gender ? html`<span><span class="lbl">Formula</span>${d.gender}</span>` : nothing}
+				${
+					d.gender
+						? html`<span
+							><span class="lbl">${this.t('Formula')}</span
+							>${displayOption(locale, 'gender', d.gender)}</span
+						>`
+						: nothing
+				}
 			</div>
 
 			${this.renderStrip(d, locale)}
@@ -227,8 +255,11 @@ export class RoxyLuckPillars extends RoxyDataElement<CalculateLuckPillarsRespons
 	): string {
 		const y = formatInteger(locale, years);
 		return typeof months === 'number' && months > 0
-			? `${y}y ${formatInteger(locale, months)}m`
-			: `${y}y`;
+			? this.t('{{years}}y {{months}}m', {
+					years: y,
+					months: formatInteger(locale, months),
+				})
+			: this.t('{{years}} yrs', { years: y });
 	}
 
 	/** The pillars themselves, in the order they are lived. */
@@ -238,24 +269,31 @@ export class RoxyLuckPillars extends RoxyDataElement<CalculateLuckPillarsRespons
 	) {
 		const pillars = d.luckPillars ?? [];
 		if (pillars.length === 0) return nothing;
-		return html`<div class="strip-wrap" part="chart" role="group" tabindex="0" aria-label="Luck pillars">
+		return html`<div class="strip-wrap" part="chart" role="group" tabindex="0" aria-label=${this.t('Luck pillars')}>
 			<div class="strip">
 				${pillars.map(
 					(p) => html`<div class="pillar" part="pillar">
 						<span class="ages"
-							>${formatInteger(locale, p.startAge ?? 0)} to
-							${formatInteger(locale, p.endAge ?? 0)}</span
+							>${this.t('{{start}} to {{end}}', {
+								start: formatInteger(locale, p.startAge ?? 0),
+								end: formatInteger(locale, p.endAge ?? 0),
+							})}</span
 						>
-						<span class="god">${p.tenGod?.name ?? ''}</span>
+						<span class="god">${display(p.tenGod, 'name')}</span>
 						<span class="hanzi" lang="zh">${p.stem?.chinese ?? ''}</span>
 						<span class="romanised"
-							>${p.stem?.pinyin ?? ''} ${p.stem?.element ?? ''}</span
+							>${p.stem?.pinyin ?? ''} ${display(p.stem, 'element')}</span
 						>
 						<span class="hanzi hanzi-branch" lang="zh">${p.branch?.chinese ?? ''}</span>
 						<span class="romanised"
-							>${p.branch?.pinyin ?? ''} ${p.branch?.animal ?? ''}</span
+							>${p.branch?.pinyin ?? ''} ${display(p.branch, 'animal')}</span
 						>
-						<span class="years">${p.startYear ?? ''} to ${p.endYear ?? ''}</span>
+						<span class="years"
+							>${this.t('{{start}} to {{end}}', {
+								start: String(p.startYear ?? ''),
+								end: String(p.endYear ?? ''),
+							})}</span
+						>
 					</div>`,
 				)}
 			</div>
@@ -267,13 +305,13 @@ export class RoxyLuckPillars extends RoxyDataElement<CalculateLuckPillarsRespons
 		const annuals = d.annualPillars ?? [];
 		if (annuals.length === 0) return nothing;
 		return html`<section part="section annual-pillars">
-			<h3 class="block-title">Annual pillars</h3>
+			<h3 class="block-title">${this.t('Annual pillars')}</h3>
 			<div class="annuals">
 				${annuals.map(
 					(a) => html`<span class="annual">
 						<span class="yr">${a.year ?? ''}</span>
 						<span lang="zh">${a.tenGod?.chinese ?? ''}</span>
-						<span>${a.tenGod?.name ?? ''}</span>
+						<span>${display(a.tenGod, 'name')}</span>
 					</span>`,
 				)}
 			</div>

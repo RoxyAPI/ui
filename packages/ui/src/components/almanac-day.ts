@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GetAlmanacDayResponse,
 	GetMonthlyAlmanacResponse,
@@ -7,7 +8,14 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatDate, formatInteger, formatMonthDay } from '../utils/format.js';
+import {
+	formatDate,
+	formatDateRange,
+	formatInteger,
+	formatMonthDay,
+} from '../utils/format.js';
+import { display, displayOption } from '../utils/localized.js';
+import { humanize } from '../utils/string.js';
 
 type AlmanacData =
 	| GetAlmanacDayResponse
@@ -42,8 +50,13 @@ function isSingleDay(d: AlmanacData): d is GetAlmanacDayResponse {
  * with one of the twelve animals outright, and a card that showed the favourable half without it
  * would be the half a reader needs least.
  *
- * **This card is English end to end, by decision, on the same grounds as the other
- * Chinese-metaphysics cards.**
+ * **The chrome is now fully catalogued, and the activity lists read the published option, not the
+ * wire id.** `favours` and `avoids` arrive as English kebab-case identifiers with no localized
+ * sibling, so each item is read through `displayOption(lang, 'activity', ...)` against the same
+ * `/languages/field-labels` payload the request field publishes, rather than printed as
+ * `moving-house`. The day officer, the clashing animal and the lunar mansion all echo a
+ * `nameLocalized`/`animalLocalized` sibling and are read through {@link display} for the same
+ * reason.
  */
 @customElement('roxy-almanac-day')
 export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
@@ -222,12 +235,12 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 		return html`<article class="card" part="card" aria-labelledby="almanac-title">
 			<header class="head" part="header">
 				<h2 class="title" id="almanac-title">
-					${'activityLabel' in d && d.activityLabel ? d.activityLabel : 'Almanac'}
+					${'activityLabel' in d && d.activityLabel ? d.activityLabel : this.t('Almanac')}
 				</h2>
 				${
 					'startDate' in d && d.startDate
 						? html`<span class="lunar"
-							>${formatDate(locale, d.startDate)} to ${formatDate(locale, d.endDate)}</span
+							>${formatDateRange(locale, d.startDate, d.endDate)}</span
 						>`
 						: nothing
 				}
@@ -238,14 +251,19 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 				}
 				${
 					typeof d.total === 'number'
-						? html`<span class="lunar">${formatInteger(locale, d.total)} days</span>`
+						? html`<span class="lunar"
+							>${this.t('{{count}} days', { count: formatInteger(locale, d.total) })}</span
+						>`
 						: nothing
 				}
 			</header>
 			${
 				'avoidAnimal' in d && d.avoidAnimal
 					? html`<div class="facts" part="details">
-						<span><span class="lbl">Avoiding</span><b>${d.avoidAnimal}</b></span>
+						<span
+							><span class="lbl">${this.t('Avoiding')}</span
+							><b>${humanize(display(d, 'avoidAnimal'))}</b></span
+						>
 					</div>`
 					: nothing
 			}
@@ -266,8 +284,16 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 			${
 				d.lunar
 					? html`<span class="lunar"
-						>Lunar ${d.lunar.month ?? ''}/${d.lunar.day ?? ''}${
-							d.lunar.isLeapMonth ? ' leap' : ''
+						>${
+							d.lunar.isLeapMonth
+								? this.t('Lunar {{month}}/{{day}} (leap)', {
+										month: String(d.lunar.month ?? ''),
+										day: String(d.lunar.day ?? ''),
+									})
+								: this.t('Lunar {{month}}/{{day}}', {
+										month: String(d.lunar.month ?? ''),
+										day: String(d.lunar.day ?? ''),
+									})
 						}</span
 					>`
 					: nothing
@@ -275,14 +301,14 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 			${
 				officer?.name
 					? html`<span class="tag tag-${officer.quality ?? 'neutral'}"
-						>${officer.name} <span lang="zh">${officer.chinese ?? ''}</span></span
+						>${display(officer, 'name')} <span lang="zh">${officer.chinese ?? ''}</span></span
 					>`
 					: nothing
 			}
 		</header>
 
 		${this.renderPillars(d)}
-		${this.renderLists(d)}
+		${this.renderLists(d, locale)}
 		${
 			officer?.meaning && !this.hideReadings
 				? html`<p class="meaning" part="reading">${officer.meaning}</p>`
@@ -293,7 +319,7 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 
 	/** The three pillars of the day, and the animal it clashes with. */
 	private renderPillars(d: AlmanacDay) {
-		const rows: Array<[string, AlmanacDay['dayPillar'] | undefined]> = [
+		const rows: Array<[ChromeString, AlmanacDay['dayPillar'] | undefined]> = [
 			['Year', d.yearPillar],
 			['Month', d.monthPillar],
 			['Day', d.dayPillar],
@@ -303,14 +329,14 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 		return html`<div class="facts" part="details">
 			${present.map(
 				([label, p]) => html`<span
-					><span class="lbl">${label}</span>
+					><span class="lbl">${this.t(label)}</span>
 					<b lang="zh">${p?.chinese ?? ''}</b> ${p?.naYin ?? ''}</span
 				>`,
 			)}
 			${
 				d.clashAnimal
 					? html`<span
-						><span class="lbl">Clash</span><b>${d.clashAnimal}</b></span
+						><span class="lbl">${this.t('Clash')}</span><b>${display(d, 'clashAnimal')}</b></span
 					>`
 					: nothing
 			}
@@ -318,7 +344,7 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 	}
 
 	/** What the day favours and what it avoids, which is the whole reason an almanac is opened. */
-	private renderLists(d: AlmanacDay) {
+	private renderLists(d: AlmanacDay, locale: string | undefined) {
 		const favours = d.favours ?? [];
 		const avoids = d.avoids ?? [];
 		if (favours.length === 0 && avoids.length === 0) return nothing;
@@ -326,9 +352,9 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 			${
 				favours.length
 					? html`<div class="list">
-						<h3>Favours</h3>
+						<h3>${this.t('Favours')}</h3>
 						<div class="chips chips-favour">
-							${favours.map((f) => html`<span>${f}</span>`)}
+							${favours.map((f) => html`<span>${displayOption(locale, 'activity', f)}</span>`)}
 						</div>
 					</div>`
 					: nothing
@@ -336,9 +362,9 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 			${
 				avoids.length
 					? html`<div class="list">
-						<h3>Avoids</h3>
+						<h3>${this.t('Avoids')}</h3>
 						<div class="chips chips-avoid">
-							${avoids.map((a) => html`<span>${a}</span>`)}
+							${avoids.map((a) => html`<span>${displayOption(locale, 'activity', a)}</span>`)}
 						</div>
 					</div>`
 					: nothing
@@ -352,12 +378,12 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 		if (!m?.name) return nothing;
 		return html`<div class="facts" part="details">
 			<span
-				><span class="lbl">Mansion</span><b>${m.name}</b>
+				><span class="lbl">${this.t('Mansion')}</span><b>${display(m, 'name')}</b>
 				<span lang="zh">${m.chinese ?? ''}</span></span
 			>
-			${m.palace ? html`<span>${m.palace}</span>` : nothing}
+			${m.palace ? html`<span>${humanize(m.palace)}</span>` : nothing}
 			${m.planet ? html`<span>${m.planet}</span>` : nothing}
-			${m.animal ? html`<span>${m.animal}</span>` : nothing}
+			${m.animal ? html`<span>${display(m, 'animal')}</span>` : nothing}
 		</div>`;
 	}
 
@@ -387,20 +413,20 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 				${
 					officer?.name
 						? html`<span class="tag tag-${officer.quality ?? 'neutral'}"
-							>${officer.name}</span
+							>${display(officer, 'name')}</span
 						>`
 						: nothing
 				}
 				${
 					favours.length
 						? html`<span class="chips chips-favour"
-								>${favours.map((f) => html`<span>${f}</span>`)}</span
+								>${favours.map((f) => html`<span>${displayOption(locale, 'activity', f)}</span>`)}</span
 							>`
 						: nothing
 				}
 				${
 					day.clashAnimal
-						? html`<span class="lbl">Clash ${day.clashAnimal}</span>`
+						? html`<span class="lbl">${this.t('Clash')} ${display(day, 'clashAnimal')}</span>`
 						: nothing
 				}
 			</div>

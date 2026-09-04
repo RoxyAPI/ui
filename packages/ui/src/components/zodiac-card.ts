@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	CalculateZodiacAnimalResponse,
 	GetDailyZodiacReadingResponse,
@@ -13,6 +14,33 @@ import {
 	frameCaptionStyles,
 	renderConventionsCaption,
 } from '../utils/frame.js';
+import { display } from '../utils/localized.js';
+
+/**
+ * The six-value day-to-sign and year-to-sign relationship a daily reading names, always English on
+ * the wire (the spec says so outright). `Secret friend`, `Trine` and `Harm` double as the labels
+ * naming a partner animal elsewhere on this card, since both readings are the same taxonomy.
+ */
+const RELATIONSHIP_LABEL: Record<string, ChromeString> = {
+	'secret-friend': 'Secret friend',
+	trine: 'Trine',
+	same: 'Same',
+	neutral: 'Neutral',
+	harm: 'Harm',
+	clash: 'Clash',
+};
+
+/**
+ * The five-band compatibility verdict, always English on the wire. `Strong` and `Challenging` are
+ * catalogued elsewhere for other cards and reused here rather than duplicated.
+ */
+const VERDICT_LABEL: Record<string, ChromeString> = {
+	excellent: 'Excellent',
+	strong: 'Strong',
+	workable: 'Workable',
+	challenging: 'Challenging',
+	difficult: 'Difficult',
+};
 
 type ZodiacData =
 	| CalculateZodiacAnimalResponse
@@ -54,12 +82,13 @@ type ZodiacAnimal = Partial<CalculateZodiacAnimalResponse['animal']>;
  * and its three topic paragraphs, the traits, strengths and weaknesses lists, the summaries and the
  * advice go.
  *
- * **This card is English end to end, by decision, on the same grounds as the other two
- * Chinese-metaphysics cards.** Its vocabulary was sourced across all seven catalogue languages and
- * could not be written honestly in every one, so it stays English until a practitioner in each can
- * source it, and every value prints as the response sent it rather than half of them arriving
- * translated under an English heading. The one translated line is the conventions caption, drawn by
- * a shared helper rather than by this card.
+ * **Every heading, fact label and closed-enum badge is now catalogued; the response vocabulary this
+ * card cannot get a display form for stays English.** The identity name, the trine's element, every
+ * partner animal and the compatibility pairing's relationship name all echo a `nameLocalized` or
+ * `elementLocalized` sibling and are read through {@link display}. The six-value relationship type a
+ * daily reading names (`secret-friend`, `trine`, `same`, `neutral`, `harm`, `clash`) and the
+ * five-band compatibility verdict carry no such sibling, so the component looks them up itself
+ * through {@link RELATIONSHIP_LABEL} and {@link VERDICT_LABEL}.
  */
 @customElement('roxy-zodiac-card')
 export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
@@ -286,7 +315,7 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 			<header class="head" part="header">
 				<span class="hanzi" lang="zh">${animal.chinese ?? ''}</span>
 				<div>
-					<h2 class="title" id="zodiac-title">${animal.name ?? ''}</h2>
+					<h2 class="title" id="zodiac-title">${display(animal, 'name')}</h2>
 					<div class="sub">
 						${animal.pinyin ?? ''}${dateLabel ? ` ${dateLabel}` : ''}
 					</div>
@@ -296,8 +325,8 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 						? html`<span
 							class="energy"
 							part="details"
-							aria-label=${`Energy ${energy} of 10`}
-							>Energy ${formatInteger(locale, energy)}/10
+							aria-label=${this.t('Energy {{value}} of 10', { value: energy })}
+							>${this.t('Energy {{value}}/10', { value: formatInteger(locale, energy) })}
 							<span class="energy-bar"
 								><span style="width: ${(energy / 10) * 100}%"></span
 							></span>
@@ -329,10 +358,14 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 			('dayPillar' in d && d.dayPillar) ||
 			null;
 		const hours = 'hours' in d ? d.hours : undefined;
-		const element =
-			('element' in d && typeof d.element === 'string' && d.element) ||
-			animal.element ||
-			'';
+		// The YEAR phase (a Metal Horse against a Fire Horse) and the animal's own
+		// FIXED branch phase are two different facts on two different objects, so
+		// each reads its own localized sibling rather than sharing one lookup.
+		const yearElement =
+			'element' in d && typeof d.element === 'string' ? d : undefined;
+		const element = yearElement
+			? display(yearElement, 'element')
+			: display(animal, 'element');
 		const polarity =
 			('polarity' in d && typeof d.polarity === 'string' && d.polarity) ||
 			animal.polarity ||
@@ -343,13 +376,17 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 		return html`<div class="facts" part="details">
 			${
 				element
-					? html`<span><span class="lbl">Element</span><b>${element}</b></span>`
+					? html`<span><span class="lbl">${this.t('Element')}</span><b>${element}</b></span>`
 					: nothing
 			}
-			${polarity ? html`<span><span class="lbl">Polarity</span>${polarity}</span>` : nothing}
+			${
+				polarity
+					? html`<span><span class="lbl">${this.t('Polarity')}</span>${polarity}</span>`
+					: nothing
+			}
 			${
 				animal.branch
-					? html`<span><span class="lbl">Branch</span>${animal.branch}</span>`
+					? html`<span><span class="lbl">${this.t('Branch')}</span>${animal.branch}</span>`
 					: nothing
 			}
 			${
@@ -357,7 +394,7 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 				// branch and nothing else, so the label is built from those.
 				pillar
 					? html`<span
-						><span class="lbl">Pillar</span> <b>${pillar.stem ?? ''}</b>
+						><span class="lbl">${this.t('Pillar')}</span> <b>${pillar.stem ?? ''}</b>
 						${pillar.branch ?? ''}</span
 					>`
 					: nothing
@@ -367,8 +404,11 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 				// clock as well as a year name.
 				hours && typeof hours.start === 'number'
 					? html`<span
-						><span class="lbl">Hours</span>${this.hourLabel(hours.start)} to
-						${this.hourLabel(hours.end)}</span
+						><span class="lbl">${this.t('Hours')}</span
+						>${this.t('{{start}} to {{end}}', {
+							start: this.hourLabel(hours.start),
+							end: this.hourLabel(hours.end),
+						})}</span
 					>`
 					: nothing
 			}
@@ -388,19 +428,37 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 		const year = 'year' in d ? d.year : undefined;
 		const benMing = 'benMingNian' in d ? d.benMingNian : false;
 		return html`${html`<div class="facts" part="details">
-				<span><span class="lbl">Day</span><b>${d.relationship ?? ''}</b></span>
+				<span
+					><span class="lbl">${this.t('Day')}</span
+					><b
+						>${
+							d.relationship && RELATIONSHIP_LABEL[d.relationship]
+								? this.t(RELATIONSHIP_LABEL[d.relationship] as ChromeString)
+								: (d.relationship ?? '')
+						}</b
+					></span
+				>
 				${
 					year
 						? html`<span
-							><span class="lbl">Year</span>${year.pillar ?? ''} ${year.animal ?? ''}
-							${year.relationship ?? ''}</span
+							><span class="lbl">${this.t('Year')}</span>${year.pillar ?? ''}
+							${display(year, 'animal')}
+							${
+								year.relationship && RELATIONSHIP_LABEL[year.relationship]
+									? this.t(
+											RELATIONSHIP_LABEL[year.relationship] as ChromeString,
+										)
+									: (year.relationship ?? '')
+							}</span
 						>`
 						: nothing
 				}
 				${
 					// The year of one's own animal, which an almanac flags because the
 					// tradition treats it as the year to be careful in.
-					benMing ? html`<span class="tag">Ben Ming Nian</span>` : nothing
+					benMing
+						? html`<span class="tag">${this.t('Ben Ming Nian')}</span>`
+						: nothing
 				}
 			</div>`}
 		${
@@ -415,7 +473,7 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 					${
 						'love' in d && d.love
 							? html`<div class="section">
-								<h3 class="block-title">Love</h3>
+								<h3 class="block-title">${this.t('Love')}</h3>
 								<p>${d.love}</p>
 							</div>`
 							: nothing
@@ -423,7 +481,7 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 					${
 						'career' in d && d.career
 							? html`<div class="section">
-								<h3 class="block-title">Career</h3>
+								<h3 class="block-title">${this.t('Career')}</h3>
 								<p>${d.career}</p>
 							</div>`
 							: nothing
@@ -431,7 +489,7 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 					${
 						'advice' in d && d.advice
 							? html`<div class="section">
-								<h3 class="block-title">Advice</h3>
+								<h3 class="block-title">${this.t('Advice')}</h3>
 								<p>${d.advice}</p>
 							</div>`
 							: nothing
@@ -452,10 +510,10 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 		return html`${
 			ref.trine
 				? html`<section part="section trine">
-					<h3 class="block-title">Trine ${ref.trine.number ?? ''}</h3>
+					<h3 class="block-title">${this.t('Trine')} ${ref.trine.number ?? ''}</h3>
 					<div class="facts">
 						<span
-							><b lang="zh">${ref.trine.chinese ?? ''}</b> ${ref.trine.element ?? ''}</span
+							><b lang="zh">${ref.trine.chinese ?? ''}</b> ${display(ref.trine, 'element')}</span
 						>
 						${
 							ref.trine.members?.length
@@ -481,13 +539,13 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 				${
 					ref.traits?.length
 						? html`<section part="section traits">
-							<h3 class="block-title">Traits</h3>
+							<h3 class="block-title">${this.t('Traits')}</h3>
 							<div class="chips">${ref.traits.map((t) => html`<span>${t}</span>`)}</div>
 						</section>`
 						: nothing
 				}
-				${this.bullets('Strengths', ref.strengths)}
-				${this.bullets('Weaknesses', ref.weaknesses)}
+				${this.bullets(this.t('Strengths'), ref.strengths)}
+				${this.bullets(this.t('Weaknesses'), ref.weaknesses)}
 				${
 					ref.compatibilitySummary
 						? html`<p class="prose" part="reading">${ref.compatibilitySummary}</p>`
@@ -504,7 +562,7 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 	 * one and not the other reads as advice rather than as the structure it is. All three or none.
 	 */
 	private renderPartners(ref: GetZodiacAnimalResponse) {
-		const rows: Array<[string, ZodiacAnimal | undefined]> = [
+		const rows: Array<[ChromeString, ZodiacAnimal | undefined]> = [
 			['Secret friend', ref.secretFriend],
 			['Clash', ref.clashPartner],
 			['Harm', ref.harmPartner],
@@ -515,9 +573,9 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 			<div class="partners">
 				${present.map(
 					([role, who]) => html`<div class="partner">
-						<span class="role">${role}</span>
+						<span class="role">${this.t(role)}</span>
 						<span class="glyph" lang="zh">${who?.chinese ?? ''}</span>
-						<span class="who">${who?.name ?? ''}</span>
+						<span class="who">${display(who, 'name')}</span>
 					</div>`,
 				)}
 			</div>
@@ -545,16 +603,16 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 				<div class="pair">
 					<span class="side"
 						><span class="hanzi" lang="zh">${first?.chinese ?? ''}</span>
-						<span class="sub">${first?.name ?? ''}</span></span
+						<span class="sub">${display(first, 'name')}</span></span
 					>
 					<span class="side"
 						><span class="hanzi" lang="zh">${second?.chinese ?? ''}</span>
-						<span class="sub">${second?.name ?? ''}</span></span
+						<span class="sub">${display(second, 'name')}</span></span
 					>
 				</div>
 			</header>
 			<h2 class="title" id="zodiac-title">
-				${d.relationshipName ?? ''}
+				${display(d, 'relationshipName')}
 				<span lang="zh">${d.relationshipChinese ?? ''}</span>
 			</h2>
 			${
@@ -567,14 +625,27 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 								style="width: ${Math.max(0, Math.min(100, score))}%"
 							></span
 						></span>
-						${d.verdict ? html`<span class="tag">${d.verdict}</span>` : nothing}
+						${
+							d.verdict
+								? html`<span class="tag"
+									>${
+										VERDICT_LABEL[d.verdict]
+											? this.t(VERDICT_LABEL[d.verdict] as ChromeString)
+											: d.verdict
+									}</span
+								>`
+								: nothing
+						}
 					</div>`
 					: nothing
 			}
 			${
 				d.sharedElement
 					? html`<div class="facts" part="details">
-						<span><span class="lbl">Shared element</span><b>${d.sharedElement}</b></span>
+						<span
+							><span class="lbl">${this.t('Shared element')}</span
+							><b>${display(d, 'sharedElement')}</b></span
+						>
 					</div>`
 					: nothing
 			}
@@ -586,8 +657,8 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 								? html`<p class="prose" part="section summary">${d.summary}</p>`
 								: nothing
 						}
-					${this.bullets('Strengths', d.strengths)}
-					${this.bullets('Frictions', d.frictions)}
+					${this.bullets(this.t('Strengths'), d.strengths)}
+					${this.bullets(this.t('Frictions'), d.frictions)}
 					${d.advice ? html`<p class="prose" part="reading">${d.advice}</p>` : nothing}`
 			}
 		</article>`;

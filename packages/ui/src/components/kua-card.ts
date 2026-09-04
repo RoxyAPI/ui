@@ -11,21 +11,11 @@ import {
 	frameCaptionStyles,
 	renderConventionsCaption,
 } from '../utils/frame.js';
+import { display, displayOption } from '../utils/localized.js';
 import { GRID_ORDER } from '../utils/nine-palaces.js';
+import { capitalize } from '../utils/string.js';
 
 type KuaData = CalculateKuaNumberResponse | GenerateEightMansionsResponse;
-
-/** Compass label per sector, keyed by the name the response gives it. */
-const SECTOR_LABEL: Record<string, string> = {
-	North: 'North',
-	Northeast: 'Northeast',
-	East: 'East',
-	Southeast: 'Southeast',
-	South: 'South',
-	Southwest: 'Southwest',
-	West: 'West',
-	Northwest: 'Northwest',
-};
 
 /**
  * Kua number and the Eight Mansions. Pass `data` from POST /feng-shui/kua, or set
@@ -47,9 +37,11 @@ const SECTOR_LABEL: Record<string, string> = {
  * `hide-readings` keeps the whole map: every sector, its star, its nature, its rank and its domain,
  * the Kua number, the group, the trigram and the boundary date. The per-sector reading goes.
  *
- * **This card is English end to end, by decision, on the same grounds as the other
- * Chinese-metaphysics cards**, with the conventions caption as the one shared-helper line that is
- * translated.
+ * **Every heading and fact label is now catalogued, and the compass grid reads the same published
+ * option a Vastu facing field already publishes** (`displayOption(lang, 'facing', ...)`), so this
+ * grid cannot disagree with that form field about what a compass direction is called. `sector.star`
+ * has a localized display name (`starNameLocalized`); the trigram's own English name and the group
+ * (east/west) it names carry no such sibling and stay exactly as the response sends them.
  */
 @customElement('roxy-kua-card')
 export class RoxyKuaCard extends RoxyDataElement<KuaData> {
@@ -267,15 +259,23 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 		const trigram = d.trigram;
 		return html`<article class="card" part="card" aria-labelledby="kua-title">
 			<header class="head" part="header">
-				<h2 class="title" id="kua-title">Kua ${d.kua ?? ''}</h2>
-				${d.group ? html`<span class="group">${d.group} group</span>` : nothing}
+				<h2 class="title" id="kua-title">${this.t('Kua')} ${d.kua ?? ''}</h2>
+				${
+					d.group
+						? html`<span class="group"
+							>${this.t('{{direction}} group', {
+								direction: displayOption(locale, 'facing', capitalize(d.group)),
+							})}</span
+						>`
+						: nothing
+				}
 			</header>
 
 			<div class="facts" part="details">
 				${
 					trigram
 						? html`<span
-							><span class="lbl">Trigram</span>
+							><span class="lbl">${this.t('Trigram')}</span>
 							<span lang="zh">${trigram.chinese ?? ''}</span> ${trigram.symbol ?? ''}
 							<b>${trigram.english ?? ''}</b> ${trigram.element ?? ''}</span
 						>`
@@ -283,7 +283,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 				}
 				${
 					trigram?.familyMember
-						? html`<span><span class="lbl">Role</span>${trigram.familyMember}</span>`
+						? html`<span><span class="lbl">${this.t('Role')}</span>${trigram.familyMember}</span>`
 						: nothing
 				}
 				${
@@ -291,27 +291,31 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 					// the boundary is what a reader born in January has to check.
 					'boundaryDate' in d && d.boundaryDate
 						? html`<span
-							><span class="lbl">Year from</span>${formatDate(locale, d.boundaryDate)}</span
+							>${this.t('Year from {{date}}', {
+								date: formatDate(locale, d.boundaryDate),
+							})}</span
 						>`
 						: nothing
 				}
 				${
 					'reassigned' in d && d.reassigned
 						? html`<span
-							><span class="lbl">Reassigned</span>from ${'rawKua' in d ? d.rawKua : ''}</span
+							>${this.t('Reassigned from {{value}}', {
+								value: String('rawKua' in d ? (d.rawKua ?? '') : ''),
+							})}</span
 						>`
 						: nothing
 				}
 				${this.renderBestWorst(d)}
 			</div>
 
-			<div class="plate" part="chart plate" role="group" aria-label="Eight mansions">
+			<div class="plate" part="chart plate" role="group" aria-label=${this.t('Eight mansions')}>
 				${GRID_ORDER.map((name) => this.renderSector(d, name))}
 			</div>
 
 			<div class="legend" part="legend">
-				<span><span class="swatch swatch-good"></span>Favourable</span>
-				<span><span class="swatch swatch-bad"></span>Unfavourable</span>
+				<span><span class="swatch swatch-good"></span>${this.t('Favourable')}</span>
+				<span><span class="swatch swatch-bad"></span>${this.t('Unfavourable')}</span>
 			</div>
 
 			${this.renderSectorRows(d)}
@@ -329,16 +333,35 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 		// narrows the type under it, so a page that asked for the Kua number alone
 		// never grows a verdict its endpoint did not return.
 		if (this.mode !== 'mansions' || !('bestSector' in d)) return nothing;
+		const locale = this.effectiveLang();
 		return html`${
 			d.bestSector
-				? html`<span><span class="lbl">Best</span><b>${d.bestSector}</b></span>`
+				? html`<span
+					><span class="lbl">${this.t('Best')}</span
+					><b>${displayOption(locale, 'facing', d.bestSector)}</b></span
+				>`
 				: nothing
 		}
 		${
 			d.worstSector
-				? html`<span><span class="lbl">Worst</span><b>${d.worstSector}</b></span>`
+				? html`<span
+					><span class="lbl">${this.t('Worst')}</span
+					><b>${displayOption(locale, 'facing', d.worstSector)}</b></span
+				>`
 				: nothing
 		}`;
+	}
+
+	/**
+	 * The compass heading for a grid position, read off the same published `facing` option a Vastu
+	 * form field already publishes so this grid cannot disagree with that field about what a
+	 * direction is called. The centre is not a compass sector and reads the shared `Center` word
+	 * instead.
+	 */
+	private sectorHeading(locale: string | undefined, name: string): string {
+		return name === 'Center'
+			? this.t('Center')
+			: displayOption(locale, 'facing', name);
 	}
 
 	/**
@@ -351,7 +374,8 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 	 * reading the system does not have.
 	 */
 	private renderSector(d: KuaData, name: string) {
-		const heading = SECTOR_LABEL[name] ?? name;
+		const locale = this.effectiveLang();
+		const heading = this.sectorHeading(locale, name);
 		if (name === 'Center') {
 			return html`<div class="sector sector-self centre">
 				<span class="kua-number">${d.kua ?? ''}</span>
@@ -370,7 +394,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 		const good = sector.nature === 'auspicious';
 		return html`<div class="sector ${good ? 'sector-good' : 'sector-bad'}">
 			<span class="sector-name">${heading}</span>
-			<span class="star-name">${sector.starName ?? ''}</span>
+			<span class="star-name">${display(sector, 'starName')}</span>
 			${
 				'chinese' in sector && sector.chinese
 					? html`<span class="star-hanzi" lang="zh">${sector.chinese}</span>`
@@ -379,7 +403,9 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 			<span class="domain">${sector.domain ?? ''}</span>
 			${
 				typeof sector.rank === 'number'
-					? html`<span class="rank">${good ? 'Rank' : 'Severity'} ${sector.rank}</span>`
+					? html`<span class="rank"
+						>${good ? this.t('Rank') : this.t('Severity')} ${sector.rank}</span
+					>`
 					: nothing
 			}
 		</div>`;
@@ -389,21 +415,22 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 	private renderSectorRows(d: KuaData) {
 		const rows = d.sectors ?? [];
 		if (rows.length === 0) return nothing;
+		const locale = this.effectiveLang();
 		const bodies = rows.map((s) => {
 			const reading =
 				this.mode === 'mansions' && 'reading' in s ? s.reading : undefined;
 			if (!reading || this.hideReadings) return nothing;
 			return html`<li class="row">
-				<span class="row-name">${SECTOR_LABEL[s.direction ?? ''] ?? s.direction}</span>
+				<span class="row-name">${this.sectorHeading(locale, s.direction ?? '')}</span>
 				<div class="row-body">
-					<span>${s.starName ?? ''}</span>
+					<span>${display(s, 'starName')}</span>
 					<p part="reading">${reading}</p>
 				</div>
 			</li>`;
 		});
 		if (bodies.every((b) => b === nothing)) return nothing;
 		return html`<section part="section sectors">
-			<h3 class="block-title">Sectors</h3>
+			<h3 class="block-title">${this.t('Sectors')}</h3>
 			<ul class="rows">
 				${bodies}
 			</ul>

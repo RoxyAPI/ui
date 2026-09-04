@@ -282,8 +282,8 @@ describe('what decides the plate', () => {
 		expect(body).toContain('175');
 		// The flight of each plate is the step that separates two charts that
 		// otherwise look alike.
-		expect(body).toContain('reverse');
-		expect(body).toContain('forward');
+		expect(body).toContain('Backward');
+		expect(body).toContain('Forward');
 		expect(body).toContain('Double Star at Sitting');
 	});
 });
@@ -308,7 +308,7 @@ describe('hide-readings', () => {
 		const el = await mount(PLATE, { 'hide-readings': '' });
 		const body = text(el);
 		expect(cells(el).length).toBe(9);
-		for (const kept of ['S2', 'reverse', 'Double Star at Sitting', '175']) {
+		for (const kept of ['S2', 'Backward', 'Double Star at Sitting', '175']) {
 			expect(body).toContain(kept);
 		}
 	});

@@ -1083,6 +1083,96 @@ export const hi: Record<ChromeString, string> = {
 	Humours: 'दोष',
 	'Planetary humours': 'ग्रहों के दोष',
 	Dhatu: 'धातु',
+
+	// The six Chinese-metaphysics cards: generic calendar words shared by every
+	// Four Pillars heading.
+	Year: 'वर्ष',
+	Month: 'मास',
+	Hour: 'घंटा',
+
+	// BaZi chart. `Four pillars` and `Na Yin` have no attested compact Hindi
+	// rendering as a unit (see IDENTICAL_BY_DESIGN in the UI repo test suite).
+	'Four pillars': 'चार स्तंभ',
+	'Day Master': 'दिन का स्वामी',
+	'Hidden stems': 'छिपे हुए तने',
+	'Na Yin': 'ना यिन',
+	Interactions: 'अंतःक्रियाएं',
+
+	// BaZi interaction categories: no attested compact Hindi term for any of the
+	// three, only full explanatory prose in the sourced package.
+	'Stem combination': 'तना संयोजन',
+	'Six combination': 'छह सामंजस्य',
+	Trine: 'तीन सामंजस्य',
+	Punishment: 'दंड',
+	'Stem clash': 'तना टकराव',
+
+	// How represented a phase is across the eight BaZi characters.
+	Deficient: 'न्यून',
+	Balanced: 'संतुलित',
+	Excess: 'अधिकता',
+
+	// The six-value relationship type a daily zodiac reading names.
+	Same: 'समान शाखा',
+	'Secret friend': 'छह सामंजस्य',
+	Harm: 'छह हानि',
+	Clash: 'छह टकराव',
+
+	// Luck pillars (Da Yun).
+	'Luck pillars': 'भाग्य स्तंभ',
+	Starts: 'आरंभ',
+	'Counted to': 'तक गिनती',
+	Days: 'दिन',
+	'Annual pillars': 'वार्षिक स्तंभ',
+	'{{start}} to {{end}}': '{{start}} से {{end}} तक',
+	'{{years}}y {{months}}m': '{{years}}व {{months}}मा',
+	Forward: 'अग्रगामी',
+	Backward: 'प्रतिगामी',
+
+	// Chinese zodiac card.
+	Branch: 'शाखा',
+	Polarity: 'ध्रुवता',
+	Pillar: 'स्तंभ',
+	Hours: 'घंटे',
+	'Ben Ming Nian': 'बेन मिंग नियान',
+	Traits: 'विशेषताएं',
+	'Shared element': 'साझा तत्व',
+	Weaknesses: 'कमजोरियां',
+	Frictions: 'घर्षण',
+	Excellent: 'उत्कृष्ट',
+	Workable: 'व्यवहार्य',
+	Difficult: 'कठिन',
+
+	// Chinese almanac (Tong Shu) day card.
+	Avoiding: 'परहेज़',
+	'Lunar {{month}}/{{day}}': 'चान्द्र {{month}}/{{day}}',
+	'Lunar {{month}}/{{day}} (leap)': 'चान्द्र {{month}}/{{day}} (अधिक)',
+	Favours: 'अनुकूल',
+	Avoids: 'प्रतिकूल',
+	Mansion: 'भवन',
+	Almanac: 'पंचांग',
+
+	// Kua number and Eight Mansions. `Eight mansions` and `Period star` have no
+	// attested compact Hindi rendering as a unit, only the individual words.
+	'{{direction}} group': '{{direction}} समूह',
+	Trigram: 'त्रिकोण',
+	Role: 'भूमिका',
+	'Year from {{date}}': '{{date}} से आरंभ वर्ष',
+	'Reassigned from {{value}}': '{{value}} से पुनः निर्धारित',
+	Kua: 'कुआ',
+	'Eight mansions': 'आठ भवन',
+	Best: 'सर्वश्रेष्ठ',
+	Worst: 'सबसे खराब',
+	Sectors: 'क्षेत्र',
+
+	// Flying Star (Xuan Kong) plate.
+	'Mountain star': 'पर्वत तारा',
+	'Water star': 'जल तारा',
+	'Period star': 'अवधि तारा',
+	'Flying star chart': 'उड़ता तारा चार्ट',
+	Facing: 'सम्मुख',
+	Sitting: 'आसन',
+	Straddling: 'सीमा पर',
+	'Period {{n}}': 'अवधि {{n}}',
 };
 
 registerLocale('hi', hi);

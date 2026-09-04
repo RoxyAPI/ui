@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GenerateFlyingStarChartResponse,
 	GetAnnualFlyingStarsResponse,
@@ -7,24 +8,21 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatInteger } from '../utils/format.js';
+import { display, displayOption } from '../utils/localized.js';
 import { GRID_ORDER } from '../utils/nine-palaces.js';
-import { humanize } from '../utils/string.js';
 
 type FlyingStarData =
 	| GenerateFlyingStarChartResponse
 	| GetAnnualFlyingStarsResponse;
 
-/** Compass label per palace, keyed by the name the response gives it. */
-const PALACE_LABEL: Record<string, string> = {
-	North: 'North',
-	Northeast: 'Northeast',
-	East: 'East',
-	Southeast: 'Southeast',
-	South: 'South',
-	Southwest: 'Southwest',
-	West: 'West',
-	Northwest: 'Northwest',
-	Center: 'Center',
+/**
+ * Which way a plate flew, always English on the wire. `reverse` reuses the `Backward` catalogue
+ * entry `roxy-luck-pillars` already carries for its own forward/backward sequence, since both name
+ * the same idea: the opposite of the forward direction.
+ */
+const FLIGHT_LABEL: Record<string, ChromeString> = {
+	forward: 'Forward',
+	reverse: 'Backward',
 };
 
 /** True for the natal plate, which carries a mountain and a water star per palace. */
@@ -45,13 +43,12 @@ function isNatal(d: FlyingStarData): d is GenerateFlyingStarChartResponse {
  * no name of its own in any language a reader might want this card in. An annual plate carries one
  * star per palace, so the cell holds that number alone.
  *
- * **This card is English end to end, by decision.** The vocabulary it needs (the mountain and water
- * stars, the facing and sitting mountains) is the product here, and a sourcing pass across all
- * seven catalogue languages could not attest it in every one, with nine in ten apparent sources
- * turning out to be machine translations of a single English original. Inventing the terms in the
- * one place where the terms ARE the product is the worst outcome available, so the card stays
- * English until a practitioner in each language can source it, and the response values print as
- * the response sent them rather than half of them arriving translated under an English heading.
+ * **The card heading and every fact label are now catalogued; the mountain and star names the
+ * response gives no display form for stay English.** `structure.name` is translated in place by the
+ * API under `lang` (switch on `structure.id`, the stable machine value), so it needs no lookup here.
+ * The facing and sitting mountains are read through the same published `facing` option a Vastu
+ * facing field already publishes (`displayOption(lang, 'facing', ...)`), because the 24 compass
+ * labels (`S2`, `NE1`, ...) are one enum shared across both domains.
  *
  * **The facing and the sitting are the chart.** Two plates built for the same period differ
  * entirely on which mountain a building faces, so the header names the facing mountain, the sitting
@@ -265,12 +262,12 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 			aria-labelledby="flying-star-title"
 		>
 			<header class="head" part="header">
-				<h2 class="title" id="flying-star-title">Flying star chart</h2>
+				<h2 class="title" id="flying-star-title">${this.t('Flying star chart')}</h2>
 				${
 					isNatal(d)
 						? natal
 							? html`<span class="period"
-								>${`Period ${formatInteger(locale, d.period ?? 0)}`}</span
+								>${this.t('Period {{n}}', { n: formatInteger(locale, d.period ?? 0) })}</span
 							>`
 							: nothing
 						: html`<span class="period">${d.year ?? ''}</span>`
@@ -285,16 +282,16 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 					: this.renderAnnualFacts(d, locale)
 			}
 
-			<div class="plate" part="chart plate" role="group" aria-label="Flying star chart">
+			<div class="plate" part="chart plate" role="group" aria-label=${this.t('Flying star chart')}>
 				${GRID_ORDER.map((name) => this.renderPalace(d, name))}
 			</div>
 
 			${
 				natal
 					? html`<div class="legend" part="legend">
-						<span><span class="swatch swatch-mountain"></span>Mountain star</span>
-						<span><span class="swatch swatch-water"></span>Water star</span>
-						<span>Period star</span>
+						<span><span class="swatch swatch-mountain"></span>${this.t('Mountain star')}</span>
+						<span><span class="swatch swatch-water"></span>${this.t('Water star')}</span>
+						<span>${this.t('Period star')}</span>
 					</div>`
 					: nothing
 			}
@@ -313,16 +310,16 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 			${
 				d.facing
 					? html`<span
-						><span class="lbl">Facing</span>
-						<b>${d.facing.label ?? ''}</b> ${d.facing.direction ?? ''}</span
+						><span class="lbl">${this.t('Facing')}</span>
+						<b>${displayOption(locale, 'facing', d.facing.label ?? '')}</b></span
 					>`
 					: nothing
 			}
 			${
 				d.sitting
 					? html`<span
-						><span class="lbl">Sitting</span>
-						<b>${d.sitting.label ?? ''}</b> ${d.sitting.direction ?? ''}</span
+						><span class="lbl">${this.t('Sitting')}</span>
+						<b>${displayOption(locale, 'facing', d.sitting.label ?? '')}</b></span
 					>`
 					: nothing
 			}
@@ -336,18 +333,20 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 				// otherwise look alike, so it is printed rather than left implied.
 				d.mountainFlight
 					? html`<span
-						><span class="lbl">Mountain star</span> ${d.mountainFlight}</span
+						><span class="lbl">${this.t('Mountain star')}</span>
+						${FLIGHT_LABEL[d.mountainFlight] ? this.t(FLIGHT_LABEL[d.mountainFlight] as ChromeString) : d.mountainFlight}</span
 					>`
 					: nothing
 			}
 			${
 				d.waterFlight
 					? html`<span
-						><span class="lbl">Water star</span> ${d.waterFlight}</span
+						><span class="lbl">${this.t('Water star')}</span>
+						${FLIGHT_LABEL[d.waterFlight] ? this.t(FLIGHT_LABEL[d.waterFlight] as ChromeString) : d.waterFlight}</span
 					>`
 					: nothing
 			}
-			${d.straddling ? html`<span><b>Straddling</b></span>` : nothing}
+			${d.straddling ? html`<span><b>${this.t('Straddling')}</b></span>` : nothing}
 		</div>`;
 	}
 
@@ -361,7 +360,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 			${
 				typeof d.centerStar === 'number'
 					? html`<span
-						><span class="lbl">Center</span>
+						><span class="lbl">${this.t('Center')}</span>
 						<b>${formatInteger(locale, d.centerStar)}</b></span
 					>`
 					: nothing
@@ -374,10 +373,20 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 		</div>`;
 	}
 
+	/**
+	 * The compass heading for a grid position, read off the same published `facing` option a Vastu
+	 * form field already publishes. The centre reads the shared `Center` word instead.
+	 */
+	private paletteHeading(locale: string | undefined, name: string): string {
+		return name === 'Center'
+			? this.t('Center')
+			: displayOption(locale, 'facing', name);
+	}
+
 	/** One cell of the plate, found by palace name so the drawing order is this component's and not the response's. */
 	private renderPalace(d: FlyingStarData, name: string) {
-		const label = PALACE_LABEL[name];
-		const heading = label ?? humanize(name);
+		const locale = this.effectiveLang();
+		const heading = this.paletteHeading(locale, name);
 		const cell = (d.palaces ?? []).find(
 			(p: { palace?: string }) => p.palace === name,
 		);
@@ -391,13 +400,13 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 		if (natal && isNatal(d)) {
 			const p = cell as GenerateFlyingStarChartResponse['palaces'][number];
 			return html`<div class="palace ${isCenter ? 'palace-center' : ''}">
-				<span class="mountain" title="Mountain star">${p.mountain ?? ''}</span>
-				<span class="water" title="Water star">${p.water ?? ''}</span>
-				<span class="star" title="Period star">${p.period ?? ''}</span>
+				<span class="mountain" title=${this.t('Mountain star')}>${p.mountain ?? ''}</span>
+				<span class="water" title=${this.t('Water star')}>${p.water ?? ''}</span>
+				<span class="star" title=${this.t('Period star')}>${p.period ?? ''}</span>
 				<span class="palace-name">${heading}</span>
 				${
 					p.combination
-						? html`<span class="combo">${p.combination.name ?? ''}</span>`
+						? html`<span class="combo">${display(p.combination, 'name')}</span>`
 						: nothing
 				}
 			</div>`;
@@ -406,7 +415,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 		return html`<div class="palace ${isCenter ? 'palace-center' : ''}">
 			<span class="star">${p.star ?? ''}</span>
 			<span class="palace-name">${heading}</span>
-			<span class="combo">${p.name ?? ''}</span>
+			<span class="combo">${display(p, 'name')}</span>
 		</div>`;
 	}
 
@@ -414,6 +423,9 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 	private renderStructure(d: GenerateFlyingStarChartResponse) {
 		const s = d.structure;
 		if (!s?.name) return nothing;
+		// `structure.name` is translated IN PLACE by the API under `lang` (unlike the
+		// star and combination names beside it, it has no `nameLocalized` sibling),
+		// so it needs no lookup here; switch on `structure.id` for the stable value.
 		return html`<section part="section structure">
 			<h3 class="block-title">${s.name}</h3>
 			${
@@ -428,17 +440,17 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 	private renderPalaceRows(d: FlyingStarData) {
 		const rows = d.palaces ?? [];
 		if (rows.length === 0) return nothing;
+		const locale = this.effectiveLang();
 		const natal = this.mode !== 'annual' && isNatal(d);
 		const bodies = rows.map((cell) => {
-			const label = PALACE_LABEL[cell.palace ?? ''];
-			const heading = label ?? humanize(cell.palace ?? '');
+			const heading = this.paletteHeading(locale, cell.palace ?? '');
 			if (natal) {
 				const p = cell as GenerateFlyingStarChartResponse['palaces'][number];
 				if (!p.reading && !p.combination) return nothing;
 				return html`<li class="row">
 					<span class="row-name">${heading}</span>
 					<div class="row-body">
-						${p.combination ? html`<span>${p.combination.name ?? ''}</span>` : nothing}
+						${p.combination ? html`<span>${display(p.combination, 'name')}</span>` : nothing}
 						${
 							p.reading && !this.hideReadings
 								? html`<p part="reading">${p.reading}</p>`
@@ -451,7 +463,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 			return html`<li class="row">
 				<span class="row-name">${heading}</span>
 				<div class="row-body">
-					<span>${p.name ?? ''}</span>
+					<span>${display(p, 'name')}</span>
 					${p.element ? html`<span> ${p.element}</span>` : nothing}
 					${
 						!this.hideReadings

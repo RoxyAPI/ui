@@ -762,6 +762,16 @@ describe('shipped locales', () => {
 				'Haab',
 				'Tradition',
 				'Trecena',
+				// The six Chinese-metaphysics cards. `Na Yin` and `Ben Ming Nian` are
+				// proper technical terms with no attested German rendering; `Kua` is
+				// already untranslated throughout the sourced feng-shui prose. `Stem
+				// combination` has no settled German short name (only the full
+				// interaction-meaning paragraph names the concept, unlike its sibling
+				// `Stem clash`, which the same prose attests as `Stammkonflikt`).
+				'Na Yin',
+				'Ben Ming Nian',
+				'Kua',
+				'Stem combination',
 			],
 			// `Natal` is a Spanish word (`carta natal`, `planetas natales`), not an
 			// untranslated fallthrough. Same in French, Portuguese and Turkish, where
@@ -902,6 +912,14 @@ describe('shipped locales', () => {
 				'Haab',
 				'Trecena',
 				'{{value}} virupas',
+				// The six Chinese-metaphysics cards. `Na Yin`, `Ben Ming Nian` and `Kua`
+				// are proper technical terms with no attested Spanish coinage; the
+				// sourced Spanish prose keeps all three untranslated in place.
+				// `Lunar` is the Spanish word too, spelled identically.
+				'Na Yin',
+				'Ben Ming Nian',
+				'Kua',
+				'Lunar {{month}}/{{day}}',
 			],
 			// French borrows `apex` for the focal planet of a figure, and `aspects`
 			// and `transits` are spelled the same; the German pair is a false friend
@@ -1077,6 +1095,18 @@ describe('shipped locales', () => {
 				'Substitutions',
 				'Tradition',
 				'{{value}} virupas',
+				// The six Chinese-metaphysics cards. `Na Yin`, `Ben Ming Nian` and `Kua`
+				// are proper technical terms the sourced French prose already keeps
+				// untranslated in place, with no attested French coinage. `Excellent`,
+				// `Frictions`, `Interactions` and `Traits` are French words too,
+				// spelled identically to the English.
+				'Na Yin',
+				'Ben Ming Nian',
+				'Kua',
+				'Excellent',
+				'Frictions',
+				'Interactions',
+				'Traits',
 			],
 			hi: ['ASC', 'ASC{{n}}', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
@@ -1213,6 +1243,14 @@ describe('shipped locales', () => {
 				'Gematria',
 				'Haab',
 				'{{value}} virupas',
+				// The six Chinese-metaphysics cards. `Na Yin`, `Ben Ming Nian` and `Kua`
+				// are proper technical terms the sourced Portuguese prose already
+				// keeps untranslated in place, with no attested Portuguese coinage.
+				// `Lunar` is the Portuguese word too, spelled identically.
+				'Na Yin',
+				'Ben Ming Nian',
+				'Kua',
+				'Lunar {{month}}/{{day}}',
 			],
 			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
@@ -1326,6 +1364,16 @@ describe('shipped locales', () => {
 				'Gematria',
 				'Haab',
 				'Trecena',
+				// The six Chinese-metaphysics cards. `Na Yin`, `Kua` and `Ben Ming Nian`
+				// are proper technical terms this catalogue already keeps untranslated
+				// elsewhere (Turkish borrows `Hora`, `orb` and `natal` the same way);
+				// `Trigram` names a concept the sourced files import from the I Ching
+				// package rather than localizing themselves, so no vetted Turkish
+				// coinage exists here either.
+				'Na Yin',
+				'Kua',
+				'Ben Ming Nian',
+				'Trigram',
 			],
 		};
 		for (const [lang, catalog] of await shippedCatalogues()) {
@@ -1536,26 +1584,21 @@ describe('a component may not write its own words, and the debt only shrinks', (
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
-		// The two Chinese-metaphysics cards, English by DECISION and on the same
-		// grounds as the KP rows above rather than as a gap nobody got to. Their
-		// vocabulary was sourced across all seven catalogue languages and could not
-		// be written honestly in every one: two of the seven have no BaZi writing at
-		// all, and the ones that do teach the system through element relationships
-		// without ever coining words for the hidden stems, the Ten Gods or the Na
-		// Yin. Nine in ten apparent sources turned out to be machine translations of
-		// one English original, which is what turned an apparently rich result into
-		// a null one. Three terms failed in every language for a different reason
-		// worth keeping: the hidden-stem ranks and the base star are not named
-		// objects in ANY tradition including the Chinese, so they are modelling
-		// mismatches rather than translation gaps. The one line on each card that IS
-		// translated is drawn by a shared helper rather than by the card. Unblocks on
-		// a practitioner pass per language, not on more searching.
-		'components/bazi-chart.ts': 7,
-		'components/flying-star-chart.ts': 14,
-		'components/almanac-day.ts': 9,
-		'components/kua-card.ts': 15,
-		'components/luck-pillars.ts': 10,
-		'components/zodiac-card.ts': 20,
+		// The six Chinese-metaphysics cards (bazi-chart, luck-pillars, zodiac-card,
+		// almanac-day, kua-card, flying-star-chart) carry no row here on a narrower
+		// claim than the KP rows above: only the chart-specific VOCABULARY (Ten
+		// Gods, hidden stems, Na Yin) could not be sourced across all seven
+		// catalogue languages, so pillar values still print exactly as the response
+		// sends them. The CHROME is a separate question: every heading, label,
+		// aria-label and closed-enum badge (the relationship types, the interaction
+		// types, the verdict bands) has a catalogue entry, sourced from the owning
+		// package's locale files where the concept overlaps (`chinese-astrology`,
+		// `feng-shui`) and translated directly where it is an ordinary word. The
+		// untranslated vocabulary itself is unrelated to this list:
+		// Ten God names, hidden-stem ranks, the BaZi interaction Chinese glyphs and
+		// the Kua/trigram English names stay exactly as the response sends them,
+		// because the API still does not localize them and this repo does not
+		// invent a translation the API withholds.
 	};
 
 	/** Path to the literals it writes, keyed the way the budget is. */

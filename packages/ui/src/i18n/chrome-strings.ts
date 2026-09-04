@@ -1201,6 +1201,126 @@ export const CHROME_STRINGS = [
 	'Humours',
 	'Planetary humours',
 	'Dhatu',
+
+	// The six Chinese-metaphysics cards (bazi-chart, luck-pillars, zodiac-card,
+	// almanac-day, kua-card, flying-star-chart). Generic calendar words shared by
+	// every Four Pillars heading: the response gives no display form for a pillar
+	// POSITION (only for the stem, branch and animal that fill it), so these are
+	// the component's own and are ordinary words in every language.
+	'Year',
+	'Month',
+	'Hour',
+
+	// BaZi chart: the card heading, the Day Master block, the two accordions and
+	// the Ten God relation each pillar and interaction carries. `Na Yin` is the
+	// sixty-pair sound-element system named on each pillar; like `Hora` and
+	// `Vargottama` above it is a technical term that prints as itself wherever a
+	// language has not coined its own word for it.
+	'Four pillars',
+	'Day Master',
+	'Hidden stems',
+	'Na Yin',
+	'Interactions',
+
+	// BaZi interactions: the seven combination, clash, harm and punishment
+	// categories the response names in `type`, always English on the wire because
+	// nothing licenses a display form there. The component is what turns each into
+	// a word, the same shape as the six relationship types below, so they are
+	// catalogued rather than left as the raw category id.
+	'Stem combination',
+	'Six combination',
+	'Trine',
+	'Punishment',
+	'Stem clash',
+
+	// How represented one of the five phases is across the eight BaZi characters,
+	// always English on the wire for the same reason as the two sets above.
+	'Deficient',
+	'Balanced',
+	'Excess',
+
+	// The six-value day-to-sign and year-to-sign relationship a Chinese zodiac
+	// daily reading is built from (`secret-friend`, `trine`, `same`, `neutral`,
+	// `harm`, `clash`), always English on the wire. `Secret friend`, `Harm` and
+	// `Trine` double as the labels naming an animal's paired partner and its own
+	// three-sign alliance elsewhere on the same family of cards, since both are
+	// the same six-way taxonomy read from a different angle. `Clash` is shared
+	// again with the almanac day card below.
+	'Same',
+	'Secret friend',
+	'Harm',
+	'Clash',
+
+	// Luck pillars (Da Yun): the strip heading, its header facts, and the two
+	// range templates it shares with the zodiac card's double-hour fact below.
+	// `{{years}}y {{months}}m` is the compact form for the strip's own header; a
+	// count with no months reuses the existing `{{years}} yrs` entry above.
+	'Luck pillars',
+	'Starts',
+	'Counted to',
+	'Days',
+	'Annual pillars',
+	'{{start}} to {{end}}',
+	'{{years}}y {{months}}m',
+	'Forward',
+	'Backward',
+
+	// Chinese zodiac card: the identity facts, the four-way relationship-type
+	// group heading, the reference-read sections and the compatibility verdict
+	// band. `Excellent`, `Workable` and `Difficult` are three of a five-value
+	// compatibility score band; the other two, `Strong` and `Challenging`, are
+	// already catalogued above.
+	'Branch',
+	'Polarity',
+	'Pillar',
+	'Hours',
+	'Ben Ming Nian',
+	'Traits',
+	'Shared element',
+	'Weaknesses',
+	'Frictions',
+	'Excellent',
+	'Workable',
+	'Difficult',
+
+	// Chinese almanac (Tong Shu) day card: the day header, the favourable and
+	// unfavourable activity lists (each item read from the published
+	// `activity.*` field-label option, never catalogued here), and the fallback
+	// title for a month or search read with no more specific activity name.
+	'Avoiding',
+	'Lunar {{month}}/{{day}}',
+	'Lunar {{month}}/{{day}} (leap)',
+	'Favours',
+	'Avoids',
+	'Mansion',
+	'Almanac',
+
+	// Kua number and Eight Mansions: the life-group clause, the trigram facts,
+	// the two boundary clauses shared with the pillar cards above, and the map
+	// legend. `Kua` and `Eight mansions` are the system's own proper names, kept
+	// untranslated in most languages the same way `Hora` and `Vargottama` are.
+	'{{direction}} group',
+	'Trigram',
+	'Role',
+	'Year from {{date}}',
+	'Reassigned from {{value}}',
+	'Kua',
+	'Eight mansions',
+	'Best',
+	'Worst',
+	'Sectors',
+
+	// Flying Star (Xuan Kong) plate: the three numbers a palace carries, the card
+	// heading, and the two mountains and the boundary flag a natal plate reads
+	// off the compass.
+	'Mountain star',
+	'Water star',
+	'Period star',
+	'Flying star chart',
+	'Facing',
+	'Sitting',
+	'Straddling',
+	'Period {{n}}',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

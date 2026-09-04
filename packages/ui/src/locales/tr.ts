@@ -1073,6 +1073,95 @@ export const tr: Record<ChromeString, string> = {
 	Humours: 'Doshalar',
 	'Planetary humours': 'Grahaların doshaları',
 	Dhatu: 'Dhatu',
+
+	// The six Chinese-metaphysics cards: generic calendar words shared by every
+	// Four Pillars heading.
+	Year: 'Yıl',
+	Month: 'Ay',
+	Hour: 'Saat',
+
+	// BaZi chart. `Na Yin` has no attested Turkish rendering, the same standing
+	// as `Hora` and `Kua` elsewhere in this catalogue.
+	'Four pillars': 'Dört Sütun',
+	'Day Master': 'Gün Efendisi',
+	'Hidden stems': 'Gizli Kökler',
+	'Na Yin': 'Na Yin',
+	Interactions: 'Etkileşimler',
+
+	// BaZi interaction categories.
+	'Stem combination': 'Kök Birleşimi',
+	'Six combination': 'Altı Uyum',
+	Trine: 'Üç Uyum',
+	Punishment: 'Ceza',
+	'Stem clash': 'Kök Çatışması',
+
+	// How represented a phase is across the eight BaZi characters.
+	Deficient: 'Eksik',
+	Balanced: 'Dengeli',
+	Excess: 'Fazla',
+
+	// The six-value relationship type a daily zodiac reading names.
+	Same: 'Aynı Dal',
+	'Secret friend': 'Altı Uyum',
+	Harm: 'Altı Zarar',
+	Clash: 'Altı Çatışma',
+
+	// Luck pillars (Da Yun).
+	'Luck pillars': 'Şans Sütunları',
+	Starts: 'Başlangıç',
+	'Counted to': 'Sayıldığı Nokta',
+	Days: 'Gün',
+	'Annual pillars': 'Yıllık Sütunlar',
+	'{{start}} to {{end}}': '{{start}} ile {{end}} arası',
+	'{{years}}y {{months}}m': '{{years}}y {{months}}a',
+	Forward: 'İleri',
+	Backward: 'Geri',
+
+	// Chinese zodiac card.
+	Branch: 'Dal',
+	Polarity: 'Kutupluk',
+	Pillar: 'Sütun',
+	Hours: 'Saatler',
+	'Ben Ming Nian': 'Ben Ming Nian',
+	Traits: 'Özellikler',
+	'Shared element': 'Ortak Element',
+	Weaknesses: 'Zayıf Yönler',
+	Frictions: 'Sürtüşmeler',
+	Excellent: 'Mükemmel',
+	Workable: 'Uygulanabilir',
+	Difficult: 'Zor',
+
+	// Chinese almanac (Tong Shu) day card.
+	Avoiding: 'Kaçınılan',
+	'Lunar {{month}}/{{day}}': 'Kamerî {{month}}/{{day}}',
+	'Lunar {{month}}/{{day}} (leap)': 'Kamerî {{month}}/{{day}} (artık)',
+	Favours: 'Uygun Etkinlikler',
+	Avoids: 'Sakıncalı Etkinlikler',
+	Mansion: 'Konak',
+	Almanac: 'Almanak',
+
+	// Kua number and Eight Mansions. `Trigram` names a concept the sourced files
+	// import from the I Ching package rather than localizing themselves.
+	'{{direction}} group': '{{direction}} Grubu',
+	Trigram: 'Trigram',
+	Role: 'Rol',
+	'Year from {{date}}': '{{date}} İtibarıyla Yıl',
+	'Reassigned from {{value}}': '{{value}} Sayısından Yeniden Atandı',
+	Kua: 'Kua',
+	'Eight mansions': 'Sekiz Sektör',
+	Best: 'En İyi',
+	Worst: 'En Kötü',
+	Sectors: 'Sektörler',
+
+	// Flying Star (Xuan Kong) plate.
+	'Mountain star': 'Dağ Yıldızı',
+	'Water star': 'Su Yıldızı',
+	'Period star': 'Dönem Yıldızı',
+	'Flying star chart': 'Uçan Yıldız Haritası',
+	Facing: 'Yön',
+	Sitting: 'Oturuş',
+	Straddling: 'Sınırda',
+	'Period {{n}}': 'Dönem {{n}}',
 };
 
 registerLocale('tr', tr);

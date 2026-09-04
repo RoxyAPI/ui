@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { GenerateBaziChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -8,16 +9,56 @@ import {
 	frameCaptionStyles,
 	renderConventionsCaption,
 } from '../utils/frame.js';
+import { display } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
 
 type BaziPillar = GenerateBaziChartResponse['pillars'][number];
+type BaziInteraction = NonNullable<
+	GenerateBaziChartResponse['interactions']
+>[number];
 
-/** Column heading per pillar, keyed by the position the response gives it. */
-const PILLAR_LABEL: Record<string, string> = {
+/** Column heading per pillar, keyed by the position the response gives it. The response names a
+ * pillar's stem, branch and animal but never the POSITION itself, so this is the component's own. */
+const PILLAR_LABEL: Record<string, ChromeString> = {
 	year: 'Year',
 	month: 'Month',
 	day: 'Day',
 	hour: 'Hour',
+};
+
+/**
+ * Whether an interaction binds or breaks. Always English on the wire (the spec says so outright),
+ * and a closed two-value set the natal chart already names for its own aspect patterns, so this
+ * reuses that vocabulary rather than adding a second word for the same idea.
+ */
+const QUALITY_LABEL: Record<string, ChromeString> = {
+	harmonious: 'Harmonious',
+	challenging: 'Challenging',
+};
+
+/**
+ * The seven BaZi interaction categories, always English on the wire (the spec says so outright:
+ * "Always English, whatever the lang parameter says"). A closed set the component turns into a
+ * word, same shape as {@link QUALITY_LABEL}.
+ */
+const TYPE_LABEL: Record<string, ChromeString> = {
+	'stem-combination': 'Stem combination',
+	'six-combination': 'Six combination',
+	trine: 'Trine',
+	clash: 'Clash',
+	harm: 'Harm',
+	punishment: 'Punishment',
+	'stem-clash': 'Stem clash',
+};
+
+/**
+ * How represented a phase is across the eight BaZi characters, always English on the wire (the spec
+ * says so outright). A closed three-value set, same shape as {@link QUALITY_LABEL}.
+ */
+const LEVEL_LABEL: Record<string, ChromeString> = {
+	deficient: 'Deficient',
+	balanced: 'Balanced',
+	excess: 'Excess',
 };
 
 /**
@@ -41,15 +82,14 @@ const PILLAR_LABEL: Record<string, string> = {
  * interaction and its members, and the conventions all stay. The Day Master paragraph, the summary,
  * the per-element reading and the per-interaction meaning go.
  *
- * **This card is English end to end, by decision, and that is not an oversight.** Its vocabulary is
- * the product here, and a sourcing pass across all seven catalogue languages found that most of it
- * cannot be written honestly in any of them: two of the seven have no BaZi writing at all, and the
- * ones that do teach the system through element relationships without ever coining words for the
- * hidden stems, the Ten Gods or the Na Yin, while nine in ten apparent sources turn out to be
- * machine translations of one English original. Inventing terminology in the one place where the
- * terminology IS the product is the worst outcome available, so the card stays English until a
- * practitioner in each language can source it, and every value prints as the response sent it
- * rather than half of them arriving translated under an English heading.
+ * **The vocabulary stays English end to end, by decision; the chrome does not.** A sourcing pass
+ * across all seven catalogue languages found that most of the VOCABULARY (the Ten Gods, the hidden
+ * stems, the Na Yin sound elements) cannot be written honestly in any of them, so every pillar value
+ * still prints exactly as the response sends it. The card's own headings are a separate question:
+ * `Four pillars`, `Day Master`, the four pillar-position headers and every localizable value
+ * (`zodiacAnimalLocalized`, `elementLocalized`, `animalLocalized`, `tenGod.nameLocalized`) are
+ * catalogued and read through {@link display}, so the chrome and the vocabulary each follow their
+ * own rule instead of one covering for the other.
  */
 @customElement('roxy-bazi-chart')
 export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
@@ -294,16 +334,16 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 		const born = formatDateTime(locale, d.birthData?.date, d.birthData?.time);
 		return html`<article class="card" part="card" aria-labelledby="bazi-title">
 			<header class="head" part="header">
-				<h2 class="title" id="bazi-title">Four pillars</h2>
+				<h2 class="title" id="bazi-title">${this.t('Four pillars')}</h2>
 				${born ? html`<span class="born">${born}</span>` : nothing}
 				${
 					d.zodiacAnimal
-						? html`<span class="animal">${d.zodiacAnimal}</span>`
+						? html`<span class="animal">${display(d, 'zodiacAnimal')}</span>`
 						: nothing
 				}
 			</header>
 
-			<div class="pillars-wrap" part="chart" role="group" tabindex="0" aria-label="Four pillars">
+			<div class="pillars-wrap" part="chart" role="group" tabindex="0" aria-label=${this.t('Four pillars')}>
 				<div class="pillars">
 					${(d.pillars ?? []).map((p) => this.renderPillar(p))}
 				</div>
@@ -330,26 +370,26 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 			class="pillar ${isSelf ? 'pillar-self' : ''}"
 			part="pillar"
 		>
-			<span class="pos">${heading ?? humanize(p.position)}</span>
-			<span class="god">${p.tenGod?.name ?? ''}</span>
+			<span class="pos">${heading ? this.t(heading) : humanize(p.position)}</span>
+			<span class="god">${display(p.tenGod, 'name')}</span>
 			<span class="hanzi" lang="zh">${p.stem?.chinese ?? ''}</span>
 			<span class="romanised"
-				>${p.stem?.pinyin ?? ''} ${p.stem?.element ?? ''}</span
+				>${p.stem?.pinyin ?? ''} ${display(p.stem, 'element')}</span
 			>
 			<span class="hanzi hanzi-branch" lang="zh">${p.branch?.chinese ?? ''}</span>
 			<span class="romanised"
 				>${p.branch?.pinyin ?? ''}
-				${p.branch?.animal ?? ''}</span
+				${display(p.branch, 'animal')}</span
 			>
 			${
 				p.hiddenStems?.length
 					? html`<hr class="rule" />
-						<ul class="hidden" aria-label="Hidden stems">
+						<ul class="hidden" aria-label=${this.t('Hidden stems')}>
 							${p.hiddenStems.map(
 								(h) => html`<li>
 									<span lang="zh">${h.stem?.chinese ?? ''}</span>
 									<span class="role">${h.role}</span>
-									${h.tenGod?.name ?? ''}
+									${display(h.tenGod, 'name')}
 								</li>`,
 							)}
 						</ul>`
@@ -358,7 +398,7 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 			${
 				p.naYin
 					? html`<hr class="rule" />
-						<span class="nayin" title="Na Yin">${p.naYin}</span>`
+						<span class="nayin" title=${this.t('Na Yin')}>${p.naYin}</span>`
 					: nothing
 			}
 		</div>`;
@@ -369,11 +409,11 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 		const m = d.dayMaster;
 		if (!m) return nothing;
 		return html`<section part="section day-master">
-			<h3 class="block-title">Day Master</h3>
+			<h3 class="block-title">${this.t('Day Master')}</h3>
 			<div class="master">
 				<span class="hanzi" lang="zh">${m.chinese ?? ''}</span>
 				<span
-					><b>${m.element ?? ''}</b> ${m.polarity ?? ''} ${m.pinyin ?? ''}</span
+					><b>${display(m, 'element')}</b> ${m.polarity ?? ''} ${m.pinyin ?? ''}</span
 				>
 				${
 					m.nature && !this.hideReadings
@@ -393,11 +433,11 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 		// share of whichever element happens to lead it.
 		const total = rows.reduce((n, r) => n + (r.count ?? 0), 0) || 1;
 		return html`<section part="section elements">
-			<h3 class="block-title">Elements</h3>
+			<h3 class="block-title">${this.t('Elements')}</h3>
 			<div class="elements">
 				${rows.map(
 					(r) => html`<div class="element">
-						<span>${r.element ?? ''}</span>
+						<span>${display(r, 'element')}</span>
 						<span class="element-track"
 							><span
 								class="element-fill"
@@ -405,7 +445,8 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 							></span
 						></span>
 						<span class="element-count"
-							>${formatInteger(locale, r.count ?? 0)} ${r.level ?? ''}</span
+							>${formatInteger(locale, r.count ?? 0)}
+							${r.level && LEVEL_LABEL[r.level] ? this.t(LEVEL_LABEL[r.level] as ChromeString) : (r.level ?? '')}</span
 						>
 						${
 							r.reading && !this.hideReadings
@@ -423,16 +464,16 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 		const rows = d.interactions ?? [];
 		if (rows.length === 0) return nothing;
 		return html`<section part="section interactions">
-			<h3 class="block-title">Interactions</h3>
+			<h3 class="block-title">${this.t('Interactions')}</h3>
 			<ul class="interactions">
 				${rows.map(
-					(i) => html`<li class="interaction">
+					(i: BaziInteraction) => html`<li class="interaction">
 						<div class="interaction-line">
 							<span lang="zh">${i.chinese ?? ''}</span>
-							<b>${humanize(i.type ?? '')}</b>
+							<b>${i.type && TYPE_LABEL[i.type] ? this.t(TYPE_LABEL[i.type] as ChromeString) : humanize(i.type ?? '')}</b>
 							${
 								i.quality
-									? html`<span class="tag tag-${i.quality}">${i.quality}</span>`
+									? html`<span class="tag tag-${i.quality}">${i.quality && QUALITY_LABEL[i.quality] ? this.t(QUALITY_LABEL[i.quality] as ChromeString) : i.quality}</span>`
 									: nothing
 							}
 							<span>${(i.positions ?? []).join(' ')}</span>
