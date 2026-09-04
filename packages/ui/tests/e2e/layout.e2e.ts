@@ -371,3 +371,79 @@ for (const vp of WIDTHS) {
 		expect(narrow, `${vp.label}: ${narrow.join('\n')}`).toEqual([]);
 	});
 }
+
+/**
+ * A plate cell's own heading never overflows the cell, in the language that spells the compass
+ * longest.
+ *
+ * @remarks
+ * The plate-fill check above asks whether the PLATE fills its card; this asks the opposite question
+ * one level in, whether a HEADING inside one of the plate's own cells fills only its cell. Neither
+ * test can stand in for the other: a heading can overflow its cell while the plate itself still sits
+ * flush with the card, because a grid cell's own box does not grow past its track just because the
+ * text inside it wants to. That is exactly what shipped: `roxy-kua-card` and
+ * `roxy-flying-star-chart` clipped `SOUTHWEST` and `NORTHWEST` at phone width in English, and every
+ * catalogue language spells at least one compass word longer than the English source does.
+ *
+ * German is the language under test because it is the shipped catalogue's longest compass spelling
+ * (`Südwesten`, `Nordwesten`), so a regression here fails on the language most likely to expose it
+ * first; `class="plate-heading"` (`utils/plate-heading.ts`) is shared by both components for exactly
+ * this reason, so the fix and this guard both live in one place rather than two. The measurement is
+ * `scrollWidth` against `clientWidth` on the heading element itself: an element wider than its own
+ * box scrolls even though nothing asked it to, which is what "the text does not fit" means in the
+ * DOM, and it is true whether the overflow renders as a clip or a scrollbar the plate's own
+ * `overflow: hidden` happens to hide. Sabotage-verified by reinstating a fixed cell width narrow
+ * enough to force it: re-narrowing turns this from a pass to a fail without touching the heading
+ * text itself, which is what proves the assertion is reading the box and not the word.
+ */
+test('no plate-cell heading overflows its own cell at phone width (375px), in German', async ({
+	page,
+}) => {
+	await page.setViewportSize({ width: 375, height: 900 });
+	await page.goto('/');
+	await page.waitForLoadState('networkidle');
+	await page.selectOption('#lang-select', 'de');
+	await expect
+		.poll(() => page.evaluate(() => document.documentElement.lang))
+		.toBe('de');
+	// A payload fetch and a re-render, same margin `language.e2e.ts` gives it.
+	await page.waitForTimeout(1000);
+
+	const found = await page.evaluate(() => {
+		const demos =
+			(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
+				.ROXY_UI_DEMOS ?? [];
+		const out: string[] = [];
+		const tags = new Set<string>();
+		for (const d of demos) {
+			const host = document.getElementById(d.id);
+			const sr = (host as HTMLElement & { shadowRoot?: ShadowRoot | null })
+				?.shadowRoot;
+			if (!sr) continue;
+			for (const plate of sr.querySelectorAll('[part~="plate"]')) {
+				tags.add((host as HTMLElement).tagName.toLowerCase());
+				for (const el of plate.querySelectorAll('.plate-heading')) {
+					const h = el as HTMLElement;
+					// 1px of tolerance for sub-pixel rounding, the same margin the
+					// plate-fill check above gives itself.
+					const over = h.scrollWidth - h.clientWidth;
+					if (over > 1) {
+						out.push(
+							`${d.id} (${(host as HTMLElement).tagName.toLowerCase()}): "${h.textContent?.trim()}" is ${over}px wider than its cell`,
+						);
+					}
+				}
+			}
+		}
+		return { out, tags: [...tags].sort() };
+	});
+
+	// Not vacuous: the walk actually found headings to measure on both plate
+	// components, so an empty result means every one of them fit rather than
+	// meaning the selector matched nothing.
+	expect(
+		found.tags,
+		'the set of components this walk actually measured',
+	).toEqual([...PLATE_TAGS].sort());
+	expect(found.out, found.out.join('\n')).toEqual([]);
+});

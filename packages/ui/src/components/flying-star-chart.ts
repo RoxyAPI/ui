@@ -10,6 +10,7 @@ import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatInteger } from '../utils/format.js';
 import { display, displayOption } from '../utils/localized.js';
 import { GRID_ORDER } from '../utils/nine-palaces.js';
+import { plateHeadingStyles } from '../utils/plate-heading.js';
 
 type FlyingStarData =
 	| GenerateFlyingStarChartResponse
@@ -62,6 +63,7 @@ function isNatal(d: FlyingStarData): d is GenerateFlyingStarChartResponse {
 export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 	static styles = [
 		baseStyles,
+		plateHeadingStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -393,7 +395,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 		const natal = this.mode !== 'annual' && isNatal(d);
 		if (!cell) {
 			return html`<div class="palace">
-				<span class="palace-name">${heading}</span>
+				<span class="palace-name plate-heading">${heading}</span>
 			</div>`;
 		}
 		const isCenter = name === 'Center';
@@ -403,7 +405,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 				<span class="mountain" title=${this.t('Mountain star')}>${p.mountain ?? ''}</span>
 				<span class="water" title=${this.t('Water star')}>${p.water ?? ''}</span>
 				<span class="star" title=${this.t('Period star')}>${p.period ?? ''}</span>
-				<span class="palace-name">${heading}</span>
+				<span class="palace-name plate-heading">${heading}</span>
 				${
 					p.combination
 						? html`<span class="combo">${display(p.combination, 'name')}</span>`
@@ -414,7 +416,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 		const p = cell as GetAnnualFlyingStarsResponse['palaces'][number];
 		return html`<div class="palace ${isCenter ? 'palace-center' : ''}">
 			<span class="star">${p.star ?? ''}</span>
-			<span class="palace-name">${heading}</span>
+			<span class="palace-name plate-heading">${heading}</span>
 			<span class="combo">${display(p, 'name')}</span>
 		</div>`;
 	}

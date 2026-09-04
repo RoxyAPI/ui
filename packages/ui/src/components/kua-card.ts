@@ -13,6 +13,7 @@ import {
 } from '../utils/frame.js';
 import { display, displayOption } from '../utils/localized.js';
 import { GRID_ORDER } from '../utils/nine-palaces.js';
+import { plateHeadingStyles } from '../utils/plate-heading.js';
 import { capitalize } from '../utils/string.js';
 
 type KuaData = CalculateKuaNumberResponse | GenerateEightMansionsResponse;
@@ -48,6 +49,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,
+		plateHeadingStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -380,7 +382,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 			return html`<div class="sector sector-self centre">
 				<span class="kua-number">${d.kua ?? ''}</span>
 				<span class="trigram-symbol">${d.trigram?.symbol ?? ''}</span>
-				<span class="sector-name">${d.trigram?.english ?? ''}</span>
+				<span class="sector-name plate-heading">${d.trigram?.english ?? ''}</span>
 			</div>`;
 		}
 		const sector = (d.sectors ?? []).find(
@@ -388,12 +390,12 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 		);
 		if (!sector) {
 			return html`<div class="sector">
-				<span class="sector-name">${heading}</span>
+				<span class="sector-name plate-heading">${heading}</span>
 			</div>`;
 		}
 		const good = sector.nature === 'auspicious';
 		return html`<div class="sector ${good ? 'sector-good' : 'sector-bad'}">
-			<span class="sector-name">${heading}</span>
+			<span class="sector-name plate-heading">${heading}</span>
 			<span class="star-name">${display(sector, 'starName')}</span>
 			${
 				'chinese' in sector && sector.chinese
