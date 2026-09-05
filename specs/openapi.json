@@ -6588,7 +6588,7 @@
                 "evidence": {
                   "type": "string",
                   "example": "Jupiter in kendra from Moon, not retrograde, no malefic drishti. Strengtheners: Moon out of 6/8/12 (house 4); Moon 5 houses from Sun; Moon not in Scorpio.",
-                  "description": "Human-readable rationale naming the specific rule that triggered or failed the detection, including planetary positions, dignity, kendradhipati status, lordship, malefic drishti, sign modality, or whole-chart bhava distribution. For a Nabhasa yoga that matched its own rule but was outranked, this names the precedence norm that silenced it, for example that an Akriti yoga outranks Asraya or that any other Nabhasa family suppresses Sankhya."
+                  "description": "Human-readable rationale naming the specific rule that triggered or failed the detection, including planetary positions, dignity, kendradhipati status, lordship, malefic drishti, sign modality, or whole-chart bhava distribution. For a Nabhasa yoga that matched its own rule but was outranked, this names the precedence norm that silenced it, for example that an Akriti yoga outranks Asraya or that any other Nabhasa family suppresses Sankhya. English in every language, like the per-graha stateSource on POST /daily, because it is provenance to be checked against a text rather than display copy."
                 }
               },
               "required": [
@@ -8861,7 +8861,7 @@
                 "evidence": {
                   "type": "string",
                   "example": "Jupiter in kendra from Moon, not retrograde, no malefic drishti. Strengtheners: Moon out of 6/8/12 (house 4); Moon 5 houses from Sun; Moon not in Scorpio.",
-                  "description": "Human-readable rationale naming the specific rule that triggered or failed the detection, including planetary positions, dignity, kendradhipati status, lordship, malefic drishti, sign modality, or whole-chart bhava distribution. For a Nabhasa yoga that matched its own rule but was outranked, this names the precedence norm that silenced it, for example that an Akriti yoga outranks Asraya or that any other Nabhasa family suppresses Sankhya."
+                  "description": "Human-readable rationale naming the specific rule that triggered or failed the detection, including planetary positions, dignity, kendradhipati status, lordship, malefic drishti, sign modality, or whole-chart bhava distribution. For a Nabhasa yoga that matched its own rule but was outranked, this names the precedence norm that silenced it, for example that an Akriti yoga outranks Asraya or that any other Nabhasa family suppresses Sankhya. English in every language, like the per-graha stateSource on POST /daily, because it is provenance to be checked against a text rather than display copy."
                 }
               },
               "required": [
@@ -68480,6 +68480,11 @@
                       "example": "xiao-shu",
                       "description": "The minor solar term the count ran to. One of the twelve that also move the month pillar. Always the pinyin identifier, whatever the lang parameter says."
                     },
+                    "boundaryTermName": {
+                      "type": "string",
+                      "example": "Minor Heat",
+                      "description": "Display name of that same term, in the requested language. Always present, and English when lang is en. Several English renderings of a term are in circulation, so treat this as the label and boundaryTerm as the value."
+                    },
                     "luckPillars": {
                       "type": "array",
                       "items": {
@@ -68782,6 +68787,7 @@
                     "startAgeMonths",
                     "daysToTerm",
                     "boundaryTerm",
+                    "boundaryTermName",
                     "luckPillars",
                     "summary"
                   ]
@@ -76550,6 +76556,11 @@
                       "example": "rat",
                       "description": "Echo of the animal protected. Absent when none was sent, rather than null."
                     },
+                    "avoidAnimalLocalized": {
+                      "type": "string",
+                      "example": "Ratte",
+                      "description": "Display name of the protected animal in the requested language, beside the avoidAnimal identifier. Absent when no animal was sent and absent when lang is en, so an English response is unchanged."
+                    },
                     "total": {
                       "type": "number",
                       "example": 8,
@@ -77713,7 +77724,12 @@
                         "english": {
                           "type": "string",
                           "example": "Wind",
-                          "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                          "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                        },
+                        "nameLocalized": {
+                          "type": "string",
+                          "example": "Viento",
+                          "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                         },
                         "pinyin": {
                           "type": "string",
@@ -77735,15 +77751,25 @@
                           "example": "Wood",
                           "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                         },
+                        "elementLocalized": {
+                          "type": "string",
+                          "example": "Madera",
+                          "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "direction": {
                           "type": "string",
                           "example": "Southeast",
                           "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                         },
+                        "directionLocalized": {
+                          "type": "string",
+                          "example": "Sureste",
+                          "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "familyMember": {
                           "type": "string",
                           "example": "Eldest Daughter",
-                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                         }
                       },
                       "required": [
@@ -77796,7 +77822,7 @@
                           "domain": {
                             "type": "string",
                             "example": "Growth and income",
-                            "description": "The life domain this sector governs, in a few words."
+                            "description": "The life domain this sector governs, in a few words, written in the requested language."
                           }
                         },
                         "required": [
@@ -78134,7 +78160,12 @@
                         "english": {
                           "type": "string",
                           "example": "Wind",
-                          "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                          "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                        },
+                        "nameLocalized": {
+                          "type": "string",
+                          "example": "Viento",
+                          "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                         },
                         "pinyin": {
                           "type": "string",
@@ -78156,15 +78187,25 @@
                           "example": "Wood",
                           "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                         },
+                        "elementLocalized": {
+                          "type": "string",
+                          "example": "Madera",
+                          "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "direction": {
                           "type": "string",
                           "example": "Southeast",
                           "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                         },
+                        "directionLocalized": {
+                          "type": "string",
+                          "example": "Sureste",
+                          "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "familyMember": {
                           "type": "string",
                           "example": "Eldest Daughter",
-                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                         }
                       },
                       "required": [
@@ -78217,7 +78258,7 @@
                           "domain": {
                             "type": "string",
                             "example": "Growth and income",
-                            "description": "The life domain this sector governs, in a few words."
+                            "description": "The life domain this sector governs, in a few words, written in the requested language."
                           }
                         },
                         "required": [
@@ -78608,7 +78649,12 @@
                         "english": {
                           "type": "string",
                           "example": "Wind",
-                          "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                          "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                        },
+                        "nameLocalized": {
+                          "type": "string",
+                          "example": "Viento",
+                          "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                         },
                         "pinyin": {
                           "type": "string",
@@ -78630,15 +78676,25 @@
                           "example": "Wood",
                           "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                         },
+                        "elementLocalized": {
+                          "type": "string",
+                          "example": "Madera",
+                          "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "direction": {
                           "type": "string",
                           "example": "Southeast",
                           "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                         },
+                        "directionLocalized": {
+                          "type": "string",
+                          "example": "Sureste",
+                          "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "familyMember": {
                           "type": "string",
                           "example": "Eldest Daughter",
-                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                         }
                       },
                       "required": [
@@ -78701,7 +78757,7 @@
                           "domain": {
                             "type": "string",
                             "example": "Growth and income",
-                            "description": "The life domain this sector governs, in a few words."
+                            "description": "The life domain this sector governs, in a few words, written in the requested language."
                           },
                           "trigram": {
                             "type": "object",
@@ -78719,7 +78775,12 @@
                               "english": {
                                 "type": "string",
                                 "example": "Wind",
-                                "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                                "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                              },
+                              "nameLocalized": {
+                                "type": "string",
+                                "example": "Viento",
+                                "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                               },
                               "pinyin": {
                                 "type": "string",
@@ -78741,15 +78802,25 @@
                                 "example": "Wood",
                                 "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                               },
+                              "elementLocalized": {
+                                "type": "string",
+                                "example": "Madera",
+                                "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                              },
                               "direction": {
                                 "type": "string",
                                 "example": "Southeast",
                                 "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                               },
+                              "directionLocalized": {
+                                "type": "string",
+                                "example": "Sureste",
+                                "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                              },
                               "familyMember": {
                                 "type": "string",
                                 "example": "Eldest Daughter",
-                                "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                                "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                               }
                             },
                             "required": [
@@ -80460,12 +80531,12 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 9,
-              "default": 20,
-              "example": 20,
-              "description": "Maximum stars to return per page. Range 1 to 9, default 20."
+              "default": 9,
+              "example": 9,
+              "description": "Maximum items to return per page. Range: 1-9, default 9."
             },
             "required": false,
-            "description": "Maximum stars to return per page. Range 1 to 9, default 20.",
+            "description": "Maximum items to return per page. Range: 1-9, default 9.",
             "name": "limit",
             "in": "query"
           },
@@ -80478,10 +80549,10 @@
               "minimum": 0,
               "default": 0,
               "example": 0,
-              "description": "Number of stars to skip for pagination. Default 0."
+              "description": "Number of items to skip for pagination. Default 0."
             },
             "required": false,
-            "description": "Number of stars to skip for pagination. Default 0.",
+            "description": "Number of items to skip for pagination. Default 0.",
             "name": "offset",
             "in": "query"
           }
@@ -81651,12 +81722,12 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 9,
-              "default": 20,
-              "example": 20,
-              "description": "Maximum sectors to return per page. Range 1 to 9, default 20."
+              "default": 9,
+              "example": 9,
+              "description": "Maximum items to return per page. Range: 1-9, default 9."
             },
             "required": false,
-            "description": "Maximum sectors to return per page. Range 1 to 9, default 20.",
+            "description": "Maximum items to return per page. Range: 1-9, default 9.",
             "name": "limit",
             "in": "query"
           },
@@ -81669,10 +81740,10 @@
               "minimum": 0,
               "default": 0,
               "example": 0,
-              "description": "Number of sectors to skip for pagination. Default 0."
+              "description": "Number of items to skip for pagination. Default 0."
             },
             "required": false,
-            "description": "Number of sectors to skip for pagination. Default 0.",
+            "description": "Number of items to skip for pagination. Default 0.",
             "name": "offset",
             "in": "query"
           }
@@ -81770,7 +81841,12 @@
                               "english": {
                                 "type": "string",
                                 "example": "Wind",
-                                "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                                "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                              },
+                              "nameLocalized": {
+                                "type": "string",
+                                "example": "Viento",
+                                "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                               },
                               "pinyin": {
                                 "type": "string",
@@ -81792,15 +81868,25 @@
                                 "example": "Wood",
                                 "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                               },
+                              "elementLocalized": {
+                                "type": "string",
+                                "example": "Madera",
+                                "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                              },
                               "direction": {
                                 "type": "string",
                                 "example": "Southeast",
                                 "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                               },
+                              "directionLocalized": {
+                                "type": "string",
+                                "example": "Sureste",
+                                "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                              },
                               "familyMember": {
                                 "type": "string",
                                 "example": "Eldest Daughter",
-                                "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                                "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                               }
                             },
                             "required": [
@@ -81832,7 +81918,12 @@
                               "english": {
                                 "type": "string",
                                 "example": "Wind",
-                                "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                                "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                              },
+                              "nameLocalized": {
+                                "type": "string",
+                                "example": "Viento",
+                                "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                               },
                               "pinyin": {
                                 "type": "string",
@@ -81854,15 +81945,25 @@
                                 "example": "Wood",
                                 "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                               },
+                              "elementLocalized": {
+                                "type": "string",
+                                "example": "Madera",
+                                "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                              },
                               "direction": {
                                 "type": "string",
                                 "example": "Southeast",
                                 "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                               },
+                              "directionLocalized": {
+                                "type": "string",
+                                "example": "Sureste",
+                                "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                              },
                               "familyMember": {
                                 "type": "string",
                                 "example": "Eldest Daughter",
-                                "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                                "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                               }
                             },
                             "required": [
@@ -82255,7 +82356,12 @@
                         "english": {
                           "type": "string",
                           "example": "Wind",
-                          "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                          "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                        },
+                        "nameLocalized": {
+                          "type": "string",
+                          "example": "Viento",
+                          "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                         },
                         "pinyin": {
                           "type": "string",
@@ -82277,15 +82383,25 @@
                           "example": "Wood",
                           "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                         },
+                        "elementLocalized": {
+                          "type": "string",
+                          "example": "Madera",
+                          "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "direction": {
                           "type": "string",
                           "example": "Southeast",
                           "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                         },
+                        "directionLocalized": {
+                          "type": "string",
+                          "example": "Sureste",
+                          "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "familyMember": {
                           "type": "string",
                           "example": "Eldest Daughter",
-                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                         }
                       },
                       "required": [
@@ -82317,7 +82433,12 @@
                         "english": {
                           "type": "string",
                           "example": "Wind",
-                          "description": "English name of the trigram, byte identical to the value the I-Ching trigram endpoints publish for this number."
+                          "description": "English name of the trigram, byte identical to the English value the I-Ching trigram endpoints publish for this number. Always English here, whatever the lang parameter says, so it stays safe to compare against. Use nameLocalized for anything a reader sees."
+                        },
+                        "nameLocalized": {
+                          "type": "string",
+                          "example": "Viento",
+                          "description": "Trigram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat english exactly. Never compare against this value."
                         },
                         "pinyin": {
                           "type": "string",
@@ -82339,15 +82460,25 @@
                           "example": "Wood",
                           "description": "Five phase of this entry: Wood, Fire, Earth, Metal or Water. Always English so it stays safe to compare against and to key styling on. The full cycles live on the Chinese astrology elements endpoint."
                         },
+                        "elementLocalized": {
+                          "type": "string",
+                          "example": "Madera",
+                          "description": "Five phase name in the requested language, for display only. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "direction": {
                           "type": "string",
                           "example": "Southeast",
                           "description": "Compass sector, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. Always English, whatever the lang parameter says, so it stays safe to compare against in code and against the same value on the I-Ching trigram endpoints."
                         },
+                        "directionLocalized": {
+                          "type": "string",
+                          "example": "Sureste",
+                          "description": "Compass sector in the requested language, for display only, the same word the composed readings use. Present only when lang is set to a language other than English. Never compare against this value."
+                        },
                         "familyMember": {
                           "type": "string",
                           "example": "Eldest Daughter",
-                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at."
+                          "description": "Family role of the trigram. Read alongside an affliction to know which member of the household a sector points at. Always English, and it carries no localized sibling: no vocabulary this package ships names the eight family roles."
                         }
                       },
                       "required": [
@@ -90413,7 +90544,7 @@
                     "minimum": 0,
                     "maximum": 1,
                     "example": 0.4,
-                    "description": "Where the main door sits along the facing side, as a fraction from 0 to 1 measured from the corner the chapter starts that side at: the north-east for an east facing, the south-east for a south facing, the south-west for a west facing and the north-west for a north facing. Requires a cardinal facing, since an intercardinal facing names no single side. Send this or door, never both."
+                    "description": "Where the main door sits along the facing side, as a fraction from 0 to 1 measured from the corner the chapter starts that side at: the north-east for an east facing, the south-east for a south facing, the south-west for a west facing and the north-west for a north facing. The side carries 8 padas, so to aim at pada n of 8 send its midpoint, (n - 0.5) / 8: 0.0625 for the first pada, 0.4375 for the fourth, 0.9375 for the eighth. The response names the pada the fraction resolved to in ordinalOnSide. Requires a cardinal facing, since an intercardinal facing names no single side. Send this or door, never both."
                   },
                   "grid": {
                     "type": "string",
@@ -90589,10 +90720,20 @@
                           "type": "string",
                           "example": "81-pada",
                           "description": "Which division of the ground was read. Echoes the resolved value whether it was sent or defaulted."
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "feet",
+                            "metres"
+                          ],
+                          "example": "feet",
+                          "description": "Unit every distance and area in the response is measured in, areas in its square. Echoes the resolved value whether it was sent or defaulted."
                         }
                       },
                       "required": [
-                        "grid"
+                        "grid",
+                        "unit"
                       ],
                       "description": "The switches this reading resolved, echoed so a stored response can be reproduced years later without knowing what the defaults were on the day it was made."
                     }
@@ -91002,6 +91143,12 @@
                           },
                           "class": {
                             "type": "string",
+                            "enum": [
+                              "perimeter",
+                              "innerRing",
+                              "innerCorner",
+                              "center"
+                            ],
                             "example": "center",
                             "description": "Which ring of the mandala the devata belongs to: perimeter for the outer 32, innerRing for the eight around Brahma, innerCorner for the four on the inner diagonals, center for Brahma. Present only on the 81 pada grid."
                           },
@@ -91012,6 +91159,14 @@
                           },
                           "role": {
                             "type": "string",
+                            "enum": [
+                              "brahma",
+                              "halved-inner-corner",
+                              "halved-outer-corner",
+                              "around-brahma",
+                              "dvipada",
+                              "outer"
+                            ],
                             "example": "around-brahma",
                             "description": "The structural role 53.55 to 56 gives this square of the 64 pada division: brahma, halved-inner-corner, halved-outer-corner, around-brahma, dvipada or outer. Present only on the 64 pada grid, which is the only thing that chapter states about it."
                           },
@@ -91308,10 +91463,20 @@
                           "type": "string",
                           "example": "81-pada",
                           "description": "Which division of the ground was projected. Echoes the resolved value whether it was sent or defaulted."
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "feet",
+                            "metres"
+                          ],
+                          "example": "feet",
+                          "description": "Unit every distance and area in the response is measured in, areas in its square. Echoes the resolved value whether it was sent or defaulted."
                         }
                       },
                       "required": [
-                        "grid"
+                        "grid",
+                        "unit"
                       ],
                       "description": "The switches this projection resolved, echoed so a stored response can be reproduced later."
                     }
@@ -95609,6 +95774,12 @@
                           },
                           "class": {
                             "type": "string",
+                            "enum": [
+                              "perimeter",
+                              "innerRing",
+                              "innerCorner",
+                              "center"
+                            ],
                             "example": "perimeter",
                             "description": "Which ring of the mandala the devata belongs to: perimeter for the outer 32, innerRing for the eight around Brahma, innerCorner for the four on the inner diagonals, center for Brahma alone. 32 plus 8 plus 4 plus 1 is 45. Always English."
                           },
@@ -96090,6 +96261,12 @@
                     },
                     "class": {
                       "type": "string",
+                      "enum": [
+                        "perimeter",
+                        "innerRing",
+                        "innerCorner",
+                        "center"
+                      ],
                       "example": "perimeter",
                       "description": "Which ring of the mandala the devata belongs to: perimeter for the outer 32, innerRing for the eight around Brahma, innerCorner for the four on the inner diagonals, center for Brahma alone. 32 plus 8 plus 4 plus 1 is 45. Always English."
                     },
@@ -106422,12 +106599,9 @@
                                   "description": "Machine identifier of the cipher. Call the ciphers endpoint for the definition, the tradition and the sources behind each one."
                                 },
                                 "value": {
-                                  "type": [
-                                    "number",
-                                    "null"
-                                  ],
+                                  "type": "number",
                                   "example": 376,
-                                  "description": "The number this cipher gives for the string. Null on the one catalogued cipher this API does not compute, which is stated on its catalogue entry rather than left to guess."
+                                  "description": "The number this cipher gives for the string. Always a number: the one catalogued cipher this API does not compute is absent from this array rather than present without a value, so no row here has to be guarded. Its catalogue entry carries computed false and says why."
                                 },
                                 "alternateValues": {
                                   "type": "array",
@@ -106458,7 +106632,7 @@
                                 "source"
                               ]
                             },
-                            "description": "Every cipher applied to this spelling."
+                            "description": "Every computed cipher applied to this spelling, in catalogue order. The rows carry no display name, because they are the same ciphers in the same order for every spelling: read the names off the top level values array once."
                           },
                           "letters": {
                             "type": "array",
@@ -106542,12 +106716,9 @@
                             "description": "Machine identifier of the cipher. Call the ciphers endpoint for the definition, the tradition and the sources behind each one."
                           },
                           "value": {
-                            "type": [
-                              "number",
-                              "null"
-                            ],
+                            "type": "number",
                             "example": 376,
-                            "description": "The number this cipher gives for the string. Null on the one catalogued cipher this API does not compute, which is stated on its catalogue entry rather than left to guess."
+                            "description": "The number this cipher gives for the string. Always a number: the one catalogued cipher this API does not compute is absent from this array rather than present without a value, so no row here has to be guarded. Its catalogue entry carries computed false and says why."
                           },
                           "alternateValues": {
                             "type": "array",
@@ -106569,16 +106740,22 @@
                             "type": "string",
                             "example": "https://en.wikipedia.org/wiki/Gematria",
                             "description": "The first published source this cipher was taken from."
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Mispar hechrachi (absolute value)",
+                            "description": "Display name of the cipher in the requested language, the same string the ciphers catalogue serves for this id. Present so a caller holding one response can label a row without humanizing the identifier or fetching the catalogue. Switch on id, never on this."
                           }
                         },
                         "required": [
                           "id",
                           "value",
                           "tradition",
-                          "source"
+                          "source",
+                          "name"
                         ]
                       },
-                      "description": "Every requested cipher applied to the chosen spelling."
+                      "description": "Every requested cipher applied to the chosen spelling, in catalogue order, each named as the catalogue names it. Only computed ciphers appear, so every row carries a number."
                     },
                     "transformations": {
                       "type": "array",
@@ -106589,6 +106766,11 @@
                             "type": "string",
                             "example": "atbash",
                             "description": "Machine identifier of the transformation."
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "AtBash",
+                            "description": "Display name of the transformation as the catalogue names it, in the requested language."
                           },
                           "output": {
                             "type": "string",
@@ -106618,6 +106800,7 @@
                         },
                         "required": [
                           "id",
+                          "name",
                           "tradition",
                           "source"
                         ]
@@ -107561,12 +107744,9 @@
                                   "description": "Machine identifier of the cipher. Call the ciphers endpoint for the definition, the tradition and the sources behind each one."
                                 },
                                 "value": {
-                                  "type": [
-                                    "number",
-                                    "null"
-                                  ],
+                                  "type": "number",
                                   "example": 376,
-                                  "description": "The number this cipher gives for the string. Null on the one catalogued cipher this API does not compute, which is stated on its catalogue entry rather than left to guess."
+                                  "description": "The number this cipher gives for the string. Always a number: the one catalogued cipher this API does not compute is absent from this array rather than present without a value, so no row here has to be guarded. Its catalogue entry carries computed false and says why."
                                 },
                                 "alternateValues": {
                                   "type": "array",
@@ -107597,7 +107777,7 @@
                                 "source"
                               ]
                             },
-                            "description": "Every cipher applied to this spelling."
+                            "description": "Every computed cipher applied to this spelling, in catalogue order. The rows carry no display name, because they are the same ciphers in the same order for every spelling: read the names off the top level values array once."
                           },
                           "letters": {
                             "type": "array",
@@ -118647,7 +118827,7 @@
                               "verse": {
                                 "type": "string",
                                 "example": "note to 20, the Satyacharya extract",
-                                "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                               },
                               "translation": {
                                 "type": [
@@ -118874,7 +119054,7 @@
                               "verse": {
                                 "type": "string",
                                 "example": "note to 20, the Satyacharya extract",
-                                "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                               },
                               "translation": {
                                 "type": [
@@ -118929,7 +119109,7 @@
                               "verse": {
                                 "type": "string",
                                 "example": "note to 20, the Satyacharya extract",
-                                "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                               },
                               "translation": {
                                 "type": [
@@ -119361,7 +119541,7 @@
                             "verse": {
                               "type": "string",
                               "example": "note to 20, the Satyacharya extract",
-                              "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                              "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                             },
                             "translation": {
                               "type": [
@@ -119538,7 +119718,7 @@
                               "verse": {
                                 "type": "string",
                                 "example": "note to 20, the Satyacharya extract",
-                                "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                               },
                               "translation": {
                                 "type": [
@@ -119613,7 +119793,7 @@
                           "verse": {
                             "type": "string",
                             "example": "note to 20, the Satyacharya extract",
-                            "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                            "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                           },
                           "translation": {
                             "type": [
@@ -120075,7 +120255,7 @@
                             "verse": {
                               "type": "string",
                               "example": "note to 20, the Satyacharya extract",
-                              "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                              "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                             },
                             "translation": {
                               "type": [
@@ -120175,7 +120355,7 @@
                             "verse": {
                               "type": "string",
                               "example": "note to 20, the Satyacharya extract",
-                              "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                              "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                             },
                             "translation": {
                               "type": [
@@ -120246,7 +120426,7 @@
                             "verse": {
                               "type": "string",
                               "example": "note to 20, the Satyacharya extract",
-                              "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                              "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                             },
                             "translation": {
                               "type": [
@@ -120326,7 +120506,7 @@
                             "verse": {
                               "type": "string",
                               "example": "note to 20, the Satyacharya extract",
-                              "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                              "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                             },
                             "translation": {
                               "type": [
@@ -120440,7 +120620,7 @@
                               "verse": {
                                 "type": "string",
                                 "example": "note to 20, the Satyacharya extract",
-                                "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                               },
                               "translation": {
                                 "type": [
@@ -120512,7 +120692,7 @@
                           "verse": {
                             "type": "string",
                             "example": "note to 20, the Satyacharya extract",
-                            "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                            "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                           },
                           "translation": {
                             "type": [
@@ -121102,7 +121282,7 @@
                           "verse": {
                             "type": "string",
                             "example": "note to 20, the Satyacharya extract",
-                            "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                            "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                           },
                           "translation": {
                             "type": [
@@ -121660,7 +121840,7 @@
                                     "verse": {
                                       "type": "string",
                                       "example": "note to 20, the Satyacharya extract",
-                                      "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                      "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                                     },
                                     "translation": {
                                       "type": [
@@ -121751,7 +121931,7 @@
                                   "verse": {
                                     "type": "string",
                                     "example": "note to 20, the Satyacharya extract",
-                                    "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                    "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                                   },
                                   "translation": {
                                     "type": [
@@ -121816,7 +121996,7 @@
                               "verse": {
                                 "type": "string",
                                 "example": "note to 20, the Satyacharya extract",
-                                "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                               },
                               "translation": {
                                 "type": [
@@ -121895,7 +122075,7 @@
                           "verse": {
                             "type": "string",
                             "example": "note to 20, the Satyacharya extract",
-                            "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                            "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                           },
                           "translation": {
                             "type": [
@@ -122385,7 +122565,7 @@
                                   "verse": {
                                     "type": "string",
                                     "example": "note to 20, the Satyacharya extract",
-                                    "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                    "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                                   },
                                   "translation": {
                                     "type": [
@@ -122476,7 +122656,7 @@
                                 "verse": {
                                   "type": "string",
                                   "example": "note to 20, the Satyacharya extract",
-                                  "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                                  "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                                 },
                                 "translation": {
                                   "type": [
@@ -122541,7 +122721,7 @@
                             "verse": {
                               "type": "string",
                               "example": "note to 20, the Satyacharya extract",
-                              "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                              "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                             },
                             "translation": {
                               "type": [
@@ -122618,7 +122798,7 @@
                           "verse": {
                             "type": "string",
                             "example": "note to 20, the Satyacharya extract",
-                            "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                            "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                           },
                           "translation": {
                             "type": [
@@ -123156,7 +123336,7 @@
                           "verse": {
                             "type": "string",
                             "example": "note to 20, the Satyacharya extract",
-                            "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                            "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                           },
                           "translation": {
                             "type": [
@@ -123672,7 +123852,7 @@
                           "verse": {
                             "type": "string",
                             "example": "note to 20, the Satyacharya extract",
-                            "description": "Verse or verse range, as printed. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this says so."
+                            "description": "Verse or verse range, printed as the source prints it, so it is a string and not always numeric. Where the claim sits in an appended note or a commentary rather than in a numbered verse, this value is prose, as in \"note to 20\". Join it to the chapter with a dot only when it is numeric, and otherwise render it after the chapter with a comma, so the pair reads \"18, note to 20\" rather than \"18.note to 20\"."
                           },
                           "translation": {
                             "type": [

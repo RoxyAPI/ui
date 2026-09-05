@@ -3,7 +3,7 @@ import { describe, expect, test } from 'bun:test';
 // Importing the index registers every custom element. happy-dom is loaded by
 // preload (bunfig.toml).
 import '../src/index.js';
-import { registerLocale } from '../src/i18n/registry.js';
+import { registerFieldLabels, registerLocale } from '../src/i18n/registry.js';
 
 // A synthetic catalogue, so the assertions below pin the MECHANISM rather than a
 // translator's wording. `humanize` produces the English word for several of these
@@ -12,6 +12,14 @@ import { registerLocale } from '../src/i18n/registry.js';
 registerLocale('zz', {
 	Center: 'ZZCENTER',
 	Perimeter: 'ZZPERIMETER',
+});
+
+// Same reasoning for the `unit` field-label enum the area figures read: catalogued
+// here rather than borrowing the humanized English word, so a render that fell back
+// to `humanize` instead of the published label would still be caught.
+registerFieldLabels('zz', {
+	fields: {},
+	enums: { 'unit.feet': 'ZZFEET', 'unit.metres': 'ZZMETRES' },
 });
 
 const settled = (el: Element): Promise<void> =>
@@ -416,6 +424,59 @@ describe('every devata is readable at any width', () => {
 		expect(chart?.querySelector('svg')).not.toBeNull();
 		expect(chart?.querySelectorAll('.compass').length).toBe(4);
 		expect(root(el).querySelector('svg[part]')).toBeNull();
+	});
+});
+
+describe('the two area figures print the unit the response echoes', () => {
+	const factsOf = (el: HTMLElement) =>
+		[...root(el).querySelectorAll('[part~="details"] span')].filter((n) =>
+			n.querySelector('.lbl'),
+		);
+	const labelled = (el: HTMLElement, needle: string) =>
+		factsOf(el).find((n) => (n.textContent ?? '').includes(needle));
+
+	/**
+	 * `conventions.unit` is the response's own echo of what the caller sent, so the printed word has
+	 * to track IT rather than a fixed string: a card that always printed `feet` would pass a test
+	 * fixed on one unit while lying to every reader who sent metres. Checked in two locales, the
+	 * default fallback and a catalogued one, and the unit swapped between them so neither run could
+	 * pass by printing the same word regardless of the echo.
+	 */
+	test('the printed unit follows conventions.unit, not a fixed word, in two locales', async () => {
+		const feet = await mount({
+			...MANDALA,
+			conventions: { grid: '81-pada', unit: 'feet' },
+		});
+		const metres = await mount(
+			{ ...MANDALA, conventions: { grid: '81-pada', unit: 'metres' } },
+			{ lang: 'zz' },
+		);
+
+		const feetBrahma = labelled(feet, 'Brahmasthan area')?.textContent ?? '';
+		expect(feetBrahma).toContain('Feet²');
+		expect(feetBrahma).not.toContain('Metres');
+
+		const metresMarma =
+			labelled(metres, 'Area of one marma')?.textContent ?? '';
+		expect(metresMarma).toContain('ZZMETRES²');
+		expect(metresMarma).not.toContain('ZZFEET');
+	});
+
+	/**
+	 * A payload from before the API echoed `conventions.unit` carries no such field, and naming a
+	 * unit nobody confirmed would be a guess dressed as a fact. `MANDALA` is exactly that shape (its
+	 * `conventions` names only `grid`), so the bare figures print with no unit word and no orphaned
+	 * superscript on either one.
+	 */
+	test('an older payload with no unit echo prints the bare number, never a default unit', async () => {
+		const el = await mount(MANDALA);
+		const brahma = labelled(el, 'Brahmasthan area');
+		const marma = labelled(el, 'Area of one marma');
+		expect(brahma?.textContent).toContain(String(MANDALA.brahmasthan.area));
+		expect(marma?.textContent).toContain(String(MANDALA.marma.areaEach));
+		for (const n of [brahma, marma]) {
+			expect(n?.textContent ?? '').not.toMatch(/Feet|Metres|ZZFEET|ZZMETRES|²/);
+		}
 	});
 });
 

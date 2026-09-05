@@ -757,13 +757,11 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 			}
 			${
 				// Both figures are areas in the SQUARE of the plot unit, so the label has
-				// to say so or 300 beside 4.17 reads as two counts. The unit itself is a
-				// request field the response does not echo, so the reader supplies it: it
-				// is the one they sent, and naming a default here would be a guess.
+				// to say so or 300 beside 4.17 reads as two counts.
 				mandala?.brahmasthan?.area != null
 					? html`<span
 						><span class="lbl">${this.t('Brahmasthan area')}</span
-						><b>${formatNumber(locale, mandala.brahmasthan.area, 2)}</b></span
+						><b>${this.areaLabel(locale, mandala.brahmasthan.area, mandala.conventions?.unit)}</b></span
 					>`
 					: nothing
 			}
@@ -771,7 +769,7 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 				mandala?.marma?.areaEach != null
 					? html`<span
 						><span class="lbl">${this.t('Area of one marma')}</span
-						>${formatNumber(locale, mandala.marma.areaEach, 2)}</span
+						>${this.areaLabel(locale, mandala.marma.areaEach, mandala.conventions?.unit)}</span
 					>`
 					: nothing
 			}
@@ -794,6 +792,28 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 				${sources.map((s) => html`<li>${citationLine(s)}</li>`)}
 			</ul>
 		</section>`;
+	}
+
+	/**
+	 * An area in the square of the plot unit: the number plus the unit word the response echoed,
+	 * with a superscript two after it rather than an abbreviation this component would have to
+	 * invent, since the field-label catalogue is the one place that word is already spelled in
+	 * every locale (the same `unit` request enum a form beside this card renders).
+	 *
+	 * @remarks
+	 * `conventions.unit` is absent on a payload from before the API started echoing it, and a
+	 * default here would be a guess about which unit the reader actually sent, so the bare number
+	 * prints on its own rather than naming a unit nobody confirmed.
+	 */
+	private areaLabel(
+		locale: string | undefined,
+		value: number,
+		unit: string | undefined,
+	): string {
+		const formatted = formatNumber(locale, value, 2);
+		return unit
+			? `${formatted} ${displayOption(locale, 'unit', unit)}²`
+			: formatted;
 	}
 
 	/** The name of one ring, falling back to the wire id for a class the API might add. */
