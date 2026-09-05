@@ -8,6 +8,15 @@ export const baseStyles = css`
 	:host {
 		display: block;
 		container-type: inline-size;
+		/* The one place the "label column never exceeds a quarter of the card"
+		 * rule is stated. A label beside a bar, a badge, or a value (a planet
+		 * name, a Bazi element, a compatibility category) reads this instead of
+		 * a bespoke rem width, so a long translation wraps inside its own
+		 * quarter rather than pushing the value column toward half the card.
+		 * utils/label-row.ts reuses it for the label-plus-prose row shape that
+		 * also stacks below 30rem; components with a shorter, non-prose second
+		 * column read it directly. */
+		--roxy-label-col: minmax(0, 25%);
 		font-family: var(
 			--roxy-font-sans,
 			system-ui,

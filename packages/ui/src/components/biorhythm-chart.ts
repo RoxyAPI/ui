@@ -141,6 +141,9 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
 			}
+			/* Not --roxy-label-col: the cycle name (physical, emotional, intellectual...)
+			 * is fixed English in every locale; capping it clips "intellectual" instead of
+			 * fixing a translation-driven growth that never happens here. */
 			.bar {
 				display: grid;
 				grid-template-columns: 8rem 1fr 3.5rem;

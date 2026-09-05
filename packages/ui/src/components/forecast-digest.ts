@@ -104,7 +104,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 			}
 			.event {
 				display: grid;
-				grid-template-columns: auto 1fr;
+				grid-template-columns: var(--roxy-label-col) minmax(0, 1fr);
 				gap: 0.25rem 0.6rem;
 				align-items: baseline;
 			}
@@ -112,7 +112,6 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-variant-numeric: tabular-nums;
-				white-space: nowrap;
 			}
 			.event-desc {
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -214,7 +213,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 			this.hideReadings || e.description == null
 				? humanize(e.type ?? '')
 				: e.description;
-		return html`<div class="event" role="listitem">
+		return html`<div class="event" part="label-track" role="listitem">
 			<span class="event-date">${formatDate(this.effectiveLang(), e.date)}</span>
 			<span class="event-desc">${label}</span>
 			<span class="sig" role="img" aria-label=${this.t('significance {{value}} of 100', { value: formatNumber(this.effectiveLang(), sig, 0) })}>

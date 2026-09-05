@@ -250,7 +250,7 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 			}
 			.element {
 				display: grid;
-				grid-template-columns: minmax(4rem, max-content) minmax(0, 1fr) max-content;
+				grid-template-columns: var(--roxy-label-col) minmax(0, 1fr) max-content;
 				align-items: center;
 				gap: 0.15rem var(--roxy-space-sm, 0.5rem);
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -436,7 +436,7 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 			<h3 class="block-title">${this.t('Elements')}</h3>
 			<div class="elements">
 				${rows.map(
-					(r) => html`<div class="element">
+					(r) => html`<div class="element" part="label-track">
 						<span>${display(r, 'element')}</span>
 						<span class="element-track"
 							><span

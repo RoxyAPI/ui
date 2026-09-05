@@ -63,7 +63,7 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 			.group dl {
 				margin: 0;
 				display: grid;
-				grid-template-columns: auto 1fr;
+				grid-template-columns: var(--roxy-label-col) 1fr;
 				gap: 2px var(--roxy-space-sm, 0.5rem);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
@@ -151,7 +151,7 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 			<div class="groups" part="details">
 				<div class="group">
 					<h3>Moon</h3>
-					<dl>
+					<dl part="label-track">
 						<dt>Sign lord</dt><dd>${d.moonSignLord ?? ''}</dd>
 						<dt>Star lord</dt><dd>${d.moonStarLord ?? ''}</dd>
 						<dt>Sub lord</dt><dd>${d.moonSublord ?? ''}</dd>
@@ -160,7 +160,7 @@ export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse
 				</div>
 				<div class="group">
 					<h3>Lagna</h3>
-					<dl>
+					<dl part="label-track">
 						<dt>Sign lord</dt><dd>${d.lagnaSignLord ?? ''}</dd>
 						<dt>Star lord</dt><dd>${d.lagnaStarLord ?? ''}</dd>
 						<dt>Sub lord</dt><dd>${d.lagnaSublord ?? ''}</dd>

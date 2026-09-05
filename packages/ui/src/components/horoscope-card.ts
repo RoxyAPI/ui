@@ -17,6 +17,7 @@ import {
 	formatDateRange,
 	normalizeAspect,
 } from '../utils/format.js';
+import { labelRowStyles } from '../utils/label-row.js';
 import { capitalize } from '../utils/string.js';
 
 type HoroscopeData =
@@ -97,6 +98,7 @@ const BEST_AREAS = [
 export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 	static styles = [
 		baseStyles,
+		labelRowStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -318,13 +320,16 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				color: var(--roxy-fg, #0a0a0a);
 			}
-			/* One grid for the whole list so every event starts on the same column,
-			 * however wide the longest date renders. The row wrapper keeps the
-			 * dt/dd pairing in the markup and drops out of the layout. */
+			/* One grid for the whole list so every event starts on the same column.
+			 * The row wrapper keeps the dt/dd pairing in the markup and drops out of
+			 * the layout. --roxy-label-col caps the date at a quarter of the card
+			 * instead of the max-content every row used to share: a long-format date
+			 * in German ran noticeably wider than the same date in Hindi and pushed
+			 * the event column past half the row at phone width. */
 			.dates {
 				margin: 0;
 				display: grid;
-				grid-template-columns: max-content 1fr;
+				grid-template-columns: var(--roxy-label-col) minmax(0, 1fr);
 				gap: 0.3rem var(--roxy-space-md, 1rem);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
@@ -335,7 +340,6 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				font-variant-numeric: tabular-nums;
 				color: var(--roxy-accent-ink, #b45309);
 				font-weight: var(--roxy-weight-bold, 600);
-				white-space: nowrap;
 			}
 			.date-row dd {
 				margin: 0;
@@ -366,8 +370,6 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				display: grid;
 			}
 			.row {
-				display: grid;
-				grid-template-columns: minmax(5rem, 9rem) minmax(0, 1fr);
 				gap: 0.15rem var(--roxy-space-md, 1rem);
 				align-items: baseline;
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
@@ -415,6 +417,14 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				text-transform: uppercase;
 				letter-spacing: 0.04em;
 				font-weight: var(--roxy-weight-bold, 600);
+			}
+			/* label-row.ts stacks .row to a single column below 30rem; .row-meta's own
+			 * explicit grid-column: 2 would otherwise orphan it into a column that no longer
+			 * exists, so it rejoins column 1 at the same breakpoint. */
+			@container (max-width: 30rem) {
+				.row-meta {
+					grid-column: 1;
+				}
 			}
 
 			.tiles {
@@ -843,7 +853,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 		meta: unknown,
 		opts?: { when: 'element' },
 	) {
-		return html`<li class="row">
+		return html`<li class="row" part="label-track">
 			${opts?.when === 'element' ? when : html`<span class="row-when">${when}</span>`}
 			<span class="row-what">${what}</span>
 			<span class="row-meta">${meta}</span>
@@ -926,7 +936,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			keyDates.length
 				? html`<section part="section key-dates">
 					<h3 class="block-title">${this.t('Key dates')}</h3>
-					<dl class="dates">
+					<dl class="dates" part="label-track">
 						${keyDates.map(
 							(k) => html`<div class="date-row">
 								<dt>${formatDate(this.effectiveLang(), k.date) || k.date}</dt>

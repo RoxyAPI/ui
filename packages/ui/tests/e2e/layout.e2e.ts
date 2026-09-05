@@ -484,3 +484,141 @@ for (const lang of PLATE_LANGS) {
 		expect(found.out, found.out.join('\n')).toEqual([]);
 	});
 }
+
+/**
+ * A label column, library-wide, never takes more than roughly a quarter of the row it labels.
+ *
+ * @remarks
+ * `--roxy-label-col` (`utils/base-styles.ts`) is the one place this ratio is stated, and every
+ * label-plus-value row in the library reads it instead of a bespoke rem or an unconstrained `auto`
+ * or `max-content` track: `roxy-kua-card` and `roxy-flying-star-chart`'s per-sector reading,
+ * `roxy-dosha-constitution`'s per-factor weight, `roxy-horoscope-card`'s dated events (both its
+ * topic rows and its key-dates `dl`), `roxy-dasha-timeline`'s per-planet bar, `roxy-bazi-chart`'s
+ * per-element bar, `roxy-almanac-day`'s per-day row, `roxy-forecast-digest`'s per-event date, and
+ * `roxy-kp-ruling-planets`'s lord table. A translated direction or a year-qualified date ran wider
+ * in German than in Hindi and pushed the value column toward half the row at phone width before this
+ * cap existed; `part="label-track"` is the marker every one of those rows carries so the walk finds
+ * them rather than guessing which grids qualify, the same contract `part="plate"` gives the check
+ * above.
+ *
+ * Not every two-column row in the library is a label-plus-value row, and capping one that is not
+ * would be the same class of bug as the one this guards against: `roxy-compatibility-card`'s
+ * breakdown key, `roxy-biorhythm-chart`'s cycle name and `roxy-shadbala-table`'s planet-plus-badge
+ * label are fixed, untranslated, English-only strings that already fit their historical rem width
+ * in every locale tested, and capping them to a quarter clipped "intellectual" and the rank badge
+ * instead of fixing anything, since nothing there grows with translation. They deliberately do NOT
+ * carry `part="label-track"` and are absent from `LABEL_TRACK_TAGS` below on purpose.
+ *
+ * `roxy-data`'s generic `dl.roxy-rows` also carries the part (its own `minmax(8ch, min(25%,
+ * max-content))` track, tightened from 30% to the same 25% ceiling here) but is excluded from the
+ * ratio measurement itself: Chromium does not reliably resolve a `min()`-of-`max-content` track back
+ * into a second numeric `gridTemplateColumns` value, so `getComputedStyle` cannot be read the same
+ * way for it. The existing overflow checks above still cover it end to end.
+ *
+ * Measured in Hindi, this catalogue's longest translated vocabulary, at all three widths: the ratio
+ * itself does not change much across widths (a percentage track), but a component that only stacks
+ * below 30rem (kua, flying-star, dosha) drops out of the two-column shape entirely at 375px, which
+ * is why the tag list below is asserted per width rather than once. ~0.26 rather than exactly 0.25
+ * is the accepted ceiling: a percentage grid track resolves against the row's full available space
+ * INCLUDING its gap, while this check's ratio divides by the two tracks' own pixel widths only
+ * (excluding the gap), so `minmax(0, 25%)` measures a few points over 0.25 by construction; verified
+ * unchanging between German and Hindi, which is what proves it is that arithmetic and not a
+ * translation-driven regression.
+ *
+ * Sabotage-verified by reverting one row's track to its old unbounded `auto`: the ratio for that tag
+ * alone jumped past the ceiling and the assertion failed, confirming the check reads the live layout
+ * rather than passing on an empty selector.
+ */
+/**
+ * Tags this walk actually measures a ratio for, not every tag the catalog lists
+ * against "label-track": `roxy-data` carries the part (see the doc comment above)
+ * but is skipped before `tags.add` runs, since its track never resolves to a
+ * second numeric value here, so it is deliberately absent from this list too.
+ */
+const LABEL_TRACK_TAGS = [
+	'roxy-almanac-day',
+	'roxy-bazi-chart',
+	'roxy-dasha-timeline',
+	'roxy-dosha-constitution',
+	'roxy-flying-star-chart',
+	'roxy-forecast-digest',
+	'roxy-horoscope-card',
+	'roxy-kp-ruling-planets',
+	'roxy-kua-card',
+];
+
+const LABEL_TRACK_RATIO_CEILING = 0.3;
+
+for (const vp of WIDTHS) {
+	test(`no label track exceeds a quarter of its row at ${vp.label} (${vp.width}px), in hi`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: vp.width, height: vp.height });
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+		await page.selectOption('#lang-select', 'hi');
+		await expect
+			.poll(() => page.evaluate(() => document.documentElement.lang))
+			.toBe('hi');
+		await page.waitForTimeout(1000);
+
+		const found = await page.evaluate((ceiling) => {
+			const demos =
+				(window as unknown as { ROXY_UI_DEMOS?: { id: string }[] })
+					.ROXY_UI_DEMOS ?? [];
+			const out: string[] = [];
+			const tags = new Set<string>();
+			for (const d of demos) {
+				const host = document.getElementById(d.id);
+				const sr = (host as HTMLElement & { shadowRoot?: ShadowRoot | null })
+					?.shadowRoot;
+				if (!sr) continue;
+				const tag = (host as HTMLElement).tagName.toLowerCase();
+				for (const track of sr.querySelectorAll('[part~="label-track"]')) {
+					const el = track as HTMLElement;
+					// roxy-data's dl carries the part but its min()-of-max-content track
+					// does not resolve to a second numeric value here; see the doc comment.
+					if (tag === 'roxy-data') continue;
+					const cs = getComputedStyle(el);
+					if (cs.display !== 'grid') continue;
+					const cols = cs.gridTemplateColumns
+						.split(/\s+/)
+						.map(Number.parseFloat)
+						.filter((v) => !Number.isNaN(v));
+					// Stacked to a single column below the component's own breakpoint: no
+					// label track to measure, and correctly so.
+					if (cols.length < 2) continue;
+					tags.add(tag);
+					const total = cols.reduce((a, b) => a + b, 0);
+					const ratio = cols[0] / total;
+					if (ratio > ceiling) {
+						out.push(
+							`${d.id} (${tag}): label track is ${Math.round(ratio * 100)}% of its row (${Math.round(cols[0])}px of ${Math.round(total)}px)`,
+						);
+					}
+				}
+			}
+			return { out, tags: [...tags].sort() };
+		}, LABEL_TRACK_RATIO_CEILING);
+
+		// Not vacuous: a component that stacks below 30rem drops out of this walk at
+		// phone width, so the expected tag set is narrower there than at tablet/desktop.
+		const expectedTags = (
+			vp.width <= 480
+				? LABEL_TRACK_TAGS.filter(
+						(t) =>
+							![
+								'roxy-kua-card',
+								'roxy-flying-star-chart',
+								'roxy-dosha-constitution',
+							].includes(t),
+					)
+				: LABEL_TRACK_TAGS
+		).sort();
+		expect(
+			found.tags,
+			'the set of components this walk actually measured',
+		).toEqual(expectedTags);
+		expect(found.out, found.out.join('\n')).toEqual([]);
+	});
+}

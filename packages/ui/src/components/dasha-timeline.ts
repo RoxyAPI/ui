@@ -203,7 +203,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			}
 			.bar {
 				display: grid;
-				grid-template-columns: 5rem 1fr 8rem;
+				grid-template-columns: var(--roxy-label-col) 1fr 8rem;
 				gap: var(--roxy-space-sm, 0.5rem);
 				/* Tighter than the gap between two bars, so a bar and its own house
 				 * line read as one row rather than as two entries. */
@@ -263,7 +263,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			 * rather than squeezing the track, which at phone width would leave the
 			 * bar itself a few pixels wide. */
 			.bar.fine {
-				grid-template-columns: 5rem 1fr;
+				grid-template-columns: var(--roxy-label-col) 1fr;
 			}
 			.bar.fine .dates {
 				grid-column: 1 / -1;
@@ -720,6 +720,7 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 			.join(' ');
 		return html`<div
 			class=${cls}
+			part="label-track"
 			role="listitem"
 			aria-current=${current ? 'time' : 'false'}
 		>

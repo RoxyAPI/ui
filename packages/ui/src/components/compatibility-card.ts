@@ -81,6 +81,10 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 
+			/* Not --roxy-label-col: the breakdown key is a fixed English word (romantic,
+			 * emotional, intellectual...), identical in every locale, and capping it to a
+			 * quarter clips "intellectual" by 15px rather than fixing anything, since the
+			 * word never grows with translation in the first place. */
 			.bar-row {
 				display: grid;
 				grid-template-columns: 8rem 1fr 3.5rem;
@@ -168,6 +172,8 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				display: grid;
 				gap: var(--roxy-space-sm, 0.5rem);
 			}
+			/* Same as .bar-row above: a fixed English element name, not a translated
+			 * label, so --roxy-label-col would clip it for no locale-driven reason. */
 			.el-row {
 				display: grid;
 				grid-template-columns: 4rem 1fr 1fr;

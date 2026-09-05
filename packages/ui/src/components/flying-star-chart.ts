@@ -8,6 +8,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatDate, formatInteger } from '../utils/format.js';
+import { labelRowStyles } from '../utils/label-row.js';
 import { display, displayOption } from '../utils/localized.js';
 import { GRID_ORDER } from '../utils/nine-palaces.js';
 import { plateHeadingStyles } from '../utils/plate-heading.js';
@@ -64,6 +65,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 	static styles = [
 		baseStyles,
 		plateHeadingStyles,
+		labelRowStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -213,8 +215,6 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 			.row {
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
 				padding-block: var(--roxy-space-sm, 0.5rem);
-				display: grid;
-				grid-template-columns: minmax(5rem, 9rem) minmax(0, 1fr);
 				gap: 0.15rem var(--roxy-space-md, 1rem);
 				align-items: baseline;
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -444,7 +444,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 			if (natal) {
 				const p = cell as GenerateFlyingStarChartResponse['palaces'][number];
 				if (!p.reading && !p.combination) return nothing;
-				return html`<li class="row">
+				return html`<li class="row" part="label-track">
 					<span class="row-name">${heading}</span>
 					<div class="row-body">
 						${p.combination ? html`<span>${display(p.combination, 'name')}</span>` : nothing}
@@ -457,7 +457,7 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 				</li>`;
 			}
 			const p = cell as GetAnnualFlyingStarsResponse['palaces'][number];
-			return html`<li class="row">
+			return html`<li class="row" part="label-track">
 				<span class="row-name">${heading}</span>
 				<div class="row-body">
 					<span>${display(p, 'name')}</span>

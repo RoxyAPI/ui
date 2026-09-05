@@ -126,6 +126,17 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 			.day:first-of-type {
 				border-top: none;
 			}
+			/* The date beside it is a fixed, year-qualified stamp (already sized to
+			 * the longest locale, not a translated word that grows), so the column
+			 * itself is not capped like a label. The events list beside it is
+			 * unbounded prose, though, so below 30rem (the same breakpoint every
+			 * label-plus-prose row in the library gives up its second column at)
+			 * the date moves above its day's events instead of squeezing them. */
+			@container (max-width: 30rem) {
+				.day {
+					grid-template-columns: minmax(0, 1fr);
+				}
+			}
 			.day-date {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);

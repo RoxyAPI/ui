@@ -11,6 +11,7 @@ import {
 	frameCaptionStyles,
 	renderConventionsCaption,
 } from '../utils/frame.js';
+import { labelRowStyles } from '../utils/label-row.js';
 import { display, displayOption } from '../utils/localized.js';
 import { GRID_ORDER } from '../utils/nine-palaces.js';
 import { plateHeadingStyles } from '../utils/plate-heading.js';
@@ -50,6 +51,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 		baseStyles,
 		frameCaptionStyles,
 		plateHeadingStyles,
+		labelRowStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -277,8 +279,6 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 			.row {
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
 				padding-block: var(--roxy-space-sm, 0.5rem);
-				display: grid;
-				grid-template-columns: minmax(5rem, 9rem) minmax(0, 1fr);
 				gap: 0.15rem var(--roxy-space-md, 1rem);
 				align-items: baseline;
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -472,7 +472,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 			const reading =
 				this.mode === 'mansions' && 'reading' in s ? s.reading : undefined;
 			if (!reading || this.hideReadings) return nothing;
-			return html`<li class="row">
+			return html`<li class="row" part="label-track">
 				<span class="row-name">${this.sectorHeading(locale, s.direction ?? '')}</span>
 				<div class="row-body">
 					<span>${display(s, 'starName')}</span>

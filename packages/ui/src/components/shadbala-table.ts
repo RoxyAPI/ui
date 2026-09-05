@@ -80,6 +80,10 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 				margin: 0;
 			}
 
+			/* Not --roxy-label-col: the label packs a glyph, the planet name AND a rank
+			 * badge on one line ("Jupiter #1"), and 25% of this card's width clips it by
+			 * up to 42px in every locale tested (the planet name itself does not grow
+			 * with translation here). 8rem is the measured floor for glyph+name+badge. */
 			.planet-row {
 				display: grid;
 				grid-template-columns: 8rem 1fr auto;

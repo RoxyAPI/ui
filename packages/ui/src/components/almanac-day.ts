@@ -190,7 +190,7 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
 				padding-block: var(--roxy-space-sm, 0.5rem);
 				display: grid;
-				grid-template-columns: minmax(4.5rem, max-content) minmax(0, 1fr);
+				grid-template-columns: var(--roxy-label-col) minmax(0, 1fr);
 				gap: 0.15rem var(--roxy-space-md, 1rem);
 				align-items: baseline;
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -406,7 +406,7 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 		// almanac is opened for, and a row that shows four of nine is a shorter row
 		// that has quietly dropped the one a reader was looking for.
 		const favours = day.favours ?? [];
-		return html`<li class="day">
+		return html`<li class="day" part="label-track">
 			<span class="day-date">${formatMonthDay(locale, day.date)}</span>
 			<div class="day-body">
 				<span lang="zh">${day.dayPillar?.chinese ?? ''}</span>

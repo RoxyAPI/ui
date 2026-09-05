@@ -13,6 +13,7 @@ import {
 	formatPercent,
 } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
+import { labelRowStyles } from '../utils/label-row.js';
 import { capitalize, humanize } from '../utils/string.js';
 
 type Constitution = CalculateAyurvedicConstitutionResponse;
@@ -100,6 +101,7 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 		baseStyles,
 		frameCaptionStyles,
 		disclosureStyles,
+		labelRowStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -213,8 +215,6 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 			.row {
 				border-top: 1px solid var(--roxy-border, #e4e4e7);
 				padding-block: var(--roxy-space-sm, 0.5rem);
-				display: grid;
-				grid-template-columns: minmax(6rem, 10rem) minmax(0, 1fr);
 				gap: 0.15rem var(--roxy-space-md, 1rem);
 				align-items: baseline;
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -401,7 +401,7 @@ export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
 			<h3 class="block-title">${this.t('Factors')}</h3>
 			<ul class="rows">
 				${rows.map(
-					(f) => html`<li class="row">
+					(f) => html`<li class="row" part="label-track">
 						<span class="row-name">${this.factorLabel(f.id)}</span>
 						<div>
 							<span>${formatInput(locale, f.input)}</span>

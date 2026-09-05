@@ -172,10 +172,12 @@ export class RoxyData extends RoxyDataElement<Json> {
 			dl.roxy-rows {
 				margin: 0;
 				display: grid;
-				/* The label column is capped at 30%. A bare max-content lets ONE long key
-				 * ("Additional Insights") set the width for every row and starve the values,
-				 * and a bare 1fr floors at min-content so a long value cannot shrink. */
-				grid-template-columns: minmax(8ch, min(30%, max-content)) minmax(0, 1fr);
+				/* The label column is capped at 25% (the library-wide ceiling every
+				 * label-plus-value row holds to, utils/base-styles.ts --roxy-label-col). A
+				 * bare max-content lets ONE long key ("Additional Insights") set the width
+				 * for every row and starve the values, and a bare 1fr floors at min-content
+				 * so a long value cannot shrink. */
+				grid-template-columns: minmax(8ch, min(25%, max-content)) minmax(0, 1fr);
 				gap: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
 			}
 			dl.roxy-rows dt {
@@ -481,7 +483,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 			${quoteKey ? html`<blockquote class="roxy-quote">${obj[quoteKey]}</blockquote>` : nothing}
 			${
 				rows.length > 0
-					? html`<dl class="roxy-rows" part="details">
+					? html`<dl class="roxy-rows" part="details label-track">
 						${rows.map(
 							([k, v]) => html`
 								<dt>${displayField(this.effectiveLang(), k)}</dt>
