@@ -63,6 +63,16 @@ const VERDICT_LABEL: Record<string, ChromeString> = {
 };
 
 /**
+ * The standard area symbol for each wire unit value. Locale-independent on purpose: `ft²` and `m²`
+ * are the same two glyphs in every language this library ships, unlike the unit WORD itself, which
+ * is what {@link RoxyVastuMandala.areaLabel} puts in the `title` instead.
+ */
+const AREA_SYMBOL: Record<string, string> = {
+	feet: 'ft²',
+	metres: 'm²',
+};
+
+/**
  * Margin around the grid, in pada units.
  *
  * @remarks
@@ -795,25 +805,28 @@ export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
 	}
 
 	/**
-	 * An area in the square of the plot unit: the number plus the unit word the response echoed,
-	 * with a superscript two after it rather than an abbreviation this component would have to
-	 * invent, since the field-label catalogue is the one place that word is already spelled in
-	 * every locale (the same `unit` request enum a form beside this card renders).
+	 * An area in the square of the plot unit: the number plus the standard symbol for the wire unit
+	 * the response echoed, with the catalogue's own word for that unit as the `title`, one hover
+	 * away and translated.
 	 *
 	 * @remarks
-	 * `conventions.unit` is absent on a payload from before the API started echoing it, and a
-	 * default here would be a guess about which unit the reader actually sent, so the bare number
-	 * prints on its own rather than naming a unit nobody confirmed.
+	 * The symbol is fixed on the WIRE value, not read out of the field-label catalogue: `ft²` and
+	 * `m²` are what every practitioner writes whatever language the card is in, and hanging a
+	 * superscript off a translator's word is not that convention. `conventions.unit` is absent on a
+	 * payload from before the API started echoing it, and a default here would be a guess about
+	 * which unit the reader actually sent, so the bare number prints on its own with no title.
 	 */
 	private areaLabel(
 		locale: string | undefined,
 		value: number,
 		unit: string | undefined,
-	): string {
+	) {
 		const formatted = formatNumber(locale, value, 2);
-		return unit
-			? `${formatted} ${displayOption(locale, 'unit', unit)}²`
-			: formatted;
+		if (!unit) return formatted;
+		const symbol = AREA_SYMBOL[unit] ?? `${unit}²`;
+		return html`<span title=${displayOption(locale, 'unit', unit)}
+			>${formatted} ${symbol}</span
+		>`;
 	}
 
 	/** The name of one ring, falling back to the wire id for a class the API might add. */

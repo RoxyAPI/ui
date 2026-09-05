@@ -434,39 +434,59 @@ describe('the two area figures print the unit the response echoes', () => {
 		);
 	const labelled = (el: HTMLElement, needle: string) =>
 		factsOf(el).find((n) => (n.textContent ?? '').includes(needle));
+	/** The element carrying the printed figure, whose `title` is the one place the word lives. */
+	const figureOf = (fact: Element | undefined) =>
+		fact?.querySelector('[title]');
 
 	/**
-	 * `conventions.unit` is the response's own echo of what the caller sent, so the printed word has
-	 * to track IT rather than a fixed string: a card that always printed `feet` would pass a test
-	 * fixed on one unit while lying to every reader who sent metres. Checked in two locales, the
-	 * default fallback and a catalogued one, and the unit swapped between them so neither run could
-	 * pass by printing the same word regardless of the echo.
+	 * `ft²` and `m²` are the standard symbols, so they print the SAME in every locale, unlike a
+	 * catalogued word. The title is the opposite: fixed English where the locale has no catalogue,
+	 * catalogued where one exists. Checked on the SAME unit in both locales so neither run could
+	 * pass by coincidence.
 	 */
-	test('the printed unit follows conventions.unit, not a fixed word, in two locales', async () => {
-		const feet = await mount({
+	test('the printed symbol is the standard one and never the locale word, in two locales', async () => {
+		const english = await mount({
 			...MANDALA,
 			conventions: { grid: '81-pada', unit: 'feet' },
 		});
-		const metres = await mount(
-			{ ...MANDALA, conventions: { grid: '81-pada', unit: 'metres' } },
+		const zz = await mount(
+			{ ...MANDALA, conventions: { grid: '81-pada', unit: 'feet' } },
 			{ lang: 'zz' },
 		);
 
-		const feetBrahma = labelled(feet, 'Brahmasthan area')?.textContent ?? '';
-		expect(feetBrahma).toContain('Feet²');
-		expect(feetBrahma).not.toContain('Metres');
+		for (const el of [english, zz]) {
+			const text = labelled(el, 'Brahmasthan area')?.textContent ?? '';
+			expect(text).toContain('ft²');
+			expect(text).not.toContain('Feet');
+			expect(text).not.toContain('ZZFEET');
+		}
+		expect(
+			figureOf(labelled(english, 'Brahmasthan area'))?.getAttribute('title'),
+		).toBe('Feet');
+		expect(
+			figureOf(labelled(zz, 'Brahmasthan area'))?.getAttribute('title'),
+		).toBe('ZZFEET');
+	});
 
-		const metresMarma =
-			labelled(metres, 'Area of one marma')?.textContent ?? '';
-		expect(metresMarma).toContain('ZZMETRES²');
-		expect(metresMarma).not.toContain('ZZFEET');
+	/**
+	 * Swapping which unit the response echoes has to swap the symbol, or a card that always printed
+	 * `ft²` would pass the test above by coincidence. The title tracks the same switch.
+	 */
+	test('the symbol and the title both track which unit the response echoes', async () => {
+		const el = await mount({
+			...MANDALA,
+			conventions: { grid: '81-pada', unit: 'metres' },
+		});
+		const marma = labelled(el, 'Area of one marma');
+		expect(marma?.textContent).toContain('m²');
+		expect(marma?.textContent).not.toContain('ft²');
+		expect(figureOf(marma)?.getAttribute('title')).toBe('Metres');
 	});
 
 	/**
 	 * A payload from before the API echoed `conventions.unit` carries no such field, and naming a
 	 * unit nobody confirmed would be a guess dressed as a fact. `MANDALA` is exactly that shape (its
-	 * `conventions` names only `grid`), so the bare figures print with no unit word and no orphaned
-	 * superscript on either one.
+	 * `conventions` names only `grid`), so the bare figures print with no symbol and no title.
 	 */
 	test('an older payload with no unit echo prints the bare number, never a default unit', async () => {
 		const el = await mount(MANDALA);
@@ -475,7 +495,10 @@ describe('the two area figures print the unit the response echoes', () => {
 		expect(brahma?.textContent).toContain(String(MANDALA.brahmasthan.area));
 		expect(marma?.textContent).toContain(String(MANDALA.marma.areaEach));
 		for (const n of [brahma, marma]) {
-			expect(n?.textContent ?? '').not.toMatch(/Feet|Metres|ZZFEET|ZZMETRES|²/);
+			expect(n?.textContent ?? '').not.toMatch(
+				/ft²|m²|Feet|Metres|ZZFEET|ZZMETRES/,
+			);
+			expect(figureOf(n)).toBeNull();
 		}
 	});
 });
