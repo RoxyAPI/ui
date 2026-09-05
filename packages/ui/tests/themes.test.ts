@@ -4,6 +4,8 @@ import {
 	type Palette,
 	type PaletteName,
 	ROXY_PALETTES,
+	SELF_HOSTED_FACES,
+	SELF_HOSTED_FONT_PALETTE,
 	SHARED_THEME,
 } from '../src/styles/palettes.js';
 
@@ -77,12 +79,17 @@ describe('generated theme presets', () => {
 	for (const name of NAMES) {
 		const p = ROXY_PALETTES[name];
 
+		const selfHosted = name === SELF_HOSTED_FONT_PALETTE;
+
 		describe(name, () => {
 			const css = read(name);
 			const noComments = css.replace(/\/\*[\s\S]*?\*\//g, '');
+			// @font-face declares font-family/font-style/src/etc, none of them
+			// --roxy-*, so it is stripped alongside @import before the custom-
+			// property scan below rather than counted as drift.
+			const noFontFaces = noComments.replace(/@font-face\s*\{[^}]*\}/g, '');
 
-			test('carries a font @import and the four trigger blocks at zero specificity', () => {
-				expect(css).toMatch(/@import url\("https:\/\/fonts\.googleapis/);
+			test('carries the four trigger blocks at zero specificity', () => {
 				const generic = [...noComments.matchAll(/:where\(:root, :host\)/g)];
 				expect(generic).toHaveLength(2); // light default + OS-dark
 				expect(noComments).toContain('@media (prefers-color-scheme: dark)');
@@ -93,8 +100,31 @@ describe('generated theme presets', () => {
 				expect(opens).toBe(closes);
 			});
 
+			if (selfHosted) {
+				test('self-hosts its fonts: no Google @import, one @font-face per subset, pinned to the package version on jsDelivr', () => {
+					expect(css).not.toMatch(/@import url\("https:\/\/fonts\.googleapis/);
+					const pkgVersion = (
+						JSON.parse(
+							readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+						) as { version: string }
+					).version;
+					for (const face of SELF_HOSTED_FACES) {
+						expect(noComments).toContain(`font-family: "${face.family}"`);
+						expect(noComments).toContain(
+							`src: url("https://cdn.jsdelivr.net/npm/@roxyapi/ui@${pkgVersion}/dist/styles/fonts/${face.file}")`,
+						);
+						expect(noComments).toContain('font-weight: 400 600;');
+					}
+				});
+			} else {
+				test('carries the shared Google Fonts @import', () => {
+					expect(css).toMatch(/@import url\("https:\/\/fonts\.googleapis/);
+					expect(noComments).not.toContain('@font-face');
+				});
+			}
+
 			test('only ever declares --roxy-* custom properties', () => {
-				const body = noComments.replace(/@import[^;]+;/g, '');
+				const body = noFontFaces.replace(/@import[^;]+;/g, '');
 				const props = [...body.matchAll(/([\w-]+)\s*:\s*[^{};]+;/g)].map(
 					(m) => m[1],
 				);

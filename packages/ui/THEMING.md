@@ -261,7 +261,7 @@ Or copy the color tokens into your own stylesheet. The Customize Colors panel on
 }
 ```
 
-`--roxy-accent-ink` and `--roxy-ring` derive from `--roxy-accent`, so the snippet does not set them. The serif display face and humanist sans body load from Google Fonts: the linked file imports both and sets `--roxy-font-display` / `--roxy-font-sans` for you, so the CSS snippet above (colors only) is the lighter option when you already have a type system.
+`--roxy-accent-ink` and `--roxy-ring` derive from `--roxy-accent`, so the snippet does not set them. The serif display face and humanist sans body ship inside this package: the linked file declares both as self-hosted fonts (OFL, bundled) and sets `--roxy-font-display` / `--roxy-font-sans` for you, so the CSS snippet above (colors only) is the lighter option when you already have a type system.
 
 ## A11y
 

@@ -252,6 +252,10 @@ async function copyAssets() {
 	// dist/styles/themes/{name}.css. The whole directory is mirrored so a new
 	// preset flows through with no build change.
 	await copyDir(`${UI_DIR}/src/styles/themes`, `${DIST}/styles/themes`);
+	// Self-hosted font files (and their OFL license text) the practitioner theme
+	// references by jsDelivr URL. Mirrored wholesale for the same reason as themes
+	// above: a new subset or family flows through with no build change.
+	await copyDir(`${UI_DIR}/src/styles/fonts`, `${DIST}/styles/fonts`);
 }
 
 async function syncSiteAssets() {

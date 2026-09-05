@@ -152,6 +152,7 @@ const OWN_DOMAINS = new Set([
 	'googleapis.com',
 	'gstatic.com',
 	'anthropic.com',
+	'sil.org', // OFL FAQ link, shipped verbatim inside the license text bundled with each self-hosted font
 ]);
 
 /**

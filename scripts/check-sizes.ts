@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 /**
- * Bundle-size gate. Asserts the gzip/raw budgets the README publishes and exits non-zero listing every offender, so a size regression cannot reach a registry. Run after a build (it measures `packages/ui/dist/cdn`).
+ * Bundle-size gate. Asserts the gzip/raw budgets the README publishes and exits non-zero listing every offender, so a size regression cannot reach a registry. Run after a build (it measures `packages/ui/dist/cdn` and `packages/ui/dist/styles/fonts`).
  *
  * @remarks
- * Four budgets, ALL measured GZIPPED, because that is the byte weight a browser downloads over a compressing CDN; the one-tag `widgets.js` reuses {@link WIDGETS_BUDGET_BYTES} so the number lives in exactly one place. {@link findOffenders} is the pure comparison seam the unit test drives with synthetic budgets.
+ * Four budgets measured GZIPPED, because that is the byte weight a browser downloads over a compressing CDN, plus one measured RAW for the self-hosted font files (already-compressed woff2 gains nothing from gzip); the one-tag `widgets.js` reuses {@link WIDGETS_BUDGET_BYTES} so the number lives in exactly one place. {@link findOffenders} is the pure comparison seam the unit test drives with synthetic budgets.
  *
  * Every artifact CLASS the build emits needs a budget here, not just the ones that were big when it was written: an unbudgeted output is one nobody is measuring, and a chrome-string catalogue is exactly the shape that grows one string at a time.
  */
@@ -12,8 +12,9 @@ import { WIDGETS_BUDGET_BYTES } from './build-widgets.js';
 
 const KB = 1024;
 const CDN_DIR = 'packages/ui/dist/cdn';
+const FONTS_DIR = 'packages/ui/dist/styles/fonts';
 
-/** Ceilings for the three budgeted artifact classes. */
+/** Ceilings for the budgeted artifact classes. */
 export interface SizeBudgets {
 	/** `dist/cdn/roxy-ui.js`, gzipped. */
 	fullGzip: number;
@@ -23,6 +24,8 @@ export interface SizeBudgets {
 	widgetsGzip: number;
 	/** each `dist/cdn/locales/*.js`, gzipped. */
 	localeGzip: number;
+	/** each `dist/styles/fonts/**\/*.woff2`, RAW. woff2 is already compressed, so gzip on top buys nothing and would hide a regression; this is the one budget measured uncompressed. */
+	fontRaw: number;
 }
 
 export const DEFAULT_BUDGETS: SizeBudgets = {
@@ -73,6 +76,12 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// file. Not the API field labels either: those are about a sixth of the source,
 	// measured, and separating them buys almost nothing.
 	localeGzip: 26 * KB,
+	// The five self-hosted practitioner-theme subsets (Fraunces latin + latin-ext,
+	// Jost latin + latin-ext + cyrillic) measure 10 to 66 KB each, so the cap sits
+	// round above the largest of those with headroom for one more subset, never so
+	// high that a wrong export (a whole variable family, every weight and style)
+	// could pass. Re-measure and move this, never raise it to make a swap pass.
+	fontRaw: 100 * KB,
 };
 
 export interface Artifact {
@@ -91,12 +100,25 @@ const readBytes = async (path: string): Promise<Uint8Array<ArrayBuffer>> =>
 const gzipLen = (bytes: Uint8Array<ArrayBuffer>): number =>
 	Bun.gzipSync(bytes, { level: 9 }).length;
 
+/** Every `.woff2` under `dir`, recursing one level (the family subdirectories), sorted for deterministic output. */
+async function collectFontFiles(dir: string): Promise<string[]> {
+	const entries = await readdir(dir, { withFileTypes: true });
+	const out: string[] = [];
+	for (const e of entries) {
+		const full = `${dir}/${e.name}`;
+		if (e.isDirectory()) out.push(...(await collectFontFiles(full)));
+		else if (e.name.endsWith('.woff2')) out.push(full);
+	}
+	return out.sort();
+}
+
 /**
- * Measure every budgeted artifact under `distCdn`: the full bundle and `widgets.js` by name, every per-component file by directory scan. Throws if the build output is absent (run `bun run build` first).
+ * Measure every budgeted artifact under `distCdn`: the full bundle and `widgets.js` by name, every per-component file by directory scan. Font files are scanned separately under `distFonts`, RAW rather than gzipped, so they never count against the JS bundle budgets above. Throws if the build output is absent (run `bun run build` first).
  */
 export async function collectArtifacts(
 	budgets: SizeBudgets = DEFAULT_BUDGETS,
 	distCdn: string = CDN_DIR,
+	distFonts: string = FONTS_DIR,
 ): Promise<Artifact[]> {
 	const out: Artifact[] = [];
 	out.push({
@@ -125,6 +147,14 @@ export async function collectArtifacts(
 				metric: 'gzip',
 			});
 		}
+	}
+	for (const f of await collectFontFiles(distFonts)) {
+		out.push({
+			name: f.replace(`${distFonts}/`, 'styles/fonts/'),
+			actual: (await readBytes(f)).length,
+			budget: budgets.fontRaw,
+			metric: 'raw',
+		});
 	}
 	return out;
 }
