@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '../types/index.js';
+import type { CastDailyReadingResponse, CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '../types/index.js';
 
 type ElementAttrs = Omit<
 	React.HTMLAttributes<HTMLElement>,
@@ -9,7 +9,7 @@ type ElementAttrs = Omit<
 
 export interface RoxyHexagramProps extends ElementAttrs {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse;
+	data?: GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse | CastDailyReadingResponse;
 	className?: string;
 	style?: React.CSSProperties;
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */

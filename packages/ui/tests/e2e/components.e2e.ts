@@ -330,7 +330,7 @@ test.describe('Roxy UI preview', () => {
 	});
 
 	/**
-	 * The two tarot shapes are not the same card. The REFERENCE card ships both orientations, so the reader picks one and the whole reading follows. The DAILY card is drawn: the API ships exactly one orientation and one set of meanings for it. The daily card used to offer the same flip, which rotated the art and relabelled it "reversed" while the text stayed the upright reading, so it showed the wrong meaning. It no longer flips, and this pins both halves of that.
+	 * The two tarot shapes are not the same card. The REFERENCE card ships both orientations, so the reader picks one and the whole reading follows. The DAILY card is drawn: the API ships exactly one orientation and one set of meanings for it. The daily card does not flip: rotating the art and relabelling it "reversed" while the text stayed the upright reading would show a meaning the response never sent. This pins both halves of that.
 	 */
 	test('the reference card switches orientation; the drawn daily card does not', async ({
 		page,

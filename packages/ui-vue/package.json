@@ -13,6 +13,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./tool-component": {
+      "types": "./dist/tool-component.d.ts",
+      "import": "./dist/tool-component.js",
+      "require": "./dist/tool-component.cjs"
+    },
     "./components/*": {
       "types": "./dist/components/*.d.ts",
       "import": "./dist/components/*.js"

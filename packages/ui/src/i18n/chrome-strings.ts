@@ -12,7 +12,7 @@
  *
  * **A component earns its vocabulary by having its chrome here, and the two move in ONE change.** Reading `nameLocalized` under an English heading is worse than reading `name` under one, so a card is either translated or it is not. `<roxy-hd-connection>` and `<roxy-hd-penta>` are deliberately absent: almost all of their chrome is Human Design doctrine the COMPONENT wrote (what an electromagnetic channel is, what the upper triangle of a penta carries), so translating them is a paragraph-level meaning risk of exactly the shape lesson 32 describes, and they stay English end to end until a practitioner pass can source them.
  *
- * **Two entries may never differ only by case.** The runtime key is {@link lookupKey} of the source string, so `harmonious` and `Harmonious` are ONE key and the second silently overwrites the first in every catalogue. Both shipped, which is why the natal legend read `Armónicos` in Spanish where English read `harmonious`. Only the capitalized forms remain and `tests/i18n.test.ts` fails on any new pair that collides.
+ * **Two entries may never differ only by case.** The runtime key is {@link lookupKey} of the source string, so `harmonious` and `Harmonious` are ONE key and the second silently overwrites the first in every catalogue. A colliding pair renders one catalogue entry under the other source string, which reads as a correct translation of the wrong word. Only the capitalized forms are declared, and `tests/i18n.test.ts` fails on any new pair that collides.
  *
  * This module is imported for its TYPE by the locale files and by value only by the tests, so it never reaches a component bundle. It exists so a locale cannot silently omit a string and a component cannot silently introduce one: `tests/i18n.test.ts` scans the component sources for `t(...)` call sites and fails on anything absent from this list, then fails again on any locale missing a key.
  */
@@ -1100,7 +1100,7 @@ export const CHROME_STRINGS = [
 	'Person {{n}}',
 	'Score {{score}} of 100',
 	// The wheel is divided by sign, so the legend says so: twelve spokes read as
-	// house cusps to anyone used to a house wheel.
+	// house cusps to anyone who reads a house wheel.
 	'Sign sectors, not houses',
 	'Planet 1',
 	'Planet 2',

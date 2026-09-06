@@ -228,9 +228,9 @@ test.describe('practitioner theme preset', () => {
  *
  * `generateRelocationChart` is the only operation in the spec that carries two coordinate pairs at
  * the TOP level, told apart by a name prefix (`birthLatitude` / `relocationLatitude`) instead of by
- * per-person object nesting. Grouping used to come from nesting alone, so this form fell through to
- * four raw number inputs and a decimal-hours timezone box, which no visitor of an embedder's site
- * can answer. The unit tests assert the form MODEL; this asserts what a browser actually paints,
+ * per-person object nesting. Grouping is derived from that prefix as well as from nesting, or a
+ * prefixed pair renders as four raw number inputs and a decimal-hours timezone box, which no
+ * visitor of an embedder site can answer. The unit tests assert the form MODEL; this asserts what a browser actually paints,
  * which is the only claim that matters to the person filling it in.
  */
 test.describe('two-location form', () => {

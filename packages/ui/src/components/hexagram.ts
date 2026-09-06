@@ -2,6 +2,7 @@ import { css, html, nothing, svg } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { trigramGlyph } from '../tokens/index.js';
 import type {
+	CastDailyReadingResponse,
 	CastReadingResponse,
 	GetDailyHexagramResponse,
 	GetHexagramResponse,
@@ -22,12 +23,13 @@ type HexagramData =
 	| GetRandomHexagramResponse
 	| LookupHexagramResponse
 	| GetDailyHexagramResponse
-	| CastReadingResponse;
+	| CastReadingResponse
+	| CastDailyReadingResponse;
 
 /**
  * I Ching hexagram card. Renders /iching/hexagrams/{number},
- * /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast and
- * /iching/daily.
+ * /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast,
+ * /iching/daily and /iching/daily/cast.
  *
  * @remarks
  * **There is deliberately no `mode` input.** Which shape arrived is
@@ -168,10 +170,17 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		`,
 	];
 
+	/**
+	 * Which shape arrived, flattened to what the card draws.
+	 *
+	 * @remarks
+	 * **The line READINGS are read from here rather than from the hexagram, because the two cast endpoints put them in different places.** `/iching/cast` nests a whole hexagram carrying its own `changingLines`; `/iching/daily/cast` sends a lighter hexagram and puts the moving-line statements at the top level, where they are ONLY the lines that moved. A card that read `hexagram.changingLines` alone would draw the right figure for the daily cast and silently drop the only thing a cast is about. Both are the same `ChangingLine` shape, so one field carries either.
+	 */
 	private resolveHexagram(): {
 		hex: Hexagram;
 		lines?: number[];
 		changingLinePositions?: number[];
+		changingLines?: Hexagram['changingLines'];
 		dailyMessage?: string;
 		resultingHexagram?: Hexagram;
 	} | null {
@@ -179,21 +188,26 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		if (!d) return null;
 		if ('hexagram' in d && d.hexagram) {
 			if ('lines' in d) {
-				const cast = d as CastReadingResponse;
+				const cast = d as CastReadingResponse & CastDailyReadingResponse;
+				const hex = cast.hexagram as Hexagram;
 				return {
-					hex: cast.hexagram as Hexagram,
+					hex,
 					lines: cast.lines,
 					changingLinePositions: cast.changingLinePositions,
+					changingLines: cast.changingLines ?? hex.changingLines,
 					resultingHexagram: cast.resultingHexagram as Hexagram | undefined,
 				};
 			}
 			const daily = d as GetDailyHexagramResponse;
+			const hex = daily.hexagram as Hexagram;
 			return {
-				hex: daily.hexagram as Hexagram,
+				hex,
+				changingLines: hex.changingLines,
 				dailyMessage: daily.dailyMessage,
 			};
 		}
-		return { hex: d as Hexagram };
+		const hex = d as Hexagram;
+		return { hex, changingLines: hex.changingLines };
 	}
 
 	protected renderData() {
@@ -204,6 +218,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 			hex: h,
 			lines: castLines,
 			changingLinePositions,
+			changingLines,
 			dailyMessage,
 			resultingHexagram,
 		} = resolved;
@@ -313,7 +328,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 						</div>`
 						: nothing
 				}
-				${this.renderLines(h, changing)}
+				${this.renderLines(changingLines, changing)}
 			</div>
 		</article>`;
 	}
@@ -324,8 +339,11 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	 * @remarks
 	 * When lines are moving, only those lines are shown: a cast turns on the moving lines, and listing the other five buries the answer. With no lines moving (a lookup, a random draw, the daily hexagram) all six are shown, because there the hexagram is being read as a reference rather than as an answer to a question.
 	 */
-	private renderLines(h: Hexagram, changing: Set<number>) {
-		const all = h.changingLines ?? [];
+	private renderLines(
+		lines: Hexagram['changingLines'] | undefined,
+		changing: Set<number>,
+	) {
+		const all = lines ?? [];
 		if (all.length === 0) return nothing;
 
 		const isCast = changing.size > 0;
@@ -348,10 +366,10 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	}
 
 	/**
-	 * Lines for a static hexagram (a lookup, a random draw, the hexagram of the day, none of which carry a cast `lines` array): read the `binary` pattern. 6 digits BOTTOM to top, so index 0 is line 1, the bottom line, exactly like the cast `lines` array. 1 = yang (solid, 7), 0 = yin (broken, 8). A response with no usable `binary` yields no lines and the figure is left undrawn, because the six lines ARE response data: a default pattern would draw one hexagram under the name and Unicode symbol of another. The Unicode `symbol` block (U+4DC0) is in King Wen order, NOT line order, so it must never be used to derive the lines either.
+	 * Lines for a static hexagram (a lookup, a random draw, the hexagram of the day, none of which carry a cast `lines` array): read the `binary` pattern. 6 digits BOTTOM to top, so index 0 is line 1, the bottom line, exactly like the cast `lines` array. 1 = yang (solid, 7), 0 = yin (broken, 8). A response with no usable `binary` yields no lines and the figure is left undrawn, because the six lines ARE response data: a default pattern would draw one hexagram under the name and Unicode symbol of another. The Unicode `symbol` block (U+4DC0) is in King Wen order, NOT line order, so it must never be a source for the lines either.
 	 *
 	 * @remarks
-	 * This used to `.reverse()`, because the API served `binary` top-to-bottom while documenting it bottom-to-top, and reversing was the only way to render the figure the right way up. The API fixed the data in 2026-07 (the same inversion was making `/cast` return the vertically MIRRORED hexagram for 56 of the 64 figures), so `binary` and `lines` now point the same way and the reverse would flip every asymmetric hexagram upside down. Do not put it back.
+	 * **Read in the order the API documents and never reversed.** `binary` and the cast `lines` array both run bottom to top, so they point the same way and a `.reverse()` here would flip every asymmetric hexagram upside down. Do not add one.
 	 */
 	private derivedLines(h: Hexagram): number[] {
 		const binary = h.binary ?? '';

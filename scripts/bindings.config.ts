@@ -319,6 +319,10 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	lookupHexagram: [{ component: 'roxy-hexagram' }],
 	castReading: [{ component: 'roxy-hexagram' }],
 	getDailyHexagram: [{ component: 'roxy-hexagram' }],
+	// The daily cast nests a lighter hexagram and puts the moving-line readings at
+	// the top level, so the card reads them from the resolved shape rather than
+	// from the hexagram. Appended last, so no widget default moves.
+	castDailyReading: [{ component: 'roxy-hexagram' }],
 
 	// Dreams
 	getDreamSymbol: [{ component: 'roxy-dream-card' }],
@@ -358,7 +362,7 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
  * @remarks
  * A binding is what makes a component a one-tag widget: it enters the generated widget map, the demo Embed tab, and the hosted embed surfaces. An unbound component still ships in full as a web component and in both wrapper packages, and still self-fetches when given an explicit `data-endpoint` and a publishable key. Only the zero-config auto-mount path is withheld.
  *
- * **Empty on purpose.** Every component that renders an endpoint is now a widget. Add an entry here only for a genuine product reason, never because of bundle size: the widget map compresses at roughly ten to one, so the size argument that used to justify entries here does not survive measuring the gzipped script.
+ * **Empty on purpose.** Every component that renders an endpoint is now a widget. Add an entry here only for a genuine product reason, never because of bundle size: the widget map compresses at roughly ten to one, so a size argument for an entry here does not survive measuring the gzipped script.
  *
  * `bindings.test.ts` reads this map, so the every-component-is-bound gate keeps biting for everything absent from it.
  */

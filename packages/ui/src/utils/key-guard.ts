@@ -1,5 +1,5 @@
 /**
- * The one place the "publishable key only" rule lives. Every client-side fetch boundary ({@link ../components/location-search.ts}, {@link ./fetch-controller.ts}) calls through here so a secret or legacy unprefixed key is refused identically: no network call, the same visible message, the same `roxy-validation-error` event. Centralising it is what stops the two paths drifting, which is exactly how `<roxy-location-search>` used to warn-then-fetch a secret key while the controller fail-closed.
+ * The one place the "publishable key only" rule lives. Every client-side fetch boundary ({@link ../components/location-search.ts}, {@link ./fetch-controller.ts}) calls through here so a secret or legacy unprefixed key is refused identically: no network call, the same visible message, the same `roxy-validation-error` event. Centralising it is what stops the two paths drifting into different answers for the same key, one warning and fetching where the other refuses.
  */
 
 /** Canonical refusal message. Both fetch boundaries surface this exact wording. */

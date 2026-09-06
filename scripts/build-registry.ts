@@ -39,9 +39,12 @@ const THEME_URL = `https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v${VERSION}/registry/t
 // `@layer base { :root }` via the `css` field bypasses Tailwind's @theme
 // processing while still cascading into Shadow DOM normally.
 //
-// Status `-fg` bridges fall back to sensible darker shades so light surfaces
-// hit WCAG AA contrast for status text. shadcn does not have foreground tokens
-// for chart-* slots, so we fall through to a hardcoded dark variant.
+// The DERIVED inks are deliberately NOT bridged: `--roxy-accent-ink` and the four
+// status `-fg` partners each mix from their own base in `tokens.css`, so bridging
+// the base is what carries the ink with it. Mapping an ink to the host FILL token
+// is worse than leaving it out, because accent text would then equal accent fill
+// and land at 2.14 to 1 on a stock amber. `--roxy-ring` is absent for the same
+// reason.
 const SHADCN_THEME_CSS = {
 	'@layer base': {
 		':root': {
@@ -58,15 +61,10 @@ const SHADCN_THEME_CSS = {
 			'--roxy-muted': 'var(--muted-foreground, #71717a)',
 			'--roxy-border': 'var(--border, #e4e4e7)',
 			'--roxy-accent': 'var(--primary, #f59e0b)',
-			'--roxy-accent-ink': 'var(--primary, #b45309)',
 			'--roxy-success': 'var(--chart-2, #16a34a)',
-			'--roxy-success-fg': '#166534',
 			'--roxy-warning': 'var(--chart-3, #f59e0b)',
-			'--roxy-warning-fg': '#9a3412',
 			'--roxy-danger': 'var(--destructive, #dc2626)',
-			'--roxy-danger-fg': 'var(--destructive-foreground, #991b1b)',
 			'--roxy-info': 'var(--chart-1, #2563eb)',
-			'--roxy-info-fg': '#075985',
 			// The host radius scale: shadcn steps its own corners from `--radius`,
 			// so the small mark, the card and the outer panel follow the same ratios.
 			'--roxy-radius-sm': 'calc(var(--radius, 12px) * 0.6)',
@@ -76,10 +74,6 @@ const SHADCN_THEME_CSS = {
 			'--roxy-motion-duration': '200ms',
 		},
 		'.dark': {
-			'--roxy-success-fg': '#86efac',
-			'--roxy-warning-fg': '#fdba74',
-			'--roxy-danger-fg': '#fca5a5',
-			'--roxy-info-fg': '#7dd3fc',
 			'--roxy-shadow-md': '0 4px 12px rgba(0,0,0,0.4)',
 		},
 	},

@@ -152,7 +152,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				margin-top: calc(var(--roxy-space-xs, 0.25rem) * -1);
 			}
 			/* The wheel divides by SIGN. Twelve spokes read as house cusps to anyone
-			 * used to a house wheel, so the legend states what they are rather than
+			 * who reads a house wheel, so the legend states what they are rather than
 			 * leaving the drawing to imply houses this response does not carry. */
 			.legend-row .caveat {
 				font-style: italic;

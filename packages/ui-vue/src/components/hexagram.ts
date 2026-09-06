@@ -1,10 +1,10 @@
 import { defineComponent, h, onMounted, type PropType, ref } from 'vue';
 import { ensureScriptLoaded } from '../load-ui.js';
-import type { CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '../types/index.js';
+import type { CastDailyReadingResponse, CastReadingResponse, GetDailyHexagramResponse, GetHexagramResponse, GetRandomHexagramResponse, LookupHexagramResponse } from '../types/index.js';
 
 export interface RoxyHexagramProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
-	data?: GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse;
+	data?: GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse | CastDailyReadingResponse;
 	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
 	endpoint?: string;
 	/** HTTP method for the self-fetch request. Defaults to POST. */

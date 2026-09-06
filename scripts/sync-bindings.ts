@@ -114,7 +114,7 @@ for (const [operationId, components] of Object.entries(UI_BINDINGS)) {
  * @remarks
  * **The first binding per tag is the DEFAULT** everywhere it matters: the widget map, the one-tag `data-roxy-widget` div, the demo Embed tab, and the hosted `/embed/{slug}` shell all take `endpoints[0]`. So the order here is semantics, not formatting.
  *
- * Sorting these by path used to look tidy and silently picked the default alphabetically, which is unrelated to what a reader wants. It gave `moon-phase` the year-and-month calendar form instead of today's phase, `forecast-timeline` the significant-dates list instead of the timeline it is named after, `numerology-card` birth-day instead of life-path, and `tarot-spread` a raw draw instead of the three-card spread: twelve components in all.
+ * Sorting these by path looks tidy and picks the default alphabetically, which is unrelated to what a reader wants: it hands `moon-phase` the year-and-month calendar form instead of the current phase, `forecast-timeline` the significant-dates list instead of the timeline it is named after, `numerology-card` birth-day instead of life-path, and `tarot-spread` a raw draw instead of the three-card spread, twelve components in all.
  *
  * `UI_BINDINGS` already lists each component's endpoints in the order a reader would want them, so declaration order IS the intent. Preserve it. Only the tag keys are sorted, and those are never read positionally.
  */

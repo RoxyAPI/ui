@@ -80,7 +80,7 @@ const ANGLE_LABEL_WIDTH = 28;
  * @remarks
  * `RelocationChartResponse` carries the same planets, houses, angles and birth details as `NatalChartResponse` (`RelocationPlanet` is field-for-field identical to the natal planet item), and differs only by having no `aspects`, `aspectsInterpretation`, `patterns`, `partOfFortune` or `summary`. The wheel already renders without them, so those five are simply optional here.
  *
- * Typing that contract is what lets {@link RoxyRelocationWheel} compose this component honestly. It used to pass its response through a `data as unknown as NatalChartResponse` double cast, which silently asserted five required fields that were not there.
+ * Typing that contract is what lets {@link RoxyRelocationWheel} compose this component honestly: it hands over a response the type actually describes, rather than a double cast asserting fields the payload may not carry.
  */
 type ChartExtras =
 	| 'aspects'

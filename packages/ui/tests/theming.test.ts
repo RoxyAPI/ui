@@ -48,6 +48,60 @@ describe('tokens.css theme selectors', () => {
 	});
 });
 
+/**
+ * The defaults live in a cascade layer, which is half of what puts the host page in charge.
+ *
+ * @remarks
+ * `:where()` answers a host rule of equal or lower SPECIFICITY. It cannot answer a host rule
+ * written inside a layer, because an unlayered declaration beats a layered one at any
+ * specificity, and a framework that writes its tokens in `@layer base` therefore lost to these
+ * defaults however it was written. Both mechanisms are kept: the layer settles the layered case,
+ * `:where()` settles the rest.
+ *
+ * The order statement is asserted too, because a layer that is never named sorts LAST among
+ * layers, which would invert the theme presets against the defaults they reassign.
+ *
+ * `tests/e2e/theming.e2e.ts` proves the effect in a real cascade, in both modes. This suite only
+ * proves the shape, which is what a browser cannot be asked about cheaply on every run.
+ */
+describe('tokens.css cascade layer', () => {
+	const withoutComments = TOKENS_CSS.replace(/\/\*[\s\S]*?\*\//g, '');
+
+	test('declares the layer order before anything else', () => {
+		expect(
+			withoutComments.trim().startsWith('@layer roxy.tokens, roxy.theme;'),
+		).toBe(true);
+	});
+
+	test('every rule sits inside the roxy.tokens layer', () => {
+		const body = withoutComments.slice(
+			withoutComments.indexOf('@layer roxy.tokens, roxy.theme;') +
+				'@layer roxy.tokens, roxy.theme;'.length,
+		);
+		// One block, opened once and closed at the end of the file: anything after
+		// the closing brace would be an unlayered rule outranking the host page.
+		expect(body.trim().startsWith('@layer roxy.tokens {')).toBe(true);
+		expect(body.trim().endsWith('}')).toBe(true);
+		expect([...body.matchAll(/@layer\s+roxy\.tokens\s*\{/g)]).toHaveLength(1);
+		const opens = (body.match(/\{/g) ?? []).length;
+		const closes = (body.match(/\}/g) ?? []).length;
+		expect(opens).toBe(closes);
+	});
+
+	test('a block added later cannot open at non-zero specificity', () => {
+		// The ratchet beside the named-selector check below, which pins the four
+		// triggers this file has today: this one holds any FIFTH block to the same
+		// rule, because both halves are needed. A layer alone loses to any unlayered
+		// rule the host never meant as an override, and :where() alone loses to a
+		// layered one.
+		const selectors = [
+			...withoutComments.matchAll(/^\t(:where\(|:root|\.\w)/gm),
+		];
+		expect(selectors.length).toBeGreaterThan(0);
+		for (const [, opener] of selectors) expect(opener).toBe(':where(');
+	});
+});
+
 describe('tokens-css.ts codegen', () => {
 	test('is byte-identical to tokens.css (run `bun run tokens:sync` if this fails)', () => {
 		expect(ROXY_UI_TOKENS_CSS).toBe(TOKENS_CSS);
@@ -99,7 +153,7 @@ describe('injectRoxyTokens', () => {
  * `--roxy-accent-ink` and `--roxy-ring` DERIVE from `--roxy-accent`, so overriding the accent alone rebrands the library instead of leaving the active tab, the conjunction aspect lines and the focus ring painting the old amber.
  *
  * @remarks
- * A cascade layer was tried here so that a consumer's `:root` override would also beat the `[data-theme]` blocks, which carry a higher specificity. It was reverted: layers mean UNLAYERED declarations win, so every theme block became weaker than any unlayered rule on the page, and dark mode broke the moment anything else declared a token. The theme blocks must stay authoritative. A consumer who themes dark differently sets the accent in their dark block too, exactly as shadcn requires.
+ * The defaults are BOTH layered and `:where()`d, and the two answer different halves: the layer settles a host rule written inside a layer of its own, `:where()` settles the rest. The consequence to keep in mind when touching anything that emits tokens is that ANY unlayered declaration of a `--roxy-*` wins, in both modes, which is the contract and is also a trap for our own pages: emitting the DEFAULTS back out at real specificity, as a colour picker sitting at its initial state would, pins the page to whichever mode those values came from. The showcase customizer therefore injects nothing until a swatch is edited, and then injects a light block and a dark one. A consumer who themes dark differently sets the accent in their dark block too, exactly as shadcn requires.
  */
 describe('theming contract', () => {
 	test('every library selector has ZERO specificity via :where()', () => {
@@ -153,6 +207,29 @@ describe('theming contract', () => {
 			'--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent)',
 		);
 	});
+
+	/**
+	 * The four status inks get the accent-ink treatment, and the same guard, because the same defect is available to them: a fixed ink beside a re-pointed base paints the old hue on every rule that reads it, which is what the practitioner preset shows when it moves `--roxy-danger` alone.
+	 *
+	 * Both directions are asserted per status, because a partial derivation is the worst outcome: a light block that mixes and a dark block that does not is a legible page in one mode and a dark green on near-black in the other.
+	 */
+	for (const status of ['success', 'warning', 'danger', 'info'] as const) {
+		test(`--roxy-${status}-fg derives from its base in every block`, () => {
+			expect(TOKENS_CSS).not.toMatch(new RegExp(`--roxy-${status}-fg:\\s*#`));
+			const derived = [
+				...TOKENS_CSS.matchAll(
+					new RegExp(
+						`--roxy-${status}-fg: color-mix\\(in oklab, var\\(--roxy-${status}\\) 70%, (black|white)\\);`,
+						'g',
+					),
+				),
+			].map(([, toward]) => toward);
+			// Four theme triggers: light default and the explicit light opt-out mix
+			// toward black, the media block and the explicit dark opt-in toward white.
+			expect(derived.filter((t) => t === 'black')).toHaveLength(2);
+			expect(derived.filter((t) => t === 'white')).toHaveLength(2);
+		});
+	}
 });
 
 /**

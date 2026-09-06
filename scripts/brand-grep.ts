@@ -20,7 +20,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 // ---------------------------------------------------------------------------
-// File allowlist — only these paths are scanned. Glob patterns are expanded
+// File allowlist: only these paths are scanned. Glob patterns are expanded
 // via `git ls-files` so we only touch committed files.
 // ---------------------------------------------------------------------------
 const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
@@ -48,7 +48,7 @@ function expandGlobs(): string[] {
 				results.push(...out.split('\n').filter(Boolean));
 			}
 		} catch {
-			// pattern matched nothing — that is fine
+			// pattern matched nothing, which is fine
 		}
 	}
 	return results;
@@ -67,6 +67,9 @@ const GENERATED = [
 	/^specs\//,
 	/^apps\/docs\/(manifest|sample-data)\.js$/,
 	/^assets\//,
+	// The OFL text ships verbatim beside each self-hosted font. It is a licence, not
+	// our prose, and it may not be edited to satisfy a writing rule.
+	/^packages\/ui\/src\/styles\/fonts\/.*\/OFL\.txt$/,
 	/\.(png|webp|jpe?g|svg|ico|woff2?|lock)$/i,
 ];
 
@@ -420,12 +423,24 @@ const CATEGORY_D_PATTERNS: Pattern[] = [
 			/(?:verified|measured|checked|corrected|captured|confirmed|re-?tested|recounted|sourced|re-?examined|as\\s+of|since|carries|carried)\b[^.]{0,60}?\b20\d\d-\d\d-\d\d\b|\b20\d\d-\d\d-\d\d\b[^.]{0,20}?\b(?:verified|measured|checked|corrected|captured|confirmed|re-?tested|recounted|sourced|re-?examined|as\\s+of|since|carries|carried)\b/i,
 		),
 	},
-	// Narrating what the code used to get wrong.
+	// Narrating a past defect. A public file states the behaviour
+	// that ships; the history belongs in the maintainer notes. The second pattern is
+	// the same class written as a comparison against a past state rather than as a
+	// verb, which is how the wording drifts back in. Both are deliberately narrow:
+	// an ordering statement ("declared before this block") and a browser fact ("the
+	// rule is silently ignored on older engines") are technical, not narration.
 	{
 		category: 'D',
 		label: 'defect-narrative',
 		test: ci(
-			/\b(used\s+to\s+(be|do|draw|render|print|read|return|carry|show|interpolate|implement|call|key|resolve)|the\s+defect|silently\s+(dropped|kept|lost|reverted|stopped|broke)|was\s+wrong|shipped\s+(with|for\s+months|green)|before\s+the\s+fix)\b/i,
+			/\b(used\s+to|the\s+defect|silently\s+(dropped|kept|lost|reverted|stopped|broke|did)|was\s+wrong|shipped\s+(with|for\s+months|green)|before\s+the\s+fix)\b/i,
+		),
+	},
+	{
+		category: 'D',
+		label: 'defect-narrative',
+		test: ci(
+			/\bwas\s+(losing|winning)\b|\bwere\s+two\s+different\s+results\b|\b(rule|rules|declaration|declarations|mapping|map|override|overrides|block|value|token|bridge|default|defaults|component|components)\s+lost\s+to\b|\bkept\s+the\s+stock\b|\bbefore\s+the\s+change\b|\bbefore\s+this\s*[.,;]/i,
 		),
 	},
 	// Pointers at files the reader cannot open. Derived rather than listed: the wordlist this replaced named five

@@ -172,9 +172,9 @@ describe('published part vocabulary', () => {
 	test('one concept keeps one name across components that render it', () => {
 		// Pins the regression this vocabulary work was done for. The natal chart
 		// and the aspects table render the same chart aspects, so one
-		// `::part(aspects)` rule has to reach both. The natal chart used to expose
-		// that block only as `aspect-grid`, which meant a rule written against one
-		// component silently missed the other.
+		// `::part(aspects)` rule has to reach both. The natal chart answers to
+		// `aspects` beside its own `aspect-grid`, because a rule written against one
+		// component reaches the other only through the shared name.
 		for (const slug of ['natal-chart', 'aspects-table']) {
 			expect({ slug, exposes: partsForSlug(slug).includes('aspects') }).toEqual(
 				{

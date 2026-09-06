@@ -682,9 +682,9 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 	}
 
 	/**
-	 * Fractional progress (0..1) through a period at the current time. Used to
-	 * draw a vertical "now" marker inside the active bar. Returns -1 outside the
-	 * period so the caller can skip the marker.
+	 * Fractional progress (0..1) through a period at the current time, which places
+	 * the vertical "now" marker inside the active bar. Returns -1 outside the period
+	 * so the caller can skip the marker.
 	 */
 	private progressIn(p: DashaPeriod): number {
 		if (!p.startDate || !p.endDate) return -1;

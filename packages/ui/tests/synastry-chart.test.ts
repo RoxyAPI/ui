@@ -52,7 +52,7 @@ const FIXTURE = {
 
 describe('the synastry wheel says what it draws', () => {
 	test('the legend names the sectors as signs', async () => {
-		// Twelve spokes on a round chart read as house cusps to anyone used to a
+		// Twelve spokes on a round chart read as house cusps to anyone who reads a
 		// house wheel, and this wheel divides by sign. The words are the only thing
 		// standing between the two readings.
 		expect(text(await mount(FIXTURE))).toContain('Sign sectors, not houses');

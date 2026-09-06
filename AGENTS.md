@@ -123,7 +123,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-vastu-mandala>` | Vastu | POST /vastu/mandala, POST /vastu/entrance | Pada grid with a devata per square, the brahmasthan, and the entrance pada lit with its effect |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-dosha-constitution>` | Ayurveda | POST /ayurveda/constitution | Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it |
-| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
+| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
 | `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |
 | `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
@@ -447,7 +447,7 @@ In React, the same props are typed: `<RoxyNatalChart endpoint="astrology/natal-c
 
 A Remote MCP server at `roxyapi.com/mcp/{domain}` exposes each RoxyAPI endpoint as a tool, named for its method and path: `post_astrology_natal_chart`, `post_tarot_spreads_three_card`, `get_tarot_cards_id`. When your model calls one, the result is a single text content block holding the JSON string, and that JSON is the same shape the SDK returns. So the whole render is: parse it, look up the component, set `data`.
 
-`componentForTool(name)` is the lookup, exported from `@roxyapi/ui`, `@roxyapi/ui-react` and `@roxyapi/ui-vue`. It returns `{ tag, pascal, attrs?, operationId, toolName }` for a tool the library draws, and `undefined` for one it does not. `operationId` names the OpenAPI operation the tool calls, for your logs or for finding the endpoint in the API reference. `attrs` values are always strings: set them as attributes in the DOM, spread them as props in React and Vue.
+`componentForTool(name)` is the lookup, exported from `@roxyapi/ui`, `@roxyapi/ui-react` and `@roxyapi/ui-vue`, and from the `/tool-component` subpath of each for a module that decides which component to render without rendering one (a server component, a route handler, a worker): `import { componentForTool } from '@roxyapi/ui-react/tool-component'` carries the lookup, `expandCompact` and the name table, and no elements. It returns `{ tag, pascal, attrs?, operationId, toolName }` for a tool the library draws, and `undefined` for one it does not. `operationId` names the OpenAPI operation the tool calls, for your logs or for finding the endpoint in the API reference. `attrs` values are always strings: set them as attributes in the DOM, spread them as props in React and Vue.
 
 ```ts
 import { componentForTool } from '@roxyapi/ui';
@@ -549,6 +549,8 @@ Rules for this pattern:
 
 This is how the WordPress plugin renders: PHP fetches the response server-side, caches it, and writes the script into the page. The same shape works in any framework that emits HTML.
 
+- Writing the tag itself in a React or Next.js file? Import `@roxyapi/ui-react/jsx` once anywhere in the project and every `roxy-*` tag is typed, with its attributes and their legal values. It is the raw-tag path, so it carries attributes only; a page that passes a response uses the wrapper component instead, which sets `data` as a property.
+
 ## Localized responses
 
 Most RoxyAPI endpoints return their interpretation text in the language you ask for, selected with the `lang` query parameter (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`, `zh-Hans`, `zh-Hant`). Human Design, for example, returns the type, strategy, authority, profile, channel, center, gate, and line readings in the requested language. Coverage varies by domain, and a field with no translation in the language you asked for comes back in English.
@@ -618,6 +620,8 @@ Per-element scope is supported:
 
 Every visible aspect of the chart is driven by `--roxy-*` CSS custom properties on `:host`. Override any token on `:root`, on `:host`, or per element. Do not write Tailwind utility classes inside the components; the Shadow DOM boundary stops them at the door.
 
+**One plain declaration is the whole override, including from inside a layer of your own.** The shipped defaults are declared at zero specificity and inside the `roxy` cascade layer, so `:root { --roxy-accent: #6d28d9 }` beats them in both modes, and so does the same line inside `@layer base`, which is where a framework maps its palette onto ours. Never reach for `html:root` or `!important`. If you link `tokens.css` after your own CSS, name the order once with `@layer roxy, base, components, utilities;`. And if your tokens are scoped to a wrapper rather than to `:root`, write the mode on that same wrapper (`data-theme="light"` or `"dark"`), because every token you did not override is still decided at the document root by the visitor OS.
+
 ## Choosing what a component renders
 
 Three tools, one vocabulary. Every structural block carries a `part` name; `::part()` targets it from a stylesheet, `hide-sections` drops it on one element, and `hide-readings` removes interpretive prose from the markup entirely.
@@ -661,6 +665,7 @@ Both are off by default. `hide-sections` takes a comma-separated list, is case-i
 | `section` | Any structural block, paired with a specific name (`section patterns`), so `::part(patterns)` targets that block alone |
 | `readings` | The interpretation accordion |
 | `reading` | One disclosure card inside it |
+| `hint` | The help text under a field of the built-in form, which quotes the API reference for that field. Hide it with `::part(hint)` on a page written for a reader who did not come for the reference; the label, the input and the validation stay |
 | `form`, `loading`, `error`, `edit-bar`, `attribution` | The built-in states, on every component |
 
 That table is the shared vocabulary, not the whole list. **`components-catalog.json` carries a `parts` array for every component, so read the exact names a component answers to instead of guessing or inspecting the DOM.** A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike. Parts reach exactly one shadow root deep, and a component that draws another re-exports its parts, so `roxy-relocation-wheel::part(readings)` reaches the wheel it nests.

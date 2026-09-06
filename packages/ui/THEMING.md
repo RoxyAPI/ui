@@ -1,6 +1,43 @@
 # Theming Roxy UI
 
-Every Roxy UI component reads its colors, fonts, spacing, and motion from a single set of `--roxy-*` CSS custom properties. Override them at `:root` to brand the whole library, or scope to one element to skin a single component. Custom properties inherit through the Shadow DOM boundary, so a value set on `:root` or any light-DOM ancestor reaches every component. The CDN bundle auto-loads the token defaults; your `:root` overrides always win over them.
+Every Roxy UI component reads its colors, fonts, spacing, and motion from a single set of `--roxy-*` CSS custom properties. Override them at `:root` to brand the whole library, or scope to one element to skin a single component. Custom properties inherit through the Shadow DOM boundary, so a value set on `:root` or any light-DOM ancestor reaches every component. The CDN bundle auto-loads the token defaults; your overrides always win over them.
+
+## The host contract
+
+**Your stylesheet wins. One plain declaration is the whole override.**
+
+```css
+:root {
+	--roxy-accent: #6d28d9;
+}
+```
+
+That line beats the shipped default in light mode, in dark mode, and under every mode signal, and it needs no `html:root`, no extra selector weight, and no `!important`. Two things make it true and they cover different cases: every default is declared at `:where()` specificity, which is zero, and everything this package ships sits in the `roxy` cascade layer, which any unlayered rule outranks whatever its specificity. So the same one line works from inside a layer of your own, which is where a framework writes its tokens:
+
+```css
+@layer base {
+	:root {
+		--roxy-surface: var(--card);
+		--roxy-accent: var(--primary);
+	}
+}
+```
+
+Layer order is decided by the order the names are first seen, and `roxy` is registered by the stylesheet itself: the CDN bundle injects it at the top of `<head>`, ahead of anything the page brought with it. If you link `tokens.css` yourself and you link it AFTER your own CSS, name the order once, before either sheet:
+
+```css
+@layer roxy, base, components, utilities;
+```
+
+**If you cannot own `:root`, say which mode you are in on the element you scope to.** A multi-tenant page, or a framework that owns `<html>`, puts its tokens on a wrapper instead. Custom properties inherit, so that works for every token you set. Every token you do NOT set still comes from `:root`, where the default is chosen by the visitor operating system, and a light page opened on a dark phone then draws the dark shadows and the pale status inks onto a near-white card. Declare the mode on the same wrapper and the whole set follows it:
+
+```html
+<div class="my-site" data-theme="light">
+	<roxy-natal-chart></roxy-natal-chart>
+</div>
+```
+
+`data-theme="light"` or `data-theme="dark"`, or the `.light` / `.dark` class if you already write one there. Set it from your own data rather than from the visitor preference when the page has one mode by design.
 
 ## Token reference
 
@@ -24,14 +61,16 @@ Every Roxy UI component reads its colors, fonts, spacing, and motion from a sing
 | `--roxy-ring` | `color-mix(in srgb, var(--roxy-accent) 40%, transparent)` | `color-mix(in srgb, var(--roxy-accent) 45%, transparent)` | Focus outlines. **Derived from `--roxy-accent`, so set the accent and this follows.** Override it only to break the focus ring away from your accent hue |
 | `--roxy-heat` | `var(--roxy-danger)` | `var(--roxy-danger)` | Intensity ramp for graded cells. Mixed to transparency per tier so the text colour stays `--roxy-fg` and reads in both themes. Set it to break heat away from the danger hue |
 
-Every status token has a `-fg` partner for text rendered ON the status colour, sized for WCAG-AA contrast:
+Every status token has a `-fg` partner: the ink for text on a tint of that status colour. **Each one is DERIVED from its own base, exactly as `--roxy-accent-ink` is derived from the accent, so re-pointing a status colour carries its text with it.** Set `--roxy-danger` alone and the danger ink follows; override a `-fg` only to break the ink away from its base. The derivation is what the token contract resolves to whenever the tokens are loaded, which the CDN bundle always does and the npm path does through the `tokens.css` link above; a page that loads no tokens at all falls back to a fixed shade per component.
 
 | Variable | Light default | Dark default |
 |---|---|---|
-| `--roxy-success-fg` | `#166534` | `#86efac` |
-| `--roxy-warning-fg` | `#9a3412` | `#fdba74` |
-| `--roxy-danger-fg` | `#991b1b` | `#fca5a5` |
-| `--roxy-info-fg` | `#075985` | `#7dd3fc` |
+| `--roxy-success-fg` | `color-mix(in oklab, var(--roxy-success) 70%, black)` | `color-mix(in oklab, var(--roxy-success) 70%, white)` |
+| `--roxy-warning-fg` | `color-mix(in oklab, var(--roxy-warning) 70%, black)` | `color-mix(in oklab, var(--roxy-warning) 70%, white)` |
+| `--roxy-danger-fg` | `color-mix(in oklab, var(--roxy-danger) 70%, black)` | `color-mix(in oklab, var(--roxy-danger) 70%, white)` |
+| `--roxy-info-fg` | `color-mix(in oklab, var(--roxy-info) 70%, black)` | `color-mix(in oklab, var(--roxy-info) 70%, white)` |
+
+The 70 percent mix is measured, not chosen: rasterised to real pixels the four shipped pairs land between 7.4 and 9.8 to 1 against the card and between 6.5 and 8.1 against a 12 percent tint of their own base, all above WCAG AA. A palette of your own inherits the ratio; check any base you re-point that is much lighter than ours.
 
 **This table is complete and a test keeps it that way.** `tests/theming-docs.test.ts` fails when a `--roxy-*` token defined in `src/styles/tokens.css` is missing here. It was added because the omission of `--roxy-surface` cost a downstream consumer real time: a chart with no surface token renders as a white rectangle, and two integrations learned that from `tokens.css` rather than from this file. The table stays hand-written rather than generated because the "Used by" column is the part worth reading, and generating it would trade that for completeness we can simply assert.
 
@@ -113,7 +152,7 @@ roxy-natal-chart {
 
 ### Dark mode
 
-Three opt-in mechanisms work out of the box. The CDN bundle auto-loads the tokens, so all three work from one script tag; on the npm path the full `@roxyapi/ui` import pulls the same tokens in.
+Three opt-in mechanisms work out of the box. The CDN bundle auto-loads the tokens, so all three work from one script tag. On the npm path nothing is auto-loaded: link or import `@roxyapi/ui/styles/tokens.css` yourself, because without it there is no dark mode and no derived value at all.
 
 ```css
 /* System preference: nothing to do */
@@ -126,6 +165,8 @@ Three opt-in mechanisms work out of the box. The CDN bundle auto-loads the token
 ```
 
 Tokens set on the `:root` / `.dark` / `[data-theme]` light-DOM element inherit through the shadow boundary into every component, so a `.dark` class anywhere above a component themes it. Per-element scope works too: `<roxy-natal-chart data-theme="dark">` runs one chart in dark on an otherwise light page.
+
+"System preference: nothing to do" holds only while the mode is a whole-document question. A page that scopes its theme to a wrapper is the exception, and it is the common one on a multi-tenant site: the system preference still decides every token that wrapper does not set, so a light page can draw dark shadows on a dark phone. Declare the mode on that wrapper, as the host contract above shows.
 
 ### Map Tailwind tokens
 
@@ -228,7 +269,7 @@ For a low-vision or high-contrast mode. Body text hits WCAG **AAA** (7:1); every
 
 ### Practitioner preset
 
-An optional theme file restyles every widget on a page to a warm rosewater palette with a serif display font, shadowless with hairline borders and generous radii. It only reassigns `--roxy-*` tokens, so it layers on top of the base tokens: link it AFTER the token stylesheet (or the CDN bundle that injects them), and it composes with the same dark-mode machinery.
+An optional theme file restyles every widget on a page to a warm rosewater palette with a serif display font, shadowless with hairline borders and generous radii. It only reassigns `--roxy-*` tokens, so it layers on top of the base tokens and composes with the same dark-mode machinery. A preset sits in the `roxy.theme` layer and the defaults in `roxy.tokens`, so it outranks them whichever order the two files load, and your own declarations still outrank the preset.
 
 When authoring your own full re-theme, cover `--roxy-secondary` alongside `--roxy-fg` and `--roxy-muted`: it is the secondary ink used by form labels, the generic renderer, and several chart strokes, and the stock value is slate, so a warm or brand theme that skips it shows cool bluish labels, most visibly in dark mode.
 
@@ -261,7 +302,7 @@ Or copy the color tokens into your own stylesheet. The Customize Colors panel on
 }
 ```
 
-`--roxy-accent-ink` and `--roxy-ring` derive from `--roxy-accent`, so the snippet does not set them. The serif display face and humanist sans body ship inside this package: the linked file declares both as self-hosted fonts (OFL, bundled) and sets `--roxy-font-display` / `--roxy-font-sans` for you, so the CSS snippet above (colors only) is the lighter option when you already have a type system.
+`--roxy-accent-ink` and `--roxy-ring` derive from `--roxy-accent`, and each status ink derives from its own status colour, so the snippet sets none of them: the warm danger above carries its own text. The serif display face and humanist sans body ship inside this package: the linked file declares both as self-hosted fonts (OFL, bundled) and sets `--roxy-font-display` / `--roxy-font-sans` for you, so the CSS snippet above (colors only) is the lighter option when you already have a type system.
 
 ## A11y
 

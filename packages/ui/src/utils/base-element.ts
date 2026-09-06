@@ -45,7 +45,7 @@ const submitContextConverter: ComplexAttributeConverter<
 };
 
 /**
- * Shared base for every data-driven Roxy component. Consolidates the things every component used to repeat by hand and adds the self-contained, drop-in behavior: controlled-mode hydration, an opt-in self-fetch (form, request, loading, error, empty), the typed `data` slot, and the render switch. A subclass implements one method, {@link RoxyDataElement.renderData}.
+ * Shared base for every data-driven Roxy component. Carries once what every component needs, rather than per component, and adds the self-contained, drop-in behavior: controlled-mode hydration, an opt-in self-fetch (form, request, loading, error, empty), the typed `data` slot, and the render switch. A subclass implements one method, {@link RoxyDataElement.renderData}.
  *
  * @remarks
  * Two render modes, one component, which is the whole drop-in contract:
@@ -357,10 +357,16 @@ export abstract class RoxyDataElement<
 		return this.endpoint ? this.renderForm() : this.renderEmpty();
 	}
 
-	/** Internal self-fetch form. Reuses the introspecting `<roxy-endpoint-form>`; the consumer never places it. */
+	/**
+	 * Internal self-fetch form. Reuses the introspecting `<roxy-endpoint-form>`; the consumer never places it.
+	 *
+	 * @remarks
+	 * `exportparts` forwards exactly one inner name, `hint`, so the same `::part(hint)` rule works whether the page places the form itself or runs a component in self-fetch mode. The rest of the form parts stay inside: this element is an internal detail, and a name is forwarded only when hiding or restyling that block is a decision a host page makes about ITS page rather than about our form. Field help is that case, because the text is API reference prose and a page written for a client wants its own words or none.
+	 */
 	protected renderForm(): unknown {
 		return html`<roxy-endpoint-form
 			part="form"
+			exportparts="hint"
 			data-endpoint=${this.endpoint}
 			method=${this.method}
 			spec-url=${ifDefined(this.specUrl)}

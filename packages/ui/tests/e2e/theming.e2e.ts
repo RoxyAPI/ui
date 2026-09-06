@@ -9,6 +9,8 @@ import { expect, test } from '@playwright/test';
  * `--roxy-accent-ink` and `--roxy-ring` were hardcoded amber, so one override left the active tab, the conjunction aspect lines and the focus ring two-tone. And the `[data-theme="dark"]` / `.dark` blocks carry class and attribute specificity (0,1,1), which outranks a consumer's plain `:root` (0,1,0), so a brand override survives under `prefers-color-scheme` and reverts to amber under the other two dark signals: one override, three different results.
  *
  * Every library selector is now wrapped in `:where()` (zero specificity) and the two shades derive from the accent, so a consumer declaration always wins and one line is genuinely enough. This test is what keeps that true.
+ *
+ * The token defaults also sit in the `roxy.tokens` cascade layer, which is the half `:where()` cannot cover: an unlayered rule beats a layered one at every specificity, so a host that writes its tokens inside a layer of its own, which is what a page built on a CSS framework does, needs the defaults layered as well. The last test in this file is that case, and it is written the way such a host writes it.
  */
 
 const AMBER = ['rgb(245, 158, 11)', 'rgb(180, 83, 9)', 'rgb(251, 191, 36)'];
@@ -103,6 +105,66 @@ for (const signal of ['class', 'attribute'] as const) {
 		expect(seen.toLowerCase()).toBe(BRAND);
 
 		const r = await page.evaluate(probeAll, AMBER);
+		expect(r.stale).toBe(0);
+	});
+}
+
+/**
+ * A host that writes its tokens inside a layer of its own is in charge of them.
+ *
+ * @remarks
+ * A page built on a CSS framework does not hand-write `:root` at the top of a stylesheet: it maps
+ * its own palette onto ours inside `@layer base`. A layered declaration loses to EVERY unlayered
+ * one whatever the specificity, which is why the defaults are layered too and why `:where()`
+ * alone cannot carry this: specificity is compared after the layer, so a zero-specificity default
+ * still outranks a layered host rule.
+ *
+ * Both modes, because an override that holds in light and reverts in dark is the class of defect
+ * this file exists for. The dark run asserts the media path and then the explicit signal on top
+ * of it, which are two different blocks in the stylesheet and resolve independently.
+ */
+for (const mode of ['light', 'dark'] as const) {
+	test(`a host token layer beats the defaults in ${mode} mode`, async ({
+		page,
+	}) => {
+		await page.emulateMedia({ colorScheme: mode });
+		await page.goto('/');
+		await expect
+			.poll(() => page.evaluate(probeAll, AMBER).then((r) => r.components))
+			.toBeGreaterThan(40);
+
+		// The shape a framework host writes, layer and all. Nothing else: no
+		// `html:root`, no `!important`, no second mode signal.
+		await page.addStyleTag({
+			content: `@layer base { :root { --roxy-accent: ${BRAND}; } }`,
+		});
+		await expect
+			.poll(() => page.evaluate(probeAll, AMBER).then((r) => r.stale))
+			.toBe(0);
+
+		const read = () =>
+			page.evaluate(() =>
+				getComputedStyle(document.documentElement)
+					.getPropertyValue('--roxy-accent')
+					.trim()
+					.toLowerCase(),
+			);
+		expect(await read()).toBe(BRAND);
+
+		if (mode === 'dark') {
+			// The explicit opt-in is a separate block from the media query, and it is
+			// the one that carried class and attribute specificity.
+			await page.evaluate(() =>
+				document.documentElement.setAttribute('data-theme', 'dark'),
+			);
+			await expect.poll(read).toBe(BRAND);
+			await expect
+				.poll(() => page.evaluate(probeAll, AMBER).then((r) => r.stale))
+				.toBe(0);
+		}
+
+		const r = await page.evaluate(probeAll, AMBER);
+		expect(r.bad).toEqual([]);
 		expect(r.stale).toBe(0);
 	});
 }

@@ -101,6 +101,10 @@ async function clean() {
 async function buildEsm(components: string[], locales: string[]) {
 	const entries: Record<string, string> = {
 		index: `${UI_DIR}/src/index.ts`,
+		// Its own entry, not a slice of index.js: a consumer that only maps a tool
+		// name to a component imports this one and carries no elements. Both names
+		// stay on the main entry too, so nothing existing moves.
+		'tool-component': `${UI_DIR}/src/tool-component.ts`,
 	};
 	for (const c of components) {
 		entries[`components/${c}`] = `${SRC_COMPONENTS}/${c}.ts`;
@@ -129,8 +133,14 @@ async function buildEsm(components: string[], locales: string[]) {
 		plugins: [litTemplateMinify()],
 	});
 
+	// Every published subpath is DUAL, like the root: a route handler or a worker on
+	// CommonJS resolves the `require` condition, and a subpath that offers only
+	// `import` throws ERR_PACKAGE_PATH_NOT_EXPORTED there.
 	await esbuild.build({
-		entryPoints: { index: `${UI_DIR}/src/index.ts` },
+		entryPoints: {
+			index: `${UI_DIR}/src/index.ts`,
+			'tool-component': `${UI_DIR}/src/tool-component.ts`,
+		},
 		outdir: DIST,
 		format: 'cjs',
 		platform: 'neutral',
@@ -384,10 +394,9 @@ npm install @roxyapi/ui
 		'packages/ui-react': reactInstall,
 		'packages/ui-vue': vueInstall,
 	};
-	// The README a package SHIPS must name that package. Every wrapper used to ship
-	// the umbrella README, titled "# @roxyapi/ui" with an npm badge pointing at the
-	// wrong package, so a reader who opened @roxyapi/ui-vue on npm got the docs
-	// for a package they had not installed.
+	// The README a package SHIPS must name that package: the title and the npm badge
+	// are rewritten per workspace, so a reader who opens @roxyapi/ui-vue on npm gets
+	// the docs for the package they installed rather than the umbrella one.
 	const pkgName: Record<string, string> = {
 		'packages/ui': '@roxyapi/ui',
 		'packages/ui-react': '@roxyapi/ui-react',
@@ -422,6 +431,8 @@ async function buildWrapperBundles(opts: {
 	pkg: string;
 	ext: '.ts' | '.tsx';
 	external: string[];
+	/** Extra top-level entry names under `src/`, for a subpath only one wrapper publishes. */
+	extra?: string[];
 }) {
 	const dist = `packages/${opts.pkg}/dist`;
 	const src = `packages/${opts.pkg}/src`;
@@ -430,7 +441,13 @@ async function buildWrapperBundles(opts: {
 	const entries: Record<string, string> = {
 		index: `${src}/index.ts`,
 		'load-ui': `${src}/load-ui.ts`,
+		// The tool-result subpath, bundled on its own so importing it pulls the
+		// lookup and its generated table and none of the component wrappers.
+		'tool-component': `${src}/tool-component.ts`,
 	};
+	for (const name of opts.extra ?? []) {
+		entries[name] = `${src}/${name}.ts`;
+	}
 	const files = (
 		await readdir(`${src}/components`, { withFileTypes: true })
 	).filter((e) => e.isFile() && e.name.endsWith(opts.ext));
@@ -460,7 +477,13 @@ async function buildWrapperBundles(opts: {
 	});
 	await esbuild.build({
 		...shared,
-		entryPoints: { index: `${src}/index.ts` },
+		entryPoints: {
+			index: `${src}/index.ts`,
+			'tool-component': `${src}/tool-component.ts`,
+			...Object.fromEntries(
+				(opts.extra ?? []).map((name) => [name, `${src}/${name}.ts`]),
+			),
+		},
 		outdir: dist,
 		format: 'cjs',
 		platform: 'neutral',
@@ -554,6 +577,9 @@ async function main() {
 		pkg: 'ui-react',
 		ext: '.tsx',
 		external: ['react', 'react-dom', 'react/jsx-runtime'],
+		// The raw-tag typings. The module is types only, so the emitted JS is empty
+		// and importing the subpath costs a consumer nothing at runtime.
+		extra: ['jsx'],
 	});
 
 	console.log('Building Vue wrapper bundles...');

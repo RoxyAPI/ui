@@ -657,7 +657,7 @@
 				"name": "How do I theme components?",
 				"acceptedAnswer": {
 					"@type": "Answer",
-					"text": "Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
+					"text": "Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. Your own declaration always wins, including from inside a Tailwind or shadcn layer, so no extra selector weight and no !important. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
 				}
 			}
 		]
@@ -877,7 +877,7 @@
 			</details>
 			<details>
 				<summary>How do I theme components?</summary>
-				<p>Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. The Customize Colors panel above generates the override CSS for you.</p>
+				<p>Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. Your own declaration always wins, including from inside a Tailwind or shadcn layer, so no extra selector weight and no <code>!important</code>. The Customize Colors panel above generates the override CSS for you.</p>
 			</details>
 		</section>
 

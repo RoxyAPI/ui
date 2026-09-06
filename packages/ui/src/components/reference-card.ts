@@ -34,7 +34,7 @@ type ReferenceData =
 	| GetCompoundNumberResponse
 	| GetAvasthaResponse;
 
-/** Keys used to derive the title, in priority order. */
+/** Keys that derive the title, in priority order. */
 const TITLE_KEYS = ['name', 'english', 'title'];
 /** Keys whose string value is always treated as prose, even when short. */
 const PROSE_KEYS = new Set([

@@ -30,7 +30,7 @@ const GUIDANCE_FIELDS: ReadonlyArray<[keyof TarotGuidance, string]> = [
  * Tarot card. Renders /tarot/cards/{id} and /tarot/daily.
  *
  * @remarks
- * The two endpoints are NOT the same card and must not be shown the same way. The reference card ships both orientations, so the reader chooses one and the whole reading (image, keywords, description, life areas) follows that choice. The daily card is DRAWN: the API ships exactly one orientation and one set of meanings for it, so there is nothing to switch to. It used to offer the same flip, which rotated the art and relabelled the card "reversed" while the text below it stayed the upright reading. The draw is now fixed and stated, never toggled.
+ * The two endpoints are NOT the same card and must not be shown the same way. The reference card ships both orientations, so the reader chooses one and the whole reading (image, keywords, description, life areas) follows that choice. The daily card is DRAWN: the API ships exactly one orientation and one set of meanings for it, so there is nothing to switch to and the draw is fixed and stated, never toggled. A flip on this shape would rotate the art and relabel the card "reversed" while the text below it stayed the upright reading.
  */
 @customElement('roxy-tarot-card')
 export class RoxyTarotCard extends RoxyDataElement<TarotData> {

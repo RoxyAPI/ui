@@ -555,6 +555,12 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/iching/daily',
 			toolName: 'post_iching_daily',
 		},
+		{
+			operationId: 'castDailyReading',
+			method: 'POST',
+			path: '/iching/daily/cast',
+			toolName: 'post_iching_daily_cast',
+		},
 	],
 	'roxy-hora-table': [
 		{

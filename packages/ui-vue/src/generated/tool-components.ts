@@ -791,6 +791,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		pascal: 'RoxyHexagram',
 		operationId: 'getDailyHexagram',
 	},
+	post_iching_daily_cast: {
+		tag: 'roxy-hexagram',
+		pascal: 'RoxyHexagram',
+		operationId: 'castDailyReading',
+	},
 	get_crystals_id: {
 		tag: 'roxy-crystal-card',
 		pascal: 'RoxyCrystalCard',

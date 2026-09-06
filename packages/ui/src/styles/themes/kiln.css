@@ -8,8 +8,9 @@
  * CDN bundle that injects them) and every component on the page adopts the
  * look. Light and dark blocks mirror the trigger structure of tokens.css
  * exactly (OS preference, [data-theme] / .dark opt-in, and the explicit-
- * light opt-out), all at :where() zero specificity so a per-page override
- * still wins.
+ * light opt-out), all at :where() zero specificity and inside the
+ * roxy.theme cascade layer, so a per-page override still wins and the
+ * preset still outranks the token defaults whichever file loads first.
  *
  * Fonts are loaded below via one Google Fonts @import (both families are
  * OFL, loaded from Google, never bundled here). To load them with markup
@@ -26,42 +27,86 @@
  */
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Jost:wght@400..600&display=swap");
 
-/* Light defaults. Fonts, radius, and shadow do not vary by theme, so they are
- * set once here and inherited by the dark blocks unchanged. */
-:where(:root, :host) {
-	--roxy-font-sans:
-		"Jost", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		sans-serif;
-	--roxy-font-display:
-		"Fraunces", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+@layer roxy.tokens, roxy.theme;
 
-	--roxy-radius-sm: 0.4375rem;
-	--roxy-radius-md: 0.875rem;
-	--roxy-radius-lg: 1.575rem;
-
-	--roxy-shadow-sm: none;
-	--roxy-shadow-md: none;
-	--roxy-shadow-lg: none;
-
-	--roxy-accent: #a44a24;
-	--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
-	--roxy-ring: var(--roxy-accent);
-	/* Secondary ink (form labels, generic-renderer text, chart strokes): a warm tone between fg and muted so it stays stronger than help text. Without this override the stock slate leaks through and reads bluish on the warm palette. */
-	--roxy-secondary: #493d30;
-	--roxy-danger: #b23a38;
-
-	--roxy-bg: #faf4ea;
-	--roxy-surface: #efe6d6;
-	--roxy-fg: #322820;
-	--roxy-muted: #74634f;
-	--roxy-border: #e6d8c2;
-}
-
-/* Dark theme via system preference. Mirrors tokens.css: only the theme-varying
- * tokens are reassigned; accent-ink follows the accent (already legible on the
- * dark surface) rather than mixing toward black. */
-@media (prefers-color-scheme: dark) {
+@layer roxy.theme {
+	/* Light defaults. Fonts, radius, and shadow do not vary by theme, so they are
+	 * set once here and inherited by the dark blocks unchanged. */
 	:where(:root, :host) {
+		--roxy-font-sans:
+			"Jost", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+			sans-serif;
+		--roxy-font-display:
+			"Fraunces", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+		--roxy-radius-sm: 0.4375rem;
+		--roxy-radius-md: 0.875rem;
+		--roxy-radius-lg: 1.575rem;
+
+		--roxy-shadow-sm: none;
+		--roxy-shadow-md: none;
+		--roxy-shadow-lg: none;
+
+		--roxy-accent: #a44a24;
+		--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
+		--roxy-ring: var(--roxy-accent);
+		/* Secondary ink (form labels, generic-renderer text, chart strokes): a warm tone between fg and muted so it stays stronger than help text. Without this override the stock slate leaks through and reads bluish on the warm palette. */
+		--roxy-secondary: #493d30;
+		--roxy-danger: #b23a38;
+
+		--roxy-bg: #faf4ea;
+		--roxy-surface: #efe6d6;
+		--roxy-fg: #322820;
+		--roxy-muted: #74634f;
+		--roxy-border: #e6d8c2;
+	}
+
+	/* Dark theme via system preference. Mirrors tokens.css: only the theme-varying
+	 * tokens are reassigned; accent-ink follows the accent (already legible on the
+	 * dark surface) rather than mixing toward black. */
+	@media (prefers-color-scheme: dark) {
+		:where(:root, :host) {
+			--roxy-accent: #d98d5f;
+			--roxy-accent-ink: var(--roxy-accent);
+			--roxy-secondary: #dccdbc;
+			--roxy-danger: #e4736b;
+
+			--roxy-bg: #211710;
+			--roxy-surface: #35281e;
+			--roxy-fg: #f2e7d9;
+			--roxy-muted: #b49d87;
+			--roxy-border: #463729;
+		}
+	}
+
+	/* Light opt-out: beats the OS-dark block when the host explicitly chooses light. */
+	:where(
+		:root[data-theme="light"],
+		[data-theme="light"],
+		:root.light,
+		.light,
+		:host([data-theme="light"])
+	) {
+		--roxy-accent: #a44a24;
+		--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
+		--roxy-secondary: #493d30;
+		--roxy-danger: #b23a38;
+
+		--roxy-bg: #faf4ea;
+		--roxy-surface: #efe6d6;
+		--roxy-fg: #322820;
+		--roxy-muted: #74634f;
+		--roxy-border: #e6d8c2;
+	}
+
+	/* Dark theme via explicit opt-in ([data-theme=dark] or .dark on any ancestor). */
+	:where(
+		:root[data-theme="dark"],
+		[data-theme="dark"],
+		:root.dark,
+		.dark,
+		:host([data-theme="dark"])
+	) {
 		--roxy-accent: #d98d5f;
 		--roxy-accent-ink: var(--roxy-accent);
 		--roxy-secondary: #dccdbc;
@@ -73,44 +118,4 @@
 		--roxy-muted: #b49d87;
 		--roxy-border: #463729;
 	}
-}
-
-/* Light opt-out: beats the OS-dark block when the host explicitly chooses light. */
-:where(
-	:root[data-theme="light"],
-	[data-theme="light"],
-	:root.light,
-	.light,
-	:host([data-theme="light"])
-) {
-	--roxy-accent: #a44a24;
-	--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
-	--roxy-secondary: #493d30;
-	--roxy-danger: #b23a38;
-
-	--roxy-bg: #faf4ea;
-	--roxy-surface: #efe6d6;
-	--roxy-fg: #322820;
-	--roxy-muted: #74634f;
-	--roxy-border: #e6d8c2;
-}
-
-/* Dark theme via explicit opt-in ([data-theme=dark] or .dark on any ancestor). */
-:where(
-	:root[data-theme="dark"],
-	[data-theme="dark"],
-	:root.dark,
-	.dark,
-	:host([data-theme="dark"])
-) {
-	--roxy-accent: #d98d5f;
-	--roxy-accent-ink: var(--roxy-accent);
-	--roxy-secondary: #dccdbc;
-	--roxy-danger: #e4736b;
-
-	--roxy-bg: #211710;
-	--roxy-surface: #35281e;
-	--roxy-fg: #f2e7d9;
-	--roxy-muted: #b49d87;
-	--roxy-border: #463729;
 }

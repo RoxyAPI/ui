@@ -101,20 +101,21 @@ export { RoxyVedicPlanetsTable } from './components/vedic-planets-table.js';
 export { RoxyWesternPlanetsTable } from './components/western-planets-table.js';
 export { RoxyYogaList } from './components/yoga-list.js';
 export { RoxyZodiacCard } from './components/zodiac-card.js';
-// The decoder for a compact tool result (Pattern 5).
-export { expandCompact } from './utils/compact.js';
+// The component a tool name maps to, and the decoder for a compact tool result
+// (Pattern 5). Re-exported from the subpath that owns them, so a module wanting
+// the lookup alone imports `@roxyapi/ui/tool-component` and carries no elements,
+// while this entry keeps both names exactly where they were.
+export {
+	componentForTool,
+	expandCompact,
+	type ToolComponent,
+} from './tool-component.js';
 // SSR helpers for the server-rendered hydration path (Pattern 7). Safe writers
 // for the inline <script class="roxy-data"> the MarkupDataController reads.
 export {
 	roxyDataScript,
 	serializeRoxyData,
 } from './utils/markup-data.js';
-// The component a tool name maps to (Pattern 5). On the full entry only, so a
-// per-component import stays exactly as small as it was.
-export {
-	componentForTool,
-	type ToolComponent,
-} from './utils/tool-component.js';
 
 import { ROXY_COMPONENTS, type RoxyComponentSlug } from './manifest.js';
 

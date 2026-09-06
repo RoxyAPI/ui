@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Generate the shipped theme preset CSS files from the palette data. One file per palette at packages/ui/src/styles/themes/{name}.css, each reassigning only --roxy-* tokens in the same four-trigger structure as tokens.css (light default, OS-dark, explicit-light opt-out, explicit-dark opt-in), all at :where() zero specificity. palettes.ts is the single source of truth; this codegen is regenerated on every build and from the release workflow. Re-run via `bun run scripts/sync-themes.ts`.
+ * Generate the shipped theme preset CSS files from the palette data. One file per palette at packages/ui/src/styles/themes/{name}.css, each reassigning only --roxy-* tokens in the same four-trigger structure as tokens.css (light default, OS-dark, explicit-light opt-out, explicit-dark opt-in), all at :where() zero specificity inside the roxy.theme cascade layer. palettes.ts is the single source of truth; this codegen is regenerated on every build and from the release workflow. Re-run via `bun run scripts/sync-themes.ts`.
  *
  * @remarks Values are emitted un-wrapped and the file is then passed through biome so long font stacks wrap exactly as biome would format a hand-written file, keeping the generated output stable under `bun run check` and the pre-push codegen gate. The rosewater palette is written as themes/practitioner.css to preserve the shipped CDN URL.
  */
@@ -24,6 +24,18 @@ const DARK_ACCENT_INK = 'var(--roxy-accent)';
 
 const SECONDARY_COMMENT =
 	'\t/* Secondary ink (form labels, generic-renderer text, chart strokes): a warm tone between fg and muted so it stays stronger than help text. Without this override the stock slate leaks through and reads bluish on the warm palette. */';
+
+/**
+ * The layer a preset writes into, and the statement that fixes its order against the defaults.
+ *
+ * @remarks
+ * `tokens.css` declares the same statement, so whichever of the two files a page loads first
+ * registers the pair in the same order and a preset always outranks the default it reassigns.
+ * Emitted in both files rather than in one, because a page may link a preset without the base
+ * sheet (the CDN bundle injects the base itself) and a layer that is never declared sorts last.
+ */
+const THEME_LAYER = 'roxy.theme';
+const LAYER_STATEMENT = '@layer roxy.tokens, roxy.theme;';
 
 const LIGHT_SELECTOR =
 	':where(\n\t:root[data-theme="light"],\n\t[data-theme="light"],\n\t:root.light,\n\t.light,\n\t:host([data-theme="light"])\n)';
@@ -87,8 +99,9 @@ function header(name: PaletteName, selfHosted: boolean): string {
 		' * CDN bundle that injects them) and every component on the page adopts the',
 		' * look. Light and dark blocks mirror the trigger structure of tokens.css',
 		' * exactly (OS preference, [data-theme] / .dark opt-in, and the explicit-',
-		' * light opt-out), all at :where() zero specificity so a per-page override',
-		' * still wins.',
+		' * light opt-out), all at :where() zero specificity and inside the',
+		' * roxy.theme cascade layer, so a per-page override still wins and the',
+		' * preset still outranks the token defaults whichever file loads first.',
 		' *',
 		...fontLines,
 		' *',
@@ -165,10 +178,7 @@ function themeCss(name: PaletteName, p: Palette, fontBase: string): string {
 		? selfHostedFontFaces(fontBase)
 		: `@import url("${SHARED_THEME.fontImport}");`;
 
-	return [
-		header(name, selfHosted),
-		fontsBlock,
-		'',
+	const body = [
 		'/* Light defaults. Fonts, radius, and shadow do not vary by theme, so they are\n * set once here and inherited by the dark blocks unchanged. */',
 		firstBlock,
 		'',
@@ -180,6 +190,24 @@ function themeCss(name: PaletteName, p: Palette, fontBase: string): string {
 		'',
 		'/* Dark theme via explicit opt-in ([data-theme=dark] or .dark on any ancestor). */',
 		darkOptIn,
+	]
+		.join('\n')
+		.split('\n')
+		.map((line) => (line.length > 0 ? `\t${line}` : line))
+		.join('\n');
+
+	return [
+		header(name, selfHosted),
+		// Font rules stay OUTSIDE the layer: a family is matched by name rather than
+		// by the cascade, and an @import may be preceded only by @charset and by a
+		// layer statement, never by a layer block.
+		fontsBlock,
+		'',
+		LAYER_STATEMENT,
+		'',
+		`@layer ${THEME_LAYER} {`,
+		body,
+		'}',
 		'',
 	].join('\n');
 }

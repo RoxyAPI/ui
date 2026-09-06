@@ -86,7 +86,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'hd-penta': 'CalculatePentaResponse',
 	'hd-variables': 'CalculateVariablesResponse',
 	hexagram:
-		'GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse',
+		'GetHexagramResponse | GetRandomHexagramResponse | LookupHexagramResponse | GetDailyHexagramResponse | CastReadingResponse | CastDailyReadingResponse',
 	'transits-table': 'TransitsResponse',
 	'transit-wheel': 'CalculateTransitAspectsResponse',
 	'aspects-table':
@@ -588,9 +588,12 @@ export async function emitTypes(outDir: string): Promise<void> {
  * @remarks
  * Same reasoning as {@link emitTypes}: a wrapper carries what it needs rather than depending on `@roxyapi/ui`, so one install is fully typed and fully working. The layout is mirrored rather than flattened so each file is a byte copy and no import specifier has to be rewritten on the way in.
  *
- * Three files and nothing else. The lookup table is resolved at build time, so neither the endpoint map nor the component manifest is carried here, and the rule that derives a tool name runs in the generator rather than in anything a consumer downloads. Each of these is rewritten on every build, so the wrapper drift gate fails on a hand edit to any of them.
+ * Four files and nothing else. The lookup table is resolved at build time, so neither the endpoint map nor the component manifest is carried here, and the rule that derives a tool name runs in the generator rather than in anything a consumer downloads. Each of these is rewritten on every build, so the wrapper drift gate fails on a hand edit to any of them.
+ *
+ * `tool-component.ts` at the package root is the SUBPATH entry (`@roxyapi/ui-react/tool-component`), copied from `packages/ui/src` like the rest: one module holds the two names, the package index re-exports it, and a consumer importing the subpath gets the lookup and its table without the component modules a bundler would otherwise keep in the same chunk.
  */
 const TOOL_HELPERS = [
+	'tool-component.ts',
 	'utils/compact.ts',
 	'utils/tool-component.ts',
 	'generated/tool-components.ts',
@@ -601,13 +604,15 @@ export const TOOL_HELPER_EXPORTS = `
 /**
  * Render the result of an AI tool call: \`componentForTool\` maps the tool name a
  * model hands back to the component that draws that response, and
- * \`expandCompact\` decodes a compact result.
+ * \`expandCompact\` decodes a compact result. Both also ship on the
+ * \`./tool-component\` subpath of this package, for a module that wants the lookup
+ * and none of the components.
  */
-export { expandCompact } from './utils/compact.js';
 export {
 \tcomponentForTool,
+\texpandCompact,
 \ttype ToolComponent,
-} from './utils/tool-component.js';
+} from './tool-component.js';
 `;
 
 /** Copy {@link TOOL_HELPERS} into a wrapper package. */
@@ -638,9 +643,8 @@ export function loadUiSource(opts: {
  *
  * Defaults to the EXACT @roxyapi/ui release this wrapper was built against, so
  * \`@roxyapi/ui-vue@x.y.z\` always runs \`@roxyapi/ui@x.y.z\` and a lockfile actually
- * pins the runtime. It used to default to '@latest', which meant a pinned wrapper
- * silently picked up whatever the CDN was serving, and a new @roxyapi/ui release
- * changed the elements under every existing install with no lockfile change.
+ * pins the runtime: it is a fixed version rather than a moving alias, so a later
+ * @roxyapi/ui release cannot change the elements under an existing install.
  *
  * Pass an explicit \`version\` to override, or 'latest' to opt back into floating.
  *

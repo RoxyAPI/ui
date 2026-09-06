@@ -119,3 +119,70 @@ describe('a response that carries no line data draws no figure', () => {
 		expect(body).toContain('Meet the day in the open.');
 	});
 });
+
+describe('the daily cast carries its line readings at the TOP level', () => {
+	/**
+	 * The shape `/iching/daily/cast` returns, as read from a live response: the figure and
+	 * the moving positions at the top level, a hexagram that carries NEITHER `binary` nor
+	 * `changingLines`, and the oracle statements for the moving lines only, beside it.
+	 */
+	const DAILY_CAST = {
+		date: '2026-01-01',
+		seed: 'fixed',
+		hexagram: {
+			number: 13,
+			symbol: '䷌',
+			chinese: '同人',
+			english: 'Fellowship with Men',
+			pinyin: 'Tóng Rén',
+			upperTrigram: 'Heaven',
+			lowerTrigram: 'Fire',
+			judgment: 'Fellowship in the open furthers.',
+			image: 'Heaven together with fire.',
+			interpretation: { general: 'Shared purpose carries the work.' },
+		},
+		lines: [8, 7, 8, 6, 7, 6],
+		changingLinePositions: [4, 6],
+		changingLines: [
+			{
+				position: 4,
+				text: 'The wall is climbed.',
+				meaning: 'Hold the ground.',
+			},
+			{ position: 6, text: 'Fellowship in the meadow.', meaning: 'No regret.' },
+		],
+		resultingHexagram: {
+			number: 49,
+			symbol: '䷰',
+			english: 'Revolution',
+			upperTrigram: 'Lake',
+			lowerTrigram: 'Fire',
+		},
+	};
+
+	test('the figure comes from the top-level lines, not from the hexagram', async () => {
+		const el = await mount(DAILY_CAST);
+		// 8 7 8 6 7 6 bottom to top, so the visual order is that reversed, with
+		// the two sixes moving.
+		expect(rows(el)).toEqual([
+			'broken changing',
+			'solid',
+			'broken changing',
+			'broken',
+			'solid',
+			'broken',
+		]);
+	});
+
+	test('the moving-line readings render, which is what the cast is about', async () => {
+		const el = await mount(DAILY_CAST);
+		const body = text(el);
+		expect(body).toContain('The wall is climbed.');
+		expect(body).toContain('Fellowship in the meadow.');
+		expect(body).toContain('Hold the ground.');
+		// The lines that did NOT move are not readings of this cast, and the
+		// response does not send them, so nothing may invent one.
+		expect(body).toContain('4, 6');
+		expect(body).toContain('Revolution');
+	});
+});

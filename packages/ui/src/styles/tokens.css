@@ -1,7 +1,7 @@
 /**
  * Roxy UI design tokens. 47 CSS custom properties that every component reads. Light + dark defaults. Host page overrides at :root or per element. No Tailwind, no class-name overrides, no JS theme switcher.
  *
- * Delivery model: this file ships as a global light-DOM stylesheet (linked, or auto-injected by the CDN bundle). Custom properties inherit through the shadow boundary, so tokens set on a light-DOM ancestor reach every component shadow. The explicit theme blocks therefore target light-DOM selectors (:root, .dark, [data-theme="dark"], a wrapper element), NOT :host (a :host rule in a global sheet matches nothing). The :host([data-theme]) selectors are kept only for the case where this CSS is ever adopted directly into a shadow root; they are inert in global delivery.
+ * Delivery model: this file ships as a global light-DOM stylesheet (linked, or auto-injected by the CDN bundle). Why every rule sits in a cascade layer is the note above the layer statement below. Custom properties inherit through the shadow boundary, so tokens set on a light-DOM ancestor reach every component shadow. The explicit theme blocks therefore target light-DOM selectors (:root, .dark, [data-theme="dark"], a wrapper element), NOT :host (a :host rule in a global sheet matches nothing). The :host([data-theme]) selectors are kept only for the case where this CSS is ever adopted directly into a shadow root; they are inert in global delivery.
  *
  * Light is the default. Dark applies under any of:
  *   - prefers-color-scheme: dark
@@ -16,160 +16,263 @@
  */
 
 /*
- * Every selector below is wrapped in :where(), which has ZERO specificity.
+ * Two mechanisms keep the host page in charge of every token, and both are load bearing.
  *
- * Source order still decides among these rules, so the explicit dark block still beats the
- * light defaults when it matches. But ANY declaration you write outranks all of them, whatever
- * selector you use. That is what makes a plain `:root { --roxy-accent: #8b5cf6 }` actually
- * rebrand the library.
+ * The rules below sit in the `roxy.tokens` cascade layer, and an unlayered declaration beats a
+ * layered one at ANY specificity. So a plain `:root { --roxy-accent: #8b5cf6 }` on the host page
+ * wins, and so does the same line written inside a layer of its own, because the layer
+ * statement above registers ours first and the CDN bundle injects this sheet at the top of
+ * <head>. A host that links this file after its own CSS orders the layers itself:
+ * `@layer roxy, base, components, utilities;` before either sheet.
  *
- * Without it, `:root.dark` and `[data-theme="dark"]` carry class/attribute specificity (0,1,1)
- * and outrank a plain `:root` (0,1,0). A brand override would then hold under
- * prefers-color-scheme and be reverted under the other two dark signals: one override, three
- * different results.
+ * Every selector is ALSO wrapped in :where(), which has ZERO specificity, so a host declaration
+ * still wins wherever a layer cannot decide it. Without that, `:root.dark` and
+ * `[data-theme="dark"]` would carry class and attribute specificity (0,1,1) and outrank a plain
+ * `:root` (0,1,0), and one brand override would hold under prefers-color-scheme and revert
+ * under the other two dark signals: one line, three different results.
  *
- * Do NOT reach for a cascade layer instead. Layers mean UNLAYERED rules win, so every theme
- * block becomes weaker than ANY unlayered rule on the page (a consumer's Tailwind reset, a demo
- * page's own CSS) and dark mode stops applying at all. :where() lowers only OUR specificity,
- * which is exactly the intent, and leaves the cascade otherwise untouched.
+ * Source order still decides among the rules in THIS file, which is what lets the explicit dark
+ * block beat the light defaults when both match.
  */
-:where(:root, :host) {
-	/* Native controls follow the theme, and this is the ONLY thing that makes them.
-	 *
-	 * `color-scheme` is a real property, not the `prefers-color-scheme` query above it, and
-	 * without it the browser paints every native control in its LIGHT appearance whatever our
-	 * tokens say. A <select> looks fine closed, because we colour it ourselves, and then opens a
-	 * light popup whose <option> rows inherit our near-white --roxy-fg: white text on white. The
-	 * same omission dims a date or time picker's calendar, the number spinner, the autofill
-	 * highlight and the scrollbar.
-	 *
-	 * It belongs HERE and not on the controls, because a per-control fix is one rule per input
-	 * type per component, forever, and it still cannot reach the popup: that is rendered by the
-	 * OS outside the DOM, so no selector we write applies to it. Declared once per theme trigger,
-	 * beside the tokens, it covers every control in every component and on the host page.
-	 * `color-scheme` is inherited, and these selectors match :host, so each shadow root gets it. */
-	color-scheme: light;
 
-	/* Color: brand */
-	--roxy-primary: #0f172a;
-	--roxy-secondary: #475569;
-	--roxy-accent: #f59e0b;
-	/* Text-safe accent variant, DERIVED from --roxy-accent so overriding the accent
-	 * alone rebrands the whole library. Never hardcode a colour here: a consumer
-	 * following the theming recipe sets only --roxy-accent, and a fixed value leaves
-	 * the active tab label, the conjunction aspect lines and the focus ring on the
-	 * old hue, giving a two-tone palette from a one-line override.
-	 *
-	 * The raw accent is too light for text (amber-500 is 2.14:1 on white, far under
-	 * WCAG AA). Mixing 70% of it into black is measured, not guessed: rasterised to
-	 * real pixels, the darkest of the twelve shipped domain accents still lands at
-	 * 5.24:1 on white, above AA. At 75% amber falls to 4.46 and fails, so 70 is a
-	 * ceiling, not a round number.
-	 *
-	 * Fills (planet glyphs, chart accents, non-text badges) keep --roxy-accent. */
-	--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
+/* Layer order, named here so it is fixed wherever the two files load: the theme presets in
+ * styles/themes/*.css reassign tokens and must win over these defaults. Both files declare it,
+ * so either one loading alone still orders the pair. */
+@layer roxy.tokens, roxy.theme;
 
-	/* Color: status. The base value (success, warning, danger, info) is for
-	 * fills and tints. The -fg variant is darker so text on a light tint passes
-	 * WCAG AA (>= 4.5:1 on white). Use -fg whenever status color hits text. */
-	--roxy-success: #16a34a;
-	--roxy-success-fg: #166534;
-	--roxy-warning: #ea580c;
-	--roxy-warning-fg: #9a3412;
-	--roxy-danger: #dc2626;
-	--roxy-danger-fg: #991b1b;
-	--roxy-info: #0284c7;
-	--roxy-info-fg: #075985;
-
-	/* Color: surface */
-	--roxy-bg: #ffffff;
-	--roxy-surface: #ffffff;
-	--roxy-fg: #0a0a0a;
-	--roxy-muted: #71717a;
-	--roxy-border: #e4e4e7;
-	--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent);
-
-	/* Typography */
-	--roxy-font-sans:
-		"Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		sans-serif;
-	--roxy-font-mono:
-		"Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono",
-		monospace;
-	/* Heading/display font. Defaults to the sans stack so nothing changes for an
-	 * existing consumer; a preset (the practitioner theme ships a serif) overrides
-	 * it to restyle every result heading and the self-fetch form title in one token.
-	 * Fonts do not vary by theme, so it is declared once here and inherited by the
-	 * dark/light blocks unchanged. */
-	--roxy-font-display: var(--roxy-font-sans);
-
-	--roxy-text-xs: 0.75rem;
-	--roxy-text-sm: 0.875rem;
-	--roxy-text-base: 1rem;
-	--roxy-text-lg: 1.125rem;
-	--roxy-text-xl: 1.5rem;
-
-	--roxy-weight-normal: 400;
-	--roxy-weight-bold: 600;
-
-	--roxy-leading-tight: 1.2;
-	--roxy-leading-normal: 1.5;
-
-	--roxy-tracking-tight: -0.02em;
-	--roxy-tracking-normal: 0em;
-
-	/* Spacing */
-	--roxy-space-xs: 0.25rem;
-	--roxy-space-sm: 0.5rem;
-	--roxy-space-md: 1rem;
-	--roxy-space-lg: 1.5rem;
-	--roxy-space-xl: 2.5rem;
-
-	/* Radius */
-	--roxy-radius-sm: 4px;
-	--roxy-radius-md: 8px;
-	--roxy-radius-lg: 12px;
-	--roxy-radius-full: 9999px;
-
-	/* Shadow */
-	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-	--roxy-shadow-md:
-		0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-	--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.14);
-
-	/* Motion */
-	--roxy-motion-duration: 200ms;
-	--roxy-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
-
-	/* Heat scale: a single base hue. Consumers mix it with `transparent` at
-	 * increasing percentages to paint cooler-to-hotter tiers. The mix-with-
-	 * transparent approach lets the page bg show through and keeps text
-	 * colour stable (always --roxy-fg), so the cells read in both themes
-	 * without per-tier text colours. */
-	--roxy-heat: var(--roxy-danger, #ef4444);
-}
-
-/* Dark theme via system preference */
-@media (prefers-color-scheme: dark) {
+@layer roxy.tokens {
 	:where(:root, :host) {
+		/* Native controls follow the theme, and this is the ONLY thing that makes them.
+		 *
+		 * `color-scheme` is a real property, not the `prefers-color-scheme` query above it, and
+		 * without it the browser paints every native control in its LIGHT appearance whatever our
+		 * tokens say. A <select> looks fine closed, because we colour it ourselves, and then opens a
+		 * light popup whose <option> rows inherit our near-white --roxy-fg: white text on white. The
+		 * same omission dims a date or time picker's calendar, the number spinner, the autofill
+		 * highlight and the scrollbar.
+		 *
+		 * It belongs HERE and not on the controls, because a per-control fix is one rule per input
+		 * type per component, forever, and it still cannot reach the popup: that is rendered by the
+		 * OS outside the DOM, so no selector we write applies to it. Declared once per theme trigger,
+		 * beside the tokens, it covers every control in every component and on the host page.
+		 * `color-scheme` is inherited, and these selectors match :host, so each shadow root gets it. */
+		color-scheme: light;
+
+		/* Color: brand */
+		--roxy-primary: #0f172a;
+		--roxy-secondary: #475569;
+		--roxy-accent: #f59e0b;
+		/* Text-safe accent variant, DERIVED from --roxy-accent so overriding the accent
+		 * alone rebrands the whole library. Never hardcode a colour here: a consumer
+		 * following the theming recipe sets only --roxy-accent, and a fixed value leaves
+		 * the active tab label, the conjunction aspect lines and the focus ring on the
+		 * old hue, giving a two-tone palette from a one-line override.
+		 *
+		 * The raw accent is too light for text (amber-500 is 2.14:1 on white, far under
+		 * WCAG AA). Mixing 70% of it into black is measured, not guessed: rasterised to
+		 * real pixels, the darkest of the twelve shipped domain accents still lands at
+		 * 5.24:1 on white, above AA. At 75% amber falls to 4.46 and fails, so 70 is a
+		 * ceiling, not a round number.
+		 *
+		 * Fills (planet glyphs, chart accents, non-text badges) keep --roxy-accent. */
+		--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
+
+		/* Color: status. The base value (success, warning, danger, info) is for
+		 * fills and tints. The -fg partner is the INK for a tint of that base, and it
+		 * is DERIVED from it exactly as --roxy-accent-ink is derived from the accent,
+		 * so re-pointing a status colour carries its text with it instead of leaving
+		 * the old hue on every rule that reads the ink.
+		 *
+		 * 70 percent toward black is the ratio the accent already uses, and it is
+		 * measured rather than chosen: rasterised to real pixels the four shipped
+		 * pairs land between 7.4 and 9.8 to 1 on the card and between 6.5 and 8.1 on
+		 * a 12 percent tint of their own base, every one of them above WCAG AA and at
+		 * or above the fixed hexes they replace. Use -fg whenever status color hits
+		 * text. */
+		--roxy-success: #16a34a;
+		--roxy-success-fg: color-mix(in oklab, var(--roxy-success) 70%, black);
+		--roxy-warning: #ea580c;
+		--roxy-warning-fg: color-mix(in oklab, var(--roxy-warning) 70%, black);
+		--roxy-danger: #dc2626;
+		--roxy-danger-fg: color-mix(in oklab, var(--roxy-danger) 70%, black);
+		--roxy-info: #0284c7;
+		--roxy-info-fg: color-mix(in oklab, var(--roxy-info) 70%, black);
+
+		/* Color: surface */
+		--roxy-bg: #ffffff;
+		--roxy-surface: #ffffff;
+		--roxy-fg: #0a0a0a;
+		--roxy-muted: #71717a;
+		--roxy-border: #e4e4e7;
+		--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent);
+
+		/* Typography */
+		--roxy-font-sans:
+			"Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+			sans-serif;
+		--roxy-font-mono:
+			"Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono",
+			monospace;
+		/* Heading/display font. Defaults to the sans stack so nothing changes for an
+		 * existing consumer; a preset (the practitioner theme ships a serif) overrides
+		 * it to restyle every result heading and the self-fetch form title in one token.
+		 * Fonts do not vary by theme, so it is declared once here and inherited by the
+		 * dark/light blocks unchanged. */
+		--roxy-font-display: var(--roxy-font-sans);
+
+		--roxy-text-xs: 0.75rem;
+		--roxy-text-sm: 0.875rem;
+		--roxy-text-base: 1rem;
+		--roxy-text-lg: 1.125rem;
+		--roxy-text-xl: 1.5rem;
+
+		--roxy-weight-normal: 400;
+		--roxy-weight-bold: 600;
+
+		--roxy-leading-tight: 1.2;
+		--roxy-leading-normal: 1.5;
+
+		--roxy-tracking-tight: -0.02em;
+		--roxy-tracking-normal: 0em;
+
+		/* Spacing */
+		--roxy-space-xs: 0.25rem;
+		--roxy-space-sm: 0.5rem;
+		--roxy-space-md: 1rem;
+		--roxy-space-lg: 1.5rem;
+		--roxy-space-xl: 2.5rem;
+
+		/* Radius */
+		--roxy-radius-sm: 4px;
+		--roxy-radius-md: 8px;
+		--roxy-radius-lg: 12px;
+		--roxy-radius-full: 9999px;
+
+		/* Shadow */
+		--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+		--roxy-shadow-md:
+			0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+		--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.14);
+
+		/* Motion */
+		--roxy-motion-duration: 200ms;
+		--roxy-motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+		/* Heat scale: a single base hue. Consumers mix it with `transparent` at
+		 * increasing percentages to paint cooler-to-hotter tiers. The mix-with-
+		 * transparent approach lets the page bg show through and keeps text
+		 * colour stable (always --roxy-fg), so the cells read in both themes
+		 * without per-tier text colours. */
+		--roxy-heat: var(--roxy-danger, #ef4444);
+	}
+
+	/* Dark theme via system preference */
+	@media (prefers-color-scheme: dark) {
+		:where(:root, :host) {
+			color-scheme: dark;
+			--roxy-primary: #f8fafc;
+			--roxy-secondary: #94a3b8;
+			--roxy-accent: #fbbf24;
+			--roxy-accent-ink: var(--roxy-accent);
+
+			/* The dark blocks mix toward WHITE, and BOTH dark triggers carry the line.
+			 * Without it a visitor on system dark with no data-theme attribute inherits
+			 * the light derivation, which lands a dark green on a near-black surface and
+			 * fails WCAG AA. */
+			--roxy-success: #22c55e;
+			--roxy-success-fg: color-mix(in oklab, var(--roxy-success) 70%, white);
+			--roxy-warning: #fb923c;
+			--roxy-warning-fg: color-mix(in oklab, var(--roxy-warning) 70%, white);
+			--roxy-danger: #ef4444;
+			--roxy-danger-fg: color-mix(in oklab, var(--roxy-danger) 70%, white);
+			--roxy-info: #38bdf8;
+			--roxy-info-fg: color-mix(in oklab, var(--roxy-info) 70%, white);
+
+			--roxy-bg: #0a0a0a;
+			--roxy-surface: #18181b;
+			--roxy-fg: #fafafa;
+			--roxy-muted: #a1a1aa;
+			--roxy-border: #27272a;
+			--roxy-ring: color-mix(in srgb, var(--roxy-accent) 45%, transparent);
+
+			--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+			--roxy-shadow-md:
+				0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+			--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
+
+			--roxy-heat: var(--roxy-danger, #ef4444);
+		}
+	}
+
+	/* Light theme override. Beats the @media (prefers-color-scheme: dark) block
+	 * when the host explicitly opts back into light. Without this, a dark-mode OS
+	 * pins the tokens to dark even after data-theme="light" is set. The light-DOM
+	 * selectors (:root.light, .light, [data-theme="light"]) set the vars on the
+	 * ancestor or the element itself so they inherit into every component shadow;
+	 * :host([data-theme="light"]) is inert in global delivery and kept only for
+	 * shadow-adopted use. */
+	:where(
+		:root[data-theme="light"],
+		[data-theme="light"],
+		:root.light,
+		.light,
+		:host([data-theme="light"])
+	) {
+		color-scheme: light;
+		--roxy-primary: #0f172a;
+		--roxy-secondary: #475569;
+		--roxy-accent: #f59e0b;
+		--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
+
+		--roxy-success: #16a34a;
+		--roxy-success-fg: color-mix(in oklab, var(--roxy-success) 70%, black);
+		--roxy-warning: #ea580c;
+		--roxy-warning-fg: color-mix(in oklab, var(--roxy-warning) 70%, black);
+		--roxy-danger: #dc2626;
+		--roxy-danger-fg: color-mix(in oklab, var(--roxy-danger) 70%, black);
+		--roxy-info: #0284c7;
+		--roxy-info-fg: color-mix(in oklab, var(--roxy-info) 70%, black);
+
+		--roxy-bg: #ffffff;
+		--roxy-surface: #ffffff;
+		--roxy-fg: #0a0a0a;
+		--roxy-muted: #71717a;
+		--roxy-border: #e4e4e7;
+		--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent);
+
+		--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+		--roxy-shadow-md:
+			0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+		--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.14);
+	}
+
+	/* Dark theme via explicit opt-in. The light-DOM selectors (:root.dark, .dark,
+	 * [data-theme="dark"]) set the vars on the ancestor or the element itself so
+	 * they inherit into every component shadow; this is what makes a .dark class on
+	 * any ancestor (Tailwind, shadcn) actually theme the components in global
+	 * delivery. :host([data-theme="dark"]) is inert in global delivery and kept
+	 * only for shadow-adopted use. */
+	:where(
+		:root[data-theme="dark"],
+		[data-theme="dark"],
+		:root.dark,
+		.dark,
+		:host([data-theme="dark"])
+	) {
 		color-scheme: dark;
 		--roxy-primary: #f8fafc;
 		--roxy-secondary: #94a3b8;
 		--roxy-accent: #fbbf24;
 		--roxy-accent-ink: var(--roxy-accent);
 
-		/* Status -fg overrides must mirror the explicit [data-theme="dark"] block
-		 * below. Without these, a user on system dark with no data-theme attribute
-		 * inherits the light-mode -fg values (e.g. #166534 success) which renders
-		 * as near-invisible dark green on a near-black surface and fails WCAG AA. */
 		--roxy-success: #22c55e;
-		--roxy-success-fg: #86efac;
+		--roxy-success-fg: color-mix(in oklab, var(--roxy-success) 70%, white);
 		--roxy-warning: #fb923c;
-		--roxy-warning-fg: #fdba74;
+		--roxy-warning-fg: color-mix(in oklab, var(--roxy-warning) 70%, white);
 		--roxy-danger: #ef4444;
-		--roxy-danger-fg: #fca5a5;
+		--roxy-danger-fg: color-mix(in oklab, var(--roxy-danger) 70%, white);
 		--roxy-info: #38bdf8;
-		--roxy-info-fg: #7dd3fc;
+		--roxy-info-fg: color-mix(in oklab, var(--roxy-info) 70%, white);
 
 		--roxy-bg: #0a0a0a;
 		--roxy-surface: #18181b;
@@ -185,96 +288,11 @@
 
 		--roxy-heat: var(--roxy-danger, #ef4444);
 	}
-}
 
-/* Light theme override. Beats the @media (prefers-color-scheme: dark) block
- * when the host explicitly opts back into light. Without this, a dark-mode OS
- * pins the tokens to dark even after data-theme="light" is set. The light-DOM
- * selectors (:root.light, .light, [data-theme="light"]) set the vars on the
- * ancestor or the element itself so they inherit into every component shadow;
- * :host([data-theme="light"]) is inert in global delivery and kept only for
- * shadow-adopted use. */
-:where(
-	:root[data-theme="light"],
-	[data-theme="light"],
-	:root.light,
-	.light,
-	:host([data-theme="light"])
-) {
-	color-scheme: light;
-	--roxy-primary: #0f172a;
-	--roxy-secondary: #475569;
-	--roxy-accent: #f59e0b;
-	--roxy-accent-ink: color-mix(in oklab, var(--roxy-accent) 70%, black);
-
-	--roxy-success: #16a34a;
-	--roxy-success-fg: #166534;
-	--roxy-warning: #ea580c;
-	--roxy-warning-fg: #9a3412;
-	--roxy-danger: #dc2626;
-	--roxy-danger-fg: #991b1b;
-	--roxy-info: #0284c7;
-	--roxy-info-fg: #075985;
-
-	--roxy-bg: #ffffff;
-	--roxy-surface: #ffffff;
-	--roxy-fg: #0a0a0a;
-	--roxy-muted: #71717a;
-	--roxy-border: #e4e4e7;
-	--roxy-ring: color-mix(in srgb, var(--roxy-accent) 40%, transparent);
-
-	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-	--roxy-shadow-md:
-		0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-	--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.14);
-}
-
-/* Dark theme via explicit opt-in. The light-DOM selectors (:root.dark, .dark,
- * [data-theme="dark"]) set the vars on the ancestor or the element itself so
- * they inherit into every component shadow; this is what makes a .dark class on
- * any ancestor (Tailwind, shadcn) actually theme the components in global
- * delivery. :host([data-theme="dark"]) is inert in global delivery and kept
- * only for shadow-adopted use. */
-:where(
-	:root[data-theme="dark"],
-	[data-theme="dark"],
-	:root.dark,
-	.dark,
-	:host([data-theme="dark"])
-) {
-	color-scheme: dark;
-	--roxy-primary: #f8fafc;
-	--roxy-secondary: #94a3b8;
-	--roxy-accent: #fbbf24;
-	--roxy-accent-ink: var(--roxy-accent);
-
-	--roxy-success: #22c55e;
-	--roxy-success-fg: #86efac;
-	--roxy-warning: #fb923c;
-	--roxy-warning-fg: #fdba74;
-	--roxy-danger: #ef4444;
-	--roxy-danger-fg: #fca5a5;
-	--roxy-info: #38bdf8;
-	--roxy-info-fg: #7dd3fc;
-
-	--roxy-bg: #0a0a0a;
-	--roxy-surface: #18181b;
-	--roxy-fg: #fafafa;
-	--roxy-muted: #a1a1aa;
-	--roxy-border: #27272a;
-	--roxy-ring: color-mix(in srgb, var(--roxy-accent) 45%, transparent);
-
-	--roxy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-	--roxy-shadow-md:
-		0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
-	--roxy-shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
-
-	--roxy-heat: var(--roxy-danger, #ef4444);
-}
-
-/* Reduced motion override */
-@media (prefers-reduced-motion: reduce) {
-	:where(:root, :host) {
-		--roxy-motion-duration: 0ms;
+	/* Reduced motion override */
+	@media (prefers-reduced-motion: reduce) {
+		:where(:root, :host) {
+			--roxy-motion-duration: 0ms;
+		}
 	}
 }

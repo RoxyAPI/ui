@@ -424,6 +424,12 @@ export function ToolWidget({ toolName, output }: { toolName: string; output: str
 
 A compact tool result is decoded for you, and a name a host prefixed with its server (`roxy_tarot:post_tarot_daily`) resolves the same as a bare one. Full recipe, with the vendor connectors and the Vercel AI SDK: <https://roxyapi.com/docs/tutorials/ai-chat-widgets>. Runnable page: [examples/vanilla/tool-result.html](examples/vanilla/tool-result.html).
 
+**The lookup also ships on its own path**, `@roxyapi/ui/tool-component` and the same subpath on both wrapper packages, for a module that decides WHICH component to render and never renders one: a server component, a route handler, a worker. It carries `componentForTool`, `expandCompact` and the name table, and no elements, so nothing in that file pulls in the library.
+
+```ts
+import { componentForTool } from '@roxyapi/ui-react/tool-component';
+```
+
 ## Server-rendered, no JavaScript wiring
 
 Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
@@ -471,6 +477,18 @@ The emitted markup:
 The component picks up the embedded JSON when no `data` property has been set. The JavaScript property always wins: assign `element.data` and the markup is ignored, so dynamic pages and server-rendered pages share one component with no branching. You can nest a server-rendered HTML fallback inside the same element for no-JavaScript and crawler views; the component leaves it untouched and reads only the marked script.
 
 This is how the WordPress plugin renders: PHP fetches the response server-side, caches it, and embeds it in the page. The same shape works in any framework that emits HTML.
+
+**Writing the tag in React or Next.js?** `@roxyapi/ui-react/jsx` types every `roxy-*` tag and its attributes, so a server component can render one directly and still be checked:
+
+```tsx
+import '@roxyapi/ui-react/jsx';
+
+export default function Page() {
+	return <roxy-tarot-spread heading="Your reading" hide-readings />;
+}
+```
+
+One import anywhere in the project types the tags everywhere in it. The typings carry attributes only, which is what markup can carry: a page that passes a response uses the wrapper component, which sets `data` as a property. Your `tsconfig.json` needs `moduleResolution` on `bundler`, `node16` or `nodenext`, because the older `node10` resolution ignores the package export map.
 
 ## Most-used components per domain
 
@@ -554,7 +572,7 @@ const { data: ashtaka } = await roxy.vedicAstrology.calculateAshtakavarga({
 });
 <RoxyAshtakavargaGrid data={ashtaka} />
 
-// Divisional chart (D9 Navamsa shown). `division` is the integer 9 — not "D9".
+// Divisional chart (D9 Navamsa shown). `division` is the integer 9, not "D9".
 // Supported: 2, 3, 4, 7, 9, 10, 12, 16, 20, 24, 27, 30, 40, 45, 60.
 const { data: d9 } = await roxy.vedicAstrology.generateDivisionalChart({
   body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5, division: 9 },
@@ -912,7 +930,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-vastu-mandala>` | Vastu | POST /vastu/mandala, POST /vastu/entrance | Pada grid with a devata per square, the brahmasthan, and the entrance pada lit with its effect |
 | `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
 | `<roxy-dosha-constitution>` | Ayurveda | POST /ayurveda/constitution | Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it |
-| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
+| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
 | `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches |
 | `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
@@ -937,7 +955,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 
 ## Theming
 
-Every component reads from `--roxy-*` CSS custom properties. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. The CDN bundle auto-loads these tokens; your `:root { --roxy-* }` overrides always win over the defaults. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference.
+Every component reads from `--roxy-*` CSS custom properties. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. The CDN bundle auto-loads these tokens, and your own declarations always win over the defaults: they are declared at zero specificity and inside the `roxy` cascade layer, so one plain line beats them in both modes, with no `!important` and no extra selector weight, and it works from inside a layer of your own. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference and for the one rule a page that scopes its theme to a wrapper has to know.
 
 ```css
 :root {
@@ -973,7 +991,7 @@ roxy-natal-chart::part(card) {
 }
 ```
 
-The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, plus `form`, `loading`, `error`, `edit-bar` and `attribution` on the built-in states. A `section` also carries its own name, which is what `::part(patterns)` above targets, so any single block can be dropped or restyled on its own.
+The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, plus `form`, `hint`, `loading`, `error`, `edit-bar` and `attribution` on the built-in states. `hint` is the help text under a field of the built-in form, which quotes the API reference for that field: hide it with `::part(hint)` when the page is written for a reader who did not come for the reference, and the label, the input and its validation stay. A `section` also carries its own name, which is what `::part(patterns)` above targets, so any single block can be dropped or restyled on its own.
 
 That list is the shared vocabulary, not the whole set. **[`components-catalog.json`](https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json) carries a `parts` array for every component**, so you can read the exact names a component answers to instead of guessing or inspecting the DOM. A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike.
 

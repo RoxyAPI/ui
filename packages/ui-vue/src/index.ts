@@ -283,19 +283,20 @@ export {
 	ROXY_UI_VERSION,
 } from './load-ui.js';
 /**
+ * Render the result of an AI tool call: `componentForTool` maps the tool name a
+ * model hands back to the component that draws that response, and
+ * `expandCompact` decodes a compact result. Both also ship on the
+ * `./tool-component` subpath of this package, for a module that wants the lookup
+ * and none of the components.
+ */
+export {
+	componentForTool,
+	expandCompact,
+	type ToolComponent,
+} from './tool-component.js';
+/**
  * Every response type these components accept, re-exported so you can type your own
  * fetch helper without installing a second package. For example:
  * import type { NatalChartResponse } from '@roxyapi/ui-vue';
  */
 export type * from './types/index.js';
-
-/**
- * Render the result of an AI tool call: `componentForTool` maps the tool name a
- * model hands back to the component that draws that response, and
- * `expandCompact` decodes a compact result.
- */
-export { expandCompact } from './utils/compact.js';
-export {
-	componentForTool,
-	type ToolComponent,
-} from './utils/tool-component.js';

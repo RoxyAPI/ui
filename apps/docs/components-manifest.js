@@ -1,5 +1,5 @@
 /**
- * One entry per demo card. The SDK call is the source of truth — both the
+ * One entry per demo card. The SDK call is the source of truth for both the
  * server-render snippet (Code tab) and the shadcn registry snippet (shadcn tab)
  * are derived from it. (tag, slug, pascal, heading, topic, description) come
  * from window.ROXY_COMPONENTS (see scripts/sync-manifest.ts).
@@ -95,9 +95,9 @@ function lookup(tag) {
  * The Embed-tab snippets for an endpoint-bound component.
  *
  * Read from `window.ROXY_WIDGET_SNIPPETS`, which `scripts/sync-manifest.ts` emits from the
- * same builder that writes the snippets into `components-catalog.json`. This function used to
- * rebuild them here, which meant two implementations of one string and they drifted: this one
- * shipped the practitioner theme commented out, the roxyapi.com /widgets page emitted it live.
+ * same builder that writes the snippets into `components-catalog.json`. The string is READ
+ * here and never rebuilt: one builder owns it, so every surface renders the identical snippet
+ * and the practitioner theme stays opt-in wherever it is shown.
  * Do not reintroduce a local build; change `scripts/widget-snippets.ts` instead and every
  * surface follows. Returns null for a component with no binding, so the demo hides the tab.
  */

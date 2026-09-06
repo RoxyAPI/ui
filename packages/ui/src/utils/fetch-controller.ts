@@ -9,7 +9,7 @@ import {
  * Host slots the controller drives. {@link RoxyDataElement} satisfies this, so the form mixin can attach a controller without the component wiring state by hand.
  *
  * @remarks
- * Intersected with `HTMLElement` because the controller dispatches events on the host. Lit's `ReactiveControllerHost` is the update-lifecycle contract only (`addController`, `requestUpdate`, `updateComplete`) and carries no DOM surface, even though every real host is a `LitElement` and therefore an `HTMLElement`. Declaring the DOM half is what the controller actually needs; it used to reach it through a `this.host as unknown as EventTarget` double cast instead, which asserted a capability the type never promised.
+ * Intersected with `HTMLElement` because the controller dispatches events on the host. Lit's `ReactiveControllerHost` is the update-lifecycle contract only (`addController`, `requestUpdate`, `updateComplete`) and carries no DOM surface, even though every real host is a `LitElement` and therefore an `HTMLElement`. Declaring the DOM half is what the controller actually needs, and it is declared rather than reached through a `this.host as unknown as EventTarget` double cast, which would assert a capability the type never promised.
  */
 type FetchHost<T> = ReactiveControllerHost &
 	HTMLElement & {

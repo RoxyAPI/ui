@@ -15,9 +15,9 @@ import { expect, test } from '@playwright/test';
  *
  * - One rule, every component. A consumer writes `::part(aspects)` once and
  *   expects it to reach every block that IS the aspects. This is the regression
- *   the vocabulary work was done for: the natal chart used to expose that block
- *   only as `aspect-grid`, so a rule written against the aspects table silently
- *   missed the chart on the same page.
+ *   the vocabulary work was done for: the natal chart answers to `aspects` beside
+ *   its own `aspect-grid`, so a rule written against the aspects table reaches the
+ *   chart on the same page.
  * - The catalog does not over-promise. Every part name a component actually
  *   renders must be one the catalog publishes, read out of the live shadow root
  *   rather than out of the source the catalog was scanned from.
@@ -260,4 +260,70 @@ test('no centre name spills outside the centre it names', async ({ page }) => {
 		return out;
 	});
 	expect(spills).toEqual([]);
+});
+
+/**
+ * The one part the base forwards out of the self-fetch form, proved across the boundary it has to cross.
+ *
+ * @remarks
+ * A component in self-fetch mode draws `<roxy-endpoint-form>` inside its own shadow root, so every part
+ * the form renders is two roots deep and a host rule reaches none of them. `hint` is forwarded with
+ * `exportparts` for exactly that shape, which is how a practitioner page hides the API reference prose
+ * under each field. Structure cannot prove it: an `exportparts` value that names a part the inner
+ * element does not carry is silent, and so is a rule that stops at the boundary.
+ *
+ * The control is the form itself, which must stay visible: a stylesheet that hid the whole widget
+ * would otherwise pass.
+ */
+test('the field hint is targetable one root out, on a component in self-fetch mode', async ({
+	page,
+}) => {
+	await showcase(page);
+
+	await page.evaluate((cls) => {
+		const host = document.createElement('roxy-natal-chart');
+		host.id = 'hint-probe';
+		host.className = cls;
+		// The demo spec, so the form introspects the preview rather than production.
+		host.setAttribute('spec-url', './openapi.json');
+		host.setAttribute('data-endpoint', 'astrology/natal-chart');
+		document.body.append(host);
+	}, HOST_CLASS);
+
+	const hints = () =>
+		page.evaluate(() => {
+			const form = document
+				.getElementById('hint-probe')
+				?.shadowRoot?.querySelector('roxy-endpoint-form');
+			return form?.shadowRoot?.querySelectorAll('[part~="hint"]').length ?? 0;
+		});
+
+	// The form reads the spec over the network before it can draw a field.
+	await expect.poll(hints).toBeGreaterThan(0);
+
+	await page.addStyleTag({
+		content: `.${HOST_CLASS}::part(hint) { display: none; }`,
+	});
+
+	const measured = await page.evaluate(() => {
+		const host = document.getElementById('hint-probe') as HTMLElement;
+		const form = host.shadowRoot?.querySelector(
+			'roxy-endpoint-form',
+		) as HTMLElement;
+		const hint = form.shadowRoot?.querySelector(
+			'[part~="hint"]',
+		) as HTMLElement;
+		const label = form.shadowRoot?.querySelector(
+			'.label',
+		) as HTMLElement | null;
+		return {
+			hint: getComputedStyle(hint).display,
+			form: getComputedStyle(form).display,
+			label: label ? getComputedStyle(label).display : 'absent',
+		};
+	});
+
+	expect(measured.hint).toBe('none');
+	expect(measured.form).not.toBe('none');
+	expect(measured.label).not.toBe('none');
 });

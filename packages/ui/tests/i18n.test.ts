@@ -450,7 +450,7 @@ describe('the chrome-string catalogue', () => {
 	 * Two source strings that differ only by case are ONE key, and the second silently wins in every catalogue.
 	 *
 	 * @remarks
-	 * The runtime key is `lookupKey(source)`, which lower-cases. `harmonious` and `Harmonious` both shipped, so `registerLocale` wrote one and then overwrote it, and the natal legend rendered `Armónicos` in Spanish where English rendered `harmonious`. Nothing could catch it: the key-parity test compares raw source strings and saw two distinct entries, the placeholder test passed, and the rendered word was a correct translation of the OTHER string. The lower-case pair is gone and only the capitalized form remains.
+	 * The runtime key is `lookupKey(source)`, which lower-cases, so `harmonious` and `Harmonious` are one key: `registerLocale` writes one and the other overwrites it, and the legend renders the translation of whichever source landed second. No other guard sees it: the key-parity test compares raw source strings and counts two distinct entries, the placeholder test passes, and the rendered word is a correct translation of the OTHER string. Only the capitalized form is declared.
 	 */
 	test('no two source strings collide once folded to their lookup key', () => {
 		const seen = new Map<string, string>();
@@ -1828,7 +1828,7 @@ describe('a component renders its chrome in the page language', () => {
 		el.remove();
 	});
 
-	/** The count line used to build an English plural by appending `es`, which no other language does. */
+	/** The count line is one catalogue entry per plural form, never English `es` appended at the call site, which no other language does. */
 	test('the dream search count reads in the page language', async () => {
 		document.documentElement.lang = 'es-AR';
 		const el = document.createElement('roxy-dream-search');
@@ -2666,9 +2666,9 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 
 		expect(body).toContain('Sol');
 		expect(sign).toContain('Piscis');
-		// The degree label carries a sign NAME too, and it used to come from a local
-		// table while the cell beside it came from the response. One row, two
-		// languages, and both perfectly readable on their own.
+		// The degree label carries a sign NAME too, and it comes from the response
+		// like the cell beside it. A local table there would put two languages in one
+		// row, both perfectly readable on their own.
 		expect(degree).toContain('Piscis');
 		expect(degree).not.toContain('Pisces');
 

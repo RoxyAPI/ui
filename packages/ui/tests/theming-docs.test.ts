@@ -14,8 +14,8 @@
  * worth reading and a generator would have to drop it, so the trade taken here is to keep
  * the prose and assert the facts: every token must appear, and the light and dark defaults
  * printed beside it must be the ones `tokens.css` actually sets. Presence alone would not
- * be enough — the first draft of the completed table carried a copy-pasted `--roxy-info-fg`
- * dark value, which reads perfectly and is simply wrong.
+ * be enough: a copy-pasted dark value for one `-fg` row reads perfectly and is simply
+ * wrong, which presence alone cannot see.
  */
 
 import { describe, expect, test } from 'bun:test';
@@ -34,14 +34,19 @@ async function documentedTokens(): Promise<Set<string>> {
 /**
  * Token rows whose printed defaults can be compared, keyed by token.
  *
- * Deliberately narrow: only rows printing a bare HEX colour in both theme columns. That
- * is where drift is SILENT and unreadable, which is the whole risk (the first draft of
- * the completed table carried a copy-pasted `--roxy-info-fg` dark value that reads
- * perfectly and is simply wrong). Composite values are skipped on purpose: shadows are
- * abbreviated with an ellipsis for readability, and derived values like
- * `color-mix(... var(--roxy-accent) ...)` are prose-annotated. Asserting those would force
- * the doc to be a worse document to satisfy a test.
+ * Two shapes are comparable and both are checked, because both are where drift is SILENT
+ * and unreadable: a bare HEX in both theme columns (a copy-pasted dark value reads
+ * perfectly and is simply wrong), and a `color-mix()` DERIVATION printed verbatim, which
+ * is what the four status inks and the accent ink now are. A derivation is exactly the
+ * kind of row a reader trusts and nobody rereads, so a doc that prints the wrong base or
+ * the wrong direction is worth failing on.
+ *
+ * Still skipped on purpose: shadows, which the doc abbreviates with an ellipsis for
+ * readability, and any row whose value is prose-annotated rather than printed. Asserting
+ * those would force the doc to be a worse document to satisfy a test.
  */
+const COMPARABLE = (value: string): boolean =>
+	HEX.test(value) || value.startsWith('color-mix(');
 async function comparableRows(): Promise<
 	Map<string, { light: string; dark: string }>
 > {
@@ -51,7 +56,7 @@ async function comparableRows(): Promise<
 	const ROW =
 		/^\|\s*`(--roxy-[a-z0-9-]+)`\s*\|\s*`([^`]+)`\s*\|\s*`([^`]+)`\s*\|/gm;
 	for (const [, name, light, dark] of md.matchAll(ROW)) {
-		if (HEX.test(light as string) && HEX.test(dark as string)) {
+		if (COMPARABLE(light as string) && COMPARABLE(dark as string)) {
 			out.set(name as string, { light: light as string, dark: dark as string });
 		}
 	}
@@ -105,12 +110,12 @@ describe('THEMING.md is the token contract and may not drift from tokens.css', (
 		).toEqual([]);
 	});
 
-	test('every printed hex default is the one tokens.css sets', async () => {
+	test('every printed default is the one tokens.css sets', async () => {
 		const { light, dark } = await tokensFromCss();
 		const rows = await comparableRows();
 		expect(
 			rows.size,
-			'the hex-row parser matched nothing, so this asserts nothing',
+			'the row parser matched nothing, so this asserts nothing',
 		).toBeGreaterThan(10);
 
 		const wrong: string[] = [];

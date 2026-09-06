@@ -10,7 +10,7 @@ import {
 } from '../src/styles/palettes.js';
 
 /**
- * Every shipped theme file is generated from ROXY_PALETTES by scripts/sync-themes.ts. This suite parses each generated CSS and pins it back to the data: the four trigger blocks are present, each carries exactly its token set, and every value equals the palette (or the shared chrome / the accent-ink and ring derivations). A hand-edit to a generated file, a dropped block, or a palette that drifts from its CSS fails here. It supersedes the practitioner-only smoke test that used to live in theming.test.ts.
+ * Every shipped theme file is generated from ROXY_PALETTES by scripts/sync-themes.ts. This suite parses each generated CSS and pins it back to the data: the four trigger blocks are present, each carries exactly its token set, and every value equals the palette (or the shared chrome / the accent-ink and ring derivations). A hand-edit to a generated file, a dropped block, or a palette that drifts from its CSS fails here. It is the whole preset contract, so theming.test.ts asserts the token source only.
  */
 const norm = (v: string) => v.replace(/\s+/g, ' ').trim();
 const LIGHT_INK = 'color-mix(in oklab, var(--roxy-accent) 70%, black)';
@@ -88,6 +88,33 @@ describe('generated theme presets', () => {
 			// --roxy-*, so it is stripped alongside @import before the custom-
 			// property scan below rather than counted as drift.
 			const noFontFaces = noComments.replace(/@font-face\s*\{[^}]*\}/g, '');
+
+			test('reassigns its tokens inside the roxy.theme layer, after the defaults', () => {
+				// A preset exists to beat the token defaults, and a host links it in an
+				// order we do not control, so the order is DECLARED rather than assumed:
+				// the statement names roxy.tokens first, and both files carry it so
+				// either one loading alone establishes the pair. Font rules stay outside
+				// the layer, because a family is matched by name rather than by the
+				// cascade and an @import may be preceded only by @charset and a layer
+				// statement.
+				// Read from tokens.css rather than restated, so renaming a layer in one
+				// file and not the other fails here instead of silently inverting the
+				// preset against the defaults it exists to reassign.
+				const declared = (readFileSync(
+					new URL('../src/styles/tokens.css', import.meta.url),
+					'utf8',
+				)
+					// Comments first: that file explains the host contract with a layer
+					// statement of its own, and matching prose would pin this to an example.
+					.replace(/\/\*[\s\S]*?\*\//g, '')
+					.match(/@layer\s+[^;{]+;/) ?? [])[0] as string;
+				expect(declared).toBeDefined();
+				expect(noComments).toContain(declared);
+				const statement = noComments.indexOf(declared);
+				const block = noComments.indexOf('@layer roxy.theme {');
+				expect(block).toBeGreaterThan(statement);
+				expect(noComments.indexOf('--roxy-')).toBeGreaterThan(block);
+			});
 
 			test('carries the four trigger blocks at zero specificity', () => {
 				const generic = [...noComments.matchAll(/:where\(:root, :host\)/g)];

@@ -11,7 +11,7 @@ export const ROXY_UI_TOKENS_STYLE_ID = 'roxy-ui-tokens';
  *
  * - SSR-safe: a missing `document` (Node, Lit-SSR, Bun) is a no-op. Only the CDN bundle calls this; the npm/ESM entry (`src/index.ts`) never touches the document, so bundler and server consumers are unaffected.
  * - Idempotent: a second call (two script tags, HMR, re-registration) finds the existing `#roxy-ui-tokens` and returns without duplicating.
- * - Lowest priority: the style is PREPENDED to `<head>`, so it is the earliest source-order rule. Any consumer `:root { --roxy-* }` brand override or linked `tokens.css` appears later and wins ties. This preserves backwards compatibility: existing pages that already link `tokens.css` and set overrides keep their exact behaviour.
+ * - Lowest priority, twice over. The tokens sit in the `roxy.tokens` cascade layer, so an unlayered host declaration outranks them at any specificity, and the style is PREPENDED to `<head>`, which registers that layer name ahead of every stylesheet the page brought with it, so a layer of the host's own sorts above it as well. A consumer `:root { --roxy-* }` brand override or a linked `tokens.css` still lands later in source order and still wins ties, so existing pages keep their exact behaviour.
  *
  * @returns The injected (or pre-existing) style element, or `null` under SSR.
  */

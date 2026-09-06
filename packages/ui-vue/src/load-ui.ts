@@ -10,9 +10,8 @@
  *
  * Defaults to the EXACT @roxyapi/ui release this wrapper was built against, so
  * `@roxyapi/ui-vue@x.y.z` always runs `@roxyapi/ui@x.y.z` and a lockfile actually
- * pins the runtime. It used to default to '@latest', which meant a pinned wrapper
- * silently picked up whatever the CDN was serving, and a new @roxyapi/ui release
- * changed the elements under every existing install with no lockfile change.
+ * pins the runtime: it is a fixed version rather than a moving alias, so a later
+ * @roxyapi/ui release cannot change the elements under an existing install.
  *
  * Pass an explicit `version` to override, or 'latest' to opt back into floating.
  *

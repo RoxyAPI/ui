@@ -92,7 +92,7 @@ export function oppositePoint(longitude: number): number {
 /**
  * Midpoint of the forward arc from `start` to `end` (both ecliptic
  * longitudes). Handles the 360/0 wrap, so a house spanning 350 to 20 degrees
- * yields a midpoint of 5, not 185. Used to place house numbers between two
+ * yields a midpoint of 5, not 185. This is what places house numbers between two
  * cusps regardless of how unequal the house is.
  */
 export function arcMidpoint(start: number, end: number): number {

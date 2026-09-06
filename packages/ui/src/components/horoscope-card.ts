@@ -323,9 +323,9 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			/* One grid for the whole list so every event starts on the same column.
 			 * The row wrapper keeps the dt/dd pairing in the markup and drops out of
 			 * the layout. --roxy-label-col caps the date at a quarter of the card
-			 * instead of the max-content every row used to share: a long-format date
-			 * in German ran noticeably wider than the same date in Hindi and pushed
-			 * the event column past half the row at phone width. */
+			 * instead of a max-content track shared by every row: a long-format date
+			 * in German runs wider than the same date in Hindi, and an uncapped track
+			 * pushes the event column past half the row at phone width. */
 			.dates {
 				margin: 0;
 				display: grid;

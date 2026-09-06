@@ -17,9 +17,20 @@
  * The type surface (which response each `data` takes, which config props and
  * events each element exposes) lives in `scripts/wrapper-meta.ts` and is shared
  * with the Vue generator. Add a component there, not here.
+ *
+ * It also emits `jsx.ts`, the raw-tag typings, for the other way a React page
+ * renders these elements: the tag itself, server-side, with no wrapper and no
+ * hydration. Attribute names and their types come from the elements' own
+ * `@property` declarations through `scripts/element-attrs.ts`.
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
+import {
+	baseAttributes,
+	type ElementAttr,
+	extendsBase,
+	ownAttributes,
+} from './element-attrs.js';
 import {
 	emitToolHelpers,
 	emitTypes,
@@ -161,11 +172,84 @@ ${dataEffectBlock}${configEffectBlocks ? `${configEffectBlocks}\n\n` : ''}${even
 `;
 }
 
+/** One attribute as a typed, documented member of an element's JSX props. */
+function attrMember(a: ElementAttr): string {
+	const doc = a.comment ? `\t\t\t/** ${a.comment} */\n` : '';
+	return `${doc}\t\t\t${JSON.stringify(a.attribute)}?: ${a.type};`;
+}
+
+/**
+ * `jsx.ts`: the custom elements as JSX intrinsic elements, so a page can render `<roxy-tarot-spread>` as a tag and still be typed.
+ *
+ * @remarks
+ * The React 19 shape, which is a module augmentation of `react` rather than of a global namespace: React 19 removed the global `JSX` namespace in favour of `React.JSX`, so an augmentation written the old way types nothing and reports no error.
+ *
+ * Every attribute is optional and every element also accepts the standard HTML attribute surface, which is where `className`, `style`, `slot`, `id`, `lang`, `dir` and `suppressHydrationWarning` come from. `data` is deliberately absent: it is declared `attribute: false` on the element, so it is set as a property (through a ref, or by using the wrapper component) and never written in markup.
+ */
+function buildJsxTypes(): string {
+	const base = baseAttributes();
+	const inherited = new Set(base.map((a) => a.attribute));
+	const rows = ROXY_COMPONENTS.map(({ slug, tag, pascal }) => {
+		const fromBase = extendsBase(slug);
+		const own = ownAttributes(slug).filter(
+			(a) => !fromBase || !inherited.has(a.attribute),
+		);
+		const parts = [
+			...(fromBase ? ['RoxyBaseAttributes'] : []),
+			...(own.length > 0
+				? [`{\n${own.map(attrMember).join('\n')}\n\t\t}`]
+				: []),
+		];
+		// `unknown` intersects away, so an element with no attributes of its own
+		// still gets the standard HTML surface and nothing else.
+		const attrs = parts.length > 0 ? parts.join(' & ') : 'unknown';
+		return `\t\t\t/** \`<${pascal}>\` as a tag. */\n\t\t\t${JSON.stringify(tag)}: RoxyElement<${attrs}>;`;
+	});
+
+	return `/**
+ * Raw-tag typings for the Roxy custom elements, so \`<roxy-natal-chart heading="Chart">\` type-checks in a React file with no wrapper component and no client JavaScript.
+ *
+ * @remarks
+ * GENERATED. Import it once anywhere in your project and every Roxy tag is typed everywhere:
+ *
+ * \`\`\`ts
+ * import '@roxyapi/ui-react/jsx';
+ * \`\`\`
+ *
+ * The wrapper components remain the path for a page that passes a response: they set \`data\` as a property, which markup cannot carry. This file is for the other case, a tag rendered on the server and left alone.
+ *
+ * Attribute names are the elements' own: several are renamed at the element and the rest are lowercased, so they are read from the source rather than derived from the prop names.
+ */
+import type * as React from 'react';
+
+/** The standard HTML attribute surface every custom element accepts, plus its own attributes. */
+type RoxyElement<A> = React.DetailedHTMLProps<
+	React.HTMLAttributes<HTMLElement>,
+	HTMLElement
+> &
+	A;
+
+/** The attributes every data component takes, from the shared base element. Referenced by the rows below, not exported: the public surface of this module is the tag typings themselves. */
+interface RoxyBaseAttributes {
+${base.map((a) => attrMember(a).replace(/^\t\t\t/gm, '\t')).join('\n')}
+}
+
+declare module 'react' {
+	namespace JSX {
+		interface IntrinsicElements {
+${rows.join('\n')}
+		}
+	}
+}
+`;
+}
+
 async function main() {
 	await mkdir(OUT_DIR, { recursive: true });
 	await mkdir(`${OUT_DIR}/components`, { recursive: true });
 	await emitTypes(OUT_DIR);
 	await emitToolHelpers(OUT_DIR);
+	await writeFile(`${OUT_DIR}/jsx.ts`, buildJsxTypes());
 
 	await writeFile(`${OUT_DIR}/load-ui.ts`, LOAD_UI_TS);
 

@@ -833,14 +833,19 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			: nothing;
 	}
 
-	/** A description under a field: rendered inline when short, collapsed behind a disclosure showing its first line when long. */
+	/**
+	 * A description under a field: rendered inline when short, collapsed behind a disclosure showing its first line when long.
+	 *
+	 * @remarks
+	 * Both shapes carry `part="hint"` on their outermost element, so one `::part(hint)` rule reaches every field description on the form. The words are the API reference text for the request field, which is the right register on a developer page and the wrong one on a page written for a client, and hiding them leaves the label, the input and its validation untouched.
+	 */
 	private description(f: FieldDef) {
 		if (!f.description) return nothing;
 		if (f.description.length <= 120) {
-			return html`<small class="help">${f.description}</small>`;
+			return html`<small part="hint" class="help">${f.description}</small>`;
 		}
 		const lead = f.description.split('. ')[0] ?? f.description;
-		return html`<details class="help-details">
+		return html`<details part="hint" class="help-details">
 			<summary><span class="help-lead">${lead}</span>${chevron()}</summary>
 			<small class="help help-full">${f.description}</small>
 		</details>`;
@@ -982,7 +987,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	/**
 	 * The fields this group's city search actually fills, named in the help text.
 	 *
-	 * Not the hardcoded "latitude, longitude, timezone" it used to say: a group does not always own a
+	 * The sentence names what the group actually fills, because a group does not always own a
 	 * timezone. `generateRelocationChart` has one top-level `timezone` that belongs to the birth
 	 * moment, so the relocation block fills coordinates only, and promising a timezone there would be
 	 * a visible lie on the one form that made this method necessary.
@@ -997,7 +1002,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * The name of one request group, translated, falling back to the humanized English.
 	 *
 	 * @remarks
-	 * A group name is the one derived label that is also ENUMERABLE. A field label is `humanize()` over one of 909 spec field names, but a group is `humanize()` over the names an object-valued property or a coordinate prefix can take, and the whole spec has nine across 176 operations. So each is a catalogue entry, and the English token that used to sit inside translated prose (`Local de Natal Chart`, `Место (Birth Data)`) is gone. A tenth group appearing in the spec still renders: `t()` returns its source string on a miss, so it degrades to the humanized English rather than to a blank or a key.
+	 * A group name is the one derived label that is also ENUMERABLE. A field label is `humanize()` over one of 909 spec field names, but a group is `humanize()` over the names an object-valued property or a coordinate prefix can take, and the whole spec has nine across 176 operations. So each is a catalogue entry, and no English token sits inside translated prose (`Local de Natal Chart`, `Место (Birth Data)`). A tenth group appearing in the spec still renders: `t()` returns its source string on a miss, so it degrades to the humanized English rather than to a blank or a key.
 	 *
 	 * **The lookup folds case, and that is what makes `natalChart` work.** `humanize` produces `Natal Chart` while the catalogue carries `Natal chart` for the card heading, and {@link lookupKey} folds both to one key on write and on read, so this reuses the shipped translation. Adding the capitalized twin instead would SILENTLY OVERWRITE that heading in every locale rather than reading as a duplicate, which is why `i18n/chrome-strings.ts` carries no entry for it.
 	 */
