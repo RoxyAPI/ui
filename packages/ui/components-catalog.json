@@ -1685,7 +1685,7 @@
       "slug": "yoga-list",
       "domain": "Vedic",
       "renders": "Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode",
-      "endpointLabel": "GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect",
+      "endpointLabel": "GET /vedic-astrology/yoga, /vedic-astrology/yoga/{id}, POST /vedic-astrology/yoga/detect",
       "endpoints": [
         {
           "operationId": "listYogas",
@@ -1698,6 +1698,12 @@
           "method": "POST",
           "path": "/vedic-astrology/yoga/detect",
           "toolName": "post_vedic_astrology_yoga_detect"
+        },
+        {
+          "operationId": "getYoga",
+          "method": "GET",
+          "path": "/vedic-astrology/yoga/{id}",
+          "toolName": "get_vedic_astrology_yoga_id"
         }
       ],
       "parts": [
@@ -2022,6 +2028,12 @@
           "method": "POST",
           "path": "/tarot/daily",
           "toolName": "post_tarot_daily"
+        },
+        {
+          "operationId": "getCard",
+          "method": "GET",
+          "path": "/tarot/cards/{id}",
+          "toolName": "get_tarot_cards_id"
         }
       ],
       "parts": [
@@ -2092,7 +2104,7 @@
       "slug": "tarot-spread",
       "domain": "Tarot",
       "renders": "Spreads with positions and reading",
-      "endpointLabel": "POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw",
+      "endpointLabel": "POST /tarot/spreads/{three-card,celtic-cross,love,career,custom}, /tarot/yes-no, /tarot/draw",
       "endpoints": [
         {
           "operationId": "castThreeCard",
@@ -3038,13 +3050,37 @@
       "slug": "hexagram",
       "domain": "I Ching",
       "renders": "Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram",
-      "endpointLabel": "GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",
+      "endpointLabel": "GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily",
       "endpoints": [
         {
           "operationId": "getRandomHexagram",
           "method": "GET",
           "path": "/iching/hexagrams/random",
           "toolName": "get_iching_hexagrams_random"
+        },
+        {
+          "operationId": "getHexagram",
+          "method": "GET",
+          "path": "/iching/hexagrams/{number}",
+          "toolName": "get_iching_hexagrams_number"
+        },
+        {
+          "operationId": "lookupHexagram",
+          "method": "GET",
+          "path": "/iching/hexagrams/lookup",
+          "toolName": "get_iching_hexagrams_lookup"
+        },
+        {
+          "operationId": "castReading",
+          "method": "GET",
+          "path": "/iching/cast",
+          "toolName": "get_iching_cast"
+        },
+        {
+          "operationId": "getDailyHexagram",
+          "method": "POST",
+          "path": "/iching/daily",
+          "toolName": "post_iching_daily"
         }
       ],
       "parts": [
@@ -3137,6 +3173,24 @@
           "method": "GET",
           "path": "/crystals/zodiac/{sign}",
           "toolName": "get_crystals_zodiac_sign"
+        },
+        {
+          "operationId": "listCrystals",
+          "method": "GET",
+          "path": "/crystals",
+          "toolName": "get_crystals"
+        },
+        {
+          "operationId": "getBirthstones",
+          "method": "GET",
+          "path": "/crystals/birthstone/{month}",
+          "toolName": "get_crystals_birthstone_month"
+        },
+        {
+          "operationId": "searchCrystals",
+          "method": "GET",
+          "path": "/crystals/search",
+          "toolName": "get_crystals_search"
         }
       ],
       "parts": [
@@ -3316,7 +3370,7 @@
       "slug": "reference-card",
       "domain": "Reference",
       "renders": "Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup",
-      "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/rashis/{id}, /iching/trigrams/{id}, /human-design/{gates,centers}/{id}, /numerology/{meanings,compound-number}/{number}",
+      "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number}",
       "endpoints": [
         {
           "operationId": "getZodiacSign",

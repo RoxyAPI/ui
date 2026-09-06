@@ -158,45 +158,144 @@ describe('the three packages version in lockstep', () => {
 });
 
 /**
- * `endpointLabel` is EDITORIAL display copy, hand-written in `manifest.ts` and shown on the roxyapi.com `/ui` table and in the README. Everything else about a component's endpoints is generated, so this is the one string that can quietly start lying.
+ * `endpointLabel` is EDITORIAL display copy, hand-written in `manifest.ts`, shown on the roxyapi.com `/ui` table and in the README, and published in `components-catalog.json`. Everything else about the endpoints of a component is generated, so this is the one string that can drift, in either direction, and this test holds it to the bindings both ways.
  *
- * It did: `roxy-divisional-chart` was bound to `/vedic-astrology/navamsa` and its label still advertised only `/vedic-astrology/divisional-chart`, so the public table under-reported what the component renders.
+ * Under-reporting: `roxy-divisional-chart` was bound to `/vedic-astrology/navamsa` while its label advertised only `/vedic-astrology/divisional-chart`.
  *
- * Labels legitimately compress a family with brace notation (`POST /vedic-astrology/dasha/{current,major,sub/...}`), so a literal substring check would be useless. Instead: strip the prefix every bound path shares, and require each remaining distinguishing segment to appear somewhere in the label.
+ * Over-reporting is the worse half and had no gate at all: a label may advertise an endpoint no binding carries, the whole suite stays green, and `componentForTool` then resolves NOTHING for a tool name the published catalog says that component renders. Eleven names sat unresolved that way. So the check now runs in BOTH directions on an exact set, not on a substring: the label is EXPANDED into concrete endpoints and must equal what the component binds.
+ *
+ * Expansion rules, which are the whole grammar the labels use. A leading verb sets the method and carries forward across commas. A brace group holding a top-level comma is an ALTERNATION and multiplies out (`/numerology/{life-path,expression}`); a brace group without one is a path PARAMETER and stays literal (`/crystals/{id}`), which is what makes `{gates,centers}/{id}` collapse correctly and what caught `gates` actually taking `{number}`. Groups nest, so commas are split at brace depth zero. A member carrying `...` is a deliberate elision (`{current,major,sub/...}`) and asserts a PREFIX instead: at least one binding must start with it, and every binding under that prefix counts as named.
  */
-describe('endpointLabel tells the truth about what a component renders', () => {
-	const commonPrefix = (paths: string[]): string => {
-		if (paths.length < 2) return '';
-		const parts = paths.map((p) => p.split('/'));
+describe('endpointLabel and the bindings are one fact, checked both ways', () => {
+	/** Split on commas at brace depth zero, so a nested alternation is not torn apart. */
+	const splitTop = (s: string): string[] => {
 		const out: string[] = [];
-		for (let i = 0; i < (parts[0]?.length ?? 0); i++) {
-			const seg = parts[0]?.[i];
-			if (parts.every((p) => p[i] === seg)) out.push(seg as string);
-			else break;
+		let depth = 0;
+		let cur = '';
+		for (const ch of s) {
+			if (ch === '{') depth++;
+			else if (ch === '}') depth--;
+			if (ch === ',' && depth === 0) {
+				out.push(cur);
+				cur = '';
+				continue;
+			}
+			cur += ch;
 		}
-		return out.join('/');
+		out.push(cur);
+		return out.map((x) => x.trim()).filter(Boolean);
 	};
 
-	test('every bound endpoint is named in the label', () => {
+	/** Multiply out every brace ALTERNATION, leaving path parameters alone. */
+	const expand = (path: string): string[] => {
+		let depth = 0;
+		let start = -1;
+		for (let i = 0; i < path.length; i++) {
+			const ch = path[i];
+			if (ch === '{') {
+				if (depth === 0) start = i;
+				depth++;
+			} else if (ch === '}') {
+				depth--;
+				if (depth === 0 && start >= 0) {
+					const members = splitTop(path.slice(start + 1, i));
+					if (members.length > 1) {
+						const head = path.slice(0, start);
+						const tail = path.slice(i + 1);
+						return members.flatMap((m) => expand(head + m + tail));
+					}
+					start = -1;
+				}
+			}
+		}
+		return [path];
+	};
+
+	const VERB = /^(GET|POST|PUT|PATCH|DELETE)\s+/;
+
+	/** Every concrete `METHOD /path` a label names. */
+	const labelEndpoints = (label: string): Array<[string, string]> => {
+		const out: Array<[string, string]> = [];
+		let method = '';
+		for (const chunk of splitTop(label)) {
+			let rest = chunk;
+			const m = VERB.exec(rest);
+			if (m) {
+				method = m[1] as string;
+				rest = rest.slice(m[0].length);
+			}
+			if (!rest.startsWith('/')) continue;
+			for (const path of expand(rest)) out.push([method, path]);
+		}
+		return out;
+	};
+
+	const bound = (tag: string) => ENDPOINT_BINDINGS[tag] ?? [];
+
+	test('the label names no endpoint the component does not bind', () => {
 		const liars: string[] = [];
+		let checked = 0;
 		for (const c of ROXY_COMPONENTS) {
-			const bound = (ENDPOINT_BINDINGS[c.tag] ?? []).map((e) => e.path);
-			if (bound.length === 0) continue;
-			const prefix = commonPrefix(bound);
-			const label = c.endpointLabel;
-			for (const path of bound) {
-				const tail = prefix ? path.slice(prefix.length) : path;
-				// The first real word of what makes this path distinct.
-				const token = tail.split('/').filter(Boolean)[0]?.replace(/[{}]/g, '');
-				if (!token) continue;
-				if (!label.includes(token)) {
+			const list = bound(c.tag);
+			if (list.length === 0) continue;
+			const have = new Set(list.map((b) => `${b.method} ${b.path}`));
+			for (const [method, path] of labelEndpoints(c.endpointLabel)) {
+				checked++;
+				if (path.includes('...')) {
+					const prefix = path.slice(0, path.indexOf('...'));
+					if (
+						list.some((b) => b.method === method && b.path.startsWith(prefix))
+					)
+						continue;
 					liars.push(
-						`${c.tag}: label "${label}" never mentions "${token}" (${path})`,
+						`${c.tag}: label promises "${method} ${prefix}..." and nothing binds it`,
+					);
+					continue;
+				}
+				if (!have.has(`${method} ${path}`)) {
+					liars.push(
+						`${c.tag}: label promises "${method} ${path}" and nothing binds it`,
 					);
 				}
 			}
 		}
-		expect(liars).toEqual([]);
+		// Not vacuous: the labels have to have been parsed and walked.
+		expect(checked).toBeGreaterThan(80);
+		expect(
+			liars,
+			`An endpointLabel advertises an endpoint no binding carries, so componentForTool resolves nothing for its tool name. Bind it in scripts/bindings.config.ts, or correct the label to what ships:\n  ${liars.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	test('the label names every endpoint the component binds', () => {
+		const silent: string[] = [];
+		for (const c of ROXY_COMPONENTS) {
+			const list = bound(c.tag);
+			if (list.length === 0) continue;
+			const named = new Set<string>();
+			for (const [method, path] of labelEndpoints(c.endpointLabel)) {
+				if (path.includes('...')) {
+					const prefix = path.slice(0, path.indexOf('...'));
+					for (const b of list) {
+						if (b.method === method && b.path.startsWith(prefix))
+							named.add(`${b.method} ${b.path}`);
+					}
+					continue;
+				}
+				named.add(`${method} ${path}`);
+			}
+			for (const b of list) {
+				if (!named.has(`${b.method} ${b.path}`)) {
+					silent.push(
+						`${c.tag}: binds "${b.method} ${b.path}" (${b.operationId}) and the label never names it`,
+					);
+				}
+			}
+		}
+		expect(
+			silent,
+			`A bound endpoint is missing from the public endpointLabel, so the README table and components-catalog.json under-report what the component renders:\n  ${silent.join('\n  ')}`,
+		).toEqual([]);
 	});
 });
 

@@ -359,6 +359,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		pascal: 'RoxyYogaList',
 		operationId: 'detectYogas',
 	},
+	get_vedic_astrology_yoga_id: {
+		tag: 'roxy-yoga-list',
+		pascal: 'RoxyYogaList',
+		operationId: 'getYoga',
+	},
 	get_vedic_astrology_nakshatras_id: {
 		tag: 'roxy-nakshatra-card',
 		pascal: 'RoxyNakshatraCard',
@@ -485,6 +490,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		tag: 'roxy-tarot-card',
 		pascal: 'RoxyTarotCard',
 		operationId: 'getDailyCard',
+	},
+	get_tarot_cards_id: {
+		tag: 'roxy-tarot-card',
+		pascal: 'RoxyTarotCard',
+		operationId: 'getCard',
 	},
 	get_tarot_cards: {
 		tag: 'roxy-tarot-catalog',
@@ -761,6 +771,26 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		pascal: 'RoxyHexagram',
 		operationId: 'getRandomHexagram',
 	},
+	get_iching_hexagrams_number: {
+		tag: 'roxy-hexagram',
+		pascal: 'RoxyHexagram',
+		operationId: 'getHexagram',
+	},
+	get_iching_hexagrams_lookup: {
+		tag: 'roxy-hexagram',
+		pascal: 'RoxyHexagram',
+		operationId: 'lookupHexagram',
+	},
+	get_iching_cast: {
+		tag: 'roxy-hexagram',
+		pascal: 'RoxyHexagram',
+		operationId: 'castReading',
+	},
+	post_iching_daily: {
+		tag: 'roxy-hexagram',
+		pascal: 'RoxyHexagram',
+		operationId: 'getDailyHexagram',
+	},
 	get_crystals_id: {
 		tag: 'roxy-crystal-card',
 		pascal: 'RoxyCrystalCard',
@@ -780,6 +810,21 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		tag: 'roxy-crystal-grid',
 		pascal: 'RoxyCrystalGrid',
 		operationId: 'getCrystalsByZodiac',
+	},
+	get_crystals: {
+		tag: 'roxy-crystal-grid',
+		pascal: 'RoxyCrystalGrid',
+		operationId: 'listCrystals',
+	},
+	get_crystals_birthstone_month: {
+		tag: 'roxy-crystal-grid',
+		pascal: 'RoxyCrystalGrid',
+		operationId: 'getBirthstones',
+	},
+	get_crystals_search: {
+		tag: 'roxy-crystal-grid',
+		pascal: 'RoxyCrystalGrid',
+		operationId: 'searchCrystals',
 	},
 	get_dreams_symbols_id: {
 		tag: 'roxy-dream-card',

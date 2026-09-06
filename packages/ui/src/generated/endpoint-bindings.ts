@@ -240,6 +240,24 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/crystals/zodiac/{sign}',
 			toolName: 'get_crystals_zodiac_sign',
 		},
+		{
+			operationId: 'listCrystals',
+			method: 'GET',
+			path: '/crystals',
+			toolName: 'get_crystals',
+		},
+		{
+			operationId: 'getBirthstones',
+			method: 'GET',
+			path: '/crystals/birthstone/{month}',
+			toolName: 'get_crystals_birthstone_month',
+		},
+		{
+			operationId: 'searchCrystals',
+			method: 'GET',
+			path: '/crystals/search',
+			toolName: 'get_crystals_search',
+		},
 	],
 	'roxy-dasha-timeline': [
 		{
@@ -512,6 +530,30 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'GET',
 			path: '/iching/hexagrams/random',
 			toolName: 'get_iching_hexagrams_random',
+		},
+		{
+			operationId: 'getHexagram',
+			method: 'GET',
+			path: '/iching/hexagrams/{number}',
+			toolName: 'get_iching_hexagrams_number',
+		},
+		{
+			operationId: 'lookupHexagram',
+			method: 'GET',
+			path: '/iching/hexagrams/lookup',
+			toolName: 'get_iching_hexagrams_lookup',
+		},
+		{
+			operationId: 'castReading',
+			method: 'GET',
+			path: '/iching/cast',
+			toolName: 'get_iching_cast',
+		},
+		{
+			operationId: 'getDailyHexagram',
+			method: 'POST',
+			path: '/iching/daily',
+			toolName: 'post_iching_daily',
 		},
 	],
 	'roxy-hora-table': [
@@ -933,6 +975,12 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/tarot/daily',
 			toolName: 'post_tarot_daily',
 		},
+		{
+			operationId: 'getCard',
+			method: 'GET',
+			path: '/tarot/cards/{id}',
+			toolName: 'get_tarot_cards_id',
+		},
 	],
 	'roxy-tarot-catalog': [
 		{
@@ -1103,6 +1151,12 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'POST',
 			path: '/vedic-astrology/yoga/detect',
 			toolName: 'post_vedic_astrology_yoga_detect',
+		},
+		{
+			operationId: 'getYoga',
+			method: 'GET',
+			path: '/vedic-astrology/yoga/{id}',
+			toolName: 'get_vedic_astrology_yoga_id',
 		},
 	],
 	'roxy-zodiac-card': [

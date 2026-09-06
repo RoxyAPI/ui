@@ -4,8 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f59e0b'/%3E%3Cpath d='M16 5l2.9 7.5L26 16l-7.1 3.5L16 27l-2.9-7.5L6 16l7.1-3.5z' fill='%23fff'/%3E%3C/svg%3E">
-	<title>RoxyAPI UI · Astrology, Vedic, numerology, and tarot UI components for web apps</title>
-	<meta name="description" content="Open source MIT licensed UI component library for astrology APIs, Vedic astrology charts, numerology calculators, tarot readers, kundli, panchang, biorhythm, I Ching, crystals, dream dictionaries, and angel numbers. Drop-in design library for React, Next.js, Hono, Vue, Svelte, and vanilla HTML.">
+	<title>RoxyAPI UI · Astrology, Vedic, numerology, and tarot UI components for web apps and AI chat</title>
+	<meta name="description" content="Open source MIT licensed UI component library for astrology APIs, Vedic astrology charts, numerology calculators, tarot readers, kundli, panchang, biorhythm, I Ching, crystals, dream dictionaries, and angel numbers. Drop-in design library for React, Next.js, Hono, Vue, Svelte, and vanilla HTML, and generative UI for chat apps that draw a Remote MCP tool result as a real chart.">
 	<meta name="keywords" content="astrology UI components, vedic astrology charts, numerology calculator UI, tarot reader widget, kundli web component, panchang component, horoscope widget, design library astrology, open source astrology UI library, React astrology components, MCP astrology, AI agent astrology, birth chart web component, synastry chart widget">
 	<meta property="og:title" content="RoxyAPI UI · Drop-in components for astrology, Vedic, tarot, and numerology apps">
 	<meta property="og:description" content="The official MIT licensed UI design library for the RoxyAPI catalog. Astrology charts, Vedic kundli, panchang, tarot readers, numerology cards, biorhythm, I Ching, crystals, dreams, angel numbers. One script tag. Every domain.">
@@ -606,6 +606,46 @@
 			},
 			{
 				"@type": "Question",
+				"name": "Can an LLM render these components from a Remote MCP tool call?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes, and it is what the tool-result helper exists for. Your model calls a Remote MCP tool at roxyapi.com/mcp/{domain} and hands back a tool name and a JSON string. componentForTool(name) turns that name into the component that draws it, so the reply carries a real natal chart, kundli or tarot spread instead of a wall of fields. It works in any chat UI that renders your own markup for a tool result. The helper ships inside @roxyapi/ui, @roxyapi/ui-react and @roxyapi/ui-vue, so whichever package you already installed has it. Full recipe at roxyapi.com/docs/tutorials/ai-chat-widgets."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "What is generative UI for astrology and tarot apps?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "A language model should never draw a chart. It should call a tool and hand the result to something that already knows how to draw it. That is generative UI: the model picks the tool, your interface picks the component. Every component here is a stateless data consumer and a tool result is the same JSON the SDK returns, so the one piece your app supplies is the map from the tool name to the component."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Which chat frameworks can host a RoxyAPI chart?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Any chat UI that lets you return your own markup for a tool result, because the render slot is ordinary JSX and the component is an ordinary element. That covers the Vercel AI SDK, assistant-ui, CopilotKit, AI Elements, and a hand-rolled React, Vue, Svelte, Angular or Solid interface. Plain HTML works with no build step: load the script tag, create the element the binding names, set data. Vendor hosted connectors from Anthropic, OpenAI and Google change only where you read the tool name and the result text from, never the lines that follow."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Do I need to turn the compact MCP response off?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "No, leave it on. Every component decodes the compact shape on the way in, so you keep the lower token cost per turn and still pass the tool result straight through with no preprocessing of your own. If your own code wants the plain object, expandCompact is exported from all three packages."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "How do I map a tool name to a component?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "One call. componentForTool('post_astrology_natal_chart') returns tag, pascal, operationId and attrs. tag is the custom element for plain DOM, pascal is the export name in the React and Vue packages, and attrs is present when one component covers several tools and needs an attribute to tell them apart. A name a host prefixed with its server, such as roxy_tarot:post_tarot_daily, resolves the same as a bare one. A tool nothing draws returns undefined, so a bot that calls a reference lookup keeps answering in prose instead of breaking."
+				}
+			},
+			{
+				"@type": "Question",
 				"name": "Is RoxyAPI UI free?",
 				"acceptedAnswer": {
 					"@type": "Answer",
@@ -614,7 +654,7 @@
 			},
 			{
 				"@type": "Question",
-				"name": "How do I theme RoxyAPI UI components?",
+				"name": "How do I theme components?",
 				"acceptedAnswer": {
 					"@type": "Answer",
 					"text": "Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
@@ -807,6 +847,33 @@
 			<details>
 				<summary>Can I use this with AI agents and MCP?</summary>
 				<p>Yes. RoxyAPI ships a <a href="https://roxyapi.com/docs/mcp" target="_blank" rel="noopener">remote MCP server</a> per domain (Streamable HTTP, no local setup). The same JSON shape your agent receives over MCP feeds straight into the matching component data prop. See <a href="https://roxyapi.com/docs/mcp" target="_blank" rel="noopener">roxyapi.com/docs/mcp</a> for the full setup.</p>
+			</details>
+			<details>
+				<summary>Can an LLM render these components from a Remote MCP tool call?</summary>
+				<p>Yes, and it is what the tool-result helper exists for. Your model calls a Remote MCP tool at <code>roxyapi.com/mcp/{domain}</code> and hands back a tool name and a JSON string. <code>componentForTool(name)</code> turns that name into the component that draws it, so the reply carries a real natal chart, kundli or tarot spread instead of a wall of fields. It works in any chat UI that renders your own markup for a tool result.</p>
+				<p>The helper ships inside <code>@roxyapi/ui</code>, <code>@roxyapi/ui-react</code> and <code>@roxyapi/ui-vue</code>, so whichever package you already installed has it. Full recipe: <a href="https://roxyapi.com/docs/tutorials/ai-chat-widgets" target="_blank" rel="noopener">roxyapi.com/docs/tutorials/ai-chat-widgets</a>.</p>
+			</details>
+			<details>
+				<summary>What is generative UI for astrology and tarot apps?</summary>
+				<p>A language model should never draw a chart. It should call a tool and hand the result to something that already knows how to draw it. That is generative UI: the model picks the tool, your interface picks the component. Every component here is a stateless data consumer and a tool result is the same JSON the SDK returns, so the one piece your app supplies is the map from the tool name to the component. Worked example: <a href="https://roxyapi.com/blogs/render-astrology-charts-from-llm-tool-calls" target="_blank" rel="noopener">render astrology charts from LLM tool calls</a>.</p>
+			</details>
+			<details>
+				<summary>Which chat frameworks can host a RoxyAPI chart?</summary>
+				<p>Any chat UI that lets you return your own markup for a tool result, because the render slot is ordinary JSX and the component is an ordinary element. That covers the Vercel AI SDK, assistant-ui, CopilotKit, AI Elements, and a hand-rolled React, Vue, Svelte, Angular or Solid interface. Plain HTML works with no build step: load the script tag, create the element the binding names, set <code>data</code>.</p>
+				<p>Vendor hosted connectors from Anthropic, OpenAI and Google change only where you read the tool name and the result text from, never the lines that follow. Each one is written out in the <a href="https://roxyapi.com/docs/tutorials/ai-chat-widgets" target="_blank" rel="noopener">chat widget tutorial</a>.</p>
+			</details>
+			<details>
+				<summary>Do I need to turn the compact MCP response off?</summary>
+				<p>No, leave it on. Every component decodes the compact shape on the way in, so you keep the lower token cost per turn and still pass the tool result straight through with no preprocessing of your own. If your own code wants the plain object, <code>expandCompact</code> is exported from all three packages.</p>
+			</details>
+			<details>
+				<summary>How do I map a tool name to a component?</summary>
+				<p>One call. <code>componentForTool('post_astrology_natal_chart')</code> returns <code>tag</code>, <code>pascal</code>, <code>operationId</code> and <code>attrs</code>. <code>tag</code> is the custom element for plain DOM, <code>pascal</code> is the export name in the React and Vue packages, and <code>attrs</code> is present when one component covers several tools and needs an attribute to tell them apart.</p>
+				<p>A name a host prefixed with its server, such as <code>roxy_tarot:post_tarot_daily</code>, resolves the same as a bare one. A tool nothing draws returns <code>undefined</code>, so a bot that calls a reference lookup keeps answering in prose instead of breaking.</p>
+			</details>
+			<details>
+				<summary>Is RoxyAPI UI free?</summary>
+				<p>The components are MIT licensed and free to use, modify, and redistribute. Rendering live data requires a RoxyAPI key. A free tier is available; paid plans cover every domain in the catalog. See <a href="https://roxyapi.com/pricing" target="_blank" rel="noopener">roxyapi.com/pricing</a> for the current plan menu.</p>
 			</details>
 			<details>
 				<summary>How do I theme components?</summary>

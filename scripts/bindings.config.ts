@@ -137,8 +137,12 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	getChoghadiya: [{ component: 'roxy-choghadiya-grid' }],
 	getHora: [{ component: 'roxy-hora-table' }],
 	calculateDrishti: [{ component: 'roxy-vedic-aspects' }],
+	// The catalog, one yoga on its own, and a detection over a chart are three
+	// reads the same card already draws. The catalog is declared first, which is
+	// what keeps it the widget default.
 	listYogas: [{ component: 'roxy-yoga-list' }],
 	detectYogas: [{ component: 'roxy-yoga-list' }],
+	getYoga: [{ component: 'roxy-yoga-list' }],
 	getNakshatra: [{ component: 'roxy-nakshatra-card' }],
 	checkManglikDosha: [
 		{ component: 'roxy-dosha-card', attrs: { type: 'manglik' } },
@@ -188,8 +192,12 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 		{ component: 'roxy-compatibility-card', attrs: { mode: 'numerology' } },
 	],
 
-	// Tarot
+	// Tarot. The drawn card and the reference card are two reads of one deck and
+	// one card renders both: the draw ships a single orientation and states it,
+	// the reference card ships both and lets the reader pick. The draw is
+	// declared first, which is what keeps it the widget default.
 	getDailyCard: [{ component: 'roxy-tarot-card' }],
+	getCard: [{ component: 'roxy-tarot-card' }],
 	castThreeCard: [
 		{ component: 'roxy-tarot-spread', attrs: { spread: 'three-card' } },
 	],
@@ -301,8 +309,16 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 		{ component: 'roxy-compatibility-card', attrs: { mode: 'biorhythm' } },
 	],
 
-	// I Ching
+	// I Ching. One card, several reads of the same figure: a draw at random, a
+	// hexagram by King Wen number, a lookup by line pattern, a cast with its
+	// moving lines, and the hexagram of the day. Which one arrived is detected
+	// from the payload, so none of them carries a selector attribute. The random
+	// draw is declared first, which is what keeps it the widget default.
 	getRandomHexagram: [{ component: 'roxy-hexagram' }],
+	getHexagram: [{ component: 'roxy-hexagram' }],
+	lookupHexagram: [{ component: 'roxy-hexagram' }],
+	castReading: [{ component: 'roxy-hexagram' }],
+	getDailyHexagram: [{ component: 'roxy-hexagram' }],
 
 	// Dreams
 	getDreamSymbol: [{ component: 'roxy-dream-card' }],
@@ -312,10 +328,16 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	getAngelNumber: [{ component: 'roxy-angel-number-card' }],
 	analyzeNumberSequence: [{ component: 'roxy-angel-number-lookup' }],
 
-	// Crystals
+	// Crystals. Every list response carries the same `crystals` summary array, so
+	// one gallery renders all of them and titles itself from whichever filter the
+	// response echoes back. The chakra list is declared first, which is what keeps
+	// it the widget default.
 	getCrystalsByChakra: [{ component: 'roxy-crystal-grid' }],
 	getCrystalsByElement: [{ component: 'roxy-crystal-grid' }],
 	getCrystalsByZodiac: [{ component: 'roxy-crystal-grid' }],
+	listCrystals: [{ component: 'roxy-crystal-grid' }],
+	getBirthstones: [{ component: 'roxy-crystal-grid' }],
+	searchCrystals: [{ component: 'roxy-crystal-grid' }],
 	getCrystal: [{ component: 'roxy-crystal-card' }],
 
 	// Reference lookups (one heuristic card for all glossary reads)

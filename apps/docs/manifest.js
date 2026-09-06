@@ -425,7 +425,7 @@ window.ROXY_COMPONENTS = [
     "heading": "Yoga catalog",
     "description": "Yoga reference cards from the catalog with optional detail mode",
     "docsLabel": "Vedic",
-    "endpointLabel": "GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect",
+    "endpointLabel": "GET /vedic-astrology/yoga, /vedic-astrology/yoga/{id}, POST /vedic-astrology/yoga/detect",
     "docsSummary": "Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode",
     "topic": "Vedic"
   },
@@ -502,7 +502,7 @@ window.ROXY_COMPONENTS = [
     "heading": "Three-card spread",
     "description": "Tarot spread renderer for three-card, Celtic Cross, love, or yes/no",
     "docsLabel": "Tarot",
-    "endpointLabel": "POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw",
+    "endpointLabel": "POST /tarot/spreads/{three-card,celtic-cross,love,career,custom}, /tarot/yes-no, /tarot/draw",
     "docsSummary": "Spreads with positions and reading",
     "topic": "Tarot"
   },
@@ -700,7 +700,7 @@ window.ROXY_COMPONENTS = [
     "heading": "I Ching hexagram",
     "description": "I Ching hexagram drawn line by line with trigram glyphs, judgment, image, and a reading for every line: the oracle statement and what it asks of the querent. A cast highlights the moving lines and shows only their readings, plus the hexagram it transforms into",
     "docsLabel": "I Ching",
-    "endpointLabel": "GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast",
+    "endpointLabel": "GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily",
     "docsSummary": "Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram",
     "topic": "I Ching"
   },
@@ -777,7 +777,7 @@ window.ROXY_COMPONENTS = [
     "heading": "Reference card",
     "description": "Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, numerology number or compound number",
     "docsLabel": "Reference",
-    "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/rashis/{id}, /iching/trigrams/{id}, /human-design/{gates,centers}/{id}, /numerology/{meanings,compound-number}/{number}",
+    "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number}",
     "docsSummary": "Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup",
     "topic": "Helpers"
   },
@@ -1040,6 +1040,24 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "GET",
       "path": "/crystals/zodiac/{sign}",
       "toolName": "get_crystals_zodiac_sign"
+    },
+    {
+      "operationId": "listCrystals",
+      "method": "GET",
+      "path": "/crystals",
+      "toolName": "get_crystals"
+    },
+    {
+      "operationId": "getBirthstones",
+      "method": "GET",
+      "path": "/crystals/birthstone/{month}",
+      "toolName": "get_crystals_birthstone_month"
+    },
+    {
+      "operationId": "searchCrystals",
+      "method": "GET",
+      "path": "/crystals/search",
+      "toolName": "get_crystals_search"
     }
   ],
   "roxy-dasha-timeline": [
@@ -1311,6 +1329,30 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "GET",
       "path": "/iching/hexagrams/random",
       "toolName": "get_iching_hexagrams_random"
+    },
+    {
+      "operationId": "getHexagram",
+      "method": "GET",
+      "path": "/iching/hexagrams/{number}",
+      "toolName": "get_iching_hexagrams_number"
+    },
+    {
+      "operationId": "lookupHexagram",
+      "method": "GET",
+      "path": "/iching/hexagrams/lookup",
+      "toolName": "get_iching_hexagrams_lookup"
+    },
+    {
+      "operationId": "castReading",
+      "method": "GET",
+      "path": "/iching/cast",
+      "toolName": "get_iching_cast"
+    },
+    {
+      "operationId": "getDailyHexagram",
+      "method": "POST",
+      "path": "/iching/daily",
+      "toolName": "post_iching_daily"
     }
   ],
   "roxy-hora-table": [
@@ -1731,6 +1773,12 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "POST",
       "path": "/tarot/daily",
       "toolName": "post_tarot_daily"
+    },
+    {
+      "operationId": "getCard",
+      "method": "GET",
+      "path": "/tarot/cards/{id}",
+      "toolName": "get_tarot_cards_id"
     }
   ],
   "roxy-tarot-catalog": [
@@ -1902,6 +1950,12 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "POST",
       "path": "/vedic-astrology/yoga/detect",
       "toolName": "post_vedic_astrology_yoga_detect"
+    },
+    {
+      "operationId": "getYoga",
+      "method": "GET",
+      "path": "/vedic-astrology/yoga/{id}",
+      "toolName": "get_vedic_astrology_yoga_id"
     }
   ],
   "roxy-zodiac-card": [

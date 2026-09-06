@@ -528,7 +528,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 			'Yoga reference cards from the catalog with optional detail mode',
 		docsLabel: 'Vedic',
 		endpointLabel:
-			'GET /vedic-astrology/yoga, POST /vedic-astrology/yoga/detect',
+			'GET /vedic-astrology/yoga, /vedic-astrology/yoga/{id}, POST /vedic-astrology/yoga/detect',
 		docsSummary:
 			'Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode',
 		topic: 'Vedic',
@@ -615,7 +615,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 			'Tarot spread renderer for three-card, Celtic Cross, love, or yes/no',
 		docsLabel: 'Tarot',
 		endpointLabel:
-			'POST /tarot/spreads/{three-card,celtic-cross,love}, /tarot/yes-no, /tarot/draw',
+			'POST /tarot/spreads/{three-card,celtic-cross,love,career,custom}, /tarot/yes-no, /tarot/draw',
 		docsSummary: 'Spreads with positions and reading',
 		topic: 'Tarot',
 	},
@@ -850,7 +850,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 			'I Ching hexagram drawn line by line with trigram glyphs, judgment, image, and a reading for every line: the oracle statement and what it asks of the querent. A cast highlights the moving lines and shows only their readings, plus the hexagram it transforms into',
 		docsLabel: 'I Ching',
 		endpointLabel:
-			'GET /iching/hexagrams/{number}, /iching/cast, POST /iching/daily, /iching/daily/cast',
+			'GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily',
 		docsSummary:
 			'Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram',
 		topic: 'I Ching',
@@ -939,7 +939,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 			'Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, numerology number or compound number',
 		docsLabel: 'Reference',
 		endpointLabel:
-			'GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/rashis/{id}, /iching/trigrams/{id}, /human-design/{gates,centers}/{id}, /numerology/{meanings,compound-number}/{number}',
+			'GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number}',
 		docsSummary:
 			'Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup',
 		topic: 'Helpers',

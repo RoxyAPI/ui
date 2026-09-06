@@ -25,11 +25,12 @@ type HexagramData =
 	| CastReadingResponse;
 
 /**
- * I Ching hexagram card. Renders /iching/hexagrams/{number}, /iching/cast,
- * /iching/daily, /iching/daily/cast.
+ * I Ching hexagram card. Renders /iching/hexagrams/{number},
+ * /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast and
+ * /iching/daily.
  *
  * @remarks
- * **There is deliberately no `mode` input.** Which of the four shapes arrived is
+ * **There is deliberately no `mode` input.** Which shape arrived is
  * shape-detected from the payload in {@link RoxyHexagram.resolveHexagram}, which
  * is the rule for every multi-endpoint component here: an attribute and a
  * response can disagree, and only one of them is the reading. A `mode` property
@@ -214,25 +215,29 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		return html`<article class="card" part="card" aria-label=${this.t('I Ching hexagram')}>
 			<div class="glyphs" part="chart">
 				${h.symbol ? html`<div class="symbol">${h.symbol}</div>` : nothing}
-				<div class="lines" aria-hidden="true">
-					${lines
-						.slice()
-						.reverse()
-						.map((l, idx) => {
-							// reverse so visual top is line 6
-							const realIdx = lines.length - 1 - idx + 1;
-							const isChanging = changing.has(realIdx);
-							const broken = l === 6 || l === 8;
-							const cls = `${broken ? 'broken' : 'solid'}${isChanging ? ' changing' : ''}`;
-							return html`<div class="line ${cls}">
-								${
-									broken
-										? svg`<span class="seg"></span><span class="seg"></span>`
-										: svg`<span class="seg"></span>`
-								}
-							</div>`;
-						})}
-				</div>
+				${
+					lines.length > 0
+						? html`<div class="lines" aria-hidden="true">
+							${lines
+								.slice()
+								.reverse()
+								.map((l, idx) => {
+									// reverse so visual top is line 6
+									const realIdx = lines.length - 1 - idx + 1;
+									const isChanging = changing.has(realIdx);
+									const broken = l === 6 || l === 8;
+									const cls = `${broken ? 'broken' : 'solid'}${isChanging ? ' changing' : ''}`;
+									return html`<div class="line ${cls}">
+										${
+											broken
+												? svg`<span class="seg"></span><span class="seg"></span>`
+												: svg`<span class="seg"></span>`
+										}
+									</div>`;
+								})}
+						</div>`
+						: nothing
+				}
 			</div>
 			<div part="header">
 				<h2 class="title">
@@ -343,7 +348,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	}
 
 	/**
-	 * Lines for a static hexagram (lookup/random/daily, which carry no cast `lines` array): read the `binary` pattern. 6 digits BOTTOM to top, so index 0 is line 1, the bottom line, exactly like the cast `lines` array. 1 = yang (solid, 7), 0 = yin (broken, 8). Falls back to all-yang only if `binary` is malformed. The Unicode `symbol` block (U+4DC0) is in King Wen order, NOT line order, so it must never be used to derive the lines.
+	 * Lines for a static hexagram (a lookup, a random draw, the hexagram of the day, none of which carry a cast `lines` array): read the `binary` pattern. 6 digits BOTTOM to top, so index 0 is line 1, the bottom line, exactly like the cast `lines` array. 1 = yang (solid, 7), 0 = yin (broken, 8). A response with no usable `binary` yields no lines and the figure is left undrawn, because the six lines ARE response data: a default pattern would draw one hexagram under the name and Unicode symbol of another. The Unicode `symbol` block (U+4DC0) is in King Wen order, NOT line order, so it must never be used to derive the lines either.
 	 *
 	 * @remarks
 	 * This used to `.reverse()`, because the API served `binary` top-to-bottom while documenting it bottom-to-top, and reversing was the only way to render the figure the right way up. The API fixed the data in 2026-07 (the same inversion was making `/cast` return the vertically MIRRORED hexagram for 56 of the 64 figures), so `binary` and `lines` now point the same way and the reverse would flip every asymmetric hexagram upside down. Do not put it back.
@@ -353,7 +358,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		if (/^[01]{6}$/.test(binary)) {
 			return Array.from(binary, (c) => (c === '1' ? 7 : 8));
 		}
-		return Array.from({ length: 6 }, () => 7);
+		return [];
 	}
 }
 
