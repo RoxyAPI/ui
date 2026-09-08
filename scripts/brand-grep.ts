@@ -33,6 +33,7 @@ const STATIC_PATHS = [
 	'packages/ui-react/README.md',
 	'packages/ui-vue/README.md',
 	'apps/docs/index.html',
+	'apps/docs/preview.html',
 ];
 
 const GLOB_PATTERNS = ['examples/**/*'];

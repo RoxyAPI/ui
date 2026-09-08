@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Roxy UI component preview</title>
+
+	<link rel="stylesheet" href="./dist/styles/tokens.css">
+	<style>
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			padding: clamp(0.75rem, 3vw, 1.5rem);
+			background: var(--roxy-bg);
+			color: var(--roxy-fg);
+			font-family: var(--roxy-font-sans, system-ui, sans-serif);
+			line-height: 1.5;
+		}
+
+		main {
+			max-width: 56rem;
+			margin-inline: auto;
+		}
+
+		/* The component fills the page the way it fills a host element, so the
+		 * frame around it decides the width and nothing here caps it. */
+		#mount > * {
+			display: block;
+			width: 100%;
+		}
+
+		.notice {
+			margin: 1rem 0 0;
+			font-size: 0.75rem;
+			line-height: 1.5;
+			color: var(--roxy-muted);
+		}
+
+		.notice code {
+			font-family: var(--roxy-font-mono, ui-monospace, monospace);
+		}
+	</style>
+
+	<script>
+		// Paint in the theme the frame was opened with, before the first frame, so a
+		// dark page never shows a light flash. Any other value falls through to the
+		// operating system preference the token sheet already follows.
+		(function () {
+			try {
+				var m = /[?&]theme=(dark|light)\b/.exec(window.location.search);
+				if (m) document.documentElement.dataset.theme = m[1];
+			} catch (_) {}
+		})();
+	</script>
+</head>
+<body>
+	<main>
+		<div id="mount"></div>
+		<p class="notice" id="notice">Rendered from a fixed sample response, not a live call.</p>
+	</main>
+
+	<!-- Order is load bearing and mirrors the capture page: the bundle registers
+	     every element first, the two manifest globals feed preview.js, preview.js
+	     writes the single mount, and the deferred sample-data.js module runs last
+	     and assigns .data onto an element that is already upgraded. -->
+	<script src="./dist/cdn/roxy-ui.js"></script>
+	<script src="./manifest.js"></script>
+	<script src="./components-manifest.js"></script>
+	<script src="./preview.js"></script>
+	<script type="module" src="./sample-data.js"></script>
+</body>
+</html>
