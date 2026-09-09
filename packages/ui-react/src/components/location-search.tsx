@@ -10,6 +10,14 @@ type ElementAttrs = Omit<
 export interface RoxyLocationSearchProps extends ElementAttrs {
 	className?: string;
 	style?: React.CSSProperties;
+	/** Browser-safe publishable key (pk_) the search sends with its request. A secret key is refused client-side and never sent. Leave unset when `endpoint` points at your own server route. */
+	publishableKey?: string;
+	/** Where the search sends its GET while the visitor types. Defaults to the RoxyAPI location search; set an absolute URL or a page-relative path such as "/api/roxy/location" to route it through your own server and keep the key there. */
+	endpoint?: string;
+	/** Input placeholder. The default renders in the page language; a caller-supplied one is printed as given. */
+	placeholder?: string;
+	/** Initial text in the input, for restoring a previous search. */
+	defaultValue?: string;
 	/** Fires when the underlying <roxy-location-search> dispatches `roxy-location-select`. */
 	onRoxyLocationSelect?: (event: CustomEvent<NonNullable<SearchCitiesResponse['cities']>[number] | { latitude?: number; longitude?: number; timezone?: string; utcOffset?: number; city?: string; province?: string; country?: string }>) => void;
 	/** Fires when the underlying <roxy-location-search> dispatches `roxy-validation-error`. */
@@ -17,7 +25,7 @@ export interface RoxyLocationSearchProps extends ElementAttrs {
 }
 
 export const RoxyLocationSearch = React.forwardRef<HTMLElement | null, RoxyLocationSearchProps>(
-	function RoxyLocationSearch({ className, style, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
+	function RoxyLocationSearch({ className, style, publishableKey, endpoint, placeholder, defaultValue, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -41,6 +49,34 @@ export const RoxyLocationSearch = React.forwardRef<HTMLElement | null, RoxyLocat
 				active = false;
 			};
 		}, []);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && publishableKey !== undefined) {
+				(el as unknown as { publishableKey: string }).publishableKey = publishableKey;
+			}
+		}, [publishableKey, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && endpoint !== undefined) {
+				(el as unknown as { endpoint: string }).endpoint = endpoint;
+			}
+		}, [endpoint, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && placeholder !== undefined) {
+				(el as unknown as { placeholder: string }).placeholder = placeholder;
+			}
+		}, [placeholder, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && defaultValue !== undefined) {
+				(el as unknown as { defaultValue: string }).defaultValue = defaultValue;
+			}
+		}, [defaultValue, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

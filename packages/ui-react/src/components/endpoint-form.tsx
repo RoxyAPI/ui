@@ -9,6 +9,20 @@ type ElementAttrs = Omit<
 export interface RoxyEndpointFormProps extends ElementAttrs {
 	className?: string;
 	style?: React.CSSProperties;
+	/** Endpoint path the form is built for and submits to, e.g. "astrology/natal-chart". The fields are derived from the spec for that operation. */
+	endpoint?: string;
+	/** HTTP method of the operation. Defaults to POST. */
+	method?: 'GET' | 'POST';
+	/** Explicit OpenAPI spec URL to build the form from. Empty resolves a version-pinned slice first, then the production spec. */
+	specUrl?: string;
+	/** Override the submit-button label. Empty derives an outcome-first label from the endpoint. */
+	submitLabel?: string;
+	/** Browser-safe publishable key (pk_) forwarded to the slotted city search so a natal or synastry form can geocode. */
+	publishableKey?: string;
+	/** Where the slotted city search sends its request, absolute or page-relative. Set it when the page routes its API traffic through its own server. Unset, the search keeps its own default. */
+	locationUrl?: string;
+	/** Prefill values keyed by field name, nested per group. Used to restore a previous submission. Property only, never an attribute. */
+	initialValues?: Record<string, unknown>;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-submit`. */
 	onRoxySubmit?: (event: CustomEvent<{ endpoint: string; values: Record<string, unknown>; queryKeys: string[]; sticky: boolean }>) => void;
 	/** Fires when the underlying <roxy-endpoint-form> dispatches `roxy-validation-error`. */
@@ -18,7 +32,7 @@ export interface RoxyEndpointFormProps extends ElementAttrs {
 }
 
 export const RoxyEndpointForm = React.forwardRef<HTMLElement | null, RoxyEndpointFormProps>(
-	function RoxyEndpointForm({ className, style, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
+	function RoxyEndpointForm({ className, style, endpoint, method, specUrl, submitLabel, publishableKey, locationUrl, initialValues, onRoxySubmit, onRoxyValidationError, onRoxySpecError, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -42,6 +56,55 @@ export const RoxyEndpointForm = React.forwardRef<HTMLElement | null, RoxyEndpoin
 				active = false;
 			};
 		}, []);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && endpoint !== undefined) {
+				(el as unknown as { endpoint: string }).endpoint = endpoint;
+			}
+		}, [endpoint, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && method !== undefined) {
+				(el as unknown as { method: 'GET' | 'POST' }).method = method;
+			}
+		}, [method, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && specUrl !== undefined) {
+				(el as unknown as { specUrl: string }).specUrl = specUrl;
+			}
+		}, [specUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && submitLabel !== undefined) {
+				(el as unknown as { submitLabel: string }).submitLabel = submitLabel;
+			}
+		}, [submitLabel, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && publishableKey !== undefined) {
+				(el as unknown as { publishableKey: string }).publishableKey = publishableKey;
+			}
+		}, [publishableKey, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && locationUrl !== undefined) {
+				(el as unknown as { locationUrl: string }).locationUrl = locationUrl;
+			}
+		}, [locationUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && initialValues !== undefined) {
+				(el as unknown as { initialValues: Record<string, unknown> }).initialValues = initialValues;
+			}
+		}, [initialValues, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

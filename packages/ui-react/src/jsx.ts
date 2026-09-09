@@ -346,19 +346,29 @@ declare module 'react' {
 			'roxy-reference-card': RoxyElement<RoxyBaseAttributes>;
 			/** `<RoxyEndpointForm>` as a tag. */
 			'roxy-endpoint-form': RoxyElement<{
+				/** Endpoint path the form is built for and submits to, e.g. "astrology/natal-chart". The fields are derived from the spec for that operation. */
 				'data-endpoint'?: string;
-				method?: string;
+				/** HTTP method of the operation. Defaults to POST. */
+				method?: 'GET' | 'POST';
+				/** Explicit OpenAPI spec URL to build the form from. Empty resolves a version-pinned slice first, then the production spec. */
 				'spec-url'?: string;
+				/** Override the submit-button label. Empty derives an outcome-first label from the endpoint. */
 				'submit-label'?: string;
+				/** Browser-safe publishable key (pk_) forwarded to the slotted city search so a natal or synastry form can geocode. */
 				'publishable-key'?: string;
+				/** Where the slotted city search sends its request, absolute or page-relative. Set it when the page routes its API traffic through its own server. Unset, the search keeps its own default. */
 				'location-url'?: string;
 			}>;
 			/** `<RoxyLocationSearch>` as a tag. */
 			'roxy-location-search': RoxyElement<{
 				'api-key'?: string;
+				/** Browser-safe publishable key (pk_) the search sends with its request. A secret key is refused client-side and never sent. Leave unset when `endpoint` points at your own server route. */
 				'publishable-key'?: string;
+				/** Where the search sends its GET while the visitor types. Defaults to the RoxyAPI location search; set an absolute URL or a page-relative path such as "/api/roxy/location" to route it through your own server and keep the key there. */
 				endpoint?: string;
+				/** Input placeholder. The default renders in the page language; a caller-supplied one is printed as given. */
 				placeholder?: string;
+				/** Initial text in the input, for restoring a previous search. */
 				'default-value'?: string;
 			}>;
 			/** `<RoxyData>` as a tag. */

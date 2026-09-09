@@ -245,6 +245,75 @@ export const BASE_PROPS: ConfigPropDef[] = [
 ];
 
 export const CONFIG_PROPS: Record<string, ConfigPropDef[]> = {
+	// The two helper elements are plain LitElements (see NO_DATA_SLUGS), so nothing from BASE_PROPS reaches them: every attribute they read is declared here or it ships untyped in both wrapper packages.
+	'location-search': [
+		{
+			prop: 'publishableKey',
+			type: 'string',
+			comment:
+				'Browser-safe publishable key (pk_) the search sends with its request. A secret key is refused client-side and never sent. Leave unset when `endpoint` points at your own server route.',
+		},
+		{
+			prop: 'endpoint',
+			type: 'string',
+			comment:
+				'Where the search sends its GET while the visitor types. Defaults to the RoxyAPI location search; set an absolute URL or a page-relative path such as "/api/roxy/location" to route it through your own server and keep the key there.',
+		},
+		{
+			prop: 'placeholder',
+			type: 'string',
+			comment:
+				'Input placeholder. The default renders in the page language; a caller-supplied one is printed as given.',
+		},
+		{
+			prop: 'defaultValue',
+			type: 'string',
+			comment: 'Initial text in the input, for restoring a previous search.',
+		},
+	],
+	'endpoint-form': [
+		{
+			prop: 'endpoint',
+			type: 'string',
+			comment:
+				'Endpoint path the form is built for and submits to, e.g. "astrology/natal-chart". The fields are derived from the spec for that operation.',
+		},
+		{
+			prop: 'method',
+			type: "'GET' | 'POST'",
+			comment: 'HTTP method of the operation. Defaults to POST.',
+		},
+		{
+			prop: 'specUrl',
+			type: 'string',
+			comment:
+				'Explicit OpenAPI spec URL to build the form from. Empty resolves a version-pinned slice first, then the production spec.',
+		},
+		{
+			prop: 'submitLabel',
+			type: 'string',
+			comment:
+				'Override the submit-button label. Empty derives an outcome-first label from the endpoint.',
+		},
+		{
+			prop: 'publishableKey',
+			type: 'string',
+			comment:
+				'Browser-safe publishable key (pk_) forwarded to the slotted city search so a natal or synastry form can geocode.',
+		},
+		{
+			prop: 'locationUrl',
+			type: 'string',
+			comment:
+				'Where the slotted city search sends its request, absolute or page-relative. Set it when the page routes its API traffic through its own server. Unset, the search keeps its own default.',
+		},
+		{
+			prop: 'initialValues',
+			type: 'Record<string, unknown>',
+			comment:
+				'Prefill values keyed by field name, nested per group. Used to restore a previous submission. Property only, never an attribute.',
+		},
+	],
 	'positions-table': [
 		{
 			prop: 'heading',
