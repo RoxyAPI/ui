@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 18 domains (Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 258+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 258+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable and stable, so it is the one safe to switch on programmatically.\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`, `X-RateLimit-Reset` (Unix timestamp, seconds). Quotas reset on the 1st of every calendar month at 12:00 AM UTC, not on your renewal date.\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 per month for 50K requests, up to 3M requests, with custom volume above that.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart): first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs): guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp): connect AI agents\n- [Open source templates](https://roxyapi.com/starters): clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq): common questions\n- [Contact](https://roxyapi.com/contact): support and API key recovery\n",
+    "description": "# RoxyAPI: AI-Native Insight Infrastructure\n\n> **Base URL:** `https://roxyapi.com/api/v2`\n> All endpoint paths below are relative to this base URL.\n\nThe only multi-domain spiritual intelligence API. 18 domains (Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 258+ endpoints, one API key, instant activation. Remote MCP server per domain plus AGENTS.md for AI coding agents.\n\n## Who uses RoxyAPI\n\n- **Developers** building astrology apps, tarot platforms, numerology calculators, or dream journals\n- **AI agent builders** connecting Claude, GPT, or Gemini to real calculation engines via MCP\n- **Vibe coders** shipping insight apps with Cursor, Bolt, or Replit using zero domain knowledge\n- **Founders and brands** launching branded spiritual experiences for their audience\n\n## Quick start (60 seconds)\n\n**1. Get your API key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). Instant delivery, no account required.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/tarot/draw -X POST -H \"Content-Type: application/json\" -d '{\"count\": 3}'\n```\n\n**3. Monitor usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agent integration (Remote MCP)\n\nRoxyAPI ships a Remote MCP server per product over Streamable HTTP, with no local setup and no Docker. Your AI agent auto-discovers all 258+ endpoints as callable tools with zero configuration:\n- **Claude Desktop, Cursor, Windsurf**: Add MCP server URL in settings\n- **OpenAI Agents, Gemini ADK**: Connect via Streamable HTTP transport\n- **Custom agents**: Use the MCP Python/TypeScript SDK\n\nMCP endpoints: `https://roxyapi.com/mcp/{domain}` (e.g., `/mcp/astrology`, `/mcp/tarot`)\n\nSetup guide: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp)\n\n## Authentication\n\nAll endpoints require an API key via header or query param:\n- **Header (recommended):** `X-API-Key: YOUR_KEY`\n- **Query param (testing):** `?api_key=YOUR_KEY`\n\n## Response format\n\nClean JSON, no wrapper objects. Errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`. The `error` field is human-readable (may change wording). The `code` field is machine-readable and stable, so it is the one safe to switch on programmatically.\n\nRate limit headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used`, `X-RateLimit-Reset` (Unix timestamp, seconds). Quotas reset on the 1st of every calendar month at 12:00 AM UTC, not on your renewal date.\n\n## Errors\n\nAll errors return `{ \"error\": \"message\", \"code\": \"error_code\" }`:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | `validation_error` | Missing or invalid parameters. Response includes `issues[]` with per-field `path`, `message`, `code`, `expected`, `minimum`, `maximum`, `format`, `pattern`. |\n| 401 | `api_key_required` | No API key provided |\n| 401 | `invalid_api_key` | Key format invalid or tampered |\n| 401 | `subscription_not_found` | Key references non-existent subscription |\n| 401 | `subscription_inactive` | Subscription cancelled, expired, or suspended |\n| 404 | `not_found` | Resource not found. Response may include a ranked `suggestions[]` array (each with `endpoint`, `hint`, and a `docs` deep link) for typo recovery. |\n| 405 | `method_not_allowed` | Path exists for a different HTTP method. Response includes `allow[]` and the `Allow` header lists valid methods. |\n| 429 | `rate_limit_exceeded` | Monthly quota reached |\n| 500 | `internal_error` | Server error |\n\n## Pricing\n\nFlat per-request pricing. Every call counts the same, whether a planet position or a full birth chart with aspects. No credit systems, no variable costs. Plans from $39 per month for 50K requests, up to 3M requests, with custom volume above that.\n\nSee [roxyapi.com/pricing](https://roxyapi.com/pricing)\n\n## Resources\n\n- [Quickstart guide](https://roxyapi.com/docs/quickstart): first API call in 60 seconds\n- [Documentation](https://roxyapi.com/docs): guides, tutorials, domain reference\n- [MCP setup](https://roxyapi.com/docs/mcp): connect AI agents\n- [Open source templates](https://roxyapi.com/templates): clone and deploy in 30 minutes\n- [FAQ](https://roxyapi.com/faq): common questions\n- [Contact](https://roxyapi.com/contact): support and API key recovery\n",
     "contact": {
       "name": "RoxyAPI Support",
       "url": "https://roxyapi.com/contact"
@@ -9912,7 +9912,7 @@
                         "Mars",
                         "Jupiter"
                       ],
-                      "description": "All significators in order of strength"
+                      "description": "The four levels flattened, strongest first, repeats included: a planet that reaches the house at two levels appears once per level, so the length counts level hits. The levels beside it are the per-level view."
                     }
                   },
                   "required": [
@@ -9970,7 +9970,7 @@
                         2,
                         11
                       ],
-                      "description": "All houses signified in order of strength"
+                      "description": "The four levels flattened, strongest first, repeats included: a house appears once per level the planet reaches it at, so the length counts level hits. The levels beside it are the per-level view."
                     }
                   },
                   "required": [
@@ -10779,7 +10779,7 @@
           "totalChanges": {
             "type": "number",
             "example": 42,
-            "description": "Total Krishnamurti sublord transitions detected. Moon crosses ~14 sublords per day due to its fast motion."
+            "description": "Total Krishnamurti sublord transitions detected. The Moon, the fastest body, crosses about 9 sublords a day."
           },
           "changes": {
             "type": "array",
@@ -10794,7 +10794,7 @@
                 "time": {
                   "type": "string",
                   "example": "13:53",
-                  "description": "Precise sublord transition time (HH:MM, 24-hour). Refined via binary search to ~1 minute accuracy. Adjusted to requested timezone."
+                  "description": "Sublord transition time (HH:MM, 24-hour): the instant is found to the second and shown to the minute it falls in. Adjusted to requested timezone."
                 },
                 "datetime": {
                   "type": "string",
@@ -10860,6 +10860,15 @@
         "properties": {
           "planet": {
             "type": "string",
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn"
+            ],
             "example": "Moon",
             "description": "Planet to track (case-insensitive). Valid values: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn"
           },
@@ -10867,13 +10876,13 @@
             "type": "string",
             "format": "date",
             "example": "2025-01-01",
-            "description": "Start date for sublord change search (YYYY-MM-DD format)"
+            "description": "First day of the search (YYYY-MM-DD), a calendar day in `timezone`."
           },
           "endDate": {
             "type": "string",
             "format": "date",
             "example": "2025-01-31",
-            "description": "End date for sublord change search (YYYY-MM-DD format)"
+            "description": "Last day of the search, inclusive (YYYY-MM-DD), a calendar day in `timezone`. Not before startDate, at most 365 days after it."
           },
           "timezone": {
             "anyOf": [
@@ -10887,7 +10896,7 @@
               }
             ],
             "default": 0,
-            "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC. IANA resolved to the DST-correct offset for startDate. Output times are converted to this timezone. Defaults to 0 (UTC).",
+            "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\"), a fixed offset like \"+05:30\", OR decimal hours from UTC. One offset is taken from startDate (DST-correct for that date) and used for the whole range, so a window crossing a daylight-saving change is read on the earlier offset throughout; send a fixed offset if you need that explicit. The two dates are read as calendar days in this timezone and output times are converted to it, so one date with 5.5 is that whole Indian day. Defaults to 0 (UTC).",
             "example": 5.5
           },
           "ayanamsa": {
@@ -10955,7 +10964,7 @@
                 "time": {
                   "type": "string",
                   "example": "08:00",
-                  "description": "Precise ingress time (HH:MM, 24-hour). Calculated via binary search refinement to ~1 minute accuracy. Adjusted to requested timezone."
+                  "description": "Ingress time (HH:MM, 24-hour): the instant is found to the second and shown to the minute it falls in. Adjusted to requested timezone."
                 },
                 "datetime": {
                   "type": "string",
@@ -11009,6 +11018,15 @@
         "properties": {
           "planet": {
             "type": "string",
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn"
+            ],
             "example": "Sun",
             "description": "Planet to track (case-insensitive). Valid values: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn"
           },
@@ -11016,13 +11034,13 @@
             "type": "string",
             "format": "date",
             "example": "2025-01-01",
-            "description": "Start date for sign ingress search (YYYY-MM-DD format)"
+            "description": "First day of the search (YYYY-MM-DD), a calendar day in `timezone`."
           },
           "endDate": {
             "type": "string",
             "format": "date",
             "example": "2025-12-31",
-            "description": "End date for sign ingress search (YYYY-MM-DD format)"
+            "description": "Last day of the search, inclusive (YYYY-MM-DD), a calendar day in `timezone`. Not before startDate, at most 365 days after it."
           },
           "timezone": {
             "anyOf": [
@@ -11036,7 +11054,7 @@
               }
             ],
             "default": 0,
-            "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC. IANA resolved to the DST-correct offset for startDate. Output times are converted to this timezone. Defaults to 0 (UTC).",
+            "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\"), a fixed offset like \"+05:30\", OR decimal hours from UTC. One offset is taken from startDate (DST-correct for that date) and used for the whole range, so a window crossing a daylight-saving change is read on the earlier offset throughout; send a fixed offset if you need that explicit. The two dates are read as calendar days in this timezone and output times are converted to it, so one date with 5.5 is that whole Indian day. Defaults to 0 (UTC).",
             "example": 5.5
           },
           "ayanamsa": {
@@ -11670,7 +11688,7 @@
                         "Mars",
                         "Jupiter"
                       ],
-                      "description": "All significators in order of strength"
+                      "description": "The four levels flattened, strongest first, repeats included: a planet that reaches the house at two levels appears once per level, so the length counts level hits. The levels beside it are the per-level view."
                     }
                   },
                   "required": [
@@ -11728,7 +11746,7 @@
                         2,
                         11
                       ],
-                      "description": "All houses signified in order of strength"
+                      "description": "The four levels flattened, strongest first, repeats included: a house appears once per level the planet reaches it at, so the length counts level hits. The levels beside it are the per-level view."
                     }
                   },
                   "required": [
@@ -45084,7 +45102,7 @@
                         "nakshatra",
                         "moonSign"
                       ],
-                      "description": "Panchang element transition times. exact timing of when each element (tithi, yoga, karana, nakshatra, Moon sign) changes. Calculated using binary search for ~1 minute precision. Essential for precise muhurta determination and panchang calendars."
+                      "description": "Panchang element transition times: when each element (tithi, yoga, karana, nakshatra, Moon sign) changes, found to the second. Essential for precise muhurta determination and panchang calendars."
                     }
                   },
                   "required": [
@@ -47701,32 +47719,6 @@
               }
             }
           },
-          "404": {
-            "description": "Yoga not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
           "405": {
             "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
             "headers": {
@@ -49881,7 +49873,7 @@
           "Vedic Astrology"
         ],
         "summary": "Find KP sublord changes",
-        "description": "Track when planets cross KP sublord boundaries (1-249 divisions) for precise Krishnamurti Paddhati event timing. Returns exact timestamps when a planet transitions between sublords, essential for prashna kundali analysis and dasha predictions. Use this to find favorable windows when benefic sublords are active. Supports Sun, Moon, Mars, Mercury, Jupiter, Venus, and Saturn tracking over any date range.",
+        "description": "Track when planets cross KP sublord boundaries (1-249 divisions) for precise Krishnamurti Paddhati event timing. Returns exact timestamps when a planet transitions between sublords, essential for prashna kundali analysis and dasha predictions. Use this to find favorable windows when benefic sublords are active. Supports Sun, Moon, Mars, Mercury, Jupiter, Venus, and Saturn tracking over any window up to 365 days.",
         "security": [
           {
             "apiKey": []
@@ -54796,32 +54788,6 @@
               }
             }
           },
-          "404": {
-            "description": "Rashi not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
           "405": {
             "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
             "headers": {
@@ -55368,32 +55334,6 @@
                     "code": {
                       "type": "string",
                       "description": "Machine-readable error code. Stable identifier."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Nakshatra not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
                     }
                   },
                   "required": [
@@ -56786,32 +56726,6 @@
                     "code": {
                       "type": "string",
                       "description": "Machine-readable error code. Stable identifier."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No avastha state matches that slug.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
                     }
                   },
                   "required": [
@@ -90628,7 +90542,7 @@
                         "name": {
                           "type": "string",
                           "example": "Jayanta",
-                          "description": "Display name of the devata, with the diacritics the transliteration carries."
+                          "description": "Display name of the devata. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi. Compare on id, never on this."
                         },
                         "padaCount": {
                           "type": "number",
@@ -90655,7 +90569,7 @@
                     },
                     "reading": {
                       "type": "string",
-                      "example": "The main entrance falls on pada 3 of the East side, counted from the Northeast corner. That pada is the square of Jayanta. Great wealth.",
+                      "example": "The main entrance falls on pada 3 of the East side, counted from the Northeast corner. That pada is the square of Jayanta. The effect the verse gives for this pada: Great wealth.",
                       "description": "The verdict as a sentence, for a report or a chat answer. Composed from the pada, its side and its effect, and translated in place when lang is set."
                     },
                     "recommendedPadas": {
@@ -91139,7 +91053,7 @@
                           "devataName": {
                             "type": "string",
                             "example": "Brahmā",
-                            "description": "Display name of that devata, with the diacritics the transliteration carries. Present only on the 81 pada grid."
+                            "description": "Display name of that devata. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi. Present only on the 81 pada grid."
                           },
                           "class": {
                             "type": "string",
@@ -93699,7 +93613,7 @@
                           "remedy": {
                             "type": "string",
                             "example": "Move the cooking hearth to the south-east quarter, which is where the chapter puts the kitchen. Where the room cannot move, shift the hob itself to the south-east corner of the room and cook facing east.",
-                            "description": "What to do when the room is not where it belongs. Original prose, translated in place when lang is set."
+                            "description": "What to do when the room is not where it belongs. Present when the verdict is acceptable or avoid, and absent on an ideal placement, which has nothing to fix. Original prose, translated in place when lang is set."
                           },
                           "source": {
                             "type": "object",
@@ -93753,7 +93667,6 @@
                           "idealDirections",
                           "avoidDirections",
                           "reading",
-                          "remedy",
                           "source"
                         ]
                       },
@@ -94852,8 +94765,8 @@
                           },
                           "dikpala": {
                             "type": "string",
-                            "example": "Isana",
-                            "description": "The lord of this quarter of the horizon, per Brihat Samhita 54.3. Always English transliteration, safe to compare against. These are NOT the 45 mandala devatas and the two sets must not be merged: Agni is the north-east mandala square and the south-east dikpala."
+                            "example": "Īśāna",
+                            "description": "The lord of this quarter of the horizon, per Brihat Samhita 54.3. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi. Compare on id, never on this. These are NOT the 45 mandala devatas and the two sets must not be merged: Agni is the north-east mandala square and the south-east dikpala."
                           },
                           "kind": {
                             "type": "string",
@@ -94897,7 +94810,7 @@
                                 "name": {
                                   "type": "string",
                                   "example": "Agni",
-                                  "description": "Display name of the devata, with the diacritics the transliteration carries."
+                                  "description": "Display name of the devata. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi."
                                 }
                               },
                               "required": [
@@ -95288,8 +95201,8 @@
                     },
                     "dikpala": {
                       "type": "string",
-                      "example": "Isana",
-                      "description": "The lord of this quarter of the horizon, per Brihat Samhita 54.3. Always English transliteration, safe to compare against. These are NOT the 45 mandala devatas and the two sets must not be merged: Agni is the north-east mandala square and the south-east dikpala."
+                      "example": "Īśāna",
+                      "description": "The lord of this quarter of the horizon, per Brihat Samhita 54.3. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi. Compare on id, never on this. These are NOT the 45 mandala devatas and the two sets must not be merged: Agni is the north-east mandala square and the south-east dikpala."
                     },
                     "kind": {
                       "type": "string",
@@ -95333,7 +95246,7 @@
                           "name": {
                             "type": "string",
                             "example": "Agni",
-                            "description": "Display name of the devata, with the diacritics the transliteration carries."
+                            "description": "Display name of the devata. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi."
                           }
                         },
                         "required": [
@@ -95533,32 +95446,6 @@
                     "code": {
                       "type": "string",
                       "description": "Machine-readable error code. Stable identifier."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No direction with that id",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
                     }
                   },
                   "required": [
@@ -95770,7 +95657,7 @@
                           "name": {
                             "type": "string",
                             "example": "Jayanta",
-                            "description": "Display name of the devata, with the diacritics the transliteration carries. A Sanskrit proper noun, so it stays as it is in every language."
+                            "description": "Display name of the devata. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi. Compare on id, never on this."
                           },
                           "class": {
                             "type": "string",
@@ -96257,7 +96144,7 @@
                     "name": {
                       "type": "string",
                       "example": "Jayanta",
-                      "description": "Display name of the devata, with the diacritics the transliteration carries. A Sanskrit proper noun, so it stays as it is in every language."
+                      "description": "Display name of the devata. A Sanskrit proper noun: romanised with the diacritics the transliteration carries in every language, and written in Devanagari as the Sanskrit text prints it when lang is hi. Compare on id, never on this."
                     },
                     "class": {
                       "type": "string",
@@ -96515,32 +96402,6 @@
                     "code": {
                       "type": "string",
                       "description": "Machine-readable error code. Stable identifier."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No devata with that id",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
                     }
                   },
                   "required": [
@@ -110688,32 +110549,6 @@
               }
             }
           },
-          "404": {
-            "description": "No sephirah carries that identifier.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
           "405": {
             "description": "Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.",
             "headers": {
@@ -111603,32 +111438,6 @@
                     "code": {
                       "type": "string",
                       "description": "Machine-readable error code. Stable identifier."
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No letter carries that identifier.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Resource not found",
-                      "description": "Human-readable error message. The wording may change, so do not parse it programmatically. Switch on the stable code instead."
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "not_found",
-                      "description": "Machine-readable error code. Stable identifier for programmatic error handling."
                     }
                   },
                   "required": [
