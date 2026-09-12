@@ -4341,7 +4341,7 @@
           },
           "summary": {
             "type": "string",
-            "example": "Solar arc directions move every point in your chart forward by the same arc the Sun has travelled by progression, about one degree per year.",
+            "example": "Solar arc directions move every point in your chart forward by the same arc the Sun has traveled by progression, about one degree per year.",
             "description": "Short overview of the directed chart for previews and report intros. Localized to the requested language."
           },
           "directed": {
@@ -20736,7 +20736,7 @@
                           "nature": {
                             "type": "string",
                             "example": "challenging",
-                            "description": "Whether the aspect is harmonious, challenging or neutral. Canonical English, so a calendar can colour or filter on it directly. natureLocalized carries the reader-facing form."
+                            "description": "Whether the aspect is harmonious, challenging or neutral. Canonical English, so a calendar can color or filter on it directly. natureLocalized carries the reader-facing form."
                           },
                           "natureLocalized": {
                             "type": "string",
@@ -27614,38 +27614,38 @@
                     },
                     "overview": {
                       "type": "string",
-                      "example": "Saturn teaches Aries through focused effort today. What feels heavy now becomes your greatest strength later. Trust the process of mastery and keep showing up.",
-                      "description": "General daily overview based on Moon house activation and planetary transits. Unique per sign based on whole-sign house positions."
+                      "example": "Mercury draws a trine to Jupiter today, drawing the running commentary into your twelfth house, where rest, retreat and the unfinished business of the mind take their turn. Held against the fact that the private half of a matter sits, out of view and mostly unspoken, the working mind looks smaller and more useful.",
+                      "description": "The single most relevant event of the period, whichever life area it touches, read into the whole-sign houses of this sign. The same event that leads column, at lede length rather than developed into a full movement, and checkable against the events array. Typically 30 to 60 words. Join it with love, career, health and finance for a general reading built from the six sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "love": {
                       "type": "string",
-                      "example": "Venus in your sixth house shows love through acts of service. Small gestures of care mean more than grand declarations. Health-focused activities with a partner strengthen your bond.",
-                      "description": "Love and relationship forecast. Based on Venus house position relative to this sign, providing unique guidance per sign."
+                      "example": "The Moon bargains from Libra, in the seventh house you keep partnerships and relationships in, where another person is party to the outcome and has to be counted, and the ask is the ground to feel solid before anything is risked on it. Treat the unremarkable part as the part that matters, because most of what holds two people together is unremarkable.",
+                      "description": "Love and relationship forecast, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to romance and partnership, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries romance and partnership, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 50 to 90 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "career": {
                       "type": "string",
-                      "example": "Take responsibility seriously at work. Hard work brings lasting results, even when progress feels invisible. Your reliability earns respect.",
-                      "description": "Career and professional outlook. Based on Mars house position relative to this sign, with Saturn and Jupiter influences."
+                      "example": "The Sun guards Aries, in your first house, where a person is read off how they carry themselves rather than off what they claim, and it wants one thing carried through to the end in the open. Whatever else is quiet, Mars still holds Pisces and still reaches your twelfth house, over effort, appetite, conflict, and whatever has to be pushed. Prove the claim in the smallest way that would convince somebody skeptical.",
+                      "description": "Career and professional outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to career, work and reputation, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries career, work and reputation, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 50 to 90 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "health": {
                       "type": "string",
-                      "example": "The Sun in your fifth house connects vitality with joy and self-expression. Physical play, creative movement, and laughter are the best medicine today.",
-                      "description": "Health, energy, and wellness guidance for the day."
+                      "example": "The Sun forms a semi-square to Uranus today, sending the part that wants to be seen through your first house of identity and self-expression, where the first impression gets made before anything has been explained. The will is set against the break in the pattern here. Going without a plain account of what is actually wanted costs more in your first house than it saves anywhere else.",
+                      "description": "Health, energy, and wellness guidance, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to health, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries health, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 50 to 90 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "finance": {
                       "type": "string",
-                      "example": "Jupiter in your fifth house brings financial luck through creative ventures and speculative risks. Hobbies could become income sources.",
-                      "description": "Financial outlook and money-related guidance."
+                      "example": "The Moon enters Scorpio today, played out in your eighth house, the one for transformation and shared resources. The first reaction lands in a place where joint holdings get settled, and what has run out gets ended properly. There is more, and it is that Venus and Pluto come to a square today, in your second house, the one for finances and personal values, where a price gets put on things that were never priced before. The useful move is toward the uncomfortable figure named before anyone acts on it.",
+                      "description": "Financial outlook and money-related guidance, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to finance, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries finance, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 50 to 90 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "advice": {
                       "type": "string",
-                      "example": "Mercury in your fourth house turns attention to family conversations and household planning. Important discussions about home life go well.",
-                      "description": "Actionable daily advice based on the dominant transit energy."
+                      "example": "Mercury trines Jupiter today, at the level of the twelfth house you keep solitude and inner reflection in. The quiet hour taken deliberately rather than stolen fills the room here, and not much beyond it.",
+                      "description": "The single actionable takeaway from the leading event of the period, read into the whole-sign houses of this sign and checkable against the events array. Drawn from the same event as overview, kept to a short, actionable pair of sentences rather than grown to match the other sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "column": {
                       "type": "string",
-                      "example": "Mercury trines Jupiter today. Your twelfth house of solitude and inner reflection takes the weight of it. The working mind is set against the impulse to expand here. A talent that costs nothing tends to get spent on nothing in particular. Alongside that, the Sun forms a semi-square to Uranus today, sitting in your first house. Between the will and the break in the pattern, the difference is the whole story. Acting early is what this angle rewards, since the cost of waiting compounds quietly. Start with a plain account of what is actually wanted. Your first house of identity and self-expression is held by Neptune in Aries, and the first impression gets made before anything has been explained. If only one thing gets done, make it the quiet hour taken deliberately rather than stolen.",
-                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 120 to 180 words. The six section fields are the same reading split by topic, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
+                      "example": "Mercury trines Jupiter today, with the fact to start from sitting in the twelfth house you keep solitude and inner reflection in. Between the working mind and the impulse to expand, the difference is the whole story. The question being asked does its best work where rest, retreat and the unfinished business of the mind take their turn. There is more, and it is that the Sun catches Uranus at a semi-square today, arriving in your first house of identity and self-expression. Put the part that wants to be seen beside the interruption and neither reads the same afterwards. Since a person is read off how they carry themselves rather than off what they claim, the center of the matter gets tested rather than admired. Start with one honest sentence about where things stand. Get to the quiet hour taken deliberately rather than stolen, and the rest of your twelfth house follows.",
+                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 120 to 180 words. The six section fields read the same ranked events filtered to their own life area, each composed as a column of its own rather than an excerpt of this one, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
                     },
                     "events": {
                       "type": "array",
@@ -27724,6 +27724,16 @@
                           "through": "2026-04-11T02:28:12Z"
                         },
                         {
+                          "type": "sign-ingress",
+                          "at": "2026-04-03T12:10:48Z",
+                          "bodies": [
+                            "Moon"
+                          ],
+                          "sign": "scorpio",
+                          "house": 8,
+                          "through": "2026-04-05T23:31:27Z"
+                        },
+                        {
                           "type": "aspect",
                           "at": "2026-04-03T15:18:11Z",
                           "bodies": [
@@ -27733,6 +27743,17 @@
                           "aspect": "semi-square",
                           "house": 1,
                           "through": "2026-04-05T18:24:14Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-03T22:36:42Z",
+                          "bodies": [
+                            "Venus",
+                            "Pluto"
+                          ],
+                          "aspect": "square",
+                          "house": 2,
+                          "through": "2026-04-09T17:00:28Z"
                         }
                       ],
                       "description": "The dated astronomical events this reading is built on, earliest first. Every field in every row can be checked against an independent authority, so a column can be fact-checked before it is published. Empty on a period in which nothing exact happens, where the reading falls back to the standing positions instead."
@@ -27765,10 +27786,10 @@
                         "type": "string"
                       },
                       "example": [
-                        "Moon in Libra (7th house of partnerships and relationships)",
-                        "Venus in Taurus (2nd house of finances and personal values)"
+                        "Sun in Virgo (your sixth house of health and daily routines)",
+                        "Moon in Libra (your seventh house of partnerships and relationships)"
                       ],
-                      "description": "Active planetary transits affecting this sign today, with house activations. Each transit shows the planet, its current sign, and which house it activates for the queried sign."
+                      "description": "Active planetary transits affecting this sign today, with house activations. Each transit shows the planet, its current sign, and which house it activates for the queried sign. The sign and the house phrase translate with the lang parameter; the planet name stays canonical English so a caller can match on it whatever the language."
                     },
                     "moonSign": {
                       "type": "string",
@@ -28126,38 +28147,38 @@
                     },
                     "overview": {
                       "type": "string",
-                      "example": "This week features Jupiter in Leo, influencing your broader life direction. Saturn presence in Aries demands maturity and hard work, but builds lasting foundations.",
-                      "description": "Weekly overview highlighting the dominant planetary transits through the sign."
+                      "example": "The Full Moon falls in Libra on Thursday, tipping the instinct toward your seventh house, where the terms of a shared thing get set, with somebody else in the room. Given that another person is party to the outcome and has to be counted, the need underneath the argument is the wrong thing to lead with.",
+                      "description": "The single most relevant event of the period, whichever life area it touches, read into the whole-sign houses of this sign. The same event that leads column, at lede length rather than developed into a full movement, and checkable against the events array. Typically 40 to 80 words. Join it with love, career, health and finance for a general reading built from the six sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "love": {
                       "type": "string",
-                      "example": "Venus in your sixth house shows love through acts of service. Small gestures of care mean more than grand declarations. Health-focused activities with a partner strengthen your bond.",
-                      "description": "Weekly love and relationship forecast."
+                      "example": "Your seventh house, the one for partnerships and relationships, takes this one, since the Full Moon falls in Libra on Thursday. The instinct lands in a place where another person is party to the outcome and has to be counted. Venus keeps to Aries, and your first house is where that keeps showing up. What it covers there is affection, taste, money spent on pleasure, and the terms people agree to. Nothing else in your seventh house works without a commitment narrowed to what both people can actually keep.",
+                      "description": "Weekly love and relationship forecast, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to romance and partnership, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries romance and partnership, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 80 to 120 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "career": {
                       "type": "string",
-                      "example": "Focus on long-term goals and responsibilities. Hard work pays off, though progress feels slow.",
-                      "description": "Weekly career and professional outlook."
+                      "example": "Mercury lays claim to Pisces, reaching your twelfth house, where what has been carried quietly asks for somewhere to be put down, and its material is language, timing, and the distance between saying and meaning. Saturn shapes this from Aries by second nature, reaching your first house and wanting the work to stand up without being propped. Among the things that simply are, the Sun in Aries works inside your first house, and what it puts there is confidence, visibility, and whatever a name is staked on. Fix the process that only breaks under load, while there is no load.",
+                      "description": "Weekly career and professional outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to career, work and reputation, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries career, work and reputation, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 80 to 120 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "health": {
                       "type": "string",
-                      "example": "The Sun in your fifth house connects vitality with joy and self-expression. Physical play, creative movement, and laughter are the best medicine today.",
-                      "description": "Weekly health, energy, and wellness guidance."
+                      "example": "Look to your seventh house, the one for partnerships and relationships, where the terms of a shared thing get set, with somebody else in the room. The Full Moon falls in Libra on Thursday. The first reaction lands in a place where agreements are made face to face and break the same way. Further along, the Sun runs into a square with Jupiter on Sunday, landing in your first house, the one for identity and self-expression, where the body and the manner arrive together and get taken as one thing, and the will is what carries it. Start with the other side of it described as they would describe it.",
+                      "description": "Weekly health, energy, and wellness guidance, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to health, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries health, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 80 to 120 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "finance": {
                       "type": "string",
-                      "example": "Jupiter in your fifth house brings financial luck through creative ventures and speculative risks. Hobbies could become income sources.",
-                      "description": "Weekly financial outlook."
+                      "example": "Venus enters Taurus on Monday, bringing the pull toward what is pleasant into your second house, where what comes in gets weighed against what it was traded for. The preference nobody argues with is the pressure here, and the ground it presses on is a place where a price gets put on things that were never priced before. Your second house carries this one, because Venus runs into a square with Pluto on Friday. Neither the sense of what is worth having nor the pressure underneath gives way, so the pressure has to go somewhere. Going without a decision about worth made while nothing is urgent costs more in your second house than it saves anywhere else.",
+                      "description": "Weekly financial outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to finance, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries finance, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 80 to 120 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "advice": {
                       "type": "string",
-                      "example": "Mercury in your fourth house turns attention to family conversations and household planning. Important discussions about home life go well.",
-                      "description": "Actionable weekly guidance based on transit patterns."
+                      "example": "The Full Moon falls in Libra on Thursday, at the level of your seventh house, the one for partnerships and relationships. The useful move is toward a commitment narrowed to what both people can actually keep.",
+                      "description": "The single actionable takeaway from the leading event of the period, read into the whole-sign houses of this sign and checkable against the events array. Drawn from the same event as overview, kept to a short, actionable pair of sentences rather than grown to match the other sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "column": {
                       "type": "string",
-                      "example": "Your second house carries the main event here, and Venus forms a semi-sextile to Neptune on Wednesday. Between the sense of what is worth having and the pull toward what is not literal, the difference is the whole story. Small corrections are all this angle asks for, and small corrections are all it takes. There is more, and it is that the Full Moon falls in Libra on Thursday. Read it in your seventh house of partnerships and relationships, where the terms of a shared thing get set, with somebody else in the room. Whatever was set going earlier is fully lit at this point, including the parts nobody planned. The useful move is toward the terms said out loud before anyone agrees to them. There is more, and it is that Mercury trines Jupiter on Friday. This is your twelfth house, where the private half of a matter sits, out of view and mostly unspoken. Put the working mind beside the impulse to expand and neither reads the same afterwards. Support of this kind arrives quietly and gets mistaken for the ordinary state of things. Nothing else in your twelfth house works without the quiet hour taken deliberately rather than stolen.\n\nIn the same stretch, Venus forms a semi-sextile to Saturn on Saturday, sitting in your second house. Adjacent things rarely understand each other, and the gap shows in the detail rather than the outline. Alongside that, the Sun squares Jupiter on Sunday, felt through your first house of identity and self-expression. A square announces itself, so nothing about the difficulty arrives as a surprise. Your first house asks for a plain account of what is actually wanted. The short version: an honest figure rather than a comfortable one.",
-                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 250 to 450 words. The six section fields are the same reading split by topic, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
+                      "example": "Venus leaves Aries on Monday, with the fact to start from sitting in your first house, the one for identity and self-expression. Work with the fact that the first impression gets made before anything has been explained, and the pull toward what is pleasant stops fighting the room. Then the Full Moon falls in Libra on Thursday, pointing the instinct at your seventh house, the one for partnerships and relationships, where agreements are made face to face and break the same way. The need underneath the argument has to operate where another person is party to the outcome and has to be counted. Start with the terms said out loud before anyone agrees to them. Further along, Mercury draws a trine to Jupiter on Friday, parking the running commentary in your twelfth house, where what has been carried quietly asks for somewhere to be put down. Between the working mind and the impulse to expand, the difference is the whole story. Since rest, retreat and the unfinished business of the mind take their turn, the question being asked gets tested rather than admired. Your twelfth house asks for the rest that was owed and never taken.\n\nYour second house carries this one, because Venus squares Pluto on Friday. The sense of what is worth having is set against the grip that will not loosen here. The preference nobody argues with is the pressure here, and the ground it presses on is a place where what comes in gets weighed against what it was traded for. The useful move is toward a decision about worth made while nothing is urgent. On top of that, the Sun runs into a square with Jupiter on Sunday, at the level of your first house. The part that wants to be seen reads differently in a place where a person is read off how they carry themselves rather than off what they claim. Settle on the version of this that survives being said out loud.",
+                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 250 to 450 words. The six section fields read the same ranked events filtered to their own life area, each composed as a column of its own rather than an excerpt of this one, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
                     },
                     "events": {
                       "type": "array",
@@ -28226,24 +28247,55 @@
                       "example": [
                         {
                           "type": "sign-ingress",
-                          "at": "2026-04-01T02:50:42Z",
+                          "at": "2026-03-30T16:00:02Z",
+                          "bodies": [
+                            "Venus"
+                          ],
+                          "sign": "taurus",
+                          "house": 2,
+                          "through": "2026-04-24T04:02:52Z"
+                        },
+                        {
+                          "type": "lunar-phase",
+                          "at": "2026-04-02T02:12:37Z",
                           "bodies": [
                             "Moon"
                           ],
                           "sign": "libra",
-                          "house": 7,
-                          "through": "2026-04-03T12:10:48Z"
+                          "house": 7
                         },
                         {
                           "type": "aspect",
-                          "at": "2026-04-01T11:21:57Z",
+                          "at": "2026-04-03T11:27:57Z",
+                          "bodies": [
+                            "Mercury",
+                            "Jupiter"
+                          ],
+                          "aspect": "trine",
+                          "house": 12,
+                          "through": "2026-04-11T02:28:12Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-03T22:36:42Z",
                           "bodies": [
                             "Venus",
-                            "Neptune"
+                            "Pluto"
                           ],
-                          "aspect": "semi-sextile",
+                          "aspect": "square",
                           "house": 2,
-                          "through": "2026-04-03T23:43:57Z"
+                          "through": "2026-04-09T17:00:28Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-05T22:21:45Z",
+                          "bodies": [
+                            "Sun",
+                            "Jupiter"
+                          ],
+                          "aspect": "square",
+                          "house": 1,
+                          "through": "2026-04-13T18:34:23Z"
                         }
                       ],
                       "description": "The dated astronomical events this reading is built on, earliest first. Every field in every row can be checked against an independent authority, so a column can be fact-checked before it is published. Empty on a period in which nothing exact happens, where the reading falls back to the standing positions instead."
@@ -28519,7 +28571,7 @@
           "Western Astrology"
         ],
         "summary": "Monthly horoscope by zodiac sign - Editorial column with key dates",
-        "description": "A month-long column for any zodiac sign, plus a week-by-week breakdown and dated key dates a calendar page renders directly. The column names every aspect, ingress, lunation and station of the month and reads each into the whole-sign houses of that sign, and those events come back beside the prose with their exact instants, so a piece can be checked against NASA JPL Horizons or the US Naval Observatory before it runs. Key dates are the real New Moon, Full Moon and retrograde instants, never approximations. Alongside the column come overview, love, career, health, finance and advice. Pass any date inside a month to retrieve that month, or timezone to roll over on a local clock. Available in eight languages. Monthly horoscope API, zodiac monthly forecast, astrology monthly prediction.",
+        "description": "A month-long column for any zodiac sign, plus a week-by-week breakdown and dated key dates a calendar page renders directly. The column names the major aspects, slow-planet sign changes, lunations and stations of the month, and reads each into the whole-sign houses of that sign, and those events come back beside the prose with their exact instants, so a piece can be checked against NASA JPL Horizons or the US Naval Observatory before it runs. Key dates are the real New Moon, Full Moon and retrograde instants, never approximations. Alongside the column come overview, love, career, health, finance and advice. Pass any date inside a month to retrieve that month, or timezone to roll over on a local clock. Available in eight languages. Monthly horoscope API, zodiac monthly forecast, astrology monthly prediction.",
         "security": [
           {
             "apiKey": []
@@ -28619,38 +28671,38 @@
                     },
                     "overview": {
                       "type": "string",
-                      "example": "April brings Jupiter influence through Leo, encouraging growth and expansion. For you, this activates your 5th house of romance, creativity, and joy. Saturn in Aries reminds you to build solid foundations.",
-                      "description": "Monthly overview covering the major planetary transits and their impact on the sign."
+                      "example": "Uranus leaves Taurus on the 26th. What comes in gets weighed against what it was traded for, which is what your second house is for. Where earnings and belongings get counted, and their worth gets decided, the refusal to keep doing it this way is either the tool or the obstacle. Venus frames Taurus in your second house of finances and personal values, where a price gets put on things that were never priced before, with affection, taste, money spent on pleasure, and the terms people agree to.",
+                      "description": "The single most relevant event of the period, whichever life area it touches, read into the whole-sign houses of this sign. The same event that leads column, at lede length rather than developed into a full movement, and checkable against the events array. Typically 55 to 100 words. Join it with love, career, health and finance for a general reading built from the six sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "love": {
                       "type": "string",
-                      "example": "Venus in your sixth house shows love through acts of service. Small gestures of care mean more than grand declarations. Health-focused activities with a partner strengthen your bond.",
-                      "description": "Monthly love and relationship forecast."
+                      "example": "The Full Moon falls in Libra on the 2nd. The address is your seventh house, the one for partnerships and relationships, where another person is party to the outcome and has to be counted. Complicating it is the fact that agreements are made face to face and break the same way, while the instinct does not bend easily. Alongside that, the First Quarter Moon falls in Leo on the 24th. Play, courtship and craft take up room without asking permission, which is what your fifth house is for. The first reaction is the pressure here, and the ground it presses on is a place where something gets made or enjoyed for its own sake, with no return required. Nothing else in your fifth house works without the offer made out loud rather than hinted. Going without the other side of it described as they would describe it costs more in your seventh house than it saves anywhere else.",
+                      "description": "Monthly love and relationship forecast, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to romance and partnership, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries romance and partnership, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 120 to 200 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "career": {
                       "type": "string",
-                      "example": "Focus on long-term career goals. Patience and persistence bring lasting success.",
-                      "description": "Monthly career and professional outlook."
+                      "example": "The Third Quarter Moon falls in Capricorn on the 10th, felt through your tenth house, the one for career and public image. The first reaction does its best work where the work is public and a name is attached to it. Because Uranus leaves Taurus on the 26th, your second house is the part that moves. Complicating it is the fact that a price gets put on things that were never priced before, while the break in the pattern does not bend easily. Your second house asks for the number written down before it is spent. Below the surface of this, Saturn in Aries gives your first house its standing tone, and it wants the work to stand up without being propped. Your tenth house wants one thing above the rest, and it wants the standard held where it can be checked by somebody else.",
+                      "description": "Monthly career and professional outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to career, work and reputation, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries career, work and reputation, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 120 to 200 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "health": {
                       "type": "string",
-                      "example": "The Sun in your fifth house connects vitality with joy and self-expression. Physical play, creative movement, and laughter are the best medicine today.",
-                      "description": "Monthly health and wellness guidance."
+                      "example": "The Full Moon falls in Libra on the 2nd, folding the first reaction into your seventh house, where agreements are made face to face and break the same way. The need underneath the argument counts for less than it thinks here, because another person is party to the outcome and has to be counted. The other half of it is that Mars comes together with Neptune on the 13th, hanging the part that refuses to wait on your first house, the one for identity and self-expression, where the body and the manner arrive together and get taken as one thing. The readiness to start does not survive contact with the pull toward what is not literal unchanged. The drive lands in a place where the first impression gets made before anything has been explained. Going without the version of this that survives being said out loud costs more in your first house than it saves anywhere else. Your first house takes this one, since the New Moon falls in Aries on the 17th. Start with the terms said out loud before anyone agrees to them.",
+                      "description": "Monthly health and wellness guidance, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to health, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries health, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 120 to 200 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "finance": {
                       "type": "string",
-                      "example": "Jupiter in your fifth house brings financial luck through creative ventures and speculative risks. Hobbies could become income sources.",
-                      "description": "Monthly financial outlook and guidance."
+                      "example": "Venus and Pluto come to a square on the 3rd, tipping the pull toward what is pleasant toward your second house, where a price gets put on things that were never priced before. Part of this is the sense of what is worth having and part of it is the grip that will not loosen. Where what comes in gets weighed against what it was traded for, the preference nobody argues with is either the tool or the obstacle. Close behind that, Mars reaches a sextile with Uranus on the 8th, arriving in the second house you keep finances and personal values in. The readiness to start is set against the break in the pattern here. The part that refuses to wait does its best work where earnings and belongings get counted, and their worth gets decided. A second thread runs through this, and Venus sextiles Jupiter on the 13th, with your second house taking it.\n\nThen the Sun squares Pluto on the 25th, so the effect shows in your second house. The useful move is toward the number written down before it is spent.",
+                      "description": "Monthly financial outlook and guidance, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to finance, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries finance, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 120 to 200 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "advice": {
                       "type": "string",
-                      "example": "Mercury in your fourth house turns attention to family conversations and household planning. Important discussions about home life go well.",
-                      "description": "Actionable guidance for the month as a whole, derived from the Mercury house activation for this sign. Distinct from the per-week advice inside weekByWeek: this is the single takeaway for the month."
+                      "example": "Uranus enters Gemini on the 26th, at the level of your third house of communication and learning. Your third house asks for the thing written out plainly and sent to the person who can act on it.",
+                      "description": "The single actionable takeaway from the leading event of the period, read into the whole-sign houses of this sign and checkable against the events array. Drawn from the same event as overview, kept to a short, actionable pair of sentences rather than grown to match the other sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "column": {
                       "type": "string",
-                      "example": "Mars leaves Pisces on the 9th, and it lands in your twelfth house of solitude and inner reflection. The change is long enough to plan around and short enough to wait out. There is more, and it is that Mars meets Neptune on the 13th. The first impression gets made before anything has been explained, which is what your first house is for. Neither the drive nor the pull toward what is not literal is the whole of what is happening. The two act as one thing here, and neither is easy to see on its own. If one thing gets done in your first house, make it a plain account of what is actually wanted. Because Mars sextiles Pluto on the 16th, your first house is the part that moves. Direction is what this contact rewards, since the capacity is present and sitting idle.\n\nThen Mercury meets Neptune on the 17th, and it registers in your first house of identity and self-expression. A single impulse comes out of the pair, and it is felt as one thing rather than two. Alongside that, the New Moon falls in Aries on the 17th, at the level of your first house. Nothing has surfaced yet, which is the correct condition for a beginning and not a sign of delay. Next to that, Mercury sextiles Pluto on the 18th, felt through your first house. The working mind is set against the pressure underneath here. An opportunity left alone at this angle does not turn into a problem, it simply expires.\n\nAlongside that, Mars meets Saturn on the 19th, played out in your first house. Fusion is the whole point, and what starts here starts with both of them behind it. A second thread runs through this, and Mercury meets Saturn on the 20th, sitting in your first house. Whichever of the two is weaker stops being noticed, because the blend runs that close. Watch your first house for this one, because Mercury meets Mars on the 20th. The one wants to name a thing accurately and be understood. The other wants to act now and have the matter settled. Objectivity is scarce at this angle, because neither half stands far enough back to be looked at.\n\nInside your third house of communication and learning, Venus sextiles Neptune on the 26th. Help of this size is modest, and modest help is the kind that actually gets used. If one thing gets done in your third house, make it the thing written out plainly and sent to the person who can act on it. Then Mars forms a semi-square to Uranus on the 29th, so the effect shows in your first house. Acting early is what this angle rewards, since the cost of waiting compounds quietly. Whatever else happens, do not let go of the quiet hour taken deliberately rather than stolen.",
-                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 400 to 700 words. The six section fields are the same reading split by topic, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
+                      "example": "Your seventh house carries the main event here, and the Full Moon falls in Libra on the 2nd. Set the instinct beside the fact that the terms of a shared thing get set, with somebody else in the room, and the size of it changes. Look to your twelfth house of solitude and inner reflection, where the private half of a matter sits, out of view and mostly unspoken. Mars leaves Pisces on the 9th. The part that refuses to wait has to operate where what has been carried quietly asks for somewhere to be put down. Your twelfth house asks for one thing let go of without an announcement. A second thread runs through this, and Mars comes together with Neptune on the 13th, sitting in your first house. The readiness to start lands in a place where a person is read off how they carry themselves rather than off what they claim. Your first house wants one thing above the rest, and it wants a plain account of what is actually wanted.\n\nClose behind that, Mars sextiles Pluto on the 16th, felt through your first house, the one for identity and self-expression. Timing carries more weight than force, because the drive is only briefly within reach of the grip that will not loosen. Then Mercury closes on Neptune on the 17th, with your first house taking it. Whatever the working mind starts, the pull toward what is not literal answers for. Since the body and the manner arrive together and get taken as one thing, the running commentary gets tested rather than admired. The same house carries this one, because the New Moon falls in Aries on the 17th. Nothing has surfaced yet, which is the correct condition for a beginning and not a sign of delay.\n\nNext to that, Mercury and Pluto make a sextile on the 18th, and it registers in the same house. Help of this size is modest, and modest help is the kind the question being asked takes from the pressure underneath. After that, Mars meets Saturn on the 19th, at the level of the same house. There is more, and it is that Mercury closes on Saturn on the 20th, arriving in your first house.\n\nIn the same stretch, Mercury meets Mars on the 20th, so the effect shows in your first house. The other half of it is that Uranus enters Gemini on the 26th, anchoring the break in the pattern in your third house, where information moves faster than the judgment it needs. Complicating it is the fact that messages travel, and the short trip matters more than the long one, while the refusal to keep doing it this way does not bend easily. The useful move is toward the short note that saves the long conversation. Come out of this with a commitment narrowed to what both people can actually keep.",
+                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 400 to 700 words. The six section fields read the same ranked events filtered to their own life area, each composed as a column of its own rather than an excerpt of this one, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
                     },
                     "events": {
                       "type": "array",
@@ -28727,6 +28779,28 @@
                           "house": 7
                         },
                         {
+                          "type": "aspect",
+                          "at": "2026-04-03T22:36:42Z",
+                          "bodies": [
+                            "Venus",
+                            "Pluto"
+                          ],
+                          "aspect": "square",
+                          "house": 2,
+                          "through": "2026-04-09T17:00:28Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-08T16:11:00Z",
+                          "bodies": [
+                            "Mars",
+                            "Uranus"
+                          ],
+                          "aspect": "sextile",
+                          "house": 12,
+                          "through": "2026-04-16T22:00:22Z"
+                        },
+                        {
                           "type": "sign-ingress",
                           "at": "2026-04-09T19:36:28Z",
                           "bodies": [
@@ -28735,6 +28809,147 @@
                           "sign": "aries",
                           "house": 1,
                           "through": "2026-05-18T22:26:00Z"
+                        },
+                        {
+                          "type": "lunar-phase",
+                          "at": "2026-04-10T04:52:18Z",
+                          "bodies": [
+                            "Moon"
+                          ],
+                          "sign": "capricorn",
+                          "house": 10
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-13T05:36:47Z",
+                          "bodies": [
+                            "Mars",
+                            "Neptune"
+                          ],
+                          "aspect": "conjunction",
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2026-04-24T01:18:59Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-13T08:19:16Z",
+                          "bodies": [
+                            "Venus",
+                            "Jupiter"
+                          ],
+                          "aspect": "sextile",
+                          "house": 2,
+                          "through": "2026-04-18T17:18:57Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-16T18:55:23Z",
+                          "bodies": [
+                            "Mars",
+                            "Pluto"
+                          ],
+                          "aspect": "sextile",
+                          "house": 1,
+                          "through": "2026-04-24T15:01:20Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-17T02:04:52Z",
+                          "bodies": [
+                            "Mercury",
+                            "Neptune"
+                          ],
+                          "aspect": "conjunction",
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2026-04-22T09:24:56Z"
+                        },
+                        {
+                          "type": "lunar-phase",
+                          "at": "2026-04-17T11:52:22Z",
+                          "bodies": [
+                            "Moon"
+                          ],
+                          "sign": "aries",
+                          "house": 1
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-18T20:34:17Z",
+                          "bodies": [
+                            "Mercury",
+                            "Pluto"
+                          ],
+                          "aspect": "sextile",
+                          "house": 1,
+                          "through": "2026-04-22T16:34:57Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-19T22:39:30Z",
+                          "bodies": [
+                            "Mars",
+                            "Saturn"
+                          ],
+                          "aspect": "conjunction",
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2026-05-02T04:18:54Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-20T11:20:17Z",
+                          "bodies": [
+                            "Mercury",
+                            "Saturn"
+                          ],
+                          "aspect": "conjunction",
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2026-04-25T17:31:44Z"
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-20T21:44:57Z",
+                          "bodies": [
+                            "Mercury",
+                            "Mars"
+                          ],
+                          "aspect": "conjunction",
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2026-04-29T12:23:33Z"
+                        },
+                        {
+                          "type": "lunar-phase",
+                          "at": "2026-04-24T02:32:18Z",
+                          "bodies": [
+                            "Moon"
+                          ],
+                          "sign": "leo",
+                          "house": 5
+                        },
+                        {
+                          "type": "aspect",
+                          "at": "2026-04-25T16:32:17Z",
+                          "bodies": [
+                            "Sun",
+                            "Pluto"
+                          ],
+                          "aspect": "square",
+                          "house": 2,
+                          "through": "2026-05-02T22:03:28Z"
+                        },
+                        {
+                          "type": "sign-ingress",
+                          "at": "2026-04-26T01:01:15Z",
+                          "bodies": [
+                            "Uranus"
+                          ],
+                          "sign": "gemini",
+                          "house": 3,
+                          "through": "2033-05-22T13:38:00Z"
                         }
                       ],
                       "description": "The dated astronomical events this reading is built on, earliest first. Every field in every row can be checked against an independent authority, so a column can be fact-checked before it is published. Empty on a period in which nothing exact happens, where the reading falls back to the standing positions instead."
@@ -29157,38 +29372,38 @@
                     },
                     "overview": {
                       "type": "string",
-                      "example": "Look to your first house of identity and self-expression, where the first impression gets made before anything has been explained. Neptune turns retrograde in July. Forward motion is not what this stretch is for, and forcing it spends the effort twice.",
-                      "description": "Yearly overview, led by the single event with the most weight for this sign across the whole year."
+                      "example": "A solar eclipse falls in Leo in August, arriving in your fifth house of romance, creativity, and joy. The disc is covered completely. Acceleration is the whole signature here, and what gets accelerated is whatever was already moving. Jupiter banks Cancer in your fourth house of home and emotional foundations, where the household sits, along with everything it inherited from before, on abundance, teaching, and what gets given away. Venus roots Capricorn, reaching your tenth house, where standing accumulates slowly and is spent quickly, and it wants warmth offered before it has to be asked for.",
+                      "description": "The single most relevant event of the period, whichever life area it touches, read into the whole-sign houses of this sign. The same event that leads column, at lede length rather than developed into a full movement, and checkable against the events array. Typically 70 to 120 words. Join it with love, career, health and finance for a general reading built from the six sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "love": {
                       "type": "string",
-                      "example": "A solar eclipse falls in Leo in August, felt through your fifth house of romance, creativity, and joy. The disc is covered completely. Acceleration is the whole signature here, and what gets accelerated is whatever was already moving.",
-                      "description": "Yearly love and relationship outlook."
+                      "example": "Jupiter enters Leo in June, arriving in your fifth house of romance, creativity, and joy. The impulse to expand is the pressure here, and the ground it presses on is a place where a thing is done because it is wanted, not because it pays. There is more, and it is that a solar eclipse falls in Leo in August, with your fifth house taking it. The disc is covered completely. The part that wants to be seen counts for less than it thinks here, because play, courtship and craft take up room without asking permission. Further along, Venus turns retrograde in October. Your eighth house is where the private accounting behind a shared arrangement comes due. The stretch it opens runs through November. Given that what two parties hold together gets divided or deepened, the preference nobody argues with is the wrong thing to lead with. Start with the plain total of what is owed and owned.\n\nThe other half of it is that Venus stays in Libra through December, steering the pull toward what is pleasant into the seventh house you keep partnerships and relationships in, where agreements are made face to face and break the same way. Notice the ground first, because the terms of a shared thing get set, with somebody else in the room, and only then what the sense of what is worth having wants from it. Your fifth house wants one thing above the rest, and it wants the offer made out loud rather than hinted.",
+                      "description": "Yearly love and relationship outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to romance and partnership, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries romance and partnership, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 150 to 260 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "career": {
                       "type": "string",
-                      "example": "Mars trines Uranus in January, felt through your tenth house of career and public image. Whatever the drive starts, the break in the pattern answers for. Smooth running gets noticed only when it stops, which is the standing problem with this angle.",
-                      "description": "Yearly career and professional outlook."
+                      "example": "A solar eclipse falls in Aquarius in February, wedging the part that wants to be seen into your eleventh house, where a wider circle decides what is possible, and the plan runs past the immediate. A ring of light stays visible all the way around the covered disc. Held against the fact that the future gets discussed by the group before it is chosen, the center of the matter looks smaller and more useful. A second thread runs through this, and a lunar eclipse falls in Virgo in March, hanging the need underneath the argument on your sixth house, the one for health and daily routines, where the ordinary routine runs, and the body keeps the score of it. The disc is covered completely. The instinct counts for less than it thinks here, because small tasks repeat until they are either a habit or a burden. Your sixth house wants one thing above the rest, and it wants one routine kept for long enough to be worth measuring. After that, a solar eclipse falls in Leo in August, at the level of your fifth house of romance, creativity, and joy. Notice the ground first, because something gets made or enjoyed for its own sake, with no return required, and only then what the will wants from it. Your fifth house asks for the offer made out loud rather than hinted. Start with one introduction made instead of a list kept privately.",
+                      "description": "Yearly career and professional outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to career, work and reputation, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries career, work and reputation, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 150 to 260 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "health": {
                       "type": "string",
-                      "example": "Neptune turns direct in December, with your first house of identity and self-expression taking it. What was held gets released here, though the backlog clears more slowly than the turn suggests.",
-                      "description": "Yearly health, energy, and wellness outlook."
+                      "example": "A solar eclipse falls in Aquarius in February. Read it in your eleventh house of friendships and future goals, where other people carry the parts of a plan nobody owns alone. A ring of light stays visible all the way around the covered disc. Complicating it is the fact that a wider circle decides what is possible, and the plan runs past the immediate, while the will does not bend easily. While that is still running, a lunar eclipse falls in Virgo in March. This is your sixth house, where the ordinary routine runs, and the body keeps the score of it. The disc is covered completely. Work with the fact that the work of keeping things running goes mostly unrecorded, and the first reaction stops fighting the room. Start with the complaint taken seriously before it grows. In the same stretch, a solar eclipse falls in Leo in August, arriving in your fifth house of romance, creativity, and joy. The part that wants to be seen is the pressure here, and the ground it presses on is a place where something gets made or enjoyed for its own sake, with no return required. Nothing else in your fifth house works without the risk taken in the open instead of rehearsed in private.\n\nBecause a lunar eclipse falls in Pisces in August, your twelfth house is the part that moves. Part of the disc is covered while the rest stays in view. Your eleventh house asks for the shared goal stated plainly enough to be joined.",
+                      "description": "Yearly health, energy, and wellness outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to health, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries health, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 150 to 260 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "finance": {
                       "type": "string",
-                      "example": "Mars forms a semi-sextile to Neptune in May. Your second house is where earnings and belongings get counted, and their worth gets decided. Put the drive beside the pull toward what is not literal and neither reads the same afterwards. The two have almost nothing in common, and the mismatch registers as a small steady irritation.",
-                      "description": "Yearly financial outlook."
+                      "example": "Saturn enters Aries in February, reaching your first house, where the body and the manner arrive together and get taken as one thing. The standard being applied counts for less than it thinks here, because a person is read off how they carry themselves rather than off what they claim. Next to that, Jupiter leaves Cancer in June, with the fourth house you keep home and emotional foundations in taking it. Work with the fact that the roof, the family and the past hold each other up, and the impulse to expand stops fighting the room. Start with the older story acknowledged so it stops steering. Close behind that, Venus turns retrograde in October, arriving in your eighth house of transformation and shared resources. The stretch it opens runs through November. The pull toward what is pleasant lands in a place where the private accounting behind a shared arrangement comes due. The plain total of what is owed and owned fills the room here, and not much beyond it.\n\nYour eighth house carries this one, because Mercury turns retrograde in October. The question being asked is the pressure here, and the ground it presses on is a place where joint holdings get settled, and what has run out gets ended properly. Partway through that, Venus leaves Scorpio in October, felt through your eighth house. Going without a plain account of what is actually wanted costs more in your first house than it saves anywhere else.",
+                      "description": "Yearly financial outlook, read into the whole-sign houses of this sign. The same ranked events that drive column, filtered to finance, plus the standing placements that reach it. Every event named here is in the events array, so a piece can be fact-checked before it runs; this section reads an event through whichever of its houses carries finance, which for an aspect between two houses can be the other one from the house the events array leads with, and both are whole-sign houses of the bodies involved counted from this sign. Typically 150 to 260 words. Render it alone for a single-topic page, or alongside the other five sections for a general reading; column is the same material woven into one piece instead of split by topic. Deterministic: the same sign and period always returns the same text."
                     },
                     "advice": {
                       "type": "string",
-                      "example": "Neptune turns retrograde in July, so the effect shows in your first house of identity and self-expression. Translated into something doable, this comes to a plain account of what is actually wanted.",
-                      "description": "The single takeaway for the year, drawn from the event that leads it rather than stated in general terms."
+                      "example": "A solar eclipse falls in Leo in August, felt through your fifth house of romance, creativity, and joy. Your fifth house wants one thing above the rest, and it wants the risk taken in the open instead of rehearsed in private.",
+                      "description": "The single actionable takeaway from the leading event of the period, read into the whole-sign houses of this sign and checkable against the events array. Drawn from the same event as overview, kept to a short, actionable pair of sentences rather than grown to match the other sections. Deterministic: the same sign and period always returns the same text."
                     },
                     "column": {
                       "type": "string",
-                      "example": "One thing outranks the rest here: Neptune leaves Pisces in January, reaching your twelfth house. A move this rare resets the terms of an area instead of shading them. Running with that, a solar eclipse falls in Aquarius in February, at the level of your eleventh house of friendships and future goals. A ring of light stays visible all the way around the covered disc. Acceleration is the whole signature here, and what gets accelerated is whatever was already moving. If one thing gets done in your eleventh house, make it the request put to the people who can actually answer it. A second thread runs through this, and Saturn meets Neptune in February, in your first house of identity and self-expression, where the first impression gets made before anything has been explained. Put the limit beside the pull toward what is not literal and neither reads the same afterwards. Fusion is the whole point, and what starts here starts with both of them behind it. Start with a plain account of what is actually wanted.\n\nAfter that, the Sun leaves Pisces in March, with your twelfth house of solitude and inner reflection taking it. A season opens at this point, and it is the frame everything else gets read against. There is more, and it is that Saturn sextiles Pluto in March, sitting in your first house. An opportunity left alone at this angle does not turn into a problem, it simply expires. Next to that, Mars meets Neptune in April, and it registers in your first house. Objectivity is scarce at this angle, because neither half stands far enough back to be looked at.\n\nInside your first house, Neptune turns retrograde in July. Forward motion is not what this stretch is for, and forcing it spends the effort twice. In the same stretch, Uranus sextiles Neptune in July. That reaches your third house, where messages travel, and the short trip matters more than the long one. Visibility is the difference between this angle and an easier one, and the offer is on show. The useful move is toward the thing written out plainly and sent to the person who can act on it. Underneath that, Jupiter trines Neptune in July, and it registers in your fifth house of romance, creativity, and joy. Support of this kind arrives quietly and gets mistaken for the ordinary state of things. Going without the risk taken in the open instead of rehearsed in private costs more in your fifth house than it saves anywhere else.\n\nPartway through that, Neptune sextiles Pluto in July, played out in your first house. The opening is real and it closes again unless somebody uses it. While that is still running, Saturn turns retrograde in July, arriving in your first house. Watch your fifth house for this one, because a solar eclipse falls in Leo in August. The disc is covered completely.\n\nBecause Mars trines Neptune in October, your fifth house is the part that moves. The ease here is real and largely unearned, which is why it so often goes unused. A second thread runs through this, and Saturn turns direct in December, at the level of your first house. Motion resumes from where it actually stopped, which is rarely where it was meant to have reached. Inside your first house, Neptune turns direct in December. What was held gets released here, though the backlog clears more slowly than the turn suggests. What is fixed here is Venus in Capricorn, landing in your tenth house of career and public image, over affection, taste, money spent on pleasure, and the terms people agree to. Get to the quiet hour taken deliberately rather than stolen, and the rest of your twelfth house follows.",
-                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 600 to 900 words. The six section fields are the same reading split by topic, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
+                      "example": "Neptune leaves Pisces in January, which puts your twelfth house in play. Work with the fact that the private half of a matter sits, out of view and mostly unspoken, and the pull toward what is not literal stops fighting the room. Alongside that, Saturn enters Aries in February, tipping the limit toward your first house, where the body and the manner arrive together and get taken as one thing. The weight of what is already owed is the pressure here, and the ground it presses on is a place where a person is read off how they carry themselves rather than off what they claim. A plain account of what is actually wanted fills the room here, and not much beyond it. Next to that, a solar eclipse falls in Aquarius in February, sending the center of the matter through your eleventh house of friendships and future goals, where a wider circle decides what is possible, and the plan runs past the immediate. A ring of light stays visible all the way around the covered disc. Complicating it is the fact that other people carry the parts of a plan nobody owns alone, while the part that wants to be seen does not bend easily. The useful move is toward the shared goal stated plainly enough to be joined.\n\nIn the same stretch, Mercury turns retrograde in February, played out in your twelfth house, the one for solitude and inner reflection. The stretch it opens runs through March. The question being asked counts for less than it thinks here, because what has been carried quietly asks for somewhere to be put down. Partway through that, a lunar eclipse falls in Virgo in March, drawing the need underneath the argument into your sixth house, where small tasks repeat until they are either a habit or a burden. The disc is covered completely. The instinct lands in a place where the ordinary routine runs, and the body keeps the score of it. Your sixth house asks for the complaint taken seriously before it grows. After that, Uranus enters Gemini in April, parking the interruption in your third house, where errands, notes and neighbors fill the hours nobody plans. The refusal to keep doing it this way reads differently in a place where information moves faster than the judgment it needs. Nothing else in your third house works without a question asked early instead of a guess defended later.\n\nWhile that is still running, Mercury turns retrograde in June. Your fourth house is where the household sits, along with everything it inherited from before. The stretch it opens runs through July. Forward motion is not what this stretch is for, and forcing it spends the running commentary twice. Start with a repair to the place itself rather than to the mood in it. The other half of it is that Jupiter leaves Cancer in June, sitting in your fourth house. Where privacy is the ordinary condition and interruption the exception, the impulse to expand is either the tool or the obstacle. Further along, Neptune turns retrograde in July, arriving in the first house you keep identity and self-expression in. The stretch it opens runs through December. Set the longing with no object beside the fact that the first impression gets made before anything has been explained, and the size of it changes.\n\nYour fifth house carries this one, because a solar eclipse falls in Leo in August. Since play, courtship and craft take up room without asking permission, the will gets tested rather than admired. Your fifth house wants one thing above the rest, and it wants the offer made out loud rather than hinted. Because a lunar eclipse falls in Pisces in August, your twelfth house is the part that moves. Part of the disc is covered while the rest stays in view. On top of that, Venus turns retrograde in October, landing in your eighth house of transformation and shared resources, where the private accounting behind a shared arrangement comes due, and the sense of what is worth having is what carries it. The stretch it opens runs through November. The preference nobody argues with has to operate where joint holdings get settled, and what has run out gets ended properly. Going without one ending finished properly instead of left half open costs more in your eighth house than it saves anywhere else.\n\nThen Mercury turns retrograde in October, and it registers in your eighth house. The working mind does its best work where what two parties hold together gets divided or deepened. Close behind that, Venus enters Libra in October, holding the pull toward what is pleasant over your seventh house, where the terms of a shared thing get set, with somebody else in the room. The change is long enough to plan around and short enough to wait out, and what it moves is attraction, courtesy, and what two people settle on. Doing that comes to the other side of it described as they would describe it. A second thread runs through this, and Neptune turns direct in December, so the effect shows in your first house. The stretch it closes opened in July. Get to one thing let go of without an announcement, and the rest of the same house follows.",
+                      "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 600 to 900 words. The six section fields read the same ranked events filtered to their own life area, each composed as a column of its own rather than an excerpt of this one, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
                     },
                     "events": {
                       "type": "array",
@@ -29256,17 +29471,6 @@
                       },
                       "example": [
                         {
-                          "type": "aspect",
-                          "at": "2026-01-20T05:55:10Z",
-                          "bodies": [
-                            "Mars",
-                            "Uranus"
-                          ],
-                          "aspect": "trine",
-                          "house": 10,
-                          "through": "2026-01-30T09:22:47Z"
-                        },
-                        {
                           "type": "sign-ingress",
                           "at": "2026-01-26T14:30:39Z",
                           "bodies": [
@@ -29275,6 +29479,142 @@
                           "sign": "aries",
                           "house": 1,
                           "through": "2038-05-21T23:49:04Z"
+                        },
+                        {
+                          "type": "sign-ingress",
+                          "at": "2026-02-14T00:39:32Z",
+                          "bodies": [
+                            "Saturn"
+                          ],
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2028-04-13T04:05:00Z"
+                        },
+                        {
+                          "type": "eclipse",
+                          "at": "2026-02-17T12:11:54Z",
+                          "bodies": [
+                            "Sun"
+                          ],
+                          "sign": "aquarius",
+                          "house": 11
+                        },
+                        {
+                          "type": "retrograde-station",
+                          "at": "2026-02-26T06:47:42Z",
+                          "bodies": [
+                            "Mercury"
+                          ],
+                          "sign": "pisces",
+                          "house": 12,
+                          "through": "2026-03-20T19:36:33Z"
+                        },
+                        {
+                          "type": "eclipse",
+                          "at": "2026-03-03T11:33:40Z",
+                          "bodies": [
+                            "Moon"
+                          ],
+                          "sign": "virgo",
+                          "house": 6
+                        },
+                        {
+                          "type": "sign-ingress",
+                          "at": "2026-04-26T01:01:15Z",
+                          "bodies": [
+                            "Uranus"
+                          ],
+                          "sign": "gemini",
+                          "house": 3,
+                          "through": "2033-05-22T13:38:00Z"
+                        },
+                        {
+                          "type": "retrograde-station",
+                          "at": "2026-06-29T17:37:25Z",
+                          "bodies": [
+                            "Mercury"
+                          ],
+                          "sign": "cancer",
+                          "house": 4,
+                          "through": "2026-07-23T22:54:50Z"
+                        },
+                        {
+                          "type": "sign-ingress",
+                          "at": "2026-06-30T05:56:15Z",
+                          "bodies": [
+                            "Jupiter"
+                          ],
+                          "sign": "leo",
+                          "house": 5,
+                          "through": "2027-07-26T04:45:22Z"
+                        },
+                        {
+                          "type": "retrograde-station",
+                          "at": "2026-07-07T11:21:30Z",
+                          "bodies": [
+                            "Neptune"
+                          ],
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2026-12-12T22:13:39Z"
+                        },
+                        {
+                          "type": "eclipse",
+                          "at": "2026-08-12T17:45:47Z",
+                          "bodies": [
+                            "Sun"
+                          ],
+                          "sign": "leo",
+                          "house": 5
+                        },
+                        {
+                          "type": "eclipse",
+                          "at": "2026-08-28T04:12:49Z",
+                          "bodies": [
+                            "Moon"
+                          ],
+                          "sign": "pisces",
+                          "house": 12
+                        },
+                        {
+                          "type": "retrograde-station",
+                          "at": "2026-10-03T07:09:17Z",
+                          "bodies": [
+                            "Venus"
+                          ],
+                          "sign": "scorpio",
+                          "house": 8,
+                          "through": "2026-11-14T00:21:35Z"
+                        },
+                        {
+                          "type": "retrograde-station",
+                          "at": "2026-10-24T07:11:15Z",
+                          "bodies": [
+                            "Mercury"
+                          ],
+                          "sign": "scorpio",
+                          "house": 8,
+                          "through": "2026-11-13T15:55:12Z"
+                        },
+                        {
+                          "type": "sign-ingress",
+                          "at": "2026-10-25T08:56:58Z",
+                          "bodies": [
+                            "Venus"
+                          ],
+                          "sign": "libra",
+                          "house": 7,
+                          "through": "2026-12-04T08:14:36Z"
+                        },
+                        {
+                          "type": "retrograde-station",
+                          "at": "2026-12-12T22:13:39Z",
+                          "bodies": [
+                            "Neptune"
+                          ],
+                          "sign": "aries",
+                          "house": 1,
+                          "through": "2026-12-12T22:13:39Z"
                         }
                       ],
                       "description": "The dated astronomical events this reading is built on, earliest first. Every field in every row can be checked against an independent authority, so a column can be fact-checked before it is published. Empty on a period in which nothing exact happens, where the reading falls back to the standing positions instead."

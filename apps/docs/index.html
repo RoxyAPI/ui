@@ -142,6 +142,20 @@
 			border-radius: 6px;
 		}
 
+		/* Keyboard users get the same affordance a pointer gets. The accent ink is
+		 * the one ring colour that reads on the page and on a filled button alike,
+		 * in both themes, so every control on the page takes it. */
+		.btn:focus-visible,
+		.filter-tab:focus-visible,
+		.copy-btn:focus-visible,
+		select:focus-visible,
+		summary:focus-visible,
+		dialog button:focus-visible,
+		input[type="color"]:focus-visible {
+			outline: 2px solid var(--roxy-accent-ink);
+			outline-offset: 2px;
+		}
+
 		.toolbar {
 			display: flex;
 			flex-wrap: wrap;
@@ -154,6 +168,23 @@
 			display: inline-flex;
 			gap: 0.375rem;
 			align-items: center;
+		}
+		/* Theme is a toggle and language is a picker; setting the palette is the one
+		 * thing a visitor DOES on this bar, so it takes the end of the row beside
+		 * the language control and carries the filled button treatment. */
+		.toolbar-controls {
+			display: inline-flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 0.75rem;
+		}
+		.btn-swatch {
+			width: 0.6875rem;
+			height: 0.6875rem;
+			border-radius: 9999px;
+			background: var(--roxy-accent);
+			flex: none;
 		}
 
 		.outcomes {
@@ -729,12 +760,16 @@
 				<button id="theme-light" type="button" class="btn btn--xs btn--ghost" aria-pressed="true">Light</button>
 				<button id="theme-dark" type="button" class="btn btn--xs btn--ghost" aria-pressed="false">Dark</button>
 			</div>
-			<button type="button" class="btn btn--xs btn--ghost" data-dialog-open="customize-dialog">Customize colors</button>
-			<div class="toolbar-group" role="group" aria-label="Language">
-				<label for="lang-select" style="font-size: 0.8125rem; color: var(--roxy-muted);">Language</label>
-				<select id="lang-select" style="padding: 0.3rem 0.5rem; border: 1px solid var(--roxy-border); border-radius: 6px; background: var(--roxy-bg); color: var(--roxy-fg); font: inherit; font-size: 0.8125rem;">
-					<option value="en">English</option>
-				</select>
+			<div class="toolbar-controls">
+				<div class="toolbar-group" role="group" aria-label="Language">
+					<label for="lang-select" style="font-size: 0.8125rem; color: var(--roxy-muted);">Language</label>
+					<select id="lang-select" style="padding: 0.3rem 0.5rem; border: 1px solid var(--roxy-border); border-radius: 6px; background: var(--roxy-bg); color: var(--roxy-fg); font: inherit; font-size: 0.8125rem;">
+						<option value="en">English</option>
+					</select>
+				</div>
+				<button type="button" class="btn btn--xs" aria-haspopup="dialog" data-dialog-open="customize-dialog">
+					<span class="btn-swatch" aria-hidden="true"></span>Customize colors
+				</button>
 			</div>
 		</div>
 		<p style="color: var(--roxy-muted); font-size: 0.8125rem; margin: 0.5rem 0 0;">

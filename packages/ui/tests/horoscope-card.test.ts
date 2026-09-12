@@ -167,6 +167,42 @@ describe('the reading renders in exactly one shape', () => {
 		expect(paragraphs.length).toBe(2);
 		expect(paragraphs[0]?.textContent).toBe('First paragraph of the column.');
 	});
+
+	/**
+	 * A topic field is a column in its own right and separates its paragraphs the same way the
+	 * whole column does. Rendered as one text node the blank line collapses to a single space, so
+	 * the break is lost silently: the words are all present, which is what makes it invisible to a
+	 * content audit and to every assertion that reads a card as one string.
+	 */
+	test('a topic section breaks into one paragraph per blank line, like the column', async () => {
+		const el = await mount(
+			{
+				...DAILY,
+				column: undefined,
+				love: 'Love, first paragraph.\n\nLove, second paragraph.',
+			},
+			{ layout: 'sections' },
+		);
+		const sections = [
+			...root(el).querySelectorAll('[part~="outlook"] .section'),
+		];
+		const love = sections.find(
+			(s) => s.querySelector('h3')?.textContent === 'Love',
+		);
+		const paragraphs = love?.querySelectorAll('p') ?? [];
+		expect(paragraphs.length).toBe(2);
+		expect(paragraphs[0]?.textContent).toBe('Love, first paragraph.');
+		expect(paragraphs[1]?.textContent).toBe('Love, second paragraph.');
+	});
+
+	test('the standfirst breaks the same way and keeps its own part name', async () => {
+		const el = await mount(
+			{ ...DAILY, column: undefined, overview: 'Lede one.\n\nLede two.' },
+			{ layout: 'sections' },
+		);
+		const overview = root(el).querySelector('[part~="overview"]');
+		expect(overview?.querySelectorAll('p').length).toBe(2);
+	});
 });
 
 describe('the events trail', () => {

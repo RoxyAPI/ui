@@ -60,6 +60,24 @@ const EVENT_TYPE_LABEL: Record<SkyEventType, ChromeString> = {
 	'solar-season': 'Solar season',
 };
 
+/**
+ * The five topic fields that follow the standfirst, in the order the endpoint documents them.
+ *
+ * @remarks
+ * Typed against the daily response so a field renamed upstream fails to compile here, and typed
+ * {@link ChromeString} so the compiler is what proves each heading is catalogued. `overview` is
+ * deliberately absent: it is the standfirst the other five run under, not a sixth peer.
+ */
+const SECTION_FIELDS = [
+	['love', 'Love'],
+	['career', 'Career'],
+	['health', 'Health'],
+	['finance', 'Finance'],
+	['advice', 'Advice'],
+] as const satisfies ReadonlyArray<
+	readonly [keyof GetDailyHoroscopeResponse, ChromeString]
+>;
+
 /** The four life areas `bestPeriods` names a month for, in the order the sections above use. */
 const BEST_AREAS = [
 	['love', 'Love'],
@@ -164,20 +182,46 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 					var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
 			}
 
-			.overview {
-				font-size: var(--roxy-text-base, 1rem);
-				color: var(--roxy-fg, #0a0a0a);
+			/* Every written field reads start to finish rather than being scanned, so
+			 * all three shapes take the same wider leading and the same paragraph
+			 * break; only the size differs. */
+			.column p,
+			.overview p,
+			.section p {
 				margin: 0;
+				line-height: 1.7;
+				color: var(--roxy-fg, #0a0a0a);
 			}
 
+			/* The standfirst over the topic sections: one size up from them and
+			 * spanning the whole card, the way a magazine runs a standfirst across
+			 * the columns it introduces. */
+			.overview {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.overview p {
+				font-size: var(--roxy-text-base, 1rem);
+			}
+
+			/* Each topic field is a column of prose rather than a phrase, so the
+			 * track floor is the narrowest one that still holds a readable line at
+			 * this size: a 250 word section takes about 24 lines in the track this
+			 * floor produces. The min() keeps the layout on a single column once
+			 * the card itself is narrower than the floor. */
 			.sections {
 				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-				gap: var(--roxy-space-md, 1rem);
+				grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+				gap: var(--roxy-space-lg, 1.5rem) var(--roxy-space-md, 1rem);
 			}
 
+			.section {
+				display: grid;
+				align-content: start;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
 			.section h3 {
-				margin: 0 0 var(--roxy-space-xs, 0.25rem) 0;
+				margin: 0;
 				font-size: var(--roxy-text-xs, 0.75rem);
 				color: var(--roxy-muted, #71717a);
 				font-weight: var(--roxy-weight-bold, 600);
@@ -185,9 +229,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				letter-spacing: 0.06em;
 			}
 			.section p {
-				margin: 0;
 				font-size: var(--roxy-text-sm, 0.875rem);
-				color: var(--roxy-fg, #0a0a0a);
 			}
 
 			.lucky {
@@ -346,18 +388,13 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				color: var(--roxy-fg, #0a0a0a);
 			}
 
-			/* The column: the same reading as the topic sections, run as one piece.
-			 * Wider leading than the sections, because it is read start to finish
-			 * rather than scanned. */
+			/* The column: the same reading as the topic sections, run as one piece. */
 			.column {
 				display: grid;
 				gap: var(--roxy-space-md, 1rem);
 			}
 			.column p {
-				margin: 0;
 				font-size: var(--roxy-text-base, 1rem);
-				line-height: 1.7;
-				color: var(--roxy-fg, #0a0a0a);
 			}
 
 			/* One row shape for the events trail and the four yearly lists, so a
@@ -605,65 +642,46 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 		if (asColumn) {
 			return d.column ? this.renderColumn(d.column) : nothing;
 		}
+		const overview = this.paragraphs(d.overview);
 		return html`${
-			d.overview
-				? html`<p class="overview" part="section overview">${d.overview}</p>`
+			overview.length
+				? html`<div class="overview" part="section overview">${overview}</div>`
 				: nothing
 		}
 		<div class="sections" part="section outlook">
-			${
-				d.love
-					? html`<div class="section">
-						<h3>${this.t('Love')}</h3>
-						<p>${d.love}</p>
-					</div>`
-					: nothing
-			}
-			${
-				d.career
-					? html`<div class="section">
-						<h3>${this.t('Career')}</h3>
-						<p>${d.career}</p>
-					</div>`
-					: nothing
-			}
-			${
-				d.health
-					? html`<div class="section">
-						<h3>${this.t('Health')}</h3>
-						<p>${d.health}</p>
-					</div>`
-					: nothing
-			}
-			${
-				d.finance
-					? html`<div class="section">
-						<h3>${this.t('Finance')}</h3>
-						<p>${d.finance}</p>
-					</div>`
-					: nothing
-			}
-			${
-				d.advice
-					? html`<div class="section">
-						<h3>${this.t('Advice')}</h3>
-						<p>${d.advice}</p>
-					</div>`
-					: nothing
-			}
+			${SECTION_FIELDS.map(([key, label]) => {
+				const paragraphs = this.paragraphs(d[key]);
+				if (!paragraphs.length) return nothing;
+				return html`<div class="section">
+					<h3>${this.t(label)}</h3>
+					${paragraphs}
+				</div>`;
+			})}
 		</div>`;
 	}
 
 	/** The column as the API set it: one paragraph per blank-line break, never one wall of text. */
 	private renderColumn(column: string) {
-		const paragraphs = column
+		const paragraphs = this.paragraphs(column);
+		if (paragraphs.length === 0) return nothing;
+		return html`<div class="column" part="section column">${paragraphs}</div>`;
+	}
+
+	/**
+	 * A written field as the paragraphs the API set in it.
+	 *
+	 * @remarks
+	 * Every long field separates its paragraphs with a blank line, and a blank line inside a text
+	 * node collapses to a single space, so a field rendered as one node loses every break the
+	 * editor made. The column and each topic section are the same reading split two ways, so both
+	 * go through here rather than the column alone.
+	 */
+	private paragraphs(text: string | undefined) {
+		return (text ?? '')
 			.split(/\n\s*\n/)
 			.map((p) => p.trim())
-			.filter(Boolean);
-		if (paragraphs.length === 0) return nothing;
-		return html`<div class="column" part="section column">
-			${paragraphs.map((p) => html`<p>${p}</p>`)}
-		</div>`;
+			.filter(Boolean)
+			.map((p) => html`<p>${p}</p>`);
 	}
 
 	/**
