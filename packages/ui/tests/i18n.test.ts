@@ -17,6 +17,10 @@ import {
 // The named export is read by the one end-to-end form assertion, so that test
 // cannot drift from the file it is proving.
 import { es } from '../src/locales/es.js';
+// Side effect: registers the Turkish catalogue, which is the one that spends two
+// different words on `Daytime` and `Day`, so it is the only page language that can
+// prove the two keys stayed apart.
+import { tr } from '../src/locales/tr.js';
 import { CENTER_GEOMETRY } from '../src/utils/bodygraph-render.js';
 import {
 	buildFormModel,
@@ -2073,6 +2077,126 @@ describe('a component renders its chrome in the page language', () => {
 		// The English source words are gone, not merely joined by Spanish ones.
 		expect(rendered).not.toContain('Natal house');
 		expect(rendered).not.toContain('No house cusps');
+		el.remove();
+	});
+});
+
+/**
+ * `Daytime` and `Day` are two senses, and only a render can tell them apart.
+ *
+ * @remarks
+ * The muhurta cards split a Vedic day at sunrise and sunset, so their two column headings name the DAYLIGHT hours against the dark ones. Every other site that writes a day word means the CALENDAR day: a lucky weekday, a day pillar beside a year and a month, the day layer of a composite score. English spells both `Day`, and a catalogue keyed by the English source therefore has one key for two concepts unless the sources are split.
+ *
+ * **Turkish is the language that proves it, because it is the one shipped catalogue that spends two nouns here.** `Gündüz` is the daylight half and nothing else, `Gün` is the calendar day, and the other six catalogues carry one noun for both senses, so in any of them a swapped key renders the right word by accident. Reading these three components in Turkish is the only assertion that can see the difference.
+ *
+ * Sabotage-verified: pointing either muhurta heading back at `Day`, or the numerology attribute at `Daytime`, turns one of these red while every static gate stays green.
+ */
+describe('the daylight half and the calendar day are two keys', () => {
+	/** Rendered text of every node matching a selector inside the shadow root. */
+	function parts(el: Element, selector: string): string[] {
+		const root = (el as unknown as { shadowRoot: ShadowRoot | null })
+			.shadowRoot;
+		return [...(root?.querySelectorAll(selector) ?? [])].map((n) =>
+			(n.textContent ?? '').trim(),
+		);
+	}
+
+	test('the shipped Turkish catalogue keeps the two senses apart', () => {
+		expect(tr.Daytime).toBe('Gündüz');
+		expect(tr.Day).toBe('Gün');
+	});
+
+	test('the choghadiya grid heads its two columns with the daytime word', async () => {
+		document.documentElement.lang = 'tr';
+		const el = document.createElement('roxy-choghadiya-grid');
+		(el as unknown as { data: unknown }).data = {
+			date: '2026-09-13',
+			dayChoghadiya: [
+				{
+					name: 'Amrit',
+					lord: 'Moon',
+					effect: 'Good',
+					start: '2026-09-13T06:12:00',
+					end: '2026-09-13T07:42:00',
+				},
+			],
+			nightChoghadiya: [
+				{
+					name: 'Rog',
+					lord: 'Mars',
+					effect: 'Bad',
+					start: '2026-09-13T18:24:00',
+					end: '2026-09-13T19:54:00',
+				},
+			],
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		expect(parts(el, '.period-heading')).toEqual(['Gündüz', 'Gece']);
+		el.remove();
+	});
+
+	test('the hora table labels its two columns with it too', async () => {
+		document.documentElement.lang = 'tr';
+		const el = document.createElement('roxy-hora-table');
+		(el as unknown as { data: unknown }).data = {
+			date: '2026-09-13',
+			dayHoras: [
+				{
+					planet: 'Sun',
+					number: 1,
+					start: '2026-09-13T06:12:00',
+					end: '2026-09-13T07:13:00',
+				},
+			],
+			nightHoras: [
+				{
+					planet: 'Jupiter',
+					number: 1,
+					start: '2026-09-13T18:24:00',
+					end: '2026-09-13T19:23:00',
+				},
+			],
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		expect(parts(el, '.section-label')).toEqual(['Gündüz', 'Gece']);
+		el.remove();
+	});
+
+	test('the numerology lucky weekday takes the calendar-day word instead', async () => {
+		document.documentElement.lang = 'tr';
+		const el = document.createElement('roxy-numerology-card');
+		(el as unknown as { data: unknown }).data = {
+			coreNumbers: { lifePath: 3 },
+			luckyAssociations: { day: 'Perşembe', element: 'Ateş' },
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const labels = parts(el, '[part~="lucky-associations"] dt');
+		expect(labels[0]).toBe('Gün');
+		expect(labels).not.toContain('Gündüz');
+		el.remove();
+	});
+
+	test('the day pillar reads the same calendar word as the Day Master beside it', async () => {
+		document.documentElement.lang = 'tr';
+		const el = document.createElement('roxy-bazi-chart');
+		(el as unknown as { data: unknown }).data = {
+			pillars: ['year', 'month', 'day', 'hour'].map((position) => ({
+				position,
+				stem: { chinese: '戊', pinyin: 'wu', element: 'Earth' },
+				branch: {
+					chinese: '辰',
+					pinyin: 'chen',
+					element: 'Earth',
+					animal: 'Dragon',
+				},
+			})),
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		expect(parts(el, '.pos')).toEqual(['Yıl', 'Ay', 'Gün', 'Saat']);
 		el.remove();
 	});
 });

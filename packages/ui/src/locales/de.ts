@@ -326,8 +326,12 @@ export const de: Record<ChromeString, string> = {
 	'Sidereal frame: {{frame}}': 'Siderischer Rahmen: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
 		'Siderischer Rahmen: {{frame}}, {{degrees}}° abgezogen',
-	Day: 'Tag',
+
+	// German spends one noun on both senses, so the two keys carry the same
+	// word on purpose: the daylight half against the night, and the calendar day.
+	Daytime: 'Tag',
 	Night: 'Nacht',
+	Day: 'Tag',
 	Planet: 'Planet',
 	Hardness: 'Härte',
 	Vibration: 'Schwingung',
@@ -802,6 +806,7 @@ export const de: Record<ChromeString, string> = {
 	'{{positive}} positive against {{negative}} negative':
 		'{{positive}} positive gegen {{negative}} negative',
 	'level {{level}} {{grade}}': 'Stufe {{level}} {{grade}}',
+	'Combined score': 'Gesamtwertung',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', bestimmt {{sections}}',
 	'Energy {{value}}/10': 'Energie {{value}}/10',

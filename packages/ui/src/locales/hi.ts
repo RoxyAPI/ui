@@ -340,8 +340,13 @@ export const hi: Record<ChromeString, string> = {
 	'Sidereal frame: {{frame}}': 'निरयण पद्धति: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
 		'निरयण पद्धति: {{frame}}, {{degrees}}° घटाया गया',
-	Day: 'दिन',
+
+	// Hindi spends one noun on both senses, so the two keys carry the same word on
+	// purpose: the panchang heads the daylight muhurtas with it and measures the
+	// whole day from sunrise with it.
+	Daytime: 'दिन',
 	Night: 'रात',
+	Day: 'दिन',
 	Planet: 'ग्रह',
 	Hardness: 'कठोरता',
 	Vibration: 'कंपन',
@@ -812,6 +817,7 @@ export const hi: Record<ChromeString, string> = {
 	'{{positive}} positive against {{negative}} negative':
 		'{{positive}} अनुकूल बनाम {{negative}} प्रतिकूल',
 	'level {{level}} {{grade}}': 'स्तर {{level}} {{grade}}',
+	'Combined score': 'समग्र अंक',
 	Dasha: 'दशा',
 	', governs {{sections}}': ', निर्धारित करता है {{sections}}',
 	'Energy {{value}}/10': 'ऊर्जा {{value}}/10',

@@ -327,8 +327,14 @@ export const tr: Record<ChromeString, string> = {
 	'Sidereal frame: {{frame}}': 'Sideral çerçeve: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
 		'Sideral çerçeve: {{frame}}, {{degrees}}° çıkarıldı',
-	Day: 'Gündüz',
+
+	// The one catalogue here that splits the two senses. `Gündüz` is the daylight
+	// half against the night and nothing else; the calendar day is `Gün`, which is
+	// the word `Gün Efendisi` and the `Yıl` / `Ay` / `Saat` pillar row below already
+	// spend on it.
+	Daytime: 'Gündüz',
 	Night: 'Gece',
+	Day: 'Gün',
 	Planet: 'Gezegen',
 	Hardness: 'Sertlik',
 	Vibration: 'Titreşim',
@@ -800,6 +806,7 @@ export const tr: Record<ChromeString, string> = {
 	'{{positive}} positive against {{negative}} negative':
 		'{{negative}} olumsuza karşı {{positive}} olumlu',
 	'level {{level}} {{grade}}': 'seviye {{level}} {{grade}}',
+	'Combined score': 'Genel puan',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', {{sections}} bölümlerini belirler',
 	'Energy {{value}}/10': 'Enerji {{value}}/10',

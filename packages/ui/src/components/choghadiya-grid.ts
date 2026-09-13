@@ -183,7 +183,7 @@ export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
 
 			<div class="cho-grid" part="table">
 				<section class="period-col" aria-label=${this.t('Day muhurta periods')}>
-					<h3 class="period-heading">${this.t('Day')}</h3>
+					<h3 class="period-heading">${this.t('Daytime')}</h3>
 					<div role="list" aria-label=${this.t('Daytime choghadiya')}>
 						${
 							dayChoghadiya && dayChoghadiya.length > 0

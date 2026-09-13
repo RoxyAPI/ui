@@ -13,6 +13,8 @@ type Graha = Daily['grahas'][number];
 type Limb = Daily['panchanga']['tithi'];
 type Finance = NonNullable<Daily['areas']['finance']>;
 type FinanceLink = NonNullable<Finance['drivers']>[number];
+type Composite = NonNullable<Finance['composite']>;
+type CompositeLayer = Composite['layers'][number];
 
 /**
  * The six graha states in the order a reader scans them, each beside the English source its label is looked up by.
@@ -39,6 +41,18 @@ const BAND_LABEL: Record<NonNullable<Daily['verdict']>, ChromeString> = {
 	strong: 'Strong',
 	moderate: 'Moderate',
 	weak: 'Weak',
+};
+
+/**
+ * The three terms the finance mean is taken over, each beside the English source its label is looked up by.
+ *
+ * @remarks
+ * Keyed by the response enum, so a fourth term added upstream fails to compile here rather than rendering its raw wire value. The order on screen is the order the response publishes, never this record.
+ */
+const LAYER_LABEL: Record<CompositeLayer['layer'], ChromeString> = {
+	day: 'Day',
+	finance: 'Finance',
+	natal: 'Natal',
 };
 
 /** The three dasha levels the ladder can carry. */
@@ -299,6 +313,30 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);
 				line-height: var(--roxy-leading-normal, 1.5);
+			}
+			.composite {
+				display: grid;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			/* Words and numbers on a wrapping row. The terms of the mean are drawn as
+			 * text for the same reason the day score is: a filled bar or a ring reads
+			 * a rare-high scale as a bad day. */
+			.layers {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: grid;
+				gap: 0.2rem;
+				font-size: var(--roxy-text-sm, 0.875rem);
+			}
+			.layers li {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: baseline;
+				gap: 0.2rem var(--roxy-space-sm, 0.5rem);
+			}
+			.layers .band {
+				color: var(--roxy-secondary, #475569);
 			}
 		`,
 	];
@@ -564,7 +602,34 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 						: nothing
 				}
 			</div>
+			${this.renderComposite(f.composite)}
 		</section>`;
+	}
+
+	/**
+	 * The mean of the day, this area and the natal chart, with each term printed under it.
+	 *
+	 * @remarks
+	 * The band leads and the terms follow, the same order the card reads the day in, so the answer is a word and the numbers are the evidence for it. Nothing is drawn when the object is absent: the running lords reaching none of the six houses, and a latitude where the cusps this area is read from have no solution, are both questions that do not apply rather than a score of zero.
+	 */
+	private renderComposite(c: Composite | null | undefined) {
+		if (!c) return nothing;
+		return html`<div class="composite">
+			<h3>${this.t('Combined score')}</h3>
+			<div class="verdict-row">
+				<span class="verdict ${c.band}">${this.t(BAND_LABEL[c.band])}</span>
+				<span class="evidence">${c.score}</span>
+			</div>
+			<ul class="layers">
+				${c.layers.map(
+					(l) => html`<li>
+						<span>${this.t(LAYER_LABEL[l.layer])}</span>
+						<span class="evidence">${l.score}</span>
+						<span class="band">${this.t(BAND_LABEL[l.band])}</span>
+					</li>`,
+				)}
+			</ul>
+		</div>`;
 	}
 
 	/** The dasha ladder running under the day. */

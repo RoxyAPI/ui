@@ -142,10 +142,10 @@ const DAY = {
 	],
 	areas: {
 		finance: {
-			score: 0,
-			band: 'weak',
-			positive: 0,
-			negative: 7,
+			score: 50,
+			band: 'strong',
+			positive: 2,
+			negative: 2,
 			drivers: [],
 			cautions: [
 				{
@@ -156,10 +156,22 @@ const DAY = {
 					dashaLevels: ['mahadasha'],
 				},
 			],
+			// The mean of the three numbers under it, and each term is one the
+			// response prints elsewhere: the day score, the area score above, and the
+			// share of the natal wealth verdicts that speak for the native.
+			composite: {
+				score: 24,
+				band: 'weak',
+				layers: [
+					{ layer: 'day', score: 22, band: 'weak' },
+					{ layer: 'finance', score: 50, band: 'strong' },
+					{ layer: 'natal', score: 0, band: 'weak' },
+				],
+			},
 			natal: {},
 		},
 	},
-	score: 0,
+	score: 22,
 	verdict: 'weak',
 	tally: [
 		{ state: 'void', count: 1 },
@@ -205,6 +217,50 @@ describe('the vedic daily card renders the whole response', () => {
 		expect(body).toContain('0 of 9 grahas support this day');
 		expect(body).not.toContain('0%');
 		expect(root(el).querySelector('progress, meter')).toBeNull();
+	});
+
+	test('the finance composite reads as a band over its three terms', async () => {
+		// The mean is only worth printing if the division can be redone off the
+		// card, so every term is a row of its own with the score that went in.
+		const el = await mount(DAY);
+		const rows = [...root(el).querySelectorAll('.layers li')].map((li) =>
+			(li.textContent ?? '').replace(/\s+/g, ' ').trim(),
+		);
+		expect(rows).toEqual(['Day 22 Weak', 'Finance 50 Strong', 'Natal 0 Weak']);
+		expect(
+			root(el).querySelector('.composite .verdict')?.textContent?.trim(),
+		).toBe('Weak');
+		expect(text(el)).toContain('Combined score');
+	});
+
+	test('the composite is never drawn as a meter and never as a percent', async () => {
+		// Same scale as the day score and the same reason: a filled bar or a ring
+		// reads a rare-high number as a bad day, and none of these values is a
+		// percentage of anything a reader can act on.
+		const el = await mount(DAY);
+		expect(text(el)).not.toContain('%');
+		expect(root(el).querySelector('progress, meter')).toBeNull();
+	});
+
+	test('a day with no composite renders no combined score at all', async () => {
+		// Null is not a low score. The running lords reach none of the six houses,
+		// or the cusps this area is read from have no solution at this latitude,
+		// and averaging either as zero would print a verdict nobody calculated. The
+		// absent case is the same picture on purpose, since that is every response
+		// captured before the field existed.
+		const { composite: _drop, ...withoutKey } = DAY.areas.finance ?? {};
+		for (const finance of [
+			{ ...DAY.areas.finance, composite: null },
+			withoutKey,
+		]) {
+			const el = await mount({ ...DAY, areas: { finance } });
+			expect(root(el).querySelectorAll('.layers li').length).toBe(0);
+			const body = text(el);
+			expect(body).not.toContain('Combined score');
+			// The rest of the area is untouched.
+			expect(body).toContain('Cautions');
+			expect(body).toContain('2 positive against 2 negative');
+		}
 	});
 
 	test('a graha with no Bhinnashtakavarga is not reported as unfavourable', async () => {

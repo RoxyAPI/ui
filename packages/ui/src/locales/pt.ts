@@ -318,8 +318,13 @@ export const pt: Record<ChromeString, string> = {
 	'Sidereal frame: {{frame}}': 'Referencial sideral: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
 		'Referencial sideral: {{frame}}, {{degrees}}° subtraídos',
-	Day: 'Dia',
+
+	// Portuguese spends one noun on both senses, so the two keys carry the same
+	// word on purpose. The adjective pair is the near miss: it names the hours
+	// rather than the half of the day they fill.
+	Daytime: 'Dia',
 	Night: 'Noite',
+	Day: 'Dia',
 	Planet: 'Planeta',
 	Hardness: 'Dureza',
 	Vibration: 'Vibração',
@@ -794,6 +799,7 @@ export const pt: Record<ChromeString, string> = {
 	'{{positive}} positive against {{negative}} negative':
 		'{{positive}} positivas contra {{negative}} negativas',
 	'level {{level}} {{grade}}': 'nível {{level}} {{grade}}',
+	'Combined score': 'Pontuação combinada',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', determina {{sections}}',
 	'Energy {{value}}/10': 'Energia {{value}}/10',

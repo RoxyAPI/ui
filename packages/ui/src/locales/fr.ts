@@ -331,8 +331,12 @@ export const fr: Record<ChromeString, string> = {
 	'Sidereal frame: {{frame}}': 'Cadre sidéral : {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
 		'Cadre sidéral : {{frame}}, {{degrees}}° soustraits',
-	Day: 'Jour',
+
+	// French spends one noun on both senses, so the two keys carry the same word
+	// on purpose, which is also the pair a planetary-hours table prints.
+	Daytime: 'Jour',
 	Night: 'Nuit',
+	Day: 'Jour',
 	Planet: 'Planète',
 	Hardness: 'Dureté',
 	Vibration: 'Vibration',
@@ -807,6 +811,7 @@ export const fr: Record<ChromeString, string> = {
 	'{{positive}} positive against {{negative}} negative':
 		'{{positive}} positives contre {{negative}} négatives',
 	'level {{level}} {{grade}}': 'niveau {{level}} {{grade}}',
+	'Combined score': 'Score combiné',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', détermine {{sections}}',
 	'Energy {{value}}/10': 'Énergie {{value}}/10',

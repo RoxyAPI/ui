@@ -329,8 +329,19 @@ export const CHROME_STRINGS = [
 	// The sidereal frame caption, shared by every Vedic card that carries a frame.
 	'Sidereal frame: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted',
-	'Day',
+
+	// The two halves a Vedic day is split into for muhurta. Both the choghadiya
+	// grid and the hora table run one column from sunrise to sunset and one from
+	// sunset to sunrise, so this pair names the DAYLIGHT hours against the dark
+	// ones.
+	'Daytime',
 	'Night',
+
+	// The calendar day, which is a different sense and a different word in any
+	// language that spends two: the numerology lucky weekday, the zodiac card
+	// daily relation, the day layer of the Vedic daily composite, and the day
+	// pillar that sits beside `Year`, `Month` and `Hour` below.
+	'Day',
 
 	// Hora table and the Vedic rashi chart.
 	'Hora',
@@ -872,6 +883,11 @@ export const CHROME_STRINGS = [
 	// the Moon opens and closes inside one day, and the finance connections. The
 	// state and band words are looked up through records keyed by the response
 	// enums, so a value added upstream fails to compile rather than printing raw.
+	// `Combined score` heads the mean of the day, the area and the natal chart. It
+	// says combined rather than composite because a composite chart is a different
+	// technique, and no catalogue may translate it with the word for a SUM, since
+	// the value is a mean of the three terms printed under it. Those three terms
+	// take the `Day`, `Finance` and `Natal` entries already catalogued above.
 	'Vedic daily',
 	'Vedic daily reading',
 	'{{supportive}} of {{evaluated}} grahas support this day',
@@ -900,6 +916,7 @@ export const CHROME_STRINGS = [
 	'Cautions',
 	'{{positive}} positive against {{negative}} negative',
 	'level {{level}} {{grade}}',
+	'Combined score',
 	'Dasha',
 	', governs {{sections}}',
 

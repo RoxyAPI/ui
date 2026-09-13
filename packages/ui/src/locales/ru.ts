@@ -320,8 +320,12 @@ export const ru: Record<ChromeString, string> = {
 	'Sidereal frame: {{frame}}': 'Сидерическая система: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
 		'Сидерическая система: {{frame}}, вычтено {{degrees}}°',
-	Day: 'День',
+
+	// Russian spends one noun on both senses, so the two keys carry the same word
+	// on purpose. `Сутки` is the 24-hour unit and is the wrong half at both sites.
+	Daytime: 'День',
 	Night: 'Ночь',
+	Day: 'День',
 	Planet: 'Планета',
 	Hardness: 'Твёрдость',
 	Vibration: 'Вибрация',
@@ -793,6 +797,7 @@ export const ru: Record<ChromeString, string> = {
 	'{{positive}} positive against {{negative}} negative':
 		'{{positive}} положительных против {{negative}} отрицательных',
 	'level {{level}} {{grade}}': 'уровень {{level}} {{grade}}',
+	'Combined score': 'Сводный балл',
 	Dasha: 'Даша',
 	', governs {{sections}}': ', определяет {{sections}}',
 	'Energy {{value}}/10': 'Энергия {{value}}/10',

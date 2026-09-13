@@ -51,10 +51,23 @@ if (SPEC_FILE) {
 	}
 }
 
+const PROD_ORIGIN = 'https://roxyapi.com';
+
 // Patch the server URL so generated client examples point at production.
-const obj = spec as { servers?: Array<{ url?: string }> };
+const obj = spec as {
+	servers?: Array<{ url?: string }>;
+	info?: { contact?: { url?: string } };
+};
 if (obj?.servers?.[0]?.url === '/api/v2') {
-	obj.servers[0].url = 'https://roxyapi.com/api/v2';
+	obj.servers[0].url = `${PROD_ORIGIN}/api/v2`;
+}
+
+// An API answering on a developer machine writes its own origin into the
+// contact link, so the committed contract would carry a URL no reader can open.
+// Same normalisation as the server URL above, and a no-op on a production spec.
+const contact = obj?.info?.contact;
+if (contact?.url?.startsWith('http://localhost')) {
+	contact.url = new URL(new URL(contact.url).pathname, PROD_ORIGIN).toString();
 }
 
 await mkdir('specs', { recursive: true });

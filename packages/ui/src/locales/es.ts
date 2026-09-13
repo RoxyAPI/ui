@@ -339,8 +339,13 @@ export const es: Record<ChromeString, string> = {
 	'Sidereal frame: {{frame}}': 'Marco sideral: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
 		'Marco sideral: {{frame}}, {{degrees}}° restados',
-	Day: 'Día',
+
+	// Spanish spends one noun on both senses, so the two keys carry the same
+	// word on purpose. The adjective pair is the near miss: it would not agree with
+	// the noun beside it.
+	Daytime: 'Día',
 	Night: 'Noche',
+	Day: 'Día',
 	Planet: 'Planeta',
 	Hardness: 'Dureza',
 	Vibration: 'Vibración',
@@ -814,6 +819,7 @@ export const es: Record<ChromeString, string> = {
 	'{{positive}} positive against {{negative}} negative':
 		'{{positive}} positivas frente a {{negative}} negativas',
 	'level {{level}} {{grade}}': 'nivel {{level}} {{grade}}',
+	'Combined score': 'Puntuación combinada',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', determina {{sections}}',
 	'Energy {{value}}/10': 'Energía {{value}}/10',
