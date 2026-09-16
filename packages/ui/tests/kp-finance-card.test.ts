@@ -270,6 +270,11 @@ describe('the KP daily finance card renders the whole response', () => {
 			.querySelector('[part~="cusps"] .evidence')
 			?.textContent?.replace(/\s+/g, ' ');
 		expect(head).toContain('Weight 30%');
+		expect(
+			root(el)
+				.querySelector('[part~="dasha"] tbody tr td:last-child')
+				?.textContent?.trim(),
+		).toBe('10%');
 		expect(head).toContain('Score 60');
 	});
 
@@ -290,9 +295,11 @@ describe('the KP daily finance card renders the whole response', () => {
 			(r) => (r.textContent ?? '').replace(/\s+/g, ' ').trim(),
 		);
 		expect(rows[0]).toContain('Mahadasha');
-		expect(rows[0]).toContain('retrograde');
+		const marks = [
+			...root(el).querySelectorAll('[part~="dasha"] tbody tr'),
+		].map((r) => r.querySelector('.retro')?.getAttribute('aria-label') ?? null);
+		expect(marks).toEqual(['retrograde', null]);
 		expect(rows[1]).toContain('Sookshma');
-		expect(rows[1]).not.toContain('retrograde');
 	});
 
 	test('a Moon window is the wall clock of the request timezone, not the viewer', async () => {
@@ -313,6 +320,10 @@ describe('the KP daily finance card renders the whole response', () => {
 		expect(body).not.toContain('Best window');
 		expect(body).toContain('Worst windows');
 		expect(root(el).querySelectorAll('.window.worst').length).toBe(2);
+		// The range is the shared formatter's, never a hand-typed dash.
+		expect(
+			root(el).querySelector('.window.worst small')?.textContent?.trim(),
+		).toBe('2:22 AM - 3:53 AM');
 	});
 
 	test('a favourable window is lifted out of the table when the day has one', async () => {

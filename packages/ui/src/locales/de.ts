@@ -835,6 +835,7 @@ export const de: Record<ChromeString, string> = {
 	'Worst windows': 'Schlechteste Zeitfenster',
 	// The form group over the four layer weights, in the words the request field label prints.
 	Weights: 'Gewichtung der Ebenen',
+	Points: 'Punkte',
 
 	'Energy {{value}}/10': 'Energie {{value}}/10',
 	'Energy {{value}} of 10': 'Energie {{value}} von 10',

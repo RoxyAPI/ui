@@ -9,7 +9,9 @@ import {
 	formatDateTime,
 	formatList,
 	formatNumber,
+	formatPercent,
 	formatTime,
+	formatTimeRange,
 } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 
@@ -410,7 +412,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 		return html`<div class="block-head">
 				<h3>${this.t(LAYER_LABEL[key])}</h3>
 				<span class="evidence">
-					${this.t('Weight')} ${formatNumber(locale, layer.weight, 0)}% · ${this.t('Score')}
+					${this.t('Weight')} ${formatPercent(locale, layer.weight, 0)} · ${this.t('Score')}
 					${formatNumber(locale, layer.score, 1)}
 				</span>
 			</div>
@@ -451,8 +453,8 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 				<tr>
 					<th scope="col">${this.t('Level')}</th>
 					<th scope="col">${this.t('Lord')}</th>
-					<th scope="col">${this.t('From')}</th>
-					<th scope="col">${this.t('To')}</th>
+					<th scope="col">${this.t('Start')}</th>
+					<th scope="col">${this.t('End')}</th>
 					<th scope="col">${this.t('Verdict')}</th>
 					<th scope="col">${this.t('Score')}</th>
 					<th scope="col">${this.t('Weight')}</th>
@@ -467,7 +469,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 						<td>${formatDateTime(locale, r.endDate)}</td>
 						<td>${this.verdictChip(r.verdict)}</td>
 						<td class="num">${formatNumber(locale, r.score, 0)}</td>
-						<td class="num">${formatNumber(locale, r.weight, 0)}%</td>
+						<td class="num">${formatPercent(locale, r.weight, 0)}</td>
 					</tr>`,
 				)}
 			</tbody>
@@ -500,8 +502,8 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 		return html`<table>
 			<thead>
 				<tr>
-					<th scope="col">${this.t('From')}</th>
-					<th scope="col">${this.t('To')}</th>
+					<th scope="col">${this.t('Start')}</th>
+					<th scope="col">${this.t('End')}</th>
 					<th scope="col">${this.t('Sub lord')}</th>
 					<th scope="col">${this.t('Verdict')}</th>
 					<th scope="col">${this.t('Score')}</th>
@@ -535,7 +537,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 		const window = (w: WindowRow, kind: 'best' | 'worst') =>
 			html`<span class="window ${kind}">
 				<span>${this.glyphName(w.subLord)}</span>
-				<small>${formatTime(locale, w.from)} — ${formatTime(locale, w.to)}</small>
+				<small>${formatTimeRange(locale, { start: w.from, end: w.to })}</small>
 			</span>`;
 		return html`<section class="block" part="section windows">
 			<dl class="facts">
@@ -559,12 +561,17 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 		</section>`;
 	}
 
-	/** A planet with its glyph in front, and the retrograde mark after it where the row says so. */
+	/**
+	 * A planet with its glyph in front, and the retrograde mark after it where the row says so.
+	 *
+	 * @remarks
+	 * The mark is the symbol the ephemeris and transit tables draw, with the catalogued word as its accessible name rather than printed: printed after a name, an adjective has to agree with that name in the languages that inflect it, and a symbol does not.
+	 */
 	private glyphName(name: string, retrograde = false) {
 		const glyph = planetGlyph(name);
 		return html`${glyph ? html`<span class="glyph" aria-hidden="true">${glyph}</span>` : nothing}${name}${
 			retrograde
-				? html` <span class="retro">${this.t('retrograde')}</span>`
+				? html` <span class="retro" aria-label=${this.t('retrograde')}>&#8478;</span>`
 				: nothing
 		}`;
 	}

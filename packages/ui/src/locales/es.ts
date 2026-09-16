@@ -462,7 +462,8 @@ export const es: Record<ChromeString, string> = {
 	'Guna Milan score': 'Puntuación de Guna Milan',
 	Koota: 'Koota',
 	Progress: 'Progreso',
-	Score: 'Puntos',
+	// The 0 to 100 rating a KP card prints; the koota tally is `Points`.
+	Score: 'Puntuación',
 	'{{dosha}} cancelled': '{{dosha}} cancelado',
 	'Moon phase calendar': 'Calendario de fases lunares',
 	'Current moon phase': 'Fase lunar actual',
@@ -848,6 +849,7 @@ export const es: Record<ChromeString, string> = {
 	'Worst windows': 'Peores ventanas',
 	// The form group over the four layer weights, in the words the request field label prints.
 	Weights: 'Ponderación de capas',
+	Points: 'Puntos',
 	'Energy {{value}}/10': 'Energía {{value}}/10',
 	'Energy {{value}} of 10': 'Energía {{value}} de 10',
 	Health: 'Salud',

@@ -848,6 +848,7 @@ export const hi: Record<ChromeString, string> = {
 	'Worst windows': 'सबसे खराब अवधियाँ',
 	// The form group over the four layer weights, in the words the request field label prints.
 	Weights: 'परत भार',
+	Points: 'अंक',
 	'Energy {{value}}/10': 'ऊर्जा {{value}}/10',
 	'Energy {{value}} of 10': '10 में से ऊर्जा {{value}}',
 	Health: 'स्वास्थ्य',
@@ -898,7 +899,8 @@ export const hi: Record<ChromeString, string> = {
 	Mahadasha: 'महादशा',
 	Antardasha: 'अंतर्दशा',
 	Pratyantardasha: 'प्रत्यंतर्दशा',
-	Sookshma: 'सूक्ष्म',
+	// With दशा like its three siblings; bare सूक्ष्म is an adjective (subtle).
+	Sookshma: 'सूक्ष्म दशा',
 	Prana: 'प्राण',
 	'Dasha timeline': 'दशा कालक्रम',
 	Timeline: 'कालक्रम',

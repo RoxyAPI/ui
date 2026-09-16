@@ -837,6 +837,7 @@ export const tr: Record<ChromeString, string> = {
 	'Worst windows': 'En kötü pencereler',
 	// The form group over the four layer weights, in the words the request field label prints.
 	Weights: 'Katman ağırlıkları',
+	Points: 'Puan',
 
 	'Energy {{value}}/10': 'Enerji {{value}}/10',
 	'Energy {{value}} of 10': '10 üzerinden {{value}} enerji',

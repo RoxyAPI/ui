@@ -1363,6 +1363,10 @@ export const CHROME_STRINGS = [
 	// The form group over the four layer weights of that request, a tenth
 	// object-valued body property beside `Domain Weights`.
 	'Weights',
+	// The Guna Milan koota column, a tally of points out of a maximum. `Score`
+	// is the 0 to 100 rating a KP card prints, and the two are different nouns
+	// in Spanish, Portuguese and French.
+	'Points',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

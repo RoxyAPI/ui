@@ -1172,7 +1172,8 @@ export const ru: Record<ChromeString, string> = {
 	Gain: 'Прибыль',
 	Loss: 'Потери',
 	Cusps: 'Куспиды',
-	'Ruling planets': 'Управляющие планеты',
+	// The request form prints the same word for the layer weight, and `управляющие планеты` is what Russian copy calls the rulers of the SIGNS, two tables above a sign lord column.
+	'Ruling planets': 'Правящие планеты',
 	'Moon windows': 'Окна Луны',
 	'Sub lord': 'Суб-лорд',
 	'Star lord': 'Управитель звезды',
@@ -1184,6 +1185,7 @@ export const ru: Record<ChromeString, string> = {
 	'Worst windows': 'Худшие окна',
 	// The form group over the four layer weights, in the words the request field label prints.
 	Weights: 'Веса слоев',
+	Points: 'Баллы',
 };
 
 registerLocale('ru', ru);
