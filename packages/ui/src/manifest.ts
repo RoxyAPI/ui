@@ -442,6 +442,19 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Vedic',
 	},
 	{
+		pascal: 'RoxyKpFinanceCard',
+		tag: 'roxy-kp-finance-card',
+		slug: 'kp-finance-card',
+		heading: 'KP daily finance',
+		description:
+			'One native, one day scored for money: the band, the gain and loss significators, and the four sub lord layers behind the score',
+		docsLabel: 'Vedic',
+		endpointLabel: 'POST /vedic-astrology/kp/daily-finance',
+		docsSummary:
+			'KP daily finance reading with the cusp sub lords, the running dasha lords, the ruling planets and the Moon sub lord windows each scored against the gain and loss houses, weighed into one band for the day',
+		topic: 'Vedic',
+	},
+	{
 		pascal: 'RoxyGocharaTable',
 		tag: 'roxy-gochara-table',
 		slug: 'gochara-table',

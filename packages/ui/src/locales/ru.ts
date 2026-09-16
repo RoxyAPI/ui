@@ -1158,6 +1158,32 @@ export const ru: Record<ChromeString, string> = {
 	Sitting: 'Тыл',
 	Straddling: 'Пограничный',
 	'Period {{n}}': 'Период {{n}}',
+
+	// KP daily finance card. `Суб-лорд` is the loanword Russian KP copy prints;
+	// the two native lords take the genitive so the three columns read in parallel.
+	'KP daily finance': 'Финансы дня по KP',
+	// The warning-label word: a call for care, not a loss.
+	Caution: 'Осторожно',
+	// The instant, never a duration, which `Время расчёта` can also read as.
+	'Reading moment': 'Момент расчёта',
+	'Gain houses': 'Дома прибыли',
+	'Loss houses': 'Дома потерь',
+	Significators: 'Сигнификаторы',
+	Gain: 'Прибыль',
+	Loss: 'Потери',
+	Cusps: 'Куспиды',
+	'Ruling planets': 'Управляющие планеты',
+	'Moon windows': 'Окна Луны',
+	'Sub lord': 'Суб-лорд',
+	'Star lord': 'Управитель звезды',
+	'Sign lord': 'Управитель знака',
+	Verdict: 'Вердикт',
+	// One word serves the dasha level here and the significator tier above.
+	Level: 'Уровень',
+	'Best window': 'Лучшее окно',
+	'Worst windows': 'Худшие окна',
+	// The form group over the four layer weights, in the words the request field label prints.
+	Weights: 'Веса слоев',
 };
 
 registerLocale('ru', ru);

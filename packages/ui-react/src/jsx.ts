@@ -188,6 +188,8 @@ declare module 'react' {
 			'roxy-heliacal-table': RoxyElement<RoxyBaseAttributes>;
 			/** `<RoxyVedicDaily>` as a tag. */
 			'roxy-vedic-daily': RoxyElement<RoxyBaseAttributes>;
+			/** `<RoxyKpFinanceCard>` as a tag. */
+			'roxy-kp-finance-card': RoxyElement<RoxyBaseAttributes>;
 			/** `<RoxyGocharaTable>` as a tag. */
 			'roxy-gochara-table': RoxyElement<RoxyBaseAttributes>;
 			/** `<RoxyBhavaBalaTable>` as a tag. */

@@ -822,6 +822,32 @@ export const es: Record<ChromeString, string> = {
 	'Combined score': 'Puntuación combinada',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', determina {{sections}}',
+
+	// KP daily finance card.
+	// del día, not de hoy: the card reads any civil date, not only today.
+	'KP daily finance': 'Finanzas KP del día',
+	Caution: 'Precaución',
+	'Reading moment': 'Momento de la lectura',
+	// Plural, as Spanish names the houses of gains and of losses.
+	'Gain houses': 'Casas de ganancias',
+	'Loss houses': 'Casas de pérdidas',
+	Significators: 'Significadores',
+	Gain: 'Ganancias',
+	Loss: 'Pérdidas',
+	Cusps: 'Cúspides',
+	'Ruling planets': 'Planetas regentes',
+	'Moon windows': 'Ventanas de la Luna',
+	// The KP three-lord chain keeps its own noun; Regente stays on the generic Lord column.
+	'Sub lord': 'Sub-señor',
+	'Star lord': 'Señor de la estrella',
+	'Sign lord': 'Señor del signo',
+	Verdict: 'Veredicto',
+	// The dasha depth; nivel also serves the significator tier, which Spanish spells the same.
+	Level: 'Nivel',
+	'Best window': 'Mejor ventana',
+	'Worst windows': 'Peores ventanas',
+	// The form group over the four layer weights, in the words the request field label prints.
+	Weights: 'Ponderación de capas',
 	'Energy {{value}}/10': 'Energía {{value}}/10',
 	'Energy {{value}} of 10': 'Energía {{value}} de 10',
 	Health: 'Salud',

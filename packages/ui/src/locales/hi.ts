@@ -820,6 +820,34 @@ export const hi: Record<ChromeString, string> = {
 	'Combined score': 'समग्र अंक',
 	Dasha: 'दशा',
 	', governs {{sections}}': ', निर्धारित करता है {{sections}}',
+
+	// KP daily finance card: the band, the two house sets, the four layers and
+	// the three lords of a cusp. KP is a proper name and stays Latin.
+	'KP daily finance': 'KP दैनिक वित्त',
+	Caution: 'सावधानी',
+	'Reading moment': 'फलादेश का समय',
+	// Genitive on both sets: the bare compound लाभ भाव names the eleventh house alone.
+	'Gain houses': 'लाभ के भाव',
+	'Loss houses': 'हानि के भाव',
+	Significators: 'कारक',
+	Gain: 'लाभ',
+	Loss: 'हानि',
+	Cusps: 'भाव संधियाँ',
+	// Not the plural of `Ruling planet` above: KP names the rulers of the moment
+	// with its own noun, and स्वामी is what the three lord columns beside it print.
+	'Ruling planets': 'शासक ग्रह',
+	// Names the sub lord, because bare Moon periods read as a dasha on a card
+	// that prints one.
+	'Moon windows': 'चंद्र उप-स्वामी अवधियाँ',
+	'Sub lord': 'उप-स्वामी',
+	'Star lord': 'नक्षत्र स्वामी',
+	'Sign lord': 'राशि स्वामी',
+	Verdict: 'निर्णय',
+	Level: 'स्तर',
+	'Best window': 'सर्वश्रेष्ठ अवधि',
+	'Worst windows': 'सबसे खराब अवधियाँ',
+	// The form group over the four layer weights, in the words the request field label prints.
+	Weights: 'परत भार',
 	'Energy {{value}}/10': 'ऊर्जा {{value}}/10',
 	'Energy {{value}} of 10': '10 में से ऊर्जा {{value}}',
 	Health: 'स्वास्थ्य',

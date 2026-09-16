@@ -616,6 +616,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			toolName: 'post_vedic_astrology_kp_chart',
 		},
 	],
+	'roxy-kp-finance-card': [
+		{
+			operationId: 'getKpDailyFinance',
+			method: 'POST',
+			path: '/vedic-astrology/kp/daily-finance',
+			toolName: 'post_vedic_astrology_kp_daily_finance',
+		},
+	],
 	'roxy-kp-planets-table': [
 		{
 			operationId: 'getKpPlanets',

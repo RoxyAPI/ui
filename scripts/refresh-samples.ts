@@ -522,6 +522,18 @@ async function main() {
 				date: '2026-02-03',
 			}),
 		),
+		// The same fixed day as the Vedic daily card, so the two Vedic day cards
+		// on the showcase read one sky and the committed preview is stable.
+		run('kp-finance-card', () =>
+			rawPost('vedic-astrology/kp/daily-finance', {
+				birthDate: PERSON1.date,
+				birthTime: PERSON1.time,
+				latitude: PERSON1.latitude,
+				longitude: PERSON1.longitude,
+				timezone: PERSON1.timezone,
+				date: '2026-02-03',
+			}),
+		),
 		run('transit-wheel', () =>
 			roxy.astrology.calculateTransitAspects({
 				body: {

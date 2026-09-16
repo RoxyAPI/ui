@@ -814,6 +814,32 @@ export const fr: Record<ChromeString, string> = {
 	'Combined score': 'Score combiné',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', détermine {{sections}}',
+
+	// KP daily finance card.
+	'KP daily finance': 'Finances KP du jour',
+	Caution: 'Prudence',
+	'Reading moment': 'Moment de la lecture',
+	'Gain houses': 'Maisons de gain',
+	'Loss houses': 'Maisons de perte',
+	Significators: 'Significateurs',
+	Gain: 'Gain',
+	Loss: 'Perte',
+	Cusps: 'Cuspides',
+	// The plural of this file `Ruling planet` on its one lord noun; `dominantes` is the strongest planet of a natal chart, a different technique. The request form prints the same word.
+	'Ruling planets': 'Planètes maîtresses',
+	'Moon windows': 'Fenêtres lunaires',
+	// One lord noun in this file, so the column sits beside Maître in the same table.
+	'Sub lord': 'Sous-maître',
+	// The nakshatra is the star, and this file already names its lord this way.
+	'Star lord': 'Maître du nakshatra',
+	'Sign lord': 'Maître du signe',
+	Verdict: 'Verdict',
+	// The dasha depth; couche is spent on the four scoring layers of this card.
+	Level: 'Niveau',
+	'Best window': 'Meilleure fenêtre',
+	'Worst windows': 'Pires fenêtres',
+	// The form group over the four layer weights, in the words the request field label prints.
+	Weights: 'Pondération des couches',
 	'Energy {{value}}/10': 'Énergie {{value}}/10',
 	'Energy {{value}} of 10': 'Énergie {{value}} sur 10',
 	Health: 'Santé',

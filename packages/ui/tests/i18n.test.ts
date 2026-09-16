@@ -1111,6 +1111,10 @@ describe('shipped locales', () => {
 				'Frictions',
 				'Interactions',
 				'Traits',
+				// The KP finance card: `Gain` and `Verdict` are the French words,
+				// spelled identically to the English.
+				'Gain',
+				'Verdict',
 			],
 			hi: ['ASC', 'ASC{{n}}', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and

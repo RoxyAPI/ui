@@ -600,6 +600,21 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'kp-finance-card',
+		tag: 'roxy-kp-finance-card',
+		seoLine: 'KP daily finance: the band, the gain and loss significators and the four sub lord layers behind the score',
+		sdkCall: `  const { data } = await roxy.vedicAstrology.getKpDailyFinance({
+    body: {
+      birthDate: '${PERSON1.date}',
+      birthTime: '${PERSON1.time}',
+      latitude: ${PERSON1.latitude},
+      longitude: ${PERSON1.longitude},
+      timezone: '${PERSON1.timezone}',
+      date: '2026-02-03',
+    },
+  });`,
+	}),
+	entry({
 		id: 'gochara',
 		tag: 'roxy-gochara-table',
 		seoLine: 'Vedic gochara transits with the Ashtakavarga kaksha verdict',

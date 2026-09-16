@@ -114,6 +114,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'shadbala-table': 'ShadbalaResponse',
 	'heliacal-table': 'HeliacalResponse',
 	'vedic-daily': 'GetVedicDailyReadingResponse',
+	'kp-finance-card': 'GetKpDailyFinanceResponse',
 	'gochara-table': 'CalculateTransitResponse',
 	'bhava-bala-table': 'BhavaBalaResponse',
 	'bhav-chalit-table': 'BhavChalitResponse',

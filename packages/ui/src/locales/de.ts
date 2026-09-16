@@ -809,6 +809,33 @@ export const de: Record<ChromeString, string> = {
 	'Combined score': 'Gesamtwertung',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', bestimmt {{sections}}',
+
+	// KP daily finance: the band, the two house sets, the four layers, the three
+	// lords of a cusp and the Moon windows a reader plans the day around.
+	'KP daily finance': 'KP-Finanzhoroskop',
+	Caution: 'Vorsicht',
+	'Reading moment': 'Deutungszeitpunkt',
+	'Gain houses': 'Gewinnhäuser',
+	'Loss houses': 'Verlusthäuser',
+	Significators: 'Signifikatoren',
+	Gain: 'Gewinn',
+	Loss: 'Verlust',
+	Cusps: 'Häuserspitzen',
+	// The plural of this file `Ruling planet`, and the heading a German KP calculator gives the section; the request form prints the same word.
+	'Ruling planets': 'Herrscherplaneten',
+	'Moon windows': 'Mondfenster',
+	'Sub lord': 'Sub-Lord',
+	// `Stern` is the fixed star in this file, so the nakshatra lord is named by the nakshatra.
+	'Star lord': 'Nakshatra-Herrscher',
+	'Sign lord': 'Zeichenherrscher',
+	Verdict: 'Einstufung',
+	// The dasha tier, kept apart from `Stufe`, which this file spends on the significator grade.
+	Level: 'Ebene',
+	'Best window': 'Bestes Zeitfenster',
+	'Worst windows': 'Schlechteste Zeitfenster',
+	// The form group over the four layer weights, in the words the request field label prints.
+	Weights: 'Gewichtung der Ebenen',
+
 	'Energy {{value}}/10': 'Energie {{value}}/10',
 	'Energy {{value}} of 10': 'Energie {{value}} von 10',
 	Health: 'Gesundheit',

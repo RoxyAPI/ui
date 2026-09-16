@@ -60,6 +60,7 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	getHeliacalVisibility: [{ component: 'roxy-heliacal-table' }],
 	calculateBhavaBala: [{ component: 'roxy-bhava-bala-table' }],
 	getVedicDailyReading: [{ component: 'roxy-vedic-daily' }],
+	getKpDailyFinance: [{ component: 'roxy-kp-finance-card' }],
 	calculateBhavChalit: [{ component: 'roxy-bhav-chalit-table' }],
 	calculateAspects: [{ component: 'roxy-aspects-table' }],
 	// The bi-wheel leads: a practitioner reads transits ON the chart, and the

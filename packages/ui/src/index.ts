@@ -63,6 +63,7 @@ export { RoxyHexagram } from './components/hexagram.js';
 export { RoxyHoraTable } from './components/hora-table.js';
 export { RoxyHoroscopeCard } from './components/horoscope-card.js';
 export { RoxyKpChart } from './components/kp-chart.js';
+export { RoxyKpFinanceCard } from './components/kp-finance-card.js';
 export { RoxyKpPlanetsTable } from './components/kp-planets-table.js';
 export { RoxyKpRulingPlanets } from './components/kp-ruling-planets.js';
 export { RoxyKuaCard } from './components/kua-card.js';

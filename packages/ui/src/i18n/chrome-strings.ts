@@ -1338,6 +1338,31 @@ export const CHROME_STRINGS = [
 	'Sitting',
 	'Straddling',
 	'Period {{n}}',
+
+	// KP daily finance card: the band the score falls in, the two house sets
+	// and the four layers the day is scored over, the three lords of a cusp,
+	// and the Moon windows a reader plans the day around.
+	'KP daily finance',
+	'Caution',
+	'Reading moment',
+	'Gain houses',
+	'Loss houses',
+	'Significators',
+	'Gain',
+	'Loss',
+	'Cusps',
+	'Ruling planets',
+	'Moon windows',
+	'Sub lord',
+	'Star lord',
+	'Sign lord',
+	'Verdict',
+	'Level',
+	'Best window',
+	'Worst windows',
+	// The form group over the four layer weights of that request, a tenth
+	// object-valued body property beside `Domain Weights`.
+	'Weights',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

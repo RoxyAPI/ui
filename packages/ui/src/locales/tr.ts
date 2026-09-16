@@ -809,6 +809,35 @@ export const tr: Record<ChromeString, string> = {
 	'Combined score': 'Genel puan',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', {{sections}} bölümlerini belirler',
+
+	// KP daily finance. The three lords take the `Yönetici` this catalogue already
+	// spends on `Lord`, never the loanword, which cannot inflect without an apostrophe.
+	'KP daily finance': 'KP günlük finans',
+	// An adjective like its four band siblings; `Uyarı` is what `Cautions` spends.
+	Caution: 'Temkinli',
+	'Reading moment': 'Yorum anı',
+	'Gain houses': 'Kazanç evleri',
+	'Loss houses': 'Kayıp evleri',
+	Significators: 'Signifikatörler',
+	Gain: 'Kazanç',
+	Loss: 'Kayıp',
+	Cusps: 'Ev başlangıçları',
+	'Ruling planets': 'Yönetici gezegenler',
+	'Moon windows': 'Ay pencereleri',
+	'Sub lord': 'Alt yönetici',
+	// KP says star where the Parashari cards say nakshatra, so the two stay apart.
+	'Star lord': 'Yıldız yöneticisi',
+	'Sign lord': 'Burç yöneticisi',
+	// A verdict is rendered, so not `Durum`, which `State` already spends.
+	Verdict: 'Hüküm',
+	// The dasha level: not `seviye`, the significator grade above, and not
+	// `katman`, the four layers this card weighs.
+	Level: 'Düzey',
+	'Best window': 'En iyi pencere',
+	'Worst windows': 'En kötü pencereler',
+	// The form group over the four layer weights, in the words the request field label prints.
+	Weights: 'Katman ağırlıkları',
+
 	'Energy {{value}}/10': 'Enerji {{value}}/10',
 	'Energy {{value}} of 10': '10 üzerinden {{value}} enerji',
 	Health: 'Sağlık',

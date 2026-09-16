@@ -152,6 +152,10 @@ export {
 } from './components/horoscope-card.js';
 export { RoxyKpChart, type RoxyKpChartProps } from './components/kp-chart.js';
 export {
+	RoxyKpFinanceCard,
+	type RoxyKpFinanceCardProps,
+} from './components/kp-finance-card.js';
+export {
 	RoxyKpPlanetsTable,
 	type RoxyKpPlanetsTableProps,
 } from './components/kp-planets-table.js';

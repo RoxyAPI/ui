@@ -802,6 +802,31 @@ export const pt: Record<ChromeString, string> = {
 	'Combined score': 'Pontuação combinada',
 	Dasha: 'Dasha',
 	', governs {{sections}}': ', determina {{sections}}',
+
+	// KP daily finance card.
+	'KP daily finance': 'Finanças KP do dia',
+	Caution: 'Cautela',
+	'Reading moment': 'Momento da leitura',
+	// Singular, as the form label over the same field already prints it.
+	'Gain houses': 'Casas de ganho',
+	'Loss houses': 'Casas de perda',
+	Significators: 'Significadores',
+	Gain: 'Ganho',
+	Loss: 'Perda',
+	Cusps: 'Cúspides',
+	'Ruling planets': 'Planetas regentes',
+	'Moon windows': 'Janelas lunares',
+	// The three lords keep the Regente this file spends on Lord, so the chain reads as one family beside the dasha table.
+	'Sub lord': 'Sub-regente',
+	'Star lord': 'Regente da estrela',
+	'Sign lord': 'Regente do signo',
+	Verdict: 'Veredito',
+	// The dasha depth; nível also serves the significator tier, which Portuguese spells the same, and camada is spent on the four layers.
+	Level: 'Nível',
+	'Best window': 'Melhor janela',
+	'Worst windows': 'Piores janelas',
+	// The form group over the four layer weights, in the words the request field label prints.
+	Weights: 'Pesos das camadas',
 	'Energy {{value}}/10': 'Energia {{value}}/10',
 	'Energy {{value}} of 10': 'Energia {{value}} de 10',
 	Health: 'Saúde',

@@ -353,6 +353,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Vedic"
   },
   {
+    "pascal": "RoxyKpFinanceCard",
+    "tag": "roxy-kp-finance-card",
+    "slug": "kp-finance-card",
+    "heading": "KP daily finance",
+    "description": "One native, one day scored for money: the band, the gain and loss significators, and the four sub lord layers behind the score",
+    "docsLabel": "Vedic",
+    "endpointLabel": "POST /vedic-astrology/kp/daily-finance",
+    "docsSummary": "KP daily finance reading with the cusp sub lords, the running dasha lords, the ruling planets and the Moon sub lord windows each scored against the gain and loss houses, weighed into one band for the day",
+    "topic": "Vedic"
+  },
+  {
     "pascal": "RoxyGocharaTable",
     "tag": "roxy-gochara-table",
     "slug": "gochara-table",
@@ -1415,6 +1426,14 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "toolName": "post_vedic_astrology_kp_chart"
     }
   ],
+  "roxy-kp-finance-card": [
+    {
+      "operationId": "getKpDailyFinance",
+      "method": "POST",
+      "path": "/vedic-astrology/kp/daily-finance",
+      "toolName": "post_vedic_astrology_kp_daily_finance"
+    }
+  ],
   "roxy-kp-planets-table": [
     {
       "operationId": "getKpPlanets",
@@ -2225,6 +2244,10 @@ window.ROXY_WIDGET_SNIPPETS = {
   "roxy-vedic-daily": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-daily data-endpoint=\"vedic-astrology/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-daily>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-daily\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+  },
+  "roxy-kp-finance-card": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-finance-card data-endpoint=\"vedic-astrology/kp/daily-finance\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-finance-card>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-finance-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
   },
   "roxy-gochara-table": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gochara-table data-endpoint=\"vedic-astrology/transit\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-gochara-table>",

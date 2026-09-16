@@ -319,6 +319,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		pascal: 'RoxyVedicDaily',
 		operationId: 'getVedicDailyReading',
 	},
+	post_vedic_astrology_kp_daily_finance: {
+		tag: 'roxy-kp-finance-card',
+		pascal: 'RoxyKpFinanceCard',
+		operationId: 'getKpDailyFinance',
+	},
 	post_vedic_astrology_transit: {
 		tag: 'roxy-gochara-table',
 		pascal: 'RoxyGocharaTable',
