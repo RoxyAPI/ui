@@ -193,6 +193,84 @@ describe('endpoint-form input registry rendering', () => {
 		el.remove();
 	});
 
+	test('with nothing required, groups and undefaulted fields render in the open and no disclosure is drawn', async () => {
+		const person = (group: string) =>
+			['fullName', 'year', 'lifePath'].map((name) => ({
+				key: `${group}.${name}`,
+				name,
+				group,
+				kind: name === 'fullName' ? ('text' as const) : ('number' as const),
+				required: false,
+			}));
+		const el = await mountForm(
+			{
+				title: 'Calculate compatibility',
+				hasLang: true,
+				fields: [...person('person1'), ...person('person2')],
+			},
+			{ 'data-endpoint': 'numerology/compatibility', method: 'POST' },
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.querySelector('details.advanced')).toBeNull();
+		expect(root.querySelectorAll('fieldset.person-group').length).toBe(2);
+		for (const key of ['person1.fullName', 'person1.year', 'person2.lifePath'])
+			expect(root.getElementById(`roxy-form-${key}`)).not.toBeNull();
+		expect(root.querySelector('button.submit')).not.toBeNull();
+		el.remove();
+	});
+
+	test('with nothing required, only the defaulted fields collapse under Advanced', async () => {
+		const el = await mountForm(
+			{
+				title: 'Calculate gematria',
+				hasLang: false,
+				fields: [
+					{ key: 'text', name: 'text', kind: 'text', required: false },
+					{
+						key: 'includeMatches',
+						name: 'includeMatches',
+						kind: 'toggle',
+						required: false,
+						default: true,
+					},
+				],
+			},
+			{ 'data-endpoint': 'kabbalah/gematria', method: 'POST' },
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		const advanced = root.querySelector('details.advanced');
+		expect(advanced).not.toBeNull();
+		expect(advanced?.querySelector('#roxy-form-includeMatches')).not.toBeNull();
+		expect(advanced?.querySelector('#roxy-form-text')).toBeNull();
+		expect(root.getElementById('roxy-form-text')).not.toBeNull();
+		el.remove();
+	});
+
+	test('a required field keeps every optional group under Advanced, defaulted or not', async () => {
+		const el = await mountForm(
+			{
+				title: 'Daily finance',
+				hasLang: false,
+				fields: [
+					{ key: 'date', name: 'date', kind: 'date', required: true },
+					{
+						key: 'weights.cusps',
+						name: 'cusps',
+						group: 'weights',
+						kind: 'number',
+						required: false,
+					},
+				],
+			},
+			{ 'data-endpoint': 'vedic-astrology/kp/daily-finance', method: 'POST' },
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		const advanced = root.querySelector('details.advanced');
+		expect(advanced?.querySelector('fieldset.person-group')).not.toBeNull();
+		expect(root.getElementById('roxy-form-date')).not.toBeNull();
+		el.remove();
+	});
+
 	test('location block shows a required mark when only timezone is required (bodygraph shape)', async () => {
 		// Bodygraph requires timezone but defaults latitude/longitude, so the single
 		// city-search input is still required (collectMissing blocks submit without it).
@@ -484,47 +562,85 @@ describe('every bound endpoint can be submitted from its form', () => {
 			>
 		)?.[path]?.[method.toLowerCase()];
 
-	test('no required parameter is left without a way to enter it', async () => {
+	/** Every bound endpoint's form model beside its mounted form, one at a time; the caller removes the element. */
+	async function* boundForms() {
 		const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
 			string,
 			OpenApiSchema
 		>;
-		const unreachable: string[] = [];
-		let checked = 0;
-
 		for (const [tag, bindings] of Object.entries(ENDPOINT_BINDINGS)) {
 			for (const b of bindings) {
 				const op = operation(b.path, b.method);
 				if (!op) continue;
-				const model = buildFormModel(op, schemas, b.path.replace(/^\//, ''));
-				const required = model.fields.filter((f) => f.required);
-				if (!required.length) continue;
-
-				const el = await mountForm(model, {
-					'data-endpoint': b.path.replace(/^\//, ''),
-					method: b.method.toUpperCase(),
-				});
-				const root = el.shadowRoot as ShadowRoot;
-				const hasCitySearch = !!root.querySelector('roxy-location-search');
-
-				for (const f of required) {
-					const rendered =
-						!!root.getElementById(`roxy-form-${f.key}`) ||
-						!!root.getElementById(`roxy-form-${f.key}-label`);
-					const covered =
-						rendered ||
-						SELF_SUPPLIED.has(f.name) ||
-						(hasCitySearch && BY_CITY_SEARCH.has(f.name));
-					if (!covered)
-						unreachable.push(`${tag} ${b.method} ${b.path} -> ${f.key}`);
-				}
-				checked++;
-				el.remove();
+				const endpoint = b.path.replace(/^\//, '');
+				const model = buildFormModel(op, schemas, endpoint);
+				yield {
+					label: `${tag} ${b.method} ${b.path}`,
+					model,
+					mount: () =>
+						mountForm(model, {
+							'data-endpoint': endpoint,
+							method: b.method.toUpperCase(),
+						}),
+				};
 			}
+		}
+	}
+
+	test('no required parameter is left without a way to enter it', async () => {
+		const unreachable: string[] = [];
+		let checked = 0;
+
+		for await (const { label, model, mount } of boundForms()) {
+			const required = model.fields.filter((f) => f.required);
+			if (!required.length) continue;
+
+			const el = await mount();
+			const root = el.shadowRoot as ShadowRoot;
+			const hasCitySearch = !!root.querySelector('roxy-location-search');
+
+			for (const f of required) {
+				const rendered =
+					!!root.getElementById(`roxy-form-${f.key}`) ||
+					!!root.getElementById(`roxy-form-${f.key}-label`);
+				const covered =
+					rendered ||
+					SELF_SUPPLIED.has(f.name) ||
+					(hasCitySearch && BY_CITY_SEARCH.has(f.name));
+				if (!covered) unreachable.push(`${label} -> ${f.key}`);
+			}
+			checked++;
+			el.remove();
 		}
 
 		// A binding list that stopped resolving would pass every assertion above.
 		expect(checked).toBeGreaterThan(50);
 		expect(unreachable).toEqual([]);
+	});
+
+	test('a form with nothing required still shows an input outside the disclosure', async () => {
+		const hidden: string[] = [];
+		let checked = 0;
+
+		for await (const { label, model, mount } of boundForms()) {
+			const fillable = model.fields.filter(
+				(f) => !SELF_SUPPLIED.has(f.name) && f.default === undefined,
+			);
+			if (model.fields.some((f) => f.required) || !fillable.length) continue;
+
+			const el = await mount();
+			const root = el.shadowRoot as ShadowRoot;
+			const open = Array.from(
+				root.querySelectorAll(
+					'input, select, textarea, [role="radiogroup"], roxy-location-search',
+				),
+			).filter((input) => !input.closest('details.advanced'));
+			if (!open.length) hidden.push(label);
+			checked++;
+			el.remove();
+		}
+
+		expect(checked).toBeGreaterThan(20);
+		expect(hidden).toEqual([]);
 	});
 });

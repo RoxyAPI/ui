@@ -872,7 +872,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -1823,7 +1823,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -2907,7 +2907,7 @@
                 "type": "string"
               }
             ],
-            "description": "Birth timezone: decimal hours from UTC (e.g. -5 for EST, 5.5 for IST) OR IANA name (e.g. \"America/New_York\"). Resolved to the DST-correct offset for the birth date. This is the birthplace timezone, not the new location timezone.",
+            "description": "Birth timezone: decimal hours from UTC (e.g. -5 for EST, 5.5 for IST) OR IANA name (e.g. \"America/New_York\"). Resolved to the offset in force at the birth date and time. This is the birthplace timezone, not the new location timezone.",
             "example": -10
           },
           "birthLatitude": {
@@ -3492,7 +3492,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -3715,7 +3715,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -3948,7 +3948,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -4248,7 +4248,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -4451,7 +4451,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -4643,7 +4643,7 @@
                 "type": "string"
               }
             ],
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
             "example": -5
           },
           "nodeType": {
@@ -6924,7 +6924,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -7274,7 +7274,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -7645,7 +7645,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -7863,7 +7863,7 @@
                   }
                 ],
                 "default": 5.5,
-                "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                 "example": 5.5
               }
             },
@@ -7916,7 +7916,7 @@
                   }
                 ],
                 "default": 5.5,
-                "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                 "example": 5.5
               }
             },
@@ -8192,7 +8192,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -8365,7 +8365,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -8545,7 +8545,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -8708,7 +8708,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -8988,7 +8988,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -13243,7 +13243,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -13583,7 +13583,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -13914,7 +13914,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -14120,7 +14120,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -14314,7 +14314,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -14540,7 +14540,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -14810,7 +14810,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+            "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
             "example": 5.5
           },
           "ayanamsa": {
@@ -20056,7 +20056,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
                       "nodeType": {
@@ -20123,7 +20123,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
                       "nodeType": {
@@ -22986,7 +22986,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
                       "nodeType": {
@@ -26594,7 +26594,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
                       "nodeType": {
@@ -26657,7 +26657,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
                       "nodeType": {
@@ -27478,7 +27478,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
                       "nodeType": {
@@ -27541,7 +27541,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                        "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                         "example": -5
                       },
                       "nodeType": {
@@ -30343,7 +30343,7 @@
                     },
                     "column": {
                       "type": "string",
-                      "example": "Neptune leaves Pisces in January, which puts your twelfth house in play. Work with the fact that the private half of a matter sits, out of view and mostly unspoken, and the pull toward what is not literal stops fighting the room. Alongside that, Saturn enters Aries in February, tipping the limit toward your first house, where the body and the manner arrive together and get taken as one thing. The weight of what is already owed is the pressure here, and the ground it presses on is a place where a person is read off how they carry themselves rather than off what they claim. A plain account of what is actually wanted fills the room here, and not much beyond it. Next to that, a solar eclipse falls in Aquarius in February, sending the center of the matter through your eleventh house of friendships and future goals, where a wider circle decides what is possible, and the plan runs past the immediate. A ring of light stays visible all the way around the covered disc. Complicating it is the fact that other people carry the parts of a plan nobody owns alone, while the part that wants to be seen does not bend easily. The useful move is toward the shared goal stated plainly enough to be joined.\n\nIn the same stretch, Mercury turns retrograde in February, played out in your twelfth house, the one for solitude and inner reflection. The stretch it opens runs through March. The question being asked counts for less than it thinks here, because what has been carried quietly asks for somewhere to be put down. Partway through that, a lunar eclipse falls in Virgo in March, drawing the need underneath the argument into your sixth house, where small tasks repeat until they are either a habit or a burden. The disc is covered completely. The instinct lands in a place where the ordinary routine runs, and the body keeps the score of it. Your sixth house asks for the complaint taken seriously before it grows. After that, Uranus enters Gemini in April, parking the interruption in your third house, where errands, notes and neighbors fill the hours nobody plans. The refusal to keep doing it this way reads differently in a place where information moves faster than the judgment it needs. Nothing else in your third house works without a question asked early instead of a guess defended later.\n\nWhile that is still running, Mercury turns retrograde in June. Your fourth house is where the household sits, along with everything it inherited from before. The stretch it opens runs through July. Forward motion is not what this stretch is for, and forcing it spends the running commentary twice. Start with a repair to the place itself rather than to the mood in it. The other half of it is that Jupiter leaves Cancer in June, sitting in your fourth house. Where privacy is the ordinary condition and interruption the exception, the impulse to expand is either the tool or the obstacle. Further along, Neptune turns retrograde in July, arriving in the first house you keep identity and self-expression in. The stretch it opens runs through December. Set the longing with no object beside the fact that the first impression gets made before anything has been explained, and the size of it changes.\n\nYour fifth house carries this one, because a solar eclipse falls in Leo in August. Since play, courtship and craft take up room without asking permission, the will gets tested rather than admired. Your fifth house wants one thing above the rest, and it wants the offer made out loud rather than hinted. Because a lunar eclipse falls in Pisces in August, your twelfth house is the part that moves. Part of the disc is covered while the rest stays in view. On top of that, Venus turns retrograde in October, landing in your eighth house of transformation and shared resources, where the private accounting behind a shared arrangement comes due, and the sense of what is worth having is what carries it. The stretch it opens runs through November. The preference nobody argues with has to operate where joint holdings get settled, and what has run out gets ended properly. Going without one ending finished properly instead of left half open costs more in your eighth house than it saves anywhere else.\n\nThen Mercury turns retrograde in October, and it registers in your eighth house. The working mind does its best work where what two parties hold together gets divided or deepened. Close behind that, Venus enters Libra in October, holding the pull toward what is pleasant over your seventh house, where the terms of a shared thing get set, with somebody else in the room. The change is long enough to plan around and short enough to wait out, and what it moves is attraction, courtesy, and what two people settle on. Doing that comes to the other side of it described as they would describe it. A second thread runs through this, and Neptune turns direct in December, so the effect shows in your first house. The stretch it closes opened in July. Get to one thing let go of without an announcement, and the rest of the same house follows.",
+                      "example": "Neptune leaves Pisces in January, which puts your twelfth house in play. Work with the fact that the private half of a matter sits, out of view and mostly unspoken, and the pull toward what is not literal stops fighting the room. Alongside that, Saturn enters Aries in February, tipping the limit toward your first house, where the body and the manner arrive together and get taken as one thing. The weight of what is already owed is the pressure here, and the ground it presses on is a place where a person is read off how they carry themselves rather than off what they claim. A plain account of what is actually wanted fills the room here, and not much beyond it. Next to that, a solar eclipse falls in Aquarius in February, sending the center of the matter through your eleventh house of friendships and future goals, where a wider circle decides what is possible, and the plan runs past the immediate. A ring of light stays visible all the way around the covered disc. Complicating it is the fact that other people carry the parts of a plan nobody owns alone, while the part that wants to be seen does not bend easily. The useful move is toward the shared goal stated plainly enough to be joined.\n\nIn the same stretch, Mercury turns retrograde in February, played out in your twelfth house, the one for solitude and inner reflection. The stretch it opens runs through March. The question being asked counts for less than it thinks here, because what has been carried quietly asks for somewhere to be put down. Partway through that, a lunar eclipse falls in Virgo in March, drawing the need underneath the argument into your sixth house, where small tasks repeat until they are either a habit or a burden. The disc is covered completely. The instinct lands in a place where the ordinary routine runs, and the body keeps the score of it. Your sixth house asks for the complaint taken seriously before it grows. After that, Uranus enters Gemini in April, parking the interruption in your third house, where errands, notes and neighbors fill the hours nobody plans. The refusal to keep doing it this way reads differently in a place where information moves faster than the judgment it needs. Nothing else in your third house works without a question asked early instead of a guess defended later.\n\nWhile that is still running, Mercury turns retrograde in June. Your fourth house is where the household sits, along with everything it inherited from before. The stretch it opens runs through July. Forward motion is not what this stretch is for, and forcing it spends the running commentary twice. Start with a repair to the place itself rather than to the mood in it. The other half of it is that Jupiter leaves Cancer in June, sitting in your fourth house. Where privacy is the ordinary condition and interruption the exception, the impulse to expand is either the tool or the obstacle. Further along, Neptune turns retrograde in July, arriving in the first house you keep identity and self-expression in. The stretch it opens runs through December. Set the longing with no object beside the fact that the first impression gets made before anything has been explained, and the size of it changes.\n\nYour fifth house carries this one, because a solar eclipse falls in Leo in August. Since play, courtship and craft take up room without asking permission, the will gets tested rather than admired. Your fifth house wants one thing above the rest, and it wants the offer made out loud rather than hinted. Because a lunar eclipse falls in Pisces in August, your twelfth house is the part that moves. Part of the disc is covered while the rest stays in view. On top of that, Venus turns retrograde in October, landing in your eighth house of transformation and shared resources, where the private accounting behind a shared arrangement comes due, and the sense of what is worth having is what carries it. The stretch it opens runs through November. The preference nobody argues with has to operate where joint holdings get settled, and what has run out gets ended properly. Going without one ending finished properly instead of left half open costs more in your eighth house than it saves anywhere else.\n\nThen Mercury turns retrograde in October, and it registers in your eighth house. The working mind does its best work where what two parties hold together gets divided or deepened. Close behind that, Venus enters Libra in October, holding the pull toward what is pleasant over your seventh house, where the terms of a shared thing get set, with somebody else in the room. The change is long enough to plan around and short enough to wait out, and what it moves is attraction, courtesy, and what two people settle on. Everything here comes down to the other side of it described as they would describe it. A second thread runs through this, and Neptune turns direct in December, so the effect shows in your first house. The stretch it closes opened in July. Get to one thing let go of without an announcement, and the rest of the same house follows.",
                       "description": "The full column for this period, ready to run as one piece, with paragraphs separated by a blank line. Names the events driving it and the dates they fall on, read into the whole-sign houses of this sign. Typically 600 to 900 words. The six section fields read the same ranked events filtered to their own life area, each composed as a column of its own rather than an excerpt of this one, so render either shape and never both. Deterministic: the same sign and period always returns the same column."
                     },
                     "events": {
@@ -32148,7 +32148,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                     "example": -5
                   },
                   "nodeType": {
@@ -32752,7 +32752,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "Decimal hours from UTC (e.g. -5 for EST, 5.5 for IST, 9 for JST) OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the birth date.",
+                    "description": "Decimal hours from UTC (e.g. -5 for EST, 5.5 for IST, 9 for JST) OR IANA name (e.g. \"America/New_York\"). IANA resolved to the offset in force at the birth date and time.",
                     "example": -5
                   }
                 },
@@ -33085,7 +33085,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly.",
                     "example": -5
                   },
                   "nodeType": {
@@ -36760,7 +36760,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "ayanamsa": {
@@ -38643,7 +38643,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "ayanamsa": {
@@ -39379,7 +39379,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "ayanamsa": {
@@ -40312,7 +40312,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "ayanamsa": {
@@ -41318,7 +41318,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "ayanamsa": {
@@ -42397,7 +42397,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the DST-correct offset for the given date, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC (e.g. -5 for EST, 1 for CET). IANA strings are resolved to the offset in force at the given date and time, so you can pass `cities[0].timezone` from /location/search directly. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "ayanamsa": {
@@ -49482,10 +49482,10 @@
             "schema": {
               "type": "string",
               "example": "Asia/Kolkata",
-              "description": "IANA name (e.g. \"Asia/Kolkata\", \"America/New_York\"), decimal hours (e.g. 5.5 for IST, -5 for EST), or a fixed UTC offset (e.g. \"+05:30\"). IANA resolved to the DST-correct offset for the given date. Applies to the time field above. Defaults to 0 (UTC)."
+              "description": "IANA name (e.g. \"Asia/Kolkata\", \"America/New_York\"), decimal hours (e.g. 5.5 for IST, -5 for EST), or a fixed UTC offset (e.g. \"+05:30\"). IANA resolved to the offset in force at the given date and the time field above. Defaults to 0 (UTC)."
             },
             "required": false,
-            "description": "IANA name (e.g. \"Asia/Kolkata\", \"America/New_York\"), decimal hours (e.g. 5.5 for IST, -5 for EST), or a fixed UTC offset (e.g. \"+05:30\"). IANA resolved to the DST-correct offset for the given date. Applies to the time field above. Defaults to 0 (UTC).",
+            "description": "IANA name (e.g. \"Asia/Kolkata\", \"America/New_York\"), decimal hours (e.g. 5.5 for IST, -5 for EST), or a fixed UTC offset (e.g. \"+05:30\"). IANA resolved to the offset in force at the given date and the time field above. Defaults to 0 (UTC).",
             "name": "timezone",
             "in": "query"
           }
@@ -59843,7 +59843,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -59973,7 +59973,7 @@
                         "timezone": {
                           "type": "number",
                           "example": -4,
-                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the DST-correct offset for the birth date, so this is the literal number applied, never the name."
+                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth date and time, so this is the literal number applied, never the name."
                         },
                         "latitude": {
                           "type": "number",
@@ -60421,7 +60421,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -60501,7 +60501,7 @@
                         "timezone": {
                           "type": "number",
                           "example": -4,
-                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the DST-correct offset for the birth date, so this is the literal number applied, never the name."
+                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth date and time, so this is the literal number applied, never the name."
                         },
                         "latitude": {
                           "type": "number",
@@ -60949,7 +60949,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -61079,7 +61079,7 @@
                         "timezone": {
                           "type": "number",
                           "example": -4,
-                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the DST-correct offset for the birth date, so this is the literal number applied, never the name."
+                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth date and time, so this is the literal number applied, never the name."
                         },
                         "latitude": {
                           "type": "number",
@@ -61527,7 +61527,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -61658,7 +61658,7 @@
                         "timezone": {
                           "type": "number",
                           "example": -4,
-                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the DST-correct offset for the birth date, so this is the literal number applied, never the name."
+                          "description": "Decimal UTC offset the forecast was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth date and time, so this is the literal number applied, never the name."
                         },
                         "latitude": {
                           "type": "number",
@@ -62228,7 +62228,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "houseSystem": {
@@ -63009,7 +63009,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -63787,7 +63787,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -63850,7 +63850,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -64379,7 +64379,7 @@
                               "type": "string"
                             }
                           ],
-                          "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                          "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                           "example": "America/New_York"
                         },
                         "latitude": {
@@ -64900,7 +64900,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -65465,7 +65465,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -65880,7 +65880,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -66778,7 +66778,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -67197,7 +67197,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -67936,7 +67936,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -68296,7 +68296,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -68839,7 +68839,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -69779,7 +69779,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -70584,7 +70584,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -71229,7 +71229,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -71313,7 +71313,7 @@
                             "type": "string"
                           }
                         ],
-                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                        "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                         "example": "America/New_York"
                       },
                       "latitude": {
@@ -72618,7 +72618,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "latitude": {
@@ -95669,7 +95669,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "muhurtaText": {
@@ -102980,27 +102980,6 @@
                   "person1": {
                     "type": "object",
                     "properties": {
-                      "lifePath": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 33,
-                        "example": 5,
-                        "description": "Person 1 Life Path number (1-9, 11, 22, 33). Optional if year, month, day are provided."
-                      },
-                      "expression": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 33,
-                        "example": 7,
-                        "description": "Person 1 Expression number (1-9, 11, 22, 33). Optional if fullName is provided."
-                      },
-                      "soulUrge": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 33,
-                        "example": 6,
-                        "description": "Person 1 Soul Urge number (1-9, 11, 22, 33). Optional if fullName is provided."
-                      },
                       "fullName": {
                         "type": "string",
                         "minLength": 1,
@@ -103028,33 +103007,33 @@
                         "maximum": 31,
                         "example": 15,
                         "description": "Birth day (1-31). Required with year and month for automatic Life Path calculation."
+                      },
+                      "lifePath": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 33,
+                        "example": 5,
+                        "description": "Person 1 Life Path number (1-9, 11, 22, 33). Optional if year, month, day are provided."
+                      },
+                      "expression": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 33,
+                        "example": 7,
+                        "description": "Person 1 Expression number (1-9, 11, 22, 33). Optional if fullName is provided."
+                      },
+                      "soulUrge": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 33,
+                        "example": 6,
+                        "description": "Person 1 Soul Urge number (1-9, 11, 22, 33). Optional if fullName is provided."
                       }
                     }
                   },
                   "person2": {
                     "type": "object",
                     "properties": {
-                      "lifePath": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 33,
-                        "example": 3,
-                        "description": "Person 2 Life Path number (1-9, 11, 22, 33). Optional if year, month, day are provided."
-                      },
-                      "expression": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 33,
-                        "example": 9,
-                        "description": "Person 2 Expression number (1-9, 11, 22, 33). Optional if fullName is provided."
-                      },
-                      "soulUrge": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 33,
-                        "example": 2,
-                        "description": "Person 2 Soul Urge number (1-9, 11, 22, 33). Optional if fullName is provided."
-                      },
                       "fullName": {
                         "type": "string",
                         "minLength": 1,
@@ -103082,6 +103061,27 @@
                         "maximum": 31,
                         "example": 22,
                         "description": "Birth day (1-31). Required with year and month for automatic Life Path calculation."
+                      },
+                      "lifePath": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 33,
+                        "example": 3,
+                        "description": "Person 2 Life Path number (1-9, 11, 22, 33). Optional if year, month, day are provided."
+                      },
+                      "expression": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 33,
+                        "example": 9,
+                        "description": "Person 2 Expression number (1-9, 11, 22, 33). Optional if fullName is provided."
+                      },
+                      "soulUrge": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 33,
+                        "example": 2,
+                        "description": "Person 2 Soul Urge number (1-9, 11, 22, 33). Optional if fullName is provided."
                       }
                     }
                   }
@@ -109812,7 +109812,7 @@
                         "type": "string"
                       }
                     ],
-                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the DST-correct offset for the birth date, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state on that date. Invalid timezones return 400 with a validation error.",
+                    "description": "IANA name (e.g. \"America/New_York\", \"Europe/London\", \"UTC\"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. \"-05:00\", \"+01:00\"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.",
                     "example": "America/New_York"
                   },
                   "angelDating": {

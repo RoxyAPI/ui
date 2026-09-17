@@ -46,7 +46,7 @@ registerFieldLabels('pt', {
 		currentYear: 'Ano',
 		cusps: 'Cúspides',
 		cuts: 'Cantos cortados',
-		dasha: 'Senhores de dasha',
+		dasha: 'Regentes de dasha',
 		date: 'Data',
 		datetime: 'Data e hora',
 		day: 'Dia',

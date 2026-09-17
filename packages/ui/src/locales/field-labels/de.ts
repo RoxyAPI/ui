@@ -142,7 +142,7 @@ registerFieldLabels('de', {
 		rituZodiac: 'Tierkreis der Jahreszeitengrenzen',
 		road: 'Straßenseite',
 		rooms: 'Räume',
-		rulingPlanets: 'Herrschende Planeten',
+		rulingPlanets: 'Herrscherplaneten',
 		scheme: 'Karaka-Schema',
 		secondName: 'Zweiter Name',
 		secondNameHebrew: 'Zweiter Name auf Hebräisch',

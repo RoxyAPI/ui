@@ -113,7 +113,7 @@ function parseArrayValue(raw: string): unknown {
  * @remarks
  * Schema resolution order: an explicit `spec-url` fetches that full spec and digests it (unchanged, the demo path); otherwise the form tries a small version-pinned per-operation slice from the CDN, and on any miss falls back to fetching the production spec. Each input kind is chosen purely from the parameter shape (see {@link ../utils/field-schema.ts}), so a new endpoint gets a working, on-brand form with no per-endpoint code.
  *
- * The visitor-facing `lang` parameter is never rendered: a site owner sets the element `lang` attribute, and the form routes it to the query string on submit. Optional parameters collapse under one Advanced disclosure; a form whose only required field is an enum submits on selection.
+ * The visitor-facing `lang` parameter is never rendered: a site owner sets the element `lang` attribute, and the form routes it to the query string on submit. Optional parameters collapse under one Advanced disclosure behind the required ones; when nothing is required, every group and every undefaulted parameter renders in the open and only the defaulted ones collapse, so a request the schema can only describe as one of two optional shapes still shows its inputs. A form whose only required field is an enum submits on selection.
  *
  * **Two languages are in play here and they are different answers.** {@link RoxyLocalizedElement.effectiveLang} is the DISPLAY tag, region included, and it is what every `t()` call and the city search read. {@link RoxyEndpointForm.requestLang} is the WIRE value, region stripped and unsupported languages omitted, and it is what reaches `?lang=`. Swapping them is silent in both directions: the request one demotes every regional visitor, and the display one is a 400.
  *
@@ -1081,12 +1081,24 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		}
 
 		const flat = this.fields.filter((f) => !f.group && this.isRendered(f));
-		const flatReq = flat.filter((f) => f.required);
-		const flatOpt = flat.filter((f) => !f.required);
 		const named = this.groupKeys().filter((g): g is string => g !== undefined);
 		const reqGroups = named.filter((g) => this.groupIsRequired(g));
-		const optGroups = named.filter((g) => !this.groupIsRequired(g));
-		const hasAdvanced = flatOpt.length > 0 || optGroups.length > 0;
+		// The disclosure keeps secondary inputs behind the primary ones. With nothing required
+		// there is no primary input, so it would hide the only way to fill the form (an either-or
+		// the schema cannot state: a name and date OR the three numbers). Then every group and
+		// every undefaulted field is primary, and only the fields the API fills in itself stay
+		// behind it.
+		const hasPrimary =
+			flat.some((f) => f.required) ||
+			reqGroups.length > 0 ||
+			this.groupHasLocation(undefined);
+		const isOpen = (f: FieldDef) =>
+			hasPrimary ? f.required : f.default === undefined;
+		const openFields = flat.filter(isOpen);
+		const tuckedFields = flat.filter((f) => !isOpen(f));
+		const openGroups = hasPrimary ? reqGroups : named;
+		const tuckedGroups = named.filter((g) => !openGroups.includes(g));
+		const hasAdvanced = tuckedFields.length > 0 || tuckedGroups.length > 0;
 
 		return html`<form @submit=${this.onSubmit}>
 			<h2 part="title" class="title">${this.formTitle}</h2>
@@ -1098,15 +1110,15 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 						</div>`
 					: nothing
 			}
-			<div class="fields">${flatReq.map((f) => this.renderField(f))}</div>
+			<div class="fields">${openFields.map((f) => this.renderField(f))}</div>
 			${this.groupHasLocation(undefined) ? this.locationBlock(undefined) : nothing}
-			${reqGroups.map((g) => this.groupCard(g))}
+			${openGroups.map((g) => this.groupCard(g))}
 			${
 				hasAdvanced
 					? html`<details part="advanced" class="advanced">
 							<summary>${this.t('Advanced')}${chevron()}</summary>
-							<div class="fields">${flatOpt.map((f) => this.renderField(f))}</div>
-							${optGroups.map((g) => this.groupCard(g))}
+							<div class="fields">${tuckedFields.map((f) => this.renderField(f))}</div>
+							${tuckedGroups.map((g) => this.groupCard(g))}
 						</details>`
 					: nothing
 			}

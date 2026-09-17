@@ -142,7 +142,7 @@ registerFieldLabels('fr', {
 		rituZodiac: 'Zodiaque des limites de saison',
 		road: 'Côté de la route',
 		rooms: 'Pièces',
-		rulingPlanets: 'Planètes gouvernantes',
+		rulingPlanets: 'Planètes maîtresses',
 		scheme: 'Schéma de karakas',
 		secondName: 'Second nom',
 		secondNameHebrew: 'Second nom en hébreu',
