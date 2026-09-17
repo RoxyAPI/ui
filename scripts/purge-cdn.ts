@@ -111,13 +111,20 @@ async function purge(
 }
 
 /** Run `jobs` a few at a time. The purge API is rate-limited, so firing every path at once spends the budget on a burst and gets most of them refused. */
-async function inBatches<T>(
-	jobs: (() => Promise<T>)[],
-	size = 8,
-): Promise<T[]> {
+/**
+ * Run the purge requests one at a time with a short gap, never concurrently.
+ *
+ * @remarks
+ * Eight concurrent requests answered `finished` and `throttled: false` for every path and still left 73
+ * of 184 serving the previous version twenty minutes later, on both aliases; the same paths purged one
+ * per request, 250 ms apart, all flipped within ten seconds. The purge API accepts a burst and drops
+ * part of it without saying so, so pacing is what makes the verify pass below mean anything.
+ */
+async function inSequence<T>(jobs: (() => Promise<T>)[]): Promise<T[]> {
 	const out: T[] = [];
-	for (let i = 0; i < jobs.length; i += size) {
-		out.push(...(await Promise.all(jobs.slice(i, i + size).map((j) => j()))));
+	for (const job of jobs) {
+		out.push(await job());
+		await new Promise((r) => setTimeout(r, 250));
 	}
 	return out;
 }
@@ -159,7 +166,7 @@ console.log(
  * grew the more reliably it failed. Reading the edge is not rate-limited; asking to purge it is.
  */
 const throttled = (
-	await inBatches(
+	await inSequence(
 		ALIASES.flatMap((a) => list.map((asset) => () => purge(a, asset))),
 	)
 ).filter((t): t is { path: string; resetSeconds: number } => t !== null);
