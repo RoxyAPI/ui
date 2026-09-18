@@ -176,3 +176,39 @@ describe('a glyph miss is never papered over with a truncation', () => {
 		).toEqual([]);
 	});
 });
+
+/**
+ * A separator that is the leading space of a nested template does not ship.
+ *
+ * @remarks
+ * The build runs every `html` template through a markup minifier, which strips
+ * the whitespace a template opens with. So `${sign}${pos ? html` ${deg}` : nothing}`
+ * reads correctly in source and in a unit test, and renders `Capricorn20°00'` in
+ * the bundle, because the only space between the two values was the one the
+ * minifier removed. The separator belongs inside ONE text node with the values
+ * on either side of it, or in the stylesheet as a margin. The pattern is an
+ * expression closing immediately before a template that opens with a space;
+ * a template that follows outer whitespace keeps its separator and is not flagged.
+ */
+describe('a separator never rides on the leading space of a nested template', () => {
+	test('no component or shared renderer opens a nested template with a space right after an expression', async () => {
+		const LEADING_SPACE_AFTER_EXPRESSION = /\}\$\{[^\n]*?\bhtml` /;
+		const offenders: string[] = [];
+		for (const dir of ['components', 'utils']) {
+			const base = `packages/ui/src/${dir}`;
+			for (const file of await readdir(base)) {
+				if (!file.endsWith('.ts') || file.endsWith('.test.ts')) continue;
+				const src = await Bun.file(`${base}/${file}`).text();
+				src.split('\n').forEach((line, i) => {
+					if (LEADING_SPACE_AFTER_EXPRESSION.test(line)) {
+						offenders.push(`${dir}/${file}:${i + 1} ${line.trim()}`);
+					}
+				});
+			}
+		}
+		expect(
+			offenders,
+			`A space that opens a nested template is stripped by the build:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
+	});
+});

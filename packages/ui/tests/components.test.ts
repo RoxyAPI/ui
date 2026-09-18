@@ -4,6 +4,10 @@ import { describe, expect, test } from 'bun:test';
 // preload (bunfig.toml). Lit reads document and customElements at module load,
 // so the order matters: setup -> import.
 import '../src/index.js';
+import { COMPASS_TYPE_SIZES } from '../src/components/local-space-compass.js';
+import { NATAL_TYPE_SIZES } from '../src/components/natal-chart.js';
+import { SYNASTRY_TYPE_SIZES } from '../src/components/synastry-chart.js';
+import { TRANSIT_TYPE_SIZES } from '../src/components/transit-wheel.js';
 import { FAMILY_ORDER } from '../src/components/yoga-list.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 import { baseStyles } from '../src/utils/base-styles.js';
@@ -1970,6 +1974,34 @@ describe('human design interpretations', () => {
 		expect(text).toContain('Projector');
 		expect(text).not.toContain('undefined');
 		expect(text).not.toContain('No data');
+		el.remove();
+	});
+
+	/**
+	 * The Design moment is the one number a reader validates the whole Design
+	 * side against, and every reference chart prints it on the UTC clock, so the
+	 * header prints it there too rather than in the viewer's zone. Asserted on
+	 * the header alone: the same instant must not leak into the readings.
+	 */
+	test('roxy-bodygraph prints the Design moment in its header on the UTC clock', async () => {
+		const el = await mount('roxy-bodygraph', {
+			...bodygraph,
+			designInstantUtc: '2021-04-04T13:24:45.384Z',
+		});
+		const header = el.shadowRoot?.querySelector('[part="header"]');
+		const meta = header?.querySelector('.meta');
+		expect(meta?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+			'Design Apr 4, 2021, 1:24 PM UTC',
+		);
+		expect(meta?.querySelector('time')?.getAttribute('datetime')).toBe(
+			'2021-04-04T13:24:45.384Z',
+		);
+		el.remove();
+	});
+
+	test('roxy-bodygraph draws no Design line for a response without the instant', async () => {
+		const el = await mount('roxy-bodygraph', bodygraph);
+		expect(el.shadowRoot?.querySelector('[part="header"] .meta')).toBeNull();
 		el.remove();
 	});
 
@@ -5491,6 +5523,348 @@ describe('roxy-hd-connection draws the combined bodygraph', () => {
 	});
 });
 
+/** Every text node matching `selector` as the point the renderer placed it at. */
+const placedText = (el: Element, selector: string) =>
+	[...(el.shadowRoot?.querySelectorAll(selector) ?? [])].map((t) => ({
+		label: t.textContent?.trim() ?? '',
+		x: Number(t.getAttribute('x')),
+		y: Number(t.getAttribute('y')),
+	}));
+
+/**
+ * The closest two placed texts come to each other. The renderer fans them to
+ * clear the widest mark, so anything at or above that width is safe whichever
+ * way round the ring the pair happens to sit.
+ */
+const closestPair = (
+	m: ReadonlyArray<{ label: string; x: number; y: number }>,
+): { gap: number; pair: string } => {
+	let gap = Number.POSITIVE_INFINITY;
+	let pair = '';
+	for (let i = 0; i < m.length; i++) {
+		for (let j = i + 1; j < m.length; j++) {
+			const d = Math.hypot(m[i].x - m[j].x, m[i].y - m[j].y);
+			if (d < gap) {
+				gap = d;
+				pair = `${m[i].label}/${m[j].label}`;
+			}
+		}
+	}
+	return { gap, pair };
+};
+
+/**
+ * The wide-host type sizes a wheel fans its marks by, before it has measured
+ * the rendered text, are the ones its stylesheet declares. The stylesheet is
+ * the only home of the sizes, so the two are held together here rather than by
+ * an interpolation the template minifier cannot follow.
+ */
+describe('wheel type sizes match the stylesheet', () => {
+	const declared = (tag: string, selector: string): number => {
+		const ctor = customElements.get(tag) as unknown as {
+			styles: ReadonlyArray<{ cssText: string }>;
+		};
+		const cssText = ctor.styles.map((s) => s.cssText).join('\n');
+		const rule = cssText.match(
+			new RegExp(
+				`${selector.replace('.', '\\.')}\\s*{[^}]*font-size:\\s*(\\d+)px`,
+			),
+		);
+		return Number(rule?.[1]);
+	};
+
+	test('the natal wheel', () => {
+		expect(declared('roxy-natal-chart', '.planet-glyph')).toBe(
+			NATAL_TYPE_SIZES.glyph,
+		);
+		expect(declared('roxy-natal-chart', '.planet-deg')).toBe(
+			NATAL_TYPE_SIZES.degree,
+		);
+	});
+
+	test('the transit wheel', () => {
+		expect(declared('roxy-transit-wheel', '.natal-glyph')).toBe(
+			TRANSIT_TYPE_SIZES.glyph,
+		);
+		expect(declared('roxy-transit-wheel', '.planet-deg')).toBe(
+			TRANSIT_TYPE_SIZES.degree,
+		);
+	});
+
+	test('the synastry wheel', () => {
+		expect(declared('roxy-synastry-chart', '.p1')).toBe(
+			SYNASTRY_TYPE_SIZES.glyph,
+		);
+		expect(declared('roxy-synastry-chart', '.planet-deg')).toBe(
+			SYNASTRY_TYPE_SIZES.degree,
+		);
+	});
+
+	test('the local space compass', () => {
+		expect(declared('roxy-local-space-compass', '.body-glyph')).toBe(
+			COMPASS_TYPE_SIZES.glyph,
+		);
+	});
+});
+
+/**
+ * The glyphs that name the astrocartography lines along the map edges. Two
+ * bodies whose meridians run within a few degrees of longitude would share
+ * one spot on the edge; the line stays at its longitude and the glyph is
+ * fanned along the edge, tied back to its line by colour.
+ */
+describe('astrocartography edge glyphs never print over each other', () => {
+	const meridians = (mc: number, ic: number) => ({
+		mc: { longitude: mc },
+		ic: { longitude: ic },
+		ascendant: { points: [{ latitude: 0, longitude: mc + 40 }] },
+		descendant: { points: [{ latitude: 0, longitude: ic + 40 }] },
+	});
+	const mount = async (lines: object[]) => {
+		const el = document.createElement(
+			'roxy-astrocartography-map',
+		) as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = { lines };
+		await settled(el);
+		return el;
+	};
+
+	test('three meridians inside four degrees fan apart and their lines stay put', async () => {
+		const el = await mount([
+			{ planet: 'Saturn', ...meridians(-120, 60) },
+			{ planet: 'Uranus', ...meridians(-118, 62) },
+			{ planet: 'Neptune', ...meridians(-116, 64) },
+		]);
+		const root = el.shadowRoot as ShadowRoot;
+		const glyphX = [...root.querySelectorAll('text.acg-glyph')]
+			.filter((t) => Number(t.getAttribute('y')) === 9)
+			.map((t) => Number(t.getAttribute('x')))
+			.sort((a, b) => a - b);
+		expect(glyphX).toHaveLength(3);
+		for (let i = 1; i < glyphX.length; i++) {
+			expect(
+				(glyphX[i] as number) - (glyphX[i - 1] as number),
+			).toBeGreaterThanOrEqual(9);
+		}
+		const lineX = [...root.querySelectorAll('line.acg-line:not(.dashed)')]
+			.map((l) => Number(l.getAttribute('x1')))
+			.sort((a, b) => a - b);
+		expect(lineX).toEqual([60, 62, 64]);
+		// The IC row clears the longitude labels drawn along the bottom edge.
+		const icY = [...root.querySelectorAll('text.acg-glyph')]
+			.map((t) => Number(t.getAttribute('y')))
+			.filter((y) => y > 90);
+		// The longitude labels are the centred ones; the latitude labels ride the left edge.
+		const axisY = Math.min(
+			...[...root.querySelectorAll('text.axis-label')]
+				.filter((t) => t.getAttribute('text-anchor') === 'middle')
+				.map((t) => Number(t.getAttribute('y'))),
+		);
+		for (const y of icY) expect(axisY - y).toBeGreaterThanOrEqual(8);
+		el.remove();
+	});
+
+	test('meridians far apart keep their glyph on their line', async () => {
+		const el = await mount([
+			{ planet: 'Sun', ...meridians(-60, 120) },
+			{ planet: 'Moon', ...meridians(0, -180) },
+		]);
+		const root = el.shadowRoot as ShadowRoot;
+		const top = [...root.querySelectorAll('text.acg-glyph')]
+			.filter((t) => Number(t.getAttribute('y')) === 9)
+			.map((t) => Number(t.getAttribute('x')))
+			.sort((a, b) => a - b);
+		expect(top).toEqual([120, 180]);
+		el.remove();
+	});
+});
+
+/**
+ * The divisional card is bound to two endpoints whose responses differ by one
+ * block: a chosen division names itself, and the navamsa, being D9 by
+ * definition, carries no `division` at all. Both must draw.
+ */
+describe('roxy-divisional-chart draws both responses it is bound to', () => {
+	const chart = {
+		meta: {
+			Lagna: { graha: 'Lagna', rashi: 'Libra' },
+			Sun: { graha: 'Sun', rashi: 'Aries', longitude: 5.4 },
+		},
+	};
+	const mount = async (data: unknown) => {
+		const el = document.createElement(
+			'roxy-divisional-chart',
+		) as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	};
+
+	test('a navamsa response, with no division block, is labelled D9 Navamsa', async () => {
+		const el = await mount({
+			frame: { ayanamsa: 'lahiri', ayanamsaDegrees: 23.72 },
+			chart,
+			vargottama: [],
+			vargottamaExplanation: '',
+		});
+		const title = el.shadowRoot
+			?.querySelector('.title')
+			?.textContent?.replace(/\s+/g, ' ')
+			.trim();
+		expect(title).toBe('D9 Navamsa');
+		expect(el.shadowRoot?.querySelector('[part~="chart"]')).not.toBeNull();
+		el.remove();
+	});
+
+	test('a chosen division names itself', async () => {
+		const el = await mount({
+			frame: { ayanamsa: 'lahiri', ayanamsaDegrees: 23.72 },
+			chart,
+			division: {
+				number: 10,
+				name: 'Dasamsa',
+				sanskritName: 'Dasamsa',
+				degreesPerDivision: '3',
+				significance: 'Career',
+			},
+			vargottama: [],
+		});
+		expect(el.shadowRoot?.querySelector('.title')?.textContent).toContain(
+			'D10 Dasamsa',
+		);
+		el.remove();
+	});
+});
+
+/** A forecast event names its bodies as the response cases them: a proper name keeps its capitals, a lowercase cycle word gets one. */
+describe('forecast timeline body names', () => {
+	test('a multi-word body keeps its capitals and a cycle word is capitalised', async () => {
+		const el = document.createElement(
+			'roxy-forecast-timeline',
+		) as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = {
+			startDate: '2026-08-01',
+			endDate: '2026-08-31',
+			count: 2,
+			events: [
+				{
+					date: '2026-08-12',
+					domain: 'western',
+					type: 'transit-aspect',
+					body: 'Mercury',
+					target: 'Black Moon Lilith',
+					aspect: 'trine',
+					orb: 0,
+					significance: 52,
+				},
+				{
+					date: '2026-08-13',
+					domain: 'biorhythm',
+					type: 'critical-day',
+					body: 'physical',
+					significance: 28,
+				},
+			],
+		};
+		await settled(el);
+		const text = el.shadowRoot?.textContent ?? '';
+		expect(text).toContain('Black Moon Lilith');
+		expect(text).not.toContain('Black moon lilith');
+		expect(text).toContain('Physical');
+		el.remove();
+	});
+});
+
+/** A biorhythm cycle runs from -100 to +100, so its bar grows out of a centre zero line: to the right for a high, to the left for a low, half the track at most. */
+describe('biorhythm bars are bipolar', () => {
+	test('a low fills leftward from the centre and a high rightward', async () => {
+		const el = document.createElement('roxy-biorhythm-chart') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = {
+			birthDate: '1990-01-15',
+			targetDate: '2026-05-09',
+			quickRead: { physical: 94, emotional: -69, intellectual: 0 },
+			energyRating: 7,
+		};
+		await settled(el);
+		const fills = [...(el.shadowRoot?.querySelectorAll('.fill') ?? [])].map(
+			(f) => ({
+				side: f.classList.contains('low') ? 'low' : 'high',
+				width: (f as HTMLElement).style.width,
+			}),
+		);
+		expect(fills).toEqual([
+			{ side: 'high', width: '47%' },
+			{ side: 'low', width: '34.5%' },
+			{ side: 'high', width: '0%' },
+		]);
+		el.remove();
+	});
+});
+
+/** The compass glyphs ride a ring outside the rim; six bodies in one quarter of the sky fan along it while every spoke stays at its azimuth. */
+describe('local space compass glyphs never print over each other', () => {
+	test('a south-western cluster fans apart and the spokes do not move', async () => {
+		const el = document.createElement(
+			'roxy-local-space-compass',
+		) as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		const body = (planet: string, azimuth: number) => ({
+			planet,
+			azimuth,
+			altitude: 10,
+			aboveHorizon: true,
+			compassDirection: 'SW',
+		});
+		el.data = {
+			bodies: [
+				body('Sun', 216),
+				body('Venus', 215),
+				body('Saturn', 222),
+				body('Neptune', 226),
+				body('Mercury', 229),
+				body('Uranus', 230),
+			],
+		};
+		await settled(el);
+		const root = el.shadowRoot as ShadowRoot;
+		const angleOf = (x: number, y: number) =>
+			((Math.atan2(y - 160, x - 160) * 180) / Math.PI + 450) % 360;
+		const glyphAz = [...root.querySelectorAll('text.body-glyph')]
+			.map((t) =>
+				angleOf(Number(t.getAttribute('x')), Number(t.getAttribute('y'))),
+			)
+			.sort((a, b) => a - b);
+		expect(glyphAz).toHaveLength(6);
+		for (let i = 1; i < glyphAz.length; i++) {
+			expect(
+				(glyphAz[i] as number) - (glyphAz[i - 1] as number),
+			).toBeGreaterThan(4);
+		}
+		const spokeAz = [...root.querySelectorAll('line.spoke')]
+			.map((l) =>
+				angleOf(Number(l.getAttribute('x2')), Number(l.getAttribute('y2'))),
+			)
+			.map((a) => Math.round(a))
+			.sort((a, b) => a - b);
+		expect(spokeAz).toEqual([215, 216, 222, 226, 229, 230]);
+		el.remove();
+	});
+});
+
 /**
  * The angle marks on the natal wheel, which are the labels a reader looks at
  * first and the ones with no fixed spacing of their own.
@@ -5520,34 +5894,8 @@ describe('natal wheel angle labels never print over each other', () => {
 		return el;
 	};
 
-	/** Every angle label as the point the renderer placed it at. */
-	const marks = (el: Element) =>
-		[...(el.shadowRoot?.querySelectorAll('.angle-marker') ?? [])].map((t) => ({
-			label: t.textContent?.trim() ?? '',
-			x: Number(t.getAttribute('x')),
-			y: Number(t.getAttribute('y')),
-		}));
-
-	/**
-	 * The closest two labels come to each other. The renderer fans them to clear
-	 * the widest label, so anything at or above that width is safe whichever way
-	 * round the ring the pair happens to sit.
-	 */
-	const closest = (el: Element): { gap: number; pair: string } => {
-		const m = marks(el);
-		let gap = Number.POSITIVE_INFINITY;
-		let pair = '';
-		for (let i = 0; i < m.length; i++) {
-			for (let j = i + 1; j < m.length; j++) {
-				const d = Math.hypot(m[i].x - m[j].x, m[i].y - m[j].y);
-				if (d < gap) {
-					gap = d;
-					pair = `${m[i].label}/${m[j].label}`;
-				}
-			}
-		}
-		return { gap, pair };
-	};
+	const marks = (el: Element) => placedText(el, '.angle-marker');
+	const closest = (el: Element) => closestPair(marks(el));
 
 	test('Part of Fortune landing on the Ascendant is moved clear of it', async () => {
 		const el = await mountWheel(85.7, {
@@ -5593,6 +5941,173 @@ describe('natal wheel angle labels never print over each other', () => {
 		const leaders = el.shadowRoot?.querySelectorAll('.angle-tick') ?? [];
 		// One tick per mark and no leader among them.
 		expect(leaders.length).toBe(marks(el).length);
+		el.remove();
+	});
+});
+
+/**
+ * The degree labels beside the bodies, which are the numbers a practitioner
+ * reads the chart by and the widest mark on the wheel.
+ *
+ * @remarks
+ * A `dd°mm'` label at the shipped size is over three times its font size wide,
+ * and a retrograde mark widens it by another em and a quarter, so the fan is
+ * asked for the width of each PAIR rather than one figure for the ring. The
+ * conjunction here is the ordinary one: two bodies five degrees apart near the
+ * Midheaven, where a horizontal label runs along the ring and two of them meet
+ * end to end. Read off the `x` and `y` the renderer writes, so it holds without
+ * a browser and cannot be masked by a narrow font.
+ */
+describe('natal wheel degree labels never print over each other', () => {
+	/**
+	 * The ink each label paints, from the widths the renderer fans by: a
+	 * two-digit degree-and-minute label at the shipped size, an em and a quarter
+	 * more for the retrograde mark, and the height of the digits. Two labels are
+	 * clear when their ink does not intersect, which is what a reader sees; a
+	 * chord would be wrong here, since a label on the inner row may sit closer
+	 * than one width to its neighbour on the outer row and still be clear.
+	 */
+	const overlapping = (
+		labels: ReadonlyArray<{ label: string; x: number; y: number }>,
+	): string[] => {
+		const width = (l: string) => 23.8 + (l.includes('℞') ? 8.75 : 0);
+		const out: string[] = [];
+		for (let i = 0; i < labels.length; i++) {
+			for (let j = i + 1; j < labels.length; j++) {
+				const a = labels[i];
+				const b = labels[j];
+				const dx = Math.abs(a.x - b.x);
+				const dy = Math.abs(a.y - b.y);
+				if (dx < (width(a.label) + width(b.label)) / 2 && dy < 6.3) {
+					out.push(`${a.label}/${b.label}`);
+				}
+			}
+		}
+		return out;
+	};
+
+	const mountWheel = async (planets: object[]) => {
+		const el = document.createElement('roxy-natal-chart') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = {
+			planets,
+			houses: [],
+			aspects: [],
+			ascendant: { longitude: 222.7 },
+		};
+		await settled(el);
+		return el;
+	};
+	const labels = (el: Element) => placedText(el, '.planet-deg');
+
+	test('two bodies five degrees apart each keep a readable degree', async () => {
+		const el = await mountWheel([
+			{ name: 'Venus', longitude: 129.19, sign: 'Leo', degree: 9.19 },
+			{ name: 'Mars', longitude: 134.34, sign: 'Leo', degree: 14.34 },
+		]);
+		expect(labels(el).map((l) => l.label)).toEqual(["9°11'", "14°20'"]);
+		expect(overlapping(labels(el))).toEqual([]);
+		el.remove();
+	});
+
+	test('a retrograde pair asks for the room its marks take', async () => {
+		const el = await mountWheel([
+			{
+				name: 'Pluto',
+				longitude: 295.87,
+				sign: 'Capricorn',
+				degree: 25.87,
+				isRetrograde: true,
+			},
+			{
+				name: 'Saturn',
+				longitude: 312.15,
+				sign: 'Aquarius',
+				degree: 12.15,
+				isRetrograde: true,
+			},
+		]);
+		expect(overlapping(labels(el))).toEqual([]);
+		el.remove();
+	});
+
+	test('a seven-body stellium keeps every degree readable without leaving its houses', async () => {
+		// The demo fixture's Capricorn stack: forty degrees of sky holding seven
+		// bodies, two of them retrograde. Every label clear, and no glyph carried
+		// more than a house away from its longitude.
+		const el = await mountWheel([
+			{ name: 'Uranus', longitude: 276.62, sign: 'Capricorn', degree: 6.62 },
+			{
+				name: 'Mercury',
+				longitude: 281.12,
+				sign: 'Capricorn',
+				degree: 11.12,
+				isRetrograde: true,
+			},
+			{ name: 'Neptune', longitude: 282.57, sign: 'Capricorn', degree: 12.57 },
+			{ name: 'Saturn', longitude: 287.35, sign: 'Capricorn', degree: 17.35 },
+			{ name: 'Sun', longitude: 295.4, sign: 'Capricorn', degree: 25.4 },
+			{
+				name: 'Venus',
+				longitude: 300.5,
+				sign: 'Aquarius',
+				degree: 0.5,
+				isRetrograde: true,
+			},
+			{
+				name: 'North Node',
+				longitude: 316.58,
+				sign: 'Aquarius',
+				degree: 16.58,
+			},
+		]);
+		expect(overlapping(labels(el))).toEqual([]);
+		const glyphs = placedText(el, '.planet-glyph');
+		const centre = 210;
+		const angleOf = (g: { x: number; y: number }) =>
+			(Math.atan2(g.y - centre, g.x - centre) * 180) / Math.PI;
+		// The last glyph of the stack against the first: the ring holds forty
+		// degrees of sky in under seventy degrees of wheel.
+		const first = glyphs[0] as { x: number; y: number };
+		const last = glyphs[glyphs.length - 1] as { x: number; y: number };
+		const spread = Math.abs(angleOf(first) - angleOf(last));
+		expect(Math.min(spread, 360 - spread)).toBeLessThan(70);
+		el.remove();
+	});
+
+	test('a stack straddling 0 degrees Aries fans across the seam', async () => {
+		const el = await mountWheel([
+			{ name: 'Neptune', longitude: 353.17, sign: 'Pisces', degree: 23.17 },
+			{ name: 'Chiron', longitude: 12.87, sign: 'Aries', degree: 12.87 },
+			{ name: 'Jupiter', longitude: 351.85, sign: 'Pisces', degree: 21.85 },
+		]);
+		expect(overlapping(labels(el))).toEqual([]);
+		el.remove();
+	});
+
+	test('a planet reading names the position in degrees and minutes, as the wheel does', async () => {
+		const el = await mountWheel([
+			{
+				name: 'Moon',
+				longitude: 171.39,
+				sign: 'Virgo',
+				degree: 21.39,
+				interpretation: { summary: 'The Moon in Virgo.' },
+			},
+		]);
+		const aside = el.shadowRoot?.querySelector('.interp-aside');
+		expect(aside?.textContent?.trim()).toBe("Virgo 21°23'");
+		el.remove();
+	});
+
+	test('an uncrowded pair keeps its glyphs on their longitudes', async () => {
+		const el = await mountWheel([
+			{ name: 'Sun', longitude: 100, sign: 'Cancer', degree: 10 },
+			{ name: 'Moon', longitude: 140, sign: 'Leo', degree: 20 },
+		]);
+		expect(el.shadowRoot?.querySelectorAll('.planet-leader')).toHaveLength(0);
 		el.remove();
 	});
 });

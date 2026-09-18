@@ -1,12 +1,19 @@
-import { css, html, nothing, svg } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { css, html, nothing, type PropertyValues, svg } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type { CalculateSynastryResponse } from '../types/index.js';
 import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { longitudeToSignPosition, polarToCartesian } from '../utils/degree.js';
+import {
+	arcSeparation,
+	fanOut,
+	formatDegreeInSign,
+	formatWheelDegree,
+	longitudeToSignPosition,
+	polarToCartesian,
+} from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	ASPECT_CLASS,
@@ -20,6 +27,7 @@ import {
 } from '../utils/interp-accordion.js';
 import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
+import { RerenderOnResize, renderedFontSize } from '../utils/type-metrics.js';
 
 /**
  * A planet as the synastry response now returns it.
@@ -35,12 +43,38 @@ type SynastryPerson = CalculateSynastryResponse['person1'];
 /** How many inter-aspects get a full reading before the rest fall back to the catalog table. A synastry can return 90+ contacts; a practitioner works the tightest ones. */
 const READING_COUNT = 12;
 
-const SIZE = 360;
+/** The viewBox leaves room past the rim for the two ascendant labels, which sit outside the zodiac like the angles on the natal wheel. */
+const SIZE = 400;
 const CENTER = SIZE / 2;
 const OUTER_R = 170;
 const SIGN_R = 154;
 const P1_R = 124;
 const P2_R = 96;
+/** Ascendant tick and label: the tick stops short of the text, and the label sits inside the viewBox edge by more than half its own width. */
+const ASC_TICK_R = 176;
+const ASC_LABEL_R = 188;
+/** The degree band sits this far inside each person's glyph ring. */
+const DEG_INSET = 11;
+/**
+ * The in-wheel type sizes at a wide host, in user units, as the stylesheet
+ * declares them: what the fan spaces the marks by until the rendered text has
+ * been measured, and what a unit test draws on. The phone sizes live in the
+ * stylesheet alone and are read back off the rendered text, never assumed.
+ */
+export const SYNASTRY_TYPE_SIZES = { glyph: 13, degree: 7 } as const;
+/**
+ * Widths a fanned cluster has to clear, as type metrics in em measured on the
+ * rendered text and multiplied by the font size in play. A glyph here carries
+ * its person tag, which is what makes it wider than the same glyph elsewhere;
+ * a retrograde mark widens a label by an em and a quarter, which is why the
+ * separation is settled per pair.
+ */
+const GLYPH_EM = 1.3;
+const WHOLE_DEG_EM = 1.85;
+const RETRO_MARK_EM = 1.25;
+/** Leader line: a tick at the body's true longitude and the foot of the line beside the displaced glyph, both outward from the ring, into the gap above it. */
+const LEADER_TICK = 8;
+const LEADER_FOOT = 4;
 
 /**
  * Dual-wheel synastry chart with inter-aspects table. Pass `data` from
@@ -48,6 +82,29 @@ const P2_R = 96;
  */
 @customElement('roxy-synastry-chart')
 export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse> {
+	/**
+	 * The in-wheel type sizes the stylesheet actually applied, read back after
+	 * each render. The fan spaces the bodies by the width of their marks, and
+	 * that width follows the container query, which nothing in a render pass can
+	 * see; a wide host keeps the declared sizes and never re-renders for them.
+	 */
+	@state()
+	private glyphFont: number = SYNASTRY_TYPE_SIZES.glyph;
+	@state()
+	private degFont: number = SYNASTRY_TYPE_SIZES.degree;
+
+	constructor() {
+		super();
+		new RerenderOnResize(this);
+	}
+
+	protected updated(changed: PropertyValues): void {
+		super.updated(changed);
+		const root = this.renderRoot;
+		this.glyphFont = renderedFontSize(root, '.p1', this.glyphFont);
+		this.degFont = renderedFontSize(root, '.planet-deg', this.degFont);
+	}
+
 	static styles = [
 		baseStyles,
 		aspectLineStyles,
@@ -131,10 +188,32 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			.planet-deg .retro {
 				fill: var(--roxy-danger, #dc2626);
 			}
+			.leader {
+				stroke-width: 0.5;
+				opacity: 0.7;
+			}
+			.leader.p1 {
+				stroke: var(--roxy-accent, #f59e0b);
+			}
+			.leader.p2 {
+				stroke: var(--roxy-info, #0284c7);
+			}
+			/* Below 480px the card shrinks to roughly 320px on a phone, so lift the
+			 * in-SVG type proportionally or the 7px degree band lands under 6px. */
+			@container (max-width: 480px) {
+				.sign,
+				.p1,
+				.p2 {
+					font-size: 18px;
+				}
+				.person-tag,
+				.planet-deg {
+					font-size: 10px;
+				}
+			}
 			.asc-tick {
 				stroke: var(--roxy-accent-ink, #b45309);
-				stroke-width: 1;
-				opacity: 0.75;
+				stroke-width: 1.5;
 			}
 			.asc-label {
 				fill: var(--roxy-accent-ink, #b45309);
@@ -535,7 +614,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 					'ASC',
 					asc?.sign ?? '',
 					asc
-						? `${display(asc, 'sign')} ${formatNumber(this.effectiveLang(), asc.degree, 0)}°`
+						? `${display(asc, 'sign')} ${formatDegreeInSign(asc.degree)}`
 						: '',
 				],
 			];
@@ -607,7 +686,6 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 	) {
 		const rows = planets.filter((p) => typeof p.houseInOtherChart === 'number');
 		if (rows.length === 0) return nothing;
-		const locale = this.effectiveLang();
 		const id = `overlay-${index}`;
 		return html`<div class="overlay-dir">
 			<h4 id=${id}>
@@ -643,7 +721,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 									<span aria-hidden="true">${signGlyph(p.sign) ?? ''}</span>
 									${display(p, 'sign')}
 								</td>
-								<td>${formatNumber(locale, p.degree, 0)}°</td>
+								<td>${formatDegreeInSign(p.degree)}</td>
 								<td class="overlay-house">${p.houseInOtherChart}</td>
 								<td class="own-house">${p.house ?? ''}</td>
 							</tr>`,
@@ -742,48 +820,80 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		});
 	}
 
+	/**
+	 * One person's ring, fanned apart only as far as legibility demands.
+	 *
+	 * @remarks
+	 * A stellium is ordinary in a real chart and drawing every glyph at its
+	 * exact angle prints the cluster as one mark. {@link fanOut} pushes a
+	 * crowded member forward and a thin leader runs from the glyph outward to a
+	 * tick at its TRUE longitude, into the gap above the ring, so the drawing
+	 * never claims a position the response did not give. The separation is
+	 * settled per pair from the measured width of each mark at its own radius.
+	 */
 	private renderRing(
 		planets: PlanetEntry[],
 		radius: number,
 		cls: string,
 		personIndex: 1 | 2,
 	) {
-		return planets.map((p) => {
-			if (!Number.isFinite(p.longitude)) return nothing;
-			const angle = this.toAngle(p.longitude);
-			const pos = polarToCartesian(CENTER, CENTER, radius, angle);
-			// Degree label sits one tier inward from the glyph so the two
-			// concentric rings never blur their numbers into the aspect lines.
-			const degOffset = personIndex === 1 ? -12 : -10;
-			const degPos = polarToCartesian(
-				CENTER,
-				CENTER,
-				radius + degOffset,
-				angle,
+		const degRadius = radius - DEG_INSET;
+		const glyphSeparation = arcSeparation(GLYPH_EM * this.glyphFont, radius);
+		const labelWidth = (p: PlanetEntry) =>
+			(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
+			this.degFont;
+		// Two centred labels clear each other at half the sum of their widths.
+		const separation = (a: PlanetEntry, b: PlanetEntry) =>
+			Math.max(
+				glyphSeparation,
+				arcSeparation((labelWidth(a) + labelWidth(b)) / 2, degRadius),
 			);
-			const glyph = planetGlyph(p.name) ?? display(p, 'name');
-			const sp = longitudeToSignPosition(p.longitude);
-			const retro = p.isRetrograde === true;
-			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
-			// The house each planet holds in its own chart.
-			const house =
-				typeof p.house === 'number'
-					? ` · ${this.t('House {{n}}', { n: p.house })}`
-					: '';
-			// The sign comes from the response rather than from the longitude, so the
-			// tooltip cannot disagree with the sign the API assigned.
-			const tooltip = `${display(p, 'name')}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel} ${display(p, 'sign')}${house}`;
-			return svg`<g>
+		return fanOut(planets, (p) => p.longitude, separation).map(
+			({ item: p, longitude, displayLongitude }) => {
+				const angle = this.toAngle(displayLongitude);
+				const pos = polarToCartesian(CENTER, CENTER, radius, angle);
+				const degPos = polarToCartesian(CENTER, CENTER, degRadius, angle);
+				const glyph = planetGlyph(p.name) ?? display(p, 'name');
+				const retro = p.isRetrograde === true;
+				// The house each planet holds in its own chart.
+				const house =
+					typeof p.house === 'number'
+						? ` · ${this.t('House {{n}}', { n: p.house })}`
+						: '';
+				// The sign comes from the response rather than from the longitude, so the
+				// tooltip cannot disagree with the sign the API assigned.
+				const tooltip = `${display(p, 'name')}${retro ? ` ${this.t('retrograde')}` : ''} - ${formatWheelDegree(longitude)} ${display(p, 'sign')}${house}`;
+				const displaced = Math.abs(displayLongitude - longitude) > 0.5;
+				const tick = polarToCartesian(
+					CENTER,
+					CENTER,
+					radius + LEADER_TICK,
+					this.toAngle(longitude),
+				);
+				const foot = polarToCartesian(
+					CENTER,
+					CENTER,
+					radius + LEADER_FOOT,
+					angle,
+				);
+				return svg`<g>
+				${
+					displaced
+						? svg`<line class=${`leader ${cls}`} x1=${tick.x} y1=${tick.y} x2=${foot.x} y2=${foot.y} />`
+						: nothing
+				}
 				<text class=${cls} x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central"><title>${tooltip}</title>${glyph}<tspan class="person-tag" dy="-0.55em" dx="0.15em">${personIndex}</tspan></text>
-				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${sp.degree}°${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
+				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${longitudeToSignPosition(longitude).degree}°${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
 			</g>`;
-		});
+			},
+		);
 	}
 
 	/**
-	 * Ascendant markers for both people. Drawn as small spokes at the inner
-	 * rim with the label outside, so the two rising signs are immediately
-	 * scannable on the wheel without depending on tooltips.
+	 * Ascendant markers for both people. Drawn as short ticks outside the rim
+	 * with the label beyond them, the way the natal wheel marks its angles, so
+	 * the two rising signs are immediately scannable without depending on
+	 * tooltips.
 	 */
 	private renderAscendants(data: CalculateSynastryResponse) {
 		const items: ReturnType<typeof svg>[] = [];
@@ -798,12 +908,12 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			if (signIdx === -1) return;
 			const longitude = signIdx * 30 + asc.degree;
 			const angle = this.toAngle(longitude);
-			const innerR = personIndex === 1 ? P1_R + 14 : P2_R + 14;
-			const tickPos = polarToCartesian(CENTER, CENTER, innerR, angle);
-			const labelPos = polarToCartesian(CENTER, CENTER, OUTER_R + 14, angle);
+			const rim = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
+			const tick = polarToCartesian(CENTER, CENTER, ASC_TICK_R, angle);
+			const label = polarToCartesian(CENTER, CENTER, ASC_LABEL_R, angle);
 			items.push(svg`<g>
-				<line class="asc-tick" x1=${tickPos.x} y1=${tickPos.y} x2=${labelPos.x} y2=${labelPos.y} />
-				<text class="asc-label" x=${labelPos.x} y=${labelPos.y} text-anchor="middle" dominant-baseline="central">${this.t('ASC{{n}}', { n: personIndex })}</text>
+				<line class="asc-tick" x1=${rim.x} y1=${rim.y} x2=${tick.x} y2=${tick.y} />
+				<text class="asc-label" x=${label.x} y=${label.y} text-anchor="middle" dominant-baseline="central">${this.t('ASC{{n}}', { n: personIndex })}</text>
 			</g>`);
 		};
 		make(data.person1?.ascendant, 1);

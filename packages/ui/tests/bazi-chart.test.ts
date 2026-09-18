@@ -237,12 +237,18 @@ describe('the chart reads against itself the way a practitioner checks it', () =
 	 * Three school rules decide a chart outright for a birth near a boundary, and a chart that
 	 * does not name them cannot be independently verified.
 	 */
-	test('the conventions the chart was cast under all print', async () => {
+	test('the conventions the chart was cast under all print, as words with the identifier in the title', async () => {
 		const el = await mount(CHART);
-		const caption = root(el).querySelector('.roxy-frame')?.textContent ?? '';
-		expect(caption).toContain('li-chun');
-		expect(caption).toContain('split-zi');
-		expect(caption).toContain('clock');
+		const frame = root(el).querySelector('.roxy-frame') as HTMLElement;
+		const caption = frame.textContent ?? '';
+		expect(caption).toContain('Li chun');
+		expect(caption).toContain('Split zi');
+		expect(caption).toContain('Clock');
+		expect(
+			[...frame.querySelectorAll('.roxy-frame-deg')].map((e) =>
+				e.getAttribute('title'),
+			),
+		).toEqual(['li-chun', 'split-zi', 'clock']);
 	});
 });
 
@@ -257,7 +263,7 @@ describe('hide-readings', () => {
 			'Wood',
 			'Earth',
 			'丁癸沖',
-			'li-chun',
+			'Li chun',
 		]) {
 			expect(
 				body,

@@ -82,4 +82,27 @@ describe('essential dignity reaches the positions table', () => {
 		);
 		expect(headers).toContain('Dignity');
 	});
+
+	test('every chart point carries its conventional glyph, not only the Ascendant', async () => {
+		const point = (longitude: number) => ({
+			sign: 'Gemini',
+			longitude,
+			degree: longitude - 60,
+		});
+		const el = await mount({
+			...FIXTURE,
+			ascendant: point(85.7),
+			midheaven: point(61.2),
+			partOfFortune: point(70),
+			vertex: point(75),
+		});
+		const glyphOf = (label: string) =>
+			[...(el.shadowRoot?.querySelectorAll('tr.point .body') ?? [])]
+				.find((td) => td.textContent?.includes(label))
+				?.querySelector('.glyph')?.textContent;
+		expect(glyphOf('Ascendant')).toBe('Asc');
+		expect(glyphOf('Midheaven')).toBe('MC');
+		expect(glyphOf('Part of Fortune')).toBe('⊗');
+		expect(glyphOf('Vertex')).toBe('Vx');
+	});
 });

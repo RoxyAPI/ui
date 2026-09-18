@@ -5,6 +5,7 @@ import { planetGlyph } from '../tokens/index.js';
 import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { fanOut } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDateTime } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
@@ -20,6 +21,8 @@ const W = 360;
 const H = 180;
 const lonToX = (lon: number): number => lon + 180;
 const latToY = (lat: number): number => 90 - lat;
+/** Degrees of longitude two edge glyphs need between them: the glyph is 8 units on a map where one unit is one degree, plus a hair of air. */
+const GLYPH_SEPARATION = 9;
 
 // Reference parallels (degrees). Tropics and polar circles use the current mean
 // obliquity; drawn as dashed guides so the curved rising/setting lines read
@@ -250,7 +253,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 			<rect class="map-frame" x="0" y="0" width=${W} height=${H} />
 			<path class="land" d=${WORLD_LAND_PATH} fill-rule="evenodd" />
 			${this.renderGraticule()}
-			${lines.map((l, i) => this.renderBodyLines(l, i))}
+			${this.renderBodyLines(lines)}
 			${
 				bd
 					? svg`<text class="birthplace" x=${lonToX(bd.longitude)} y=${latToY(bd.latitude)} text-anchor="middle" dominant-baseline="central"><title>${this.t('Birth location')}</title>★</text>`
@@ -290,50 +293,96 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 		return svg`${meridians}${parallels}${refs}`;
 	}
 
-	private renderBodyLines(line: LineSet, index: number) {
-		const color = planetColor(line.planet, index);
-		// Response symbol first, then the shared table, then the full name. Never a
-		// truncation: `North Node.slice(0, 2)` labelled a whole map line "No".
-		const glyph = line.symbol || planetGlyph(line.planet) || line.planet;
-		const items = [
-			this.renderMeridian(
-				line.mc.longitude,
-				color,
-				glyph,
-				line.planet,
-				'mc',
-				false,
-			),
-			this.renderMeridian(
-				line.ic.longitude,
-				color,
-				glyph,
-				line.planet,
-				'ic',
-				true,
-			),
-			this.renderCurve(
-				line.ascendant.points,
-				color,
-				glyph,
-				line.planet,
-				'ascendant',
-				false,
-			),
-			this.renderCurve(
-				line.descendant.points,
-				color,
-				glyph,
-				line.planet,
-				'descendant',
-				true,
-			),
-		];
-		return svg`${items}`;
+	/**
+	 * Every body's four lines, with the glyph that names each line fanned along
+	 * its edge so two bodies within a few degrees of longitude never print one
+	 * glyph over the other. Longitude wraps like a wheel, so the same fan the
+	 * wheels use spaces the glyphs; the LINE stays at its true longitude and the
+	 * colour ties a displaced glyph back to it.
+	 */
+	private renderBodyLines(lines: LineSet[]) {
+		const bodies = lines.map((line, index) => ({
+			line,
+			color: planetColor(line.planet, index),
+			// Response symbol first, then the shared table, then the full name. Never a
+			// truncation: `North Node.slice(0, 2)` labelled a whole map line "No".
+			glyph: line.symbol || planetGlyph(line.planet) || line.planet,
+		}));
+		type Body = (typeof bodies)[number];
+		const nearEquator = (points: GeoPoint[]): GeoPoint =>
+			points.reduce(
+				(best, p) =>
+					Math.abs(p.latitude) < Math.abs(best.latitude) ? p : best,
+				points[0] ?? { latitude: 0, longitude: 0 },
+			);
+		// The label longitude for each line of each body, fanned per edge.
+		const fanned = (longitudeOf: (b: Body) => number) =>
+			new Map(
+				fanOut(bodies, (b) => longitudeOf(b) + 180, GLYPH_SEPARATION).map(
+					({ item, displayLongitude }) => [item, displayLongitude - 180],
+				),
+			);
+		const mcAt = fanned((b) => b.line.mc.longitude);
+		const icAt = fanned((b) => b.line.ic.longitude);
+		const ascAt = fanned(
+			(b) => nearEquator(b.line.ascendant.points ?? []).longitude,
+		);
+		const dscAt = fanned(
+			(b) => nearEquator(b.line.descendant.points ?? []).longitude,
+		);
+		return bodies.map((b) => {
+			const { line, color, glyph } = b;
+			const at = (m: Map<Body, number>) => m.get(b) ?? 0;
+			return svg`${[
+				this.renderMeridian(
+					line.mc.longitude,
+					at(mcAt),
+					color,
+					glyph,
+					line.planet,
+					'mc',
+					false,
+				),
+				this.renderMeridian(
+					line.ic.longitude,
+					at(icAt),
+					color,
+					glyph,
+					line.planet,
+					'ic',
+					true,
+				),
+				this.renderCurve(
+					line.ascendant.points,
+					{
+						longitude: at(ascAt),
+						latitude: nearEquator(line.ascendant.points ?? []).latitude,
+					},
+					color,
+					glyph,
+					line.planet,
+					'ascendant',
+					false,
+				),
+				this.renderCurve(
+					line.descendant.points,
+					{
+						longitude: at(dscAt),
+						latitude: nearEquator(line.descendant.points ?? []).latitude,
+					},
+					color,
+					glyph,
+					line.planet,
+					'descendant',
+					true,
+				),
+			]}`;
+		});
 	}
 
 	private renderMeridian(
 		lon: number,
+		labelLon: number,
 		color: string,
 		glyph: string,
 		planet: string,
@@ -342,16 +391,18 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 	) {
 		const x = lonToX(lon);
 		// MC label rides the top edge, IC the bottom, so the two meridians of one
-		// body never stack their glyphs at the same point.
-		const labelY = angle === 'ic' ? H - 7 : 9;
+		// body never stack their glyphs at the same point; the IC row sits above
+		// the longitude labels along the bottom edge.
+		const labelY = angle === 'ic' ? H - 16 : 9;
 		return svg`<g>
 			<line class=${`acg-line${dashed ? ' dashed' : ''}`} stroke=${color} x1=${x} y1="0" x2=${x} y2=${H}><title>${this.t('{{planet}} {{angle}} line', { planet, angle: this.t(ANGLE_LABEL[angle] ?? 'MC') })}</title></line>
-			<text class="acg-glyph" fill=${color} x=${x} y=${labelY} text-anchor="middle" dominant-baseline="central">${glyph}</text>
+			<text class="acg-glyph" fill=${color} x=${lonToX(labelLon)} y=${labelY} text-anchor="middle" dominant-baseline="central">${glyph}</text>
 		</g>`;
 	}
 
 	private renderCurve(
 		points: GeoPoint[],
+		label: GeoPoint,
 		color: string,
 		glyph: string,
 		planet: string,
@@ -360,17 +411,13 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 	) {
 		const segments = toSegments(points ?? []);
 		if (segments.length === 0) return nothing;
-		// Label at the sample nearest the equator, the most visible band.
-		const anchor = (points ?? []).reduce(
-			(best, p) => (Math.abs(p.latitude) < Math.abs(best.latitude) ? p : best),
-			points[0] ?? { latitude: 0, longitude: 0 },
-		);
+		// Labelled at the sample nearest the equator, the most visible band.
 		return svg`<g>
 			${segments.map(
 				(pts) =>
 					svg`<polyline class=${`acg-line${dashed ? ' dashed' : ''}`} stroke=${color} points=${pts}><title>${this.t('{{planet}} {{angle}} line', { planet, angle: this.t(ANGLE_LABEL[angle] ?? 'MC') })}</title></polyline>`,
 			)}
-			<text class="acg-glyph" fill=${color} x=${lonToX(anchor.longitude)} y=${latToY(anchor.latitude)} text-anchor="middle" dominant-baseline="central">${glyph}</text>
+			<text class="acg-glyph" fill=${color} x=${lonToX(label.longitude)} y=${latToY(label.latitude)} text-anchor="middle" dominant-baseline="central">${glyph}</text>
 		</g>`;
 	}
 

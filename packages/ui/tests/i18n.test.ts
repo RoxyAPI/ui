@@ -25,6 +25,7 @@ import { CENTER_GEOMETRY } from '../src/utils/bodygraph-render.js';
 import {
 	buildFormModel,
 	deriveSubmitLabel,
+	parseRepeatGroup,
 	type SpecDoc,
 } from '../src/utils/field-schema.js';
 import { KEY_REFUSED_MESSAGE } from '../src/utils/key-guard.js';
@@ -739,6 +740,7 @@ describe('shipped locales', () => {
 				'Sookshma',
 				'Vimshottari Mahadasha',
 				'{{planet}} {{level}}',
+				'{{group}} {{n}}',
 				'Ashtakavarga',
 				'Baladi',
 				'Bhinnashtakavarga',
@@ -892,6 +894,7 @@ describe('shipped locales', () => {
 				'Pratyantardasha',
 				'Sookshma',
 				'{{planet}} {{level}}',
+				'{{group}} {{n}}',
 				'Ashtakavarga',
 				'Baladi',
 				'Bhinnashtakavarga',
@@ -1072,6 +1075,7 @@ describe('shipped locales', () => {
 				'Pratyantardasha',
 				'Sookshma',
 				'{{planet}} {{level}}',
+				'{{group}} {{n}}',
 				'Ashtakavarga',
 				'Baladi',
 				'Bhinnashtakavarga',
@@ -1119,7 +1123,16 @@ describe('shipped locales', () => {
 				'Score',
 				'Points',
 			],
-			hi: ['ASC', 'ASC{{n}}', 'DSC', 'IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
+			hi: [
+				'ASC',
+				'ASC{{n}}',
+				'DSC',
+				'IC',
+				'MC',
+				'Vtx',
+				'{{planet}} {{level}}',
+				'{{group}} {{n}}',
+			],
 			// The three Portuguese abbreviations truncate `Cardinal`, `Fixo` and
 			// `Mutável` at three characters, which lands on the English set;
 			// `Cardinal` is the full Portuguese word. `Aura`, `Bodygraph` and `Motor`
@@ -1230,6 +1243,7 @@ describe('shipped locales', () => {
 				'Pratyantardasha',
 				'Sookshma',
 				'{{planet}} {{level}}',
+				'{{group}} {{n}}',
 				'Ashtakavarga',
 				'Baladi',
 				'Bhinnashtakavarga',
@@ -1263,7 +1277,7 @@ describe('shipped locales', () => {
 				'Kua',
 				'Lunar {{month}}/{{day}}',
 			],
-			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}'],
+			ru: ['IC', 'MC', 'Vtx', '{{planet}} {{level}}', '{{group}} {{n}}'],
 			// Turkish astrology borrows `orb`, `apex` and `natal` unchanged; `Total`
 			// is `Toplam`. Turkish Human Design borrows `Aura`, `Bodygraph` and
 			// `Motor` the same way (`Motor merkezler`). `Relocation` is the same
@@ -1351,6 +1365,7 @@ describe('shipped locales', () => {
 				'Sookshma',
 				'Vimshottari Mahadasha',
 				'{{planet}} {{level}}',
+				'{{group}} {{n}}',
 				'Ashtakavarga',
 				'Baladi',
 				'Bhinnashtakavarga',
@@ -3285,8 +3300,11 @@ describe('the form path writes no untranslated words', () => {
 		for (const [path, item] of Object.entries(doc.paths)) {
 			for (const [method, op] of Object.entries(item)) {
 				if (!['get', 'post', 'put', 'patch'].includes(method)) continue;
+				// A record of a repeating property (`members.0`) is legended from the
+				// published field label plus its number, so it carries no chrome name.
 				for (const f of buildFormModel(op, schemas, path).fields)
-					if (f.group) names.add(humanize(f.group));
+					if (f.group && !parseRepeatGroup(f.group))
+						names.add(humanize(f.group));
 			}
 		}
 		// Not vacuous, and pinned to BOTH shapes a group can come from: an

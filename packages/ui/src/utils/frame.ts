@@ -2,6 +2,7 @@ import type { TemplateResult } from 'lit';
 import { css, html, nothing } from 'lit';
 import { formatAyanamsa, formatNumber } from './format.js';
 import type { Translate } from './hd-reading.js';
+import { displayOption } from './localized.js';
 
 /**
  * The sidereal frame a Vedic response was computed in.
@@ -90,27 +91,28 @@ export interface ChineseConventions {
  * @remarks
  * **A sibling of {@link renderFrameCaption}, and it exists for the same reason.** Three splits decide a chart for a birth near a boundary: which instant starts the day, which starts the year, and which clock the hour is read from. Two teachers using different rules get different pillars for the same birth, so a chart printed without saying which rules produced it cannot be reconciled against any other chart, and a reader holding two of them concludes one is wrong rather than that they answer different questions. Echoing them is why the response carries them.
  *
- * The VALUES print as the response sent them: each NAMES a rule rather than describing one, and none carries a localized partner. The three labels beside them are plain compositional language rather than terms of art, which is why they are catalogued where the rest of a Chinese-metaphysics card is not.
+ * Each value NAMES a rule and carries no localized partner, so it prints through the published field-label option for its field (`Beginning of Spring` for `li-chun`, `Civil clock` for `clock`) with the wire identifier kept in the title, the way any request option is shown; a payload with no word for it prints the identifier humanized. The three labels beside them are plain compositional language rather than terms of art, which is why they are catalogued where the rest of a Chinese-metaphysics card is not.
  *
  * Renders nothing for a response that echoes none, so it is safe to call unconditionally.
  */
 export function renderConventionsCaption(
 	conventions: ChineseConventions | undefined,
 	t: Translate,
+	lang: string | undefined,
 ): TemplateResult | typeof nothing {
-	const pairs: Array<[string, string]> = [];
+	const pairs: Array<[string, string, string]> = [];
 	if (conventions?.yearBoundary)
-		pairs.push([t('Year boundary'), conventions.yearBoundary]);
+		pairs.push(['Year boundary', 'yearBoundary', conventions.yearBoundary]);
 	if (conventions?.dayBoundary)
-		pairs.push([t('Day boundary'), conventions.dayBoundary]);
+		pairs.push(['Day boundary', 'dayBoundary', conventions.dayBoundary]);
 	if (conventions?.hourClock)
-		pairs.push([t('Hour clock'), conventions.hourClock]);
+		pairs.push(['Hour clock', 'hourClock', conventions.hourClock]);
 	if (pairs.length === 0) return nothing;
 	return html`<p class="roxy-frame">
 		${pairs.map(
-			([label, value], i) =>
-				html`${i > 0 ? ' · ' : ''}${label}:
-				<span class="roxy-frame-deg">${value}</span>`,
+			([label, field, value], i) =>
+				html`${i > 0 ? ' · ' : ''}${t(label)}:
+				<span class="roxy-frame-deg" title=${value}>${displayOption(lang, field, value)}</span>`,
 		)}
 	</p>`;
 }

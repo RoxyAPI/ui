@@ -174,6 +174,9 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 			.retro {
 				color: var(--roxy-danger, #dc2626);
 				font-weight: 600;
+				/* The gap is a margin, not a text space: a space that opens a nested
+				 * template is stripped by the markup minifier. */
+				margin-left: 0.3em;
 			}
 			.formula {
 				color: var(--roxy-muted, #71717a);
@@ -251,7 +254,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				cols.motion
 					? html`<td>${
 							r.speed != null
-								? html`${formatNumber(this.effectiveLang(), r.speed, 3)}${this.t('°/day')}${r.isRetrograde ? html` <span class="retro">℞</span>` : nothing}`
+								? html`${formatNumber(this.effectiveLang(), r.speed, 3)}${this.t('°/day')}${r.isRetrograde ? html`<span class="retro">℞</span>` : nothing}`
 								: html`&mdash;`
 						}</td>`
 					: nothing

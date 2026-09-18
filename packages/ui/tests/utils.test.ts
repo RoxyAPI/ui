@@ -142,12 +142,35 @@ describe('utils/degree', () => {
 		expect(out.map((p) => p.longitude)).toEqual([10, 300, 340]);
 	});
 
-	test('a cluster that overruns 360 slides back instead of wrapping', () => {
+	test('a cluster at 0 degrees Aries fans across the seam like any other', () => {
 		const out = fanOut([{ l: 355 }, { l: 356 }, { l: 357 }], (p) => p.l, 10);
-		// Last would land at 375, so everything shifts back by 15 and the stack
-		// stays anchored near its real longitudes rather than jumping to Aries.
-		expect(out.map((p) => p.displayLongitude)).toEqual([340, 350, 360]);
+		// The ring has no seam: the two pushed members continue into Aries at the
+		// same ten degree step a cluster anywhere else takes.
+		expect(out.map((p) => p.displayLongitude)).toEqual([355, 5, 15]);
 		expect(out.map((p) => p.longitude)).toEqual([355, 356, 357]);
+	});
+
+	test('the sweep starts after the widest gap, so a body just past Aries clears a stack just before it', () => {
+		const out = fanOut([{ l: 2 }, { l: 350 }, { l: 355 }], (p) => p.l, 10);
+		// 350 and 355 lead the sweep and 355 is pushed to 0; the body at 2 is then
+		// pushed to 10 rather than being left under it.
+		expect(out.map((p) => p.longitude)).toEqual([2, 350, 355]);
+		expect(out.map((p) => p.displayLongitude)).toEqual([10, 350, 0]);
+	});
+
+	test('fanOut takes a per-pair separation, so a wider mark asks for more room', () => {
+		const width = (p: { l: number; w: number }) => p.w;
+		const out = fanOut(
+			[
+				{ l: 100, w: 10 },
+				{ l: 101, w: 10 },
+				{ l: 102, w: 30 },
+			],
+			(p) => p.l,
+			(a, b) => (width(a) + width(b)) / 2,
+		);
+		// Two narrow marks clear at 10; the wide one needs 20 from its neighbour.
+		expect(out.map((p) => p.displayLongitude)).toEqual([100, 110, 130]);
 	});
 });
 

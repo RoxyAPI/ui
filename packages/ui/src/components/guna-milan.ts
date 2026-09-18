@@ -5,6 +5,7 @@ import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatNumber, formatPercent } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
+import { stackedTableStyles } from '../utils/stacked-table.js';
 
 /**
  * The eight kootas and the points each carries, in the classical order the API
@@ -44,6 +45,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,
+		stackedTableStyles,
 		css`
 			.card {
 				background: var(--roxy-surface, #fff);
@@ -324,7 +326,7 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 
 			${
 				breakdown.length > 0
-					? html`<div class="table-scroll" part="table"><table>
+					? html`<div class="table-scroll" part="table"><table class="stacked">
 						<caption class="roxy-sr-only">
 							${this.t('Guna Milan breakdown: each koota with the classification of person 1 and person 2, and the score it earned out of its maximum.')}
 						</caption>
@@ -347,14 +349,14 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 										${b.category}
 										${b.description ? html`<small>${b.description}</small>` : nothing}
 									</td>
-									<td class="classification">${b.person1 ?? ''}</td>
-									<td class="classification">${b.person2 ?? ''}</td>
+									<td class="classification" data-label=${this.t('Person 1')}>${b.person1 ?? ''}</td>
+									<td class="classification" data-label=${this.t('Person 2')}>${b.person2 ?? ''}</td>
 									<td class="bar-cell bar-col">
 										<div class="mini-bar">
 											<span style="width: ${pct}%"></span>
 										</div>
 									</td>
-									<td class="score">${formatNumber(this.effectiveLang(), score, 1)} / ${maxScore}</td>
+									<td class="score" data-label=${this.t('Points')}>${formatNumber(this.effectiveLang(), score, 1)} / ${maxScore}</td>
 								</tr>`;
 							})}
 						</tbody>

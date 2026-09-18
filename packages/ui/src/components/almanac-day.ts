@@ -13,6 +13,7 @@ import {
 	formatDateRange,
 	formatInteger,
 	formatMonthDay,
+	formatMonthYear,
 } from '../utils/format.js';
 import { display, displayOption } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
@@ -246,7 +247,7 @@ export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
 				}
 				${
 					'year' in d && typeof d.year === 'number'
-						? html`<span class="lunar">${d.year} ${d.month ?? ''}</span>`
+						? html`<span class="lunar">${formatMonthYear(locale, d.year, d.month) || d.year}</span>`
 						: nothing
 				}
 				${

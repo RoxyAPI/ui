@@ -26,6 +26,8 @@ export interface OpenApiSchema extends OpenApiSchemaRef {
 	properties?: Record<string, OpenApiSchema>;
 	required?: string[];
 	items?: OpenApiSchema;
+	minItems?: number;
+	maxItems?: number;
 	example?: unknown;
 	anyOf?: OpenApiSchema[];
 	oneOf?: OpenApiSchema[];
@@ -94,6 +96,19 @@ export interface FieldDef {
 }
 
 /** The digested form model for one operation. The build-time slice is exactly this shape. */
+/**
+ * A request property that is an ARRAY of objects, each a card of its own on the form.
+ *
+ * @remarks
+ * A penta takes three to five birth records and a custom spread one to ten positions. The item schema expands into one group per record, keyed `{key}.{index}` so the group machinery (legend, city search, validation) treats each record like a `person1`; the model carries `min` records and the form grows to `max`. A comma-separated text box cannot take a birth record, which is what this exists to replace.
+ */
+export interface RepeatDef {
+	/** The array property name on the wire, e.g. `members`. */
+	key: string;
+	min: number;
+	max: number;
+}
+
 export interface FormModel {
 	/** Concise heading derived from the operation summary, falling back to the path. */
 	title: string;
@@ -101,10 +116,38 @@ export interface FormModel {
 	fields: FieldDef[];
 	/** True when the operation carries a `lang` query parameter, so the form knows to route an effective language to the query string on submit. */
 	hasLang: boolean;
+	/** The array-of-object properties, each already expanded into `min` groups inside `fields`. Absent when the request has none. */
+	repeats?: RepeatDef[];
+}
+
+/** The group key of the `index`th record of a repeating property, and its inverse. */
+export const repeatGroup = (key: string, index: number): string =>
+	`${key}.${index}`;
+export function parseRepeatGroup(
+	group: string,
+): { key: string; index: number } | null {
+	const m = /^(.+)\.(\d+)$/.exec(group);
+	return m ? { key: m[1] as string, index: Number(m[2]) } : null;
+}
+
+/** The fields of one record of a repeating property, from the fields of its first record. Every record is the same template, so the form grows a repeat by re-keying record zero. */
+export function repeatFields(
+	fields: readonly FieldDef[],
+	key: string,
+	index: number,
+): FieldDef[] {
+	const first = repeatGroup(key, 0);
+	return fields
+		.filter((f) => f.group === first)
+		.map((f) => ({
+			...f,
+			key: `${repeatGroup(key, index)}.${f.name}`,
+			group: repeatGroup(key, index),
+		}));
 }
 
 /** At most this many enum options render as a tile/chip picker; above it a filterable select is used instead. */
-export const TILE_MAX = 12;
+const TILE_MAX = 12;
 
 /** The latitude+longitude+timezone trio the form suppresses in favour of a city search. Centralised so the render path and tests agree. */
 export const LOCATION_TRIO = ['latitude', 'longitude', 'timezone'] as const;
@@ -139,7 +182,7 @@ export const LOCATION_PAIR = ['latitude', 'longitude'] as const;
  * other field name, so `birthDate` stays an ordinary field in the flat group and does not invent a
  * phantom `birth` group with a lone date in it.
  */
-export function splitCoordinateName(
+function splitCoordinateName(
 	name: string,
 ): { group: string; leaf: (typeof LOCATION_PAIR)[number] } | null {
 	const m = name.match(/^(.+?)(Latitude|Longitude)$/);
@@ -250,6 +293,7 @@ export function buildFormModel(
 	endpoint: string,
 ): FormModel {
 	const fields: FieldDef[] = [];
+	const repeats: RepeatDef[] = [];
 	let hasLang = false;
 
 	const bodyRef = op.requestBody?.content?.['application/json']?.schema;
@@ -258,12 +302,41 @@ export function buildFormModel(
 		const required = new Set(bodySchema.required ?? []);
 		for (const [name, sub] of Object.entries(bodySchema.properties)) {
 			const resolved = resolveSchema(sub, schemas) ?? {};
-			if (resolved.type === 'object' && resolved.properties) {
+			const item =
+				resolved.type === 'array'
+					? resolveSchema(resolved.items, schemas)
+					: undefined;
+			if (item?.type === 'object' && item.properties) {
+				const min = Math.max(1, resolved.minItems ?? 1);
+				const itemRequired = new Set(item.required ?? []);
+				repeats.push({ key: name, min, max: resolved.maxItems ?? min });
+				for (let i = 0; i < min; i++) {
+					for (const [subName, subSchema] of Object.entries(item.properties)) {
+						const r = resolveSchema(subSchema, schemas) ?? {};
+						fields.push(
+							toField(subName, r, {
+								key: `${repeatGroup(name, i)}.${subName}`,
+								group: repeatGroup(name, i),
+								required: required.has(name) && itemRequired.has(subName),
+							}),
+						);
+					}
+				}
+			} else if (resolved.type === 'object' && resolved.properties) {
 				const subRequired = new Set(resolved.required ?? []);
 				for (const [subName, subSchema] of Object.entries(
 					resolved.properties,
 				)) {
 					const r = resolveSchema(subSchema, schemas) ?? {};
+					// A list of objects nested inside a group (a plot's polygon points) has no
+					// input a visitor can fill, and a text box for it can only produce a
+					// rejected request; the group's scalar alternative (width and depth) is
+					// what the form offers.
+					if (
+						r.type === 'array' &&
+						resolveSchema(r.items, schemas)?.type === 'object'
+					)
+						continue;
 					fields.push(
 						toField(subName, r, {
 							key: `${name}.${subName}`,
@@ -313,7 +386,12 @@ export function buildFormModel(
 		);
 	}
 
-	return { title: deriveTitle(op.summary, endpoint), fields, hasLang };
+	return {
+		title: deriveTitle(op.summary, endpoint),
+		fields,
+		hasLang,
+		...(repeats.length > 0 ? { repeats } : {}),
+	};
 }
 
 /**

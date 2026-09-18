@@ -183,6 +183,21 @@
 		});
 	});
 
+	// Quick-start tab switch, the same shape as the card tabs but outside the grid.
+	document.getElementById('quickstart-tabs')?.addEventListener('click', (e) => {
+		const tab = e.target.closest('[role="tab"]');
+		if (!tab) return;
+		const list = tab.closest('[role="tablist"]');
+		list.querySelectorAll('[role="tab"]').forEach((t) => {
+			const selected = t === tab;
+			t.setAttribute('aria-selected', selected ? 'true' : 'false');
+			t.setAttribute('tabindex', selected ? '0' : '-1');
+		});
+		tab.closest('.quickstart').querySelectorAll('[role="tabpanel"]').forEach((panel) => {
+			panel.hidden = panel.id !== tab.getAttribute('aria-controls');
+		});
+	});
+
 	// Native <dialog> open/close on data-dialog-open / data-dialog-close.
 	document.addEventListener('click', (e) => {
 		const opener = e.target.closest('[data-dialog-open]');

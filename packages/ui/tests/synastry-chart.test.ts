@@ -50,6 +50,67 @@ const FIXTURE = {
 	summary: { total: 0, harmonious: 0, challenging: 0, neutral: 0 },
 } as unknown as CalculateSynastryResponse;
 
+describe('the synastry wheel fans a stellium apart and still reports the true longitudes', () => {
+	const stacked = (name: string, house: number) => ({
+		...person(name, house),
+		planets: [
+			{ name: 'Sun', longitude: 100, sign: 'Cancer', degree: 10, house },
+			{ name: 'Mercury', longitude: 101, sign: 'Cancer', degree: 11, house },
+			{ name: 'Venus', longitude: 102, sign: 'Cancer', degree: 12, house },
+			{ name: 'Mars', longitude: 103, sign: 'Cancer', degree: 13, house },
+		],
+	});
+	const num = (n: Element, a: string) => Number(n.getAttribute(a));
+
+	test('each ring fans its own cluster, and a leader ties every displaced glyph to its longitude', async () => {
+		const el = await mount({
+			...FIXTURE,
+			person1: stacked('A', 10),
+			person2: stacked('B', 4),
+		});
+		for (const cls of ['p1', 'p2']) {
+			const glyphs = [...root(el).querySelectorAll(`text.${cls}`)];
+			expect(glyphs.length).toBe(4);
+			const angles = glyphs
+				.map((g) => Math.atan2(num(g, 'y') - 200, num(g, 'x') - 200))
+				.map((a) => (a * 180) / Math.PI)
+				.sort((a, b) => a - b);
+			// The glyph with its person tag, at its own ring's radius, in degrees of
+			// arc: the max of that and the whole-degree label at the label radius.
+			const radius = cls === 'p1' ? 124 : 96;
+			const minSep =
+				Math.max((1.3 * 13) / radius, (1.85 * 7) / (radius - 11)) *
+				(180 / Math.PI);
+			for (let i = 1; i < angles.length; i++) {
+				expect(
+					(angles[i] as number) - (angles[i - 1] as number),
+				).toBeGreaterThan(minSep - 0.001);
+			}
+			expect(root(el).querySelectorAll(`line.leader.${cls}`).length).toBe(3);
+		}
+		// What moved is the drawing; every tooltip still names the true degree.
+		expect(
+			tooltips(el)
+				.filter((t) => t.includes('Cancer'))
+				.sort(),
+		).toEqual([
+			"Mars - 13°00' Cancer · House 10",
+			"Mars - 13°00' Cancer · House 4",
+			"Mercury - 11°00' Cancer · House 10",
+			"Mercury - 11°00' Cancer · House 4",
+			"Sun - 10°00' Cancer · House 10",
+			"Sun - 10°00' Cancer · House 4",
+			"Venus - 12°00' Cancer · House 10",
+			"Venus - 12°00' Cancer · House 4",
+		]);
+	});
+
+	test('an uncrowded ring draws no leader', async () => {
+		const el = await mount(FIXTURE);
+		expect(root(el).querySelectorAll('line.leader').length).toBe(0);
+	});
+});
+
 describe('the synastry wheel says what it draws', () => {
 	test('the legend names the sectors as signs', async () => {
 		// Twelve spokes on a round chart read as house cusps to anyone who reads a

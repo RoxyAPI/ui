@@ -428,12 +428,13 @@ When you do not want a backend at all, mint a **publishable key** (`pk_live_*` /
 ></roxy-natal-chart>
 ```
 
-That single element renders a schema-driven form (a zodiac/enum tile picker, a boolean toggle, native date and time inputs, and a city search for endpoints that need coordinates), fetches on submit, and shows a loading then error-or-result state. Optional fields collapse under one Advanced disclosure, and a form whose only required field is an enum submits on selection (tap a sign, get a reading, no button). The result keeps a re-query affordance: a single-enum picker stays above the result and refetches when the selection changes, any other form gets a compact Edit query control that restores it with the previous values. `method` defaults to `POST`; set `method="GET"` for GET endpoints. Set `data-endpoint` to the spec path without the leading slash (`dreams/symbols/{id}`, `astrology/horoscope/{sign}/daily`).
+That single element renders a schema-driven form (a zodiac/enum tile picker, a boolean toggle, native date and time inputs, a city search for endpoints that need coordinates, and one card per record for a request that takes several, such as the members of a penta, with `Add` and `Remove` inside the bounds the API declares), fetches on submit, and shows a loading then error-or-result state. Optional fields collapse under one Advanced disclosure, and a form whose only required field is an enum submits on selection (tap a sign, pick a nakshatra, get a reading, no button). When the API rejects a request it names the fields it rejected, and the form prints each message under that input, marks it, opens the Advanced disclosure if the field sits there, and summarises the rejections by field label above the form; editing a field clears its message. The result keeps a re-query affordance: a single-enum picker stays above the result and refetches when the selection changes, any other form gets a compact Edit query control that restores it with the previous values. `method` defaults to `POST`; set `method="GET"` for GET endpoints. Set `data-endpoint` to the spec path without the leading slash (`dreams/symbols/{id}`, `astrology/horoscope/{sign}/daily`).
 
 **Key handling is the contract. The component enforces it, not you:**
 
 - The publishable key is safe in client code: it is origin-restricted (any other origin gets 403) and cannot read your account.
 - A **secret key never works here.** If `publishable-key` is not a `pk_` key the component refuses to fetch, sends nothing, and emits a `roxy-validation-error` event. A secret key cannot leak through self-fetch even by mistake.
+- A component that cannot draw a response it received (a shape it was not written for) falls back to the generic `<roxy-data>` table for that response and emits a `roxy-render-error` event with the exception, so a page never keeps a loading placeholder on screen.
 - For production with a backend, prefer controlled mode (Patterns 1, 6, 7): the server fetches with the `sk_` key and injects the response, so no key of any kind reaches the browser.
 
 In React, the same props are typed: `<RoxyNatalChart endpoint="astrology/natal-chart" publishableKey={process.env.NEXT_PUBLIC_ROXY_PK} />`.
@@ -667,6 +668,7 @@ Both are off by default. `hide-sections` takes a comma-separated list, is case-i
 | `readings` | The interpretation accordion |
 | `reading` | One disclosure card inside it |
 | `hint` | The help text under a field of the built-in form, which quotes the API reference for that field. Hide it with `::part(hint)` on a page written for a reader who did not come for the reference; the label, the input and the validation stay |
+| `field-error` | One message the API returned about one input of the built-in form, printed under it, or about one record card, printed on it |
 | `form`, `loading`, `error`, `edit-bar`, `attribution` | The built-in states, on every component |
 
 That table is the shared vocabulary, not the whole list. **`components-catalog.json` carries a `parts` array for every component, so read the exact names a component answers to instead of guessing or inspecting the DOM.** A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike. Parts reach exactly one shadow root deep, and a component that draws another re-exports its parts, so `roxy-relocation-wheel::part(readings)` reaches the wheel it nests.

@@ -1,5 +1,5 @@
-import { css, html, nothing, svg } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, nothing, type PropertyValues, svg } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type {
 	CalculateTransitAspectsResponse,
@@ -12,6 +12,7 @@ import {
 	arcMidpoint,
 	arcSeparation,
 	fanOut,
+	formatWheelDegree,
 	longitudeToSignPosition,
 	normalizeLongitude,
 	oppositePoint,
@@ -32,6 +33,7 @@ import {
 } from '../utils/interp-accordion.js';
 import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
+import { RerenderOnResize, renderedFontSize } from '../utils/type-metrics.js';
 
 type Body = CalculateTransitAspectsResponse['transitPlanets'][number];
 type TransitAspect = CalculateTransitAspectsResponse['aspects'][number];
@@ -59,8 +61,9 @@ type TransitAspectsPayload = CalculateTransitAspectsResponse &
  */
 const SIZE = 400;
 const CENTER = SIZE / 2;
-/** ASC/DSC label. Inside the rim by more than half the label width, or the axis text clips on the viewBox edge. */
-const AXIS_LABEL_R = 184;
+/** ASC/DSC tick and label. The tick stops short of the text, and the label sits inside the viewBox edge by more than half its own width, or the axis text clips on it. */
+const AXIS_TICK_R = 176;
+const AXIS_LABEL_R = 188;
 /** Outer rim of the zodiac band. */
 const OUTER_R = 170;
 /** Sign glyphs, and the inner edge of the band that holds them. */
@@ -80,12 +83,24 @@ const HUB_R = 70;
 /** House sector numbers, inside the hub: the only band on this wheel with nothing else in it. Drawn ONLY from real cusps, the response ones or a page override. */
 const HOUSE_NUM_R = 58;
 /**
- * Widths a fanned cluster has to clear. The glyph is the wider mark but sits on
- * the larger radius, and the degree label is narrower on a smaller one, so which
- * of the two actually binds depends on the ring and neither can be assumed.
+ * The in-wheel type sizes at a wide host, in user units, as the stylesheet
+ * declares them: what the fan spaces the marks by until the rendered text has
+ * been measured, and what a unit test draws on. The phone sizes live in the
+ * stylesheet alone and are read back off the rendered text, never assumed.
  */
-const GLYPH_WIDTH = 13;
-const DEG_LABEL_WIDTH = 15;
+export const TRANSIT_TYPE_SIZES = { glyph: 13, degree: 7 } as const;
+const GLYPH_FONT = TRANSIT_TYPE_SIZES.glyph;
+const DEG_FONT = TRANSIT_TYPE_SIZES.degree;
+/**
+ * Widths a fanned cluster has to clear, as type metrics in em measured on the
+ * rendered text and multiplied by the font size in play. The glyph is on the
+ * larger radius and the whole-degree label on a smaller one, so which of the two
+ * binds depends on the ring, and a retrograde mark widens a label by an em and a
+ * quarter, which is why the separation is settled per pair.
+ */
+const GLYPH_EM = 0.95;
+const WHOLE_DEG_EM = 1.85;
+const RETRO_MARK_EM = 1.25;
 /** Leader line: a tick at the body's true longitude, and the foot of the line beside the displaced glyph. Both offsets are measured from the ring, signed so the leader always runs into the gap between the two rings. */
 const LEADER_TICK = 8;
 const LEADER_FOOT = 4;
@@ -97,12 +112,6 @@ const LEADER_FOOT = 4;
  */
 const glyphFor = (name: string, label: string): string =>
 	planetGlyph(name) ?? label;
-
-/** `12°34'` from a raw ecliptic longitude, the form a practitioner reads off a wheel. */
-const degLabel = (longitude: number): string => {
-	const sp = longitudeToSignPosition(longitude);
-	return `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
-};
 
 /** Bodies keyed by their canonical ENGLISH name, so an aspect or a table row can find a longitude without rescanning the array. The API keeps `name` English in every language for exactly this, and keying on `nameLocalized` would resolve nothing on a translated page. */
 const byName = (list: Body[]): Map<string, Body> => {
@@ -486,6 +495,29 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	@property({ type: Array })
 	houses?: NatalChartResponse['houses'] | number[];
 
+	/**
+	 * The in-wheel type sizes the stylesheet actually applied, read back after
+	 * each render. The fan spaces the bodies by the width of their marks, and
+	 * that width follows the container query, which nothing in a render pass can
+	 * see; a wide host keeps the declared sizes and never re-renders for them.
+	 */
+	@state()
+	private glyphFont: number = GLYPH_FONT;
+	@state()
+	private degFont: number = DEG_FONT;
+
+	constructor() {
+		super();
+		new RerenderOnResize(this);
+	}
+
+	protected updated(changed: PropertyValues): void {
+		super.updated(changed);
+		const root = this.renderRoot;
+		this.glyphFont = renderedFontSize(root, '.natal-glyph', this.glyphFont);
+		this.degFont = renderedFontSize(root, '.planet-deg', this.degFont);
+	}
+
 	/** The response widened to the natal frame it carries. One cast, so nothing below repeats it. */
 	private get payload(): TransitAspectsPayload | undefined {
 		return this.data as TransitAspectsPayload | undefined;
@@ -773,10 +805,16 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		kind: string,
 		leaderSign: 1 | -1,
 	) {
-		const separation = Math.max(
-			arcSeparation(GLYPH_WIDTH, radius),
-			arcSeparation(DEG_LABEL_WIDTH, degRadius),
-		);
+		const glyphSeparation = arcSeparation(GLYPH_EM * this.glyphFont, radius);
+		const labelWidth = (p: Body) =>
+			(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
+			this.degFont;
+		// Two centred labels clear each other at half the sum of their widths.
+		const separation = (a: Body, b: Body) =>
+			Math.max(
+				glyphSeparation,
+				arcSeparation((labelWidth(a) + labelWidth(b)) / 2, degRadius),
+			);
 		return fanOut(bodies, (p) => p.longitude, separation).map(
 			({ item: p, longitude, displayLongitude }) => {
 				const angle = this.toAngle(displayLongitude);
@@ -791,7 +829,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				// costs the legibility of the position it is trying to state.
 				const label = `${longitudeToSignPosition(longitude).degree}°`;
 				const body = display(p, 'name');
-				const tooltip = `${kind} ${body}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel(longitude)} ${display(p, 'sign')}`;
+				const tooltip = `${kind} ${body}${retro ? ` ${this.t('retrograde')}` : ''} - ${formatWheelDegree(longitude)} ${display(p, 'sign')}`;
 				const displaced = Math.abs(displayLongitude - longitude) > 0.5;
 				const tick = polarToCartesian(
 					CENTER,
@@ -870,10 +908,11 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return [asc, oppositePoint(asc)].map((lon, i) => {
 			const angle = this.toAngle(lon);
 			const inner = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
-			const outer = polarToCartesian(CENTER, CENTER, AXIS_LABEL_R, angle);
+			const tick = polarToCartesian(CENTER, CENTER, AXIS_TICK_R, angle);
+			const label = polarToCartesian(CENTER, CENTER, AXIS_LABEL_R, angle);
 			return svg`<g>
-				<line class="axis-tick" x1=${inner.x} y1=${inner.y} x2=${outer.x} y2=${outer.y} />
-				<text class="axis-label" x=${outer.x} y=${outer.y} text-anchor="middle" dominant-baseline="central">${i === 0 ? this.t('ASC') : this.t('DSC')}</text>
+				<line class="axis-tick" x1=${inner.x} y1=${inner.y} x2=${tick.x} y2=${tick.y} />
+				<text class="axis-label" x=${label.x} y=${label.y} text-anchor="middle" dominant-baseline="central">${i === 0 ? this.t('ASC') : this.t('DSC')}</text>
 			</g>`;
 		});
 	}
@@ -965,7 +1004,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		const rows = natal.length > 0 ? natal : transit;
 		const cell = (p: Body | undefined) =>
 			p
-				? html`${signGlyph(p.sign) ?? ''} ${degLabel(p.longitude)} ${display(p, 'sign')}${p.isRetrograde ? html`<span class="retro-badge" aria-label=${this.t('retrograde')}>℞</span>` : nothing}`
+				? html`${signGlyph(p.sign) ?? ''} ${formatWheelDegree(p.longitude)} ${display(p, 'sign')}${p.isRetrograde ? html`<span class="retro-badge" aria-label=${this.t('retrograde')}>℞</span>` : nothing}`
 				: nothing;
 		const houseCell = (p: Body | undefined) =>
 			showHouses

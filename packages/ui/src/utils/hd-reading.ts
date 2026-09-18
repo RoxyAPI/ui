@@ -60,6 +60,12 @@ export const hdReadingStyles = css`
 	.fact strong {
 		font-size: var(--roxy-text-base, 1rem);
 		color: var(--roxy-fg, #0a0a0a);
+		/* A value is often one word, and in Russian or German that word can be
+		 * wider than the tile: hyphenate it at a dictionary point where the
+		 * platform can, and break it rather than run past the tile where it
+		 * cannot. */
+		hyphens: auto;
+		overflow-wrap: anywhere;
 	}
 	.lead {
 		margin: 0;

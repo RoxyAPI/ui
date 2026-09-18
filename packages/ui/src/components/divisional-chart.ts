@@ -1,7 +1,10 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { planetGlyph } from '../tokens/index.js';
-import type { DivisionalChartResponse } from '../types/index.js';
+import type {
+	DivisionalChartResponse,
+	NavamsaResponse,
+} from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { distinctSanskrit } from '../utils/format.js';
@@ -17,16 +20,29 @@ import {
 import { kundliStyles } from '../utils/kundli-styles.js';
 import { tablistStyles } from '../utils/tablist.js';
 
+/** The two responses this card draws: a chosen division, which names itself, and the navamsa, which is D9 by definition. */
+type DivisionalData = DivisionalChartResponse | NavamsaResponse;
+type Division = Partial<DivisionalChartResponse['division']> &
+	Pick<DivisionalChartResponse['division'], 'number' | 'name'>;
+
 /**
- * Divisional chart renderer (D2-D60). Accepts a DivisionalChartResponse and
- * renders the same South / North / East kundli grid as the birth chart, plus
- * division metadata and Vargottama planet pills. A visible tablist lets the
- * end user switch styles at runtime. The varga response carries a graha-keyed
- * `chart.meta` map (no per-rashi buckets), so houses are bucketed from that
- * map.
+ * The navamsa endpoint is the ninth division by definition, so its response carries no `division` block of its own; this is the one the divisional endpoint prints for D9, in every language, and it is what the card labels a navamsa response with.
+ */
+const NAVAMSA: Division = { number: 9, name: 'Navamsa' };
+
+const divisionOf = (d: DivisionalData): Division =>
+	'division' in d && d.division ? d.division : NAVAMSA;
+
+/**
+ * Divisional chart renderer (D2-D60). Accepts a DivisionalChartResponse or a
+ * NavamsaResponse and renders the same South / North / East kundli grid as the
+ * birth chart, plus division metadata and Vargottama planet pills. A visible
+ * tablist lets the end user switch styles at runtime. The varga response
+ * carries a graha-keyed `chart.meta` map (no per-rashi buckets), so houses are
+ * bucketed from that map.
  */
 @customElement('roxy-divisional-chart')
-export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse> {
+export class RoxyDivisionalChart extends RoxyDataElement<DivisionalData> {
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,
@@ -81,16 +97,17 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalChartResponse
 
 	private viewModel(): KundliViewModel | null {
 		if (!this.data?.chart?.meta) return null;
-		const { division } = this.data;
+		const division = divisionOf(this.data);
 		const label = `D${division.number} ${division.name}`;
 		return toKundliViewModel(this.data.chart.meta, { divisionLabel: label });
 	}
 
-	protected renderData(d: DivisionalChartResponse) {
+	protected renderData(d: DivisionalData) {
 		const vm = this.viewModel();
 		if (!vm) return this.renderEmpty();
 
-		const { division, vargottama } = d;
+		const division = divisionOf(d);
+		const { vargottama } = d;
 
 		return html`<div class="wrap" part="card">
 			<div class="header" part="header">

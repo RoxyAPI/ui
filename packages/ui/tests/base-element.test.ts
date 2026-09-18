@@ -93,6 +93,7 @@ class FakeHost<T> {
 	data: T | null = null;
 	loading = false;
 	error: string | null = null;
+	issues: { path: string; message: string }[] | null = null;
 	events: CustomEvent[] = [];
 	addController() {}
 	removeController() {}
@@ -195,7 +196,41 @@ describe('FetchController security and state machine', () => {
 		await fc.run({ path: '/astrology/natal-chart', method: 'POST', body: {} });
 
 		expect(host.error).toBe('Invalid latitude');
+		expect(host.issues).toBeNull();
 		expect(host.data).toBeNull();
+	});
+
+	/**
+	 * A validation failure names its fields, and the controller hands them to the
+	 * host as they came: the wire path is the form's own field key, so a message
+	 * can sit under the input it is about. Any other failure carries none.
+	 */
+	test('hands the per-field issues of a validation failure to the host', async () => {
+		globalThis.fetch = mock(async () => ({
+			ok: false,
+			status: 400,
+			json: async () => ({
+				error: 'year: Too small: expected number to be >=1900',
+				code: 'validation_error',
+				issues: [
+					{
+						path: 'year',
+						message: 'Too small: expected number to be >=1900',
+						code: 'too_small',
+					},
+					{ path: 'members.0.date', message: 'Invalid date', code: 'invalid' },
+				],
+			}),
+		})) as unknown as typeof fetch;
+		const host = new FakeHost<unknown>();
+		const fc = new FetchController(host as never);
+		fc.publishableKey = 'pk_test_abc';
+		await fc.run({ path: '/astrology/horoscope/aries/yearly', method: 'GET' });
+		expect(host.error).toBe('year: Too small: expected number to be >=1900');
+		expect(host.issues).toEqual([
+			{ path: 'year', message: 'Too small: expected number to be >=1900' },
+			{ path: 'members.0.date', message: 'Invalid date' },
+		]);
 	});
 });
 
@@ -400,6 +435,51 @@ describe('RoxyDataElement uncontrolled mode (self-fetch UI)', () => {
 		).toBe(false);
 		plain.remove();
 	});
+
+	/**
+	 * A rejected request that names its fields is answered on the form, so the
+	 * banner that would repeat the same words over it is withheld; a failure that
+	 * names nothing keeps the banner, because the form has nowhere to put it.
+	 */
+	test('a validation failure reaches the form as issues and draws no banner; any other failure keeps the banner', async () => {
+		const mount = async () => {
+			const el = document.createElement('roxy-dream-card') as HTMLElement & {
+				updateComplete: Promise<unknown>;
+				error: string | null;
+				issues: { path: string; message: string }[] | null;
+			};
+			el.setAttribute('data-endpoint', 'dreams/symbols/{id}');
+			el.setAttribute('method', 'GET');
+			el.setAttribute('publishable-key', 'pk_test_abc');
+			document.body.appendChild(el);
+			await el.updateComplete;
+			return el;
+		};
+		const named = await mount();
+		named.error = 'id: Invalid input';
+		named.issues = [{ path: 'id', message: 'Invalid input' }];
+		await named.updateComplete;
+		expect(named.shadowRoot?.querySelector('[part="error"]')).toBeNull();
+		const form = named.shadowRoot?.querySelector(
+			'roxy-endpoint-form',
+		) as HTMLElement & {
+			serverIssues: unknown;
+		};
+		expect(form.serverIssues).toEqual([
+			{ path: 'id', message: 'Invalid input' },
+		]);
+		named.remove();
+
+		const bare = await mount();
+		bare.error = 'Invalid API key';
+		bare.issues = null;
+		await bare.updateComplete;
+		expect(bare.shadowRoot?.querySelector('[part="error"]')?.textContent).toBe(
+			'Invalid API key',
+		);
+		expect(bare.shadowRoot?.querySelector('roxy-endpoint-form')).not.toBeNull();
+		bare.remove();
+	});
 });
 
 /**
@@ -408,6 +488,50 @@ describe('RoxyDataElement uncontrolled mode (self-fetch UI)', () => {
  * refused it. Anything that is not an object leaves no context AND says so, because the alternative
  * is a proxy route reporting a missing value while the page believes it sent one.
  */
+/**
+ * A card that throws while drawing must not leave the page with whatever was
+ * on screen before, which after a self-fetch is the loading placeholder. It
+ * degrades to the generic renderer, tells the page, and names itself in the
+ * console.
+ */
+describe('RoxyDataElement render safety net', () => {
+	test('a throwing renderData degrades to roxy-data and dispatches roxy-render-error', async () => {
+		const tag = 'roxy-test-throws';
+		if (!customElements.get(tag)) {
+			class Throws extends RoxyDataElement<{ n: number }> {
+				protected renderData(): unknown {
+					throw new Error('no such field');
+				}
+			}
+			customElements.define(tag, Throws);
+		}
+		const el = document.createElement(tag) as HTMLElement & {
+			data: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		const events: CustomEvent[] = [];
+		el.addEventListener('roxy-render-error', (e) =>
+			events.push(e as CustomEvent),
+		);
+		const warn = console.warn;
+		const warned: unknown[][] = [];
+		console.warn = (...args: unknown[]) => {
+			warned.push(args);
+		};
+		document.body.appendChild(el);
+		el.data = { n: 1 };
+		await el.updateComplete;
+		console.warn = warn;
+		expect(el.shadowRoot?.querySelector('roxy-data')).not.toBeNull();
+		expect(el.shadowRoot?.querySelector('[part="loading"]')).toBeNull();
+		expect(events).toHaveLength(1);
+		const detail = events[0]?.detail as { error: Error } | undefined;
+		expect(detail?.error.message).toBe('no such field');
+		expect(String(warned[0]?.[0])).toContain(tag);
+		el.remove();
+	});
+});
+
 describe('RoxyDataElement submit-context', () => {
 	const originalWarn = console.warn;
 	let warnings: string[] = [];

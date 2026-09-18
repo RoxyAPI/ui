@@ -3585,6 +3585,7 @@
         "empty",
         "error",
         "field",
+        "field-error",
         "form",
         "group",
         "hint",

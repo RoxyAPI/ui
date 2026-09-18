@@ -145,6 +145,11 @@ export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
 				 * unbreakable string widens the track past the padded card. */
 				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
+				background: var(--roxy-surface, #fff);
+				color: var(--roxy-fg, #0a0a0a);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-lg, 1.5rem);
 			}
 			.head {
 				display: flex;

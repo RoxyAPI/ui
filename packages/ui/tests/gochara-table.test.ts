@@ -98,4 +98,9 @@ describe('gochara reads from the natal Moon', () => {
 	test('the sidereal frame the chart was cast in is stated', async () => {
 		expect(text(await mount(FIXTURE))).toContain('Lahiri');
 	});
+
+	test('a position reads as the sign, a space, then the degree', async () => {
+		const pos = (await mount(FIXTURE)).shadowRoot?.querySelector('.pos');
+		expect(pos?.textContent?.trim()).toMatch(/^[A-Z][a-z]+ \d{1,2}°\d{2}'$/);
+	});
 });

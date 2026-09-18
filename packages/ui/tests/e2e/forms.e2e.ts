@@ -16,6 +16,11 @@ const FORMS = [
 		endpoint: 'astrology/horoscope/{sign}/daily',
 		method: 'GET',
 	},
+	{
+		id: 'e2e-yearly',
+		endpoint: 'astrology/horoscope/{sign}/yearly',
+		method: 'GET',
+	},
 	{ id: 'e2e-tarot-draw', endpoint: 'tarot/draw', method: 'POST' },
 	{ id: 'e2e-natal', endpoint: 'astrology/natal-chart', method: 'POST' },
 	{ id: 'e2e-synastry', endpoint: 'astrology/synastry', method: 'POST' },
@@ -24,6 +29,7 @@ const FORMS = [
 		endpoint: 'astrology/relocation-chart',
 		method: 'POST',
 	},
+	{ id: 'e2e-penta', endpoint: 'human-design/penta', method: 'POST' },
 ];
 
 async function mountForms(page: Page): Promise<void> {
@@ -258,4 +264,69 @@ test.describe('two-location form', () => {
 		const raw = names.filter((n) => /latitude|longitude|timezone/i.test(n));
 		expect(raw, `raw inputs still rendered: ${raw.join(', ')}`).toEqual([]);
 	});
+});
+
+/**
+ * A form fits a phone with every disclosure open.
+ *
+ * @remarks
+ * The showcase overflow walk measures cards as they load, and a closed `Advanced`
+ * disclosure has no width, so a two-column field row that only exists once it is
+ * opened is invisible to it. A native number or date input is wider than half a
+ * phone card, and a grid track that floors at that width puts two of them side by
+ * side past the edge. Every disclosure is opened here first, then every element in
+ * every form, and in the repeat cards of the penta, is measured against its host.
+ */
+test('every form fits a phone with its disclosures open, bare and inside a self-fetch component', async ({
+	page,
+}) => {
+	await page.setViewportSize({ width: 375, height: 1200 });
+	await mountForms(page);
+	// The same form drawn by a component in self-fetch mode, which is how a page
+	// embeds it: a second shadow root around the first.
+	await page.evaluate(() => {
+		const el = document.createElement('roxy-horoscope-card');
+		el.id = 'e2e-card-yearly';
+		el.setAttribute('data-endpoint', 'astrology/horoscope/{sign}/yearly');
+		el.setAttribute('method', 'GET');
+		el.setAttribute('period', 'yearly');
+		el.setAttribute('spec-url', './openapi.json');
+		document.getElementById('roxy-e2e-forms')?.appendChild(el);
+	});
+	await page.waitForFunction(
+		() =>
+			!!document
+				.getElementById('e2e-card-yearly')
+				?.shadowRoot?.querySelector('roxy-endpoint-form')
+				?.shadowRoot?.querySelector('details'),
+	);
+	const issues = await page.evaluate(
+		(ids) => {
+			const found: string[] = [];
+			const deep = (root: ShadowRoot): HTMLElement[] =>
+				[...root.querySelectorAll('*')].flatMap((el) => [
+					el as HTMLElement,
+					...((el as HTMLElement).shadowRoot
+						? deep((el as HTMLElement).shadowRoot as ShadowRoot)
+						: []),
+				]);
+			for (const id of ids) {
+				const host = document.getElementById(id) as HTMLElement;
+				const all = deep(host.shadowRoot as ShadowRoot);
+				for (const d of all) if (d instanceof HTMLDetailsElement) d.open = true;
+				const right = host.getBoundingClientRect().right;
+				for (const el of all) {
+					const r = el.getBoundingClientRect();
+					if (r.width === 0 || r.right <= right + 2) continue;
+					found.push(
+						`${id}: ${el.tagName.toLowerCase()}.${el.className || '?'} overflows by ${Math.round(r.right - right)}px`,
+					);
+					break;
+				}
+			}
+			return found;
+		},
+		[...FORMS.map((f) => f.id), 'e2e-card-yearly'],
+	);
+	expect(issues, issues.join('\n')).toEqual([]);
 });

@@ -4,6 +4,7 @@ import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { TransitsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { formatDegreeInSign } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatAspectName,
@@ -356,7 +357,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 								${p.sign}
 							</div>
 						</td>
-						<td class="num">${formatNumber(this.effectiveLang(), p.degree, 2)}</td>
+						<td class="num">${formatDegreeInSign(p.degree)}</td>
 						<td class="speed">
 							<span class="speed-arrow" aria-hidden="true">${speedArrow}</span>
 							${formatNumber(this.effectiveLang(), Math.abs(p.speed), 2)}${this.t('°/day')}

@@ -5,6 +5,7 @@ import { planetGlyph } from '../tokens/index.js';
 import type { LocalSpaceResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { arcSeparation, fanOut } from '../utils/degree.js';
 import { formatDateTime } from '../utils/format.js';
 import { planetColor } from '../utils/planet-color.js';
 
@@ -14,8 +15,13 @@ const SIZE = 320;
 const CENTER = SIZE / 2;
 const RIM = 128;
 const SPOKE = 118;
-const GLYPH_R = 140;
-const TICK_LABEL_R = 150;
+/** The body glyphs ride a ring just outside the rim and the compass words a ring outside that, far enough apart that a body at a compass point never prints over its word. */
+const GLYPH_R = 137;
+const TICK_LABEL_R = 152;
+/** A body glyph is this many em wide, measured on the rendered text, at the `.body-glyph` size the stylesheet declares. */
+const GLYPH_EM = 0.95;
+export const COMPASS_TYPE_SIZES = { glyph: 11 } as const;
+const GLYPH_FONT = COMPASS_TYPE_SIZES.glyph;
 
 // Compass azimuth (0 = north, clockwise) to a screen point. North is up, east
 // is right, matching how the local space line is read off a real compass.
@@ -258,21 +264,32 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 			${ticks}${labels}`;
 	}
 
+	/**
+	 * One spoke per body at its true azimuth, and its glyph on the ring outside
+	 * the rim, fanned along that ring so several bodies in one quarter of the
+	 * sky never print one glyph over another. The spoke never moves; the colour
+	 * ties a displaced glyph back to it.
+	 */
 	private renderSpokes(bodies: Body[]) {
-		return bodies.map((b, i) => {
-			const color = planetColor(b.planet, i);
-			const below = b.aboveHorizon === false;
-			const end = azimuthPoint(b.azimuth, SPOKE);
-			const glyphPos = azimuthPoint(b.azimuth, GLYPH_R);
-			// Response symbol first, then the shared table, then the full name. Never a
-			// truncation: `North Node.slice(0, 2)` drew a compass spoke labelled "No".
-			const glyph = b.symbol || planetGlyph(b.planet) || b.planet;
-			const altLabel = `${b.altitude > 0 ? '+' : ''}${Math.round(b.altitude)}°`;
-			return svg`<g>
+		const indexed = bodies.map((b, i) => ({ b, i }));
+		const separation = arcSeparation(GLYPH_EM * GLYPH_FONT, GLYPH_R);
+		return fanOut(indexed, ({ b }) => b.azimuth, separation).map(
+			({ item, displayLongitude }) => {
+				const { b, i } = item;
+				const color = planetColor(b.planet, i);
+				const below = b.aboveHorizon === false;
+				const end = azimuthPoint(b.azimuth, SPOKE);
+				const glyphPos = azimuthPoint(displayLongitude, GLYPH_R);
+				// Response symbol first, then the shared table, then the full name. Never a
+				// truncation: `North Node.slice(0, 2)` drew a compass spoke labelled "No".
+				const glyph = b.symbol || planetGlyph(b.planet) || b.planet;
+				const altLabel = `${b.altitude > 0 ? '+' : ''}${Math.round(b.altitude)}°`;
+				return svg`<g>
 				<line class=${`spoke${below ? ' below' : ''}`} stroke=${color} x1=${CENTER} y1=${CENTER} x2=${end.x} y2=${end.y}><title>${this.t('{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}', { planet: b.planet, direction: b.compassDirection, azimuth: Math.round(b.azimuth), altitude: altLabel })}</title></line>
 				<text class=${`body-glyph${below ? ' below' : ''}`} fill=${color} x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central">${glyph}</text>
 			</g>`;
-		});
+			},
+		);
 	}
 
 	private renderList(bodies: Body[]) {

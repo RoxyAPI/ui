@@ -231,10 +231,10 @@ test('a component renders no part name the catalog does not publish', async ({
 });
 
 /**
- * Every centre name stays inside the shape it names.
+ * Every centre name stays inside the shape it names, or, for a centre too crowded to carry one, just under it and no wider than it.
  *
  * @remarks
- * The names are ground behind the gate numbers, so a name wider than its own outline reads as text spilling onto the chart rather than as a label. It cannot be checked without a browser: the width depends on the rendered font, and the names come from the response, so a translation is a different length in every language. The renderer shrinks a name to the room the shape has at that height, and this is the assertion that makes that non-vacuous.
+ * The names are ground behind the gate numbers, so a name wider than its own outline reads as text spilling onto the chart rather than as a label. It cannot be checked without a browser: the width depends on the rendered font, and the names come from the response, so a translation is a different length in every language. The renderer shrinks a name to the room the shape has at that height, and this is the assertion that makes that non-vacuous. The three side triangles carry their name as a caption below the shape instead, and a caption has its own two bounds: it starts under the outline, and it runs no wider than the outline does.
  */
 test('no centre name spills outside the centre it names', async ({ page }) => {
 	await showcase(page);
@@ -252,9 +252,15 @@ test('no centre name spills outside the centre it names', async ({ page }) => {
 		names.forEach((t, i) => {
 			const a = (t as SVGGraphicsElement).getBBox();
 			const b = (polys[i] as SVGGraphicsElement).getBBox();
+			const name = t.textContent?.trim();
 			// Half a unit of slack for the antialiased edge of the outline itself.
-			if (a.x < b.x - 0.5 || a.x + a.width > b.x + b.width + 0.5) {
-				out.push(`${t.textContent?.trim()} is wider than its centre`);
+			if (t.classList.contains('bg-caption')) {
+				if (a.y < b.y + b.height - 0.5)
+					out.push(`${name} is not under its centre`);
+				if (a.width > b.width + 0.5)
+					out.push(`${name} is wider than its centre`);
+			} else if (a.x < b.x - 0.5 || a.x + a.width > b.x + b.width + 0.5) {
+				out.push(`${name} is wider than its centre`);
 			}
 		});
 		return out;

@@ -15,7 +15,7 @@ import {
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
-import { capitalize, humanize } from '../utils/string.js';
+import { humanize } from '../utils/string.js';
 
 /** Timeline, significant-dates, and forecast-transits all return the same `{ events, startDate, endDate, birthData, count }` shape. */
 type ForecastTimelineData =
@@ -328,8 +328,10 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 	 * by nature, matching the chart aspect encoding.
 	 */
 	private renderHeadline(e: ForecastEvent) {
-		const body = e.body ? capitalize(e.body) : '';
-		const target = e.target ? capitalize(e.target) : '';
+		// `humanize`, never `capitalize`: a body is a proper name the response already
+		// cases (`Black Moon Lilith`, `South Node`), and a cycle is one lowercase word.
+		const body = e.body ? humanize(e.body) : '';
+		const target = e.target ? humanize(e.target) : '';
 		const aspect = normalizeAspect({ type: e.aspect });
 		const aspectClass = ASPECT_CLASS[aspect] ?? '';
 		const aspectSym = aspect
@@ -354,13 +356,13 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 	/** Type-specific qualifier text from the optional spec fields. */
 	private typeQualifier(e: ForecastEvent): string {
 		if (e.type === 'sign-ingress' && e.target)
-			return `enters ${capitalize(e.target)}`;
+			return `enters ${humanize(e.target)}`;
 		if (e.type === 'retrograde-station' && e.station) return e.station;
 		if (e.type === 'eclipse')
 			return [e.kind, 'eclipse'].filter(Boolean).join(' ');
 		if (e.type === 'critical-day') return 'critical day';
 		if (e.type === 'dasha-change' && e.target)
-			return `dasha ${capitalize(e.target)}`;
+			return `dasha ${humanize(e.target)}`;
 		return humanize(e.type ?? '');
 	}
 }

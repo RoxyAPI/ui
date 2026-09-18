@@ -347,9 +347,12 @@ describe('roxy-transit-wheel', () => {
 		for (const g of glyphs) expect(radiusOf(g)).toBeCloseTo(NATAL_R, 6);
 
 		// Adjacent glyphs now clear each other. The separation is derived from the
-		// radius, so restate it here rather than importing the component's number.
-		// max of the glyph at the ring radius and the degree label at its own.
-		const minSep = Math.max(13 / NATAL_R, 15 / NATAL_DEG_R) * (180 / Math.PI);
+		// radius, so restate it here rather than importing the component's number:
+		// the max of the glyph at the ring radius and the whole-degree label at its
+		// own, each a measured em width times the font size the wheel declares.
+		const minSep =
+			Math.max((0.95 * 13) / NATAL_R, (1.85 * 7) / NATAL_DEG_R) *
+			(180 / Math.PI);
 		const angles = glyphs
 			.map((g) => Math.atan2(num(g, 'y') - CENTER, num(g, 'x') - CENTER))
 			.map((a) => (a * 180) / Math.PI)

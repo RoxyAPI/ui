@@ -1,4 +1,4 @@
-import { css, html, nothing, svg } from 'lit';
+import { css, html, nothing, type PropertyValues, svg } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import {
 	aspectSymbol,
@@ -14,10 +14,12 @@ import {
 	arcMidpoint,
 	arcSeparation,
 	fanOut,
+	formatWheelDegree,
 	longitudeToSignPosition,
 	normalizeLongitude,
 	oppositePoint,
 	polarToCartesian,
+	staggerRows,
 } from '../utils/degree.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
@@ -36,6 +38,7 @@ import {
 import { display, displayList } from '../utils/localized.js';
 import { capitalize, lookupKey } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
+import { RerenderOnResize, renderedFontSize } from '../utils/type-metrics.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
 type AspectEntry = NatalChartResponse['aspects'][number];
@@ -63,16 +66,39 @@ const PLANET_R = 96;
 const ANGLE_TICK_R = 178;
 const ANGLE_LABEL_R = 196;
 /**
- * How wide each mark on the wheel is, in user units, so {@link arcSeparation}
- * can turn it into the degrees of arc that mark needs at its own radius. These
- * are type metrics rather than shared constants: the glyph width tracks the
- * `.planet-glyph` font size, the degree allowance the `.planet-deg` one, and the
- * angle label the widest of `ASC`, `DSC`, `MC`, `IC`, `PoF` and `Vtx` plus the
- * gap that keeps two of them apart.
+ * The in-wheel type sizes at a wide host, in user units, as the stylesheet
+ * declares them: what the fan spaces the marks by until the rendered text has
+ * been measured, and what a unit test draws on. The phone sizes live in the
+ * stylesheet alone and are read back off the rendered text, never assumed.
  */
-const GLYPH_WIDTH = 14;
-const DEG_LABEL_WIDTH = 15;
+export const NATAL_TYPE_SIZES = { glyph: 14, degree: 7 } as const;
+const GLYPH_FONT = NATAL_TYPE_SIZES.glyph;
+const DEG_FONT = NATAL_TYPE_SIZES.degree;
+/**
+ * How wide each mark on the wheel is, so {@link arcSeparation} can turn it into
+ * the degrees of arc that mark needs at its own radius. The glyph and the
+ * degree label are type metrics in em, measured on the rendered text and
+ * multiplied by the font size in play: a full `dd°mm'` label is over three
+ * times its font size wide and the retrograde mark adds another em and a
+ * quarter, which is why the label, not the glyph, decides the spacing. The angle
+ * label is fixed in user units: the widest of `ASC`, `DSC`, `MC`, `IC`, `PoF`
+ * and `Vtx` plus the gap that keeps two of them apart.
+ */
+const GLYPH_EM = 0.95;
+const DEG_LABEL_EM = 3.4;
+const WHOLE_DEG_EM = 1.85;
+const RETRO_MARK_EM = 1.25;
+/** The ink of a degree label, digits and marks, is this tall: what two labels must not share, rather than the line box. */
+const DEG_LABEL_INK_EM = 0.9;
 const ANGLE_LABEL_WIDTH = 28;
+/**
+ * The degree band: a first row this far inside the glyph ring, a second row
+ * this much further in for a label that would touch its neighbour, and the
+ * hub the aspect lines are drawn inside, just under the second row.
+ */
+const DEG_LABEL_INSET = 12;
+const DEG_LABEL_STAGGER = 13;
+const HUB_R = PLANET_R - 31;
 
 /**
  * The chart shape the wheel actually renders.
@@ -487,6 +513,29 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	@state()
 	private view: 'wheel' | 'grid' = 'wheel';
 
+	/**
+	 * The in-wheel type sizes the stylesheet actually applied, read back after
+	 * each render. The fan spaces the bodies by the width of their labels, and
+	 * that width follows the container query, which nothing in a render pass can
+	 * see; a wide host keeps the declared sizes and never re-renders for them.
+	 */
+	@state()
+	private glyphFont: number = GLYPH_FONT;
+	@state()
+	private degFont: number = DEG_FONT;
+
+	constructor() {
+		super();
+		new RerenderOnResize(this);
+	}
+
+	protected updated(changed: PropertyValues): void {
+		super.updated(changed);
+		const root = this.renderRoot;
+		this.glyphFont = renderedFontSize(root, '.planet-glyph', this.glyphFont);
+		this.degFont = renderedFontSize(root, '.planet-deg', this.degFont);
+	}
+
 	private getPlanets(): PlanetEntry[] {
 		return this.data?.planets ?? [];
 	}
@@ -606,7 +655,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${OUTER_R} stroke-width="1.5" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${SIGN_R - 14} stroke-width="0.8" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${HOUSE_R} stroke-width="1" />
-			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${PLANET_R - 16} stroke-width="0.5" />
+			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${HUB_R} stroke-width="0.5" />
 			${this.renderTicks()} ${this.renderSpokes()} ${this.renderSigns()}
 			${this.renderHouseNumbers()} ${this.renderCuspDegrees()}
 			${this.renderAspects(planets, aspects)} ${this.renderPlanets(planets)}
@@ -849,8 +898,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		return houses.map((house) => {
 			const angle = this.toAngle(house.longitude);
 			const pos = polarToCartesian(CENTER, CENTER, HOUSE_R + 9, angle);
-			const sp = longitudeToSignPosition(house.longitude);
-			return svg`<text class="cusp-deg" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${sp.degree}°${String(sp.minute).padStart(2, '0')}'</text>`;
+			return svg`<text class="cusp-deg" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${formatWheelDegree(house.longitude)}</text>`;
 		});
 	}
 
@@ -862,15 +910,50 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 * every glyph is pushed forward only as far as it takes to clear its neighbour
 	 * and a leader runs back to the body's TRUE longitude on the rim. The
 	 * separation is derived from the radius each mark is drawn at rather than
-	 * fixed, so the degree label, which sits on a tighter ring than the glyph and
-	 * is the wider of the two, is what decides the spacing.
+	 * fixed. The degree label is about twice as wide as the glyph, so it takes
+	 * two rows: a label that would touch the one before it drops to the inner
+	 * row, which is what lets the fan clear the GLYPHS and no more, so a stellium
+	 * stays near its houses with every degree still readable.
+	 *
+	 * Below the phone breakpoint the label is the whole degree, the rule the
+	 * transit wheel applies at every width: fourteen `dd°mm'` labels at the
+	 * compact size ask for more arc than the ring has, so fanning them would
+	 * carry every body away from its position to fit them. The minute stays in
+	 * the tooltip.
 	 */
 	private renderPlanets(planets: PlanetEntry[]) {
+		const degRadius = PLANET_R - DEG_LABEL_INSET;
+		const compact = this.degFont > DEG_FONT;
+		const glyphSeparation = arcSeparation(GLYPH_EM * this.glyphFont, PLANET_R);
+		const labelWidth = (p: PlanetEntry) =>
+			((compact ? WHOLE_DEG_EM : DEG_LABEL_EM) +
+				(p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
+			this.degFont;
+		// With two rows the fan only has to hold every SECOND label a label width
+		// apart, so one step of half the widest label does for the whole ring: a
+		// per-pair step would let a narrow label land two steps past a wide one
+		// with no row left to take it.
 		const separation = Math.max(
-			arcSeparation(GLYPH_WIDTH, PLANET_R),
-			arcSeparation(DEG_LABEL_WIDTH, PLANET_R - 13),
+			glyphSeparation,
+			arcSeparation(
+				((compact ? WHOLE_DEG_EM : DEG_LABEL_EM) + RETRO_MARK_EM) *
+					this.degFont,
+				degRadius,
+			) / 2,
 		);
-		return fanOut(planets, (p) => p.longitude, separation).map((placed) => {
+		const fanned = fanOut(planets, (p) => p.longitude, separation);
+		const labelRadius = (row: number) => degRadius - row * DEG_LABEL_STAGGER;
+		const rows = staggerRows(fanned, ({ item, displayLongitude }, row) => ({
+			...polarToCartesian(
+				CENTER,
+				CENTER,
+				labelRadius(row),
+				this.toAngle(displayLongitude),
+			),
+			width: labelWidth(item),
+			height: DEG_LABEL_INK_EM * this.degFont,
+		}));
+		return fanned.map((placed, i) => {
 			const {
 				item: p,
 				longitude: trueLon,
@@ -882,7 +965,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			const degPos = polarToCartesian(
 				CENTER,
 				CENTER,
-				PLANET_R - 13,
+				labelRadius(rows[i] ?? 0),
 				displayAngle,
 			);
 			const rimPos = polarToCartesian(CENTER, CENTER, OUTER_R - 4, trueAngle);
@@ -896,9 +979,11 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			// the localized one, because the fallback is TEXT the reader is left with.
 			const label = display(p, 'name');
 			const glyph = planetGlyph(p.name) ?? label;
-			const sp = longitudeToSignPosition(p.longitude);
 			const retro = p.isRetrograde === true;
-			const degLabel = `${sp.degree}°${String(sp.minute).padStart(2, '0')}'`;
+			const position = formatWheelDegree(p.longitude);
+			const degLabel = compact
+				? `${longitudeToSignPosition(p.longitude).degree}°`
+				: position;
 			const offset = Math.abs(displayLon - trueLon) > 0.5;
 			return svg`<g>
 				${
@@ -906,7 +991,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						? svg`<line class="planet-leader" x1=${rimPos.x} y1=${rimPos.y} x2=${leaderInner.x} y2=${leaderInner.y} />`
 						: nothing
 				}
-				<text class="planet-glyph" x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central"><title>${label}${retro ? ` ${this.t('retrograde')}` : ''} - ${degLabel} ${display(p, 'sign')}</title>${glyph}</text>
+				<text class="planet-glyph" x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central"><title>${label}${retro ? ` ${this.t('retrograde')}` : ''} - ${position} ${display(p, 'sign')}</title>${glyph}</text>
 				<text class="planet-deg" x=${degPos.x} y=${degPos.y} text-anchor="middle" dominant-baseline="central">${degLabel}${retro ? svg`<tspan class="retro"> ℞</tspan>` : nothing}</text>
 			</g>`;
 		});
@@ -1158,7 +1243,6 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			.map((p) => {
 				const interp = p.interpretation!;
 				const glyph = planetGlyph(p.name) ?? '';
-				const deg = formatNumber(this.effectiveLang(), p.degree ?? 0, 1);
 				const label = display(p, 'name');
 				const lead = interp.summary || interp.detailed || '';
 				// `detailed` only becomes a second paragraph when `summary` already
@@ -1167,7 +1251,8 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				const detail = interp.summary ? interp.detailed : undefined;
 				return {
 					label: `${glyph} ${label}`.trim(),
-					aside: [display(p, 'sign'), deg].filter(Boolean).join(' '),
+					// The same degree and minute the wheel prints beside the glyph.
+					aside: `${display(p, 'sign')} ${formatWheelDegree(p.longitude)}`,
 					body: lead,
 					extra: html`${detail ? html`<p>${detail}</p>` : nothing}
 					${renderKeywordChips(interp.keywords)}`,
@@ -1194,18 +1279,8 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			const l1 = planetMap.get(lookupKey(a.planet1));
 			const l2 = planetMap.get(lookupKey(a.planet2));
 			if (l1 === undefined || l2 === undefined) return nothing;
-			const p1 = polarToCartesian(
-				CENTER,
-				CENTER,
-				PLANET_R - 18,
-				this.toAngle(l1),
-			);
-			const p2 = polarToCartesian(
-				CENTER,
-				CENTER,
-				PLANET_R - 18,
-				this.toAngle(l2),
-			);
+			const p1 = polarToCartesian(CENTER, CENTER, HUB_R - 2, this.toAngle(l1));
+			const p2 = polarToCartesian(CENTER, CENTER, HUB_R - 2, this.toAngle(l2));
 			const aspectName = normalizeAspect(a);
 			const aspectClass = ASPECT_CLASS[aspectName] ?? 'aspect-other';
 			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);

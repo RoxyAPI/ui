@@ -358,7 +358,7 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 					? html`<p class="summary" part="section summary">${d.summary}</p>`
 					: nothing
 			}
-			${renderConventionsCaption(d.conventions, this.translator)}
+			${renderConventionsCaption(d.conventions, this.translator, this.effectiveLang())}
 		</article>`;
 	}
 

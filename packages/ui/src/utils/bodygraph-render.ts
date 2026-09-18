@@ -36,8 +36,8 @@ interface CenterGeometry {
 	label: string;
 	color: CenterColor;
 	points: Point[];
-	/** Where the centre name sits, when the shape's middle is taken by a gate number. Defaults to the centroid. */
-	labelAt?: Point;
+	/** Where the centre name sits and how wide it may run, for a centre whose gate circles leave no gap inside the shape: the three side triangles are solid with numbers, so their names sit just outside, below the shape. A centre without one prints its name at the centroid, as ground behind the numbers. */
+	caption?: { at: Point; room: number };
 }
 
 /** Traditional center color group: gold for Head and G, green for Ajna, red for the Heart and Sacral motors, brown for the rest. A defined center is filled with it; an open one takes the card surface so the wiring passes behind. */
@@ -221,6 +221,16 @@ const SPLEEN_SHAPE: ReadonlyArray<readonly [number, number]> = [
 	[18.3, 82.0],
 	[30.3, 75.15],
 ];
+/**
+ * The side captions sit under the lower edge of their triangle, toward the base
+ * corner, where the channels leaving the two bottom gates for the Root have not
+ * yet crossed; the mirrored anchor serves the Solar Plexus. The Heart's sits
+ * under its base, which nothing crosses. Room is the triangle's own span.
+ */
+const SIDE_CAPTION: readonly [number, number] = [20.0, 84.4];
+const SIDE_CAPTION_ROOM = 12 * UNIT;
+const HEART_CAPTION: readonly [number, number] = [63.2, 67.9];
+const HEART_CAPTION_ROOM = 13.1 * UNIT;
 
 /**
  * Center shapes in canonical orientation and color. Central-column centers are
@@ -275,12 +285,14 @@ export const CENTER_GEOMETRY: readonly CenterGeometry[] = [
 			[64.2, 56.74],
 			[69.75, 65.23],
 		]),
+		caption: { at: g(...HEART_CAPTION), room: HEART_CAPTION_ROOM },
 	},
 	{
 		id: 'spleen',
 		label: 'Spleen',
 		color: 'brown',
 		points: shape(SPLEEN_SHAPE),
+		caption: { at: g(...SIDE_CAPTION), room: SIDE_CAPTION_ROOM },
 	},
 	{
 		id: 'sacral',
@@ -295,6 +307,10 @@ export const CENTER_GEOMETRY: readonly CenterGeometry[] = [
 		points: shape(
 			SPLEEN_SHAPE.map(([x, y]) => [mirrorX(x), y] as [number, number]),
 		),
+		caption: {
+			at: g(mirrorX(SIDE_CAPTION[0]), SIDE_CAPTION[1]),
+			room: SIDE_CAPTION_ROOM,
+		},
 	},
 	{
 		id: 'root',
@@ -486,48 +502,54 @@ function renderCenters(
 		const isDefined = defined.has(c.id);
 		const cls = `bg-center bg-${c.color}${isDefined ? ' defined' : ''}`;
 		const label = names?.get(c.id) || c.label;
-		const at = c.labelAt ?? centroid(c.points);
 		return [
 			svg`<polygon class=${cls} points=${polygonPoints(c.points)}><title>${label}: ${isDefined ? stateWords.defined : stateWords.open}</title></polygon>`,
 			// Drawn with the shapes, so the gate numbers paint over it. Hidden from
 			// the accessibility tree because the polygon `<title>` above already
-			// names this centre, and announcing it twice is worse than once.
-			renderCenterName(label, at, isDefined, c.points),
+			// names this centre, and announcing it twice is worse than once. A
+			// caption outside the shape sits on the card, so it keeps the ground ink
+			// whatever the centre's state.
+			c.caption
+				? renderCenterName(label, c.caption.at, 'bg-caption', c.caption.room)
+				: renderCenterName(
+						label,
+						centroid(c.points),
+						isDefined ? 'defined' : '',
+						widthAt(c.points, centroid(c.points).y) * 0.86,
+					),
 		];
 	});
 }
 
 /**
- * The centre name as ground behind the gate numbers.
+ * The centre name: ground behind the gate numbers inside a centre, or a caption just outside one too crowded to carry it.
  *
  * @remarks
- * A multi-word name stacks one word per line rather than running past the shape: the two side triangles taper to a point, so `Solar Plexus` on one line overruns its own outline while `SOLAR` over `PLEXUS` sits inside it. Splitting on whitespace is one rule for every language rather than a width measured per label, and a name that is one long word in some language simply stays one line.
+ * A multi-word name stacks one word per line rather than running past its room: `Solar Plexus` on one line overruns the span of its triangle while `SOLAR` over `PLEXUS` sits within it. Splitting on whitespace is one rule for every language rather than a width measured per label, and a name that is one long word in some language simply stays one line.
  */
 function renderCenterName(
 	label: string,
 	at: Point,
-	isDefined: boolean,
-	points: readonly Point[],
+	variant: 'defined' | 'bg-caption' | '',
+	room: number,
 ): TemplateResult {
 	const words = label.split(/\s+/).filter(Boolean);
 	const longest = words.reduce((n, w) => Math.max(n, w.length), 0);
-	// Shrink to the room the shape actually has at this height rather than
-	// trusting one size to fit every name: the side centres taper to a point, and
-	// a translated name is a different length in every language.
-	const room = widthAt(points, at.y) * 0.86;
+	// Shrink to the room there actually is rather than trusting one size to fit
+	// every name: a translated name is a different length in every language.
 	const size = Math.min(
 		CENTER_NAME_FONT_SIZE,
 		room / Math.max(1, longest * UPPERCASE_EM),
 	);
 	const step = size * 1.05;
 	const top = at.y - (step * (words.length - 1)) / 2;
-	return svg`<text class="bg-center-name ${isDefined ? 'defined' : ''}" style=${`font-size:${size}px`} x=${at.x} y=${at.y} text-anchor="middle" dominant-baseline="central" aria-hidden="true">${words.map(
+	return svg`<text class="bg-center-name ${variant}" style=${`font-size:${size}px`} x=${at.x} y=${at.y} text-anchor="middle" dominant-baseline="central" aria-hidden="true">${words.map(
 		(w, i) => svg`<tspan x=${at.x} y=${top + i * step}>${w}</tspan>`,
 	)}</text>`;
 }
 
 /** Advance width of one uppercase character at the label weight, as a fraction of the font size. Approximate on purpose: it only has to keep a name inside its own outline, and it is applied with room to spare. */
-const UPPERCASE_EM = 0.66;
+export const UPPERCASE_EM = 0.66;
 
 /** Horizontal span of a convex polygon at height `y`: how much room a line of text has there. */
 function widthAt(points: readonly Point[], y: number): number {

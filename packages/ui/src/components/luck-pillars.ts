@@ -243,7 +243,7 @@ export class RoxyLuckPillars extends RoxyDataElement<CalculateLuckPillarsRespons
 					? html`<p class="summary" part="section summary">${d.summary}</p>`
 					: nothing
 			}
-			${renderConventionsCaption(d.conventions, this.translator)}
+			${renderConventionsCaption(d.conventions, this.translator, this.effectiveLang())}
 		</article>`;
 	}
 

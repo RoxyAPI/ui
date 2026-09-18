@@ -231,7 +231,11 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 					${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${p.name}
 				</span>
 				<span class="pos">
-					${p.sign}${pos ? html` ${formatDegreeInSign(pos.degree)}` : nothing}
+					${
+						// One text node, not two: the markup minifier collapses the leading
+						// space of an adjacent template and the separator would lose it.
+						pos ? `${p.sign} ${formatDegreeInSign(pos.degree)}` : p.sign
+					}
 				</span>
 				${
 					typeof p.houseFromMoon === 'number'

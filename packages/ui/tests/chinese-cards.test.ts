@@ -174,7 +174,11 @@ describe('luck pillars', () => {
 		expect(body).toContain('Forward');
 		expect(body).toContain('7y 4m');
 		expect(body).toContain('Beginning of Spring');
-		expect(body).toContain('li-chun');
+		// The convention prints as a word, with the wire identifier kept in the title.
+		expect(body).toContain('Li chun');
+		expect(
+			root(el).querySelector('.roxy-frame-deg[title="li-chun"]'),
+		).not.toBeNull();
 	});
 
 	/**
@@ -298,7 +302,7 @@ describe('the zodiac card', () => {
 	 */
 	test('the year boundary that decided the animal is printed', async () => {
 		const el = await mount('roxy-zodiac-card', SIGN, { mode: 'sign' });
-		expect(text(el)).toContain('li-chun');
+		expect(text(el)).toContain('Li chun');
 	});
 
 	test('the reference read names all three partner animals, never a subset', async () => {
@@ -333,7 +337,7 @@ describe('the zodiac card', () => {
 
 	test('hide-readings keeps every structural fact on all four modes', async () => {
 		const cases: Array<[unknown, string, string[], string[]]> = [
-			[SIGN, 'sign', ['Snake', 'li-chun'], ['ZZREADINGINTERPRETATION']],
+			[SIGN, 'sign', ['Snake', 'Li chun'], ['ZZREADINGINTERPRETATION']],
 			[
 				ANIMAL,
 				'animal',
@@ -490,6 +494,9 @@ describe('the almanac card', () => {
 		const el = await mount('roxy-almanac-day', MONTH, { mode: 'month' });
 		expect(root(el).querySelectorAll('.day').length).toBe(2);
 		expect(text(el)).toContain('End of Heat');
+		// The month is named, never the two numbers the payload echoes side by side.
+		expect(text(el)).toContain('August 2026');
+		expect(text(el)).not.toContain('2026 8');
 	});
 
 	test('a search names the activity it searched for and the animal it avoided', async () => {

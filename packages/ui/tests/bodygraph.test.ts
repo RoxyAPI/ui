@@ -1,11 +1,14 @@
 import { describe, expect, test } from 'bun:test';
 import {
+	BODYGRAPH_VIEWBOX,
 	CENTER_GEOMETRY,
+	CENTER_NAME_FONT_SIZE,
 	CHANNEL_PAIRS,
 	CHART_AXIS_X,
 	GATE_CENTER,
 	GATE_POINTS,
 	GATE_RADIUS,
+	UPPERCASE_EM,
 } from '../src/utils/bodygraph-render.js';
 
 /**
@@ -357,5 +360,109 @@ describe('bodygraph matches the reference chart', () => {
 		const sacralLeft = apexOf('sacral', (xs) => Math.min(...xs));
 		const sacralWidth = apexOf('sacral', (xs) => Math.max(...xs)) - sacralLeft;
 		expect((sacralLeft - spleenApex) / sacralWidth).toBeGreaterThan(0.9);
+	});
+});
+
+/**
+ * The centre captions. Six centres carry their name inside, as ground behind
+ * the gate numbers, in a gap the numbers leave. The three side triangles have
+ * no such gap, so their names sit just outside, and the relationships below are
+ * what keep a caption readable there: outside its own shape, under it, clear
+ * of every gate circle and every channel, on the card, and mirrored across the
+ * axis for the two that are mirrors.
+ */
+describe('bodygraph centre captions', () => {
+	const captioned = CENTER_GEOMETRY.filter((c) => c.caption);
+	const [, , viewW, viewH] = BODYGRAPH_VIEWBOX.split(' ').map(Number);
+
+	/**
+	 * The box a caption paints, stacked one word per line at the label size. The
+	 * name comes from the response in the reader's language, so the width is
+	 * budgeted at eleven characters a word, which is `Solarplexus` in German,
+	 * the longest single word any shipped language spends on one of these three,
+	 * rather than at the English word.
+	 */
+	const box = (c: (typeof captioned)[number]) => {
+		const at = c.caption?.at ?? { x: 0, y: 0 };
+		const words = c.label.split(' ');
+		const longest = Math.max(11, ...words.map((w) => w.length));
+		const halfW = (longest * UPPERCASE_EM * CENTER_NAME_FONT_SIZE) / 2;
+		const halfH = (words.length * CENTER_NAME_FONT_SIZE * 1.05) / 2;
+		return {
+			l: at.x - halfW,
+			r: at.x + halfW,
+			t: at.y - halfH,
+			b: at.y + halfH,
+		};
+	};
+	const inBox = (p: Pt, b: ReturnType<typeof box>) =>
+		p.x >= b.l && p.x <= b.r && p.y >= b.t && p.y <= b.b;
+
+	test('exactly the three side triangles carry a caption, placed outside the shape', () => {
+		expect(captioned.map((c) => c.id).sort()).toEqual([
+			'heart',
+			'solar-plexus',
+			'spleen',
+		]);
+		for (const c of captioned) {
+			const at = c.caption?.at as Pt;
+			expect(pointInPolygon(at, c.points), c.id).toBe(false);
+			// Under the shape, where nothing else is drawn, never beside it.
+			expect(at.y, c.id).toBeGreaterThan(Math.max(...c.points.map((p) => p.y)));
+		}
+	});
+
+	test('a caption clears every gate circle and every channel', () => {
+		for (const c of captioned) {
+			const b = box(c);
+			const clearance = GATE_RADIUS + CENTER_NAME_FONT_SIZE / 2;
+			for (const [gate, p] of Object.entries(GATE_POINTS)) {
+				const nearest = {
+					x: Math.min(Math.max(p.x, b.l), b.r),
+					y: Math.min(Math.max(p.y, b.t), b.b),
+				};
+				expect(
+					Math.hypot(p.x - nearest.x, p.y - nearest.y),
+					`${c.id} caption sits on gate ${gate}`,
+				).toBeGreaterThanOrEqual(clearance);
+			}
+			for (const [a, z] of CHANNEL_PAIRS) {
+				const from = GATE_POINTS[a] as Pt;
+				const to = GATE_POINTS[z] as Pt;
+				for (let i = 0; i <= 100; i++) {
+					const t = i / 100;
+					const p = {
+						x: from.x + (to.x - from.x) * t,
+						y: from.y + (to.y - from.y) * t,
+					};
+					expect(inBox(p, b), `${c.id} caption crosses channel ${a}-${z}`).toBe(
+						false,
+					);
+				}
+			}
+		}
+	});
+
+	test('a caption stays inside the viewBox with the room it may take', () => {
+		for (const c of captioned) {
+			const { at, room } = c.caption as { at: Pt; room: number };
+			expect(at.x - room / 2, c.id).toBeGreaterThanOrEqual(0);
+			expect(at.x + room / 2, c.id).toBeLessThanOrEqual(viewW);
+			expect(at.y + CENTER_NAME_FONT_SIZE, c.id).toBeLessThanOrEqual(viewH);
+		}
+	});
+
+	test('the Spleen and Solar Plexus captions are exact mirror images', () => {
+		const spleen = captioned.find((c) => c.id === 'spleen')?.caption as {
+			at: Pt;
+			room: number;
+		};
+		const solar = captioned.find((c) => c.id === 'solar-plexus')?.caption as {
+			at: Pt;
+			room: number;
+		};
+		expect(reflect(spleen.at.x)).toBeCloseTo(solar.at.x, 6);
+		expect(spleen.at.y).toBe(solar.at.y);
+		expect(spleen.room).toBe(solar.room);
 	});
 });

@@ -151,6 +151,10 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 				align-items: center;
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
+			/* A cycle runs from -100 to +100 percent, so the track is bipolar: a
+			 * zero line at the centre and the fill growing from it to the right for a
+			 * high and to the left for a low, which is what the sign of the number
+			 * beside it means. */
 			.track {
 				height: 14px;
 				background: var(--roxy-border, #e4e4e7);
@@ -158,12 +162,28 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 				overflow: hidden;
 				position: relative;
 			}
+			.track::after {
+				content: '';
+				position: absolute;
+				left: 50%;
+				top: 0;
+				bottom: 0;
+				width: 1px;
+				background: var(--roxy-surface, #fff);
+			}
 			.fill {
-				display: block;
+				position: absolute;
+				top: 0;
 				height: 100%;
 				transition:
 					width var(--roxy-motion-duration, 200ms)
 					var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			}
+			.fill.high {
+				left: 50%;
+			}
+			.fill.low {
+				right: 50%;
 			}
 			.value {
 				font-variant-numeric: tabular-nums;
@@ -301,13 +321,14 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			}
 			<div class="bars" part="chart bars" role="list">
 				${entries.map(([cycle, v]) => {
-					const pct = ((v + 1) / 2) * 100; // -1..1 -> 0..100
+					// -1..1 -> 0..50 percent of the track, out from the zero line.
+					const pct = Math.abs(v) * 50;
 					const color = CYCLE_COLOR[cycle] ?? 'var(--roxy-accent, #f59e0b)';
 					return html`<div class="bar" role="listitem">
 						<span style="text-transform: capitalize">${cycle}</span>
 						<span class="track">
 							<span
-								class="fill"
+								class="fill ${v < 0 ? 'low' : 'high'}"
 								style="width: ${pct}%; background: ${color}"
 							></span>
 						</span>

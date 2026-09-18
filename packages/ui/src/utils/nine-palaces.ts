@@ -41,8 +41,3 @@ export const GRID_ORDER = [
  * numbers do not form the square fails instead of drawing whatever arrived.
  */
 export const LO_SHU = [4, 9, 2, 3, 5, 7, 8, 1, 6] as const;
-
-/** The eight compass sectors, without the centre. The order a response lists its sectors in is its own. */
-export const COMPASS_SECTORS = GRID_ORDER.filter(
-	(p) => p !== 'Center',
-) as readonly string[];

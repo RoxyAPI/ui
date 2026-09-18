@@ -294,6 +294,12 @@ export const CHROME_STRINGS = [
 	'Choose',
 	'Comma separated',
 	'Advanced',
+	// A repeating request property (a penta's members, a custom spread's positions)
+	// renders one card per record: the legend numbers the published field label, and
+	// the two controls grow and shrink the set inside the bounds the spec declares.
+	'{{group}} {{n}}',
+	'Add',
+	'Remove',
 	'Please complete:',
 	'Search city',
 	'No cities found',

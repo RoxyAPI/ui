@@ -64,8 +64,17 @@ for (const vp of WIDTHS) {
 					);
 				}
 
-				for (const el of sr.querySelectorAll('*')) {
-					const e = el as HTMLElement;
+				// Every element in the host's shadow root AND in the shadow roots nested
+				// inside it: a component in self-fetch mode draws its form in a second
+				// root, and a walk that stops at the first cannot see the form overflow.
+				const deep = (root: ShadowRoot): HTMLElement[] =>
+					[...root.querySelectorAll('*')].flatMap((el) => [
+						el as HTMLElement,
+						...((el as HTMLElement).shadowRoot
+							? deep((el as HTMLElement).shadowRoot as ShadowRoot)
+							: []),
+					]);
+				for (const e of deep(sr)) {
 					const r = e.getBoundingClientRect();
 					if (r.width === 0) continue;
 					// 2px of tolerance for sub-pixel rounding.
@@ -80,7 +89,11 @@ for (const vp of WIDTHS) {
 							scrollable = true;
 							break;
 						}
-						p = p.parentElement;
+						// Step out of a nested shadow root to its host and keep climbing.
+						p =
+							p.parentElement ??
+							((p.getRootNode() as ShadowRoot).host as HTMLElement | null);
+						if (p === host) break;
 					}
 					if (!scrollable) {
 						found.push(

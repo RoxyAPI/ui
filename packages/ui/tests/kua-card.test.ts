@@ -247,7 +247,7 @@ describe('hide-readings', () => {
 		});
 		expect(cells(el).length).toBe(9);
 		const body = text(el);
-		for (const kept of ['Sheng Chi', 'Growth and income', 'Wind', 'li-chun']) {
+		for (const kept of ['Sheng Chi', 'Growth and income', 'Wind', 'Li chun']) {
 			expect(body, `hide-readings removed ${kept}, which is the map`).toContain(
 				kept,
 			);

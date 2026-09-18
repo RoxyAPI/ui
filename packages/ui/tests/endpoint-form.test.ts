@@ -3,6 +3,7 @@ import spec from '../../../specs/openapi.json';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import {
 	buildFormModel,
+	type FieldDef,
 	type FormModel,
 	type OpenApiSchema,
 	type OperationSchema,
@@ -129,6 +130,47 @@ describe('endpoint-form input registry rendering', () => {
 			(detail as unknown as { values: { sign: string } }).values.sign,
 		).toBe('aries');
 		expect((detail as unknown as { sticky: boolean }).sticky).toBe(true);
+		el.remove();
+	});
+
+	/**
+	 * The same rule for the other enum shape. Past twelve options the enum is a
+	 * `<select>`, the submit button is withheld exactly as for the tiles, and so
+	 * the change itself has to submit, or a nakshatra, avastha or yoga form has
+	 * no way to be sent at all.
+	 */
+	test('the single required select auto-submits on change, and not on the empty choice', async () => {
+		const options = Array.from({ length: 27 }, (_, i) => `n${i + 1}`);
+		const el = await mountForm(
+			{
+				title: 'Get Nakshatra by ID',
+				hasLang: false,
+				fields: [
+					{
+						key: 'id',
+						name: 'id',
+						kind: 'select',
+						required: true,
+						enum: options,
+					},
+				],
+			},
+			{ 'data-endpoint': 'vedic-astrology/nakshatras/{id}', method: 'GET' },
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.querySelector('button.submit')).toBeNull();
+		const select = root.querySelector('select') as HTMLSelectElement;
+		expect(select.options.length).toBe(options.length + 1);
+		let submits = 0;
+		el.addEventListener('roxy-submit', () => {
+			submits++;
+		});
+		select.value = '';
+		select.dispatchEvent(new Event('change', { bubbles: true }));
+		expect(submits).toBe(0);
+		select.value = 'n3';
+		select.dispatchEvent(new Event('change', { bubbles: true }));
+		expect(submits).toBe(1);
 		el.remove();
 	});
 
@@ -548,6 +590,306 @@ describe('endpoint-form input registry rendering', () => {
  * renders an input of its own, the city search fills it, or the form supplies the value itself.
  * Anything else is a parameter the visitor is asked for and given no way to enter.
  */
+/**
+ * A request property that is an array of objects is a set of cards, one per record,
+ * never a comma-separated text box. The penta is the case: three to five birth
+ * records, each with its own city search, and the API rejects a string where it
+ * wants an object.
+ */
+describe('a repeating request property renders one card per record', () => {
+	const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+		string,
+		OpenApiSchema
+	>;
+	const penta = () =>
+		buildFormModel(
+			(
+				spec.paths as unknown as Record<string, Record<string, OperationSchema>>
+			)['/human-design/penta']?.post as OperationSchema,
+			schemas,
+			'human-design/penta',
+		);
+
+	test('the model expands the item schema into the minimum number of records', () => {
+		const model = penta();
+		expect(model.repeats).toEqual([{ key: 'members', min: 3, max: 5 }]);
+		const groups = new Set(model.fields.map((f) => f.group));
+		expect([...groups]).toEqual(['members.0', 'members.1', 'members.2']);
+		// Every record carries the item's required fields as required, and no
+		// text input stands in for the array itself.
+		expect(
+			model.fields.filter((f) => f.name === 'date' && f.required),
+		).toHaveLength(3);
+		expect(model.fields.some((f) => f.key === 'members')).toBe(false);
+	});
+
+	test('three member cards render, each with a city search, and the set grows to five and back', async () => {
+		const el = await mountForm(penta(), {
+			'data-endpoint': 'human-design/penta',
+			method: 'POST',
+		});
+		const root = el.shadowRoot as ShadowRoot;
+		const cards = () => root.querySelectorAll('fieldset.person-group');
+		expect(cards().length).toBe(3);
+		expect(root.querySelectorAll('roxy-location-search').length).toBe(3);
+		// The legend is the published field label plus the record number; with no
+		// label catalogue registered here it falls back to the humanized wire name.
+		expect(
+			Array.from(root.querySelectorAll('legend')).map((l) =>
+				l.textContent?.trim(),
+			),
+		).toEqual(['Members 1', 'Members 2', 'Members 3']);
+		expect(root.querySelector('input[type="text"]')).toBeNull();
+
+		const button = (word: string) =>
+			Array.from(root.querySelectorAll('button.repeat-btn')).find((b) =>
+				b.textContent?.includes(word),
+			) as HTMLButtonElement | undefined;
+		// At the minimum there is nothing to remove; at the maximum nothing to add.
+		expect(button('Remove')).toBeUndefined();
+		button('Add')?.click();
+		await flush(el);
+		button('Add')?.click();
+		await flush(el);
+		expect(cards().length).toBe(5);
+		expect(button('Add')).toBeUndefined();
+		// An added record starts from the same schema defaults as the first.
+		expect(
+			(el as unknown as { values: Record<string, unknown> }).values[
+				'members.4.nodeType'
+			],
+		).toBe(
+			(el as unknown as { values: Record<string, unknown> }).values[
+				'members.0.nodeType'
+			],
+		);
+		button('Remove')?.click();
+		await flush(el);
+		expect(cards().length).toBe(4);
+		el.remove();
+	});
+
+	test('a list of objects nested inside a group is not drawn, so the group offers its scalar alternative', () => {
+		const model = buildFormModel(
+			(
+				spec.paths as unknown as Record<string, Record<string, OperationSchema>>
+			)['/vastu/mandala']?.post as OperationSchema,
+			schemas,
+			'vastu/mandala',
+		);
+		const plot = model.fields
+			.filter((f) => f.group === 'plot')
+			.map((f) => f.name);
+		expect(plot).toContain('width');
+		expect(plot).toContain('depth');
+		expect(plot).not.toContain('polygon');
+		expect(model.repeats).toBeUndefined();
+	});
+
+	test('the submitted body carries the records as an array of objects', async () => {
+		const el = await mountForm(penta(), {
+			'data-endpoint': 'human-design/penta',
+			method: 'POST',
+		});
+		const root = el.shadowRoot as ShadowRoot;
+		let detail: { values: Record<string, unknown> } | undefined;
+		el.addEventListener('roxy-submit', (e) => {
+			detail = (e as CustomEvent).detail;
+		});
+		for (let i = 0; i < 3; i++) {
+			const set = (name: string, value: unknown) => {
+				(
+					el as unknown as { setValue: (k: string, v: unknown) => void }
+				).setValue(`members.${i}.${name}`, value);
+			};
+			set('date', '1990-01-15');
+			set('time', '14:30:00');
+			set('timezone', 5.5);
+		}
+		await flush(el);
+		(root.querySelector('form') as HTMLFormElement).requestSubmit();
+		await flush(el);
+		// Three objects in record order, each carrying what was entered plus the
+		// spec defaults every form pre-fills.
+		const members = detail?.values.members as Record<string, unknown>[];
+		expect(members).toHaveLength(3);
+		for (const m of members) {
+			expect(m).toMatchObject({
+				date: '1990-01-15',
+				time: '14:30:00',
+				timezone: 5.5,
+			});
+		}
+		el.remove();
+	});
+});
+
+/**
+ * A prefixed coordinate is grouped for the form and flat on the wire: the relocation
+ * chart takes `birthLatitude` and `relocationLatitude` as top-level properties while
+ * the form shows them as two city boxes, and a body nesting them under `birth` and
+ * `relocation` is one the API rejects.
+ */
+describe('a prefixed coordinate group serialises flat', () => {
+	test('the relocation body carries the six coordinates and the one timezone at the top level', async () => {
+		const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+			string,
+			OpenApiSchema
+		>;
+		const model = buildFormModel(
+			(
+				spec.paths as unknown as Record<string, Record<string, OperationSchema>>
+			)['/astrology/relocation-chart']?.post as OperationSchema,
+			schemas,
+			'astrology/relocation-chart',
+		);
+		const el = await mountForm(model, {
+			'data-endpoint': 'astrology/relocation-chart',
+			method: 'POST',
+		});
+		const set = (
+			el as unknown as { setValue: (k: string, v: unknown) => void }
+		).setValue.bind(el);
+		set('date', '1990-01-15');
+		set('time', '14:30:00');
+		set('birthLatitude', 40.7);
+		set('birthLongitude', -74);
+		set('timezone', 'America/New_York');
+		set('relocationLatitude', 51.5);
+		set('relocationLongitude', -0.1);
+		let detail: { values: Record<string, unknown> } | undefined;
+		el.addEventListener('roxy-submit', (e) => {
+			detail = (e as CustomEvent).detail;
+		});
+		await flush(el);
+		(el.shadowRoot as ShadowRoot).querySelector('form')?.requestSubmit();
+		await flush(el);
+		expect(detail?.values).toMatchObject({
+			birthLatitude: 40.7,
+			birthLongitude: -74,
+			relocationLatitude: 51.5,
+			relocationLongitude: -0.1,
+			timezone: 'America/New_York',
+		});
+		expect(detail?.values.birth).toBeUndefined();
+		expect(detail?.values.relocation).toBeUndefined();
+		el.remove();
+	});
+});
+
+/**
+ * What the API rejects prints where it can be fixed. A validation failure names
+ * its fields by wire path, which is the key the form renders each input under,
+ * so the message sits under that input, the input is marked invalid, and the
+ * summary names the field by the label on the form rather than by its path.
+ */
+describe('server-side validation issues print under their fields', () => {
+	const model = (): FormModel => ({
+		title: 'Yearly horoscope',
+		hasLang: false,
+		fields: [
+			{ key: 'sign', name: 'sign', kind: 'tiles', required: true, enum: SIGNS },
+			{
+				key: 'year',
+				name: 'year',
+				kind: 'number',
+				required: false,
+				inQuery: true,
+			},
+			{
+				key: 'person1.date',
+				name: 'date',
+				group: 'person1',
+				kind: 'date',
+				required: false,
+			},
+		],
+	});
+	const issues = [
+		{ path: 'year', message: 'Too small: expected number to be >=1900' },
+		{ path: 'person1.date', message: 'Invalid date' },
+		{ path: 'person1', message: 'Send either a name or a date' },
+	];
+
+	test('each issue prints under its input, on its group, and once in the summary by label', async () => {
+		const el = await mountForm(model(), {
+			'data-endpoint': 'astrology/horoscope/{sign}/yearly',
+			method: 'GET',
+		});
+		(el as unknown as { serverIssues: unknown }).serverIssues = issues;
+		await flush(el);
+		const root = el.shadowRoot as ShadowRoot;
+		const year = root.getElementById('roxy-form-year') as HTMLInputElement;
+		expect(year.getAttribute('aria-invalid')).toBe('true');
+		expect(year.getAttribute('aria-describedby')).toBe('roxy-form-year-error');
+		expect(
+			root.getElementById('roxy-form-year-error')?.textContent?.trim(),
+		).toBe('Too small: expected number to be >=1900');
+		expect(
+			root.getElementById('roxy-form-person1.date-error')?.textContent?.trim(),
+		).toBe('Invalid date');
+		// The group-level issue sits on the card, not under any one input.
+		const card = root.querySelector('fieldset.person-group') as HTMLElement;
+		expect(card.textContent).toContain('Send either a name or a date');
+		const summary = root.querySelector('.validation-error') as HTMLElement;
+		const lines = Array.from(summary.querySelectorAll('div')).map((d) =>
+			d.textContent?.replace(/\s+/g, ' ').trim(),
+		);
+		expect(lines).toEqual([
+			'Year Too small: expected number to be >=1900',
+			'Person 1 Date Invalid date',
+			'Person 1 Send either a name or a date',
+		]);
+		el.remove();
+	});
+
+	test('an issue on a field behind Advanced opens the disclosure', async () => {
+		const el = await mountForm(model(), {
+			'data-endpoint': 'astrology/horoscope/{sign}/yearly',
+			method: 'GET',
+		});
+		const root = el.shadowRoot as ShadowRoot;
+		const details = () =>
+			root.querySelector('details.advanced') as HTMLDetailsElement;
+		expect(details().open).toBe(false);
+		(el as unknown as { serverIssues: unknown }).serverIssues = [
+			{ path: 'year', message: 'Too small' },
+		];
+		await flush(el);
+		expect(details().open).toBe(true);
+		el.remove();
+	});
+
+	test('editing a field clears its issue, and a new report starts clean', async () => {
+		const el = await mountForm(model(), {
+			'data-endpoint': 'astrology/horoscope/{sign}/yearly',
+			method: 'GET',
+		});
+		const form = el as unknown as {
+			serverIssues: unknown;
+			setValue: (k: string, v: unknown) => void;
+		};
+		form.serverIssues = issues;
+		await flush(el);
+		form.setValue('year', 2026);
+		await flush(el);
+		const root = el.shadowRoot as ShadowRoot;
+		expect(root.getElementById('roxy-form-year-error')).toBeNull();
+		expect(
+			root.getElementById('roxy-form-year')?.getAttribute('aria-invalid'),
+		).toBeNull();
+		// The other two stay until they are edited or the API answers again.
+		expect(root.getElementById('roxy-form-person1.date-error')).not.toBeNull();
+		form.serverIssues = [{ path: 'year', message: 'Too big' }];
+		await flush(el);
+		expect(
+			root.getElementById('roxy-form-year-error')?.textContent?.trim(),
+		).toBe('Too big');
+		expect(root.getElementById('roxy-form-person1.date-error')).toBeNull();
+		el.remove();
+	});
+});
+
 describe('every bound endpoint can be submitted from its form', () => {
 	/** Filled by the form on submit rather than entered, so no input is expected. */
 	const SELF_SUPPLIED = new Set(['seed']);
@@ -616,6 +958,23 @@ describe('every bound endpoint can be submitted from its form', () => {
 		// A binding list that stopped resolving would pass every assertion above.
 		expect(checked).toBeGreaterThan(50);
 		expect(unreachable).toEqual([]);
+	});
+
+	test('every form can be sent: a submit button, or a single enum input that submits itself', async () => {
+		const stuck: string[] = [];
+		let checked = 0;
+		for await (const { label, mount } of boundForms()) {
+			const el = await mount();
+			const root = el.shadowRoot as ShadowRoot;
+			const button = !!root.querySelector('button.submit');
+			const single = (el as unknown as { singleEnumField: FieldDef | null })
+				.singleEnumField;
+			if (!button && !single) stuck.push(label);
+			checked++;
+			el.remove();
+		}
+		expect(checked).toBeGreaterThan(100);
+		expect(stuck).toEqual([]);
 	});
 
 	test('a form with nothing required still shows an input outside the disclosure', async () => {

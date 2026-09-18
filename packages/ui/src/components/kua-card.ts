@@ -373,7 +373,11 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 			${this.renderSectorRows(d)}
 			${
 				'conventions' in d
-					? renderConventionsCaption(d.conventions, this.translator)
+					? renderConventionsCaption(
+							d.conventions,
+							this.translator,
+							this.effectiveLang(),
+						)
 					: nothing
 			}
 		</article>`;

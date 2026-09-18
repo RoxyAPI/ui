@@ -135,6 +135,7 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			.head {
 				display: flex;
 				align-items: center;
+				flex-wrap: wrap;
 				gap: var(--roxy-space-md, 1rem);
 			}
 
@@ -150,6 +151,9 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 				margin: 0;
 				letter-spacing: var(--roxy-tracking-tight);
 				text-transform: capitalize;
+				/* Never broken to make room for the meter: on a narrow card the meter
+				 * wraps under the title instead. */
+				white-space: nowrap;
 			}
 
 			.date {

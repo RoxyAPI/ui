@@ -429,6 +429,30 @@ export function formatDateTime(
 }
 
 /**
+ * An instant on the UTC clock, with the zone named: `Apr 4, 2021, 1:24 PM UTC`.
+ *
+ * @remarks
+ * {@link formatDateTime} converts an offset-bearing timestamp to the viewer's zone, which is right for an event the viewer is living through and wrong for a value that exists to be compared against a printed reference: the Design moment on a bodygraph is published to the minute in UTC, so a reader in Kolkata and one in Chicago must see the same digits. The zone name comes from Intl rather than a typed suffix, so it follows the locale like every other unit here.
+ */
+export function formatDateTimeUtc(
+	locale: string | undefined,
+	input: unknown,
+): string {
+	if (typeof input !== 'string' || input.length === 0) return '';
+	const { d } = resolveDisplayDate(input);
+	if (Number.isNaN(d.getTime())) return input;
+	return d.toLocaleString(intlLocales(locale), {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		timeZone: 'UTC',
+		timeZoneName: 'short',
+	});
+}
+
+/**
  * The Sanskrit form of a name, but only when it actually differs from the English one.
  *
  * @remarks

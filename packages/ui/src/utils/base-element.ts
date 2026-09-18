@@ -11,7 +11,11 @@ import type { ChromeString } from '../i18n/chrome-strings.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { baseStyles } from './base-styles.js';
 import { expandCompact } from './compact.js';
-import { buildRequest, FetchController } from './fetch-controller.js';
+import {
+	type ApiIssue,
+	buildRequest,
+	FetchController,
+} from './fetch-controller.js';
 import {
 	type InterpSection,
 	renderInterpAccordion,
@@ -184,6 +188,10 @@ export abstract class RoxyDataElement<
 	@state()
 	error: string | null = null;
 
+	/** The fields a rejected self-fetch named, or null. Public so {@link FetchController} can drive it; the form prints each under its input. */
+	@state()
+	issues: ApiIssue[] | null = null;
+
 	/**
 	 * True once a self-fetch (not a consumer-assigned or island-hydrated `data`) produced the current result. It gates the interactive result affordances, so controlled mode never shows an Edit control or a sticky picker.
 	 */
@@ -241,6 +249,33 @@ export abstract class RoxyDataElement<
 	}
 
 	/**
+	 * A bespoke card that throws while drawing a response degrades to the generic renderer instead of a dead skeleton.
+	 *
+	 * @remarks
+	 * A response the card was not written for (a sibling endpoint's shape, a field the spec grew) reaches `renderData` as data the type system cannot check at runtime, and a render that throws leaves whatever was on screen before it, which for a self-fetch is the loading placeholder, forever. The library already promises that an endpoint nothing draws falls back to `<roxy-data>`, so a card that cannot draw falls back the same way: the visitor reads the response as a table, the page hears `roxy-render-error` with the exception, and the console names the element. When the generic renderer is not registered (a per-component import), the empty state stands in.
+	 */
+	private drawn(data: T): unknown {
+		try {
+			return this.renderData(data);
+		} catch (err) {
+			console.warn(
+				`[roxy-ui] ${this.localName} could not draw its response`,
+				err,
+			);
+			this.dispatchEvent(
+				new CustomEvent('roxy-render-error', {
+					detail: { error: err },
+					bubbles: true,
+					composed: true,
+				}),
+			);
+			return customElements.get('roxy-data')
+				? html`<roxy-data .data=${data} lang=${ifDefined(this.effectiveLang())}></roxy-data>`
+				: this.renderEmpty();
+		}
+	}
+
+	/**
 	 * The one rule set that acts on {@link RoxyDataElement.hideSections}, generated from the names rather than from a list of components.
 	 *
 	 * @remarks
@@ -278,8 +313,8 @@ export abstract class RoxyDataElement<
 			// sets the attribute, so this stays byte-identical for them.
 			if (!this.selfFetched) {
 				return this.showAttribution()
-					? html`${this.renderData(this.data)}${this.renderAttribution()}`
-					: this.renderData(this.data);
+					? html`${this.drawn(this.data)}${this.renderAttribution()}`
+					: this.drawn(this.data);
 			}
 			if (this.editing) return this.renderForm();
 			return this.renderResult(this.data);
@@ -317,11 +352,11 @@ export abstract class RoxyDataElement<
 	 */
 	protected renderResult(data: T): unknown {
 		const body = this.sticky
-			? html`${this.renderForm()}${this.renderData(data)}`
+			? html`${this.renderForm()}${this.drawn(data)}`
 			: html`<div class="roxy-edit-bar" part="edit-bar">
 					<button type="button" class="roxy-edit" @click=${this.onEdit}>${this.t('Edit query')}</button>
 				</div>
-				${this.renderData(data)}`;
+				${this.drawn(data)}`;
 		return this.showAttribution()
 			? html`${body}${this.renderAttribution()}`
 			: body;
@@ -375,6 +410,7 @@ export abstract class RoxyDataElement<
 			submit-label=${ifDefined(this.submitLabel)}
 			lang=${ifDefined(this.effectiveLang())}
 			.initialValues=${this.formInitialValues()}
+			.serverIssues=${this.issues}
 			@roxy-submit=${this.onFormSubmit}
 		></roxy-endpoint-form>`;
 	}
@@ -451,6 +487,9 @@ export abstract class RoxyDataElement<
 	 * The message goes through `t()` because ONE of the messages that reaches here is ours: `KEY_REFUSED_MESSAGE` (`utils/key-guard.ts`), which {@link FetchController} assigns when a site owner pastes a secret key into a browser page, and which `<roxy-location-search>` renders in its own shadow root from the same constant. Translating it in one place and not the other would put two languages on one page. Everything else that lands here is a wire fact (an HTTP status, a browser network error), misses the catalogue and renders unchanged.
 	 */
 	protected renderError(message: string): unknown {
+		// A rejected request that names its fields is answered on the form, field by
+		// field, and needs no banner repeating the same words over it.
+		if (this.endpoint && this.issues) return this.renderForm();
 		const banner = html`<div class="roxy-error" role="alert" part="error">${this.t(message)}</div>`;
 		return this.endpoint ? html`${banner}${this.renderForm()}` : banner;
 	}

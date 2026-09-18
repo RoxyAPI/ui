@@ -56,23 +56,23 @@ export function formatSignPosition(
 	return `${degree}° ${signLabel || sign} ${String(minute).padStart(2, '0')}'`;
 }
 
+/** `12°34'` from a raw ecliptic longitude: the degree and minute within the sign, truncated to the minute, the form a wheel prints beside a glyph and a cusp. */
+export function formatWheelDegree(longitude: number): string {
+	return formatDegreeInSign(normalizeLongitude(longitude) % 30);
+}
+
 /**
- * A within-sign decimal degree (0-30) split into whole degrees and minutes, with the rounding carry already applied.
+ * A within-sign decimal degree (0-30) split into whole degrees and minutes, truncated to the minute.
  *
  * @remarks
- * Separate from {@link formatDegreeInSign} because a printed ephemeris interleaves the sign BETWEEN the two halves (`09♌56`, the form every published ephemeris has used for a century) rather than putting the sign beside a finished `9°56'`. Rounding 59.6 minutes up has to roll the degree with it, and that carry is the part a caller gets wrong, so it lives here once and both forms read it.
+ * Separate from {@link formatDegreeInSign} because a printed ephemeris interleaves the sign BETWEEN the two halves (`09♌56`, the form every published ephemeris has used for a century) rather than putting the sign beside a finished `9°56'`. Truncation rather than rounding, the way an ephemeris prints and every wheel here draws: a position at 29 degrees 59.6 minutes stays in its sign at 29°59' instead of rolling to a 30°00' that no sign has, and a table and a wheel reading the same longitude print the same minute.
  */
 export function splitDegreeInSign(deg: number): {
 	degree: number;
 	minute: number;
 } {
-	let degree = Math.floor(deg);
-	let minute = Math.round((deg - degree) * 60);
-	if (minute === 60) {
-		minute = 0;
-		degree += 1;
-	}
-	return { degree, minute };
+	const degree = Math.floor(deg);
+	return { degree, minute: Math.floor((deg - degree) * 60) };
 }
 
 /** Format a within-sign decimal degree (0-30) as degree-and-minute, e.g. 17.99 to "17°59'". The reference-grade form astrologers read when the sign is already known (asteroids, lots, directed points, fixed stars). */
@@ -127,15 +127,22 @@ export interface FannedPoint<T> {
  *
  * `minSeparation` is an ANGLE, so it depends on the radius the caller is drawing
  * at: the same glyph needs more degrees of arc on a small ring than a large one.
+ * It is a number where every mark is the same width, and a function of the two
+ * neighbours where they are not: a degree label grows by a retrograde mark, so
+ * two centred labels clear each other at half the sum of their widths, which is
+ * what a per-pair answer states and one number for the ring cannot.
  *
- * If a cluster runs past 360 degrees the whole set slides back by the overshoot,
- * which keeps the stack anchored near its real longitudes instead of wrapping
- * one member around to the far side of the wheel.
+ * A wheel has no seam, so the sweep starts after the WIDEST gap on the ring and
+ * runs once around it: a cluster straddling 0 degrees Aries fans across the
+ * seam like any other, and whatever room the ring has to absorb its total
+ * displacement lies at the end of the sweep rather than at an arbitrary point.
+ * Only a ring too full to hold every mark at its separation still overlaps,
+ * and then it overlaps at that widest gap.
  */
 export function fanOut<T>(
 	items: readonly T[],
 	longitudeOf: (item: T) => number,
-	minSeparation: number,
+	minSeparation: number | ((prev: T, next: T) => number),
 ): FannedPoint<T>[] {
 	const placed: FannedPoint<T>[] = items
 		.filter((item) => Number.isFinite(longitudeOf(item)))
@@ -144,21 +151,99 @@ export function fanOut<T>(
 			return { item, longitude, displayLongitude: longitude };
 		})
 		.sort((a, b) => a.longitude - b.longitude);
+	const n = placed.length;
+	if (n < 2) return placed;
 
-	for (let i = 1; i < placed.length; i++) {
-		const prev = placed[i - 1];
-		const cur = placed[i];
-		if (!prev || !cur) continue;
-		const wanted = prev.displayLongitude + minSeparation;
-		if (cur.displayLongitude < wanted) cur.displayLongitude = wanted;
+	let start = 0;
+	let widest = -1;
+	for (let i = 0; i < n; i++) {
+		const prev = placed[(i + n - 1) % n] as FannedPoint<T>;
+		const cur = placed[i] as FannedPoint<T>;
+		const gap = (cur.longitude - prev.longitude + 360) % 360;
+		if (gap > widest) {
+			widest = gap;
+			start = i;
+		}
 	}
 
-	const last = placed[placed.length - 1];
-	if (last && last.displayLongitude > 360) {
-		const shift = last.displayLongitude - 360;
-		for (const p of placed) p.displayLongitude -= shift;
+	let prev = placed[start] as FannedPoint<T>;
+	let prevDisplay = prev.longitude;
+	for (let j = 1; j < n; j++) {
+		const cur = placed[(start + j) % n] as FannedPoint<T>;
+		const separation =
+			typeof minSeparation === 'function'
+				? minSeparation(prev.item, cur.item)
+				: minSeparation;
+		// Past the seam the ring continues at +360, so the sweep stays monotone.
+		const unwrapped = cur.longitude + (start + j >= n ? 360 : 0);
+		prevDisplay = Math.max(unwrapped, prevDisplay + separation);
+		cur.displayLongitude = normalizeLongitude(prevDisplay);
+		prev = cur;
 	}
 	return placed;
+}
+
+/** An axis-aligned box in wheel units, for a horizontal label. */
+export interface LabelBox {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
+const boxesTouch = (a: LabelBox, b: LabelBox): boolean =>
+	Math.abs(a.x - b.x) < (a.width + b.width) / 2 &&
+	Math.abs(a.y - b.y) < (a.height + b.height) / 2;
+
+/**
+ * Which of two label rows each mark takes, so horizontal labels on one ring
+ * never print over each other.
+ *
+ * @remarks
+ * A degree label is about twice as wide as its glyph, so a fan wide enough to
+ * clear every label carries a stellium far from its houses, and one tight
+ * enough to keep the glyphs honest prints neighbouring labels over each other.
+ * A second row inward is the professional wheel's answer, and the row is chosen
+ * from the box each label PAINTS rather than from the arc between them, because
+ * a horizontal label on a ring meets its neighbour differently at every angle:
+ * side by side near the top and bottom, where only a row apart separates them,
+ * and one above the other at the sides, where the arc alone does. A label takes
+ * the inner row only when the outer one would touch a label already placed, so
+ * an uncrowded chart keeps every label on the outer row exactly as before; one
+ * that would touch on both rows keeps the lesser overlap, which the fan step is
+ * chosen to make impossible short of three marks inside one label width.
+ */
+export function staggerRows<T>(
+	placed: readonly FannedPoint<T>[],
+	boxAt: (point: FannedPoint<T>, row: number) => LabelBox,
+): number[] {
+	const taken: LabelBox[] = [];
+	const overlap = (box: LabelBox) =>
+		taken.reduce(
+			(worst, other) =>
+				boxesTouch(box, other)
+					? Math.max(
+							worst,
+							Math.min(
+								(box.width + other.width) / 2 - Math.abs(box.x - other.x),
+								(box.height + other.height) / 2 - Math.abs(box.y - other.y),
+							),
+						)
+					: worst,
+			0,
+		);
+	return [...placed]
+		.map((point, index) => ({ point, index }))
+		.sort((a, b) => a.point.displayLongitude - b.point.displayLongitude)
+		.reduce<number[]>((rows, { point, index }) => {
+			const outer = boxAt(point, 0);
+			const inner = boxAt(point, 1);
+			const row =
+				overlap(outer) === 0 || overlap(outer) <= overlap(inner) ? 0 : 1;
+			taken.push(row === 0 ? outer : inner);
+			rows[index] = row;
+			return rows;
+		}, []);
 }
 
 /**

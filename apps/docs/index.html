@@ -321,7 +321,8 @@
 			padding: 0.3rem 0.75rem;
 			border: 0;
 			background: transparent;
-			color: var(--roxy-muted);
+			/* Secondary, not muted: the toggle sits on a tint, and muted ink measures under the AA floor there. */
+			color: var(--roxy-secondary);
 			font-size: 0.75rem;
 			font-weight: 500;
 			border-radius: 6px;
@@ -355,7 +356,8 @@
 		}
 		.code-block pre {
 			margin: 0;
-			padding: 0.875rem 1rem 0.875rem;
+			/* Room on the right for the copy button, so the first line never runs under it on a narrow screen. */
+			padding: 0.875rem 3.75rem 0.875rem 1rem;
 			font-size: 0.78125rem;
 			line-height: 1.55;
 			overflow-x: auto;
@@ -403,22 +405,40 @@
 			padding: 1.25rem;
 			margin-block: 1rem;
 		}
-		.quickstart summary {
-			font-size: 0.875rem;
+		.quickstart-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 0.75rem;
+		}
+		.quickstart-head h2 {
+			margin: 0;
+			font-size: 0.9375rem;
 			font-weight: 600;
-			cursor: pointer;
-			list-style: none;
-			color: var(--roxy-fg);
+			letter-spacing: -0.01em;
 		}
-		.quickstart summary::after {
-			content: '+';
-			float: right;
+		.quickstart-note {
+			margin: 0.875rem 0 0;
+			font-size: 0.875rem;
 			color: var(--roxy-muted);
-			font-weight: 400;
-			margin-left: 1rem;
+			line-height: 1.55;
 		}
-		.quickstart[open] summary::after { content: '−'; }
-		.quickstart .code-block { margin-top: 1rem; }
+		.quickstart .code-block { margin-top: 0.75rem; }
+		.quickstart-next {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem 1.25rem;
+			margin: 1rem 0 0;
+			font-size: 0.875rem;
+		}
+		.quickstart-next a {
+			color: var(--roxy-accent-ink);
+			text-decoration: none;
+			font-weight: 500;
+		}
+		.quickstart-next a:hover { text-decoration: underline; }
+		.quickstart-next a::after { content: ' →'; }
 
 		dialog {
 			border: 1px solid var(--roxy-border);
@@ -608,7 +628,7 @@
 				"name": "How do I add an astrology chart to my website?",
 				"acceptedAnswer": {
 					"@type": "Answer",
-					"text": "Three lines. Drop the @roxyapi/ui script tag from jsDelivr, add a roxy-natal-chart custom element, then call createRoxy from @roxyapi/sdk and assign the response to the element's data property. Works in plain HTML, WordPress, Shopify themes that allow custom code, and any modern browser with no build step."
+					"text": "Two lines and no build: load widgets.js from jsDelivr and drop a div with data-roxy-widget set to natal-chart and your publishable key. The widget draws the birth-data form and the chart in the browser. To keep every key on your server instead, fetch with @roxyapi/sdk and assign the response to the data property of a roxy-natal-chart element, or inline it as a JSON island for a server-rendered page. Works in plain HTML, WordPress, Shopify themes that allow custom code, and any modern browser."
 				}
 			},
 			{
@@ -688,7 +708,7 @@
 				"name": "How do I theme components?",
 				"acceptedAnswer": {
 					"@type": "Answer",
-					"text": "Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. Your own declaration always wins, including from inside a Tailwind or shadcn layer, so no extra selector weight and no !important. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
+					"text": "Override CSS custom properties on the root or per element. One set of design tokens covers color, typography, spacing, radius, shadow, and motion. Your own declaration always wins, including from inside a Tailwind or shadcn layer, so no extra selector weight and no !important. No Tailwind required, no class-name overrides, no rebuild step. Light and dark defaults are built in. The Customize Colors panel on this page generates the override CSS for you."
 				}
 			}
 		]
@@ -741,18 +761,78 @@
 				<a href="https://www.npmjs.com/package/@roxyapi/sdk" target="_blank" rel="noopener">@roxyapi/sdk</a>
 			</div>
 
-			<details class="quickstart">
-				<summary>Quick start · vanilla HTML</summary>
-				<div class="code-block">
-					<button type="button" class="copy-btn" data-copy-target="hero-snippet">Copy</button>
-					<pre><code id="hero-snippet">&lt;script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer&gt;&lt;/script&gt;
-
-&lt;!-- Fetch /astrology/natal-chart on your server with your key, then inline the JSON. --&gt;
-&lt;roxy-natal-chart&gt;
-  &lt;script type="application/json" class="roxy-data"&gt;{ "planets": [ ... ], "aspects": [ ... ], "ascendant": { ... } }&lt;/script&gt;
-&lt;/roxy-natal-chart&gt;</code></pre>
+			<div class="quickstart" id="quickstart" aria-labelledby="quickstart-title">
+				<div class="quickstart-head">
+					<h2 id="quickstart-title">Get started</h2>
+					<div class="tab-toggle" role="tablist" id="quickstart-tabs" aria-label="Quick start by stack">
+						<button type="button" role="tab" id="qs-tab-widget" aria-selected="true" aria-controls="qs-widget" tabindex="0">Widget</button>
+						<button type="button" role="tab" id="qs-tab-react" aria-selected="false" aria-controls="qs-react" tabindex="-1">React</button>
+						<button type="button" role="tab" id="qs-tab-vue" aria-selected="false" aria-controls="qs-vue" tabindex="-1">Vue</button>
+						<button type="button" role="tab" id="qs-tab-any" aria-selected="false" aria-controls="qs-any" tabindex="-1">Any stack</button>
+					</div>
 				</div>
-			</details>
+				<div role="tabpanel" id="qs-widget" aria-labelledby="qs-tab-widget">
+					<p class="quickstart-note">One script, one tag, no build. The widget renders its own birth-data form and the chart, in the browser, on a publishable key.</p>
+					<div class="code-block">
+						<button type="button" class="copy-btn" data-copy-target="qs-widget-code">Copy</button>
+						<pre><code id="qs-widget-code">&lt;script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js" defer&gt;&lt;/script&gt;
+
+&lt;div data-roxy-widget="natal-chart" data-publishable-key="pk_live_…"&gt;&lt;/div&gt;</code></pre>
+					</div>
+				</div>
+				<div role="tabpanel" id="qs-react" aria-labelledby="qs-tab-react" hidden>
+					<p class="quickstart-note">Fetch with the typed SDK on your server, pass <code>data</code> to the component. The key never reaches the browser.</p>
+					<div class="code-block">
+						<button type="button" class="copy-btn" data-copy-target="qs-react-code">Copy</button>
+						<pre><code id="qs-react-code">import { createRoxy } from '@roxyapi/sdk';
+import { RoxyHoroscopeCard } from '@roxyapi/ui-react';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });
+
+return &lt;RoxyHoroscopeCard data={data} /&gt;;</code></pre>
+					</div>
+				</div>
+				<div role="tabpanel" id="qs-vue" aria-labelledby="qs-tab-vue" hidden>
+					<p class="quickstart-note">The same typed surface for Vue. Every component takes the response as <code>data</code>.</p>
+					<div class="code-block">
+						<button type="button" class="copy-btn" data-copy-target="qs-vue-code">Copy</button>
+						<pre><code id="qs-vue-code">&lt;script setup lang="ts"&gt;
+import { RoxyNatalChart } from '@roxyapi/ui-vue';
+
+defineProps&lt;{ data: NatalChart }&gt;();
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;RoxyNatalChart :data="data" /&gt;
+&lt;/template&gt;</code></pre>
+					</div>
+				</div>
+				<div role="tabpanel" id="qs-any" aria-labelledby="qs-tab-any" hidden>
+					<p class="quickstart-note">Web components run in every framework and in none. Search the city first: every chart endpoint takes latitude, longitude and timezone.</p>
+					<div class="code-block">
+						<button type="button" class="copy-btn" data-copy-target="qs-any-code">Copy</button>
+						<pre><code id="qs-any-code">import { createRoxy } from '@roxyapi/sdk';
+import '@roxyapi/ui';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+const { data: cities } = await roxy.location.searchCities({ query: { q: 'Mumbai' } });
+const { latitude, longitude, timezone } = cities.cities[0];
+
+const { data: kundli } = await roxy.vedicAstrology.generateBirthChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone },
+});
+
+document.querySelector('roxy-vedic-kundli')!.data = kundli;</code></pre>
+					</div>
+				</div>
+				<p class="quickstart-next">
+					<a href="https://roxyapi.com/widgets" target="_blank" rel="noopener">Browse the widgets</a>
+					<a href="https://roxyapi.com/docs/ui" target="_blank" rel="noopener">Read the UI guide</a>
+					<a href="https://roxyapi.com/docs/tutorials/ai-chat-widgets" target="_blank" rel="noopener">Render AI tool results</a>
+				</p>
+			</div>
 		</section>
 
 		<div class="toolbar">
@@ -863,7 +943,7 @@
 			</details>
 			<details>
 				<summary>How do I add an astrology chart to my website?</summary>
-				<p>Three lines. Drop the @roxyapi/ui script tag from jsDelivr, add a roxy-natal-chart custom element, then call createRoxy from @roxyapi/sdk and assign the response to the element data property. Works in plain HTML, WordPress, and any modern browser with no build step.</p>
+				<p>Two lines and no build: load <code>widgets.js</code> from jsDelivr and drop a <code>&lt;div data-roxy-widget="natal-chart"&gt;</code> with your publishable key. The widget draws the birth-data form and the chart in the browser. To keep every key on your server instead, fetch with <code>@roxyapi/sdk</code> and assign the response to the <code>data</code> property of a <code>&lt;roxy-natal-chart&gt;</code>, or inline it as a JSON island for a server-rendered page. Works in plain HTML, WordPress, Shopify themes that allow custom code, and any modern browser.</p>
 			</details>
 			<details>
 				<summary>Does this work with React, Next.js, Vue, and Svelte?</summary>
@@ -912,7 +992,7 @@
 			</details>
 			<details>
 				<summary>How do I theme components?</summary>
-				<p>Override CSS custom properties on the root or per element. About 47 design tokens cover color, typography, spacing, radius, shadow, and motion. Your own declaration always wins, including from inside a Tailwind or shadcn layer, so no extra selector weight and no <code>!important</code>. The Customize Colors panel above generates the override CSS for you.</p>
+				<p>Override CSS custom properties on the root or per element. One set of design tokens covers color, typography, spacing, radius, shadow, and motion. Your own declaration always wins, including from inside a Tailwind or shadcn layer, so no extra selector weight and no <code>!important</code>. The Customize Colors panel above generates the override CSS for you.</p>
 			</details>
 		</section>
 

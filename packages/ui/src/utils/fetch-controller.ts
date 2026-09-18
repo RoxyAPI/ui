@@ -16,7 +16,21 @@ type FetchHost<T> = ReactiveControllerHost &
 		data: T | null;
 		loading: boolean;
 		error: string | null;
+		/** The field-level issues of a rejected request, or null when the failure was not about the request body. */
+		issues: ApiIssue[] | null;
 	};
+
+/** One field the API rejected, as the API reports it: the wire path of the field (`year`, `person1.date`, `members.0.date`) and the reason. */
+export interface ApiIssue {
+	path: string;
+	message: string;
+}
+
+/** A failed request, read once: the message every failure carries and the per-field issues a validation failure adds. */
+export interface ApiFailure {
+	message: string;
+	issues: ApiIssue[] | null;
+}
 
 /** Default RoxyAPI v2 origin. A component overrides it per instance via its `base-url` attribute. */
 /** The public API root. Exported so anything else that must reach the API (the field-label
@@ -30,13 +44,41 @@ export const DEFAULT_BASE_URL = 'https://roxyapi.com/api/v2';
  * Exported so every client-side fetch boundary renders the same words for the same failure, the way {@link keyIsRefused} centralizes the key refusal. A boundary that discards the response body cannot tell a rejected request from an empty result, and renders the two identically.
  */
 export async function readApiError(res: Response): Promise<string> {
+	return (await readApiFailure(res)).message;
+}
+
+/**
+ * The failure a response carries.
+ *
+ * @remarks
+ * A rejected request answers `{ error, code, issues }`, and `issues` is what makes the error actionable: each names the field by its wire path, which is the same identity the form keys its inputs by, so the message can sit under the input it is about instead of in a banner quoting a path. Only a `validation_error` carries them; every other failure keeps the message alone.
+ */
+export async function readApiFailure(res: Response): Promise<ApiFailure> {
 	try {
-		const body = (await res.json()) as { error?: string };
-		if (body?.error) return body.error;
+		const body = (await res.json()) as {
+			error?: string;
+			code?: string;
+			issues?: Array<{ path?: unknown; message?: unknown }>;
+		};
+		if (body?.error) {
+			const issues =
+				body.code === 'validation_error' && Array.isArray(body.issues)
+					? body.issues
+							.filter(
+								(i) =>
+									typeof i.path === 'string' && typeof i.message === 'string',
+							)
+							.map((i) => ({
+								path: i.path as string,
+								message: i.message as string,
+							}))
+					: null;
+			return { message: body.error, issues: issues?.length ? issues : null };
+		}
 	} catch {
 		// Non-JSON error body: fall through to the status line.
 	}
-	return `Request failed (${res.status})`;
+	return { message: `Request failed (${res.status})`, issues: null };
 }
 
 /** A single request the controller issues on the component's behalf. */
@@ -101,6 +143,7 @@ export class FetchController<T = unknown> implements ReactiveController {
 		this.abort = controller;
 		this.host.loading = true;
 		this.host.error = null;
+		this.host.issues = null;
 		try {
 			const res = this.submitUrl
 				? await fetch(this.submitUrl, {
@@ -113,7 +156,13 @@ export class FetchController<T = unknown> implements ReactiveController {
 						signal: controller.signal,
 					})
 				: await this.callApi(req, controller.signal);
-			if (!res.ok) throw new Error(await readApiError(res));
+			if (!res.ok) {
+				const failure = await readApiFailure(res);
+				if (controller.signal.aborted) return;
+				this.host.issues = failure.issues;
+				this.host.error = failure.message;
+				return;
+			}
 			const json = (await res.json()) as T;
 			if (controller.signal.aborted) return;
 			this.host.data = json;

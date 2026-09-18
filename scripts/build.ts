@@ -49,6 +49,14 @@ const DIST = `${UI_DIR}/dist`;
 // components lose almost nothing. The call is async and returns null when a file
 // has nothing to minify; cache by path so a file is only processed once across
 // the ESM, CJS, and CDN passes.
+//
+// A file the minifier cannot process FAILS the build rather than shipping raw:
+// every template in it would otherwise reach the bundle with its authoring
+// whitespace, which costs kilobytes of gzip, and a warning line in a long build
+// log is not a gate. The known trigger is a placeholder inside a css`` template
+// whose selector the CSS minifier then merges with another rule, so a size that
+// must reach JavaScript is declared as a literal in the stylesheet and read
+// back, never interpolated.
 const litMinifyCache = new Map<string, string>();
 function litTemplateMinify(): esbuild.Plugin {
 	return {
@@ -67,8 +75,8 @@ function litTemplateMinify(): esbuild.Plugin {
 					});
 					if (result) out = result.code;
 				} catch (err) {
-					console.warn(
-						`! lit-template-minify skipped ${args.path} (${err instanceof Error ? err.message : String(err)})`,
+					throw new Error(
+						`lit-template-minify cannot process ${args.path}: ${err instanceof Error ? err.message : String(err)}`,
 					);
 				}
 				litMinifyCache.set(args.path, out);

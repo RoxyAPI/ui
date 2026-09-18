@@ -35,19 +35,19 @@
     },
     {
       "name": "Vedic Astrology",
-      "description": "Vedic astrology (Jyotish) and KP API for kundli generation with 15 divisional charts (D1-D60), Ashtakoot Gun Milan kundli matching, Vimshottari Dasha predictions, dosha detection with remedies, a 301-entry planetary yoga glossary with 48 of them chart-detected and evidenced, complete Panchang, and KP horary with 249-level sub-lord analysis. Calculations verified against NASA JPL Horizons at arc-second-level accuracy. Built for matrimonial apps, horoscope platforms, spiritual wellness services, and AI-powered astrology chatbots. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Vedic astrology (Jyotish) and KP API for kundli generation with 15 divisional charts (D1-D60), panchang with choghadiya, hora and the classical muhurta windows, Ashtakoot Gun Milan kundli matching, Vimshottari Dasha predictions, dosha detection with remedies, a 301-entry planetary yoga glossary with 48 of them chart-detected and evidenced, and KP horary with 249-level sub-lord analysis. Calculations verified against NASA JPL Horizons at arc-second-level accuracy. Built for matrimonial apps, horoscope platforms, spiritual wellness services, and AI-powered astrology chatbots. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Forecast",
-      "description": "Forecast API that merges upcoming transit aspects, sign ingresses, retrograde stations, new and full moons, biorhythm critical days, and Vimshottari dasha changes into one time-ordered forecast for a single subject. The only cross-domain forecast timeline behind one key, positions verified against NASA JPL Horizons, available over Remote MCP with typed SDKs. Horizon capped at 90 days."
+      "description": "Astrology forecast API that merges upcoming transit aspects, sign ingresses, retrograde stations, new and full moons, biorhythm critical days, and Vimshottari dasha changes into one time-ordered forecast for a single subject. The only cross-domain forecast timeline behind one key, positions verified against NASA JPL Horizons, available over Remote MCP with typed SDKs. Horizon capped at 90 days."
     },
     {
       "name": "Human Design",
-      "description": "Generate the full Human Design bodygraph from a birth moment: type, strategy, inner authority, profile, definition, incarnation cross, the nine centers, defined channels, and all 26 gate activations, plus two-person connection charts and small-group Penta analysis. Planetary positions verified against NASA JPL Horizons, the Design side solved on the exact 88 degree solar arc. One key, Remote MCP, typed SDKs."
+      "description": "Human Design API that generates the full bodygraph from a birth moment: type, strategy, inner authority, profile, definition, incarnation cross, the nine centers, defined channels, and all 26 gate activations, plus two-person connection charts and small-group Penta analysis. Planetary positions verified against NASA JPL Horizons, the Design side solved on the exact 88 degree solar arc. One key, Remote MCP, typed SDKs."
     },
     {
       "name": "Chinese Astrology",
-      "description": "Calculate BaZi Four Pillars charts, Chinese zodiac signs, and the Chinese lunisolar calendar from any birth moment: year, month, day and hour pillars with hidden stems, Na Yin and Ten God relations, luck pillars, day master strength, and animal compatibility. The school splits that make two calculators disagree are typed parameters rather than hidden defaults, and every chart echoes the conventions it was computed under. Solar terms come back as astronomical instants, lunar dates convert in both directions with leap months placed correctly, and the Tong Shu almanac covers day officers, lunar mansions and date selection. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Chinese zodiac and BaZi astrology API: Four Pillars charts, Chinese zodiac signs and the Chinese lunisolar calendar from any birth moment: year, month, day and hour pillars with hidden stems, Na Yin and Ten God relations, luck pillars, day master strength, and animal compatibility. The school splits that make two calculators disagree are typed parameters rather than hidden defaults, and every chart echoes the conventions it was computed under. Solar terms come back as astronomical instants, lunar dates convert in both directions with leap months placed correctly, and the Tong Shu almanac covers day officers, lunar mansions and date selection. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Feng Shui",
@@ -99,7 +99,7 @@
     },
     {
       "name": "Location and Timezone",
-      "description": "Location and timezone API with city search and geocoding across 235,000+ cities in 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. Coverage goes down to towns of a few hundred people and every administrative seat, so a rural birthplace resolves as reliably as a capital. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fully offline dataset with no third party geocoding call, and fields that map directly to the astrology endpoints. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Timezone and location API with city search and geocoding across 235,000+ cities in 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. Coverage goes down to towns of a few hundred people and every administrative seat, so a rural birthplace resolves as reliably as a capital. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fully offline dataset with no third party geocoding call, and fields that map directly to the astrology endpoints. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Usage",
@@ -18110,7 +18110,7 @@
           "Western Astrology"
         ],
         "summary": "Get planetary positions - Ephemeris calculator for all planets",
-        "description": "Calculate accurate tropical zodiac positions for all 14 celestial bodies (the 10 classical planets Sun through Pluto, the lunar nodes, Chiron, and Black Moon Lilith) for any date, time, and location. Returns longitude, latitude, zodiac sign, degree within sign, daily motion speed, and retrograde status. Perfect for transit tracking, ephemeris tables, astrology apps, and planetary position widgets. Verified against NASA JPL Horizons.",
+        "description": "Calculate accurate tropical zodiac positions for all 14 celestial bodies for any date, time, and location. The bodies are the 10 classical planets Sun through Pluto, the lunar nodes, Chiron, and Black Moon Lilith. Returns longitude, latitude, zodiac sign, degree within sign, daily motion speed, and retrograde status. Perfect for transit tracking, ephemeris tables, astrology apps, and planetary position widgets. Verified against NASA JPL Horizons.",
         "security": [
           {
             "apiKey": []
@@ -32993,7 +32993,7 @@
           "Western Astrology"
         ],
         "summary": "Fixed stars and star conjunctions calculator - Regulus, Spica, Algol natal report",
-        "description": "Calculate the tropical zodiac positions of the major named fixed stars for any birth moment, including the four Royal stars and the fifteen Behenian stars, then detect conjunctions to the natal planets, Ascendant, and Midheaven. Each star returns its precessed ecliptic longitude, zodiac sign, visual magnitude, and traditional planetary nature, with a plain language interpretation for every conjunction inside the chosen orb. A focused tool for natal reports that weigh Regulus, Spica, Aldebaran, Antares, and Algol against the chart.",
+        "description": "Calculate the tropical zodiac positions of the major named fixed stars for any birth moment. Covers the four Royal stars and the fifteen Behenian stars, then detects conjunctions to the natal planets, Ascendant, and Midheaven. Each star returns its precessed ecliptic longitude, zodiac sign, visual magnitude, and traditional planetary nature, with a plain language interpretation for every conjunction inside the chosen orb. A focused tool for natal reports that weigh Regulus, Spica, Aldebaran, Antares, and Algol against the chart.",
         "security": [
           {
             "apiKey": []
@@ -33336,7 +33336,7 @@
           "Western Astrology"
         ],
         "summary": "Arabic lots calculator - seven Hermetic parts including Part of Fortune and Spirit",
-        "description": "Calculate the seven Hermetic lots (Arabic parts) for any birth moment: Part of Fortune, Part of Spirit, Eros, Necessity, Courage, Victory, and Nemesis. Each lot is a sensitive point projected by arc from the Ascendant, with the day or night formula applied automatically from the chart sect. Returns the zodiac sign, degree, exact longitude, the arc used, and a plain language interpretation per lot, for Hellenistic and traditional astrology apps. Built on accurate tropical chart positions, no astronomy expertise needed.",
+        "description": "Calculate the seven Hermetic lots (Arabic parts) for any birth moment. The lots are the Part of Fortune, Part of Spirit, Eros, Necessity, Courage, Victory, and Nemesis. Each lot is a sensitive point projected by arc from the Ascendant, with the day or night formula applied automatically from the chart sect. Returns the zodiac sign, degree, exact longitude, the arc used, and a plain language interpretation per lot, for Hellenistic and traditional astrology apps. Built on accurate tropical chart positions, no astronomy expertise needed.",
         "security": [
           {
             "apiKey": []
@@ -34137,7 +34137,7 @@
           "Western Astrology"
         ],
         "summary": "Secondary progressions calculator - progressed chart, progressed Sun and Moon",
-        "description": "Generate the secondary progressed chart for any date using the day-for-a-year key, where each day of ephemeris motion after birth stands in for one year of life. Returns every progressed body with its sign, degree, whole-sign house, motion, and retrograde state, plus the progressed Ascendant and Midheaven via the Naibod arc. The progressed Sun and progressed Moon are the headline timing markers for inner growth and emotional chapters. Secondary progressions API, progressed chart calculator, progressed Sun and Moon, progressed Ascendant and Midheaven.",
+        "description": "Generate the secondary progressed chart for any date using the day-for-a-year key. Each day of ephemeris motion after birth stands in for one year of life. Returns every progressed body with its sign, degree, whole-sign house, motion, and retrograde state, plus the progressed Ascendant and Midheaven via the Naibod arc. The progressed Sun and progressed Moon are the headline timing markers for inner growth and emotional chapters. Secondary progressions API, progressed chart calculator, progressed Sun and Moon, progressed Ascendant and Midheaven.",
         "security": [
           {
             "apiKey": []
@@ -36668,7 +36668,7 @@
           "Vedic Astrology"
         ],
         "summary": "Get current Mahadasha, Antardasha, Pratyantardasha, Sookshma, Prana - Dasha Calculator API",
-        "description": "Calculate all five running Vimshottari Dasha levels (Mahadasha, Antardasha, Pratyantardasha, Sookshma, Prana) with remaining time in each. Accurate dasha calculator API for life phase prediction and planetary period analysis. Returns the dasha timeline with start/end dates for every level, ready for a current DBA readout down to hour-level timing. Pass datetime to read the five lords at any moment instead of now, which is what a reading prepared for tomorrow or a backtest over a past day needs. Set significators true to add the KP star lord, sub lord, signified houses and strength grade of each running lord, plus the houses they have in common. Essential for understanding current planetary influences, dasha transitions, and timing events in Vedic astrology. 120-year dasha system based on moon nakshatra at birth, with selectable Lahiri or KP ayanamsa.",
+        "description": "Calculate all five running Vimshottari Dasha levels with remaining time in each. The levels are Mahadasha, Antardasha, Pratyantardasha, Sookshma, and Prana. Accurate dasha calculator API for life phase prediction and planetary period analysis. Returns the dasha timeline with start/end dates for every level, ready for a current DBA readout down to hour-level timing. Pass datetime to read the five lords at any moment instead of now, which is what a reading prepared for tomorrow or a backtest over a past day needs. Set significators true to add the KP star lord, sub lord, signified houses and strength grade of each running lord, plus the houses they have in common. Essential for understanding current planetary influences, dasha transitions, and timing events in Vedic astrology. 120-year dasha system based on moon nakshatra at birth, with selectable Lahiri or KP ayanamsa.",
         "security": [
           {
             "apiKey": []
@@ -63196,6 +63196,11 @@
                       },
                       "description": "What the two chart sides are: personality is the conscious mind side, design is the unconscious body side computed 88 degrees of solar arc before birth. Returned once at the top level rather than repeated across all 26 activations."
                     },
+                    "designInstantUtc": {
+                      "type": "string",
+                      "example": "1972-03-14T00:55:56.900Z",
+                      "description": "The Design moment as an ISO 8601 UTC instant: the exact time the Sun stood 88 degrees of solar arc before its natal longitude, and the instant every Design activation was computed at. Compare it with the Design date a reference tool prints to validate the chart on the moment itself."
+                    },
                     "incarnationCross": {
                       "type": "object",
                       "properties": {
@@ -63499,6 +63504,7 @@
                     "definition",
                     "definitionDescription",
                     "sides",
+                    "designInstantUtc",
                     "incarnationCross",
                     "centers",
                     "channels",
@@ -114097,7 +114103,7 @@
           "Tarot"
         ],
         "summary": "List all 78 tarot cards - Tarot deck catalog API",
-        "description": "Retrieve the complete Rider-Waite-Smith tarot deck of 78 cards: 22 Major Arcana (numbered 0-21, representing life lessons, spiritual themes, and karmic influences like The Fool, Death, The Tower) plus 56 Minor Arcana (4 suits × 14 cards each for daily situations and practical matters). Filter by arcana type (major for spiritual guidance, minor for everyday concerns), suit (cups for emotions and relationships, wands for creativity and passion, swords for intellect and conflict, pentacles for material wealth and finances), or card number (Ace=1 for new beginnings, 2-10 for progression, Page=11 for messages, Knight=12 for action, Queen=13 for mastery, King=14 for authority). Returns lightweight basic card data. Use GET /cards/{id} for full upright and reversed interpretations with keywords. Perfect for building tarot reference libraries, card databases, learning applications, or browsing the complete traditional deck used by professional tarot readers worldwide.",
+        "description": "Retrieve the complete Rider-Waite-Smith tarot deck of 78 cards. The 22 Major Arcana (numbered 0-21) carry life lessons, spiritual themes, and karmic influences like The Fool, Death, The Tower; the 56 Minor Arcana (4 suits × 14 cards each) cover daily situations and practical matters. Filter by arcana type (major for spiritual guidance, minor for everyday concerns), suit (cups for emotions and relationships, wands for creativity and passion, swords for intellect and conflict, pentacles for material wealth and finances), or card number (Ace=1 for new beginnings, 2-10 for progression, Page=11 for messages, Knight=12 for action, Queen=13 for mastery, King=14 for authority). Returns lightweight basic card data. Use GET /cards/{id} for full upright and reversed interpretations with keywords. Perfect for building tarot reference libraries, card databases, learning applications, or browsing the complete traditional deck used by professional tarot readers worldwide.",
         "security": [
           {
             "apiKey": []
@@ -115754,7 +115760,7 @@
           "Tarot"
         ],
         "summary": "Three card spread, past present future - Tarot spread API",
-        "description": "Perform the classic three-card tarot spread revealing Past (what led to this situation), Present (current energy and circumstances), and Future (likely outcome if current path continues). The most popular beginner-friendly spread, perfect for quick insights, daily guidance, or exploring specific questions. Each position includes a drawn card with reversal state, keywords, full meaning, and position-specific interpretation. Returns a summary connecting all three cards. Ideal for tarot reading apps, decision-making tools, and personal growth platforms. Optionally provide a seed for reproducible readings.",
+        "description": "Perform the classic three-card tarot spread revealing Past, Present, and Future. Past is what led to this situation, Present the current energy and circumstances, and Future the likely outcome if the current path continues. The most popular beginner-friendly spread, perfect for quick insights, daily guidance, or exploring specific questions. Each position includes a drawn card with reversal state, keywords, full meaning, and position-specific interpretation. Returns a summary connecting all three cards. Ideal for tarot reading apps, decision-making tools, and personal growth platforms. Optionally provide a seed for reproducible readings.",
         "security": [
           {
             "apiKey": []

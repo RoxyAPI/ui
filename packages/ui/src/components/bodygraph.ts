@@ -14,6 +14,7 @@ import {
 } from '../utils/bodygraph-render.js';
 import { bodygraphChartStyles } from '../utils/bodygraph-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { formatDateTimeUtc } from '../utils/format.js';
 import {
 	hdReadingStyles,
 	type ReadingSection,
@@ -109,7 +110,8 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				font-size: var(--roxy-text-lg, 1.125rem);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
-			.type-line {
+			.type-line,
+			.meta {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
@@ -253,7 +255,20 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 
 		return html`<div class="wrap" part="card">
 			<header class="head" part="header">
-				<h2 class="title">${this.t('Bodygraph')}</h2>
+				<div>
+					<h2 class="title">${this.t('Bodygraph')}</h2>
+					${
+						// The instant the Design side was computed at, on the UTC clock
+						// every reference chart prints it in, so a reader validates the
+						// chart on the moment itself rather than on thirteen gates.
+						d.designInstantUtc
+							? html`<div class="meta">
+								${this.t('Design')}
+								<time datetime=${d.designInstantUtc}>${formatDateTimeUtc(this.effectiveLang(), d.designInstantUtc)}</time>
+							</div>`
+							: nothing
+					}
+				</div>
 				${
 					// One text node, not two: the markup minifier collapses the leading
 					// space of an adjacent template and the separator would lose it.

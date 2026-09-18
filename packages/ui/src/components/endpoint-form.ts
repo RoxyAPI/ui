@@ -6,6 +6,7 @@ import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { signGlyph } from '../tokens/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import type { ApiIssue } from '../utils/fetch-controller.js';
 import {
 	buildFormModel,
 	deriveSubmitLabel,
@@ -16,6 +17,10 @@ import {
 	LOCATION_TRIO,
 	type OpenApiDoc,
 	type OperationSchema,
+	parseRepeatGroup,
+	type RepeatDef,
+	repeatFields,
+	repeatGroup,
 	sliceFileName,
 } from '../utils/field-schema.js';
 import { displayField, displayOption } from '../utils/localized.js';
@@ -92,6 +97,9 @@ function randomSeed(): string {
 }
 
 /** Parse an array-field text value into a real array: JSON when it parses to one, else comma-separated tokens. */
+/** True when a grouped field lives inside its group on the wire (`person1.date`), false when the group is only how the form shows it and the key is a flat property (`birthLatitude`). */
+const isNested = (f: FieldDef): boolean => f.key === `${f.group}.${f.name}`;
+
 function parseArrayValue(raw: string): unknown {
 	const trimmed = raw.trim();
 	if (!trimmed) return [];
@@ -129,6 +137,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		css`
 			form {
 				display: grid;
+				/* Never an implicit auto column: it floors at min-content, and a number
+				 * input's intrinsic width is wider than a phone card, so two fields
+				 * would sit side by side past the edge instead of stacking. */
+				grid-template-columns: minmax(0, 1fr);
 				gap: var(--roxy-space-md, 1rem);
 				background: var(--roxy-surface, #fff);
 				color: var(--roxy-fg, #0a0a0a);
@@ -171,6 +183,15 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				gap: var(--roxy-space-xs, 0.25rem);
 				min-width: 0;
 			}
+			/* A grid item floors at its content's intrinsic width unless told otherwise, and
+			 * a native number or date input is wider than half a phone card. */
+			.fields > * {
+				min-width: 0;
+			}
+			.field > input,
+			.field > select {
+				min-width: 0;
+			}
 			.tiles-field {
 				grid-column: 1 / -1;
 			}
@@ -204,6 +225,14 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			.help {
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.field-error {
+				color: var(--roxy-danger-fg, #991b1b);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			input[aria-invalid='true'],
+			select[aria-invalid='true'] {
+				border-color: var(--roxy-danger, #dc2626);
 			}
 			/* Long descriptions collapse: the summary shows the first line, the body the rest. */
 			.help-details > summary {
@@ -333,6 +362,24 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			.advanced[open] > summary {
 				margin-bottom: var(--roxy-space-md, 1rem);
 			}
+			.repeat-controls {
+				display: flex;
+				gap: var(--roxy-space-sm, 0.5rem);
+			}
+			.repeat-btn {
+				background: transparent;
+				color: var(--roxy-accent-ink, #b45309);
+				border: 1px solid var(--roxy-border, #e4e4e7);
+				border-radius: var(--roxy-radius-md, 8px);
+				padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
+				font: inherit;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-weight: var(--roxy-weight-bold, 600);
+				cursor: pointer;
+			}
+			.repeat-btn:hover {
+				border-color: var(--roxy-accent-ink, #b45309);
+			}
 			.advanced .fields,
 			.advanced .person-group {
 				margin-top: var(--roxy-space-md, 1rem);
@@ -413,8 +460,25 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	@property({ attribute: false })
 	initialValues?: Record<string, unknown>;
 
+	/**
+	 * The fields the API rejected on the last submit, by wire path, as the host's fetch reported them. JS property only.
+	 *
+	 * @remarks
+	 * The wire path is the same identity a field is keyed by (`year`, `person1.date`, `members.0.date`, `birthLatitude`), so each issue prints under the input it names and the input is marked invalid; an issue on a whole group (`members.0`) prints on that card, and one the form cannot place prints in the summary alone. Editing a field clears its issue, so a corrected value is not still marked wrong.
+	 */
+	@property({ attribute: false })
+	serverIssues: ApiIssue[] | null = null;
+
+	/** Issues the visitor has since edited away, by wire path. */
+	@state()
+	private clearedIssues = new Set<string>();
+
 	@state()
 	private fields: FieldDef[] = [];
+
+	/** The array-of-object request properties, each a set of cards the visitor can grow up to `max` and shrink back to `min`. */
+	@state()
+	private repeats: RepeatDef[] = [];
 
 	@state()
 	private formTitle = '';
@@ -507,6 +571,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 	private applyModel(model: FormModel) {
 		this.fields = model.fields;
+		this.repeats = model.repeats ?? [];
 		this.formTitle = model.title;
 		this.hasLang = model.hasLang;
 		// Pre-fill: schema defaults first, then any remembered/initial values (only
@@ -516,11 +581,14 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const init: Record<string, unknown> = {};
 		for (const f of model.fields) {
 			if (f.default !== undefined) init[f.key] = f.default;
-			const remembered = f.group
-				? (
-						this.initialValues?.[f.group] as Record<string, unknown> | undefined
-					)?.[f.name]
-				: this.initialValues?.[f.name];
+			const remembered =
+				f.group && isNested(f)
+					? (
+							this.initialValues?.[f.group] as
+								| Record<string, unknown>
+								| undefined
+						)?.[f.name]
+					: this.initialValues?.[f.key];
 			if (remembered !== undefined) init[f.key] = remembered;
 		}
 		this.values = init;
@@ -535,6 +603,63 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 	private setValue(name: string, value: unknown) {
 		this.values = { ...this.values, [name]: value };
+		if (this.serverIssues?.some((i) => i.path === name))
+			this.clearedIssues = new Set([...this.clearedIssues, name]);
+	}
+
+	/** The live issues: what the API reported, less what has been edited since. A new report resets the edits. */
+	protected willUpdate(changed: Map<PropertyKey, unknown>): void {
+		if (changed.has('serverIssues')) this.clearedIssues = new Set();
+	}
+
+	private liveIssues(): ApiIssue[] {
+		return (this.serverIssues ?? []).filter(
+			(i) => !this.clearedIssues.has(i.path),
+		);
+	}
+
+	/** The issue on exactly this field, if the API named it. */
+	private issueFor(f: FieldDef): ApiIssue | undefined {
+		return this.liveIssues().find((i) => i.path === f.key);
+	}
+
+	/** The issues on a whole group card (`members.0`), as opposed to one of its fields. */
+	private issuesForGroup(group: string): ApiIssue[] {
+		return this.liveIssues().filter((i) => i.path === group);
+	}
+
+	/** The inline message under an input, and the attributes that tie it to the input for assistive tech. */
+	private fieldIssue(f: FieldDef) {
+		const issue = this.issueFor(f);
+		return issue
+			? html`<small part="field-error" class="field-error" id=${`roxy-form-${f.key}-error`} role="alert">${issue.message}</small>`
+			: nothing;
+	}
+
+	/**
+	 * The summary of what the API rejected: one line per issue, the field named by
+	 * its label on the form rather than by its wire path, so the reader is sent to
+	 * the input they can see. The message is the API's own and prints as sent.
+	 */
+	private renderIssueSummary() {
+		const issues = this.liveIssues();
+		if (issues.length === 0) return nothing;
+		const labelFor = (path: string): string => {
+			const field = this.fields.find((f) => f.key === path);
+			if (field)
+				return field.group
+					? `${this.groupName(field.group)} ${this.fieldText(field.name)}`
+					: this.fieldText(field.name);
+			const group = this.groupKeys().find((g) => g === path);
+			if (group) return this.groupName(group);
+			return this.fieldText(path.split('.')[0] ?? path);
+		};
+		return html`<div part="validation-error" class="validation-error" role="alert">
+			${issues.map(
+				(i) =>
+					html`<div><strong>${labelFor(i.path)}</strong> ${i.message}</div>`,
+			)}
+		</div>`;
 	}
 
 	/** The field's render role: a hidden autogenerated seed, a hidden defaulted limit/offset, a suppressed location coordinate, or a normally rendered input. */
@@ -706,9 +831,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		};
 	}
 
-	private selectTile(f: FieldDef, value: string) {
+	/** Records a chosen option, and submits at once when that option is the only input the form has: a form whose one required field is an enum draws no submit button. */
+	private chooseOption(f: FieldDef, value: string) {
 		this.setValue(f.key, value);
-		if (this.singleEnumField?.key === f.key) this.submit();
+		if (value && this.singleEnumField?.key === f.key) this.submit();
 	}
 
 	/** Roving-tabindex arrow-key navigation for a tile radiogroup, modeled on the shared tablist pattern (selection follows focus). */
@@ -729,7 +855,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			e.preventDefault();
 			const value = opts[next];
 			if (value === undefined) return;
-			this.selectTile(f, value);
+			this.chooseOption(f, value);
 			const root = e.currentTarget as HTMLElement;
 			requestAnimationFrame(() =>
 				root.querySelector<HTMLButtonElement>(`[data-tile='${next}']`)?.focus(),
@@ -757,6 +883,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			return;
 		}
 		this.validationErrors = [];
+		this.clearedIssues = new Set((this.serverIssues ?? []).map((i) => i.path));
 		const out: Record<string, unknown> = {};
 		for (const f of this.fields) {
 			let v = this.values[f.key];
@@ -764,12 +891,23 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			if (f.name === 'seed' && (v === undefined || v === '')) v = randomSeed();
 			if (v === undefined || v === '') continue;
 			if (f.kind === 'array' && typeof v === 'string') v = parseArrayValue(v);
-			if (f.group) {
+			const repeat = f.group ? parseRepeatGroup(f.group) : null;
+			if (repeat) {
+				// A repeating group serialises as one object per record, in record order.
+				const list =
+					(out[repeat.key] as Record<string, unknown>[] | undefined) ?? [];
+				const g = list[repeat.index] ?? {};
+				g[f.name] = v;
+				list[repeat.index] = g;
+				out[repeat.key] = list;
+			} else if (f.group && isNested(f)) {
 				const g = (out[f.group] as Record<string, unknown> | undefined) ?? {};
 				g[f.name] = v;
 				out[f.group] = g;
 			} else {
-				out[f.name] = v;
+				// The key is the wire identity: a prefixed coordinate (`birthLatitude`) is
+				// grouped for the form and flat on the wire.
+				out[f.key] = v;
 			}
 		}
 		// The spec knows which parameters belong in the query string; the listener
@@ -875,7 +1013,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 						data-tile=${i}
 						aria-checked=${selected ? 'true' : 'false'}
 						tabindex=${i === active ? '0' : '-1'}
-						@click=${() => this.selectTile(f, opt)}
+						@click=${() => this.chooseOption(f, opt)}
 					>
 						${
 							glyph
@@ -887,6 +1025,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				})}
 			</div>
 			${this.description(f)}
+			${this.fieldIssue(f)}
 		</div>`;
 	}
 
@@ -897,8 +1036,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			<select
 				id=${id}
 				?required=${f.required}
+				aria-invalid=${ifDefined(this.issueFor(f) ? 'true' : undefined)}
+				aria-describedby=${ifDefined(this.issueFor(f) ? `${id}-error` : undefined)}
 				@change=${(e: Event) =>
-					this.setValue(f.key, (e.target as HTMLSelectElement).value)}
+					this.chooseOption(f, (e.target as HTMLSelectElement).value)}
 			>
 				<option value="">${this.t('Choose')}</option>
 				${(f.enum ?? []).map(
@@ -910,6 +1051,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				)}
 			</select>
 			${this.description(f)}
+			${this.fieldIssue(f)}
 		</div>`;
 	}
 
@@ -933,6 +1075,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				>
 			</div>
 			${this.description(f)}
+			${this.fieldIssue(f)}
 		</div>`;
 	}
 
@@ -956,6 +1099,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				id=${id}
 				type=${f.kind === 'array' ? 'text' : type}
 				?required=${f.required}
+				aria-invalid=${ifDefined(this.issueFor(f) ? 'true' : undefined)}
+				aria-describedby=${ifDefined(this.issueFor(f) ? `${id}-error` : undefined)}
 				min=${ifDefined(f.min)}
 				max=${ifDefined(f.max)}
 				step=${f.kind === 'number' ? 'any' : nothing}
@@ -968,6 +1113,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					)}
 			/>
 			${this.description(f)}
+			${this.fieldIssue(f)}
 		</div>`;
 	}
 
@@ -1006,8 +1152,66 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 *
 	 * **The lookup folds case, and that is what makes `natalChart` work.** `humanize` produces `Natal Chart` while the catalogue carries `Natal chart` for the card heading, and {@link lookupKey} folds both to one key on write and on read, so this reuses the shipped translation. Adding the capitalized twin instead would SILENTLY OVERWRITE that heading in every locale rather than reading as a duplicate, which is why `i18n/chrome-strings.ts` carries no entry for it.
 	 */
+	/** The legend of a group: the catalogued name of an object property, or, for one record of a repeating property, the published label of the array with the record's number. */
 	private groupName(group: string): string {
-		return this.t(humanize(group));
+		const repeat = parseRepeatGroup(group);
+		return repeat
+			? this.t('{{group}} {{n}}', {
+					group: this.fieldText(repeat.key),
+					n: repeat.index + 1,
+				})
+			: this.t(humanize(group));
+	}
+
+	/** How many records a repeating property currently shows. */
+	private repeatCount(key: string): number {
+		return new Set(
+			this.fields
+				.map((f) => f.group && parseRepeatGroup(f.group))
+				.filter((r) => r && r.key === key)
+				.map((r) => (r as { index: number }).index),
+		).size;
+	}
+
+	/** Appends a record with the same fields as the first, pre-filled with the schema defaults the first record was. */
+	private addRecord(key: string) {
+		const added = repeatFields(this.fields, key, this.repeatCount(key));
+		const next = { ...this.values };
+		for (const f of added) if (f.default !== undefined) next[f.key] = f.default;
+		this.values = next;
+		this.fields = [...this.fields, ...added];
+	}
+
+	/** Drops the last record and every value it held, so a removed card cannot ride along in the body. */
+	private removeRecord(key: string) {
+		const group = repeatGroup(key, this.repeatCount(key) - 1);
+		this.fields = this.fields.filter((f) => f.group !== group);
+		const next = { ...this.values };
+		for (const k of Object.keys(next))
+			if (k.startsWith(`${group}.`)) delete next[k];
+		this.values = next;
+	}
+
+	/** The add and remove controls under the records of one repeating property, each only where the spec leaves room for it. */
+	private repeatControls(repeat: RepeatDef) {
+		const count = this.repeatCount(repeat.key);
+		if (repeat.max <= repeat.min) return nothing;
+		return html`<div class="repeat-controls">
+			${
+				count < repeat.max
+					? html`<button type="button" class="repeat-btn" @click=${() => this.addRecord(repeat.key)}>
+							<span aria-hidden="true">+</span> ${this.t('Add')}
+						</button>`
+					: nothing
+			}
+			${
+				count > repeat.min
+					? html`<button type="button" class="repeat-btn" @click=${() => this.removeRecord(repeat.key)}>
+							<span aria-hidden="true">−</span> ${this.t('Remove')}
+						</button>`
+					: nothing
+			}
+		</div>`;
 	}
 
 	/**
@@ -1064,6 +1268,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			<legend>${this.groupName(group)}</legend>
 			${this.groupHasLocation(group) ? this.locationBlock(group) : nothing}
 			<div class="fields">${fields.map((f) => this.renderField(f))}</div>
+			${this.issuesForGroup(group).map(
+				(i) =>
+					html`<small part="field-error" class="field-error" role="alert">${i.message}</small>`,
+			)}
 		</fieldset>`;
 	}
 
@@ -1110,12 +1318,22 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 						</div>`
 					: nothing
 			}
+			${this.renderIssueSummary()}
 			<div class="fields">${openFields.map((f) => this.renderField(f))}</div>
 			${this.groupHasLocation(undefined) ? this.locationBlock(undefined) : nothing}
 			${openGroups.map((g) => this.groupCard(g))}
+			${this.repeats.map((r) => this.repeatControls(r))}
 			${
 				hasAdvanced
-					? html`<details part="advanced" class="advanced">
+					? html`<details
+							part="advanced"
+							class="advanced"
+							?open=${this.liveIssues().some((i) =>
+								[...tuckedFields.map((f) => f.key), ...tuckedGroups].some(
+									(k) => i.path === k || i.path.startsWith(`${k}.`),
+								),
+							)}
+						>
 							<summary>${this.t('Advanced')}${chevron()}</summary>
 							<div class="fields">${tuckedFields.map((f) => this.renderField(f))}</div>
 							${tuckedGroups.map((g) => this.groupCard(g))}

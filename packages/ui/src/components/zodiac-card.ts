@@ -345,7 +345,11 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 			}
 			${
 				'conventions' in d
-					? renderConventionsCaption(d.conventions, this.translator)
+					? renderConventionsCaption(
+							d.conventions,
+							this.translator,
+							this.effectiveLang(),
+						)
 					: nothing
 			}
 		</article>`;
