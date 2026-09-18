@@ -628,6 +628,18 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		return this.liveIssues().filter((i) => i.path === group);
 	}
 
+	/**
+	 * A field named the way its input is labelled on the form, for a message that sends the visitor back to it.
+	 *
+	 * @remarks
+	 * The group half translates and the field half cannot, which is not a half-measure: this names a block the visitor has to go back to, so the word in the message has to be the word printed on the fieldset legend. A message saying `Person 1` over a legend reading `Persona 1` points at nothing.
+	 */
+	private fieldLabel(f: FieldDef): string {
+		return f.group
+			? `${this.groupName(f.group)} ${this.fieldText(f.name)}`
+			: this.fieldText(f.name);
+	}
+
 	/** The inline message under an input, and the attributes that tie it to the input for assistive tech. */
 	private fieldIssue(f: FieldDef) {
 		const issue = this.issueFor(f);
@@ -646,10 +658,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		if (issues.length === 0) return nothing;
 		const labelFor = (path: string): string => {
 			const field = this.fields.find((f) => f.key === path);
-			if (field)
-				return field.group
-					? `${this.groupName(field.group)} ${this.fieldText(field.name)}`
-					: this.fieldText(field.name);
+			if (field) return this.fieldLabel(field);
 			const group = this.groupKeys().find((g) => g === path);
 			if (group) return this.groupName(group);
 			return this.fieldText(path.split('.')[0] ?? path);
@@ -949,15 +958,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				locGroups.add(f.group);
 				continue;
 			}
-			// The group half translates and the field half cannot, which is not a
-			// half-measure: this names a block the visitor has to go back to, so the word
-			// in the message has to be the word printed on the fieldset legend. A message
-			// saying `Person 1` over a legend reading `Persona 1` points at nothing.
-			labels.push(
-				f.group
-					? `${this.groupName(f.group)} ${this.fieldText(f.name)}`
-					: this.fieldText(f.name),
-			);
+			labels.push(this.fieldLabel(f));
 		}
 		for (const g of locGroups) {
 			labels.push(this.locationLabel(g));

@@ -27,7 +27,7 @@ export interface ApiIssue {
 }
 
 /** A failed request, read once: the message every failure carries and the per-field issues a validation failure adds. */
-export interface ApiFailure {
+interface ApiFailure {
 	message: string;
 	issues: ApiIssue[] | null;
 }
@@ -53,7 +53,7 @@ export async function readApiError(res: Response): Promise<string> {
  * @remarks
  * A rejected request answers `{ error, code, issues }`, and `issues` is what makes the error actionable: each names the field by its wire path, which is the same identity the form keys its inputs by, so the message can sit under the input it is about instead of in a banner quoting a path. Only a `validation_error` carries them; every other failure keeps the message alone.
  */
-export async function readApiFailure(res: Response): Promise<ApiFailure> {
+async function readApiFailure(res: Response): Promise<ApiFailure> {
 	try {
 		const body = (await res.json()) as {
 			error?: string;

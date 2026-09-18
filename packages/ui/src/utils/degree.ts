@@ -184,7 +184,7 @@ export function fanOut<T>(
 }
 
 /** An axis-aligned box in wheel units, for a horizontal label. */
-export interface LabelBox {
+interface LabelBox {
 	x: number;
 	y: number;
 	width: number;

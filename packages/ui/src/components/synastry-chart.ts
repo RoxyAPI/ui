@@ -1,5 +1,5 @@
-import { css, html, nothing, type PropertyValues, svg } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { css, html, nothing, svg } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type { CalculateSynastryResponse } from '../types/index.js';
@@ -27,7 +27,7 @@ import {
 } from '../utils/interp-accordion.js';
 import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
-import { RerenderOnResize, renderedFontSize } from '../utils/type-metrics.js';
+import { MeasuredType } from '../utils/type-metrics.js';
 
 /**
  * A planet as the synastry response now returns it.
@@ -82,28 +82,11 @@ const LEADER_FOOT = 4;
  */
 @customElement('roxy-synastry-chart')
 export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse> {
-	/**
-	 * The in-wheel type sizes the stylesheet actually applied, read back after
-	 * each render. The fan spaces the bodies by the width of their marks, and
-	 * that width follows the container query, which nothing in a render pass can
-	 * see; a wide host keeps the declared sizes and never re-renders for them.
-	 */
-	@state()
-	private glyphFont: number = SYNASTRY_TYPE_SIZES.glyph;
-	@state()
-	private degFont: number = SYNASTRY_TYPE_SIZES.degree;
-
-	constructor() {
-		super();
-		new RerenderOnResize(this);
-	}
-
-	protected updated(changed: PropertyValues): void {
-		super.updated(changed);
-		const root = this.renderRoot;
-		this.glyphFont = renderedFontSize(root, '.p1', this.glyphFont);
-		this.degFont = renderedFontSize(root, '.planet-deg', this.degFont);
-	}
+	/** The in-wheel type sizes the stylesheet actually applied, read back after each render, because the fan spaces the marks by the width of their text and that width follows the container query. */
+	private readonly type = new MeasuredType(this, {
+		glyph: ['.p1', SYNASTRY_TYPE_SIZES.glyph],
+		degree: ['.planet-deg', SYNASTRY_TYPE_SIZES.degree],
+	});
 
 	static styles = [
 		baseStyles,
@@ -838,10 +821,13 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		personIndex: 1 | 2,
 	) {
 		const degRadius = radius - DEG_INSET;
-		const glyphSeparation = arcSeparation(GLYPH_EM * this.glyphFont, radius);
+		const glyphSeparation = arcSeparation(
+			GLYPH_EM * this.type.size.glyph,
+			radius,
+		);
 		const labelWidth = (p: PlanetEntry) =>
 			(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
-			this.degFont;
+			this.type.size.degree;
 		// Two centred labels clear each other at half the sum of their widths.
 		const separation = (a: PlanetEntry, b: PlanetEntry) =>
 			Math.max(

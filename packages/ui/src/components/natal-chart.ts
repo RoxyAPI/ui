@@ -1,4 +1,4 @@
-import { css, html, nothing, type PropertyValues, svg } from 'lit';
+import { css, html, nothing, svg } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import {
 	aspectSymbol,
@@ -38,7 +38,7 @@ import {
 import { display, displayList } from '../utils/localized.js';
 import { capitalize, lookupKey } from '../utils/string.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
-import { RerenderOnResize, renderedFontSize } from '../utils/type-metrics.js';
+import { MeasuredType } from '../utils/type-metrics.js';
 
 type PlanetEntry = NatalChartResponse['planets'][number];
 type AspectEntry = NatalChartResponse['aspects'][number];
@@ -72,8 +72,6 @@ const ANGLE_LABEL_R = 196;
  * stylesheet alone and are read back off the rendered text, never assumed.
  */
 export const NATAL_TYPE_SIZES = { glyph: 14, degree: 7 } as const;
-const GLYPH_FONT = NATAL_TYPE_SIZES.glyph;
-const DEG_FONT = NATAL_TYPE_SIZES.degree;
 /**
  * How wide each mark on the wheel is, so {@link arcSeparation} can turn it into
  * the degrees of arc that mark needs at its own radius. The glyph and the
@@ -513,28 +511,11 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	@state()
 	private view: 'wheel' | 'grid' = 'wheel';
 
-	/**
-	 * The in-wheel type sizes the stylesheet actually applied, read back after
-	 * each render. The fan spaces the bodies by the width of their labels, and
-	 * that width follows the container query, which nothing in a render pass can
-	 * see; a wide host keeps the declared sizes and never re-renders for them.
-	 */
-	@state()
-	private glyphFont: number = GLYPH_FONT;
-	@state()
-	private degFont: number = DEG_FONT;
-
-	constructor() {
-		super();
-		new RerenderOnResize(this);
-	}
-
-	protected updated(changed: PropertyValues): void {
-		super.updated(changed);
-		const root = this.renderRoot;
-		this.glyphFont = renderedFontSize(root, '.planet-glyph', this.glyphFont);
-		this.degFont = renderedFontSize(root, '.planet-deg', this.degFont);
-	}
+	/** The in-wheel type sizes the stylesheet actually applied, read back after each render, because the fan spaces the marks by the width of their text and that width follows the container query. */
+	private readonly type = new MeasuredType(this, {
+		glyph: ['.planet-glyph', NATAL_TYPE_SIZES.glyph],
+		degree: ['.planet-deg', NATAL_TYPE_SIZES.degree],
+	});
 
 	private getPlanets(): PlanetEntry[] {
 		return this.data?.planets ?? [];
@@ -923,12 +904,15 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 */
 	private renderPlanets(planets: PlanetEntry[]) {
 		const degRadius = PLANET_R - DEG_LABEL_INSET;
-		const compact = this.degFont > DEG_FONT;
-		const glyphSeparation = arcSeparation(GLYPH_EM * this.glyphFont, PLANET_R);
+		const compact = this.type.size.degree > NATAL_TYPE_SIZES.degree;
+		const glyphSeparation = arcSeparation(
+			GLYPH_EM * this.type.size.glyph,
+			PLANET_R,
+		);
 		const labelWidth = (p: PlanetEntry) =>
 			((compact ? WHOLE_DEG_EM : DEG_LABEL_EM) +
 				(p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
-			this.degFont;
+			this.type.size.degree;
 		// With two rows the fan only has to hold every SECOND label a label width
 		// apart, so one step of half the widest label does for the whole ring: a
 		// per-pair step would let a narrow label land two steps past a wide one
@@ -937,7 +921,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			glyphSeparation,
 			arcSeparation(
 				((compact ? WHOLE_DEG_EM : DEG_LABEL_EM) + RETRO_MARK_EM) *
-					this.degFont,
+					this.type.size.degree,
 				degRadius,
 			) / 2,
 		);
@@ -951,7 +935,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				this.toAngle(displayLongitude),
 			),
 			width: labelWidth(item),
-			height: DEG_LABEL_INK_EM * this.degFont,
+			height: DEG_LABEL_INK_EM * this.type.size.degree,
 		}));
 		return fanned.map((placed, i) => {
 			const {

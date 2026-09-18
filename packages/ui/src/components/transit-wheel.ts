@@ -1,5 +1,5 @@
-import { css, html, nothing, type PropertyValues, svg } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css, html, nothing, svg } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type {
 	CalculateTransitAspectsResponse,
@@ -33,7 +33,7 @@ import {
 } from '../utils/interp-accordion.js';
 import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
-import { RerenderOnResize, renderedFontSize } from '../utils/type-metrics.js';
+import { MeasuredType } from '../utils/type-metrics.js';
 
 type Body = CalculateTransitAspectsResponse['transitPlanets'][number];
 type TransitAspect = CalculateTransitAspectsResponse['aspects'][number];
@@ -89,8 +89,6 @@ const HOUSE_NUM_R = 58;
  * stylesheet alone and are read back off the rendered text, never assumed.
  */
 export const TRANSIT_TYPE_SIZES = { glyph: 13, degree: 7 } as const;
-const GLYPH_FONT = TRANSIT_TYPE_SIZES.glyph;
-const DEG_FONT = TRANSIT_TYPE_SIZES.degree;
 /**
  * Widths a fanned cluster has to clear, as type metrics in em measured on the
  * rendered text and multiplied by the font size in play. The glyph is on the
@@ -495,28 +493,11 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	@property({ type: Array })
 	houses?: NatalChartResponse['houses'] | number[];
 
-	/**
-	 * The in-wheel type sizes the stylesheet actually applied, read back after
-	 * each render. The fan spaces the bodies by the width of their marks, and
-	 * that width follows the container query, which nothing in a render pass can
-	 * see; a wide host keeps the declared sizes and never re-renders for them.
-	 */
-	@state()
-	private glyphFont: number = GLYPH_FONT;
-	@state()
-	private degFont: number = DEG_FONT;
-
-	constructor() {
-		super();
-		new RerenderOnResize(this);
-	}
-
-	protected updated(changed: PropertyValues): void {
-		super.updated(changed);
-		const root = this.renderRoot;
-		this.glyphFont = renderedFontSize(root, '.natal-glyph', this.glyphFont);
-		this.degFont = renderedFontSize(root, '.planet-deg', this.degFont);
-	}
+	/** The in-wheel type sizes the stylesheet actually applied, read back after each render, because the fan spaces the marks by the width of their text and that width follows the container query. */
+	private readonly type = new MeasuredType(this, {
+		glyph: ['.natal-glyph', TRANSIT_TYPE_SIZES.glyph],
+		degree: ['.planet-deg', TRANSIT_TYPE_SIZES.degree],
+	});
 
 	/** The response widened to the natal frame it carries. One cast, so nothing below repeats it. */
 	private get payload(): TransitAspectsPayload | undefined {
@@ -805,10 +786,13 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		kind: string,
 		leaderSign: 1 | -1,
 	) {
-		const glyphSeparation = arcSeparation(GLYPH_EM * this.glyphFont, radius);
+		const glyphSeparation = arcSeparation(
+			GLYPH_EM * this.type.size.glyph,
+			radius,
+		);
 		const labelWidth = (p: Body) =>
 			(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
-			this.degFont;
+			this.type.size.degree;
 		// Two centred labels clear each other at half the sum of their widths.
 		const separation = (a: Body, b: Body) =>
 			Math.max(
