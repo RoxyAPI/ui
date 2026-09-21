@@ -236,6 +236,7 @@ export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
 					longitude: node.longitude,
 					house: node.house,
 					nakshatra: node.nakshatra,
+					pada: node.pada,
 					starLord: node.starLord,
 					subLord: node.subLord,
 					subSubLord: node.subSubLord,

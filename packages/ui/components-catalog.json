@@ -3269,7 +3269,7 @@
       "pascal": "RoxyCrystalGrid",
       "slug": "crystal-grid",
       "domain": "Crystals",
-      "renders": "Crystal gallery tiles with photo, name, and colour swatches",
+      "renders": "Crystal gallery tiles with photo, name, and colour swatches; a pick opens the card in place",
       "endpointLabel": "GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search",
       "endpoints": [
         {
@@ -3313,6 +3313,7 @@
         "attribution",
         "card",
         "crystals",
+        "detail",
         "edit-bar",
         "empty",
         "error",
@@ -3371,7 +3372,7 @@
       "pascal": "RoxyDreamSearch",
       "slug": "dream-search",
       "domain": "Dreams",
-      "renders": "Matched dream symbols as selectable tiles with a letter chip",
+      "renders": "Matched dream symbols as selectable tiles with a letter chip; a pick opens the card in place",
       "endpointLabel": "GET /dreams/symbols",
       "endpoints": [
         {
@@ -3384,6 +3385,7 @@
       "parts": [
         "attribution",
         "card",
+        "detail",
         "edit-bar",
         "empty",
         "error",

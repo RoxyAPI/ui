@@ -273,7 +273,7 @@
     },
     {
       "name": "roxy-crystal-grid",
-      "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response"
+      "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response; a picked tile opens its crystal card in place"
     },
     {
       "name": "roxy-dream-card",
@@ -281,7 +281,7 @@
     },
     {
       "name": "roxy-dream-search",
-      "description": "Dream-symbol search results as selectable tiles; emits roxy-symbol-select to pair with roxy-dream-card"
+      "description": "Dream-symbol search results as selectable tiles; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own"
     },
     {
       "name": "roxy-angel-number-card",

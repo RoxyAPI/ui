@@ -8,6 +8,7 @@ import {
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
+import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { baseStyles } from './base-styles.js';
 import { expandCompact } from './compact.js';
@@ -15,6 +16,7 @@ import {
 	type ApiIssue,
 	buildRequest,
 	FetchController,
+	type RoxyRequest,
 } from './fetch-controller.js';
 import {
 	type InterpSection,
@@ -58,6 +60,8 @@ const submitContextConverter: ComplexAttributeConverter<
  * - Uncontrolled: no data is injected, but a `data-endpoint` and a `pk_` `publishable-key` are set. The component renders its own `<roxy-endpoint-form>` (an internal detail, never placed by the consumer), and on submit fetches through {@link FetchController}, which refuses any non-publishable key. The result populates `data` and the component renders it.
  *
  * The JavaScript `data` property always wins over markup, so a host that assigns `el.data = …` after upgrade is authoritative.
+ *
+ * A list component can open one of its rows in place: it declares {@link RoxyDataElement.rowDetail} (the element that draws one row and the path that fetches it) and calls {@link RoxyDataElement.openRow} on a pick. In self-fetch mode the base creates that element, hands it the key and the settings this element already holds, and {@link RoxyDataElement.load}s the row into it, so a hosted embed completes the flow with no host code. In controlled mode nothing is created and the pick reaches the host as the same `roxy-symbol-select` event it always sent, because the host holds the key and owns the navigation.
  *
  * Self-fetch needs `<roxy-endpoint-form>` (and `<roxy-location-search>`) registered. The CDN bundle and the full `@roxyapi/ui` entry register everything; per-component ESM consumers that want self-fetch import the form component too.
  *
@@ -211,6 +215,17 @@ export abstract class RoxyDataElement<
 
 	private fetcher: FetchController<T>;
 
+	/** The element that draws one row of this list and the path that fetches it, `{id}` standing for the picked row. Declared by a list component; absent on everything else, so {@link openRow} is a no-op there. */
+	protected rowDetail?: { tag: string; path: string };
+
+	/** The opened row, or undefined until a pick. A list component renders it under its rows, inside its own `part="detail"` block, so the name is scanned onto that component and not onto every card the base draws. */
+	@state()
+	protected openedRow?: RoxyDataElement;
+
+	/** The id of the opened row, so a list can mark the picked tile. */
+	@state()
+	protected openedRowId?: string;
+
 	constructor() {
 		super();
 		// Controlled mode: hydrate `data` from a direct-child roxy-data island when
@@ -230,18 +245,22 @@ export abstract class RoxyDataElement<
 			const expanded = expandCompact(this.data);
 			if (expanded !== this.data) this.data = expanded;
 		}
-		if (changed.has('publishableKey')) {
-			this.fetcher.publishableKey = this.publishableKey;
+		if (
+			changed.has('publishableKey') ||
+			changed.has('baseUrl') ||
+			changed.has('submitUrl') ||
+			changed.has('submitContext')
+		) {
+			this.syncFetcher();
 		}
-		if (changed.has('baseUrl') && this.baseUrl) {
-			this.fetcher.baseUrl = this.baseUrl;
-		}
-		if (changed.has('submitUrl')) {
-			this.fetcher.submitUrl = this.submitUrl;
-		}
-		if (changed.has('submitContext')) {
-			this.fetcher.submitContext = this.submitContext;
-		}
+	}
+
+	/** Hand the request settings to the controller. Called on any change of them, and by {@link load} before it runs, because a host that sets the properties and loads in the same tick has not been through an update yet. */
+	private syncFetcher(): void {
+		this.fetcher.publishableKey = this.publishableKey;
+		if (this.baseUrl) this.fetcher.baseUrl = this.baseUrl;
+		this.fetcher.submitUrl = this.submitUrl;
+		this.fetcher.submitContext = this.submitContext;
 	}
 
 	render(): unknown {
@@ -365,6 +384,43 @@ export abstract class RoxyDataElement<
 	private onEdit = () => {
 		this.editing = true;
 	};
+
+	/**
+	 * Fetch one request into this element from a host that already holds the key. The result renders as assigned data (no form, no edit bar), which is what a list component needs when it opens one of its rows in place, and the key guard is the same one every self-fetch passes through: a secret key is refused before anything is sent.
+	 */
+	load(req: RoxyRequest): Promise<void> {
+		this.syncFetcher();
+		return this.fetcher.run(req);
+	}
+
+	/**
+	 * Open one row of this list in place. Only when this element can fetch for itself, a publishable key or a proxy route; a controlled host receives the select event and owns the navigation, so the DOM it was given stays byte-identical. The detail element is created once and reused across picks, carries the key, origin, proxy, section and reading switches and language of this element, and asks the API for the row in the language of the page.
+	 */
+	protected openRow(id: string): void {
+		if (!this.rowDetail || !(this.publishableKey || this.submitUrl)) return;
+		const el =
+			this.openedRow ??
+			(document.createElement(this.rowDetail.tag) as RoxyDataElement);
+		el.publishableKey = this.publishableKey;
+		el.baseUrl = this.baseUrl;
+		el.submitUrl = this.submitUrl;
+		el.submitContext = this.submitContext;
+		el.hideReadings = this.hideReadings;
+		el.hideSections = this.hideSections;
+		const lang = this.effectiveLang();
+		if (lang) el.setAttribute('lang', lang);
+		this.openedRow = el;
+		this.openedRowId = id;
+		void el
+			.load({
+				path: `/${this.rowDetail.path.replace('{id}', encodeURIComponent(id))}`,
+				method: 'GET',
+				query: { lang: apiLang(this) },
+			})
+			// The card lands under the whole list, so a tile picked near the top of a
+			// phone would otherwise open it out of sight. Nearest keeps a visible card still.
+			.then(() => el.scrollIntoView?.({ block: 'nearest' }));
+	}
 
 	/** True when the attribution credit renders: the attribute is present and not explicitly disabled. */
 	private showAttribution(): boolean {

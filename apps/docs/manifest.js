@@ -731,10 +731,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-crystal-grid",
     "slug": "crystal-grid",
     "heading": "Crystal grid",
-    "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response",
+    "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response; a picked tile opens its crystal card in place",
     "docsLabel": "Crystals",
     "endpointLabel": "GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search",
-    "docsSummary": "Crystal gallery tiles with photo, name, and colour swatches",
+    "docsSummary": "Crystal gallery tiles with photo, name, and colour swatches; a pick opens the card in place",
     "topic": "Crystals"
   },
   {
@@ -753,10 +753,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-dream-search",
     "slug": "dream-search",
     "heading": "Dream search",
-    "description": "Dream-symbol search results as selectable tiles; emits roxy-symbol-select to pair with roxy-dream-card",
+    "description": "Dream-symbol search results as selectable tiles; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own",
     "docsLabel": "Dreams",
     "endpointLabel": "GET /dreams/symbols",
-    "docsSummary": "Matched dream symbols as selectable tiles with a letter chip",
+    "docsSummary": "Matched dream symbols as selectable tiles with a letter chip; a pick opens the card in place",
     "topic": "Dreams"
   },
   {

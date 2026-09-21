@@ -7,7 +7,7 @@ import { baseStyles } from '../utils/base-styles.js';
 type DreamSymbol = NonNullable<SearchDreamSymbolsResponse['symbols']>[number];
 
 /**
- * Dream-symbol search results. Renders /dreams/symbols (the `q` search): the matched symbols as selectable tiles. In self-fetch mode the base renders the search input and this lists the matches. Selecting a result emits a `roxy-symbol-select` CustomEvent ({ id, name, letter }) that bubbles and is composed, so a host pairs it with a roxy-dream-card to show the full meaning. This is the dreams form-mode analog of roxy-location-search.
+ * Dream-symbol search results. Renders /dreams/symbols (the `q` search): the matched symbols as selectable tiles. In self-fetch mode the base renders the search input and this lists the matches, and a picked tile opens its roxy-dream-card under the list with the full meaning, so a hosted embed completes the flow on its own. Every pick also emits a `roxy-symbol-select` CustomEvent ({ id, name, letter }) that bubbles and is composed, which is how a controlled host, the one holding the key, pairs the list with a card of its own. This is the dreams form-mode analog of roxy-location-search.
  */
 @customElement('roxy-dream-search')
 export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse> {
@@ -66,11 +66,15 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 				cursor: pointer;
 				transition: border-color 0.12s ease, background 0.12s ease;
 			}
+			.result[aria-pressed='true'],
 			.result:hover,
 			.result:focus-visible {
 				border-color: var(--roxy-accent, #f59e0b);
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 8%, transparent);
 				outline: none;
+			}
+			.detail {
+				margin-top: var(--roxy-space-md, 1rem);
 			}
 			.letter {
 				flex: none;
@@ -92,6 +96,8 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 		`,
 	];
 
+	protected rowDetail = { tag: 'roxy-dream-card', path: 'dreams/symbols/{id}' };
+
 	protected renderData(d: SearchDreamSymbolsResponse) {
 		const symbols = d.symbols ?? [];
 		if (symbols.length === 0) return this.renderEmpty();
@@ -105,17 +111,23 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 			<ul class="grid" part="section symbols">
 				${symbols.map(
 					(s) => html`<li>
-						<button type="button" class="result" @click=${() => this.select(s)}>
+						<button
+							type="button"
+							class="result"
+							aria-pressed=${this.openedRowId === s.id ? 'true' : 'false'}
+							@click=${() => this.select(s)}
+						>
 							${s.letter ? html`<span class="letter" aria-hidden="true">${s.letter}</span>` : nothing}
 							<span class="name">${s.name}</span>
 						</button>
 					</li>`,
 				)}
 			</ul>
+			${this.openedRow ? html`<div class="detail" part="detail">${this.openedRow}</div>` : nothing}
 		</section>`;
 	}
 
-	/** Emit the chosen symbol so a host can load its detail (e.g. into a roxy-dream-card). */
+	/** Emit the chosen symbol for a host that pairs its own card, and open it here when this element holds the key. */
 	private select(s: DreamSymbol) {
 		this.dispatchEvent(
 			new CustomEvent('roxy-symbol-select', {
@@ -124,6 +136,7 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 				composed: true,
 			}),
 		);
+		this.openRow(s.id);
 	}
 }
 

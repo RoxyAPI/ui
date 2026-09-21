@@ -25,7 +25,7 @@ type CrystalGridData =
 	| SearchCrystalsResponse;
 
 /**
- * Crystal grid. Renders any crystals list response (/crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search) as a responsive gallery of crystal tiles with photo, name, and colour swatches. The heading is derived from the response filter (chakra, element, zodiac sign, or birth month) or set explicitly via the `heading` attribute.
+ * Crystal grid. Renders any crystals list response (/crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search) as a responsive gallery of crystal tiles with photo, name, and colour swatches. The heading is derived from the response filter (chakra, element, zodiac sign, or birth month) or set explicitly via the `heading` attribute. A picked tile emits `roxy-symbol-select` ({ id, name }) for a host that pairs its own roxy-crystal-card, and in self-fetch mode opens that card under the grid itself.
  */
 @customElement('roxy-crystal-grid')
 export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
@@ -67,11 +67,26 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 			.tile {
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
+				width: 100%;
+				text-align: left;
+				font: inherit;
+				color: inherit;
 				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem);
 				box-shadow: var(--roxy-shadow-sm);
+				cursor: pointer;
+				transition: border-color 0.12s ease;
+			}
+			.tile[aria-pressed='true'],
+			.tile:hover,
+			.tile:focus-visible {
+				border-color: var(--roxy-accent, #f59e0b);
+				outline: none;
+			}
+			.detail {
+				margin-top: var(--roxy-space-md, 1rem);
 			}
 			.photo {
 				aspect-ratio: 1 / 1;
@@ -106,6 +121,8 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 	@property({ type: String, reflect: true })
 	heading = '';
 
+	protected rowDetail = { tag: 'roxy-crystal-card', path: 'crystals/{id}' };
+
 	protected renderData(d: CrystalGridData) {
 		const crystals = d.crystals ?? [];
 		if (crystals.length === 0) return this.renderEmpty();
@@ -121,24 +138,44 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 			</header>
 			<ul class="grid" part="section crystals">
 				${crystals.map(
-					(c) => html`<li class="tile">
-						${
-							c.imageUrl
-								? html`<img class="photo" src=${c.imageUrl} alt=${c.name ?? 'Crystal'} loading="lazy" />`
-								: html`<div class="photo" aria-hidden="true"></div>`
-						}
-						<p class="name">${c.name}</p>
-						${
-							c.colors && c.colors.length > 0
-								? html`<div class="colors" aria-label=${`Colours: ${c.colors.join(', ')}`}>
-									${c.colors.map((col) => html`<span class="swatch" style=${`background:${cssColor(col)}`} title=${col}></span>`)}
-								</div>`
-								: nothing
-						}
+					(c) => html`<li>
+						<button
+							type="button"
+							class="tile"
+							aria-pressed=${this.openedRowId === c.id ? 'true' : 'false'}
+							@click=${() => this.select(c)}
+						>
+							${
+								c.imageUrl
+									? html`<img class="photo" src=${c.imageUrl} alt=${c.name ?? 'Crystal'} loading="lazy" />`
+									: html`<div class="photo" aria-hidden="true"></div>`
+							}
+							<p class="name">${c.name}</p>
+							${
+								c.colors && c.colors.length > 0
+									? html`<div class="colors" aria-label=${`Colours: ${c.colors.join(', ')}`}>
+										${c.colors.map((col) => html`<span class="swatch" style=${`background:${cssColor(col)}`} title=${col}></span>`)}
+									</div>`
+									: nothing
+							}
+						</button>
 					</li>`,
 				)}
 			</ul>
+			${this.openedRow ? html`<div class="detail" part="detail">${this.openedRow}</div>` : nothing}
 		</section>`;
+	}
+
+	/** Emit the chosen crystal for a host that pairs its own card, and open it here when this element holds the key. */
+	private select(c: CrystalGridData['crystals'][number]) {
+		this.dispatchEvent(
+			new CustomEvent('roxy-symbol-select', {
+				detail: { id: c.id, name: c.name },
+				bubbles: true,
+				composed: true,
+			}),
+		);
+		this.openRow(c.id);
 	}
 
 	private deriveHeading(d: CrystalGridData): string {

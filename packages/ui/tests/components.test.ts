@@ -394,6 +394,7 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					sign: 'Capricorn',
 					house: 9,
 					nakshatra: 'Uttara Ashadha',
+					pada: 2,
 					starLord: 'Sun',
 					subLord: 'Venus',
 					subSubLord: 'Mars',
@@ -406,6 +407,7 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					sign: 'Aquarius',
 					house: 10,
 					nakshatra: 'Shatabhisha',
+					pada: 4,
 					starLord: 'Rahu',
 					subLord: 'Jupiter',
 					subSubLord: 'Saturn',
@@ -415,6 +417,7 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					sign: 'Leo',
 					house: 4,
 					nakshatra: 'Magha',
+					pada: 2,
 					starLord: 'Ketu',
 					subLord: 'Venus',
 					subSubLord: 'Mercury',
@@ -2190,6 +2193,16 @@ describe('roxy-kp-chart planets-and-nodes table', () => {
 		expect(cells(el, 'Sun').at(-1)).toBe('201');
 		expect(cells(el, 'Rahu').at(-1)).toBe('194');
 		expect(cells(el, 'Ketu').at(-1)).toBe('72');
+		el.remove();
+	});
+
+	test('the nodes carry a nakshatra pada, exactly like the planets', async () => {
+		// The pada column reads "Nakshatra N" from one formatter for every body, so a
+		// node mapped without its pada prints the bare nakshatra on those two rows only.
+		const el = await mount();
+		expect(cells(el, 'Sun')).toContain('Uttara Ashadha 2');
+		expect(cells(el, 'Rahu')).toContain('Shatabhisha 4');
+		expect(cells(el, 'Ketu')).toContain('Magha 2');
 		el.remove();
 	});
 
@@ -6323,5 +6336,171 @@ describe('component surfaces', () => {
 
 		expect(ROXY_COMPONENTS.length).toBeGreaterThan(50);
 		expect(unpainted).toEqual([]);
+	});
+});
+
+/**
+ * A list opens one of its rows in place only when it holds the key. The hosted embed and the one-tag widget are that case, and before this a picked tile did nothing there because the select event had no listener. A controlled host keeps the event and the DOM it was given, byte for byte.
+ */
+describe('opening a row in place (dream search, crystal grid)', () => {
+	const results = {
+		total: 2,
+		symbols: [
+			{ id: 'snake', name: 'Snake', letter: 'S' },
+			{ id: 'being-late', name: 'Being late', letter: 'B' },
+		],
+	};
+	const crystals = {
+		total: 1,
+		crystals: [{ id: 'amethyst', name: 'Amethyst', colors: ['purple'] }],
+	};
+
+	async function flush(el: Element): Promise<void> {
+		for (let i = 0; i < 6; i++) {
+			await settled(el);
+			await new Promise((r) => setTimeout(r, 0));
+		}
+	}
+
+	function mountList(
+		tag: 'roxy-dream-search' | 'roxy-crystal-grid',
+		data: unknown,
+		key?: string,
+	): HTMLElement & { data?: unknown } {
+		const el = document.createElement(tag) as HTMLElement & { data?: unknown };
+		if (key) el.setAttribute('publishable-key', key);
+		el.setAttribute('lang', 'de-AT');
+		document.body.appendChild(el);
+		el.data = data;
+		return el;
+	}
+
+	function tiles(el: HTMLElement): HTMLButtonElement[] {
+		return [
+			...(el.shadowRoot?.querySelectorAll('button') ?? []),
+		] as HTMLButtonElement[];
+	}
+
+	test('with a key, a picked dream symbol loads its card under the list, in the language of the page', async () => {
+		const originalFetch = globalThis.fetch;
+		const calls: { url: string; headers: Record<string, string> }[] = [];
+		globalThis.fetch = (async (url: string | URL, init?: RequestInit) => {
+			calls.push({
+				url: String(url),
+				headers: (init?.headers ?? {}) as Record<string, string>,
+			});
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({
+					id: 'being-late',
+					name: 'Being late',
+					letter: 'B',
+					meaning: 'A deadline you fear.',
+				}),
+			};
+		}) as unknown as typeof fetch;
+		try {
+			const el = mountList('roxy-dream-search', results, 'pk_test_rows');
+			await flush(el);
+			expect(el.shadowRoot?.querySelector('[part="detail"]')).toBeNull();
+
+			tiles(el)[1]?.click();
+			await flush(el);
+
+			expect(calls.length).toBe(1);
+			expect(calls[0]?.url).toBe(
+				'https://roxyapi.com/api/v2/dreams/symbols/being-late?lang=de',
+			);
+			expect(calls[0]?.headers['X-API-Key']).toBe('pk_test_rows');
+			const card = el.shadowRoot?.querySelector(
+				'[part="detail"] roxy-dream-card',
+			) as (HTMLElement & { data?: unknown; publishableKey?: string }) | null;
+			expect(card).not.toBeNull();
+			expect(card?.publishableKey).toBe('pk_test_rows');
+			expect(card?.getAttribute('lang')).toBe('de-AT');
+			expect(card?.shadowRoot?.textContent).toContain('A deadline you fear.');
+			expect(card?.shadowRoot?.querySelector('[part="edit-bar"]')).toBeNull();
+			expect(tiles(el)[1]?.getAttribute('aria-pressed')).toBe('true');
+			expect(tiles(el)[0]?.getAttribute('aria-pressed')).toBe('false');
+
+			// A second pick reuses the one card and re-points it.
+			tiles(el)[0]?.click();
+			await flush(el);
+			expect(calls.length).toBe(2);
+			expect(calls[1]?.url).toContain('/dreams/symbols/snake?');
+			expect(el.shadowRoot?.querySelectorAll('roxy-dream-card').length).toBe(1);
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	test('without a key, a pick emits the event and changes nothing in the DOM', async () => {
+		const originalFetch = globalThis.fetch;
+		let fetched = 0;
+		globalThis.fetch = (async () => {
+			fetched++;
+			return { ok: true, status: 200, json: async () => ({}) };
+		}) as unknown as typeof fetch;
+		try {
+			const el = mountList('roxy-dream-search', results);
+			await flush(el);
+			const before = el.shadowRoot?.innerHTML;
+			const picked: unknown[] = [];
+			el.addEventListener('roxy-symbol-select', (e) =>
+				picked.push((e as CustomEvent).detail),
+			);
+
+			tiles(el)[0]?.click();
+			await flush(el);
+
+			expect(picked).toEqual([{ id: 'snake', name: 'Snake', letter: 'S' }]);
+			expect(fetched).toBe(0);
+			expect(el.shadowRoot?.innerHTML).toBe(before);
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	test('a crystal tile is a button that opens its card the same way', async () => {
+		const originalFetch = globalThis.fetch;
+		const urls: string[] = [];
+		globalThis.fetch = (async (url: string | URL) => {
+			urls.push(String(url));
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({
+					id: 'amethyst',
+					name: 'Amethyst',
+					description: 'Calm and clarity.',
+				}),
+			};
+		}) as unknown as typeof fetch;
+		try {
+			const el = mountList('roxy-crystal-grid', crystals, 'pk_test_rows');
+			await flush(el);
+			const picked: unknown[] = [];
+			el.addEventListener('roxy-symbol-select', (e) =>
+				picked.push((e as CustomEvent).detail),
+			);
+
+			expect(tiles(el).length).toBe(1);
+			tiles(el)[0]?.click();
+			await flush(el);
+
+			expect(picked).toEqual([{ id: 'amethyst', name: 'Amethyst' }]);
+			expect(urls[0]).toBe(
+				'https://roxyapi.com/api/v2/crystals/amethyst?lang=de',
+			);
+			expect(
+				el.shadowRoot?.querySelector('[part="detail"] roxy-crystal-card'),
+			).not.toBeNull();
+			el.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
 	});
 });
