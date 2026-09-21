@@ -180,8 +180,8 @@ describe('widgets.js mount paths', () => {
 		const el0 = child(w, 'w0');
 		expect(el0?.tagName.toLowerCase()).toBe('roxy-horoscope-card');
 		expect(el0?.data).toEqual({ sign: 'aries' });
-		// Auto-mount enables attribution by default.
-		expect(el0?.getAttribute('attribution')).toBe('');
+		// The credit line is opt-in: nothing is set unless the host asks for it.
+		expect(el0?.hasAttribute('attribution')).toBe(false);
 
 		// Form-mode path: the element carries data-endpoint + the key, and it made no keyed request.
 		const el1 = child(w, 'w1');
@@ -239,11 +239,26 @@ describe('widgets.js mount paths', () => {
 		expect(el?.getAttribute('submitContext')).toBeNull();
 	});
 
-	test('data-attribution="off" suppresses the credit on an auto-mount', async () => {
+	test('data-attribution forwards verbatim on both mount paths and never reaches the request', async () => {
 		const map = await buildWidgetMap();
-		mockFetch({ sign: 'leo' });
+		const calls = mockFetch({ sign: 'leo' });
 
 		const w = await runWidgets(map, [
+			// Immediate path: the value travels as given.
+			{
+				slug: 'horoscope-card',
+				attrs: {
+					'data-publishable-key': 'pk_test_3',
+					'data-sign': 'leo',
+					'data-attribution': 'on',
+				},
+			},
+			// Form-mode path: a bare attribute still reaches the element, so the credit renders once the visitor submits.
+			{
+				slug: 'horoscope-card',
+				attrs: { 'data-publishable-key': 'pk_test_3', 'data-attribution': '' },
+			},
+			// An explicit off is the element's decision, not the script's, so it is forwarded too.
 			{
 				slug: 'horoscope-card',
 				attrs: {
@@ -254,6 +269,10 @@ describe('widgets.js mount paths', () => {
 			},
 		]);
 
-		expect(child(w, 'w0')?.hasAttribute('attribution')).toBe(false);
+		expect(child(w, 'w0')?.getAttribute('attribution')).toBe('on');
+		expect(child(w, 'w1')?.getAttribute('attribution')).toBe('');
+		expect(child(w, 'w2')?.getAttribute('attribution')).toBe('off');
+		for (const c of calls.filter(keyed))
+			expect(c.url).not.toContain('attribution');
 	});
 });

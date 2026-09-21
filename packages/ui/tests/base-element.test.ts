@@ -746,10 +746,12 @@ describe('RoxyDataElement attribution credit', () => {
 		el.remove();
 	});
 
-	test('attribution="off" forces the credit off even in self-fetch', async () => {
-		const el = await selfFetchAttr('off');
-		expect(credit(el).present).toBe(false);
-		el.remove();
+	test('attribution="off" and attribution="false" force the credit off even in self-fetch', async () => {
+		for (const value of ['off', 'false']) {
+			const el = await selfFetchAttr(value);
+			expect(credit(el).present, `attribution="${value}"`).toBe(false);
+			el.remove();
+		}
 	});
 
 	test('auto-mount analog: assigned data plus the attribute shows the credit', async () => {

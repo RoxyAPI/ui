@@ -255,7 +255,8 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 			if (attrs.lang != null) element.setAttribute('lang', attrs.lang);
 			var label = host.getAttribute('data-submit-label');
 			if (label != null) element.setAttribute('submit-label', label);
-			if (host.getAttribute('data-attribution') !== 'off') element.setAttribute('attribution', '');
+			var credit = host.getAttribute('data-attribution');
+			if (credit != null) element.setAttribute('attribution', credit);
 
 			if (!complete) {
 				// Missing a required parameter: hand off to form mode. The component

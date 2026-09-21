@@ -1,6 +1,6 @@
 <p align="center">
 	<a href="https://roxyapi.com/ui">
-		<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/banner.png" alt="Roxy UI: complete UI library for astrology, vedic, tarot, and more" width="100%">
+		<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/banner.png" alt="RoxyAPI UI components, drop in and themed. The Spiritual OS layer for agentic AI. One key, flat pricing." width="100%">
 	</a>
 </p>
 
@@ -1087,7 +1087,7 @@ Chinese is keyed by script rather than by language, so a page declaring `zh-Hant
 - Consistent response formats across every domain in the catalog.
 - A11y zero violations enforced in CI.
 - Tight per-component bundle budget enforced in CI.
-- Coverage of the highest-demand endpoints across Western astrology, Vedic astrology, forecast, Human Design, Chinese astrology, feng shui, numerology, tarot, biorhythm, I Ching, plus helpers for location search and schema-driven forms.
+- Coverage of the highest-demand endpoints across every domain in the catalog: Western astrology, Vedic astrology, forecast, Human Design, Chinese astrology, feng shui, Mesoamerican astrology, Vastu, numerology, Kabbalah, tarot, biorhythm, Ayurveda, I Ching, crystals, dreams and angel numbers, plus helpers for location search and schema-driven forms.
 
 ## Built for AI agents
 

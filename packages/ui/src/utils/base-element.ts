@@ -176,7 +176,7 @@ export abstract class RoxyDataElement<
 	@property({ type: String, attribute: 'submit-label' })
 	submitLabel?: string;
 
-	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch or auto-mount result. Off by default; any value except "off"/"false" enables it. The one-tag widgets script turns it on unless data-attribution="off". Never shown in controlled mode. */
+	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch or auto-mount result. Off by default; any value except "off"/"false" enables it. The one-tag widgets script forwards data-attribution as this attribute. Never shown in controlled mode. */
 	@property({ type: String })
 	attribution?: string;
 
