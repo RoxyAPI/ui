@@ -153,8 +153,53 @@ const expected =
 	(await Bun.file('packages/ui/package.json').json()).version;
 const list = assets();
 
+/**
+ * The version npm lists as `latest` right now, read past every cache, or null when the registry
+ * cannot be reached.
+ */
+async function npmLatest(): Promise<string | null> {
+	try {
+		const res = await fetch(`https://registry.npmjs.org/${PKG}`, {
+			headers: { Accept: 'application/vnd.npm.install-v1+json' },
+			cache: 'no-store',
+			signal: AbortSignal.timeout(20_000),
+		});
+		if (!res.ok) return null;
+		const body = (await res.json()) as { 'dist-tags'?: { latest?: string } };
+		return body['dist-tags']?.latest ?? null;
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Wait for npm before purging anything.
+ *
+ * @remarks
+ * jsDelivr resolves `@latest` and `@0` from the npm registry, so a purge issued before npm lists the
+ * new version refills every path with the previous bytes, and no amount of polling afterwards can
+ * turn that green. The registry can list a version several minutes after `npm publish` returns,
+ * longer than the gap between the release job and this one. So: poll the packument first, purge once
+ * npm agrees, then prove the edge. The deadline is overridable so the failure path can be exercised.
+ */
+const NPM_DEADLINE_MS = Number(process.env.ROXY_NPM_DEADLINE_MS ?? 900_000);
+const npmStarted = Date.now();
+let listed = await npmLatest();
+while (listed !== expected && Date.now() - npmStarted < NPM_DEADLINE_MS) {
+	await Bun.sleep(10_000);
+	listed = await npmLatest();
+}
+if (listed !== expected) {
+	console.error(
+		`npm lists ${PKG}@${listed ?? 'unreachable'} as latest after ${Math.round((Date.now() - npmStarted) / 1000)}s, expected ${expected}. ` +
+			'Nothing was purged: a purge before npm has the version refills the edge with the old bytes. ' +
+			'Check the publish step, then run `bun run purge:cdn` again.',
+	);
+	process.exit(1);
+}
 console.log(
-	`Purging ${list.length} asset(s) x ${ALIASES.length} alias(es) for ${PKG}@${expected}`,
+	`npm lists ${PKG}@${expected} after ${Math.round((Date.now() - npmStarted) / 1000)}s. ` +
+		`Purging ${list.length} asset(s) x ${ALIASES.length} alias(es)`,
 );
 /**
  * Purged ONCE, not on every poll.
@@ -182,7 +227,7 @@ if (throttled.length > 0) {
 // The edge takes a moment to refill. Poll rather than sleeping a fixed guess: a release
 // should not fail because one region was slow, and it must not pass because we did not look.
 // Overridable so the failure path can be exercised without waiting out a real deadline.
-const DEADLINE_MS = Number(process.env.ROXY_PURGE_DEADLINE_MS ?? 120_000);
+const DEADLINE_MS = Number(process.env.ROXY_PURGE_DEADLINE_MS ?? 180_000);
 const started = Date.now();
 let stale: string[] = [];
 
@@ -208,7 +253,7 @@ if (stale.length > 0) {
 	);
 	for (const line of stale.sort()) console.error(`  ${line}`);
 	console.error(
-		'\nThe release is NOT live. npm has the new version and the CDN does not, which is the ' +
+		'\nThe release is NOT live. npm lists the new version and the CDN does not, which is the ' +
 			'shape that shipped an untranslated bundle to every embed for twelve hours. ' +
 			(throttled.length > 0
 				? 'The purge requests above were throttled, so re-running now will not help: wait for the ' +
