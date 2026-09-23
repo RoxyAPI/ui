@@ -239,6 +239,35 @@ describe('widgets.js mount paths', () => {
 		expect(el?.getAttribute('submitContext')).toBeNull();
 	});
 
+	test('data-hide-sections and data-hide-readings reach the element and never the request', async () => {
+		const map = await buildWidgetMap();
+		const calls = mockFetch({ sign: 'leo' });
+
+		const w = await runWidgets(map, [
+			{
+				slug: 'horoscope-card',
+				attrs: {
+					'data-publishable-key': 'pk_test_3',
+					'data-sign': 'leo',
+					'data-hide-sections': 'hint',
+					'data-hide-readings': '',
+				},
+			},
+			{
+				slug: 'aspects-table',
+				attrs: {
+					'data-publishable-key': 'pk_test_3',
+					'data-hide-sections': 'hint',
+				},
+			},
+		]);
+
+		expect(child(w, 'w0')?.getAttribute('hide-sections')).toBe('hint');
+		expect(child(w, 'w0')?.hasAttribute('hide-readings')).toBe(true);
+		expect(child(w, 'w1')?.getAttribute('hide-sections')).toBe('hint');
+		for (const c of calls.filter(keyed)) expect(c.url).not.toMatch(/hide/i);
+	});
+
 	test('data-attribution forwards verbatim on both mount paths and never reaches the request', async () => {
 		const map = await buildWidgetMap();
 		const calls = mockFetch({ sign: 'leo' });

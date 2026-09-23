@@ -92,6 +92,7 @@ describe('embed tab derivation', () => {
 			if (first.method === 'POST') expect(e.script).not.toContain(' method=');
 			else expect(e.script).toContain(` method="${first.method}"`);
 			expect(e.script).toContain(`publishable-key="${PK_PLACEHOLDER}"`);
+			expect(e.script).toContain('hide-sections="hint"');
 
 			// One-tag variant references the widgets slug and the widgets.js script.
 			const comp = ROXY_COMPONENTS.find((c) => c.tag === demo.tag);
@@ -99,6 +100,7 @@ describe('embed tab derivation', () => {
 			if (!comp) continue;
 			expect(e.oneTag).toContain(`data-roxy-widget="${comp.slug}"`);
 			expect(e.oneTag).toContain('widgets.js');
+			expect(e.oneTag).toContain('data-hide-sections="hint"');
 			expect(e.hint).toContain('roxyapi.com/account');
 			boundChecked++;
 		}

@@ -348,6 +348,65 @@ describe('endpoint-form input registry rendering', () => {
 		el.remove();
 	});
 
+	test('a timezone no coordinate pair claims is a city search that submits the IANA zone', async () => {
+		const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+			string,
+			OpenApiSchema
+		>;
+		const model = buildFormModel(
+			(
+				spec.paths as unknown as Record<string, Record<string, OperationSchema>>
+			)['/astrology/aspects']?.post as OperationSchema,
+			schemas,
+			'astrology/aspects',
+		);
+		const el = await mountForm(model, {
+			'data-endpoint': 'astrology/aspects',
+			method: 'POST',
+		});
+		const root = el.shadowRoot as ShadowRoot;
+		const field = root.querySelector('roxy-location-search')?.closest('.field');
+		expect(root.getElementById('roxy-form-timezone')).toBeNull();
+		expect(field?.querySelector('.req')).not.toBeNull();
+		expect(field?.querySelector('[part~="hint"]')).toBeNull();
+
+		const set = (
+			el as unknown as { setValue: (k: string, v: unknown) => void }
+		).setValue.bind(el);
+		set('date', '1965-07-12');
+		set('time', '14:30:00');
+		root.querySelector('roxy-location-search')?.dispatchEvent(
+			new CustomEvent('roxy-location-select', {
+				detail: {
+					city: 'Copenhagen',
+					country: 'Denmark',
+					latitude: 55.68,
+					longitude: 12.57,
+					timezone: 'Europe/Copenhagen',
+					utcOffset: 2,
+				},
+			}),
+		);
+		let detail: { values: Record<string, unknown> } | undefined;
+		el.addEventListener('roxy-submit', (e) => {
+			detail = (e as CustomEvent).detail;
+		});
+		await flush(el);
+		root.querySelector('form')?.requestSubmit();
+		await flush(el);
+		expect(detail?.values.timezone).toBe('Europe/Copenhagen');
+		expect(detail?.values.latitude).toBeUndefined();
+		el.remove();
+	});
+
+	test('the submit button meets the 44px touch target', () => {
+		const ctor = customElements.get('roxy-endpoint-form') as unknown as {
+			styles: { cssText: string }[];
+		};
+		const css = ctor.styles.map((s) => s.cssText).join('');
+		expect(css).toMatch(/button\.submit\s*\{[^}]*min-height:\s*44px/);
+	});
+
 	test('a failed submit renders an inline role=alert listing humanized missing fields', async () => {
 		const el = await mountForm(
 			{
@@ -958,6 +1017,22 @@ describe('every bound endpoint can be submitted from its form', () => {
 		// A binding list that stopped resolving would pass every assertion above.
 		expect(checked).toBeGreaterThan(50);
 		expect(unreachable).toEqual([]);
+	});
+
+	test('no form asks a visitor to type a coordinate or a timezone', async () => {
+		const typed: string[] = [];
+		for await (const { label, model, mount } of boundForms()) {
+			const el = await mount();
+			const root = el.shadowRoot as ShadowRoot;
+			for (const f of model.fields)
+				if (
+					BY_CITY_SEARCH.has(f.name) &&
+					root.getElementById(`roxy-form-${f.key}`)
+				)
+					typed.push(`${label} -> ${f.key}`);
+			el.remove();
+		}
+		expect(typed).toEqual([]);
 	});
 
 	test('every form can be sent: a submit button, or a single enum input that submits itself', async () => {

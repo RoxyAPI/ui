@@ -4,6 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { signGlyph } from '../tokens/index.js';
+import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import type { ApiIssue } from '../utils/fetch-controller.js';
@@ -96,10 +97,13 @@ function randomSeed(): string {
 	);
 }
 
-/** Parse an array-field text value into a real array: JSON when it parses to one, else comma-separated tokens. */
 /** True when a grouped field lives inside its group on the wire (`person1.date`), false when the group is only how the form shows it and the key is a flat property (`birthLatitude`). */
 const isNested = (f: FieldDef): boolean => f.key === `${f.group}.${f.name}`;
 
+/** The city `<roxy-location-search>` reports on `roxy-location-select`. */
+type PickedCity = SearchCitiesResponse['cities'][number];
+
+/** Parse an array-field text value into a real array: JSON when it parses to one, else comma-separated tokens. */
 function parseArrayValue(raw: string): unknown {
 	const trimmed = raw.trim();
 	if (!trimmed) return [];
@@ -396,6 +400,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			}
 			button.submit {
 				justify-self: start;
+				min-height: 44px;
 				background: var(--roxy-accent-ink, #b45309);
 				color: var(--roxy-bg, #fff);
 				border: 0;
@@ -819,23 +824,16 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * never reads and the coordinates would silently stay empty.
 	 */
 	private onLocationFor(group?: string) {
-		return (e: Event) => {
-			const detail = (e as CustomEvent).detail as {
-				latitude?: number;
-				longitude?: number;
-				timezone?: string;
-				utcOffset?: number;
-			};
-			if (!detail) return;
+		return (city: PickedCity) => {
 			const keyOf = (name: string) =>
 				this.fields.find((f) => f.group === group && f.name === name)?.key;
 			const next: Record<string, unknown> = { ...this.values };
 			const lat = keyOf('latitude');
 			const lon = keyOf('longitude');
-			if (lat) next[lat] = detail.latitude;
-			if (lon) next[lon] = detail.longitude;
+			if (lat) next[lat] = city.latitude;
+			if (lon) next[lon] = city.longitude;
 			const tz = this.timezoneFieldFor(group);
-			if (tz) next[tz.key] = detail.timezone ?? detail.utcOffset;
+			if (tz) next[tz.key] = city.timezone;
 			this.values = next;
 		};
 	}
@@ -1119,6 +1117,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	}
 
 	private renderField(f: FieldDef) {
+		// Only a timezone no coordinate pair claims reaches here; a claimed one is the location block's.
+		if (f.name === 'timezone') return this.renderTimezoneCity(f);
 		switch (f.kind) {
 			case 'tiles':
 				return this.renderTiles(f);
@@ -1129,20 +1129,6 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			default:
 				return this.renderInput(f);
 		}
-	}
-
-	/**
-	 * The fields this group's city search actually fills, named in the help text.
-	 *
-	 * The sentence names what the group actually fills, because a group does not always own a
-	 * timezone. `generateRelocationChart` has one top-level `timezone` that belongs to the birth
-	 * moment, so the relocation block fills coordinates only, and promising a timezone there would be
-	 * a visible lie on the one form that made this method necessary.
-	 */
-	private locationFillList(group?: string): string {
-		const names = [...LOCATION_PAIR] as string[];
-		if (this.timezoneFieldFor(group)) names.push('timezone');
-		return names.join(', ');
 	}
 
 	/**
@@ -1226,13 +1212,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			: this.t('Birth location');
 	}
 
-	/**
-	 * One city search standing in for a group's raw coordinates.
-	 *
-	 * `lang` is forwarded EXPLICITLY and that line is load-bearing: the city search lives inside this shadow root, and the `closest('[lang]')` link of the resolution chain stops at a shadow boundary, so without it the dropdown renders its own empty state and its refusal message in English on a fully translated page. Every composing component carries the same obligation.
-	 *
-	 * `endpoint` is forwarded for the same structural reason as the key. This search is the one request the form issues on its own, it sits inside this shadow root where a host page cannot reach it, and it is the only part of a birth-data form that talks to the API before submit. So a page that routes its API traffic through its own server states that route once, on the form, and it lands here. An unset {@link RoxyEndpointForm.locationUrl} omits the attribute entirely, which leaves the search on its own default.
-	 */
+	/** One city search standing in for a group's raw coordinates. */
 	private locationBlock(group?: string) {
 		return html`<div class="location-block">
 			<label
@@ -1242,23 +1222,34 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 						: nothing
 				}</label
 			>
-			<roxy-location-search
+			${this.citySearch(
+				this.onLocationFor(group),
+				group
+					? this.t('{{group}} city', { group: this.groupName(group) })
+					: this.t('City of birth'),
+			)}
+		</div>`;
+	}
+
+	/** A `timezone` no coordinate pair claims, asked for as a city: the IANA zone it writes resolves to the offset in force on the requested date. */
+	private renderTimezoneCity(f: FieldDef) {
+		return html`<div part="field" class="field location-block">
+			<label>${this.fieldText(f.name)}${this.reqMark(f)}</label>
+			${this.citySearch((city) => this.setValue(f.key, city.timezone))}
+			${this.fieldIssue(f)}
+		</div>`;
+	}
+
+	/** The one city search every location input draws; `lang` and `endpoint` are forwarded because a shadow root hides the host page from it. */
+	private citySearch(onPick: (city: PickedCity) => void, placeholder?: string) {
+		return html`<roxy-location-search
 				endpoint=${ifDefined(this.locationUrl || undefined)}
 				publishable-key=${ifDefined(this.publishableKey)}
 				lang=${ifDefined(this.effectiveLang())}
-				@roxy-location-select=${this.onLocationFor(group)}
-				placeholder=${
-					group
-						? this.t('{{group}} city', { group: this.groupName(group) })
-						: this.t('City of birth')
-				}
+				placeholder=${ifDefined(placeholder)}
+				@roxy-location-select=${(e: CustomEvent<PickedCity>) => onPick(e.detail)}
 			></roxy-location-search>
-			<small class="help">
-				${this.t('Fills {{fields}}. Pick a city to autofill.', {
-					fields: this.locationFillList(group),
-				})}
-			</small>
-		</div>`;
+			<small class="help">${this.t('Type a city, then pick it from the list.')}</small>`;
 	}
 
 	private groupCard(group: string) {

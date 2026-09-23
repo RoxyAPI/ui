@@ -4,7 +4,7 @@ import type { CalculateDrishtiResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
-import { formatDate, formatNumber, formatTime } from '../utils/format.js';
+import { formatDateTime, formatNumber } from '../utils/format.js';
 
 /**
  * Vedic graha drishti (planetary aspects) table. Renders /vedic-astrology/aspects: which planet casts an aspect on which, by special Vedic rules (every graha aspects the 7th; Mars the 4th and 8th, Jupiter the 5th and 9th, Saturn the 3rd and 10th). Mutual aspects (two planets aspecting each other) are surfaced first as they are the strongest sambandha. Each row shows the aspecting planet, the aspect kind, the aspected planet, its strength and orb.
@@ -152,7 +152,7 @@ export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> 
 		const planets = d.planets ?? [];
 		if (aspects.length === 0 && mutual.length === 0) return this.renderEmpty();
 		const when = d.datetime
-			? `${formatDate(this.effectiveLang(), d.datetime)}, ${formatTime(this.effectiveLang(), d.datetime)}`
+			? formatDateTime(this.effectiveLang(), d.datetime)
 			: '';
 
 		return html`<div class="wrap" part="card" aria-label=${this.t('Vedic aspects')}>

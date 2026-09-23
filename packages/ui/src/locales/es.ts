@@ -287,8 +287,8 @@ export const es: Record<ChromeString, string> = {
 	Plot: 'Terreno',
 	Door: 'Puerta',
 	'Domain Weights': 'Pesos por área',
-	'Fills {{fields}}. Pick a city to autofill.':
-		'Completa {{fields}}. Elige una ciudad para autocompletar.',
+	'Type a city, then pick it from the list.':
+		'Escribe una ciudad y elígela de la lista.',
 	Choose: 'Seleccionar',
 	'Comma separated': 'Separados por comas',
 	Advanced: 'Avanzado',

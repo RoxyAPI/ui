@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import type { GenerateDigestResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatDate, formatNumber } from '../utils/format.js';
+import { formatDate, formatDateRange, formatNumber } from '../utils/format.js';
 import { humanize } from '../utils/string.js';
 
 type DigestWindow = NonNullable<GenerateDigestResponse['windows']>[number];
@@ -149,12 +149,7 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 	protected renderData(d: GenerateDigestResponse) {
 		const windows = d.windows ?? [];
 		if (windows.length === 0) return this.renderEmpty();
-		const range = [
-			formatDate(this.effectiveLang(), d.startDate),
-			formatDate(this.effectiveLang(), d.endDate),
-		]
-			.filter(Boolean)
-			.join(' – ');
+		const range = formatDateRange(this.effectiveLang(), d.startDate, d.endDate);
 
 		return html`<div class="wrap" part="card" aria-label=${this.t('Forecast digest')}>
 			<div class="head" part="header">

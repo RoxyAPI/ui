@@ -5,7 +5,11 @@ import { planetGlyph } from '../tokens/index.js';
 import type { GetVedicDailyReadingResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatDateTime, formatNumber } from '../utils/format.js';
+import {
+	formatDateTime,
+	formatDateTimeRange,
+	formatNumber,
+} from '../utils/format.js';
 import { frameCaptionStyles, renderFrameProvenance } from '../utils/frame.js';
 
 type Daily = GetVedicDailyReadingResponse;
@@ -366,7 +370,7 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 			<div class="title-row">
 				<h2 class="title">${this.t('Vedic daily')}</h2>
 				<span class="when">
-					${formatDateTime(this.effectiveLang(), d.dayStart)} — ${formatDateTime(this.effectiveLang(), d.dayEnd)}
+					${formatDateTimeRange(this.effectiveLang(), d.dayStart, d.dayEnd)}
 				</span>
 			</div>
 			<div class="verdict-row">
@@ -519,7 +523,7 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 		const bala = d.chandrabala ?? [];
 		if (!tara.length && !bala.length) return nothing;
 		const span = (from?: string, to?: string) =>
-			html`<small>${formatDateTime(this.effectiveLang(), from)} — ${formatDateTime(this.effectiveLang(), to)}</small>`;
+			html`<small>${formatDateTimeRange(this.effectiveLang(), from, to)}</small>`;
 		return html`<section class="block" part="section windows">
 			<h3>${this.t('Tara and Chandrabala')}</h3>
 			${
@@ -642,7 +646,7 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 				${rows.map(
 					(r) => html`<span class="window">
 						<span>${this.t(LEVEL_LABEL[r.level])} · ${r.lord}</span>
-						<small>${formatDateTime(this.effectiveLang(), r.startDate)} — ${formatDateTime(this.effectiveLang(), r.endDate)}</small>
+						<small>${formatDateTimeRange(this.effectiveLang(), r.startDate, r.endDate)}</small>
 					</span>`,
 				)}
 			</div>

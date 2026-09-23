@@ -268,8 +268,8 @@ export const ru: Record<ChromeString, string> = {
 	Plot: 'Участок',
 	Door: 'Дверь',
 	'Domain Weights': 'Веса сфер',
-	'Fills {{fields}}. Pick a city to autofill.':
-		'Заполняет {{fields}}. Выберите город для автозаполнения.',
+	'Type a city, then pick it from the list.':
+		'Введите город и выберите его из списка.',
 	Choose: 'Выберите',
 	'Comma separated': 'Через запятую',
 	Advanced: 'Дополнительно',

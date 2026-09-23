@@ -48,6 +48,32 @@ function intlLocales(locale: string | undefined): string[] {
 	return [canonical, 'en'];
 }
 
+const CLOCK = new Map<string, Intl.DateTimeFormatOptions>();
+
+/** The hour and minute fields in the locale's own short-time style, so a 24-hour locale pads `09:52` and a 12-hour one keeps `9:52 AM`. */
+function clock(locale: string | undefined): Intl.DateTimeFormatOptions {
+	const key = locale ?? '';
+	const cached = CLOCK.get(key);
+	if (cached) return cached;
+	const hour = new Intl.DateTimeFormat(intlLocales(locale), {
+		timeStyle: 'short',
+		timeZone: 'UTC',
+	})
+		.formatToParts(new Date(Date.UTC(2000, 0, 1, 1)))
+		.find((p) => p.type === 'hour')?.value;
+	const fields: Intl.DateTimeFormatOptions = {
+		hour: hour?.length === 2 ? '2-digit' : 'numeric',
+		minute: '2-digit',
+	};
+	CLOCK.set(key, fields);
+	return fields;
+}
+
+/** Two formatted ends as one label, falling back to whichever end is present. */
+function joinRange(a: string, b: string): string {
+	return a && b ? `${a} - ${b}` : a || b;
+}
+
 /**
  * Resolve an API timestamp to a Date plus the timezone it must be RENDERED in.
  *
@@ -94,8 +120,7 @@ export function formatTime(locale: string | undefined, input: unknown): string {
 	const { d, timeZone } = resolveDisplayDate(input);
 	if (Number.isNaN(d.getTime())) return input;
 	return d.toLocaleTimeString(intlLocales(locale), {
-		hour: 'numeric',
-		minute: '2-digit',
+		...clock(locale),
 		timeZone,
 	});
 }
@@ -117,10 +142,7 @@ export function formatTimeRange(
 	t: { start?: string; end?: string } | undefined,
 ): string {
 	if (!t) return '';
-	const start = formatTime(locale, t.start);
-	const end = formatTime(locale, t.end);
-	if (start && end) return `${start} - ${end}`;
-	return start || end || '';
+	return joinRange(formatTime(locale, t.start), formatTime(locale, t.end));
 }
 
 /** Two dates as one label: `Jan 1, 2026 - Jan 7, 2026`. Falls back to whichever end parses when the other is absent. */
@@ -129,10 +151,7 @@ export function formatDateRange(
 	start: unknown,
 	end: unknown,
 ): string {
-	const a = formatDate(locale, start);
-	const b = formatDate(locale, end);
-	if (a && b) return `${a} - ${b}`;
-	return a || b;
+	return joinRange(formatDate(locale, start), formatDate(locale, end));
 }
 
 /** How much of a timestamp a label shows. `time` is the whole date plus the clock. */
@@ -160,8 +179,7 @@ export function formatDateGrain(
 		day: grain === 'month' ? undefined : 'numeric',
 		month: 'short',
 		year: 'numeric',
-		hour: grain === 'time' ? 'numeric' : undefined,
-		minute: grain === 'time' ? '2-digit' : undefined,
+		...(grain === 'time' ? clock(locale) : {}),
 		timeZone,
 	});
 }
@@ -400,7 +418,7 @@ export function formatAyanamsa(
  * @remarks
  * Components were concatenating a raw date and a raw time (`1990-01-15 \u00b7 14:30:00`) while siblings rendered the same instant through {@link formatDate}. One helper keeps every card reading the same way.
  *
- * Birth details arrive as two fields rather than one timestamp, so `time` may be passed separately; it is merged into a naive datetime, which {@link formatDate} and {@link formatTime} pin to UTC so the wall clock renders identically for every viewer.
+ * Birth details arrive as two fields rather than one timestamp, so `time` may be passed separately; it is merged into a naive datetime, pinned to UTC so the wall clock renders identically for every viewer.
  *
  * @example
  * ```ts
@@ -422,10 +440,27 @@ export function formatDateTime(
 		BARE_TIME.test(time)
 			? `${input}T${time}`
 			: input;
-	const date = formatDate(locale, merged);
-	const clock = formatTime(locale, merged);
-	if (date && clock) return `${date}, ${clock}`;
-	return date || clock;
+	if (typeof merged !== 'string' || merged.length === 0) return '';
+	if (DATE_ONLY.test(merged)) return formatDate(locale, merged);
+	const { d, timeZone } = resolveDisplayDate(merged);
+	if (Number.isNaN(d.getTime())) return merged;
+	// One Intl call, so the locale joins the date and the clock (Turkish writes no comma).
+	return d.toLocaleString(intlLocales(locale), {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+		...clock(locale),
+		timeZone,
+	});
+}
+
+/** Two timestamps as one label, each through {@link formatDateTime}. */
+export function formatDateTimeRange(
+	locale: string | undefined,
+	start: unknown,
+	end: unknown,
+): string {
+	return joinRange(formatDateTime(locale, start), formatDateTime(locale, end));
 }
 
 /**
@@ -445,8 +480,7 @@ export function formatDateTimeUtc(
 		month: 'short',
 		day: 'numeric',
 		year: 'numeric',
-		hour: 'numeric',
-		minute: '2-digit',
+		...clock(locale),
 		timeZone: 'UTC',
 		timeZoneName: 'short',
 	});

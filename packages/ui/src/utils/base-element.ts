@@ -171,6 +171,7 @@ export abstract class RoxyDataElement<
 	 * ```html
 	 * <roxy-natal-chart hide-sections="patterns"></roxy-natal-chart>
 	 * <roxy-natal-chart hide-sections="patterns, aspects"></roxy-natal-chart>
+	 * <roxy-natal-chart data-endpoint="astrology/natal-chart" hide-sections="hint"></roxy-natal-chart>
 	 * ```
 	 */
 	@property({ type: String, attribute: 'hide-sections', reflect: true })
@@ -312,8 +313,12 @@ export abstract class RoxyDataElement<
 			.map((n) => n.trim().toLowerCase())
 			.filter((n) => /^[a-z][a-z0-9-]*$/.test(n));
 		if (names.length === 0) return nothing;
+		// The second selector reaches a part the self-fetch form forwards through `exportparts`.
 		const rules = names
-			.map((n) => `[part~="${n}"]{display:none!important}`)
+			.map(
+				(n) =>
+					`[part~="${n}"],roxy-endpoint-form::part(${n}){display:none!important}`,
+			)
 			.join('');
 		return html`<style>
 			${rules}

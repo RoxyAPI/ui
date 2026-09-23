@@ -290,7 +290,7 @@ export const CHROME_STRINGS = [
 	'Plot',
 	'Door',
 	'Domain Weights',
-	'Fills {{fields}}. Pick a city to autofill.',
+	'Type a city, then pick it from the list.',
 	'Choose',
 	'Comma separated',
 	'Advanced',

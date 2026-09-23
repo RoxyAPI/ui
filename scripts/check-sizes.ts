@@ -41,7 +41,8 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// room for the next few, and it is raised the same way: build, read the
 	// number, write down what moved it. Never raise it to make a run pass.
 	fullGzip: 165 * KB,
-	componentGzip: 30 * KB,
+	// The world basemap holds the map card at the cap, so shared form and formatter code sets the ceiling: 30.0 KB gz before the timezone city search, 30.1 after.
+	componentGzip: 31 * KB,
 	widgetsGzip: WIDGETS_BUDGET_BYTES,
 	// A catalogue is one download that translates every element on the page, and
 	// it is pure text, which gzip eats. The ceiling tracks how many cards are

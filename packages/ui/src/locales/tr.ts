@@ -275,8 +275,8 @@ export const tr: Record<ChromeString, string> = {
 	Plot: 'Arsa',
 	Door: 'Kapı',
 	'Domain Weights': 'Alan ağırlıkları',
-	'Fills {{fields}}. Pick a city to autofill.':
-		'{{fields}} alanlarını doldurur. Otomatik doldurmak için bir şehir seçin.',
+	'Type a city, then pick it from the list.':
+		'Bir şehir yazın, ardından listeden seçin.',
 	Choose: 'Seçin',
 	'Comma separated': 'Virgülle ayrılmış',
 	Advanced: 'Gelişmiş',

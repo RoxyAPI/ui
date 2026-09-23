@@ -44,8 +44,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-natal-chart data-endpoint=\"astrology/natal-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-natal-chart>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"natal-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-natal-chart data-endpoint=\"astrology/natal-chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-natal-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"natal-chart\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/natal-chart-light.webp",
@@ -88,8 +88,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-synastry-chart data-endpoint=\"astrology/synastry\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-synastry-chart>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"synastry-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-synastry-chart data-endpoint=\"astrology/synastry\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-synastry-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"synastry-chart\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/synastry-chart-light.webp",
@@ -124,8 +124,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-western-planets-table data-endpoint=\"astrology/natal-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-western-planets-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"western-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-western-planets-table data-endpoint=\"astrology/natal-chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-western-planets-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"western-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/western-planets-table-light.webp",
@@ -167,8 +167,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transits-table data-endpoint=\"astrology/transits\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-transits-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transits-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transits-table data-endpoint=\"astrology/transits\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-transits-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transits-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/transits-table-light.webp",
@@ -210,8 +210,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transit-wheel data-endpoint=\"astrology/transit-aspects\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-transit-wheel>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transit-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-transit-wheel data-endpoint=\"astrology/transit-aspects\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-transit-wheel>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"transit-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/transit-wheel-light.webp",
@@ -264,8 +264,8 @@
         "strongest"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-aspects-table data-endpoint=\"astrology/aspects\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-aspects-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"aspects-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-aspects-table data-endpoint=\"astrology/aspects\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-aspects-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"aspects-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/aspects-table-light.webp",
@@ -322,8 +322,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-moon-phase mode=\"current\" data-endpoint=\"astrology/moon-phase/current\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-moon-phase>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"moon-phase\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-moon-phase mode=\"current\" data-endpoint=\"astrology/moon-phase/current\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-moon-phase>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"moon-phase\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/moon-phase-light.webp",
@@ -402,8 +402,8 @@
         "week-by-week"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-horoscope-card period=\"daily\" data-endpoint=\"astrology/horoscope/{sign}/daily\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-horoscope-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"horoscope-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-horoscope-card period=\"daily\" data-endpoint=\"astrology/horoscope/{sign}/daily\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-horoscope-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"horoscope-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/horoscope-card-light.webp",
@@ -442,8 +442,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-astrocartography-map data-endpoint=\"astrology/astrocartography\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-astrocartography-map>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"astrocartography-map\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-astrocartography-map data-endpoint=\"astrology/astrocartography\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-astrocartography-map>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"astrocartography-map\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/astrocartography-map-light.webp",
@@ -479,8 +479,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-local-space-compass data-endpoint=\"astrology/local-space\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-local-space-compass>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"local-space-compass\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-local-space-compass data-endpoint=\"astrology/local-space\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-local-space-compass>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"local-space-compass\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/local-space-compass-light.webp",
@@ -533,8 +533,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-relocation-wheel data-endpoint=\"astrology/relocation-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-relocation-wheel>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"relocation-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-relocation-wheel data-endpoint=\"astrology/relocation-chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-relocation-wheel>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"relocation-wheel\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/relocation-wheel-light.webp",
@@ -597,8 +597,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-positions-table data-endpoint=\"astrology/asteroids\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-positions-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"positions-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-positions-table data-endpoint=\"astrology/asteroids\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-positions-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"positions-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/positions-table-light.webp",
@@ -643,8 +643,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ephemeris-table data-endpoint=\"astrology/planets/monthly\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-ephemeris-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ephemeris-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ephemeris-table data-endpoint=\"astrology/planets/monthly\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-ephemeris-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ephemeris-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/ephemeris-table-light.webp",
@@ -681,8 +681,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-fixed-stars data-endpoint=\"astrology/fixed-stars\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-fixed-stars>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"fixed-stars\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-fixed-stars data-endpoint=\"astrology/fixed-stars\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-fixed-stars>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"fixed-stars\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/fixed-stars-light.webp",
@@ -717,8 +717,8 @@
         "loading"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-profection-card data-endpoint=\"astrology/profections\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-profection-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"profection-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-profection-card data-endpoint=\"astrology/profections\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-profection-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"profection-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/profection-card-light.webp",
@@ -782,8 +782,8 @@
         "strengths-challenges"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-compatibility-card mode=\"astrology\" data-endpoint=\"astrology/compatibility-score\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-compatibility-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"compatibility-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-compatibility-card mode=\"astrology\" data-endpoint=\"astrology/compatibility-score\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-compatibility-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"compatibility-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/compatibility-card-light.webp",
@@ -821,8 +821,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-kundli data-endpoint=\"vedic-astrology/birth-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-kundli>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-kundli\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-kundli data-endpoint=\"vedic-astrology/birth-chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-vedic-kundli>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-kundli\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/vedic-kundli-light.webp",
@@ -867,8 +867,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-divisional-chart data-endpoint=\"vedic-astrology/divisional-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-divisional-chart>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"divisional-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-divisional-chart data-endpoint=\"vedic-astrology/divisional-chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-divisional-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"divisional-chart\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/divisional-chart-light.webp",
@@ -907,8 +907,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-chart data-endpoint=\"vedic-astrology/kp/chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-chart>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-chart data-endpoint=\"vedic-astrology/kp/chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-kp-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-chart\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/kp-chart-light.webp",
@@ -949,8 +949,8 @@
         "yogas"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-planets-table data-endpoint=\"vedic-astrology/birth-chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-planets-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-planets-table data-endpoint=\"vedic-astrology/birth-chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-vedic-planets-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/vedic-planets-table-light.webp",
@@ -985,8 +985,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-planets-table data-endpoint=\"vedic-astrology/kp/planets\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-planets-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-planets-table data-endpoint=\"vedic-astrology/kp/planets\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-kp-planets-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-planets-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/kp-planets-table-light.webp",
@@ -1023,8 +1023,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-ruling-planets data-endpoint=\"vedic-astrology/kp/ruling-planets\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-ruling-planets>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-ruling-planets\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-ruling-planets data-endpoint=\"vedic-astrology/kp/ruling-planets\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-kp-ruling-planets>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-ruling-planets\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/kp-ruling-planets-light.webp",
@@ -1063,8 +1063,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ashtakavarga-grid data-endpoint=\"vedic-astrology/ashtakavarga\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-ashtakavarga-grid>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ashtakavarga-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-ashtakavarga-grid data-endpoint=\"vedic-astrology/ashtakavarga\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-ashtakavarga-grid>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"ashtakavarga-grid\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/ashtakavarga-grid-light.webp",
@@ -1101,8 +1101,8 @@
         "loading"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-shadbala-table data-endpoint=\"vedic-astrology/shadbala\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-shadbala-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"shadbala-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-shadbala-table data-endpoint=\"vedic-astrology/shadbala\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-shadbala-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"shadbala-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/shadbala-table-light.webp",
@@ -1196,8 +1196,8 @@
         "timeline"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dasha-timeline period=\"major\" data-endpoint=\"vedic-astrology/dasha/major\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dasha-timeline>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dasha-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dasha-timeline period=\"major\" data-endpoint=\"vedic-astrology/dasha/major\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-dasha-timeline>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dasha-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/dasha-timeline-light.webp",
@@ -1234,8 +1234,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-guna-milan data-endpoint=\"vedic-astrology/compatibility\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-guna-milan>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"guna-milan\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-guna-milan data-endpoint=\"vedic-astrology/compatibility\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-guna-milan>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"guna-milan\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/guna-milan-light.webp",
@@ -1287,8 +1287,8 @@
         "transitions"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-panchang-table detail=\"detailed\" data-endpoint=\"vedic-astrology/panchang/detailed\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-panchang-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"panchang-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-panchang-table detail=\"detailed\" data-endpoint=\"vedic-astrology/panchang/detailed\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-panchang-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"panchang-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/panchang-table-light.webp",
@@ -1326,8 +1326,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-aspects data-endpoint=\"vedic-astrology/aspects\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-aspects>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-aspects\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-aspects data-endpoint=\"vedic-astrology/aspects\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-vedic-aspects>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-aspects\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/vedic-aspects-light.webp",
@@ -1362,8 +1362,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hora-table data-endpoint=\"vedic-astrology/panchang/hora\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hora-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hora-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hora-table data-endpoint=\"vedic-astrology/panchang/hora\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-hora-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hora-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/hora-table-light.webp",
@@ -1398,8 +1398,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-choghadiya-grid data-endpoint=\"vedic-astrology/panchang/choghadiya\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-choghadiya-grid>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"choghadiya-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-choghadiya-grid data-endpoint=\"vedic-astrology/panchang/choghadiya\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-choghadiya-grid>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"choghadiya-grid\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/choghadiya-grid-light.webp",
@@ -1436,8 +1436,8 @@
         "window"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-heliacal-table data-endpoint=\"vedic-astrology/heliacal\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-heliacal-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"heliacal-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-heliacal-table data-endpoint=\"vedic-astrology/heliacal\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-heliacal-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"heliacal-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/heliacal-table-light.webp",
@@ -1481,8 +1481,8 @@
         "windows"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-daily data-endpoint=\"vedic-astrology/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vedic-daily>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-daily\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vedic-daily data-endpoint=\"vedic-astrology/daily\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-vedic-daily>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vedic-daily\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/vedic-daily-light.webp",
@@ -1526,8 +1526,8 @@
         "windows"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-finance-card data-endpoint=\"vedic-astrology/kp/daily-finance\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kp-finance-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-finance-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kp-finance-card data-endpoint=\"vedic-astrology/kp/daily-finance\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-kp-finance-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kp-finance-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/kp-finance-card-light.webp",
@@ -1565,8 +1565,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gochara-table data-endpoint=\"vedic-astrology/transit\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-gochara-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"gochara-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gochara-table data-endpoint=\"vedic-astrology/transit\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-gochara-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"gochara-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/gochara-table-light.webp",
@@ -1602,8 +1602,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bhava-bala-table data-endpoint=\"vedic-astrology/bhava-bala\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bhava-bala-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bhava-bala-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bhava-bala-table data-endpoint=\"vedic-astrology/bhava-bala\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-bhava-bala-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bhava-bala-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/bhava-bala-table-light.webp",
@@ -1640,8 +1640,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bhav-chalit-table data-endpoint=\"vedic-astrology/bhav-chalit\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bhav-chalit-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bhav-chalit-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bhav-chalit-table data-endpoint=\"vedic-astrology/bhav-chalit\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-bhav-chalit-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bhav-chalit-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/bhav-chalit-table-light.webp",
@@ -1679,8 +1679,8 @@
         "time-based"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-upagraha-table data-endpoint=\"vedic-astrology/upagraha\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-upagraha-table>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"upagraha-table\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-upagraha-table data-endpoint=\"vedic-astrology/upagraha\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-upagraha-table>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"upagraha-table\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/upagraha-table-light.webp",
@@ -1716,8 +1716,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-chara-karakas data-endpoint=\"vedic-astrology/chara-karakas\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-chara-karakas>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"chara-karakas\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-chara-karakas data-endpoint=\"vedic-astrology/chara-karakas\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-chara-karakas>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"chara-karakas\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/chara-karakas-light.webp",
@@ -1754,8 +1754,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-arudha-padas data-endpoint=\"vedic-astrology/arudha\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-arudha-padas>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"arudha-padas\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-arudha-padas data-endpoint=\"vedic-astrology/arudha\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-arudha-padas>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"arudha-padas\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/arudha-padas-light.webp",
@@ -1806,8 +1806,8 @@
         "yogas"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-yoga-list data-endpoint=\"vedic-astrology/yoga\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-yoga-list>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"yoga-list\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-yoga-list data-endpoint=\"vedic-astrology/yoga\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-yoga-list>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"yoga-list\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/yoga-list-light.webp",
@@ -1845,8 +1845,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-nakshatra-card data-endpoint=\"vedic-astrology/nakshatras/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-nakshatra-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"nakshatra-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-nakshatra-card data-endpoint=\"vedic-astrology/nakshatras/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-nakshatra-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"nakshatra-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/nakshatra-card-light.webp",
@@ -1906,8 +1906,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dosha-card type=\"manglik\" data-endpoint=\"vedic-astrology/dosha/manglik\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dosha-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dosha-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dosha-card type=\"manglik\" data-endpoint=\"vedic-astrology/dosha/manglik\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-dosha-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dosha-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/dosha-card-light.webp",
@@ -2050,8 +2050,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-numerology-card type=\"life-path\" data-endpoint=\"numerology/life-path\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-numerology-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"numerology-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-numerology-card type=\"life-path\" data-endpoint=\"numerology/life-path\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-numerology-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"numerology-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/numerology-card-light.webp",
@@ -2095,8 +2095,8 @@
         "values"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gematria data-endpoint=\"kabbalah/gematria\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-gematria>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"gematria\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gematria data-endpoint=\"kabbalah/gematria\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-gematria>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"gematria\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/gematria-light.webp",
@@ -2143,8 +2143,8 @@
         "tablist"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-card data-endpoint=\"tarot/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-tarot-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-card data-endpoint=\"tarot/daily\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-tarot-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/tarot-card-light.webp",
@@ -2180,8 +2180,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-catalog data-endpoint=\"tarot/cards\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-tarot-catalog>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-catalog\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-catalog data-endpoint=\"tarot/cards\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-tarot-catalog>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-catalog\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/tarot-catalog-light.webp",
@@ -2278,8 +2278,8 @@
         "verdict"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-spread spread=\"three-card\" data-endpoint=\"tarot/spreads/three-card\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-tarot-spread>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-spread\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-tarot-spread spread=\"three-card\" data-endpoint=\"tarot/spreads/three-card\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-tarot-spread>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"tarot-spread\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/tarot-spread-light.webp",
@@ -2330,8 +2330,8 @@
         "themes"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bodygraph data-endpoint=\"human-design/bodygraph\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bodygraph>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bodygraph\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bodygraph data-endpoint=\"human-design/bodygraph\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-bodygraph>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bodygraph\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/bodygraph-light.webp",
@@ -2379,8 +2379,8 @@
         "themes"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-type-card data-endpoint=\"human-design/type\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-type-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-type-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-type-card data-endpoint=\"human-design/type\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-hd-type-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-type-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/hd-type-card-light.webp",
@@ -2424,8 +2424,8 @@
         "table"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-connection data-endpoint=\"human-design/connection\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-connection>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-connection\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-connection data-endpoint=\"human-design/connection\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-hd-connection>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-connection\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/hd-connection-light.webp",
@@ -2466,8 +2466,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-penta data-endpoint=\"human-design/penta\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-penta>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-penta\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-penta data-endpoint=\"human-design/penta\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-hd-penta>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-penta\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/hd-penta-light.webp",
@@ -2506,8 +2506,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-variables data-endpoint=\"human-design/variables\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hd-variables>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-variables\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hd-variables data-endpoint=\"human-design/variables\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-hd-variables>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hd-variables\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/hd-variables-light.webp",
@@ -2556,8 +2556,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-forecast-timeline data-endpoint=\"forecast/timeline\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-forecast-timeline>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-forecast-timeline data-endpoint=\"forecast/timeline\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-forecast-timeline>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-timeline\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/forecast-timeline-light.webp",
@@ -2596,8 +2596,8 @@
         "window"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-forecast-digest data-endpoint=\"forecast/digest\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-forecast-digest>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-digest\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-forecast-digest data-endpoint=\"forecast/digest\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-forecast-digest>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"forecast-digest\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/forecast-digest-light.webp",
@@ -2640,8 +2640,8 @@
         "summary"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bazi-chart data-endpoint=\"chinese-astrology/bazi/chart\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-bazi-chart>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bazi-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-bazi-chart data-endpoint=\"chinese-astrology/bazi/chart\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-bazi-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"bazi-chart\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/bazi-chart-light.webp",
@@ -2681,8 +2681,8 @@
         "summary"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-luck-pillars data-endpoint=\"chinese-astrology/bazi/luck-pillars\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-luck-pillars>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"luck-pillars\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-luck-pillars data-endpoint=\"chinese-astrology/bazi/luck-pillars\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-luck-pillars>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"luck-pillars\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/luck-pillars-light.webp",
@@ -2757,8 +2757,8 @@
         "trine"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-zodiac-card mode=\"sign\" data-endpoint=\"chinese-astrology/zodiac/sign\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-zodiac-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"zodiac-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-zodiac-card mode=\"sign\" data-endpoint=\"chinese-astrology/zodiac/sign\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-zodiac-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"zodiac-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/zodiac-card-light.webp",
@@ -2819,8 +2819,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-almanac-day mode=\"day\" data-endpoint=\"chinese-astrology/calendar/day/{date}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-almanac-day>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"almanac-day\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-almanac-day mode=\"day\" data-endpoint=\"chinese-astrology/calendar/day/{date}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-almanac-day>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"almanac-day\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/almanac-day-light.webp",
@@ -2875,8 +2875,8 @@
         "structure"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-flying-star-chart mode=\"natal\" data-endpoint=\"feng-shui/flying-stars/natal\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-flying-star-chart>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"flying-star-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-flying-star-chart mode=\"natal\" data-endpoint=\"feng-shui/flying-stars/natal\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-flying-star-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"flying-star-chart\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/flying-star-chart-light.webp",
@@ -2930,8 +2930,8 @@
         "sectors"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kua-card mode=\"kua\" data-endpoint=\"feng-shui/kua\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-kua-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kua-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-kua-card mode=\"kua\" data-endpoint=\"feng-shui/kua\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-kua-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"kua-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/kua-card-light.webp",
@@ -2982,8 +2982,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-mayan-day-sign mode=\"day\" data-endpoint=\"mesoamerican-astrology/mayan/tzolkin\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-mayan-day-sign>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"mayan-day-sign\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-mayan-day-sign mode=\"day\" data-endpoint=\"mesoamerican-astrology/mayan/tzolkin\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-mayan-day-sign>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"mayan-day-sign\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/mayan-day-sign-light.webp",
@@ -3036,8 +3036,8 @@
         "sources"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vastu-mandala mode=\"mandala\" data-endpoint=\"vastu/mandala\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-vastu-mandala>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vastu-mandala\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-vastu-mandala mode=\"mandala\" data-endpoint=\"vastu/mandala\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-vastu-mandala>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"vastu-mandala\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/vastu-mandala-light.webp",
@@ -3100,8 +3100,8 @@
         "spotlight"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-biorhythm-chart mode=\"daily\" data-endpoint=\"biorhythm/daily\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-biorhythm-chart>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"biorhythm-chart\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-biorhythm-chart mode=\"daily\" data-endpoint=\"biorhythm/daily\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-biorhythm-chart>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"biorhythm-chart\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/biorhythm-chart-light.webp",
@@ -3144,8 +3144,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dosha-constitution data-endpoint=\"ayurveda/constitution\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dosha-constitution>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dosha-constitution\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dosha-constitution data-endpoint=\"ayurveda/constitution\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-dosha-constitution>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dosha-constitution\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/dosha-constitution-light.webp",
@@ -3215,8 +3215,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hexagram data-endpoint=\"iching/hexagrams/random\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-hexagram>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hexagram\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-hexagram data-endpoint=\"iching/hexagrams/random\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-hexagram>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"hexagram\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/hexagram-light.webp",
@@ -3256,8 +3256,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-card data-endpoint=\"crystals/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-crystal-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-card data-endpoint=\"crystals/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-crystal-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/crystal-card-light.webp",
@@ -3324,8 +3324,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-grid data-endpoint=\"crystals/chakra/{chakra}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-crystal-grid>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-grid\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-grid data-endpoint=\"crystals/chakra/{chakra}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-crystal-grid>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-grid\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/crystal-grid-light.webp",
@@ -3359,8 +3359,8 @@
         "loading"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dream-card data-endpoint=\"dreams/symbols/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dream-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dream-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dream-card data-endpoint=\"dreams/symbols/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-dream-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dream-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/dream-card-light.webp",
@@ -3397,8 +3397,8 @@
         "symbols"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dream-search data-endpoint=\"dreams/symbols\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-dream-search>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dream-search\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-dream-search data-endpoint=\"dreams/symbols\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-dream-search>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"dream-search\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/dream-search-light.webp",
@@ -3437,8 +3437,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-angel-number-card data-endpoint=\"angel-numbers/numbers/{number}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-angel-number-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"angel-number-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-angel-number-card data-endpoint=\"angel-numbers/numbers/{number}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-angel-number-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"angel-number-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/angel-number-card-light.webp",
@@ -3479,8 +3479,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-angel-number-lookup data-endpoint=\"angel-numbers/lookup\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-angel-number-lookup>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"angel-number-lookup\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-angel-number-lookup data-endpoint=\"angel-numbers/lookup\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-angel-number-lookup>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"angel-number-lookup\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/angel-number-lookup-light.webp",
@@ -3564,8 +3564,8 @@
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-reference-card data-endpoint=\"astrology/signs/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\"></roxy-reference-card>",
-        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"reference-card\" data-publishable-key=\"pk_live_YOUR_KEY\"></div>"
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-reference-card data-endpoint=\"astrology/signs/{id}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-reference-card>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"reference-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.45.0/assets/previews/reference-card-light.webp",

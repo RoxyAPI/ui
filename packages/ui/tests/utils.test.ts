@@ -31,6 +31,8 @@ import {
 	formatDateGrain,
 	formatDateRange,
 	formatDateTime,
+	formatDateTimeRange,
+	formatDateTimeUtc,
 	formatInteger,
 	formatNumber,
 	formatPercent,
@@ -686,8 +688,25 @@ describe('dates and numbers follow the page locale, not the viewer', () => {
 		expect(formatTime('es', D)).toBe('14:30');
 		expect(formatTime('en', D)).toBe('2:30 PM');
 		expect(formatTimeRange('de', { start: '06:00', end: '18:30' })).toBe(
-			'6:00 - 18:30',
+			'06:00 - 18:30',
 		);
+	});
+
+	test('a 24-hour locale pads the hour and a 12-hour one does not, on every clock-bearing formatter', () => {
+		const early = '1990-01-15T09:05:00';
+		for (const l of ['de', 'fr', 'pt', 'ru', 'tr'])
+			expect(formatTime(l, early)).toBe('09:05');
+		expect(formatTime('en', early)).toBe('9:05 AM');
+		expect(formatDateTime('de', early)).toContain('09:05');
+		expect(formatDateTimeUtc('fr', '1990-01-15T09:05:00Z')).toContain('09:05');
+	});
+
+	test('the locale joins a date and a clock, so Turkish writes no comma', () => {
+		expect(formatDateTime('tr', D)).not.toContain(',');
+		expect(formatDateTime('en', D)).toBe('Jan 15, 1990, 2:30 PM');
+		expect(
+			formatDateTimeRange('en', '1990-01-15T09:05:00', '1990-01-15T14:30:00'),
+		).toBe('Jan 15, 1990, 9:05 AM - Jan 15, 1990, 2:30 PM');
 	});
 
 	test('no language signal is English, never the browser default', () => {

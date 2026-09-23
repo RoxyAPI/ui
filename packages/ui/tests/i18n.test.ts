@@ -1741,7 +1741,8 @@ describe('a component may not write its own words, and the debt only shrinks', (
 describe('locale formatting cannot escape the sanctioned utility', () => {
 	const FORMAT = 'packages/ui/src/utils/format.ts';
 	/** Every way into locale-aware formatting: the three `toLocale*` methods and any `Intl` constructor. */
-	const RAW_INTL = /\.toLocale(?:Date|Time)?String\s*\(|\bIntl\.[A-Z]/;
+	// Calls only: a type such as `Intl.DateTimeFormatOptions` formats nothing.
+	const RAW_INTL = /\.toLocale(?:Date|Time)?String\s*\(|\bIntl\.[A-Z]\w*\s*\(/;
 	/** How a call site is allowed to name the locale. A string literal is not on the list: that IS the `'en'` bug. */
 	const SANCTIONED = ['this.effectiveLang()', 'locale,', 'locale)'];
 
@@ -1756,6 +1757,35 @@ describe('locale formatting cannot escape the sanctioned utility', () => {
 		expect(
 			offenders,
 			`Locale formatting belongs in ${FORMAT}, which takes the page locale as an argument. A component reaching Intl directly formats for whoever is looking, or pins a literal language:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	test('no component joins two formatted values itself; the range and date-time helpers do', async () => {
+		const HAND_JOIN =
+			/\$\{\s*format\w+\([^`]*?\)\s*\}\s*[-,·\u2013\u2014]\s*\$\{\s*format\w+\(/;
+		const offenders: string[] = [];
+		for (const path of await sourceFiles()) {
+			if (!path.includes('/components/')) continue;
+			for (const [n, line] of codeLines(await Bun.file(path).text()))
+				if (HAND_JOIN.test(line)) offenders.push(`${path}:${n} ${line.trim()}`);
+		}
+		expect(
+			offenders,
+			`Use formatDateRange, formatDateTimeRange, formatTimeRange or formatDateTime, which let the locale write the join:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
+	});
+
+	test('no en or em dash in component or utility code', async () => {
+		const offenders: string[] = [];
+		for (const path of await sourceFiles()) {
+			if (!/\/(components|utils)\//.test(path)) continue;
+			for (const [n, line] of codeLines(await Bun.file(path).text()))
+				if (/[\u2013\u2014]/.test(line))
+					offenders.push(`${path}:${n} ${line.trim()}`);
+		}
+		expect(
+			offenders,
+			`A range goes through a format.ts range helper and an empty cell stays empty:\n  ${offenders.join('\n  ')}`,
 		).toEqual([]);
 	});
 
@@ -3412,7 +3442,7 @@ describe('a mounted form renders in the page language', () => {
 	const SENTINEL: Record<string, string> = {
 		'Birth location': 'LOC',
 		'City of birth': 'CITY',
-		'Fills {{fields}}. Pick a city to autofill.': 'FILLS {{fields}}',
+		'Type a city, then pick it from the list.': 'CITYHELP',
 		Choose: 'PICK',
 		'Comma separated': 'COMMAS',
 		Advanced: 'MORE',
@@ -3489,7 +3519,7 @@ describe('a mounted form renders in the page language', () => {
 		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
 		const rendered = text(el);
 		expect(rendered).toContain('LOC');
-		expect(rendered).toContain('FILLS latitude, longitude, timezone');
+		expect(rendered).toContain('CITYHELP');
 		expect(rendered).toContain('MORE');
 		expect(rendered).toContain('GO');
 		expect(root.querySelector('option')?.textContent?.trim()).toBe('PICK');

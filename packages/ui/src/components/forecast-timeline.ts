@@ -12,6 +12,7 @@ import {
 	ASPECT_CLASS,
 	formatAspectName,
 	formatDate,
+	formatDateRange,
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
@@ -247,7 +248,7 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 				${
 					d.startDate && d.endDate
 						? html`<div class="range">
-							${formatDate(this.effectiveLang(), d.startDate)} - ${formatDate(this.effectiveLang(), d.endDate)} · ${this.t('{{count}} events', { count: d.count ?? events.length })}
+							${formatDateRange(this.effectiveLang(), d.startDate, d.endDate)} · ${this.t('{{count}} events', { count: d.count ?? events.length })}
 						</div>`
 						: nothing
 				}

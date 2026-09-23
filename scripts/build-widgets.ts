@@ -198,8 +198,10 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 	// configures that wire rather than carrying a value the endpoint takes, so they
 	// are forwarded to the element and never collected as request parameters.
 	var PROXY_ATTRS = ['submit-url', 'location-url', 'submit-context'];
-	var SKIP = { 'data-roxy-widget': 1, 'data-roxy-mounted': 1, 'data-publishable-key': 1, 'data-attribution': 1, 'data-submit-label': 1 };
-	PROXY_ATTRS.forEach(function (k) { SKIP['data-' + k] = 1; });
+	// Display toggles: forwarded to the element as given, never sent as request parameters.
+	var DISPLAY_ATTRS = ['submit-label', 'attribution', 'hide-sections', 'hide-readings'];
+	var SKIP = { 'data-roxy-widget': 1, 'data-roxy-mounted': 1, 'data-publishable-key': 1 };
+	PROXY_ATTRS.concat(DISPLAY_ATTRS).forEach(function (k) { SKIP['data-' + k] = 1; });
 
 	// data-* attributes as camelCase keys, minus the control attributes that are
 	// not request parameters (the widget name, the key, and the display toggles).
@@ -249,14 +251,14 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 		ensureLoaded().then(function () {
 			var element = document.createElement('roxy-' + name);
 			// Forward the selector and path-param attributes so the element renders the
-			// right view, and pass lang / submit-label / attribution through.
+			// right view, and pass lang and the display toggles through.
 			if (def.s && attrs[def.s] != null) element.setAttribute(def.s, attrs[def.s]);
 			params.forEach(function (k) { if (attrs[k] != null) element.setAttribute(k, attrs[k]); });
 			if (attrs.lang != null) element.setAttribute('lang', attrs.lang);
-			var label = host.getAttribute('data-submit-label');
-			if (label != null) element.setAttribute('submit-label', label);
-			var credit = host.getAttribute('data-attribution');
-			if (credit != null) element.setAttribute('attribution', credit);
+			DISPLAY_ATTRS.forEach(function (k) {
+				var v = host.getAttribute('data-' + k);
+				if (v != null) element.setAttribute(k, v);
+			});
 
 			if (!complete) {
 				// Missing a required parameter: hand off to form mode. The component

@@ -217,7 +217,7 @@ export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
 			<td class="num">${formatNumber(this.effectiveLang(), b.madhya, 2)}&deg;</td>
 			<td class="num">${formatNumber(this.effectiveLang(), b.end, 2)}&deg;</td>
 			<td class="num">${formatNumber(this.effectiveLang(), b.span, 2)}&deg;</td>
-			<td class="occupants">${occupants || '—'}</td>
+			<td class="occupants">${occupants}</td>
 		</tr>`;
 	}
 }

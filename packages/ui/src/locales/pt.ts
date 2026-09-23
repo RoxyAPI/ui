@@ -266,8 +266,8 @@ export const pt: Record<ChromeString, string> = {
 	Plot: 'Terreno',
 	Door: 'Porta',
 	'Domain Weights': 'Pesos por domínio',
-	'Fills {{fields}}. Pick a city to autofill.':
-		'Preenche {{fields}}. Escolha uma cidade para preencher automaticamente.',
+	'Type a city, then pick it from the list.':
+		'Digite uma cidade e escolha-a na lista.',
 	Choose: 'Escolha',
 	'Comma separated': 'Separados por vírgula',
 	Advanced: 'Avançado',

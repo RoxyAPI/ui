@@ -273,8 +273,8 @@ export const de: Record<ChromeString, string> = {
 	Plot: 'Grundstück',
 	Door: 'Tür',
 	'Domain Weights': 'Lebensbereichsgewichtung',
-	'Fills {{fields}}. Pick a city to autofill.':
-		'Das füllt {{fields}} aus. Wählen Sie eine Stadt zum automatischen Ausfüllen.',
+	'Type a city, then pick it from the list.':
+		'Geben Sie eine Stadt ein und wählen Sie sie aus der Liste.',
 	Choose: 'Bitte wählen',
 	'Comma separated': 'Kommagetrennt',
 	Advanced: 'Erweitert',

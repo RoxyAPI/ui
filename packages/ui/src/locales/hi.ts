@@ -288,8 +288,7 @@ export const hi: Record<ChromeString, string> = {
 	Plot: 'भूखंड',
 	Door: 'द्वार',
 	'Domain Weights': 'क्षेत्रवार भार',
-	'Fills {{fields}}. Pick a city to autofill.':
-		'यह {{fields}} भरता है। अपने आप भरने के लिए शहर चुनें।',
+	'Type a city, then pick it from the list.': 'शहर का नाम लिखें, फिर सूची से चुनें।',
 	Choose: 'चुनें',
 	'Comma separated': 'कॉमा लगाकर अलग करें',
 	Advanced: 'उन्नत',

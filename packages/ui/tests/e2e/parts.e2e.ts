@@ -268,50 +268,42 @@ test('no centre name spills outside the centre it names', async ({ page }) => {
 	expect(spills).toEqual([]);
 });
 
-/**
- * The one part the base forwards out of the self-fetch form, proved across the boundary it has to cross.
- *
- * @remarks
- * A component in self-fetch mode draws `<roxy-endpoint-form>` inside its own shadow root, so every part
- * the form renders is two roots deep and a host rule reaches none of them. `hint` is forwarded with
- * `exportparts` for exactly that shape, which is how a practitioner page hides the API reference prose
- * under each field. Structure cannot prove it: an `exportparts` value that names a part the inner
- * element does not carry is silent, and so is a rule that stops at the boundary.
- *
- * The control is the form itself, which must stay visible: a stylesheet that hid the whole widget
- * would otherwise pass.
- */
-test('the field hint is targetable one root out, on a component in self-fetch mode', async ({
-	page,
-}) => {
+/** Mounts a self-fetch natal chart on the showcase and waits for its form to draw a hint. */
+async function mountHintProbe(
+	page: import('@playwright/test').Page,
+	attrs: Record<string, string>,
+) {
 	await showcase(page);
-
-	await page.evaluate((cls) => {
-		const host = document.createElement('roxy-natal-chart');
-		host.id = 'hint-probe';
-		host.className = cls;
-		// The demo spec, so the form introspects the preview rather than production.
-		host.setAttribute('spec-url', './openapi.json');
-		host.setAttribute('data-endpoint', 'astrology/natal-chart');
-		document.body.append(host);
-	}, HOST_CLASS);
-
-	const hints = () =>
-		page.evaluate(() => {
-			const form = document
-				.getElementById('hint-probe')
-				?.shadowRoot?.querySelector('roxy-endpoint-form');
-			return form?.shadowRoot?.querySelectorAll('[part~="hint"]').length ?? 0;
-		});
-
+	await page.evaluate(
+		([cls, extra]) => {
+			const host = document.createElement('roxy-natal-chart');
+			host.id = 'hint-probe';
+			host.className = cls as string;
+			// The demo spec, so the form introspects the preview rather than production.
+			host.setAttribute('spec-url', './openapi.json');
+			host.setAttribute('data-endpoint', 'astrology/natal-chart');
+			for (const [k, v] of Object.entries(extra as Record<string, string>))
+				host.setAttribute(k, v);
+			document.body.append(host);
+		},
+		[HOST_CLASS, attrs] as const,
+	);
 	// The form reads the spec over the network before it can draw a field.
-	await expect.poll(hints).toBeGreaterThan(0);
+	await expect
+		.poll(() =>
+			page.evaluate(() => {
+				const form = document
+					.getElementById('hint-probe')
+					?.shadowRoot?.querySelector('roxy-endpoint-form');
+				return form?.shadowRoot?.querySelectorAll('[part~="hint"]').length ?? 0;
+			}),
+		)
+		.toBeGreaterThan(0);
+}
 
-	await page.addStyleTag({
-		content: `.${HOST_CLASS}::part(hint) { display: none; }`,
-	});
-
-	const measured = await page.evaluate(() => {
+/** Computed display of the first hint, the form and its first label. */
+const measureHint = (page: import('@playwright/test').Page) =>
+	page.evaluate(() => {
 		const host = document.getElementById('hint-probe') as HTMLElement;
 		const form = host.shadowRoot?.querySelector(
 			'roxy-endpoint-form',
@@ -329,6 +321,37 @@ test('the field hint is targetable one root out, on a component in self-fetch mo
 		};
 	});
 
+/**
+ * The one part the base forwards out of the self-fetch form, proved across the boundary it has to cross.
+ *
+ * @remarks
+ * A component in self-fetch mode draws `<roxy-endpoint-form>` inside its own shadow root, so every part
+ * the form renders is two roots deep and a host rule reaches none of them. `hint` is forwarded with
+ * `exportparts` for exactly that shape, which is how a practitioner page hides the API reference prose
+ * under each field. Structure cannot prove it: an `exportparts` value that names a part the inner
+ * element does not carry is silent, and so is a rule that stops at the boundary.
+ *
+ * The control is the form itself, which must stay visible: a stylesheet that hid the whole widget
+ * would otherwise pass.
+ */
+test('the field hint is targetable one root out, on a component in self-fetch mode', async ({
+	page,
+}) => {
+	await mountHintProbe(page, {});
+	await page.addStyleTag({
+		content: `.${HOST_CLASS}::part(hint) { display: none; }`,
+	});
+	const measured = await measureHint(page);
+	expect(measured.hint).toBe('none');
+	expect(measured.form).not.toBe('none');
+	expect(measured.label).not.toBe('none');
+});
+
+test('hide-sections="hint" hides the forwarded field hint with no host stylesheet', async ({
+	page,
+}) => {
+	await mountHintProbe(page, { 'hide-sections': 'hint' });
+	const measured = await measureHint(page);
 	expect(measured.hint).toBe('none');
 	expect(measured.form).not.toBe('none');
 	expect(measured.label).not.toBe('none');
