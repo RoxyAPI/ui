@@ -320,9 +320,7 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	lookupHexagram: [{ component: 'roxy-hexagram' }],
 	castReading: [{ component: 'roxy-hexagram' }],
 	getDailyHexagram: [{ component: 'roxy-hexagram' }],
-	// The daily cast nests a lighter hexagram and puts the moving-line readings at
-	// the top level, so the card reads them from the resolved shape rather than
-	// from the hexagram. Appended last, so no widget default moves.
+	// Appended last, so no widget default moves.
 	castDailyReading: [{ component: 'roxy-hexagram' }],
 
 	// Dreams

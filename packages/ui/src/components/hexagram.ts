@@ -174,7 +174,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	 * Which shape arrived, flattened to what the card draws.
 	 *
 	 * @remarks
-	 * **The line READINGS are read from here rather than from the hexagram, because the two cast endpoints put them in different places.** `/iching/cast` nests a whole hexagram carrying its own `changingLines`; `/iching/daily/cast` sends a lighter hexagram and puts the moving-line statements at the top level, where they are ONLY the lines that moved. A card that read `hexagram.changingLines` alone would draw the right figure for the daily cast and silently drop the only thing a cast is about. Both are the same `ChangingLine` shape, so one field carries either.
+	 * A cast prefers the top-level `changingLines` (only the lines that moved, on `/iching/daily/cast`) over the hexagram list (all six, on `/iching/cast`); both are the same `ChangingLine` shape.
 	 */
 	private resolveHexagram(): {
 		hex: Hexagram;

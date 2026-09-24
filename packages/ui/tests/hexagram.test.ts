@@ -121,11 +121,11 @@ describe('a response that carries no line data draws no figure', () => {
 });
 
 describe('the daily cast carries its line readings at the TOP level', () => {
-	/**
-	 * The shape `/iching/daily/cast` returns, as read from a live response: the figure and
-	 * the moving positions at the top level, a hexagram that carries NEITHER `binary` nor
-	 * `changingLines`, and the oracle statements for the moving lines only, beside it.
-	 */
+	/** The shape `/iching/daily/cast` returns: the figure, the moving positions and the moving-line statements at the top level, the same statements nested in the hexagram beside its `binary`. */
+	const MOVING_LINES = [
+		{ position: 4, text: 'The wall is climbed.', meaning: 'Hold the ground.' },
+		{ position: 6, text: 'Fellowship in the meadow.', meaning: 'No regret.' },
+	];
 	const DAILY_CAST = {
 		date: '2026-01-01',
 		seed: 'fixed',
@@ -137,20 +137,15 @@ describe('the daily cast carries its line readings at the TOP level', () => {
 			pinyin: 'Tóng Rén',
 			upperTrigram: 'Heaven',
 			lowerTrigram: 'Fire',
+			binary: '101111',
 			judgment: 'Fellowship in the open furthers.',
 			image: 'Heaven together with fire.',
 			interpretation: { general: 'Shared purpose carries the work.' },
+			changingLines: MOVING_LINES,
 		},
 		lines: [8, 7, 8, 6, 7, 6],
 		changingLinePositions: [4, 6],
-		changingLines: [
-			{
-				position: 4,
-				text: 'The wall is climbed.',
-				meaning: 'Hold the ground.',
-			},
-			{ position: 6, text: 'Fellowship in the meadow.', meaning: 'No regret.' },
-		],
+		changingLines: MOVING_LINES,
 		resultingHexagram: {
 			number: 49,
 			symbol: '䷰',
