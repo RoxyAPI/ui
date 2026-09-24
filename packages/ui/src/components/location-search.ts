@@ -7,8 +7,8 @@ import { debounce } from '../utils/debounce.js';
 import { DEFAULT_BASE_URL, readApiError } from '../utils/fetch-controller.js';
 import {
 	dispatchKeyRefusal,
-	KEY_REFUSED_MESSAGE,
-	keyIsRefused,
+	type KeyRefusal,
+	keyRefusal,
 } from '../utils/key-guard.js';
 
 type CityResult = SearchCitiesResponse['cities'][number];
@@ -191,9 +191,9 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 	@state()
 	private highlight = -1;
 
-	/** True when a non-publishable key is present, so the search fail-closes: no network call, a visible error, matching {@link FetchController}. */
+	/** Why the key is refused, when it is, so the search fail-closes: no network call, a visible error, matching {@link FetchController}. */
 	@state()
-	private keyBlocked = false;
+	private refusal?: KeyRefusal;
 
 	/** Message from the last failed search, or null. Rendered under the field and outliving the dropdown, so a failed request reads as a failure rather than as a city that does not exist. */
 	@state()
@@ -218,10 +218,11 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 	protected willUpdate(changed: PropertyValues): void {
 		if (changed.has('publishableKey') || changed.has('apiKey')) {
 			// Effective key mirrors fetchResults: publishable-key wins, api-key is the
-			// legacy fallback. A set-but-non-pk_ key fail-closes here, warning once.
-			const refused = keyIsRefused(this.publishableKey ?? this.apiKey);
-			if (refused && !this.keyBlocked) dispatchKeyRefusal(this, { warn: true });
-			this.keyBlocked = refused;
+			// legacy fallback. A refused key fail-closes here, warning once.
+			const refusal = keyRefusal(this.publishableKey ?? this.apiKey);
+			if (refusal && !this.refusal)
+				dispatchKeyRefusal(this, refusal, { warn: true });
+			this.refusal = refusal;
 		}
 	}
 
@@ -238,9 +239,9 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 	}
 
 	private async fetchResults(q: string) {
-		// Fail closed: never send a non-pk_ key. willUpdate has already flipped
-		// keyBlocked and surfaced the error; this guards the direct-call paths.
-		if (this.keyBlocked) return;
+		// Fail closed: never send a refused key. willUpdate has already set
+		// refusal and surfaced the error; this guards the direct-call paths.
+		if (this.refusal) return;
 		// Abort any in-flight request so a stale response cannot overwrite a
 		// fresher one (debounced typing) or land after disconnect.
 		if (this.abortController) this.abortController.abort();
@@ -342,9 +343,9 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 	};
 
 	render() {
-		if (this.keyBlocked) {
+		if (this.refusal) {
 			return html`<div class="roxy-error" role="alert">
-				${this.t(KEY_REFUSED_MESSAGE)}
+				${this.t(this.refusal.message)}
 			</div>`;
 		}
 		return html`<div class="field">

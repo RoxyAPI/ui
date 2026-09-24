@@ -3,7 +3,7 @@
  * Mirror the TypeScript manifest into apps/docs/manifest.js so the static docs site can read it without a build step. CI fails on drift.
  *
  * @remarks
- * Four browser globals are emitted from the same generated file: `window.ROXY_COMPONENTS` (the component manifest), `window.ROXY_ENDPOINT_BINDINGS` (the generated component-to-endpoint map), `window.ROXY_THEME_PRESETS` (the theme palette data), and `window.ROXY_LOCALES` (the language payloads that actually shipped). The demo's `components-manifest.js` reads the second to derive the Embed tab snippet for every endpoint-bound card, so a binding change flows to the demo with no per-card edit; `page.js` reads the third to drive the customizer preset picker, so a palette edit flows to the demo with no hand-copied hexes.
+ * Six browser globals are emitted from the same generated file: `window.ROXY_COMPONENTS` (the component manifest), `window.ROXY_ENDPOINT_BINDINGS` (the generated component-to-endpoint map), `window.ROXY_THEME_PRESETS` (the theme palette data), `window.ROXY_WIDGET_SNIPPETS` (the copy-paste snippets), `window.ROXY_SAMPLE_KEY` (the sample key those snippets carry), and `window.ROXY_LOCALES` (the language payloads that actually shipped). The demo's `components-manifest.js` reads the second to derive the Embed tab snippet for every endpoint-bound card, so a binding change flows to the demo with no per-card edit; `page.js` reads the third to drive the customizer preset picker, so a palette edit flows to the demo with no hand-copied hexes.
  */
 import { readdir, writeFile } from 'node:fs/promises';
 import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
@@ -14,6 +14,7 @@ import {
 	ROXY_PALETTES,
 	SHARED_THEME,
 } from '../packages/ui/src/styles/palettes.js';
+import { SAMPLE_PUBLISHABLE_KEY } from '../packages/ui/src/utils/key-guard.js';
 import { widgetSnippets } from './widget-snippets.js';
 
 /**
@@ -83,6 +84,7 @@ async function main() {
 		`window.ROXY_ENDPOINT_BINDINGS = ${JSON.stringify(ENDPOINT_BINDINGS, null, 2)};\n` +
 		`window.ROXY_THEME_PRESETS = ${JSON.stringify(THEME_PRESETS, null, 2)};\n` +
 		`window.ROXY_WIDGET_SNIPPETS = ${JSON.stringify(SNIPPETS, null, 2)};\n` +
+		`window.ROXY_SAMPLE_KEY = ${JSON.stringify(SAMPLE_PUBLISHABLE_KEY)};\n` +
 		`window.ROXY_LOCALES = ${JSON.stringify(locales)};\n`;
 	await writeFile(OUT_PATH, body);
 	console.log(

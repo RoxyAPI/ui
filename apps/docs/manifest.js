@@ -2406,4 +2406,5 @@ window.ROXY_WIDGET_SNIPPETS = {
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"reference-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
   }
 };
+window.ROXY_SAMPLE_KEY = "pk_live_YOUR_KEY";
 window.ROXY_LOCALES = ["de","es","fr","hi","pt","ru","tr"];

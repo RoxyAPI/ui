@@ -8,6 +8,7 @@ import {
 	type OpenApiSchema,
 	type OperationSchema,
 } from '../src/utils/field-schema.js';
+import { humanize } from '../src/utils/string.js';
 // Registers roxy-endpoint-form (and roxy-location-search it slots).
 import '../src/index.js';
 
@@ -365,10 +366,41 @@ describe('endpoint-form input registry rendering', () => {
 			method: 'POST',
 		});
 		const root = el.shadowRoot as ShadowRoot;
-		const field = root.querySelector('roxy-location-search')?.closest('.field');
+		const search = root.querySelector('roxy-location-search');
+		const field = search?.closest('.field');
 		expect(root.getElementById('roxy-form-timezone')).toBeNull();
 		expect(field?.querySelector('.req')).not.toBeNull();
 		expect(field?.querySelector('[part~="hint"]')).toBeNull();
+		// Named as the place the visitor picks, never as the wire field it fills.
+		expect(
+			field?.querySelector('label')?.textContent?.replace('*', '').trim(),
+		).toBe('Location');
+		expect(search?.hasAttribute('placeholder')).toBe(false);
+
+		// An empty submit and an API rejection both name the box by that label, and the rejection prints under it.
+		root
+			.querySelector('form')
+			?.dispatchEvent(new Event('submit', { cancelable: true }));
+		await flush(el);
+		expect(root.querySelector('.validation-error')?.textContent).toContain(
+			'Location',
+		);
+		expect(root.querySelector('.validation-error')?.textContent).not.toContain(
+			'Timezone',
+		);
+		(el as unknown as { serverIssues: unknown }).serverIssues = [
+			{ path: 'timezone', message: 'Invalid timezone' },
+		];
+		await flush(el);
+		expect(
+			field?.querySelector('[part="field-error"]')?.textContent?.trim(),
+		).toBe('Invalid timezone');
+		expect(
+			root
+				.querySelector('.validation-error div')
+				?.textContent?.replace(/\s+/g, ' ')
+				.trim(),
+		).toBe('Location Invalid timezone');
 
 		const set = (
 			el as unknown as { setValue: (k: string, v: unknown) => void }
@@ -414,7 +446,13 @@ describe('endpoint-form input registry rendering', () => {
 				hasLang: false,
 				fields: [
 					{ key: 'date', name: 'date', kind: 'date', required: true },
-					{ key: 'latitude', name: 'latitude', kind: 'number', required: true },
+					{
+						key: 'latitude',
+						name: 'latitude',
+						kind: 'number',
+						required: true,
+						description: 'Birth location latitude in decimal degrees.',
+					},
 					{
 						key: 'longitude',
 						name: 'longitude',
@@ -834,6 +872,46 @@ describe('a prefixed coordinate group serialises flat', () => {
 		expect(detail?.values.relocation).toBeUndefined();
 		el.remove();
 	});
+
+	test('an empty submit names each city box once, the flat timezone under the group that claimed it', async () => {
+		const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+			string,
+			OpenApiSchema
+		>;
+		const model = buildFormModel(
+			(
+				spec.paths as unknown as Record<string, Record<string, OperationSchema>>
+			)['/astrology/relocation-chart']?.post as OperationSchema,
+			schemas,
+			'astrology/relocation-chart',
+		);
+		const el = await mountForm(model, {
+			'data-endpoint': 'astrology/relocation-chart',
+			method: 'POST',
+		});
+		let missing: string[] = [];
+		el.addEventListener('roxy-validation-error', (e) => {
+			missing = (e as CustomEvent).detail.missing;
+		});
+		const root = el.shadowRoot as ShadowRoot;
+		root
+			.querySelector('form')
+			?.dispatchEvent(new Event('submit', { cancelable: true }));
+		await flush(el);
+		expect(missing).toContain('timezone');
+		const listed = root
+			.querySelector('.validation-error')
+			?.textContent?.replace('Please complete:', '')
+			.split(',')
+			.map((l) => l.trim());
+		expect(listed).toEqual([
+			'Date',
+			'Time',
+			'Birth location',
+			'Relocation location',
+		]);
+		el.remove();
+	});
 });
 
 /**
@@ -899,6 +977,45 @@ describe('server-side validation issues print under their fields', () => {
 			'Person 1 Date Invalid date',
 			'Person 1 Send either a name or a date',
 		]);
+		el.remove();
+	});
+
+	test('an issue on a coordinate or timezone the city box writes prints under that box, named as the place', async () => {
+		const el = await mountForm(
+			{
+				...LOCATION_MODEL,
+				fields: [
+					...LOCATION_MODEL.fields,
+					{ key: 'timezone', name: 'timezone', kind: 'text', required: true },
+				],
+			},
+			{ 'data-endpoint': 'astrology/natal-chart', method: 'POST' },
+		);
+		const form = el as unknown as {
+			serverIssues: unknown;
+			onLocationFor: (g?: string) => (city: Record<string, unknown>) => void;
+		};
+		form.serverIssues = [{ path: 'timezone', message: 'Unknown zone' }];
+		await flush(el);
+		const root = el.shadowRoot as ShadowRoot;
+		const block = root.querySelector('.location-block') as HTMLElement;
+		expect(
+			block.querySelector('[part="field-error"]')?.textContent?.trim(),
+		).toBe('Unknown zone');
+		expect(
+			root
+				.querySelector('.validation-error div')
+				?.textContent?.replace(/\s+/g, ' ')
+				.trim(),
+		).toBe('Location Unknown zone');
+		// Picking a city rewrites the timezone, which clears the issue on it.
+		form.onLocationFor(undefined)({
+			latitude: 55.68,
+			longitude: 12.57,
+			timezone: 'Europe/Copenhagen',
+		});
+		await flush(el);
+		expect(block.querySelector('[part="field-error"]')).toBeNull();
 		el.remove();
 	});
 
@@ -1033,6 +1150,64 @@ describe('every bound endpoint can be submitted from its form', () => {
 			el.remove();
 		}
 		expect(typed).toEqual([]);
+	});
+
+	/** The label over each city box on a mounted form, required mark dropped, beside the placeholder it hands the search. */
+	const cityBoxes = (root: ShadowRoot) =>
+		Array.from(root.querySelectorAll('roxy-location-search')).map((search) => ({
+			label: search
+				.closest('.location-block')
+				?.querySelector('label')
+				?.textContent?.replace('*', '')
+				.trim(),
+			placeholder: search.getAttribute('placeholder'),
+		}));
+
+	test('every city box is labelled as a place, never as the wire field it fills', async () => {
+		const wire = new Set(
+			[...BY_CITY_SEARCH].map((n) => humanize(n).toLowerCase()),
+		);
+		const mislabelled: string[] = [];
+		let boxes = 0;
+		for await (const { label, mount } of boundForms()) {
+			const el = await mount();
+			for (const box of cityBoxes(el.shadowRoot as ShadowRoot)) {
+				boxes++;
+				const text = box.label ?? '';
+				if (wire.has(text.toLowerCase()) || !/(^|\s)location$/i.test(text))
+					mislabelled.push(`${label} -> ${text || '(no label)'}`);
+			}
+			el.remove();
+		}
+		expect(boxes).toBeGreaterThan(50);
+		expect(mislabelled).toEqual([]);
+	});
+
+	test('a birth place reads as one and every other place does not, from the spec description', async () => {
+		const read = async (method: string, path: string) => {
+			for await (const f of boundForms())
+				if (f.label.endsWith(` ${method} ${path}`)) {
+					const el = await f.mount();
+					const boxes = cityBoxes(el.shadowRoot as ShadowRoot);
+					el.remove();
+					return boxes;
+				}
+			throw new Error(`${method} ${path} is not bound`);
+		};
+		expect(await read('POST', '/astrology/natal-chart')).toEqual([
+			{ label: 'Birth location', placeholder: 'City of birth' },
+		]);
+		expect(await read('POST', '/vedic-astrology/panchang/basic')).toEqual([
+			{ label: 'Location', placeholder: null },
+		]);
+		expect(await read('POST', '/astrology/aspects')).toEqual([
+			{ label: 'Location', placeholder: null },
+		]);
+		// The natal half is its group; the flat timezone is the transit moment, a place of its own.
+		expect(await read('POST', '/astrology/transits')).toEqual([
+			{ label: 'Natal Chart location', placeholder: 'Natal Chart city' },
+			{ label: 'Location', placeholder: null },
+		]);
 	});
 
 	test('every form can be sent: a submit button, or a single enum input that submits itself', async () => {

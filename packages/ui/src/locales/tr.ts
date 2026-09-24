@@ -265,6 +265,7 @@ export const tr: Record<ChromeString, string> = {
 	'{{group}} location': '{{group}} yeri',
 	'City of birth': 'Doğum şehri',
 	'{{group}} city': '{{group}} şehri',
+	Location: 'Konum',
 	'Person 1': '1. Kişi',
 	'Person 2': '2. Kişi',
 	'Person A': 'A Kişi',
@@ -297,6 +298,8 @@ export const tr: Record<ChromeString, string> = {
 	Retry: 'Yeniden dene',
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
 		'İstemci tarafı bileşenler yalnızca pk_ ön ekli yayınlanabilir anahtar kabul eder. Köken izin listesi olan bir yayınlanabilir anahtar kullanın ya da sunucu tarafında oluşturun.',
+	'Replace the sample key with your own publishable key from your RoxyAPI account.':
+		'Örnek anahtarı RoxyAPI hesabınızdaki kendi yayınlanabilir anahtarınızla değiştirin.',
 	Severity: 'Şiddet',
 	Remedies: 'Öneriler',
 	Exceptions: 'İstisnalar',

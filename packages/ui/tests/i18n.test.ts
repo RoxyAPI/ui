@@ -28,7 +28,10 @@ import {
 	parseRepeatGroup,
 	type SpecDoc,
 } from '../src/utils/field-schema.js';
-import { KEY_REFUSED_MESSAGE } from '../src/utils/key-guard.js';
+import {
+	KEY_REFUSALS,
+	SAMPLE_PUBLISHABLE_KEY,
+} from '../src/utils/key-guard.js';
 import { humanize, lookupKey } from '../src/utils/string.js';
 
 const settled = (el: Element): Promise<void> =>
@@ -3379,17 +3382,20 @@ describe('the form path writes no untranslated words', () => {
 	 * Key parity for the form path specifically, derived from the sources rather than restated.
 	 *
 	 * @remarks
-	 * The catalogue-wide parity test above already fails on ANY key a locale is short of. This one names the form path, so a failure reads as "the form is half translated in Turkish" instead of "tr.ts is out of step", and it covers the strings that reach a reader with no `t('literal')` call site at all: the four submit verbs and the refusal message the key guard owns.
+	 * The catalogue-wide parity test above already fails on ANY key a locale is short of. This one names the form path, so a failure reads as "the form is half translated in Turkish" instead of "tr.ts is out of step", and it covers the strings that reach a reader with no `t('literal')` call site at all: the four submit verbs and the refusal messages the key guard owns.
 	 */
 	test('every form-path string is carried by all seven catalogues', async () => {
 		// `\s*` after the paren, because the formatter puts a long string on its own
 		// line and a pattern anchored to the quote silently skips every one of those.
 		const CALL = /\bt\(\s*'((?:[^'\\]|\\.)*)'/g;
-		// Seeded, not scanned, because these three reach a reader without a `t('literal')` call site the
-		// regex could find: the refusal message the key guard owns, the submit verbs `deriveSubmitLabel`
+		// Seeded, not scanned, because these reach a reader without a `t('literal')` call site the
+		// regex could find: the refusal messages the key guard owns, the submit verbs `deriveSubmitLabel`
 		// returns, and `Search city`, which is a `@property` DEFAULT translated at render as
 		// `t(this.placeholder)` so a caller-supplied placeholder still prints as given.
-		const keys = new Set<string>([KEY_REFUSED_MESSAGE, 'Search city']);
+		const keys = new Set<string>([
+			...Object.values(KEY_REFUSALS).map((r) => r.message),
+			'Search city',
+		]);
 		for (const path of FORM_PATH) {
 			const src = code(await Bun.file(path).text());
 			for (const m of src.matchAll(CALL))
@@ -3423,7 +3429,13 @@ describe('a mounted form renders in the page language', () => {
 		title: 'Natal chart',
 		hasLang: true,
 		fields: [
-			{ key: 'latitude', name: 'latitude', kind: 'number', required: true },
+			{
+				key: 'latitude',
+				name: 'latitude',
+				kind: 'number',
+				required: true,
+				description: 'Birth location latitude in decimal degrees.',
+			},
 			{ key: 'longitude', name: 'longitude', kind: 'number', required: true },
 			{ key: 'timezone', name: 'timezone', kind: 'text', required: true },
 			{ key: 'birthDate', name: 'birthDate', kind: 'date', required: true },
@@ -3442,6 +3454,7 @@ describe('a mounted form renders in the page language', () => {
 	const SENTINEL: Record<string, string> = {
 		'Birth location': 'LOC',
 		'City of birth': 'CITY',
+		Location: 'PLACE',
 		'Type a city, then pick it from the list.': 'CITYHELP',
 		Choose: 'PICK',
 		'Comma separated': 'COMMAS',
@@ -3536,6 +3549,26 @@ describe('a mounted form renders in the page language', () => {
 		el.remove();
 	});
 
+	test('a place that is not a birth place, and the timezone box that asks for one, read the neutral label', async () => {
+		document.documentElement.lang = 'zz';
+		const el = await mountForm({
+			title: 'Aspects',
+			hasLang: true,
+			fields: [
+				{ key: 'date', name: 'date', kind: 'date', required: true },
+				{ key: 'timezone', name: 'timezone', kind: 'text', required: true },
+			],
+		});
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		const label = root
+			.querySelector('roxy-location-search')
+			?.closest('.location-block')
+			?.querySelector('label');
+		expect(label?.textContent?.replace('*', '').trim()).toBe('PLACE');
+		expect(text(el)).not.toContain('Timezone');
+		el.remove();
+	});
+
 	test('the validation banner translates its lead-in and names the location once', async () => {
 		document.documentElement.lang = 'zz';
 		const el = await mountForm();
@@ -3616,13 +3649,22 @@ describe('a mounted form renders in the page language', () => {
 
 	test('a refused key is refused in the page language', async () => {
 		document.documentElement.lang = 'zz';
-		registerLocale('zz', { ...SENTINEL, [KEY_REFUSED_MESSAGE]: 'BADKEY' });
-		const el = document.createElement('roxy-location-search');
-		el.setAttribute('publishable-key', 'sk_live_not_publishable');
-		document.body.appendChild(el);
-		await settled(el);
-		expect(text(el)).toContain('BADKEY');
-		el.remove();
+		registerLocale('zz', {
+			...SENTINEL,
+			[KEY_REFUSALS.secret.message]: 'BADKEY',
+			[KEY_REFUSALS.sample.message]: 'SAMPLEKEY',
+		});
+		for (const [key, word] of [
+			['sk_live_not_publishable', 'BADKEY'],
+			[SAMPLE_PUBLISHABLE_KEY, 'SAMPLEKEY'],
+		]) {
+			const el = document.createElement('roxy-location-search');
+			el.setAttribute('publishable-key', key as string);
+			document.body.appendChild(el);
+			await settled(el);
+			expect(text(el)).toContain(word as string);
+			el.remove();
+		}
 	});
 
 	test('a catalogue that lands after the form mounted still re-renders it', async () => {

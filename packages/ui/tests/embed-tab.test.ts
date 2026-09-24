@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
-import { PK_PLACEHOLDER } from '../../../scripts/widget-snippets.js';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
+import { SAMPLE_PUBLISHABLE_KEY } from '../src/utils/key-guard.js';
 
 /**
  * The demo Embed tab derives entirely from two GENERATED browser globals, exactly as the static docs site builds them: `apps/docs/manifest.js` (mirror of the component manifest + endpoint bindings) and `apps/docs/components-manifest.js` (which reads those globals and builds `window.ROXY_UI_DEMOS`, each bound card carrying an `embed` snippet). These evaluate both committed files against a window stub, in the same order index.html loads them, then assert (1) the mirror matches source and (2) every endpoint-bound card derives a snippet naming its tag and its first-binding endpoint, while every unbound card derives none.
@@ -91,7 +91,8 @@ describe('embed tab derivation', () => {
 			// GET surfaces an explicit method; POST omits it (the element default).
 			if (first.method === 'POST') expect(e.script).not.toContain(' method=');
 			else expect(e.script).toContain(` method="${first.method}"`);
-			expect(e.script).toContain(`publishable-key="${PK_PLACEHOLDER}"`);
+			expect(e.script).toContain(`publishable-key="${SAMPLE_PUBLISHABLE_KEY}"`);
+			expect(e.hint).toContain(SAMPLE_PUBLISHABLE_KEY);
 			expect(e.script).toContain('hide-sections="hint"');
 
 			// One-tag variant references the widgets slug and the widgets.js script.

@@ -24,6 +24,7 @@ import {
 	repeatGroup,
 	sliceFileName,
 } from '../utils/field-schema.js';
+import { dispatchKeyRefusal, keyRefusal } from '../utils/key-guard.js';
 import { displayField, displayOption } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';
 import { ROXY_UI_VERSION } from '../version.js';
@@ -96,6 +97,10 @@ function randomSeed(): string {
 		globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)
 	);
 }
+
+/** True when the spec describes a place field as where someone was born, as opposed to where an observer or a reader stands. */
+const isBirthPlace = (f?: FieldDef): boolean =>
+	/\bbirth/i.test(f?.description ?? '');
 
 /** True when a grouped field lives inside its group on the wire (`person1.date`), false when the group is only how the form shows it and the key is a flat property (`birthLatitude`). */
 const isNested = (f: FieldDef): boolean => f.key === `${f.group}.${f.name}`;
@@ -453,7 +458,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	@property({ type: String, attribute: 'submit-label' })
 	submitLabel = '';
 
-	/** Browser-safe publishable key, forwarded to the slotted city search so the natal or synastry form can geocode. */
+	/** Browser-safe publishable key, forwarded to the slotted city search so the natal or synastry form can geocode; a key the guard refuses replaces the inputs with the reason. */
 	@property({ type: String, attribute: 'publishable-key' })
 	publishableKey?: string;
 
@@ -607,14 +612,26 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	};
 
 	private setValue(name: string, value: unknown) {
-		this.values = { ...this.values, [name]: value };
-		if (this.serverIssues?.some((i) => i.path === name))
-			this.clearedIssues = new Set([...this.clearedIssues, name]);
+		this.setValues({ [name]: value });
+	}
+
+	/** Writes several values at once and clears the issue on each one the API named. */
+	private setValues(patch: Record<string, unknown>) {
+		this.values = { ...this.values, ...patch };
+		const edited = Object.keys(patch).filter((k) =>
+			this.serverIssues?.some((i) => i.path === k),
+		);
+		if (edited.length)
+			this.clearedIssues = new Set([...this.clearedIssues, ...edited]);
 	}
 
 	/** The live issues: what the API reported, less what has been edited since. A new report resets the edits. */
 	protected willUpdate(changed: Map<PropertyKey, unknown>): void {
 		if (changed.has('serverIssues')) this.clearedIssues = new Set();
+		const refusal = changed.has('publishableKey')
+			? keyRefusal(this.publishableKey)
+			: undefined;
+		if (refusal) dispatchKeyRefusal(this, refusal, { warn: true });
 	}
 
 	private liveIssues(): ApiIssue[] {
@@ -626,6 +643,16 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	/** The issue on exactly this field, if the API named it. */
 	private issueFor(f: FieldDef): ApiIssue | undefined {
 		return this.liveIssues().find((i) => i.path === f.key);
+	}
+
+	/** The issues on the coordinates and timezone a group's city box writes, which have no input of their own to sit under. */
+	private cityIssues(group?: string): ApiIssue[] {
+		return this.liveIssues().filter((i) => {
+			const f = this.fields.find((x) => x.key === i.path);
+			return (
+				!!f && this.roleOf(f) === 'location' && this.cityGroup(f) === group
+			);
+		});
 	}
 
 	/** The issues on a whole group card (`members.0`), as opposed to one of its fields. */
@@ -640,9 +667,19 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * The group half translates and the field half cannot, which is not a half-measure: this names a block the visitor has to go back to, so the word in the message has to be the word printed on the fieldset legend. A message saying `Person 1` over a legend reading `Persona 1` points at nothing.
 	 */
 	private fieldLabel(f: FieldDef): string {
+		if (this.roleOf(f) === 'location' || f.name === 'timezone')
+			return this.locationLabel(this.cityGroup(f));
 		return f.group
 			? `${this.groupName(f.group)} ${this.fieldText(f.name)}`
 			: this.fieldText(f.name);
+	}
+
+	/** The issues the API reported on a whole card or a city box, printed under it. */
+	private issueLines(issues: ApiIssue[]) {
+		return issues.map(
+			(i) =>
+				html`<small part="field-error" class="field-error" role="alert">${i.message}</small>`,
+		);
 	}
 
 	/** The inline message under an input, and the attributes that tie it to the input for assistive tech. */
@@ -747,6 +784,25 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		);
 	}
 
+	/** The group whose city box writes `f`: the group that claimed a timezone, else the field's own. */
+	private cityGroup(f: FieldDef): string | undefined {
+		if (f.name !== 'timezone') return f.group;
+		return (
+			this.locationGroups().find(
+				(g) => this.timezoneFieldFor(g)?.key === f.key,
+			) ?? f.group
+		);
+	}
+
+	/** The field whose spec description says what place a group's city box asks for: its latitude, or a timezone standing alone. */
+	private placeField(group?: string): FieldDef | undefined {
+		const inGroup = this.fields.filter((f) => f.group === group);
+		return (
+			inGroup.find((f) => f.name === 'latitude') ??
+			inGroup.find((f) => f.name === 'timezone')
+		);
+	}
+
 	/**
 	 * True when the location block must show a required mark, i.e. ANY member of the trio is required. The block is a single city-search input that fills all three, so if even one is required (e.g. bodygraph requires `timezone` while `latitude`/`longitude` are optional) the input is required and `collectMissing` blocks submit without it. Requiring ALL three understated that: the asterisk went missing on a block the form still enforced, which reads as optional to a non-technical embedder.
 	 */
@@ -827,14 +883,14 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		return (city: PickedCity) => {
 			const keyOf = (name: string) =>
 				this.fields.find((f) => f.group === group && f.name === name)?.key;
-			const next: Record<string, unknown> = { ...this.values };
+			const patch: Record<string, unknown> = {};
 			const lat = keyOf('latitude');
 			const lon = keyOf('longitude');
-			if (lat) next[lat] = city.latitude;
-			if (lon) next[lon] = city.longitude;
+			if (lat) patch[lat] = city.latitude;
+			if (lon) patch[lon] = city.longitude;
 			const tz = this.timezoneFieldFor(group);
-			if (tz) next[tz.key] = city.timezone;
-			this.values = next;
+			if (tz) patch[tz.key] = city.timezone;
+			this.setValues(patch);
 		};
 	}
 
@@ -953,7 +1009,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			if (v !== undefined && v !== '') continue;
 			keys.push(f.key);
 			if (isLocation) {
-				locGroups.add(f.group);
+				locGroups.add(this.cityGroup(f));
 				continue;
 			}
 			labels.push(this.fieldLabel(f));
@@ -1207,9 +1263,11 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * The placeholder carries the group rather than the form concatenating a name in front of a translated noun, so a translator owns the word order: `Person 1 location` is English syntax, and Turkish suffixes the head noun, Hindi takes a genitive, Russian a parenthetical and German a colon. The four shapes are deliberately different and normalizing them breaks three languages.
 	 */
 	private locationLabel(group?: string): string {
-		return group
-			? this.t('{{group}} location', { group: this.groupName(group) })
-			: this.t('Birth location');
+		if (group)
+			return this.t('{{group}} location', { group: this.groupName(group) });
+		return isBirthPlace(this.placeField(group))
+			? this.t('Birth location')
+			: this.t('Location');
 	}
 
 	/** One city search standing in for a group's raw coordinates. */
@@ -1222,26 +1280,30 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 						: nothing
 				}</label
 			>
-			${this.citySearch(
-				this.onLocationFor(group),
-				group
-					? this.t('{{group}} city', { group: this.groupName(group) })
-					: this.t('City of birth'),
-			)}
+			${this.citySearch(group, this.onLocationFor(group))}
+			${this.issueLines(this.cityIssues(group))}
 		</div>`;
 	}
 
-	/** A `timezone` no coordinate pair claims, asked for as a city: the IANA zone it writes resolves to the offset in force on the requested date. */
+	/** A `timezone` no coordinate pair claims, asked for as a city and labelled as the place: the IANA zone it writes resolves to the offset in force on the requested date. */
 	private renderTimezoneCity(f: FieldDef) {
 		return html`<div part="field" class="field location-block">
-			<label>${this.fieldText(f.name)}${this.reqMark(f)}</label>
-			${this.citySearch((city) => this.setValue(f.key, city.timezone))}
+			<label>${this.locationLabel(f.group)}${this.reqMark(f)}</label>
+			${this.citySearch(f.group, (city) => this.setValue(f.key, city.timezone))}
 			${this.fieldIssue(f)}
 		</div>`;
 	}
 
-	/** The one city search every location input draws; `lang` and `endpoint` are forwarded because a shadow root hides the host page from it. */
-	private citySearch(onPick: (city: PickedCity) => void, placeholder?: string) {
+	/** The one city search every location input draws, its placeholder named for the place; `lang` and `endpoint` are forwarded because a shadow root hides the host page from it. */
+	private citySearch(
+		group: string | undefined,
+		onPick: (city: PickedCity) => void,
+	) {
+		const placeholder = group
+			? this.t('{{group}} city', { group: this.groupName(group) })
+			: isBirthPlace(this.placeField(group))
+				? this.t('City of birth')
+				: undefined;
 		return html`<roxy-location-search
 				endpoint=${ifDefined(this.locationUrl || undefined)}
 				publishable-key=${ifDefined(this.publishableKey)}
@@ -1260,10 +1322,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			<legend>${this.groupName(group)}</legend>
 			${this.groupHasLocation(group) ? this.locationBlock(group) : nothing}
 			<div class="fields">${fields.map((f) => this.renderField(f))}</div>
-			${this.issuesForGroup(group).map(
-				(i) =>
-					html`<small part="field-error" class="field-error" role="alert">${i.message}</small>`,
-			)}
+			${this.issueLines(this.issuesForGroup(group))}
 		</fieldset>`;
 	}
 
@@ -1278,6 +1337,15 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					${this.t('Retry')}
 				</button>
 			</div>`;
+		}
+
+		// A refused key can never send, so the reason stands in for inputs nobody could submit.
+		const refusal = keyRefusal(this.publishableKey);
+		if (refusal) {
+			return html`<form>
+				<h2 part="title" class="title">${this.formTitle}</h2>
+				<div part="validation-error" class="validation-error" role="alert">${this.t(refusal.message)}</div>
+			</form>`;
 		}
 
 		const flat = this.fields.filter((f) => !f.group && this.isRendered(f));

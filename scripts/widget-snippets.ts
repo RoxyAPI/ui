@@ -4,11 +4,10 @@
  * @remarks
  * The snippet is DATA, produced here and carried in `components-catalog.json`, which is already the cross-repo contract. Consumers render the string; they do not rebuild it. A change to the snippet form therefore reaches the demo, `/widgets` and any future consumer from one edit.
  *
- * Keep this dependency-free and string-only: it is imported by build scripts and its output is serialized into a published JSON artifact.
+ * Keep this dependency-free and string-only: it is imported by build scripts and its output is serialized into a published JSON artifact. The sample key comes from the key guard, which refuses it on a live page.
  */
 
-/** The token a consumer swaps for the visitor's real key. Consumers that offer a live key input (the `/widgets` page) search for this exact string, so changing it is a breaking change for them. */
-export const PK_PLACEHOLDER = 'pk_live_YOUR_KEY';
+import { SAMPLE_PUBLISHABLE_KEY } from '../packages/ui/src/utils/key-guard.js';
 
 /** One component's ready-to-paste snippets. Mirrored into `components-catalog.json` per component and into `window.ROXY_WIDGET_SNIPPETS` for the demo. */
 export interface WidgetSnippets {
@@ -50,10 +49,10 @@ export function widgetSnippets(i: SnippetInput): WidgetSnippets {
 	const script = `<!-- Optional: warm practitioner theme (drop this line for the default look) -->
 <!-- <link rel="stylesheet" href="${i.themeUrl}"> -->
 <script src="${i.cdnBase}/roxy-ui.js" defer></script>
-<${i.tag}${configAttr} data-endpoint="${endpoint}"${methodAttr} publishable-key="${PK_PLACEHOLDER}" hide-sections="hint"></${i.tag}>`;
+<${i.tag}${configAttr} data-endpoint="${endpoint}"${methodAttr} publishable-key="${SAMPLE_PUBLISHABLE_KEY}" hide-sections="hint"></${i.tag}>`;
 
 	const oneTag = `<script src="${i.cdnBase}/widgets.js" defer></script>
-<div data-roxy-widget="${i.slug}" data-publishable-key="${PK_PLACEHOLDER}" data-hide-sections="hint"></div>`;
+<div data-roxy-widget="${i.slug}" data-publishable-key="${SAMPLE_PUBLISHABLE_KEY}" data-hide-sections="hint"></div>`;
 
 	return { script, oneTag };
 }

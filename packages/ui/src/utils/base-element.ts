@@ -545,7 +545,7 @@ export abstract class RoxyDataElement<
 	/**
 	 * Error state shown when a self-fetch fails. Keeps the form in view so the request can be retried.
 	 *
-	 * The message goes through `t()` because ONE of the messages that reaches here is ours: `KEY_REFUSED_MESSAGE` (`utils/key-guard.ts`), which {@link FetchController} assigns when a site owner pastes a secret key into a browser page, and which `<roxy-location-search>` renders in its own shadow root from the same constant. Translating it in one place and not the other would put two languages on one page. Everything else that lands here is a wire fact (an HTTP status, a browser network error), misses the catalogue and renders unchanged.
+	 * The message goes through `t()` because the key refusal messages that reach here are ours: `KEY_REFUSALS` (`utils/key-guard.ts`), which {@link FetchController} assigns when a site owner leaves a secret or sample key in a browser page, and which `<roxy-location-search>` and the form render in their own shadow roots from the same constants. Translating it in one place and not the other would put two languages on one page. Everything else that lands here is a wire fact (an HTTP status, a browser network error), misses the catalogue and renders unchanged.
 	 */
 	protected renderError(message: string): unknown {
 		// A rejected request that names its fields is answered on the form, field by

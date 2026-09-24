@@ -256,6 +256,10 @@ export const CHROME_STRINGS = [
 	'{{group}} location',
 	'City of birth',
 	'{{group}} city',
+	// A place the spec does not describe as a birth place: an observer for a panchang,
+	// or the clock a horoscope or an aspect moment is read on. The city box keeps its
+	// default `Search city` placeholder.
+	'Location',
 
 	// The group names themselves, which is the one part of a form label that is
 	// derived AND enumerable. Every other label is `humanize()` over one of 909
@@ -522,13 +526,14 @@ export const CHROME_STRINGS = [
 	'Remedies',
 	'Exceptions',
 
-	// The key refusal, shown in place of a widget when a site owner puts a secret
-	// key in a browser page. Two components render this ONE constant
-	// (`utils/key-guard.ts`), so it is translated where each renders and never
-	// copied: `<roxy-location-search>` in its own shadow root, and every data
-	// component through `renderError`. `pk_` is a literal key prefix and stays
-	// verbatim in every language.
+	// The key refusals, shown in place of a widget when a site owner puts a secret
+	// key, or leaves the snippet sample key, in a browser page. Each is ONE constant
+	// (`KEY_REFUSALS` in `utils/key-guard.ts`), translated where it renders and never
+	// copied: the form and `<roxy-location-search>` in their own shadow roots, and
+	// every data component through `renderError`. `pk_` is a literal key prefix and
+	// stays verbatim in every language.
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.',
+	'Replace the sample key with your own publishable key from your RoxyAPI account.',
 
 	// Western chart axes drawn on the natal wheel. Short by necessity: the label ring
 	// has a fixed width, so each one is the abbreviation that language's own charts

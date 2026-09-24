@@ -278,6 +278,7 @@ export const hi: Record<ChromeString, string> = {
 	'{{group}} location': '{{group}} का स्थान',
 	'City of birth': 'जन्म शहर',
 	'{{group}} city': '{{group}} का शहर',
+	Location: 'स्थान',
 	'Person 1': 'प्रथम व्यक्ति',
 	'Person 2': 'द्वितीय व्यक्ति',
 	'Person A': 'व्यक्ति क',
@@ -309,6 +310,8 @@ export const hi: Record<ChromeString, string> = {
 	Retry: 'फिर से कोशिश करें',
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
 		'क्लाइंट-साइड कंपोनेंट केवल pk_ प्रकाशन योग्य कुंजी स्वीकार करते हैं। ओरिजिन अनुमति सूची वाली pk_ कुंजी का उपयोग करें, या सर्वर पर रेंडर करें।',
+	'Replace the sample key with your own publishable key from your RoxyAPI account.':
+		'नमूना कुंजी की जगह अपने RoxyAPI खाते की अपनी प्रकाशन योग्य कुंजी लगाएँ।',
 	Severity: 'तीव्रता',
 	Remedies: 'उपाय',
 	Exceptions: 'अपवाद',

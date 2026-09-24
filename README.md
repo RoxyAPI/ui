@@ -842,7 +842,7 @@ Two key types. **Secret keys** (`sk_*`) grant full account access: use them serv
 Two ways to feed a component, and the key rule for each:
 
 - **Controlled (recommended for production).** Your server fetches with the secret key and passes the response in via the `data` property or a `roxy-data` JSON island. No key of any kind reaches the browser. This is what the WordPress plugin and the server-rendered patterns do.
-- **Self-fetch (no backend).** Give the component a `data-endpoint` and a `publishable-key` and it renders its own form and fetches in the browser. Only publishable keys work here: a secret key is refused client-side, so the component sends nothing and raises a validation error. A secret key cannot leak through self-fetch.
+- **Self-fetch (no backend).** Give the component a `data-endpoint` and a `publishable-key` and it renders its own form and fetches in the browser. Only publishable keys work here: a secret key, or the `pk_live_YOUR_KEY` sample left in a copied snippet, is refused client-side, so the component shows the reason in place of its form, sends nothing and raises a validation error. A secret key cannot leak through self-fetch.
 
 Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For self-fetch embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
 

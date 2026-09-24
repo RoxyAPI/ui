@@ -157,6 +157,13 @@ element.data = data;
 
 Every snippet below follows this rule.
 
+A second silent failure: assigning `data` before the element is defined. With a deferred script tag, a property set on a tag the bundle has not upgraded yet shadows the accessor the component later defines, and the card stays empty with no error. Wait for the definition first:
+
+```ts
+await customElements.whenDefined(element.localName);
+element.data = data;
+```
+
 ### 2. Hardcoded coordinates
 
 Every chart endpoint (Western, Vedic, KP, synastry, transits, dasha, dosha, panchang) needs `latitude`, `longitude`, and `timezone`. Never ask the user to type coordinates. Call `/location/search` first, then feed the result into the chart endpoint.
@@ -433,7 +440,7 @@ That single element renders a schema-driven form (a zodiac/enum tile picker, a b
 **Key handling is the contract. The component enforces it, not you:**
 
 - The publishable key is safe in client code: it is origin-restricted (any other origin gets 403) and cannot read your account.
-- A **secret key never works here.** If `publishable-key` is not a `pk_` key the component refuses to fetch, sends nothing, and emits a `roxy-validation-error` event. A secret key cannot leak through self-fetch even by mistake.
+- A **secret key never works here.** If `publishable-key` is not a `pk_` key, or is still the `pk_live_YOUR_KEY` sample from a copied snippet, the component shows the reason in place of its form, sends nothing, and emits a `roxy-validation-error` event whose `reason` is `possible-secret-key` or `sample-key`. A secret key cannot leak through self-fetch even by mistake.
 - A component that cannot draw a response it received (a shape it was not written for) falls back to the generic `<roxy-data>` table for that response and emits a `roxy-render-error` event with the exception, so a page never keeps a loading placeholder on screen.
 - For production with a backend, prefer controlled mode (Patterns 1, 6, 7): the server fetches with the `sk_` key and injects the response, so no key of any kind reaches the browser.
 

@@ -34,6 +34,11 @@ export const baseStyles = css`
 			var(--roxy-motion-easing, cubic-bezier(0.4, 0, 0.2, 1)) both;
 	}
 
+	/* The host display above outranks the user agent hidden rule, so it is restated. */
+	:host([hidden]) {
+		display: none;
+	}
+
 	/**
 	 * Opt out of the component's own card surface. When the embedder already
 	 * wraps the component in their own card, set the \`bare\` attribute to drop

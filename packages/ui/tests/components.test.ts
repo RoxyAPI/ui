@@ -1030,7 +1030,7 @@ describe('roxy-location-search behavior', () => {
 		})) as unknown as typeof fetch;
 		try {
 			const el = document.createElement('roxy-location-search');
-			el.setAttribute('publishable-key', 'pk_live_YOUR_KEY');
+			el.setAttribute('publishable-key', 'pk_live_example');
 			document.body.appendChild(el);
 			await settled(el);
 
@@ -6336,6 +6336,19 @@ describe('component surfaces', () => {
 
 		expect(ROXY_COMPONENTS.length).toBeGreaterThan(50);
 		expect(unpainted).toEqual([]);
+	});
+
+	// The host `display` outranks the user agent `[hidden]` rule, so a page that renders a
+	// tag up front and reveals it on data would otherwise lay out the empty state.
+	test('every component honours the hidden attribute', () => {
+		const shown = ROXY_COMPONENTS.filter((c) => {
+			const ctor = customElements.get(c.tag) as unknown as {
+				elementStyles?: ReadonlyArray<{ cssText: string }>;
+			};
+			const css = (ctor?.elementStyles ?? []).map((s) => s.cssText).join('\n');
+			return !/:host\(\[hidden\]\)\s*\{\s*display:\s*none/.test(css);
+		}).map((c) => c.tag);
+		expect(shown).toEqual([]);
 	});
 });
 

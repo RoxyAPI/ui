@@ -63,8 +63,6 @@ const VASTU_PLOT = {
 
 const REGISTRY_BASE = 'https://cdn.jsdelivr.net/gh/RoxyAPI/ui@main/registry';
 const UI_CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn';
-// Must match PK_PLACEHOLDER in scripts/widget-snippets.ts, which produces the snippets.
-const PK_PLACEHOLDER = 'pk_live_YOUR_KEY';
 const PRACTITIONER_THEME_URL =
 	'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css';
 
@@ -121,7 +119,7 @@ function embedSnippet(tag, slug) {
 			? ` Switch variant with data-${selector} (${otherValues.map((v) => `"${v}"`).join(', ')}) on the one-tag div.`
 			: '';
 
-	const hint = `Mint a publishable key at roxyapi.com/account, register the origins you embed on, and replace the ${PK_PLACEHOLDER} placeholder. Works on any site that allows script tags.${variantHint}`;
+	const hint = `Mint a publishable key at roxyapi.com/account, register the origins you embed on, and replace the ${window.ROXY_SAMPLE_KEY} placeholder. Works on any site that allows script tags.${variantHint}`;
 
 	return { script: snippets.script, oneTag: snippets.oneTag, hint };
 }
@@ -1184,7 +1182,7 @@ export default function NumerologyForm() {
 		seoLine: 'Geocoder for any chart endpoint that needs latitude and longitude',
 		attrs: ' placeholder="Try: London"',
 		code: `<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer></script>
-<roxy-location-search publishable-key="YOUR_PUBLISHABLE_KEY"></roxy-location-search>
+<roxy-location-search publishable-key="${window.ROXY_SAMPLE_KEY}"></roxy-location-search>
 <script>
   document.querySelector('roxy-location-search')
     .addEventListener('roxy-location-select', (e) => {

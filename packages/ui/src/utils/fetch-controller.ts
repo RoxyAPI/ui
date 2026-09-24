@@ -1,9 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
-import {
-	dispatchKeyRefusal,
-	KEY_REFUSED_MESSAGE,
-	keyIsRefused,
-} from './key-guard.js';
+import { dispatchKeyRefusal, keyRefusal } from './key-guard.js';
 
 /**
  * Host slots the controller drives. {@link RoxyDataElement} satisfies this, so the form mixin can attach a controller without the component wiring state by hand.
@@ -41,7 +37,7 @@ export const DEFAULT_BASE_URL = 'https://roxyapi.com/api/v2';
  * Turn a failed `Response` into the message to show: the API's own `{ error }` string when the body carries one, else the status line.
  *
  * @remarks
- * Exported so every client-side fetch boundary renders the same words for the same failure, the way {@link keyIsRefused} centralizes the key refusal. A boundary that discards the response body cannot tell a rejected request from an empty result, and renders the two identically.
+ * Exported so every client-side fetch boundary renders the same words for the same failure, the way {@link keyRefusal} centralizes the key refusal. A boundary that discards the response body cannot tell a rejected request from an empty result, and renders the two identically.
  */
 export async function readApiError(res: Response): Promise<string> {
 	return (await readApiFailure(res)).message;
@@ -96,7 +92,7 @@ export interface RoxyRequest {
  * Client-side fetch for uncontrolled (self-fetching) components: drives `host.data` / `host.loading` / `host.error` and cancels a stale request when a newer one starts or the host disconnects.
  *
  * @remarks
- * Security boundary. The only credential this ever sends is a `pk_` publishable key, which carries a server-side origin allowlist. A secret (`sk_`) or legacy unprefixed key is refused before any network call and surfaced as an error, so a server secret cannot leak into a browser request. This centralizes the guard that originated in `<roxy-location-search>` so every self-fetching component enforces it identically.
+ * Security boundary. The only credential this ever sends is a `pk_` publishable key, which carries a server-side origin allowlist. A secret (`sk_`), legacy unprefixed or sample key is refused before any network call and surfaced as an error, so a server secret cannot leak into a browser request. This centralizes the guard that originated in `<roxy-location-search>` so every self-fetching component enforces it identically.
  *
  * Controlled-mode components never construct this. When a server injects the response as a `<script class="roxy-data">` island, there is no key and no fetch, which is the path server-rendered consumers (WordPress, JSX SSR, static HTML) rely on.
  */
@@ -132,12 +128,12 @@ export class FetchController<T = unknown> implements ReactiveController {
 
 	/**
 	 * Issue the request and resolve once `host.data` (success) or `host.error`
-	 * (failure) is set. A no-op return when a non-publishable key is present:
-	 * the error is already surfaced and nothing is sent.
+	 * (failure) is set. A no-op return when the key is refused: the error is
+	 * already surfaced and nothing is sent.
 	 */
 	async run(req: RoxyRequest): Promise<void> {
 		// submit-url proxy: no key leaves the browser; the consumer's backend holds it.
-		if (!this.submitUrl && this.secretKeyRefused()) return;
+		if (!this.submitUrl && this.keyRefused()) return;
 		this.abort?.abort();
 		const controller = new AbortController();
 		this.abort = controller;
@@ -207,11 +203,12 @@ export class FetchController<T = unknown> implements ReactiveController {
 		});
 	}
 
-	/** True when a key is set and it is not a browser-safe `pk_` publishable key. Surfaces the error and refuses to send, via the shared {@link keyIsRefused} guard so every fetch boundary fail-closes identically. */
-	private secretKeyRefused(): boolean {
-		if (!keyIsRefused(this.publishableKey)) return false;
-		this.host.error = KEY_REFUSED_MESSAGE;
-		dispatchKeyRefusal(this.host);
+	/** True when the shared {@link keyRefusal} guard refuses the key; surfaces its message and sends nothing, so every fetch boundary fail-closes identically. */
+	private keyRefused(): boolean {
+		const refusal = keyRefusal(this.publishableKey);
+		if (!refusal) return false;
+		this.host.error = refusal.message;
+		dispatchKeyRefusal(this.host, refusal);
 		return true;
 	}
 }

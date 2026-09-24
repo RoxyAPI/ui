@@ -277,6 +277,7 @@ export const es: Record<ChromeString, string> = {
 	'{{group}} location': 'Lugar de {{group}}',
 	'City of birth': 'Ciudad de nacimiento',
 	'{{group}} city': 'Ciudad de {{group}}',
+	Location: 'Lugar',
 	'Person 1': 'Persona 1',
 	'Person 2': 'Persona 2',
 	'Person A': 'Persona A',
@@ -309,6 +310,8 @@ export const es: Record<ChromeString, string> = {
 	Retry: 'Reintentar',
 	'Client-side components accept a pk_ publishable key only. Use a publishable key with an origin allowlist, or render server-side.':
 		'Los componentes del lado del cliente solo aceptan una clave publicable pk_. Usa una clave publicable con una lista de orígenes permitidos, o renderiza en el servidor.',
+	'Replace the sample key with your own publishable key from your RoxyAPI account.':
+		'Sustituye la clave de ejemplo por tu propia clave publicable de tu cuenta de RoxyAPI.',
 	Severity: 'Gravedad',
 	Remedies: 'Remedios',
 	Exceptions: 'Excepciones',
