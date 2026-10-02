@@ -329,6 +329,7 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 
 	// Angel numbers
 	getAngelNumber: [{ component: 'roxy-angel-number-card' }],
+	getDailyAngelNumber: [{ component: 'roxy-angel-number-card' }],
 	analyzeNumberSequence: [{ component: 'roxy-angel-number-lookup' }],
 
 	// Crystals. Every list response carries the same `crystals` summary array, so

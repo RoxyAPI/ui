@@ -928,7 +928,8 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		description:
 			'Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps',
 		docsLabel: 'Angel Numbers',
-		endpointLabel: 'GET /angel-numbers/numbers/{number}',
+		endpointLabel:
+			'GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily',
 		docsSummary:
 			'Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections',
 		topic: 'Angel Numbers',

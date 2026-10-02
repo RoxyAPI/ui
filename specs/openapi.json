@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: the Spiritual OS layer for agentic AI\n\n> **Base URL:** `https://roxyapi.com/api/v2`. Every path below is relative to it.\n\nOne API key for 18 insight domains (Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 261+ endpoints, planetary positions verified against NASA JPL Horizons and the calculations held by 2,961 gold standard tests. Readings come back as structured data with editorial interpretation text, translated into 10+ languages via `?lang=` on translated endpoints. Remote MCP servers, typed SDKs for TypeScript, Python, PHP, C#, and Go, drop-in UI components and copy-paste widgets, and open source Templates all run on this one document.\n\n## Who builds on RoxyAPI\n\n- **Developers** shipping astrology, tarot, numerology and wellness apps without learning each system first\n- **AI agent builders** giving Claude, GPT or Gemini real calculations instead of guesses, over Remote MCP\n- **Vibe coders** building with Cursor, Claude Code, Bolt or Replit from the spec and AGENTS.md\n- **Founders and brands** launching insight products for their audience in days instead of months\n\n## Quick start\n\n**1. Get a key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). It is ready the moment payment clears.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/astrology/horoscope/aries/daily\n```\n\n**3. Check your usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agents: Remote MCP\n\nEvery domain has its own Remote MCP server over Streamable HTTP at `https://roxyapi.com/mcp/{domain}` (for example `/mcp/astrology`), 258+ tools in all, with nothing to install or host. Add the URL to Claude, Cursor, VS Code, ChatGPT or any MCP client, or connect from the OpenAI Agents SDK and Gemini ADK. Coding agents that build against this API use the documentation server at `/mcp/docs`. Setup for every client: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp).\n\n## Authentication\n\nSend your key as `X-API-Key: YOUR_KEY` (recommended), as `Authorization: Bearer YOUR_KEY`, or as the `?api_key=` query parameter for quick tests. Keep secret keys on a server; publishable keys are for the browser.\n\n## Responses and limits\n\nClean JSON with no wrapper. An error returns `{ \"error\", \"code\", \"doc_url\" }`: `error` is readable and may change wording, `code` is stable and the one to switch on, and `doc_url` links to the fix for that exact code.\n\nEvery response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used` and `X-RateLimit-Reset` for your monthly allowance, which resets on the 1st of each month at 00:00 UTC. Each plan also has a per-minute limit for bursts, from 600 requests per minute on Starter; going over it answers `429` with a `Retry-After` and never counts against the month.\n\n## Errors\n\nEvery code the API returns, also published machine-readably as `x-error-codes` on the `info` object of this document:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | [`validation_error`](https://roxyapi.com/docs/errors#validation_error) | A field is missing or invalid. The body lists every failing field at once in issues, each with its path and the expected shape. |\n| 400 | [`bad_request`](https://roxyapi.com/docs/errors#bad_request) | The request was rejected as a whole, for example a body that is not valid JSON or a date range that ends before it starts. |\n| 401 | [`api_key_required`](https://roxyapi.com/docs/errors#api_key_required) | No API key was sent. |\n| 401 | [`invalid_api_key`](https://roxyapi.com/docs/errors#invalid_api_key) | The key sent is malformed or cannot be verified. |\n| 401 | [`api_key_revoked`](https://roxyapi.com/docs/errors#api_key_revoked) | The key was valid once and has since been revoked from the account page. |\n| 401 | [`subscription_not_found`](https://roxyapi.com/docs/errors#subscription_not_found) | The key verifies, but the subscription behind it no longer exists. |\n| 401 | [`subscription_inactive`](https://roxyapi.com/docs/errors#subscription_inactive) | The subscription behind the key is cancelled, expired or suspended, or a trial is past its end date. |\n| 401 | [`publishable_key_not_allowed_on_mcp`](https://roxyapi.com/docs/errors#publishable_key_not_allowed_on_mcp) | A publishable key was used on a Remote MCP server, which takes a secret key. |\n| 401 | [`invalid_client_ip`](https://roxyapi.com/docs/errors#invalid_client_ip) | A keyless request could not be attributed to a caller. |\n| 401 | [`unauthorized`](https://roxyapi.com/docs/errors#unauthorized) | Authentication failed with no more specific reason to give. |\n| 403 | [`forbidden`](https://roxyapi.com/docs/errors#forbidden) | The key is valid, but this request is not permitted. |\n| 403 | [`origin_required`](https://roxyapi.com/docs/errors#origin_required) | A publishable key with an origin allowlist was used with no Origin header, as from a server or a native app. |\n| 403 | [`origin_not_allowed`](https://roxyapi.com/docs/errors#origin_not_allowed) | The calling site is not on the origin allowlist of this publishable key. |\n| 404 | [`not_found`](https://roxyapi.com/docs/errors#not_found) | Nothing is served at this path, or the identifier in it does not exist. A path miss adds suggestions, the closest real endpoints. |\n| 405 | [`method_not_allowed`](https://roxyapi.com/docs/errors#method_not_allowed) | The path exists for a different HTTP method. The body lists the accepted methods in allow, as does the Allow header. |\n| 409 | [`conflict`](https://roxyapi.com/docs/errors#conflict) | The request cannot be applied in the current state. |\n| 410 | [`gone`](https://roxyapi.com/docs/errors#gone) | The path was removed permanently. |\n| 413 | [`payload_too_large`](https://roxyapi.com/docs/errors#payload_too_large) | The request body is larger than the API accepts. |\n| 415 | [`unsupported_media_type`](https://roxyapi.com/docs/errors#unsupported_media_type) | A request with a body was sent without Content-Type: application/json. |\n| 422 | [`unprocessable_entity`](https://roxyapi.com/docs/errors#unprocessable_entity) | Every field is valid, but the combination cannot be computed. |\n| 429 | [`rate_limit_exceeded`](https://roxyapi.com/docs/errors#rate_limit_exceeded) | The monthly request allowance is used up. Retry-After gives the seconds to the reset. |\n| 429 | [`rate_limit_per_minute`](https://roxyapi.com/docs/errors#rate_limit_per_minute) | The per-minute limit of the plan was reached. Retry-After gives the seconds to the next minute, and the monthly allowance is not charged. |\n| 429 | [`rate_limited`](https://roxyapi.com/docs/errors#rate_limited) | A rate limit was reached, reported without the plan detail. |\n| 429 | [`free_tier_exhausted`](https://roxyapi.com/docs/errors#free_tier_exhausted) | A keyless request has used up its trial allowance. |\n| 500 | [`internal_error`](https://roxyapi.com/docs/errors#internal_error) | The request failed inside our service. Retry with exponential backoff. |\n| 503 | [`compute_saturated`](https://roxyapi.com/docs/errors#compute_saturated) | Heavy calculations are briefly at capacity. Send the same request again after Retry-After seconds. |\n| Any | [`error`](https://roxyapi.com/docs/errors#error) | A fallback for a status with no more specific code. The status and the error field carry the signal. |\n\n## Pricing\n\nOne flat subscription covers every domain, every endpoint, Remote MCP, the SDKs, UI components, widgets and every language. Every call counts the same, a planet position or a full birth chart, with no credits and no per-product fees. From $39 per month for 50K requests, up to 3M requests, with custom volume above that: [roxyapi.com/pricing](https://roxyapi.com/pricing).\n\n## Resources\n\n- [Quickstart](https://roxyapi.com/docs/quickstart): the first call in 60 seconds\n- [Documentation](https://roxyapi.com/docs): guides, tutorials and a reference per domain\n- [Remote MCP](https://roxyapi.com/docs/mcp): connect an AI agent\n- [SDKs](https://roxyapi.com/docs/sdk) and [UI components](https://roxyapi.com/ui)\n- [Templates](https://roxyapi.com/templates): open source apps to clone and deploy\n- [Methodology](https://roxyapi.com/methodology): how accuracy is verified\n- [Contact](https://roxyapi.com/contact): support and key recovery\n",
+    "description": "# RoxyAPI: the Spiritual OS layer for agentic AI\n\n> **Base URL:** `https://roxyapi.com/api/v2`. Every path below is relative to it.\n\nOne API key for 18 insight domains (Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 261+ endpoints, planetary positions read directly from the NASA JPL DE440 ephemeris and verified against NASA JPL Horizons, and every calculation held by 3,502 gold standard tests. Readings come back as structured data with editorial interpretation text, translated into 10+ languages via `?lang=` on translated endpoints. Remote MCP servers, typed SDKs for TypeScript, Python, PHP, C#, and Go, drop-in UI components and copy-paste widgets, and open source Templates all run on this one document.\n\n## Who builds on RoxyAPI\n\n- **Developers** shipping astrology, tarot, numerology and wellness apps without learning each system first\n- **AI agent builders** giving Claude, GPT or Gemini real calculations instead of guesses, over Remote MCP\n- **Vibe coders** building with Cursor, Claude Code, Bolt or Replit from the spec and AGENTS.md\n- **Founders and brands** launching insight products for their audience in days instead of months\n\n## Quick start\n\n**1. Get a key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). It is ready the moment payment clears.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/astrology/horoscope/aries/daily\n```\n\n**3. Check your usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agents: Remote MCP\n\nEvery domain has its own Remote MCP server over Streamable HTTP at `https://roxyapi.com/mcp/{domain}` (for example `/mcp/astrology`), 258+ tools in all, with nothing to install or host. Add the URL to Claude, Cursor, VS Code, ChatGPT or any MCP client, or connect from the OpenAI Agents SDK and Gemini ADK. Coding agents that build against this API use the documentation server at `/mcp/docs`. Setup for every client: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp).\n\n## Authentication\n\nSend your key as `X-API-Key: YOUR_KEY` (recommended), as `Authorization: Bearer YOUR_KEY`, or as the `?api_key=` query parameter for quick tests. Keep secret keys on a server; publishable keys are for the browser.\n\n## Responses and limits\n\nClean JSON with no wrapper. An error returns `{ \"error\", \"code\", \"doc_url\" }`: `error` is readable and may change wording, `code` is stable and the one to switch on, and `doc_url` links to the fix for that exact code.\n\nEvery response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used` and `X-RateLimit-Reset` for your monthly allowance, which resets on the 1st of each month at 00:00 UTC. Each plan also has a per-minute limit for bursts, from 600 requests per minute on Starter; going over it answers `429` with a `Retry-After` and never counts against the month.\n\n## Errors\n\nEvery code the API returns, also published machine-readably as `x-error-codes` on the `info` object of this document:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | [`validation_error`](https://roxyapi.com/docs/errors#validation_error) | A field is missing or invalid. The body lists every failing field at once in issues, each with its path and the expected shape. |\n| 400 | [`bad_request`](https://roxyapi.com/docs/errors#bad_request) | The request was rejected as a whole, for example a body that is not valid JSON or a date range that ends before it starts. |\n| 400 | [`date_out_of_range`](https://roxyapi.com/docs/errors#date_out_of_range) | A date lies outside the span the planetary positions are served for. The error names the supported dates. |\n| 401 | [`api_key_required`](https://roxyapi.com/docs/errors#api_key_required) | No API key was sent. |\n| 401 | [`invalid_api_key`](https://roxyapi.com/docs/errors#invalid_api_key) | The key sent is malformed or cannot be verified. |\n| 401 | [`api_key_revoked`](https://roxyapi.com/docs/errors#api_key_revoked) | The key was valid once and has since been revoked from the account page. |\n| 401 | [`subscription_not_found`](https://roxyapi.com/docs/errors#subscription_not_found) | The key verifies, but the subscription behind it no longer exists. |\n| 401 | [`subscription_inactive`](https://roxyapi.com/docs/errors#subscription_inactive) | The subscription behind the key is cancelled, expired or suspended, or a trial is past its end date. |\n| 401 | [`publishable_key_not_allowed_on_mcp`](https://roxyapi.com/docs/errors#publishable_key_not_allowed_on_mcp) | A publishable key was used on a Remote MCP server, which takes a secret key. |\n| 401 | [`invalid_client_ip`](https://roxyapi.com/docs/errors#invalid_client_ip) | A keyless request could not be attributed to a caller. |\n| 401 | [`unauthorized`](https://roxyapi.com/docs/errors#unauthorized) | Authentication failed with no more specific reason to give. |\n| 403 | [`forbidden`](https://roxyapi.com/docs/errors#forbidden) | The key is valid, but this request is not permitted. |\n| 403 | [`origin_required`](https://roxyapi.com/docs/errors#origin_required) | A publishable key with an origin allowlist was used with no Origin header, as from a server or a native app. |\n| 403 | [`origin_not_allowed`](https://roxyapi.com/docs/errors#origin_not_allowed) | The calling site is not on the origin allowlist of this publishable key. |\n| 404 | [`not_found`](https://roxyapi.com/docs/errors#not_found) | Nothing is served at this path, or the identifier in it does not exist. A path miss adds suggestions, the closest real endpoints. |\n| 405 | [`method_not_allowed`](https://roxyapi.com/docs/errors#method_not_allowed) | The path exists for a different HTTP method. The body lists the accepted methods in allow, as does the Allow header. |\n| 409 | [`conflict`](https://roxyapi.com/docs/errors#conflict) | The request cannot be applied in the current state. |\n| 410 | [`gone`](https://roxyapi.com/docs/errors#gone) | The path was removed permanently. |\n| 413 | [`payload_too_large`](https://roxyapi.com/docs/errors#payload_too_large) | The request body is larger than the API accepts. |\n| 415 | [`unsupported_media_type`](https://roxyapi.com/docs/errors#unsupported_media_type) | A request with a body was sent without Content-Type: application/json. |\n| 422 | [`unprocessable_entity`](https://roxyapi.com/docs/errors#unprocessable_entity) | Every field is valid, but the combination cannot be computed. |\n| 429 | [`rate_limit_exceeded`](https://roxyapi.com/docs/errors#rate_limit_exceeded) | The monthly request allowance is used up. Retry-After gives the seconds to the reset. |\n| 429 | [`rate_limit_per_minute`](https://roxyapi.com/docs/errors#rate_limit_per_minute) | The per-minute limit of the plan was reached. Retry-After gives the seconds to the next minute, and the monthly allowance is not charged. |\n| 429 | [`rate_limited`](https://roxyapi.com/docs/errors#rate_limited) | A rate limit was reached, reported without the plan detail. |\n| 429 | [`free_tier_exhausted`](https://roxyapi.com/docs/errors#free_tier_exhausted) | A keyless request has used up its trial allowance. |\n| 500 | [`internal_error`](https://roxyapi.com/docs/errors#internal_error) | The request failed inside our service. Retry with exponential backoff. |\n| 503 | [`compute_saturated`](https://roxyapi.com/docs/errors#compute_saturated) | Heavy calculations are briefly at capacity. Send the same request again after Retry-After seconds. |\n| Any | [`error`](https://roxyapi.com/docs/errors#error) | A fallback for a status with no more specific code. The status and the error field carry the signal. |\n\n## Pricing\n\nOne flat subscription covers every domain, every endpoint, Remote MCP, the SDKs, UI components, widgets and every language. Every call counts the same, a planet position or a full birth chart, with no credits and no per-product fees. From $39 per month for 50K requests, up to 3M requests, with custom volume above that: [roxyapi.com/pricing](https://roxyapi.com/pricing).\n\n## Resources\n\n- [Quickstart](https://roxyapi.com/docs/quickstart): the first call in 60 seconds\n- [Documentation](https://roxyapi.com/docs): guides, tutorials and a reference per domain\n- [Remote MCP](https://roxyapi.com/docs/mcp): connect an AI agent\n- [SDKs](https://roxyapi.com/docs/sdk) and [UI components](https://roxyapi.com/ui)\n- [Templates](https://roxyapi.com/templates): open source apps to clone and deploy\n- [Methodology](https://roxyapi.com/methodology): how accuracy is verified\n- [Contact](https://roxyapi.com/contact): support and key recovery\n",
     "x-error-codes": [
       {
         "code": "validation_error",
@@ -14,6 +14,11 @@
         "code": "bad_request",
         "status": 400,
         "meaning": "The request was rejected as a whole, for example a body that is not valid JSON or a date range that ends before it starts."
+      },
+      {
+        "code": "date_out_of_range",
+        "status": 400,
+        "meaning": "A date lies outside the span the planetary positions are served for. The error names the supported dates."
       },
       {
         "code": "api_key_required",
@@ -200,11 +205,11 @@
     },
     {
       "name": "Numerology",
-      "description": "Numerology API to calculate life path, expression, soul urge, personality, and maturity numbers, with Pinnacle and Challenge life-phase timing, Hidden Passion, Subconscious Self, and Cornerstone and Capstone name analysis. Birth day 1-31 profiles, lucky associations (colors, gemstones, planets), personal year and month forecasts, relationship compatibility, and karmic debt and lessons. Unicode-aware multilingual name handling transliterates Spanish, French, German, Russian, Hindi, Bengali, Tamil, Japanese, Chinese, Korean, Arabic, Greek, and Hebrew names to correct Pythagorean numbers so non-Latin scripts no longer drop letters. Both Pythagorean and Chaldean systems in one call, Cheiro compound numbers (10 to 52) with planetary rulers, and business and brand name analysis. Built for numerology apps, editorial platforms, AI chatbots, and wellness services. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Numerology API for life path numbers, complete numerology charts and compatibility, in both Pythagorean and Chaldean numerology. One chart call returns the Life Path, Expression, Soul Urge, Personality, Birth Day and Maturity numbers with Pinnacles, Challenges, Karmic Lessons, karmic debt, Hidden Passion, Subconscious Self, Cornerstone, Capstone, First Vowel and the Personal Year, each with a full interpretation and every calculation step. Pythagorean numbers follow Hans Decoz and Chaldean numbers follow Cheiro, with master numbers 11, 22 and 33 kept and name numbers reduced name by name as both authors print them. A name in any script is converted to Latin letters, Cyrillic and Greek as the passport spelling, and every name calculation shows the letters it counted. Personal Year, Month and Day forecasts, four Bridge numbers, Cheiro compound numbers 10 to 52, side by side dual-system readings and business name analysis complete the set. Built for numerology apps, dating and compatibility features, editorial platforms and AI agents. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Kabbalah",
-      "description": "Kabbalah API for gematria, the 72 names, the Tree of Life and the Hebrew birthday, from one key. Score a Hebrew word or a Latin name across ten rabbinic ciphers with the per letter breakdown, every candidate Hebrew spelling shown and the rule that chose one, plus a cited equal value lexicon. The 72 names are derived from the verses rather than copied from a table, the birth name is dated by the exact position of the Sun or by the civil wheel as you choose, and the sephirot, the 22 paths and the 22 letters come back under typed school variants cross linked to the tarot deck. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Kabbalah API for gematria, the 72 names, the Tree of Life and the Hebrew birthday, from one key. Score a Hebrew word or a Latin name across 11 rabbinic ciphers with the per letter breakdown, every candidate Hebrew spelling shown and the rule that chose one, plus a cited equal value lexicon. The 72 names are derived from the verses rather than copied from a table, the birth name is dated by the exact position of the Sun or by the civil wheel as you choose, and the sephirot, the 22 paths and the 22 letters come back under typed school variants cross linked to the tarot deck. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Tarot",
@@ -1363,7 +1368,7 @@
                 ]
               }
             },
-            "description": "Side-by-side house cusp comparison keyed by house system id: placidus, whole-sign, equal, koch. Only included when houseSystem is set to \"all\". Useful for educational tools and system comparison."
+            "description": "Side-by-side house cusp comparison keyed by house system id: placidus, whole-sign, equal, koch. Only included when houseSystem is set to \"all\". A system that cannot be computed at the latitude (Placidus and Koch beyond 66 degrees 33 minutes north or south) is omitted, so every key present carries its own cusps, and the top level houses array is the first system present in that order. Useful for educational tools and system comparison."
           }
         },
         "required": [
@@ -2278,7 +2283,7 @@
                 "type": "string",
                 "format": "date",
                 "example": "1990-07-15",
-                "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected."
+                "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected. Calculations that read planetary positions support 1550-01-02 to 2650-01-22; outside that span they answer 400 with code date_out_of_range, and a calculation that reads a window around the date (a sunrise search, a run of days) may answer the same 400 for a date within a few days of either end."
               },
               "time": {
                 "type": "string",
@@ -16321,7 +16326,7 @@
               }
             ],
             "default": 0,
-            "description": "Timezone as an IANA name such as \"Europe/London\", or as decimal hours from UTC such as 5.5. An IANA name is resolved to the offset in force on the requested date. It decides which local day is meant and, on the clock-hour grid, where the blocks fall. Defaults to 0.",
+            "description": "Timezone as an IANA name such as \"Europe/London\", or as decimal hours from UTC such as 5.5. An IANA name is resolved to the offset in force on the requested date, and on the clock-hour grid at the local hour each block opens, so on a daylight-saving change every block keeps its printed hour and one that falls in the skipped hour moves forward past it. It decides which local day is meant and, on the clock-hour grid, where the blocks fall. Defaults to 0.",
             "example": "Europe/London"
           },
           "doshaClock": {
@@ -16348,7 +16353,7 @@
             "type": "string",
             "format": "date",
             "example": "2026-03-01",
-            "description": "The date to resolve, in YYYY-MM-DD format. The season is read at midday UTC on this date, because a season boundary is an instant and a calendar day has to be reduced to one; on a day that carries a boundary, the half the midday falls in is the answer."
+            "description": "The date to resolve, in YYYY-MM-DD format. The season is read at midday UTC on this date, because a season boundary is an instant and a calendar day has to be reduced to one; on a day that carries a boundary, the half the midday falls in is the answer. Within about two months of either end of the supported span, a date whose season opens or closes outside that span answers 400."
           },
           "ritucharyaScheme": {
             "type": "string",
@@ -19568,10 +19573,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for the monthly ephemeris (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for the monthly ephemeris (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -20690,13 +20695,13 @@
           {
             "schema": {
               "type": "integer",
-              "minimum": 1900,
-              "maximum": 2100,
+              "minimum": 1551,
+              "maximum": 2649,
               "example": 2026,
-              "description": "Calendar year (1900-2100)."
+              "description": "Calendar year, 1551 to 2649."
             },
             "required": true,
-            "description": "Calendar year (1900-2100).",
+            "description": "Calendar year, 1551 to 2649.",
             "name": "year",
             "in": "path"
           },
@@ -22663,10 +22668,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for the aspect calendar (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for the aspect calendar (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -23722,10 +23727,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for the monthly transit table (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for the monthly transit table (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -25315,10 +25320,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for the declination calendar (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for the declination calendar (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -25764,10 +25769,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year to scan for node passages (1900-2100)."
+                    "description": "Year to scan for node passages (1551 to 2649)."
                   },
                   "timezone": {
                     "anyOf": [
@@ -26421,7 +26426,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith. Chiron is included for charts from 1600 to 2500 and omitted outside that range."
                         },
                         "houses": {
                           "type": "array",
@@ -27287,7 +27292,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith. Chiron is included for charts from 1600 to 2500 and omitted outside that range."
                         },
                         "houses": {
                           "type": "array",
@@ -32794,7 +32799,7 @@
                     "type": "string",
                     "format": "date",
                     "example": "2026-08-15",
-                    "description": "Approximate date near the expected planetary return (YYYY-MM-DD). Provide a date within the expected return window. The algorithm searches from this starting point."
+                    "description": "Approximate date near the expected planetary return (YYYY-MM-DD). The return nearest this date is returned, so a date off by months still lands on a genuine return; during a retrograde loop the planet crosses its natal degree up to three times and the crossing nearest the date is the one returned."
                   },
                   "latitude": {
                     "type": "number",
@@ -33032,7 +33037,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith. Chiron is included for charts from 1600 to 2500 and omitted outside that range."
                         },
                         "houses": {
                           "type": "array",
@@ -38825,10 +38830,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for monthly ephemeris (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for monthly ephemeris (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -48235,7 +48240,7 @@
                     "type": "string",
                     "format": "date",
                     "example": "2026-02-03",
-                    "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected."
+                    "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected. Calculations that read planetary positions support 1550-01-02 to 2650-01-22; outside that span they answer 400 with code date_out_of_range, and a calculation that reads a window around the date (a sunrise search, a run of days) may answer the same 400 for a date within a few days of either end."
                   },
                   "latitude": {
                     "type": "number",
@@ -49479,7 +49484,7 @@
                     "type": "string",
                     "format": "date",
                     "example": "2026-02-03",
-                    "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected."
+                    "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected. Calculations that read planetary positions support 1550-01-02 to 2650-01-22; outside that span they answer 400 with code date_out_of_range, and a calculation that reads a window around the date (a sunrise search, a run of days) may answer the same 400 for a date within a few days of either end."
                   },
                   "latitude": {
                     "type": "number",
@@ -49907,7 +49912,7 @@
                     "type": "string",
                     "format": "date",
                     "example": "2026-02-03",
-                    "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected."
+                    "description": "Date in YYYY-MM-DD format. A single-digit month or day is accepted and zero-padded (2026-3-5 becomes 2026-03-05). Impossible calendar dates are rejected. Calculations that read planetary positions support 1550-01-02 to 2650-01-22; outside that span they answer 400 with code date_out_of_range, and a calculation that reads a window around the date (a sunrise search, a run of days) may answer the same 400 for a date within a few days of either end."
                   },
                   "latitude": {
                     "type": "number",
@@ -56234,10 +56239,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for monthly analysis (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for monthly analysis (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -56671,10 +56676,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for monthly analysis (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for monthly analysis (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -57735,10 +57740,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for monthly transit analysis (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for monthly transit analysis (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -58188,14 +58193,14 @@
                     "minimum": -90,
                     "maximum": 90,
                     "example": 17.385044,
-                    "description": "Observer latitude in decimal degrees. Used for topocentric declination corrections."
+                    "description": "Birth latitude in decimal degrees, part of the birth record. Declinations are geocentric, as every published ephemeris prints them, so it does not move them."
                   },
                   "longitude": {
                     "type": "number",
                     "minimum": -180,
                     "maximum": 180,
                     "example": 78.486671,
-                    "description": "Observer longitude in decimal degrees. Affects local time context for declination calculations."
+                    "description": "Birth longitude in decimal degrees, part of the birth record. Declinations are geocentric, so it does not move them; the instant comes from date, time and timezone."
                   },
                   "timezone": {
                     "anyOf": [
@@ -58614,10 +58619,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year for monthly parallel analysis (1900-2100). Defaults to the current year (UTC)."
+                    "description": "Year for monthly parallel analysis (1551 to 2649). Defaults to the current year (UTC)."
                   },
                   "month": {
                     "type": "integer",
@@ -59033,10 +59038,10 @@
                 "properties": {
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
-                    "description": "Year to scan for ecliptic crossings (1900-2100)."
+                    "description": "Year to scan for ecliptic crossings (1551 to 2649)."
                   },
                   "timezone": {
                     "anyOf": [
@@ -63834,7 +63839,7 @@
                           "datetime": {
                             "type": "string",
                             "example": "2026-07-04T08:42:11Z",
-                            "description": "Exact instant of the event as an ISO-8601 UTC datetime. Astronomical events are refined to this instant by search, not reported at a daily sample point."
+                            "description": "Exact instant of the event as an ISO-8601 UTC datetime, to the nearest second. Astronomical events are refined to this instant by search, not reported at a daily sample point; a dasha-change is the period boundary itself, counted from the birth instant."
                           },
                           "domain": {
                             "type": "string",
@@ -63863,7 +63868,7 @@
                           "body": {
                             "type": "string",
                             "example": "Saturn",
-                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
+                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, or the critical cycle for biorhythm days. For a dasha-change, the Vimshottari lords outermost first, joined by a hyphen, then one space and the level: Saturn Mahadasha, Saturn-Mercury Antardasha, Saturn-Mercury-Ketu Pratyantardasha. Lords are always one of Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury. Never localized."
                           },
                           "target": {
                             "type": "string",
@@ -64387,7 +64392,7 @@
                           "datetime": {
                             "type": "string",
                             "example": "2026-07-04T08:42:11Z",
-                            "description": "Exact instant of the event as an ISO-8601 UTC datetime. Astronomical events are refined to this instant by search, not reported at a daily sample point."
+                            "description": "Exact instant of the event as an ISO-8601 UTC datetime, to the nearest second. Astronomical events are refined to this instant by search, not reported at a daily sample point; a dasha-change is the period boundary itself, counted from the birth instant."
                           },
                           "domain": {
                             "type": "string",
@@ -64416,7 +64421,7 @@
                           "body": {
                             "type": "string",
                             "example": "Saturn",
-                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
+                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, or the critical cycle for biorhythm days. For a dasha-change, the Vimshottari lords outermost first, joined by a hyphen, then one space and the level: Saturn Mahadasha, Saturn-Mercury Antardasha, Saturn-Mercury-Ketu Pratyantardasha. Lords are always one of Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury. Never localized."
                           },
                           "target": {
                             "type": "string",
@@ -64990,7 +64995,7 @@
                           "datetime": {
                             "type": "string",
                             "example": "2026-07-04T08:42:11Z",
-                            "description": "Exact instant of the event as an ISO-8601 UTC datetime. Astronomical events are refined to this instant by search, not reported at a daily sample point."
+                            "description": "Exact instant of the event as an ISO-8601 UTC datetime, to the nearest second. Astronomical events are refined to this instant by search, not reported at a daily sample point; a dasha-change is the period boundary itself, counted from the birth instant."
                           },
                           "domain": {
                             "type": "string",
@@ -65019,7 +65024,7 @@
                           "body": {
                             "type": "string",
                             "example": "Saturn",
-                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
+                            "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, or the critical cycle for biorhythm days. For a dasha-change, the Vimshottari lords outermost first, joined by a hyphen, then one space and the level: Saturn Mahadasha, Saturn-Mercury Antardasha, Saturn-Mercury-Ketu Pratyantardasha. Lords are always one of Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury. Never localized."
                           },
                           "target": {
                             "type": "string",
@@ -65686,7 +65691,7 @@
                                 "datetime": {
                                   "type": "string",
                                   "example": "2026-07-04T08:42:11Z",
-                                  "description": "Exact instant of the event as an ISO-8601 UTC datetime. Astronomical events are refined to this instant by search, not reported at a daily sample point."
+                                  "description": "Exact instant of the event as an ISO-8601 UTC datetime, to the nearest second. Astronomical events are refined to this instant by search, not reported at a daily sample point; a dasha-change is the period boundary itself, counted from the birth instant."
                                 },
                                 "domain": {
                                   "type": "string",
@@ -65715,7 +65720,7 @@
                                 "body": {
                                   "type": "string",
                                   "example": "Saturn",
-                                  "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, a mahadasha, antardasha, or pratyantardasha label for dasha changes, or the critical cycle for biorhythm days."
+                                  "description": "Primary subject of the event. A transiting planet for western events, Sun for a solar eclipse, Moon for a lunar eclipse or a new or full moon, or the critical cycle for biorhythm days. For a dasha-change, the Vimshottari lords outermost first, joined by a hyphen, then one space and the level: Saturn Mahadasha, Saturn-Mercury Antardasha, Saturn-Mercury-Ketu Pratyantardasha. Lords are always one of Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury. Never localized."
                                 },
                                 "target": {
                                   "type": "string",
@@ -66105,8 +66110,8 @@
                   },
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2200,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
                     "description": "Year to cast the solar return for. The chart is erected for the moment in this year when the transiting Sun returns to the natal Sun longitude, on or within a day of the birthday."
                   },
@@ -66366,7 +66371,7 @@
                               "isRetrograde"
                             ]
                           },
-                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith."
+                          "description": "All 14 celestial bodies in the tropical zodiac with house placements: the 10 classical planets (Sun through Pluto), the lunar nodes (North Node, South Node, in the requested `nodeType` convention), Chiron, and Black Moon Lilith. Chiron is included for charts from 1600 to 2500 and omitted outside that range."
                         },
                         "houses": {
                           "type": "array",
@@ -73098,7 +73103,7 @@
                     ],
                     "default": "clock",
                     "example": "clock",
-                    "description": "Which clock the HOUR branch is read from. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
+                    "description": "Which clock the day boundary and the hour branch are read from, so a correction that carries a birth across midnight moves the day pillar with the hour. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
                   }
                 },
                 "required": [
@@ -73136,7 +73141,7 @@
                         "timezone": {
                           "type": "number",
                           "example": 8,
-                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force on the birth date, so this is the literal number applied and never the name."
+                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth, so this is the literal number applied and never the name. A local time that never happened (the skipped hour of a daylight-saving change) is moved forward past the gap, and date, time and timezone then echo the clock that was running, which the day and hour pillars are read from."
                         },
                         "latitude": {
                           "type": "number",
@@ -74068,7 +74073,7 @@
                     ],
                     "default": "clock",
                     "example": "clock",
-                    "description": "Which clock the HOUR branch is read from. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
+                    "description": "Which clock the day boundary and the hour branch are read from, so a correction that carries a birth across midnight moves the day pillar with the hour. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
                   },
                   "gender": {
                     "type": "string",
@@ -74089,8 +74094,8 @@
                   },
                   "annualFromYear": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
                     "description": "First Gregorian year of the annual pillar overlay. Omit it to leave annualPillars out of the response entirely. The annual pillar is the year the chart is currently walking through, read against the ten-year luck pillar underneath it."
                   },
@@ -74139,7 +74144,7 @@
                         "timezone": {
                           "type": "number",
                           "example": 8,
-                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force on the birth date, so this is the literal number applied and never the name."
+                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth, so this is the literal number applied and never the name. A local time that never happened (the skipped hour of a daylight-saving change) is moved forward past the gap, and date, time and timezone then echo the clock that was running, which the day and hour pillars are read from."
                         },
                         "latitude": {
                           "type": "number",
@@ -74789,7 +74794,7 @@
           "Chinese Astrology"
         ],
         "summary": "Calculate Day Master strength - BaZi favorable element API",
-        "description": "Assess how well the Day Master is supported by the rest of a BaZi chart, and which of the five elements help it. Uses the classical three-factor method: whether the birth month season backs the Day Master element, whether any branch stores a root for it, and whether the other stems help or spend it. Returns the verdict, an auditable score with each factor contribution, the seasonal state, the root count, the element headcount, and the favorable and unfavorable element lists that follow from the verdict. Built for chart readers, remedy features, and agents that need the usable half of a Four Pillars reading.",
+        "description": "Assess how well the Day Master is supported by the rest of a BaZi chart, and which of the five elements help it. Uses the classical three-factor method: whether the birth month season backs the Day Master element, whether any branch stores a root for it, and whether the other stems and the branches outside the month help or spend it. Returns the verdict, an auditable score with each factor contribution, the seasonal state, the root count, the element headcount, and the favorable and unfavorable element lists that follow from the verdict. Built for chart readers, remedy features, and agents that need the usable half of a Four Pillars reading.",
         "security": [
           {
             "apiKey": []
@@ -74898,7 +74903,7 @@
                     ],
                     "default": "clock",
                     "example": "clock",
-                    "description": "Which clock the HOUR branch is read from. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
+                    "description": "Which clock the day boundary and the hour branch are read from, so a correction that carries a birth across midnight moves the day pillar with the hour. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
                   }
                 },
                 "required": [
@@ -74936,7 +74941,7 @@
                         "timezone": {
                           "type": "number",
                           "example": 8,
-                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force on the birth date, so this is the literal number applied and never the name."
+                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth, so this is the literal number applied and never the name. A local time that never happened (the skipped hour of a daylight-saving change) is moved forward past the gap, and date, time and timezone then echo the clock that was running, which the day and hour pillars are read from."
                         },
                         "latitude": {
                           "type": "number",
@@ -75088,7 +75093,7 @@
                           "id": {
                             "type": "string",
                             "example": "month-command",
-                            "description": "Which classical factor this is. month-command is de ling, whether the birth month season backs the Day Master element. rooting is de di, whether any branch stores a stem of that element. party is de shi, whether the other three stems help or spend it. Always English, whatever the lang parameter says."
+                            "description": "Which classical factor this is. month-command is de ling, whether the birth month season backs the Day Master element. rooting is de di, whether any branch stores a stem of that element. party is de shi, whether the other three stems, and the principal stems of the three branches outside the month, help or spend it. Always English, whatever the lang parameter says."
                           },
                           "name": {
                             "type": "string",
@@ -75568,7 +75573,7 @@
                         ],
                         "default": "clock",
                         "example": "clock",
-                        "description": "Which clock the HOUR branch is read from. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
+                        "description": "Which clock the day boundary and the hour branch are read from, so a correction that carries a birth across midnight moves the day pillar with the hour. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
                       }
                     },
                     "required": [
@@ -75652,7 +75657,7 @@
                         ],
                         "default": "clock",
                         "example": "clock",
-                        "description": "Which clock the HOUR branch is read from. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
+                        "description": "Which clock the day boundary and the hour branch are read from, so a correction that carries a birth across midnight moves the day pillar with the hour. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
                       }
                     },
                     "required": [
@@ -76992,12 +76997,12 @@
                     ],
                     "default": "clock",
                     "example": "clock",
-                    "description": "Which clock the HOUR branch is read from. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
+                    "description": "Which clock the day boundary and the hour branch are read from, so a correction that carries a birth across midnight moves the day pillar with the hour. \"clock\" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. \"local-mean\" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. \"solar\" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need \"longitude\" in the request and return 400 without it."
                   },
                   "year": {
                     "type": "integer",
-                    "minimum": 1900,
-                    "maximum": 2100,
+                    "minimum": 1551,
+                    "maximum": 2649,
                     "example": 2026,
                     "description": "Gregorian year to read against the natal chart. The annual pillar for that year is resolved under the same year boundary the request selected, so a li-chun reading and a lunar-new-year reading of the same calendar year can differ."
                   }
@@ -77038,7 +77043,7 @@
                         "timezone": {
                           "type": "number",
                           "example": 8,
-                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force on the birth date, so this is the literal number applied and never the name."
+                          "description": "Decimal UTC offset the chart was computed with, resolved from whatever the request sent. An IANA name is resolved to the offset in force at the birth, so this is the literal number applied and never the name. A local time that never happened (the skipped hour of a daylight-saving change) is moved forward past the gap, and date, time and timezone then echo the clock that was running, which the day and hour pillars are read from."
                         },
                         "latitude": {
                           "type": "number",
@@ -80762,7 +80767,7 @@
                     "type": "string",
                     "format": "date",
                     "example": "1990-06-15",
-                    "description": "Gregorian date to convert to the lunisolar calendar. Send this OR the lunar fields, never both."
+                    "description": "Gregorian date to convert to the lunisolar calendar. Send this OR the lunar fields, never both. Converts from the first day of lunar year 1551 to the last day of lunar year 2648, a little inside the supported date span, because numbering a lunar month needs the winter solstice on each side of it and placing a leap month needs the year before; a date outside that answers 400 date_out_of_range."
                   },
                   "lunarYear": {
                     "type": "integer",
@@ -89201,10 +89206,10 @@
               "type": "string",
               "format": "date",
               "example": "2026-08-23",
-              "description": "Date to resolve the current period for, in YYYY-MM-DD format. Defaults to today in UTC. Useful for asking which period a building was completed in."
+              "description": "Date to resolve the current period for, in YYYY-MM-DD format. Defaults to today in UTC. Useful for asking which period a building was completed in. A date landing exactly on the Li Chun day a period opens is placed in the outgoing period."
             },
             "required": false,
-            "description": "Date to resolve the current period for, in YYYY-MM-DD format. Defaults to today in UTC. Useful for asking which period a building was completed in.",
+            "description": "Date to resolve the current period for, in YYYY-MM-DD format. Defaults to today in UTC. Useful for asking which period a building was completed in. A date landing exactly on the Li Chun day a period opens is placed in the outgoing period.",
             "name": "date",
             "in": "query"
           }
@@ -89240,7 +89245,7 @@
                     "currentPeriod": {
                       "type": "number",
                       "example": 9,
-                      "description": "The period in force on that date. Resolved at Li Chun, so a date in January belongs to the previous solar year and can fall in the previous period."
+                      "description": "The period in force on that date. Resolved at Li Chun, so a date in January belongs to the previous solar year and can fall in the previous period. A date is read at the start of its day in the Chinese calendar frame (UTC+8) and Li Chun falls part-way through its own day, so the date a period opens on still reads as the previous period, the same reading the Kua route gives a birth date."
                     },
                     "periods": {
                       "type": "array",
@@ -103784,8 +103789,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Life Path number - Most important numerology calculation",
-        "description": "Calculate your Life Path number from your birth date using Pythagorean numerology. This is the most significant number in your numerology chart, revealing your life purpose, natural talents, and destiny path. Automatically detects Master Numbers (11, 22, 33) and Karmic Debt numbers (13, 14, 16, 19). Returns comprehensive interpretation including personality traits, strengths, challenges, career guidance, relationship compatibility, and spiritual insights. Perfect for numerology apps, birth chart calculators, life purpose discovery tools, personal development platforms, and astrology services. Get detailed 300-500 word meanings for all numbers 1-9, 11, 22, and 33.",
+        "summary": "Calculate Life Path number - Calculator and meaning API",
+        "description": "Calculate a Life Path number from a birth date with Pythagorean numerology. The Life Path is the core number of a numerology chart, read from the birth year, month and day alone, with master numbers 11, 22 and 33 kept and a karmic debt of 13, 14, 16 or 19 flagged with its meaning. The response returns every reduction step and a full interpretation (archetype title, keywords, description, strengths, challenges, career, relationships and spirituality) in the language set by lang. Built for Life Path calculators, numerology apps, onboarding personality profiles and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -103870,7 +103875,7 @@
                     "calculation": {
                       "type": "string",
                       "example": "Month: 7, Day: 15 → 1+5 = 6, Year: 1990 → 1+9+9+0 = 19 → 1+9 = 10 → 1+0 = 1 → 7+6+1=14 → 5",
-                      "description": "Full step-by-step breakdown of the 3-Cycle Pythagorean reduction. Shows how month, day, and year each reduce independently before combining into the final Life Path number."
+                      "description": "Every step of the calculation: the birth month, day and year each reduced, then combined into the final Life Path number."
                     },
                     "type": {
                       "type": "string",
@@ -103883,7 +103888,7 @@
                     },
                     "hasKarmicDebt": {
                       "type": "boolean",
-                      "example": false,
+                      "example": true,
                       "description": "Indicates whether a Karmic Debt number (13, 14, 16, or 19) appeared during the reduction chain. Karmic Debt reveals past-life challenges carried into this lifetime."
                     },
                     "karmicDebtNumber": {
@@ -103896,17 +103901,17 @@
                       "properties": {
                         "description": {
                           "type": "string",
-                          "example": "Karmic Debt of Abuse of Freedom",
+                          "example": "Accumulated Obligation of Moderation and Stability",
                           "description": "Title describing the karmic debt theme and core past-life pattern."
                         },
                         "challenge": {
                           "type": "string",
-                          "example": "Past life misuse of personal freedom, possibly through excess or manipulation.",
+                          "example": "A past pattern of misusing personal freedom, whether through overindulgence, excess, or the...",
                           "description": "The specific challenge or pattern from past lives that must be confronted."
                         },
                         "resolution": {
                           "type": "string",
-                          "example": "Learn balance, moderation, and responsible use of freedom.",
+                          "example": "Develop moderation as a practiced discipline rather than a reactive restriction. Build and honor...",
                           "description": "Practical guidance for resolving the karmic debt and transforming the challenge into growth."
                         }
                       },
@@ -103931,18 +103936,18 @@
                             "type": "string"
                           },
                           "example": [
-                            "adventurous",
                             "freedom",
-                            "versatile",
-                            "dynamic",
-                            "curious"
+                            "adventure",
+                            "change",
+                            "versatility",
+                            "curiosity"
                           ],
-                          "description": "Ten defining personality traits and energetic themes associated with this number. Useful for quick personality snapshots, tag clouds, and compatibility matching."
+                          "description": "Defining personality traits and energetic themes of this number. Useful for quick personality snapshots, tag clouds and compatibility matching."
                         },
                         "description": {
                           "type": "string",
-                          "example": "In the span of single-digit numbers 1 to 9, 5 is the number in the exact middle. It acts as a go-between and a pivotal point of change...",
-                          "description": "In-depth 300 to 500 word interpretation covering personality, purpose, and life themes. Written by numerology experts with decades of practice. Suitable for full-page readings and detailed reports."
+                          "example": "The 5 is the most kinetic of all single-digit numbers. It is in constant motion, oriented toward...",
+                          "description": "Core interpretation of the number covering personality, purpose and life themes. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full-page reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -103950,9 +103955,9 @@
                             "type": "string"
                           },
                           "example": [
-                            "Curious",
                             "Adaptable",
-                            "Social"
+                            "Resourceful",
+                            "Socially fluent"
                           ],
                           "description": "Core strengths and positive qualities. Each entry includes a trait name followed by a detailed explanation of how it manifests in daily life."
                         },
@@ -103962,25 +103967,25 @@
                             "type": "string"
                           },
                           "example": [
-                            "Non-committal",
                             "Unreliable",
+                            "Impulsive",
                             "Directionless"
                           ],
                           "description": "Growth areas and shadow qualities to be aware of. Each entry names the challenge and explains its root cause and how to work through it constructively."
                         },
                         "career": {
                           "type": "string",
-                          "example": "Life Path 5 thrives in careers that offer freedom, variety, and constant stimulation...",
+                          "example": "The 5 requires variety, autonomy, and stimulation in its professional life. Sales, journalism...",
                           "description": "Tailored career guidance covering ideal industries, roles, and work environments. Includes specific job titles and explains why certain professional paths align with this number."
                         },
                         "relationships": {
                           "type": "string",
-                          "example": "Life Path 5 individuals are exciting, charming, and freedom-loving partners...",
+                          "example": "The 5 brings vitality and spontaneity to relationships but requires genuine freedom within them to...",
                           "description": "Love, friendship, and family dynamics. Covers romantic compatibility with other Life Path numbers, communication style, and the key relationship lessons for this number."
                         },
                         "spirituality": {
                           "type": "string",
-                          "example": "Five is the rebel, the traveler, the agent of change. It vibrates with adventure and liberation...",
+                          "example": "The 5 encounters the sacred primarily through direct experience rather than formal practice....",
                           "description": "Spiritual path, soul lessons, and recommended practices. Explores the deeper purpose behind this number and offers guidance for personal growth and inner alignment."
                         }
                       },
@@ -104246,8 +104251,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Expression number - Natural talents and life goals",
-        "description": "Calculate your Expression (Destiny) number from your full birth name using Pythagorean numerology. This number reveals your natural talents, abilities, and life goals. It shows what you came here to do and what tools you have to accomplish your life purpose. Returns comprehensive interpretation including personality traits, career paths, relationship dynamics, and spiritual insights. Automatically detects Master Numbers (11, 22, 33). Perfect for name numerology apps, career guidance tools, personal development platforms, and talent assessment services. Get detailed 300-500 word meanings for all numbers 1-9, 11, 22, and 33.",
+        "summary": "Calculate Expression number - Destiny number calculator API",
+        "description": "Calculate the Expression number, also called the Destiny number, from a full birth name with Pythagorean numerology. Every letter is valued and the name is reduced name by name, with master numbers 11, 22 and 33 kept and a karmic debt of 13, 14, 16 or 19 flagged with its meaning. The response lists every letter value and returns a full interpretation of natural talents, career, relationships and spiritual path in the language set by lang. Built for name numerology apps, career and personal brand tools, and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -104290,7 +104295,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full birth name (first, middle, last)"
+                    "description": "Full birth name (first, middle, last). A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 },
                 "required": [
@@ -104310,13 +104315,13 @@
                   "properties": {
                     "number": {
                       "type": "number",
-                      "example": 7,
-                      "description": "Expression number (also called Destiny number) derived from all letters in the full birth name. Reveals natural talents, abilities, and the goals you are meant to achieve. Values: 1 to 9, 11, 22, or 33."
+                      "example": 6,
+                      "description": "Expression number (also called Destiny number) from every letter of the full birth name. Reveals natural talents, abilities, and the goals you are meant to achieve. Values: 1 to 9, 11, 22, or 33."
                     },
                     "calculation": {
                       "type": "string",
-                      "example": "1+6+8+5 + 5+9+3+3+9+1+4 + 1+4+9+2+8 = 78 → 7+8 = 15 → 1+5 = 6",
-                      "description": "Full Pythagorean letter-to-number conversion showing every letter value in the birth name, grouped by word, then summed and reduced to the final Expression number."
+                      "example": "John: J=1, O=6, H=8, N=5 = 20 → 2; William: W=5, I=9, L=3, L=3, I=9, A=1, M=4 = 34 → 7; Smith: S=1, M=4, I=9, T=2, H=8 = 24 → 6 → 2+7+6 = 15 → 6",
+                      "description": "Every letter value of the birth name, grouped by name: each name is summed and reduced, then the names are added and reduced to the final Expression number."
                     },
                     "type": {
                       "type": "string",
@@ -104330,7 +104335,7 @@
                     "hasKarmicDebt": {
                       "type": "boolean",
                       "example": false,
-                      "description": "Whether a Karmic Debt number (13, 14, 16, 19) appeared during the name reduction. Indicates inherited challenges embedded in your given name."
+                      "description": "Whether a Karmic Debt number (13, 14, 16, 19) appeared in the final reduction, the sum of the reduced names. Indicates inherited challenges embedded in your given name."
                     },
                     "karmicDebtNumber": {
                       "type": "number",
@@ -104342,17 +104347,17 @@
                       "properties": {
                         "description": {
                           "type": "string",
-                          "example": "Karmic Debt of Abuse of Freedom",
+                          "example": "Accumulated Obligation of Moderation and Stability",
                           "description": "Title describing the karmic debt theme. Identifies the core past-life pattern that this debt number carries forward."
                         },
                         "challenge": {
                           "type": "string",
-                          "example": "Past life misuse of personal freedom, possibly through excess or manipulation.",
+                          "example": "A past pattern of misusing personal freedom, whether through overindulgence, excess, or the...",
                           "description": "The specific challenge or pattern from past lives that must be confronted. Explains the root cause of recurring obstacles."
                         },
                         "resolution": {
                           "type": "string",
-                          "example": "Learn balance, moderation, and responsible use of freedom.",
+                          "example": "Develop moderation as a practiced discipline rather than a reactive restriction. Build and honor...",
                           "description": "Practical guidance for resolving the karmic debt. Actionable steps for transforming the inherited challenge into growth."
                         }
                       },
@@ -104368,7 +104373,7 @@
                       "properties": {
                         "title": {
                           "type": "string",
-                          "example": "The Seeker",
+                          "example": "The Nurturer",
                           "description": "Numerology archetype for this Expression number. Captures the essence of your natural abilities, such as \"The Communicator\" for 3 or \"The Master Intuitive\" for 11."
                         },
                         "keywords": {
@@ -104377,18 +104382,18 @@
                             "type": "string"
                           },
                           "example": [
-                            "analytical",
-                            "spiritual",
-                            "wise",
-                            "introspective",
-                            "perfectionist"
+                            "love",
+                            "harmony",
+                            "responsibility",
+                            "nurturing",
+                            "family"
                           ],
                           "description": "Defining traits and talent themes for this Expression number. Ideal for personality profiles, compatibility engines, and talent-matching features."
                         },
                         "description": {
                           "type": "string",
-                          "example": "People with a 7 Expression number have a natural gift for analysis and investigation...",
-                          "description": "Expert-written 300 to 500 word interpretation of the natural abilities, life mission, and destiny encoded in your birth name. Covers how these talents manifest across life stages."
+                          "example": "The 6 is the most relationship-oriented of the single-digit numbers, organized around a genuine...",
+                          "description": "Core interpretation of the natural abilities, life mission and destiny the birth name describes. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -104396,10 +104401,9 @@
                             "type": "string"
                           },
                           "example": [
-                            "Deep thinking",
-                            "Intuition",
-                            "Research ability",
-                            "Spiritual insight"
+                            "Supportive",
+                            "Protective",
+                            "Responsible"
                           ],
                           "description": "Natural talents and innate gifts. Each strength includes a detailed explanation of how it shows up in work, relationships, and personal growth."
                         },
@@ -104409,25 +104413,25 @@
                             "type": "string"
                           },
                           "example": [
-                            "Aloofness",
-                            "Over-analysis",
-                            "Skepticism"
+                            "Overprotective",
+                            "Self-neglecting",
+                            "Idealistic"
                           ],
                           "description": "Shadow side of your talents and areas requiring conscious effort. Each challenge explains its root cause and practical strategies for transformation."
                         },
                         "career": {
                           "type": "string",
-                          "example": "Life Path 7 excels in careers that reward deep thinking, research, and intellectual exploration...",
+                          "example": "The 6 is most effective in roles where its capacity for care and its aesthetic sensibility can both...",
                           "description": "Professional guidance aligned with your natural Expression talents. Covers ideal industries, specific roles, and the work environments where you will thrive."
                         },
                         "relationships": {
                           "type": "string",
-                          "example": "Life Path 7 individuals are introspective, thoughtful partners who seek deep connections...",
+                          "example": "The 6 is a devoted and attentive partner who brings warmth, stability, and genuine investment to...",
                           "description": "How your Expression number shapes love, friendship, and family bonds. Includes compatibility insights with other numbers and communication patterns."
                         },
                         "spirituality": {
                           "type": "string",
-                          "example": "Seven is on a great quest for truth and meaning, the most spiritual of all numbers...",
+                          "example": "The spiritual life of the 6 is inseparable from its relational life. It finds the sacred in acts of...",
                           "description": "The spiritual dimension of your Expression energy. Explores soul lessons, recommended practices, and the deeper purpose your talents are meant to serve."
                         }
                       },
@@ -104693,8 +104697,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Bridge Numbers - Harmonize different aspects of personality",
-        "description": "Calculate three Bridge Numbers that reveal the adjustments needed to create harmony between different aspects of your numerology profile. Bridge Numbers are the absolute difference between pairs of core numbers: Life Path and Expression, Expression and Personality, Expression and Soul Urge. A Bridge of 0 means the two aspects are already aligned. Higher bridges (1 to 8) indicate greater tension and provide specific guidance on what changes to make. Bridge Numbers are essential for personal development, coaching applications, self-improvement platforms, and AI-powered personality analysis tools. Requires both a full birth name and birth date to calculate all four core numbers (Life Path, Expression, Soul Urge, Personality) internally before deriving the bridges.",
+        "summary": "Calculate Bridge Numbers - Numerology bridge numbers API",
+        "description": "Calculate four numerology Bridge numbers from a full birth name and birth date: Life Path and Expression, Expression and Soul Urge, Soul Urge and Personality, and Expression and Personality. Each bridge is the distance between two core numbers, from 0 to 8, where 0 means the two are already in harmony, and comes with guidance for closing the gap in the language set by lang. Built for personal development, coaching and personality analysis tools and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -104737,7 +104741,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full legal birth name as it appears on the birth certificate. Used to calculate Expression, Soul Urge, and Personality numbers. Include first, middle, and last names separated by spaces."
+                    "description": "Full birth name as it appears on the birth certificate, first, middle and last names separated by spaces. Used to calculate the Expression, Soul Urge and Personality numbers. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   },
                   "year": {
                     "type": "integer",
@@ -104773,7 +104777,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successfully calculated three Bridge Numbers with actionable harmony guidance",
+            "description": "Successfully calculated four Bridge Numbers with actionable harmony guidance",
             "content": {
               "application/json": {
                 "schema": {
@@ -104901,7 +104905,69 @@
                         "to",
                         "meaning"
                       ],
-                      "description": "Bridge between Expression and Personality numbers. Reveals the gap between your true talents (all letters) and how others perceive you (consonants only). A high bridge means others may not see your real capabilities, requiring you to present yourself more authentically."
+                      "description": "Bridge between Expression and Personality numbers, a pairing this API adds beside the classical bridges. Reveals the gap between your true talents (all letters) and how others perceive you (consonants only). A high bridge means others may not see your real capabilities, requiring you to present yourself more authentically."
+                    },
+                    "soulUrgePersonality": {
+                      "type": "object",
+                      "properties": {
+                        "bridge": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8,
+                          "example": 3,
+                          "description": "Bridge number (0 to 8). The absolute difference between two core numerology numbers after reducing master numbers to single digits. 0 means the two aspects are already in natural harmony. Higher values indicate greater tension requiring conscious adjustment."
+                        },
+                        "from": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Life Path",
+                              "description": "Name of the first core number in this bridge pair. Identifies which aspect of personality or destiny is being compared."
+                            },
+                            "number": {
+                              "type": "number",
+                              "example": 5,
+                              "description": "The reduced single-digit value (1 to 9) of the first core number used in the bridge calculation."
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "number"
+                          ]
+                        },
+                        "to": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Expression",
+                              "description": "Name of the second core number in this bridge pair. Identifies the other aspect of personality or destiny being compared."
+                            },
+                            "number": {
+                              "type": "number",
+                              "example": 8,
+                              "description": "The reduced single-digit value (1 to 9) of the second core number used in the bridge calculation."
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "number"
+                          ]
+                        },
+                        "meaning": {
+                          "type": "string",
+                          "example": "Focus on developing self-discipline and a consistent work ethic. Channel your creative ideas into structured plans with clear milestones. Regular routines and organized habits will help you align your inner vision with your outer expression.",
+                          "description": "Actionable guidance for bridging the gap between these two aspects of your numerology profile. Explains what adjustments to make to bring these energies into harmony."
+                        }
+                      },
+                      "required": [
+                        "bridge",
+                        "from",
+                        "to",
+                        "meaning"
+                      ],
+                      "description": "Bridge between Soul Urge and Personality numbers, one of the classical bridges. Reveals the gap between your inner self (vowels only) and the image others meet first (consonants only). A high bridge means what you want and how you come across pull apart, calling for a more transparent presentation of your real motives."
                     },
                     "expressionSoulUrge": {
                       "type": "object",
@@ -104969,6 +105035,7 @@
                   "required": [
                     "lifePathExpression",
                     "expressionPersonality",
+                    "soulUrgePersonality",
                     "expressionSoulUrge"
                   ]
                 }
@@ -105214,8 +105281,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Soul Urge number - Inner motivations and desires",
-        "description": "Calculate your Soul Urge (Heart Desire) number from the vowels in your birth name using Pythagorean numerology. This number reveals your innermost desires, motivations, and what your soul truly wants to experience. It shows what drives you from within, your emotional needs, and what brings you fulfillment. Returns comprehensive interpretation including personality traits, emotional needs, relationship desires, and spiritual longings. Automatically detects Master Numbers (11, 22, 33). Perfect for self-discovery apps, emotional intelligence tools, relationship counseling platforms, and personal development services. Get detailed 300-500 word meanings for all numbers 1-9, 11, 22, and 33.",
+        "summary": "Calculate Soul Urge number - Heart Desire number calculator API",
+        "description": "Calculate the Soul Urge number, also called the Heart Desire number, from the vowels of a full birth name with Pythagorean numerology. A, E, I, O and U are the vowels and Y and W count as consonants; master numbers 11, 22 and 33 are kept and a karmic debt of 13, 14, 16 or 19 is flagged with its meaning. The response lists every vowel name by name and returns a full interpretation of inner motivation, relationships and spiritual path in the language set by lang. Built for self-discovery apps, dating profiles, coaching tools and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -105258,7 +105325,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full birth name (vowels will be extracted)"
+                    "description": "Full birth name. Its vowels A, E, I, O and U give the Soul Urge, so a name with none is refused. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 },
                 "required": [
@@ -105278,13 +105345,13 @@
                   "properties": {
                     "number": {
                       "type": "number",
-                      "example": 6,
+                      "example": 7,
                       "description": "Your Soul Urge number (also called Heart Desire number), revealing your innermost motivations and what your soul truly craves. Values range from 1 to 9 for single digits, or 11, 22, 33 for Master Numbers."
                     },
                     "calculation": {
                       "type": "string",
-                      "example": "6+9+1 + 9+9+1 + 9 = 44 → 4+4 = 8",
-                      "description": "Full step-by-step Pythagorean reduction using only the vowels (A, E, I, O, U) from the birth name. Shows each vowel mapped to its numeric value, grouped by word, then summed and reduced to the final Soul Urge number."
+                      "example": "Vowels: John: O=6 = 6; William: I=9, I=9, A=1 = 19 → 10 → 1; Smith: I=9 = 9 → 6+1+9 = 16 → 7",
+                      "description": "Every vowel (A, E, I, O, U) of the birth name with its value, grouped by name: each name is summed and reduced, then the names are added and reduced to the final Soul Urge number."
                     },
                     "type": {
                       "type": "string",
@@ -105297,12 +105364,12 @@
                     },
                     "hasKarmicDebt": {
                       "type": "boolean",
-                      "example": false,
+                      "example": true,
                       "description": "Indicates whether a Karmic Debt number (13, 14, 16, or 19) appeared during the vowel reduction chain. Karmic Debt in the Soul Urge reveals past-life emotional patterns and unresolved inner desires carried into this lifetime."
                     },
                     "karmicDebtNumber": {
                       "type": "number",
-                      "example": 13,
+                      "example": 16,
                       "description": "The specific Karmic Debt number detected during the vowel reduction, if any. Each debt number (13, 14, 16, 19) represents a distinct past-life emotional lesson that influences your deepest desires and motivations."
                     },
                     "karmicDebtMeaning": {
@@ -105310,17 +105377,17 @@
                       "properties": {
                         "description": {
                           "type": "string",
-                          "example": "Karmic Debt of Laziness and Negativity",
+                          "example": "Accumulated Obligation of Humility and Authentic Love",
                           "description": "Title describing the karmic debt theme and core past-life pattern."
                         },
                         "challenge": {
                           "type": "string",
-                          "example": "Past life tendency toward shortcuts and laziness.",
+                          "example": "A past pattern centered on ego, misuse of relational power, or the destruction of bonds through...",
                           "description": "The specific challenge from past lives that must be confronted."
                         },
                         "resolution": {
                           "type": "string",
-                          "example": "Learn discipline, hard work, and persistence.",
+                          "example": "Develop authentic humility by setting aside the need for status in close relationships. Build...",
                           "description": "Practical guidance for resolving the karmic debt."
                         }
                       },
@@ -105336,7 +105403,7 @@
                       "properties": {
                         "title": {
                           "type": "string",
-                          "example": "The Nurturer",
+                          "example": "The Seeker",
                           "description": "Numerology archetype for this Soul Urge number. Reveals the deepest inner motivation, such as \"The Seeker\" for 7 or \"The Master Teacher\" for 33."
                         },
                         "keywords": {
@@ -105345,18 +105412,18 @@
                             "type": "string"
                           },
                           "example": [
-                            "caring",
-                            "responsible",
-                            "harmonious",
-                            "protective",
-                            "service"
+                            "wisdom",
+                            "introspection",
+                            "analysis",
+                            "mystery",
+                            "solitude"
                           ],
                           "description": "Core emotional drives and inner motivations for this Soul Urge. Useful for understanding hidden desires, emotional needs, and what truly fulfills someone at the deepest level."
                         },
                         "description": {
                           "type": "string",
-                          "example": "People with a 6 Soul Urge number have a deep desire to nurture and care for others...",
-                          "description": "Expert-written 300 to 500 word exploration of the inner self, hidden desires, and emotional landscape. Reveals what the heart truly craves beneath the surface persona."
+                          "example": "The 7 is the most internally-oriented of the single-digit numbers. While other numbers are engaged...",
+                          "description": "Core interpretation of the inner self, hidden desires and emotional landscape. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -105364,10 +105431,9 @@
                             "type": "string"
                           },
                           "example": [
-                            "Compassion",
-                            "Responsibility",
-                            "Harmony creation",
-                            "Service orientation"
+                            "Analytical",
+                            "Spiritually perceptive",
+                            "Depth of focus"
                           ],
                           "description": "Emotional superpowers and inner gifts. Each strength describes how it shapes decision-making, relationships, and the pursuit of personal fulfillment."
                         },
@@ -105377,25 +105443,25 @@
                             "type": "string"
                           },
                           "example": [
-                            "Over-responsibility",
-                            "Martyrdom",
-                            "Interference"
+                            "Withdrawn",
+                            "Overly private",
+                            "Skeptical to excess"
                           ],
                           "description": "Inner shadows and emotional patterns to balance. Explains how each challenge manifests when the Soul Urge energy is overextended or repressed."
                         },
                         "career": {
                           "type": "string",
-                          "example": "Life Path 6 excels in careers built around service, nurturing, and creating harmony...",
+                          "example": "The 7 performs at its highest level in roles that reward solitary investigation, analytical depth...",
                           "description": "Career paths that satisfy your deepest emotional needs. Focuses on work that feeds the soul rather than just the resume, aligned with inner fulfillment."
                         },
                         "relationships": {
                           "type": "string",
-                          "example": "Life Path 6 individuals are devoted, nurturing, and deeply romantic partners...",
+                          "example": "The 7 forms relationships with care and some difficulty, opening its interior world slowly and only...",
                           "description": "How your Soul Urge shapes what you need from love, friendship, and family. Covers emotional compatibility, attachment style, and the key to feeling truly seen."
                         },
                         "spirituality": {
                           "type": "string",
-                          "example": "With the beautiful number 6, it is all about love and unconditional compassion...",
+                          "example": "The 7 is the most naturally spiritual of the single-digit numbers, not in a doctrinal sense but in...",
                           "description": "The spiritual hunger at your core. Explores what your soul is seeking in this lifetime and the practices that bring you closest to inner peace and alignment."
                         }
                       },
@@ -105661,8 +105727,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Personality number - How others perceive you",
-        "description": "Calculate your Personality number from the consonants in your birth name using Pythagorean numerology. This number reveals how others perceive you, your outer personality, and first impressions you make. It represents the mask you show the world and your social persona. Returns comprehensive interpretation including public image, social dynamics, professional presence, and relationship first impressions. Automatically detects Master Numbers (11, 22, 33). Perfect for personal branding apps, social skills training, professional development platforms, and communication coaching services. Get detailed 300-500 word meanings for all numbers 1-9, 11, 22, and 33.",
+        "summary": "Calculate Personality number - Outer personality numerology API",
+        "description": "Calculate the Personality number from the consonants of a full birth name with Pythagorean numerology. Every letter other than A, E, I, O and U is a consonant, Y and W included; master numbers 11, 22 and 33 are kept and a karmic debt of 13, 14, 16 or 19 is flagged with its meaning. The response lists every consonant name by name and returns a full interpretation of first impressions, public image, career and relationships in the language set by lang. Built for personal branding apps, social and dating profiles, coaching tools and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -105705,7 +105771,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full birth name (consonants will be extracted)"
+                    "description": "Full birth name. Its consonants give the Personality number, so a name with none is refused. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 },
                 "required": [
@@ -105725,13 +105791,13 @@
                   "properties": {
                     "number": {
                       "type": "number",
-                      "example": 9,
+                      "example": 8,
                       "description": "Your Personality number, derived from the consonants in your birth name. Reveals how others perceive you, your outer persona, and the first impression you project. Values range from 1 to 9 for single digits, or 11, 22, 33 for Master Numbers."
                     },
                     "calculation": {
                       "type": "string",
-                      "example": "1+8+5 + 5+3+3+4 + 1+4+2+8 = 44 → 4+4 = 8",
-                      "description": "Full step-by-step Pythagorean reduction using only the consonants from the birth name. Shows each consonant mapped to its numeric value, grouped by word, then summed and reduced to the final Personality number."
+                      "example": "Consonants: John: J=1, H=8, N=5 = 14 → 5; William: W=5, L=3, L=3, M=4 = 15 → 6; Smith: S=1, M=4, T=2, H=8 = 15 → 6 → 5+6+6 = 17 → 8",
+                      "description": "Every consonant of the birth name with its value, grouped by name: each name is summed and reduced, then the names are added and reduced to the final Personality number."
                     },
                     "type": {
                       "type": "string",
@@ -105757,17 +105823,17 @@
                       "properties": {
                         "description": {
                           "type": "string",
-                          "example": "Karmic Debt of Ego and Relationships",
+                          "example": "Accumulated Obligation of Humility and Authentic Love",
                           "description": "Title describing the karmic debt theme and core past-life pattern."
                         },
                         "challenge": {
                           "type": "string",
-                          "example": "Past life issues with ego, pride, or relationship destruction.",
+                          "example": "A past pattern centered on ego, misuse of relational power, or the destruction of bonds through...",
                           "description": "The specific challenge from past lives that must be confronted."
                         },
                         "resolution": {
                           "type": "string",
-                          "example": "Learn humility, compassion, and authentic connection.",
+                          "example": "Develop authentic humility by setting aside the need for status in close relationships. Build...",
                           "description": "Practical guidance for resolving the karmic debt."
                         }
                       },
@@ -105783,7 +105849,7 @@
                       "properties": {
                         "title": {
                           "type": "string",
-                          "example": "The Humanitarian",
+                          "example": "The Powerhouse",
                           "description": "Numerology archetype for this Personality number. Represents the outer mask you show the world, such as \"The Builder\" for 4 or \"The Powerhouse\" for 8."
                         },
                         "keywords": {
@@ -105792,18 +105858,18 @@
                             "type": "string"
                           },
                           "example": [
-                            "compassionate",
-                            "charismatic",
-                            "idealistic",
-                            "generous",
-                            "wise"
+                            "achievement",
+                            "authority",
+                            "abundance",
+                            "ambition",
+                            "material mastery"
                           ],
                           "description": "Traits that define your public persona and first impression. These are the qualities others perceive before they get to know the real you."
                         },
                         "description": {
                           "type": "string",
-                          "example": "People with a 9 Personality number project warmth and compassion to others...",
-                          "description": "Expert-written 300 to 500 word analysis of the outer personality, social presence, and the image you project to the world. Reveals the gap between how others see you and who you truly are."
+                          "example": "The 8 is the number most directly associated with material mastery and the exercise of authority in...",
+                          "description": "Core interpretation of the outer personality, social presence and the image projected to the world. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -105811,10 +105877,9 @@
                             "type": "string"
                           },
                           "example": [
-                            "Charisma",
-                            "Compassion",
-                            "Wisdom",
-                            "Universal understanding"
+                            "Ambitious",
+                            "Resilient",
+                            "Organizationally capable"
                           ],
                           "description": "Your strongest social assets and public-facing gifts. These qualities shape how you are received in professional settings, social gatherings, and first meetings."
                         },
@@ -105824,25 +105889,25 @@
                             "type": "string"
                           },
                           "example": [
-                            "Emotional distance",
-                            "Impracticality",
-                            "Scattered energy"
+                            "Controlling",
+                            "Status-oriented",
+                            "Imbalanced in personal life"
                           ],
                           "description": "Blind spots in your public persona. Patterns others notice that you may not, including defense mechanisms and image-management tendencies that can limit authentic connection."
                         },
                         "career": {
                           "type": "string",
-                          "example": "Life Path 9 excels in careers that serve the greater good and allow creative expression...",
+                          "example": "The 8 is drawn to professional domains where strategic intelligence and organizational capability...",
                           "description": "How your outward presence shapes professional opportunities. Covers the industries, roles, and environments where your public image creates the greatest advantage."
                         },
                         "relationships": {
                           "type": "string",
-                          "example": "Life Path 9 individuals are compassionate, devoted, and emotionally generous partners...",
+                          "example": "The 8 is loyal and reliable in close relationships, and it expresses care primarily through...",
                           "description": "First impressions in love and social dynamics. Explores how your Personality number attracts certain partners, sets relationship expectations, and influences group dynamics."
                         },
                         "spirituality": {
                           "type": "string",
-                          "example": "The number 9 shines its light of love and wisdom into the world, guiding others toward awakening...",
+                          "example": "The spiritual path of the 8 runs through its engagement with material life rather than away from...",
                           "description": "The spiritual energy you radiate to others. Explores how your outer presence serves as a channel for deeper purpose, and what your public path reveals about your soul mission."
                         }
                       },
@@ -106108,8 +106173,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Birth Day number - Special talents from day of birth",
-        "description": "Calculate your Birth Day number from the day you were born (1-31) using Pythagorean numerology. This number reveals special talents and abilities you possess from birth. It shows natural gifts that can help you achieve your life purpose. Returns comprehensive interpretation including innate talents, natural abilities, career advantages, and how to leverage your special gifts. Automatically detects Master Numbers (11, 22) and reduces double-digit days. Perfect for talent discovery apps, career counseling platforms, personal development services, and skill assessment tools. Get detailed 300-500 word meanings for all numbers 1-9, 11, and 22.",
+        "summary": "Calculate Birth Day number - Birthday numerology API",
+        "description": "Calculate the Birth Day number from the day of the month a person was born, 1 to 31, with Pythagorean numerology. The 11th, 22nd and 29th keep the master numbers 11 and 22, other two-digit days reduce to one digit, and the 13th, 14th, 16th and 19th are flagged as karmic debt with their meaning. The response returns the calculation and a full interpretation of the special talents the day brings in the language set by lang. Built for birthday features, talent and career discovery tools, and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -106173,12 +106238,12 @@
                     "number": {
                       "type": "number",
                       "example": 5,
-                      "description": "Your Birth Day number, revealing the special talents and innate abilities you carry from the day you were born. Values range from 1 to 9 for single digits, or 11, 22 for Master Numbers (days 11 and 22 are never reduced)."
+                      "description": "Your Birth Day number, revealing the special talents and innate abilities you carry from the day you were born. Values range from 1 to 9 for single digits, or 11, 22 for Master Numbers (the 11th, 22nd and 29th)."
                     },
                     "calculation": {
                       "type": "string",
-                      "example": "23 → 2+3 = 5",
-                      "description": "Step-by-step digit reduction of the birth day. Single-digit days (1 to 9) remain as-is, Master Number days (11, 22) are preserved, and all other double-digit days are reduced by summing their digits."
+                      "example": "23 → 5",
+                      "description": "Step-by-step digit reduction of the birth day. Single-digit days (1 to 9) remain as they are, a day that is or reduces to 11 or 22 keeps it, and every other two-digit day is reduced to one digit."
                     },
                     "type": {
                       "type": "string",
@@ -106250,7 +106315,7 @@
                         "description": {
                           "type": "string",
                           "example": "People born on a 5 Birth Day have natural versatility and adaptability...",
-                          "description": "Expert-written 300 to 500 word reading of the special abilities your birth day bestows. Covers how these gifts complement your Life Path and Expression numbers."
+                          "description": "Core interpretation of the special abilities the birth day brings and how they complement the Life Path and Expression numbers. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -106555,8 +106620,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Maturity number - Who you become in later life",
-        "description": "Calculate your Maturity (Realization) number by adding Life Path and Expression numbers using Pythagorean numerology. This number reveals who you become in the second half of life, typically manifesting after age 35-40. It shows the ultimate goal of personal development and mature self-expression. Returns comprehensive interpretation including life transformation, mature personality, later-life purpose, and wisdom development. Automatically detects Master Numbers (11, 22, 33). Perfect for life coaching apps, midlife guidance platforms, personal development services, and aging wisdom tools. Get detailed 300-500 word meanings for all numbers 1-9, 11, 22, and 33.",
+        "summary": "Calculate Maturity number - Realization number numerology API",
+        "description": "Calculate the Maturity number, also called the Realization number, from the Life Path and Expression numbers with Pythagorean numerology. Send a full birth name and birth date, the two numbers precomputed, or one of each; master numbers 11, 22 and 33 are kept at full value and in the result. The Maturity number describes who a person grows into in the second half of life, usually felt from around 35 to 40, and the response returns the calculation and a full interpretation in the language set by lang. Built for life coaching apps, midlife and later-life guidance, and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -106613,7 +106678,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full birth name to calculate Expression number automatically. Use instead of passing expression directly."
+                    "description": "Full birth name to calculate the Expression number automatically. Use instead of passing expression directly. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   },
                   "year": {
                     "type": "integer",
@@ -106656,7 +106721,7 @@
                     },
                     "calculation": {
                       "type": "string",
-                      "example": "5 + 7 = 12 → 1+2 = 3",
+                      "example": "Life Path 5 + Expression 7 = 12 → 3",
                       "description": "Full step-by-step reduction showing Life Path plus Expression combined and reduced to the final Maturity number. This synthesis represents the convergence of your life purpose and natural talents into mature wisdom."
                     },
                     "type": {
@@ -106729,7 +106794,7 @@
                         "description": {
                           "type": "string",
                           "example": "People with a 3 Maturity number grow into creative and joyful expression...",
-                          "description": "Expert-written 300 to 500 word guide to the person you are evolving into. The Maturity number is the sum of Life Path and Expression, representing the wisdom gained through lived experience."
+                          "description": "Core interpretation of the person being grown into in the second half of life, the wisdom gained through lived experience. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -107034,8 +107099,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Analyze Karmic Lessons - Life lessons from missing numbers",
-        "description": "Analyze your Karmic Lessons from your birth name using Pythagorean numerology. Karmic lessons are indicated by numbers missing from your name (numbers 1-9 that do not appear). These represent challenges you came to learn and skills you need to develop in this lifetime. Returns comprehensive analysis including missing numbers, specific lessons for each, challenges to overcome, and practical guidance for development. Perfect for spiritual growth apps, personal development platforms, life coaching services, and self-improvement tools. Get detailed lesson descriptions, development strategies, and practical exercises for each missing number.",
+        "summary": "Analyze Karmic Lessons - Missing numbers numerology API",
+        "description": "Analyze the Karmic Lessons of a full birth name with Pythagorean numerology: the numbers 1 to 9 that no letter of the name carries. Each missing number is returned with its lesson, a fuller explanation and practical guidance for developing it, in the language set by lang, beside the count of letters behind every number present. Built for spiritual growth apps, coaching tools, full numerology reports and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -107078,7 +107143,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full birth name to analyze for missing numbers"
+                    "description": "Full birth name to analyze for missing numbers. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 },
                 "required": [
@@ -107408,8 +107473,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Detect Karmic Debt numbers - Past life challenges (13, 14, 16, 19)",
-        "description": "Check for Karmic Debt numbers (13, 14, 16, 19) in Life Path, Expression, Soul Urge, or Personality calculations using Pythagorean numerology. Karmic debt indicates challenges carried from past lives that must be resolved in this lifetime. These numbers appear during reduction and represent specific lessons and tests. Returns comprehensive analysis including debt descriptions, challenges to overcome, and resolution guidance. Perfect for spiritual growth apps, karmic astrology platforms, past life exploration services, and personal transformation tools. Get detailed meanings for all four karmic debt numbers with practical resolution strategies.",
+        "summary": "Detect Karmic Debt numbers - Karmic debt 13, 14, 16, 19 API",
+        "description": "Detect Karmic Debt numbers 13, 14, 16 and 19 across the five core numbers that carry them: Life Path, Expression, Soul Urge, Personality and Birth Day. Send a birth date, a full birth name, or both, and only the positions those inputs reach are read; each debt is listed once with its challenge and resolution guidance in the language set by lang. Built for spiritual growth apps, karmic readings, coaching tools and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -107466,14 +107531,14 @@
                     "minimum": 1,
                     "maximum": 31,
                     "example": 15,
-                    "description": "Birth day (checks Life Path)"
+                    "description": "Birth day (checks Birth Day on its own, and Life Path with year and month)"
                   },
                   "fullName": {
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full birth name (checks Expression, Soul Urge, Personality)"
+                    "description": "Full birth name (checks Expression, Soul Urge, Personality). A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 }
               }
@@ -107502,7 +107567,7 @@
                         14,
                         16
                       ],
-                      "description": "All karmic debt numbers found (13, 14, 16, 19)"
+                      "description": "All karmic debt numbers found (13, 14, 16, 19), each listed once, in core-number order: Life Path, Expression, Soul Urge, Personality, Birth Day."
                     },
                     "meanings": {
                       "type": "array",
@@ -107793,8 +107858,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Personal Day - Daily personalized numerology forecast",
-        "description": "Calculate your Personal Day number from birth month, day, and a target date. Personal Day is the most granular cycle in Pythagorean numerology, revealing the specific energy and theme for a single calendar day personalized to you. Unlike generic daily numbers, this is based on YOUR birth data combined with the calendar date. Returns the daily theme, actionable guidance, and parent month and year context. Perfect for daily push notifications, morning briefings, calendar widget integrations, daily content generation, and life coaching tools.",
+        "summary": "Calculate Personal Day - Daily numerology forecast API",
+        "description": "Calculate the Personal Day number from a birth month and day with Pythagorean numerology, the 1 to 9 theme of a single calendar day personalized to the birthday. The day is targetDate, or today in UTC when omitted. The response returns the day theme and guidance with the parent Personal Month and Personal Year, in the language set by lang. Built for daily push notifications, morning briefings, calendar widgets and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -107850,7 +107915,7 @@
                     "type": "string",
                     "format": "date",
                     "example": "2026-04-04",
-                    "description": "Target date in YYYY-MM-DD format. Defaults to today (UTC)."
+                    "description": "Target date in YYYY-MM-DD format, in the years 100 to 2100. Defaults to today (UTC)."
                   }
                 },
                 "required": [
@@ -108163,8 +108228,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Personal Month - Monthly numerology forecast",
-        "description": "Calculate your Personal Month number from birth month, day, and a target year and month. Personal Month reveals the specific theme and energy influencing each calendar month within your Personal Year cycle. Returns the monthly theme, practical focus guidance, and the parent Personal Year context. Perfect for monthly forecast features, push notification content, calendar integrations, editorial monthly columns, and life coaching tools.",
+        "summary": "Calculate Personal Month - Monthly numerology forecast API",
+        "description": "Calculate the Personal Month number from a birth month and day with Pythagorean numerology, the 1 to 9 theme of one calendar month inside the Personal Year. The year and month are the ones sent, each defaulting to the current UTC year and month when omitted. The response returns the month theme, practical focus and the parent Personal Year with its theme, in the language set by lang. Built for monthly forecast features, push notifications, editorial columns and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -108218,17 +108283,17 @@
                   },
                   "year": {
                     "type": "integer",
-                    "minimum": 2020,
+                    "minimum": 100,
                     "maximum": 2100,
                     "example": 2026,
-                    "description": "Target year for calculation (defaults to current year)"
+                    "description": "Target year. Defaults to the current UTC year."
                   },
                   "targetMonth": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 12,
                     "example": 4,
-                    "description": "Target calendar month to forecast (1-12, defaults to current month)"
+                    "description": "Target calendar month to forecast (1 to 12). Defaults to the current UTC month."
                   }
                 },
                 "required": [
@@ -108529,8 +108594,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Personal Year - Annual cycle and forecast for current year",
-        "description": "Calculate your Personal Year number from your birth month, day, and current year using Pythagorean numerology. Personal Year runs in 9-year cycles (1-9) and reveals the theme, opportunities, and challenges for the current year. Each year has a specific energy and lessons. Returns comprehensive annual forecast including year theme, opportunities, challenges, and actionable advice. Perfect for yearly planning apps, life coaching platforms, astrology services, and personal development tools. Get detailed forecasts for all 9 Personal Year cycles with practical guidance.",
+        "summary": "Calculate Personal Year - Personal Year number forecast API",
+        "description": "Calculate the Personal Year number from a birth month and day with Pythagorean numerology, the 1 to 9 cycle that sets the theme of a calendar year. The year is the one sent, or the current UTC year when omitted, and it turns over on 1 January; the birth year is not needed. The response returns the place in the nine-year cycle, the theme, a forecast, opportunities, challenges and advice in the language set by lang. Built for yearly planning features, New Year content, coaching tools and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -108584,10 +108649,10 @@
                   },
                   "year": {
                     "type": "integer",
-                    "minimum": 2020,
+                    "minimum": 100,
                     "maximum": 2100,
                     "example": 2025,
-                    "description": "Year to calculate (defaults to current year)"
+                    "description": "Year to forecast. Defaults to the current UTC year; the Personal Year turns over on 1 January."
                   }
                 },
                 "required": [
@@ -108909,8 +108974,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Calculate Compatibility - Relationship dynamics between two people",
-        "description": "Calculate numerology compatibility between two people using Pythagorean numerology. Accepts two input modes per person: pre-calculated Life Path, Expression, and Soul Urge numbers, or raw name and birthdate for automatic calculation. You can mix modes across persons (e.g. numbers for person1, raw inputs for person2). Provides comprehensive relationship analysis with overall compatibility score (0-100), individual aspect compatibility (Life Path 50% weight, Expression 30%, Soul Urge 20%), relationship strengths, challenges, and practical advice. Uses detailed compatibility matrix for all number combinations. Perfect for dating apps, relationship counseling platforms, matchmaking services, and compatibility tools. Get actionable insights for improving relationship dynamics.",
+        "summary": "Calculate numerology compatibility - Love match scoring API",
+        "description": "Calculate numerology compatibility between two people from their Life Path, Expression and Soul Urge numbers. Send each person as a full birth name with a birth date, or as precomputed numbers, and mix the two modes freely across the pair. The response returns an overall score from 50 to 100 with its rating, a score and description for each number pair, and the strengths, challenges and advice for the relationship, in the language set by lang. Built for dating apps, matchmaking, relationship coaching and AI companions.",
         "security": [
           {
             "apiKey": []
@@ -109076,12 +109141,12 @@
                     "overallScore": {
                       "type": "number",
                       "example": 78,
-                      "description": "Overall compatibility score (0-100)"
+                      "description": "Overall compatibility score: 50% Life Path, 30% Expression and 20% Soul Urge pair scores, rounded. Every pair score runs 50 to 100, so the overall score does too."
                     },
                     "rating": {
                       "type": "string",
                       "example": "Very Compatible",
-                      "description": "Compatibility rating: Highly Compatible, Very Compatible, Compatible, Moderately Compatible, or Challenging."
+                      "description": "Compatibility rating from overallScore: Highly Compatible (90 and up), Very Compatible (75 to 89), Compatible (60 to 74) or Moderately Compatible (50 to 59). The scale also names Challenging below 45, which no pair of core numbers reaches."
                     },
                     "lifePath": {
                       "type": "object",
@@ -109099,7 +109164,7 @@
                         "compatibility": {
                           "type": "number",
                           "example": 85,
-                          "description": "Life Path compatibility score (0-100)"
+                          "description": "Life Path compatibility score (50-100)"
                         },
                         "description": {
                           "type": "string",
@@ -109130,7 +109195,7 @@
                         "compatibility": {
                           "type": "number",
                           "example": 70,
-                          "description": "Expression compatibility score (0-100)"
+                          "description": "Expression compatibility score (50-100)"
                         },
                         "description": {
                           "type": "string",
@@ -109161,7 +109226,7 @@
                         "compatibility": {
                           "type": "number",
                           "example": 90,
-                          "description": "Soul Urge compatibility score (0-100)"
+                          "description": "Soul Urge compatibility score (50-100)"
                         },
                         "description": {
                           "type": "string",
@@ -109460,8 +109525,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Generate Complete Numerology Chart - Full profile analysis",
-        "description": "Generate a comprehensive numerology chart combining all major calculations: Life Path, Expression, Soul Urge, Personality, Birth Day, Maturity, Karmic Lessons, Karmic Debt, and Personal Year. This single endpoint provides everything needed for a full numerology reading. Returns detailed interpretations for all numbers, karmic analysis, yearly forecast, and holistic summary. Perfect for numerology apps, complete reading services, birth chart generators, and comprehensive analysis tools. Save multiple API calls by getting the full chart in one request. Ideal for generating PDF reports or detailed user profiles.",
+        "summary": "Generate numerology chart - Complete numerology reading API",
+        "description": "Generate a complete numerology chart from a full birth name and birth date in one call. It returns the six core numbers (Life Path, Expression, Soul Urge, Personality, Birth Day and Maturity) with their calculations and full interpretations, the four Pinnacles and four Challenges with their ages, Karmic Lessons, karmic debt in all five positions, Hidden Passion, Subconscious Self, Cornerstone, Capstone and First Vowel, the Birth Day profile for the exact day, lucky associations, the Maturity activation status, the Personal Year with the current Personal Month, and a written summary, in the language set by lang. The Personal Year uses currentYear or the current UTC year, while the Personal Month and the age behind the Maturity status read the current UTC date. Built for full numerology readings, PDF reports, onboarding profiles and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -109504,7 +109569,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "John William Smith",
-                    "description": "Full birth name as it appears on the birth certificate. Used for all letter-based Pythagorean numerology calculations including Expression, Soul Urge, Personality, and Karmic Lessons."
+                    "description": "Full birth name as it appears on the birth certificate. Used for every letter-based number in the chart: Expression, Soul Urge, Personality, Karmic Lessons, Hidden Passion, Subconscious Self and the special letters. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   },
                   "year": {
                     "type": "integer",
@@ -109529,10 +109594,10 @@
                   },
                   "currentYear": {
                     "type": "integer",
-                    "minimum": 2020,
+                    "minimum": 100,
                     "maximum": 2100,
                     "example": 2025,
-                    "description": "Year for Personal Year calculation (defaults to current year)"
+                    "description": "Calendar year for the Personal Year, defaults to the current UTC year. It moves the Personal Year only: the nested personalMonth and maturityStatus.currentAge always read the current UTC date."
                   }
                 },
                 "required": [
@@ -109632,7 +109697,7 @@
                                 "description": {
                                   "type": "string",
                                   "example": "The 5 is the most kinetic of all single-digit numbers. It is in constant motion, oriented toward what is new, and constitutionally resistant to the kind of settled routine that other numbers find stabilizing...",
-                                  "description": "Authoritative 300 to 500 word interpretation covering personality, life purpose, and core themes. Written by numerology experts and suitable for full-page readings or PDF report generation."
+                                  "description": "Core interpretation of the Life Path covering personality, life purpose and core themes. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                                 },
                                 "strengths": {
                                   "type": "array",
@@ -109706,7 +109771,7 @@
                             },
                             "calculation": {
                               "type": "string",
-                              "example": "J=1, O=6, H=8, N=5, W=5, I=9, L=3, L=3, I=9, A=1, M=4, S=1, M=4, I=9, T=2, H=8 → 1+6+8+5+5+9+3+3+9+1+4+1+4+9+2+8 = 78 → 15 → 1+5 = 6",
+                              "example": "John: J=1, O=6, H=8, N=5 = 20 → 2; William: W=5, I=9, L=3, L=3, I=9, A=1, M=4 = 34 → 7; Smith: S=1, M=4, I=9, T=2, H=8 = 24 → 6 → 2+7+6 = 15 → 6",
                               "description": "Letter-to-number conversion showing how the Expression number was calculated."
                             },
                             "type": {
@@ -109752,7 +109817,7 @@
                                 "description": {
                                   "type": "string",
                                   "example": "The 6 is the most relationship-oriented of the single-digit numbers, organized around a genuine drive to care for those within its sphere...",
-                                  "description": "Expert-written 300 to 500 word analysis of natural abilities, life goals, and the talents your birth name reveals. Suitable for detailed readings and personality assessments."
+                                  "description": "Core interpretation of the natural abilities, life goals and talents the birth name describes. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                                 },
                                 "strengths": {
                                   "type": "array",
@@ -109826,7 +109891,7 @@
                             },
                             "calculation": {
                               "type": "string",
-                              "example": "Vowels: O=6, I=9, I=9, A=1, I=9 → 6+9+9+1+9 = 34 → 7",
+                              "example": "Vowels: John: O=6 = 6; William: I=9, I=9, A=1 = 19 → 10 → 1; Smith: I=9 = 9 → 6+1+9 = 16 → 7",
                               "description": "Vowel extraction and reduction calculation."
                             },
                             "type": {
@@ -109839,12 +109904,12 @@
                             },
                             "hasKarmicDebt": {
                               "type": "boolean",
-                              "example": false,
+                              "example": true,
                               "description": "Whether karmic debt was encountered."
                             },
                             "karmicDebtNumber": {
                               "type": "number",
-                              "example": 13,
+                              "example": 16,
                               "description": "Karmic debt number if present."
                             },
                             "meaning": {
@@ -109872,7 +109937,7 @@
                                 "description": {
                                   "type": "string",
                                   "example": "The 7 is the most internally-oriented of the single-digit numbers. While other numbers are engaged primarily with the external world of action, relationship, and material achievement, the 7 is fundamentally concerned with the interior world of understanding...",
-                                  "description": "Expert-written 300 to 500 word exploration of the inner self, hidden desires, and emotional landscape. Reveals what the heart truly craves beneath the surface persona."
+                                  "description": "Core interpretation of the inner self, hidden desires and emotional landscape. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                                 },
                                 "strengths": {
                                   "type": "array",
@@ -109946,7 +110011,7 @@
                             },
                             "calculation": {
                               "type": "string",
-                              "example": "Consonants: J=1, H=8, N=5, W=5, L=3, L=3, M=4, S=1, M=4, T=2, H=8 → 1+8+5+5+3+3+4+1+4+2+8 = 44 → 8",
+                              "example": "Consonants: John: J=1, H=8, N=5 = 14 → 5; William: W=5, L=3, L=3, M=4 = 15 → 6; Smith: S=1, M=4, T=2, H=8 = 15 → 6 → 5+6+6 = 17 → 8",
                               "description": "Consonant extraction and reduction calculation."
                             },
                             "type": {
@@ -109992,7 +110057,7 @@
                                 "description": {
                                   "type": "string",
                                   "example": "The 8 is the number most directly associated with material mastery and the exercise of authority in the world. It is oriented toward achievement, and it brings to that orientation an uncommon combination of strategic intelligence, organizational capability, and physical endurance...",
-                                  "description": "Expert-written 300 to 500 word analysis of the outer personality, social presence, and the image you project to the world. Reveals the gap between perception and inner truth."
+                                  "description": "Core interpretation of the outer personality, social presence and the image projected to the world. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                                 },
                                 "strengths": {
                                   "type": "array",
@@ -110112,7 +110177,7 @@
                                 "description": {
                                   "type": "string",
                                   "example": "Its instinct is to tend: to notice when someone needs support and to provide it in ways that are practical and consistent rather than occasional and showy...",
-                                  "description": "Expert-written 300 to 500 word reading of the special abilities your birth day bestows. Covers how these gifts complement your Life Path and Expression numbers."
+                                  "description": "Core interpretation of the special abilities the birth day brings and how they complement the Life Path and Expression numbers. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                                 },
                                 "strengths": {
                                   "type": "array",
@@ -110232,7 +110297,7 @@
                                 "description": {
                                   "type": "string",
                                   "example": "Eleven operates on a fundamentally different frequency than the single-digit numbers. The foundation of 2 is present: the need to relate, to listen, to balance, to work alongside others. But 11 adds a perceptive capacity that transcends ordinary observation...",
-                                  "description": "Expert-written 300 to 500 word guide to the person you are evolving into. The Maturity number represents the wisdom gained through lived experience and reveals your ultimate destination."
+                                  "description": "Core interpretation of the person being grown into in the second half of life, the wisdom gained through lived experience. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                                 },
                                 "strengths": {
                                   "type": "array",
@@ -110399,7 +110464,7 @@
                               "example": [
                                 14
                               ],
-                              "description": "List of karmic debt numbers found (13=laziness, 14=abuse of freedom, 16=ego destruction, 19=selfishness)."
+                              "description": "List of karmic debt numbers found (13=laziness, 14=abuse of freedom, 16=ego destruction, 19=selfishness), each listed once, in core-number order: Life Path, Expression, Soul Urge, Personality, Birth Day."
                             },
                             "meanings": {
                               "type": "array",
@@ -110504,7 +110569,7 @@
                                 "personalMonth": {
                                   "type": "number",
                                   "example": 3,
-                                  "description": "Personal Month number (1-9)."
+                                  "description": "Personal Month number (1-9): the Personal Year above plus the current UTC calendar month, reduced to one digit."
                                 },
                                 "theme": {
                                   "type": "string",
@@ -110522,7 +110587,7 @@
                                 "theme",
                                 "focus"
                               ],
-                              "description": "Personal Month forecast nested within the Personal Year cycle."
+                              "description": "Personal Month forecast for the current UTC calendar month, applied to the Personal Year above. With a currentYear other than the current year, it pairs that Personal Year with the current month."
                             }
                           },
                           "required": [
@@ -110563,7 +110628,7 @@
                                   "null"
                                 ],
                                 "example": 31,
-                                "description": "Age when this phase ends. Null for the 4th Pinnacle (lasts rest of life)."
+                                "description": "Last whole age of this phase, inclusive. The First Pinnacle ends at 36 minus the Life Path reduced to one digit and each later phase starts the year after; null for the 4th Pinnacle (lasts rest of life)."
                               },
                               "meaning": {
                                 "type": "object",
@@ -110620,7 +110685,7 @@
                               "meaning"
                             ]
                           },
-                          "description": "Four Pinnacle numbers representing major life phases with age ranges and meanings."
+                          "description": "Four Pinnacle numbers representing major life phases, master numbers 11, 22 and 33 kept, with age ranges and meanings."
                         },
                         "challenges": {
                           "type": "array",
@@ -110640,7 +110705,7 @@
                               "startAge": {
                                 "type": "number",
                                 "example": 0,
-                                "description": "Age when this Challenge period begins."
+                                "description": "Age when this Challenge is most felt. The 3rd (Main) Challenge starts at 0 and lasts for life; the 1st, 2nd and 4th take the ages of their Pinnacle phase as an approximation, since Challenges have no fixed durations."
                               },
                               "endAge": {
                                 "type": [
@@ -110648,7 +110713,7 @@
                                   "null"
                                 ],
                                 "example": 31,
-                                "description": "Age when this period ends. Null for the 4th Challenge."
+                                "description": "Last whole age of the period, inclusive, approximate as startAge explains. Null for the 3rd (Main) Challenge and the 4th, which last for life."
                               },
                               "meaning": {
                                 "type": "object",
@@ -110691,7 +110756,7 @@
                               "meaning"
                             ]
                           },
-                          "description": "Four Challenge numbers representing life obstacles aligned with Pinnacle timing."
+                          "description": "Four Challenge numbers representing life obstacles. The 3rd (Main) Challenge lasts for life; the other three are timed approximately with the Pinnacle phases."
                         },
                         "hiddenPassion": {
                           "type": "object",
@@ -110699,7 +110764,7 @@
                             "number": {
                               "type": "number",
                               "example": 1,
-                              "description": "Hidden Passion number (1-9). The most frequently occurring number in the birth name."
+                              "description": "Hidden Passion number (1-9). The most frequently occurring number in the birth name; when several tie, the lowest of them."
                             },
                             "count": {
                               "type": "number",
@@ -110715,7 +110780,7 @@
                                 1,
                                 9
                               ],
-                              "description": "All numbers tied for highest frequency (usually one, sometimes multiple)."
+                              "description": "All numbers tied for highest frequency, in ascending order (usually one, sometimes multiple)."
                             },
                             "title": {
                               "type": "string",
@@ -110842,7 +110907,7 @@
                                 "letter": {
                                   "type": "string",
                                   "example": "O",
-                                  "description": "First vowel in the full name (A, E, I, O, or U)."
+                                  "description": "First vowel of the first name (A, E, I, O or U). A first name with none of them takes its Y, the vowel sound of names like Lynn; one with no Y either takes the first A, E, I, O or U of the rest of the name."
                                 },
                                 "meaning": {
                                   "type": "string",
@@ -110975,7 +111040,7 @@
                         "currentAge": {
                           "type": "number",
                           "example": 36,
-                          "description": "Current age calculated from the birth year."
+                          "description": "The current UTC calendar year minus the birth year. The birthday is not considered, so before the birthday it reads one more than the age in whole years, and currentYear does not move it."
                         },
                         "activationRange": {
                           "type": "string",
@@ -111326,8 +111391,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Get Number Meaning - Interpretation for any number 1-9, 11, 22, 33",
-        "description": "Get the complete meaning and interpretation for any numerology number (1-9, 11, 22, 33) using Pythagorean numerology. Returns comprehensive description including archetype title, keywords, personality traits, strengths, weaknesses, career guidance, relationship dynamics, and spiritual insights. Master numbers (11, 22, 33) include amplified meanings with their reduced base number. Perfect for numerology reference tools, educational apps, quick lookups, and building custom numerology calculators. Get detailed 300-500 word expert-written meanings for all 12 valid numerology numbers.",
+        "summary": "Get number meaning - Numerology number meanings API",
+        "description": "Get the full numerology meaning of any number 1 to 9 or the master numbers 11, 22 and 33. The response returns the archetype title, keywords, a core description, strengths, challenges, career, relationships and spirituality in the language set by lang, the same reading every core number endpoint returns for that number. Built for numerology reference pages, custom calculators, educational apps and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -111418,7 +111483,7 @@
                         "description": {
                           "type": "string",
                           "example": "In the span of single-digit numbers 1 to 9, 5 is the number in the exact middle...",
-                          "description": "Authoritative 300 to 500 word interpretation covering personality, life purpose, and core themes. Written by numerology experts and suitable for full-page readings."
+                          "description": "Core interpretation of the number covering personality, life purpose and core themes. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -111752,8 +111817,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Get daily numerology number - Number of the Day with interpretation",
-        "description": "Receive a daily numerology number (1-9, 11, 22, 33) for guidance and reflection. Uses seeded randomness so the same seed gets the same number on the same date, perfect for \"Number of the Day\" features in numerology apps, wellness platforms, and daily guidance tools. Returns the number with full interpretation including archetype, keywords, strengths, challenges, career, relationships, and spiritual insights. Ideal for daily push notifications, morning briefings, and personalized numerology experiences.",
+        "summary": "Get daily numerology number - Number of the Day API",
+        "description": "Get the numerology Number of the Day, one of 1 to 9, 11, 22 or 33, with its full interpretation. The same seed returns the same number for the same date, so a user keeps one number all day, and the date defaults to today in UTC. The response returns the number, its type, a daily message and the archetype, keywords, strengths, challenges, career, relationships and spirituality reading in the language set by lang. Built for Number of the Day widgets, push notifications and daily content.",
         "security": [
           {
             "apiKey": []
@@ -111870,7 +111935,7 @@
                         "description": {
                           "type": "string",
                           "example": "The 7 is the most internally-oriented of the single-digit numbers. While other numbers are engaged primarily with the external world of action, relationship, and material achievement, the 7 is fundamentally concerned with the interior world of understanding...",
-                          "description": "Expert-written 300 to 500 word interpretation of the daily energy. Covers personality resonance, life themes, and how this number influences the day."
+                          "description": "Core interpretation of the number of the day: its personality resonance, life themes and how it colors the day. Together with the strengths, challenges, career, relationships and spirituality fields it makes a full reading."
                         },
                         "strengths": {
                           "type": "array",
@@ -112175,8 +112240,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Chaldean numerology name reading - Destiny, compound number, planetary ruler",
-        "description": "Calculate a complete Chaldean numerology reading for a name. The older Chaldean system maps letters to values 1 to 8 by vibration (the number 9 is sacred and never assigned to a letter) and reads the unreduced two-digit compound number (10 to 52, also called a fadic number, defined by Cheiro) in addition to the single-digit root. Returns the Destiny or name number from all letters, the Soul Urge from vowels, and the Personality from consonants, each with its compound number, root, and Cheiro compound interpretation, plus the planetary ruler of the Destiny root and a caution flag for the karmic numbers 4 and 8. Perfect for Chaldean numerology calculators, name analysis tools, and AI numerology assistants that need both the compound and root layers in one call.",
+        "summary": "Calculate Chaldean numerology - Chaldean name number calculator API",
+        "description": "Calculate a complete Chaldean numerology reading for a name, following Cheiro. The Destiny or name number, the Soul Urge from the vowels and the Personality from the consonants each come with the compound number from 10 to 52, the single-digit root and the classical compound interpretation, and a longer name is read name by name with every step shown in its calculation. The response adds the planetary ruler and meaning of the Destiny root, a caution flag for the roots 4 and 8, and a summary, in the language set by lang. Built for Chaldean numerology calculators, name analysis tools and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -112219,7 +112284,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "Helen",
-                    "description": "The name to analyze. Chaldean tradition uses the name a person is most known by, not necessarily the full legal birth name."
+                    "description": "The name to analyze. Chaldean tradition uses the name a person is most known by, not necessarily the full legal birth name. It needs at least one vowel (A, E, I, O, U) and one consonant, since the Soul Urge is read from the vowels and the Personality from the consonants; Y counts as a consonant. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 },
                 "required": [
@@ -112248,7 +112313,7 @@
                         "total": {
                           "type": "number",
                           "example": 23,
-                          "description": "Raw sum of the Chaldean letter values before any reduction."
+                          "description": "The sum the compound is read from: for a one-word name, its Chaldean letter total; for a longer name, the sum of each word reduced to its single number, as Cheiro works John Smith (18 to 9, 17 to 8, total 17)."
                         },
                         "compound": {
                           "type": [
@@ -112266,7 +112331,7 @@
                         "calculation": {
                           "type": "string",
                           "example": "H=5, E=5, L=3, E=5, N=5 = 23 → 5",
-                          "description": "Letter-by-letter Chaldean breakdown summed to the total, then to compound and root."
+                          "description": "Letter-by-letter Chaldean breakdown, name by name for a longer name, summed to the total, then to compound and root."
                         },
                         "compoundMeaning": {
                           "type": [
@@ -112332,7 +112397,7 @@
                         "total": {
                           "type": "number",
                           "example": 23,
-                          "description": "Raw sum of the Chaldean letter values before any reduction."
+                          "description": "The sum the compound is read from: for a one-word name, its Chaldean letter total; for a longer name, the sum of each word reduced to its single number, as Cheiro works John Smith (18 to 9, 17 to 8, total 17)."
                         },
                         "compound": {
                           "type": [
@@ -112350,7 +112415,7 @@
                         "calculation": {
                           "type": "string",
                           "example": "H=5, E=5, L=3, E=5, N=5 = 23 → 5",
-                          "description": "Letter-by-letter Chaldean breakdown summed to the total, then to compound and root."
+                          "description": "Letter-by-letter Chaldean breakdown, name by name for a longer name, summed to the total, then to compound and root."
                         },
                         "compoundMeaning": {
                           "type": [
@@ -112416,7 +112481,7 @@
                         "total": {
                           "type": "number",
                           "example": 23,
-                          "description": "Raw sum of the Chaldean letter values before any reduction."
+                          "description": "The sum the compound is read from: for a one-word name, its Chaldean letter total; for a longer name, the sum of each word reduced to its single number, as Cheiro works John Smith (18 to 9, 17 to 8, total 17)."
                         },
                         "compound": {
                           "type": [
@@ -112434,7 +112499,7 @@
                         "calculation": {
                           "type": "string",
                           "example": "H=5, E=5, L=3, E=5, N=5 = 23 → 5",
-                          "description": "Letter-by-letter Chaldean breakdown summed to the total, then to compound and root."
+                          "description": "Letter-by-letter Chaldean breakdown, name by name for a longer name, summed to the total, then to compound and root."
                         },
                         "compoundMeaning": {
                           "type": [
@@ -112809,8 +112874,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Compound number meaning - Cheiro Chaldean interpretation 10 to 52",
-        "description": "Get the classical Chaldean interpretation of a compound number (also called a fadic number) from 10 to 52, as defined by Cheiro in the Book of Numbers. Compound numbers are the unreduced two-digit numbers that reveal the hidden influence behind a name or date, beyond the single-digit root. Each returns its symbolic title (such as The Wheel of Fortune for 10, The Star of the Magi for 17, or The Crown of the Magi for 21), its nature (fortunate, unfortunate, or mixed), and a full interpretation. Numbers 33 to 52 share the meaning of a lower number in their series, returned with a sameAs pointer. Perfect for Chaldean numerology references, compound number lookups, and AI numerology tools.",
+        "summary": "Get compound number meaning - Chaldean compound numbers 10 to 52 API",
+        "description": "Get the classical Chaldean meaning of a compound number, also called a fadic number, from 10 to 52 as Cheiro defines it. A compound number is the unreduced two-digit total behind a name or date, read beside its single-digit root. The response returns the root, the nature (fortunate, unfortunate or mixed), the full interpretation in the language set by lang, and the symbolic name where Cheiro gives one, such as The Wheel of Fortune for 10 or The Crown of the Magi for 21; a number from 33 up that repeats a lower one carries a sameAs pointer to it. Built for Chaldean numerology references, name analysis tools and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -113151,8 +113216,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Dual numerology - Pythagorean and Chaldean name numbers in one call",
-        "description": "Calculate a name number in both major numerology systems at once and compare them. The Pythagorean system maps letters 1 to 9 in alphabetical order and preserves master numbers (11, 22, 33), giving the Expression or Destiny number used in modern Western numerology. The Chaldean system maps letters 1 to 8 by vibration, reads the compound number (10 to 52), and reduces to a root 1 to 9. Returns both results with their interpretations, plus an agreement flag showing whether the two systems point to the same single-digit energy. The only numerology API that returns Pythagorean and Chaldean for a name in a single request, ideal for comparison tools and AI numerology assistants.",
+        "summary": "Calculate dual numerology - Pythagorean and Chaldean name number API",
+        "description": "Calculate a name number in both Pythagorean and Chaldean numerology in one call and compare them. The Pythagorean side returns the Expression or Destiny number with master numbers 11, 22 and 33 kept; the Chaldean side returns the compound number from 10 to 52, the root, its planetary ruler and the compound interpretation; each shows its calculation name by name. An agreement flag and a plain-language note show whether the two systems point to the same single-digit energy, in the language set by lang. Built for system comparison tools, name analysis features and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -113195,7 +113260,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "David",
-                    "description": "The name to analyze in both systems."
+                    "description": "The name to analyze in both systems. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 },
                 "required": [
@@ -113287,7 +113352,7 @@
                         "total": {
                           "type": "number",
                           "example": 16,
-                          "description": "Raw Chaldean letter total."
+                          "description": "The sum the compound is read from: for a one-word name, its Chaldean letter total; for a longer name, the sum of each word reduced to its single number, as Cheiro works John Smith (18 to 9, 17 to 8, total 17)."
                         },
                         "calculation": {
                           "type": "string",
@@ -113630,8 +113695,8 @@
         "tags": [
           "Numerology"
         ],
-        "summary": "Business name numerology - Chaldean brand name analysis and lucky numbers",
-        "description": "Analyze a business or brand name with Chaldean numerology, the system practitioners use for trade names. Returns the name number (compound and root), its planetary ruler, an overall business rating, the industries the number favors, and whether the compound is one of Cheiro fortunate compounds. The most favorable business roots are 1 (leadership), 3 (expansion), 5 (commerce) and 6 (beauty and hospitality); the numbers 4 and 8 carry caution as the karmic numbers of instability and heavy demand. Use it to vet a company name, compare brand options, or guide a naming decision. This is positioning guidance layered over the fundamentals of a memorable, available name, not a guarantee.",
+        "summary": "Calculate business name numerology - Brand name numerology API",
+        "description": "Analyze a business or brand name with Chaldean numerology, the system practitioners use for trade names. The name is read word by word, and the response returns the compound number and root with every step, the planetary ruler, a business rating, the industries the number favors, whether the compound is one of the fortunate compounds Cheiro names, and guidance, in the language set by lang. The roots 1, 3, 5 and 6 rate excellent, 2 and 9 good, 7 and 8 caution and 4 avoid. Built for naming tools, brand agencies and founder apps; the rating is positioning guidance, not a guarantee.",
         "security": [
           {
             "apiKey": []
@@ -113674,7 +113739,7 @@
                     "minLength": 1,
                     "maxLength": 200,
                     "example": "Ford",
-                    "description": "The business or brand name to evaluate."
+                    "description": "The business or brand name to evaluate. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
                 },
                 "required": [
@@ -113700,7 +113765,7 @@
                     "total": {
                       "type": "number",
                       "example": 21,
-                      "description": "Raw Chaldean letter total of the name."
+                      "description": "The sum the compound is read from: for a one-word name, its Chaldean letter total; for a longer name, the sum of each word reduced to its single number, as Cheiro works John Smith (18 to 9, 17 to 8, total 17)."
                     },
                     "compound": {
                       "type": [
@@ -122031,7 +122096,12 @@
                         "No",
                         "Maybe"
                       ],
-                      "description": "Tarot-derived answer. Yes = upright card supports a positive outcome. No = reversed card suggests obstacles. Maybe = inherently ambiguous card drawn (The Hanged Man, Wheel of Fortune, Temperance, Two of Swords, Four of Swords) signaling pause, reflection, or shifting circumstances."
+                      "description": "Tarot-derived answer. Yes = upright card supports a positive outcome. No = reversed card suggests obstacles. Maybe = inherently ambiguous card drawn (The Hanged Man, Wheel of Fortune, Temperance, Two of Swords, Four of Swords) signaling pause, reflection, or shifting circumstances. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use answerLocalized for anything a reader sees."
+                    },
+                    "answerLocalized": {
+                      "type": "string",
+                      "example": "Sí",
+                      "description": "Answer in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "strength": {
                       "type": "string",
@@ -122039,7 +122109,12 @@
                         "Strong",
                         "Qualified"
                       ],
-                      "description": "Confidence level of the answer. Strong = Major Arcana card drawn (powerful, definitive cosmic energy). Qualified = Minor Arcana card drawn (nuanced, situational guidance)."
+                      "description": "Confidence level of the answer. Strong = Major Arcana card drawn (powerful, definitive cosmic energy). Qualified = Minor Arcana card drawn (nuanced, situational guidance). Always English, whatever the lang parameter says. Use strengthLocalized for anything a reader sees."
+                    },
+                    "strengthLocalized": {
+                      "type": "string",
+                      "example": "Fuerte",
+                      "description": "Answer strength in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it."
                     },
                     "card": {
                       "type": "object",
@@ -141559,10 +141634,10 @@
             "schema": {
               "type": "string",
               "example": "snake",
-              "description": "Unique symbol identifier in kebab-case (e.g., \"snake\", \"being-chased\", \"teeth-falling-out\")."
+              "description": "Unique symbol identifier in kebab-case (e.g., \"snake\", \"chase-dreams\", \"losing-teeth\")."
             },
             "required": true,
-            "description": "Unique symbol identifier in kebab-case (e.g., \"snake\", \"being-chased\", \"teeth-falling-out\").",
+            "description": "Unique symbol identifier in kebab-case (e.g., \"snake\", \"chase-dreams\", \"losing-teeth\").",
             "name": "id",
             "in": "path"
           }
@@ -145192,6 +145267,9 @@
           {
             "apiKey": []
           }
+        ],
+        "x-key-types": [
+          "secret"
         ],
         "responses": {
           "200": {

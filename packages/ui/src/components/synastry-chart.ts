@@ -375,6 +375,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				color: var(--roxy-muted, #71717a);
 			}
 			.retro {
+				margin-inline-start: 0.3em;
 				color: var(--roxy-muted, #71717a);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
@@ -696,7 +697,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 									<span aria-hidden="true">${planetGlyph(p.name) ?? ''}</span>
 									${display(p, 'name')}${
 										p.isRetrograde
-											? html` <span class="retro" title=${this.t('retrograde')}>℞</span>`
+											? html`<span class="retro" title=${this.t('retrograde')}>℞</span>`
 											: nothing
 									}
 								</td>

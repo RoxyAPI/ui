@@ -3061,6 +3061,42 @@ describe('roxy-tarot-spread titles itself from the response', () => {
 		expect(title(el)).toBe('Three card');
 		el.remove();
 	});
+
+	test('a yes or no verdict prints the localized words and keeps its colour class on the canonical answer', async () => {
+		const cast = {
+			question: 'Should I take the offer',
+			answer: 'No',
+			strength: 'Qualified',
+			spread: null,
+			card: { name: 'Sechs der Schwerter', reversed: true },
+		};
+		const verdict = (el: Element) => {
+			const span = el.shadowRoot?.querySelector('.answer');
+			return {
+				cls: span?.getAttribute('class') ?? '',
+				word: span?.textContent?.trim() ?? '',
+				strength: span?.nextElementSibling?.textContent?.trim() ?? '',
+			};
+		};
+		const de = await mount({
+			...cast,
+			answerLocalized: 'Nein',
+			strengthLocalized: 'Bedingt',
+		});
+		expect(verdict(de)).toEqual({
+			cls: 'answer no',
+			word: 'Nein',
+			strength: '· Bedingt',
+		});
+		de.remove();
+		const en = await mount(cast);
+		expect(verdict(en)).toEqual({
+			cls: 'answer no',
+			word: 'No',
+			strength: '· Qualified',
+		});
+		en.remove();
+	});
 });
 
 /**

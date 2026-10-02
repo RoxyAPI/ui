@@ -54,6 +54,12 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			path: '/angel-numbers/numbers/{number}',
 			toolName: 'get_angel_numbers_number',
 		},
+		{
+			operationId: 'getDailyAngelNumber',
+			method: 'POST',
+			path: '/angel-numbers/daily',
+			toolName: 'post_angel_numbers_daily',
+		},
 	],
 	'roxy-angel-number-lookup': [
 		{

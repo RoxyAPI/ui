@@ -355,3 +355,22 @@ describe('gate marks clear AA against the disc they are painted on', () => {
 		}
 	});
 });
+
+describe('an entry animation never fades text', () => {
+	test('no keyframes in a component or shared style animate opacity, so a contrast scan mid-entry measures the real ink', () => {
+		const offenders: string[] = [];
+		for (const dir of ['components', 'utils']) {
+			for (const rel of readdirSync(`packages/ui/src/${dir}`)) {
+				if (!rel.endsWith('.ts')) continue;
+				const src = readFileSync(`packages/ui/src/${dir}/${rel}`, 'utf8');
+				for (const m of src.matchAll(
+					/@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*)[^{}]*\}/g,
+				)) {
+					if (/\bopacity\s*:/.test(m[2] ?? ''))
+						offenders.push(`${dir}/${rel} ${m[1]}`);
+				}
+			}
+		}
+		expect(offenders).toEqual([]);
+	});
+});

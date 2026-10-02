@@ -851,6 +851,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		pascal: 'RoxyAngelNumberCard',
 		operationId: 'getAngelNumber',
 	},
+	post_angel_numbers_daily: {
+		tag: 'roxy-angel-number-card',
+		pascal: 'RoxyAngelNumberCard',
+		operationId: 'getDailyAngelNumber',
+	},
 	get_angel_numbers_lookup: {
 		tag: 'roxy-angel-number-lookup',
 		pascal: 'RoxyAngelNumberLookup',

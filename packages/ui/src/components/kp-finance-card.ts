@@ -571,7 +571,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 		const glyph = planetGlyph(name);
 		return html`${glyph ? html`<span class="glyph" aria-hidden="true">${glyph}</span>` : nothing}${name}${
 			retrograde
-				? html` <span class="retro" aria-label=${this.t('retrograde')}>&#8478;</span>`
+				? html`<span class="retro" aria-label=${this.t('retrograde')}>&#8478;</span>`
 				: nothing
 		}`;
 	}

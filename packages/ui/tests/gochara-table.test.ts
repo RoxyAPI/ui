@@ -103,4 +103,20 @@ describe('gochara reads from the natal Moon', () => {
 		const pos = (await mount(FIXTURE)).shadowRoot?.querySelector('.pos');
 		expect(pos?.textContent?.trim()).toMatch(/^[A-Z][a-z]+ \d{1,2}°\d{2}'$/);
 	});
+
+	test('a position keeps its minutes', async () => {
+		const el = await mount({
+			...FIXTURE,
+			transitingPlanets: [
+				{
+					...FIXTURE.transitingPlanets[0],
+					longitude: 290.6481,
+					sign: 'Capricorn',
+				},
+			],
+		});
+		expect(el.shadowRoot?.querySelector('.pos')?.textContent?.trim()).toBe(
+			"Capricorn 20°38'",
+		);
+	});
 });

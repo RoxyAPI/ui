@@ -80,13 +80,12 @@ export const baseStyles = css`
 		);
 	}
 
+	/* Motion only: text never passes through a partial opacity, so a scan mid-entry measures full contrast. */
 	@keyframes roxy-fade-in {
 		from {
-			opacity: 0;
 			transform: translateY(2px);
 		}
 		to {
-			opacity: 1;
 			transform: translateY(0);
 		}
 	}

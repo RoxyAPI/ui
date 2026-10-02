@@ -3411,13 +3411,19 @@
       "slug": "angel-number-card",
       "domain": "Angel Numbers",
       "renders": "Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections",
-      "endpointLabel": "GET /angel-numbers/numbers/{number}",
+      "endpointLabel": "GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily",
       "endpoints": [
         {
           "operationId": "getAngelNumber",
           "method": "GET",
           "path": "/angel-numbers/numbers/{number}",
           "toolName": "get_angel_numbers_number"
+        },
+        {
+          "operationId": "getDailyAngelNumber",
+          "method": "POST",
+          "path": "/angel-numbers/daily",
+          "toolName": "post_angel_numbers_daily"
         }
       ],
       "parts": [

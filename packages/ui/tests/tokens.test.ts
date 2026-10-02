@@ -193,6 +193,8 @@ describe('a glyph miss is never papered over with a truncation', () => {
 describe('a separator never rides on the leading space of a nested template', () => {
 	test('no component or shared renderer opens a nested template with a space right after an expression', async () => {
 		const LEADING_SPACE_AFTER_EXPRESSION = /\}\$\{[^\n]*?\bhtml` /;
+		// The same shape with the conditional wrapped onto the following lines.
+		const WRAPPED_AFTER_EXPRESSION = /\}\$\{\s*\n[^`$]*?\bhtml` /g;
 		const offenders: string[] = [];
 		for (const dir of ['components', 'utils']) {
 			const base = `packages/ui/src/${dir}`;
@@ -204,6 +206,10 @@ describe('a separator never rides on the leading space of a nested template', ()
 						offenders.push(`${dir}/${file}:${i + 1} ${line.trim()}`);
 					}
 				});
+				for (const m of src.matchAll(WRAPPED_AFTER_EXPRESSION)) {
+					const line = src.slice(0, m.index).split('\n').length;
+					offenders.push(`${dir}/${file}:${line} ${m[0].trim()}`);
+				}
 			}
 		}
 		expect(

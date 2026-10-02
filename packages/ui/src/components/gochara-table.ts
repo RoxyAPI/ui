@@ -4,10 +4,7 @@ import { planetGlyph } from '../tokens/index.js';
 import type { CalculateTransitResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import {
-	formatDegreeInSign,
-	longitudeToSignPosition,
-} from '../utils/degree.js';
+import { formatWheelDegree } from '../utils/degree.js';
 import {
 	formatAspectName,
 	formatDateTime,
@@ -222,7 +219,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 		const glyph = planetGlyph(p.name) ?? '';
 		const pos =
 			typeof p.longitude === 'number'
-				? longitudeToSignPosition(p.longitude)
+				? formatWheelDegree(p.longitude)
 				: undefined;
 
 		return html`<article class="row">
@@ -234,7 +231,7 @@ export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> 
 					${
 						// One text node, not two: the markup minifier collapses the leading
 						// space of an adjacent template and the separator would lose it.
-						pos ? `${p.sign} ${formatDegreeInSign(pos.degree)}` : p.sign
+						pos ? `${p.sign} ${pos}` : p.sign
 					}
 				</span>
 				${

@@ -98,6 +98,9 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 				font-weight: var(--roxy-weight-bold, 600);
 				margin-right: 0.35rem;
 			}
+			.src {
+				margin-inline-start: 0.35rem;
+			}
 			.block-title {
 				margin: 0 0 var(--roxy-space-sm, 0.5rem);
 				font-size: var(--roxy-text-xs, 0.75rem);
@@ -373,7 +376,7 @@ export class RoxyGematria extends RoxyDataElement<Gematria> {
 				([tradition, source], i) =>
 					html`${i > 0 ? ' · ' : ''}${humanize(tradition)}${
 						source
-							? html` <a href=${source} target="_blank" rel="noopener noreferrer">${this.t('Source')}</a>`
+							? html`<a class="src" href=${source} target="_blank" rel="noopener noreferrer">${this.t('Source')}</a>`
 							: nothing
 					}`,
 			)}

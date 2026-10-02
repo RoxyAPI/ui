@@ -12,6 +12,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { display } from '../utils/localized.js';
 
 type TarotSpreadData =
 	| CastThreeCardResponse
@@ -215,9 +216,9 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 				? (d.positions ?? [])
 				: [];
 		const cards = isDrawn && 'cards' in d ? (d as DrawCardsResponse).cards : [];
-		const answer = isYesNo ? (d as CastYesNoResponse).answer : undefined;
-		const strength = isYesNo ? (d as CastYesNoResponse).strength : undefined;
-		const verdictCard = isYesNo ? (d as CastYesNoResponse).card : undefined;
+		const yesNo = isYesNo ? (d as CastYesNoResponse) : undefined;
+		const strength = display(yesNo, 'strength');
+		const verdictCard = yesNo?.card;
 		// Title from the RESPONSE SHAPE first, the attribute only as a last resort.
 		// The API sends `spread: null` on several casts, and a host that cannot set
 		// attributes (the WordPress plugin maps an operationId to a bare tag) always
@@ -235,12 +236,9 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 			'question' in d ? (d as CastThreeCardResponse).question : undefined;
 		const summary =
 			'summary' in d ? (d as CastThreeCardResponse).summary : undefined;
-		const yesNoInterp = isYesNo
-			? (d as CastYesNoResponse).interpretation
-			: undefined;
-		const answerClass = answer
-			? answer.toLowerCase().replace(/[^a-z]/g, '')
-			: '';
+		const yesNoInterp = yesNo?.interpretation;
+		// The class keys on the canonical English answer; only the printed word follows the language.
+		const answerClass = yesNo?.answer ? yesNo.answer.toLowerCase() : '';
 
 		return html`<article class="wrap" part="card" aria-label=${this.t('Tarot spread')}>
 			<header class="head" part="header">
@@ -270,7 +268,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 						</div>
 						<div class="meta" part="details">
 							<div>
-								<span class=${`answer ${answerClass}`}>${answer}</span>
+								<span class=${`answer ${answerClass}`}>${display(yesNo, 'answer')}</span>
 								${strength ? html`<small> · ${strength}</small>` : nothing}
 							</div>
 							${

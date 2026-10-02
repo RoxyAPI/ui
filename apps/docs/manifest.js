@@ -766,7 +766,7 @@ window.ROXY_COMPONENTS = [
     "heading": "Angel number",
     "description": "Angel number card with title, core message, badges, keywords, life-area interpretations, affirmation, and action steps",
     "docsLabel": "Angel Numbers",
-    "endpointLabel": "GET /angel-numbers/numbers/{number}",
+    "endpointLabel": "GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily",
     "docsSummary": "Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections",
     "topic": "Angel Numbers"
   },
@@ -865,6 +865,12 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "GET",
       "path": "/angel-numbers/numbers/{number}",
       "toolName": "get_angel_numbers_number"
+    },
+    {
+      "operationId": "getDailyAngelNumber",
+      "method": "POST",
+      "path": "/angel-numbers/daily",
+      "toolName": "post_angel_numbers_daily"
     }
   ],
   "roxy-angel-number-lookup": [
