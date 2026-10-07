@@ -1,5 +1,9 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
-import { dispatchKeyRefusal, keyRefusal } from './key-guard.js';
+import {
+	dispatchKeyRefusal,
+	type KeyRefusal,
+	keyRefusal,
+} from './key-guard.js';
 
 /**
  * Host slots the controller drives. {@link RoxyDataElement} satisfies this, so the form mixin can attach a controller without the component wiring state by hand.
@@ -28,9 +32,7 @@ interface ApiFailure {
 	issues: ApiIssue[] | null;
 }
 
-/** Default RoxyAPI v2 origin. A component overrides it per instance via its `base-url` attribute. */
-/** The public API root. Exported so anything else that must reach the API (the field-label
- * fetch in `endpoint-form`) uses the SAME origin as every data request instead of a second copy. */
+/** The public API root, which a component overrides per instance through its `base-url` attribute; exported so every request names one origin. */
 export const DEFAULT_BASE_URL = 'https://roxyapi.com/api/v2';
 
 /**
@@ -89,14 +91,124 @@ export interface RoxyRequest {
 }
 
 /**
+ * Where an element sends its requests: the key it may present, the API origin, and the host route that proxies them.
+ *
+ * @remarks
+ * Every element that fetches holds these four, and {@link apiFetch} is the one function that turns them into a request, so a list that loads its next page, a form that loads its choices and a component that loads its result reach the API, or the host route standing in for it, the same way.
+ */
+export interface ApiRoute {
+	/** Browser-safe publishable key; anything else is refused before a request is made. */
+	publishableKey?: string;
+	/** API origin, absolute or relative to the page; {@link DEFAULT_BASE_URL} when unset. */
+	baseUrl?: string;
+	/** Host route that holds the secret key. When set, the request is POSTed there as `{ path, method, body, query }` and no key leaves the browser. */
+	submitUrl?: string;
+	/** Object the host page attaches to a proxied request as `context`, passed through unread. */
+	submitContext?: Record<string, unknown>;
+}
+
+/** A request the API answered with a failure: its own message, plus the fields it named when it rejected the request. */
+export class ApiError extends Error {
+	constructor(
+		message: string,
+		readonly issues: ApiIssue[] | null = null,
+	) {
+		super(message);
+	}
+}
+
+/** The key refusal that applies to a route, or undefined when it may send; a proxy route holds its own key, so none applies there. */
+export function routeRefusal(route: ApiRoute): KeyRefusal | undefined {
+	return route.submitUrl ? undefined : keyRefusal(route.publishableKey);
+}
+
+/** True when a route can reach the API at all: it carries a publishable key it may send, or a proxy route that holds one. */
+export function canFetch(route: ApiRoute): boolean {
+	return !!(route.submitUrl || (route.publishableKey && !routeRefusal(route)));
+}
+
+/**
+ * Send one request through a route and resolve to the JSON it answered.
+ *
+ * @remarks
+ * The one place a request is built, so the key refusal, the proxy body and the failure reading cannot drift between the elements that fetch. A refused key throws before anything is sent; a failed response throws an {@link ApiError} carrying the API message and, for a rejected body, the fields it named.
+ */
+export async function apiFetch<T>(
+	route: ApiRoute,
+	req: RoxyRequest,
+	signal?: AbortSignal,
+): Promise<T> {
+	const refusal = routeRefusal(route);
+	if (refusal) throw new ApiError(refusal.message);
+	const res = route.submitUrl
+		? await fetch(route.submitUrl, {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+				body: proxyBody(req, route.submitContext),
+				signal,
+			})
+		: await callApi(route, req, signal);
+	if (!res.ok) {
+		const failure = await readApiFailure(res);
+		throw new ApiError(failure.message, failure.issues);
+	}
+	return (await res.json()) as T;
+}
+
+/**
+ * The body of a proxied POST: the request, plus the host context under `context` when one is set.
+ *
+ * @remarks
+ * The context is appended rather than declared on {@link RoxyRequest}, so with none set the payload is the request object itself and every route already written against it keeps receiving the same four keys in the same order. A `null` or an empty object would be a fifth key such a route never agreed to read.
+ */
+function proxyBody(
+	req: RoxyRequest,
+	context?: Record<string, unknown>,
+): string {
+	return JSON.stringify(context ? { ...req, context } : req);
+}
+
+/** Direct call against RoxyAPI with the publishable key (the no-backend path). */
+function callApi(
+	route: ApiRoute,
+	req: RoxyRequest,
+	signal?: AbortSignal,
+): Promise<Response> {
+	// Resolved against the page, so a same-origin base ("/api/roxy") is as valid as an
+	// absolute one. Every route a host page can name resolves the same way, and a bare
+	// `new URL()` would reject the relative shape with an opaque "Invalid URL".
+	const url = new URL(
+		`${route.baseUrl ?? DEFAULT_BASE_URL}${req.path}`,
+		document.baseURI,
+	);
+	for (const [k, v] of Object.entries(req.query ?? {})) {
+		if (v != null) url.searchParams.set(k, String(v));
+	}
+	const headers: Record<string, string> = { Accept: 'application/json' };
+	if (route.publishableKey) headers['X-API-Key'] = route.publishableKey;
+	if (req.body != null) headers['Content-Type'] = 'application/json';
+	return fetch(url, {
+		method: req.method ?? 'GET',
+		headers,
+		body: req.body != null ? JSON.stringify(req.body) : undefined,
+		signal,
+	});
+}
+
+/**
  * Client-side fetch for uncontrolled (self-fetching) components: drives `host.data` / `host.loading` / `host.error` and cancels a stale request when a newer one starts or the host disconnects.
  *
  * @remarks
- * Security boundary. The only credential this ever sends is a `pk_` publishable key, which carries a server-side origin allowlist. A secret (`sk_`), legacy unprefixed or sample key is refused before any network call and surfaced as an error, so a server secret cannot leak into a browser request. This centralizes the guard that originated in `<roxy-location-search>` so every self-fetching component enforces it identically.
+ * Security boundary. The only credential this ever sends is a `pk_` publishable key, which carries a server-side origin allowlist. A secret (`sk_`), legacy unprefixed or sample key is refused before any network call and surfaced as an error, so a server secret cannot leak into a browser request. The request itself goes through {@link apiFetch}, which every other fetch on an element shares.
  *
  * Controlled-mode components never construct this. When a server injects the response as a `<script class="roxy-data">` island, there is no key and no fetch, which is the path server-rendered consumers (WordPress, JSX SSR, static HTML) rely on.
  */
-export class FetchController<T = unknown> implements ReactiveController {
+export class FetchController<T = unknown>
+	implements ReactiveController, ApiRoute
+{
 	private readonly host: FetchHost<T>;
 	private abort?: AbortController;
 
@@ -104,16 +216,9 @@ export class FetchController<T = unknown> implements ReactiveController {
 	publishableKey?: string;
 	/** API origin, overridable for self-hosted or proxied deployments. */
 	baseUrl = DEFAULT_BASE_URL;
-	/**
-	 * Consumer backend route that holds the secret key. When set, the request is POSTed here as `{ path, method, body, query }` instead of called against RoxyAPI directly, so no key (publishable or secret) is sent from the browser. This is the canonical path for server-rendered hosts (WordPress); the backend proxies the request with its own `sk_` key and returns the JSON response.
-	 */
+	/** Consumer backend route that holds the secret key, set from the host `submit-url` attribute; see {@link ApiRoute.submitUrl}. */
 	submitUrl?: string;
-	/**
-	 * Object the host page attaches to the proxied request, carried beside it as `context`. Set by the host from its `submit-context` attribute, and shapeless on purpose: this passes it through and reads no key of it, so what it holds is for the page and its own route to agree on.
-	 *
-	 * @remarks
-	 * Only the {@link FetchController.submitUrl} path can carry it, because that is the only body this code writes. A direct call sends the request the endpoint declares and nothing beside it.
-	 */
+	/** Object the host page attaches to the proxied request, set from its `submit-context` attribute; see {@link ApiRoute.submitContext}. */
 	submitContext?: Record<string, unknown>;
 
 	constructor(host: FetchHost<T>) {
@@ -132,8 +237,12 @@ export class FetchController<T = unknown> implements ReactiveController {
 	 * already surfaced and nothing is sent.
 	 */
 	async run(req: RoxyRequest): Promise<void> {
-		// submit-url proxy: no key leaves the browser; the consumer's backend holds it.
-		if (!this.submitUrl && this.keyRefused()) return;
+		const refusal = routeRefusal(this);
+		if (refusal) {
+			this.host.error = refusal.message;
+			dispatchKeyRefusal(this.host, refusal);
+			return;
+		}
 		this.abort?.abort();
 		const controller = new AbortController();
 		this.abort = controller;
@@ -141,75 +250,18 @@ export class FetchController<T = unknown> implements ReactiveController {
 		this.host.error = null;
 		this.host.issues = null;
 		try {
-			const res = this.submitUrl
-				? await fetch(this.submitUrl, {
-						method: 'POST',
-						headers: {
-							Accept: 'application/json',
-							'Content-Type': 'application/json',
-						},
-						body: this.proxyBody(req),
-						signal: controller.signal,
-					})
-				: await this.callApi(req, controller.signal);
-			if (!res.ok) {
-				const failure = await readApiFailure(res);
-				if (controller.signal.aborted) return;
-				this.host.issues = failure.issues;
-				this.host.error = failure.message;
-				return;
-			}
-			const json = (await res.json()) as T;
+			const json = await apiFetch<T>(this, req, controller.signal);
 			if (controller.signal.aborted) return;
 			this.host.data = json;
 		} catch (err) {
+			if (controller.signal.aborted) return;
 			if ((err as { name?: string })?.name === 'AbortError') return;
+			if (err instanceof ApiError) this.host.issues = err.issues;
 			this.host.error = err instanceof Error ? err.message : String(err);
 		} finally {
 			if (this.abort === controller) this.abort = undefined;
 			if (!controller.signal.aborted) this.host.loading = false;
 		}
-	}
-
-	/**
-	 * The body of a proxied POST: the request, plus {@link FetchController.submitContext} under `context` when the host set one.
-	 *
-	 * @remarks
-	 * The context is appended rather than declared on {@link RoxyRequest}, so with none set the payload is the request object itself and every route already written against it keeps receiving the same four keys in the same order. A `null` or an empty object would be a fifth key such a route never agreed to read.
-	 */
-	private proxyBody(req: RoxyRequest): string {
-		return JSON.stringify(
-			this.submitContext ? { ...req, context: this.submitContext } : req,
-		);
-	}
-
-	/** Direct call against RoxyAPI with the publishable key (the no-backend path). */
-	private callApi(req: RoxyRequest, signal: AbortSignal): Promise<Response> {
-		// Resolved against the page, so a same-origin base ("/api/roxy") is as valid as an
-		// absolute one. Every route a host page can name resolves the same way, and a bare
-		// `new URL()` would reject the relative shape with an opaque "Invalid URL".
-		const url = new URL(`${this.baseUrl}${req.path}`, document.baseURI);
-		for (const [k, v] of Object.entries(req.query ?? {})) {
-			if (v != null) url.searchParams.set(k, String(v));
-		}
-		const headers: Record<string, string> = { Accept: 'application/json' };
-		if (this.publishableKey) headers['X-API-Key'] = this.publishableKey;
-		if (req.body != null) headers['Content-Type'] = 'application/json';
-		return fetch(url, {
-			method: req.method ?? 'GET',
-			headers,
-			body: req.body != null ? JSON.stringify(req.body) : undefined,
-			signal,
-		});
-	}
-
-	/** True when the shared {@link keyRefusal} guard refuses the key; surfaces its message and sends nothing, so every fetch boundary fail-closes identically. */
-	private keyRefused(): boolean {
-		const refusal = keyRefusal(this.publishableKey);
-		if (!refusal) return false;
-		this.host.error = refusal.message;
-		dispatchKeyRefusal(this.host, refusal);
-		return true;
 	}
 }
 

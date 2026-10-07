@@ -27,12 +27,16 @@ export interface RoxyDreamSearchProps {
 	submitLabel?: string;
 	/** Persist the last self-fetch form values in sessionStorage, keyed by endpoint, and prefill the form when the visitor returns. Off by default. */
 	remember?: boolean;
+	/** Your own words for a failed self-fetch, printed in place of the message the request failed with (a spent quota, a network fault, a rejected key). Unset, the failure reads as the API worded it. */
+	errorMessage?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
 	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
 	hideReadings?: boolean;
 	/** Comma-separated list of `part` names to take off this component, for example "patterns" or "patterns, legend". Per element rather than per site, so the same component can drop a block on one page and keep it on another with no CSS. Sibling of hideReadings and a different tool: this hides a whole block whatever it contains, where hideReadings drops interpretive prose out of the markup. Names come from the `parts` array in components-catalog.json; a name the component does not carry hides nothing and is not an error. */
 	hideSections?: string;
+	/** Fires when the underlying <roxy-dream-search> dispatches `roxy-symbol-select`. */
+	onRoxySymbolSelect?: (event: CustomEvent<{ id: string; name: string; letter: string }>) => void;
 }
 
 export const RoxyDreamSearch = defineComponent({
@@ -50,9 +54,11 @@ export const RoxyDreamSearch = defineComponent({
 		lang: { type: String as PropType<RoxyDreamSearchProps['lang']> },
 		submitLabel: { type: String as PropType<RoxyDreamSearchProps['submitLabel']> },
 		remember: { type: Boolean as PropType<RoxyDreamSearchProps['remember']> },
+		errorMessage: { type: String as PropType<RoxyDreamSearchProps['errorMessage']> },
 		attribution: { type: String as PropType<RoxyDreamSearchProps['attribution']> },
 		hideReadings: { type: Boolean as PropType<RoxyDreamSearchProps['hideReadings']> },
 		hideSections: { type: String as PropType<RoxyDreamSearchProps['hideSections']> },
+		onRoxySymbolSelect: { type: Function as PropType<RoxyDreamSearchProps['onRoxySymbolSelect']> },
 	},
 	setup(props) {
 		const loadError = ref<Error | null>(null);
@@ -85,9 +91,11 @@ export const RoxyDreamSearch = defineComponent({
 			if (props.lang !== undefined) elementProps['.lang'] = props.lang;
 			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;
 			if (props.remember !== undefined) elementProps['.remember'] = props.remember;
+			if (props.errorMessage !== undefined) elementProps['.errorMessage'] = props.errorMessage;
 			if (props.attribution !== undefined) elementProps['.attribution'] = props.attribution;
 			if (props.hideReadings !== undefined) elementProps['.hideReadings'] = props.hideReadings;
 			if (props.hideSections !== undefined) elementProps['.hideSections'] = props.hideSections;
+			if (props.onRoxySymbolSelect) elementProps.onRoxySymbolSelect = props.onRoxySymbolSelect;
 
 			return h('roxy-dream-search', elementProps);
 		};

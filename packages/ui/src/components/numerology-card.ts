@@ -17,7 +17,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatDate } from '../utils/format.js';
+import { formatDate, formatList } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -448,7 +448,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 						${
 							profile.title
 								? html`<h4 class="sub-title">
-									${[profile.day ? `Day ${profile.day}` : '', profile.title].filter(Boolean).join(' · ')}
+									${[profile.day ? this.t('Day {{day}}', { day: profile.day }) : '', profile.title].filter(Boolean).join(' · ')}
 								</h4>`
 								: nothing
 						}
@@ -670,8 +670,10 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								<h4 class="sub-title">
 									${[
 										passion.number != null
-											? `Hidden passion ${passion.number}`
-											: 'Hidden passion',
+											? this.t('Hidden passion {{number}}', {
+													number: passion.number,
+												})
+											: this.t('Hidden passion'),
 										passion.title ?? '',
 									]
 										.filter(Boolean)
@@ -680,7 +682,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								${passion.description && readings ? html`<p>${passion.description}</p>` : nothing}
 								${
 									typeof passion.count === 'number'
-										? html`<p class="label">${`Appears ${passion.count} times in the name`}</p>`
+										? html`<p class="label">${this.t('Appears {{count}} times in the name', { count: passion.count })}</p>`
 										: nothing
 								}
 							</div>`
@@ -692,8 +694,10 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								<h4 class="sub-title">
 									${[
 										subconscious.number != null
-											? `Subconscious self ${subconscious.number}`
-											: 'Subconscious self',
+											? this.t('Subconscious self {{number}}', {
+													number: subconscious.number,
+												})
+											: this.t('Subconscious self'),
 										subconscious.title ?? '',
 									]
 										.filter(Boolean)
@@ -702,7 +706,7 @@ export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
 								${subconscious.description && readings ? html`<p>${subconscious.description}</p>` : nothing}
 								${
 									subconscious.uniqueNumbers?.length
-										? html`<p class="label">${`Numbers present: ${subconscious.uniqueNumbers.join(', ')}`}</p>`
+										? html`<p class="label">${this.t('Numbers present: {{list}}', { list: formatList(this.effectiveLang(), subconscious.uniqueNumbers.map(String)) })}</p>`
 										: nothing
 								}
 							</div>`

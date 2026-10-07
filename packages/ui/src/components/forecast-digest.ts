@@ -161,8 +161,10 @@ export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> 
 	}
 
 	private windowLabel(days: number | undefined): string {
-		if (days === 1) return 'Next 24 hours';
-		return typeof days === 'number' ? `Next ${days} days` : 'Window';
+		if (days === 1) return this.t('Next 24 hours');
+		return typeof days === 'number'
+			? this.t('Next {{count}} days', { count: days })
+			: this.t('Window');
 	}
 
 	private renderWindow(w: DigestWindow) {

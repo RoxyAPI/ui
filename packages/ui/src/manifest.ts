@@ -613,10 +613,11 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'tarot-catalog',
 		heading: 'Tarot deck',
 		description:
-			'Responsive tarot deck gallery with card art, name, and an arcana and suit caption from the tarot catalog response',
+			'Responsive tarot deck gallery with card art, name, and an arcana and suit caption; a picked tile opens its tarot card in place, and emits roxy-symbol-select for a host that pairs its own',
 		docsLabel: 'Tarot',
 		endpointLabel: 'GET /tarot/cards',
-		docsSummary: 'Deck gallery tiles with card art, name, and arcana and suit',
+		docsSummary:
+			'Deck gallery tiles with card art, name, and arcana and suit; a pick opens the card in place',
 		topic: 'Tarot',
 	},
 	{
@@ -874,7 +875,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'crystal-card',
 		heading: 'Crystal detail',
 		description:
-			'Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings',
+			'Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings; as a widget the visitor types a crystal name and picks it',
 		docsLabel: 'Crystals',
 		endpointLabel: 'GET /crystals/{id}',
 		docsSummary:
@@ -887,12 +888,12 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'crystal-grid',
 		heading: 'Crystal grid',
 		description:
-			'Responsive crystal gallery with photo, name, and colour swatches from any crystals list response; a picked tile opens its crystal card in place',
+			'Responsive crystal gallery with photo, name, and colour swatches from any crystals list response, filterable by chakra, zodiac sign, element, colour, and planet; a picked tile opens its crystal card in place',
 		docsLabel: 'Crystals',
 		endpointLabel:
 			'GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search',
 		docsSummary:
-			'Crystal gallery tiles with photo, name, and colour swatches; a pick opens the card in place',
+			'Crystal gallery with chakra, zodiac, element, colour, and planet filters; a pick opens the card in place',
 		topic: 'Crystals',
 	},
 	{
@@ -901,7 +902,7 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'dream-card',
 		heading: 'Dream symbol',
 		description:
-			'Dream symbol card with the symbol name, full interpretation, and dictionary letter',
+			'Dream symbol card with the symbol name, full interpretation, and dictionary letter; as a widget the visitor types a symbol and picks it',
 		docsLabel: 'Dreams',
 		endpointLabel: 'GET /dreams/symbols/{id}',
 		docsSummary: 'Symbol name, interpretation body, and letter chip',
@@ -913,11 +914,11 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'dream-search',
 		heading: 'Dream search',
 		description:
-			'Dream-symbol search results as selectable tiles; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own',
+			'The dream dictionary as selectable tiles under a search box and an A to Z bar; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own',
 		docsLabel: 'Dreams',
 		endpointLabel: 'GET /dreams/symbols',
 		docsSummary:
-			'Matched dream symbols as selectable tiles with a letter chip; a pick opens the card in place',
+			'The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place',
 		topic: 'Dreams',
 	},
 	{

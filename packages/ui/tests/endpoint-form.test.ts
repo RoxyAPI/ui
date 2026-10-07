@@ -3,7 +3,6 @@ import spec from '../../../specs/openapi.json';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import {
 	buildFormModel,
-	type FieldDef,
 	type FormModel,
 	type OpenApiSchema,
 	type OperationSchema,
@@ -729,13 +728,13 @@ describe('a repeating request property renders one card per record', () => {
 		const cards = () => root.querySelectorAll('fieldset.person-group');
 		expect(cards().length).toBe(3);
 		expect(root.querySelectorAll('roxy-location-search').length).toBe(3);
-		// The legend is the published field label plus the record number; with no
-		// label catalogue registered here it falls back to the humanized wire name.
+		// The legend is the published field label plus the record number; on an
+		// English page that label is the API English one compiled into the form.
 		expect(
 			Array.from(root.querySelectorAll('legend')).map((l) =>
 				l.textContent?.trim(),
 			),
-		).toEqual(['Members 1', 'Members 2', 'Members 3']);
+		).toEqual(['Group members 1', 'Group members 2', 'Group members 3']);
 		expect(root.querySelector('input[type="text"]')).toBeNull();
 
 		const button = (word: string) =>
@@ -1210,16 +1209,15 @@ describe('every bound endpoint can be submitted from its form', () => {
 		]);
 	});
 
-	test('every form can be sent: a submit button, or a single enum input that submits itself', async () => {
+	test('every form can be sent: a submit button, or inputs that submit themselves', async () => {
 		const stuck: string[] = [];
 		let checked = 0;
 		for await (const { label, mount } of boundForms()) {
 			const el = await mount();
 			const root = el.shadowRoot as ShadowRoot;
 			const button = !!root.querySelector('button.submit');
-			const single = (el as unknown as { singleEnumField: FieldDef | null })
-				.singleEnumField;
-			if (!button && !single) stuck.push(label);
+			const self = (el as unknown as { selfSubmits: boolean }).selfSubmits;
+			if (!button && !self) stuck.push(label);
 			checked++;
 			el.remove();
 		}
@@ -1251,5 +1249,406 @@ describe('every bound endpoint can be submitted from its form', () => {
 
 		expect(checked).toBeGreaterThan(20);
 		expect(hidden).toEqual([]);
+	});
+});
+
+/**
+ * A field whose choices the API lists is chosen from them: a required free-string identifier through a search-as-you-type picker, an optional filter on a form that opens on load through a chip row or a select that submits on pick. None of it happens on a form that cannot reach the API, which keeps its plain inputs.
+ */
+describe('choices read from the API', () => {
+	/** Mount with the slice resolving to `model` and each API path answering from `routes`; every other URL 404s. Records API calls. */
+	async function mountWith(
+		model: FormModel,
+		attrs: Record<string, string>,
+		routes: Record<string, unknown>,
+		calls: string[] = [],
+	): Promise<FormEl> {
+		globalThis.fetch = mock(async (url: string | URL) => {
+			const u = new URL(String(url));
+			if (u.pathname.includes('/schemas/'))
+				return { ok: true, status: 200, json: async () => model };
+			const path = u.pathname.replace('/api/v2', '');
+			calls.push(`${path}${u.search}`);
+			return path in routes
+				? { ok: true, status: 200, json: async () => routes[path] }
+				: {
+						ok: false,
+						status: 404,
+						json: async () => ({ error: 'Not found' }),
+					};
+		}) as unknown as typeof fetch;
+		const el = document.createElement('roxy-endpoint-form') as FormEl;
+		for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+		document.body.appendChild(el);
+		await flush(el);
+		return el;
+	}
+
+	const submits = (el: FormEl) => {
+		const out: Record<string, unknown>[] = [];
+		el.addEventListener('roxy-submit', (e) =>
+			out.push((e as CustomEvent).detail),
+		);
+		return out;
+	};
+
+	const CRYSTALS: FormModel = {
+		title: 'List all crystals',
+		hasLang: true,
+		fields: [
+			{
+				key: 'chakra',
+				name: 'chakra',
+				kind: 'tiles',
+				required: false,
+				inQuery: true,
+				enum: ['Root', 'Heart'],
+			},
+			{
+				key: 'color',
+				name: 'color',
+				kind: 'text',
+				required: false,
+				inQuery: true,
+			},
+			{
+				key: 'limit',
+				name: 'limit',
+				kind: 'number',
+				required: false,
+				inQuery: true,
+				default: 20,
+			},
+		],
+	};
+
+	/** More words than a tile row holds, so the colour filter is a select. */
+	const COLORS = [
+		'black',
+		'blue',
+		'brown',
+		'clear',
+		'gold',
+		'green',
+		'grey',
+		'orange',
+		'pink',
+		'purple',
+		'red',
+		'white',
+		'yellow',
+	];
+
+	test('a filter bar submits on pick, one filter at a time, and its words are compact selects', async () => {
+		const el = await mountWith(
+			CRYSTALS,
+			{
+				'data-endpoint': 'crystals',
+				method: 'GET',
+				'publishable-key': 'pk_test_f',
+			},
+			{ '/crystals/colors': { count: COLORS.length, colors: COLORS } },
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		const sent = submits(el);
+		// Every input sends itself, so there is no submit button, and a filter of words never draws tiles.
+		expect(root.querySelector('button.submit')).toBeNull();
+		expect(root.querySelector('[role="radio"]')).toBeNull();
+		const chakra = root.getElementById('roxy-form-chakra') as HTMLSelectElement;
+		const color = root.getElementById('roxy-form-color') as HTMLSelectElement;
+		expect([...color.options].map((o) => o.value)).toEqual(['', ...COLORS]);
+
+		const pick = async (select: HTMLSelectElement, value: string) => {
+			select.value = value;
+			select.dispatchEvent(new Event('change'));
+			await flush(el);
+		};
+		await pick(chakra, 'Root');
+		expect(sent.at(-1)?.values).toEqual({ chakra: 'Root', limit: 20 });
+		expect(sent.at(-1)?.sticky).toBe(true);
+
+		await pick(color, 'blue');
+		expect(sent.at(-1)?.values).toEqual({ color: 'blue', limit: 20 });
+		expect(chakra.value).toBe('');
+
+		await pick(color, '');
+		expect(sent.at(-1)?.values).toEqual({ limit: 20 });
+		el.remove();
+	});
+
+	test('a letter index is a row of narrow tiles holding the whole alphabet, the empty letters disabled', async () => {
+		const el = await mountWith(
+			{
+				title: 'List dream symbols',
+				hasLang: false,
+				fields: [
+					{ key: 'q', name: 'q', kind: 'text', required: false, inQuery: true },
+					{
+						key: 'letter',
+						name: 'letter',
+						kind: 'text',
+						required: false,
+						inQuery: true,
+					},
+					{
+						key: 'limit',
+						name: 'limit',
+						kind: 'number',
+						required: false,
+						inQuery: true,
+						default: 20,
+					},
+				],
+			},
+			{
+				'data-endpoint': 'dreams/symbols',
+				method: 'GET',
+				'publishable-key': 'pk_test_f',
+			},
+			{ '/dreams/symbols/letters': { letters: { a: 3, m: 9 }, total: 12 } },
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		const tiles = [
+			...root.querySelectorAll<HTMLButtonElement>(
+				'.tiles.narrow [role="radio"]',
+			),
+		];
+		expect(tiles.map((t) => t.textContent?.trim()).join('')).toBe(
+			'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+		);
+		expect(
+			tiles.filter((t) => !t.disabled).map((t) => t.textContent?.trim()),
+		).toEqual(['A', 'M']);
+		// The search box stays a search box, so the form keeps its submit button and the API English label.
+		expect(root.getElementById('roxy-form-q')?.getAttribute('type')).toBe(
+			'text',
+		);
+		expect(
+			root.querySelector('label[for="roxy-form-q"]')?.textContent?.trim(),
+		).toBe('Search');
+		expect(root.querySelector('button.submit')?.textContent?.trim()).toBe(
+			'Search',
+		);
+		el.remove();
+	});
+
+	test('a required identifier is a combobox that searches as the visitor types and submits the picked id', async () => {
+		const calls: string[] = [];
+		const el = await mountWith(
+			{
+				title: 'Get dream symbol by id',
+				hasLang: false,
+				fields: [{ key: 'id', name: 'id', kind: 'text', required: true }],
+			},
+			{
+				'data-endpoint': 'dreams/symbols/{id}',
+				method: 'GET',
+				'publishable-key': 'pk_test_f',
+			},
+			{
+				'/dreams/symbols': {
+					total: 1,
+					symbols: [{ id: 'adder-snake', name: 'Adder Snake' }],
+				},
+			},
+			calls,
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		const sent = submits(el);
+		const box = root.getElementById('roxy-form-id') as HTMLInputElement;
+		expect(box.getAttribute('role')).toBe('combobox');
+		expect(box.getAttribute('aria-labelledby')).toBe('roxy-form-title');
+		expect(root.getElementById('roxy-form-title')?.textContent).toBe(
+			'Get dream symbol by id',
+		);
+		expect(root.querySelector('button.submit')).toBeNull();
+
+		box.value = 'snake';
+		box.dispatchEvent(new Event('input'));
+		await new Promise((r) => setTimeout(r, 300));
+		await flush(el);
+		expect(calls).toEqual(['/dreams/symbols?limit=10&q=snake']);
+		expect(box.getAttribute('aria-expanded')).toBe('true');
+		const option = root.querySelector('[role="option"]') as HTMLElement;
+		expect(option.textContent?.trim()).toBe('Adder Snake');
+		expect(box.getAttribute('aria-activedescendant')).toBe(option.id);
+
+		box.dispatchEvent(
+			new (
+				window as unknown as { KeyboardEvent: typeof KeyboardEvent }
+			).KeyboardEvent('keydown', { key: 'Enter' }),
+		);
+		await flush(el);
+		expect(sent.at(-1)?.values).toEqual({ id: 'adder-snake' });
+		expect(box.value).toBe('Adder Snake');
+		el.remove();
+	});
+
+	test('a collection with no search is read once and filtered in place, and a failure prints the API message under the box', async () => {
+		const calls: string[] = [];
+		const el = await mountWith(
+			{
+				title: 'Get tarot card by id',
+				hasLang: true,
+				fields: [{ key: 'id', name: 'id', kind: 'text', required: true }],
+			},
+			{
+				'data-endpoint': 'tarot/cards/{id}',
+				method: 'GET',
+				'publishable-key': 'pk_test_f',
+				lang: 'de',
+			},
+			{
+				'/tarot/cards': {
+					total: 2,
+					cards: [
+						{ id: 'tower', name: 'Der Turm' },
+						{ id: 'star', name: 'Der Stern' },
+					],
+				},
+			},
+			calls,
+		);
+		const root = el.shadowRoot as ShadowRoot;
+		const box = root.getElementById('roxy-form-id') as HTMLInputElement;
+		box.dispatchEvent(new Event('focus'));
+		await flush(el);
+		expect(root.querySelectorAll('[role="option"]').length).toBe(2);
+		box.value = 'turm';
+		box.dispatchEvent(new Event('input'));
+		await flush(el);
+		expect(
+			[...root.querySelectorAll('[role="option"]')].map((o) =>
+				o.textContent?.trim(),
+			),
+		).toEqual(['Der Turm']);
+		// One read, in the page language, at the largest page the collection serves.
+		expect(calls).toEqual(['/tarot/cards?limit=100&lang=de']);
+		el.remove();
+
+		const failing = await mountWith(
+			{
+				title: 'Get crystal by id',
+				hasLang: true,
+				fields: [{ key: 'id', name: 'id', kind: 'text', required: true }],
+			},
+			{
+				'data-endpoint': 'crystals/{id}',
+				method: 'GET',
+				'publishable-key': 'pk_test_f',
+			},
+			{},
+		);
+		const fbox = failing.shadowRoot?.getElementById(
+			'roxy-form-id',
+		) as HTMLInputElement;
+		fbox.dispatchEvent(new Event('focus'));
+		await flush(failing);
+		expect(
+			failing.shadowRoot?.querySelector('.picker + .field-error, .field-error')
+				?.textContent,
+		).toBe('Not found');
+		failing.remove();
+	});
+
+	test('a form that cannot reach the API keeps its plain inputs and reads nothing', async () => {
+		const calls: string[] = [];
+		const el = await mountWith(
+			{
+				title: 'Get dream symbol by id',
+				hasLang: false,
+				fields: [{ key: 'id', name: 'id', kind: 'text', required: true }],
+			},
+			{ 'data-endpoint': 'dreams/symbols/{id}', method: 'GET' },
+			{},
+			calls,
+		);
+		const box = el.shadowRoot?.getElementById('roxy-form-id');
+		expect(box?.getAttribute('type')).toBe('text');
+		expect(box?.hasAttribute('role')).toBe(false);
+		expect(calls).toEqual([]);
+		el.remove();
+	});
+
+	test('autoload submits once on load a read that needs nothing, and never a POST or a form with no key', async () => {
+		const mountAuto = async (method: string, key?: string) => {
+			globalThis.fetch = mock(async (url: string | URL) =>
+				String(url).includes('/schemas/')
+					? { ok: true, status: 200, json: async () => CRYSTALS }
+					: { ok: false, status: 404, json: async () => ({}) },
+			) as unknown as typeof fetch;
+			const el = document.createElement('roxy-endpoint-form') as FormEl & {
+				autoload: boolean;
+			};
+			el.setAttribute('data-endpoint', 'crystals');
+			el.setAttribute('method', method);
+			if (key) el.setAttribute('publishable-key', key);
+			el.autoload = true;
+			const sent = submits(el);
+			document.body.appendChild(el);
+			await flush(el);
+			el.remove();
+			return sent;
+		};
+		const opened = await mountAuto('GET', 'pk_test_a');
+		expect(opened).toHaveLength(1);
+		expect(opened[0]?.values).toEqual({ limit: 20 });
+		expect(opened[0]?.sticky).toBe(true);
+		expect(await mountAuto('POST', 'pk_test_a')).toHaveLength(0);
+		expect(await mountAuto('GET')).toHaveLength(0);
+	});
+});
+
+describe('no bound form asks a visitor to type a free-string identifier', () => {
+	/** The required free-string path parameters of an operation: no enum, pattern or format says what to type. */
+	const freeIds = (op: OperationSchema) =>
+		(op.parameters ?? []).filter((p) => {
+			const s = (p.schema ?? {}) as OpenApiSchema;
+			return (
+				p.in === 'path' &&
+				p.required &&
+				s.type === 'string' &&
+				!s.enum &&
+				!s.pattern &&
+				!s.format
+			);
+		});
+
+	test('every such identifier is a combobox on a form that holds a key', async () => {
+		const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+			string,
+			OpenApiSchema
+		>;
+		const typed: string[] = [];
+		let checked = 0;
+		for (const [tag, bindings] of Object.entries(ENDPOINT_BINDINGS)) {
+			for (const b of bindings) {
+				const op = (
+					spec.paths as unknown as Record<
+						string,
+						Record<string, OperationSchema>
+					>
+				)[b.path]?.[b.method.toLowerCase()];
+				if (!op) continue;
+				const ids = freeIds(op);
+				if (!ids.length) continue;
+				const endpoint = b.path.replace(/^\//, '');
+				const el = await mountForm(buildFormModel(op, schemas, endpoint), {
+					'data-endpoint': endpoint,
+					method: b.method,
+					'publishable-key': 'pk_test_sweep',
+				});
+				for (const p of ids) {
+					const input = el.shadowRoot?.getElementById(`roxy-form-${p.name}`);
+					if (input?.getAttribute('role') !== 'combobox')
+						typed.push(`${tag} ${b.method} ${b.path} -> ${p.name}`);
+				}
+				checked++;
+				el.remove();
+			}
+		}
+		// Dream symbols, crystals, tarot cards, zodiac signs, planet meanings, trigrams and angel numbers today.
+		expect(checked).toBeGreaterThanOrEqual(7);
+		expect(typed).toEqual([]);
 	});
 });

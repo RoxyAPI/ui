@@ -28,6 +28,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          # Full history and tags, so the release notes can list every commit since the previous tag.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v6
         with:
@@ -217,10 +219,21 @@ jobs:
           (cd packages/ui-vue && npm pack --pack-destination ../../.release-assets)
           ls -la .release-assets/
 
+      # The body lists every commit subject since the previous tag, minus the release
+      # commits and dependency bumps, so a release says what shipped.
+      - name: Release notes
+        run: |
+          PREV=$(git describe --tags --abbrev=0 HEAD^)
+          git log --no-merges --format='%an%x09- %s' "$PREV"..HEAD^ \
+            | grep -v '^dependabot' | cut -f2- | grep -v '^- release:' > .release-notes.md || true
+          [ -s .release-notes.md ] || echo '- Regenerated with no source change.' > .release-notes.md
+          cat .release-notes.md
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.bump.outputs.version }}
+          body_path: .release-notes.md
           generate_release_notes: true
           make_latest: 'true'
           files: |

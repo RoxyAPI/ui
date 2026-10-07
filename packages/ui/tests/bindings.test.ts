@@ -4,6 +4,7 @@ import {
 	UNBOUND_COMPONENTS,
 } from '../../../scripts/bindings.config.js';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
+import { OPTION_SOURCES } from '../src/generated/option-sources.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 
 /**
@@ -35,6 +36,51 @@ describe('binding config vs spec', () => {
 			orphans,
 			`Binding operationIds absent from the spec:\n  ${orphans.join('\n  ')}`,
 		).toEqual([]);
+	});
+
+	test('every declared option source names a GET the spec has and a field the bound operation takes', async () => {
+		const spec = (await Bun.file('specs/openapi.json').json()) as {
+			paths: Record<
+				string,
+				Record<
+					string,
+					{ operationId?: string; parameters?: { name: string }[] }
+				>
+			>;
+		};
+		const ops = new Map<string, { method: string; params: string[] }>();
+		for (const methods of Object.values(spec.paths))
+			for (const [method, op] of Object.entries(methods))
+				if (op?.operationId)
+					ops.set(op.operationId, {
+						method,
+						params: (op.parameters ?? []).map((p) => p.name),
+					});
+		const bad: string[] = [];
+		let declared = 0;
+		for (const [operationId, bindings] of Object.entries(UI_BINDINGS))
+			for (const { options } of bindings)
+				for (const [field, source] of Object.entries(options ?? {})) {
+					declared++;
+					if (ops.get(source)?.method !== 'get')
+						bad.push(
+							`${operationId}.${field}: ${source} is not a GET in the spec`,
+						);
+					if (!ops.get(operationId)?.params.includes(field))
+						bad.push(
+							`${operationId}.${field}: not a parameter of the operation`,
+						);
+				}
+		expect(declared).toBeGreaterThan(0);
+		expect(bad).toEqual([]);
+		// The generated table carries every declared source, so a config edit with no regeneration is red.
+		expect(OPTION_SOURCES['GET /dreams/symbols']?.letter?.path).toBe(
+			'/dreams/symbols/letters',
+		);
+		expect(Object.keys(OPTION_SOURCES['GET /crystals'] ?? {}).sort()).toEqual([
+			'color',
+			'planet',
+		]);
 	});
 
 	test('every binding component tag is one the library ships', () => {

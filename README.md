@@ -912,7 +912,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
 | `<roxy-gematria>` | Kabbalah | POST /kabbalah/gematria | Values by cipher, every candidate Hebrew spelling with its per letter breakdown, and equal-value words |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
-| `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit |
+| `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit; a pick opens the card in place |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love,career,custom}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
 | `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, and gates, plus the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning |
 | `<roxy-hd-type-card>` | Human Design | POST /human-design/type, /human-design/profile | Type, strategy, authority, and profile tiles with the aura, signature, and not-self themes, plus the reading behind each label and the profile line keynotes |
@@ -933,9 +933,9 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | `<roxy-dosha-constitution>` | Ayurveda | POST /ayurveda/constitution | Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it |
 | `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
 | `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
-| `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery tiles with photo, name, and colour swatches; a pick opens the card in place |
+| `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery with chakra, zodiac, element, colour, and planet filters; a pick opens the card in place |
 | `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
-| `<roxy-dream-search>` | Dreams | GET /dreams/symbols | Matched dream symbols as selectable tiles with a letter chip; a pick opens the card in place |
+| `<roxy-dream-search>` | Dreams | GET /dreams/symbols | The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place |
 | `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily | Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections |
 | `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
 | `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
@@ -1150,7 +1150,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Every component bundle is under 30 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 165 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Every component bundle is under 31 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 175 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>

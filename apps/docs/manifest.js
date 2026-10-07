@@ -500,10 +500,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-tarot-catalog",
     "slug": "tarot-catalog",
     "heading": "Tarot deck",
-    "description": "Responsive tarot deck gallery with card art, name, and an arcana and suit caption from the tarot catalog response",
+    "description": "Responsive tarot deck gallery with card art, name, and an arcana and suit caption; a picked tile opens its tarot card in place, and emits roxy-symbol-select for a host that pairs its own",
     "docsLabel": "Tarot",
     "endpointLabel": "GET /tarot/cards",
-    "docsSummary": "Deck gallery tiles with card art, name, and arcana and suit",
+    "docsSummary": "Deck gallery tiles with card art, name, and arcana and suit; a pick opens the card in place",
     "topic": "Tarot"
   },
   {
@@ -720,7 +720,7 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-crystal-card",
     "slug": "crystal-card",
     "heading": "Crystal detail",
-    "description": "Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings",
+    "description": "Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings; as a widget the visitor types a crystal name and picks it",
     "docsLabel": "Crystals",
     "endpointLabel": "GET /crystals/{id}",
     "docsSummary": "Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings",
@@ -731,10 +731,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-crystal-grid",
     "slug": "crystal-grid",
     "heading": "Crystal grid",
-    "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response; a picked tile opens its crystal card in place",
+    "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response, filterable by chakra, zodiac sign, element, colour, and planet; a picked tile opens its crystal card in place",
     "docsLabel": "Crystals",
     "endpointLabel": "GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search",
-    "docsSummary": "Crystal gallery tiles with photo, name, and colour swatches; a pick opens the card in place",
+    "docsSummary": "Crystal gallery with chakra, zodiac, element, colour, and planet filters; a pick opens the card in place",
     "topic": "Crystals"
   },
   {
@@ -742,7 +742,7 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-dream-card",
     "slug": "dream-card",
     "heading": "Dream symbol",
-    "description": "Dream symbol card with the symbol name, full interpretation, and dictionary letter",
+    "description": "Dream symbol card with the symbol name, full interpretation, and dictionary letter; as a widget the visitor types a symbol and picks it",
     "docsLabel": "Dreams",
     "endpointLabel": "GET /dreams/symbols/{id}",
     "docsSummary": "Symbol name, interpretation body, and letter chip",
@@ -753,10 +753,10 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-dream-search",
     "slug": "dream-search",
     "heading": "Dream search",
-    "description": "Dream-symbol search results as selectable tiles; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own",
+    "description": "The dream dictionary as selectable tiles under a search box and an A to Z bar; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own",
     "docsLabel": "Dreams",
     "endpointLabel": "GET /dreams/symbols",
-    "docsSummary": "Matched dream symbols as selectable tiles with a letter chip; a pick opens the card in place",
+    "docsSummary": "The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place",
     "topic": "Dreams"
   },
   {
@@ -1041,6 +1041,12 @@ window.ROXY_ENDPOINT_BINDINGS = {
   ],
   "roxy-crystal-grid": [
     {
+      "operationId": "listCrystals",
+      "method": "GET",
+      "path": "/crystals",
+      "toolName": "get_crystals"
+    },
+    {
       "operationId": "getCrystalsByChakra",
       "method": "GET",
       "path": "/crystals/chakra/{chakra}",
@@ -1057,12 +1063,6 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "method": "GET",
       "path": "/crystals/zodiac/{sign}",
       "toolName": "get_crystals_zodiac_sign"
-    },
-    {
-      "operationId": "listCrystals",
-      "method": "GET",
-      "path": "/crystals",
-      "toolName": "get_crystals"
     },
     {
       "operationId": "getBirthstones",
@@ -2388,7 +2388,7 @@ window.ROXY_WIDGET_SNIPPETS = {
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
   },
   "roxy-crystal-grid": {
-    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-grid data-endpoint=\"crystals/chakra/{chakra}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-crystal-grid>",
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-grid data-endpoint=\"crystals\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-crystal-grid>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-grid\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
   },
   "roxy-dream-card": {

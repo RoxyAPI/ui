@@ -229,6 +229,12 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 	],
 	'roxy-crystal-grid': [
 		{
+			operationId: 'listCrystals',
+			method: 'GET',
+			path: '/crystals',
+			toolName: 'get_crystals',
+		},
+		{
 			operationId: 'getCrystalsByChakra',
 			method: 'GET',
 			path: '/crystals/chakra/{chakra}',
@@ -245,12 +251,6 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'GET',
 			path: '/crystals/zodiac/{sign}',
 			toolName: 'get_crystals_zodiac_sign',
-		},
-		{
-			operationId: 'listCrystals',
-			method: 'GET',
-			path: '/crystals',
-			toolName: 'get_crystals',
 		},
 		{
 			operationId: 'getBirthstones',

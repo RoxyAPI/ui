@@ -174,7 +174,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 		return html`<article
 			class="card"
 			part="card"
-			aria-label=${`Number ${d.number ?? ''}`}
+			aria-label=${this.t('Angel number {{number}}', { number: d.number ?? '' })}
 		>
 			<div class="hero" part="header">
 				${d.number ? html`<div class="numeral">${d.number}</div>` : nothing}

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
+import { demosRendered } from './helpers';
 
 /**
  * `hide-readings` and the `part` escape hatch, proved in a real browser.
@@ -139,7 +140,7 @@ test('the readings part answers to the same name in every component that has one
 	page,
 }) => {
 	await page.goto('/');
-	await page.waitForTimeout(2500);
+	await demosRendered(page);
 
 	const tags = await page.evaluate(() => {
 		const found: string[] = [];
@@ -262,7 +263,7 @@ test('hide-readings does something on every component that promises it, and noth
 	page,
 }) => {
 	await page.goto('/');
-	await page.waitForTimeout(3000);
+	await demosRendered(page);
 
 	const rows = await page.evaluate(async () => {
 		type Host = HTMLElement & {

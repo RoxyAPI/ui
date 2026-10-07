@@ -806,6 +806,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		pascal: 'RoxyCrystalCard',
 		operationId: 'getCrystal',
 	},
+	get_crystals: {
+		tag: 'roxy-crystal-grid',
+		pascal: 'RoxyCrystalGrid',
+		operationId: 'listCrystals',
+	},
 	get_crystals_chakra: {
 		tag: 'roxy-crystal-grid',
 		pascal: 'RoxyCrystalGrid',
@@ -820,11 +825,6 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		tag: 'roxy-crystal-grid',
 		pascal: 'RoxyCrystalGrid',
 		operationId: 'getCrystalsByZodiac',
-	},
-	get_crystals: {
-		tag: 'roxy-crystal-grid',
-		pascal: 'RoxyCrystalGrid',
-		operationId: 'listCrystals',
 	},
 	get_crystals_birthstone_month: {
 		tag: 'roxy-crystal-grid',

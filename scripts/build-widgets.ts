@@ -2,8 +2,8 @@
 /**
  * Emit packages/ui/dist/cdn/widgets.js, the one-tag auto-mount script. Once loaded via the CDN it scans the page for `[data-roxy-widget="{slug}"]` elements carrying `[data-publishable-key="pk_..."]` and mounts each `<roxy-{slug}>`, taking one of two paths per tag:
  *
- *   1. Every required parameter is present as a `data-*` attribute -> fetch the endpoint immediately with the publishable key and assign the result.
- *   2. A required parameter is missing -> set `data-endpoint` / `method` / `publishable-key` and let the component render its own input UI (Phase 1 form mode), which fetches on submit.
+ *   1. Every required parameter is present as a `data-*` attribute -> hand the element its key and proxy settings and have it `load()` the request, so it renders the result and can still open a row or page a list.
+ *   2. A required parameter is missing, or the request opens on load -> set `data-endpoint` / `method` / `publishable-key` and let the component render its own form, which fetches on submit or, for a read that needs nothing, at once with the form kept above the result.
  *
  * @remarks
  * The slug -> endpoint map is GENERATED from the committed endpoint bindings joined with the manifest, never hand-maintained: the first binding per component (bindings are path-sorted) is the default, and its `attrs` sibling bindings become selectable through one `data-*` attribute (for example `data-period` on the horoscope card). Required-parameter names come from the same {@link buildFormModel} the form and the schema slices use, so the widget cannot disagree with the form about what a request needs. Drop-in for plain HTML pages and creator embed surfaces where a full SDK install is not practical.
@@ -15,6 +15,7 @@ import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-binding
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
 import {
 	buildFormModel,
+	opensOnLoad,
 	type SpecDoc,
 } from '../packages/ui/src/utils/field-schema.js';
 
@@ -39,7 +40,7 @@ export const WIDGETS_BUDGET_BYTES = 4096;
 /**
  * One selectable request variant a widget can resolve to. Kept minimal so the interpolated map stays small:
  *  - `m` (method) is omitted on a non-default variant, which inherits the default method (a component's endpoints share one method).
- *  - `g` marks a request that needs body or query input (birth data, a grouped person1/person2 body, a required query field). That input is entered through the form (date pickers, the city search), not raw attributes, so such a widget always renders form mode. Path parameters are derived from `p` at runtime, so a widget whose only required inputs are path parameters (or none) fetches immediately.
+ *  - `g` marks a request that renders form mode: one that needs body or query input (birth data, a grouped person1/person2 body, a required query field), entered through the form rather than raw attributes, and one that opens on load (a read that needs nothing), whose form stays above its result exactly as on the component tag. Path parameters are derived from `p` at runtime, so a widget whose only required inputs are path parameters fetches immediately.
  */
 interface WidgetVariant {
 	m?: string;
@@ -66,30 +67,23 @@ const HELPER_TAGS = new Set([
 	'roxy-location-search',
 ]);
 
-/** A variant record. A request with any required key that is NOT a path parameter (a body field, a grouped person leaf, or a required query field) needs form input, so it is marked `g` (form mode always). Path-only and parameter-free requests fetch immediately. */
-function variant(
-	method: string,
-	path: string,
-	required: string[],
-): WidgetVariant {
+/** A variant record, marked `g` (form mode) when the request needs a key that is NOT a path parameter or opens on load; path-only and parameter-free POSTs fetch immediately. Read from the SAME {@link buildFormModel} and {@link opensOnLoad} the form uses, so the widget cannot disagree with the form or the hosted embed about what a request needs. */
+function variant(spec: SpecDoc, method: string, path: string): WidgetVariant {
+	const op = spec.paths[path]?.[method.toLowerCase()];
+	const model = op
+		? buildFormModel(
+				op,
+				spec.components?.schemas ?? {},
+				path.replace(/^\//, ''),
+			)
+		: undefined;
 	const inPath = new Set(pathParams(path));
-	return required.some((k) => !inPath.has(k))
+	const needsForm = !!model?.fields.some(
+		(f) => f.required && f.name !== 'seed' && !inPath.has(f.key),
+	);
+	return needsForm || (model && opensOnLoad(model, method))
 		? { m: method, p: path, g: 1 }
 		: { m: method, p: path };
-}
-
-/** Required parameter keys for one operation, excluding the auto-generated `seed`. Derived from the SAME {@link buildFormModel} the form and slices use, so the widget cannot disagree about what a request needs. */
-function requiredOf(spec: SpecDoc, method: string, path: string): string[] {
-	const op = spec.paths[path]?.[method.toLowerCase()];
-	if (!op) return [];
-	const model = buildFormModel(
-		op,
-		spec.components?.schemas ?? {},
-		path.replace(/^\//, ''),
-	);
-	return model.fields
-		.filter((f) => f.required && f.name !== 'seed')
-		.map((f) => f.key);
 }
 
 /**
@@ -117,11 +111,7 @@ export async function buildWidgetMap(): Promise<Record<string, WidgetDef>> {
 
 		// The default always carries an explicit method; variants inherit it.
 		const def: WidgetDef = {
-			...variant(
-				head.method,
-				head.path,
-				requiredOf(spec, head.method, head.path),
-			),
+			...variant(spec, head.method, head.path),
 			m: head.method,
 		};
 		if (selector) {
@@ -130,7 +120,7 @@ export async function buildWidgetMap(): Promise<Record<string, WidgetDef>> {
 			for (const b of rest) {
 				const value = b.attrs?.[selector];
 				if (value == null) continue;
-				const v = variant(b.method, b.path, requiredOf(spec, b.method, b.path));
+				const v = variant(spec, b.method, b.path);
 				// A variant inherits the default method (a component's endpoints share one).
 				if (v.m === head.method) delete v.m;
 				variants[value] = v;
@@ -150,7 +140,6 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 	window.__ROXY_WIDGETS_LOADED__ = true;
 
 	var CDN = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION.split('.')[0]}/dist/cdn/roxy-ui.js';
-	var API = 'https://roxyapi.com/api/v2';
 	var WIDGETS = ${JSON.stringify(map)};
 	var LANGS = ${JSON.stringify(API_LANGUAGES)};
 
@@ -245,7 +234,7 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 		var method = variant.m || def.m;
 		var params = pathParams(variant.p);
 		// Immediate fetch only when every path parameter is present and the request
-		// needs no form input (g). Anything else renders form mode.
+		// renders no form (g). Anything else renders form mode.
 		var complete = !!pk && !variant.g && params.every(function (k) { return attrs[k] != null && attrs[k] !== ''; });
 
 		ensureLoaded().then(function () {
@@ -260,16 +249,19 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 				if (v != null) element.setAttribute(k, v);
 			});
 
+			// The key and the proxy wire reach the element on both paths, so a list it
+			// renders can open a row and page on through the same route.
+			if (pk) element.setAttribute('publishable-key', pk);
+			PROXY_ATTRS.forEach(function (k) {
+				var v = host.getAttribute('data-' + k);
+				if (v) element.setAttribute(k, v);
+			});
+
 			if (!complete) {
-				// Missing a required parameter: hand off to form mode. The component
-				// renders its own input UI and fetches on submit through one controller.
+				// Form mode: the component renders its own input UI and fetches through
+				// one controller, on submit or, for a read that needs nothing, at once.
 				element.setAttribute('data-endpoint', variant.p.replace(/^\\//, ''));
 				element.setAttribute('method', method);
-				if (pk) element.setAttribute('publishable-key', pk);
-				PROXY_ATTRS.forEach(function (k) {
-					var v = host.getAttribute('data-' + k);
-					if (v) element.setAttribute(k, v);
-				});
 				host.innerHTML = '';
 				host.appendChild(element);
 				return;
@@ -278,7 +270,8 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 			host.innerHTML = '';
 			host.appendChild(element);
 
-			// Every required parameter present: fetch now and assign the result.
+			// Every required parameter present: the element loads it, refusing a
+			// secret key and printing a failure the way its own form path does.
 			var rest = {};
 			Object.keys(attrs).forEach(function (k) {
 				if (k === def.s || params.indexOf(k) >= 0) return;
@@ -286,25 +279,8 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 			});
 			var query = {};
 			if (rest.lang != null) { var lang = apiLang(rest.lang); if (lang) query.lang = lang; delete rest.lang; }
-			var headers = { Accept: 'application/json', 'X-API-Key': pk };
-			var init = { method: method, headers: headers };
-			if (method === 'POST') {
-				headers['Content-Type'] = 'application/json';
-				init.body = JSON.stringify(rest);
-			} else {
-				Object.keys(rest).forEach(function (k) { query[k] = rest[k]; });
-			}
-			var url = API + fillTemplate(variant.p, attrs);
-			var qs = Object.keys(query).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]); }).join('&');
-			if (qs) url += (url.indexOf('?') >= 0 ? '&' : '?') + qs;
-
-			fetch(url, init)
-				.then(function (res) { return res.json(); })
-				.then(function (json) { element.data = json; })
-				.catch(function (err) {
-					element.setAttribute('aria-invalid', 'true');
-					console.error('roxy-widget', name, err);
-				});
+			if (method !== 'POST') Object.keys(rest).forEach(function (k) { query[k] = rest[k]; });
+			element.load({ path: fillTemplate(variant.p, attrs), method: method, query: query, body: method === 'POST' ? rest : undefined });
 		});
 	}
 

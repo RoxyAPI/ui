@@ -9,7 +9,12 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { disclosureStyles } from '../utils/disclosure.js';
-import { formatDate, formatDateRange, formatPercent } from '../utils/format.js';
+import {
+	formatDate,
+	formatDateRange,
+	formatList,
+	formatPercent,
+} from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -48,6 +53,15 @@ const CYCLE_LABEL: Record<(typeof FORECAST_CYCLES)[number], ChromeString> = {
 	emotional: 'Emotional',
 	intellectual: 'Intellectual',
 	intuitive: 'Intuitive',
+};
+
+/** A critical day `direction` to the English SOURCE of the line that says which way the cycle crossed zero. */
+const CROSSING_LABEL: Record<
+	GetCriticalDaysResponse['criticalDays'][number]['direction'],
+	ChromeString
+> = {
+	ascending: 'ascending through zero',
+	descending: 'descending through zero',
 };
 
 /**
@@ -394,11 +408,13 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					day.isCritical
 						? svg`<circle cx=${(i * xStep).toFixed(2)} cy=${h / 2} r="3" fill="var(--roxy-danger, #dc2626)"><title>${[
 								formatDate(this.effectiveLang(), day.date),
-								day.criticalCycles?.length
-									? `${day.criticalCycles.join(', ')} critical`
-									: 'critical',
+								formatList(
+									this.effectiveLang(),
+									(day.criticalCycles ?? []).map((c) => this.cycleName(c)),
+								),
+								this.t('critical day'),
 								typeof day.energyRating === 'number'
-									? `energy ${day.energyRating}/10`
+									? this.t('Energy {{value}}/10', { value: day.energyRating })
 									: '',
 							]
 								.filter(Boolean)
@@ -451,8 +467,10 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			body: day.advisory ?? '',
 			extra: html`<p class="crit-meta">
 				${[
-					day.direction ? `${day.direction} through zero` : '',
-					typeof day.period === 'number' ? `${day.period} day cycle` : '',
+					day.direction ? this.t(CROSSING_LABEL[day.direction]) : '',
+					typeof day.period === 'number'
+						? this.t('{{period}}-day cycle', { period: day.period })
+						: '',
 				]
 					.filter(Boolean)
 					.join(' · ')}
@@ -483,6 +501,12 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 			}
 			${this.renderInterpretation(sections, 'biorhythm-critical', 'Advisories')}
 		</section>`;
+	}
+
+	/** A cycle key as a reader sees it: the legend word where the legend has one, else the key humanized. */
+	private cycleName(cycle: string): string {
+		const label = CYCLE_LABEL[cycle as keyof typeof CYCLE_LABEL];
+		return label ? this.t(label) : humanize(cycle);
 	}
 
 	private stat(label: string, value: string) {

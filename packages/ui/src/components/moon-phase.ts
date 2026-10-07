@@ -8,7 +8,12 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatDate, formatNumber, formatPercent } from '../utils/format.js';
+import {
+	formatDate,
+	formatMonthYear,
+	formatNumber,
+	formatPercent,
+} from '../utils/format.js';
 
 type MoonPhaseData =
 	| GetCurrentMoonPhaseResponse
@@ -124,14 +129,17 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 		const list: MoonListEntry[] =
 			'phases' in d ? d.phases : 'calendar' in d ? d.calendar : [];
 		if (this.mode !== 'current' && list.length > 0) {
-			const month = 'month' in d ? d.month : undefined;
-			const year = 'year' in d ? d.year : undefined;
+			const month = formatMonthYear(
+				this.effectiveLang(),
+				'year' in d ? d.year : undefined,
+				'month' in d ? d.month : undefined,
+			);
 			return html`<article
 				class="card"
 				part="card"
 				aria-label=${this.t('Moon phase calendar')}
 			>
-				<h2 class="label" part="header">${month ?? 'Moon phases'} ${year ?? ''}</h2>
+				<h2 class="label" part="header">${month || this.t('Moon phase calendar')}</h2>
 				<div class="list" part="table" role="list">
 					${list.map((phase) => this.renderListItem(phase))}
 				</div>
@@ -149,7 +157,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 			<div class="hero" part="header">
 				<span class="emoji" aria-hidden="true">${emoji}</span>
 				<div>
-					<h2 class="label">${d.phase ?? 'Moon'}</h2>
+					<h2 class="label">${d.phase ?? this.t('Current moon phase')}</h2>
 					${d.date ? html`<div class="date">${formatDate(this.effectiveLang(), d.date)}</div>` : nothing}
 				</div>
 			</div>

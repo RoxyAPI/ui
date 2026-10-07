@@ -34,6 +34,8 @@ export interface RoxyCharaKarakasProps extends ElementAttrs {
 	submitLabel?: string;
 	/** Persist the last self-fetch form values in sessionStorage, keyed by endpoint, and prefill the form when the visitor returns. Off by default. */
 	remember?: boolean;
+	/** Your own words for a failed self-fetch, printed in place of the message the request failed with (a spent quota, a network fault, a rejected key). Unset, the failure reads as the API worded it. */
+	errorMessage?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
 	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
@@ -44,7 +46,7 @@ export interface RoxyCharaKarakasProps extends ElementAttrs {
 }
 
 export const RoxyCharaKarakas = React.forwardRef<HTMLElement | null, RoxyCharaKarakasProps>(
-	function RoxyCharaKarakas({ data, className, style, endpoint, method, publishableKey, baseUrl, submitUrl, submitContext, locationUrl, specUrl, lang, submitLabel, remember, attribution, hideReadings, hideSections, ...rest }, ref) {
+	function RoxyCharaKarakas({ data, className, style, endpoint, method, publishableKey, baseUrl, submitUrl, submitContext, locationUrl, specUrl, lang, submitLabel, remember, errorMessage, attribution, hideReadings, hideSections, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -152,6 +154,13 @@ export const RoxyCharaKarakas = React.forwardRef<HTMLElement | null, RoxyCharaKa
 				(el as unknown as { remember: boolean }).remember = remember;
 			}
 		}, [remember, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && errorMessage !== undefined) {
+				(el as unknown as { errorMessage: string }).errorMessage = errorMessage;
+			}
+		}, [errorMessage, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

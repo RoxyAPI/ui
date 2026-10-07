@@ -2156,7 +2156,7 @@
       "pascal": "RoxyTarotCatalog",
       "slug": "tarot-catalog",
       "domain": "Tarot",
-      "renders": "Deck gallery tiles with card art, name, and arcana and suit",
+      "renders": "Deck gallery tiles with card art, name, and arcana and suit; a pick opens the card in place",
       "endpointLabel": "GET /tarot/cards",
       "endpoints": [
         {
@@ -2170,6 +2170,7 @@
         "attribution",
         "card",
         "cards",
+        "detail",
         "edit-bar",
         "empty",
         "error",
@@ -2177,6 +2178,7 @@
         "header",
         "hint",
         "loading",
+        "more",
         "section"
       ],
       "snippets": {
@@ -3269,9 +3271,15 @@
       "pascal": "RoxyCrystalGrid",
       "slug": "crystal-grid",
       "domain": "Crystals",
-      "renders": "Crystal gallery tiles with photo, name, and colour swatches; a pick opens the card in place",
+      "renders": "Crystal gallery with chakra, zodiac, element, colour, and planet filters; a pick opens the card in place",
       "endpointLabel": "GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search",
       "endpoints": [
+        {
+          "operationId": "listCrystals",
+          "method": "GET",
+          "path": "/crystals",
+          "toolName": "get_crystals"
+        },
         {
           "operationId": "getCrystalsByChakra",
           "method": "GET",
@@ -3289,12 +3297,6 @@
           "method": "GET",
           "path": "/crystals/zodiac/{sign}",
           "toolName": "get_crystals_zodiac_sign"
-        },
-        {
-          "operationId": "listCrystals",
-          "method": "GET",
-          "path": "/crystals",
-          "toolName": "get_crystals"
         },
         {
           "operationId": "getBirthstones",
@@ -3321,10 +3323,11 @@
         "header",
         "hint",
         "loading",
+        "more",
         "section"
       ],
       "snippets": {
-        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-grid data-endpoint=\"crystals/chakra/{chakra}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-crystal-grid>",
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-crystal-grid data-endpoint=\"crystals\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-crystal-grid>",
         "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"crystal-grid\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
       },
       "preview": {
@@ -3372,7 +3375,7 @@
       "pascal": "RoxyDreamSearch",
       "slug": "dream-search",
       "domain": "Dreams",
-      "renders": "Matched dream symbols as selectable tiles with a letter chip; a pick opens the card in place",
+      "renders": "The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place",
       "endpointLabel": "GET /dreams/symbols",
       "endpoints": [
         {
@@ -3393,6 +3396,7 @@
         "header",
         "hint",
         "loading",
+        "more",
         "section",
         "symbols"
       ],

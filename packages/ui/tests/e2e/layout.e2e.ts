@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { demosRendered, localeLoaded } from './helpers';
 
 /**
  * Layout audit across every demo section: no card may overflow its own host, and no
@@ -37,7 +38,7 @@ for (const vp of WIDTHS) {
 		await page.setViewportSize({ width: vp.width, height: vp.height });
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
-		await page.waitForTimeout(800);
+		await demosRendered(page);
 
 		const issues = await page.evaluate(() => {
 			/** Self-fetching widgets render only an input until the user acts. They are legitimately short. */
@@ -149,7 +150,7 @@ for (const vp of WIDTHS) {
 		await page.setViewportSize({ width: vp.width, height: vp.height });
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
-		await page.waitForTimeout(800);
+		await demosRendered(page);
 
 		const issues = await page.evaluate(async () => {
 			const demos =
@@ -223,7 +224,7 @@ test('no section overflows when its text fields are long', async ({ page }) => {
 	await page.setViewportSize({ width: 375, height: 900 });
 	await page.goto('/');
 	await page.waitForLoadState('networkidle');
-	await page.waitForTimeout(800);
+	await demosRendered(page);
 
 	const issues = await page.evaluate(async () => {
 		const LONG =
@@ -336,7 +337,7 @@ for (const vp of WIDTHS) {
 		await page.setViewportSize({ width: vp.width, height: vp.height });
 		await page.goto('/');
 		await page.waitForLoadState('networkidle');
-		await page.waitForTimeout(800);
+		await demosRendered(page);
 
 		const found = await page.evaluate(() => {
 			const demos =
@@ -426,8 +427,8 @@ for (const lang of PLATE_LANGS) {
 		await expect
 			.poll(() => page.evaluate(() => document.documentElement.lang))
 			.toBe(lang);
-		// A payload fetch and a re-render, same margin `language.e2e.ts` gives it.
-		await page.waitForTimeout(1000);
+		await localeLoaded(page, lang);
+		await demosRendered(page);
 
 		const found = await page.evaluate(() => {
 			const demos =
@@ -573,7 +574,8 @@ for (const vp of WIDTHS) {
 		await expect
 			.poll(() => page.evaluate(() => document.documentElement.lang))
 			.toBe('hi');
-		await page.waitForTimeout(1000);
+		await localeLoaded(page, 'hi');
+		await demosRendered(page);
 
 		const found = await page.evaluate((ceiling) => {
 			const demos =

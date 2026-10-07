@@ -4,10 +4,8 @@ import type { SearchDreamSymbolsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 
-type DreamSymbol = NonNullable<SearchDreamSymbolsResponse['symbols']>[number];
-
 /**
- * Dream-symbol search results. Renders /dreams/symbols (the `q` search): the matched symbols as selectable tiles. In self-fetch mode the base renders the search input and this lists the matches, and a picked tile opens its roxy-dream-card under the list with the full meaning, so a hosted embed completes the flow on its own. Every pick also emits a `roxy-symbol-select` CustomEvent ({ id, name, letter }) that bubbles and is composed, which is how a controlled host, the one holding the key, pairs the list with a card of its own. This is the dreams form-mode analog of roxy-location-search.
+ * Dream-symbol search results. Renders /dreams/symbols: the dictionary, a letter of it or the matches for a `q` search, as selectable tiles. In self-fetch mode the list opens on the whole dictionary under a search box and an A to Z bar, pages on with Show more, and a picked tile opens its roxy-dream-card under the list with the full meaning, so a hosted embed completes the flow on its own. Every pick also emits a `roxy-symbol-select` CustomEvent ({ id, name, letter }) that bubbles and is composed, which is how a controlled host, the one holding the key, pairs the list with a card of its own. This is the dreams form-mode analog of roxy-location-search.
  */
 @customElement('roxy-dream-search')
 export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse> {
@@ -98,6 +96,8 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 
 	protected rowDetail = { tag: 'roxy-dream-card', path: 'dreams/symbols/{id}' };
 
+	protected listKey = 'symbols';
+
 	protected renderData(d: SearchDreamSymbolsResponse) {
 		const symbols = d.symbols ?? [];
 		if (symbols.length === 0) return this.renderEmpty();
@@ -106,7 +106,7 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 		return html`<section class="wrap" part="card" aria-label=${this.t('Dream symbols')}>
 			<header class="head" part="header">
 				<h2 class="title">${this.t('Dream symbols')}</h2>
-				<span class="count">${this.t('{{count}} matches', { count: total })}</span>
+				<span class="count">${total === 1 ? this.t('1 symbol') : this.t('{{count}} symbols', { count: total })}</span>
 			</header>
 			<ul class="grid" part="section symbols">
 				${symbols.map(
@@ -115,7 +115,7 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 							type="button"
 							class="result"
 							aria-pressed=${this.openedRowId === s.id ? 'true' : 'false'}
-							@click=${() => this.select(s)}
+							@click=${() => this.pickRow({ id: s.id, name: s.name, letter: s.letter })}
 						>
 							${s.letter ? html`<span class="letter" aria-hidden="true">${s.letter}</span>` : nothing}
 							<span class="name">${s.name}</span>
@@ -123,20 +123,9 @@ export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse>
 					</li>`,
 				)}
 			</ul>
+			${this.renderMore()}
 			${this.openedRow ? html`<div class="detail" part="detail">${this.openedRow}</div>` : nothing}
 		</section>`;
-	}
-
-	/** Emit the chosen symbol for a host that pairs its own card, and open it here when this element holds the key. */
-	private select(s: DreamSymbol) {
-		this.dispatchEvent(
-			new CustomEvent('roxy-symbol-select', {
-				detail: { id: s.id, name: s.name, letter: s.letter },
-				bubbles: true,
-				composed: true,
-			}),
-		);
-		this.openRow(s.id);
 	}
 }
 

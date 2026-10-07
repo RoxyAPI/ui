@@ -107,6 +107,13 @@ const LINK_STRING = /^https?:\/\//;
 // this same class without a separate import.
 const MAX_DEPTH = 6;
 
+/** A whole number under a key whose final word is year (`year`, `birthYear`, `start_year`) is a calendar year, so it never gets digit grouping. */
+function isYearField(key: string, value: number): boolean {
+	if (!Number.isInteger(value)) return false;
+	const words = key.replace(/([a-z])([A-Z])/g, '$1 $2').split(/[\s_-]+/);
+	return words[words.length - 1].toLowerCase() === 'year';
+}
+
 function isPrimitive(value: Json | undefined): value is Scalar | null {
 	return (
 		value === null || ['string', 'number', 'boolean'].includes(typeof value)
@@ -532,7 +539,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		if (value === true && key !== undefined && isBadgeKey(key)) {
 			return html`<span class="roxy-badge">${this.t('Yes')}</span>`;
 		}
-		if (isPrimitive(value)) return html`${this.scalarTemplate(value)}`;
+		if (isPrimitive(value)) return html`${this.scalarTemplate(value, key)}`;
 		if (Array.isArray(value) && value.every(isPrimitive)) {
 			return this.renderChips(value as (Scalar | null)[]);
 		}
@@ -555,7 +562,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		if (value === true && key !== undefined && isBadgeKey(key)) {
 			return html`<span class="roxy-badge">${this.t('Yes')}</span>`;
 		}
-		if (isPrimitive(value)) return this.scalarTemplate(value);
+		if (isPrimitive(value)) return this.scalarTemplate(value, key);
 		if (Array.isArray(value) && value.every(isPrimitive)) {
 			return (value as (Scalar | null)[])
 				.filter((v): v is Scalar => v !== null)
@@ -573,17 +580,18 @@ export class RoxyData extends RoxyDataElement<Json> {
 		></roxy-data>`;
 	}
 
-	private scalarTemplate(value: Scalar): TemplateResult | string {
+	private scalarTemplate(value: Scalar, key?: string): TemplateResult | string {
 		if (typeof value === 'string' && LINK_STRING.test(value)) {
 			return html`<a href=${value} target="_blank" rel="noopener noreferrer"
 				>${value}</a
 			>`;
 		}
-		return this.formatScalar(value);
+		return this.formatScalar(value, key);
 	}
 
-	private formatScalar(value: Scalar): string {
+	private formatScalar(value: Scalar, key?: string): string {
 		if (typeof value === 'number') {
+			if (key !== undefined && isYearField(key, value)) return String(value);
 			return formatNumber(this.effectiveLang(), value, 2) || String(value);
 		}
 		if (typeof value === 'boolean') return value ? this.t('Yes') : this.t('No');

@@ -185,7 +185,7 @@ const SDK_USAGE_HINT: Record<string, string> = {
 	'panchang-table':
 		'const { data } = await roxy.vedicAstrology.getDetailedPanchang({ body: await req.json() });',
 	'dasha-timeline':
-		'const { data } = await roxy.vedicAstrology.getMajorDashas({ body: await req.json() });',
+		'const body = await req.json();\n  const { data } = await roxy.vedicAstrology.getCurrentDasha({ body });\n  // period="major": call roxy.vedicAstrology.getMajorDashas({ body }) instead.',
 	'dosha-card':
 		'const { data } = await roxy.vedicAstrology.checkManglikDosha({ body: await req.json() });',
 	'guna-milan':

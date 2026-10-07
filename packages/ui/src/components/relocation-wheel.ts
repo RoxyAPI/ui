@@ -10,6 +10,8 @@ import type { RelocationChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatInteger } from '../utils/format.js';
+import { displayOption } from '../utils/localized.js';
+import { capitalize } from '../utils/string.js';
 
 type HouseChange =
 	RelocationChartResponse['changes']['planetsChangedHouse'][number];
@@ -129,8 +131,21 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 									// birthplace" reads as a broken calculation, not a same-place
 									// relocation.
 									Math.round(c.distanceKm) === 0
-										? 'Same location as birth'
-										: `${formatInteger(this.effectiveLang(), c.distanceKm)} km ${c.direction ?? ''} of birthplace`
+										? this.t('Same location as birth')
+										: this.t('{{distance}} km {{direction}} of birthplace', {
+												distance: formatInteger(
+													this.effectiveLang(),
+													c.distanceKm,
+												),
+												direction: c.direction
+													? displayOption(
+															this.effectiveLang(),
+															'direction',
+															capitalize(c.direction),
+															c.direction,
+														)
+													: '',
+											})
 								}
 							</span>`
 							: nothing

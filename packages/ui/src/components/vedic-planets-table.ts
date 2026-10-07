@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -27,6 +28,15 @@ const GRAHA_ORDER = [
 ];
 
 type MetaEntry = BirthChartResponse['meta'][string];
+
+/** The three avastha systems in column order: the state field, the English SOURCE of the label its reading is printed under. */
+const AVASTHA_SYSTEMS = [
+	['awastha', 'Baladi.'],
+	['jagradadi', 'Jagradadi.'],
+	['deeptadi', 'Deeptadi.'],
+] as const satisfies ReadonlyArray<
+	readonly [keyof NonNullable<MetaEntry['avasthaInfo']>, ChromeString]
+>;
 
 /**
  * Vedic planetary positions table. Renders /vedic-astrology/birth-chart `meta`
@@ -127,6 +137,11 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 			   contrast floor, so use the accent foreground there instead. */
 			tbody tr.lagna .glyph {
 				color: var(--roxy-accent-ink, #b45309);
+			}
+			.gloss {
+				display: block;
+				color: var(--roxy-secondary, #475569);
+				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 			.retro {
 				color: var(--roxy-warning-fg, #9a3412);
@@ -259,6 +274,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 	protected renderData(d: BirthChartResponse) {
 		if (!d.meta) return this.renderEmpty();
 		const rows = this.orderedRows();
+		const glossed = rows.some(([, p]) => p.avasthaInfo);
 
 		return html`<div class="wrap" part="card" aria-label=${this.t('Vedic planetary positions')}>
 			<header class="head" part="header">
@@ -271,6 +287,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 					${this.t(
 						'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.',
 					)}
+					${glossed ? this.t('Each avastha state is followed by its meaning.') : nothing}
 				</caption>
 				<thead>
 					<tr>
@@ -318,9 +335,11 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 							<td class="num">${p.nakshatra?.pada ?? ''}</td>
 							<td>${p.nakshatra?.lord ?? ''}</td>
 							<td class="num">${typeof p.house === 'number' ? p.house : ''}</td>
-							<td>${p.awastha ?? ''}</td>
-							<td>${p.jagradadi ?? ''}</td>
-							<td>${p.deeptadi ?? ''}</td>
+							${AVASTHA_SYSTEMS.map(
+								([key]) => html`<td>
+									${p[key] ?? ''}${p.avasthaInfo?.[key]?.meaning ? html`<span class="gloss">${p.avasthaInfo[key].meaning}</span>` : nothing}
+								</td>`,
+							)}
 							<td>${p.isRetrograde ? html`<span class="retro">R</span>` : nothing}</td>
 						</tr>`;
 					})}
@@ -420,20 +439,28 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 		if (this.hideReadings) return nothing;
 		const interp = this.data?.interpretations ?? {};
 		const entries = this.orderedRows()
-			.map(([name, p]) => [p.graha ?? name, interp[p.graha ?? name]] as const)
-			.filter(([, v]) => v != null);
+			.map(
+				([name, p]) =>
+					[p.graha ?? name, interp[p.graha ?? name], p.avasthaInfo] as const,
+			)
+			.filter(([, v, a]) => v != null || a != null);
 		if (entries.length === 0) return nothing;
 		return html`<details class="panel" part="section readings">
 			<summary>
 				${this.t('Interpretations')}<span class="summary-count">${entries.length}</span>${chevron()}
 			</summary>
 			<div class="panel-body">
-				${entries.map(([name, v]) => {
+				${entries.map(([name, v, a]) => {
 					const glyph = planetGlyph(name) ?? '';
 					return html`<div class="interp">
 						<span class="planet">${glyph ? `${glyph} ` : ''}${name}</span>
-						${v.rashi ? html`<p><span class="label">${this.t('Rashi.')}</span> ${v.rashi}</p>` : nothing}
-						${v.nakshatra ? html`<p><span class="label">${this.t('Nakshatra.')}</span> ${v.nakshatra}</p>` : nothing}
+						${v?.rashi ? html`<p><span class="label">${this.t('Rashi.')}</span> ${v.rashi}</p>` : nothing}
+						${v?.nakshatra ? html`<p><span class="label">${this.t('Nakshatra.')}</span> ${v.nakshatra}</p>` : nothing}
+						${AVASTHA_SYSTEMS.map(([key, label]) =>
+							a?.[key]?.interpretation
+								? html`<p><span class="label">${this.t(label)}</span> ${a[key].interpretation}</p>`
+								: nothing,
+						)}
 					</div>`;
 				})}
 			</div>

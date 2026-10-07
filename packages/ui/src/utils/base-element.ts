@@ -14,6 +14,7 @@ import { baseStyles } from './base-styles.js';
 import { expandCompact } from './compact.js';
 import {
 	type ApiIssue,
+	apiFetch,
 	buildRequest,
 	FetchController,
 	type RoxyRequest,
@@ -181,6 +182,10 @@ export abstract class RoxyDataElement<
 	@property({ type: String, attribute: 'submit-label' })
 	submitLabel?: string;
 
+	/** The host page's own words for a failed self-fetch, printed in place of the message the request failed with; unset, the failure reads as the API worded it. */
+	@property({ type: String, attribute: 'error-message' })
+	errorMessage?: string;
+
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch or auto-mount result. Off by default; any value except "off"/"false" enables it. The one-tag widgets script forwards data-attribution as this attribute. Never shown in controlled mode. */
 	@property({ type: String })
 	attribution?: string;
@@ -207,7 +212,7 @@ export abstract class RoxyDataElement<
 	@state()
 	private editing = false;
 
-	/** True when the last self-fetch form was a single-enum picker, so it stays visible above the result and a change refetches. */
+	/** True when the last self-fetch form stays above its result (a sole choice, or a form that opened on load), so a change refetches under it. */
 	@state()
 	private sticky = false;
 
@@ -226,6 +231,20 @@ export abstract class RoxyDataElement<
 	/** The id of the opened row, so a list can mark the picked tile. */
 	@state()
 	protected openedRowId?: string;
+
+	/** The response key a list draws its rows from (`symbols`, `crystals`, `cards`); declared by a list component so the base can page it with {@link renderMore}. */
+	protected listKey?: string;
+
+	/** The request behind the data this element fetched for itself, kept so a list can ask for the page after it. */
+	private lastRequest?: RoxyRequest;
+
+	/** True while the next page of a list is in flight. */
+	@state()
+	private moreLoading = false;
+
+	/** Message from a failed next-page read, printed under the button that asked for it. */
+	@state()
+	private moreError: string | null = null;
 
 	constructor() {
 		super();
@@ -327,6 +346,8 @@ export abstract class RoxyDataElement<
 
 	/** The state machine every render goes through, split out so {@link render} can pair it with the per-instance rules above. */
 	private renderState(): unknown {
+		if (this.endpoint && this.sticky && this.selfFetched && !this.editing)
+			return this.renderWithForm(this.stickyBody());
 		if (this.loading) return this.renderLoading();
 		if (this.error != null) return this.renderError(this.error);
 		if (this.data != null) {
@@ -371,19 +392,98 @@ export abstract class RoxyDataElement<
 		return renderInterpAccordion(sections, name, this.t(heading ?? 'Reading'));
 	}
 
-	/**
-	 * A self-fetch result plus its re-query affordance. A single-enum form keeps its picker above the result so a new selection refetches (a sign switch is a new reading); any other form gets a compact Edit control that restores the form with the previous values.
-	 */
+	/** A self-fetch result under a compact Edit control that restores the form with the previous values. */
 	protected renderResult(data: T): unknown {
-		const body = this.sticky
-			? html`${this.renderForm()}${this.drawn(data)}`
-			: html`<div class="roxy-edit-bar" part="edit-bar">
-					<button type="button" class="roxy-edit" @click=${this.onEdit}>${this.t('Edit query')}</button>
-				</div>
-				${this.drawn(data)}`;
+		const body = html`<div class="roxy-edit-bar" part="edit-bar">
+				<button type="button" class="roxy-edit" @click=${this.onEdit}>${this.t('Edit query')}</button>
+			</div>
+			${this.drawn(data)}`;
 		return this.showAttribution()
 			? html`${body}${this.renderAttribution()}`
 			: body;
+	}
+
+	/** The form with what stands under it, from ONE call site, so the form element and the choices it read survive every refetch of a form that stays above its result. */
+	private renderWithForm(body: unknown): unknown {
+		return html`${this.renderForm()}${body}`;
+	}
+
+	/** What a form that stays above its result shows under it: the skeleton while a refetch is in flight, the failure, or the result. */
+	private stickyBody(): unknown {
+		if (this.loading) return this.renderLoading();
+		if (this.error != null)
+			return this.issues ? nothing : this.renderErrorBanner(this.error);
+		if (this.data == null) return nothing;
+		return this.showAttribution()
+			? html`${this.drawn(this.data)}${this.renderAttribution()}`
+			: this.drawn(this.data);
+	}
+
+	/**
+	 * The next page of a list this element fetched for itself, appended under its rows: a list component places it after its rows, and it draws nothing in controlled mode, once every row is in, or for a response that reports no total.
+	 */
+	protected renderMore(): unknown {
+		const rows = this.listRows();
+		const total = (this.data as { total?: unknown } | null)?.total;
+		if (!this.lastRequest || !rows || typeof total !== 'number') return nothing;
+		if (rows.length >= total) return nothing;
+		return html`<div class="roxy-more" part="more">
+			<button
+				type="button"
+				class="roxy-edit"
+				?disabled=${this.moreLoading}
+				aria-busy=${this.moreLoading ? 'true' : 'false'}
+				@click=${this.onMore}
+			>
+				${this.t('Show more')}
+			</button>
+			${this.moreError ? html`<p class="roxy-error" role="alert">${this.t(this.moreError)}</p>` : nothing}
+		</div>`;
+	}
+
+	/** The rows of a list response, or undefined when this element is not a list or the response has none. */
+	private listRows(): unknown[] | undefined {
+		const rows = this.listKey
+			? (this.data as Record<string, unknown> | null)?.[this.listKey]
+			: undefined;
+		return Array.isArray(rows) ? rows : undefined;
+	}
+
+	private onMore = async () => {
+		const req = this.lastRequest;
+		const key = this.listKey;
+		const rows = this.listRows();
+		if (!req || !key || !rows) return;
+		this.moreLoading = true;
+		this.moreError = null;
+		try {
+			const next = await apiFetch<Record<string, unknown>>(this.fetcher, {
+				...req,
+				query: { ...req.query, offset: rows.length },
+			});
+			// A new search replaced the list while this page was in flight; it belongs to the old one.
+			if (this.lastRequest !== req) return;
+			const added = next[key];
+			this.data = {
+				...(this.data as Record<string, unknown>),
+				...next,
+				[key]: [...rows, ...(Array.isArray(added) ? added : [])],
+			} as T;
+		} catch (err) {
+			if (this.lastRequest === req)
+				this.moreError = err instanceof Error ? err.message : String(err);
+		} finally {
+			this.moreLoading = false;
+		}
+	};
+
+	/** Start a request that REPLACES the data: the row a previous list opened and the page state it reached belong to the old data, so they go with it. */
+	private fetchFresh(req: RoxyRequest): Promise<void> {
+		this.lastRequest = req;
+		this.openedRow = undefined;
+		this.openedRowId = undefined;
+		this.moreError = null;
+		return this.fetcher.run(req);
 	}
 
 	private onEdit = () => {
@@ -395,7 +495,19 @@ export abstract class RoxyDataElement<
 	 */
 	load(req: RoxyRequest): Promise<void> {
 		this.syncFetcher();
-		return this.fetcher.run(req);
+		return this.fetchFresh(req);
+	}
+
+	/** A visitor picked a row of this list: emit `roxy-symbol-select` with it for a host that pairs its own detail, then open it here when this element can fetch. */
+	protected pickRow(detail: { id: string } & Record<string, unknown>): void {
+		this.dispatchEvent(
+			new CustomEvent('roxy-symbol-select', {
+				detail,
+				bubbles: true,
+				composed: true,
+			}),
+		);
+		this.openRow(detail.id);
 	}
 
 	/**
@@ -450,7 +562,7 @@ export abstract class RoxyDataElement<
 
 	/** The data-absent branch: the self-fetch form when an endpoint is set, otherwise the empty state. */
 	protected renderNoData(): unknown {
-		return this.endpoint ? this.renderForm() : this.renderEmpty();
+		return this.endpoint ? this.renderWithForm(nothing) : this.renderEmpty();
 	}
 
 	/**
@@ -472,6 +584,8 @@ export abstract class RoxyDataElement<
 			lang=${ifDefined(this.effectiveLang())}
 			.initialValues=${this.formInitialValues()}
 			.serverIssues=${this.issues}
+			.apiRoute=${this.fetcher}
+			.autoload=${!this.selfFetched}
 			@roxy-submit=${this.onFormSubmit}
 		></roxy-endpoint-form>`;
 	}
@@ -494,7 +608,7 @@ export abstract class RoxyDataElement<
 		this.selfFetched = true;
 		this.editing = false;
 		if (this.remember) this.writeRemembered(detail.values);
-		void this.fetcher.run(
+		void this.fetchFresh(
 			buildRequest(
 				this.endpoint,
 				this.method,
@@ -551,7 +665,12 @@ export abstract class RoxyDataElement<
 		// A rejected request that names its fields is answered on the form, field by
 		// field, and needs no banner repeating the same words over it.
 		if (this.endpoint && this.issues) return this.renderForm();
-		const banner = html`<div class="roxy-error" role="alert" part="error">${this.t(message)}</div>`;
+		const banner = this.renderErrorBanner(message);
 		return this.endpoint ? html`${banner}${this.renderForm()}` : banner;
+	}
+
+	/** The failure line: the host page's own {@link errorMessage} when it set one, else the message the request failed with. */
+	private renderErrorBanner(message: string): unknown {
+		return html`<div class="roxy-error" role="alert" part="error">${this.errorMessage || this.t(message)}</div>`;
 	}
 }

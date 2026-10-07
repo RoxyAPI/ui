@@ -13,6 +13,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { display } from '../utils/localized.js';
+import { arcanaText } from '../utils/tarot.js';
 
 type TarotSpreadData =
 	| CastThreeCardResponse
@@ -225,9 +226,9 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 		// falls through to the property default, so a yes or no reading was headed
 		// "three card". Reading the shape means the heading is right either way.
 		const spreadLabel = isYesNo
-			? 'Yes or no'
+			? this.t('Yes or no')
 			: isDrawn
-				? 'Card draw'
+				? this.t('Card draw')
 				: titleCase(
 						('spread' in d ? (d as CastThreeCardResponse).spread : '') ||
 							this.spread.replace(/-/g, ' '),
@@ -254,7 +255,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 									verdictCard?.imageUrl
 										? html`<img
 											src=${verdictCard.imageUrl}
-											alt=${verdictCard.name ?? 'tarot card'}
+											alt=${verdictCard.name ?? this.t('Tarot card')}
 											class=${verdictCard.reversed ? 'reversed' : ''}
 										/>`
 										: html`${verdictCard?.name ?? '?'}`
@@ -264,7 +265,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 								${verdictCard?.name ?? ''}
 								${verdictCard?.reversed ? html`<small>${this.t('(reversed)')}</small>` : nothing}
 							</p>
-							${verdictCard?.arcana ? html`<p class="arcana">${this.t('{{arcana}} arcana', { arcana: verdictCard.arcana })}</p>` : nothing}
+							${verdictCard?.arcana ? html`<p class="arcana">${arcanaText(this.effectiveLang(), verdictCard.arcana)}</p>` : nothing}
 						</div>
 						<div class="meta" part="details">
 							<div>
@@ -297,7 +298,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 										p.card?.imageUrl
 											? html`<img
 												src=${p.card.imageUrl}
-												alt=${p.card.name ?? 'tarot card'}
+												alt=${p.card.name ?? this.t('Tarot card')}
 												class=${p.card.reversed ? 'reversed' : ''}
 											/>`
 											: html`${p.card?.name ?? '?'}`
@@ -323,7 +324,7 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 										c.imageUrl
 											? html`<img
 												src=${c.imageUrl}
-												alt=${c.name ?? 'tarot card'}
+												alt=${c.name ?? this.t('Tarot card')}
 												class=${c.reversed ? 'reversed' : ''}
 											/>`
 											: html`${c.name ?? '?'}`

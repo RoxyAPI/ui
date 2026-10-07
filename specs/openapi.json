@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: the Spiritual OS layer for agentic AI\n\n> **Base URL:** `https://roxyapi.com/api/v2`. Every path below is relative to it.\n\nOne API key for 18 insight domains (Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 261+ endpoints, planetary positions read directly from the NASA JPL DE440 ephemeris and verified against NASA JPL Horizons, and every calculation held by 3,502 gold standard tests. Readings come back as structured data with editorial interpretation text, translated into 10+ languages via `?lang=` on translated endpoints. Remote MCP servers, typed SDKs for TypeScript, Python, PHP, C#, and Go, drop-in UI components and copy-paste widgets, and open source Templates all run on this one document.\n\n## Who builds on RoxyAPI\n\n- **Developers** shipping astrology, tarot, numerology and wellness apps without learning each system first\n- **AI agent builders** giving Claude, GPT or Gemini real calculations instead of guesses, over Remote MCP\n- **Vibe coders** building with Cursor, Claude Code, Bolt or Replit from the spec and AGENTS.md\n- **Founders and brands** launching insight products for their audience in days instead of months\n\n## Quick start\n\n**1. Get a key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). It is ready the moment payment clears.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/astrology/horoscope/aries/daily\n```\n\n**3. Check your usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agents: Remote MCP\n\nEvery domain has its own Remote MCP server over Streamable HTTP at `https://roxyapi.com/mcp/{domain}` (for example `/mcp/astrology`), 258+ tools in all, with nothing to install or host. Add the URL to Claude, Cursor, VS Code, ChatGPT or any MCP client, or connect from the OpenAI Agents SDK and Gemini ADK. Coding agents that build against this API use the documentation server at `/mcp/docs`. Setup for every client: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp).\n\n## Authentication\n\nSend your key as `X-API-Key: YOUR_KEY` (recommended), as `Authorization: Bearer YOUR_KEY`, or as the `?api_key=` query parameter for quick tests. Keep secret keys on a server; publishable keys are for the browser.\n\n## Responses and limits\n\nClean JSON with no wrapper. An error returns `{ \"error\", \"code\", \"doc_url\" }`: `error` is readable and may change wording, `code` is stable and the one to switch on, and `doc_url` links to the fix for that exact code.\n\nEvery response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used` and `X-RateLimit-Reset` for your monthly allowance, which resets on the 1st of each month at 00:00 UTC. Each plan also has a per-minute limit for bursts, from 600 requests per minute on Starter; going over it answers `429` with a `Retry-After` and never counts against the month.\n\n## Errors\n\nEvery code the API returns, also published machine-readably as `x-error-codes` on the `info` object of this document:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | [`validation_error`](https://roxyapi.com/docs/errors#validation_error) | A field is missing or invalid. The body lists every failing field at once in issues, each with its path and the expected shape. |\n| 400 | [`bad_request`](https://roxyapi.com/docs/errors#bad_request) | The request was rejected as a whole, for example a body that is not valid JSON or a date range that ends before it starts. |\n| 400 | [`date_out_of_range`](https://roxyapi.com/docs/errors#date_out_of_range) | A date lies outside the span the planetary positions are served for. The error names the supported dates. |\n| 401 | [`api_key_required`](https://roxyapi.com/docs/errors#api_key_required) | No API key was sent. |\n| 401 | [`invalid_api_key`](https://roxyapi.com/docs/errors#invalid_api_key) | The key sent is malformed or cannot be verified. |\n| 401 | [`api_key_revoked`](https://roxyapi.com/docs/errors#api_key_revoked) | The key was valid once and has since been revoked from the account page. |\n| 401 | [`subscription_not_found`](https://roxyapi.com/docs/errors#subscription_not_found) | The key verifies, but the subscription behind it no longer exists. |\n| 401 | [`subscription_inactive`](https://roxyapi.com/docs/errors#subscription_inactive) | The subscription behind the key is cancelled, expired or suspended, or a trial is past its end date. |\n| 401 | [`publishable_key_not_allowed_on_mcp`](https://roxyapi.com/docs/errors#publishable_key_not_allowed_on_mcp) | A publishable key was used on a Remote MCP server, which takes a secret key. |\n| 401 | [`invalid_client_ip`](https://roxyapi.com/docs/errors#invalid_client_ip) | A keyless request could not be attributed to a caller. |\n| 401 | [`unauthorized`](https://roxyapi.com/docs/errors#unauthorized) | Authentication failed with no more specific reason to give. |\n| 403 | [`forbidden`](https://roxyapi.com/docs/errors#forbidden) | The key is valid, but this request is not permitted. |\n| 403 | [`origin_required`](https://roxyapi.com/docs/errors#origin_required) | A publishable key with an origin allowlist was used with no Origin header, as from a server or a native app. |\n| 403 | [`origin_not_allowed`](https://roxyapi.com/docs/errors#origin_not_allowed) | The calling site is not on the origin allowlist of this publishable key. |\n| 404 | [`not_found`](https://roxyapi.com/docs/errors#not_found) | Nothing is served at this path, or the identifier in it does not exist. A path miss adds suggestions, the closest real endpoints. |\n| 405 | [`method_not_allowed`](https://roxyapi.com/docs/errors#method_not_allowed) | The path exists for a different HTTP method. The body lists the accepted methods in allow, as does the Allow header. |\n| 409 | [`conflict`](https://roxyapi.com/docs/errors#conflict) | The request cannot be applied in the current state. |\n| 410 | [`gone`](https://roxyapi.com/docs/errors#gone) | The path was removed permanently. |\n| 413 | [`payload_too_large`](https://roxyapi.com/docs/errors#payload_too_large) | The request body is larger than the API accepts. |\n| 415 | [`unsupported_media_type`](https://roxyapi.com/docs/errors#unsupported_media_type) | A request with a body was sent without Content-Type: application/json. |\n| 422 | [`unprocessable_entity`](https://roxyapi.com/docs/errors#unprocessable_entity) | Every field is valid, but the combination cannot be computed. |\n| 429 | [`rate_limit_exceeded`](https://roxyapi.com/docs/errors#rate_limit_exceeded) | The monthly request allowance is used up. Retry-After gives the seconds to the reset. |\n| 429 | [`rate_limit_per_minute`](https://roxyapi.com/docs/errors#rate_limit_per_minute) | The per-minute limit of the plan was reached. Retry-After gives the seconds to the next minute, and the monthly allowance is not charged. |\n| 429 | [`rate_limited`](https://roxyapi.com/docs/errors#rate_limited) | A rate limit was reached, reported without the plan detail. |\n| 429 | [`free_tier_exhausted`](https://roxyapi.com/docs/errors#free_tier_exhausted) | A keyless request has used up its trial allowance. |\n| 500 | [`internal_error`](https://roxyapi.com/docs/errors#internal_error) | The request failed inside our service. Retry with exponential backoff. |\n| 503 | [`compute_saturated`](https://roxyapi.com/docs/errors#compute_saturated) | Heavy calculations are briefly at capacity. Send the same request again after Retry-After seconds. |\n| Any | [`error`](https://roxyapi.com/docs/errors#error) | A fallback for a status with no more specific code. The status and the error field carry the signal. |\n\n## Pricing\n\nOne flat subscription covers every domain, every endpoint, Remote MCP, the SDKs, UI components, widgets and every language. Every call counts the same, a planet position or a full birth chart, with no credits and no per-product fees. From $39 per month for 50K requests, up to 3M requests, with custom volume above that: [roxyapi.com/pricing](https://roxyapi.com/pricing).\n\n## Resources\n\n- [Quickstart](https://roxyapi.com/docs/quickstart): the first call in 60 seconds\n- [Documentation](https://roxyapi.com/docs): guides, tutorials and a reference per domain\n- [Remote MCP](https://roxyapi.com/docs/mcp): connect an AI agent\n- [SDKs](https://roxyapi.com/docs/sdk) and [UI components](https://roxyapi.com/ui)\n- [Templates](https://roxyapi.com/templates): open source apps to clone and deploy\n- [Methodology](https://roxyapi.com/methodology): how accuracy is verified\n- [Contact](https://roxyapi.com/contact): support and key recovery\n",
+    "description": "# RoxyAPI: the Spiritual OS layer for agentic AI\n\n> **Base URL:** `https://roxyapi.com/api/v2`. Every path below is relative to it.\n\nOne API key for 18 insight domains (Western Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 261+ endpoints, planetary positions read directly from the NASA JPL DE440 ephemeris and verified against NASA JPL Horizons, and every calculation held by 3,620 gold standard tests. Readings come back as structured data with editorial interpretation text, translated into 10+ languages via `?lang=` on translated endpoints. Remote MCP servers, typed SDKs for TypeScript, Python, PHP, C#, and Go, drop-in UI components and copy-paste widgets, and open source Templates all run on this one document.\n\n## Who builds on RoxyAPI\n\n- **Developers** shipping astrology, tarot, numerology and wellness apps without learning each system first\n- **AI agent builders** giving Claude, GPT or Gemini real calculations instead of guesses, over Remote MCP\n- **Vibe coders** building with Cursor, Claude Code, Bolt or Replit from the spec and AGENTS.md\n- **Founders and brands** launching insight products for their audience on one key\n\n## Quick start\n\n**1. Get a key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). It is ready the moment payment clears.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/astrology/horoscope/aries/daily\n```\n\n**3. Check your usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agents: Remote MCP\n\nEvery domain has its own Remote MCP server over Streamable HTTP at `https://roxyapi.com/mcp/{domain}` (for example `/mcp/astrology`), 258+ tools in all, with nothing to install or host. Add the URL to Claude, Cursor, VS Code, ChatGPT or any MCP client, or connect from the OpenAI Agents SDK and Gemini ADK. Coding agents that build against this API use the documentation server at `/mcp/docs`. Setup for every client: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp).\n\n## Authentication\n\nSend your key as `X-API-Key: YOUR_KEY` (recommended), as `Authorization: Bearer YOUR_KEY`, or as the `?api_key=` query parameter for quick tests. Keep secret keys on a server; publishable keys are for the browser.\n\n## Responses and limits\n\nClean JSON with no wrapper. An error returns `{ \"error\", \"code\", \"doc_url\" }`: `error` is readable and may change wording, `code` is stable and the one to switch on, and `doc_url` links to the fix for that exact code.\n\nEvery response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used` and `X-RateLimit-Reset` for your monthly allowance, which resets on the 1st of each month at 00:00 UTC. Each plan also has a per-minute limit for bursts, from 600 requests per minute on Starter; going over it answers `429` with a `Retry-After` and never counts against the month.\n\n## Errors\n\nEvery code the API returns, also published machine-readably as `x-error-codes` on the `info` object of this document:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | [`validation_error`](https://roxyapi.com/docs/errors#validation_error) | A field is missing or invalid. The body lists every failing field at once in issues, each with its path and the expected shape. |\n| 400 | [`bad_request`](https://roxyapi.com/docs/errors#bad_request) | The request was rejected as a whole, for example a body that is not valid JSON or a date range that ends before it starts. |\n| 400 | [`date_out_of_range`](https://roxyapi.com/docs/errors#date_out_of_range) | A date lies outside the span the planetary positions are served for. The error names the supported dates. |\n| 401 | [`api_key_required`](https://roxyapi.com/docs/errors#api_key_required) | No API key was sent. |\n| 401 | [`invalid_api_key`](https://roxyapi.com/docs/errors#invalid_api_key) | The key sent is malformed or cannot be verified. |\n| 401 | [`api_key_revoked`](https://roxyapi.com/docs/errors#api_key_revoked) | The key was valid once and has since been revoked from the account page. |\n| 401 | [`subscription_not_found`](https://roxyapi.com/docs/errors#subscription_not_found) | The key verifies, but the subscription behind it no longer exists. |\n| 401 | [`subscription_inactive`](https://roxyapi.com/docs/errors#subscription_inactive) | The subscription behind the key is cancelled, expired or suspended, or a trial is past its end date. |\n| 401 | [`publishable_key_not_allowed_on_mcp`](https://roxyapi.com/docs/errors#publishable_key_not_allowed_on_mcp) | A publishable key was used on a Remote MCP server, which takes a secret key. |\n| 401 | [`invalid_client_ip`](https://roxyapi.com/docs/errors#invalid_client_ip) | A keyless request could not be attributed to a caller. |\n| 401 | [`unauthorized`](https://roxyapi.com/docs/errors#unauthorized) | Authentication failed with no more specific reason to give. |\n| 403 | [`forbidden`](https://roxyapi.com/docs/errors#forbidden) | The key is valid, but this request is not permitted. |\n| 403 | [`origin_required`](https://roxyapi.com/docs/errors#origin_required) | A publishable key with an origin allowlist was used with no Origin header, as from a server or a native app. |\n| 403 | [`origin_not_allowed`](https://roxyapi.com/docs/errors#origin_not_allowed) | The calling site is not on the origin allowlist of this publishable key. |\n| 404 | [`not_found`](https://roxyapi.com/docs/errors#not_found) | Nothing is served at this path, or the identifier in it does not exist. A path miss adds suggestions, the closest real endpoints. |\n| 405 | [`method_not_allowed`](https://roxyapi.com/docs/errors#method_not_allowed) | The path exists for a different HTTP method. The body lists the accepted methods in allow, as does the Allow header. |\n| 409 | [`conflict`](https://roxyapi.com/docs/errors#conflict) | The request cannot be applied in the current state. |\n| 410 | [`gone`](https://roxyapi.com/docs/errors#gone) | The path was removed permanently. |\n| 413 | [`payload_too_large`](https://roxyapi.com/docs/errors#payload_too_large) | The request body is larger than the API accepts. |\n| 415 | [`unsupported_media_type`](https://roxyapi.com/docs/errors#unsupported_media_type) | A request with a body was sent without Content-Type: application/json. |\n| 422 | [`unprocessable_entity`](https://roxyapi.com/docs/errors#unprocessable_entity) | Every field is valid, but the combination cannot be computed. |\n| 429 | [`rate_limit_exceeded`](https://roxyapi.com/docs/errors#rate_limit_exceeded) | The monthly request allowance is used up. Retry-After gives the seconds to the reset. |\n| 429 | [`rate_limit_per_minute`](https://roxyapi.com/docs/errors#rate_limit_per_minute) | The per-minute limit of the plan was reached. Retry-After gives the seconds to the next minute, and the monthly allowance is not charged. |\n| 429 | [`rate_limited`](https://roxyapi.com/docs/errors#rate_limited) | A rate limit was reached, reported without the plan detail. |\n| 429 | [`free_tier_exhausted`](https://roxyapi.com/docs/errors#free_tier_exhausted) | A keyless request has used up its trial allowance. |\n| 500 | [`internal_error`](https://roxyapi.com/docs/errors#internal_error) | The request failed inside our service. Retry with exponential backoff. |\n| 503 | [`compute_saturated`](https://roxyapi.com/docs/errors#compute_saturated) | Heavy calculations are briefly at capacity. Send the same request again after Retry-After seconds. |\n| Any | [`error`](https://roxyapi.com/docs/errors#error) | A fallback for a status with no more specific code. The status and the error field carry the signal. |\n\n## Pricing\n\nOne flat subscription covers every domain, every endpoint, Remote MCP, the SDKs, UI components, widgets and every language. Every call counts the same, a planet position or a full birth chart, with no credits and no per-product fees. From $39 per month for 50K requests, up to 3M requests, with custom volume above that: [roxyapi.com/pricing](https://roxyapi.com/pricing).\n\n## Resources\n\n- [Quickstart](https://roxyapi.com/docs/quickstart): the first call in three steps\n- [Documentation](https://roxyapi.com/docs): guides, tutorials and a reference per domain\n- [Remote MCP](https://roxyapi.com/docs/mcp): connect an AI agent\n- [SDKs](https://roxyapi.com/docs/sdk) and [UI components](https://roxyapi.com/ui)\n- [Templates](https://roxyapi.com/templates): open source apps to clone and deploy\n- [Methodology](https://roxyapi.com/methodology): how accuracy is verified\n- [Contact](https://roxyapi.com/contact): support and key recovery\n",
     "x-error-codes": [
       {
         "code": "validation_error",
@@ -181,11 +181,11 @@
     },
     {
       "name": "Forecast",
-      "description": "Astrology forecast API that merges upcoming transit aspects, sign ingresses, retrograde stations, new and full moons, biorhythm critical days, and Vimshottari dasha changes into one time-ordered forecast for a single subject. The only cross-domain forecast timeline behind one key, positions verified against NASA JPL Horizons, available over Remote MCP with typed SDKs. Horizon capped at 90 days."
+      "description": "Astrology forecast API that merges upcoming transit aspects, sign ingresses, retrograde stations, new and full moons, biorhythm critical days, and Vimshottari dasha changes into one time-ordered forecast for a single subject, with positions verified against NASA JPL Horizons. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Human Design",
-      "description": "Human Design API that generates the full bodygraph from a birth moment: type, strategy, inner authority, profile, definition, incarnation cross, the nine centers, defined channels, and all 26 gate activations, plus two-person connection charts and small-group Penta analysis. Planetary positions verified against NASA JPL Horizons, the Design side solved on the exact 88 degree solar arc. One key, Remote MCP, typed SDKs."
+      "description": "Human Design API that generates the full bodygraph from a birth moment: type, strategy, inner authority, profile, definition, incarnation cross, the nine centers, defined channels, and all 26 gate activations, plus two-person connection charts and small-group Penta analysis. Planetary positions verified against NASA JPL Horizons. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Chinese Astrology",
@@ -193,11 +193,11 @@
     },
     {
       "name": "Feng Shui",
-      "description": "Compute classical feng shui from one API: Xuan Kong flying star natal charts for any of the nine periods and 24 mountains, Kua numbers and the full Eight Mansions map of favourable and unfavourable directions, annual and monthly star plates, the four annual afflictions with exact degree spans, the compass Bagua map and the 1864 to 2043 period table. Chinese years resolve at Li Chun, computed astronomically, so the boundary is right rather than assumed. One key, Remote MCP, typed SDKs."
+      "description": "Compute classical feng shui from one API: Xuan Kong flying star natal charts for any of the nine periods and 24 mountains, Kua numbers and the full Eight Mansions map of favourable and unfavourable directions, annual and monthly star plates, the four annual afflictions with exact degree spans, the compass Bagua map and the 1864 to 2043 period table. Chinese years resolve at Li Chun, computed astronomically, so the boundary is right rather than assumed. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Mesoamerican Astrology",
-      "description": "Calculate Mayan astrology day signs, the Tzolkin sacred round, the Haab year, the full Long Count and the Aztec tonalpohualli from any date: day sign and coefficient, trecena, Calendar Round, Lord of the Night, Year Bearer and the five point Cruz Maya, each with a composed reading. The correlation constant that makes two Mayan calculators disagree is a typed parameter with a named default rather than a hidden pick, and every response echoes the conventions it was computed under, so a saved chart stays reproducible. Both naming traditions ship on every sign, the Yucatec spelling and the Kʼicheʼ name daykeepers actually use, and readings come back in every language the API ships. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Calculate Mayan astrology day signs, the Tzolkin sacred round, the Haab year, the full Long Count and the Aztec tonalpohualli from any date: day sign and coefficient, trecena, Calendar Round, Lord of the Night, Year Bearer and the five point Cruz Maya, each with a composed reading. The correlation constant that makes two Mayan calculators disagree is a typed parameter, and every response echoes the conventions it was computed under, so a saved chart stays reproducible. Both naming traditions ship on every sign, the Yucatec spelling and the Kʼicheʼ name daykeepers actually use, and readings come back in every language the API ships. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Vastu",
@@ -209,15 +209,15 @@
     },
     {
       "name": "Kabbalah",
-      "description": "Kabbalah API for gematria, the 72 names, the Tree of Life and the Hebrew birthday, from one key. Score a Hebrew word or a Latin name across 11 rabbinic ciphers with the per letter breakdown, every candidate Hebrew spelling shown and the rule that chose one, plus a cited equal value lexicon. The 72 names are derived from the verses rather than copied from a table, the birth name is dated by the exact position of the Sun or by the civil wheel as you choose, and the sephirot, the 22 paths and the 22 letters come back under typed school variants cross linked to the tarot deck. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Kabbalah API for gematria, the 72 names, the Tree of Life and the Hebrew birthday. Score a Hebrew word or a Latin name across 11 rabbinic ciphers with the per letter breakdown, every candidate Hebrew spelling shown and the rule that chose one, plus a cited equal value lexicon. The 72 names are derived from the verses rather than copied from a table, the birth name is dated by the exact position of the Sun or by the civil wheel as you choose, and the sephirot, the 22 paths and the 22 letters come back under typed school variants cross linked to the tarot deck. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Tarot",
-      "description": "Tarot reading API with the complete 78-card Rider-Waite-Smith deck and card meanings for love, career, health, and spiritual growth. Celtic Cross, three-card, love, career, yes/no oracle, daily card, and custom spreads, each with upright and reversed interpretations. Seeded reproducibility for personalized daily readings, and card images included. Built for tarot apps, AI tarot chatbots, fortune-telling platforms, and spiritual wellness products. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Tarot reading API with the complete 78-card Rider-Waite-Smith deck and card meanings for love, career, health, and spiritual growth. Celtic Cross, three-card, love, career, yes/no oracle, daily card, and custom spreads, each with upright and reversed interpretations. Daily cards that stay the same for one user all day, shareable readings that reopen unchanged, and card images included. Built for tarot apps, AI tarot chatbots, fortune-telling platforms, and spiritual wellness products. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Biorhythm",
-      "description": "The most complete biorhythm API: 10 cycle types across 3 primary (physical, emotional, intellectual), 4 secondary (intuitive, aesthetic, awareness, spiritual), and 3 composite (passion, mastery, wisdom). Critical-day detection with severity classification, 90-day forecasts with best and worst days, two-person compatibility scoring, phase tracking for dashboards, and seeded daily readings for push notifications. Localized into every language this API ships, deterministic results, and editorial-grade interpretations. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs. Ship a biorhythm feature in hours, not weeks."
+      "description": "Biorhythm API for entertainment and reflection, with 10 model cycle types across 3 primary (physical, emotional, intellectual), 4 secondary (intuitive, aesthetic, awareness, spiritual), and 3 composite (passion, mastery, wisdom). Critical-day detection with severity classification, 90-day forecasts with best and worst days, two-person compatibility scoring, phase tracking for dashboards, and daily readings that hold all day for push notifications. Localized into every language this API ships, deterministic results, and editorial-grade interpretations. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Ayurveda",
@@ -241,7 +241,7 @@
     },
     {
       "name": "Location and Timezone",
-      "description": "Timezone and location API with city search and geocoding across 235,000+ cities in 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. Coverage goes down to towns of a few hundred people and every administrative seat, so a rural birthplace resolves as reliably as a capital. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fully offline dataset with no third party geocoding call, and fields that map directly to the astrology endpoints. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Timezone and location API with city search and geocoding across 235,000+ cities in 240+ countries, returning latitude, longitude, IANA timezone, and DST-aware UTC offset. Coverage goes down to towns of a few hundred people and every administrative seat, so a rural birthplace resolves as reliably as a capital. The location layer for birth chart forms, horoscope apps, event planners, and any feature that needs place-to-coordinates resolution. Fields map directly to the astrology endpoints, with no separate geocoding service to call or pay for. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Usage",
@@ -290,7 +290,7 @@
               },
               "timezone": {
                 "type": "number",
-                "example": -5,
+                "example": -4,
                 "description": "Timezone offset from UTC in decimal hours."
               }
             },
@@ -1015,7 +1015,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -1073,7 +1073,7 @@
           },
           "timezone": {
             "type": "number",
-            "example": -5,
+            "example": -4,
             "description": "Timezone offset from UTC applied to this calculation."
           },
           "houseSystem": {
@@ -1398,7 +1398,7 @@
           },
           "timezone": {
             "type": "number",
-            "example": -5,
+            "example": -4,
             "description": "Timezone offset from UTC in decimal hours."
           },
           "aspectsFound": {
@@ -1735,7 +1735,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "planets": {
             "type": "array",
@@ -1966,7 +1966,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -2317,7 +2317,7 @@
                   }
                 ],
                 "description": "Natal timezone: decimal hours OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the natal date.",
-                "example": -5
+                "example": "America/New_York"
               }
             },
             "required": [
@@ -2367,8 +2367,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -3131,7 +3131,7 @@
               },
               "timezone": {
                 "type": "number",
-                "example": -5,
+                "example": -4,
                 "description": "Timezone offset from UTC applied to the birth instant."
               }
             },
@@ -3282,8 +3282,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -3497,8 +3497,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -3635,7 +3635,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -3704,8 +3704,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -3858,7 +3858,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -3927,8 +3927,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -4091,7 +4091,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -4160,8 +4160,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -4391,7 +4391,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -4455,8 +4455,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -4594,7 +4594,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -4658,8 +4658,8 @@
                 "type": "number",
                 "minimum": -12,
                 "maximum": 14,
-                "example": -5,
-                "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                "example": -4,
+                "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
               }
             },
             "required": [
@@ -4786,7 +4786,7 @@
               }
             ],
             "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-            "example": -5
+            "example": "America/New_York"
           },
           "nodeType": {
             "type": "string",
@@ -19139,7 +19139,7 @@
                       }
                     ],
                     "description": "Decimal hours from UTC (e.g. -5 for EST, 5.5 for IST, 9 for JST, 5.75 for NPT) OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the chart date.",
-                    "example": -5
+                    "example": "America/New_York"
                   }
                 },
                 "required": [
@@ -21125,7 +21125,7 @@
                           }
                         ],
                         "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                        "example": -5
+                        "example": "America/New_York"
                       },
                       "nodeType": {
                         "type": "string",
@@ -21192,7 +21192,7 @@
                           }
                         ],
                         "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                        "example": -5
+                        "example": "America/New_York"
                       },
                       "nodeType": {
                         "type": "string",
@@ -22049,7 +22049,7 @@
                       }
                     ],
                     "description": "Decimal hours from UTC (e.g. -5 for EST, 5.5 for IST, 9 for JST) OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the chart date.",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "houseSystem": {
                     "anyOf": [
@@ -22693,7 +22693,7 @@
                     ],
                     "default": 0,
                     "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved once, at the start of the window, and that offset applies to every time in the response. Event dates and times are reported in this zone, which is what makes a published calendar read correctly for its audience. Defaults to 0 (UTC).",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "nodeType": {
                     "type": "string",
@@ -22730,7 +22730,7 @@
                     },
                     "timezone": {
                       "type": "number",
-                      "example": -5,
+                      "example": -4,
                       "description": "Timezone the event dates and times are reported in. Echoes the request."
                     },
                     "events": {
@@ -23752,7 +23752,7 @@
                     ],
                     "default": 0,
                     "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved once, at the start of the window, and that offset applies to every time in the response. Ingress dates and times are reported in this zone, which is what makes a published calendar read correctly for its audience. Defaults to 0 (UTC).",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "nodeType": {
                     "type": "string",
@@ -23789,7 +23789,7 @@
                     },
                     "timezone": {
                       "type": "number",
-                      "example": -5,
+                      "example": -4,
                       "description": "Timezone the ingress dates and times are reported in. Echoes the request."
                     },
                     "startingPositions": {
@@ -24230,7 +24230,7 @@
                           }
                         ],
                         "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                        "example": -5
+                        "example": "America/New_York"
                       },
                       "nodeType": {
                         "type": "string",
@@ -24262,7 +24262,7 @@
                     "type": "string",
                     "format": "time",
                     "example": "12:00:00",
-                    "description": "Transit time in HH:MM:SS format. Defaults to 12:00:00 (noon) if omitted."
+                    "description": "Transit time in HH:MM:SS format, read on the clock of the natal chart timezone at the transit date (an IANA zone takes the offset in force on that date, daylight saving included). Defaults to 12:00:00 (noon) if omitted."
                   },
                   "planets": {
                     "type": "array",
@@ -25345,7 +25345,7 @@
                     ],
                     "default": 0,
                     "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved once, at the start of the window, and that offset applies to every time in the response. Event dates and times are reported in this zone, which is what makes a published calendar read correctly for its audience. Defaults to 0 (UTC).",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "orb": {
                     "type": "number",
@@ -25390,7 +25390,7 @@
                     },
                     "timezone": {
                       "type": "number",
-                      "example": -5,
+                      "example": -4,
                       "description": "Timezone the event dates and times are reported in. Echoes the request."
                     },
                     "orb": {
@@ -25787,7 +25787,7 @@
                     ],
                     "default": 0,
                     "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved once, at the start of the window, and that offset applies to every time in the response. Crossing dates and times are reported in this zone. Defaults to 0 (UTC).",
-                    "example": -5
+                    "example": "America/New_York"
                   }
                 },
                 "required": [
@@ -25812,7 +25812,7 @@
                     },
                     "timezone": {
                       "type": "number",
-                      "example": -5,
+                      "example": -4,
                       "description": "Timezone the dates and times are reported in. Echoes the request."
                     },
                     "events": {
@@ -26173,7 +26173,7 @@
                 "returnYear": 2024,
                 "latitude": 40.7128,
                 "longitude": -74.006,
-                "timezone": -5,
+                "timezone": "America/New_York",
                 "houseSystem": "placidus"
               },
               "schema": {
@@ -26222,7 +26222,7 @@
                       }
                     ],
                     "description": "Decimal hours from UTC OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the birthDate. Output datetime is adjusted to this timezone.",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "houseSystem": {
                     "type": "string",
@@ -26287,7 +26287,7 @@
                         },
                         "timezone": {
                           "type": "number",
-                          "example": -5,
+                          "example": -4,
                           "description": "Timezone offset from UTC applied to output datetime formatting."
                         }
                       },
@@ -26334,8 +26334,8 @@
                               "type": "number",
                               "minimum": -12,
                               "maximum": 14,
-                              "example": -5,
-                              "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                              "example": -4,
+                              "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
                             }
                           },
                           "required": [
@@ -27043,7 +27043,7 @@
                 "returnDate": "2024-08-12",
                 "latitude": 40.7128,
                 "longitude": -74.006,
-                "timezone": -5,
+                "timezone": "America/New_York",
                 "houseSystem": "placidus"
               },
               "schema": {
@@ -27093,7 +27093,7 @@
                       }
                     ],
                     "description": "Decimal hours from UTC OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the birthDate. Output datetime is adjusted to this timezone.",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "houseSystem": {
                     "type": "string",
@@ -27153,7 +27153,7 @@
                         },
                         "timezone": {
                           "type": "number",
-                          "example": -5,
+                          "example": -4,
                           "description": "Timezone offset from UTC applied to output datetime formatting."
                         }
                       },
@@ -27200,8 +27200,8 @@
                               "type": "number",
                               "minimum": -12,
                               "maximum": 14,
-                              "example": -5,
-                              "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                              "example": -4,
+                              "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
                             }
                           },
                           "required": [
@@ -27908,7 +27908,7 @@
                   "time": "14:30:00",
                   "latitude": 40.7128,
                   "longitude": -74.006,
-                  "timezone": -5
+                  "timezone": "America/New_York"
                 },
                 "person2": {
                   "date": "1992-03-20",
@@ -27963,7 +27963,7 @@
                           }
                         ],
                         "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                        "example": -5
+                        "example": "America/New_York"
                       },
                       "nodeType": {
                         "type": "string",
@@ -28026,7 +28026,7 @@
                           }
                         ],
                         "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                        "example": -5
+                        "example": "America/New_York"
                       },
                       "nodeType": {
                         "type": "string",
@@ -28110,8 +28110,8 @@
                           "type": "number",
                           "minimum": -12,
                           "maximum": 14,
-                          "example": -5,
-                          "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                          "example": -4,
+                          "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
                         }
                       },
                       "required": [
@@ -28156,8 +28156,8 @@
                           "type": "number",
                           "minimum": -12,
                           "maximum": 14,
-                          "example": -5,
-                          "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                          "example": -4,
+                          "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
                         }
                       },
                       "required": [
@@ -28818,7 +28818,7 @@
                   "time": "14:30:00",
                   "latitude": 40.7128,
                   "longitude": -74.006,
-                  "timezone": -5
+                  "timezone": "America/New_York"
                 },
                 "person2": {
                   "date": "1992-03-20",
@@ -28872,7 +28872,7 @@
                           }
                         ],
                         "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                        "example": -5
+                        "example": "America/New_York"
                       },
                       "nodeType": {
                         "type": "string",
@@ -28935,7 +28935,7 @@
                           }
                         ],
                         "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                        "example": -5
+                        "example": "America/New_York"
                       },
                       "nodeType": {
                         "type": "string",
@@ -32765,7 +32765,7 @@
                 "approximateDate": "2024-08-15",
                 "latitude": 40.7128,
                 "longitude": -74.006,
-                "timezone": -5,
+                "timezone": "America/New_York",
                 "houseSystem": "placidus"
               },
               "schema": {
@@ -32827,7 +32827,7 @@
                       }
                     ],
                     "description": "Decimal hours from UTC OR IANA name (e.g. \"America/New_York\"). IANA resolved to the DST-correct offset for the birthDate. Output datetime is adjusted to this timezone.",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "houseSystem": {
                     "type": "string",
@@ -32898,7 +32898,7 @@
                         },
                         "timezone": {
                           "type": "number",
-                          "example": -5,
+                          "example": -4,
                           "description": "Timezone offset from UTC applied to output datetime formatting."
                         }
                       },
@@ -32945,8 +32945,8 @@
                               "type": "number",
                               "minimum": -12,
                               "maximum": 14,
-                              "example": -5,
-                              "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                              "example": -4,
+                              "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
                             }
                           },
                           "required": [
@@ -33694,7 +33694,7 @@
                       }
                     ],
                     "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "nodeType": {
                     "type": "string",
@@ -34348,7 +34348,7 @@
                       }
                     ],
                     "description": "Decimal hours from UTC (e.g. -5 for EST, 5.5 for IST, 9 for JST) OR IANA name (e.g. \"America/New_York\"). IANA resolved to the offset in force at the birth date and time.",
-                    "example": -5
+                    "example": "America/New_York"
                   }
                 },
                 "required": [
@@ -34703,7 +34703,7 @@
                       }
                     ],
                     "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.",
-                    "example": -5
+                    "example": "America/New_York"
                   },
                   "nodeType": {
                     "type": "string",
@@ -63882,8 +63882,8 @@
                           },
                           "orb": {
                             "type": "number",
-                            "example": 0.12,
-                            "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant. Tighter orb means a more exact and significant aspect."
+                            "example": 0,
+                            "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant, rounded to three decimals. The instant is the moment the aspect perfects, so this reads 0. Absent for other event types."
                           },
                           "station": {
                             "type": "string",
@@ -63921,7 +63921,7 @@
                           },
                           "description": {
                             "type": "string",
-                            "example": "Transiting Saturn square natal Moon, an exact aspect within 0.12 degrees.",
+                            "example": "Transiting Saturn square natal Moon, an exact aspect.",
                             "description": "Plain-language summary of the event, suitable for direct display. The only localized field: when lang is set this sentence, and the body, target, and aspect names within it, render in the requested language while the structured fields stay English."
                           },
                           "significance": {
@@ -64435,8 +64435,8 @@
                           },
                           "orb": {
                             "type": "number",
-                            "example": 0.12,
-                            "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant. Tighter orb means a more exact and significant aspect."
+                            "example": 0,
+                            "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant, rounded to three decimals. The instant is the moment the aspect perfects, so this reads 0. Absent for other event types."
                           },
                           "station": {
                             "type": "string",
@@ -64474,7 +64474,7 @@
                           },
                           "description": {
                             "type": "string",
-                            "example": "Transiting Saturn square natal Moon, an exact aspect within 0.12 degrees.",
+                            "example": "Transiting Saturn square natal Moon, an exact aspect.",
                             "description": "Plain-language summary of the event, suitable for direct display. The only localized field: when lang is set this sentence, and the body, target, and aspect names within it, render in the requested language while the structured fields stay English."
                           },
                           "significance": {
@@ -65038,8 +65038,8 @@
                           },
                           "orb": {
                             "type": "number",
-                            "example": 0.12,
-                            "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant. Tighter orb means a more exact and significant aspect."
+                            "example": 0,
+                            "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant, rounded to three decimals. The instant is the moment the aspect perfects, so this reads 0. Absent for other event types."
                           },
                           "station": {
                             "type": "string",
@@ -65077,7 +65077,7 @@
                           },
                           "description": {
                             "type": "string",
-                            "example": "Transiting Saturn square natal Moon, an exact aspect within 0.12 degrees.",
+                            "example": "Transiting Saturn square natal Moon, an exact aspect.",
                             "description": "Plain-language summary of the event, suitable for direct display. The only localized field: when lang is set this sentence, and the body, target, and aspect names within it, render in the requested language while the structured fields stay English."
                           },
                           "significance": {
@@ -65734,8 +65734,8 @@
                                 },
                                 "orb": {
                                   "type": "number",
-                                  "example": 0.12,
-                                  "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant. Tighter orb means a more exact and significant aspect."
+                                  "example": 0,
+                                  "description": "For a transit-aspect, the separation in degrees from the exact aspect at the reported instant, rounded to three decimals. The instant is the moment the aspect perfects, so this reads 0. Absent for other event types."
                                 },
                                 "station": {
                                   "type": "string",
@@ -65773,7 +65773,7 @@
                                 },
                                 "description": {
                                   "type": "string",
-                                  "example": "Transiting Saturn square natal Moon, an exact aspect within 0.12 degrees.",
+                                  "example": "Transiting Saturn square natal Moon, an exact aspect.",
                                   "description": "Plain-language summary of the event, suitable for direct display. The only localized field: when lang is set this sentence, and the body, target, and aspect names within it, render in the requested language while the structured fields stay English."
                                 },
                                 "significance": {
@@ -66206,7 +66206,7 @@
                         },
                         "timezone": {
                           "type": "number",
-                          "example": -5,
+                          "example": -4,
                           "description": "Decimal timezone offset applied to the output datetime."
                         }
                       },
@@ -66279,8 +66279,8 @@
                               "type": "number",
                               "minimum": -12,
                               "maximum": 14,
-                              "example": -5,
-                              "description": "Timezone offset from UTC in decimal hours. Examples: New York = -5, London = 0, India = 5.5, Tokyo = 9."
+                              "example": -4,
+                              "description": "Timezone offset from UTC in decimal hours, resolved for the birth date. Examples: New York = -5 in winter and -4 in summer, London = 0, India = 5.5, Tokyo = 9."
                             }
                           },
                           "required": [
@@ -142259,7 +142259,7 @@
           "Angel Numbers"
         ],
         "summary": "List all angel numbers - Angel number catalog API",
-        "description": "Retrieve the complete database of angel numbers with summary information. Returns 75+ angel numbers covering root digits (0-9), master numbers (11, 22, 33), double digits (44-99), triple repeating (111-999), quad repeating (1111-9999), the mirror families (X0X like 101-909, X1X, four-digit mirrors like 1212-2121), palindromes (1221, 1331), compound sequences (911, 1122), and sequential numbers (123, 1234). Supports optional type filtering. Perfect for building angel number explorer apps, reference guides, and spiritual databases.",
+        "description": "Retrieve the angel number catalog with summary information. Returns 75+ angel numbers covering root digits (0-9), master numbers (11, 22, 33), double digits (44-99), triple repeating (111-999), quad repeating (1111-9999), the mirror families (X0X like 101-909, X1X, four-digit mirrors like 1212-2121), palindromes (1221, 1331), compound sequences (911, 1122), and sequential numbers (123, 1234). Supports optional type filtering. Perfect for building angel number explorer apps, reference guides, and spiritual databases.",
         "security": [
           {
             "apiKey": []
@@ -142674,7 +142674,7 @@
           "Angel Numbers"
         ],
         "summary": "Get angel number meaning - Angel number lookup API",
-        "description": "Get the complete, authoritative meaning and interpretation for a specific angel number. Returns detailed spiritual, love, career, money, and twin flame interpretations, plus a biblical perspective and a shadow reading, along with keywords, affirmation, and actionable steps. Covers 75+ angel numbers including 111, 222, 333, 444, 555, 666, 777, 888, 999, 1111, 1212, 1234, and more. Authoritative interpretations covering all major angel number patterns.",
+        "description": "Get the full meaning and interpretation for a specific angel number. Returns detailed spiritual, love, career, money, and twin flame interpretations, plus a biblical perspective and a shadow reading, along with keywords, affirmation, and actionable steps. Covers 75+ angel numbers including 111, 222, 333, 444, 555, 666, 777, 888, 999, 1111, 1212, 1234, and more, across every major angel number pattern.",
         "security": [
           {
             "apiKey": []

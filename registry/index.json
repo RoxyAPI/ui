@@ -189,7 +189,7 @@
     },
     {
       "name": "roxy-tarot-catalog",
-      "description": "Responsive tarot deck gallery with card art, name, and an arcana and suit caption from the tarot catalog response"
+      "description": "Responsive tarot deck gallery with card art, name, and an arcana and suit caption; a picked tile opens its tarot card in place, and emits roxy-symbol-select for a host that pairs its own"
     },
     {
       "name": "roxy-tarot-spread",
@@ -269,19 +269,19 @@
     },
     {
       "name": "roxy-crystal-card",
-      "description": "Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings"
+      "description": "Single-crystal detail card with photo, spiritual, emotional, and physical meaning, metaphysical attributes, affirmation, and pairings; as a widget the visitor types a crystal name and picks it"
     },
     {
       "name": "roxy-crystal-grid",
-      "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response; a picked tile opens its crystal card in place"
+      "description": "Responsive crystal gallery with photo, name, and colour swatches from any crystals list response, filterable by chakra, zodiac sign, element, colour, and planet; a picked tile opens its crystal card in place"
     },
     {
       "name": "roxy-dream-card",
-      "description": "Dream symbol card with the symbol name, full interpretation, and dictionary letter"
+      "description": "Dream symbol card with the symbol name, full interpretation, and dictionary letter; as a widget the visitor types a symbol and picks it"
     },
     {
       "name": "roxy-dream-search",
-      "description": "Dream-symbol search results as selectable tiles; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own"
+      "description": "The dream dictionary as selectable tiles under a search box and an A to Z bar; a picked tile opens its dream card in place, and emits roxy-symbol-select for a host that pairs its own"
     },
     {
       "name": "roxy-angel-number-card",

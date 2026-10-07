@@ -4,7 +4,7 @@ import type { GetCrystalResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { cssColor } from '../utils/css-color.js';
-import { monthName } from '../utils/format.js';
+import { formatNumber, monthName } from '../utils/format.js';
 
 /**
  * Single-crystal detail card. Renders /crystals/{id}: the stone's photo, description, and full metaphysical profile (spiritual / emotional / physical meaning, governing chakras, zodiac signs, planet, elements, colours, Mohs hardness, numerical vibration, birthstone month), plus its affirmation and the crystals it pairs with. This is the detail view; roxy-crystal-grid is the gallery.
@@ -149,10 +149,11 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 		const keywords = d.keywords ?? [];
 		const pairs = d.pairsWith ?? [];
 		const month = monthName(this.effectiveLang(), d.birthMonth) || undefined;
+		const name = d.name ?? this.t('Crystal');
 
-		return html`<article class="wrap" part="card" aria-label=${d.name ?? 'Crystal'}>
+		return html`<article class="wrap" part="card" aria-label=${name}>
 			<div class="hero" part="header">
-				${d.imageUrl ? html`<img class="photo" part="chart" src=${d.imageUrl} alt=${d.name ?? 'Crystal'} loading="lazy" />` : nothing}
+				${d.imageUrl ? html`<img class="photo" part="chart" src=${d.imageUrl} alt=${name} loading="lazy" />` : nothing}
 				<div>
 					<h2 class="title">${d.name}</h2>
 					${
@@ -166,7 +167,7 @@ export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
 
 			<dl class="attrs" part="details">
 				${this.attr(this.t('Planet'), d.planet)}
-				${this.attr(this.t('Hardness'), typeof d.hardness === 'number' ? `${d.hardness} Mohs` : undefined)}
+				${this.attr(this.t('Hardness'), typeof d.hardness === 'number' ? this.t('{{value}} Mohs', { value: formatNumber(this.effectiveLang(), d.hardness) }) : undefined)}
 				${this.attr(this.t('Vibration'), d.numericalVibration)}
 				${this.attr(this.t('Birthstone'), month)}
 				${this.list(this.t('Chakras'), d.chakras)}

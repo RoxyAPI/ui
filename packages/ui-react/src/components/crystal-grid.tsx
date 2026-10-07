@@ -36,17 +36,20 @@ export interface RoxyCrystalGridProps extends ElementAttrs {
 	submitLabel?: string;
 	/** Persist the last self-fetch form values in sessionStorage, keyed by endpoint, and prefill the form when the visitor returns. Off by default. */
 	remember?: boolean;
+	/** Your own words for a failed self-fetch, printed in place of the message the request failed with (a spent quota, a network fault, a rejected key). Unset, the failure reads as the API worded it. */
+	errorMessage?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
 	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
 	hideReadings?: boolean;
 	/** Comma-separated list of `part` names to take off this component, for example "patterns" or "patterns, legend". Per element rather than per site, so the same component can drop a block on one page and keep it on another with no CSS. Sibling of hideReadings and a different tool: this hides a whole block whatever it contains, where hideReadings drops interpretive prose out of the markup. Names come from the `parts` array in components-catalog.json; a name the component does not carry hides nothing and is not an error. */
 	hideSections?: string;
-
+	/** Fires when the underlying <roxy-crystal-grid> dispatches `roxy-symbol-select`. */
+	onRoxySymbolSelect?: (event: CustomEvent<{ id: string; name: string }>) => void;
 }
 
 export const RoxyCrystalGrid = React.forwardRef<HTMLElement | null, RoxyCrystalGridProps>(
-	function RoxyCrystalGrid({ data, className, style, heading, endpoint, method, publishableKey, baseUrl, submitUrl, submitContext, locationUrl, specUrl, lang, submitLabel, remember, attribution, hideReadings, hideSections, ...rest }, ref) {
+	function RoxyCrystalGrid({ data, className, style, heading, endpoint, method, publishableKey, baseUrl, submitUrl, submitContext, locationUrl, specUrl, lang, submitLabel, remember, errorMessage, attribution, hideReadings, hideSections, onRoxySymbolSelect, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -164,6 +167,13 @@ export const RoxyCrystalGrid = React.forwardRef<HTMLElement | null, RoxyCrystalG
 
 		React.useEffect(() => {
 			const el = internal.current;
+			if (el && errorMessage !== undefined) {
+				(el as unknown as { errorMessage: string }).errorMessage = errorMessage;
+			}
+		}, [errorMessage, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
 			if (el && attribution !== undefined) {
 				(el as unknown as { attribution: string }).attribution = attribution;
 			}
@@ -182,6 +192,15 @@ export const RoxyCrystalGrid = React.forwardRef<HTMLElement | null, RoxyCrystalG
 				(el as unknown as { hideSections: string }).hideSections = hideSections;
 			}
 		}, [hideSections, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			const handler = onRoxySymbolSelect;
+			if (!el || !handler) return;
+			const listener = (event: Event) => handler(event as CustomEvent<{ id: string; name: string }>);
+			el.addEventListener('roxy-symbol-select', listener);
+			return () => el.removeEventListener('roxy-symbol-select', listener);
+		}, [onRoxySymbolSelect, loaded]);
 
 		if (error) {
 			return React.createElement(

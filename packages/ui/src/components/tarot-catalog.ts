@@ -1,15 +1,15 @@
-import { css, html } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { ListCardsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { capitalize } from '../utils/string.js';
+import { arcanaText, suitText } from '../utils/tarot.js';
 
 /** A single card row from the catalog response. Kept spec-derived so the tile never reads a field the API does not return. */
 type CatalogCard = ListCardsResponse['cards'][number];
 
 /**
- * Tarot catalog. Renders GET /tarot/cards as a responsive gallery of the deck: each tile carries the Rider-Waite-Smith artwork, the card name, and an arcana/suit caption. Filter the deck server-side (arcana, suit, number, paging) and pass the page response; the component renders whatever cards it carries. Pairs with `<roxy-tarot-card>` for a single-card detail view and `<roxy-tarot-spread>` for readings.
+ * Tarot catalog. Renders GET /tarot/cards as a responsive gallery of the deck: each tile carries the Rider-Waite-Smith artwork, the card name, and an arcana and suit caption. A picked tile emits `roxy-symbol-select` ({ id, name }) for a host that pairs its own `<roxy-tarot-card>`, and in self-fetch mode the deck opens on load under its arcana and suit filters, pages on with Show more, and opens the picked card under the gallery itself.
  */
 @customElement('roxy-tarot-catalog')
 export class RoxyTarotCatalog extends RoxyDataElement<ListCardsResponse> {
@@ -51,11 +51,26 @@ export class RoxyTarotCatalog extends RoxyDataElement<ListCardsResponse> {
 			.tile {
 				display: grid;
 				gap: var(--roxy-space-xs, 0.25rem);
+				width: 100%;
+				text-align: left;
+				font: inherit;
+				color: inherit;
 				background: var(--roxy-surface, #fff);
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-sm, 0.5rem);
 				box-shadow: var(--roxy-shadow-sm);
+				cursor: pointer;
+				transition: border-color 0.12s ease;
+			}
+			.tile[aria-pressed='true'],
+			.tile:hover,
+			.tile:focus-visible {
+				border-color: var(--roxy-accent, #f59e0b);
+				outline: none;
+			}
+			.detail {
+				margin-top: var(--roxy-space-md, 1rem);
 			}
 			.art {
 				aspect-ratio: 2 / 3;
@@ -84,41 +99,53 @@ export class RoxyTarotCatalog extends RoxyDataElement<ListCardsResponse> {
 	@property({ type: String, reflect: true })
 	heading = '';
 
+	protected rowDetail = { tag: 'roxy-tarot-card', path: 'tarot/cards/{id}' };
+
+	protected listKey = 'cards';
+
 	protected renderData(d: ListCardsResponse) {
 		const cards = d.cards ?? [];
 		if (cards.length === 0) return this.renderEmpty();
 
-		const title = this.heading || 'Tarot deck';
+		const title = this.heading || this.t('Tarot deck');
 		const total = typeof d.total === 'number' ? d.total : cards.length;
+		const locale = this.effectiveLang();
 
 		return html`<section class="wrap" part="card" aria-label=${title}>
 			<header class="head" part="header">
 				<h2 class="title">${title}</h2>
-				<span class="count">${total} ${total === 1 ? 'card' : 'cards'}</span>
+				<span class="count">${total === 1 ? this.t('1 card') : this.t('{{count}} cards', { count: total })}</span>
 			</header>
 			<ul class="grid" part="section cards">
 				${cards.map(
-					(c) => html`<li class="tile">
-						${
-							c.imageUrl
-								? html`<img class="art" src=${c.imageUrl} alt=${c.name ?? 'Tarot card'} loading="lazy" />`
-								: html`<div class="art" aria-hidden="true"></div>`
-						}
-						<p class="name">${c.name}</p>
-						<p class="meta">${cardMeta(c)}</p>
+					(c) => html`<li>
+						<button
+							type="button"
+							class="tile"
+							aria-pressed=${this.openedRowId === c.id ? 'true' : 'false'}
+							@click=${() => this.pickRow({ id: c.id, name: c.name })}
+						>
+							${
+								c.imageUrl
+									? html`<img class="art" src=${c.imageUrl} alt=${c.name ?? this.t('Tarot card')} loading="lazy" />`
+									: html`<div class="art" aria-hidden="true"></div>`
+							}
+							<p class="name">${c.name}</p>
+							<p class="meta">${cardMeta(locale, c)}</p>
+						</button>
 					</li>`,
 				)}
 			</ul>
+			${this.renderMore()}
+			${this.openedRow ? html`<div class="detail" part="detail">${this.openedRow}</div>` : nothing}
 		</section>`;
 	}
 }
 
-/**
- * Caption line for a catalog tile. Minor Arcana cards name their suit (`Minor · Cups`); Major Arcana cards read `Major Arcana`. Both derive only from the spec `arcana` and `suit` fields.
- */
-function cardMeta(c: CatalogCard): string {
-	if (c.suit) return `${capitalize(c.arcana)} · ${capitalize(c.suit)}`;
-	return `${capitalize(c.arcana)} Arcana`;
+/** Caption line for a catalog tile: the published arcana name, and the suit for a minor card. */
+function cardMeta(locale: string | undefined, c: CatalogCard): string {
+	const arcana = arcanaText(locale, c.arcana);
+	return c.suit ? `${arcana} · ${suitText(locale, c.suit)}` : arcana;
 }
 
 declare global {

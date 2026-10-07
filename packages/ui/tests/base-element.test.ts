@@ -809,3 +809,228 @@ describe('RoxyDataElement attributes reach the generated wrappers', () => {
 		}
 	});
 });
+
+/**
+ * A list this element fetched for itself pages on under its rows, a new query starts clean, and a form that stays above its result is never torn down by a refetch.
+ */
+describe('RoxyDataElement list chrome and the form that stays', () => {
+	const originalFetch = globalThis.fetch;
+	afterEach(() => {
+		globalThis.fetch = originalFetch;
+	});
+
+	type ListEl = DreamEl & {
+		load(req: unknown): Promise<void>;
+		errorMessage?: string;
+	};
+
+	const SYMBOLS = [
+		{ id: 'snake', name: 'Snake', letter: 's' },
+		{ id: 'sea', name: 'Sea', letter: 's' },
+		{ id: 'sky', name: 'Sky', letter: 's' },
+	];
+
+	/** The API in miniature: a paged dictionary by offset, one card by id, and 404 for every spec read. */
+	function api(calls: string[], gate?: Promise<void>) {
+		globalThis.fetch = mock(async (url: string | URL) => {
+			const u = new URL(String(url));
+			if (u.pathname.includes('openapi') || u.pathname.includes('/schemas/'))
+				return { ok: false, status: 404, json: async () => ({}) };
+			calls.push(`${u.pathname}${u.search}`);
+			if (gate) await gate;
+			if (u.pathname.endsWith('/dreams/symbols')) {
+				const offset = Number(u.searchParams.get('offset') ?? 0);
+				const limit = Number(u.searchParams.get('limit') ?? 2);
+				return {
+					ok: true,
+					status: 200,
+					json: async () => ({
+						total: SYMBOLS.length,
+						limit,
+						offset,
+						symbols: SYMBOLS.slice(offset, offset + limit),
+					}),
+				};
+			}
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ id: 'snake', name: 'Snake', meaning: 'Change' }),
+			};
+		}) as unknown as typeof fetch;
+	}
+
+	async function mountSearch(): Promise<ListEl> {
+		await import('../src/components/dream-search.js');
+		const el = document.createElement('roxy-dream-search') as ListEl;
+		el.setAttribute('data-endpoint', 'dreams/symbols');
+		el.setAttribute('method', 'GET');
+		el.setAttribute('publishable-key', 'pk_test_list');
+		document.body.appendChild(el);
+		await flush(el);
+		return el;
+	}
+
+	function submit(el: ListEl, values: Record<string, unknown>, sticky = true) {
+		el.shadowRoot?.querySelector('roxy-endpoint-form')?.dispatchEvent(
+			new CustomEvent('roxy-submit', {
+				detail: { endpoint: 'dreams/symbols', values, queryKeys: [], sticky },
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+
+	const rows = (el: ListEl) =>
+		el.shadowRoot?.querySelectorAll('.grid li').length ?? 0;
+	const more = (el: ListEl) =>
+		el.shadowRoot?.querySelector<HTMLButtonElement>('[part="more"] button');
+
+	test('Show more asks for the page after the rows it holds, appends it, and leaves once every row is in', async () => {
+		const calls: string[] = [];
+		api(calls);
+		const el = await mountSearch();
+		submit(el, { limit: 2, offset: 0 });
+		await flush(el);
+		expect(rows(el)).toBe(2);
+		expect(more(el)?.textContent?.trim()).toBe('Show more');
+
+		more(el)?.click();
+		await flush(el);
+		expect(calls.at(-1)).toBe('/api/v2/dreams/symbols?limit=2&offset=2');
+		expect(rows(el)).toBe(3);
+		expect(more(el)).toBeNull();
+		el.remove();
+	});
+
+	test('a page still in flight when a new query lands is dropped, never appended to the new list', async () => {
+		const calls: string[] = [];
+		let release = () => {};
+		const held = new Promise<void>((r) => {
+			release = r;
+		});
+		api(calls);
+		const direct = globalThis.fetch;
+		globalThis.fetch = mock(async (url: string | URL, init?: RequestInit) => {
+			if (new URL(String(url)).searchParams.get('offset') === '2') await held;
+			return direct(url, init);
+		}) as unknown as typeof fetch;
+		const el = await mountSearch();
+		submit(el, { limit: 2, offset: 0 });
+		await flush(el);
+		more(el)?.click();
+		submit(el, { limit: 1, q: 'sea' });
+		await flush(el);
+		expect(rows(el)).toBe(1);
+		release();
+		await flush(el);
+		expect(rows(el)).toBe(1);
+		el.remove();
+	});
+
+	test('a list loaded through load() pages on the same way, and one a host assigned draws no button at all', async () => {
+		const calls: string[] = [];
+		api(calls);
+		await import('../src/components/dream-search.js');
+		const loaded = document.createElement('roxy-dream-search') as ListEl;
+		loaded.setAttribute('publishable-key', 'pk_test_list');
+		document.body.appendChild(loaded);
+		await loaded.load({
+			path: '/dreams/symbols',
+			method: 'GET',
+			query: { limit: 2 },
+		});
+		await flush(loaded);
+		expect(more(loaded)).not.toBeNull();
+		loaded.remove();
+
+		const assigned = document.createElement('roxy-dream-search') as ListEl;
+		assigned.setAttribute('publishable-key', 'pk_test_list');
+		assigned.data = { total: 3, symbols: SYMBOLS.slice(0, 2) };
+		document.body.appendChild(assigned);
+		await flush(assigned);
+		expect(assigned.shadowRoot?.querySelector('[part="more"]')).toBeNull();
+		assigned.remove();
+	});
+
+	test('a new query drops the row the old list opened', async () => {
+		const calls: string[] = [];
+		api(calls);
+		const el = await mountSearch();
+		submit(el, { limit: 3 });
+		await flush(el);
+		el.shadowRoot?.querySelector<HTMLButtonElement>('.grid button')?.click();
+		await flush(el);
+		expect(el.shadowRoot?.querySelector('[part="detail"]')).not.toBeNull();
+
+		submit(el, { limit: 3, q: 'sea' });
+		await flush(el);
+		expect(el.shadowRoot?.querySelector('[part="detail"]')).toBeNull();
+		expect(
+			el.shadowRoot
+				?.querySelector('.grid button')
+				?.getAttribute('aria-pressed'),
+		).toBe('false');
+		el.remove();
+	});
+
+	test('a form that stays above its result is the same element through a refetch, with the skeleton under it', async () => {
+		const calls: string[] = [];
+		let release = () => {};
+		// No spec reaches the inner form, so it renders its error and never submits on its own.
+		api([]);
+		const el = await mountSearch();
+		const form = el.shadowRoot?.querySelector('roxy-endpoint-form');
+		expect((form as unknown as { autoload: boolean }).autoload).toBe(true);
+
+		api(calls, new Promise<void>((r) => (release = r)));
+		submit(el, { limit: 2 });
+		await flush(el);
+		expect(el.shadowRoot?.querySelector('roxy-endpoint-form')).toBe(form);
+		expect(el.shadowRoot?.querySelector('[part="loading"]')).not.toBeNull();
+
+		release();
+		await flush(el);
+		expect(el.shadowRoot?.querySelector('roxy-endpoint-form')).toBe(form);
+		expect(el.shadowRoot?.querySelector('[part="loading"]')).toBeNull();
+		expect(rows(el)).toBe(2);
+		// The form already opened this result, so it never submits on load again.
+		expect((form as unknown as { autoload: boolean }).autoload).toBe(false);
+		el.remove();
+	});
+
+	test('error-message replaces the words of a failed self-fetch, and its absence keeps the API message', async () => {
+		globalThis.fetch = mock(async (url: string | URL) =>
+			String(url).includes('/schemas/') || String(url).includes('openapi')
+				? { ok: false, status: 404, json: async () => ({}) }
+				: {
+						ok: false,
+						status: 429,
+						json: async () => ({ error: 'Monthly quota exceeded' }),
+					},
+		) as unknown as typeof fetch;
+		const mount = async (message?: string) => {
+			const el = document.createElement('roxy-dream-card') as ListEl;
+			el.setAttribute('data-endpoint', 'dreams/symbols/{id}');
+			el.setAttribute('method', 'GET');
+			el.setAttribute('publishable-key', 'pk_test_abc');
+			if (message) el.setAttribute('error-message', message);
+			document.body.appendChild(el);
+			await flush(el);
+			el.shadowRoot?.querySelector('roxy-endpoint-form')?.dispatchEvent(
+				new CustomEvent('roxy-submit', {
+					detail: { values: { id: 'x' }, queryKeys: [], sticky: false },
+					bubbles: true,
+					composed: true,
+				}),
+			);
+			await flush(el);
+			return el.shadowRoot?.querySelector('[part="error"]')?.textContent;
+		};
+		expect(await mount()).toBe('Monthly quota exceeded');
+		expect(await mount('Readings are resting for now.')).toBe(
+			'Readings are resting for now.',
+		);
+		document.body.innerHTML = '';
+	});
+});

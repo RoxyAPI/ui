@@ -31,6 +31,8 @@ export interface RoxyHoroscopeCardProps {
 	submitLabel?: string;
 	/** Persist the last self-fetch form values in sessionStorage, keyed by endpoint, and prefill the form when the visitor returns. Off by default. */
 	remember?: boolean;
+	/** Your own words for a failed self-fetch, printed in place of the message the request failed with (a spent quota, a network fault, a rejected key). Unset, the failure reads as the API worded it. */
+	errorMessage?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
 	/** Render the chart and the data and omit the written interpretation. Off by default. Use it when the page supplies its own words: the wheels, tables, grids, legends and numbers stay, and the interpretive prose is left out of the markup entirely. */
@@ -56,6 +58,7 @@ export const RoxyHoroscopeCard = defineComponent({
 		lang: { type: String as PropType<RoxyHoroscopeCardProps['lang']> },
 		submitLabel: { type: String as PropType<RoxyHoroscopeCardProps['submitLabel']> },
 		remember: { type: Boolean as PropType<RoxyHoroscopeCardProps['remember']> },
+		errorMessage: { type: String as PropType<RoxyHoroscopeCardProps['errorMessage']> },
 		attribution: { type: String as PropType<RoxyHoroscopeCardProps['attribution']> },
 		hideReadings: { type: Boolean as PropType<RoxyHoroscopeCardProps['hideReadings']> },
 		hideSections: { type: String as PropType<RoxyHoroscopeCardProps['hideSections']> },
@@ -93,6 +96,7 @@ export const RoxyHoroscopeCard = defineComponent({
 			if (props.lang !== undefined) elementProps['.lang'] = props.lang;
 			if (props.submitLabel !== undefined) elementProps['.submitLabel'] = props.submitLabel;
 			if (props.remember !== undefined) elementProps['.remember'] = props.remember;
+			if (props.errorMessage !== undefined) elementProps['.errorMessage'] = props.errorMessage;
 			if (props.attribution !== undefined) elementProps['.attribution'] = props.attribution;
 			if (props.hideReadings !== undefined) elementProps['.hideReadings'] = props.hideReadings;
 			if (props.hideSections !== undefined) elementProps['.hideSections'] = props.hideSections;

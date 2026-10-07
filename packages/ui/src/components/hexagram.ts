@@ -262,7 +262,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 						// "30.The Clinging" with the separator eaten. Join in JS instead.
 						[
 							h.number != null ? `${h.number}.` : '',
-							h.english ?? h.chinese ?? 'Hexagram',
+							h.english ?? h.chinese ?? this.t('I Ching hexagram'),
 						]
 							.filter(Boolean)
 							.join(' ')

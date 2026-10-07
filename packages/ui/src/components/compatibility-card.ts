@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type {
 	CalculateBioCompatibilityResponse,
@@ -30,6 +31,14 @@ type AstroCompat = CalculateCompatibilityResponse;
 /** The four relationship planets, in the order a synastry reading works them: identity, feeling, love, desire. */
 const RELATIONSHIP_PLANETS = ['sun', 'moon', 'venus', 'mars'] as const;
 const ELEMENTS = ['fire', 'earth', 'air', 'water'] as const;
+
+/** The heading per mode, as the English SOURCE it is looked up by. */
+const HEADING: Record<'astrology' | 'numerology' | 'biorhythm', ChromeString> =
+	{
+		astrology: 'Astrology compatibility',
+		numerology: 'Numerology compatibility',
+		biorhythm: 'Biorhythm compatibility',
+	};
 
 /**
  * Cross-domain compatibility card. Renders /astrology/compatibility-score,
@@ -291,13 +300,14 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 
 		const readings = !this.hideReadings;
 
+		const heading = this.t(HEADING[this.mode] ?? HEADING.astrology);
 		return html`<article
 			class="card"
 			part="card"
-			aria-label=${`Compatibility (${this.mode})`}
+			aria-label=${heading}
 		>
 			<div class="head" part="header">
-				<h2>${humanize(`${this.mode} compatibility`)}</h2>
+				<h2>${heading}</h2>
 				<div>
 					${
 						typeof score === 'number'

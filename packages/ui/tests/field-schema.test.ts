@@ -1,13 +1,21 @@
 import { describe, expect, test } from 'bun:test';
+import spec from '../../../specs/openapi.json';
 import {
 	buildFormModel,
 	classifyInput,
+	collectionSource,
 	deriveSubmitLabel,
 	deriveTitle,
+	type FieldDef,
 	isZodiacEnum,
 	LOCATION_PAIR,
 	type OpenApiSchema,
 	type OperationSchema,
+	opensOnLoad,
+	optionKind,
+	optionsFrom,
+	pickerSource,
+	type SpecDoc,
 	sliceFileName,
 } from '../src/utils/field-schema.js';
 
@@ -29,9 +37,23 @@ const SIGNS = [
 describe('classifyInput (the shape -> input-kind registry)', () => {
 	test('a small enum is a tile picker, a large one a select', () => {
 		expect(classifyInput({ enum: SIGNS })).toBe('tiles');
+		expect(classifyInput({ enum: [...SIGNS, 'ophiuchus'] })).toBe('select');
 		expect(classifyInput({ enum: ['a', 'b', 'c'] })).toBe('tiles');
-		const big = Array.from({ length: 27 }, (_, i) => String(i));
-		expect(classifyInput({ enum: big })).toBe('select');
+	});
+
+	test('choices of one or two characters fit thirty to a row, words twelve, and past that a select', () => {
+		const letters = [...'abcdefghijklmnopqrstuvwxyz'];
+		expect(optionKind(letters)).toBe('tiles');
+		expect(optionKind(Array.from({ length: 30 }, (_, i) => String(i)))).toBe(
+			'tiles',
+		);
+		expect(optionKind(Array.from({ length: 31 }, (_, i) => String(i)))).toBe(
+			'select',
+		);
+		expect(optionKind(SIGNS)).toBe('tiles');
+		expect(optionKind([...SIGNS, 'Mars & Venus'])).toBe('select');
+		// One word among the codes makes the set a set of words.
+		expect(optionKind([...letters.slice(0, 12), 'mars'])).toBe('select');
 	});
 
 	test('a boolean is a toggle (fixes the boolean-as-text bug)', () => {
@@ -267,6 +289,13 @@ describe('deriveTitle and deriveSubmitLabel', () => {
 		expect(deriveSubmitLabel('astrology/synastry')).toBe('Compare');
 		expect(deriveSubmitLabel('iching/cast')).toBe('Cast');
 		expect(deriveSubmitLabel('vedic-astrology/birth-chart')).toBe('Generate');
+		// A collection that pages is searched, whatever its domain would say: the deck is not cast.
+		const paged: FieldDef[] = [
+			{ key: 'limit', name: 'limit', kind: 'number', required: false },
+		];
+		expect(deriveSubmitLabel('tarot/cards')).toBe('Cast');
+		expect(deriveSubmitLabel('tarot/cards', paged)).toBe('Search');
+		expect(deriveSubmitLabel('dreams/symbols', paged)).toBe('Search');
 	});
 });
 
@@ -278,5 +307,138 @@ describe('sliceFileName', () => {
 		expect(sliceFileName('POST', '/astrology/natal-chart')).toBe(
 			'post--astrology-natal-chart.json',
 		);
+	});
+});
+
+describe('options read from the API', () => {
+	const doc = spec as unknown as SpecDoc;
+	const param = (path: string, name: string) =>
+		doc.paths[path]?.get?.parameters?.find((p) => p.name === name) ?? {
+			name,
+		};
+
+	test('a list of strings, a list of records and a count map each become choices', () => {
+		expect(optionsFrom({ count: 2, colors: ['apple green', 'blue'] })).toEqual([
+			{ value: 'apple green', label: 'apple green' },
+			{ value: 'blue', label: 'blue' },
+		]);
+		expect(
+			optionsFrom({
+				total: 1,
+				cards: [{ id: 'fool', name: 'The Fool', arcana: 'major' }],
+			}),
+		).toEqual([{ value: 'fool', label: 'The Fool' }]);
+		// A response that is itself the list.
+		expect(optionsFrom([{ id: 'aries', name: 'Aries' }])).toEqual([
+			{ value: 'aries', label: 'Aries' },
+		]);
+		// A record with no id carries its value under the field it fills, or its number.
+		expect(
+			optionsFrom(
+				{ numbers: [{ number: '444', title: 'Protection' }] },
+				'number',
+			),
+		).toEqual([{ value: '444', label: '444' }]);
+		expect(
+			optionsFrom({ trigrams: [{ number: 1, english: 'Heaven' }] }),
+		).toEqual([{ value: '1', label: 'Heaven' }]);
+	});
+
+	test('a letter index lists the whole alphabet, with the letters it lacks disabled', () => {
+		const options = optionsFrom({
+			letters: { a: 109, b: 97, m: 0 },
+			total: 206,
+		});
+		expect(options).toHaveLength(26);
+		expect(options[0]).toEqual({ value: 'a', label: 'A', disabled: false });
+		expect(options[2]).toEqual({ value: 'c', label: 'C', disabled: true });
+		expect(options[12]).toEqual({ value: 'm', label: 'M', disabled: true });
+		// A count map that is not an index lists what it has.
+		expect(optionsFrom({ by: { Fire: 3, Water: 0 } })).toEqual([
+			{ value: 'Fire', label: 'Fire', disabled: false },
+			{ value: 'Water', label: 'Water', disabled: true },
+		]);
+		expect(optionsFrom({ total: 0 })).toEqual([]);
+		expect(optionsFrom(null)).toEqual([]);
+	});
+
+	test('a free-string path identifier picks from the collection one segment up', () => {
+		expect(
+			pickerSource(
+				doc,
+				'/dreams/symbols/{id}',
+				param('/dreams/symbols/{id}', 'id'),
+			),
+		).toEqual({ path: '/dreams/symbols', search: 'q', limit: 50 });
+		expect(
+			pickerSource(doc, '/tarot/cards/{id}', param('/tarot/cards/{id}', 'id')),
+		).toEqual({ path: '/tarot/cards', limit: 100, lang: true });
+		expect(
+			pickerSource(
+				doc,
+				'/astrology/signs/{id}',
+				param('/astrology/signs/{id}', 'id'),
+			),
+		).toEqual({ path: '/astrology/signs', lang: true });
+	});
+
+	test('an identifier the spec already constrains keeps its input', () => {
+		// A pattern names the values, an enum lists them, a number is typed as one.
+		expect(
+			pickerSource(
+				doc,
+				'/numerology/meanings/{number}',
+				param('/numerology/meanings/{number}', 'number'),
+			),
+		).toBeUndefined();
+		expect(
+			pickerSource(
+				doc,
+				'/crystals/chakra/{chakra}',
+				param('/crystals/chakra/{chakra}', 'chakra'),
+			),
+		).toBeUndefined();
+		expect(
+			pickerSource(
+				doc,
+				'/crystals/birthstone/{month}',
+				param('/crystals/birthstone/{month}', 'month'),
+			),
+		).toBeUndefined();
+		expect(collectionSource(doc, '/no/such/collection')).toBeUndefined();
+	});
+
+	test('a read that needs nothing from the visitor opens on load, and nothing else does', () => {
+		const optional: FieldDef = {
+			key: 'q',
+			name: 'q',
+			kind: 'text',
+			required: false,
+		};
+		const required: FieldDef = { ...optional, required: true };
+		expect(
+			opensOnLoad({ title: '', hasLang: false, fields: [optional] }, 'GET'),
+		).toBe(true);
+		expect(opensOnLoad({ title: '', hasLang: false, fields: [] }, 'get')).toBe(
+			true,
+		);
+		expect(
+			opensOnLoad({ title: '', hasLang: false, fields: [required] }, 'GET'),
+		).toBe(false);
+		// An empty body is usually an either-or the schema cannot state, so a POST never opens on load.
+		expect(
+			opensOnLoad({ title: '', hasLang: false, fields: [optional] }, 'POST'),
+		).toBe(false);
+	});
+
+	test('an exclusive bound reaches the input as the nearest bound it can state', () => {
+		const model = buildFormModel(
+			doc.paths['/kabbalah/names']?.get as OperationSchema,
+			(doc.components?.schemas ?? {}) as Record<string, OpenApiSchema>,
+			'kabbalah/names',
+		);
+		const longitude = model.fields.find((f) => f.name === 'longitude');
+		expect(longitude?.min).toBe(0);
+		expect(longitude?.max).toBe(360);
 	});
 });

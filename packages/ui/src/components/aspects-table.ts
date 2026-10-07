@@ -12,9 +12,11 @@ import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatAspectName,
 	formatDate,
+	formatList,
 	formatNumber,
 	formatPercent,
 } from '../utils/format.js';
+import type { Translate } from '../utils/hd-reading.js';
 import {
 	interpAccordionStyles,
 	renderReadingDetail,
@@ -33,14 +35,22 @@ type PatternEntry = NonNullable<
 >[number];
 
 /**
- * One line naming the orb budget and the body set a pattern run used, so a reader can reproduce the detection. Built as a string, not a template: interpolating the clauses in markup leaves a space before the comma.
+ * One line naming the orb budget and the body set a pattern run used, so a reader can reproduce the detection. One whole sentence per case, so each language owns its word order.
  */
-function provenance(o: NonNullable<DetectAspectPatternsResponse['options']>) {
-	const orbs = o.strictOrbs ? 'strict' : 'industry-standard';
-	const bodies = o.include?.length
-		? `including ${o.include.join(' and ')}`
-		: 'classical bodies only';
-	return `Detected with ${orbs} orbs, ${bodies}.`;
+function provenance(
+	o: NonNullable<DetectAspectPatternsResponse['options']>,
+	locale: string | undefined,
+	t: Translate,
+) {
+	if (o.include?.length) {
+		const vars = { bodies: formatList(locale, o.include) };
+		return o.strictOrbs
+			? t('Detected with strict orbs, including {{bodies}}.', vars)
+			: t('Detected with industry-standard orbs, including {{bodies}}.', vars);
+	}
+	return o.strictOrbs
+		? t('Detected with strict orbs, classical bodies only.')
+		: t('Detected with industry-standard orbs, classical bodies only.');
 }
 
 /** Reading order for detected configurations: the rare, chart-defining figures first, then by tightness. Mirrors `roxy-natal-chart`, which renders the same `patterns` shape. */
@@ -290,9 +300,11 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 					aspects.length > 0 || date
 						? html`<p class="subtitle">
 							${[
-								aspects.length > 0
-									? `${aspects.length} aspect${aspects.length === 1 ? '' : 's'}`
-									: '',
+								aspects.length === 1
+									? this.t('1 aspect')
+									: aspects.length > 1
+										? this.t('{{count}} aspects', { count: aspects.length })
+										: '',
 								date,
 							]
 								.filter(Boolean)
@@ -324,7 +336,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 					</div>`
 					: nothing
 			}
-			${options ? html`<p class="provenance">${provenance(options)}</p>` : nothing}
+			${options ? html`<p class="provenance">${provenance(options, this.effectiveLang(), this.translator)}</p>` : nothing}
 		</div>`;
 	}
 
@@ -453,7 +465,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			: planets;
 		return html`<div class="pattern" part="pattern">
 			<div class="pattern-head">
-				<span class="pattern-name">${p.name ?? p.kind ?? 'Pattern'}</span>
+				<span class="pattern-name">${p.name ?? p.kind ?? this.t('Pattern')}</span>
 				${p.element ? html`<span class="pattern-tag">${p.element}</span>` : nothing}
 				${p.modality ? html`<span class="pattern-tag">${p.modality}</span>` : nothing}
 				${

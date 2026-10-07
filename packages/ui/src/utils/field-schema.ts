@@ -23,6 +23,9 @@ export interface OpenApiSchema extends OpenApiSchemaRef {
 	default?: unknown;
 	minimum?: number;
 	maximum?: number;
+	exclusiveMinimum?: number;
+	exclusiveMaximum?: number;
+	pattern?: string;
 	properties?: Record<string, OpenApiSchema>;
 	required?: string[];
 	items?: OpenApiSchema;
@@ -93,6 +96,32 @@ export interface FieldDef {
 	default?: unknown;
 	/** Spec `example`, used as the placeholder for a text input. */
 	example?: unknown;
+	/** Where the choices for this field are listed, when the API serves them; the form reads them at run time. */
+	source?: OptionSource;
+}
+
+/**
+ * A GET collection on the API that lists the choices for one request field.
+ *
+ * @remarks
+ * Two kinds reach a form, both resolved at build time into `generated/option-sources.ts`: a filter whose values the API serves as a list of their own (the letters the dream dictionary holds, the colours the crystal list filters on), and a free-string path identifier (`/dreams/symbols/{id}`), whose choices are the collection one segment up. The spec stays UI-agnostic either way: the first is a hint declared in `scripts/bindings.config.ts`, the second is derived from the paths.
+ */
+export interface OptionSource {
+	/** Path of the collection, leading slash. */
+	path: string;
+	/** The query parameter that searches the collection, when it has one; absent, the whole collection is read once and filtered as the visitor types. */
+	search?: string;
+	/** The largest page the collection serves, so a read asks for as much of it as one request allows. */
+	limit?: number;
+	/** True when the collection takes `?lang=`, so its names arrive in the page language. */
+	lang?: true;
+}
+
+/** One choice a field offers: the wire value, the words a visitor reads, and whether it can be picked. */
+export interface FieldOption {
+	value: string;
+	label: string;
+	disabled?: boolean;
 }
 
 /** The digested form model for one operation. The build-time slice is exactly this shape. */
@@ -146,8 +175,17 @@ export function repeatFields(
 		}));
 }
 
-/** At most this many enum options render as a tile/chip picker; above it a filterable select is used instead. */
-const TILE_MAX = 12;
+/**
+ * Tiles or a select for a set of choices, decided by their SHAPE: a letter or a two-character code is a narrow tile, so up to thirty fit a row the way an index bar does, while a word or a name keeps the twelve a zodiac grid needs and anything longer is a select.
+ */
+export function optionKind(values: readonly string[]): 'tiles' | 'select' {
+	return values.length <= (isIndex(values) ? 30 : 12) ? 'tiles' : 'select';
+}
+
+/** True for choices that read as an index (letters, two-character codes) rather than words. */
+export function isIndex(values: readonly string[]): boolean {
+	return values.every((v) => v.length <= 2);
+}
 
 /** The latitude+longitude+timezone trio the form suppresses in favour of a city search. Centralised so the render path and tests agree. */
 export const LOCATION_TRIO = ['latitude', 'longitude', 'timezone'] as const;
@@ -242,8 +280,7 @@ export function scalarType(s: OpenApiSchema): string | undefined {
 export function classifyInput(schema: OpenApiSchema): InputKind | null {
 	const s = representative(schema);
 	const type = scalarType(s);
-	if (Array.isArray(s.enum))
-		return s.enum.length <= TILE_MAX ? 'tiles' : 'select';
+	if (Array.isArray(s.enum)) return optionKind(s.enum);
 	if (type === 'boolean') return 'toggle';
 	if (s.format === 'date') return 'date';
 	if (s.format === 'time') return 'time';
@@ -277,8 +314,9 @@ function toField(
 		required: opts.required,
 		description: rep.description ?? resolved.description,
 		enum: rep.enum,
-		min: rep.minimum,
-		max: rep.maximum,
+		// HTML has no exclusive bound, so an exclusive one is the nearest an input can state; the API refuses the bound itself and prints why under the field.
+		min: rep.minimum ?? rep.exclusiveMinimum,
+		max: rep.maximum ?? rep.exclusiveMaximum,
 		default: resolved.default ?? rep.default,
 		example: resolved.example ?? rep.example,
 	};
@@ -407,11 +445,30 @@ export function deriveTitle(
 }
 
 /**
- * Outcome-first submit-button label keyed off the endpoint intent. Chart and reading endpoints "Generate", divination endpoints "Cast", comparison endpoints "Compare", and lookup/reading GETs "Get reading". A generic verb beats a bare "Submit" on a widget a visitor never set up.
+ * True when a form can show its result before the visitor asks: a read (GET) that needs nothing from them, such as a list, today's phase or a random draw.
  *
- * Returns the CANONICAL English verb, which is also its catalogue key: the form translates the result rather than this function doing it, because this module is request-context-free and has no element to resolve a page language from. All four verbs live in `i18n/chrome-strings.ts`, and `tests/i18n.test.ts` runs this function over every operation in the committed spec so a fifth verb cannot be added without a catalogue entry.
+ * @remarks
+ * The ONE rule the self-fetch component, the hosted embed and the one-tag widget script all ask, so the three never disagree about which forms open on a result. A POST is never one, because a request body with nothing required is usually an either-or the schema cannot state, and sending it empty is a 400 rather than a default reading.
  */
-export function deriveSubmitLabel(endpoint: string): string {
+export function opensOnLoad(model: FormModel, method: string): boolean {
+	return (
+		method.toUpperCase() === 'GET' && !model.fields.some((f) => f.required)
+	);
+}
+
+/**
+ * Outcome-first submit-button label keyed off the endpoint intent. A paged collection is searched, chart and reading endpoints "Generate", divination endpoints "Cast", comparison endpoints "Compare", and lookup/reading GETs "Get reading". A generic verb beats a bare "Submit" on a widget a visitor never set up.
+ *
+ * Returns the CANONICAL English verb, which is also its catalogue key: the form translates the result rather than this function doing it, because this module is request-context-free and has no element to resolve a page language from. Every verb lives in `i18n/chrome-strings.ts`, and `tests/i18n.test.ts` runs this function over every operation in the committed spec so a new verb cannot be added without a catalogue entry.
+ *
+ * @param fields - The form fields, when known: a request that pages (`limit`, `offset`) lists a collection, which a visitor searches whatever domain the path names.
+ */
+export function deriveSubmitLabel(
+	endpoint: string,
+	fields: readonly FieldDef[] = [],
+): string {
+	if (fields.some((f) => f.name === 'limit' || f.name === 'offset'))
+		return 'Search';
 	const e = endpoint.toLowerCase();
 	if (/compat|synastry|guna|connection|penta|composite/.test(e))
 		return 'Compare';
@@ -428,4 +485,103 @@ export function sliceFileName(method: string, endpoint: string): string {
 		.replace(/[{}]/g, '')
 		.replace(/\//g, '-');
 	return `${method.toLowerCase()}--${path}.json`;
+}
+
+/** The array or count map a collection response carries its entries in: the response itself when it is a list, else its first list, else its first object of counts. */
+function entriesOf(json: unknown): unknown[] | Record<string, number> | null {
+	if (Array.isArray(json)) return json;
+	if (!json || typeof json !== 'object') return null;
+	const values = Object.values(json as Record<string, unknown>);
+	const list = values.find(Array.isArray);
+	if (list) return list as unknown[];
+	const counts = values.find(
+		(v) =>
+			!!v &&
+			typeof v === 'object' &&
+			Object.values(v).every((n) => typeof n === 'number'),
+	);
+	return (counts as Record<string, number> | undefined) ?? null;
+}
+
+/**
+ * The choices a collection response offers, read from its shape and never from its name.
+ *
+ * @remarks
+ * Three shapes: a list of strings (each is its own value), a list of records (the value is the record's `id`, else the field's own name, else its `number`; the words are its `name`, else its `english` name, else the value), and a map of counts, where a zero is a choice with nothing behind it. A map keyed by single letters is an index, so the letters it omits are listed too, disabled, and a reader sees the whole alphabet.
+ *
+ * @param field - The request field the choices fill, which is also where a record may carry its value (an angel number sequence sits in `number`).
+ */
+export function optionsFrom(json: unknown, field = 'id'): FieldOption[] {
+	const entries = entriesOf(json);
+	if (!entries) return [];
+	if (!Array.isArray(entries)) {
+		const keys = Object.keys(entries);
+		const index = keys.length > 0 && keys.every((k) => /^[a-z]$/.test(k));
+		const all = index ? [...'abcdefghijklmnopqrstuvwxyz'] : keys;
+		return all.map((k) => ({
+			value: k,
+			label: index ? k.toUpperCase() : k,
+			disabled: !entries[k],
+		}));
+	}
+	const out: FieldOption[] = [];
+	for (const item of entries) {
+		if (typeof item === 'string') {
+			out.push({ value: item, label: item });
+			continue;
+		}
+		if (!item || typeof item !== 'object') continue;
+		const r = item as Record<string, unknown>;
+		const raw = r.id ?? r[field] ?? r.number;
+		if (raw == null) continue;
+		const value = String(raw);
+		const name = r.name ?? r.english;
+		out.push({ value, label: typeof name === 'string' ? name : value });
+	}
+	return out;
+}
+
+/** The total a paged collection reports, or undefined when it reports none. */
+export function totalOf(json: unknown): number | undefined {
+	const t = (json as { total?: unknown } | null)?.total;
+	return typeof t === 'number' ? t : undefined;
+}
+
+/**
+ * The collection a free-string path identifier is chosen from: the GET one segment up, as the spec declares it, or undefined when there is none.
+ *
+ * @remarks
+ * Only a FREE string qualifies: an enum already lists its choices, and a pattern, a format or a number type already tells the input what to accept. So `/dreams/symbols/{id}` picks from `/dreams/symbols`, `/crystals/{id}` from `/crystals`, and `/numerology/meanings/{number}`, whose pattern names its twelve values, keeps its input.
+ */
+export function pickerSource(
+	spec: SpecDoc,
+	path: string,
+	param: { name: string; required?: boolean; schema?: OpenApiSchema },
+): OptionSource | undefined {
+	const s = resolveSchema(param.schema, spec.components?.schemas ?? {}) ?? {};
+	if (!param.required || scalarType(s) !== 'string') return undefined;
+	if (s.enum || s.pattern || s.format) return undefined;
+	const suffix = `/{${param.name}}`;
+	if (!path.endsWith(suffix)) return undefined;
+	const parent = path.slice(0, -suffix.length);
+	return parent ? collectionSource(spec, parent) : undefined;
+}
+
+/** How a GET collection is read for its choices: its search parameter, its largest page and whether it is localized, all from its declared query parameters. */
+export function collectionSource(
+	spec: SpecDoc,
+	path: string,
+): OptionSource | undefined {
+	const op = spec.paths[path]?.get;
+	if (!op) return undefined;
+	const schemas = spec.components?.schemas ?? {};
+	const query = (op.parameters ?? []).filter((p) => p.in === 'query');
+	const limit = query.find((p) => p.name === 'limit');
+	const max = resolveSchema(limit?.schema, schemas)?.maximum;
+	return {
+		path,
+		...(query.some((p) => p.name === 'q') ? { search: 'q' } : {}),
+		...(max !== undefined ? { limit: max } : {}),
+		...(query.some((p) => p.name === 'lang') ? { lang: true as const } : {}),
+	};
 }

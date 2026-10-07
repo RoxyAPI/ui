@@ -226,6 +226,12 @@ export const BASE_PROPS: ConfigPropDef[] = [
 			'Persist the last self-fetch form values in sessionStorage, keyed by endpoint, and prefill the form when the visitor returns. Off by default.',
 	},
 	{
+		prop: 'errorMessage',
+		type: 'string',
+		comment:
+			'Your own words for a failed self-fetch, printed in place of the message the request failed with (a spent quota, a network fault, a rejected key). Unset, the failure reads as the API worded it.',
+	},
+	{
 		prop: 'attribution',
 		type: 'string',
 		comment:
@@ -558,6 +564,27 @@ export const EVENTS: Record<string, EventDef[]> = {
 			event: 'roxy-spec-error',
 			prop: 'onRoxySpecError',
 			detailType: '{ url: string; message: string }',
+		},
+	],
+	'dream-search': [
+		{
+			event: 'roxy-symbol-select',
+			prop: 'onRoxySymbolSelect',
+			detailType: '{ id: string; name: string; letter: string }',
+		},
+	],
+	'crystal-grid': [
+		{
+			event: 'roxy-symbol-select',
+			prop: 'onRoxySymbolSelect',
+			detailType: '{ id: string; name: string }',
+		},
+	],
+	'tarot-catalog': [
+		{
+			event: 'roxy-symbol-select',
+			prop: 'onRoxySymbolSelect',
+			detailType: '{ id: string; name: string }',
 		},
 	],
 	'location-search': [

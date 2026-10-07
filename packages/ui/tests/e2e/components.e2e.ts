@@ -310,7 +310,14 @@ test.describe('Roxy UI preview', () => {
 			const el = document.querySelector('roxy-hexagram');
 			return el && (el as HTMLElement & { data?: unknown }).data;
 		});
-		await page.waitForTimeout(150);
+		await page.waitForFunction(
+			() =>
+				(
+					document
+						.querySelector('roxy-hexagram')
+						?.shadowRoot?.querySelector('.symbol')?.textContent ?? ''
+				).length > 0,
+		);
 		const result = await page
 			.locator('roxy-hexagram')
 			.first()
@@ -351,7 +358,13 @@ test.describe('Roxy UI preview', () => {
 			);
 			(target as HTMLButtonElement | undefined)?.click();
 		});
-		await page.waitForTimeout(150);
+		await expect
+			.poll(() =>
+				reference.evaluate((el) =>
+					Boolean(el.shadowRoot?.querySelector('.image.reversed')),
+				),
+			)
+			.not.toBe(before);
 		const after = await reference.evaluate((el) =>
 			Boolean(el.shadowRoot?.querySelector('.image.reversed')),
 		);
@@ -373,7 +386,13 @@ test.describe('Roxy UI preview', () => {
 		page,
 	}) => {
 		await page.goto('/');
-		await page.waitForTimeout(2000); // allow network to settle
+		await page.waitForLoadState('networkidle');
+		await page.waitForFunction(() =>
+			[
+				...(document.querySelector('roxy-endpoint-form')?.shadowRoot
+					?.children ?? []),
+			].some((n) => n.tagName !== 'STYLE'),
+		);
 		const hasFields = await page
 			.locator('roxy-endpoint-form')
 			.first()

@@ -291,7 +291,7 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 		const badgeClass = isAdequate
 			? 'adequacy-badge--adequate'
 			: 'adequacy-badge--weak';
-		const badgeLabel = isAdequate ? 'adequate' : 'weak';
+		const badgeLabel = isAdequate ? this.t('Adequate') : this.t('Weak');
 
 		const rupasStr =
 			formatNumber(this.effectiveLang(), p.totalRupas, 2) &&

@@ -207,6 +207,26 @@ export const baseStyles = css`
 		outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 		outline-offset: 2px;
 	}
+	.roxy-edit:disabled {
+		cursor: progress;
+		color: var(--roxy-muted, #71717a);
+	}
+
+	/* A form that stays above its result keeps the card gap from it. */
+	roxy-endpoint-form + * {
+		margin-top: var(--roxy-space-md, 1rem);
+	}
+
+	/* The next page of a list, centred under its rows. */
+	.roxy-more {
+		display: grid;
+		justify-items: center;
+		gap: var(--roxy-space-sm, 0.5rem);
+		margin-top: var(--roxy-space-md, 1rem);
+	}
+	.roxy-more .roxy-edit {
+		min-height: 44px;
+	}
 
 	/* Force the text-style variant on every Unicode glyph in the component.
 	 * macOS and iOS substitute coloured emoji glyphs for the planetary and

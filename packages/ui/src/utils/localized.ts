@@ -19,9 +19,15 @@ import { humanize } from './string.js';
  * A catalogue keyed on English source text cannot reach a name computed per response, so these read the published field-label payload instead and fall back to {@link humanize}, which is exactly what every caller printed before one existed. A name the payload does not carry therefore renders as it always did rather than as a gap.
  *
  * Here rather than in each component because three of them need the identical pairing: the form that asks for a field, and the two generic renderers that label what came back.
+ *
+ * @param english - The API English label to print where the payload carries none, INSTEAD of the humanized name; the form passes it, so a field reads as the API names it on an English page too.
  */
-export function displayField(lang: string | undefined, name: string): string {
-	return fieldLabel(lang, name) ?? humanize(name);
+export function displayField(
+	lang: string | undefined,
+	name: string,
+	english?: string,
+): string {
+	return fieldLabel(lang, name) ?? english ?? humanize(name);
 }
 
 /**

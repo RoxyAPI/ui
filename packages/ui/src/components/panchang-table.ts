@@ -406,7 +406,7 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 			<td>
 				${
 					p.active
-						? html`${p.type ? `${p.type} Panchaka` : 'Panchaka'}${
+						? html`${p.type ? this.t('{{type}} Panchaka', { type: p.type }) : this.t('Panchaka')}${
 								span ? html`<small>${span}</small>` : nothing
 							}`
 						: html`<span class="quiet">${this.t('None today')}</span>`

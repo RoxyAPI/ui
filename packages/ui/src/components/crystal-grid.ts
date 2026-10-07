@@ -11,7 +11,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { cssColor } from '../utils/css-color.js';
-import { monthName } from '../utils/format.js';
+import { formatList, monthName } from '../utils/format.js';
 
 /**
  * Any crystal list response that carries a `crystals` summary array. Every crystals endpoint that returns more than one stone shares the `{ name, id, imageUrl, colors }` item shape, so one grid renders them all.
@@ -25,7 +25,7 @@ type CrystalGridData =
 	| SearchCrystalsResponse;
 
 /**
- * Crystal grid. Renders any crystals list response (/crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search) as a responsive gallery of crystal tiles with photo, name, and colour swatches. The heading is derived from the response filter (chakra, element, zodiac sign, or birth month) or set explicitly via the `heading` attribute. A picked tile emits `roxy-symbol-select` ({ id, name }) for a host that pairs its own roxy-crystal-card, and in self-fetch mode opens that card under the grid itself.
+ * Crystal grid. Renders any crystals list response (/crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search) as a responsive gallery of crystal tiles with photo, name, and colour swatches. The heading is derived from the response filter (chakra, element, zodiac sign, or birth month) or set explicitly via the `heading` attribute. A picked tile emits `roxy-symbol-select` ({ id, name }) for a host that pairs its own roxy-crystal-card, and in self-fetch mode opens that card under the grid itself; the full list opens on every stone with its chakra, zodiac, element, colour and planet filters above it and pages on with Show more.
  */
 @customElement('roxy-crystal-grid')
 export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
@@ -123,6 +123,8 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 
 	protected rowDetail = { tag: 'roxy-crystal-card', path: 'crystals/{id}' };
 
+	protected listKey = 'crystals';
+
 	protected renderData(d: CrystalGridData) {
 		const crystals = d.crystals ?? [];
 		if (crystals.length === 0) return this.renderEmpty();
@@ -134,7 +136,7 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 		return html`<section class="wrap" part="card" aria-label=${title}>
 			<header class="head" part="header">
 				<h2 class="title">${title}</h2>
-				<span class="count">${total} ${total === 1 ? 'crystal' : 'crystals'}</span>
+				<span class="count">${total === 1 ? this.t('1 crystal') : this.t('{{count}} crystals', { count: total })}</span>
 			</header>
 			<ul class="grid" part="section crystals">
 				${crystals.map(
@@ -143,17 +145,17 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 							type="button"
 							class="tile"
 							aria-pressed=${this.openedRowId === c.id ? 'true' : 'false'}
-							@click=${() => this.select(c)}
+							@click=${() => this.pickRow({ id: c.id, name: c.name })}
 						>
 							${
 								c.imageUrl
-									? html`<img class="photo" src=${c.imageUrl} alt=${c.name ?? 'Crystal'} loading="lazy" />`
+									? html`<img class="photo" src=${c.imageUrl} alt=${c.name ?? this.t('Crystal')} loading="lazy" />`
 									: html`<div class="photo" aria-hidden="true"></div>`
 							}
 							<p class="name">${c.name}</p>
 							${
 								c.colors && c.colors.length > 0
-									? html`<div class="colors" aria-label=${`Colours: ${c.colors.join(', ')}`}>
+									? html`<div class="colors" aria-label=${this.t('Colors: {{list}}', { list: formatList(this.effectiveLang(), c.colors) })}>
 										${c.colors.map((col) => html`<span class="swatch" style=${`background:${cssColor(col)}`} title=${col}></span>`)}
 									</div>`
 									: nothing
@@ -162,20 +164,9 @@ export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
 					</li>`,
 				)}
 			</ul>
+			${this.renderMore()}
 			${this.openedRow ? html`<div class="detail" part="detail">${this.openedRow}</div>` : nothing}
 		</section>`;
-	}
-
-	/** Emit the chosen crystal for a host that pairs its own card, and open it here when this element holds the key. */
-	private select(c: CrystalGridData['crystals'][number]) {
-		this.dispatchEvent(
-			new CustomEvent('roxy-symbol-select', {
-				detail: { id: c.id, name: c.name },
-				bubbles: true,
-				composed: true,
-			}),
-		);
-		this.openRow(c.id);
 	}
 
 	private deriveHeading(d: CrystalGridData): string {

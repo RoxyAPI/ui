@@ -975,7 +975,7 @@ describe('roxy-tarot-catalog rendering', () => {
 		expect(text).toContain('78 cards');
 		// Major Arcana caption and Minor Arcana suit caption both derive from spec fields.
 		expect(text).toContain('Major Arcana');
-		expect(text).toContain('Minor · Cups');
+		expect(text).toContain('Minor Arcana · Cups');
 		// One tile per card (counted via markup to avoid the happy-dom
 		// shadow-root querySelectorAll quirk; other component tests assert via
 		// textContent for the same reason).
@@ -3749,7 +3749,7 @@ describe('hide-readings', () => {
 				'ZZREADINGLOVE',
 				'ZZREADINGDAILY',
 			],
-			data_: ['The Star', 'major arcana', 'drawn upright'],
+			data_: ['The Star', 'Major Arcana', 'drawn upright'],
 		},
 		{
 			name: 'roxy-hexagram',
@@ -4236,7 +4236,7 @@ describe('hide-readings', () => {
 				'strong',
 				'The Sun',
 				'(reversed)',
-				'major arcana',
+				'Major Arcana',
 			],
 			readingsSection: false,
 		},
@@ -6551,5 +6551,290 @@ describe('opening a row in place (dream search, crystal grid)', () => {
 		} finally {
 			globalThis.fetch = originalFetch;
 		}
+	});
+});
+
+describe('roxy-data keeps calendar years ungrouped', () => {
+	async function mount(data: unknown, lang?: string) {
+		const el = document.createElement('roxy-data') as HTMLElement & {
+			data?: unknown;
+		};
+		if (lang) el.setAttribute('lang', lang);
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+	const text = (el: Element) =>
+		Array.from(el.shadowRoot?.childNodes ?? [])
+			.filter((n) => (n as Element).tagName !== 'STYLE')
+			.map((n) => n.textContent)
+			.join(' ');
+
+	test('a year key in a table row prints the bare year', async () => {
+		const el = await mount([
+			{ name: 'A', birthYear: 2026, population: 12345 },
+			{ name: 'B', birthYear: 1999, population: 6789 },
+		]);
+		expect(text(el)).toContain('2026');
+		expect(text(el)).not.toContain('2,026');
+		expect(text(el)).toContain('12,345');
+		el.remove();
+	});
+
+	test('a year key in an object prints the bare year', async () => {
+		const el = await mount({ year: 2026, start_year: 1984 });
+		expect(text(el)).toContain('2026');
+		expect(text(el)).toContain('1984');
+		expect(text(el)).not.toContain('2,026');
+		expect(text(el)).not.toContain('1,984');
+		el.remove();
+	});
+
+	test('a non-year integer still groups its digits', async () => {
+		const el = await mount({ population: 2026, yearly: 4321 });
+		expect(text(el)).toContain('2,026');
+		expect(text(el)).toContain('4,321');
+		el.remove();
+	});
+
+	test('a fractional number under a year key is unchanged', async () => {
+		const el = await mount({ year: 2026.5 });
+		expect(text(el)).toContain('2,026.5');
+		el.remove();
+	});
+
+	test('a translated locale leaves the year bare and groups the rest', async () => {
+		const el = await mount({ year: 2026, population: 2026 }, 'de');
+		expect(text(el)).toContain('2026');
+		expect(text(el)).toContain('2.026');
+		expect(text(el)).not.toContain('2,026');
+		el.remove();
+	});
+});
+
+/**
+ * The tarot deck opens a card the way the dream and crystal lists open theirs, and every list that pages carries its Show more and its detail block in its own template.
+ */
+describe('the tarot deck opens a card in place, and every list wires the shared chrome', () => {
+	const deck = {
+		total: 78,
+		cards: [
+			{ id: 'fool', name: 'The Fool', arcana: 'major', number: 0 },
+			{
+				id: 'two-of-cups',
+				name: 'Two of Cups',
+				arcana: 'minor',
+				suit: 'cups',
+				number: 2,
+			},
+		],
+	};
+
+	async function flush(el: Element): Promise<void> {
+		for (let i = 0; i < 6; i++) {
+			await settled(el);
+			await new Promise((r) => setTimeout(r, 0));
+		}
+	}
+
+	test('with a key a picked card loads under the deck; without one the pick is an event and the DOM is untouched', async () => {
+		const originalFetch = globalThis.fetch;
+		const urls: string[] = [];
+		globalThis.fetch = (async (url: string | URL) => {
+			urls.push(String(url));
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({
+					id: 'fool',
+					name: 'The Fool',
+					arcana: 'major',
+					number: 0,
+					keywords: { upright: [], reversed: [] },
+				}),
+			};
+		}) as unknown as typeof fetch;
+		try {
+			const mount = (key?: string) => {
+				const el = document.createElement(
+					'roxy-tarot-catalog',
+				) as HTMLElement & { data?: unknown };
+				if (key) el.setAttribute('publishable-key', key);
+				document.body.appendChild(el);
+				el.data = deck;
+				return el;
+			};
+			const keyed = mount('pk_test_deck');
+			await flush(keyed);
+			const picked: unknown[] = [];
+			keyed.addEventListener('roxy-symbol-select', (e) =>
+				picked.push((e as CustomEvent).detail),
+			);
+			const tiles = () => [
+				...(keyed.shadowRoot?.querySelectorAll<HTMLButtonElement>(
+					'.grid button',
+				) ?? []),
+			];
+			expect(tiles().map((t) => t.querySelector('.meta')?.textContent)).toEqual(
+				['Major Arcana', 'Minor Arcana · Cups'],
+			);
+			tiles()[0]?.click();
+			await flush(keyed);
+			expect(picked).toEqual([{ id: 'fool', name: 'The Fool' }]);
+			expect(urls).toEqual(['https://roxyapi.com/api/v2/tarot/cards/fool']);
+			expect(
+				keyed.shadowRoot?.querySelector('[part="detail"] roxy-tarot-card'),
+			).not.toBeNull();
+			expect(tiles()[0]?.getAttribute('aria-pressed')).toBe('true');
+			keyed.remove();
+
+			const plain = mount();
+			await flush(plain);
+			const before = plain.shadowRoot?.innerHTML;
+			plain.shadowRoot
+				?.querySelector<HTMLButtonElement>('.grid button')
+				?.click();
+			await flush(plain);
+			expect(urls).toHaveLength(1);
+			expect(plain.shadowRoot?.innerHTML).toBe(before);
+			plain.remove();
+		} finally {
+			globalThis.fetch = originalFetch;
+		}
+	});
+
+	test('every list that declares its rows places Show more and draws the row it opens', async () => {
+		const lists: string[] = [];
+		for (const c of ROXY_COMPONENTS) {
+			const src = await Bun.file(
+				`packages/ui/src/components/${c.slug}.ts`,
+			).text();
+			if (!/protected listKey\b/.test(src)) continue;
+			lists.push(c.slug);
+			expect(
+				src,
+				`${c.slug} declares its rows and never places Show more`,
+			).toContain('this.renderMore()');
+			if (/protected rowDetail\b/.test(src))
+				expect(src, `${c.slug} opens a row it never draws`).toContain(
+					'part="detail"',
+				);
+		}
+		expect(lists.sort()).toEqual([
+			'crystal-grid',
+			'dream-search',
+			'tarot-catalog',
+		]);
+	});
+});
+
+/**
+ * `avasthaInfo: true` adds a short meaning and a one-sentence reading beside each avastha state. The meaning is a legend for the Sanskrit name above it and stays under `hide-readings`; the reading is prose and goes.
+ */
+describe('vedic planets table avasthaInfo meanings', () => {
+	const CAPTION = 'Each avastha state is followed by its meaning.';
+	const chart = (withInfo: boolean) => ({
+		meta: {
+			Sun: {
+				graha: 'Sun',
+				rashi: 'Capricorn',
+				longitude: 290.9,
+				nakshatra: { name: 'Shravana', pada: 1, key: 22, lord: 'Moon' },
+				isRetrograde: false,
+				house: 9,
+				awastha: 'Mrita',
+				jagradadi: 'Sushupti',
+				deeptadi: 'Vikala',
+				...(withInfo
+					? {
+							avasthaInfo: {
+								awastha: { meaning: 'Spent', interpretation: 'ZZBALADI' },
+								jagradadi: { meaning: 'Sleeping', interpretation: 'ZZJAGRAT' },
+								deeptadi: { meaning: 'Disabled', interpretation: 'ZZDEEPTA' },
+							},
+						}
+					: {}),
+			},
+		},
+	});
+
+	async function mount(data: unknown, attrs: Record<string, string> = {}) {
+		const el = document.createElement(
+			'roxy-vedic-planets-table',
+		) as unknown as HTMLElement & { data?: unknown };
+		for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+		document.body.appendChild(el);
+		el.data = data;
+		await settled(el);
+		return el;
+	}
+
+	const squash = (s: string | null | undefined) =>
+		(s ?? '').replace(/\s+/g, ' ').trim();
+	/** The three avastha cells of the one row, after graha, rashi, degree, nakshatra, pada, lord and house, as the state and the meaning printed under it. */
+	const avasthaCells = (el: Element) =>
+		[...(el.shadowRoot?.querySelectorAll('tbody td') ?? [])]
+			.slice(7, 10)
+			.map((td) => {
+				const gloss = td.querySelector('.gloss');
+				const meaning = squash(gloss?.textContent);
+				gloss?.remove();
+				return meaning
+					? `${squash(td.textContent)} / ${meaning}`
+					: squash(td.textContent);
+			});
+	const caption = (el: Element) =>
+		squash(el.shadowRoot?.querySelector('caption')?.textContent);
+	/** Each reading line of the accordion, label and sentence. */
+	const readings = (el: Element) =>
+		[
+			...(el.shadowRoot?.querySelectorAll('[part~="readings"] .interp p') ??
+				[]),
+		].map((p) => squash(p.textContent));
+
+	test('without it a cell is the state alone and the caption names no meaning', async () => {
+		const el = await mount(chart(false));
+		expect(avasthaCells(el)).toEqual(['Mrita', 'Sushupti', 'Vikala']);
+		expect(caption(el)).not.toContain(CAPTION);
+		expect(readings(el)).toEqual([]);
+		el.remove();
+	});
+
+	test('with it each state carries its meaning, the caption says so, and each reading sits under its system', async () => {
+		const el = await mount(chart(true));
+		expect(avasthaCells(el)).toEqual([
+			'Mrita / Spent',
+			'Sushupti / Sleeping',
+			'Vikala / Disabled',
+		]);
+		expect(caption(el)).toEndWith(CAPTION);
+		expect(readings(el)).toEqual([
+			'Baladi. ZZBALADI',
+			'Jagradadi. ZZJAGRAT',
+			'Deeptadi. ZZDEEPTA',
+		]);
+		el.remove();
+	});
+
+	test('hide-readings keeps the meanings and the caption and drops the readings', async () => {
+		const el = await mount(chart(true), { 'hide-readings': '' });
+		expect(avasthaCells(el)).toEqual([
+			'Mrita / Spent',
+			'Sushupti / Sleeping',
+			'Vikala / Disabled',
+		]);
+		expect(caption(el)).toEndWith(CAPTION);
+		expect(el.shadowRoot?.textContent).not.toContain('ZZBALADI');
+		el.remove();
+	});
+
+	test('a Hindi page reads the caption and the system labels from the shipped catalogue', async () => {
+		const { hi } = await import('../src/locales/hi.js');
+		const el = await mount(chart(true), { lang: 'hi' });
+		expect(caption(el)).toEndWith(hi[CAPTION]);
+		expect(caption(el)).not.toContain(CAPTION);
+		expect(readings(el)[0]).toBe(`${hi['Baladi.']} ZZBALADI`);
+		el.remove();
 	});
 });

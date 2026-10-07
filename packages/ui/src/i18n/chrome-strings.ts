@@ -47,6 +47,7 @@ export const CHROME_STRINGS = [
 	// Natal chart: legend.
 	'{{count}} planets',
 	'{{count}} aspects',
+	'1 aspect',
 	'{{system}} houses',
 
 	// Natal chart: aspect grid.
@@ -80,6 +81,12 @@ export const CHROME_STRINGS = [
 
 	// Natal chart: configurations.
 	'Chart patterns',
+	'Pattern',
+	// Which orbs and which bodies a pattern run used, one whole sentence per case.
+	'Detected with strict orbs, classical bodies only.',
+	'Detected with industry-standard orbs, classical bodies only.',
+	'Detected with strict orbs, including {{bodies}}.',
+	'Detected with industry-standard orbs, including {{bodies}}.',
 	'Dissociate',
 	'Out of sign: one or more planets sit outside the pattern element or modality, so the theme holds but runs weaker.',
 	'{{percent}} tight',
@@ -327,11 +334,17 @@ export const CHROME_STRINGS = [
 
 	// Angel number card, crystal card, and the vargottama pills on a divisional chart.
 	'Angel number',
+	'Angel number {{number}}',
 	'Digit root',
 	'Action steps',
 	'Colors',
 	'Keywords',
 	'Pairs with',
+	'Crystal',
+	'1 crystal',
+	'{{count}} crystals',
+	'Colors: {{list}}',
+	'{{value}} Mohs',
 	'Vargottama',
 	'Vargottama planets',
 	'{{chart}} divisional chart with twelve sign houses',
@@ -394,6 +407,8 @@ export const CHROME_STRINGS = [
 	'For',
 	'Lord of the year',
 	'What changes at this location',
+	'Same location as birth',
+	'{{distance}} km {{direction}} of birthplace',
 	'Angular planets here',
 	'Planets that change house',
 	'No planet changes house at this location.',
@@ -404,6 +419,9 @@ export const CHROME_STRINGS = [
 	'Aspect breakdown',
 	'Element balance',
 	'Forecast digest',
+	'Next 24 hours',
+	'Next {{count}} days',
+	'Window',
 	'No notable events.',
 	'{{count}} events',
 	'significance {{value}} of 100',
@@ -418,8 +436,9 @@ export const CHROME_STRINGS = [
 	'Formula',
 	'°/day',
 	'Tarot spread',
+	'Yes or no',
+	'Card draw',
 	'(reversed)',
-	'{{arcana}} arcana',
 	'{{chakra}} chakra crystals',
 	'{{element}} element crystals',
 	'Crystals for {{sign}}',
@@ -436,6 +455,7 @@ export const CHROME_STRINGS = [
 	'None today',
 	'Bhadra (Vishti)',
 	'Panchaka',
+	'{{type}} Panchaka',
 	'Favorable Moon signs',
 	'Favorable birth nakshatras',
 	'Unfavorable birth nakshatras',
@@ -469,6 +489,7 @@ export const CHROME_STRINGS = [
 	'Master',
 	'Master number',
 	'Birth day profile',
+	'Day {{day}}',
 	'Lucky associations',
 	'Missing',
 	'No numbers are missing from the birth name.',
@@ -483,6 +504,12 @@ export const CHROME_STRINGS = [
 	'Lesson',
 	'Challenges',
 	'Name numbers',
+	'Hidden passion',
+	'Hidden passion {{number}}',
+	'Appears {{count}} times in the name',
+	'Subconscious self',
+	'Subconscious self {{number}}',
+	'Numbers present: {{list}}',
 	'Name letters',
 	'Personal month',
 	'Calendar month',
@@ -518,6 +545,11 @@ export const CHROME_STRINGS = [
 	'Dream symbol',
 	'Dream symbols',
 	'{{count}} matches',
+	'1 symbol',
+	'{{count}} symbols',
+	'Show more',
+	'Type to search',
+	'Search',
 
 	// Dosha card. The three headings the card writes around a response that is
 	// otherwise prose: how strong the dosha is, what cancels it, and what is
@@ -563,6 +595,12 @@ export const CHROME_STRINGS = [
 	'Upright',
 	'Reversed',
 	'Card orientation',
+	'drawn upright',
+	'drawn reversed',
+	'no. {{number}}',
+	'Tarot deck',
+	'1 card',
+	'{{count}} cards',
 
 	// Numerology: the three letter positions of a name, and the section headings the
 	// card writes over readings the response returns.
@@ -606,6 +644,9 @@ export const CHROME_STRINGS = [
 	'Readings',
 	'Advisories',
 	'Sign compatibility',
+	'Astrology compatibility',
+	'Numerology compatibility',
+	'Biorhythm compatibility',
 	'Breakdown',
 	'Changing lines',
 	'Dynamics',
@@ -853,6 +894,7 @@ export const CHROME_STRINGS = [
 	'{{planet}} Shadbala',
 	'rank {{n}}',
 	'Strength components for {{planet}}',
+	'Adequate',
 	'Ishta Phala {{ishta}}, Kashta Phala {{kashta}} virupas',
 	'Ishta {{value}}',
 	'Kashta {{value}}',
@@ -1039,6 +1081,9 @@ export const CHROME_STRINGS = [
 	'Events',
 	'Double days',
 	'Triple day',
+	'ascending through zero',
+	'descending through zero',
+	'{{period}}-day cycle',
 	'Readings ({{count}})',
 
 	// The two forecast cycles the legend names beyond the physical and emotional
@@ -1067,6 +1112,10 @@ export const CHROME_STRINGS = [
 	'Interpretations',
 	'Rashi.',
 	'Nakshatra.',
+	'Baladi.',
+	'Jagradadi.',
+	'Deeptadi.',
+	'Each avastha state is followed by its meaning.',
 	'Bhava significations',
 	'Yogas',
 

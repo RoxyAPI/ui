@@ -14,11 +14,11 @@ interface FetchCall {
 	init: { headers?: Record<string, string>; method?: string };
 }
 
-/** The request the widget itself issues carries the publishable key. */
+/** A request carrying the publishable key, which the script itself must never issue: the element sends it. */
 const keyed = (c: FetchCall): boolean => !!c.init.headers?.['X-API-Key'];
 
 /**
- * The one-tag auto-mount map is GENERATED from the endpoint bindings joined with the manifest, and the script it ships is size-budgeted. These pin both: the map covers exactly the endpoint-bound data components (never a helper, never a stray), its default and variant endpoints match the bindings, and the two mount paths (immediate fetch vs form mode) behave as specified against a mocked DOM and fetch.
+ * The one-tag auto-mount map is GENERATED from the endpoint bindings joined with the manifest, and the script it ships is size-budgeted. These pin both: the map covers exactly the endpoint-bound data components (never a helper, never a stray), its default and variant endpoints match the bindings, and the two mount paths (the element loading the request, or form mode) behave as specified against a mocked DOM and fetch.
  */
 
 const HELPER_SLUGS = new Set(['data', 'endpoint-form', 'location-search']);
@@ -87,7 +87,8 @@ describe('widgets.js size budget', () => {
 	});
 });
 
-type AnyEl = HTMLElement & { data?: unknown };
+/** A mounted element, which in the isolated window records the request it was asked to load instead of sending it. */
+type AnyEl = HTMLElement & { loaded?: unknown };
 
 interface HostSpec {
 	slug: string;
@@ -95,7 +96,7 @@ interface HostSpec {
 }
 
 /**
- * Run the EXACT shipped script against a FRESH, isolated happy-dom window whose custom elements are unregistered, so each mounted element is an inert node with no lifecycle side effects (no schema-slice fetch) and no cross-test or cross-file shared-DOM bleed. The script reads window/document/fetch as globals, so they are swapped for the duration and restored after; fetch is the mock the caller set before this runs.
+ * Run the EXACT shipped script against a FRESH, isolated happy-dom window, so there is no cross-test or cross-file shared-DOM bleed. Each tag a host names is defined there as a stand-in that records the request `load()` is handed, because the straight path no longer fetches itself: it gives the element its key and has the element load the request, which is the component contract `components.test.ts` and `base-element.test.ts` pin. The script reads window/document/fetch as globals, so they are swapped for the duration and restored after; fetch is the mock the caller set before this runs.
  */
 async function runWidgets(
 	map: Awaited<ReturnType<typeof buildWidgetMap>>,
@@ -113,6 +114,17 @@ async function runWidgets(
 		const loader = w.document.createElement('script');
 		loader.id = 'roxy-ui-loader';
 		w.document.head.appendChild(loader);
+		for (const slug of new Set(hosts.map((h) => h.slug))) {
+			w.customElements.define(
+				`roxy-${slug}`,
+				class extends w.HTMLElement {
+					loaded?: unknown;
+					load(req: unknown) {
+						this.loaded = req;
+					}
+				},
+			);
+		}
 		hosts.forEach((h, i) => {
 			const div = w.document.createElement('div');
 			div.id = `w${i}`;
@@ -139,32 +151,33 @@ describe('widgets.js mount paths', () => {
 		globalThis.fetch = originalFetch;
 	});
 
-	/** A fetch mock that answers the KEYED widget request with `payload` and 404s every other URL (a mounted element's internal spec/slice fetch), recording each call. */
-	function mockFetch(payload: unknown): FetchCall[] {
+	/** A fetch mock that records every call and answers each with a 404, so a test sees any request the script itself made. */
+	function mockFetch(): FetchCall[] {
 		const calls: FetchCall[] = [];
 		globalThis.fetch = mock(
 			async (
 				url: string | URL,
 				init?: { headers?: Record<string, string>; method?: string },
 			) => {
-				const call: FetchCall = { url: String(url), init: init ?? {} };
-				calls.push(call);
-				return keyed(call)
-					? { ok: true, status: 200, json: async () => payload }
-					: { ok: false, status: 404, json: async () => ({}) };
+				calls.push({ url: String(url), init: init ?? {} });
+				return { ok: false, status: 404, json: async () => ({}) };
 			},
 		) as unknown as typeof fetch;
 		return calls;
 	}
 
-	test('attrs-complete fetches with the key and assigns data; attrs-missing renders form mode', async () => {
+	test('attrs-complete hands the element its key and the request to load; attrs-missing renders form mode', async () => {
 		const map = await buildWidgetMap();
-		const calls = mockFetch({ sign: 'aries' });
+		const calls = mockFetch();
 
 		const w = await runWidgets(map, [
 			{
 				slug: 'horoscope-card',
-				attrs: { 'data-publishable-key': 'pk_test_1', 'data-sign': 'aries' },
+				attrs: {
+					'data-publishable-key': 'pk_test_1',
+					'data-sign': 'aries',
+					'data-lang': 'es-AR',
+				},
 			},
 			{
 				slug: 'horoscope-card',
@@ -172,34 +185,78 @@ describe('widgets.js mount paths', () => {
 			},
 		]);
 
-		// Immediate path: exactly one keyed request, to the resolved endpoint, data assigned.
-		const api = calls.filter(keyed);
-		expect(api.length).toBe(1);
-		expect(api[0]?.url).toContain('/astrology/horoscope/aries/daily');
-		expect(api[0]?.init.headers?.['X-API-Key']).toBe('pk_test_1');
+		// The script sends nothing itself: the element loads through its own guarded controller.
+		expect(calls.filter(keyed).length).toBe(0);
 		const el0 = child(w, 'w0');
 		expect(el0?.tagName.toLowerCase()).toBe('roxy-horoscope-card');
-		expect(el0?.data).toEqual({ sign: 'aries' });
+		expect(el0?.getAttribute('publishable-key')).toBe('pk_test_1');
+		expect(el0?.hasAttribute('data-endpoint')).toBe(false);
+		expect(el0?.loaded).toEqual({
+			path: '/astrology/horoscope/aries/daily',
+			method: 'GET',
+			query: { lang: 'es' },
+			body: undefined,
+		});
 		// The credit line is opt-in: nothing is set unless the host asks for it.
 		expect(el0?.hasAttribute('attribution')).toBe(false);
 
-		// Form-mode path: the element carries data-endpoint + the key, and it made no keyed request.
+		// Form-mode path: the element carries data-endpoint + the key, and loads nothing.
 		const el1 = child(w, 'w1');
 		expect(el1?.getAttribute('data-endpoint')).toBe(
 			'astrology/horoscope/{sign}/daily',
 		);
 		expect(el1?.getAttribute('publishable-key')).toBe('pk_test_1');
+		expect(el1?.loaded).toBeUndefined();
+	});
+
+	test('a read that needs nothing opens in form mode, so the one-tag widget keeps its filters above the result as the component tag does', async () => {
+		const map = await buildWidgetMap();
+		const calls = mockFetch();
+		const w = await runWidgets(map, [
+			{
+				slug: 'dream-search',
+				attrs: { 'data-publishable-key': 'pk_test_4' },
+			},
+		]);
+		expect(calls.filter(keyed).length).toBe(0);
+		const el = child(w, 'w0');
+		expect(el?.getAttribute('data-endpoint')).toBe('dreams/symbols');
+		expect(el?.getAttribute('method')).toBe('GET');
+		expect(el?.getAttribute('publishable-key')).toBe('pk_test_4');
+		expect(el?.loaded).toBeUndefined();
+	});
+
+	test('the proxy wire reaches an element that loads its own request, so a row it opens rides the same route', async () => {
+		const map = await buildWidgetMap();
+		mockFetch();
+		const w = await runWidgets(map, [
+			{
+				slug: 'crystal-card',
+				attrs: {
+					'data-publishable-key': 'pk_test_5',
+					'data-id': 'amethyst',
+					'data-submit-url': '/api/roxy/proxy',
+				},
+			},
+		]);
+		const el = child(w, 'w0');
+		expect(el?.getAttribute('submit-url')).toBe('/api/roxy/proxy');
+		expect(el?.getAttribute('publishable-key')).toBe('pk_test_5');
+		expect((el?.loaded as { path?: string } | undefined)?.path).toBe(
+			'/crystals/amethyst',
+		);
 	});
 
 	test('a POST widget with no supplied inputs renders form mode, never an empty request', async () => {
 		const map = await buildWidgetMap();
-		const calls = mockFetch({});
+		const calls = mockFetch();
 
 		const w = await runWidgets(map, [
 			{ slug: 'natal-chart', attrs: { 'data-publishable-key': 'pk_test_2' } },
 		]);
 
 		expect(calls.filter(keyed).length).toBe(0);
+		expect(child(w, 'w0')?.loaded).toBeUndefined();
 		expect(child(w, 'w0')?.getAttribute('data-endpoint')).toBe(
 			'astrology/natal-chart',
 		);
@@ -214,7 +271,7 @@ describe('widgets.js mount paths', () => {
 	 */
 	test('the proxied wire attributes reach the element and are never sent as request parameters', async () => {
 		const map = await buildWidgetMap();
-		const calls = mockFetch({});
+		const calls = mockFetch();
 
 		const w = await runWidgets(map, [
 			{
@@ -241,7 +298,7 @@ describe('widgets.js mount paths', () => {
 
 	test('data-hide-sections and data-hide-readings reach the element and never the request', async () => {
 		const map = await buildWidgetMap();
-		const calls = mockFetch({ sign: 'leo' });
+		mockFetch();
 
 		const w = await runWidgets(map, [
 			{
@@ -265,12 +322,12 @@ describe('widgets.js mount paths', () => {
 		expect(child(w, 'w0')?.getAttribute('hide-sections')).toBe('hint');
 		expect(child(w, 'w0')?.hasAttribute('hide-readings')).toBe(true);
 		expect(child(w, 'w1')?.getAttribute('hide-sections')).toBe('hint');
-		for (const c of calls.filter(keyed)) expect(c.url).not.toMatch(/hide/i);
+		expect(JSON.stringify(child(w, 'w0')?.loaded)).not.toMatch(/hide/i);
 	});
 
 	test('data-attribution forwards verbatim on both mount paths and never reaches the request', async () => {
 		const map = await buildWidgetMap();
-		const calls = mockFetch({ sign: 'leo' });
+		mockFetch();
 
 		const w = await runWidgets(map, [
 			// Immediate path: the value travels as given.
@@ -301,7 +358,7 @@ describe('widgets.js mount paths', () => {
 		expect(child(w, 'w0')?.getAttribute('attribution')).toBe('on');
 		expect(child(w, 'w1')?.getAttribute('attribution')).toBe('');
 		expect(child(w, 'w2')?.getAttribute('attribution')).toBe('off');
-		for (const c of calls.filter(keyed))
-			expect(c.url).not.toContain('attribution');
+		for (const id of ['w0', 'w2'])
+			expect(JSON.stringify(child(w, id)?.loaded)).not.toContain('attribution');
 	});
 });

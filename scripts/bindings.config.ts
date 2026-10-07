@@ -19,6 +19,8 @@ export interface UiBinding {
 	component: string;
 	/** Config attributes for this operation-to-component pairing; omit when the component needs none. */
 	attrs?: Record<string, string>;
+	/** Request field -> the GET operation that lists its choices, for a free-string filter the API serves a list of values for. A required free-string path identifier needs no entry: its choices are derived from the collection one segment up. */
+	options?: Record<string, string>;
 }
 
 /** operationId -> the component(s) that render its response (primary visualization first). */
@@ -325,7 +327,13 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 
 	// Dreams
 	getDreamSymbol: [{ component: 'roxy-dream-card' }],
-	searchDreamSymbols: [{ component: 'roxy-dream-search' }],
+	// The whole dictionary opens paged, with an A to Z bar of the letters it holds.
+	searchDreamSymbols: [
+		{
+			component: 'roxy-dream-search',
+			options: { letter: 'getSymbolLetterCounts' },
+		},
+	],
 
 	// Angel numbers
 	getAngelNumber: [{ component: 'roxy-angel-number-card' }],
@@ -334,12 +342,17 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 
 	// Crystals. Every list response carries the same `crystals` summary array, so
 	// one gallery renders all of them and titles itself from whichever filter the
-	// response echoes back. The chakra list is declared first, which is what keeps
-	// it the widget default.
+	// response echoes back. The full list is declared first, which makes it the
+	// widget default: it opens on every stone with the filters above it.
+	listCrystals: [
+		{
+			component: 'roxy-crystal-grid',
+			options: { color: 'listCrystalColors', planet: 'listCrystalPlanets' },
+		},
+	],
 	getCrystalsByChakra: [{ component: 'roxy-crystal-grid' }],
 	getCrystalsByElement: [{ component: 'roxy-crystal-grid' }],
 	getCrystalsByZodiac: [{ component: 'roxy-crystal-grid' }],
-	listCrystals: [{ component: 'roxy-crystal-grid' }],
 	getBirthstones: [{ component: 'roxy-crystal-grid' }],
 	searchCrystals: [{ component: 'roxy-crystal-grid' }],
 	getCrystal: [{ component: 'roxy-crystal-card' }],

@@ -1,23 +1,34 @@
 import { css, html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { live } from 'lit/directives/live.js';
+import { EN_FIELD_LABELS } from '../generated/field-labels-en.js';
+import { OPTION_SOURCES } from '../generated/option-sources.js';
 import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { signGlyph } from '../tokens/index.js';
 import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
-import type { ApiIssue } from '../utils/fetch-controller.js';
+import {
+	type ApiIssue,
+	type ApiRoute,
+	canFetch,
+} from '../utils/fetch-controller.js';
 import {
 	buildFormModel,
 	deriveSubmitLabel,
 	type FieldDef,
+	type FieldOption,
 	type FormModel,
+	isIndex,
 	isZodiacEnum,
 	LOCATION_PAIR,
 	LOCATION_TRIO,
 	type OpenApiDoc,
 	type OperationSchema,
+	opensOnLoad,
+	optionKind,
 	parseRepeatGroup,
 	type RepeatDef,
 	repeatFields,
@@ -26,6 +37,12 @@ import {
 } from '../utils/field-schema.js';
 import { dispatchKeyRefusal, keyRefusal } from '../utils/key-guard.js';
 import { displayField, displayOption } from '../utils/localized.js';
+import {
+	OptionPicker,
+	pickerStyles,
+	readOptions,
+	renderPicker,
+} from '../utils/option-picker.js';
 import { humanize } from '../utils/string.js';
 import { ROXY_UI_VERSION } from '../version.js';
 
@@ -143,6 +160,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	static styles = [
 		baseStyles,
 		disclosureStyles,
+		pickerStyles,
 		css`
 			form {
 				display: grid;
@@ -290,8 +308,17 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					border-color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease),
 					background-color var(--roxy-motion-duration, 200ms) var(--roxy-motion-easing, ease);
 			}
-			.tile:hover {
+			.tile:hover:not(:disabled) {
 				border-color: var(--roxy-accent, #f59e0b);
+			}
+			.tile:disabled {
+				cursor: default;
+				color: var(--roxy-muted, #71717a);
+				border-style: dashed;
+			}
+			.tiles.narrow {
+				grid-template-columns: repeat(auto-fill, minmax(2.25rem, 1fr));
+				gap: var(--roxy-space-xs, 0.25rem);
 			}
 			.tile[aria-checked='true'] {
 				border-color: var(--roxy-accent, #f59e0b);
@@ -479,6 +506,21 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	@property({ attribute: false })
 	serverIssues: ApiIssue[] | null = null;
 
+	/** Where the choices for a field are read through, handed in by a component in self-fetch mode so a proxied page reads them through its own route; a placed form reads them with its own publishable key. JS property only. */
+	@property({ attribute: false })
+	apiRoute?: ApiRoute;
+
+	/** Submit once on load when the request needs nothing from the visitor, set by a component in self-fetch mode so a list or today's reading opens on its result. JS property only. */
+	@property({ attribute: false })
+	autoload = false;
+
+	/** The choices read for each optional field the API lists values for, or the read in flight; absent when they could not be read, and the field keeps its plain input. */
+	@state()
+	private choices: Record<string, FieldOption[] | 'loading'> = {};
+
+	/** One search-as-you-type picker per required free-string identifier, keyed by field. */
+	private pickers = new Map<string, OptionPicker>();
+
 	/** Issues the visitor has since edited away, by wire path. */
 	@state()
 	private clearedIssues = new Set<string>();
@@ -580,7 +622,13 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	}
 
 	private applyModel(model: FormModel) {
-		this.fields = model.fields;
+		const sources =
+			OPTION_SOURCES[
+				`${this.method.toUpperCase()} /${this.endpoint.replace(/^\//, '')}`
+			] ?? {};
+		this.fields = model.fields.map((f) =>
+			sources[f.key] ? { ...f, source: sources[f.key] } : f,
+		);
 		this.repeats = model.repeats ?? [];
 		this.formTitle = model.title;
 		this.hasLang = model.hasLang;
@@ -603,6 +651,47 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		}
 		this.values = init;
 		this.loaded = true;
+		this.loadChoices();
+		if (
+			this.autoload &&
+			opensOnLoad(model, this.method) &&
+			canFetch(this.route)
+		)
+			void this.updateComplete.then(() => this.submit());
+	}
+
+	/** The route the choices are read through. */
+	private get route(): ApiRoute {
+		return this.apiRoute ?? { publishableKey: this.publishableKey };
+	}
+
+	/** Read the choices of every sourced field when this form can reach the API: a picker for a required identifier, a list read once for an optional filter. */
+	private loadChoices() {
+		for (const old of this.pickers.values()) this.removeController(old);
+		this.pickers.clear();
+		if (!canFetch(this.route)) return;
+		const context = () => ({ route: this.route, lang: this.requestLang() });
+		for (const f of this.fields) {
+			if (!f.source) continue;
+			if (f.required) {
+				const picker = new OptionPicker(this, f.source, f.name, context, (o) =>
+					this.pickChoice(f, o.value),
+				);
+				picker.query = String(this.values[f.key] ?? '');
+				this.pickers.set(f.key, picker);
+				continue;
+			}
+			this.choices = { ...this.choices, [f.key]: 'loading' };
+			readOptions(this.route, f.source, f.name, this.requestLang()).then(
+				(options) => {
+					this.choices = { ...this.choices, [f.key]: options };
+				},
+				() => {
+					const { [f.key]: _, ...rest } = this.choices;
+					this.choices = rest;
+				},
+			);
+		}
 	}
 
 	private retryLoadSchema = () => {
@@ -822,20 +911,67 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	}
 
 	/**
-	 * The single visible required enum field, when the whole form reduces to exactly one: no location block, no named group, one required rendered enum. This is what turns the horoscope form into a tap-to-load sign grid; returns null otherwise.
+	 * The single visible required choice, when the whole form reduces to exactly one: no location block, no named group, one required rendered enum or picker. This is what turns the horoscope form into a tap-to-load sign grid and the dream card into type, pick, read; returns null otherwise.
 	 */
-	private get singleEnumField(): FieldDef | null {
+	private get soleChoice(): FieldDef | null {
 		if (this.groupKeys().some((g) => this.groupHasLocation(g))) return null;
 		if (this.groupKeys().some((g) => g !== undefined)) return null;
 		const req = this.fields.filter((f) => f.required && this.isRendered(f));
 		const only = req[0];
 		if (req.length !== 1 || !only) return null;
-		return only.kind === 'tiles' || only.kind === 'select' ? only : null;
+		return only.kind === 'tiles' ||
+			only.kind === 'select' ||
+			this.pickers.has(only.key)
+			? only
+			: null;
+	}
+
+	/** True when this form opens on its result, so it stays above the result as a filter bar. */
+	private get opensOnLoad(): boolean {
+		return opensOnLoad(
+			{ title: '', fields: this.fields, hasLang: false },
+			this.method,
+		);
+	}
+
+	/** True for an optional filter on a form that opens on load: a listed choice that submits when picked and clears the other filters. */
+	private isFilter(f: FieldDef): boolean {
+		return this.opensOnLoad && !f.required && !!(f.enum || f.source);
+	}
+
+	/** True when every input on the form sends it by itself (a sole choice, or a filter bar with nothing typed), so it draws no submit button. */
+	private get selfSubmits(): boolean {
+		if (this.soleChoice) return true;
+		if (!this.opensOnLoad) return false;
+		const shown = this.fields.filter((f) => this.isRendered(f));
+		return shown.length > 0 && shown.every((f) => this.isFilter(f));
+	}
+
+	/** Tiles or a select for a choice field: by the shape of its choices, except that a filter of words is a select, so a list that opens on load keeps its filters to one compact row and only an index (letters, short codes) stays a tile bar. */
+	private choiceKind(f: FieldDef): 'tiles' | 'select' {
+		const values = this.choicesOf(f).map((o) => o.value);
+		if (this.isFilter(f) && !isIndex(values)) return 'select';
+		// A list the API served is classed here; an enum keeps the kind its schema gave it.
+		return this.choices[f.key]
+			? optionKind(values)
+			: (f.kind as 'tiles' | 'select');
+	}
+
+	/** The choices a field offers: its enum with the published option text, or the list the API served for it. */
+	private choicesOf(f: FieldDef): FieldOption[] {
+		const listed = this.choices[f.key];
+		if (Array.isArray(listed)) return listed;
+		return (f.enum ?? []).map((value) => ({
+			value,
+			label: this.optionText(f.name, value),
+		}));
 	}
 
 	/** The submit-button label. A caller-supplied one is theirs and is printed verbatim; the derived verb is ours, so it goes through the catalogue. {@link deriveSubmitLabel} returns the canonical English verb, which IS the catalogue key. */
 	private effectiveSubmitLabel(): string {
-		return this.submitLabel || this.t(deriveSubmitLabel(this.endpoint));
+		return (
+			this.submitLabel || this.t(deriveSubmitLabel(this.endpoint, this.fields))
+		);
 	}
 
 	/**
@@ -860,9 +996,11 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * Keyed by WIRE NAME rather than by the English text, because the English text is itself
 	 * computed here by `humanize()`; there is no constant to key on. Same reason the label map is
 	 * a separate key space from the chrome catalogue.
+	 *
+	 * English ships no payload, so the API English label is compiled in and comes before `humanize()`.
 	 */
 	private fieldText(name: string): string {
-		return displayField(this.requestLang(), name);
+		return displayField(this.requestLang(), name, EN_FIELD_LABELS[name]);
 	}
 
 	/** The option text under one field, falling back the same way. */
@@ -894,16 +1032,41 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		};
 	}
 
-	/** Records a chosen option, and submits at once when that option is the only input the form has: a form whose one required field is an enum draws no submit button. */
+	/** Records a chosen option, and submits at once when it is the only input the form has or a filter; picking the chosen filter again clears it. */
 	private chooseOption(f: FieldDef, value: string) {
+		if (this.isFilter(f)) {
+			this.setFilter(f, this.values[f.key] === value ? '' : value);
+			this.submit();
+			return;
+		}
+		this.pickChoice(f, value);
+	}
+
+	/** Records a choice and submits when the form reduces to it. */
+	private pickChoice(f: FieldDef, value: string) {
 		this.setValue(f.key, value);
-		if (value && this.singleEnumField?.key === f.key) this.submit();
+		if (value && this.soleChoice?.key === f.key) this.submit();
+	}
+
+	/** Sets one filter and clears the others and the text search, so a list is narrowed one way at a time. */
+	private setFilter(f: FieldDef, value: unknown) {
+		const patch: Record<string, unknown> = { [f.key]: value };
+		for (const other of this.fields)
+			if (
+				other !== f &&
+				(this.isFilter(other) ||
+					(this.opensOnLoad && other.kind === 'text' && this.isRendered(other)))
+			)
+				patch[other.key] = undefined;
+		this.setValues(patch);
 	}
 
 	/** Roving-tabindex arrow-key navigation for a tile radiogroup, modeled on the shared tablist pattern (selection follows focus). */
 	private onTilesKeyDown(f: FieldDef) {
 		return (e: KeyboardEvent) => {
-			const opts = f.enum ?? [];
+			const opts = this.choicesOf(f)
+				.filter((o) => !o.disabled)
+				.map((o) => o.value);
 			if (opts.length === 0) return;
 			const cur = opts.indexOf(this.values[f.key] as string);
 			let next: number;
@@ -920,8 +1083,9 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			if (value === undefined) return;
 			this.chooseOption(f, value);
 			const root = e.currentTarget as HTMLElement;
+			const tile = this.choicesOf(f).findIndex((o) => o.value === value);
 			requestAnimationFrame(() =>
-				root.querySelector<HTMLButtonElement>(`[data-tile='${next}']`)?.focus(),
+				root.querySelector<HTMLButtonElement>(`[data-tile='${tile}']`)?.focus(),
 			);
 		};
 	}
@@ -931,7 +1095,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		this.submit();
 	};
 
-	/** Validate, then emit `roxy-submit` with the reconstructed payload, the spec query keys, and whether the form was a single-enum sticky picker. */
+	/** Validate, then emit `roxy-submit` with the reconstructed payload, the spec query keys, and whether the form stays above its result. */
 	private submit() {
 		const missing = this.collectMissing();
 		if (missing.keys.length > 0) {
@@ -988,7 +1152,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					endpoint: this.endpoint,
 					values: out,
 					queryKeys,
-					sticky: this.singleEnumField != null,
+					sticky: this.soleChoice != null || this.opensOnLoad,
 				},
 				bubbles: true,
 				composed: true,
@@ -1047,20 +1211,21 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private renderTiles(f: FieldDef) {
 		const labelId = `roxy-form-${f.key}-label`;
 		const zodiac = !!f.enum && isZodiacEnum(f.enum);
-		const opts = f.enum ?? [];
-		const cur = opts.indexOf(this.values[f.key] as string);
-		const active = cur === -1 ? 0 : cur;
+		const opts = this.choicesOf(f);
+		const narrow = isIndex(opts.map((o) => o.value));
+		const cur = opts.findIndex((o) => o.value === this.values[f.key]);
+		const active = cur === -1 ? opts.findIndex((o) => !o.disabled) : cur;
 		return html`<div class="field tiles-field">
 			<span class="label" id=${labelId}>${this.fieldText(f.name)}${this.reqMark(f)}</span>
 			<div
-				class="tiles"
+				class=${narrow ? 'tiles narrow' : 'tiles'}
 				role="radiogroup"
 				aria-labelledby=${labelId}
 				@keydown=${this.onTilesKeyDown(f)}
 			>
 				${opts.map((opt, i) => {
-					const selected = this.values[f.key] === opt;
-					const glyph = zodiac ? signGlyph(opt) : undefined;
+					const selected = this.values[f.key] === opt.value;
+					const glyph = zodiac ? signGlyph(opt.value) : undefined;
 					return html`<button
 						type="button"
 						class="tile"
@@ -1068,14 +1233,15 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 						data-tile=${i}
 						aria-checked=${selected ? 'true' : 'false'}
 						tabindex=${i === active ? '0' : '-1'}
-						@click=${() => this.chooseOption(f, opt)}
+						?disabled=${!!opt.disabled}
+						@click=${() => this.chooseOption(f, opt.value)}
 					>
 						${
 							glyph
 								? html`<span class="tile-glyph" aria-hidden="true">${glyph}</span>`
 								: nothing
 						}
-						<span class="tile-label">${this.optionText(f.name, opt)}</span>
+						<span class="tile-label">${opt.label}</span>
 					</button>`;
 				})}
 			</div>
@@ -1093,19 +1259,45 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				?required=${f.required}
 				aria-invalid=${ifDefined(this.issueFor(f) ? 'true' : undefined)}
 				aria-describedby=${ifDefined(this.issueFor(f) ? `${id}-error` : undefined)}
+				.value=${live((this.values[f.key] ?? '') as string)}
 				@change=${(e: Event) =>
 					this.chooseOption(f, (e.target as HTMLSelectElement).value)}
 			>
 				<option value="">${this.t('Choose')}</option>
-				${(f.enum ?? []).map(
+				${this.choicesOf(f).map(
 					(
 						opt,
-					) => html`<option value=${opt} ?selected=${this.values[f.key] === opt}>
-						${this.optionText(f.name, opt)}
+					) => html`<option value=${opt.value} ?selected=${this.values[f.key] === opt.value} ?disabled=${!!opt.disabled}>
+						${opt.label}
 					</option>`,
 				)}
 			</select>
 			${this.description(f)}
+			${this.fieldIssue(f)}
+		</div>`;
+	}
+
+	/** A required identifier picked from its collection as the visitor types; the sole input on its form is named by the form title. */
+	private renderPickerField(f: FieldDef, picker: OptionPicker) {
+		const id = `roxy-form-${f.key}`;
+		const sole = this.soleChoice?.key === f.key;
+		const issue = this.issueFor(f);
+		return html`<div part="field" class="field">
+			${sole ? nothing : html`<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>`}
+			${renderPicker(
+				picker,
+				id,
+				{
+					placeholder: this.t('Type to search'),
+					empty: this.t('{{count}} matches', { count: 0 }),
+					loading: this.t('Loading'),
+				},
+				{
+					labelledby: sole ? 'roxy-form-title' : undefined,
+					describedby: issue ? `${id}-error` : undefined,
+					invalid: !!issue,
+				},
+			)}
 			${this.fieldIssue(f)}
 		</div>`;
 	}
@@ -1161,11 +1353,11 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				step=${f.kind === 'number' ? 'any' : nothing}
 				placeholder=${placeholder || nothing}
 				.value=${(this.values[f.key] ?? '') as string}
-				@input=${(e: Event) =>
-					this.setValue(
-						f.key,
-						this.coerce(f.kind, (e.target as HTMLInputElement).value),
-					)}
+				@input=${(e: Event) => {
+					const v = this.coerce(f.kind, (e.target as HTMLInputElement).value);
+					if (this.opensOnLoad && f.kind === 'text') this.setFilter(f, v);
+					else this.setValue(f.key, v);
+				}}
 			/>
 			${this.description(f)}
 			${this.fieldIssue(f)}
@@ -1175,11 +1367,16 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private renderField(f: FieldDef) {
 		// Only a timezone no coordinate pair claims reaches here; a claimed one is the location block's.
 		if (f.name === 'timezone') return this.renderTimezoneCity(f);
+		const picker = this.pickers.get(f.key);
+		if (picker) return this.renderPickerField(f, picker);
+		const listed = this.choices[f.key];
+		if (listed === 'loading')
+			return html`<div class="field"><div class="roxy-skeleton" style="height: 2.75rem" aria-label=${this.t('Loading')} role="status"></div></div>`;
+		if (listed || f.kind === 'tiles' || f.kind === 'select')
+			return this.choiceKind(f) === 'tiles'
+				? this.renderTiles(f)
+				: this.renderSelect(f);
 		switch (f.kind) {
-			case 'tiles':
-				return this.renderTiles(f);
-			case 'select':
-				return this.renderSelect(f);
 			case 'toggle':
 				return this.renderToggle(f);
 			default:
@@ -1343,7 +1540,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const refusal = keyRefusal(this.publishableKey);
 		if (refusal) {
 			return html`<form>
-				<h2 part="title" class="title">${this.formTitle}</h2>
+				<h2 part="title" class="title" id="roxy-form-title">${this.formTitle}</h2>
 				<div part="validation-error" class="validation-error" role="alert">${this.t(refusal.message)}</div>
 			</form>`;
 		}
@@ -1369,7 +1566,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const hasAdvanced = tuckedFields.length > 0 || tuckedGroups.length > 0;
 
 		return html`<form @submit=${this.onSubmit}>
-			<h2 part="title" class="title">${this.formTitle}</h2>
+			<h2 part="title" class="title" id="roxy-form-title">${this.formTitle}</h2>
 			${
 				this.validationErrors.length > 0
 					? html`<div part="validation-error" class="validation-error" role="alert">
@@ -1401,7 +1598,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					: nothing
 			}
 			${
-				this.singleEnumField
+				this.selfSubmits
 					? nothing
 					: html`<button part="submit" class="submit" type="submit">${this.effectiveSubmitLabel()}</button>`
 			}

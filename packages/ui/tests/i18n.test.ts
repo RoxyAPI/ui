@@ -101,8 +101,17 @@ function codeLines(src: string): Array<[number, string]> {
  * ------------------------------------------------------------------------- */
 
 /** Attributes a visitor or a screen reader READS. `class`, `role` and `id` are machine values and are not on it. `data-label` is on it because a stacked table PAINTS it, through `content: attr(data-label)`, so it is copy that reaches a reader while being invisible to a text-node scan. */
-const VISIBLE_ATTRS =
-	/\b(?:placeholder|aria-label|aria-placeholder|aria-description|title|alt|data-label)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
+const VISIBLE_ATTR_NAMES =
+	'placeholder|aria-label|aria-placeholder|aria-description|title|alt|data-label';
+
+/** A {@link VISIBLE_ATTR_NAMES} attribute with a quoted literal value. */
+const VISIBLE_ATTRS = new RegExp(
+	`\\b(?:${VISIBLE_ATTR_NAMES})\\s*=\\s*(?:"([^"]*)"|'([^']*)')`,
+	'g',
+);
+
+/** The same names, for an attribute whose value is an interpolation. */
+const VISIBLE_ATTR = new RegExp(`^(?:${VISIBLE_ATTR_NAMES})$`);
 
 /**
  * Text allowed to sit in a template as a literal, with the reason. Keep it SHORT: an entry here is copy no visitor will ever read in their own language.
@@ -220,17 +229,17 @@ function markupTemplates(src: string): string[] {
 	return out;
 }
 
-/** The raw source of every markup template, concatenated. The ternary scan reads THIS rather than the whole file, because that shape is only INVISIBLE inside an interpolation: the same ternary as a plain function argument is an ordinary expression, and where it feeds a `ChromeString` parameter the compiler already checks it. */
-function markupSource(src: string): string {
-	const spans: string[] = [];
+/** Where each top-level markup template body starts and ends. The ternary scan reads only THESE, because that shape is only INVISIBLE inside an interpolation: the same ternary as a plain function argument is an ordinary expression, and where it feeds a `ChromeString` parameter the compiler already checks it. */
+function markupSpans(src: string): Array<[number, number]> {
+	const spans: Array<[number, number]> = [];
 	for (let i = 0; i < src.length; i++) {
 		if (src[i] === '`' && isMarkupTag(src, i)) {
 			const end = scanTemplate(src, i + 1, [], false);
-			spans.push(src.slice(i + 1, end));
+			spans.push([i + 1, end - 1]);
 			i = end - 1;
 		}
 	}
-	return spans.join('\n');
+	return spans;
 }
 
 /** An element whose text content is a machine language rather than copy. */
@@ -261,11 +270,6 @@ function visibleStrings(template: string): string[] {
 	return found;
 }
 
-/**
- * Every user-visible literal one source file writes into its own markup: the whole pipeline, comments stripped, in the order they appear.
- *
- * A string that IS translated is invisible here for free, because `${this.t('...')}` is an interpolation and collapses to {@link EXPR} before anything reads it. What survives is copy that reaches a reader in English on all seven translated sites.
- */
 /** A prose string handed to one of the component's own helpers, e.g. `this.attr('Hardness', ...)`. */
 const HELPER_ARG = /\bthis\.([a-zA-Z][a-zA-Z0-9]*)\(\s*'([A-Z][^']{1,48})'/g;
 
@@ -285,7 +289,7 @@ const RECORD_COPY =
  *
  * The translated form is `cond ? t('A') : t('B')`, one call per branch, which this pattern no longer matches. Writing it as `t(cond ? 'A' : 'B')` instead would satisfy a reader and still be wrong: the forward scan matches `t('` literally, so a ternary INSIDE the call hides both strings from the check that they are catalogued at all.
  */
-const TERNARY_COPY = /\?\s*'([A-Z][^']{1,60})'\s*:\s*'([^']{0,60})'/g;
+const TERNARY_COPY = /\?\s*'([A-Z][^']{1,60})'\s*:\s*'([^']{0,60})'/dg;
 
 /** Platform and framework calls whose first argument is a selector or a key, never copy. */
 const NOT_COPY = new Set([
@@ -307,6 +311,271 @@ const NOT_COPY = new Set([
 	'emit',
 ]);
 
+/** Index just past the bracket that closes the one opened right before `start`, strings and templates skipped. */
+function closer(src: string, start: number): number {
+	let depth = 1;
+	let i = start;
+	while (i < src.length) {
+		const c = src[i] as string;
+		if (c === "'" || c === '"') {
+			i = skipString(src, i);
+			continue;
+		}
+		if (c === '`') {
+			i = scanTemplate(src, i + 1, [], false);
+			continue;
+		}
+		if (c === '(' || c === '[' || c === '{') depth++;
+		else if (c === ')' || c === ']' || c === '}') {
+			depth--;
+			if (depth === 0) return i + 1;
+		}
+		i++;
+	}
+	return i;
+}
+
+/** Where the expression starting at `start` ends: a `;`, or a `,` or an unmatched closer at depth zero. */
+function expressionEnd(src: string, start: number): number {
+	let i = start;
+	while (i < src.length) {
+		const c = src[i] as string;
+		if (c === "'" || c === '"') i = skipString(src, i);
+		else if (c === '`') i = scanTemplate(src, i + 1, [], false);
+		else if (c === '(' || c === '[' || c === '{') i = closer(src, i + 1);
+		else if (/[)\]};,]/.test(c)) return i;
+		else i++;
+	}
+	return i;
+}
+
+/** The attribute an interpolation is the value of, read off the tag text in front of it, quoted or not. */
+const ATTR_BEFORE = /([.?@]?[\w:-]+)\s*=\s*(?:["'][^"']*)?$/;
+
+/** One `${...}` inside markup: its expression range, and whether a reader sees what it yields. */
+interface Slot {
+	start: number;
+	end: number;
+	visible: boolean;
+}
+
+/**
+ * Every interpolation of every markup template, nested ones included, classified by where it lands.
+ *
+ * @remarks A text node and a {@link VISIBLE_ATTR_NAMES} attribute are visible; `class`, `part`, `style`, `id`, `href`, `role`, every other `data-*`, a `.property`, a `?boolean` and an `@event` binding are machine values, and so is anything inside a `<style>` or `<script>` element.
+ */
+function slots(src: string): Slot[] {
+	const out: Slot[] = [];
+	const walk = (start: number): number => {
+		let i = start;
+		let inTag = false;
+		let opaque = false;
+		let tag = '';
+		while (i < src.length) {
+			const c = src[i] as string;
+			if (c === '\\') {
+				i += 2;
+				continue;
+			}
+			if (c === '`') return i + 1;
+			if (c === '$' && src[i + 1] === '{') {
+				const end = closer(src, i + 2);
+				const attr = inTag ? tag.match(ATTR_BEFORE)?.[1] : undefined;
+				const visible = inTag ? VISIBLE_ATTR.test(attr ?? '') : !opaque;
+				out.push({ start: i + 2, end: end - 1, visible });
+				inner(i + 2, end - 1);
+				tag += EXPR;
+				i = end;
+				continue;
+			}
+			if (c === '<' && !inTag) {
+				inTag = true;
+				tag = '';
+			} else if (c === '>' && inTag) {
+				opaque = OPAQUE_TAG.test(tag);
+				inTag = false;
+			} else tag += c;
+			i++;
+		}
+		return i;
+	};
+	// A markup template inside an expression, or inside a plain template in one, is walked in its own right.
+	const inner = (from: number, to: number) => {
+		for (let i = from; i < to; i++) {
+			if (src[i] === '`' && isMarkupTag(src, i)) i = walk(i + 1) - 1;
+		}
+	};
+	for (const [start] of markupSpans(src)) walk(start);
+	return out;
+}
+
+/** What may sit right before a literal for it to be the VALUE of an expression: its start, a fallback, a ternary branch, an `&&` result, an array element, a grouping paren, an arrow body or a `return`. */
+const VALUE_BEFORE = /(?:^|\?\?|\|\||&&|[?:([,]|=>|\breturn)\s*$/;
+
+/** What after one makes it an operand, a receiver or a condition instead. */
+const NOT_VALUE_AFTER =
+	/^\s*(?:[.[]|[!=<>]=|[<>]|&&|\?(?![?.])|\bin\b|\binstanceof\b)/;
+
+/** A literal one expression can evaluate to, at its offset in the scanned source. */
+interface Hit {
+	at: number;
+	value: string;
+}
+
+/**
+ * Every literal an expression can evaluate to, and every identifier or call standing where one could.
+ *
+ * @remarks A call's arguments are the callee's business and are never read, which is what keeps `this.t('...')` and the English fallback handed to `displayOption(lang, field, value, fallback)` out of it. A bracket is transparent only when it builds an array or groups, never when it calls or indexes.
+ */
+function valueLiterals(
+	src: string,
+	from: number,
+	to: number,
+	hits: Hit[],
+	refs: Set<string>,
+): void {
+	const opened: boolean[] = [];
+	const transparent = () => opened.every(Boolean);
+	let i = from;
+	while (i < to) {
+		const c = src[i] as string;
+		const before = () => src.slice(from, i);
+		if (c === "'" || c === '"' || c === '`') {
+			const markup = c === '`' && isMarkupTag(src, i);
+			const end =
+				c === '`' ? scanTemplate(src, i + 1, [], false) : skipString(src, i);
+			if (
+				!markup &&
+				transparent() &&
+				VALUE_BEFORE.test(before()) &&
+				!NOT_VALUE_AFTER.test(src.slice(end, to))
+			) {
+				hits.push({
+					at: i + 1,
+					value: src.slice(i + 1, end - 1).replace(/\$\{[\s\S]*?\}/g, EXPR),
+				});
+				// The slots of a template that is itself the value are values too.
+				for (let j = i + 1; c === '`' && j < end - 1; j++) {
+					if (src[j] === '\\') j++;
+					else if (src[j] === '$' && src[j + 1] === '{') {
+						const close = closer(src, j + 2);
+						valueLiterals(src, j + 2, close - 1, hits, refs);
+						j = close - 1;
+					}
+				}
+			}
+			i = end;
+			continue;
+		}
+		if (c === '(' || c === '[') {
+			const prev = before().trimEnd();
+			opened.push(!/[\w$)\].]$/.test(prev) || /\breturn$/.test(prev));
+		} else if (c === '{') opened.push(false);
+		else if (c === ')' || c === ']' || c === '}') opened.pop();
+		else if (/[A-Za-z_$]/.test(c) && !/[\w$.]/.test(src[i - 1] ?? '')) {
+			const m = src.slice(i, to).match(/^(this\.)?([A-Za-z_$][\w$]*)(\s*\()?/);
+			const name = m?.[2] as string;
+			const valued = transparent() && VALUE_BEFORE.test(before());
+			i += m?.[0].length ?? 1;
+			if (m?.[3]) {
+				const close = closer(src, i);
+				if (valued && !NOT_VALUE_AFTER.test(src.slice(close, to)))
+					refs.add(`${name}()`);
+				i = close;
+			} else if (
+				valued &&
+				!m?.[1] &&
+				!/^\s*\(/.test(src.slice(i, to)) &&
+				!NOT_VALUE_AFTER.test(src.slice(i, to))
+			)
+				refs.add(name);
+			continue;
+		}
+		i++;
+	}
+}
+
+/**
+ * The expressions a reference stands for, one step out: every `return` of a method or function of that name declared in the file (or a concise arrow body), or the initializer of a `const` or `let` of that name.
+ *
+ * @remarks Resolved by name across the whole file, so two helpers sharing one name are both read. Measured over the library, that never reached a machine value once a condition was excluded from the value positions.
+ */
+function resolve(src: string, ref: string): Array<[number, number]> {
+	const out: Array<[number, number]> = [];
+	if (!ref.endsWith('()')) {
+		const init = new RegExp(
+			`\\b(?:const|let)\\s+${ref}\\s*(?::[^=]+)?=(?![=>])`,
+			'g',
+		);
+		for (const m of src.matchAll(init)) {
+			const start = (m.index ?? 0) + m[0].length;
+			out.push([start, expressionEnd(src, start)]);
+		}
+		return out;
+	}
+	const name = ref.slice(0, -2);
+	const heads = [
+		new RegExp(
+			`^[ \\t]*(?:(?:export|private|protected|public|static|async|override)\\s+)*(?:function\\s+)?${name}\\s*(?:<[^>\\n]*>)?\\(`,
+			'gm',
+		),
+		new RegExp(`\\b(?:const|let)\\s+${name}\\s*=\\s*(?:async\\s*)?\\(`, 'g'),
+	];
+	for (const head of heads) {
+		for (const m of src.matchAll(head)) {
+			const params = closer(src, (m.index ?? 0) + m[0].length);
+			const body = src
+				.slice(params)
+				.match(/^\s*(?::\s*[^{=;\n]+?)?\s*(\{|=>\s*\{|=>)/);
+			if (!body) continue;
+			const start = params + body[0].length;
+			if (body[1] === '=>') {
+				out.push([start, expressionEnd(src, start)]);
+				continue;
+			}
+			const end = closer(src, start) - 1;
+			const ret = /\breturn\b/g;
+			ret.lastIndex = start;
+			for (let r = ret.exec(src); r && r.index < end; r = ret.exec(src)) {
+				const from = r.index + r[0].length;
+				out.push([from, expressionEnd(src, from)]);
+			}
+		}
+	}
+	return out;
+}
+
+/**
+ * Copy that reaches a reader from INSIDE an interpolation, which the text-node scan collapses to one placeholder before it reads anything: a fallback (`${c.name ?? 'Tarot card'}`), a ternary branch of either case (`${n === 1 ? 'card' : 'cards'}`), and a literal returned by a helper or held in a `const` the slot prints (`${this.windowLabel(days)}`).
+ *
+ * @remarks Only slots a reader sees are read (see {@link slots}), and a reference is followed one step, which is as far as the measurement stayed free of machine values.
+ */
+function interpolatedCopy(src: string): Hit[] {
+	const hits: Hit[] = [];
+	for (const slot of slots(src)) {
+		if (!slot.visible) continue;
+		const refs = new Set<string>();
+		valueLiterals(src, slot.start, slot.end, hits, refs);
+		for (const ref of refs)
+			for (const [from, to] of resolve(src, ref))
+				valueLiterals(src, from, to, hits, new Set());
+	}
+	const seen = new Set<number>();
+	return hits.filter((h) => !seen.has(h.at) && Boolean(seen.add(h.at)));
+}
+
+/** Whether a literal carries a word a translator would touch: two letters in a row, entities aside, that are not a {@link LITERAL_BY_DESIGN} token. */
+function isCopy(literal: string): boolean {
+	if (LITERAL_BY_DESIGN.has(literal)) return false;
+	const words = literal.replace(ENTITY, '').match(/[A-Za-z]{2,}/g) ?? [];
+	return words.some((w) => !LITERAL_BY_DESIGN.has(w));
+}
+
+/**
+ * Every user-visible literal one source file writes into its own markup: the whole pipeline, comments stripped, in the order they appear.
+ *
+ * A string that IS translated is invisible here for free, because `${this.t('...')}` is an interpolation and collapses to {@link EXPR} before anything reads it. What survives is copy that reaches a reader in English on all seven translated sites.
+ */
 function visibleLiterals(src: string): string[] {
 	const found: string[] = [];
 	for (const template of markupTemplates(code(src))) {
@@ -340,13 +609,24 @@ function visibleLiterals(src: string): string[] {
 	}
 	// And both halves of a two-state label, which sit inside an interpolation and
 	// so collapse before the markup scan reads any text.
-	for (const m of markupSource(code(src)).matchAll(TERNARY_COPY)) {
-		for (const literal of [m[1], m[2]]) {
-			const value = (literal ?? '').trim();
-			if (!value || LITERAL_BY_DESIGN.has(value)) continue;
-			if (!/[A-Za-z]{2,}/.test(value)) continue;
-			found.push(value);
+	const body = code(src);
+	const ternaries = new Set<number>();
+	for (const [start, end] of markupSpans(body)) {
+		for (const m of body.slice(start, end).matchAll(TERNARY_COPY)) {
+			for (const group of [1, 2]) {
+				ternaries.add(start + (m.indices?.[group]?.[0] ?? 0));
+				const value = (m[group] ?? '').trim();
+				if (!value || LITERAL_BY_DESIGN.has(value)) continue;
+				if (!/[A-Za-z]{2,}/.test(value)) continue;
+				found.push(value);
+			}
 		}
+	}
+	// And every other literal an interpolation can print, read where it lands
+	// rather than by its shape; a branch the ternary pass took is not counted twice.
+	for (const hit of interpolatedCopy(body)) {
+		const value = hit.value.replaceAll(EXPR, ' ').trim().replace(/\s+/g, ' ');
+		if (!ternaries.has(hit.at) && isCopy(value)) found.push(value);
 	}
 	return found;
 }
@@ -754,6 +1034,9 @@ describe('shipped locales', () => {
 				'Nakshatra.',
 				'Rashi Pinda',
 				'Rashi.',
+				'Baladi.',
+				'Jagradadi.',
+				'Deeptadi.',
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'Yogas',
@@ -908,6 +1191,9 @@ describe('shipped locales', () => {
 				'Nakshatra.',
 				'Rashi Pinda',
 				'Rashi.',
+				'Baladi.',
+				'Jagradadi.',
+				'Deeptadi.',
 				'Retro',
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
@@ -1015,6 +1301,7 @@ describe('shipped locales', () => {
 				'Vtx',
 				'pada {{n}}',
 				'Aspect',
+				'1 aspect',
 				'Longitude',
 				'Mantras:',
 				'Nakshatra {{name}}',
@@ -1089,6 +1376,9 @@ describe('shipped locales', () => {
 				'Nakshatra.',
 				'Rashi Pinda',
 				'Rashi.',
+				'Baladi.',
+				'Jagradadi.',
+				'Deeptadi.',
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'Yogas',
@@ -1257,6 +1547,9 @@ describe('shipped locales', () => {
 				'Nakshatra.',
 				'Rashi Pinda',
 				'Rashi.',
+				'Baladi.',
+				'Jagradadi.',
+				'Deeptadi.',
 				'Retro',
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
@@ -1354,6 +1647,7 @@ describe('shipped locales', () => {
 				'Sthana',
 				'{{component}} Bala',
 				'{{planet}} Shadbala',
+				'{{type}} Panchaka',
 				'Gochara',
 				'Arudha Lagna',
 				'Chandra lagna',
@@ -1378,6 +1672,9 @@ describe('shipped locales', () => {
 				'Nakshatra.',
 				'Rashi Pinda',
 				'Rashi.',
+				'Baladi.',
+				'Jagradadi.',
+				'Deeptadi.',
 				'Sarvashtakavarga',
 				'Shodhya Pinda',
 				'ASC{{n}}',
@@ -1590,7 +1887,9 @@ describe('every localized call site is a string the catalogues carry', () => {
  *
  * @remarks The detector is `visibleLiterals`, shared with the form-path guard at the bottom of this file. It reads text nodes and human-facing attributes out of every `html` and `svg` template, and anything routed through `t()` is invisible to it for free, because an interpolation collapses before the text is read.
  *
- * @remarks Known blind spots, stated rather than implied. Copy passed to a helper as a plain argument is NOT seen: `renderTablist({ items: [{ label: 'Positions' }], label: 'Transit views' })` is an object literal, not markup, and every tab label in the library reaches a reader that way. Nor is a string assigned to a `@property` default, a `const` table of labels, or anything a component builds by concatenation. This guard closes the template door; it does not prove a file is localized.
+ * @remarks Inside an interpolation it reads what the slot can PRINT: a fallback, a ternary branch of either case, an array element, and one step out to a helper the slot calls or a `const` it prints, in text nodes and human-facing attributes only.
+ *
+ * @remarks Known blind spots, stated rather than implied. Copy passed to a helper as a plain argument is NOT seen: `renderTablist({ items: [{ label: 'Positions' }], label: 'Transit views' })` is an object literal, not markup, and every tab label in the library reaches a reader that way. Nor is a string assigned to a `@property` default, a `const` table of labels a slot reaches by index, a helper two calls away, or anything a component builds by concatenation. This guard closes the template door; it does not prove a file is localized.
  */
 describe('a component may not write its own words, and the debt only shrinks', () => {
 	/**
@@ -1606,10 +1905,12 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	// copy declared in a record as well as copy written at the point of render, so
 	// those numbers are what they always were. Copy reached through a DYNAMIC
 	// lookup is invisible to any scan, so the record holding it is typed
-	// `ChromeString` and the compiler owns that half.
+	// `ChromeString` and the compiler owns that half. The two Human Design rows
+	// were re-baselined the same way when the scan learned to read inside an
+	// interpolation (a fallback, a ternary branch of either case, a returned label).
 	const UNTRANSLATED_DEBT: Record<string, number> = {
-		'components/hd-connection.ts': 30,
-		'components/hd-penta.ts': 27,
+		'components/hd-connection.ts': 37,
+		'components/hd-penta.ts': 28,
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
 		'components/kp-ruling-planets.ts': 18,
@@ -1893,14 +2194,20 @@ describe('a component renders its chrome in the page language', () => {
 		const el = document.createElement('roxy-dream-search');
 		(el as unknown as { data: unknown }).data = {
 			symbols: [{ id: '1', name: 'Water', letter: 'W' }],
-			total: 1,
+			total: 2053,
 		};
 		document.body.appendChild(el);
 		await settled(el);
 		const t = text(el);
 		expect(t).toContain('Símbolos oníricos');
-		expect(t).toContain('1 coincidencias');
-		expect(t).not.toContain('match');
+		expect(t).toContain('2053 símbolos');
+		expect(t).not.toContain('symbol');
+		(el as unknown as { data: unknown }).data = {
+			symbols: [{ id: '1', name: 'Water', letter: 'W' }],
+			total: 1,
+		};
+		await settled(el);
+		expect(text(el)).toContain('1 símbolo');
 		el.remove();
 	});
 
@@ -3280,6 +3587,40 @@ describe('the form path writes no untranslated words', () => {
 		expect(visibleLiterals(translated)).toEqual([]);
 	});
 
+	test('the scan reads what an interpolation can print, and only where a reader sees it', () => {
+		// Each shape a slot can print copy through: a returned literal and a returned
+		// template, a const it prints, a fallback, and a lower-case ternary.
+		const sample = `
+			private label(days: number): string {
+				if (days === 1) return 'Next day';
+				return \`Next \${days} days\`;
+			}
+			render() {
+				const heading = this.yes ? 'Yes or no' : this.t('Card draw');
+				return html\`<h2>\${heading}</h2>
+					<img alt=\${c.name ?? 'tarot card'} />
+					<span>\${n === 1 ? 'card' : 'cards'}</span>
+					<span>\${this.label(n)}</span>\`;
+			}`;
+		expect(visibleLiterals(sample).sort()).toEqual([
+			'Next day',
+			'Next days',
+			'Yes or no',
+			'card',
+			'cards',
+			'tarot card',
+		]);
+		// And none of what a slot hands to code: a class, a part, an id, a property
+		// binding, a condition, a comparison operand, a call argument, or the English
+		// fallback a published label is looked up with.
+		const machine = `html\`<div class=\${on ? 'active' : 'idle'} part=\${p ?? 'card'} id="tab-\${v ?? 'first'}" .mode=\${m ?? 'daily'}>
+			\${view === 'timeline' ? html\`<b>\${this.t('Timeline')}</b>\` : nothing}
+			\${displayOption(lang, 'direction', dir, 'Fallback word')}
+			\${this.t('Retry')}
+		</div>\``;
+		expect(visibleLiterals(machine)).toEqual([]);
+	});
+
 	/**
 	 * The two form-path files are held at ZERO by name, on top of the library-wide ratchet.
 	 *
@@ -3297,18 +3638,25 @@ describe('the form path writes no untranslated words', () => {
 	});
 
 	/**
-	 * The four submit verbs, which no literal scan can see.
+	 * The submit verbs, which no literal scan can see.
 	 *
 	 * @remarks
-	 * `deriveSubmitLabel` RETURNS the English verb and the form translates the result, because `utils/field-schema.ts` is request-context-free and has no element to resolve a page language from. So the coverage question is not "is this string wrapped" but "does every verb this function can produce have a catalogue entry", and the honest way to ask it is to run the function over the committed spec rather than to restate the four words here.
+	 * `deriveSubmitLabel` RETURNS the English verb and the form translates the result, because `utils/field-schema.ts` is request-context-free and has no element to resolve a page language from. So the coverage question is not "is this string wrapped" but "does every verb this function can produce have a catalogue entry", and the honest way to ask it is to run the function over the committed spec rather than to restate the words here.
 	 */
 	test('every submit verb the spec can produce is a catalogue entry', async () => {
-		const spec = (await Bun.file('specs/openapi.json').json()) as {
-			paths: Record<string, unknown>;
-		};
-		const endpoints = Object.keys(spec.paths);
-		expect(endpoints.length).toBeGreaterThan(100);
-		const verbs = new Set(endpoints.map((p) => deriveSubmitLabel(p)));
+		const doc = (await Bun.file('specs/openapi.json').json()) as SpecDoc;
+		const schemas = doc.components?.schemas ?? {};
+		expect(Object.keys(doc.paths).length).toBeGreaterThan(100);
+		// Called with each operation fields too, because a paged collection takes its verb from them.
+		const verbs = new Set<string>();
+		for (const [path, item] of Object.entries(doc.paths)) {
+			for (const [method, op] of Object.entries(item)) {
+				if (!['get', 'post', 'put', 'patch'].includes(method)) continue;
+				verbs.add(
+					deriveSubmitLabel(path, buildFormModel(op, schemas, path).fields),
+				);
+			}
+		}
 		// Not vacuous: the spec has to exercise more than one branch of the map.
 		expect(verbs.size).toBeGreaterThan(1);
 		const missing = [...verbs].filter(
@@ -3543,9 +3891,10 @@ describe('a mounted form renders in the page language', () => {
 		expect(rendered).not.toContain('Birth location');
 		expect(rendered).not.toContain('Advanced');
 		expect(rendered).not.toContain('Generate');
-		// And the spec-derived half is untouched, which is the documented boundary:
-		// a field label is `humanize()` over a wire name and no catalogue reaches it.
-		expect(rendered).toContain('Birth Date');
+		// And the spec-derived half is untouched, which is the documented boundary: a
+		// field label is the API English label compiled in, a translated page reads
+		// the published payload, and `humanize()` is only the last fallback.
+		expect(rendered).toContain('Birth date');
 		el.remove();
 	});
 

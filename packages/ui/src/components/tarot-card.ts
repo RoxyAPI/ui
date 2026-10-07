@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { GetCardResponse, GetDailyCardResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -9,6 +10,7 @@ import {
 	interpAccordionStyles,
 } from '../utils/interp-accordion.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
+import { arcanaText, suitText } from '../utils/tarot.js';
 
 type TarotData = GetCardResponse | GetDailyCardResponse;
 
@@ -18,12 +20,12 @@ type TarotGuidance = Pick<
 	'love' | 'career' | 'finances' | 'health' | 'spirituality'
 >;
 
-const GUIDANCE_FIELDS: ReadonlyArray<[keyof TarotGuidance, string]> = [
+const GUIDANCE_FIELDS: ReadonlyArray<[keyof TarotGuidance, ChromeString]> = [
 	['love', 'Love'],
 	['career', 'Career'],
-	['finances', 'Finances'],
+	['finances', 'Finance'],
 	['health', 'Health'],
-	['spirituality', 'Spirituality'],
+	['spirituality', 'Spiritual'],
 ];
 
 /**
@@ -134,7 +136,11 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 		const keywords = card.keywords ?? [];
 		// One text node per span: the markup minifier collapses whitespace at an
 		// expression boundary, so every separator is joined in JS, never in markup.
-		const meta = [card.arcana ? `${card.arcana} arcana` : '', card.suit ?? '']
+		const locale = this.effectiveLang();
+		const meta = [
+			card.arcana ? arcanaText(locale, card.arcana) : '',
+			card.suit ? suitText(locale, card.suit) : '',
+		]
 			.filter(Boolean)
 			.join(' · ');
 
@@ -143,16 +149,16 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 		return html`<article
 			class="card"
 			part="card"
-			aria-label=${card.name ?? 'Tarot card'}
+			aria-label=${card.name ?? this.t('Tarot card')}
 		>
 			${this.renderImage(card.imageUrl, card.name, reversed)}
 			<div part="header">
 				<div class="meta">
 					${meta ? `${meta} · ` : ''}<span class="drawn"
-						>${reversed ? 'drawn reversed' : 'drawn upright'}</span
+						>${reversed ? this.t('drawn reversed') : this.t('drawn upright')}</span
 					>
 				</div>
-				<h2 class="title">${card.name ?? 'Tarot card'}</h2>
+				<h2 class="title">${card.name ?? this.t('Tarot card')}</h2>
 				${d.dailyMessage && readings ? html`<p class="message">${d.dailyMessage}</p>` : nothing}
 				${card.meaning && readings ? html`<p class="reading">${card.meaning}</p>` : nothing}
 				${
@@ -188,16 +194,16 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 			<div part="header">
 				<div class="meta">
 					${[
-						d.arcana ? `${d.arcana} arcana` : '',
-						d.suit ?? '',
+						d.arcana ? arcanaText(this.effectiveLang(), d.arcana) : '',
+						d.suit ? suitText(this.effectiveLang(), d.suit) : '',
 						d.number !== undefined && d.number !== null
-							? `no. ${d.number}`
+							? this.t('no. {{number}}', { number: d.number })
 							: '',
 					]
 						.filter(Boolean)
 						.join(' · ')}
 				</div>
-				<h2 class="title">${d.name ?? 'Tarot card'}</h2>
+				<h2 class="title">${d.name ?? this.t('Tarot card')}</h2>
 				${renderTablist({
 					items: [
 						{ id: 'upright', label: this.t('Upright') },
@@ -252,7 +258,7 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 			class=${cls}
 			part="chart"
 			src=${imageUrl}
-			alt=${name ?? 'Tarot card'}
+			alt=${name ?? this.t('Tarot card')}
 		/>`;
 	}
 
@@ -260,7 +266,7 @@ export class RoxyTarotCard extends RoxyDataElement<TarotData> {
 	private renderGuidance(guidance: TarotGuidance | undefined, name: string) {
 		if (!guidance) return nothing;
 		const sections: InterpSection[] = GUIDANCE_FIELDS.map(([key, label]) => ({
-			label,
+			label: this.t(label),
 			body: guidance[key] ?? '',
 		}));
 		return this.renderInterpretation(sections, name, 'Guidance');

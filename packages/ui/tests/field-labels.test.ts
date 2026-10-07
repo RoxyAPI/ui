@@ -151,3 +151,28 @@ describe('the two key spaces never collide', () => {
 		expect(fieldLabel('es', 'b')).toBeUndefined();
 	});
 });
+
+describe('the compiled-in English field labels', () => {
+	test('carry only names whose API English label differs from the humanized name, and the form-side resolver prefers them', async () => {
+		const { EN_FIELD_LABELS } = await import(
+			'../src/generated/field-labels-en.js'
+		);
+		const { humanize } = await import('../src/utils/string.js');
+		const { displayField } = await import('../src/utils/localized.js');
+		const entries = Object.entries(EN_FIELD_LABELS);
+		expect(entries.length).toBeGreaterThan(50);
+		const redundant = entries.filter(
+			([name, label]) => label === humanize(name),
+		);
+		expect(redundant).toEqual([]);
+		expect(EN_FIELD_LABELS.q).toBe('Search');
+		// English with no payload: the API English label, then humanize for a name it does not carry.
+		expect(displayField('en', 'q', EN_FIELD_LABELS.q)).toBe('Search');
+		expect(displayField('en', 'nosuchField', EN_FIELD_LABELS.nosuchField)).toBe(
+			'Nosuch Field',
+		);
+		// A payload label still wins over the English one.
+		registerFieldLabels('de', { fields: { q: 'Suche' }, enums: {} });
+		expect(displayField('de', 'q', EN_FIELD_LABELS.q)).toBe('Suche');
+	});
+});

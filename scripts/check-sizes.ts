@@ -40,7 +40,12 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// two kilobytes gzipped. The ceiling is set where that measurement lands plus
 	// room for the next few, and it is raised the same way: build, read the
 	// number, write down what moved it. Never raise it to make a run pass.
-	fullGzip: 165 * KB,
+	// Re-measured when the self-fetch form learned to read
+	// its choices from the API: 166.8 KB on a HEAD build, 173.8 KB after, of which the
+	// search-as-you-type picker is 2.4, the compiled-in English field labels 1.7,
+	// the option source table 0.3, the form and list chrome and the newly
+	// catalogued chrome calls the rest.
+	fullGzip: 175 * KB,
 	// The world basemap holds the map card at the cap, so shared form and formatter code sets the ceiling: 30.0 KB gz before the timezone city search, 30.1 after.
 	componentGzip: 31 * KB,
 	widgetsGzip: WIDGETS_BUDGET_BYTES,
@@ -65,7 +70,9 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// fields in one deploy: `ru` 22.8 KB, `hi` 21.8 KB, the Latin five
 	// 19.3 to 19.8 KB. Each domain has been costing roughly half a kilobyte per
 	// catalogue, so 26 KB is where coverage lands plus room for the next few, and
-	// it moves again by re-measuring, never by guessing.
+	// it moves again by re-measuring, never by guessing. Re-measured when the
+	// wider scan brought 47 more strings into every catalogue: `ru` 25.5 KB on a
+	// HEAD build, 26.3 KB after, so the ceiling is 28 KB.
 	//
 	// **Splitting the catalogue is the next lever but it cannot answer THIS gate,
 	// so do not reach for it here.** The published contract is one `<script>` per
@@ -76,7 +83,7 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// buy headroom here without breaking every consumer that loads the documented
 	// file. Not the API field labels either: those are about a sixth of the source,
 	// measured, and separating them buys almost nothing.
-	localeGzip: 26 * KB,
+	localeGzip: 28 * KB,
 	// The five self-hosted practitioner-theme subsets (Fraunces latin + latin-ext,
 	// Jost latin + latin-ext + cyrillic) measure 10 to 66 KB each, so the cap sits
 	// round above the largest of those with headroom for one more subset, never so
