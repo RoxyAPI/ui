@@ -238,7 +238,7 @@ const specs: ComponentSpec<HTMLElement>[] = [
 					graha: 'Lagna',
 					rashi: 'Libra',
 					longitude: 196.6,
-					nakshatra: { name: 'Swati', pada: 3, key: 14, lord: 'Rahu' },
+					nakshatra: { name: 'Swati', pada: 3, key: 15, lord: 'Rahu' },
 					isRetrograde: false,
 					house: 1,
 					awastha: 'Yuva',
