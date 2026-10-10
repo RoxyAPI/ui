@@ -135,7 +135,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 			.verdict.strong,
 			.verdict.favourable {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #14532d);
+				color: var(--_success-fg);
 			}
 			.verdict.mixed,
 			.verdict.caution {
@@ -144,7 +144,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 			}
 			.verdict.unfavourable {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 14%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.evidence {
 				color: var(--roxy-secondary, #475569);
@@ -255,7 +255,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 			}
 			.state.favourable {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #14532d);
+				color: var(--_success-fg);
 			}
 			.state.mixed {
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 16%, transparent);
@@ -263,7 +263,7 @@ export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
 			}
 			.state.unfavourable {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 14%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.window {
 				display: grid;

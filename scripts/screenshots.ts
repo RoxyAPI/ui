@@ -69,6 +69,7 @@ const TARGETS: Target[] = [
 	{ id: 'nakshatra', label: 'nakshatra-card' },
 	{ id: 'dosha', label: 'dosha-card' },
 	{ id: 'num', label: 'numerology-card' },
+	{ id: 'compound-number', label: 'compound-number' },
 	{ id: 'tarot', label: 'tarot-card' },
 	{ id: 'spread', label: 'tarot-spread' },
 	{ id: 'tarot-catalog', label: 'tarot-catalog' },

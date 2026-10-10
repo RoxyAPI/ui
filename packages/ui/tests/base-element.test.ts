@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, mock, test } from 'bun:test';
 // exercise the base in both modes. happy-dom is loaded by preload (bunfig.toml).
 import '../src/components/data.js';
 import '../src/components/dream-card.js';
+import '../src/components/endpoint-form.js';
 import { BASE_PROPS } from '../../../scripts/wrapper-meta.js';
 import { RoxyDataElement } from '../src/utils/base-element.js';
 import {
@@ -999,16 +1000,91 @@ describe('RoxyDataElement list chrome and the form that stays', () => {
 		el.remove();
 	});
 
-	test('error-message replaces the words of a failed self-fetch, and its absence keeps the API message', async () => {
-		globalThis.fetch = mock(async (url: string | URL) =>
-			String(url).includes('/schemas/') || String(url).includes('openapi')
-				? { ok: false, status: 404, json: async () => ({}) }
-				: {
-						ok: false,
-						status: 429,
-						json: async () => ({ error: 'Monthly quota exceeded' }),
-					},
-		) as unknown as typeof fetch;
+	test('a list asks for the largest page the API serves, on the first page and on every Show more', async () => {
+		const many = Array.from({ length: 120 }, (_, i) => ({
+			id: `s${i}`,
+			name: `Symbol ${i}`,
+			letter: 's',
+		}));
+		const calls: string[] = [];
+		globalThis.fetch = mock(async (url: string | URL) => {
+			const u = new URL(String(url));
+			if (u.pathname.includes('/schemas/'))
+				return {
+					ok: true,
+					status: 200,
+					json: async () => ({
+						title: 'Search dream symbols',
+						hasLang: false,
+						fields: [
+							{
+								key: 'limit',
+								name: 'limit',
+								kind: 'number',
+								required: false,
+								inQuery: true,
+								min: 1,
+								max: 50,
+								default: 20,
+							},
+							{
+								key: 'offset',
+								name: 'offset',
+								kind: 'number',
+								required: false,
+								inQuery: true,
+								min: 0,
+								default: 0,
+							},
+						],
+					}),
+				};
+			if (!u.pathname.endsWith('/dreams/symbols'))
+				return { ok: false, status: 404, json: async () => ({}) };
+			calls.push(u.search);
+			const offset = Number(u.searchParams.get('offset') ?? 0);
+			const limit = Number(u.searchParams.get('limit') ?? 20);
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({
+					total: many.length,
+					limit,
+					offset,
+					symbols: many.slice(offset, offset + limit),
+				}),
+			};
+		}) as unknown as typeof fetch;
+		const el = await mountSearch();
+		await flush(el);
+		expect(calls).toEqual(['?limit=50&offset=0']);
+		expect(rows(el)).toBe(50);
+		more(el)?.click();
+		await flush(el);
+		expect(calls.at(-1)).toBe('?limit=50&offset=50');
+		expect(rows(el)).toBe(100);
+		el.remove();
+	});
+
+	test('error-message replaces only a failure the API did not word, and its absence keeps the words the failure carried', async () => {
+		const answer = (failure: 'worded' | 'unworded' | 'dropped') => {
+			globalThis.fetch = mock(async (url: string | URL) => {
+				if (
+					String(url).includes('/schemas/') ||
+					String(url).includes('openapi')
+				)
+					return { ok: false, status: 404, json: async () => ({}) };
+				if (failure === 'dropped') throw new TypeError('Failed to fetch');
+				return {
+					ok: false,
+					status: failure === 'worded' ? 429 : 502,
+					json: async () =>
+						failure === 'worded'
+							? { error: 'Monthly quota exceeded' }
+							: JSON.parse('<html>Bad gateway</html>'),
+				};
+			}) as unknown as typeof fetch;
+		};
 		const mount = async (message?: string) => {
 			const el = document.createElement('roxy-dream-card') as ListEl;
 			el.setAttribute('data-endpoint', 'dreams/symbols/{id}');
@@ -1027,10 +1103,16 @@ describe('RoxyDataElement list chrome and the form that stays', () => {
 			await flush(el);
 			return el.shadowRoot?.querySelector('[part="error"]')?.textContent;
 		};
+		const own = 'Readings are resting for now.';
+		answer('worded');
 		expect(await mount()).toBe('Monthly quota exceeded');
-		expect(await mount('Readings are resting for now.')).toBe(
-			'Readings are resting for now.',
-		);
+		expect(await mount(own)).toBe('Monthly quota exceeded');
+		answer('unworded');
+		expect(await mount()).toBe('Request failed (502)');
+		expect(await mount(own)).toBe(own);
+		answer('dropped');
+		expect(await mount()).toBe('Failed to fetch');
+		expect(await mount(own)).toBe(own);
 		document.body.innerHTML = '';
 	});
 });

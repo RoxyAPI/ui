@@ -726,6 +726,23 @@ window.ROXY_UI_DEMOS = [
   });`,
 	}),
 	entry({
+		id: 'compound-number',
+		tag: 'roxy-compound-number',
+		seoLine: 'Chaldean compound number meaning with root, nature and symbolic name',
+		sdkCall: `  const { data } = await roxy.numerology.getCompoundNumber({
+    path: { number: '23' },
+  });`,
+	}),
+	entry({
+		id: 'compound-number-repeat',
+		tag: 'roxy-compound-number',
+		heading: 'Repeating compound number',
+		seoLine: 'A compound from 33 to 52 that shares the meaning of a lower number',
+		sdkCall: `  const { data } = await roxy.numerology.getCompoundNumber({
+    path: { number: '33' },
+  });`,
+	}),
+	entry({
 		id: 'num-chart',
 		tag: 'roxy-numerology-card',
 		heading: 'Numerology chart',

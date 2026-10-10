@@ -278,7 +278,7 @@ export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-weight: var(--roxy-weight-bold, 600);
 				background: color-mix(in srgb, var(--roxy-info, #2563eb) 16%, transparent);
-				color: var(--roxy-info-fg, #1e40af);
+				color: var(--_info-fg);
 			}
 			.pair {
 				display: flex;

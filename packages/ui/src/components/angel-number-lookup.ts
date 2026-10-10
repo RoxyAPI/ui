@@ -101,7 +101,7 @@ export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequence
 			}
 			.badge.flag {
 				background: color-mix(in srgb, var(--roxy-info, #0284c7) 16%, transparent);
-				color: var(--roxy-info-fg, #075985);
+				color: var(--_info-fg);
 			}
 			/* The tint carries the energy classification; the text stays --roxy-fg,
 			 * because accent ink on a tinted chip misses WCAG AA. */

@@ -48,6 +48,7 @@ const OVERRIDES: Record<string, { scale?: number; chartWidth?: string }> = {
 	'nakshatra-card': { scale: 1.1 },
 	'dosha-card': { scale: 1.1 },
 	'numerology-card': { scale: 1.12 },
+	'compound-number': { scale: 1.12 },
 	'dream-card': { scale: 1.1 },
 	'reference-card': { scale: 1.12 },
 };

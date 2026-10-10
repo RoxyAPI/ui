@@ -431,6 +431,13 @@ async function main() {
 				body: { fullName: 'Ada Lovelace', year: 1990, month: 1, day: 15 },
 			}),
 		),
+		run('compound-number', () =>
+			roxy.numerology.getCompoundNumber({ path: { number: '23' } }),
+		),
+		// 33 to 52 repeat a lower compound and most carry no name, a branch 23 never takes.
+		run('compound-number-repeat', () =>
+			roxy.numerology.getCompoundNumber({ path: { number: '33' } }),
+		),
 		run('tarot', () =>
 			roxy.tarot.getDailyCard({ body: { seed: 'roxy-ui-demo' } }),
 		),

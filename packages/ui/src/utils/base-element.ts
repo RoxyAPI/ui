@@ -182,7 +182,7 @@ export abstract class RoxyDataElement<
 	@property({ type: String, attribute: 'submit-label' })
 	submitLabel?: string;
 
-	/** The host page's own words for a failed self-fetch, printed in place of the message the request failed with; unset, the failure reads as the API worded it. */
+	/** The host page's own words for a failed self-fetch the API did not word (a dropped connection, a body with no message); a failure the API explains reads as the API worded it. */
 	@property({ type: String, attribute: 'error-message' })
 	errorMessage?: string;
 
@@ -586,6 +586,7 @@ export abstract class RoxyDataElement<
 			.serverIssues=${this.issues}
 			.apiRoute=${this.fetcher}
 			.autoload=${!this.selfFetched}
+			.fullPages=${!!this.listKey}
 			@roxy-submit=${this.onFormSubmit}
 		></roxy-endpoint-form>`;
 	}
@@ -669,8 +670,8 @@ export abstract class RoxyDataElement<
 		return this.endpoint ? html`${banner}${this.renderForm()}` : banner;
 	}
 
-	/** The failure line: the host page's own {@link errorMessage} when it set one, else the message the request failed with. */
+	/** The failure line: the message the request failed with, or the host page's own {@link errorMessage} in place of a failure the API did not word. */
 	private renderErrorBanner(message: string): unknown {
-		return html`<div class="roxy-error" role="alert" part="error">${this.errorMessage || this.t(message)}</div>`;
+		return html`<div class="roxy-error" role="alert" part="error">${(!this.fetcher.worded && this.errorMessage) || this.t(message)}</div>`;
 	}
 }

@@ -184,7 +184,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 			}
 			.horizon-pill.up {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.horizon-pill.down {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 55%, transparent);

@@ -8,6 +8,8 @@
  *
  * Two choices worth knowing. The counted legend chips read `планет: {{count}}` rather than `{{count}} планет`, because Russian declines the noun after a numeral (1 планета, 3 планеты, 12 планет) and this catalogue has no plural rules; the label form is correct for every count instead of correct for most. And the vocabulary is the one a working astrologer uses rather than the literal translation: `стихия` not `элемент`, `крест` not `модальность`, `трактовка` not `интерпретация`.
  *
+ * **A single-state word agrees with the siblings it is read beside, and the count of aspects is a separate key in the plural.** `Нейтральная` and `Смешанная` are feminine like `Благоприятная` and `Неблагоприятная`, so a KP verdict column reads one gender; `Гармоничный` and `Напряжённый` are masculine like the compatibility verdicts `Отличный` and `Трудный`, and a BaZi interaction tag takes the same pair so its two values agree.
+ *
  * Every entry below is attested in live Russian astrology copy rather than machine translated. What follows is the reasoning a maintainer needs; the attestation itself is recorded internally.
  *
  * **`Natal` and `Transiting` are NOUNS here (`Натал`, `Транзит`), not the adjectives `Натальный` and `Транзитный`, and that is the same class of fix as the numeral one above.** Both strings sit in front of an API-returned body name, and Russian adjectives agree in gender across all three genders the API returns (Марс m., Венера f., Солнце n.), so one invariant adjective is wrong on most rows. An invariable noun label is correct on all of them. The adjective forms ARE used wherever the noun they modify is fixed and known: `транзитных объектов`, `натальных домов`, `Сводка транзитных аспектов`.
@@ -101,9 +103,14 @@ export const ru: Record<ChromeString, string> = {
 
 	'Dominant element': 'Преобладающая стихия',
 	'Dominant modality': 'Преобладающий крест',
-	Harmonious: 'Гармоничные',
-	Challenging: 'Напряжённые',
-	Neutral: 'Нейтральные',
+	Harmonious: 'Гармоничный',
+	Challenging: 'Напряжённый',
+	Neutral: 'Нейтральная',
+	'Harmonious: {{count}}': 'Гармоничные: {{count}}',
+	'Challenging: {{count}}': 'Напряжённые: {{count}}',
+	'Neutral: {{count}}': 'Нейтральные: {{count}}',
+	'Harmonious aspects': 'Гармоничные аспекты',
+	'Challenging aspects': 'Напряжённые аспекты',
 	'All {{count}} bodies in the chart, placed by sign':
 		'Все объекты карты ({{count}}), распределённые по знакам',
 	'Element and modality distribution': 'Распределение по стихиям и крестам',
@@ -363,6 +370,12 @@ export const ru: Record<ChromeString, string> = {
 	Spiritual: 'Духовное',
 	Emotional: 'Эмоциональное',
 	Physical: 'Физическое',
+	'Compound number': 'Составное число',
+	'Root number {{n}}': 'Корневое число {{n}}',
+	Fortunate: 'Счастливое',
+	Unfortunate: 'Несчастливое',
+	'Mixed fortune': 'Переменчивая удача',
+	'Same meaning as {{n}}': 'Значение как у {{n}}',
 	Master: 'Мастер',
 	'Master number': 'Мастер-число',
 	'Birth day profile': 'Профиль дня рождения',
@@ -450,7 +463,7 @@ export const ru: Record<ChromeString, string> = {
 	'Element balance': 'Баланс стихий',
 	'Forecast digest': 'Сводка прогноза',
 	'Next 24 hours': 'Ближайшие 24 часа',
-	'Next {{count}} days': 'Ближайшие {{count}} дней',
+	'Next {{count}} days': 'Ближайшие дни: {{count}}',
 	Window: 'Окно',
 	'No notable events.': 'Заметных событий нет.',
 	'{{count}} events': 'событий: {{count}}',
@@ -564,6 +577,10 @@ export const ru: Record<ChromeString, string> = {
 	'Astrology compatibility': 'Астрологическая совместимость',
 	'Numerology compatibility': 'Нумерологическая совместимость',
 	'Biorhythm compatibility': 'Совместимость по биоритмам',
+	'{{percent}} in step': 'Совпадение {{percent}}',
+	'In sync': 'Синхронная',
+	Complementary: 'Дополняющая',
+	Opposing: 'Расходящаяся',
 	Breakdown: 'Разбор',
 	'Changing lines': 'Изменяющиеся черты',
 	Dynamics: 'Динамики',
@@ -694,12 +711,11 @@ export const ru: Record<ChromeString, string> = {
 	Aspects: 'Аспекты',
 	'Aspect list': 'Список аспектов',
 	'Aspect summary': 'Сводка аспектов',
-	Patterns: 'Конфигурации',
 	'{{status}} · orb {{orb}}° · str {{strength}}':
 		'{{status}} · орбис {{orb}}° · сила {{strength}}',
 	'Number analysis': 'Разбор числа',
-	'{{count}} digits': '{{count}} цифр',
-	'{{count}} unique': '{{count}} уникальных',
+	'{{count}} digits': 'цифр: {{count}}',
+	'{{count}} unique': 'уникальных: {{count}}',
 	'Digit root {{n}}': 'Цифровой корень {{n}}',
 	Palindrome: 'Палиндром',
 	Repeating: 'Повторяющееся',
@@ -707,7 +723,7 @@ export const ru: Record<ChromeString, string> = {
 	'Neutral energy': 'Нейтральная энергия',
 	'Cautionary energy': 'Предостерегающая энергия',
 	'Where you saw it': 'Где вы её увидели',
-	'Known angel number': 'Известное ангельское число',
+	'Known angel number': 'Известное число ангела',
 	'What to do next': 'Что делать дальше',
 	'Foundational digit root': 'Базовый цифровой корень',
 	'Foundational digit root ({{n}})': 'Базовый цифровой корень ({{n}})',
@@ -939,6 +955,7 @@ export const ru: Record<ChromeString, string> = {
 	'Average energy': 'Средняя энергия',
 	Events: 'События',
 	'Double days': 'Двойные дни',
+	'Double day': 'Двойной день',
 	'Triple day': 'Тройной день',
 	'ascending through zero': 'пересекает ноль при подъёме',
 	'descending through zero': 'пересекает ноль при спуске',
@@ -1096,7 +1113,7 @@ export const ru: Record<ChromeString, string> = {
 	Perimeter: 'Периметр',
 	'Inner ring': 'Внутреннее кольцо',
 	'Inner corner': 'Внутренний угол',
-	Mixed: 'Смешанный',
+	Mixed: 'Смешанная',
 
 	// Kabbalah: the gematria calculator.
 	Gematria: 'Гематрия',

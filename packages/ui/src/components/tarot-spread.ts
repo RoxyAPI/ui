@@ -85,15 +85,15 @@ export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
 			}
 			.answer.yes {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.answer.no {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.answer.maybe {
 				background: color-mix(in srgb, var(--roxy-warning, #ea580c) 16%, transparent);
-				color: var(--roxy-warning-fg, #9a3412);
+				color: var(--_warning-fg);
 			}
 
 			.chips {

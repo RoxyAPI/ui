@@ -183,12 +183,44 @@ export function fanOut<T>(
 	return placed;
 }
 
-/** An axis-aligned box in wheel units, for a horizontal label. */
-interface LabelBox {
-	x: number;
-	y: number;
+/** The ink of a horizontal mark on a wheel, in user units. */
+export interface MarkSize {
 	width: number;
 	height: number;
+}
+
+/** An axis-aligned box in wheel units, for a horizontal label. */
+interface LabelBox extends MarkSize {
+	x: number;
+	y: number;
+}
+
+/** The ink gap a wheel keeps between a body's glyph and its own degree label, in user units. */
+export const GLYPH_LABEL_GAP = 2;
+
+/** How far a horizontal box centred on a ray at `angleDeg` (0 at 3 o'clock) reaches along that ray either way. */
+export function rayReach(angleDeg: number, box: MarkSize): number {
+	const t = (angleDeg * Math.PI) / 180;
+	return (
+		(box.width / 2) * Math.abs(Math.cos(t)) +
+		(box.height / 2) * Math.abs(Math.sin(t))
+	);
+}
+
+/** How far apart along a ray at `angleDeg` (0 at 3 o'clock) two horizontal boxes must be centred for their ink to clear by `gap`: the half heights near 12 and 6 o'clock, the half widths near 3 and 9. */
+export function rayClearance(
+	angleDeg: number,
+	a: MarkSize,
+	b: MarkSize,
+	gap: number,
+): number {
+	const t = (angleDeg * Math.PI) / 180;
+	const along = (span: number, component: number) =>
+		component > 1e-9 ? (span + gap) / component : Number.POSITIVE_INFINITY;
+	return Math.min(
+		along((a.width + b.width) / 2, Math.abs(Math.cos(t))),
+		along((a.height + b.height) / 2, Math.abs(Math.sin(t))),
+	);
 }
 
 const boxesTouch = (a: LabelBox, b: LabelBox): boolean =>

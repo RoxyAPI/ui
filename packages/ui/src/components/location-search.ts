@@ -86,7 +86,7 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 			}
 			.search-error {
 				margin: var(--roxy-space-xs, 0.25rem) 0 0;
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 		`,

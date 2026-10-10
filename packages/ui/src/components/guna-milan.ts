@@ -111,11 +111,11 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 			}
 			.verdict.yes {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.verdict.no {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.recommendation {
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -249,11 +249,11 @@ export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
 			}
 			.tags .dosha {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.tags .cancel {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 18%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 		`,
 	];

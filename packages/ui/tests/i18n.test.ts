@@ -21,6 +21,9 @@ import { es } from '../src/locales/es.js';
 // different words on `Daytime` and `Day`, so it is the only page language that can
 // prove the two keys stayed apart.
 import { tr } from '../src/locales/tr.js';
+// Side effect: registers the French catalogue, which inflects the count words
+// for number, so it is the page language that proves a count and a state stay apart.
+import '../src/locales/fr.js';
 import { CENTER_GEOMETRY } from '../src/utils/bodygraph-render.js';
 import {
 	buildFormModel,
@@ -279,7 +282,7 @@ const HELPER_ARG = /\bthis\.([a-zA-Z][a-zA-Z0-9]*)\(\s*'([A-Z][^']{1,48})'/g;
  * These property NAMES are copy by definition, which is what makes the rule precise where a blanket scan of string literals is not: a selector, an id or a lookup key is never called a label, a note or a caption, so the shape carries no machine values to filter out. `heading` is deliberately absent because `manifest.ts` uses it for build metadata that no visitor reads.
  */
 const RECORD_COPY =
-	/(?:^|[\s{,(])(?:label|title|note|caption|summary|placeholder|hint)\s*:\s*'([A-Z][^']+)'/g;
+	/(?:^|[\s{,(])(?:label|title|note|caption|summary|placeholder|hint|aside)\s*:\s*'([A-Z][^']+)'/g;
 
 /**
  * A two-state label picked by a ternary, e.g. `${below ? 'Below' : 'Above'}`.
@@ -966,6 +969,7 @@ describe('shipped locales', () => {
 				'Fix',
 				'Motor',
 				'Neutral',
+				'Neutral: {{count}}',
 				'Person 1',
 				'Person 2',
 				'Person A',
@@ -1009,10 +1013,8 @@ describe('shipped locales', () => {
 				'Shadbala',
 				'Sthana',
 				'{{component}} Bala',
-				'{{planet}} Shadbala',
 				'Gochara',
 				'Arudha Lagna',
-				'Chandra lagna',
 				'Lagna',
 				'Phase',
 				'Upapada',
@@ -1071,8 +1073,10 @@ describe('shipped locales', () => {
 			// `Cardinal`, `Mutable` and `Mut` are Spanish words that coincide with
 			// the English; `No` is the same word in both. `Aura`, `Motor`, `Color`,
 			// `Base` and `Variables` are the Spanish Human Design words, and
-			// `Bodygraph` is the loanword the API's Spanish prose prints.
+			// `Bodygraph` is the loanword the API's Spanish prose prints. `Neutral`
+			// is the gender-invariant Spanish adjective a single state takes.
 			es: [
+				'Neutral',
 				'Koota',
 				// `Eclipse` and `Eclipses` are the Spanish words, spelled exactly as
 				// the English. Both are correct translations rather than gaps.
@@ -2559,6 +2563,190 @@ describe('the daylight half and the calendar day are two keys', () => {
 		document.body.appendChild(el);
 		await settled(el);
 		expect(parts(el, '.pos')).toEqual(['Yıl', 'Ay', 'Gün', 'Saat']);
+		el.remove();
+	});
+});
+
+/**
+ * A count of aspects and the state of one thing are two senses of `Harmonious`, `Challenging` and `Neutral`, and only a render can tell them apart.
+ *
+ * @remarks
+ * The six summary pills count aspects (`Neutral: 3`), which French writes in the plural, while the BaZi interaction tag and the zodiac day relation name the state of ONE thing, which it writes in the singular. English spells both the same word, so one key per word would make every French state read as a plural or every count as a singular. French proves the split because it inflects all three words for number.
+ *
+ * Sabotage-verified: pointing the pills back at the bare words, or the state sites at the count keys, turns these red while every static gate stays green.
+ */
+describe('a count legend and a single state are two keys', () => {
+	const text = (el: Element, selector: string): string[] =>
+		[
+			...((
+				el as unknown as { shadowRoot: ShadowRoot }
+			).shadowRoot?.querySelectorAll(selector) ?? []),
+		].map((n) => (n.textContent ?? '').replace(/\s+/g, ' ').trim());
+
+	test('the aspect summary counts in the plural', async () => {
+		document.documentElement.lang = 'fr';
+		const el = document.createElement('roxy-aspects-table');
+		(el as unknown as { data: unknown }).data = {
+			aspects: [
+				{
+					planet1: 'Sun',
+					planet2: 'Moon',
+					type: 'TRINE',
+					angle: 120,
+					orb: 1,
+					strength: 90,
+					isApplying: true,
+				},
+			],
+			summary: {
+				total: 6,
+				harmonious: 3,
+				challenging: 2,
+				neutral: 1,
+				byType: {},
+			},
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const pills = text(el, '.pill');
+		expect(pills).toContain('Harmoniques: 3');
+		expect(pills).toContain('Dissonants: 2');
+		expect(pills).toContain('Neutres: 1');
+		el.remove();
+	});
+
+	test('a BaZi interaction tag names its state in the singular', async () => {
+		document.documentElement.lang = 'fr';
+		const el = document.createElement('roxy-bazi-chart');
+		(el as unknown as { data: unknown }).data = {
+			pillars: ['year', 'month', 'day', 'hour'].map((position) => ({
+				position,
+				stem: { chinese: '戊', pinyin: 'wu', element: 'Earth' },
+				branch: {
+					chinese: '辰',
+					pinyin: 'chen',
+					element: 'Earth',
+					animal: 'Dragon',
+				},
+			})),
+			interactions: [
+				{
+					type: 'six-combination',
+					quality: 'harmonious',
+					positions: ['year', 'day'],
+				},
+				{
+					type: 'six-clash',
+					quality: 'challenging',
+					positions: ['month', 'hour'],
+				},
+			],
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		expect(text(el, '.interaction .tag')).toEqual(['Harmonieux', 'Tendu']);
+		el.remove();
+	});
+
+	test('the zodiac day relation names its state in the singular', async () => {
+		document.documentElement.lang = 'fr';
+		const el = document.createElement('roxy-zodiac-card');
+		(el as unknown as { data: unknown }).data = {
+			animal: 'Dragon',
+			relationship: 'neutral',
+			overview: 'A steady day.',
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const facts = text(el, '[part~="details"] b');
+		expect(facts[0]).toBe('Neutre');
+		el.remove();
+	});
+});
+
+/**
+ * The two reading asides a source scan cannot see are written in the page language.
+ *
+ * @remarks
+ * Both are joined from parts at the call site, so neither the record scan nor the markup scan reads them; a render under Spanish is the only assertion that can. Sabotage-verified by restoring the English join and the raw severity enum.
+ */
+describe('reading asides built from parts are translated', () => {
+	const asides = (el: Element): string[] =>
+		[
+			...((
+				el as unknown as { shadowRoot: ShadowRoot }
+			).shadowRoot?.querySelectorAll('.interp-aside') ?? []),
+		].map((n) => (n.textContent ?? '').replace(/\s+/g, ' ').trim());
+
+	test('a biorhythm pair row prints its alignment and phase in Spanish', async () => {
+		document.documentElement.lang = 'es';
+		const el = document.createElement('roxy-compatibility-card');
+		el.setAttribute('mode', 'biorhythm');
+		(el as unknown as { data: unknown }).data = {
+			overallScore: 61,
+			cycles: {
+				emotional: { alignment: 55, phase: 'complementary', description: 'x' },
+			},
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const [aside] = asides(el);
+		expect(aside).toContain('de sintonía');
+		expect(aside).toContain('Complementario');
+		expect(aside).not.toContain('in step');
+		el.remove();
+	});
+
+	test('a critical day names its cycle and a double severity in Spanish', async () => {
+		document.documentElement.lang = 'es';
+		const el = document.createElement('roxy-biorhythm-chart');
+		el.setAttribute('mode', 'critical-days');
+		(el as unknown as { data: unknown }).data = {
+			startDate: '2026-10-01',
+			endDate: '2026-10-31',
+			totalCriticalDays: 1,
+			criticalDays: [
+				{
+					date: '2026-10-10',
+					cycle: 'physical',
+					period: 23,
+					direction: 'ascending',
+					severity: 'double',
+					advisory: 'x',
+				},
+			],
+			doubleCriticalDays: ['2026-10-10'],
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		expect(asides(el)).toEqual([`${es.Physical} · ${es['Double day']}`]);
+		el.remove();
+	});
+
+	test('the daily spotlight and cycle rows name their cycles in Spanish', async () => {
+		document.documentElement.lang = 'es';
+		const el = document.createElement('roxy-biorhythm-chart');
+		(el as unknown as { data: unknown }).data = {
+			date: '2026-10-10',
+			spotlight: {
+				cycle: 'emotional',
+				value: 40,
+				phase: 'rising',
+				message: 'x',
+			},
+			quickRead: { physical: 0.5, emotional: 0.2 },
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const root = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot;
+		const rows = [...root.querySelectorAll('.bar > span:first-child')].map(
+			(n) => n.textContent?.trim(),
+		);
+		expect(rows).toEqual([es.Physical, es.Emotional]);
+		const lead = (
+			el as unknown as { shadowRoot: ShadowRoot }
+		).shadowRoot.querySelector('.spotlight strong');
+		expect(lead?.textContent?.trim()).toBe(es.Emotional);
 		el.remove();
 	});
 });

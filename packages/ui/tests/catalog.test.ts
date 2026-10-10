@@ -19,12 +19,17 @@ import {
 	partsInSource,
 	sourcePathForSlug,
 } from '../../../scripts/component-parts.js';
+import { type SideRead, sideReadsFor } from '../../../scripts/side-reads.js';
 import catalog from '../components-catalog.json';
+import '../src/index.js';
+import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
+import { OPTION_SOURCES } from '../src/generated/option-sources.js';
 
 const components = catalog.components as Array<{
 	tag: string;
 	slug: string;
 	parts?: string[];
+	sideReads?: SideRead[];
 }>;
 
 describe('published part vocabulary', () => {
@@ -182,6 +187,48 @@ describe('published part vocabulary', () => {
 					exposes: true,
 				},
 			);
+		}
+	});
+});
+
+describe('published side reads', () => {
+	test('the committed catalog matches a fresh derivation', () => {
+		for (const c of components) {
+			expect({ slug: c.slug, sideReads: c.sideReads ?? [] }).toEqual({
+				slug: c.slug,
+				sideReads: sideReadsFor(c.slug, ENDPOINT_BINDINGS[c.tag] ?? []),
+			});
+		}
+	});
+
+	test('every read a live element sends is published, and nothing else', () => {
+		// Read from the registered elements and the table the form reads at runtime, not from the source scan the generator uses.
+		for (const c of components) {
+			const el = document.createElement(c.tag) as unknown as {
+				rowDetail?: { path: string };
+				listKey?: string;
+			};
+			const sent = (ENDPOINT_BINDINGS[c.tag] ?? []).flatMap((e) =>
+				Object.entries(OPTION_SOURCES[`${e.method} ${e.path}`] ?? {}).map(
+					([field, source]) => `${e.operationId} ${field} ${source.path}`,
+				),
+			);
+			if (el.rowDetail) sent.push(`row /${el.rowDetail.path}`);
+			const published = (c.sideReads ?? [])
+				.filter((r) => r.kind !== 'more')
+				.map((r) =>
+					r.kind === 'row'
+						? `row ${r.path}`
+						: `${r.endpoint} ${r.field} ${r.path}`,
+				);
+			expect({ slug: c.slug, reads: published.sort() }).toEqual({
+				slug: c.slug,
+				reads: sent.sort(),
+			});
+			expect({
+				slug: c.slug,
+				pages: (c.sideReads ?? []).some((r) => r.kind === 'more'),
+			}).toEqual({ slug: c.slug, pages: !!el.listKey });
 		}
 	});
 });

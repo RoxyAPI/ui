@@ -108,6 +108,11 @@ export const de: Record<ChromeString, string> = {
 	Harmonious: 'Harmonisch',
 	Challenging: 'Herausfordernd',
 	Neutral: 'Neutral',
+	'Harmonious: {{count}}': 'Harmonisch: {{count}}',
+	'Challenging: {{count}}': 'Herausfordernd: {{count}}',
+	'Neutral: {{count}}': 'Neutral: {{count}}',
+	'Harmonious aspects': 'Harmonische Aspekte',
+	'Challenging aspects': 'Herausfordernde Aspekte',
 	'All {{count}} bodies in the chart, placed by sign':
 		'Alle {{count}} Himmelskörper des Horoskops, nach Zeichen geordnet',
 	'Element and modality distribution': 'Verteilung nach Element und Qualität',
@@ -323,7 +328,7 @@ export const de: Record<ChromeString, string> = {
 	Hora: 'Hora',
 	'Hora periods': 'Planetenstunden',
 	'Vedic kundli': 'Vedisches Geburtshoroskop',
-	'Chandra lagna': 'Chandra lagna',
+	'Chandra lagna': 'Chandra Lagna',
 	'No ascendant in this chart, so the houses are not numbered.':
 		'Kein Aszendent in diesem Chart, daher sind die Häuser nicht nummeriert.',
 	combust: 'verbrannt',
@@ -350,9 +355,9 @@ export const de: Record<ChromeString, string> = {
 	'Vargottama planets': 'Vargottama-Planeten',
 	'{{chart}} divisional chart with twelve sign houses':
 		'Teilungshoroskop {{chart}} mit zwölf Zeichenhäusern',
-	'Sidereal frame: {{frame}}': 'Siderischer Rahmen: {{frame}}',
+	'Sidereal frame: {{frame}}': 'Ayanamsa: {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
-		'Siderischer Rahmen: {{frame}}, {{degrees}}° abgezogen',
+		'Ayanamsa: {{frame}}, {{degrees}}° abgezogen',
 
 	// German spends one noun on both senses, so the two keys carry the same
 	// word on purpose: the daylight half against the night, and the calendar day.
@@ -369,6 +374,12 @@ export const de: Record<ChromeString, string> = {
 	Spiritual: 'Spirituell',
 	Emotional: 'Emotional',
 	Physical: 'Körperlich',
+	'Compound number': 'Zusammengesetzte Zahl',
+	'Root number {{n}}': 'Wurzelzahl {{n}}',
+	Fortunate: 'Glücklich',
+	Unfortunate: 'Unglücklich',
+	'Mixed fortune': 'Wechselhaftes Glück',
+	'Same meaning as {{n}}': 'Gleiche Deutung wie {{n}}',
 	Master: 'Meister',
 	'Master number': 'Meisterzahl',
 	'Birth day profile': 'Geburtstagsprofil',
@@ -571,6 +582,10 @@ export const de: Record<ChromeString, string> = {
 	'Astrology compatibility': 'Astrologie-Kompatibilität',
 	'Numerology compatibility': 'Numerologie-Kompatibilität',
 	'Biorhythm compatibility': 'Biorhythmus-Kompatibilität',
+	'{{percent}} in step': '{{percent}} Übereinstimmung',
+	'In sync': 'Im Gleichklang',
+	Complementary: 'Ergänzend',
+	Opposing: 'Gegenläufig',
 	Breakdown: 'Aufschlüsselung',
 	'Changing lines': 'Wandelnde Linien',
 	Dynamics: 'Dynamiken',
@@ -702,7 +717,6 @@ export const de: Record<ChromeString, string> = {
 	Aspects: 'Aspekte',
 	'Aspect list': 'Aspektliste',
 	'Aspect summary': 'Aspektübersicht',
-	Patterns: 'Figuren',
 	'{{status}} · orb {{orb}}° · str {{strength}}':
 		'{{status}} · Orbis {{orb}}° · Stärke {{strength}}',
 	'Number analysis': 'Zahlenanalyse',
@@ -775,14 +789,14 @@ export const de: Record<ChromeString, string> = {
 	'Bhava Bala {{value}} virupas': 'Bhava Bala {{value}} Virupas',
 	'{{component}} {{value}} virupas': '{{component}} {{value}} Virupas',
 	Shadbala: 'Shadbala',
-	'Shadbala planetary strength': 'Shadbala Planetenstärke',
+	'Shadbala planetary strength': 'Shadbala-Planetenstärke',
 	'{{count}} planets ranked by strength':
 		'{{count}} Planeten nach Stärke geordnet',
 	'Planet strength bars': 'Balken der Planetenstärke',
 	'Strength component legend': 'Legende der Stärkekomponenten',
 	'Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give malefic ones. Both are in virupas and are read together, since a planet can be strong and still deliver hardship.':
 		'Ishta Phala ist die Fähigkeit, günstige Ergebnisse zu geben, Kashta Phala die Fähigkeit, ungünstige zu geben. Beide stehen in Virupas und werden zusammen gelesen, denn ein Planet kann stark sein und dennoch Härte bringen.',
-	'{{planet}} Shadbala': '{{planet}} Shadbala',
+	'{{planet}} Shadbala': '{{planet}}-Shadbala',
 	'rank {{n}}': 'Rang {{n}}',
 	'Strength components for {{planet}}': 'Stärkekomponenten für {{planet}}',
 	Adequate: 'Ausreichend',
@@ -976,6 +990,7 @@ export const de: Record<ChromeString, string> = {
 	'Average energy': 'Durchschnittliche Energie',
 	Events: 'Ereignisse',
 	'Double days': 'Doppeltage',
+	'Double day': 'Doppeltag',
 	'Triple day': 'Dreifachtag',
 	'ascending through zero': 'im Aufstieg durch die Nulllinie',
 	'descending through zero': 'im Abstieg durch die Nulllinie',

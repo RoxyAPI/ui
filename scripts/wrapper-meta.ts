@@ -70,6 +70,7 @@ export const DATA_TYPES: Record<string, string> = {
 	'nakshatra-card': 'NakshatraResponse',
 	'numerology-card':
 		'CalculateLifePathResponse | CalculateExpressionResponse | CalculateSoulUrgeResponse | CalculatePersonalityResponse | CalculateBirthDayResponse | CalculateMaturityResponse | GetDailyNumberResponse | CalculatePersonalDayResponse | CalculatePersonalMonthResponse | CalculatePersonalYearResponse | GenerateNumerologyChartResponse',
+	'compound-number': 'GetCompoundNumberResponse',
 	'reference-card':
 		'GetZodiacSignResponse | GetPlanetMeaningResponse | GetRashiResponse | GetTrigramResponse | GetGateResponse | GetCenterResponse | GetNumberMeaningResponse | GetCompoundNumberResponse | GetAvasthaResponse',
 	'tarot-card': 'GetCardResponse | GetDailyCardResponse',
@@ -229,7 +230,7 @@ export const BASE_PROPS: ConfigPropDef[] = [
 		prop: 'errorMessage',
 		type: 'string',
 		comment:
-			'Your own words for a failed self-fetch, printed in place of the message the request failed with (a spent quota, a network fault, a rejected key). Unset, the failure reads as the API worded it.',
+			'Your own words for a failed self-fetch the API did not explain (a dropped connection, a response with no message). A failure the API explains, such as a spent quota, reads as the API worded it.',
 	},
 	{
 		prop: 'attribution',

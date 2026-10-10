@@ -180,6 +180,10 @@
       "description": "Numerology card for life path, expression, soul urge, personality, personal year, or full chart"
     },
     {
+      "name": "roxy-compound-number",
+      "description": "Chaldean compound number card with the numeral, its symbolic name, root number, fortunate or unfortunate nature, the lower number it repeats, and the meaning"
+    },
+    {
       "name": "roxy-gematria",
       "description": "Gematria calculator that shows its work: every Hebrew spelling the input can take, the value under each cipher with the ones that are not single valued, the per letter breakdown right to left, the two substitution ciphers, the Latin alphabet ciphers and the curated words of equal value"
     },
@@ -293,7 +297,7 @@
     },
     {
       "name": "roxy-reference-card",
-      "description": "Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, numerology number or compound number"
+      "description": "Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, or numerology number"
     },
     {
       "name": "roxy-endpoint-form",

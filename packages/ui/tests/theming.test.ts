@@ -278,7 +278,7 @@ describe('status ink is the -fg token wherever a status tint is the background',
 						`background[^;]*color-mix\\([^;]*--roxy-${name}[,)\\s]`,
 					).test(block);
 					if (!tinted) continue;
-					const ink = /color:\s*var\(\s*(--roxy-[\w-]+)/.exec(block)?.[1];
+					const ink = /color:\s*var\(\s*(--_?[\w-]+)/.exec(block)?.[1];
 					if (ink && !ink.endsWith('-fg')) {
 						offenders.push(`${rel}: ${name} tint painted with ${ink}`);
 					}
@@ -288,6 +288,86 @@ describe('status ink is the -fg token wherever a status tint is the background',
 		expect(
 			offenders,
 			`Use the -fg partner for ink on a status tint:\n  ${offenders.join('\n  ')}`,
+		).toEqual([]);
+	});
+});
+
+/** Linear sRGB channel of a two-digit hex pair, and back to the nearest byte. */
+const toLinear = (hex: string): number => {
+	const c = Number.parseInt(hex, 16) / 255;
+	return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+};
+const toByte = (c: number): string =>
+	Math.round(
+		255 *
+			Math.min(
+				1,
+				Math.max(
+					0,
+					c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055,
+				),
+			),
+	)
+		.toString(16)
+		.padStart(2, '0');
+
+/** `color-mix(in oklab, {hex} 70%, black)` resolved to sRGB hex: black is the oklab origin, so the mix scales L, a and b by 0.7. */
+function mixTowardBlack(hex: string): string {
+	const [r, g, b] = [1, 3, 5].map((i) => toLinear(hex.slice(i, i + 2))) as [
+		number,
+		number,
+		number,
+	];
+	const lms = [
+		0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
+		0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
+		0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b,
+	].map((v) => (0.7 * Math.cbrt(v)) ** 3) as [number, number, number];
+	const [l, m, s] = lms;
+	return `#${[
+		4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+		-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+		-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+	]
+		.map(toByte)
+		.join('')}`;
+}
+
+/** A page that loads no tokens reads one fallback per status ink, declared once on the shared host and equal to the light derivation it stands in for. */
+describe('status ink fallbacks', () => {
+	const BASE = readFileSync(
+		new URL('../src/utils/base-styles.ts', import.meta.url),
+		'utf8',
+	);
+
+	for (const status of ['success', 'warning', 'danger', 'info'] as const) {
+		test(`--_${status}-fg falls back to the resolved light --roxy-${status}-fg`, () => {
+			const base = new RegExp(`--roxy-${status}: (#[0-9a-f]{6});`).exec(
+				TOKENS_CSS,
+			)?.[1];
+			expect(base).toBeDefined();
+			expect(BASE).toContain(
+				`--_${status}-fg: var(--roxy-${status}-fg, ${mixTowardBlack(base as string)});`,
+			);
+		});
+	}
+
+	test('no component or helper writes a status ink fallback of its own', () => {
+		const offenders: string[] = [];
+		for (const dir of ['components', 'utils']) {
+			for (const rel of readdirSync(`packages/ui/src/${dir}`)) {
+				if (!rel.endsWith('.ts')) continue;
+				const src = readFileSync(`packages/ui/src/${dir}/${rel}`, 'utf8');
+				for (const m of src.matchAll(
+					/(?<!--_[a-z]+-fg: )var\(\s*--roxy-[\w-]+-fg\s*,\s*#/g,
+				)) {
+					offenders.push(`${dir}/${rel}: ${m[0]}`);
+				}
+			}
+		}
+		expect(
+			offenders,
+			`Read var(--_{status}-fg) instead:\n  ${offenders.join('\n  ')}`,
 		).toEqual([]);
 	});
 });

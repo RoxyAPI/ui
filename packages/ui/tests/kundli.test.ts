@@ -147,3 +147,65 @@ describe('the chart marks the graha states its response carries', () => {
 		expect(mercury?.war?.winner).toBe('Sun');
 	});
 });
+
+/**
+ * A crowded North cell: the rasi number stays clear above the graha stack and
+ * the stack stays inside the chart, in every cell, for three and four grahas.
+ * Read off the `y` the renderer writes, as relationships rather than coordinates.
+ */
+describe('a North cell never prints its number into its grahas', () => {
+	const SIGNS = [
+		'aries',
+		'taurus',
+		'gemini',
+		'cancer',
+		'leo',
+		'virgo',
+		'libra',
+		'scorpio',
+		'sagittarius',
+		'capricorn',
+		'aquarius',
+		'pisces',
+	];
+	const GRAHAS = ['Sun', 'Venus', 'Rahu', 'Mars'];
+	const crowded = (rashi: string, count: number) => ({
+		Lagna: { graha: 'Lagna', rashi: 'gemini' },
+		...Object.fromEntries(
+			GRAHAS.slice(0, count).map((graha, i) => [
+				graha,
+				{
+					graha,
+					rashi,
+					longitude: SIGNS.indexOf(rashi) * 30 + 1 + i * 7,
+				},
+			]),
+		),
+	});
+
+	for (const count of [3, 4]) {
+		test(`${count} grahas`, async () => {
+			const faults: string[] = [];
+			for (const rashi of SIGNS) {
+				const el = await mount(crowded(rashi, count), 'north');
+				const y = (n: Element) => Number(n.getAttribute('y'));
+				const frame = root(el).querySelector('rect.line') as Element;
+				const floor =
+					Number(frame.getAttribute('y')) +
+					Number(frame.getAttribute('height'));
+				const cell = [...root(el).querySelectorAll('g.cell')].find(
+					(g) => g.querySelectorAll('.planet-text').length === count,
+				) as Element;
+				const number = y(cell.querySelector('.rashi-num') as Element);
+				const lines = [...cell.querySelectorAll('.planet-text')].map(y);
+				const pitch = (lines[1] as number) - (lines[0] as number);
+				if ((lines[0] as number) - number < pitch)
+					faults.push(`${rashi}: number ${number} on line ${lines[0]}`);
+				if ((lines.at(-1) as number) + pitch / 2 > floor)
+					faults.push(`${rashi}: last line ${lines.at(-1)} past ${floor}`);
+				el.remove();
+			}
+			expect(faults).toEqual([]);
+		});
+	}
+});

@@ -62,10 +62,11 @@ const NATAL_R = 94;
 const TRANSIT_R = 124;
 const TRANSIT_LINE_R = 112;
 const NATAL_LINE_R = 104;
-const NATAL_DEG_R = 83;
-const HUB_R = 70;
+// The natal degree band at the top of the ring: the glyph and label half heights plus the ink gap inside the ring.
+const NATAL_DEG_R = NATAL_R - (0.95 * 13 + 0.9 * 7) / 2 - 2;
+const HUB_R = 46;
 const BAND_R = 140;
-const HOUSE_NUM_R = 58;
+const HOUSE_NUM_R = 34;
 
 /** Where the component should place a longitude, derived from first principles. */
 function expected(longitude: number, radius: number, ascendant = 0) {

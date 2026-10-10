@@ -7,9 +7,8 @@
 import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { LIVE_SPEC_URL as SPEC_URL } from './spec-diff.js';
 
-const SPEC_URL =
-	process.env.ROXY_OPENAPI_URL ?? 'https://roxyapi.com/api/v2/openapi.json';
 const SPEC_PATH = 'specs/openapi.json';
 
 /** Remote MCP root. Points at a local API the same way `ROXY_OPENAPI_URL` points the spec fetch. */

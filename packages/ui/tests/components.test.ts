@@ -195,7 +195,7 @@ const specs: ComponentSpec<HTMLElement>[] = [
 		ctor: RoxyMoonPhase as unknown as new () => HTMLElement,
 		sample: {
 			phase: 'waxing crescent',
-			illumination: 0.32,
+			illumination: 32,
 			age: 4.2,
 			sign: 'Taurus',
 			meaning: {
@@ -3634,7 +3634,7 @@ describe('hide-readings', () => {
 				'ZZREADINGASPECTS',
 				'ZZREADINGPATTERN',
 			],
-			data_: ['2 planets', 'T-Square', '88% tight', 'Harmonious 3'],
+			data_: ['2 planets', 'T-Square', '88% tight', 'Harmonious: 3'],
 		},
 		{
 			name: 'roxy-positions-table',
@@ -3795,7 +3795,7 @@ describe('hide-readings', () => {
 				},
 			},
 			readings: ['ZZREADINGDAILY', 'ZZREADINGADVICE', 'ZZREADINGSPOT'],
-			data_: ['physical', 'Energy 8/10', '50%'],
+			data_: ['Physical', 'Energy 8/10', '50%'],
 			readingsSection: false,
 		},
 		{
@@ -4480,7 +4480,7 @@ describe('hide-readings', () => {
 			data: {
 				phase: 'Waxing Gibbous Moon',
 				date: '2026-08-07',
-				illumination: 0.78,
+				illumination: 78,
 				age: 10.2,
 				sign: 'Sagittarius',
 				distance: 384400,
@@ -5649,6 +5649,26 @@ describe('wheel type sizes match the stylesheet', () => {
 		);
 	});
 
+	test('a retrograde mark inside a wheel label takes the label size, whatever a table rule sets', () => {
+		for (const tag of [
+			'roxy-natal-chart',
+			'roxy-transit-wheel',
+			'roxy-synastry-chart',
+		]) {
+			const ctor = customElements.get(tag) as unknown as {
+				styles: ReadonlyArray<{ cssText: string }>;
+			};
+			const cssText = ctor.styles.map((st) => st.cssText).join('\n');
+			const sizedElsewhere = /(^|[\s}])\.retro\s*{[^}]*font-size/m.test(
+				cssText,
+			);
+			const inherits = /\.planet-deg \.retro\s*{[^}]*font-size:\s*inherit/.test(
+				cssText,
+			);
+			expect(!sizedElsewhere || inherits, tag).toBe(true);
+		}
+	});
+
 	test('the local space compass', () => {
 		expect(declared('roxy-local-space-compass', '.body-glyph')).toBe(
 			COMPASS_TYPE_SIZES.glyph,
@@ -6159,6 +6179,178 @@ describe('natal wheel degree labels never print over each other', () => {
 		expect(el.shadowRoot?.querySelectorAll('.planet-leader')).toHaveLength(0);
 		el.remove();
 	});
+});
+
+/**
+ * A body's glyph against its OWN degree label, all the way round the ring.
+ *
+ * @remarks
+ * A horizontal label meets its glyph by their heights at 12 and 6 o'clock and by
+ * their widths at 3 and 9, so a band tuned clean at the top prints under the
+ * glyph at the sides. Twelve bodies thirty degrees apart, so nothing fans, read
+ * at three offsets: every ten degrees of the ring, the four cardinal points
+ * among them. The ink is the measured one at the size in play, a degree label at
+ * the em widths the renderer fans by plus the retrograde mark, and the label
+ * must also stay outside the innermost ring line, inside which the aspect lines
+ * or the house numbers are drawn. Read off the `x` and `y` the renderer writes.
+ */
+describe('a wheel never prints a glyph over its own degree label', () => {
+	type Size = { glyph: number; degree: number };
+	const PHONE: Size = { glyph: 18, degree: 10 };
+	const NAMES = [
+		'Sun',
+		'Moon',
+		'Mercury',
+		'Venus',
+		'Mars',
+		'Jupiter',
+		'Saturn',
+		'Uranus',
+		'Neptune',
+		'Pluto',
+		'Chiron',
+		'North Node',
+	];
+	const ring = (offset: number, retro: boolean) =>
+		NAMES.map((name, i) => ({
+			name,
+			longitude: offset + i * 30 + 3.3,
+			sign: 'Aries',
+			degree: 3.3,
+			isRetrograde: retro,
+		}));
+	const labelBox = (deg: Element, size: Size) => {
+		const text = deg.textContent?.trim() ?? '';
+		return {
+			text,
+			x: Number(deg.getAttribute('x')),
+			y: Number(deg.getAttribute('y')),
+			w:
+				((text.includes("'") ? 3.4 : 1.85) + (text.includes('℞') ? 1.25 : 0)) *
+				size.degree,
+			h: 0.9 * size.degree,
+		};
+	};
+	/** Every fault on the ring: a label whose ink meets its own glyph, or crosses the innermost ring line. */
+	const faults = (
+		el: Element,
+		wheel: {
+			glyph: string;
+			glyphEm: { w: number; h: number };
+			centre: number;
+			hub: boolean;
+		},
+		size: Size,
+	): string[] => {
+		const root = el.shadowRoot as ShadowRoot;
+		const hub = Math.min(
+			...[...root.querySelectorAll('circle.wheel-line')].map((c) =>
+				Number(c.getAttribute('r')),
+			),
+		);
+		const out: string[] = [];
+		for (const deg of root.querySelectorAll('.planet-deg')) {
+			const glyph = deg.parentElement?.querySelector(wheel.glyph);
+			if (!glyph) continue;
+			const l = labelBox(deg, size);
+			const dx = Math.abs(l.x - Number(glyph.getAttribute('x')));
+			const dy = Math.abs(l.y - Number(glyph.getAttribute('y')));
+			const own = Math.max(
+				dx - (wheel.glyphEm.w * size.glyph + l.w) / 2,
+				dy - (wheel.glyphEm.h * size.glyph + l.h) / 2,
+			);
+			if (own <= 0) out.push(`${l.text} on its glyph by ${(-own).toFixed(1)}`);
+			const inner = Math.hypot(
+				Math.max(0, Math.abs(l.x - wheel.centre) - l.w / 2),
+				Math.max(0, Math.abs(l.y - wheel.centre) - l.h / 2),
+			);
+			if (wheel.hub && inner <= hub)
+				out.push(`${l.text} on the hub by ${(hub - inner).toFixed(1)}`);
+		}
+		return out;
+	};
+	/** Lifts the read-back type sizes to the phone ones, as the container query does. */
+	const atSize = async (el: Element, size: Size) => {
+		Object.assign((el as unknown as { type: { size: Size } }).type.size, size);
+		(el as unknown as { requestUpdate(): void }).requestUpdate();
+		await settled(el);
+	};
+	const WHEELS = [
+		{
+			tag: 'roxy-natal-chart',
+			wide: NATAL_TYPE_SIZES,
+			glyph: 'text.planet-glyph',
+			glyphEm: { w: 0.95, h: 0.95 },
+			centre: 210,
+			hub: true,
+			data: (planets: object[]) => ({
+				planets,
+				houses: [],
+				aspects: [],
+				ascendant: { longitude: 0 },
+			}),
+		},
+		{
+			tag: 'roxy-transit-wheel',
+			wide: TRANSIT_TYPE_SIZES,
+			glyph: 'text.natal-glyph',
+			glyphEm: { w: 0.95, h: 0.95 },
+			centre: 200,
+			hub: true,
+			data: (natalPlanets: object[]) => ({
+				natalPlanets,
+				transitPlanets: [],
+				aspects: [],
+			}),
+		},
+		{
+			tag: 'roxy-synastry-chart',
+			wide: SYNASTRY_TYPE_SIZES,
+			glyph: 'text.p2',
+			glyphEm: { w: 1.3, h: 0.95 },
+			centre: 200,
+			hub: false,
+			data: (planets: object[]) => ({
+				person1: { planets },
+				person2: { planets },
+				interAspects: [],
+			}),
+		},
+	];
+
+	for (const wheel of WHEELS) {
+		for (const retro of [false, true]) {
+			for (const [width, phone] of [
+				['wide host', false],
+				['phone', true],
+			] as const) {
+				test(`${wheel.tag}, ${retro ? 'retrograde' : 'direct'}, ${width}`, async () => {
+					const size = phone ? PHONE : wheel.wide;
+					const found: string[] = [];
+					for (const offset of [0, 10, 20]) {
+						const el = document.createElement(wheel.tag) as HTMLElement & {
+							data?: unknown;
+						};
+						document.body.appendChild(el);
+						el.data = wheel.data(ring(offset, retro));
+						await settled(el);
+						if (phone) {
+							await atSize(el, size);
+							// The phone band prints whole degrees, which is how the lift is known to have applied.
+							for (const deg of el.shadowRoot?.querySelectorAll(
+								'.planet-deg',
+							) ?? [])
+								if (deg.textContent?.includes("'"))
+									found.push(`${deg.textContent} not whole degrees`);
+						}
+						found.push(...faults(el, wheel, size));
+						el.remove();
+					}
+					expect(found).toEqual([]);
+				});
+			}
+		}
+	}
 });
 
 /** The penta ladder: three bars, six rungs, and the gate that takes each end. */
@@ -6835,6 +7027,26 @@ describe('vedic planets table avasthaInfo meanings', () => {
 		expect(caption(el)).toEndWith(hi[CAPTION]);
 		expect(caption(el)).not.toContain(CAPTION);
 		expect(readings(el)[0]).toBe(`${hi['Baladi.']} ZZBALADI`);
+		el.remove();
+	});
+});
+
+describe('roxy-moon-phase illumination', () => {
+	test('prints the published percentage as is, so a near-new Moon reads near zero', async () => {
+		document.documentElement.lang = 'en';
+		const el = document.createElement('roxy-moon-phase');
+		(el as unknown as { data: unknown }).data = {
+			phase: 'New Moon',
+			illumination: 0.13,
+			age: 29.36,
+		};
+		document.body.appendChild(el);
+		await settled(el);
+		const t =
+			(el as unknown as { shadowRoot: ShadowRoot }).shadowRoot.textContent ??
+			'';
+		expect(t).toContain('0%');
+		expect(t).not.toContain('13%');
 		el.remove();
 	});
 });

@@ -11,8 +11,11 @@ import {
 	fanOut,
 	formatDegreeInSign,
 	formatWheelDegree,
+	GLYPH_LABEL_GAP,
 	longitudeToSignPosition,
+	type MarkSize,
 	polarToCartesian,
+	rayClearance,
 } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
@@ -53,7 +56,7 @@ const P2_R = 96;
 /** Ascendant tick and label: the tick stops short of the text, and the label sits inside the viewBox edge by more than half its own width. */
 const ASC_TICK_R = 176;
 const ASC_LABEL_R = 188;
-/** The degree band sits this far inside each person's glyph ring. */
+/** The first person's degree band sits this far inside their glyph ring; the second person's clears each glyph along its own ray. */
 const DEG_INSET = 11;
 /**
  * The in-wheel type sizes at a wide host, in user units, as the stylesheet
@@ -72,6 +75,9 @@ export const SYNASTRY_TYPE_SIZES = { glyph: 13, degree: 7 } as const;
 const GLYPH_EM = 1.3;
 const WHOLE_DEG_EM = 1.85;
 const RETRO_MARK_EM = 1.25;
+/** The ink heights of a glyph and of a degree label: the person tag rides inside the glyph's height. */
+const GLYPH_INK_EM = 0.95;
+const DEG_LABEL_INK_EM = 0.9;
 /** Leader line: a tick at the body's true longitude and the foot of the line beside the displaced glyph, both outward from the ring, into the gap above it. */
 const LEADER_TICK = 8;
 const LEADER_FOOT = 4;
@@ -168,8 +174,10 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				font-size: 7px;
 				font-family: var(--roxy-font-sans);
 			}
+			/* The size the table sets on .retro never reaches the mark inside a wheel label. */
 			.planet-deg .retro {
 				fill: var(--roxy-danger, #dc2626);
+				font-size: inherit;
 			}
 			.leader {
 				stroke-width: 0.5;
@@ -297,11 +305,11 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			}
 			.pill--success {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.pill--danger {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 
 			.glyph {
@@ -323,10 +331,10 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				text-transform: capitalize;
 			}
 			.asp-name.harmonious {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.asp-name.challenging {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.context {
 				color: var(--roxy-muted, #71717a);
@@ -511,14 +519,14 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 							/>
 							${this.renderSpokes()} ${this.renderSigns()}
 							${this.renderInterAspectLines(p1Planets, p2Planets, interAspects)}
-							${this.renderRing(p1Planets, P1_R, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, 'p2', 2)}
+							${this.renderRing(p1Planets, P1_R, () => P1_R - DEG_INSET, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, (angle, glyph, label) => P2_R - rayClearance(angle, glyph, label, GLYPH_LABEL_GAP), 'p2', 2)}
 							${this.renderAscendants(d)}
 						</svg>
 						<div class="legend-row" part="legend">
 							<span><span class="swatch" style="background: var(--roxy-accent)"></span>${this.t('Person 1')}</span>
 							<span><span class="swatch" style="background: var(--roxy-info)"></span>${this.t('Person 2')}</span>
-							<span><span class="swatch" style="background: var(--roxy-success)"></span>${this.t('Harmonious')}</span>
-							<span><span class="swatch" style="background: var(--roxy-danger)"></span>${this.t('Challenging')}</span>
+							<span><span class="swatch" style="background: var(--roxy-success)"></span>${this.t('Harmonious aspects')}</span>
+							<span><span class="swatch" style="background: var(--roxy-danger)"></span>${this.t('Challenging aspects')}</span>
 							<span class="caveat">${this.t('Sign sectors, not houses')}</span>
 						</div>`
 					: html`<div class="missing-planets" role="status">
@@ -723,9 +731,9 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		if (typeof s.total !== 'number' && byType.length === 0) return nothing;
 		return html`<div class="summary-pills" part="details" role="region" aria-label=${this.t('Inter-aspect summary')}>
 			${typeof s.total === 'number' ? html`<span class="pill">${this.t('Total')}: ${s.total}</span>` : nothing}
-			<span class="pill pill--success">${this.t('Harmonious')}: ${s.harmonious}</span>
-			<span class="pill pill--danger">${this.t('Challenging')}: ${s.challenging}</span>
-			<span class="pill">${this.t('Neutral')}: ${s.neutral}</span>
+			<span class="pill pill--success">${this.t('Harmonious: {{count}}', { count: s.harmonious })}</span>
+			<span class="pill pill--danger">${this.t('Challenging: {{count}}', { count: s.challenging })}</span>
+			<span class="pill">${this.t('Neutral: {{count}}', { count: s.neutral })}</span>
 			${byType.map(
 				([type, count]) =>
 					html`<span class="pill">${formatAspectName({ type })}: ${count}</span>`,
@@ -813,33 +821,46 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 	 * crowded member forward and a thin leader runs from the glyph outward to a
 	 * tick at its TRUE longitude, into the gap above the ring, so the drawing
 	 * never claims a position the response did not give. The separation is
-	 * settled per pair from the measured width of each mark at its own radius.
+	 * settled per pair from the measured width of each mark at its own radius,
+	 * and `labelRadius` is where a degree label sits along its glyph's ray.
 	 */
 	private renderRing(
 		planets: PlanetEntry[],
 		radius: number,
+		labelRadius: (angle: number, glyph: MarkSize, label: MarkSize) => number,
 		cls: string,
 		personIndex: 1 | 2,
 	) {
-		const degRadius = radius - DEG_INSET;
-		const glyphSeparation = arcSeparation(
-			GLYPH_EM * this.type.size.glyph,
-			radius,
-		);
-		const labelWidth = (p: PlanetEntry) =>
-			(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
-			this.type.size.degree;
-		// Two centred labels clear each other at half the sum of their widths.
+		const glyphBox = {
+			width: GLYPH_EM * this.type.size.glyph,
+			height: GLYPH_INK_EM * this.type.size.glyph,
+		};
+		const labelBox = (p: PlanetEntry) => ({
+			width:
+				(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
+				this.type.size.degree,
+			height: DEG_LABEL_INK_EM * this.type.size.degree,
+		});
+		const glyphSeparation = arcSeparation(glyphBox.width, radius);
+		// Two centred labels clear each other at half the sum of their widths, on the band at the top of the ring.
 		const separation = (a: PlanetEntry, b: PlanetEntry) =>
 			Math.max(
 				glyphSeparation,
-				arcSeparation((labelWidth(a) + labelWidth(b)) / 2, degRadius),
+				arcSeparation(
+					(labelBox(a).width + labelBox(b).width) / 2,
+					labelRadius(90, glyphBox, labelBox(a)),
+				),
 			);
 		return fanOut(planets, (p) => p.longitude, separation).map(
 			({ item: p, longitude, displayLongitude }) => {
 				const angle = this.toAngle(displayLongitude);
 				const pos = polarToCartesian(CENTER, CENTER, radius, angle);
-				const degPos = polarToCartesian(CENTER, CENTER, degRadius, angle);
+				const degPos = polarToCartesian(
+					CENTER,
+					CENTER,
+					labelRadius(angle, glyphBox, labelBox(p)),
+					angle,
+				);
 				const glyph = planetGlyph(p.name) ?? display(p, 'name');
 				const retro = p.isRetrograde === true;
 				// The house each planet holds in its own chart.

@@ -2059,6 +2059,44 @@
       }
     },
     {
+      "tag": "roxy-compound-number",
+      "pascal": "RoxyCompoundNumber",
+      "slug": "compound-number",
+      "domain": "Numerology",
+      "renders": "Compound 10 to 52 with name, root, nature and meaning",
+      "endpointLabel": "GET /numerology/compound-number/{number}",
+      "endpoints": [
+        {
+          "operationId": "getCompoundNumber",
+          "method": "GET",
+          "path": "/numerology/compound-number/{number}",
+          "toolName": "get_numerology_compound_number"
+        }
+      ],
+      "parts": [
+        "attribution",
+        "card",
+        "details",
+        "edit-bar",
+        "empty",
+        "error",
+        "form",
+        "header",
+        "hint",
+        "loading",
+        "readings",
+        "section"
+      ],
+      "snippets": {
+        "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-compound-number data-endpoint=\"numerology/compound-number/{number}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-compound-number>",
+        "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"compound-number\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
+      },
+      "preview": {
+        "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/compound-number-light.webp",
+        "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/compound-number-dark.webp"
+      }
+    },
+    {
       "tag": "roxy-gematria",
       "pascal": "RoxyGematria",
       "slug": "gematria",
@@ -2149,7 +2187,17 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/tarot-card-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/tarot-card-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "picker",
+          "endpoint": "getCard",
+          "field": "id",
+          "operationId": "listCards",
+          "method": "GET",
+          "path": "/tarot/cards"
+        }
+      ]
     },
     {
       "tag": "roxy-tarot-catalog",
@@ -2188,7 +2236,22 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/tarot-catalog-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/tarot-catalog-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "more",
+          "endpoint": "listCards",
+          "operationId": "listCards",
+          "method": "GET",
+          "path": "/tarot/cards"
+        },
+        {
+          "kind": "row",
+          "operationId": "getCard",
+          "method": "GET",
+          "path": "/tarot/cards/{id}"
+        }
+      ]
     },
     {
       "tag": "roxy-tarot-spread",
@@ -3264,7 +3327,17 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/crystal-card-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/crystal-card-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "picker",
+          "endpoint": "getCrystal",
+          "field": "id",
+          "operationId": "listCrystals",
+          "method": "GET",
+          "path": "/crystals"
+        }
+      ]
     },
     {
       "tag": "roxy-crystal-grid",
@@ -3333,7 +3406,66 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/crystal-grid-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/crystal-grid-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "options",
+          "endpoint": "listCrystals",
+          "field": "color",
+          "operationId": "listCrystalColors",
+          "method": "GET",
+          "path": "/crystals/colors"
+        },
+        {
+          "kind": "options",
+          "endpoint": "listCrystals",
+          "field": "planet",
+          "operationId": "listCrystalPlanets",
+          "method": "GET",
+          "path": "/crystals/planets"
+        },
+        {
+          "kind": "more",
+          "endpoint": "listCrystals",
+          "operationId": "listCrystals",
+          "method": "GET",
+          "path": "/crystals"
+        },
+        {
+          "kind": "more",
+          "endpoint": "getCrystalsByChakra",
+          "operationId": "getCrystalsByChakra",
+          "method": "GET",
+          "path": "/crystals/chakra/{chakra}"
+        },
+        {
+          "kind": "more",
+          "endpoint": "getCrystalsByElement",
+          "operationId": "getCrystalsByElement",
+          "method": "GET",
+          "path": "/crystals/element/{element}"
+        },
+        {
+          "kind": "more",
+          "endpoint": "getCrystalsByZodiac",
+          "operationId": "getCrystalsByZodiac",
+          "method": "GET",
+          "path": "/crystals/zodiac/{sign}"
+        },
+        {
+          "kind": "more",
+          "endpoint": "searchCrystals",
+          "operationId": "searchCrystals",
+          "method": "GET",
+          "path": "/crystals/search"
+        },
+        {
+          "kind": "row",
+          "operationId": "getCrystal",
+          "method": "GET",
+          "path": "/crystals/{id}"
+        }
+      ]
     },
     {
       "tag": "roxy-dream-card",
@@ -3368,7 +3500,17 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/dream-card-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/dream-card-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "picker",
+          "endpoint": "getDreamSymbol",
+          "field": "id",
+          "operationId": "searchDreamSymbols",
+          "method": "GET",
+          "path": "/dreams/symbols"
+        }
+      ]
     },
     {
       "tag": "roxy-dream-search",
@@ -3407,7 +3549,30 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/dream-search-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/dream-search-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "options",
+          "endpoint": "searchDreamSymbols",
+          "field": "letter",
+          "operationId": "getSymbolLetterCounts",
+          "method": "GET",
+          "path": "/dreams/symbols/letters"
+        },
+        {
+          "kind": "more",
+          "endpoint": "searchDreamSymbols",
+          "operationId": "searchDreamSymbols",
+          "method": "GET",
+          "path": "/dreams/symbols"
+        },
+        {
+          "kind": "row",
+          "operationId": "getDreamSymbol",
+          "method": "GET",
+          "path": "/dreams/symbols/{id}"
+        }
+      ]
     },
     {
       "tag": "roxy-angel-number-card",
@@ -3453,7 +3618,17 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/angel-number-card-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/angel-number-card-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "picker",
+          "endpoint": "getAngelNumber",
+          "field": "number",
+          "operationId": "listAngelNumbers",
+          "method": "GET",
+          "path": "/angel-numbers/numbers"
+        }
+      ]
     },
     {
       "tag": "roxy-angel-number-lookup",
@@ -3503,7 +3678,7 @@
       "slug": "reference-card",
       "domain": "Reference",
       "renders": "Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup",
-      "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number}",
+      "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/meanings/{number}",
       "endpoints": [
         {
           "operationId": "getZodiacSign",
@@ -3548,12 +3723,6 @@
           "toolName": "get_numerology_meanings_number"
         },
         {
-          "operationId": "getCompoundNumber",
-          "method": "GET",
-          "path": "/numerology/compound-number/{number}",
-          "toolName": "get_numerology_compound_number"
-        },
-        {
           "operationId": "getAvastha",
           "method": "GET",
           "path": "/vedic-astrology/avasthas/{id}",
@@ -3580,7 +3749,33 @@
       "preview": {
         "light": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/reference-card-light.webp",
         "dark": "https://cdn.jsdelivr.net/gh/RoxyAPI/ui@v0.49.0/assets/previews/reference-card-dark.webp"
-      }
+      },
+      "sideReads": [
+        {
+          "kind": "picker",
+          "endpoint": "getZodiacSign",
+          "field": "id",
+          "operationId": "listZodiacSigns",
+          "method": "GET",
+          "path": "/astrology/signs"
+        },
+        {
+          "kind": "picker",
+          "endpoint": "getPlanetMeaning",
+          "field": "id",
+          "operationId": "listPlanetMeanings",
+          "method": "GET",
+          "path": "/astrology/planet-meanings"
+        },
+        {
+          "kind": "picker",
+          "endpoint": "getTrigram",
+          "field": "id",
+          "operationId": "listTrigrams",
+          "method": "GET",
+          "path": "/iching/trigrams"
+        }
+      ]
     },
     {
       "tag": "roxy-endpoint-form",

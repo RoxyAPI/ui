@@ -26,6 +26,8 @@ export { RoxyBodygraph } from './components/bodygraph.js';
 export { RoxyCharaKarakas } from './components/chara-karakas.js';
 export { RoxyChoghadiyaGrid } from './components/choghadiya-grid.js';
 export { RoxyCompatibilityCard } from './components/compatibility-card.js';
+// Numerology
+export { RoxyCompoundNumber } from './components/compound-number.js';
 // Crystals
 export { RoxyCrystalCard } from './components/crystal-card.js';
 export { RoxyCrystalGrid } from './components/crystal-grid.js';

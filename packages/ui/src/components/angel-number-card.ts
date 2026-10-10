@@ -103,15 +103,15 @@ export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse>
 			}
 			.badge.positive {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.badge.cautionary {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.badge.neutral {
 				background: color-mix(in srgb, var(--roxy-info, #0284c7) 16%, transparent);
-				color: var(--roxy-info-fg, #075985);
+				color: var(--_info-fg);
 			}
 			.chips {
 				display: flex;

@@ -144,7 +144,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 			.retro {
-				color: var(--roxy-warning-fg, #9a3412);
+				color: var(--_warning-fg);
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
@@ -201,7 +201,7 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 				font-variant-numeric: tabular-nums;
 			}
 			.condition .winner {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 			.interp {
@@ -242,10 +242,10 @@ export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
 				letter-spacing: 0.04em;
 			}
 			.quality.positive {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.quality.negative {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.quality.both {
 				color: var(--roxy-muted, #71717a);

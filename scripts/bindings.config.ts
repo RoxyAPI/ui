@@ -1,3 +1,5 @@
+import type { FieldCondition } from '../packages/ui/src/utils/field-schema.js';
+
 /**
  * Component-to-endpoint binding, owned by THIS repo (not the API). Declares
  * which component(s) render each endpoint's response and the config attributes
@@ -21,6 +23,8 @@ export interface UiBinding {
 	attrs?: Record<string, string>;
 	/** Request field -> the GET operation that lists its choices, for a free-string filter the API serves a list of values for. A required free-string path identifier needs no entry: its choices are derived from the collection one segment up. */
 	options?: Record<string, string>;
+	/** Request field -> the value of another field that disables it, for a pair the API answers empty in that combination; the form greys the field out and drops its value while the other holds that value. */
+	disabledWhen?: Record<string, FieldCondition>;
 }
 
 /** operationId -> the component(s) that render its response (primary visualization first). */
@@ -191,6 +195,7 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	generateNumerologyChart: [
 		{ component: 'roxy-numerology-card', attrs: { type: 'chart' } },
 	],
+	getCompoundNumber: [{ component: 'roxy-compound-number' }],
 	calculateNumCompatibility: [
 		{ component: 'roxy-compatibility-card', attrs: { mode: 'numerology' } },
 	],
@@ -218,7 +223,13 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	],
 	castYesNo: [{ component: 'roxy-tarot-spread', attrs: { spread: 'yes-no' } }],
 	drawCards: [{ component: 'roxy-tarot-spread', attrs: { spread: 'draw' } }],
-	listCards: [{ component: 'roxy-tarot-catalog' }],
+	// A major arcana card has no suit, so the suit filter waits until the arcana is not major.
+	listCards: [
+		{
+			component: 'roxy-tarot-catalog',
+			disabledWhen: { suit: { field: 'arcana', value: 'major' } },
+		},
+	],
 
 	// Human design
 	generateBodygraph: [{ component: 'roxy-bodygraph' }],
@@ -365,7 +376,6 @@ export const UI_BINDINGS: Record<string, UiBinding[]> = {
 	getGate: [{ component: 'roxy-reference-card' }],
 	getCenter: [{ component: 'roxy-reference-card' }],
 	getNumberMeaning: [{ component: 'roxy-reference-card' }],
-	getCompoundNumber: [{ component: 'roxy-reference-card' }],
 	getAvastha: [{ component: 'roxy-reference-card' }],
 };
 

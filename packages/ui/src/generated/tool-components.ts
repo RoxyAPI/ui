@@ -486,6 +486,11 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 			type: 'chart',
 		},
 	},
+	get_numerology_compound_number: {
+		tag: 'roxy-compound-number',
+		pascal: 'RoxyCompoundNumber',
+		operationId: 'getCompoundNumber',
+	},
 	post_kabbalah_gematria: {
 		tag: 'roxy-gematria',
 		pascal: 'RoxyGematria',
@@ -895,11 +900,6 @@ export const TOOL_COMPONENTS: Record<string, ToolComponentEntry> = {
 		tag: 'roxy-reference-card',
 		pascal: 'RoxyReferenceCard',
 		operationId: 'getNumberMeaning',
-	},
-	get_numerology_compound_number: {
-		tag: 'roxy-reference-card',
-		pascal: 'RoxyReferenceCard',
-		operationId: 'getCompoundNumber',
 	},
 	get_vedic_astrology_avasthas_id: {
 		tag: 'roxy-reference-card',

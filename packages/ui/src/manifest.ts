@@ -584,6 +584,18 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		topic: 'Numerology',
 	},
 	{
+		pascal: 'RoxyCompoundNumber',
+		tag: 'roxy-compound-number',
+		slug: 'compound-number',
+		heading: 'Compound number',
+		description:
+			'Chaldean compound number card with the numeral, its symbolic name, root number, fortunate or unfortunate nature, the lower number it repeats, and the meaning',
+		docsLabel: 'Numerology',
+		endpointLabel: 'GET /numerology/compound-number/{number}',
+		docsSummary: 'Compound 10 to 52 with name, root, nature and meaning',
+		topic: 'Numerology',
+	},
+	{
 		pascal: 'RoxyGematria',
 		tag: 'roxy-gematria',
 		slug: 'gematria',
@@ -953,10 +965,10 @@ export const ROXY_COMPONENTS: readonly RoxyComponent[] = [
 		slug: 'reference-card',
 		heading: 'Reference card',
 		description:
-			'Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, numerology number or compound number',
+			'Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, or numerology number',
 		docsLabel: 'Reference',
 		endpointLabel:
-			'GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number}',
+			'GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/meanings/{number}',
 		docsSummary:
 			'Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup',
 		topic: 'Helpers',

@@ -4,7 +4,10 @@ import {
 	UNBOUND_COMPONENTS,
 } from '../../../scripts/bindings.config.js';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
-import { OPTION_SOURCES } from '../src/generated/option-sources.js';
+import {
+	DISABLED_WHEN,
+	OPTION_SOURCES,
+} from '../src/generated/option-sources.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 
 /**
@@ -81,6 +84,59 @@ describe('binding config vs spec', () => {
 			'color',
 			'planet',
 		]);
+	});
+
+	test('every disabled-when rule names two parameters of the bound operation and a value the other one takes', async () => {
+		const spec = (await Bun.file('specs/openapi.json').json()) as {
+			paths: Record<
+				string,
+				Record<
+					string,
+					{
+						operationId?: string;
+						parameters?: { name: string; schema?: { enum?: string[] } }[];
+					}
+				>
+			>;
+		};
+		const params = new Map<string, { name: string; enum?: string[] }[]>();
+		for (const methods of Object.values(spec.paths))
+			for (const op of Object.values(methods))
+				if (op?.operationId)
+					params.set(
+						op.operationId,
+						(op.parameters ?? []).map((p) => ({
+							name: p.name,
+							enum: p.schema?.enum,
+						})),
+					);
+		const bad: string[] = [];
+		let declared = 0;
+		for (const [operationId, bindings] of Object.entries(UI_BINDINGS))
+			for (const { disabledWhen } of bindings)
+				for (const [field, when] of Object.entries(disabledWhen ?? {})) {
+					declared++;
+					const taken = params.get(operationId) ?? [];
+					const on = taken.find((p) => p.name === when.field);
+					if (!taken.some((p) => p.name === field))
+						bad.push(
+							`${operationId}.${field}: not a parameter of the operation`,
+						);
+					if (!on)
+						bad.push(
+							`${operationId}.${field}: ${when.field} is not a parameter of the operation`,
+						);
+					else if (on.enum && !on.enum.includes(when.value))
+						bad.push(
+							`${operationId}.${field}: ${when.value} is not a value of ${when.field}`,
+						);
+				}
+		expect(declared).toBeGreaterThan(0);
+		expect(bad).toEqual([]);
+		// The generated table carries the declared rule, so a config edit with no regeneration is red.
+		expect(DISABLED_WHEN['GET /tarot/cards']).toEqual({
+			suit: { field: 'arcana', value: 'major' },
+		});
 	});
 
 	test('every binding component tag is one the library ships', () => {

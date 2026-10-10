@@ -464,41 +464,45 @@ function centroidOf(pts: Array<{ x: number; y: number }>): {
 }
 
 /**
- * House centres for the North Indian diamond. Numbered 1..12 counter-clockwise
- * from the top diamond (H1 is always the ascendant cell). Centroids derived
- * from the canonical geometry above; do not edit by eye, recompute if you
- * change `VIEW_BOX` or `MARGIN`.
+ * The twelve cells of the North Indian diamond, numbered 1..12 counter-clockwise
+ * from the top diamond (H1 is always the ascendant cell), each with the centroid
+ * its labels anchor on and the lowest point of its outline.
  */
-const NORTH_HOUSE_CENTERS: Record<number, { x: number; y: number }> = {
-	1: { x: CENTRE, y: NORTH_VERTICES.tlMid.y },
-	2: centroidOf([NORTH_VERTICES.tl, NORTH_VERTICES.top, NORTH_VERTICES.tlMid]),
-	3: centroidOf([NORTH_VERTICES.tl, NORTH_VERTICES.left, NORTH_VERTICES.tlMid]),
-	4: { x: NORTH_VERTICES.tlMid.x, y: CENTRE },
-	5: centroidOf([NORTH_VERTICES.bl, NORTH_VERTICES.left, NORTH_VERTICES.blMid]),
-	6: centroidOf([
-		NORTH_VERTICES.bl,
-		NORTH_VERTICES.bottom,
-		NORTH_VERTICES.blMid,
-	]),
-	7: { x: CENTRE, y: NORTH_VERTICES.blMid.y },
-	8: centroidOf([
-		NORTH_VERTICES.br,
-		NORTH_VERTICES.bottom,
-		NORTH_VERTICES.brMid,
-	]),
-	9: centroidOf([
-		NORTH_VERTICES.br,
-		NORTH_VERTICES.right,
-		NORTH_VERTICES.brMid,
-	]),
-	10: { x: NORTH_VERTICES.brMid.x, y: CENTRE },
-	11: centroidOf([
-		NORTH_VERTICES.tr,
-		NORTH_VERTICES.right,
-		NORTH_VERTICES.trMid,
-	]),
-	12: centroidOf([NORTH_VERTICES.tr, NORTH_VERTICES.top, NORTH_VERTICES.trMid]),
-};
+const NORTH_HOUSE_CELLS: Record<
+	number,
+	{ centre: { x: number; y: number }; floor: number }
+> = Object.fromEntries(
+	Object.entries({
+		1: ['top', 'trMid', 'centre', 'tlMid'],
+		2: ['tl', 'top', 'tlMid'],
+		3: ['tl', 'left', 'tlMid'],
+		4: ['left', 'tlMid', 'centre', 'blMid'],
+		5: ['bl', 'left', 'blMid'],
+		6: ['bl', 'bottom', 'blMid'],
+		7: ['bottom', 'blMid', 'centre', 'brMid'],
+		8: ['br', 'bottom', 'brMid'],
+		9: ['br', 'right', 'brMid'],
+		10: ['right', 'brMid', 'centre', 'trMid'],
+		11: ['tr', 'right', 'trMid'],
+		12: ['tr', 'top', 'trMid'],
+	} satisfies Record<
+		number,
+		Array<keyof typeof NORTH_VERTICES | 'centre'>
+	>).map(([house, names]) => {
+		const pts = names.map((n) =>
+			n === 'centre' ? { x: CENTRE, y: CENTRE } : NORTH_VERTICES[n],
+		);
+		return [
+			house,
+			{ centre: centroidOf(pts), floor: Math.max(...pts.map((p) => p.y)) },
+		];
+	}),
+);
+
+/** Graha lines in a North cell sit this far apart, the first this far below the rasi number, and the last this far above the cell's lowest point. */
+const NORTH_LINE = 12;
+const NORTH_NUMBER_GAP = 16;
+const NORTH_FLOOR_PAD = 8;
 
 function renderNorthFrame(divisionLabel?: string): TemplateResult {
 	const { tl, tr, br, bl, top, right, bottom, left } = NORTH_VERTICES;
@@ -523,14 +527,24 @@ function renderNorthCell(
 	isLagna: boolean,
 	t: Translate,
 ): TemplateResult {
-	const c = NORTH_HOUSE_CENTERS[houseNum];
-	if (!c) return svg``;
+	const cell = NORTH_HOUSE_CELLS[houseNum];
+	if (!cell) return svg``;
+	const c = cell.centre;
 	// Tight cells (H2/3/5/6/8/9/11/12 corner triangles) clip the rasi number
 	// when it sits too high above the centroid. Clamp the upward offset based
 	// on the cell's distance from the chart vertical centre so the label
 	// always stays comfortably inside its triangle or diamond.
 	const rashiOffsetY = Math.min(14, Math.abs(c.y - CENTRE) * 0.45 + 6);
-	const ascOffsetY = rashiOffsetY + 12;
+	// The stack centres on the cell but starts clear below the number, and the
+	// two rise together when the stack would otherwise run past the cell floor.
+	const span = (planets.length - 1) * NORTH_LINE;
+	const below = Math.max(
+		c.y + 8 - span / 2,
+		c.y - rashiOffsetY + NORTH_NUMBER_GAP,
+	);
+	const lift = Math.max(0, below + span - (cell.floor - NORTH_FLOOR_PAD));
+	const rashiY = c.y - rashiOffsetY - lift;
+	const stackY = below - lift + span / 2;
 	// North cells carry only a rasi number by convention. The ascendant also
 	// names its sign so the reader can see which sign rises without translating
 	// the number; other cells stay number-only.
@@ -539,13 +553,13 @@ function renderNorthCell(
 		: `${rashiNum}`;
 	return svg`
 		<g class=${isLagna ? 'cell lagna' : 'cell'}>
-			<text class="rashi-num" x=${c.x} y=${c.y - rashiOffsetY} text-anchor="middle" dominant-baseline="central">${rashiLabel}</text>
+			<text class="rashi-num" x=${c.x} y=${rashiY} text-anchor="middle" dominant-baseline="central">${rashiLabel}</text>
 			${
 				isLagna
-					? svg`<text class="lagna-marker" x=${c.x} y=${c.y - ascOffsetY} text-anchor="middle" dominant-baseline="central">${t('ASC')}</text>`
+					? svg`<text class="lagna-marker" x=${c.x} y=${rashiY - 12} text-anchor="middle" dominant-baseline="central">${t('ASC')}</text>`
 					: nothing
 			}
-			${planets.length ? renderPlanetStack(planets, sign, c.x, c.y + 8, 12, t) : nothing}
+			${planets.length ? renderPlanetStack(planets, sign, c.x, stackY, NORTH_LINE, t) : nothing}
 		</g>
 	`;
 }

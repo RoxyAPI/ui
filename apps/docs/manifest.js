@@ -474,6 +474,17 @@ window.ROXY_COMPONENTS = [
     "topic": "Numerology"
   },
   {
+    "pascal": "RoxyCompoundNumber",
+    "tag": "roxy-compound-number",
+    "slug": "compound-number",
+    "heading": "Compound number",
+    "description": "Chaldean compound number card with the numeral, its symbolic name, root number, fortunate or unfortunate nature, the lower number it repeats, and the meaning",
+    "docsLabel": "Numerology",
+    "endpointLabel": "GET /numerology/compound-number/{number}",
+    "docsSummary": "Compound 10 to 52 with name, root, nature and meaning",
+    "topic": "Numerology"
+  },
+  {
     "pascal": "RoxyGematria",
     "tag": "roxy-gematria",
     "slug": "gematria",
@@ -786,9 +797,9 @@ window.ROXY_COMPONENTS = [
     "tag": "roxy-reference-card",
     "slug": "reference-card",
     "heading": "Reference card",
-    "description": "Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, numerology number or compound number",
+    "description": "Glossary entry for any reference lookup: zodiac sign, planet meaning, rashi, I Ching trigram, Human Design gate or center, or numerology number",
     "docsLabel": "Reference",
-    "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number}",
+    "endpointLabel": "GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/meanings/{number}",
     "docsSummary": "Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup",
     "topic": "Helpers"
   },
@@ -1029,6 +1040,14 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "attrs": {
         "mode": "biorhythm"
       }
+    }
+  ],
+  "roxy-compound-number": [
+    {
+      "operationId": "getCompoundNumber",
+      "method": "GET",
+      "path": "/numerology/compound-number/{number}",
+      "toolName": "get_numerology_compound_number"
     }
   ],
   "roxy-crystal-card": [
@@ -1762,12 +1781,6 @@ window.ROXY_ENDPOINT_BINDINGS = {
       "toolName": "get_numerology_meanings_number"
     },
     {
-      "operationId": "getCompoundNumber",
-      "method": "GET",
-      "path": "/numerology/compound-number/{number}",
-      "toolName": "get_numerology_compound_number"
-    },
-    {
       "operationId": "getAvastha",
       "method": "GET",
       "path": "/vedic-astrology/avasthas/{id}",
@@ -2294,6 +2307,10 @@ window.ROXY_WIDGET_SNIPPETS = {
   "roxy-numerology-card": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-numerology-card type=\"life-path\" data-endpoint=\"numerology/life-path\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-numerology-card>",
     "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"numerology-card\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
+  },
+  "roxy-compound-number": {
+    "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-compound-number data-endpoint=\"numerology/compound-number/{number}\" method=\"GET\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-compound-number>",
+    "oneTag": "<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js\" defer></script>\n<div data-roxy-widget=\"compound-number\" data-publishable-key=\"pk_live_YOUR_KEY\" data-hide-sections=\"hint\"></div>"
   },
   "roxy-gematria": {
     "script": "<!-- Optional: warm practitioner theme (drop this line for the default look) -->\n<!-- <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css\"> -->\n<script src=\"https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js\" defer></script>\n<roxy-gematria data-endpoint=\"kabbalah/gematria\" publishable-key=\"pk_live_YOUR_KEY\" hide-sections=\"hint\"></roxy-gematria>",

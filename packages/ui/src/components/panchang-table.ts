@@ -147,11 +147,11 @@ export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
 			}
 			.chip.good {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 14%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.chip.bad {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 14%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 		`,
 	];

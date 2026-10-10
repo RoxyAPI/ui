@@ -435,11 +435,11 @@ export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
 			}
 			.row-what .aspect-trine,
 			.row-what .aspect-sextile {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.row-what .aspect-square,
 			.row-what .aspect-opposition {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.row-what .aspect-conjunction {
 				color: var(--roxy-accent-ink, #b45309);

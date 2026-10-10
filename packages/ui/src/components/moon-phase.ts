@@ -166,7 +166,7 @@ export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
 					typeof d.illumination === 'number'
 						? html`<div>
 							<span>${this.t('Illumination')}</span>
-							<strong>${formatPercent(this.effectiveLang(), d.illumination <= 1 ? d.illumination * 100 : d.illumination, 0)}</strong>
+							<strong>${formatPercent(this.effectiveLang(), d.illumination, 0)}</strong>
 						</div>`
 						: nothing
 				}

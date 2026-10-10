@@ -106,7 +106,7 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 			}
 			.badge.defined {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.badge.open {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 45%, transparent);
@@ -282,7 +282,7 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 					label: 'Centers defined',
 					value:
 						centers.length > 0
-							? `${definedCenters} of ${centers.length}`
+							? `${definedCenters}/${centers.length}`
 							: undefined,
 				},
 			])}

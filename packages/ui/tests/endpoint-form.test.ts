@@ -1597,6 +1597,98 @@ describe('choices read from the API', () => {
 		expect(await mountAuto('POST', 'pk_test_a')).toHaveLength(0);
 		expect(await mountAuto('GET')).toHaveLength(0);
 	});
+
+	test('a list that pages its own rows opens on the largest page the API serves, and a placed form keeps the default', async () => {
+		const model: FormModel = {
+			...CRYSTALS,
+			fields: CRYSTALS.fields.map((f) =>
+				f.name === 'limit' ? { ...f, max: 100 } : f,
+			),
+		};
+		const opened = async (fullPages: boolean) => {
+			globalThis.fetch = mock(async (url: string | URL) =>
+				String(url).includes('/schemas/')
+					? { ok: true, status: 200, json: async () => model }
+					: { ok: false, status: 404, json: async () => ({}) },
+			) as unknown as typeof fetch;
+			const el = document.createElement('roxy-endpoint-form') as FormEl & {
+				autoload: boolean;
+				fullPages: boolean;
+			};
+			el.setAttribute('data-endpoint', 'crystals');
+			el.setAttribute('method', 'GET');
+			el.setAttribute('publishable-key', 'pk_test_a');
+			el.autoload = true;
+			el.fullPages = fullPages;
+			const sent = submits(el);
+			document.body.appendChild(el);
+			await flush(el);
+			el.remove();
+			return sent[0]?.values;
+		};
+		expect(await opened(true)).toEqual({ limit: 100 });
+		expect(await opened(false)).toEqual({ limit: 20 });
+	});
+
+	const TAROT: FormModel = {
+		title: 'List tarot cards',
+		hasLang: false,
+		fields: [
+			{
+				key: 'arcana',
+				name: 'arcana',
+				kind: 'tiles',
+				required: false,
+				inQuery: true,
+				enum: ['major', 'minor'],
+			},
+			{
+				key: 'suit',
+				name: 'suit',
+				kind: 'tiles',
+				required: false,
+				inQuery: true,
+				enum: ['cups', 'pentacles'],
+			},
+		],
+	};
+
+	test('a field its binding disables while another holds a value is greyed out and never sent', async () => {
+		globalThis.fetch = mock(async (url: string | URL) =>
+			String(url).includes('/schemas/')
+				? { ok: true, status: 200, json: async () => TAROT }
+				: { ok: false, status: 404, json: async () => ({}) },
+		) as unknown as typeof fetch;
+		const el = document.createElement('roxy-endpoint-form') as FormEl & {
+			autoload: boolean;
+			initialValues: Record<string, unknown>;
+		};
+		el.setAttribute('data-endpoint', 'tarot/cards');
+		el.setAttribute('method', 'GET');
+		el.setAttribute('publishable-key', 'pk_test_t');
+		el.autoload = true;
+		// A suit remembered from before the arcana was major is dropped, not sent.
+		el.initialValues = { arcana: 'major', suit: 'pentacles' };
+		const sent = submits(el);
+		document.body.appendChild(el);
+		await flush(el);
+		const root = el.shadowRoot as ShadowRoot;
+		const suit = () =>
+			root.getElementById('roxy-form-suit') as HTMLSelectElement;
+		expect(sent[0]?.values).toEqual({ arcana: 'major' });
+		expect(suit().disabled).toBe(true);
+		expect(suit().value).toBe('');
+
+		const arcana = root.getElementById('roxy-form-arcana') as HTMLSelectElement;
+		arcana.value = 'minor';
+		arcana.dispatchEvent(new Event('change'));
+		await flush(el);
+		expect(suit().disabled).toBe(false);
+		// A field with no rule, and one whose rule does not hold, carry exactly the attributes they always did.
+		expect(arcana.getAttributeNames()).toEqual(['id']);
+		expect(suit().getAttributeNames()).toEqual(['id']);
+		el.remove();
+	});
 });
 
 describe('no bound form asks a visitor to type a free-string identifier', () => {

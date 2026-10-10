@@ -17,6 +17,11 @@ export const baseStyles = css`
 		 * also stacks below 30rem; components with a shorter, non-prose second
 		 * column read it directly. */
 		--roxy-label-col: minmax(0, 25%);
+		/* The one fallback per status ink, the light derivation of tokens.css resolved, for a page that loads no tokens. */
+		--_success-fg: var(--roxy-success-fg, #09632a);
+		--_warning-fg: var(--roxy-warning-fg, #913304);
+		--_danger-fg: var(--roxy-danger-fg, #881313);
+		--_info-fg: var(--roxy-info-fg, #014f7a);
 		font-family: var(
 			--roxy-font-sans,
 			system-ui,
@@ -154,7 +159,7 @@ export const baseStyles = css`
 		background: var(--roxy-surface, #fff);
 		border: 1px solid var(--roxy-danger, #dc2626);
 		border-radius: var(--roxy-radius-md, 8px);
-		color: var(--roxy-danger-fg, #991b1b);
+		color: var(--_danger-fg);
 		font-size: var(--roxy-text-sm, 0.875rem);
 	}
 

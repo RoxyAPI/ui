@@ -28,8 +28,7 @@ const PILLAR_LABEL: Record<string, ChromeString> = {
 
 /**
  * Whether an interaction binds or breaks. Always English on the wire (the spec says so outright),
- * and a closed two-value set the natal chart already names for its own aspect patterns, so this
- * reuses that vocabulary rather than adding a second word for the same idea.
+ * a closed two-value set read through the singular state words, never the plural aspect counts.
  */
 const QUALITY_LABEL: Record<string, ChromeString> = {
 	harmonious: 'Harmonious',
@@ -309,11 +308,11 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 			}
 			.tag-harmonious {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.tag-challenging {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.interaction-meaning {
 				margin: 0;

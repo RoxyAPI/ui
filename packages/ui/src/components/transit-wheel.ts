@@ -13,10 +13,13 @@ import {
 	arcSeparation,
 	fanOut,
 	formatWheelDegree,
+	GLYPH_LABEL_GAP,
 	longitudeToSignPosition,
+	type MarkSize,
 	normalizeLongitude,
 	oppositePoint,
 	polarToCartesian,
+	rayClearance,
 } from '../utils/degree.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
@@ -74,14 +77,13 @@ const TRANSIT_R = 124;
 const TRANSIT_DEG_R = 135;
 /** Natal bodies: the INNER ring, the chart being transited. Degree labels sit inward, so the two bands of numbers never meet. */
 const NATAL_R = 94;
-const NATAL_DEG_R = 83;
 /** Aspect lines run between the rings: out of the transit ring, in to the natal one. */
 const TRANSIT_LINE_R = 112;
 const NATAL_LINE_R = 104;
-/** Innermost circle, closing the wheel under the natal degree labels. */
-const HUB_R = 70;
+/** Innermost circle, closing the wheel under the deepest reach of a natal degree label beside a glyph at 3 or 9 o'clock. */
+const HUB_R = 46;
 /** House sector numbers, inside the hub: the only band on this wheel with nothing else in it. Drawn ONLY from real cusps, the response ones or a page override. */
-const HOUSE_NUM_R = 58;
+const HOUSE_NUM_R = HUB_R - 12;
 /**
  * The in-wheel type sizes at a wide host, in user units, as the stylesheet
  * declares them: what the fan spaces the marks by until the rendered text has
@@ -99,6 +101,8 @@ export const TRANSIT_TYPE_SIZES = { glyph: 13, degree: 7 } as const;
 const GLYPH_EM = 0.95;
 const WHOLE_DEG_EM = 1.85;
 const RETRO_MARK_EM = 1.25;
+/** The ink of a degree label is this tall. */
+const DEG_LABEL_INK_EM = 0.9;
 /** Leader line: a tick at the body's true longitude, and the foot of the line beside the displaced glyph. Both offsets are measured from the ring, signed so the leader always runs into the gap between the two rings. */
 const LEADER_TICK = 8;
 const LEADER_FOOT = 4;
@@ -349,11 +353,11 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
 			}
 			.pill--success {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 10%, transparent);
 			}
 			.pill--danger {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 10%, transparent);
 			}
 
@@ -394,11 +398,11 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			}
 			.nature-badge.harmonious {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.nature-badge.challenging {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.nature-badge.neutral {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
@@ -437,7 +441,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				font-variant-numeric: tabular-nums;
 			}
 			.retro-badge {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				font-weight: var(--roxy-weight-bold, 600);
 				margin-left: 0.25rem;
 			}
@@ -666,8 +670,8 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			${this.renderTicks()} ${this.renderSpokes()} ${this.renderSigns()}
 			${this.renderHouses()}
 			${this.renderAspectLines(natal, transit, aspects)}
-			${this.renderRing(natal, NATAL_R, NATAL_DEG_R, 'natal-glyph', this.t('Natal'), 1)}
-			${this.renderRing(transit, TRANSIT_R, TRANSIT_DEG_R, 'transit-glyph', this.t('Transiting'), -1)}
+			${this.renderRing(natal, NATAL_R, (angle, glyph, label) => NATAL_R - rayClearance(angle, glyph, label, GLYPH_LABEL_GAP), 'natal-glyph', this.t('Natal'), 1)}
+			${this.renderRing(transit, TRANSIT_R, () => TRANSIT_DEG_R, 'transit-glyph', this.t('Transiting'), -1)}
 			${this.renderAxis()}
 		</svg>`;
 	}
@@ -776,34 +780,45 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 *
 	 * `leaderSign` points that tick outward from the natal ring and inward from
 	 * the transit ring, i.e. always into the gap between the two, so a leader is
-	 * never mistaken for one of the aspect lines crossing the middle.
+	 * never mistaken for one of the aspect lines crossing the middle, and
+	 * `labelRadius` is where a degree label sits along its glyph's ray.
 	 */
 	private renderRing(
 		bodies: Body[],
 		radius: number,
-		degRadius: number,
+		labelRadius: (angle: number, glyph: MarkSize, label: MarkSize) => number,
 		cls: string,
 		kind: string,
 		leaderSign: 1 | -1,
 	) {
-		const glyphSeparation = arcSeparation(
-			GLYPH_EM * this.type.size.glyph,
-			radius,
-		);
-		const labelWidth = (p: Body) =>
-			(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
-			this.type.size.degree;
-		// Two centred labels clear each other at half the sum of their widths.
+		const glyphSize = GLYPH_EM * this.type.size.glyph;
+		const glyphBox = { width: glyphSize, height: glyphSize };
+		const labelBox = (p: Body) => ({
+			width:
+				(WHOLE_DEG_EM + (p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
+				this.type.size.degree,
+			height: DEG_LABEL_INK_EM * this.type.size.degree,
+		});
+		const glyphSeparation = arcSeparation(glyphSize, radius);
+		// Two centred labels clear each other at half the sum of their widths, on the band at the top of the ring.
 		const separation = (a: Body, b: Body) =>
 			Math.max(
 				glyphSeparation,
-				arcSeparation((labelWidth(a) + labelWidth(b)) / 2, degRadius),
+				arcSeparation(
+					(labelBox(a).width + labelBox(b).width) / 2,
+					labelRadius(90, glyphBox, labelBox(a)),
+				),
 			);
 		return fanOut(bodies, (p) => p.longitude, separation).map(
 			({ item: p, longitude, displayLongitude }) => {
 				const angle = this.toAngle(displayLongitude);
 				const pos = polarToCartesian(CENTER, CENTER, radius, angle);
-				const degPos = polarToCartesian(CENTER, CENTER, degRadius, angle);
+				const degPos = polarToCartesian(
+					CENTER,
+					CENTER,
+					labelRadius(angle, glyphBox, labelBox(p)),
+					angle,
+				);
 				const retro = p.isRetrograde === true;
 				// Whole degrees on the wheel and the full degree-and-minute in the
 				// tooltip and the positions table, matching `roxy-synastry-chart`, the
@@ -923,8 +938,8 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			<span><span class="swatch swatch--transit"></span>${this.t('{{count}} transiting bodies', { count: transit.length })}</span>
 			${
 				aspects.length > 0
-					? html`<span><span class="swatch swatch--harmonious"></span>${this.t('Harmonious')}</span>
-						<span><span class="swatch swatch--challenging"></span>${this.t('Challenging')}</span>`
+					? html`<span><span class="swatch swatch--harmonious"></span>${this.t('Harmonious aspects')}</span>
+						<span><span class="swatch swatch--challenging"></span>${this.t('Challenging aspects')}</span>`
 					: nothing
 			}
 			${houseSystem ? html`<span>${this.t('{{system}} houses', { system: houseSystem })}</span>` : nothing}
@@ -940,9 +955,9 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		return html`<div part="details">
 			<div class="summary-pills" role="region" aria-label=${this.t('Transit aspect summary')}>
 				${typeof s.total === 'number' ? html`<span class="pill pill--muted">${this.t('Total')}: ${s.total}</span>` : nothing}
-				<span class="pill pill--success">${this.t('Harmonious')}: ${s.harmonious}</span>
-				<span class="pill pill--danger">${this.t('Challenging')}: ${s.challenging}</span>
-				<span class="pill pill--muted">${this.t('Neutral')}: ${s.neutral}</span>
+				<span class="pill pill--success">${this.t('Harmonious: {{count}}', { count: s.harmonious })}</span>
+				<span class="pill pill--danger">${this.t('Challenging: {{count}}', { count: s.challenging })}</span>
+				<span class="pill pill--muted">${this.t('Neutral: {{count}}', { count: s.neutral })}</span>
 				${byType.map(
 					// English in every language, and nothing to do about it here: `byType`
 					// is an object KEYED by the canonical aspect name, so the response

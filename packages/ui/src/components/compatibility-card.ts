@@ -9,8 +9,10 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { cycleName } from '../utils/biorhythm.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
+	formatList,
 	formatNumber,
 	formatPercent,
 	normalizeAspect,
@@ -19,7 +21,7 @@ import {
 	type InterpSection,
 	interpAccordionStyles,
 } from '../utils/interp-accordion.js';
-import { capitalize, humanize } from '../utils/string.js';
+import { capitalize } from '../utils/string.js';
 
 type CompatibilityData =
 	| CalculateCompatibilityResponse
@@ -27,6 +29,9 @@ type CompatibilityData =
 	| CalculateBioCompatibilityResponse;
 
 type AstroCompat = CalculateCompatibilityResponse;
+type PairPhase = NonNullable<
+	NonNullable<CalculateBioCompatibilityResponse['cycles']>[string]['phase']
+>;
 
 /** The four relationship planets, in the order a synastry reading works them: identity, feeling, love, desire. */
 const RELATIONSHIP_PLANETS = ['sun', 'moon', 'venus', 'mars'] as const;
@@ -39,6 +44,14 @@ const HEADING: Record<'astrology' | 'numerology' | 'biorhythm', ChromeString> =
 		numerology: 'Numerology compatibility',
 		biorhythm: 'Biorhythm compatibility',
 	};
+
+/** How the two cycles of a pair sit against each other, always English on the wire, as the English SOURCE its label is looked up by. */
+const PAIR_PHASE_LABEL: Record<PairPhase, ChromeString> = {
+	in_sync: 'In sync',
+	complementary: 'Complementary',
+	neutral: 'Neutral',
+	opposing: 'Opposing',
+};
 
 /**
  * Cross-domain compatibility card. Renders /astrology/compatibility-score,
@@ -170,11 +183,11 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			}
 			.pill--success {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.pill--danger {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 
 			.elements {
@@ -405,9 +418,9 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			aria-label=${this.t('Aspect breakdown')}
 		>
 			${typeof b.total === 'number' ? html`<span class="pill">${this.t('Total')}: ${b.total}</span>` : nothing}
-			<span class="pill pill--success">${this.t('Harmonious')}: ${b.harmonious}</span>
-			<span class="pill pill--danger">${this.t('Challenging')}: ${b.challenging}</span>
-			<span class="pill">${this.t('Neutral')}: ${b.neutral}</span>
+			<span class="pill pill--success">${this.t('Harmonious: {{count}}', { count: b.harmonious })}</span>
+			<span class="pill pill--danger">${this.t('Challenging: {{count}}', { count: b.challenging })}</span>
+			<span class="pill">${this.t('Neutral: {{count}}', { count: b.neutral })}</span>
 		</div>`;
 	}
 
@@ -434,7 +447,10 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 				};
 				return {
 					label: `${planetGlyph(planet) ?? ''} ${capitalize(planet)}`.trim(),
-					aside: `${at('person1')} and ${at('person2')}`,
+					aside: formatList(this.effectiveLang(), [
+						at('person1'),
+						at('person2'),
+					]),
 					body: pair.description ?? '',
 				};
 			},
@@ -500,7 +516,7 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 		if (!d) return nothing;
 		const sections: InterpSection[] = [];
 		if ('lifePath' in d) {
-			const cores: Array<[string, typeof d.lifePath]> = [
+			const cores: Array<[ChromeString, typeof d.lifePath]> = [
 				['Life Path', d.lifePath],
 				['Expression', d.expression],
 				['Soul Urge', d.soulUrge],
@@ -508,8 +524,16 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			for (const [label, core] of cores) {
 				if (!core) continue;
 				sections.push({
-					label,
-					aside: `${core.person1} and ${core.person2} · ${formatPercent(this.effectiveLang(), core.compatibility, 0)}`,
+					label: this.t(label),
+					aside: [
+						formatList(this.effectiveLang(), [
+							String(core.person1),
+							String(core.person2),
+						]),
+						formatPercent(this.effectiveLang(), core.compatibility, 0),
+					]
+						.filter(Boolean)
+						.join(' · '),
 					body: core.description ?? '',
 				});
 			}
@@ -518,8 +542,21 @@ export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
 			for (const [name, cycle] of Object.entries(d.cycles)) {
 				if (!cycle) continue;
 				sections.push({
-					label: capitalize(name),
-					aside: `${formatPercent(this.effectiveLang(), cycle.alignment, 0)} in step · ${humanize(cycle.phase ?? '')}`,
+					label: cycleName(name, (l) => this.t(l)),
+					aside: [
+						typeof cycle.alignment === 'number'
+							? this.t('{{percent}} in step', {
+									percent: formatPercent(
+										this.effectiveLang(),
+										cycle.alignment,
+										0,
+									),
+								})
+							: '',
+						cycle.phase ? this.t(PAIR_PHASE_LABEL[cycle.phase]) : '',
+					]
+						.filter(Boolean)
+						.join(' · '),
 					body: cycle.description ?? '',
 				});
 			}

@@ -15,10 +15,13 @@ import {
 	arcSeparation,
 	fanOut,
 	formatWheelDegree,
+	GLYPH_LABEL_GAP,
 	longitudeToSignPosition,
 	normalizeLongitude,
 	oppositePoint,
 	polarToCartesian,
+	rayClearance,
+	rayReach,
 	staggerRows,
 } from '../utils/degree.js';
 import { disclosureStyles } from '../utils/disclosure.js';
@@ -89,14 +92,10 @@ const RETRO_MARK_EM = 1.25;
 /** The ink of a degree label, digits and marks, is this tall: what two labels must not share, rather than the line box. */
 const DEG_LABEL_INK_EM = 0.9;
 const ANGLE_LABEL_WIDTH = 28;
-/**
- * The degree band: a first row this far inside the glyph ring, a second row
- * this much further in for a label that would touch its neighbour, and the
- * hub the aspect lines are drawn inside, just under the second row.
- */
-const DEG_LABEL_INSET = 12;
+/** A second row this much further in, for a label that would touch its neighbour. */
 const DEG_LABEL_STAGGER = 13;
-const HUB_R = PLANET_R - 31;
+/** The hub the aspect lines are drawn inside, under the deepest reach of a label beside a glyph at 3 or 9 o'clock. */
+const HUB_R = 48;
 
 /**
  * The chart shape the wheel actually renders.
@@ -365,12 +364,12 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			 * near 3:1. The sibling tables take the same pair. */
 			.pill--success {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 15%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 
 			.pill--danger {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 15%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 
 			.pill--muted {
@@ -599,8 +598,8 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				}
 				${
 					aspects.length > 0
-						? html`<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>${this.t('Harmonious')}</span>
-							<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>${this.t('Challenging')}</span>`
+						? html`<span><span class="legend-swatch" style="background: var(--roxy-success)"></span>${this.t('Harmonious aspects')}</span>
+							<span><span class="legend-swatch" style="background: var(--roxy-danger)"></span>${this.t('Challenging aspects')}</span>`
 						: nothing
 				}
 			</div>
@@ -903,40 +902,59 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 	 * the tooltip.
 	 */
 	private renderPlanets(planets: PlanetEntry[]) {
-		const degRadius = PLANET_R - DEG_LABEL_INSET;
 		const compact = this.type.size.degree > NATAL_TYPE_SIZES.degree;
-		const glyphSeparation = arcSeparation(
-			GLYPH_EM * this.type.size.glyph,
-			PLANET_R,
-		);
-		const labelWidth = (p: PlanetEntry) =>
-			((compact ? WHOLE_DEG_EM : DEG_LABEL_EM) +
-				(p.isRetrograde === true ? RETRO_MARK_EM : 0)) *
-			this.type.size.degree;
+		const glyphSize = GLYPH_EM * this.type.size.glyph;
+		// A glyph's ink is about as tall as it is wide.
+		const glyphBox = { width: glyphSize, height: glyphSize };
+		const labelBox = (retro: boolean) => ({
+			width:
+				((compact ? WHOLE_DEG_EM : DEG_LABEL_EM) +
+					(retro ? RETRO_MARK_EM : 0)) *
+				this.type.size.degree,
+			height: DEG_LABEL_INK_EM * this.type.size.degree,
+		});
+		// The outer row clears the glyph along its own ray; the inner row steps in
+		// but never past the hub, which near the sides leaves it on the outer row.
+		const labelRadius = (p: PlanetEntry, angle: number, row: number) => {
+			const box = labelBox(p.isRetrograde === true);
+			const outer =
+				PLANET_R - rayClearance(angle, glyphBox, box, GLYPH_LABEL_GAP);
+			return row === 0
+				? outer
+				: Math.min(
+						outer,
+						Math.max(
+							outer - DEG_LABEL_STAGGER,
+							HUB_R + GLYPH_LABEL_GAP + rayReach(angle, box),
+						),
+					);
+		};
+		const glyphSeparation = arcSeparation(glyphSize, PLANET_R);
 		// With two rows the fan only has to hold every SECOND label a label width
 		// apart, so one step of half the widest label does for the whole ring: a
 		// per-pair step would let a narrow label land two steps past a wide one
 		// with no row left to take it.
+		const widest = labelBox(true);
 		const separation = Math.max(
 			glyphSeparation,
 			arcSeparation(
-				((compact ? WHOLE_DEG_EM : DEG_LABEL_EM) + RETRO_MARK_EM) *
-					this.type.size.degree,
-				degRadius,
+				widest.width,
+				PLANET_R - rayClearance(90, glyphBox, widest, GLYPH_LABEL_GAP),
 			) / 2,
 		);
 		const fanned = fanOut(planets, (p) => p.longitude, separation);
-		const labelRadius = (row: number) => degRadius - row * DEG_LABEL_STAGGER;
-		const rows = staggerRows(fanned, ({ item, displayLongitude }, row) => ({
-			...polarToCartesian(
-				CENTER,
-				CENTER,
-				labelRadius(row),
-				this.toAngle(displayLongitude),
-			),
-			width: labelWidth(item),
-			height: DEG_LABEL_INK_EM * this.type.size.degree,
-		}));
+		const rows = staggerRows(fanned, ({ item, displayLongitude }, row) => {
+			const angle = this.toAngle(displayLongitude);
+			return {
+				...polarToCartesian(
+					CENTER,
+					CENTER,
+					labelRadius(item, angle, row),
+					angle,
+				),
+				...labelBox(item.isRetrograde === true),
+			};
+		});
 		return fanned.map((placed, i) => {
 			const {
 				item: p,
@@ -949,7 +967,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			const degPos = polarToCartesian(
 				CENTER,
 				CENTER,
-				labelRadius(rows[i] ?? 0),
+				labelRadius(p, displayAngle, rows[i] ?? 0),
 				displayAngle,
 			);
 			const rimPos = polarToCartesian(CENTER, CENTER, OUTER_R - 4, trueAngle);
@@ -1003,9 +1021,9 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			${
 				ai
 					? html`<div class="pill-row">
-						<span class="pill pill--success">${this.t('Harmonious')} ${ai.harmonious}</span>
-						<span class="pill pill--danger">${this.t('Challenging')} ${ai.challenging}</span>
-						<span class="pill pill--muted">${this.t('Neutral')} ${ai.neutral}</span>
+						<span class="pill pill--success">${this.t('Harmonious: {{count}}', { count: ai.harmonious })}</span>
+						<span class="pill pill--danger">${this.t('Challenging: {{count}}', { count: ai.challenging })}</span>
+						<span class="pill pill--muted">${this.t('Neutral: {{count}}', { count: ai.neutral })}</span>
 					</div>`
 					: nothing
 			}

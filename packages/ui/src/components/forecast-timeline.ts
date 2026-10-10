@@ -178,11 +178,11 @@ export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> 
 			}
 			.event-line .aspect-trine,
 			.event-line .aspect-sextile {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.event-line .aspect-square,
 			.event-line .aspect-opposition {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.event-line .aspect-conjunction {
 				color: var(--roxy-accent-ink, #b45309);

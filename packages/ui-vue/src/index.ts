@@ -59,6 +59,10 @@ export {
 	type RoxyCompatibilityCardProps,
 } from './components/compatibility-card.js';
 export {
+	RoxyCompoundNumber,
+	type RoxyCompoundNumberProps,
+} from './components/compound-number.js';
+export {
 	RoxyCrystalCard,
 	type RoxyCrystalCardProps,
 } from './components/crystal-card.js';

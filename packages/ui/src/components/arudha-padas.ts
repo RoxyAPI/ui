@@ -114,7 +114,7 @@ export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
 			.exception {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-weight: var(--roxy-weight-bold, 600);
-				color: var(--roxy-warning-fg, #b45309);
+				color: var(--_warning-fg);
 			}
 			.meaning {
 				white-space: normal;

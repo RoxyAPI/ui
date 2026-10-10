@@ -200,17 +200,17 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 			}
 			.quality-Positive {
 				background: color-mix(in srgb, var(--roxy-success, #22c55e) 18%, transparent);
-				color: var(--roxy-success-fg, #15803d);
+				color: var(--_success-fg);
 				border: 1px solid color-mix(in srgb, var(--roxy-success, #22c55e) 40%, transparent);
 			}
 			.quality-Negative {
 				background: color-mix(in srgb, var(--roxy-danger, #ef4444) 18%, transparent);
-				color: var(--roxy-danger-fg, #b91c1c);
+				color: var(--_danger-fg);
 				border: 1px solid color-mix(in srgb, var(--roxy-danger, #ef4444) 40%, transparent);
 			}
 			.quality-Both {
 				background: color-mix(in srgb, var(--roxy-warning, #f59e0b) 18%, transparent);
-				color: var(--roxy-warning-fg, #b45309);
+				color: var(--_warning-fg);
 				border: 1px solid color-mix(in srgb, var(--roxy-warning, #f59e0b) 40%, transparent);
 			}
 			/* Classification, not a verdict, so it is outlined rather than filled and
@@ -234,7 +234,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 			}
 			.present-badge.is-present {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.present-badge.is-absent {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 55%, transparent);
@@ -242,7 +242,7 @@ export class RoxyYogaList extends RoxyDataElement<YogaListData> {
 			}
 			.present-badge.is-outranked {
 				background: color-mix(in srgb, var(--roxy-warning, #f59e0b) 16%, transparent);
-				color: var(--roxy-warning-fg, #b45309);
+				color: var(--_warning-fg);
 			}
 			/* De-emphasis is carried by the SURFACE, never by opacity on the card.
 			 * Opacity composites the text against the page too, so it drags every

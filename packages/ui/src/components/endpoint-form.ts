@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { live } from 'lit/directives/live.js';
 import { EN_FIELD_LABELS } from '../generated/field-labels-en.js';
-import { OPTION_SOURCES } from '../generated/option-sources.js';
+import { DISABLED_WHEN, OPTION_SOURCES } from '../generated/option-sources.js';
 import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { signGlyph } from '../tokens/index.js';
@@ -228,7 +228,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				color: var(--roxy-secondary, #475569);
 			}
 			.req {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				margin-left: 4px;
 			}
 			input,
@@ -254,12 +254,19 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 			.field-error {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 			input[aria-invalid='true'],
 			select[aria-invalid='true'] {
 				border-color: var(--roxy-danger, #dc2626);
+			}
+			/* A field another choice rules out reads like a ruled-out tile. */
+			input:disabled,
+			select:disabled {
+				cursor: default;
+				color: var(--roxy-muted, #71717a);
+				border-style: dashed;
 			}
 			/* Long descriptions collapse: the summary shows the first line, the body the rest. */
 			.help-details > summary {
@@ -427,7 +434,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 8%, transparent);
 				border: 1px solid var(--roxy-danger, #dc2626);
 				border-radius: var(--roxy-radius-md, 8px);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 			button.submit {
@@ -465,7 +472,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				border: 1px solid var(--roxy-danger, #dc2626);
 				border-radius: var(--roxy-radius-md, 8px);
 				padding: var(--roxy-space-lg, 1.5rem);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
 		`,
@@ -513,6 +520,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	/** Submit once on load when the request needs nothing from the visitor, set by a component in self-fetch mode so a list or today's reading opens on its result. JS property only. */
 	@property({ attribute: false })
 	autoload = false;
+
+	/** Ask a hidden `limit` for the largest page the API serves rather than its default, set by a list component that pages its own rows. JS property only. */
+	@property({ attribute: false })
+	fullPages = false;
 
 	/** The choices read for each optional field the API lists values for, or the read in flight; absent when they could not be read, and the field keeps its plain input. */
 	@state()
@@ -622,13 +633,14 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	}
 
 	private applyModel(model: FormModel) {
-		const sources =
-			OPTION_SOURCES[
-				`${this.method.toUpperCase()} /${this.endpoint.replace(/^\//, '')}`
-			] ?? {};
-		this.fields = model.fields.map((f) =>
-			sources[f.key] ? { ...f, source: sources[f.key] } : f,
-		);
+		const op = `${this.method.toUpperCase()} /${this.endpoint.replace(/^\//, '')}`;
+		const sources = OPTION_SOURCES[op] ?? {};
+		const rules = DISABLED_WHEN[op] ?? {};
+		this.fields = model.fields.map((f) => ({
+			...f,
+			...(sources[f.key] && { source: sources[f.key] }),
+			...(rules[f.key] && { disabledWhen: rules[f.key] }),
+		}));
 		this.repeats = model.repeats ?? [];
 		this.formTitle = model.title;
 		this.hasLang = model.hasLang;
@@ -638,7 +650,13 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		// group, so read them by group.
 		const init: Record<string, unknown> = {};
 		for (const f of model.fields) {
-			if (f.default !== undefined) init[f.key] = f.default;
+			const seed =
+				this.fullPages &&
+				f.name === 'limit' &&
+				this.roleOf(f) === 'hidden-default'
+					? (f.max ?? f.default)
+					: f.default;
+			if (seed !== undefined) init[f.key] = seed;
 			const remembered =
 				f.group && isNested(f)
 					? (
@@ -649,7 +667,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					: this.initialValues?.[f.key];
 			if (remembered !== undefined) init[f.key] = remembered;
 		}
-		this.values = init;
+		this.values = this.withoutDisabled(init);
 		this.loaded = true;
 		this.loadChoices();
 		if (
@@ -706,12 +724,25 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 	/** Writes several values at once and clears the issue on each one the API named. */
 	private setValues(patch: Record<string, unknown>) {
-		this.values = { ...this.values, ...patch };
+		this.values = this.withoutDisabled({ ...this.values, ...patch });
 		const edited = Object.keys(patch).filter((k) =>
 			this.serverIssues?.some((i) => i.path === k),
 		);
 		if (edited.length)
 			this.clearedIssues = new Set([...this.clearedIssues, ...edited]);
+	}
+
+	/** True while another field holds the value this field waits on, so it takes no input and sends nothing. */
+	private isDisabled(f: FieldDef, values = this.values): boolean {
+		const when = f.disabledWhen;
+		return !!when && values[when.field] === when.value;
+	}
+
+	/** The values with every disabled field dropped, so a choice made before it was disabled is never sent. */
+	private withoutDisabled(values: Record<string, unknown>) {
+		for (const f of this.fields)
+			if (this.isDisabled(f, values)) values[f.key] = undefined;
+		return values;
 	}
 
 	/** The live issues: what the API reported, less what has been edited since. A new report resets the edits. */
@@ -1233,7 +1264,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 						data-tile=${i}
 						aria-checked=${selected ? 'true' : 'false'}
 						tabindex=${i === active ? '0' : '-1'}
-						?disabled=${!!opt.disabled}
+						?disabled=${!!opt.disabled || this.isDisabled(f)}
 						@click=${() => this.chooseOption(f, opt.value)}
 					>
 						${
@@ -1257,6 +1288,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			<select
 				id=${id}
 				?required=${f.required}
+				?disabled=${this.isDisabled(f)}
 				aria-invalid=${ifDefined(this.issueFor(f) ? 'true' : undefined)}
 				aria-describedby=${ifDefined(this.issueFor(f) ? `${id}-error` : undefined)}
 				.value=${live((this.values[f.key] ?? '') as string)}
@@ -1346,6 +1378,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				id=${id}
 				type=${f.kind === 'array' ? 'text' : type}
 				?required=${f.required}
+				?disabled=${this.isDisabled(f)}
 				aria-invalid=${ifDefined(this.issueFor(f) ? 'true' : undefined)}
 				aria-describedby=${ifDefined(this.issueFor(f) ? `${id}-error` : undefined)}
 				min=${ifDefined(f.min)}

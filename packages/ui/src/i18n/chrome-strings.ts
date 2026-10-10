@@ -57,9 +57,18 @@ export const CHROME_STRINGS = [
 	// Natal chart: balance details.
 	'Dominant element',
 	'Dominant modality',
+	// The bare words are a STATE of one thing (an interaction, a verdict, a
+	// relation), singular in every language; a count of aspects and the swatch
+	// naming a class of aspect lines are a different sense, plural where the
+	// language inflects, so they are sources of their own.
 	'Harmonious',
 	'Challenging',
 	'Neutral',
+	'Harmonious: {{count}}',
+	'Challenging: {{count}}',
+	'Neutral: {{count}}',
+	'Harmonious aspects',
+	'Challenging aspects',
 	'All {{count}} bodies in the chart, placed by sign',
 	'Element and modality distribution',
 	'Total',
@@ -541,6 +550,14 @@ export const CHROME_STRINGS = [
 	'Emotional',
 	'Physical',
 
+	// Chaldean compound number card: the label, the root, the three natures and the repeat.
+	'Compound number',
+	'Root number {{n}}',
+	'Fortunate',
+	'Unfortunate',
+	'Mixed fortune',
+	'Same meaning as {{n}}',
+
 	// Dream symbols: the single-symbol card and the search results beside it.
 	'Dream symbol',
 	'Dream symbols',
@@ -647,6 +664,12 @@ export const CHROME_STRINGS = [
 	'Astrology compatibility',
 	'Numerology compatibility',
 	'Biorhythm compatibility',
+	// How the two cycles of a pair sit against each other, closed and always
+	// English on the wire, plus the alignment score it rides beside.
+	'{{percent}} in step',
+	'In sync',
+	'Complementary',
+	'Opposing',
 	'Breakdown',
 	'Changing lines',
 	'Dynamics',
@@ -796,7 +819,6 @@ export const CHROME_STRINGS = [
 	'Aspects',
 	'Aspect list',
 	'Aspect summary',
-	'Patterns',
 	'{{status}} · orb {{orb}}° · str {{strength}}',
 
 	// Angel number lookup: the analysed sequence, its pattern flags, the three
@@ -1080,6 +1102,7 @@ export const CHROME_STRINGS = [
 	'Average energy',
 	'Events',
 	'Double days',
+	'Double day',
 	'Triple day',
 	'ascending through zero',
 	'descending through zero',

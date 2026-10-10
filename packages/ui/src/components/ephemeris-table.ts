@@ -320,7 +320,7 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 			}
 			.chip--retro {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 10%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 			/* A box that scrolls has to be reachable from the keyboard, which is why it
@@ -392,7 +392,7 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 			 * stretch is read as a band down a column rather than cell by cell. */
 			td.retro {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 10%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			td.retro .sg {
 				color: inherit;
@@ -405,7 +405,7 @@ export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 			td.station {
-				border-top: 2px solid var(--roxy-danger-fg, #991b1b);
+				border-top: 2px solid var(--_danger-fg);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 		`,

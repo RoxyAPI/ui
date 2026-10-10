@@ -188,12 +188,12 @@ export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
 
 			.adequacy-badge--adequate {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 
 			.adequacy-badge--weak {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 
 			.rank-badge {

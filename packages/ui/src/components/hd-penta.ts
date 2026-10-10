@@ -202,7 +202,7 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 			}
 			.badge.defined {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.badge.open {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 45%, transparent);
@@ -214,7 +214,7 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 			}
 			.badge.gap {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.footnote {
 				margin: 0;

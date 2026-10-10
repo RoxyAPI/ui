@@ -121,11 +121,11 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
 			}
 			.pill--success {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 10%, transparent);
 			}
 			.pill--danger {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 10%, transparent);
 			}
 			.section-label {
@@ -173,11 +173,11 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			}
 			.nature-badge.harmonious {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.nature-badge.challenging {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.nature-badge.neutral {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
@@ -325,7 +325,7 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			${
 				patterns.length > 0
 					? html`<div part="section patterns">
-						<p class="section-label">${this.t('Patterns')}</p>
+						<p class="section-label">${this.t('Chart patterns')}</p>
 						${[...patterns]
 							.sort(
 								(a, b) =>
@@ -350,9 +350,9 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const byType = Object.entries(s.byType ?? {}).sort((a, b) => b[1] - a[1]);
 		return html`<div class="summary-pills" part="details" role="region" aria-label=${this.t('Aspect summary')}>
 			${typeof total === 'number' ? html`<span class="pill pill--muted">${this.t('Total')}: ${total}</span>` : nothing}
-			<span class="pill pill--success">${this.t('Harmonious')}: ${s.harmonious}</span>
-			<span class="pill pill--danger">${this.t('Challenging')}: ${s.challenging}</span>
-			<span class="pill pill--muted">${this.t('Neutral')}: ${s.neutral}</span>
+			<span class="pill pill--success">${this.t('Harmonious: {{count}}', { count: s.harmonious })}</span>
+			<span class="pill pill--danger">${this.t('Challenging: {{count}}', { count: s.challenging })}</span>
+			<span class="pill pill--muted">${this.t('Neutral: {{count}}', { count: s.neutral })}</span>
 			${byType.map(
 				([type, count]) =>
 					html`<span class="pill pill--muted">${formatAspectName({ type })}: ${count}</span>`,

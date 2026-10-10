@@ -133,7 +133,7 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 			.verdict.very-strong,
 			.verdict.strong {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #14532d);
+				color: var(--_success-fg);
 			}
 			.verdict.moderate {
 				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 18%, transparent);
@@ -241,7 +241,7 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 			}
 			.state.favourable {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #14532d);
+				color: var(--_success-fg);
 			}
 			.state.underdelivered,
 			.state.obstructed,
@@ -252,7 +252,7 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 			.state.aggravated,
 			.state.unfavourable {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 14%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.kaksha {
 				display: inline-flex;
@@ -299,7 +299,7 @@ export class RoxyVedicDaily extends RoxyDataElement<Daily> {
 				border-color: color-mix(in srgb, var(--roxy-danger, #dc2626) 35%, transparent);
 			}
 			.mark {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.lists {
 				display: grid;

@@ -8,6 +8,11 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import {
+	BIORHYTHM_CYCLES,
+	CYCLE_LABEL,
+	cycleName,
+} from '../utils/biorhythm.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatDate,
@@ -39,22 +44,6 @@ const CYCLE_COLOR: Record<string, string> = {
 	wisdom: '#475569',
 };
 
-/** The cycles a forecast day carries, in the order they are plotted and keyed in the legend. */
-const FORECAST_CYCLES = [
-	'physical',
-	'emotional',
-	'intellectual',
-	'intuitive',
-] as const;
-
-/** Response key to the English SOURCE its legend entry is looked up by. The key indexes the payload and stays lower case; the label a reader sees does not. */
-const CYCLE_LABEL: Record<(typeof FORECAST_CYCLES)[number], ChromeString> = {
-	physical: 'Physical',
-	emotional: 'Emotional',
-	intellectual: 'Intellectual',
-	intuitive: 'Intuitive',
-};
-
 /** A critical day `direction` to the English SOURCE of the line that says which way the cycle crossed zero. */
 const CROSSING_LABEL: Record<
 	GetCriticalDaysResponse['criticalDays'][number]['direction'],
@@ -62,6 +51,17 @@ const CROSSING_LABEL: Record<
 > = {
 	ascending: 'ascending through zero',
 	descending: 'descending through zero',
+};
+
+/** A critical day `severity` to the English SOURCE of its label; a `single` day, one cycle crossing zero, is what every row already says, so it adds no word. */
+const SEVERITY_LABEL: Partial<
+	Record<
+		GetCriticalDaysResponse['criticalDays'][number]['severity'],
+		ChromeString
+	>
+> = {
+	double: 'Double day',
+	triple: 'Triple day',
 };
 
 /**
@@ -319,7 +319,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					>
 						<p class="label">${this.t('Spotlight cycle')}</p>
 						<div class="lead">
-							<strong>${humanize(spot.cycle)}</strong>
+							<strong>${cycleName(spot.cycle, (l) => this.t(l))}</strong>
 							${typeof spot.value === 'number' ? html`<span class="energy">${formatPercent(this.effectiveLang(), spot.value, 0)}</span>` : nothing}
 							${spot.phase ? html`<span class="phase">${humanize(spot.phase)}</span>` : nothing}
 						</div>
@@ -339,7 +339,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					const pct = Math.abs(v) * 50;
 					const color = CYCLE_COLOR[cycle] ?? 'var(--roxy-accent, #f59e0b)';
 					return html`<div class="bar" role="listitem">
-						<span style="text-transform: capitalize">${cycle}</span>
+						<span>${cycleName(cycle, (l) => this.t(l))}</span>
 						<span class="track">
 							<span
 								class="fill ${v < 0 ? 'low' : 'high'}"
@@ -388,7 +388,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					stroke="var(--roxy-border, #e4e4e7)"
 					stroke-width="1"
 				/>
-				${FORECAST_CYCLES.map((cycle) => {
+				${BIORHYTHM_CYCLES.map((cycle) => {
 					const points = days
 						.map((day, i) => {
 							const v = day[cycle] ?? 0;
@@ -410,7 +410,9 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 								formatDate(this.effectiveLang(), day.date),
 								formatList(
 									this.effectiveLang(),
-									(day.criticalCycles ?? []).map((c) => this.cycleName(c)),
+									(day.criticalCycles ?? []).map((c) =>
+										cycleName(c, (l) => this.t(l)),
+									),
 								),
 								this.t('critical day'),
 								typeof day.energyRating === 'number'
@@ -423,7 +425,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 				)}
 			</svg>
 			<div class="legend" part="legend">
-				${FORECAST_CYCLES.map(
+				${BIORHYTHM_CYCLES.map(
 					(cycle) => html`<span class="key">
 						<span class="dot" style=${`background: ${CYCLE_COLOR[cycle]}`}></span>${this.t(CYCLE_LABEL[cycle])}
 					</span>`,
@@ -463,7 +465,12 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		const doubles = d.doubleCriticalDays ?? [];
 		const sections: InterpSection[] = days.map((day) => ({
 			label: formatDate(this.effectiveLang(), day.date) || day.date,
-			aside: [day.cycle, day.severity].filter(Boolean).join(' · '),
+			aside: [
+				day.cycle ? cycleName(day.cycle, (l) => this.t(l)) : '',
+				this.severityName(day.severity),
+			]
+				.filter(Boolean)
+				.join(' · '),
 			body: day.advisory ?? '',
 			extra: html`<p class="crit-meta">
 				${[
@@ -489,13 +496,21 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					this.t('Triple day'),
 					d.tripleCriticalDay
 						? formatDate(this.effectiveLang(), d.tripleCriticalDay)
-						: 'None in range',
+						: this.t('None'),
 				)}
 			</dl>
 			${
 				doubles.length > 0
 					? html`<p class="crit-note">
-						${this.t('Two or more cycles cross zero on {{dates}}. Take extra care on these dates.', { dates: doubles.map((x) => formatDate(this.effectiveLang(), x) || x).join(', ') })}
+						${this.t(
+							'Two or more cycles cross zero on {{dates}}. Take extra care on these dates.',
+							{
+								dates: formatList(
+									this.effectiveLang(),
+									doubles.map((x) => formatDate(this.effectiveLang(), x) || x),
+								),
+							},
+						)}
 					</p>`
 					: nothing
 			}
@@ -503,10 +518,12 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 		</section>`;
 	}
 
-	/** A cycle key as a reader sees it: the legend word where the legend has one, else the key humanized. */
-	private cycleName(cycle: string): string {
-		const label = CYCLE_LABEL[cycle as keyof typeof CYCLE_LABEL];
-		return label ? this.t(label) : humanize(cycle);
+	/** A critical day severity as a reader sees it, empty for the base case. */
+	private severityName(
+		severity: GetCriticalDaysResponse['criticalDays'][number]['severity'],
+	): string {
+		const label = SEVERITY_LABEL[severity];
+		return label ? this.t(label) : '';
 	}
 
 	private stat(label: string, value: string) {

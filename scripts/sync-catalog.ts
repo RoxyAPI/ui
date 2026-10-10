@@ -19,6 +19,7 @@ import { writeFile } from 'node:fs/promises';
 import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../packages/ui/src/manifest.js';
 import { partsForSlug } from './component-parts.js';
+import { sideReadsFor } from './side-reads.js';
 import { widgetSnippets } from './widget-snippets.js';
 
 const OUT_PATH = 'packages/ui/components-catalog.json';
@@ -61,6 +62,7 @@ const components = ROXY_COMPONENTS.map((c) => {
 	// roxyapi.com /widgets page and any future consumer render the same string
 	// instead of each rebuilding it. Absent for the helpers, which bind to nothing.
 	const head = endpoints[0];
+	const sideReads = sideReadsFor(c.slug, ENDPOINT_BINDINGS[c.tag] ?? []);
 	const snippets = head
 		? {
 				snippets: widgetSnippets({
@@ -92,6 +94,8 @@ const components = ROXY_COMPONENTS.map((c) => {
 		parts: partsForSlug(c.slug),
 		...snippets,
 		...preview(c.slug),
+		// The GET requests the component sends beyond `endpoints`, so a proxy can allow exactly these.
+		...(sideReads.length > 0 ? { sideReads } : {}),
 	};
 });
 

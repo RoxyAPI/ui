@@ -219,6 +219,14 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			},
 		},
 	],
+	'roxy-compound-number': [
+		{
+			operationId: 'getCompoundNumber',
+			method: 'GET',
+			path: '/numerology/compound-number/{number}',
+			toolName: 'get_numerology_compound_number',
+		},
+	],
 	'roxy-crystal-card': [
 		{
 			operationId: 'getCrystal',
@@ -950,12 +958,6 @@ export const ENDPOINT_BINDINGS: Record<string, EndpointBinding[]> = {
 			method: 'GET',
 			path: '/numerology/meanings/{number}',
 			toolName: 'get_numerology_meanings_number',
-		},
-		{
-			operationId: 'getCompoundNumber',
-			method: 'GET',
-			path: '/numerology/compound-number/{number}',
-			toolName: 'get_numerology_compound_number',
 		},
 		{
 			operationId: 'getAvastha',

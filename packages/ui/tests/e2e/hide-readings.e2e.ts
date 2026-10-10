@@ -186,6 +186,7 @@ const HONOURS = [
 	'roxy-biorhythm-chart',
 	'roxy-bodygraph',
 	'roxy-compatibility-card',
+	'roxy-compound-number',
 	'roxy-crystal-card',
 	'roxy-dasha-timeline',
 	'roxy-dosha-card',

@@ -16,7 +16,7 @@
  *
  * **`le thème` was removed from the out-of-sign tooltip in the same pass, and it was a live mistranslation rather than a style fix.** French reserves `le thème` for the birth chart itself, so `le thème demeure donc mais agit plus faiblement` read as "the birth chart persists but acts more weakly", which is nonsense. The English `theme` meant the pattern character. `qui reste donc valable` now refers unambiguously to `la configuration`.
  *
- * **`Dissonants` replaced `Tendus` and `Durée` replaced `Période`.** `Tendus` is real French but pairs badly with `Neutres`, since the conjunction is defined as `ni harmonique ni tendue`, so a legend carrying both reads as overlapping. `Période` was not wrong either, but the field is a duration, and `Période` names WHICH span is active rather than HOW LONG it lasts.
+ * **`Dissonants` replaced `Tendus` in the aspect count legend and `Durée` replaced `Période`.** `Tendus` is real French but pairs badly with `Neutres`, since the conjunction is defined as `ni harmonique ni tendue`, so a legend carrying both reads as overlapping. The singular state of one interaction or verdict is a key of its own and takes `Tendu`, which never shares a row with `Neutre`. `Période` was not wrong either, but the field is a duration, and `Période` names WHICH span is active rather than HOW LONG it lasts.
  *
  * `Card` for the cardinal column is ours, not a convention: French sources spell all three modalities out in full. `Car` was rejected because it is a high-frequency French conjunction and a common noun; `Fixe` needs no truncation at all.
  *
@@ -107,9 +107,14 @@ export const fr: Record<ChromeString, string> = {
 
 	'Dominant element': 'Élément dominant',
 	'Dominant modality': 'Modalité dominante',
-	Harmonious: 'Harmoniques',
-	Challenging: 'Dissonants',
-	Neutral: 'Neutres',
+	Harmonious: 'Harmonieux',
+	Challenging: 'Tendu',
+	Neutral: 'Neutre',
+	'Harmonious: {{count}}': 'Harmoniques: {{count}}',
+	'Challenging: {{count}}': 'Dissonants: {{count}}',
+	'Neutral: {{count}}': 'Neutres: {{count}}',
+	'Harmonious aspects': 'Aspects harmoniques',
+	'Challenging aspects': 'Aspects dissonants',
 	'All {{count}} bodies in the chart, placed by sign':
 		'Les {{count}} astres du thème, classés par signe',
 	'Element and modality distribution': 'Répartition par éléments et modalités',
@@ -355,9 +360,9 @@ export const fr: Record<ChromeString, string> = {
 	'Vargottama planets': 'Planètes vargottama',
 	'{{chart}} divisional chart with twelve sign houses':
 		'Thème divisionnel {{chart}} à douze maisons de signe',
-	'Sidereal frame: {{frame}}': 'Cadre sidéral : {{frame}}',
+	'Sidereal frame: {{frame}}': 'Ayanamsa : {{frame}}',
 	'Sidereal frame: {{frame}}, {{degrees}}° subtracted':
-		'Cadre sidéral : {{frame}}, {{degrees}}° soustraits',
+		'Ayanamsa : {{frame}}, {{degrees}}° soustraits',
 
 	// French spends one noun on both senses, so the two keys carry the same word
 	// on purpose, which is also the pair a planetary-hours table prints.
@@ -374,6 +379,12 @@ export const fr: Record<ChromeString, string> = {
 	Spiritual: 'Spirituel',
 	Emotional: 'Émotionnel',
 	Physical: 'Physique',
+	'Compound number': 'Nombre composé',
+	'Root number {{n}}': 'Nombre racine {{n}}',
+	Fortunate: 'Fortuné',
+	Unfortunate: 'Infortuné',
+	'Mixed fortune': 'Fortune mixte',
+	'Same meaning as {{n}}': 'Même sens que {{n}}',
 	Master: 'Maître',
 	'Master number': 'Nombre maître',
 	'Birth day profile': 'Profil du jour de naissance',
@@ -577,6 +588,10 @@ export const fr: Record<ChromeString, string> = {
 	'Astrology compatibility': 'Compatibilité astrologique',
 	'Numerology compatibility': 'Compatibilité numérologique',
 	'Biorhythm compatibility': 'Compatibilité de biorythme',
+	'{{percent}} in step': 'Synchronie de {{percent}}',
+	'In sync': 'En phase',
+	Complementary: 'Complémentaire',
+	Opposing: 'Opposé',
 	Breakdown: 'Détail',
 	'Changing lines': 'Lignes mutantes',
 	Dynamics: 'Dynamiques',
@@ -708,7 +723,6 @@ export const fr: Record<ChromeString, string> = {
 	Aspects: 'Aspects',
 	'Aspect list': 'Liste des aspects',
 	'Aspect summary': 'Résumé des aspects',
-	Patterns: 'Figures',
 	'{{status}} · orb {{orb}}° · str {{strength}}':
 		'{{status}} · orbe {{orb}}° · force {{strength}}',
 	'Number analysis': 'Analyse du nombre',
@@ -981,6 +995,7 @@ export const fr: Record<ChromeString, string> = {
 	'Average energy': 'Énergie moyenne',
 	Events: 'Événements',
 	'Double days': 'Jours doubles',
+	'Double day': 'Jour double',
 	'Triple day': 'Jour triple',
 	'ascending through zero': 'franchissement du zéro en montée',
 	'descending through zero': 'franchissement du zéro en descente',

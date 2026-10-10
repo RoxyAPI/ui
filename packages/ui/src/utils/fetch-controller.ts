@@ -30,6 +30,8 @@ export interface ApiIssue {
 interface ApiFailure {
 	message: string;
 	issues: ApiIssue[] | null;
+	/** False when the body carried no `error` sentence and the message is the status line. */
+	worded: boolean;
 }
 
 /** The public API root, which a component overrides per instance through its `base-url` attribute; exported so every request names one origin. */
@@ -71,12 +73,20 @@ async function readApiFailure(res: Response): Promise<ApiFailure> {
 								message: i.message as string,
 							}))
 					: null;
-			return { message: body.error, issues: issues?.length ? issues : null };
+			return {
+				message: body.error,
+				issues: issues?.length ? issues : null,
+				worded: true,
+			};
 		}
 	} catch {
 		// Non-JSON error body: fall through to the status line.
 	}
-	return { message: `Request failed (${res.status})`, issues: null };
+	return {
+		message: `Request failed (${res.status})`,
+		issues: null,
+		worded: false,
+	};
 }
 
 /** A single request the controller issues on the component's behalf. */
@@ -107,11 +117,12 @@ export interface ApiRoute {
 	submitContext?: Record<string, unknown>;
 }
 
-/** A request the API answered with a failure: its own message, plus the fields it named when it rejected the request. */
+/** A request the API answered with a failure: its own message, plus the fields it named when it rejected the request, and whether the message is a sentence it wrote rather than the status line. */
 export class ApiError extends Error {
 	constructor(
 		message: string,
 		readonly issues: ApiIssue[] | null = null,
+		readonly worded = true,
 	) {
 		super(message);
 	}
@@ -153,7 +164,7 @@ export async function apiFetch<T>(
 		: await callApi(route, req, signal);
 	if (!res.ok) {
 		const failure = await readApiFailure(res);
-		throw new ApiError(failure.message, failure.issues);
+		throw new ApiError(failure.message, failure.issues, failure.worded);
 	}
 	return (await res.json()) as T;
 }
@@ -220,6 +231,8 @@ export class FetchController<T = unknown>
 	submitUrl?: string;
 	/** Object the host page attaches to the proxied request, set from its `submit-context` attribute; see {@link ApiRoute.submitContext}. */
 	submitContext?: Record<string, unknown>;
+	/** False when the last failure carried no sentence of its own: a dropped connection, or a body with no `error`. */
+	worded = true;
 
 	constructor(host: FetchHost<T>) {
 		this.host = host;
@@ -237,6 +250,7 @@ export class FetchController<T = unknown>
 	 * already surfaced and nothing is sent.
 	 */
 	async run(req: RoxyRequest): Promise<void> {
+		this.worded = true;
 		const refusal = routeRefusal(this);
 		if (refusal) {
 			this.host.error = refusal.message;
@@ -257,6 +271,7 @@ export class FetchController<T = unknown>
 			if (controller.signal.aborted) return;
 			if ((err as { name?: string })?.name === 'AbortError') return;
 			if (err instanceof ApiError) this.host.issues = err.issues;
+			this.worded = err instanceof ApiError && err.worded;
 			this.host.error = err instanceof Error ? err.message : String(err);
 		} finally {
 			if (this.abort === controller) this.abort = undefined;

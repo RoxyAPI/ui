@@ -99,9 +99,14 @@ export const pt: Record<ChromeString, string> = {
 
 	'Dominant element': 'Elemento dominante',
 	'Dominant modality': 'Qualidade dominante',
-	Harmonious: 'Harmoniosos',
-	Challenging: 'Tensos',
-	Neutral: 'Neutros',
+	Harmonious: 'Harmonioso',
+	Challenging: 'Desafiador',
+	Neutral: 'Neutro',
+	'Harmonious: {{count}}': 'Harmoniosos: {{count}}',
+	'Challenging: {{count}}': 'Tensos: {{count}}',
+	'Neutral: {{count}}': 'Neutros: {{count}}',
+	'Harmonious aspects': 'Aspectos harmoniosos',
+	'Challenging aspects': 'Aspectos tensos',
 	'All {{count}} bodies in the chart, placed by sign':
 		'Os {{count}} astros do mapa, dispostos por signo',
 	'Element and modality distribution': 'Distribuição por elemento e qualidade',
@@ -362,6 +367,12 @@ export const pt: Record<ChromeString, string> = {
 	Spiritual: 'Espiritual',
 	Emotional: 'Emocional',
 	Physical: 'Físico',
+	'Compound number': 'Número composto',
+	'Root number {{n}}': 'Número raiz {{n}}',
+	Fortunate: 'Afortunado',
+	Unfortunate: 'Desafortunado',
+	'Mixed fortune': 'Fortuna mista',
+	'Same meaning as {{n}}': 'Mesmo significado que {{n}}',
 	Master: 'Mestre',
 	'Master number': 'Número mestre',
 	'Birth day profile': 'Perfil do dia de nascimento',
@@ -475,7 +486,7 @@ export const pt: Record<ChromeString, string> = {
 	'{{month}} birthstones': 'Pedras de nascimento de {{month}}',
 	Crystals: 'Cristais',
 	'Forecast timeline': 'Linha do tempo da previsão',
-	'No events in this window': 'Sem eventos neste período',
+	'No events in this window': 'Sem eventos nesta janela',
 	'orb {{value}}°': 'orbe {{value}}°',
 	'Guna Milan score': 'Pontuação de Guna Milan',
 	Koota: 'Koota',
@@ -565,6 +576,10 @@ export const pt: Record<ChromeString, string> = {
 	'Astrology compatibility': 'Compatibilidade astrológica',
 	'Numerology compatibility': 'Compatibilidade numerológica',
 	'Biorhythm compatibility': 'Compatibilidade de biorritmo',
+	'{{percent}} in step': '{{percent}} de sincronia',
+	'In sync': 'Em sintonia',
+	Complementary: 'Complementar',
+	Opposing: 'Descompassado',
 	Breakdown: 'Detalhamento',
 	'Changing lines': 'Linhas mutáveis',
 	Dynamics: 'Dinâmicas',
@@ -682,9 +697,9 @@ export const pt: Record<ChromeString, string> = {
 	'Invisible until it {{event}} {{where}} on {{when}}':
 		'Invisível até {{event}} {{where}} em {{when}}',
 	'{{event}} {{where}} on {{when}}, with no further event inside the search window':
-		'{{event}} {{where}} em {{when}}, sem mais eventos dentro da janela de pesquisa',
+		'{{event}} {{where}} em {{when}}, sem mais eventos dentro da janela de busca',
 	'No rising or setting inside the search window, which is normal for a graha far from the Sun':
-		'Sem nascer nem ocaso dentro da janela de pesquisa, o que é normal para um graha longe do Sol',
+		'Sem nascer nem ocaso dentro da janela de busca, o que é normal para um graha longe do Sol',
 	'{{degrees}}° of time from the Sun against a limit of {{limit}}°':
 		'{{degrees}}° de tempo desde o Sol face a um limite de {{limit}}°',
 	'{{degrees}}° of time from the Sun against a limit of {{limit}}°, becoming {{shifted}}° at that event':
@@ -696,7 +711,6 @@ export const pt: Record<ChromeString, string> = {
 	Aspects: 'Aspectos',
 	'Aspect list': 'Lista de aspectos',
 	'Aspect summary': 'Resumo dos aspectos',
-	Patterns: 'Figuras',
 	'{{status}} · orb {{orb}}° · str {{strength}}':
 		'{{status}} · orbe {{orb}}° · força {{strength}}',
 	'Number analysis': 'Análise do número',
@@ -709,7 +723,7 @@ export const pt: Record<ChromeString, string> = {
 	'Neutral energy': 'Energia neutra',
 	'Cautionary energy': 'Energia de advertência',
 	'Where you saw it': 'Onde a viu',
-	'Known angel number': 'Número de anjo conhecido',
+	'Known angel number': 'Número angelical conhecido',
 	'What to do next': 'O que fazer a seguir',
 	'Foundational digit root': 'Raiz digital de base',
 	'Foundational digit root ({{n}})': 'Raiz digital de base ({{n}})',
@@ -727,7 +741,7 @@ export const pt: Record<ChromeString, string> = {
 	'Ascendant keeps its sign': 'O Ascendente mantém o seu signo',
 	'Bhav Chalit': 'Bhav Chalit',
 	'No graha changes house. The Rashi chart and the Chalit chart agree, which is a normal result rather than a missing reading.':
-		'Nenhum graha muda de casa. O mapa Rashi e o mapa Chalit concordam, o que é um resultado normal e não uma leitura em falta.',
+		'Nenhum graha muda de casa. O mapa Rashi e o mapa Chalit concordam, o que é um resultado normal e não uma leitura ausente.',
 	'{{count}} of {{total}} grahas change house between the Rashi chart and the unequal Sripati cusps.':
 		'{{count}} de {{total}} grahas mudam de casa entre o mapa Rashi e as cúspides desiguais de Sripati.',
 	'house {{from}} in the Rashi chart, house {{to}} here':
@@ -775,7 +789,7 @@ export const pt: Record<ChromeString, string> = {
 	'Planet strength bars': 'Barras de força planetária',
 	'Strength component legend': 'Legenda das componentes de força',
 	'Ishta Phala is the capacity to give benefic results, Kashta Phala the capacity to give malefic ones. Both are in virupas and are read together, since a planet can be strong and still deliver hardship.':
-		'Ishta Phala é a capacidade de dar resultados benéficos, Kashta Phala a de dar resultados maléficos. Ambos vão em virupas e leem-se juntos, pois um planeta pode ser forte e ainda assim trazer dureza.',
+		'Ishta Phala é a capacidade de dar resultados benéficos, Kashta Phala a de dar resultados maléficos. Ambos vão em virupas e se leem juntos, pois um planeta pode ser forte e ainda assim trazer dureza.',
 	'{{planet}} Shadbala': '{{planet}} Shadbala',
 	'rank {{n}}': 'posição {{n}}',
 	'Strength components for {{planet}}': 'Componentes de força de {{planet}}',
@@ -968,6 +982,7 @@ export const pt: Record<ChromeString, string> = {
 	'Average energy': 'Energia média',
 	Events: 'Eventos',
 	'Double days': 'Dias duplos',
+	'Double day': 'Dia duplo',
 	'Triple day': 'Dia triplo',
 	'ascending through zero': 'cruzando o zero em ascensão',
 	'descending through zero': 'cruzando o zero em descida',
@@ -977,7 +992,7 @@ export const pt: Record<ChromeString, string> = {
 	Intuitive: 'Intuitivo',
 	'Vedic planetary positions': 'Posições planetárias védicas',
 	'Vedic planetary positions: each graha with its rashi, degree, nakshatra, pada, nakshatra lord, house, its state in all three avastha systems, and retrograde state. Jagradadi and Deeptadi are read from sign dignity, which the nodes and the Lagna do not have, so those two cells are blank on the Rahu, Ketu and Lagna rows. Uranus, Neptune and Pluto appear only when asked for and rule no sign, so every avastha and house cell is blank on their rows too.':
-		'Posições planetárias védicas: cada graha com o seu rashi, grau, nakshatra, pada, regente do nakshatra, casa, o seu estado nos três sistemas de avastha e a retrogradação. Jagradadi e Deeptadi leem-se da dignidade por signo, que os nodos e o Lagna não têm, por isso essas duas células ficam vazias nas linhas de Rahu, Ketu e Lagna. Urano, Neptuno e Plutão só aparecem se forem pedidos e não regem signo algum, por isso nas suas linhas ficam vazias todas as células de avastha e de casa.',
+		'Posições planetárias védicas: cada graha com o seu rashi, grau, nakshatra, pada, regente do nakshatra, casa, o seu estado nos três sistemas de avastha e a retrogradação. Jagradadi e Deeptadi se leem da dignidade por signo, que os nodos e o Lagna não têm, por isso essas duas células ficam vazias nas linhas de Rahu, Ketu e Lagna. Urano, Netuno e Plutão só aparecem se forem pedidos e não regem signo algum, por isso nas suas linhas ficam vazias todas as células de avastha e de casa.',
 	'Nak. lord': 'Regente nak.',
 	Baladi: 'Baladi',
 	Jagradadi: 'Jagradadi',
@@ -1033,7 +1048,7 @@ export const pt: Record<ChromeString, string> = {
 	'Yoga catalog': 'Catálogo de yogas',
 	'Yoga results': 'Resultados de yogas',
 	'No yoga data': 'Sem dados de yogas',
-	'No yogas match your search.': 'Nenhum yoga corresponde à sua pesquisa.',
+	'No yogas match your search.': 'Nenhum yoga corresponde à sua busca.',
 	'Filter yogas...': 'Filtrar yogas...',
 	'Filter detected yogas by name': 'Filtrar por nome os yogas detetados',
 	'Filter yoga list by name': 'Filtrar a lista de yogas por nome',

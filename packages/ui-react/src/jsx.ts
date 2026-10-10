@@ -47,7 +47,7 @@ interface RoxyBaseAttributes {
 	'hide-sections'?: string;
 	/** Override the self-fetch form submit-button label. Empty derives an outcome-first label from the endpoint (Get reading, Generate, Compare, Cast). */
 	'submit-label'?: string;
-	/** Your own words for a failed self-fetch, printed in place of the message the request failed with (a spent quota, a network fault, a rejected key). Unset, the failure reads as the API worded it. */
+	/** Your own words for a failed self-fetch the API did not explain (a dropped connection, a response with no message). A failure the API explains, such as a spent quota, reads as the API worded it. */
 	'error-message'?: string;
 	/** Render a small "Spiritual data by RoxyAPI" credit under a self-fetch result, linking back to RoxyAPI. Off by default; set any value to enable, or "off" to force it off. Never shown in controlled mode. */
 	attribution?: string;
@@ -233,6 +233,8 @@ declare module 'react' {
 						| 'chart';
 				}
 			>;
+			/** `<RoxyCompoundNumber>` as a tag. */
+			'roxy-compound-number': RoxyElement<RoxyBaseAttributes>;
 			/** `<RoxyGematria>` as a tag. */
 			'roxy-gematria': RoxyElement<RoxyBaseAttributes>;
 			/** `<RoxyTarotCard>` as a tag. */

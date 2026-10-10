@@ -103,7 +103,7 @@ export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
 				);
 			}
 			.retro {
-				color: var(--roxy-warning-fg, #9a3412);
+				color: var(--_warning-fg);
 				font-size: var(--roxy-text-xs, 0.75rem);
 				font-weight: var(--roxy-weight-bold, 600);
 			}

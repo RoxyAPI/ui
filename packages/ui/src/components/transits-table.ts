@@ -90,12 +90,12 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 			}
 
 			.pill--success {
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 10%, transparent);
 			}
 
 			.pill--danger {
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 10%, transparent);
 			}
 
@@ -148,7 +148,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 				padding: 1px 4px;
 				border-radius: var(--roxy-radius-sm, 4px);
 				background: color-mix(in srgb, var(--roxy-warning, #ea580c) 12%, transparent);
-				color: var(--roxy-warning-fg, #9a3412);
+				color: var(--_warning-fg);
 				font-weight: var(--roxy-weight-bold, 600);
 				margin-left: 2px;
 				vertical-align: middle;
@@ -215,11 +215,11 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 			}
 			.nature-badge.harmonious {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 12%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.nature-badge.challenging {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 12%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.nature-badge.neutral {
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 60%, transparent);
@@ -308,13 +308,13 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 				${this.t('Total')}: ${summary.totalAspects}
 			</span>
 			<span class="pill pill--success">
-				${this.t('Harmonious')}: ${summary.harmonious}
+				${this.t('Harmonious: {{count}}', { count: summary.harmonious })}
 			</span>
 			<span class="pill pill--danger">
-				${this.t('Challenging')}: ${summary.challenging}
+				${this.t('Challenging: {{count}}', { count: summary.challenging })}
 			</span>
 			<span class="pill pill--muted">
-				${this.t('Neutral')}: ${summary.neutral}
+				${this.t('Neutral: {{count}}', { count: summary.neutral })}
 			</span>
 		</div>`;
 	}

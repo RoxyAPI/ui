@@ -98,6 +98,14 @@ export interface FieldDef {
 	example?: unknown;
 	/** Where the choices for this field are listed, when the API serves them; the form reads them at run time. */
 	source?: OptionSource;
+	/** The other field and value that disable this one, when its binding declares them. */
+	disabledWhen?: FieldCondition;
+}
+
+/** One request field holding one value: the condition under which a bound form disables another field. */
+export interface FieldCondition {
+	field: string;
+	value: string;
 }
 
 /**

@@ -80,11 +80,11 @@ export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
 			}
 			.badge.absent {
 				background: color-mix(in srgb, var(--roxy-success, #16a34a) 16%, transparent);
-				color: var(--roxy-success-fg, #166534);
+				color: var(--_success-fg);
 			}
 			.badge.present {
 				background: color-mix(in srgb, var(--roxy-danger, #dc2626) 16%, transparent);
-				color: var(--roxy-danger-fg, #991b1b);
+				color: var(--_danger-fg);
 			}
 			.severity-bar {
 				position: relative;

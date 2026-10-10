@@ -103,6 +103,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
 | `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |
 | `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
+| `<roxy-compound-number>` | Numerology | GET /numerology/compound-number/{number} | Compound 10 to 52 with name, root, nature and meaning |
 | `<roxy-gematria>` | Kabbalah | POST /kabbalah/gematria | Values by cipher, every candidate Hebrew spelling with its per letter breakdown, and equal-value words |
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit; a pick opens the card in place |
@@ -131,7 +132,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-dream-search>` | Dreams | GET /dreams/symbols | The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place |
 | `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily | Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections |
 | `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
-| `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/{meanings,compound-number}/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
+| `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/meanings/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
 | `<roxy-endpoint-form>` | Helper | Any endpoint, from the spec | Schema-driven form, emits roxy-submit |
 | `<roxy-location-search>` | Helper | GET /location/search | Debounced city search input, emits roxy-location-select |
 | `<roxy-data>` | Helper | Any response shape | Generic fallback renderer for unknown shapes |
