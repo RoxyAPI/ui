@@ -6466,17 +6466,17 @@
                   "properties": {
                     "name": {
                       "type": "string",
-                      "example": "Vishakha",
+                      "example": "Anuradha",
                       "description": "Nakshatra (lunar mansion, 1 of 27) the body occupies."
                     },
                     "pada": {
                       "type": "number",
-                      "example": 3,
+                      "example": 1,
                       "description": "Nakshatra pada (quarter, 1-4)."
                     },
                     "key": {
                       "type": "number",
-                      "example": 16,
+                      "example": 17,
                       "description": "Nakshatra index (1-27) starting from Ashwini."
                     },
                     "lord": {
@@ -6492,7 +6492,7 @@
                         "Saturn",
                         "Mercury"
                       ],
-                      "example": "Jupiter",
+                      "example": "Saturn",
                       "description": "Vimshottari ruling planet of this nakshatra."
                     }
                   },
@@ -6770,7 +6770,7 @@
                   "properties": {
                     "name": {
                       "type": "string",
-                      "example": "Vishakha",
+                      "example": "Moola",
                       "description": "Nakshatra (lunar mansion) the planet occupies. One of 27 Vedic nakshatras spanning 13 degrees 20 minutes each. Determines dasha lord and behavioral qualities."
                     },
                     "pada": {
@@ -6780,7 +6780,7 @@
                     },
                     "key": {
                       "type": "number",
-                      "example": 16,
+                      "example": 19,
                       "description": "Nakshatra sequence number (1-27) in zodiac order starting from Ashwini. Used for Tara Bala compatibility and dasha calculations."
                     },
                     "lord": {
@@ -6796,7 +6796,7 @@
                         "Saturn",
                         "Mercury"
                       ],
-                      "example": "Jupiter",
+                      "example": "Ketu",
                       "description": "Vimshottari ruling planet of this nakshatra. One of the nine grahas (Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury). Drives the dasha sequence and the nakshatra qualities."
                     }
                   },
@@ -7001,7 +7001,7 @@
               "nakshatra": {
                 "name": "Magha",
                 "pada": 2,
-                "key": 9,
+                "key": 10,
                 "lord": "Ketu"
               },
               "isRetrograde": false,
@@ -7015,7 +7015,7 @@
               "nakshatra": {
                 "name": "Punarvasu",
                 "pada": 4,
-                "key": 6,
+                "key": 7,
                 "lord": "Jupiter"
               },
               "isRetrograde": false,
@@ -7203,7 +7203,7 @@
                     "nakshatra": {
                       "name": "Dhanishta",
                       "pada": 3,
-                      "key": 22,
+                      "key": 23,
                       "lord": "Mars"
                     },
                     "isRetrograde": false,
@@ -7219,7 +7219,7 @@
                     "nakshatra": {
                       "name": "Dhanishta",
                       "pada": 3,
-                      "key": 22,
+                      "key": 23,
                       "lord": "Mars"
                     },
                     "isRetrograde": false,
@@ -7266,8 +7266,8 @@
                             },
                             "key": {
                               "type": "number",
-                              "example": 14,
-                              "description": "Nakshatra index in the zodiac sequence starting from Ashwini."
+                              "example": 15,
+                              "description": "Nakshatra index (1-27) in the zodiac sequence starting from Ashwini."
                             },
                             "lord": {
                               "type": "string",
@@ -7534,7 +7534,7 @@
                       "properties": {
                         "name": {
                           "type": "string",
-                          "example": "Vishakha",
+                          "example": "Moola",
                           "description": "Nakshatra (lunar mansion) the planet occupies. One of 27 Vedic nakshatras spanning 13 degrees 20 minutes each. Determines dasha lord and behavioral qualities."
                         },
                         "pada": {
@@ -7544,7 +7544,7 @@
                         },
                         "key": {
                           "type": "number",
-                          "example": 16,
+                          "example": 19,
                           "description": "Nakshatra sequence number (1-27) in zodiac order starting from Ashwini. Used for Tara Bala compatibility and dasha calculations."
                         },
                         "lord": {
@@ -7560,7 +7560,7 @@
                             "Saturn",
                             "Mercury"
                           ],
-                          "example": "Jupiter",
+                          "example": "Ketu",
                           "description": "Vimshottari ruling planet of this nakshatra. One of the nine grahas (Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury). Carried over from the D1 nakshatra."
                         }
                       },
@@ -7652,7 +7652,7 @@
                           "properties": {
                             "name": {
                               "type": "string",
-                              "example": "Vishakha",
+                              "example": "Moola",
                               "description": "Nakshatra (lunar mansion) the planet occupies."
                             },
                             "pada": {
@@ -7662,8 +7662,8 @@
                             },
                             "key": {
                               "type": "number",
-                              "example": 16,
-                              "description": "Nakshatra index in the zodiac sequence starting from Ashwini."
+                              "example": 19,
+                              "description": "Nakshatra index (1-27) in the zodiac sequence starting from Ashwini."
                             },
                             "lord": {
                               "type": "string",
@@ -7678,7 +7678,7 @@
                                 "Saturn",
                                 "Mercury"
                               ],
-                              "example": "Jupiter",
+                              "example": "Ketu",
                               "description": "Vimshottari ruling planet of this nakshatra."
                             }
                           },
@@ -8766,7 +8766,7 @@
                 },
                 "key": {
                   "type": "number",
-                  "example": 9,
+                  "example": 10,
                   "description": "Nakshatra sequence number (1-27) in zodiac order starting from Ashwini. Used for Tara Bala and dasha calculations."
                 },
                 "deity": {
@@ -8861,7 +8861,7 @@
             "latitude": -0.000012444336161568964,
             "nakshatra": {
               "anga": "nakshatra",
-              "key": 2,
+              "key": 3,
               "ratio": 0.2912129685237899,
               "abhijit": false,
               "left": 9.450493753016135,
@@ -8894,7 +8894,7 @@
             "latitude": -0.000012444336161568964,
             "nakshatra": {
               "anga": "nakshatra",
-              "key": 2,
+              "key": 3,
               "ratio": 0.2912129685237899,
               "abhijit": false,
               "left": 9.450493753016135,
@@ -20348,7 +20348,7 @@
           "Western Astrology"
         ],
         "summary": "Get upcoming moon phases - Next new moon, full moon, quarters",
-        "description": "Get upcoming moon phase transitions (New Moon, First Quarter, Full Moon, Last Quarter) for the next weeks/months. Returns dates and phase names for each lunar quarter. Perfect for lunar event calendars, moon phase widgets, and astrology planning tools.",
+        "description": "Get upcoming moon phase transitions (New Moon, First Quarter Moon, Full Moon, Third Quarter Moon) for the next weeks/months. Returns dates and phase names for each lunar quarter. Perfect for lunar event calendars, moon phase widgets, and astrology planning tools.",
         "security": [
           {
             "apiKey": []
@@ -20427,7 +20427,7 @@
                           "phase": {
                             "type": "string",
                             "example": "New Moon",
-                            "description": "Lunar phase name (New Moon, First Quarter, Full Moon, Last Quarter)."
+                            "description": "Lunar phase name (New Moon, First Quarter Moon, Full Moon, Third Quarter Moon)."
                           }
                         },
                         "required": [
@@ -36730,7 +36730,7 @@
           "Vedic Astrology"
         ],
         "summary": "Get birth chart (D1 Rashi chart) - Kundli Calculator API",
-        "description": "Calculate complete Vedic birth chart (Janam Kundli, natal chart) with all 9 planetary positions (Sun through Ketu) plus Ascendant (Lagna). Kundli calculator API for astrology apps, matrimonial sites. Returns accurate graha positions grouped by zodiac signs (rashis) with nakshatra details and pada. Perfect for kundli generation, horoscope matching, and Vedic astrology software integration.",
+        "description": "Calculate complete Vedic birth chart (Janam Kundli, natal chart) with all 9 planetary positions (Sun through Ketu) plus Ascendant (Lagna). Kundli calculator API for astrology apps, matrimonial sites. Returns accurate graha positions grouped by zodiac signs (rashis) with nakshatra details and pada. Perfect for kundli generation, horoscope matching, and Vedic astrology software integration. Rahu and Ketu are the mean lunar node, referred to the true equinox of date, with Ketu exactly opposite Rahu.",
         "security": [
           {
             "apiKey": []
@@ -38498,7 +38498,7 @@
           "Vedic Astrology"
         ],
         "summary": "Get planetary positions - Graha Positions API",
-        "description": "Get simplified planetary positions (graha positions) for all 9 planets (Sun through Ketu) plus Ascendant (Lagna). Real-time planet transit calculator for Vedic astrology. Navagraha positions API with nakshatra, pada, and rashi details. Includes house number placement using Whole Sign house system from Lagna. Faster response for basic planetary data without full chart structure. Perfect for planetary alignment tracking, daily transit updates, and astrology widgets.",
+        "description": "Get simplified planetary positions (graha positions) for all 9 planets (Sun through Ketu) plus Ascendant (Lagna). Real-time planet transit calculator for Vedic astrology. Navagraha positions API with nakshatra, pada, and rashi details. Includes house number placement using Whole Sign house system from Lagna. Faster response for basic planetary data without full chart structure. Perfect for planetary alignment tracking, daily transit updates, and astrology widgets. Rahu and Ketu are the mean lunar node, referred to the true equinox of date, with Ketu exactly opposite Rahu.",
         "security": [
           {
             "apiKey": []
@@ -38790,7 +38790,7 @@
           "Vedic Astrology"
         ],
         "summary": "Monthly Ephemeris - Daily sidereal planetary positions for a month",
-        "description": "Get daily sidereal ecliptic positions for all 9 Vedic planets (Navagraha) for an entire month. Returns longitude, zodiac sign, degree within sign, and retrograde status for each planet on each day. Calculated at noon UTC. Omit year and month to get the month in progress, so a published ephemeris page stays current without a redeploy. Essential for ephemeris generation, transit tracking, and planetary movement visualization. Monthly planetary ephemeris API, sidereal position table, daily graha gochara positions, ecliptic longitude calculator.",
+        "description": "Get daily sidereal ecliptic positions for all 9 Vedic planets (Navagraha) for an entire month. Returns longitude, zodiac sign, degree within sign, and retrograde status for each planet on each day. Calculated at noon UTC. Omit year and month to get the month in progress, so a published ephemeris page stays current without a redeploy. Essential for ephemeris generation, transit tracking, and planetary movement visualization. Monthly planetary ephemeris API, sidereal position table, daily graha gochara positions, ecliptic longitude calculator. Rahu and Ketu are the mean lunar node, referred to the true equinox of date, with Ketu exactly opposite Rahu.",
         "security": [
           {
             "apiKey": []
@@ -49072,7 +49072,7 @@
                             "endsAt": {
                               "type": "string",
                               "example": "2026-02-03T14:53:00",
-                              "description": "ISO 8601 UTC time when the current tithi ends. Precise to ~1 minute via binary search."
+                              "description": "Local time in the requested timezone (ISO 8601, no offset suffix) when the current tithi ends. Precise to ~1 minute via binary search."
                             },
                             "next": {
                               "type": "string",
@@ -49092,7 +49092,7 @@
                             "endsAt": {
                               "type": "string",
                               "example": "2026-02-03T10:15:00",
-                              "description": "ISO 8601 UTC time when the current yoga ends."
+                              "description": "Local time in the requested timezone (ISO 8601, no offset suffix) when the current yoga ends."
                             },
                             "next": {
                               "type": "string",
@@ -49112,7 +49112,7 @@
                             "endsAt": {
                               "type": "string",
                               "example": "2026-02-03T08:30:00",
-                              "description": "ISO 8601 UTC time when the current karana ends."
+                              "description": "Local time in the requested timezone (ISO 8601, no offset suffix) when the current karana ends."
                             },
                             "next": {
                               "type": "string",
@@ -49132,7 +49132,7 @@
                             "endsAt": {
                               "type": "string",
                               "example": "2026-02-03T16:22:00",
-                              "description": "ISO 8601 UTC time when the Moon leaves the current nakshatra."
+                              "description": "Local time in the requested timezone (ISO 8601, no offset suffix) when the Moon leaves the current nakshatra."
                             },
                             "next": {
                               "type": "string",
@@ -49163,7 +49163,7 @@
                             "changesAt": {
                               "type": "string",
                               "example": "2026-02-04T01:11:00",
-                              "description": "ISO 8601 UTC time when Moon enters the next rashi. Moon changes sign approximately every 2.25 days."
+                              "description": "Local time in the requested timezone (ISO 8601, no offset suffix) when Moon enters the next rashi. Moon changes sign approximately every 2.25 days."
                             },
                             "next": {
                               "type": "string",
