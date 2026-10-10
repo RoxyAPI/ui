@@ -4836,38 +4836,30 @@ describe('hide-readings', () => {
 		},
 	];
 
-	test.each(cases)('$name renders its readings by default', async ({
-		tag,
-		data,
-		attrs,
-		readings,
-		data_,
-	}: ReadingCase) => {
-		const el = await mount(tag, data, attrs);
-		const body = text(el);
-		for (const r of readings) expect(body).toContain(r);
-		for (const d of data_) expect(body).toContain(d);
-		el.remove();
-	});
+	test.each(cases)(
+		'$name renders its readings by default',
+		async ({ tag, data, attrs, readings, data_ }: ReadingCase) => {
+			const el = await mount(tag, data, attrs);
+			const body = text(el);
+			for (const r of readings) expect(body).toContain(r);
+			for (const d of data_) expect(body).toContain(d);
+			el.remove();
+		},
+	);
 
-	test.each(
-		cases,
-	)('$name drops every reading and keeps every fact under hide-readings', async ({
-		tag,
-		data,
-		attrs,
-		readings,
-		data_,
-	}: ReadingCase) => {
-		const el = await mount(tag, data, {
-			...(attrs ?? {}),
-			'hide-readings': '',
-		});
-		const body = text(el);
-		for (const r of readings) expect(body).not.toContain(r);
-		for (const d of data_) expect(body).toContain(d);
-		el.remove();
-	});
+	test.each(cases)(
+		'$name drops every reading and keeps every fact under hide-readings',
+		async ({ tag, data, attrs, readings, data_ }: ReadingCase) => {
+			const el = await mount(tag, data, {
+				...(attrs ?? {}),
+				'hide-readings': '',
+			});
+			const body = text(el);
+			for (const r of readings) expect(body).not.toContain(r);
+			for (const d of data_) expect(body).toContain(d);
+			el.remove();
+		},
+	);
 
 	test('the default is off, and the property round-trips with the attribute', async () => {
 		const el = await mount('roxy-natal-chart', natal);
@@ -5112,24 +5104,20 @@ describe('hide-readings', () => {
 	/**
 	 * A no-op has to be a decision rather than an omission, so it is asserted as one: the render is identical with the attribute and without it, and the prose the card exists for is still there.
 	 */
-	test.each(
-		NO_OP,
-	)('$name is a documented no-op and renders identically either way', async ({
-		tag,
-		data,
-		attrs,
-		data_,
-	}: ReadingCase) => {
-		const on = await mount(tag, data, attrs);
-		const off = await mount(tag, data, {
-			...(attrs ?? {}),
-			'hide-readings': '',
-		});
-		expect(off.shadowRoot?.innerHTML).toBe(on.shadowRoot?.innerHTML ?? '');
-		for (const d of data_) expect(text(off)).toContain(d);
-		on.remove();
-		off.remove();
-	});
+	test.each(NO_OP)(
+		'$name is a documented no-op and renders identically either way',
+		async ({ tag, data, attrs, data_ }: ReadingCase) => {
+			const on = await mount(tag, data, attrs);
+			const off = await mount(tag, data, {
+				...(attrs ?? {}),
+				'hide-readings': '',
+			});
+			expect(off.shadowRoot?.innerHTML).toBe(on.shadowRoot?.innerHTML ?? '');
+			for (const d of data_) expect(text(off)).toContain(d);
+			on.remove();
+			off.remove();
+		},
+	);
 
 	/**
 	 * The angel-number card hand-rolled its own `<details>` accordion, which was neither `.interp-card` markup nor a call to the shared helper, so it slipped past the guard that caught the other five. It draws the shared accordion now, and this pins that rather than the symptom.
