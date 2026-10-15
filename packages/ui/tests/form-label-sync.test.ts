@@ -1,28 +1,15 @@
-import { describe, expect, mock, test } from 'bun:test';
+import { afterEach, describe, expect, mock, test } from 'bun:test';
 import {
-	enumPickers,
-	matchingEnumLabels,
+	fetchLabels,
 	splitLabelPayload,
-	syncPickerEnums,
 } from '../../../scripts/sync-field-labels.js';
-import specJson from '../../../specs/openapi.json';
 import { registerFieldLabels, registerLocale } from '../src/i18n/registry.js';
-import {
-	optionsFrom,
-	type SpecDoc,
-	translatedFieldLabel,
-} from '../src/utils/field-schema.js';
+import { translatedFieldLabel } from '../src/utils/field-schema.js';
 
-const spec = specJson as unknown as SpecDoc;
-const animalPath = '/chinese-astrology/zodiac/animals';
-const animalSpec: SpecDoc = {
-	paths: {
-		[animalPath]: spec.paths[animalPath]!,
-		[`${animalPath}/{id}`]: spec.paths[`${animalPath}/{id}`]!,
-		'/chinese-astrology/zodiac/{id}/daily':
-			spec.paths['/chinese-astrology/zodiac/{id}/daily']!,
-	},
-};
+const originalFetch = globalThis.fetch;
+afterEach(() => {
+	globalThis.fetch = originalFetch;
+});
 
 describe('contextual form labels', () => {
 	test('uses published nouns including unchanged spellings, with regional tags and deliberate gaps', () => {
@@ -75,165 +62,66 @@ describe('server/runtime label split', () => {
 	});
 });
 
-describe('identifier option sync', () => {
-	test('finds enum collection paths, with language and page bounds, once for daily and animal pickers', () => {
-		expect(enumPickers(animalSpec)).toEqual([
-			{
-				source: { path: animalPath, lang: true, limit: 12 },
-				field: 'id',
-				values: [
-					'rat',
-					'ox',
-					'tiger',
-					'rabbit',
-					'dragon',
-					'snake',
-					'horse',
-					'goat',
-					'monkey',
-					'rooster',
-					'dog',
-					'pig',
-				],
+describe('keyless field-label feed', () => {
+	test('reads picker names directly from the feed with one request and no credentials', async () => {
+		const payload = {
+			fields: { birthLatitude: 'Latitud de nacimiento' },
+			enums: {
+				'id.rat': 'Rata',
+				'id.ox': 'Buey',
+				'id.tiger': 'Tigre',
+				'avoidAnimal.rat': 'Rata',
 			},
-		]);
+		};
+		const request = mock(async () => new Response(JSON.stringify(payload)));
+		globalThis.fetch = request as unknown as typeof fetch;
+		const result = await fetchLabels('es');
+		expect(result).toEqual(payload);
+		expect(request).toHaveBeenCalledTimes(1);
+		const [url, options] = (
+			request.mock.calls as unknown as [string, RequestInit][]
+		)[0]!;
+		expect(url).toBe(
+			'https://roxyapi.com/api/v2/languages/field-labels?lang=es',
+		);
+		expect(options.headers).toBeUndefined();
+		const { runtime, server } = splitLabelPayload(result);
+		expect(server.enums).toEqual({
+			'id.rat': 'Rata',
+			'id.ox': 'Buey',
+			'id.tiger': 'Tigre',
+		});
+		expect(runtime.enums).toEqual({ 'avoidAnimal.rat': 'Rata' });
 	});
 
-	test('publishes localized collection names under wire values, without changing API field labels', async () => {
-		const load = mock(async () => ({
-			animals: [
-				{ id: 'rat', name: 'Rat', nameLocalized: 'Rata' },
-				{ id: 'ox', name: 'Buey' },
-				{ id: 'unlisted', name: 'Ignored' },
-				{ id: 'tiger' },
-			],
-		}));
+	test('does not reconstruct omitted conflicting identifiers from other enums', async () => {
 		const payload = {
 			fields: { id: 'ID' },
-			enums: { 'id.ox': 'Existing API label' },
-		};
-		expect(await syncPickerEnums(payload, animalSpec, load)).toEqual({
-			fields: payload.fields,
-			enums: { 'id.rat': 'Rata', 'id.ox': 'Existing API label' },
-		});
-		expect(load).toHaveBeenCalledTimes(1);
-		expect(payload.enums).toEqual({ 'id.ox': 'Existing API label' });
-	});
-
-	test('conflicting names for an ID shared by collections stay absent instead of depending on source order', async () => {
-		const shared: SpecDoc = {
-			paths: {
-				'/first': {
-					get: {
-						operationId: 'listFirst',
-						parameters: [{ name: 'lang', in: 'query' }],
-					},
-				},
-				'/first/{id}': {
-					get: {
-						operationId: 'getFirst',
-						parameters: [
-							{
-								name: 'id',
-								in: 'path',
-								description: 'First identifier',
-								schema: { type: 'string', enum: ['shared'] },
-							},
-						],
-					},
-				},
-				'/second': {
-					get: {
-						operationId: 'listSecond',
-						parameters: [{ name: 'lang', in: 'query' }],
-					},
-				},
-				'/second/{id}': {
-					get: {
-						operationId: 'getSecond',
-						parameters: [
-							{
-								name: 'id',
-								in: 'path',
-								description: 'Second identifier',
-								schema: { type: 'string', enum: ['shared'] },
-							},
-						],
-					},
-				},
+			enums: {
+				'first.shared': 'First meaning',
+				'second.shared': 'Second meaning',
 			},
 		};
-		const result = await syncPickerEnums(
-			{ fields: {}, enums: {} },
-			shared,
-			async (source) => [
-				{
-					id: 'shared',
-					name: source.path === '/first' ? 'First name' : 'Second name',
-				},
-			],
-		);
-		expect(result.enums).toEqual({});
+		globalThis.fetch = mock(
+			async () => new Response(JSON.stringify(payload)),
+		) as unknown as typeof fetch;
+		const { server } = splitLabelPayload(await fetchLabels('es'));
+		expect(server.enums).toEqual({});
 	});
 
-	test('never borrows names from a partial or conflicting choice set', () => {
-		expect(matchingEnumLabels({ 'one.rat': 'Rata' }, ['rat', 'ox'])).toEqual(
-			{},
+	test('rejects failed and empty feeds so drift checks cannot silently pass', async () => {
+		globalThis.fetch = mock(
+			async () => new Response('{}', { status: 503 }),
+		) as unknown as typeof fetch;
+		await expect(fetchLabels('es')).rejects.toThrow('HTTP 503');
+		globalThis.fetch = mock(
+			async () =>
+				new Response(
+					JSON.stringify({ fields: {}, enums: { 'id.rat': 'Rata' } }),
+				),
+		) as unknown as typeof fetch;
+		await expect(fetchLabels('es')).rejects.toThrow(
+			'payload carried no fields',
 		);
-		expect(
-			matchingEnumLabels(
-				{
-					'one.rat': 'Rata',
-					'one.ox': 'Buey',
-					'two.rat': 'Other meaning',
-					'two.ox': 'Buey',
-				},
-				['rat', 'ox'],
-			),
-		).toEqual({ ox: 'Buey' });
-	});
-
-	test('uses the API field-label names when a collection is unavailable, leaving unsupported values absent', async () => {
-		const enums = Object.fromEntries(
-			enumPickers(animalSpec)[0]!.values.map((v) => [
-				`avoidAnimal.${v}`,
-				v === 'rat' ? 'Rata' : v,
-			]),
-		);
-		const result = await syncPickerEnums(
-			{ fields: {}, enums },
-			animalSpec,
-			async () => {
-				throw new Error('HTTP 401');
-			},
-		);
-		expect(result.enums?.['id.rat']).toBe('Rata');
-		expect(result.enums?.['id.unlisted']).toBeUndefined();
-	});
-
-	test('an unavailable collection fails the drift check and preserves prior names during a normal sync', async () => {
-		const load = async () => {
-			throw new Error('HTTP 401');
-		};
-		await expect(
-			syncPickerEnums({ fields: {}, enums: {} }, animalSpec, load, {
-				strict: true,
-			}),
-		).rejects.toThrow('HTTP 401');
-		const result = await syncPickerEnums(
-			{ fields: {}, enums: {} },
-			animalSpec,
-			load,
-			{ previous: { 'id.rat': 'Rata' } },
-		);
-		expect(result.enums).toEqual({ 'id.rat': 'Rata' });
-	});
-
-	test('browser collection options keep their original canonical names', () => {
-		expect(
-			optionsFrom({
-				entries: [{ id: 'rat', name: 'Rat', nameLocalized: 'Rata' }],
-			}),
-		).toEqual([{ value: 'rat', label: 'Rat' }]);
 	});
 });

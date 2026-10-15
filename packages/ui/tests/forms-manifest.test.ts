@@ -15,6 +15,7 @@ import specJson from '../../../specs/openapi.json';
 import { API_LANGUAGES } from '../src/generated/api-languages.js';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import { EN_FIELD_LABELS } from '../src/generated/field-labels-en.js';
+import serverLabelsJson from '../src/generated/form-labels.json';
 import type { FieldLabels } from '../src/i18n/registry.js';
 import {
 	type FieldDef,
@@ -345,7 +346,7 @@ describe('published forms manifest', () => {
 		});
 	});
 
-	test('locale files match label sync, including deliberate gaps, and English matches browser fallbacks', async () => {
+	test('locale files match label sync, including deliberate gaps and English picker names', async () => {
 		const catalogued = new Set(
 			(await readdir('packages/ui/src/locales'))
 				.filter((f) => f.endsWith('.ts'))
@@ -374,7 +375,11 @@ describe('published forms manifest', () => {
 					);
 				}
 				for (const value of field.enum ?? [])
-					expect(english.enums[`${field.name}.${value}`]).toBe(humanize(value));
+					expect(english.enums[`${field.name}.${value}`]).toBe(
+						(serverLabelsJson.en.enums as Record<string, string>)[
+							`${field.name}.${value}`
+						] ?? humanize(value),
+					);
 			}
 		for (const model of Object.values(manifest.forms))
 			for (const group of model.groups ?? [])

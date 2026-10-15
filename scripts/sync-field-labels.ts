@@ -12,6 +12,7 @@
  * translated a moment later. Baking them removes all three.
  *
  * @remarks
+ * The keyless `/languages/field-labels?lang=` feed supplies all names, including `id.*` enums.
  * Shared fields and enums ride the existing `locales/{lang}.js` payload. Identifier picker names
  * and contextual operation/field labels are generated separately in `generated/form-labels.json`,
  * read only by build-forms.ts for server renderers. No browser entry imports that artifact.
@@ -42,9 +43,6 @@ import {
 } from '../packages/ui/src/i18n/registry.js';
 import {
 	buildFormModel,
-	collectionSource,
-	type OptionSource,
-	optionsFrom,
 	type SpecDoc,
 	translatedFieldLabel,
 } from '../packages/ui/src/utils/field-schema.js';
@@ -152,7 +150,7 @@ function formatted(path: string, text: string): string {
 	return run.stdout.toString();
 }
 
-async function fetchLabels(lang: string): Promise<LabelPayload> {
+export async function fetchLabels(lang: string): Promise<LabelPayload> {
 	const res = await fetch(`${API_BASE}/languages/field-labels?lang=${lang}`, {
 		signal: AbortSignal.timeout(20_000),
 	});
@@ -162,164 +160,6 @@ async function fetchLabels(lang: string): Promise<LabelPayload> {
 		throw new Error('payload carried no fields');
 	}
 	return body;
-}
-
-/** Enumerated identifier pickers with a localized collection, deduplicated by collection path. */
-export function enumPickers(
-	spec: SpecDoc,
-): Array<{ source: OptionSource; field: string; values: string[] }> {
-	const pickers = new Map<
-		string,
-		{ source: OptionSource; field: string; values: string[] }
-	>();
-	for (const [path, item] of Object.entries(spec.paths)) {
-		for (const [method, op] of Object.entries(item)) {
-			if (!op.operationId) continue;
-			for (const field of buildFormModel(
-				op,
-				spec.components?.schemas ?? {},
-				path,
-				method,
-			).fields) {
-				if (!field.label || !field.enum || field.name !== 'id') continue;
-				const parent = path.split(`/{${field.name}}`)[0]!;
-				const source = field.source ?? collectionSource(spec, parent);
-				if (source?.lang)
-					pickers.set(source.path, {
-						source,
-						field: field.name,
-						values: field.enum,
-					});
-			}
-		}
-	}
-	return [...pickers.values()];
-}
-
-/**
- * Reuse names already in the API field-label payload when another field has the exact same
- * choice set. Never borrow a bare value from a different enum, and omit conflicting names.
- */
-export function matchingEnumLabels(
-	enums: Record<string, string>,
-	values: string[],
-): Record<string, string> {
-	const fields = new Map<string, string[]>();
-	for (const key of Object.keys(enums)) {
-		const dot = key.indexOf('.');
-		if (dot < 0 || key.slice(0, dot) === 'id') continue;
-		const field = key.slice(0, dot);
-		const entries = fields.get(field) ?? [];
-		entries.push(key.slice(dot + 1));
-		fields.set(field, entries);
-	}
-	const candidates = [...fields].filter(
-		([, entries]) =>
-			entries.length === values.length &&
-			values.every((v) => entries.includes(v)),
-	);
-	const out: Record<string, string> = {};
-	for (const value of values) {
-		const names = new Set(
-			candidates.map(([field]) => enums[`${field}.${value}`]!),
-		);
-		if (names.size === 1) out[value] = [...names][0]!;
-	}
-	return out;
-}
-
-/** Fill identifier option labels from API names; collection requests are injected for hermetic tests. */
-export async function syncPickerEnums(
-	payload: LabelPayload,
-	spec: SpecDoc,
-	load: (source: OptionSource) => Promise<unknown>,
-	options: { strict?: boolean; previous?: Record<string, string> } = {},
-): Promise<LabelPayload> {
-	const enums = { ...payload.enums };
-	// Different collections can share an identifier (Brahma is both a yoga and a devata).
-	// Publish a shared id.value only when its sources agree; never let collection order choose.
-	const namesByKey = new Map<string, string | undefined>();
-	const pickers = enumPickers(spec);
-	const results = await Promise.allSettled(
-		pickers.map(({ source }) => load(source)),
-	);
-	for (const [index, picker] of pickers.entries()) {
-		const result = results[index]!;
-		const names = matchingEnumLabels(payload.enums ?? {}, picker.values);
-		if (result.status === 'fulfilled') {
-			const body = result.value;
-			const entries = Array.isArray(body)
-				? body
-				: body && typeof body === 'object'
-					? Object.values(body).find(Array.isArray)
-					: [];
-			// A bare identifier is not a translated name. Leave unnamed entries absent.
-			const named = (entries ?? []).filter((entry: unknown) => {
-				if (!entry || typeof entry !== 'object') return false;
-				const row = entry as Record<string, unknown>;
-				return ['nameLocalized', 'name', 'english'].some(
-					(key) => typeof row[key] === 'string' && row[key] !== '',
-				);
-			});
-			for (const option of optionsFrom(
-				named.map((entry: Record<string, unknown>) => ({
-					...entry,
-					name: entry.nameLocalized || entry.name || entry.english,
-				})),
-				picker.field,
-			)) {
-				if (picker.values.includes(option.value))
-					names[option.value] = option.label;
-			}
-		} else {
-			if (options.strict)
-				throw new Error(`${picker.source.path}: ${String(result.reason)}`);
-			console.warn(
-				`${picker.source.path}: ${String(result.reason)}; keeping available published names`,
-			);
-			for (const value of picker.values) {
-				const previous = options.previous?.[`${picker.field}.${value}`];
-				if (previous !== undefined) names[value] ??= previous;
-			}
-		}
-		for (const [value, label] of Object.entries(names)) {
-			const key = `${picker.field}.${value}`;
-			if (!namesByKey.has(key)) namesByKey.set(key, label);
-			else if (namesByKey.get(key) !== label) namesByKey.set(key, undefined);
-		}
-	}
-	for (const [key, label] of namesByKey)
-		if (label !== undefined) enums[key] ??= label;
-	return { ...payload, enums };
-}
-
-async function fetchPickerLabels(
-	lang: string,
-	previous?: Record<string, string>,
-): Promise<LabelPayload> {
-	const payload = await fetchLabels(lang);
-	// English only compiles field names, so it needs no option collection reads.
-	if (lang === 'en') return payload;
-	const spec = (await Bun.file('specs/openapi.json').json()) as SpecDoc;
-	if (existsSync(`${OUT_DIR}/${lang}.ts`))
-		await import(`../${OUT_DIR}/${lang}.ts`);
-	return syncPickerEnums(
-		payload,
-		spec,
-		async (source) => {
-			const url = new URL(`${API_BASE}${source.path}`);
-			url.searchParams.set('lang', lang);
-			if (source.limit) url.searchParams.set('limit', String(source.limit));
-			const key = process.env.ROXY_API_KEY;
-			const res = await fetch(url, {
-				signal: AbortSignal.timeout(20_000),
-				...(key ? { headers: { 'X-API-Key': key } } : {}),
-			});
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			return res.json();
-		},
-		{ strict: CHECK, previous: { ...labelsFor(lang)?.enums, ...previous } },
-	);
 }
 
 /** Separate build-only picker names by their existing key space, keeping shared enums intact. */
@@ -371,7 +211,7 @@ async function labelOutputs(
 }
 
 async function main() {
-	// Replay persisted API names for migrations/offline rebuilds, without losing authenticated reads.
+	// Replay persisted API names for migrations/offline rebuilds without another API read.
 	const fromDisk = process.argv.includes('--from-disk');
 	if (CHECK && fromDisk)
 		throw new Error(
@@ -395,7 +235,11 @@ async function main() {
 		try {
 			let payload: LabelPayload;
 			if (fromDisk) {
-				if (lang === 'en') payload = { fields: EN_FIELD_LABELS, enums: {} };
+				if (lang === 'en')
+					payload = {
+						fields: EN_FIELD_LABELS,
+						enums: serverLabels.en?.enums ?? {},
+					};
 				else {
 					await import(`../${OUT_DIR}/${lang}.ts`);
 					const existing = labelsFor(lang);
@@ -406,7 +250,7 @@ async function main() {
 						enums: { ...existing.enums, ...serverLabels[lang]?.enums },
 					};
 				}
-			} else payload = await fetchPickerLabels(lang, serverLabels[lang]?.enums);
+			} else payload = await fetchLabels(lang);
 			const outputs = await labelOutputs(lang, payload, spec);
 			const expected = formatted(out, write(outputs.runtime));
 			if (CHECK) {
