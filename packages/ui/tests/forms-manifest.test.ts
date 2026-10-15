@@ -26,6 +26,7 @@ import { humanize } from '../src/utils/string.js';
 import '../src/components/endpoint-form.js';
 
 const spec = specJson as unknown as SpecDoc;
+type ManifestLabels = FieldLabels & { groups: Record<string, string> };
 let out: string;
 let manifest: {
 	version: number;
@@ -106,6 +107,42 @@ function fieldNode(root: ShadowRoot, field: FieldDef): HTMLElement | null {
 }
 
 describe('published forms manifest', () => {
+	test('identifier labels carry the spec noun for every affected lookup', () => {
+		const expected = {
+			getRashi: 'Rashi',
+			getDailyZodiacReading: 'Animal',
+			getBaguaSector: 'Life area',
+			getYoga: 'Yoga',
+			getNakshatra: 'Nakshatra',
+			getAvastha: 'Avastha',
+			getCenter: 'Center',
+			getDosha: 'Dosha',
+			getHaabMonth: 'Haab period',
+			getHebrewLetter: 'Letter',
+			getMayanDaySign: 'Day sign',
+			getAztecDaySign: 'Day sign',
+			getDevata: 'Devata',
+			getDikpalaDirection: 'Direction',
+			getSephirah: 'Sephirah',
+			getZodiacAnimal: 'Animal',
+		};
+		for (const [id, label] of Object.entries(expected))
+			expect(
+				manifest.forms[id]!.fields.find((f) => f.key === 'id')?.label,
+			).toBe(label);
+	});
+
+	test('relocation coordinates have distinct fallback labels and unchanged wire names', () => {
+		const model = manifest.forms.generateRelocationChart!;
+		for (const [key, label] of Object.entries({
+			birthLatitude: 'Birth latitude',
+			birthLongitude: 'Birth longitude',
+			relocationLatitude: 'Relocation latitude',
+			relocationLongitude: 'Relocation longitude',
+		}))
+			expect(model.fields.find((f) => f.key === key)?.label).toBe(label);
+	});
+
 	test('every spec operation is present with method/path and the unchanged schema slice model', async () => {
 		await buildSchemas(`${out}/schemas`);
 		const operations = Object.entries(spec.paths).flatMap(([path, item]) =>
@@ -203,6 +240,9 @@ describe('published forms manifest', () => {
 				const fieldsets = [...root.querySelectorAll('fieldset.person-group')];
 				const named = model.groups!.filter((g) => g.key !== undefined);
 				expect(fieldsets.length).toBe(named.length);
+				expect(
+					fieldsets.map((f) => f.querySelector('legend')?.textContent),
+				).toEqual(named.map((g) => g.label));
 				const cities = root.querySelectorAll('roxy-location-search');
 				expect(cities.length).toBe(
 					model.groups!.filter((g) => g.location).length +
@@ -280,7 +320,7 @@ describe('published forms manifest', () => {
 		expect(
 			await readdir(`${out}/forms/labels`).then((files) => files.sort()),
 		).toEqual(languages.map((lang) => `${lang}.json`).sort());
-		const english: FieldLabels = JSON.parse(
+		const english: ManifestLabels = JSON.parse(
 			await readFile(`${out}/forms/labels/en.json`, 'utf8'),
 		);
 		for (const model of Object.values(manifest.forms))
@@ -291,22 +331,37 @@ describe('published forms manifest', () => {
 				for (const value of field.enum ?? [])
 					expect(english.enums[`${field.name}.${value}`]).toBe(humanize(value));
 			}
+		for (const model of Object.values(manifest.forms))
+			for (const group of model.groups ?? [])
+				if (group.key !== undefined) {
+					expect(group.label).toBeDefined();
+					expect(english.groups[group.key]).toBe(group.label!);
+				}
 		// Reference registration also runs in a child: no locale module touches this test process.
 		const registered = JSON.parse(
 			await runBun([
 				'--eval',
-				`const { labelsFor } = await import('./packages/ui/src/i18n/registry.js');
+				`const { labelsFor, translate } = await import('./packages/ui/src/i18n/registry.js');
+			const { deriveGroupLabel } = await import('./packages/ui/src/utils/field-schema.js');
+			const { displayField } = await import('./packages/ui/src/utils/localized.js');
+			const { EN_FIELD_LABELS } = await import('./packages/ui/src/generated/field-labels-en.js');
+			const manifest = await Bun.file(${JSON.stringify(`${out}/forms.json`)}).json();
 			const labels = {};
 			for (const lang of process.argv.slice(1)) {
 				await import('./packages/ui/src/locales/' + lang + '.js');
-				labels[lang] = labelsFor(lang);
+				const groups = {};
+				for (const model of Object.values(manifest.forms))
+					for (const group of model.groups ?? [])
+						if (group.key !== undefined)
+							groups[group.key] = deriveGroupLabel(group.key, (source, vars) => translate(lang, source, vars), name => displayField(lang, name, EN_FIELD_LABELS[name]));
+				labels[lang] = { ...labelsFor(lang), groups };
 			}
 			console.log(JSON.stringify(labels));`,
 				...languages.filter((lang) => lang !== 'en'),
 			]),
-		) as Record<string, FieldLabels>;
+		) as Record<string, ManifestLabels>;
 		for (const lang of languages.filter((l) => l !== 'en')) {
-			const labels: FieldLabels = JSON.parse(
+			const labels: ManifestLabels = JSON.parse(
 				await readFile(`${out}/forms/labels/${lang}.json`, 'utf8'),
 			);
 			expect(labels).toEqual(registered[lang]);
@@ -319,5 +374,9 @@ describe('published forms manifest', () => {
 					registered[lang]?.enums[key],
 				);
 		}
+		expect(registered.es?.groups.personA).toBe('Persona A');
+		expect(registered.es?.groups.person1).toBe('Persona 1');
+		expect(registered.es?.groups.plot).toBe('Terreno');
+		expect(registered.es?.groups.natalChart).toBe('Carta natal');
 	});
 });

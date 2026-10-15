@@ -11,12 +11,15 @@ import { EN_FIELD_LABELS } from '../packages/ui/src/generated/field-labels-en.js
 import {
 	type FieldLabels,
 	labelsFor,
+	translate,
 } from '../packages/ui/src/i18n/registry.js';
 import {
 	buildFormModel,
+	deriveGroupLabel,
 	type FormModel,
 	type SpecDoc,
 } from '../packages/ui/src/utils/field-schema.js';
+import { displayField } from '../packages/ui/src/utils/localized.js';
 import { humanize } from '../packages/ui/src/utils/string.js';
 
 const OUT_DIR = 'packages/ui/dist';
@@ -102,9 +105,20 @@ export async function buildForms(outDir: string = OUT_DIR): Promise<number> {
 		if (lang !== 'en') await import(`../packages/ui/src/locales/${lang}.js`);
 		const labels = lang === 'en' ? english : labelsFor(lang);
 		if (!labels) throw new Error(`No field labels registered for ${lang}`);
+		const groups: Record<string, string> = {};
+		for (const model of Object.values(manifest.forms)) {
+			for (const group of model.groups ?? []) {
+				if (group.key === undefined) continue;
+				groups[group.key] = deriveGroupLabel(
+					group.key,
+					(source, vars) => translate(lang, source, vars),
+					(name) => displayField(lang, name, EN_FIELD_LABELS[name]),
+				);
+			}
+		}
 		await writeFile(
 			`${outDir}/forms/labels/${lang}.json`,
-			JSON.stringify(ordered(labels)),
+			JSON.stringify(ordered({ ...labels, groups })),
 		);
 	}
 	return Object.keys(manifest.forms).length;

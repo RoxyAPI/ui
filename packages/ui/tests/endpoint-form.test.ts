@@ -73,6 +73,33 @@ afterEach(() => {
 });
 
 describe('endpoint-form input registry rendering', () => {
+	test('enum path identifiers display the shared spec noun instead of ID for tiles and selects', async () => {
+		for (const [path, label] of [
+			['/vedic-astrology/rashis/{id}', 'Rashi'],
+			['/vedic-astrology/nakshatras/{id}', 'Nakshatra'],
+		] as const) {
+			const op = spec.paths[path].get as OperationSchema;
+			const model = buildFormModel(
+				op,
+				spec.components.schemas as Record<string, OpenApiSchema>,
+				path,
+				'GET',
+			);
+			const el = await mountForm(model, {
+				'data-endpoint': path,
+				method: 'GET',
+			});
+			try {
+				const node = el.shadowRoot!.querySelector(
+					'#roxy-form-id-label, label[for="roxy-form-id"]',
+				);
+				expect(node?.textContent?.replace('*', '').trim()).toBe(label);
+			} finally {
+				el.remove();
+			}
+		}
+	});
+
 	test('a small enum renders a tile radiogroup with zodiac glyphs and no bare select', async () => {
 		const el = await mountForm(
 			{

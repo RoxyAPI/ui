@@ -4,6 +4,7 @@ import {
 	buildFormModel,
 	classifyInput,
 	collectionSource,
+	deriveGroupLabel,
 	deriveSubmitLabel,
 	deriveTitle,
 	type FieldDef,
@@ -218,6 +219,73 @@ describe('buildFormModel', () => {
 		});
 		expect(model.hasLang).toBe(true);
 		expect(model.title).toBe('Daily horoscope by zodiac sign');
+	});
+
+	test('bare path enum identifiers get the opening noun, without relabelling meaningful names or free inputs', () => {
+		const field = (name: string, description?: string, inPath = true) =>
+			buildFormModel(
+				{
+					parameters: [
+						{
+							name,
+							in: inPath ? 'path' : 'query',
+							description,
+							schema: { type: 'string', enum: ['one'] },
+						},
+					],
+				},
+				{},
+				'test',
+			).fields[0]!;
+		for (const [description, label] of [
+			['Animal id, case-insensitive.', 'Animal'],
+			['Rashi ID slug. One of mesha.', 'Rashi'],
+			['Life area id.', 'Life area'],
+			['Yoga identifier (lowercase, hyphenated)', 'Yoga'],
+			['Avastha slug. Baladi: bala.', 'Avastha'],
+		])
+			expect(field('id', description).label).toBe(label);
+		expect(field('id').label).toBeUndefined();
+		expect(field('id', 'Choose a value.').label).toBeUndefined();
+		expect(field('sign', 'Animal id.').label).toBeUndefined();
+		expect(field('id', 'Animal id.', false).label).toBeUndefined();
+		const free = buildFormModel(
+			{
+				parameters: [
+					{
+						name: 'id',
+						in: 'path',
+						schema: { type: 'string', description: 'Animal id.' },
+					},
+				],
+			},
+			{},
+			'test',
+		);
+		expect(free.fields[0]!.label).toBeUndefined();
+		const schemaDescription = buildFormModel(
+			{
+				parameters: [
+					{
+						name: 'id',
+						in: 'path',
+						schema: { enum: ['one'], description: 'Center id.' },
+					},
+				],
+			},
+			{},
+			'test',
+		);
+		expect(schemaDescription.fields[0]!.label).toBe('Center');
+	});
+
+	test('group labels retain humanized legends and numbered array field labels', () => {
+		expect(deriveGroupLabel('personA')).toBe('Person A');
+		expect(deriveGroupLabel('person1')).toBe('Person 1');
+		expect(deriveGroupLabel('plot')).toBe('Plot');
+		expect(deriveGroupLabel('natalChart')).toBe('Natal Chart');
+		expect(deriveGroupLabel('members.0')).toBe('Group members 1');
+		expect(deriveGroupLabel('futureGroup')).toBe('Future Group');
 	});
 
 	test('body props expand nested groups and carry min/max on params too', () => {
@@ -482,6 +550,7 @@ describe('platform-neutral render intent', () => {
 			{},
 			{
 				key: 'birth',
+				label: 'Birth',
 				location: {
 					fields: ['birthLatitude', 'birthLongitude', 'timezone'],
 					required: true,
@@ -489,6 +558,7 @@ describe('platform-neutral render intent', () => {
 			},
 			{
 				key: 'relocation',
+				label: 'Relocation',
 				location: {
 					fields: ['relocationLatitude', 'relocationLongitude'],
 					required: false,
@@ -497,6 +567,26 @@ describe('platform-neutral render intent', () => {
 		]);
 		expect(model.fields.every((f) => f.role === 'location')).toBe(true);
 		expect(model.fields.some((f) => f.city)).toBe(false);
+		expect(
+			model.fields
+				.filter((f) => f.name !== 'timezone')
+				.map((f) => [f.key, f.label]),
+		).toEqual([
+			['birthLatitude', 'Birth latitude'],
+			['birthLongitude', 'Birth longitude'],
+			['relocationLatitude', 'Relocation latitude'],
+			['relocationLongitude', 'Relocation longitude'],
+		]);
+		const future = bodyModel({
+			partnerLatitude: { type: 'number' },
+			partnerLongitude: { type: 'number' },
+			birthDate: { type: 'string', format: 'date' },
+		});
+		expect(future.fields.map((f) => f.label)).toEqual([
+			'Partner latitude',
+			'Partner longitude',
+			undefined,
+		]);
 	});
 
 	test('an unclaimed timezone becomes a city picker and a lone coordinate never invents a pair', () => {

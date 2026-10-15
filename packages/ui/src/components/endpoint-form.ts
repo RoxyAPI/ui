@@ -16,6 +16,7 @@ import {
 } from '../utils/fetch-controller.js';
 import {
 	buildFormModel,
+	deriveGroupLabel,
 	deriveSubmitLabel,
 	type FieldDef,
 	type FieldOption,
@@ -41,7 +42,6 @@ import {
 	readOptions,
 	renderPicker,
 } from '../utils/option-picker.js';
-import { humanize } from '../utils/string.js';
 import { ROXY_UI_VERSION } from '../version.js';
 
 /** Production spec, fetched when no slice is available and no explicit `spec-url` is set. */
@@ -790,8 +790,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		if (this.roleOf(f) === 'location' || f.city)
 			return this.locationLabel(this.cityGroup(f));
 		return f.group
-			? `${this.groupName(f.group)} ${this.fieldText(f.name)}`
-			: this.fieldText(f.name);
+			? `${this.groupName(f.group)} ${this.fieldText(f.name, f.label)}`
+			: this.fieldText(f.name, f.label);
 	}
 
 	/** The issues the API reported on a whole card or a city box, printed under it. */
@@ -964,8 +964,11 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * a separate key space from the chrome catalogue.
 	 *
 	 * English ships no payload, so the API English label is compiled in and comes before `humanize()`.
+	 * A contextual model label wins over the generic wire-name map: translating `id` would
+	 * discard the noun the spec supplied and make every lookup say ID again.
 	 */
-	private fieldText(name: string): string {
+	private fieldText(name: string, label?: string): string {
+		if (label) return label;
 		return displayField(this.requestLang(), name, EN_FIELD_LABELS[name]);
 	}
 
@@ -1180,7 +1183,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const cur = opts.findIndex((o) => o.value === this.values[f.key]);
 		const active = cur === -1 ? opts.findIndex((o) => !o.disabled) : cur;
 		return html`<div class="field tiles-field">
-			<span class="label" id=${labelId}>${this.fieldText(f.name)}${this.reqMark(f)}</span>
+			<span class="label" id=${labelId}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</span>
 			<div
 				class=${narrow ? 'tiles narrow' : 'tiles'}
 				role="radiogroup"
@@ -1217,7 +1220,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private renderSelect(f: FieldDef) {
 		const id = `roxy-form-${f.key}`;
 		return html`<div part="field" class="field">
-			<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>
+			<label for=${id}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label>
 			<select
 				id=${id}
 				?required=${f.required}
@@ -1248,7 +1251,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const sole = this.soleChoice?.key === f.key;
 		const issue = this.issueFor(f);
 		return html`<div part="field" class="field">
-			${sole ? nothing : html`<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>`}
+			${sole ? nothing : html`<label for=${id}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label>`}
 			${renderPicker(
 				picker,
 				id,
@@ -1283,7 +1286,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					<span class="knob"></span>
 				</button>
 				<label class="toggle-label" for=${id}
-					>${this.fieldText(f.name)}${this.reqMark(f)}</label
+					>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label
 				>
 			</div>
 			${this.description(f)}
@@ -1306,7 +1309,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					? String(f.example)
 					: '';
 		return html`<div part="field" class="field">
-			<label for=${id}>${this.fieldText(f.name)}${this.reqMark(f)}</label>
+			<label for=${id}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label>
 			<input
 				id=${id}
 				type=${f.kind === 'array' ? 'text' : type}
@@ -1350,23 +1353,13 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		}
 	}
 
-	/**
-	 * The name of one request group, translated, falling back to the humanized English.
-	 *
-	 * @remarks
-	 * A group name is the one derived label that is also ENUMERABLE. A field label is `humanize()` over one of 909 spec field names, but a group is `humanize()` over the names an object-valued property or a coordinate prefix can take, and the whole spec has nine across 176 operations. So each is a catalogue entry, and no English token sits inside translated prose (`Local de Natal Chart`, `Место (Birth Data)`). A tenth group appearing in the spec still renders: `t()` returns its source string on a miss, so it degrades to the humanized English rather than to a blank or a key.
-	 *
-	 * **The lookup folds case, and that is what makes `natalChart` work.** `humanize` produces `Natal Chart` while the catalogue carries `Natal chart` for the card heading, and {@link lookupKey} folds both to one key on write and on read, so this reuses the shipped translation. Adding the capitalized twin instead would SILENTLY OVERWRITE that heading in every locale rather than reading as a duplicate, which is why `i18n/chrome-strings.ts` carries no entry for it.
-	 */
-	/** The legend of a group: the catalogued name of an object property, or, for one record of a repeating property, the published label of the array with the record's number. */
+	/** The shared group legend, using this form's chrome and field-label catalogues. */
 	private groupName(group: string): string {
-		const repeat = parseRepeatGroup(group);
-		return repeat
-			? this.t('{{group}} {{n}}', {
-					group: this.fieldText(repeat.key),
-					n: repeat.index + 1,
-				})
-			: this.t(humanize(group));
+		return deriveGroupLabel(
+			group,
+			(source, vars) => this.t(source, vars),
+			(name) => this.fieldText(name),
+		);
 	}
 
 	/** How many records a repeating property currently shows. */
@@ -1392,6 +1385,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				{
 					...template,
 					key: repeatGroup(key, index),
+					label: deriveGroupLabel(repeatGroup(key, index)),
 					...(template.location && {
 						location: {
 							...template.location,

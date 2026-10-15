@@ -5,7 +5,9 @@
  * The registry is by SHAPE, never by name: {@link classifyInput} inspects `enum` / `type` / `format` only, so a new API parameter gets a working widget with no code change, and the taxonomy gate fails loudly (via a `null` return) the day a genuinely new shape appears. Name-driven render intent (hidden values, city searches and the Advanced fold) is resolved here too, so browser and server renderers consume the same decisions.
  */
 
+import { EN_FIELD_LABELS } from '../generated/field-labels-en.js';
 import { DISABLED_WHEN, OPTION_SOURCES } from '../generated/option-sources.js';
+import { interpolate } from '../i18n/registry.js';
 import { SIGNS_ORDER } from '../tokens/index.js';
 import { humanize } from './string.js';
 
@@ -47,6 +49,7 @@ export interface OperationSchema {
 	parameters?: Array<{
 		name: string;
 		in: string;
+		description?: string;
 		required?: boolean;
 		schema?: OpenApiSchema;
 	}>;
@@ -84,6 +87,8 @@ export interface FieldDef {
 	key: string;
 	/** Schema property name (the label source), e.g. "date". */
 	name: string;
+	/** Contextual English label, overriding the generic name label when it loses the field's meaning. */
+	label?: string;
 	/** Parent object key for a nested schema (person1/person2); undefined for a flat field. */
 	group?: string;
 	/** True when the spec declares the field as `in: query`, so it belongs in the query string even on a POST. */
@@ -156,6 +161,8 @@ export interface RepeatDef {
 /** One field group, in field order. An absent key denotes the flat top level. */
 export interface FormGroup {
 	key?: string;
+	/** English legend for a named group; absent for the unlabelled flat top level. */
+	label?: string;
 	fold?: true;
 	/** A coordinate pair's city box, with the exact wire keys it fills (including its claimed timezone). */
 	location?: { fields: string[]; required: boolean };
@@ -185,6 +192,32 @@ export function parseRepeatGroup(
 ): { key: string; index: number } | null {
 	const m = /^(.+)\.(\d+)$/.exec(group);
 	return m ? { key: m[1] as string, index: Number(m[2]) } : null;
+}
+
+/**
+ * A group legend, shared by the browser and published labels. Named objects use the chrome
+ * catalogue (whose lookup folds case); repeating records use the array's field label and the
+ * catalogued numbered-group template. The defaults produce the same legend in English.
+ *
+ * Catalogue lookup folds case: `humanize('natalChart')` produces `Natal Chart` and reuses
+ * the existing `Natal chart` heading translation. Do not add a capitalized twin, which
+ * would overwrite that heading in every locale. A new group with no catalogue entry
+ * falls back to its humanized English name, so a missing translation never leaves a key
+ * or an empty legend inside translated location labels.
+ */
+export function deriveGroupLabel(
+	group: string,
+	t: typeof interpolate = interpolate,
+	fieldText: (name: string) => string = (name) =>
+		EN_FIELD_LABELS[name] ?? humanize(name),
+): string {
+	const repeat = parseRepeatGroup(group);
+	return repeat
+		? t('{{group}} {{n}}', {
+				group: fieldText(repeat.key),
+				n: repeat.index + 1,
+			})
+		: t(humanize(group));
 }
 
 /** The fields of one record of a repeating property, from the fields of its first record. Every record is the same template, so the form grows a repeat by re-keying record zero. */
@@ -419,18 +452,13 @@ export function buildFormModel(
 				// identity: rewriting it to `birth.latitude` would serialise a body the API
 				// rejects.
 				const coord = splitCoordinateName(name);
-				fields.push(
-					coord
-						? toField(coord.leaf, resolved, {
-								key: name,
-								group: coord.group,
-								required: required.has(name),
-							})
-						: toField(name, resolved, {
-								key: name,
-								required: required.has(name),
-							}),
-				);
+				const field = toField(coord?.leaf ?? name, resolved, {
+					key: name,
+					group: coord?.group,
+					required: required.has(name),
+				});
+				if (coord) field.label = `${humanize(coord.group)} ${coord.leaf}`;
+				fields.push(field);
 			}
 		}
 	}
@@ -444,13 +472,26 @@ export function buildFormModel(
 			continue;
 		}
 		const resolved = resolveSchema(param.schema, schemas) ?? {};
-		fields.push(
-			toField(param.name, resolved, {
-				key: param.name,
-				required: !!param.required,
-				inQuery: param.in === 'query',
-			}),
-		);
+		const field = toField(param.name, resolved, {
+			key: param.name,
+			required: !!param.required,
+			inQuery: param.in === 'query',
+		});
+		// Only an otherwise bare identifier needs a noun from the spec. A meaningful
+		// name such as `sign` keeps its existing field-label catalogue entry.
+		if (
+			param.in === 'path' &&
+			field.enum &&
+			/^(id|identifier|slug)$/i.test(
+				EN_FIELD_LABELS[field.name] ?? humanize(field.name),
+			)
+		) {
+			const noun = /^([A-Za-z][A-Za-z -]*?)\s+(?:id|identifier|slug)\b/i
+				.exec(param.description ?? field.description ?? '')?.[1]
+				?.trim();
+			if (noun) field.label = noun;
+		}
+		fields.push(field);
 	}
 
 	return withRenderIntent(
@@ -497,7 +538,7 @@ export function withRenderIntent(
 		};
 	});
 	const groups: FormGroup[] = [...new Set(fields.map((f) => f.group))].map(
-		(key) => (key === undefined ? {} : { key }),
+		(key) => (key === undefined ? {} : { key, label: deriveGroupLabel(key) }),
 	);
 	const locations = groups.filter((g) =>
 		LOCATION_PAIR.every((name) =>
