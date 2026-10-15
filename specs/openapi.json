@@ -233,7 +233,7 @@
     },
     {
       "name": "Dreams",
-      "description": "Dream interpretation API with a 2,000+ symbol dream dictionary and psychological meanings covering animals, objects, emotions, people, scenarios, and abstract concepts. Decode dreams about falling, flying, teeth falling out, being chased, water, snakes, and more. Search, browse A-Z, or discover random symbols. Build dream journal apps, AI dream analysis chatbots, sleep-tracking features, and wellness platforms. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
+      "description": "Dream interpretation API with a 2,200+ symbol dream dictionary and psychological meanings covering animals, objects, emotions, people, scenarios, and abstract concepts. Decode dreams about falling, flying, teeth falling out, being chased, water, snakes, and more. Search, browse A-Z, or discover random symbols. Build dream journal apps, AI dream analysis chatbots, sleep-tracking features, and wellness platforms. One key covers every RoxyAPI domain, with Remote MCP and typed SDKs."
     },
     {
       "name": "Angel Numbers",
@@ -529,7 +529,7 @@
                   "properties": {
                     "summary": {
                       "type": "string",
-                      "example": "Your Sun forms a very strong conjunction (0) with Jupiter, currently separating (weakening). This neutral aspect creates Planets and points that form a conjunction are energies that are united. They are blended; therefore...",
+                      "example": "Your Sun forms a very strong conjunction (0) with Jupiter, currently separating (weakening). This neutral aspect highlights themes of blend, difficult, and unite.",
                       "description": "One-sentence read of THIS pair: which two bodies, how tight the aspect is, whether it is applying or separating, and how it is classified. Translated in place, so it arrives in the requested language."
                     },
                     "keywords": {
@@ -3449,7 +3449,7 @@
           },
           "summary": {
             "type": "string",
-            "example": "Fixed star positions for 1990-07-15 with 3 conjunctions within 1 degrees across the major named stars including Regulus, Spica, and Algol.",
+            "example": "Fixed star positions for July 15, 1990 at 2:30 PM, with 3 conjunctions within 1° across the major named stars including Regulus, Spica, and Algol.",
             "description": "Short overview of the fixed-star report for previews and report intros."
           }
         },
@@ -24151,7 +24151,7 @@
           "Western Astrology"
         ],
         "summary": "Transit Aspects - Detailed transit-to-natal aspect analysis with interpretations",
-        "description": "Calculate all transit-to-natal aspects with detailed interpretations, strength ratings, and timing guidance. Compares current (or future) planetary positions against your natal chart to identify active transits. Returns aspect type, orb, applying/separating status, narrative interpretation, impact rating, and practical guidance for each transit. Supports planet and aspect-type filtering. More detailed than the /transits endpoint, adding AI-friendly interpretation fields. Transit aspects API, transit-to-natal analysis, predictive astrology, personalized transit forecast.",
+        "description": "Calculate all transit-to-natal aspects with detailed interpretations, strength ratings, and timing guidance. Compares current (or future) planetary positions against your natal chart to identify active transits. Returns aspect type, orb, applying/separating status, narrative interpretation, impact rating, and practical guidance for each transit. Like /astrology/transits with a natalChart, returns summary, timing, impact, guidance, and keywords for each aspect. Adds planet, aspect-type, and minStrength filtering plus summary.strongest and summary.byType rollups. Transit aspects API, transit-to-natal analysis, predictive astrology, personalized transit forecast.",
         "security": [
           {
             "apiKey": []
@@ -140714,7 +140714,7 @@
           "Dreams"
         ],
         "summary": "List and search dream symbols - Dream dictionary API",
-        "description": "Browse and search our complete dream interpretation dictionary containing 2,000+ dream symbols with psychological meanings. Find dream meanings for animals (snake dreams, spider dreams, dog dreams), common scenarios (falling dreams, flying dreams, being chased, drowning), people (dreams about mother, father, baby, ex), objects (car, house, water, fire), emotions (fear, anxiety, love), body parts (teeth falling out, hair, eyes), colors, numbers, and abstract concepts. Filter by starting letter for A-Z navigation or search by keyword to find what your dreams mean.",
+        "description": "Browse and search our complete dream interpretation dictionary containing 2,200+ dream symbols with psychological meanings. Find dream meanings for animals (snake dreams, spider dreams, dog dreams), common scenarios (falling dreams, flying dreams, being chased, drowning), people (dreams about mother, father, baby, ex), objects (car, house, water, fire), emotions (fear, anxiety, love), body parts (teeth falling out, hair, eyes), colors, numbers, and abstract concepts. Filter by starting letter for A-Z navigation or search by keyword to find what your dreams mean.",
         "security": [
           {
             "apiKey": []
@@ -140803,7 +140803,7 @@
                       "items": {
                         "$ref": "#/components/schemas/BasicDreamSymbol"
                       },
-                      "description": "Dream symbols for the current page. Use /symbols/{id} to get full interpretation."
+                      "description": "Dream symbols for the current page, in alphabetical order by name. With q, symbols whose name starts with the query come first, then names containing it, then symbols whose meaning mentions it, each group alphabetical. Use /symbols/{id} to get full interpretation."
                     }
                   },
                   "required": [
@@ -141056,7 +141056,7 @@
           "Dreams"
         ],
         "summary": "Random dream symbols - Dream symbol discovery API",
-        "description": "Discover random dream symbols and their interpretations for daily dream insights and exploration. Each request returns different symbols from the 2,000+ dream meaning database, perfect for dream of the day features, dream journaling prompts, meditation on subconscious themes, or exploring what different dreams mean. Get one or multiple random dream interpretations with full psychological meanings.",
+        "description": "Discover random dream symbols and their interpretations for daily dream insights and exploration. Each request returns different symbols from the 2,200+ dream meaning database, perfect for dream of the day features, dream journaling prompts, meditation on subconscious themes, or exploring what different dreams mean. Get one or multiple random dream interpretations with full psychological meanings.",
         "security": [
           {
             "apiKey": []
