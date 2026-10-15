@@ -4157,6 +4157,7 @@ describe('a mounted form renders in the page language', () => {
 
 	test('the schema-load failure and its retry button translate, and the event does not', async () => {
 		document.documentElement.lang = 'zz';
+		const specUrl = 'https://example.test/i18n-schema-load-failure.json';
 		globalThis.fetch = mock(async () => ({
 			ok: false,
 			status: 404,
@@ -4164,6 +4165,8 @@ describe('a mounted form renders in the page language', () => {
 		})) as unknown as typeof fetch;
 		const el = document.createElement('roxy-endpoint-form');
 		el.setAttribute('data-endpoint', 'astrology/natal-chart');
+		// Successful specs are shared by URL; another test may have warmed the production URL.
+		el.setAttribute('spec-url', specUrl);
 		let detail: { message?: string } | null = null;
 		el.addEventListener('roxy-spec-error', (e) => {
 			detail = (e as CustomEvent).detail as { message?: string };
@@ -4174,6 +4177,7 @@ describe('a mounted form renders in the page language', () => {
 			await new Promise((r) => setTimeout(r, 0));
 		}
 		const rendered = text(el);
+		expect(globalThis.fetch).toHaveBeenCalledWith(specUrl);
 		expect(rendered).toContain('BROKEN');
 		expect(rendered).toContain('STATUS 404');
 		expect(rendered).toContain('AGAIN');
@@ -4181,6 +4185,7 @@ describe('a mounted form renders in the page language', () => {
 		// The EVENT keeps the canonical English: a listener is code, and a developer
 		// console is not a localized surface.
 		expect((detail as unknown as { message: string }).message).toBe('HTTP 404');
+		expect(detail).toMatchObject({ url: specUrl });
 		el.remove();
 	});
 
