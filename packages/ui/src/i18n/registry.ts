@@ -103,11 +103,19 @@ export function translate(
 	source: string,
 	vars?: Record<string, string | number>,
 ): string {
-	if (!lang) return interpolate(source, vars);
+	return interpolate(chromeLabel(lang, source) ?? source, vars);
+}
+
+/** A published chrome label, including translations equal to the source; absent on a miss. */
+export function chromeLabel(
+	lang: string | undefined,
+	source: string,
+): string | undefined {
+	if (!lang) return undefined;
 	const { catalogs } = registry();
 	const tag = lang.toLowerCase();
 	const catalog = catalogs[tag] ?? catalogs[tag.split('-')[0] as string];
-	return interpolate(catalog?.[lookupKey(source)] ?? source, vars);
+	return catalog?.[lookupKey(source)];
 }
 
 /**

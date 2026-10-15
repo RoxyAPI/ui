@@ -7,7 +7,7 @@
 
 import { EN_FIELD_LABELS } from '../generated/field-labels-en.js';
 import { DISABLED_WHEN, OPTION_SOURCES } from '../generated/option-sources.js';
-import { interpolate } from '../i18n/registry.js';
+import { chromeLabel, fieldLabel, interpolate } from '../i18n/registry.js';
 import { SIGNS_ORDER } from '../tokens/index.js';
 import { humanize } from './string.js';
 
@@ -218,6 +218,21 @@ export function deriveGroupLabel(
 				n: repeat.index + 1,
 			})
 		: t(humanize(group));
+}
+
+/**
+ * A published label for a model field. Contextual identifier nouns use the existing chrome
+ * catalogue; coordinates use their full wire-name label from the API. Missing nouns must
+ * stay absent rather than degrading to the generic ID label. Server consumers own English fallback.
+ */
+export function translatedFieldLabel(
+	lang: string | undefined,
+	field: Pick<FieldDef, 'name' | 'label'> & Partial<Pick<FieldDef, 'key'>>,
+): string | undefined {
+	const wireName = field.key ?? field.name;
+	if (splitCoordinateName(wireName)) return fieldLabel(lang, wireName);
+	if (!field.label) return fieldLabel(lang, field.name);
+	return chromeLabel(lang, field.label);
 }
 
 /** The fields of one record of a repeating property, from the fields of its first record. Every record is the same template, so the form grows a repeat by re-keying record zero. */

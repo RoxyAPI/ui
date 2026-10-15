@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Pull the API's field-label maps and emit one side-effect module per language.
+ * Sync API labels into runtime locale modules and one build-only server form artifact.
  *
  * @remarks
  * **Build time, not run time, and that is the whole decision.** These labels translate request
@@ -12,10 +12,11 @@
  * translated a moment later. Baking them removes all three.
  *
  * @remarks
- * They ride the EXISTING per-language payload rather than a new file. A page that wants Spanish
- * already loads `locales/es.js`; this adds the labels to that same download, so the request count
- * is unchanged and English still ships nothing. Refresh point is `bun run generate`, the same
- * command that refreshes the spec, because they are the same fact from one source.
+ * Shared fields and enums ride the existing `locales/{lang}.js` payload. Identifier picker names
+ * and contextual operation/field labels are generated separately in `generated/form-labels.json`,
+ * read only by build-forms.ts for server renderers. No browser entry imports that artifact.
+ * `--from-disk` splits/rebuilds both outputs from persisted API names without another API read.
+ * Refresh point is `bun run generate`, the same command that refreshes the spec.
  *
  * @remarks
  * A build with no reachable API keeps whatever is on disk and warns. That matters: the endpoint is
@@ -34,6 +35,19 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { API_LANGUAGES } from '../packages/ui/src/generated/api-languages.js';
+import { EN_FIELD_LABELS } from '../packages/ui/src/generated/field-labels-en.js';
+import {
+	labelsFor,
+	registerFieldLabels,
+} from '../packages/ui/src/i18n/registry.js';
+import {
+	buildFormModel,
+	collectionSource,
+	type OptionSource,
+	optionsFrom,
+	type SpecDoc,
+	translatedFieldLabel,
+} from '../packages/ui/src/utils/field-schema.js';
 import { humanize } from '../packages/ui/src/utils/string.js';
 
 const API_BASE = process.env.ROXY_API_BASE ?? 'https://roxyapi.com/api/v2';
@@ -41,6 +55,12 @@ const LOCALES_DIR = 'packages/ui/src/locales';
 const OUT_DIR = `${LOCALES_DIR}/field-labels`;
 /** English ships no payload, so the API English names the form prints are compiled in, and only where they differ from what `humanize` would print anyway. */
 const EN_OUT = 'packages/ui/src/generated/field-labels-en.ts';
+const SERVER_OUT = 'packages/ui/src/generated/form-labels.json';
+
+interface ServerLabels {
+	enums: Record<string, string>;
+	labels: Record<string, string>;
+}
 
 /**
  * Derived twice over, never mirrored by hand: a language the API serves AND ships a chrome
@@ -144,68 +164,289 @@ async function fetchLabels(lang: string): Promise<LabelPayload> {
 	return body;
 }
 
-if (CHECK) {
-	const drifted: string[] = [];
-	for (const { lang, out, emit: write } of TARGETS) {
-		let expected: string;
-		try {
-			expected = formatted(out, write(await fetchLabels(lang)));
-		} catch (err) {
-			console.error(
-				`${lang}: ${err instanceof Error ? err.message : String(err)}`,
-			);
-			process.exit(1);
+/** Enumerated identifier pickers with a localized collection, deduplicated by collection path. */
+export function enumPickers(
+	spec: SpecDoc,
+): Array<{ source: OptionSource; field: string; values: string[] }> {
+	const pickers = new Map<
+		string,
+		{ source: OptionSource; field: string; values: string[] }
+	>();
+	for (const [path, item] of Object.entries(spec.paths)) {
+		for (const [method, op] of Object.entries(item)) {
+			if (!op.operationId) continue;
+			for (const field of buildFormModel(
+				op,
+				spec.components?.schemas ?? {},
+				path,
+				method,
+			).fields) {
+				if (!field.label || !field.enum || field.name !== 'id') continue;
+				const parent = path.split(`/{${field.name}}`)[0]!;
+				const source = field.source ?? collectionSource(spec, parent);
+				if (source?.lang)
+					pickers.set(source.path, {
+						source,
+						field: field.name,
+						values: field.enum,
+					});
+			}
 		}
-		const committed = existsSync(out) ? await Bun.file(out).text() : '';
-		if (committed !== expected) drifted.push(lang);
 	}
-	if (drifted.length > 0) {
-		console.error(
-			`Field labels drifted from the live API: ${drifted.join(', ')}. Run 'bun run labels:sync' and commit.`,
+	return [...pickers.values()];
+}
+
+/**
+ * Reuse names already in the API field-label payload when another field has the exact same
+ * choice set. Never borrow a bare value from a different enum, and omit conflicting names.
+ */
+export function matchingEnumLabels(
+	enums: Record<string, string>,
+	values: string[],
+): Record<string, string> {
+	const fields = new Map<string, string[]>();
+	for (const key of Object.keys(enums)) {
+		const dot = key.indexOf('.');
+		if (dot < 0 || key.slice(0, dot) === 'id') continue;
+		const field = key.slice(0, dot);
+		const entries = fields.get(field) ?? [];
+		entries.push(key.slice(dot + 1));
+		fields.set(field, entries);
+	}
+	const candidates = [...fields].filter(
+		([, entries]) =>
+			entries.length === values.length &&
+			values.every((v) => entries.includes(v)),
+	);
+	const out: Record<string, string> = {};
+	for (const value of values) {
+		const names = new Set(
+			candidates.map(([field]) => enums[`${field}.${value}`]!),
 		);
-		process.exit(1);
+		if (names.size === 1) out[value] = [...names][0]!;
 	}
-	console.log(
-		`Field labels match the live API across ${TARGETS.length} catalogue(s).`,
-	);
-	process.exit(0);
+	return out;
 }
 
-await mkdir(OUT_DIR, { recursive: true });
-
-// The same hermetic switch `generate.ts` honours for the spec and the MCP tool list: with it set,
-// the committed catalogues are the input, so an install or a CI run never rewrites them from a
-// live API that may have moved. Refreshing them is the release workflow's job, which runs online.
-if (process.env.ROXYAPI_SPEC_FILE) {
-	console.log(
-		`Keeping ${OUT_DIR}/*.ts and ${EN_OUT} (offline, ROXYAPI_SPEC_FILE)`,
+/** Fill identifier option labels from API names; collection requests are injected for hermetic tests. */
+export async function syncPickerEnums(
+	payload: LabelPayload,
+	spec: SpecDoc,
+	load: (source: OptionSource) => Promise<unknown>,
+	options: { strict?: boolean; previous?: Record<string, string> } = {},
+): Promise<LabelPayload> {
+	const enums = { ...payload.enums };
+	// Different collections can share an identifier (Brahma is both a yoga and a devata).
+	// Publish a shared id.value only when its sources agree; never let collection order choose.
+	const namesByKey = new Map<string, string | undefined>();
+	const pickers = enumPickers(spec);
+	const results = await Promise.allSettled(
+		pickers.map(({ source }) => load(source)),
 	);
-	process.exit(0);
-}
-
-let written = 0;
-let kept = 0;
-for (const { lang, out, emit: write } of TARGETS) {
-	try {
-		await writeFile(out, formatted(out, write(await fetchLabels(lang))));
-		written++;
-	} catch (err) {
-		const detail = err instanceof Error ? err.message : String(err);
-		if (existsSync(out)) {
-			console.warn(`  ${lang}: ${detail} — keeping the committed catalogue`);
-			kept++;
+	for (const [index, picker] of pickers.entries()) {
+		const result = results[index]!;
+		const names = matchingEnumLabels(payload.enums ?? {}, picker.values);
+		if (result.status === 'fulfilled') {
+			const body = result.value;
+			const entries = Array.isArray(body)
+				? body
+				: body && typeof body === 'object'
+					? Object.values(body).find(Array.isArray)
+					: [];
+			// A bare identifier is not a translated name. Leave unnamed entries absent.
+			const named = (entries ?? []).filter((entry: unknown) => {
+				if (!entry || typeof entry !== 'object') return false;
+				const row = entry as Record<string, unknown>;
+				return ['nameLocalized', 'name', 'english'].some(
+					(key) => typeof row[key] === 'string' && row[key] !== '',
+				);
+			});
+			for (const option of optionsFrom(
+				named.map((entry: Record<string, unknown>) => ({
+					...entry,
+					name: entry.nameLocalized || entry.name || entry.english,
+				})),
+				picker.field,
+			)) {
+				if (picker.values.includes(option.value))
+					names[option.value] = option.label;
+			}
 		} else {
-			// No payload and nothing on disk. Emit an empty catalogue so the import still
-			// resolves and the form falls back to humanize().
-			await writeFile(out, formatted(out, write({ fields: {}, enums: {} })));
+			if (options.strict)
+				throw new Error(`${picker.source.path}: ${String(result.reason)}`);
 			console.warn(
-				`  ${lang}: ${detail} — wrote an EMPTY catalogue (form falls back)`,
+				`${picker.source.path}: ${String(result.reason)}; keeping available published names`,
 			);
-			written++;
+			for (const value of picker.values) {
+				const previous = options.previous?.[`${picker.field}.${value}`];
+				if (previous !== undefined) names[value] ??= previous;
+			}
+		}
+		for (const [value, label] of Object.entries(names)) {
+			const key = `${picker.field}.${value}`;
+			if (!namesByKey.has(key)) namesByKey.set(key, label);
+			else if (namesByKey.get(key) !== label) namesByKey.set(key, undefined);
 		}
 	}
+	for (const [key, label] of namesByKey)
+		if (label !== undefined) enums[key] ??= label;
+	return { ...payload, enums };
 }
 
-console.log(
-	`Field labels: ${written} written, ${kept} kept from disk, across ${TARGETS.length} catalogue(s).`,
-);
+async function fetchPickerLabels(
+	lang: string,
+	previous?: Record<string, string>,
+): Promise<LabelPayload> {
+	const payload = await fetchLabels(lang);
+	// English only compiles field names, so it needs no option collection reads.
+	if (lang === 'en') return payload;
+	const spec = (await Bun.file('specs/openapi.json').json()) as SpecDoc;
+	if (existsSync(`${OUT_DIR}/${lang}.ts`))
+		await import(`../${OUT_DIR}/${lang}.ts`);
+	return syncPickerEnums(
+		payload,
+		spec,
+		async (source) => {
+			const url = new URL(`${API_BASE}${source.path}`);
+			url.searchParams.set('lang', lang);
+			if (source.limit) url.searchParams.set('limit', String(source.limit));
+			const key = process.env.ROXY_API_KEY;
+			const res = await fetch(url, {
+				signal: AbortSignal.timeout(20_000),
+				...(key ? { headers: { 'X-API-Key': key } } : {}),
+			});
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			return res.json();
+		},
+		{ strict: CHECK, previous: { ...labelsFor(lang)?.enums, ...previous } },
+	);
+}
+
+/** Separate build-only picker names by their existing key space, keeping shared enums intact. */
+export function splitLabelPayload(payload: LabelPayload): {
+	runtime: LabelPayload;
+	server: ServerLabels;
+} {
+	const runtimeEnums: Record<string, string> = {};
+	const pickerEnums: Record<string, string> = {};
+	for (const [key, label] of Object.entries(payload.enums ?? {})) {
+		(key.startsWith('id.') ? pickerEnums : runtimeEnums)[key] = label;
+	}
+	return {
+		runtime: { fields: payload.fields ?? {}, enums: runtimeEnums },
+		server: { enums: pickerEnums, labels: {} },
+	};
+}
+
+/** Both outputs derive from one synced payload; contextual labels never enter a runtime module. */
+async function labelOutputs(
+	lang: string,
+	payload: LabelPayload,
+	spec: SpecDoc,
+) {
+	const { runtime, server } = splitLabelPayload(payload);
+	if (lang !== 'en') await import(`../packages/ui/src/locales/${lang}.js`);
+	registerFieldLabels(lang, {
+		fields: runtime.fields ?? {},
+		enums: runtime.enums ?? {},
+	});
+	for (const [path, item] of Object.entries(spec.paths)) {
+		for (const [method, op] of Object.entries(item)) {
+			if (!op.operationId) continue;
+			for (const field of buildFormModel(
+				op,
+				spec.components?.schemas ?? {},
+				path,
+				method,
+			).fields) {
+				if (!field.label) continue;
+				const label =
+					lang === 'en' ? field.label : translatedFieldLabel(lang, field);
+				if (label !== undefined)
+					server.labels[`${op.operationId}.${field.key}`] = label;
+			}
+		}
+	}
+	return { runtime, server };
+}
+
+async function main() {
+	// Replay persisted API names for migrations/offline rebuilds, without losing authenticated reads.
+	const fromDisk = process.argv.includes('--from-disk');
+	if (CHECK && fromDisk)
+		throw new Error(
+			'--check requires live API reads; it cannot use --from-disk',
+		);
+	if (!CHECK && !fromDisk && process.env.ROXYAPI_SPEC_FILE) {
+		console.log(
+			`Keeping runtime and server form labels (offline, ROXYAPI_SPEC_FILE)`,
+		);
+		return;
+	}
+	await mkdir(OUT_DIR, { recursive: true });
+	const spec = (await Bun.file('specs/openapi.json').json()) as SpecDoc;
+	const serverLabels: Record<string, ServerLabels> = existsSync(SERVER_OUT)
+		? await Bun.file(SERVER_OUT).json()
+		: {};
+	const drifted: string[] = [];
+	let written = 0;
+	let kept = 0;
+	for (const { lang, out, emit: write } of TARGETS) {
+		try {
+			let payload: LabelPayload;
+			if (fromDisk) {
+				if (lang === 'en') payload = { fields: EN_FIELD_LABELS, enums: {} };
+				else {
+					await import(`../${OUT_DIR}/${lang}.ts`);
+					const existing = labelsFor(lang);
+					if (!existing)
+						throw new Error(`No persisted field labels for ${lang}`);
+					payload = {
+						fields: existing.fields,
+						enums: { ...existing.enums, ...serverLabels[lang]?.enums },
+					};
+				}
+			} else payload = await fetchPickerLabels(lang, serverLabels[lang]?.enums);
+			const outputs = await labelOutputs(lang, payload, spec);
+			const expected = formatted(out, write(outputs.runtime));
+			if (CHECK) {
+				const committed = existsSync(out) ? await Bun.file(out).text() : '';
+				if (committed !== expected) drifted.push(lang);
+			} else await writeFile(out, expected);
+			serverLabels[lang] = outputs.server;
+			written++;
+		} catch (err) {
+			if (CHECK || fromDisk) throw err;
+			if (!existsSync(out)) throw err;
+			console.warn(
+				`${lang}: ${String(err)} — keeping both committed label outputs`,
+			);
+			kept++;
+		}
+	}
+	const serverText = formatted(
+		SERVER_OUT,
+		JSON.stringify(serverLabels, null, '\t'),
+	);
+	if (CHECK) {
+		if (
+			!existsSync(SERVER_OUT) ||
+			(await Bun.file(SERVER_OUT).text()) !== serverText
+		)
+			drifted.push('server forms');
+		if (drifted.length)
+			throw new Error(
+				`Field labels drifted from the live API: ${drifted.join(', ')}. Run 'bun run labels:sync'.`,
+			);
+		console.log(
+			`Runtime and server form labels match the live API across ${TARGETS.length} catalogue(s).`,
+		);
+	} else {
+		await writeFile(SERVER_OUT, serverText);
+		console.log(
+			`Field labels: ${written} runtime/server pairs written, ${kept} kept from disk. Server labels: ${SERVER_OUT}`,
+		);
+	}
+}
+
+if (import.meta.main) await main();

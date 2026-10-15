@@ -964,8 +964,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * a separate key space from the chrome catalogue.
 	 *
 	 * English ships no payload, so the API English label is compiled in and comes before `humanize()`.
-	 * A contextual model label wins over the generic wire-name map: translating `id` would
-	 * discard the noun the spec supplied and make every lookup say ID again.
+	 * Contextual model labels stay in English; translated picker/context labels are server artifacts.
 	 */
 	private fieldText(name: string, label?: string): string {
 		if (label) return label;

@@ -3,11 +3,12 @@
  * Publish the shared form model for server renderers and platform integrations, without a DOM,
  * a live API call or a second field classifier. Existing per-operation schema URLs stay intact.
  * Labels come from the committed label-sync outputs; missing translations stay missing so a
- * consumer can use the English fallback, exactly as the browser does.
+ * consumer can use the English fallback, without translating API names at render time.
  */
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { API_LANGUAGES } from '../packages/ui/src/generated/api-languages.js';
 import { EN_FIELD_LABELS } from '../packages/ui/src/generated/field-labels-en.js';
+import serverLabelsJson from '../packages/ui/src/generated/form-labels.json';
 import {
 	type FieldLabels,
 	labelsFor,
@@ -105,6 +106,13 @@ export async function buildForms(outDir: string = OUT_DIR): Promise<number> {
 		if (lang !== 'en') await import(`../packages/ui/src/locales/${lang}.js`);
 		const labels = lang === 'en' ? english : labelsFor(lang);
 		if (!labels) throw new Error(`No field labels registered for ${lang}`);
+		const server = (
+			serverLabelsJson as Record<
+				string,
+				{ enums: Record<string, string>; labels: Record<string, string> }
+			>
+		)[lang];
+		if (!server) throw new Error(`No generated server form labels for ${lang}`);
 		const groups: Record<string, string> = {};
 		for (const model of Object.values(manifest.forms)) {
 			for (const group of model.groups ?? []) {
@@ -118,7 +126,14 @@ export async function buildForms(outDir: string = OUT_DIR): Promise<number> {
 		}
 		await writeFile(
 			`${outDir}/forms/labels/${lang}.json`,
-			JSON.stringify(ordered({ ...labels, groups })),
+			JSON.stringify(
+				ordered({
+					...labels,
+					enums: { ...labels.enums, ...server.enums },
+					groups,
+					labels: server.labels,
+				}),
+			),
 		);
 	}
 	return Object.keys(manifest.forms).length;

@@ -26,7 +26,10 @@ import { humanize } from '../src/utils/string.js';
 import '../src/components/endpoint-form.js';
 
 const spec = specJson as unknown as SpecDoc;
-type ManifestLabels = FieldLabels & { groups: Record<string, string> };
+type ManifestLabels = FieldLabels & {
+	groups: Record<string, string>;
+	labels: Record<string, string>;
+};
 let out: string;
 let manifest: {
 	version: number;
@@ -308,6 +311,40 @@ describe('published forms manifest', () => {
 			}
 		});
 
+	test('Spanish Lit keeps its original picker labels while server labels stay translated', async () => {
+		const rendered = JSON.parse(
+			await runBun([
+				'--preload',
+				'./packages/ui/tests/setup.ts',
+				'--eval',
+				`await import('./packages/ui/src/components/endpoint-form.js');
+			await import('./packages/ui/src/locales/es.js');
+			const manifest = await Bun.file(${JSON.stringify(`${out}/forms.json`)}).json();
+			const model = manifest.forms.getDailyZodiacReading;
+			globalThis.fetch = async () => ({ok: true, json: async () => model});
+			const el = document.createElement('roxy-endpoint-form');
+			el.setAttribute('lang', 'es-AR');
+			el.setAttribute('method', 'GET');
+			el.setAttribute('data-endpoint', model.path);
+			el.setAttribute('hide-sections', 'hint');
+			document.body.appendChild(el);
+			for(let i=0;i<6;i++) {await el.updateComplete; await new Promise(r=>setTimeout(r,0));}
+			const options = [...el.shadowRoot.querySelectorAll('.tile-label')].slice(0,3).map(n=>n.textContent.trim());
+			const label = el.shadowRoot.querySelector('.label').textContent.replace('*','').trim();
+			// Contextual translations are server-only, including nouns already present in chrome.
+			el.fields = manifest.forms.getCenter.fields;
+			await el.updateComplete;
+			console.log(JSON.stringify({ label, options, center: el.shadowRoot.querySelector('.label').textContent.replace('*','').trim() }));
+			el.remove();`,
+			]),
+		);
+		expect(rendered).toEqual({
+			label: 'Animal',
+			options: ['Rat', 'Ox', 'Tiger'],
+			center: 'Center',
+		});
+	});
+
 	test('locale files match label sync, including deliberate gaps, and English matches browser fallbacks', async () => {
 		const catalogued = new Set(
 			(await readdir('packages/ui/src/locales'))
@@ -328,6 +365,14 @@ describe('published forms manifest', () => {
 				expect(english.fields[field.name]).toBe(
 					EN_FIELD_LABELS[field.name] ?? humanize(field.name),
 				);
+				if (field.label) {
+					const operationId = Object.entries(manifest.forms).find(
+						([, m]) => m === model,
+					)![0];
+					expect(english.labels[`${operationId}.${field.key}`]).toBe(
+						field.label,
+					);
+				}
 				for (const value of field.enum ?? [])
 					expect(english.enums[`${field.name}.${value}`]).toBe(humanize(value));
 			}
@@ -342,10 +387,11 @@ describe('published forms manifest', () => {
 			await runBun([
 				'--eval',
 				`const { labelsFor, translate } = await import('./packages/ui/src/i18n/registry.js');
-			const { deriveGroupLabel } = await import('./packages/ui/src/utils/field-schema.js');
+			const { deriveGroupLabel, translatedFieldLabel } = await import('./packages/ui/src/utils/field-schema.js');
 			const { displayField } = await import('./packages/ui/src/utils/localized.js');
 			const { EN_FIELD_LABELS } = await import('./packages/ui/src/generated/field-labels-en.js');
 			const manifest = await Bun.file(${JSON.stringify(`${out}/forms.json`)}).json();
+			const serverLabels = await Bun.file('./packages/ui/src/generated/form-labels.json').json();
 			const labels = {};
 			for (const lang of process.argv.slice(1)) {
 				await import('./packages/ui/src/locales/' + lang + '.js');
@@ -354,7 +400,16 @@ describe('published forms manifest', () => {
 					for (const group of model.groups ?? [])
 						if (group.key !== undefined)
 							groups[group.key] = deriveGroupLabel(group.key, (source, vars) => translate(lang, source, vars), name => displayField(lang, name, EN_FIELD_LABELS[name]));
-				labels[lang] = { ...labelsFor(lang), groups };
+				const contextual = {};
+				for (const [operationId, model] of Object.entries(manifest.forms))
+					for (const field of model.fields) {
+						if (!field.label) continue;
+						const label = translatedFieldLabel(lang, field);
+						if (label !== undefined) contextual[operationId + '.' + field.key] = label;
+					}
+				const runtime = labelsFor(lang);
+				if (Object.keys(runtime.enums).some(key => key.startsWith('id.'))) throw new Error('Picker names leaked into runtime ' + lang);
+				labels[lang] = { ...runtime, enums: {...runtime.enums, ...serverLabels[lang].enums}, groups, labels: contextual };
 			}
 			console.log(JSON.stringify(labels));`,
 				...languages.filter((lang) => lang !== 'en'),
@@ -374,6 +429,12 @@ describe('published forms manifest', () => {
 					registered[lang]?.enums[key],
 				);
 		}
+		expect(registered.es?.labels['generateRelocationChart.birthLatitude']).toBe(
+			'Latitud de nacimiento',
+		);
+		expect(registered.es?.labels['getRashi.id']).toBe('Rashi');
+		expect(registered.es?.labels['getDailyZodiacReading.id']).toBeUndefined();
+		expect(registered.es?.labels['getBaguaSector.id']).toBeUndefined();
 		expect(registered.es?.groups.personA).toBe('Persona A');
 		expect(registered.es?.groups.person1).toBe('Persona 1');
 		expect(registered.es?.groups.plot).toBe('Terreno');
