@@ -3,7 +3,6 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { live } from 'lit/directives/live.js';
 import { EN_FIELD_LABELS } from '../generated/field-labels-en.js';
-import { DISABLED_WHEN, OPTION_SOURCES } from '../generated/option-sources.js';
 import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { signGlyph } from '../tokens/index.js';
@@ -20,20 +19,19 @@ import {
 	deriveSubmitLabel,
 	type FieldDef,
 	type FieldOption,
+	type FormGroup,
 	type FormModel,
 	isIndex,
 	isZodiacEnum,
-	LOCATION_PAIR,
-	LOCATION_TRIO,
 	type OpenApiDoc,
 	type OperationSchema,
-	opensOnLoad,
 	optionKind,
 	parseRepeatGroup,
 	type RepeatDef,
 	repeatFields,
 	repeatGroup,
 	sliceFileName,
+	withRenderIntent,
 } from '../utils/field-schema.js';
 import { dispatchKeyRefusal, keyRefusal } from '../utils/key-guard.js';
 import { displayField, displayOption } from '../utils/localized.js';
@@ -539,6 +537,9 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	@state()
 	private fields: FieldDef[] = [];
 
+	private groups: FormGroup[] = [];
+	private modelOpensOnLoad = false;
+
 	/** The array-of-object request properties, each a set of cards the visitor can grow up to `max` and shrink back to `min`. */
 	@state()
 	private repeats: RepeatDef[] = [];
@@ -616,7 +617,12 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			| OperationSchema
 			| undefined;
 		if (!op) throw new SpecMissingOperationError(this.method, path);
-		return buildFormModel(op, spec.components?.schemas ?? {}, this.endpoint);
+		return buildFormModel(
+			op,
+			spec.components?.schemas ?? {},
+			this.endpoint,
+			this.method,
+		);
 	}
 
 	/** Try the small precomputed slice; return null on any miss so the caller falls back to the full spec. */
@@ -633,14 +639,12 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	}
 
 	private applyModel(model: FormModel) {
-		const op = `${this.method.toUpperCase()} /${this.endpoint.replace(/^\//, '')}`;
-		const sources = OPTION_SOURCES[op] ?? {};
-		const rules = DISABLED_WHEN[op] ?? {};
-		this.fields = model.fields.map((f) => ({
-			...f,
-			...(sources[f.key] && { source: sources[f.key] }),
-			...(rules[f.key] && { disabledWhen: rules[f.key] }),
-		}));
+		// Older slices omit render intent; normalize through the same pure model builder.
+		if (!model.groups || model.opensOnLoad === undefined)
+			model = withRenderIntent(model, this.method, this.endpoint);
+		this.fields = model.fields;
+		this.groups = model.groups ?? [];
+		this.modelOpensOnLoad = model.opensOnLoad ?? false;
 		this.repeats = model.repeats ?? [];
 		this.formTitle = model.title;
 		this.hasLang = model.hasLang;
@@ -670,11 +674,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		this.values = this.withoutDisabled(init);
 		this.loaded = true;
 		this.loadChoices();
-		if (
-			this.autoload &&
-			opensOnLoad(model, this.method) &&
-			canFetch(this.route)
-		)
+		if (this.autoload && this.opensOnLoad && canFetch(this.route))
 			void this.updateComplete.then(() => this.submit());
 	}
 
@@ -787,7 +787,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * The group half translates and the field half cannot, which is not a half-measure: this names a block the visitor has to go back to, so the word in the message has to be the word printed on the fieldset legend. A message saying `Person 1` over a legend reading `Persona 1` points at nothing.
 	 */
 	private fieldLabel(f: FieldDef): string {
-		if (this.roleOf(f) === 'location' || f.name === 'timezone')
+		if (this.roleOf(f) === 'location' || f.city)
 			return this.locationLabel(this.cityGroup(f));
 		return f.group
 			? `${this.groupName(f.group)} ${this.fieldText(f.name)}`
@@ -837,80 +837,29 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private roleOf(
 		f: FieldDef,
 	): 'seed' | 'hidden-default' | 'location' | 'normal' {
-		if (f.name === 'seed') return 'seed';
-		if ((f.name === 'limit' || f.name === 'offset') && !f.required)
-			return 'hidden-default';
-		if (
-			(LOCATION_TRIO as readonly string[]).includes(f.name) &&
-			this.groupHasLocation(f.group)
-		)
-			return 'location';
-		// A flat timezone in a group with no coordinates of its own is still suppressed when a
-		// location group has claimed it, otherwise the prefixed shape shows a raw decimal-hours
-		// box beside two city searches that already know the answer.
-		if (
-			f.name === 'timezone' &&
-			this.locationGroups().some((g) => this.timezoneFieldFor(g)?.key === f.key)
-		)
-			return 'location';
-		return 'normal';
+		return f.role ?? 'normal';
 	}
 
-	/** True when the field renders its own input (as opposed to being hidden or replaced by the city search). */
+	/** True when the model assigns the field its own input. */
 	private isRendered(f: FieldDef): boolean {
 		return this.roleOf(f) === 'normal';
 	}
 
-	/** Ordered, de-duplicated group keys (undefined flat group plus each named object). */
+	/** Groups in the model's render order, including the flat top level. */
 	private groupKeys(): (string | undefined)[] {
-		const keys: (string | undefined)[] = [];
-		for (const f of this.fields)
-			if (!keys.includes(f.group)) keys.push(f.group);
-		return keys;
+		return this.groups.map((g) => g.key);
 	}
 
-	/** True when the fields in `group` (or the flat top level) carry a latitude+longitude pair, so a location-search can autofill them. Timezone is NOT required here, see {@link LOCATION_PAIR}. */
+	/** The city box assigned to this group by the model. */
 	private groupHasLocation(group?: string): boolean {
-		const inGroup = this.fields.filter((f) => f.group === group);
-		return LOCATION_PAIR.every((n) => inGroup.some((f) => f.name === n));
+		return !!this.groups.find((g) => g.key === group)?.location;
 	}
 
-	/**
-	 * Location groups in field order. Order is load-bearing: when a request carries coordinate
-	 * groups but only ONE unprefixed top-level `timezone`, the FIRST group owns it, because that
-	 * timezone belongs to the primary moment (`generateRelocationChart` has one `timezone` and it is
-	 * the birth timezone). Without an owner both city boxes would write the same key and the second
-	 * pick would silently overwrite the first with the wrong offset.
-	 */
-	private locationGroups(): (string | undefined)[] {
-		return this.groupKeys().filter((g) => this.groupHasLocation(g));
-	}
-
-	/**
-	 * The timezone field a group's city search should fill, or undefined when there is none.
-	 *
-	 * Prefers a timezone inside the group (the nested `person1`/`person2` shape has its own). Falls
-	 * back to an unowned flat `timezone` for the first location group only, which is what makes the
-	 * prefixed shape work without leaving a decimal-hours box for a visitor to guess at.
-	 */
-	private timezoneFieldFor(group?: string): FieldDef | undefined {
-		const own = this.fields.find(
-			(f) => f.group === group && f.name === 'timezone',
-		);
-		if (own) return own;
-		if (this.locationGroups()[0] !== group) return undefined;
-		return this.fields.find(
-			(f) => f.group === undefined && f.name === 'timezone',
-		);
-	}
-
-	/** The group whose city box writes `f`: the group that claimed a timezone, else the field's own. */
+	/** The group whose city box fills this field, including a claimed flat timezone. */
 	private cityGroup(f: FieldDef): string | undefined {
-		if (f.name !== 'timezone') return f.group;
 		return (
-			this.locationGroups().find(
-				(g) => this.timezoneFieldFor(g)?.key === f.key,
-			) ?? f.group
+			this.groups.find((g) => g.location?.fields.includes(f.key))?.key ??
+			f.group
 		);
 	}
 
@@ -923,21 +872,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		);
 	}
 
-	/**
-	 * True when the location block must show a required mark, i.e. ANY member of the trio is required. The block is a single city-search input that fills all three, so if even one is required (e.g. bodygraph requires `timezone` while `latitude`/`longitude` are optional) the input is required and `collectMissing` blocks submit without it. Requiring ALL three understated that: the asterisk went missing on a block the form still enforced, which reads as optional to a non-technical embedder.
-	 */
+	/** Whether the model marks this city box required. */
 	private locationRequired(group?: string): boolean {
-		const inGroup = this.fields.filter((f) => f.group === group);
-		return LOCATION_TRIO.some((n) =>
-			inGroup.some((f) => f.name === n && f.required),
-		);
-	}
-
-	/** A named group is a required input when any of its leaf fields is required or it carries a location. */
-	private groupIsRequired(group: string): boolean {
 		return (
-			this.groupHasLocation(group) ||
-			this.fields.some((f) => f.group === group && f.required)
+			this.groups.find((g) => g.key === group)?.location?.required ?? false
 		);
 	}
 
@@ -959,10 +897,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 	/** True when this form opens on its result, so it stays above the result as a filter bar. */
 	private get opensOnLoad(): boolean {
-		return opensOnLoad(
-			{ title: '', fields: this.fields, hasLang: false },
-			this.method,
-		);
+		return this.modelOpensOnLoad;
 	}
 
 	/** True for an optional filter on a form that opens on load: a listed choice that submits when picked and clears the other filters. */
@@ -1050,15 +985,13 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 */
 	private onLocationFor(group?: string) {
 		return (city: PickedCity) => {
-			const keyOf = (name: string) =>
-				this.fields.find((f) => f.group === group && f.name === name)?.key;
+			const keys =
+				this.groups.find((g) => g.key === group)?.location?.fields ?? [];
 			const patch: Record<string, unknown> = {};
-			const lat = keyOf('latitude');
-			const lon = keyOf('longitude');
-			if (lat) patch[lat] = city.latitude;
-			if (lon) patch[lon] = city.longitude;
-			const tz = this.timezoneFieldFor(group);
-			if (tz) patch[tz.key] = city.timezone;
+			for (const key of keys) {
+				const name = this.fields.find((f) => f.key === key)?.name;
+				if (name) patch[key] = city[name as keyof PickedCity];
+			}
 			this.setValues(patch);
 		};
 	}
@@ -1399,7 +1332,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 	private renderField(f: FieldDef) {
 		// Only a timezone no coordinate pair claims reaches here; a claimed one is the location block's.
-		if (f.name === 'timezone') return this.renderTimezoneCity(f);
+		if (f.city) return this.renderTimezoneCity(f);
 		const picker = this.pickers.get(f.key);
 		if (picker) return this.renderPickerField(f, picker);
 		const listed = this.choices[f.key];
@@ -1448,7 +1381,26 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 	/** Appends a record with the same fields as the first, pre-filled with the schema defaults the first record was. */
 	private addRecord(key: string) {
-		const added = repeatFields(this.fields, key, this.repeatCount(key));
+		const index = this.repeatCount(key);
+		const added = repeatFields(this.fields, key, index);
+		const template = this.groups.find((g) => g.key === repeatGroup(key, 0));
+		if (template) {
+			const rekey = (k: string) =>
+				k.replace(`${repeatGroup(key, 0)}.`, `${repeatGroup(key, index)}.`);
+			this.groups = [
+				...this.groups,
+				{
+					...template,
+					key: repeatGroup(key, index),
+					...(template.location && {
+						location: {
+							...template.location,
+							fields: template.location.fields.map(rekey),
+						},
+					}),
+				},
+			];
+		}
 		const next = { ...this.values };
 		for (const f of added) if (f.default !== undefined) next[f.key] = f.default;
 		this.values = next;
@@ -1459,6 +1411,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private removeRecord(key: string) {
 		const group = repeatGroup(key, this.repeatCount(key) - 1);
 		this.fields = this.fields.filter((f) => f.group !== group);
+		this.groups = this.groups.filter((g) => g.key !== group);
 		const next = { ...this.values };
 		for (const k of Object.keys(next))
 			if (k.startsWith(`${group}.`)) delete next[k];
@@ -1580,22 +1533,14 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 
 		const flat = this.fields.filter((f) => !f.group && this.isRendered(f));
 		const named = this.groupKeys().filter((g): g is string => g !== undefined);
-		const reqGroups = named.filter((g) => this.groupIsRequired(g));
-		// The disclosure keeps secondary inputs behind the primary ones. With nothing required
-		// there is no primary input, so it would hide the only way to fill the form (an either-or
-		// the schema cannot state: a name and date OR the three numbers). Then every group and
-		// every undefaulted field is primary, and only the fields the API fills in itself stay
-		// behind it.
-		const hasPrimary =
-			flat.some((f) => f.required) ||
-			reqGroups.length > 0 ||
-			this.groupHasLocation(undefined);
-		const isOpen = (f: FieldDef) =>
-			hasPrimary ? f.required : f.default === undefined;
-		const openFields = flat.filter(isOpen);
-		const tuckedFields = flat.filter((f) => !isOpen(f));
-		const openGroups = hasPrimary ? reqGroups : named;
-		const tuckedGroups = named.filter((g) => !openGroups.includes(g));
+		const openFields = flat.filter((f) => !f.fold);
+		const tuckedFields = flat.filter((f) => f.fold);
+		const openGroups = named.filter(
+			(key) => !this.groups.find((g) => g.key === key)?.fold,
+		);
+		const tuckedGroups = named.filter(
+			(key) => this.groups.find((g) => g.key === key)?.fold,
+		);
 		const hasAdvanced = tuckedFields.length > 0 || tuckedGroups.length > 0;
 
 		return html`<form @submit=${this.onSubmit}>

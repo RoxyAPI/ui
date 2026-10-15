@@ -18,6 +18,7 @@
 		"build:registry": "bun run scripts/build-registry.ts",
 		"build:widgets": "bun run scripts/build-widgets.ts",
 		"build:schemas": "bun run scripts/build-schemas.ts",
+		"build:forms": "bun run scripts/build-forms.ts",
 		"purge:cdn": "bun run scripts/purge-cdn.ts",
 		"size:check": "bun run scripts/check-sizes.ts",
     "spec:diff": "bun run scripts/spec-diff.ts",

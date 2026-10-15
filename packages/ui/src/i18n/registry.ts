@@ -124,8 +124,14 @@ export function registerFieldLabels(lang: string, labels: FieldLabels): void {
 	for (const listener of reg.listeners) listener();
 }
 
-/** The field-label map for `lang`, resolving a regional tag against its base language. */
-function labelsFor(lang: string | undefined): FieldLabels | undefined {
+/**
+ * Read the registered field-label payload for `lang`, resolving regional tags against their base.
+ *
+ * @remarks
+ * Shared by browser label lookups and build-time manifest generation after importing the locale
+ * modules. Returns `undefined` when no payload is registered, leaving English fallback to callers.
+ */
+export function labelsFor(lang: string | undefined): FieldLabels | undefined {
 	if (!lang) return undefined;
 	const { fieldLabels } = registry();
 	const tag = lang.toLowerCase();

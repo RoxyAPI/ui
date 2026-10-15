@@ -568,6 +568,9 @@ async function main() {
 	console.log('Generating per-operation schema slices...');
 	execSync('bun run scripts/build-schemas.ts', { stdio: 'inherit' });
 
+	console.log('Generating platform-neutral forms manifest and labels...');
+	execSync('bun run scripts/build-forms.ts', { stdio: 'inherit' });
+
 	console.log('Mirroring README and LICENSE into each workspace...');
 	await copyRootDocsToWorkspaces();
 

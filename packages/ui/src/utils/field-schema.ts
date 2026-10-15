@@ -2,9 +2,10 @@
  * Pure, framework-free schema layer shared by the self-fetch form. It turns one OpenAPI operation into a digested list of {@link FieldDef}s whose {@link InputKind} decides which input widget renders, with zero Lit or DOM dependency so the build-time slice generator ({@link ../../../scripts/build-schemas.ts}) and the taxonomy-coverage test consume the exact same classification the browser does.
  *
  * @remarks
- * The registry is by SHAPE, never by name: {@link classifyInput} inspects `enum` / `type` / `format` only, so a new API parameter gets a working widget with no code change, and the taxonomy gate fails loudly (via a `null` return) the day a genuinely new shape appears. Name-driven behaviour (suppressing `lang`, hiding `seed` / `limit` / `offset`, replacing the latitude+longitude+timezone trio with a city search) is a separate render-time concern layered on top by the form, never encoded here.
+ * The registry is by SHAPE, never by name: {@link classifyInput} inspects `enum` / `type` / `format` only, so a new API parameter gets a working widget with no code change, and the taxonomy gate fails loudly (via a `null` return) the day a genuinely new shape appears. Name-driven render intent (hidden values, city searches and the Advanced fold) is resolved here too, so browser and server renderers consume the same decisions.
  */
 
+import { DISABLED_WHEN, OPTION_SOURCES } from '../generated/option-sources.js';
 import { SIGNS_ORDER } from '../tokens/index.js';
 import { humanize } from './string.js';
 
@@ -38,6 +39,7 @@ export interface OpenApiSchema extends OpenApiSchemaRef {
 
 /** One operation's request shape, as read from `spec.paths[path][method]`. */
 export interface OperationSchema {
+	operationId?: string;
 	summary?: string;
 	requestBody?: {
 		content?: Record<string, { schema?: OpenApiSchema | OpenApiSchemaRef }>;
@@ -98,6 +100,12 @@ export interface FieldDef {
 	example?: unknown;
 	/** Where the choices for this field are listed, when the API serves them; the form reads them at run time. */
 	source?: OptionSource;
+	/** Hidden value or coordinate supplied by a group's city box; absent for a visible input. */
+	role?: 'seed' | 'hidden-default' | 'location';
+	/** A visible timezone input is a city picker writing an IANA zone, never a typed offset. */
+	city?: true;
+	/** True when this input (or its whole group) belongs under Advanced. */
+	fold?: true;
 	/** The other field and value that disable this one, when its binding declares them. */
 	disabledWhen?: FieldCondition;
 }
@@ -132,7 +140,6 @@ export interface FieldOption {
 	disabled?: boolean;
 }
 
-/** The digested form model for one operation. The build-time slice is exactly this shape. */
 /**
  * A request property that is an ARRAY of objects, each a card of its own on the form.
  *
@@ -146,13 +153,26 @@ export interface RepeatDef {
 	max: number;
 }
 
+/** One field group, in field order. An absent key denotes the flat top level. */
+export interface FormGroup {
+	key?: string;
+	fold?: true;
+	/** A coordinate pair's city box, with the exact wire keys it fills (including its claimed timezone). */
+	location?: { fields: string[]; required: boolean };
+}
+
+/** The digested form model shared by browser slices and platform-neutral manifests. */
 export interface FormModel {
 	/** Concise heading derived from the operation summary, falling back to the path. */
 	title: string;
-	/** Every rendered field. The `lang` query parameter is intentionally excluded (routed via the element `lang` attribute instead). */
+	/** Every request field, including hidden defaults and city-filled coordinates. The `lang` query parameter is intentionally excluded (routed via the element `lang` attribute instead). */
 	fields: FieldDef[];
 	/** True when the operation carries a `lang` query parameter, so the form knows to route an effective language to the query string on submit. */
 	hasLang: boolean;
+	/** Resolved render intent. Optional only for older slices; normalize with withRenderIntent. */
+	groups?: FormGroup[];
+	/** Whether a GET can open on its result without visitor input. */
+	opensOnLoad?: boolean;
 	/** The array-of-object properties, each already expanded into `min` groups inside `fields`. Absent when the request has none. */
 	repeats?: RepeatDef[];
 }
@@ -337,6 +357,7 @@ export function buildFormModel(
 	op: OperationSchema,
 	schemas: Record<string, OpenApiSchema>,
 	endpoint: string,
+	method: string = op.requestBody ? 'POST' : 'GET',
 ): FormModel {
 	const fields: FieldDef[] = [];
 	const repeats: RepeatDef[] = [];
@@ -432,12 +453,108 @@ export function buildFormModel(
 		);
 	}
 
-	return {
-		title: deriveTitle(op.summary, endpoint),
-		fields,
-		hasLang,
-		...(repeats.length > 0 ? { repeats } : {}),
-	};
+	return withRenderIntent(
+		{
+			title: deriveTitle(op.summary, endpoint),
+			fields,
+			hasLang,
+			...(repeats.length > 0 ? { repeats } : {}),
+		},
+		method,
+		endpoint,
+	);
+}
+
+/**
+ * Resolve render intent once, shared by spec digestion and compatibility with older schema slices.
+ *
+ * @remarks
+ * A coordinate PAIR defines a city box, not a trio: relocation has two pairs and one birth
+ * timezone. Only the first pair may claim a flat timezone; an unclaimed timezone remains a
+ * visible city picker writing an IANA zone. Keys always retain their original wire identity.
+ * A city box is marked required when any of its own coordinate or timezone fields is required,
+ * including a required timezone beside optional Human Design coordinates.
+ * Optional named groups stay together under Advanced. With no primary required input, groups
+ * and undefaulted flat fields stay open so an either-or request still offers its inputs.
+ */
+export function withRenderIntent(
+	model: FormModel,
+	method: string,
+	endpoint: string,
+): FormModel {
+	const operation = `${method.toUpperCase()} /${endpoint.replace(/^\//, '')}`;
+	const sources = OPTION_SOURCES[operation] ?? {};
+	const rules = DISABLED_WHEN[operation] ?? {};
+	const fields = model.fields.map((f): FieldDef => {
+		const field = { ...f };
+		delete field.role;
+		delete field.city;
+		delete field.fold;
+		return {
+			...field,
+			...(sources[f.key] && { source: sources[f.key] }),
+			...(rules[f.key] && { disabledWhen: rules[f.key] }),
+		};
+	});
+	const groups: FormGroup[] = [...new Set(fields.map((f) => f.group))].map(
+		(key) => (key === undefined ? {} : { key }),
+	);
+	const locations = groups.filter((g) =>
+		LOCATION_PAIR.every((name) =>
+			fields.some((f) => f.group === g.key && f.name === name),
+		),
+	);
+	for (const [index, group] of locations.entries()) {
+		const own = fields.filter((f) => f.group === group.key);
+		const timezone =
+			own.find((f) => f.name === 'timezone') ??
+			(index === 0
+				? fields.find((f) => !f.group && f.name === 'timezone')
+				: undefined);
+		group.location = {
+			fields: [
+				...own
+					.filter((f) => (LOCATION_PAIR as readonly string[]).includes(f.name))
+					.map((f) => f.key),
+				...(timezone ? [timezone.key] : []),
+			],
+			// Preserve the group's required mark; a claimed flat timezone is still validated by its field.
+			required: own.some(
+				(f) =>
+					(LOCATION_TRIO as readonly string[]).includes(f.name) && f.required,
+			),
+		};
+	}
+	for (const f of fields) {
+		if (f.name === 'seed') f.role = 'seed';
+		else if ((f.name === 'limit' || f.name === 'offset') && !f.required)
+			f.role = 'hidden-default';
+		else if (locations.some((g) => g.location?.fields.includes(f.key)))
+			f.role = 'location';
+		else if (f.name === 'timezone') f.city = true;
+	}
+	const primaryGroups = groups.filter(
+		(g) =>
+			g.key !== undefined &&
+			(g.location || fields.some((f) => f.group === g.key && f.required)),
+	);
+	const hasPrimary =
+		fields.some((f) => !f.group && !f.role && f.required) ||
+		primaryGroups.length > 0 ||
+		locations.some((g) => g.key === undefined);
+	for (const group of groups) {
+		if (group.key !== undefined && hasPrimary && !primaryGroups.includes(group))
+			group.fold = true;
+	}
+	for (const f of fields) {
+		if (
+			f.group
+				? groups.find((g) => g.key === f.group)?.fold
+				: !f.role && (hasPrimary ? !f.required : f.default !== undefined)
+		)
+			f.fold = true;
+	}
+	return { ...model, fields, groups, opensOnLoad: opensOnLoad(model, method) };
 }
 
 /**

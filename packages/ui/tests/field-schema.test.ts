@@ -442,3 +442,137 @@ describe('options read from the API', () => {
 		expect(longitude?.max).toBe(360);
 	});
 });
+
+describe('platform-neutral render intent', () => {
+	const bodyModel = (
+		properties: Record<string, OpenApiSchema>,
+		required: string[] = [],
+	) =>
+		buildFormModel(
+			{
+				requestBody: {
+					content: {
+						'application/json': {
+							schema: {
+								type: 'object',
+								properties,
+								required,
+							},
+						},
+					},
+				},
+			},
+			{},
+			'test',
+			'POST',
+		);
+
+	test('only the first coordinate pair claims the shared timezone, without rewriting keys', () => {
+		const model = bodyModel(
+			{
+				timezone: { type: 'number' },
+				birthLatitude: { type: 'number' },
+				birthLongitude: { type: 'number' },
+				relocationLatitude: { type: 'number' },
+				relocationLongitude: { type: 'number' },
+			},
+			['birthLatitude', 'birthLongitude', 'timezone'],
+		);
+		expect(model.groups).toEqual([
+			{},
+			{
+				key: 'birth',
+				location: {
+					fields: ['birthLatitude', 'birthLongitude', 'timezone'],
+					required: true,
+				},
+			},
+			{
+				key: 'relocation',
+				location: {
+					fields: ['relocationLatitude', 'relocationLongitude'],
+					required: false,
+				},
+			},
+		]);
+		expect(model.fields.every((f) => f.role === 'location')).toBe(true);
+		expect(model.fields.some((f) => f.city)).toBe(false);
+	});
+
+	test('an unclaimed timezone becomes a city picker and a lone coordinate never invents a pair', () => {
+		const model = bodyModel(
+			{ timezone: { type: 'string' }, latitude: { type: 'number' } },
+			['timezone'],
+		);
+		expect(model.fields.find((f) => f.name === 'timezone')).toMatchObject({
+			city: true,
+			required: true,
+		});
+		expect(model.groups?.some((g) => g.location)).toBe(false);
+	});
+
+	test('Advanced groups stay whole; fields with no primary input stay open unless defaulted', () => {
+		const properties: Record<string, OpenApiSchema> = {
+			name: { type: 'string' },
+			count: { type: 'integer', default: 3 },
+			person: {
+				type: 'object',
+				properties: { date: { type: 'string', format: 'date' } },
+			},
+		};
+		const eitherOr = bodyModel(properties);
+		expect(eitherOr.fields.filter((f) => f.fold).map((f) => f.key)).toEqual([
+			'count',
+		]);
+		expect(
+			eitherOr.groups?.find((g) => g.key === 'person')?.fold,
+		).toBeUndefined();
+		const primary = bodyModel(properties, ['name']);
+		expect(primary.fields.filter((f) => f.fold).map((f) => f.key)).toEqual([
+			'count',
+			'person.date',
+		]);
+		expect(primary.groups?.find((g) => g.key === 'person')?.fold).toBe(true);
+	});
+
+	test('seed and optional pagination stay hidden, required pagination remains an input', () => {
+		const model = bodyModel(
+			{
+				seed: { type: 'integer' },
+				limit: { type: 'integer', default: 20 },
+				offset: { type: 'integer' },
+			},
+			['seed', 'offset'],
+		);
+		expect(model.fields.map((f) => [f.key, f.role])).toEqual([
+			['seed', 'seed'],
+			['limit', 'hidden-default'],
+			['offset', undefined],
+		]);
+	});
+
+	test('option sources, disabling rules and opensOnLoad are resolved in the model', () => {
+		const doc = spec as unknown as SpecDoc;
+		const modelFor = (path: string, method: string) =>
+			buildFormModel(
+				doc.paths[path]?.[method] as OperationSchema,
+				doc.components?.schemas ?? {},
+				path,
+				method,
+			);
+		const dreams = modelFor('/dreams/symbols', 'get');
+		expect(dreams.opensOnLoad).toBe(true);
+		expect(dreams.fields.find((f) => f.key === 'letter')?.source).toEqual({
+			path: '/dreams/symbols/letters',
+		});
+		expect(
+			modelFor('/dreams/symbols/{id}', 'get').fields.find((f) => f.key === 'id')
+				?.source,
+		).toMatchObject({ path: '/dreams/symbols', search: 'q' });
+		expect(
+			modelFor('/tarot/cards', 'get').fields.find((f) => f.key === 'suit')
+				?.disabledWhen,
+		).toEqual({ field: 'arcana', value: 'major' });
+		expect(modelFor('/numerology/chart', 'post').opensOnLoad).toBe(false);
+	});
+});
