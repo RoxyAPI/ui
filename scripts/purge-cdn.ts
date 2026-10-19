@@ -110,7 +110,6 @@ async function purge(
 	}
 }
 
-/** Run `jobs` a few at a time. The purge API is rate-limited, so firing every path at once spends the budget on a burst and gets most of them refused. */
 /**
  * Run the purge requests one at a time with a short gap, never concurrently.
  *

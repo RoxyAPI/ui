@@ -2357,7 +2357,7 @@ describe('a component renders its chrome in the page language', () => {
 		expect(rendered).not.toContain('Planet<');
 		expect(rendered).toContain('Is Retrograde');
 		expect(
-			root.querySelector('.roxy-table-wrap')?.getAttribute('aria-label'),
+			root.querySelector('.roxy-collection')?.getAttribute('aria-label'),
 		).toBe('Tabla de datos');
 		expect(root.querySelector('.roxy-card')?.getAttribute('aria-label')).toBe(
 			'Visualización de datos genérica',

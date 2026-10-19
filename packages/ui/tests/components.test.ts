@@ -1,4 +1,7 @@
 import { describe, expect, test } from 'bun:test';
+import nakshatras from '../../../specs/fixtures/nakshatras.json' with {
+	type: 'json',
+};
 
 // Importing the index registers every custom element. happy-dom is loaded by
 // preload (bunfig.toml). Lit reads document and customElements at module load,
@@ -11,6 +14,7 @@ import { TRANSIT_TYPE_SIZES } from '../src/components/transit-wheel.js';
 import { FAMILY_ORDER } from '../src/components/yoga-list.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 import { baseStyles } from '../src/utils/base-styles.js';
+import { formatDateTime } from '../src/utils/format.js';
 
 /** `updateComplete` lives on LitElement, not on the `HTMLElement` that `createElement` returns, and every call site was reaching it through the same double cast. One helper, one place to change. */
 const settled = (el: Element): Promise<void> =>
@@ -1505,6 +1509,44 @@ describe('roxy-data hides what the PHP renderer hides', () => {
 		]);
 		expect(html).toContain('col-tight'); // date
 		expect(html).toContain('col-wide'); // positions
+		expect(
+			el.shadowRoot!.querySelector('table')!.classList.contains('stacked'),
+		).toBe(true);
+		el.remove();
+	});
+
+	test('paragraph columns wrap beside nested data while short labels stay compact', async () => {
+		const { el } = await mount([
+			{
+				name: 'Ashwini',
+				characteristics:
+					'An energetic and pioneering nature with a natural ability to heal and a strong drive for new beginnings.',
+				remedies: { mantras: 'A morning practice.' },
+			},
+		]);
+		const cells = el.shadowRoot!.querySelectorAll('tbody > tr > td');
+		expect(cells[0].classList.contains('col-tight')).toBe(true);
+		expect(cells[1].classList.contains('col-wide')).toBe(true);
+		expect(cells[2].classList.contains('col-wide')).toBe(true);
+		el.remove();
+	});
+
+	test('paragraphs stack even when every column is prose or a nested record', async () => {
+		const { el } = await mount([
+			{
+				description:
+					'A detailed description with several sentences gives the reader useful context. The paragraph stays readable beside the other information.',
+				details: { practice: 'A morning practice.' },
+			},
+		]);
+		expect(
+			el.shadowRoot!.querySelector('table')!.classList.contains('stacked'),
+		).toBe(true);
+		const cells = el.shadowRoot!.querySelectorAll('tbody > tr > td');
+		expect([...cells].every((c) => c.classList.contains('col-wide'))).toBe(
+			true,
+		);
+		expect(cells[0].getAttribute('data-label')).toBe('Description');
 		el.remove();
 	});
 
@@ -1515,16 +1557,90 @@ describe('roxy-data hides what the PHP renderer hides', () => {
 		]);
 		expect(html).not.toContain('col-tight');
 		expect(html).not.toContain('col-wide');
+		expect(
+			el.shadowRoot!.querySelector('table')!.classList.contains('stacked'),
+		).toBe(false);
 		el.remove();
 	});
 
-	test('an oversized table folds away behind its row count', async () => {
+	test('paragraph boundaries count Unicode characters rather than encoded units', async () => {
+		for (const length of [80, 81]) {
+			const { el } = await mount([
+				{
+					name: 'Example',
+					score: 1,
+					category: 'primary',
+					description: '🌙'.repeat(length),
+				},
+			]);
+			expect(el.shadowRoot!.querySelector('table') !== null).toBe(
+				length === 80,
+			);
+			expect(el.shadowRoot!.querySelectorAll('.roxy-record')).toHaveLength(
+				length === 81 ? 1 : 0,
+			);
+			el.remove();
+		}
+	});
+
+	test('wide reference records retain every name, deity, paragraph and nested remedy', async () => {
+		const { el } = await mount(nakshatras);
+		const records =
+			el.shadowRoot!.querySelectorAll<HTMLElement>('.roxy-record');
+		expect(records).toHaveLength(nakshatras.length);
+		expect(el.shadowRoot!.querySelector('table')).toBeNull();
+		const collection = el.shadowRoot!.querySelector('.roxy-collection')!;
+		expect(collection.classList.contains('long')).toBe(false);
+		expect(collection.classList.contains('compact')).toBe(false);
+		expect(collection.hasAttribute('tabindex')).toBe(false);
+		expect(collection.getAttribute('role')).toBe('list');
+		expect(collection.getAttribute('aria-label')).toBe('27 rows');
+		expect(
+			[...records].every(
+				(record) => record.getAttribute('role') === 'listitem',
+			),
+		).toBe(true);
+		for (const [i, record] of [...records].entries()) {
+			const inner = record.querySelector('roxy-data')!;
+			await settled(inner);
+			const root = inner.shadowRoot!;
+			expect(root.querySelector('h3')!.textContent).toBe(nakshatras[i].name);
+			expect(root.textContent).toContain(nakshatras[i].deity);
+			expect(root.textContent).toContain(nakshatras[i].characteristics);
+			const details = root.querySelector('details')!;
+			expect(details.open).toBe(false);
+			const remedies = details.querySelector('roxy-data')!;
+			await settled(remedies);
+			for (const value of Object.values(nakshatras[i].remedies))
+				expect(remedies.shadowRoot!.textContent).toContain(value);
+		}
+		el.remove();
+	});
+
+	test('wide nested reference records stay readable when their prose is short', async () => {
+		const { el } = await mount(
+			nakshatras.map((row) => ({ ...row, characteristics: 'Brief reading.' })),
+		);
+		expect(el.shadowRoot!.querySelectorAll('.roxy-record')).toHaveLength(
+			nakshatras.length,
+		);
+		expect(el.shadowRoot!.querySelector('table')).toBeNull();
+		el.remove();
+	});
+
+	test('a long table shows every row in a focusable scroll area', async () => {
 		const rows = Array.from({ length: 27 }, (_, i) => ({
 			name: `Nakshatra ${i + 1}`,
 			lord: 'Ketu',
 		}));
-		const { el, html, text } = await mount(rows);
-		expect(html).toContain('roxy-table-details');
+		const { el, text } = await mount(rows);
+		expect(el.shadowRoot!.querySelector('details')).toBeNull();
+		expect(
+			el
+				.shadowRoot!.querySelector('.roxy-collection.long')
+				?.getAttribute('tabindex'),
+		).toBe('0');
+		expect(el.shadowRoot!.querySelectorAll('tbody > tr')).toHaveLength(27);
 		expect(text).toContain('27 rows');
 		el.remove();
 	});
@@ -1532,8 +1648,25 @@ describe('roxy-data hides what the PHP renderer hides', () => {
 	test('a table under the threshold stays open', async () => {
 		const rows = Array.from({ length: 3 }, (_, i) => ({ name: `Row ${i}` }));
 		const { el, html } = await mount(rows);
-		expect(html).not.toContain('roxy-table-details');
+		expect(el.shadowRoot!.querySelector('.roxy-collection.long')).toBeNull();
 		expect(html).toContain('roxy-table');
+		el.remove();
+	});
+
+	test('a named collection has one open disclosure and no hidden table', async () => {
+		const { el } = await mount({
+			events: Array.from({ length: 39 }, (_, i) => ({
+				planet: 'Moon',
+				longitude: i,
+			})),
+		});
+		const section = el.shadowRoot!.querySelector<HTMLDetailsElement>('details');
+		expect(section?.open).toBe(true);
+		expect(section?.querySelector('summary')?.textContent).toBe('Events');
+		const table = section!.querySelector('roxy-data')!;
+		await settled(table);
+		expect(table.shadowRoot!.querySelector('details')).toBeNull();
+		expect(table.shadowRoot!.querySelectorAll('tbody > tr')).toHaveLength(39);
 		el.remove();
 	});
 
@@ -1568,11 +1701,12 @@ describe('roxy-data hides what the PHP renderer hides', () => {
 });
 
 describe('roxy-data scalar formatting and structure', () => {
-	async function mount(data: unknown) {
+	async function mount(data: unknown, lang?: string) {
 		const el = document.createElement('roxy-data') as HTMLElement & {
 			data?: unknown;
 			depth?: number;
 		};
+		if (lang) el.lang = lang;
 		document.body.appendChild(el);
 		el.data = data;
 		await settled(el);
@@ -1592,7 +1726,7 @@ describe('roxy-data scalar formatting and structure', () => {
 
 	test('wraps tables in a horizontal-scroll container', async () => {
 		const el = await mount([{ a: 1 }, { a: 2 }]);
-		expect(el.shadowRoot?.innerHTML ?? '').toContain('roxy-table-wrap');
+		expect(el.shadowRoot?.innerHTML ?? '').toContain('roxy-collection');
 		el.remove();
 	});
 
@@ -1629,6 +1763,26 @@ describe('roxy-data scalar formatting and structure', () => {
 		const el = await mount({ aspectType: 'SEMI_SQUARE' });
 		expect(el.shadowRoot?.textContent ?? '').toContain('Semi square');
 		el.remove();
+	});
+
+	test('generic dates use the shared locale join and preserve instant equivalence', async () => {
+		for (const locale of ['en', 'de', 'tr']) {
+			const values = [
+				'2026-02-03',
+				'2026-02-03T00:00:00',
+				'2026-02-03T00:00:00Z',
+				'2026-02-03T02:00:00+02:00',
+			];
+			const rendered: string[] = [];
+			for (const value of values) {
+				const el = await mount({ datetime: value }, locale);
+				const text = el.shadowRoot!.querySelector('dd')!.textContent!.trim();
+				expect(text).toBe(formatDateTime(locale, value));
+				rendered.push(text);
+				el.remove();
+			}
+			expect(rendered[2]).toBe(rendered[3]);
+		}
 	});
 
 	test('formats UTC-suffixed ISO datetimes', async () => {

@@ -24,11 +24,13 @@ import { css } from 'lit';
 export const stackedTableStyles = css`
 	@container (max-width: 30rem) {
 		table.stacked,
+		table.stacked caption,
 		table.stacked tbody,
 		table.stacked tr,
 		table.stacked td {
 			display: block;
 			width: 100%;
+			min-width: 0;
 		}
 		table.stacked thead {
 			display: none;

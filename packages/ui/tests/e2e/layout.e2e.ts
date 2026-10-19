@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test';
+import nakshatras from '../../../../specs/fixtures/nakshatras.json' with {
+	type: 'json',
+};
 import { demosRendered, localeLoaded } from './helpers';
 
 /**
@@ -82,9 +85,11 @@ for (const vp of WIDTHS) {
 					if (r.right <= hostRect.right + 2) continue;
 
 					// An ancestor that scrolls horizontally is doing its job, not overflowing.
-					let p: HTMLElement | null = e.parentElement;
+					let p: HTMLElement | null =
+						e.parentElement ??
+						((e.getRootNode() as ShadowRoot).host as HTMLElement);
 					let scrollable = false;
-					while (p && p !== (sr as unknown as HTMLElement)) {
+					while (p && p !== host) {
 						const ox = getComputedStyle(p).overflowX;
 						if (ox === 'auto' || ox === 'scroll') {
 							scrollable = true;
@@ -282,15 +287,19 @@ test('no section overflows when its text fields are long', async ({ page }) => {
 					const r = e.getBoundingClientRect();
 					if (r.width === 0) continue;
 					if (r.right <= hostRect.right + 2) continue;
-					let p: HTMLElement | null = e.parentElement;
+					let p: HTMLElement | null =
+						e.parentElement ??
+						((e.getRootNode() as ShadowRoot).host as HTMLElement);
 					let scrollable = false;
-					while (p && p !== (root as unknown as HTMLElement)) {
+					while (p && p !== h) {
 						const ox = getComputedStyle(p).overflowX;
 						if (ox === 'auto' || ox === 'scroll') {
 							scrollable = true;
 							break;
 						}
-						p = p.parentElement;
+						p =
+							p.parentElement ??
+							((p.getRootNode() as ShadowRoot).host as HTMLElement);
 					}
 					if (!scrollable) {
 						found.push(
@@ -635,5 +644,327 @@ for (const vp of WIDTHS) {
 			'the set of components this walk actually measured',
 		).toEqual(expectedTags);
 		expect(found.out, found.out.join('\n')).toEqual([]);
+	});
+}
+
+for (const width of [375, 1280]) {
+	for (const shape of ['mixed', 'wide', 'nested', 'short'] as const) {
+		test(`generic ${shape} table retains readable cells at ${width}px`, async ({
+			page,
+		}) => {
+			await page.setViewportSize({ width, height: 900 });
+			await page.goto('/');
+			await page.evaluate(async (shape) => {
+				await customElements.whenDefined('roxy-data');
+				const el = document.createElement('roxy-data') as HTMLElement & {
+					data: unknown;
+					updateComplete: Promise<boolean>;
+				};
+				el.id = 'prose-table';
+				el.style.width = '100%';
+				el.data = [
+					{
+						name: 'Example',
+						characteristics:
+							'A detailed description with several sentences gives the reader useful context. The paragraph stays readable beside the other information.',
+						remedies: {
+							mantras: 'A regular practice offers time to pause and reflect.',
+							gemstones: 'Choose a meaningful stone for a personal reminder.',
+							rituals: 'Set aside a quiet moment each morning.',
+						},
+					},
+				];
+				const rows = el.data as Record<string, unknown>[];
+				if (shape === 'wide') el.data = rows.map(({ name, ...rest }) => rest);
+				if (shape === 'nested')
+					el.data = [
+						{
+							date: '2026-01-15',
+							positions: Array.from({ length: 9 }, (_, i) => ({
+								planet: 'Moon',
+								longitude: i,
+							})),
+						},
+					];
+				if (shape === 'short') el.data = [{ name: 'Example', score: 87 }];
+				document.body.replaceChildren(el);
+				await el.updateComplete;
+			}, shape);
+			const measurements = await page
+				.locator('#prose-table')
+				.evaluate((el, shape) => {
+					const cells =
+						el.shadowRoot!.querySelectorAll<HTMLTableCellElement>(
+							'tbody > tr > td',
+						);
+					return {
+						proseWidth:
+							cells[
+								shape === 'mixed' ? 1 : shape === 'nested' ? 1 : 0
+							].getBoundingClientRect().width,
+						nestedWidth:
+							cells[shape === 'mixed' ? 2 : 1].getBoundingClientRect().width,
+						compactWidth: cells[0].getBoundingClientRect().width,
+						rowHeight: cells[0].parentElement!.getBoundingClientRect().height,
+						whiteSpace: getComputedStyle(
+							cells[shape === 'mixed' ? 1 : shape === 'nested' ? 1 : 0],
+						).whiteSpace,
+						stacked: el
+							.shadowRoot!.querySelector('table')!
+							.classList.contains('stacked'),
+						layout: getComputedStyle(cells[0]).display,
+						scrollWidth:
+							el.shadowRoot!.querySelector<HTMLElement>('.roxy-collection')!
+								.scrollWidth,
+						wrapperWidth:
+							el.shadowRoot!.querySelector<HTMLElement>('.roxy-collection')!
+								.clientWidth,
+						cardWidth: el
+							.shadowRoot!.querySelector('[part=card]')!
+							.getBoundingClientRect().width,
+						hostWidth: el.getBoundingClientRect().width,
+						documentWidth: document.documentElement.scrollWidth,
+						viewportWidth: document.documentElement.clientWidth,
+					};
+				}, shape);
+			expect(measurements.cardWidth).toBeLessThanOrEqual(
+				measurements.hostWidth,
+			);
+			expect(measurements.documentWidth).toBe(measurements.viewportWidth);
+			expect(measurements.stacked).toBe(shape !== 'short');
+			if (shape !== 'short') {
+				expect(measurements.whiteSpace).toBe('normal');
+				expect(measurements.proseWidth).toBeGreaterThan(150);
+				expect(measurements.nestedWidth).toBeGreaterThan(150);
+				if (width === 375) {
+					expect(measurements.layout).toBe('block');
+					expect(measurements.scrollWidth).toBeLessThanOrEqual(
+						measurements.wrapperWidth + 1,
+					);
+					expect(measurements.proseWidth).toBeCloseTo(
+						measurements.wrapperWidth,
+						0,
+					);
+					expect(measurements.nestedWidth).toBeCloseTo(
+						measurements.wrapperWidth,
+						0,
+					);
+				} else if (shape === 'nested')
+					expect(measurements.compactWidth).toBeLessThan(150);
+				else expect(measurements.rowHeight).toBeLessThan(300);
+			} else expect(measurements.layout).toBe('table-cell');
+		});
+	}
+}
+
+for (const vp of WIDTHS) {
+	for (const lang of ['en', 'es']) {
+		test(`generic collections show rows and support keyboard scrolling at ${vp.label} in ${lang}`, async ({
+			page,
+		}) => {
+			await page.setViewportSize(vp);
+			await page.goto(`/preview.html?c=data&lang=${lang}`);
+			await page.evaluate(() => customElements.whenDefined('roxy-data'));
+			if (lang !== 'en') await localeLoaded(page, lang);
+			await page.evaluate(async () => {
+				document.body.replaceChildren();
+				const rows = Array.from({ length: 39 }, (_, i) => ({
+					planet: 'Moon',
+					date: '2026-01-07',
+					time: '11:23',
+					datetime: '2026-01-07T11:23:00',
+					direction: 'ascending',
+					longitude: i,
+					sign: 'Leo',
+				}));
+				for (const [id, data] of Object.entries({
+					named: { events: rows },
+					plain: rows,
+					short: rows.slice(0, 3),
+					prose: rows.map((row) => ({
+						...row,
+						description:
+							'A detailed description with several sentences gives the reader useful context. The paragraph stays readable beside the other information.',
+					})),
+					deep: { chart: { events: rows } },
+				})) {
+					const el = document.createElement('roxy-data') as HTMLElement & {
+						data: unknown;
+						updateComplete: Promise<unknown>;
+					};
+					el.id = id;
+					el.style.maxWidth = '600px';
+					el.data = data;
+					document.body.append(el);
+					await el.updateComplete;
+				}
+			});
+			const named = page.locator('#named');
+			await expect(named.locator('tbody > tr')).toHaveCount(39);
+			await expect(named.locator('summary')).toHaveCount(1);
+			await expect(named.locator('details')).toHaveAttribute('open', '');
+			await expect(named.locator('tbody > tr').first()).toBeVisible();
+			const scroll = named.locator('.roxy-collection');
+			expect(
+				await scroll.evaluate((el) => {
+					const range = document.createRange();
+					range.selectNodeContents(el.querySelector('caption')!);
+					const text = range.getBoundingClientRect();
+					const box = el.getBoundingClientRect();
+					return text.left >= box.left && text.right <= box.right;
+				}),
+			).toBe(true);
+			expect(
+				await scroll.evaluate((el) => el.scrollHeight > el.clientHeight),
+			).toBe(true);
+			expect(
+				await scroll.evaluate((el) => el.clientHeight),
+			).toBeLessThanOrEqual(512);
+			await scroll.focus();
+			await page.keyboard.press('End');
+			await expect
+				.poll(() => scroll.evaluate((el) => el.scrollTop))
+				.toBeGreaterThan(0);
+			await expect(named.locator('tbody > tr').last()).toBeInViewport();
+			await expect(page.locator('#plain details')).toHaveCount(0);
+			await expect(page.locator('#plain tbody > tr')).toHaveCount(39);
+			await expect(page.locator('#short .roxy-collection.long')).toHaveCount(0);
+			await expect(page.locator('#short tbody > tr')).toHaveCount(3);
+			const records = page.locator('#prose .roxy-collection').first();
+			await expect(records).toHaveAttribute('role', 'list');
+			await expect(records).toHaveAttribute(
+				'aria-label',
+				lang === 'es' ? '39 filas' : '39 rows',
+			);
+			await expect(records).not.toHaveAttribute('tabindex');
+			await expect(records).toHaveCSS('overflow-y', 'visible');
+			expect(
+				await records.evaluate((el) => {
+					el.scrollTop = 100;
+					return el.scrollTop;
+				}),
+			).toBe(0);
+			const lastRecord = records.locator('[role="listitem"]').last();
+			await lastRecord.scrollIntoViewIfNeeded();
+			await expect(lastRecord).toBeInViewport();
+			expect(await records.evaluate((el) => el.scrollTop)).toBe(0);
+			const count = page.locator('#prose .roxy-collection > p').first();
+			await expect(count).toHaveText(lang === 'es' ? '39 filas' : '39 rows');
+			if (vp.label === 'phone') {
+				const caption = count;
+				await expect(caption).toHaveCSS('display', 'block');
+				expect(await caption.evaluate((el) => el.clientWidth)).toBeGreaterThan(
+					200,
+				);
+			}
+			await expect(page.locator('#deep details')).not.toHaveAttribute(
+				'open',
+				'',
+			);
+			await expect(named.locator('caption')).toHaveText(
+				lang === 'es' ? '39 filas' : '39 rows',
+			);
+			expect(
+				await page.evaluate(() => {
+					window.scrollTo(10000, 0);
+					return window.scrollX;
+				}),
+			).toBe(0);
+		});
+	}
+}
+
+for (const width of [1280, 768, 375]) {
+	test(`wide reference collection retains readable records at ${width}px`, async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width, height: 900 });
+		await page.goto('/');
+		await page.evaluate(async (data) => {
+			await customElements.whenDefined('roxy-data');
+			const el = document.createElement('roxy-data') as HTMLElement & {
+				data: unknown;
+				updateComplete: Promise<boolean>;
+			};
+			el.id = 'reference-records';
+			el.data = data;
+			document.body.replaceChildren(el);
+			await el.updateComplete;
+			await Promise.all(
+				[...el.shadowRoot!.querySelectorAll('roxy-data')].map(
+					(r) =>
+						(r as unknown as { updateComplete: Promise<boolean> })
+							.updateComplete,
+				),
+			);
+		}, nakshatras);
+		const measured = await page.locator('#reference-records').evaluate((el) => {
+			const wrapper =
+				el.shadowRoot!.querySelector<HTMLElement>('.roxy-collection')!;
+			const records = [...el.shadowRoot!.querySelectorAll('.roxy-record')];
+			const issues: string[] = [];
+			let maxGap = 0;
+			const names: string[] = [];
+			for (const record of records) {
+				const inner = record.querySelector('roxy-data')!;
+				const root = inner.shadowRoot!;
+				names.push(root.querySelector('h3')!.textContent!);
+				const values = [...root.querySelectorAll<HTMLElement>('dd')];
+				for (const value of values)
+					if (value.scrollWidth > value.clientWidth + 1)
+						issues.push(value.textContent!);
+				const occupied = [...root.querySelectorAll('dt, dd')]
+					.flatMap((field) => {
+						const range = document.createRange();
+						range.selectNodeContents(field);
+						return [...range.getClientRects()];
+					})
+					.sort((a, b) => a.top - b.top);
+				let bottom = occupied[0].bottom;
+				for (const field of occupied.slice(1)) {
+					maxGap = Math.max(maxGap, field.top - bottom);
+					bottom = Math.max(bottom, field.bottom);
+				}
+			}
+			return {
+				names,
+				issues,
+				maxGap,
+				scrollWidth: wrapper.scrollWidth,
+				width: wrapper.clientWidth,
+				tableCount: el.shadowRoot!.querySelectorAll('table').length,
+				overflowY: getComputedStyle(wrapper).overflowY,
+				scrollTop: (() => {
+					wrapper.scrollTop = 100;
+					return wrapper.scrollTop;
+				})(),
+				maxHeight: getComputedStyle(wrapper).maxBlockSize,
+			};
+		});
+		expect(measured.names).toEqual(nakshatras.map((n) => n.name));
+		expect(measured.tableCount).toBe(0);
+		expect(measured.maxHeight).toBe('none');
+		expect(measured.overflowY).toBe('visible');
+		expect(measured.scrollTop).toBe(0);
+		expect(measured.issues).toEqual([]);
+		expect(measured.maxGap).toBeLessThan(24);
+		expect(measured.scrollWidth).toBeLessThanOrEqual(measured.width + 1);
+		const last = page.locator('#reference-records [role="listitem"]').last();
+		await last.scrollIntoViewIfNeeded();
+		await expect(
+			last.getByRole('heading', { name: nakshatras.at(-1)!.name, exact: true }),
+		).toBeInViewport();
+		expect(
+			await page
+				.locator('#reference-records .roxy-collection')
+				.first()
+				.evaluate((el) => el.scrollTop),
+		).toBe(0);
+		await page.locator('#reference-records').locator('summary').first().click();
+		await expect(
+			page
+				.locator('#reference-records')
+				.getByText(nakshatras[0].remedies.mantras, { exact: true }),
+		).toBeVisible();
 	});
 }

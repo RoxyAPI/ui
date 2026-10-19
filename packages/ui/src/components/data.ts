@@ -3,42 +3,10 @@ import { customElement, property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatDate, formatNumber, formatTime } from '../utils/format.js';
+import { formatDateTime, formatNumber } from '../utils/format.js';
 import { displayField, foldLocalized } from '../utils/localized.js';
+import { stackedTableStyles } from '../utils/stacked-table.js';
 import { humanize } from '../utils/string.js';
-
-/**
- * Generic fallback renderer. Accepts ANY OpenAPI response shape and renders
- * it via field-name heuristics so future spec additions render reasonably
- * without hand-wired components.
- *
- * Heuristic order:
- *   1. Primitive (string, number, boolean) -> single line.
- *   2. Array of primitives -> chip list.
- *   3. Array of objects with shared keys -> table.
- *   4. Object with title-like field -> card with key/value rows; object and
- *      object-array values promote to full-width sections below the rows so
- *      nested tables keep the whole container width.
- *   5. Otherwise -> definition list of all keys.
- *
- * Scalar display rules (shared by rows, chips, and table cells): numbers
- * round to 2 decimals, booleans read Yes/No, ISO dates and datetimes format
- * for the locale, SCREAMING_SNAKE enums humanize, http(s) strings link out.
- *
- * Every word this component writes goes through `this.t()`, which is not
- * optional politeness: `suppress()` already folds the API's localized values
- * into their canonical columns, so before the catalogue landed a Spanish page
- * read `Sol` and `Piscis` under `Yes`, `No` and `31 rows` in English. What a
- * catalogue CANNOT reach is the column headings, which come from the wire field
- * name through `humanize()` and are therefore computed per response; those stay
- * English on both this path and the PHP one, which at least keeps them
- * consistent with each other. The PHP twin has none of these strings yet, so
- * the JS and no-JS paths currently disagree on the chrome as well as the fold
- * (see lesson 6 for why that matters).
- *
- * When a schema declares an `x-roxy-ui` hint, a future dispatcher can opt
- * into a hand-tuned component instead of this fallback.
- */
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 type Scalar = string | number | boolean;
@@ -46,6 +14,8 @@ type Scalar = string | number | boolean;
 const TITLE_KEYS = ['title', 'name', 'label', 'heading', 'overview', 'summary'];
 /** A title is a label, not a paragraph. `overview`/`summary` are only title candidates when a response carries no real name, and a whole paragraph promoted to an <h3> is worse than no title at all. */
 const MAX_TITLE_LEN = 80;
+const MAX_COMPACT_CELL_LENGTH = 80;
+const MAX_FLEX_TABLE_COLUMNS = 3;
 const IMAGE_KEYS = ['imageUrl', 'image', 'icon', 'symbol'];
 const SKIP_KEYS = ['imageUrl', 'image']; // rendered separately, not in body rows
 const QUOTE_KEYS = ['affirmation', 'mantra', 'motto', 'quote'];
@@ -76,11 +46,11 @@ const SUPPRESS_NOISE = new Set([
 	'perpage',
 ]);
 
-/** Sections with more keys than this, and tables with more rows than this, collapse into `<details>`. */
+/** Sections with more keys than this collapse into `<details>`. */
 const DETAILS_KEYS = 8;
 /** Depth at which a section folds shut by default rather than rendering open. */
 const DEEP_DEPTH = 1;
-const DETAILS_ROWS = 12;
+const SCROLL_ROWS = 12;
 
 const normKey = (k: string): string => k.toLowerCase().replace(/[_-]/g, '');
 
@@ -145,6 +115,15 @@ function isEmptyValue(value: Json): boolean {
 	return values.length === 0 || values.every(isEmptyValue);
 }
 
+/**
+ * Generic fallback heuristic order:
+ * 1. Primitives render as locale-aware text; primitive arrays render as chips.
+ * 2. Compact object arrays render as tables; arrays with many columns plus paragraph text or nested data render as readable records.
+ * 3. Objects with a title render a heading and scalar facts; other objects render a definition list.
+ * 4. Nested objects and object arrays occupy full-width sections, retaining the shared depth and disclosure policy.
+ * Scalar dates, numbers and enums use shared locale-aware formatters; chrome uses t(), response labels use displayField(), and values are folded before classification.
+ * Folding localized values without translating surrounding chrome gives the reader mixed languages, and the server fallback must apply the same field selection and collection presentation.
+ */
 @customElement('roxy-data')
 export class RoxyData extends RoxyDataElement<Json> {
 	static styles = [
@@ -215,20 +194,36 @@ export class RoxyData extends RoxyDataElement<Json> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 			}
 
-			.roxy-table-wrap {
-				overflow-x: auto;
+			.roxy-collection {
 				min-width: 0;
+			}
+			.roxy-collection.compact {
+				overflow-x: auto;
+			}
+			.roxy-collection.long {
+				max-block-size: 32rem;
+			}
+			.roxy-collection:focus-visible {
+				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
+				outline-offset: 2px;
+			}
+			.roxy-record + .roxy-record {
+				margin-block-start: var(--roxy-space-sm, 0.5rem);
 			}
 			table.roxy-table {
 				width: 100%;
 				border-collapse: collapse;
 				font-size: var(--roxy-text-sm, 0.875rem);
 			}
+			table.roxy-table caption {
+				text-align: start;
+			}
 			table.roxy-table th,
 			table.roxy-table td {
 				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
 				padding: var(--roxy-space-sm, 0.5rem);
 				text-align: left;
+				vertical-align: top;
 				text-transform: none;
 				word-break: normal;
 				overflow-wrap: normal;
@@ -241,18 +236,17 @@ export class RoxyData extends RoxyDataElement<Json> {
 				letter-spacing: 0.04em;
 				white-space: nowrap;
 			}
-			/* Scalar column: as narrow as its content allows. A 1% width on an auto
-			 * table is the standard way to say that, and the remaining auto column
-			 * absorbs everything left. See renderTable for why. */
-			table.roxy-table th.col-tight,
-			table.roxy-table td.col-tight {
+			/* A 1% auto-table width keeps short columns at their content width, leaving room for prose and nested records. */
+			:where(table.roxy-table) :is(th, td).col-tight {
 				width: 1%;
 				white-space: nowrap;
 			}
-			/* Column holding nested data: take the width the scalars gave back. */
-			table.roxy-table th.col-wide,
-			table.roxy-table td.col-wide {
+			/* Text and nested data keep a readable measure beside compact scalars. */
+			:where(table.roxy-table) :is(th, td).col-wide {
 				width: auto;
+			}
+			:where(table.roxy-table.prose) :is(th, td).col-wide {
+				min-width: 40ch;
 			}
 
 			.roxy-image {
@@ -296,25 +290,23 @@ export class RoxyData extends RoxyDataElement<Json> {
 				font-weight: var(--roxy-weight-bold, 600);
 			}
 
-			details.roxy-section,
-			details.roxy-table-details {
+			details.roxy-section {
 				margin-top: var(--roxy-space-md, 1rem);
 			}
-			details.roxy-section > summary,
-			details.roxy-table-details > summary {
+			details.roxy-section > summary {
 				cursor: pointer;
 				font-size: var(--roxy-text-sm, 0.875rem);
 				font-weight: var(--roxy-weight-bold, 600);
 				color: var(--roxy-secondary, #475569);
 				text-transform: capitalize;
 			}
-			details.roxy-section > summary:focus-visible,
-			details.roxy-table-details > summary:focus-visible {
+			details.roxy-section > summary:focus-visible {
 				outline: 2px solid var(--roxy-ring, rgba(245, 158, 11, 0.4));
 				outline-offset: 2px;
 				border-radius: 4px;
 			}
 		`,
+		stackedTableStyles,
 	];
 
 	/**
@@ -351,7 +343,8 @@ export class RoxyData extends RoxyDataElement<Json> {
 		const allObjects = arr.every(
 			(v) => v !== null && typeof v === 'object' && !Array.isArray(v),
 		);
-		if (allObjects) return this.renderTable(arr as Record<string, Json>[]);
+		if (allObjects)
+			return this.renderObjectArray(arr as Record<string, Json>[]);
 		return html`<ol>
 			${arr.map((v) => html`<li>${this.renderValue(v)}</li>`)}
 		</ol>`;
@@ -365,33 +358,46 @@ export class RoxyData extends RoxyDataElement<Json> {
 		</ul>`;
 	}
 
-	private renderTable(rows: Record<string, Json>[]): TemplateResult {
+	private renderObjectArray(rows: Record<string, Json>[]): TemplateResult {
 		const clean = rows.map((r) => this.suppress(r));
 		const keys = this.collectKeys(clean);
 
-		/**
-		 * A column holding nested data needs the width; a column holding a short scalar does not.
-		 *
-		 * @remarks
-		 * Browsers lay an auto table out by content, so a `date` column of ten characters and a `positions` column holding a whole nested table settle at roughly half the width each, and the nested one is the one that ends up cramped. Marking each column by what it actually CONTAINS lets the scalar columns collapse to their content (`width: 1%` is the standard way to say "as narrow as your content allows") and the nested column absorb everything left over. No fixed percentage: the split follows the data.
-		 *
-		 * Only worth doing when the row is mixed. If every column is scalar, or every column is nested, there is nothing to bias toward and the browser's own distribution is already right.
-		 */
-		const complex = new Set(
-			keys.filter((k) => clean.some((r) => isComplex(r[k] ?? null))),
+		const prose = new Set(
+			keys.filter((k) =>
+				clean.some(
+					(r) =>
+						typeof r[k] === 'string' &&
+						Array.from(r[k]).length > MAX_COMPACT_CELL_LENGTH,
+				),
+			),
 		);
-		const mixed = complex.size > 0 && complex.size < keys.length;
+		const wide = new Set(
+			keys.filter(
+				(k) => prose.has(k) || clean.some((r) => isComplex(r[k] ?? null)),
+			),
+		);
+		const sized = prose.size > 0 || (wide.size > 0 && wide.size < keys.length);
 		const colClass = (k: string) =>
-			mixed ? (complex.has(k) ? 'col-wide' : 'col-tight') : '';
+			sized ? (wide.has(k) ? 'col-wide' : 'col-tight') : '';
 
-		const table = html`<div
-			class="roxy-table-wrap"
+		const records = wide.size > 0 && keys.length > MAX_FLEX_TABLE_COLUMNS;
+		const long = clean.length > SCROLL_ROWS;
+		const bounded = long && !records;
+		return html`<div
+			class=${records ? 'roxy-collection' : bounded ? 'roxy-collection compact long' : 'roxy-collection compact'}
 			part="table"
-			role="group"
-			aria-label=${this.t('Data table')}
-			tabindex="0"
+			role=${records ? 'list' : 'group'}
+			aria-label=${records ? this.t('{{count}} rows', { count: clean.length }) : this.t('Data table')}
+			tabindex=${records ? nothing : '0'}
 		>
-			<table class="roxy-table" role="table">
+			${
+				records
+					? html`
+				${long ? html`<p>${this.t('{{count}} rows', { count: clean.length })}</p>` : nothing}
+				${clean.map((row) => html`<div class="roxy-record" role="listitem">${this.renderField(row)}</div>`)}
+			`
+					: html`<table class=${prose.size ? 'roxy-table stacked prose' : wide.size ? 'roxy-table stacked' : 'roxy-table'} role="table">
+				${long ? html`<caption>${this.t('{{count}} rows', { count: clean.length })}</caption>` : nothing}
 				<thead>
 					<tr>
 						${keys.map(
@@ -405,24 +411,16 @@ export class RoxyData extends RoxyDataElement<Json> {
 						(row) => html`<tr>
 							${keys.map(
 								(k) =>
-									html`<td class=${colClass(k)}>
+									html`<td class=${colClass(k)} data-label=${displayField(this.effectiveLang(), k)}>
 										${this.renderCell(row[k], k)}
 									</td>`,
 							)}
 						</tr>`,
 					)}
 				</tbody>
-			</table>
+			</table>`
+			}
 		</div>`;
-		// A 78-row angel-number list or a 27-row nakshatra table is a scroll trap
-		// inline. Past the threshold it folds away behind its own row count.
-		if (clean.length > DETAILS_ROWS) {
-			return html`<details class="roxy-table-details">
-				<summary>${this.t('{{count}} rows', { count: clean.length })}</summary>
-				${table}
-			</details>`;
-		}
-		return table;
 	}
 
 	/**
@@ -543,9 +541,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 		if (Array.isArray(value) && value.every(isPrimitive)) {
 			return this.renderChips(value as (Scalar | null)[]);
 		}
-		// `bare`: a nested card inside a card compounds padding and border at every
-		// level, and by depth 3 the innermost object was rendering into a fraction of the
-		// width with prose wrapping to two words a line.
+		// Bare nested cards suppress their surface and shadows while retaining padding and a hairline border.
 		return html`<roxy-data
 			bare
 			lang=${ifDefined(this.effectiveLang())}
@@ -569,9 +565,7 @@ export class RoxyData extends RoxyDataElement<Json> {
 				.map((v) => this.formatScalar(v))
 				.join(', ');
 		}
-		// Nested object or object array inside a row: recurse instead of
-		// stringifying to [object Object]. `bare` drops the card surface so
-		// the cell does not paint a card inside a cell.
+		// Nested cells recurse rather than stringify, with bare cards retaining padding and a hairline border.
 		return html`<roxy-data
 			bare
 			lang=${ifDefined(this.effectiveLang())}
@@ -595,11 +589,8 @@ export class RoxyData extends RoxyDataElement<Json> {
 			return formatNumber(this.effectiveLang(), value, 2) || String(value);
 		}
 		if (typeof value === 'boolean') return value ? this.t('Yes') : this.t('No');
-		if (ISO_DATE.test(value)) {
-			const time = formatTime(this.effectiveLang(), value);
-			const date = formatDate(this.effectiveLang(), value);
-			return time ? `${date}, ${time}` : date;
-		}
+		if (ISO_DATE.test(value))
+			return formatDateTime(this.effectiveLang(), value);
 		if (ENUM_STRING.test(value)) return humanize(value.toLowerCase());
 		return value;
 	}
