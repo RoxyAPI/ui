@@ -449,7 +449,7 @@ const samples = {
 				strength: 100,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your North Node forms a very strong opposition (180) with South Node, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your North Node forms a very strong opposition (180) with South Node, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -476,7 +476,7 @@ const samples = {
 				strength: 98.61345216757513,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a very strong sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Saturn forms a very strong sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -495,7 +495,7 @@ const samples = {
 				strength: 96.73058120419,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Neptune forms a very strong opposition (180) with Chiron, currently applying (strengthening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Neptune forms a very strong opposition (180) with Chiron, currently applying (strengthening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -522,7 +522,7 @@ const samples = {
 				strength: 87.90635905421595,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Pluto forms a very strong square (90) with North Node, currently applying (strengthening). This challenging aspect creates difficult, obstacle, stress...",
+					summary: "Your Pluto forms a very strong square (90) with North Node, currently applying (strengthening). This challenging aspect highlights themes of difficult, obstacle, and stress.",
 					keywords: [
 						"difficult",
 						"obstacle",
@@ -541,7 +541,7 @@ const samples = {
 				strength: 87.90635905421595,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Pluto forms a very strong square (90) with South Node, currently applying (strengthening). This challenging aspect creates difficult, obstacle, stress...",
+					summary: "Your Pluto forms a very strong square (90) with South Node, currently applying (strengthening). This challenging aspect highlights themes of difficult, obstacle, and stress.",
 					keywords: [
 						"difficult",
 						"obstacle",
@@ -560,7 +560,7 @@ const samples = {
 				strength: 82.02417891409165,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Moon forms a very strong square (90) with Mars, currently separating (weakening). This challenging aspect creates difficult, obstacle, stress...",
+					summary: "Your Moon forms a very strong square (90) with Mars, currently separating (weakening). This challenging aspect highlights themes of difficult, obstacle, and stress.",
 					keywords: [
 						"difficult",
 						"obstacle",
@@ -579,7 +579,7 @@ const samples = {
 				strength: 81.86912569637173,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a very strong conjunction (0) with Neptune, currently separating (weakening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Mercury forms a very strong conjunction (0) with Neptune, currently separating (weakening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -598,7 +598,7 @@ const samples = {
 				strength: 78.59970690056173,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a strong opposition (180) with Chiron, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Mercury forms a strong opposition (180) with Chiron, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -625,7 +625,7 @@ const samples = {
 				strength: 76.0632068406565,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Uranus forms a strong sextile (60) with Black Moon Lilith, currently separating (weakening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Uranus forms a strong sextile (60) with Black Moon Lilith, currently separating (weakening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -644,7 +644,7 @@ const samples = {
 				strength: 74.55460012468696,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a strong semi-sextile (30) with North Node, currently separating (weakening). This neutral aspect creates growth, subtle, adjustment...",
+					summary: "Your Saturn forms a strong semi-sextile (30) with North Node, currently separating (weakening). This neutral aspect highlights themes of growth, subtle, and adjustment.",
 					keywords: [
 						"growth",
 						"subtle",
@@ -663,7 +663,7 @@ const samples = {
 				strength: 74.55460012468696,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a strong quincunx (150) with South Node, currently separating (weakening). This challenging aspect creates adjustment, tension, adaptation...",
+					summary: "Your Saturn forms a strong quincunx (150) with South Node, currently separating (weakening). This challenging aspect highlights themes of adjustment, tension, and adaptation.",
 					keywords: [
 						"adjustment",
 						"tension",
@@ -682,7 +682,7 @@ const samples = {
 				strength: 58.72779129881067,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a moderate opposition (180) with Uranus, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Jupiter forms a moderate opposition (180) with Uranus, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -709,7 +709,7 @@ const samples = {
 				strength: 55.7039179617874,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Mars forms a moderate trine (120) with South Node, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Mars forms a moderate trine (120) with South Node, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -730,7 +730,7 @@ const samples = {
 				strength: 55.248258203042155,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a moderate sesquiquadrate (135) with Pluto, currently applying (strengthening). This challenging aspect creates frustration, adjustment, external tension...",
+					summary: "Your Jupiter forms a moderate sesquiquadrate (135) with Pluto, currently applying (strengthening). This challenging aspect highlights themes of frustration, adjustment, and external tension.",
 					keywords: [
 						"frustration",
 						"adjustment",
@@ -749,7 +749,7 @@ const samples = {
 				strength: 49.91830924151692,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Sun forms a moderate trine (120) with Moon, currently applying (strengthening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Sun forms a moderate trine (120) with Moon, currently applying (strengthening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -770,7 +770,7 @@ const samples = {
 				strength: 49.51709946485998,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Moon forms a moderate trine (120) with Saturn, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Moon forms a moderate trine (120) with Saturn, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -791,7 +791,7 @@ const samples = {
 				strength: 49.00990530466108,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a moderate sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Mercury forms a moderate sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -810,7 +810,7 @@ const samples = {
 				strength: 43.80483410898819,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a moderate conjunction (0) with Uranus, currently applying (strengthening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Mercury forms a moderate conjunction (0) with Uranus, currently applying (strengthening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -829,7 +829,7 @@ const samples = {
 				strength: 43.59551401519752,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a moderate opposition (180) with Chiron, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Saturn forms a moderate opposition (180) with Chiron, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -856,7 +856,7 @@ const samples = {
 				strength: 42.55560314087887,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Pluto forms a moderate trine (120) with Chiron, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Pluto forms a moderate trine (120) with Chiron, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -877,7 +877,7 @@ const samples = {
 				strength: 40.938557282383194,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Mars forms a moderate sextile (60) with North Node, currently separating (weakening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Mars forms a moderate sextile (60) with North Node, currently separating (weakening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -896,7 +896,7 @@ const samples = {
 				strength: 40.77519642930305,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a moderate trine (120) with Black Moon Lilith, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Jupiter forms a moderate trine (120) with Black Moon Lilith, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -917,7 +917,7 @@ const samples = {
 				strength: 40.35713587905754,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Chiron forms a moderate trine (120) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Chiron forms a moderate trine (120) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -938,7 +938,7 @@ const samples = {
 				strength: 40.326095219387526,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a moderate conjunction (0) with Neptune, currently separating (weakening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Saturn forms a moderate conjunction (0) with Neptune, currently separating (weakening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -957,7 +957,7 @@ const samples = {
 				strength: 36.21301996574289,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Sun forms a weak conjunction (0) with Venus, currently applying (strengthening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Sun forms a weak conjunction (0) with Venus, currently applying (strengthening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -976,7 +976,7 @@ const samples = {
 				strength: 34.07601378557151,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Moon forms a weak sextile (60) with Pluto, currently separating (weakening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Moon forms a weak sextile (60) with Pluto, currently separating (weakening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -995,7 +995,7 @@ const samples = {
 				strength: 25.673959805359914,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Uranus forms a weak conjunction (0) with Neptune, currently applying (strengthening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Uranus forms a weak conjunction (0) with Neptune, currently applying (strengthening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -1014,7 +1014,7 @@ const samples = {
 				strength: 24.83540623315671,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Neptune forms a weak sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Neptune forms a weak sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -1033,7 +1033,7 @@ const samples = {
 				strength: 22.404541009549916,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Uranus forms a weak opposition (180) with Chiron, currently applying (strengthening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Uranus forms a weak opposition (180) with Chiron, currently applying (strengthening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -1060,7 +1060,7 @@ const samples = {
 				strength: 22.19522091575925,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a weak conjunction (0) with Saturn, currently separating (weakening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Mercury forms a weak conjunction (0) with Saturn, currently separating (weakening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -1079,7 +1079,7 @@ const samples = {
 				strength: 19.048245793425167,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Neptune forms a weak sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Neptune forms a weak sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -1098,7 +1098,7 @@ const samples = {
 				strength: 16.121002563539832,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Moon forms a weak semi-square (45) with Black Moon Lilith, currently applying (strengthening). This challenging aspect creates friction, irritation, agitation...",
+					summary: "Your Moon forms a weak semi-square (45) with Black Moon Lilith, currently applying (strengthening). This challenging aspect highlights themes of friction, irritation, and agitation.",
 					keywords: [
 						"friction",
 						"irritation",
@@ -1117,7 +1117,7 @@ const samples = {
 				strength: 12.920514892797996,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a weak sesquiquadrate (135) with North Node, currently applying (strengthening). This challenging aspect creates frustration, adjustment, external tension...",
+					summary: "Your Jupiter forms a weak sesquiquadrate (135) with North Node, currently applying (strengthening). This challenging aspect highlights themes of frustration, adjustment, and external tension.",
 					keywords: [
 						"frustration",
 						"adjustment",
@@ -1136,7 +1136,7 @@ const samples = {
 				strength: 12.920514892797996,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a weak semi-square (45) with South Node, currently applying (strengthening). This challenging aspect creates friction, irritation, agitation...",
+					summary: "Your Jupiter forms a weak semi-square (45) with South Node, currently applying (strengthening). This challenging aspect highlights themes of friction, irritation, and agitation.",
 					keywords: [
 						"friction",
 						"irritation",
@@ -1155,7 +1155,7 @@ const samples = {
 				strength: 10.095610104929165,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mars forms a weak semi-sextile (30) with Pluto, currently separating (weakening). This neutral aspect creates growth, subtle, adjustment...",
+					summary: "Your Mars forms a weak semi-sextile (30) with Pluto, currently separating (weakening). This neutral aspect highlights themes of growth, subtle, and adjustment.",
 					keywords: [
 						"growth",
 						"subtle",
@@ -1174,7 +1174,7 @@ const samples = {
 				strength: 7.322514440079431,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mars forms a weak semi-sextile (30) with Saturn, currently separating (weakening). This neutral aspect creates growth, subtle, adjustment...",
+					summary: "Your Mars forms a weak semi-sextile (30) with Saturn, currently separating (weakening). This neutral aspect highlights themes of growth, subtle, and adjustment.",
 					keywords: [
 						"growth",
 						"subtle",
@@ -1193,7 +1193,7 @@ const samples = {
 				strength: 5.663266678192258,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Venus forms a weak quincunx (150) with Jupiter, currently separating (weakening). This challenging aspect creates adjustment, tension, adaptation...",
+					summary: "Your Venus forms a weak quincunx (150) with Jupiter, currently separating (weakening). This challenging aspect highlights themes of adjustment, tension, and adaptation.",
 					keywords: [
 						"adjustment",
 						"tension",
@@ -1212,7 +1212,7 @@ const samples = {
 				strength: 2.532625407798861,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a weak opposition (180) with Jupiter, currently applying (strengthening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Mercury forms a weak opposition (180) with Jupiter, currently applying (strengthening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -1746,7 +1746,7 @@ const samples = {
 				strength: 100,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your North Node forms a very strong opposition (180) with South Node, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your North Node forms a very strong opposition (180) with South Node, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -1773,7 +1773,7 @@ const samples = {
 				strength: 98.61345216757513,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a very strong sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Saturn forms a very strong sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -1792,7 +1792,7 @@ const samples = {
 				strength: 96.73058120419,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Neptune forms a very strong opposition (180) with Chiron, currently applying (strengthening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Neptune forms a very strong opposition (180) with Chiron, currently applying (strengthening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -1819,7 +1819,7 @@ const samples = {
 				strength: 87.90635905421595,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Pluto forms a very strong square (90) with North Node, currently applying (strengthening). This challenging aspect creates difficult, obstacle, stress...",
+					summary: "Your Pluto forms a very strong square (90) with North Node, currently applying (strengthening). This challenging aspect highlights themes of difficult, obstacle, and stress.",
 					keywords: [
 						"difficult",
 						"obstacle",
@@ -1838,7 +1838,7 @@ const samples = {
 				strength: 87.90635905421595,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Pluto forms a very strong square (90) with South Node, currently applying (strengthening). This challenging aspect creates difficult, obstacle, stress...",
+					summary: "Your Pluto forms a very strong square (90) with South Node, currently applying (strengthening). This challenging aspect highlights themes of difficult, obstacle, and stress.",
 					keywords: [
 						"difficult",
 						"obstacle",
@@ -1857,7 +1857,7 @@ const samples = {
 				strength: 82.02417891409165,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Moon forms a very strong square (90) with Mars, currently separating (weakening). This challenging aspect creates difficult, obstacle, stress...",
+					summary: "Your Moon forms a very strong square (90) with Mars, currently separating (weakening). This challenging aspect highlights themes of difficult, obstacle, and stress.",
 					keywords: [
 						"difficult",
 						"obstacle",
@@ -1876,7 +1876,7 @@ const samples = {
 				strength: 81.86912569637173,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a very strong conjunction (0) with Neptune, currently separating (weakening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Mercury forms a very strong conjunction (0) with Neptune, currently separating (weakening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -1895,7 +1895,7 @@ const samples = {
 				strength: 78.59970690056173,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a strong opposition (180) with Chiron, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Mercury forms a strong opposition (180) with Chiron, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -1922,7 +1922,7 @@ const samples = {
 				strength: 76.0632068406565,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Uranus forms a strong sextile (60) with Black Moon Lilith, currently separating (weakening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Uranus forms a strong sextile (60) with Black Moon Lilith, currently separating (weakening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -1941,7 +1941,7 @@ const samples = {
 				strength: 74.55460012468696,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a strong semi-sextile (30) with North Node, currently separating (weakening). This neutral aspect creates growth, subtle, adjustment...",
+					summary: "Your Saturn forms a strong semi-sextile (30) with North Node, currently separating (weakening). This neutral aspect highlights themes of growth, subtle, and adjustment.",
 					keywords: [
 						"growth",
 						"subtle",
@@ -1960,7 +1960,7 @@ const samples = {
 				strength: 74.55460012468696,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a strong quincunx (150) with South Node, currently separating (weakening). This challenging aspect creates adjustment, tension, adaptation...",
+					summary: "Your Saturn forms a strong quincunx (150) with South Node, currently separating (weakening). This challenging aspect highlights themes of adjustment, tension, and adaptation.",
 					keywords: [
 						"adjustment",
 						"tension",
@@ -1979,7 +1979,7 @@ const samples = {
 				strength: 58.72779129881067,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a moderate opposition (180) with Uranus, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Jupiter forms a moderate opposition (180) with Uranus, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2006,7 +2006,7 @@ const samples = {
 				strength: 55.7039179617874,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Mars forms a moderate trine (120) with South Node, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Mars forms a moderate trine (120) with South Node, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2027,7 +2027,7 @@ const samples = {
 				strength: 55.248258203042155,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a moderate sesquiquadrate (135) with Pluto, currently applying (strengthening). This challenging aspect creates frustration, adjustment, external tension...",
+					summary: "Your Jupiter forms a moderate sesquiquadrate (135) with Pluto, currently applying (strengthening). This challenging aspect highlights themes of frustration, adjustment, and external tension.",
 					keywords: [
 						"frustration",
 						"adjustment",
@@ -2046,7 +2046,7 @@ const samples = {
 				strength: 49.91830924151692,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Sun forms a moderate trine (120) with Moon, currently applying (strengthening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Sun forms a moderate trine (120) with Moon, currently applying (strengthening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2067,7 +2067,7 @@ const samples = {
 				strength: 49.51709946485998,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Moon forms a moderate trine (120) with Saturn, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Moon forms a moderate trine (120) with Saturn, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2088,7 +2088,7 @@ const samples = {
 				strength: 49.00990530466108,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a moderate sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Mercury forms a moderate sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -2107,7 +2107,7 @@ const samples = {
 				strength: 43.80483410898819,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a moderate conjunction (0) with Uranus, currently applying (strengthening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Mercury forms a moderate conjunction (0) with Uranus, currently applying (strengthening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -2126,7 +2126,7 @@ const samples = {
 				strength: 43.59551401519752,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a moderate opposition (180) with Chiron, currently separating (weakening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Saturn forms a moderate opposition (180) with Chiron, currently separating (weakening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2153,7 +2153,7 @@ const samples = {
 				strength: 42.55560314087887,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Pluto forms a moderate trine (120) with Chiron, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Pluto forms a moderate trine (120) with Chiron, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2174,7 +2174,7 @@ const samples = {
 				strength: 40.938557282383194,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Mars forms a moderate sextile (60) with North Node, currently separating (weakening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Mars forms a moderate sextile (60) with North Node, currently separating (weakening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -2193,7 +2193,7 @@ const samples = {
 				strength: 40.77519642930305,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a moderate trine (120) with Black Moon Lilith, currently separating (weakening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Jupiter forms a moderate trine (120) with Black Moon Lilith, currently separating (weakening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2214,7 +2214,7 @@ const samples = {
 				strength: 40.35713587905754,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Chiron forms a moderate trine (120) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect creates accept, accepting, difficult...",
+					summary: "Your Chiron forms a moderate trine (120) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect highlights themes of accept, accepting, and difficult.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2235,7 +2235,7 @@ const samples = {
 				strength: 40.326095219387526,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Saturn forms a moderate conjunction (0) with Neptune, currently separating (weakening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Saturn forms a moderate conjunction (0) with Neptune, currently separating (weakening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -2254,7 +2254,7 @@ const samples = {
 				strength: 36.21301996574289,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Sun forms a weak conjunction (0) with Venus, currently applying (strengthening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Sun forms a weak conjunction (0) with Venus, currently applying (strengthening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -2273,7 +2273,7 @@ const samples = {
 				strength: 34.07601378557151,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Moon forms a weak sextile (60) with Pluto, currently separating (weakening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Moon forms a weak sextile (60) with Pluto, currently separating (weakening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -2292,7 +2292,7 @@ const samples = {
 				strength: 25.673959805359914,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Uranus forms a weak conjunction (0) with Neptune, currently applying (strengthening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Uranus forms a weak conjunction (0) with Neptune, currently applying (strengthening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -2311,7 +2311,7 @@ const samples = {
 				strength: 24.83540623315671,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Neptune forms a weak sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Neptune forms a weak sextile (60) with Black Moon Lilith, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -2330,7 +2330,7 @@ const samples = {
 				strength: 22.404541009549916,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Uranus forms a weak opposition (180) with Chiron, currently applying (strengthening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Uranus forms a weak opposition (180) with Chiron, currently applying (strengthening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2357,7 +2357,7 @@ const samples = {
 				strength: 22.19522091575925,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a weak conjunction (0) with Saturn, currently separating (weakening). This neutral aspect creates blend, difficult, unite...",
+					summary: "Your Mercury forms a weak conjunction (0) with Saturn, currently separating (weakening). This neutral aspect highlights themes of blend, difficult, and unite.",
 					keywords: [
 						"blend",
 						"difficult",
@@ -2376,7 +2376,7 @@ const samples = {
 				strength: 19.048245793425167,
 				interpretation: "harmonious",
 				aspectInterpretation: {
-					summary: "Your Neptune forms a weak sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect creates ease, natural, relationship...",
+					summary: "Your Neptune forms a weak sextile (60) with Pluto, currently applying (strengthening). This harmonious aspect highlights themes of ease, natural, and relationship.",
 					keywords: [
 						"ease",
 						"natural",
@@ -2395,7 +2395,7 @@ const samples = {
 				strength: 16.121002563539832,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Moon forms a weak semi-square (45) with Black Moon Lilith, currently applying (strengthening). This challenging aspect creates friction, irritation, agitation...",
+					summary: "Your Moon forms a weak semi-square (45) with Black Moon Lilith, currently applying (strengthening). This challenging aspect highlights themes of friction, irritation, and agitation.",
 					keywords: [
 						"friction",
 						"irritation",
@@ -2414,7 +2414,7 @@ const samples = {
 				strength: 12.920514892797996,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a weak sesquiquadrate (135) with North Node, currently applying (strengthening). This challenging aspect creates frustration, adjustment, external tension...",
+					summary: "Your Jupiter forms a weak sesquiquadrate (135) with North Node, currently applying (strengthening). This challenging aspect highlights themes of frustration, adjustment, and external tension.",
 					keywords: [
 						"frustration",
 						"adjustment",
@@ -2433,7 +2433,7 @@ const samples = {
 				strength: 12.920514892797996,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Jupiter forms a weak semi-square (45) with South Node, currently applying (strengthening). This challenging aspect creates friction, irritation, agitation...",
+					summary: "Your Jupiter forms a weak semi-square (45) with South Node, currently applying (strengthening). This challenging aspect highlights themes of friction, irritation, and agitation.",
 					keywords: [
 						"friction",
 						"irritation",
@@ -2452,7 +2452,7 @@ const samples = {
 				strength: 10.095610104929165,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mars forms a weak semi-sextile (30) with Pluto, currently separating (weakening). This neutral aspect creates growth, subtle, adjustment...",
+					summary: "Your Mars forms a weak semi-sextile (30) with Pluto, currently separating (weakening). This neutral aspect highlights themes of growth, subtle, and adjustment.",
 					keywords: [
 						"growth",
 						"subtle",
@@ -2471,7 +2471,7 @@ const samples = {
 				strength: 7.322514440079431,
 				interpretation: "neutral",
 				aspectInterpretation: {
-					summary: "Your Mars forms a weak semi-sextile (30) with Saturn, currently separating (weakening). This neutral aspect creates growth, subtle, adjustment...",
+					summary: "Your Mars forms a weak semi-sextile (30) with Saturn, currently separating (weakening). This neutral aspect highlights themes of growth, subtle, and adjustment.",
 					keywords: [
 						"growth",
 						"subtle",
@@ -2490,7 +2490,7 @@ const samples = {
 				strength: 5.663266678192258,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Venus forms a weak quincunx (150) with Jupiter, currently separating (weakening). This challenging aspect creates adjustment, tension, adaptation...",
+					summary: "Your Venus forms a weak quincunx (150) with Jupiter, currently separating (weakening). This challenging aspect highlights themes of adjustment, tension, and adaptation.",
 					keywords: [
 						"adjustment",
 						"tension",
@@ -2509,7 +2509,7 @@ const samples = {
 				strength: 2.532625407798861,
 				interpretation: "challenging",
 				aspectInterpretation: {
-					summary: "Your Mercury forms a weak opposition (180) with Jupiter, currently applying (strengthening). This challenging aspect creates accept, accepting, balance...",
+					summary: "Your Mercury forms a weak opposition (180) with Jupiter, currently applying (strengthening). This challenging aspect highlights themes of accept, accepting, and balance.",
 					keywords: [
 						"accept",
 						"accepting",
@@ -2602,37 +2602,27 @@ const samples = {
 	},
 	horoscope: {
 		sign: "Aries",
-		date: "2026-10-10",
-		overview: "The New Moon falls in Libra today, casting the need underneath the argument across your seventh house, the one for partnerships and relationships, where two names sit on one lease, one invoice or one promise. Where agreements are made face to face and break the same way, the first reaction is either the tool or the obstacle.",
-		love: "The New Moon falls in Libra today, sitting in your seventh house. The need underneath the argument counts for less than it thinks here, because another person is party to the outcome and has to be counted. Then Venus runs into a square with Mars today, tipping the pull toward what is pleasant toward your fifth house, where applause is wanted more than it is admitted. Your seventh house wants one thing above the rest, and it wants the terms said out loud before anyone agrees to them.",
-		career: "Lying in Leo, Mars reaches your fifth house, where the heart makes its bids in public and hopes nobody is keeping score, with effort, appetite, conflict, and whatever has to be pushed. Resting in Libra for now, the Sun reaches your seventh house, where a contract is only as good as the mood in the room when it was signed, and the want under it is one thing carried through to the end in the open. Audit the promise made earlier against what has actually been delivered.",
-		health: "Your seventh house carries this one, because the New Moon falls in Libra today. Complicating it is the fact that the person across the table hears the offer differently than it was meant, while the first reaction does not bend easily. The other side of it described as they would describe it fills the room here, and not much beyond it.",
-		finance: "Look to the eighth house you keep transformation and shared resources in, where the private accounting behind a shared arrangement comes due. Venus runs into a square with Mars today. The sense of what is worth having does not survive contact with the part that refuses to wait unchanged. Your eighth house asks for the plain total of what is owed and owned.",
-		advice: "The New Moon falls in Libra today, at the level of your seventh house, the one for partnerships and relationships. Your seventh house wants one thing above the rest, and it wants a commitment narrowed to what both people can actually keep.",
-		column: "The New Moon falls in Libra today, which puts your seventh house in play. The first reaction reads differently in a place where the terms of a shared thing get set, with somebody else in the room. Next to that, Venus runs into a square with Mars today, laying the sense of what is worth having over your eighth house, where joint holdings get settled, and what has run out gets ended properly. On one side is the pull toward what is pleasant. On the other, the readiness to start. Work with the fact that the private accounting behind a shared arrangement comes due, and the preference nobody argues with stops fighting the room. The plain total of what is owed and owned fills the room here, and not much beyond it. Whatever else happens, do not let go of the terms said out loud before anyone agrees to them.",
+		date: "2026-10-19",
+		overview: "The Moon leaves Capricorn today. That reaches your tenth house, where a promotion is decided by people who have never watched the work being done. Work with the fact that the work is public and a name is attached to it, and the need underneath the argument stops fighting the room.",
+		love: "The settled condition is Mars in Leo, reaching the fifth house you keep romance, creativity, and joy in, and what it wants is a clear target and permission to go at it. The Sun hosts Libra in your seventh house, where what one partner leaves unsaid, the other one fills in, usually wrongly, and its stock in trade is vitality, authorship, and the right to be counted. Choose one shared plan and make it small enough to finish.",
+		career: "At work in Aries, Saturn reaches your first house, where the entrance is the argument, and everything after it is footnotes, wanting fewer promises and better ones. Mars leans on Leo, in your fifth house, the place where applause is wanted more than it is admitted, and what it brings there is initiative, heat, and the cost of moving first. Sharpen the skill that gets sharper only in the gaps.",
+		health: "Quietly and without a date, Saturn holds Aries and your first house, the one for identity and self-expression, carries it, where a habit of standing a certain way turns into a reputation without anyone deciding it should. Rest on purpose, since recovery is not an event and stretches like this are most of how it happens.",
+		finance: "Held in Scorpio, Venus reaches the eighth house you keep transformation and shared resources in, where the private accounting behind a shared arrangement comes due, on affection, taste, money spent on pleasure, and the terms people agree to. Mercury takes Scorpio in your eighth house, where what two parties hold together gets divided or deepened, and wants to name a thing accurately and be understood. Price the thing properly rather than by what it feels like.",
+		advice: "The Moon enters Aquarius today, at the level of the eleventh house you keep friendships and future goals in. Nothing else in your eleventh house works without one introduction made instead of a list kept privately.",
+		column: "What to watch is in your tenth house, the one for career and public image, where the Moon leaves Capricorn today. The need underneath the argument lands in a place where the title on the card and the work under it are graded separately. Always in the background, Pluto in Aquarius works your eleventh house of friendships and future goals and wants the hold examined rather than defended. Uranus keeps to Gemini, and your third house is where that keeps showing up. What it covers there is freedom, shock, and the part that outgrew its container. Out of Scorpio, Mercury belongs to the eighth house you keep transformation and shared resources in, where what was shared has to be untangled before it can be ended, and its own ask is to name a thing accurately and be understood. Nothing in your tenth house needs more than the claim made only as large as the work behind it.",
 		events: [
 			{
-				type: "lunar-phase",
-				at: "2026-10-10T15:50:05Z",
+				type: "sign-ingress",
+				at: "2026-10-19T01:39:55Z",
 				bodies: [
 					"Moon",
 				],
-				sign: "libra",
-				house: 7,
-			},
-			{
-				type: "aspect",
-				at: "2026-10-10T21:31:07Z",
-				bodies: [
-					"Venus",
-					"Mars",
-				],
-				aspect: "square",
-				house: 8,
-				through: "2026-10-18T01:28:14Z",
+				sign: "aquarius",
+				house: 11,
+				through: "2026-10-21T12:35:09Z",
 			},
 		],
-		luckyNumber: 9,
+		luckyNumber: 2,
 		luckyColor: "Orange",
 		compatibleSigns: [
 			"Leo",
@@ -2641,7 +2631,7 @@ const samples = {
 		],
 		activeTransits: [
 			"Sun in Libra (your seventh house of partnerships and relationships)",
-			"Moon in Libra (your seventh house of partnerships and relationships)",
+			"Moon in Aquarius (your eleventh house of friendships and future goals)",
 			"Mercury in Scorpio (your eighth house of transformation and shared resources)",
 			"Venus in Scorpio (your eighth house of transformation and shared resources)",
 			"Venus retrograde",
@@ -2650,9 +2640,9 @@ const samples = {
 			"Saturn in Aries (your first house of identity and self-expression)",
 			"Saturn retrograde",
 		],
-		moonSign: "Libra",
-		moonPhase: "New Moon",
-		energyRating: 4,
+		moonSign: "Aquarius",
+		moonPhase: "Waxing Gibbous Moon",
+		energyRating: 5,
 	},
 	bazi: {
 		birthData: {
@@ -3542,21 +3532,21 @@ const samples = {
 			element: "Fire",
 			polarity: "yang",
 		},
-		date: "2026-10-10",
+		date: "2026-10-19",
 		dayPillar: {
-			id: "ding-si",
-			number: 54,
-			stem: "ding",
-			branch: "si",
-			animal: "snake",
+			id: "bing-yin",
+			number: 3,
+			stem: "bing",
+			branch: "yin",
+			animal: "tiger",
 			element: "Fire",
 		},
-		relationship: "neutral",
-		energyRating: 6,
-		overview: "The day branch has no formal relation to the Horse, neither alliance nor opposition, which makes this an ordinary day and a useful one. The day phase is Fire, which raises the temperature, makes the sign expressive, and puts it in front of people. Nothing external decides anything for you, so what you get is what you put in toward motion, and the next thing after that.",
-		love: "Relationships move at whatever pace you set. There is no push from the day either way, which makes it a good one for the ordinary maintenance that never feels urgent. The Horse warm on contact and honest past the point of comfort.",
-		career: "A working day with no thumb on the scale. Use it for the backlog and the unglamorous middle of a project, which is where the Horse tends to lose ground to leaving the finish to someone else once the fun ends.",
-		advice: "Spend the day on something cumulative. Nothing arrives on its own, which makes it the right day for motion, and the next thing after that rather than for waiting.",
+		relationship: "trine",
+		energyRating: 9,
+		overview: "The day sits in the Fire trine with the Horse, one of the three-sign alliances the cycle divides into. Effort meets less resistance than usual and the people around you are easier to read. The day phase is Fire, which raises the temperature, makes the sign expressive, and puts it in front of people. This is a day for motion, and the next thing after that.",
+		love: "An easy day for closeness. The trine removes the translation step, so what you meant is roughly what lands. The Horse warm on contact and honest past the point of comfort, and today that is met rather than merely tolerated.",
+		career: "Good for anything collaborative. Trine partners cooperate without negotiating first, so meetings run short and delegation actually holds. Push the piece of work that needs other people to say yes.",
+		advice: "Ask for the thing. Trine days are when a request costs the other person least, and the Horse is more likely to under-ask than to over-ask.",
 		year: {
 			pillar: "bing-wu",
 			animal: "horse",
@@ -7303,67 +7293,76 @@ const samples = {
 	},
 	"horoscope-weekly": {
 		sign: "Aries",
-		week: "2026-10-05",
-		overview: "The New Moon falls in Libra on Saturday, bringing the instinct into your seventh house, where a contract is only as good as the mood in the room when it was signed. The first reaction has to operate where agreements are made face to face and break the same way.",
-		love: "Mars reaches a sextile with Uranus on Wednesday. This is your fifth house, where a thing is done because it is wanted, not because it pays. Neither the drive nor the break in the pattern is the whole of what is happening. Since a flirtation, a hobby or a child takes whatever time is left without apology, the part that refuses to wait gets tested rather than admired. Alongside that, the New Moon falls in Libra on Saturday, parking the need underneath the argument in your seventh house, where the person across the table hears the offer differently than it was meant. Everything here comes down to the offer made out loud rather than hinted.",
-		career: "Mars lodges in Leo, and your fifth house is where a flirtation, a hobby or a child takes whatever time is left without apology, bringing effort, appetite, conflict, and whatever has to be pushed. Resting in Libra for now, the Sun reaches your seventh house, where agreements are made face to face and break the same way, and the want under it is one thing carried through to the end in the open. Push the unfinished thing forward while it is still visible.",
-		health: "Your seventh house carries this one, because the New Moon falls in Libra on Saturday. Set the instinct beside the fact that a contract is only as good as the mood in the room when it was signed, and the size of it changes. Saturn grips Aries in your first house, the one for identity and self-expression, where the entrance is the argument, and everything after it is footnotes, and what it holds on for is the work to stand up without being propped. The useful move is toward a commitment narrowed to what both people can actually keep.",
-		finance: "Mercury comes together with Venus on Wednesday. The address is the eighth house you keep transformation and shared resources in, where the estate gets divided long before anyone dies, in the small favours nobody writes down. The running commentary does not survive contact with the preference nobody argues with unchanged. Separating the working mind from the sense of what is worth having is the work, and it is work nobody does while the contact holds. Not far behind, Venus squares Mars on Saturday, and it registers in your eighth house. Start with the plain total of what is owed and owned.",
-		advice: "The New Moon falls in Libra on Saturday, and it registers in your seventh house, the one for partnerships and relationships. Everything here comes down to a commitment narrowed to what both people can actually keep.",
-		column: "Mercury comes together with Venus on Wednesday. That is the fact your eighth house is working with. Part of this is the question being asked and part of it is the pull toward what is pleasant. Whichever of the running commentary and the preference nobody argues with is weaker stops being noticed, because the blend runs that close. While that is still running, Mars sextiles Uranus on Wednesday, holding the part that refuses to wait over your fifth house, where a game gets played for the playing, and the score is an afterthought. The drive does its best work where applause is wanted more than it is admitted. The risk taken in the open instead of rehearsed in private fills the room here, and not much beyond it. Close behind that, the New Moon falls in Libra on Saturday, hanging the first reaction on your seventh house, the one for partnerships and relationships, where another person is party to the outcome and has to be counted. Work with the fact that the argument that never gets finished is the one the marriage rests upon, and the need underneath the argument stops fighting the room. Start with the other side of it described as they would describe it.\n\nAfter that, Venus squares Mars on Saturday, sitting in your eighth house. Set the sense of what is worth having beside the fact that what two parties hold together gets divided or deepened, and the size of it changes. Whatever else happens, do not let go of the uncomfortable figure named before anyone acts on it.",
+		week: "2026-10-19",
+		overview: "Venus enters Libra on Sunday, holding the preference nobody argues with over your seventh house, where another person is party to the outcome and has to be counted. Where the argument that never gets finished is the one the marriage rests upon, the sense of what is worth having is either the tool or the obstacle.",
+		love: "Mercury squares Jupiter on Friday, landing in your fifth house, the one for romance, creativity, and joy, where the heart makes its bids in public and hopes nobody is keeping score, and the working mind is what carries it. Since the sketchbook, the guitar and the dating app compete for the same hour, the running commentary gets tested rather than admired. After that, Venus enters Libra on Sunday, bringing the preference nobody argues with into your seventh house, where a contract is only as good as the mood in the room when it was signed. Everything here comes down to an hour spent on something with no useful outcome.",
+		career: "Mercury turns retrograde on Saturday, with your eighth house, the one for transformation and shared resources, taking it. The question being asked lands in a place where the joint account, the inheritance papers and the tax return get read line by line. Uranus lodges in Gemini, and your third house is where a sibling, a neighbor or a driver has the news before the papers print it, bringing sudden change, independence, and whatever has quietly stopped fitting. Your eighth house wants one thing above the rest, and it wants one ending finished properly instead of left half open.",
+		health: "Saturn beds down in Aries, which is the first house you keep identity and self-expression in, where the name on the door and the face behind it get judged in the same second, on time, obligation, and the part of a thing that has to be earned. Neptune waits in Aries, in your first house, where the body and the manner arrive together and get taken as one thing, and it wants the hard outline to soften. Stretch the baseline gently rather than testing it.",
+		finance: "Mercury turns retrograde on Saturday, in your eighth house, the one for transformation and shared resources, where joint holdings get settled, and what has run out gets ended properly. Since the private accounting behind a shared arrangement comes due, the question being asked gets tested rather than admired. Alongside that, Venus leaves Scorpio on Sunday, and it registers in your eighth house. Complicating it is the fact that a debt outlives the reason anyone took it, while the sense of what is worth having does not bend easily. The uncomfortable figure named before anyone acts on it fills the room here, and not much beyond it.",
+		advice: "Venus enters Libra on Sunday, played out in your seventh house of partnerships and relationships. The other side of it described as they would describe it fills the room here, and not much beyond it.",
+		column: "Your eighth house carries the main event here, and Venus runs into a square with Pluto on Tuesday. Put the preference nobody argues with beside the pressure underneath and neither reads the same afterwards. The sense of what is worth having counts for less than it thinks here, because a debt outlives the reason anyone took it. Partway through that, Mercury squares Jupiter on Friday, and it registers in your eighth house, the one for transformation and shared resources. The running commentary and the case for going further are not asking for the same thing. Complacency does not survive a contact like this, which is the one thing to be said for the working mind meeting the appetite for more. Further along, the Sun leaves Libra on Friday, sending the center of the matter through your seventh house of partnerships and relationships, where two names sit on one lease, one invoice or one promise. Set the will beside the fact that the person across the table hears the offer differently than it was meant, and the size of it changes. The useful move is toward a commitment narrowed to what both people can actually keep.\n\nThere is more, and it is that Mercury turns retrograde on Saturday, arriving in your eighth house. Complicating it is the fact that somebody else holds the other half of the money, the secret or the bed, while the question being asked does not bend easily. Close behind that, Venus enters Libra on Sunday, so the effect shows in your seventh house. Since another person is party to the outcome and has to be counted, the pull toward what is pleasant gets tested rather than admired. If only one thing gets done, make it one ending finished properly instead of left half open.",
 		events: [
 			{
 				type: "aspect",
-				at: "2026-10-07T00:10:23Z",
-				bodies: [
-					"Mercury",
-					"Venus",
-				],
-				aspect: "conjunction",
-				sign: "scorpio",
-				house: 8,
-				through: "2026-10-12T23:31:49Z",
-			},
-			{
-				type: "aspect",
-				at: "2026-10-07T10:41:31Z",
-				bodies: [
-					"Mars",
-					"Uranus",
-				],
-				aspect: "sextile",
-				house: 5,
-				through: "2026-10-17T17:56:19Z",
-			},
-			{
-				type: "lunar-phase",
-				at: "2026-10-10T15:50:05Z",
-				bodies: [
-					"Moon",
-				],
-				sign: "libra",
-				house: 7,
-			},
-			{
-				type: "aspect",
-				at: "2026-10-10T21:31:07Z",
+				at: "2026-10-20T06:56:07Z",
 				bodies: [
 					"Venus",
-					"Mars",
+					"Pluto",
 				],
 				aspect: "square",
 				house: 8,
-				through: "2026-10-18T01:28:14Z",
+				through: "2026-11-01T05:41:06Z",
+			},
+			{
+				type: "aspect",
+				at: "2026-10-23T04:40:29Z",
+				bodies: [
+					"Mercury",
+					"Jupiter",
+				],
+				aspect: "square",
+				house: 8,
+				through: "2026-10-31T10:43:18Z",
+			},
+			{
+				type: "solar-season",
+				at: "2026-10-23T09:37:56Z",
+				bodies: [
+					"Sun",
+				],
+				sign: "scorpio",
+				house: 8,
+				through: "2026-11-22T07:23:21Z",
+			},
+			{
+				type: "retrograde-station",
+				at: "2026-10-24T07:12:42Z",
+				bodies: [
+					"Mercury",
+				],
+				sign: "scorpio",
+				house: 8,
+				through: "2026-11-13T15:53:52Z",
+			},
+			{
+				type: "sign-ingress",
+				at: "2026-10-25T09:09:48Z",
+				bodies: [
+					"Venus",
+				],
+				sign: "libra",
+				house: 7,
+				through: "2026-12-04T08:12:40Z",
 			},
 		],
 		luckyDays: [
-			"Tuesday",
 			"Monday",
 			"Saturday",
+			"Friday",
 		],
 		luckyNumbers: [
-			9,
 			2,
+			7,
 			8,
 		],
 		compatibleSigns: [
@@ -10960,26 +10959,26 @@ const samples = {
 		],
 	},
 	moon: {
-		date: "2026-10-10",
-		phase: "New Moon",
-		illumination: 0.13,
-		age: 29.36,
-		sign: "Libra",
-		degree: 15.28,
-		distance: 387033,
+		date: "2026-10-19",
+		phase: "Waxing Gibbous Moon",
+		illumination: 57.98,
+		age: 8.84,
+		sign: "Aquarius",
+		degree: 5.16,
+		distance: 400557,
 		meaning: {
-			name: "New Moon",
-			symbol: "🌑",
-			description: "When the moon is invisible, it signals that all has been cleared and a new beginning is ready. This is the ideal time to gather ideas, set intentions, and plan ahead for the coming month.",
+			name: "Waxing Gibbous Moon",
+			symbol: "🌔",
+			description: "The waxing gibbous moon is there when we are close to our goals, but we need to assess their viability. Perhaps your original desire is not possible at this time, but a different version of it is.",
 			keywords: [
-				"beginning",
-				"intention",
-				"clarity",
-				"fresh start",
-				"planning",
+				"assess",
+				"refine",
+				"patience",
+				"adjust",
+				"anticipation",
 			],
-			energy: "new",
-			illumination: "0% (Dark Moon)",
+			energy: "waxing",
+			illumination: "50-100% (Nearly Full)",
 		},
 	},
 	kundli: {
@@ -14324,67 +14323,73 @@ const samples = {
 			},
 		},
 		sookshmaDasha: {
-			planet: "Mars",
-			startDate: "2026-10-03T01:32:00",
-			endDate: "2026-10-12T02:50:00",
-			durationYears: 0.02478978122544173,
+			planet: "Rahu",
+			startDate: "2026-10-12T02:50:00",
+			endDate: "2026-11-04T09:38:00",
+			durationYears: 0.06374515172256445,
 			mahadashaLord: "Rahu",
 			antardashaLord: "Venus",
 			pratyantardashaLord: "Mercury",
-			interpretation: "This period can bring energy, ambition, and courage. It may also signify the potential for conflicts, competition, and possible health-related issues.",
+			interpretation: "This period can bring both positive and negative experiences. It may signify sudden changes, ambitions, and material desires. Spiritual growth is also possible during this period.",
 			significators: {
-				house: 6,
-				starLord: "Mercury",
-				subLord: "Jupiter",
+				house: 9,
+				starLord: "Mars",
+				subLord: "Mars",
 				signifies: {
 					L1: [
-						7,
+						6,
+						8,
 					],
 					L2: [
-						6,
+						9,
+						8,
 					],
 					L3: [
-						1,
-						2,
-						5,
+						12,
+						4,
+						6,
 					],
 					L4: [
-						12,
+						4,
+						6,
+						9,
+						10,
 					],
 				},
 				signifiedHouses: [
-					7,
 					6,
-					1,
-					2,
-					5,
+					8,
+					9,
+					4,
 					12,
+					10,
 				],
 				strongHouses: [
-					7,
 					6,
+					8,
+					9,
 				],
 				strength: {
-					score: 58.3,
-					grade: "C",
-					label: "moderate",
+					score: 66.7,
+					grade: "B",
+					label: "strong",
 				},
 			},
 		},
 		pranaDasha: {
-			planet: "Venus",
-			startDate: "2026-10-09T09:39:00",
-			endDate: "2026-10-10T21:52:00",
-			durationYears: 0.004131630193677593,
+			planet: "Saturn",
+			startDate: "2026-10-18T17:10:00",
+			endDate: "2026-10-22T09:38:00",
+			durationYears: 0.010092982356072705,
 			mahadashaLord: "Rahu",
 			antardashaLord: "Venus",
 			pratyantardashaLord: "Mercury",
-			sookshmaLord: "Mars",
-			interpretation: "This period is associated with love, relationships, and creativity. It can bring harmony to personal life, artistic pursuits, and social recognition.",
+			sookshmaLord: "Rahu",
+			interpretation: "It is a period of hard work, discipline, and responsibility. Challenges and obstacles may arise, but it offers opportunities for growth through perseverance and self-discipline.",
 			significators: {
 				house: 8,
-				starLord: "Sun",
-				subLord: "Mercury",
+				starLord: "Venus",
+				subLord: "Saturn",
 				signifies: {
 					L1: [
 						8,
@@ -14393,22 +14398,24 @@ const samples = {
 						8,
 					],
 					L3: [
-						4,
+						6,
 					],
 					L4: [
-						6,
+						9,
+						10,
 					],
 				},
 				signifiedHouses: [
 					8,
-					4,
 					6,
+					9,
+					10,
 				],
 				strongHouses: [
 					8,
 				],
 				strength: {
-					score: 58.3,
+					score: 50,
 					grade: "C",
 					label: "moderate",
 				},
@@ -14417,6 +14424,7 @@ const samples = {
 		commonHouses: {
 			allLevels: [
 				6,
+				8,
 			],
 			dashaBhuktiAntara: [
 				6,
@@ -14426,32 +14434,32 @@ const samples = {
 		remainingInMahadasha: {
 			years: 3,
 			months: 9,
-			days: 25,
-			totalDays: 1395,
+			days: 16,
+			totalDays: 1386,
 		},
 		remainingInAntardasha: {
 			years: 0,
 			months: 4,
-			days: 13,
-			totalDays: 135,
+			days: 4,
+			totalDays: 126,
 		},
 		remainingInPratyantardasha: {
 			years: 0,
 			months: 2,
-			days: 10,
-			totalDays: 71,
+			days: 1,
+			totalDays: 62,
 		},
 		remainingInSookshma: {
 			years: 0,
 			months: 0,
-			days: 2,
-			totalDays: 2,
+			days: 17,
+			totalDays: 17,
 		},
 		remainingInPrana: {
 			years: 0,
 			months: 0,
-			days: 1,
-			totalDays: 1,
+			days: 4,
+			totalDays: 4,
 		},
 	},
 	"dasha-sub": {
@@ -18766,32 +18774,32 @@ const samples = {
 		sameAs: 24,
 	},
 	tarot: {
-		date: "2026-10-10",
-		seed: "roxy-ui-demo-2026-10-10",
+		date: "2026-10-19",
+		seed: "roxy-ui-demo-2026-10-19",
 		card: {
-			id: "nine-of-swords",
-			name: "Nine of Swords",
+			id: "five-of-cups",
+			name: "Five of Cups",
 			arcana: "minor",
-			suit: "swords",
-			number: 9,
+			suit: "cups",
+			number: 5,
 			position: 1,
-			reversed: true,
+			reversed: false,
 			keywords: [
-				"releasing worry",
-				"inner turmoil",
-				"buried fear",
-				"recovery",
-				"reaching out",
+				"loss",
+				"grief",
+				"regret",
+				"disappointment",
+				"mourning",
 			],
-			meaning: "Reversed, the Nine of Swords keeps the torment but shifts its character, and the surrounding cards reveal whether it is deepening or breaking. Waite linked the reversal to imprisonment, suspicion, and reasonable fear, the anxiety pressing further inward.\n\nIn its harder form, the reversal describes inner turmoil that contradicts the facts. A negative frame of mind drives a downward spiral, making everything feel far worse than it is, and the fear is often kept hidden, carried privately rather than confided. The card also exposes a habit of harsh self-talk, the figure tormented less by events than by an inner voice that will not relent. The work is to test which fears are warranted and which are not, to release the buried ones, and to ask plainly why the self is being treated so severely.\n\nIn its constructive form, the reversal marks recovery. The worst of the worry has been worked through, and the realisation lands that things were never as dire as the night insisted. Relief arrives, the grip of fear loosens, and calm begins to return after a frightening stretch.\n\nIn either direction the instruction holds: stop carrying it alone. Confiding in someone trusted offers a place to set the weight down and a perspective the airless small hours cannot supply.",
-			love: "Worry about love starting to ease as perspective and hope return, the worst-case scenarios failing to arrive. Relief and healing are under way. Where the harder reading runs, fear about the relationship has gone underground and needs voicing rather than hiding. Lean on trusted friends; this is not a burden to carry in silence.",
-			career: "Work anxiety lifting as circumstances improve or coping steadies, the professional nightmares fading. Stress becomes something to manage rather than something that consumes. The reversal can also point to buried dread that needs naming before it festers, and to an inner critic whose verdicts deserve questioning rather than belief.",
-			finances: "Money anxiety beginning to ease through practical action or a turn in circumstances, the paralysis of dread loosening. Clear thought returns, enough to take constructive steps. Where worry has been hidden, bringing it into the open removes much of its power and lets steadier judgement resume.",
-			health: "Anxiety, insomnia, and mental strain easing as the darkest stretch passes and relief comes within reach. Continued support consolidates the gain. The reversal can also surface harsh self-criticism as the real source of suffering, in which case softening that inner voice matters as much as any other remedy.",
-			spirituality: "Emerging from a passage of spiritual torment as the dawn breaks after a long dark night, the anguish having deepened compassion and resilience. Where the harder current still runs, buried fear and self-judgement remain to be released. Set the hidden weight down, and the calm that follows is earned rather than imagined.",
-			imageUrl: "./img/tarot/minor/nine-of-swords.jpg",
+			meaning: "The Five of Cups is the suit of feeling at its lowest ebb, the card of grief and loss. In the Rider-Waite-Smith image, a cloaked figure stands with head bowed, gazing down at three cups that have spilled and run dry at his feet. Behind him, unseen because he will not turn, two cups still stand upright and full. A river crosses the middle distance, and beyond it a bridge leads to a small keep, a way home that he has not yet noticed. Waite read the card as loss, but with something remaining over: three taken, two left, an inheritance or expectation that fell short of its promise, marked by bitterness and frustration.\n\nIn a reading, the Five of Cups describes the aftermath of disappointment. Something has not turned out as hoped, and the feeling is sorrow, regret, and the weight of what went wrong. The figure is consumed by the three fallen cups, by the loss, the mistake, the chapter that ended badly, and his whole attention is fixed on what has been spilled rather than on what survives. Grief at this pitch narrows the field of vision to the wound alone.\n\nThe card honours that grief rather than rushing it. Loss is real and the sorrow it brings is legitimate; the spilled cups are not to be pretended away. But the composition is deliberate, and its instruction is held in the two cups still standing behind him. Not everything has been lost. Something of value remains, and it waits only for the gaze to lift from the fallen to the upright.\n\nWhen the Five of Cups appears, it asks for the feeling to be felt and then, gently, for the head to turn. The bridge home is there, the standing cups are there, and the path forward runs through acknowledging the loss without letting it become the whole of the view.",
+			love: "Grief or disappointment weighs on the heart, perhaps a breakup, a betrayal, or hopes that went unmet. The Five of Cups acknowledges that the pain is real and worth grieving. Yet two cups remain standing behind the figure: love still available, a bond still intact, a possibility not yet seen. Mourn what was lost, then let the gaze lift to what survives.",
+			career: "A professional setback or loss is the focus, a project that failed, a role that ended, or recognition that did not come. The Five of Cups asks you to acknowledge the disappointment honestly rather than deny it. Then turn from the fallen cups to the standing ones: the skills, contacts, and openings that remain. What is left is enough to rebuild from.",
+			finances: "A financial loss or shortfall has brought real disappointment, perhaps an investment gone wrong or resources unexpectedly drained. The Five of Cups does not minimise the setback. But it points past the spilled cups to what is still in hand. Take honest stock of remaining resources and let recovery begin from there rather than from the weight of the loss.",
+			health: "Grief and sorrow are pressing on the body, the emotional weight of loss surfacing as low energy, sadness, or depletion. The Five of Cups asks you to let the grief move rather than suppress it, while remembering that healing remains possible. Tend the sorrow with care, then turn gently toward the reserves of vitality that have not been spent.",
+			spirituality: "A spiritual grief or dark night of the soul is present, a sense of abandonment or doubt about the path. The Five of Cups honours the depth of this passage rather than hurrying past it. Painful as it is, such loss often carries the seed of deeper understanding. Let the sorrow be felt, and trust that something of value still stands behind it.",
+			imageUrl: "./img/tarot/minor/five-of-cups.jpg",
 		},
-		dailyMessage: "Your card for 2026-10-10: Nine of Swords (reversed). releasing worry, inner turmoil, buried fear, recovery, reaching out. Reversed, the Nine of Swords keeps the torment but shifts its character, and the surrounding cards reveal whether it is deepening or breaking. Waite linked the reversal to imprisonment, suspicion, and...",
+		dailyMessage: "Your card for 2026-10-19: Five of Cups. loss, grief, regret, disappointment, mourning. The Five of Cups is the suit of feeling at its lowest ebb, the card of grief and loss. In the Rider-Waite-Smith image, a cloaked figure stands with head bowed, gazing down at three cups that have...",
 	},
 	"tarot-reference": {
 		id: "fool",
@@ -18849,20 +18857,20 @@ const samples = {
 		answer: "Yes",
 		strength: "Qualified",
 		card: {
-			id: "eight-of-cups",
-			name: "Eight of Cups",
+			id: "ten-of-wands",
+			name: "Ten of Wands",
 			arcana: "minor",
 			reversed: false,
 			keywords: [
-				"walking away",
-				"disappointment",
-				"withdrawal",
-				"seeking meaning",
-				"departure",
+				"burden",
+				"responsibility",
+				"hard work",
+				"completion",
+				"overload",
 			],
-			imageUrl: "./img/tarot/minor/eight-of-cups.jpg",
+			imageUrl: "./img/tarot/minor/ten-of-wands.jpg",
 		},
-		interpretation: "Qualified Yes: Eight of Cups suggests forward momentum. In the Rider-Waite-Smith image, a cloaked figure turns away from eight cups stacked carefully in the foreground and walks toward distant mountains, le...",
+		interpretation: "Qualified Yes: Ten of Wands suggests forward momentum. In the Rider-Waite-Smith image, a man bends under the weight of ten wands gathered in his arms, carrying the whole bundle toward a town visible in the...",
 	},
 	spread: {
 		spread: "Three-Card",
@@ -18873,27 +18881,26 @@ const samples = {
 				name: "Past",
 				interpretation: "What has led to this situation and the foundational influences at play. Shows the events, decisions, and energies that have brought you to where you are now. Understanding the past provides context for the present.",
 				card: {
-					id: "three-of-swords",
-					name: "Three of Swords",
-					arcana: "minor",
-					suit: "swords",
-					number: 3,
+					id: "world",
+					name: "The World",
+					arcana: "major",
+					number: 21,
 					position: 1,
 					reversed: false,
 					keywords: [
-						"heartbreak",
-						"grief",
-						"sorrow",
-						"painful truth",
-						"separation",
+						"completion",
+						"fulfilment",
+						"integration",
+						"accomplishment",
+						"travel",
 					],
-					meaning: "The Three of Swords is the deck plainest image of heartbreak. In the Rider-Waite-Smith card, three swords pierce a single red heart against a grey sky heavy with cloud and rain. There is no figure, no ambiguity: the design states its meaning directly. Waite read it as removal, absence, delay, division, rupture, and dispersion, and the card is counted among the most sorrowful in the deck. The storm behind the heart is as much the point as the blades themselves, the weather of grief gathering over a real and present wound.\n\nIn a reading, the Three of Swords marks genuine emotional pain: a separation, a betrayal, a loss, a truth that cuts. The hurt is often sudden and unexpected, arriving from words or actions that pierce before they can be guarded against. The card does not soften this. It names the sorrow honestly and counsels that the pain be felt rather than buried, because the grief is part of how the wound clears. Tears are not weakness here but cleansing, the necessary release that lets the storm pass.\n\nYet the rain that obscures vision also waters what comes after. The Three of Swords holds the quiet promise that this season is temporary. Pain of this kind, fully felt, eventually brings clarity, and the lesson it carries becomes part of a stronger self once the worst has moved through.\n\nThe card also appears when another person words are being taken too deeply to heart. A cutting remark, a harsh judgement, a betrayal of trust lands hard, and the instruction is twofold: to recognise that such words are often a projection of the speaker own pain, and to ask honestly whether the hurt points to something worth examining. Feel the grief, learn what it teaches, and trust that the sky clears.",
-					love: "Heartbreak, betrayal, or a painful truth surfaces in a relationship. This is among the deck heaviest cards for love, marking separation, the discovery of dishonesty, or grief over a bond that has wounded. The Three of Swords does not minimise the hurt. Allow yourself to feel it fully, since the sorrow honestly met is the beginning of how the heart heals.",
-					career: "Professional disappointment cuts deep: a rejection, a betrayal by a colleague, or criticism that wounds more than expected. A job loss or a sharp falling-out causes real pain, and the Three of Swords asks that it be acknowledged rather than brushed aside. Process the hurt honestly, then refuse to let one painful chapter define the working future that follows it.",
-					finances: "A financial loss or a painful money lesson leaves a genuine sting. The Three of Swords marks the hurt of a poor decision, a betrayal of trust, or a setback that wounds. The pain is real, yet the wisdom earned has worth. Feel the disappointment without denial, and let the hard lesson sharpen the choices that come after rather than harden into bitterness.",
-					health: "Grief and emotional pain can register in the body, often as tension in the chest, disrupted sleep, or a weakened defence against illness. The Three of Swords reminds that heartache is not only metaphorical. Tend the emotional wound directly: name the sorrow, allow its release, and treat the care of the heart as part of, not separate from, the care of the body.",
-					spirituality: "A painful truth shatters an illusion and brings a dark passage of the soul. The Three of Swords marks the grief of losing a comforting belief or a trusted certainty. The breaking hurts, yet it clears space for a faith that is more honest and more durable. Let the sorrow do its work, and trust that what survives the storm stands on truer ground.",
-					imageUrl: "./img/tarot/minor/three-of-swords.jpg",
+					meaning: "The World is the final card of the Major Arcana, the close of the journey that began with The Fool. In the Rider-Waite-Smith image, a dancing figure moves within a great laurel wreath bound at top and bottom, a baton in each hand, draped only in a flowing scarf. At the four corners appear the man, the eagle, the bull, and the lion, the four fixed signs and four elements, the same living creatures that frame The Wheel of Fortune. The wreath is wholeness and the dance is joy. Waite read the card as the perfection and end of the cosmos, the rapture of the universe when it understands itself, and on the worldly side as assured success and attainment.\n\nIn a reading, The World marks completion and fulfilment. A long endeavour, a course of study, a relationship, or a chapter of life has come full circle, and the feeling is one of wholeness and earned closure. It can signal graduation, marriage, the birth of a child, or the realisation of a long-held aspiration. Everything has come together; you are in the right place, doing the right thing, having brought a vision to fruition.\n\nThe card invites reflection and gratitude rather than immediate haste toward the next goal. The triumphs and trials of the road have shaped a wiser, more complete person, and honouring that journey sets the ground for what follows. Where completion is near but not yet reached, the card affirms how close it is and asks for the final understanding or last steps that bring the work to its close, clearing the space for new beginnings to emerge.\n\nThe encircling wreath and the four creatures speak of integration: the disparate parts of a life, and the opposing forces within a person, brought into a harmonious whole. The figure that dances is complete and self-possessed. More literally, The World can indicate travel and a widening of horizons, an extended journey or time abroad that deepens understanding of other people and cultures. Read upright, it is the image of arrival: the circle closed, the work fulfilled, and the self made whole.",
+					love: "Completion, fulfilment, and wholeness are celebrated in love. A relationship milestone is reached, or a long passage of personal growth brings deep romantic satisfaction. The card describes feeling complete within yourself and within the partnership, the two in genuine harmony. Honour how far the bond has come, and let this sense of arrival ground whatever comes next.",
+					career: "A major achievement, the completion of a significant project, or reaching a long-sought professional summit is at hand. Recognition and well-earned celebration follow, and a full cycle of growth has closed. The card favours reflection and gratitude before the next undertaking. Acknowledge how far you have come, and let this completion set the ground for what follows.",
+					finances: "Financial goals are achieved and a sense of abundance and completion settles in. Long-term efforts pay off and stability is realised; something solid has been built. The card favours celebrating this prosperity and reflecting on the journey that produced it before reaching for the next aim. Honour the accomplishment, and let it become the foundation for a new cycle.",
+					health: "A health journey reaches a positive conclusion. Recovery is complete, wellness goals are met, and there is a sense of being whole and integrated in body, mind, and spirit. The card favours celebrating how far you have come and consolidating the gains. Honour the road travelled, and let this wholeness become the steady base for continued wellbeing.",
+					spirituality: "A major cycle of soul growth is complete, the lessons learned and the work done, bringing a real sense of wholeness and integration. The disparate parts have been brought into harmony. The card marks an arrival from which a new spiritual cycle will begin, on higher ground than before. Pause in gratitude, honour the journey, and let the next chapter open from here.",
+					imageUrl: "./img/tarot/major/world.jpg",
 				},
 			},
 			{
@@ -18901,26 +18908,26 @@ const samples = {
 				name: "Present",
 				interpretation: "The current energy, circumstances, and challenges you are experiencing right now. This card shows what is happening in this moment and what you need to be aware of. It represents your current state of being.",
 				card: {
-					id: "lovers",
-					name: "The Lovers",
-					arcana: "major",
-					number: 6,
+					id: "nine-of-wands",
+					name: "Nine of Wands",
+					arcana: "minor",
+					suit: "wands",
+					number: 9,
 					position: 2,
-					reversed: false,
+					reversed: true,
 					keywords: [
-						"love",
-						"union",
-						"harmony",
-						"choice",
-						"values alignment",
+						"exhaustion",
+						"defensiveness",
+						"paranoia",
+						"on the verge of giving up",
 					],
-					meaning: "The Lovers is the card of conscious union and meaningful choice. In the Rider-Waite-Smith image, a man and a woman stand unclothed beneath a great winged angel who blesses them from a radiant sun. Behind the woman grows the Tree of the Knowledge of Good and Evil, the serpent coiled around it; behind the man stands the Tree of Life, bearing flames. The figures recall Adam and Eve before the fall, exposed to one another in innocence and trust. The angel is Raphael, associated with the element of air and with Gemini, the sign that governs this card, and air rules the mind and communication that healthy relationships depend on. Waite called this in all simplicity the card of human love.\n\nIn a reading, The Lovers most often signals a deep and honest bond, a connection built on openness, mutual respect, and genuine care. The nakedness of the figures points to the vulnerability such intimacy requires: the willingness to be seen fully and to speak truly. While the card frequently concerns romance, it applies equally to a profound friendship or family tie where trust flows freely. Its first counsel is that candid, open communication is what builds and sustains harmony.\n\nOn a more personal level, the card concerns values. Having passed through the teaching of The Hierophant, the soul now sets out to decide for itself what it believes and what it holds essential, to define its own philosophy and live by it authentically.\n\nAt its heart, The Lovers is about choice: who to be, how and on what terms to connect with others, and what to stand for. Sound choices rest on clarity about ones own values and the resolve to honour them, even when the decision is hard. The card often marks a genuine dilemma, a moral crossroads where consequences must be weighed and the higher path taken rather than the easier one. The deeper invitation is to bring opposing forces into harmony, uniting what seems divided into a whole from which love can flow.",
-					love: "A deep, honest connection and real harmony are present, often a bond of strong mutual feeling and aligned values. The card can mark a significant relationship, a deepening commitment, or a meaningful choice in matters of the heart. Its message is that openness and trust build the union: be seen fully, communicate truly, and let the relationship rest on respect.",
-					career: "A meaningful decision asks you to align your work with your values rather than convenience alone. Partnerships and collaborations grounded in mutual respect are favoured and tend to flourish. The Lovers counsels choosing the path that feels authentic and true to what you stand for, even when it is not the easiest option on the table.",
-					finances: "Financial choices are best guided by values and not by profit alone. Joint ventures and partnerships fare well when both parties genuinely share aims and principles. The card invites you to direct resources toward what reflects your real priorities, and to weigh a significant money decision against what matters most rather than what merely looks advantageous.",
-					health: "Harmony between mind and body, and choices made in keeping with your values, support wellbeing. The card draws attention to how emotional life shapes physical health, and to the part that close relationships and supportive connection play in overall wellness. Choose the habits that genuinely serve you, and tend the bonds that sustain you.",
-					spirituality: "A strengthening union between the higher self and the everyday self is indicated, a movement toward inner wholeness. Shared practice and spiritual partnership can deepen growth. The Lovers favours soul-level alignment and conscious, values-based choices, the bringing together of divided parts into a harmony from which genuine love and meaning arise.",
-					imageUrl: "./img/tarot/major/lovers.jpg",
+					meaning: "Reversed, the Nine of Wands describes resilience worn past its useful limit. The relentless setbacks of the upright card have become too much, and the figure who once stood guard is ready to lay the staff down and walk away. Waite tied the reversal to obstacles, adversity, and calamity, the contest tilting against the one who has fought it so long.\n\nThe first reading is exhaustion at the threshold of surrender. The goal may be close, yet the energy to reach it feels spent. Here the card points inward, to the reserve of resilience that can carry the final stretch, while being honest that the well may be running dry. When responsibilities have piled up and support is thin, the wise move is often to ask for help rather than grind on alone, and to refuse any new commitment for now.\n\nThe reversal also warns of defensiveness curdling into paranoia. The wall of wands becomes a fortress, the wariness of the upright card hardening into a conviction that everyone is an enemy. Often this fear arises from within rather than from any real danger, and the defended position becomes a prison that keeps out the help that could ease the strain. The remedy is to lower the guard enough to test which threats are real, focus on the work rather than on what others think, and recognise when stubborn defence has stopped serving the goal it was meant to protect.",
+					love: "Romantic exhaustion and walls built so high that closeness cannot pass through them. Old heartbreak breeds suspicion, and a partner is braced against attacks that may not be coming. The defensive perimeter has become a prison. The card asks for the wounds to be tended before love can enter, and for the guard to lower enough to tell genuine care from imagined threat. Healing precedes trust here.",
+					career: "Burnout and the urge to give up just short of the goal, or a losing battle continued out of pure stubbornness. The reversal asks for honest discernment between persistence and rigidity. Sometimes the right move is to push through the final stretch, and sometimes it is to step back, regroup, and ask for support. Refuse new commitments until the current load eases, and stop defending ground that no longer matters.",
+					finances: "Financial exhaustion and the temptation to abandon the fight for stability, or anxiety about money so heavy that it blocks sound decisions. The reversal counsels rest and a calmer regrouping rather than either surrender or frantic defence. Step back from the strain, ask for help where it is available, and build a sustainable plan rather than guarding the position with energy that has already run thin.",
+					health: "Complete depletion, with the body pushed well past its limits and demanding genuine rest. The reversal warns that stubbornly pushing through is no longer strength but harm. Stop forcing the effort and allow real recovery to begin. Seek proper support rather than toughing it out alone, and treat exhaustion as a signal to lay the burden down rather than a weakness to override. Healing requires surrender, not more fighting.",
+					spirituality: "Spiritual fatigue and battle weariness, the practice that once steadied you now feeling like a struggle. The reversal can also bring paranoia or a sense of being spiritually under siege, usually fear arising from within rather than any real threat. The guidance is to lay down the weapons, rest, and let renewal come through surrender rather than continued strain. Lower the guard, and let support and stillness restore what fighting has drained.",
+					imageUrl: "./img/tarot/minor/nine-of-wands.jpg",
 				},
 			},
 			{
@@ -18928,31 +18935,30 @@ const samples = {
 				name: "Future",
 				interpretation: "The likely outcome or energy that lies ahead if you continue on your current path. This is not set in stone, your free will and actions can shape this future. Shows potential developments and where things are heading.",
 				card: {
-					id: "eight-of-wands",
-					name: "Eight of Wands",
-					arcana: "minor",
-					suit: "wands",
-					number: 8,
+					id: "chariot",
+					name: "The Chariot",
+					arcana: "major",
+					number: 7,
 					position: 3,
 					reversed: false,
 					keywords: [
-						"swift movement",
-						"momentum",
-						"rapid news",
-						"air travel",
-						"aligned action",
+						"willpower",
+						"determination",
+						"victory",
+						"control",
+						"focus",
 					],
-					meaning: "The Eight of Wands is the one pip in the suit of Wands with no human figure in it. In the Rider-Waite-Smith image, eight leafed wands fly in parallel through clear open sky above a green country with a river and a distant house, angled downward as though nearing the end of a long flight. Waite called the card motion through the immovable, a flight of wands drawing to the term of their course, and read it as activity, swiftness like that of an express messenger, great haste, and speed toward an end that promises assured felicity. He also named the wands the arrows of love.\n\nIn a reading, the Eight of Wands marks the moment when obstruction clears and everything begins to move at once. The struggle and standoff of the Seven of Wands resolve, the path opens, and events accelerate. Messages arrive, plans advance, and progress that had stalled now travels fast. This is rapid, directed energy rather than chaos: the wands fly in formation, all pointing the same way, which is the card asking for resources and attention to be aligned on a single aim so the momentum is not wasted.\n\nThe instruction is to move with the current rather than against it. The window is open now and will not stay open indefinitely, so this favours acting while the energy is high, answering the message, taking the trip, committing to the project that has suddenly gained speed. Because the wands are about to land, the card also signals that something long anticipated is at hand and may already be on the threshold.\n\nThe Eight of Wands often points to literal travel, particularly air travel or a short, fast-paced trip taken for business or pleasure. More broadly it favours communication that crosses distance, quick decisions made on sound footing, and the satisfaction of seeing effort convert into visible motion. Strike while the conditions hold, keep the aim singular, and let the speed carry the work to its conclusion.",
-					love: "A relationship moves quickly, with messages, attraction, and developments arriving in rapid succession. The card favours romance that crosses distance, travel to meet a partner, or a sudden warming after a stalled stretch. Waite named these wands the arrows of love. Enjoy the pace, but let depth and understanding keep step with the speed so the connection has substance once the rush settles.",
-					career: "Work accelerates as obstacles clear and projects that were stuck begin to move. Communication speeds up, opportunities arrive in quick succession, and progress becomes visible. The card favours decisive action while conditions hold rather than waiting for a calmer moment that may not come. Keep effort aligned on the central goal so the momentum converts into finished results rather than scattered activity.",
-					finances: "Money and financial matters move at speed: payments clear, transactions complete, and returns arrive faster than expected. The card favours acting promptly and deliberately on a developing opportunity while the momentum is fresh. Direct the energy toward one clear aim rather than several at once, and let the swift movement work in favour of resources rather than rushing decisions that warrant more care.",
-					health: "Vitality returns quickly and the body responds well to treatment or a change in routine. The Eight of Wands favours a rapid improvement after a flat or stalled stretch, energy rising and recovery gathering pace. Channel the surge into active movement while it is strong, but pace the effort so the gains hold rather than burning the new vigour out in a single push.",
-					spirituality: "Spiritual insight arrives swiftly, with sudden clarity, synchronicities, and a sense of momentum on the path. The card favours acting on genuine intuition while the energy is alive rather than deliberating it into stillness. Stay receptive to what is moving toward you, and trust the impulses that arrive aligned and clear. Direct the quickened energy into practice so the insight grounds into something lasting.",
-					imageUrl: "./img/tarot/minor/eight-of-wands.jpg",
+					meaning: "The Chariot is the card of directed will, the force that carries a resolve into the world. In the Rider-Waite-Smith image an erect and princely figure stands in a chariot beneath a canopy of stars, a drawn sword in hand, crescent moons on the shoulders and a square upon the breast. Two sphinxes, one black and one white, are harnessed before him, pulling toward opposing aims, and the charioteer holds them to a single course not by reins but by the strength of his command. Waite called him conquest on all planes, triumph above all in the mind, the one who has led captivity captive.\n\nIn a reading, The Chariot marks a time to take focused action and hold a chosen course. A decision has been made, often building on the values weighed under The Lovers, and now the work is to drive it forward with discipline and conviction. The card favours assertion over passivity, momentum over hesitation. Where there is a goal worth reaching, it promises success to the one who keeps focus and does not waver.\n\nIt also speaks of mastering opposing forces. The two sphinxes are the competing pulls within and around the charioteer, ambition against fear, one desire against another, and victory depends on holding them to one direction rather than letting them tear the course apart. Control here is inner before it is outer, the harnessing of one own divided energies toward a single aim.\n\nThe deeper instruction of The Chariot is that triumph is earned by will, not granted by circumstance. There will be obstacles and competing distractions, and the card asks for boundaries held firm and effort sustained past the point of ease. To know what is wanted, to drive toward it with discipline, and to keep command of oneself amid the pull of opposing forces, is the lesson and the victory.",
+					love: "Determination and clear intent move matters of the heart forward. For those pursuing a connection, confidence and a sense of direction draw success. Within a partnership, two people aligning their effort toward a shared aim deepens the bond. The card favours acting with purpose rather than waiting for circumstance to decide.",
+					career: "Forward momentum, achievement, and hard-won victory define the professional path now. Obstacles yield to sustained effort and disciplined focus, and recognition or advancement may follow. The card rewards the one who sets a clear target and drives toward it without losing command of the course along the way.",
+					finances: "Steady progress through discipline and focus is indicated. Control over the financial picture grows as effort is directed toward a defined goal rather than scattered. The card favours the determined, deliberate push toward security, and rewards the focus that holds a plan together against distraction.",
+					health: "Strong will supports the pursuit of health goals, and the determination is present to push through limitation and see a regimen through. Disciplined, focused effort serves well now, and active, demanding pursuits suit the energy. The card favours channelling drive toward a clear physical aim while keeping command of its intensity.",
+					spirituality: "The work now is to master the balance between spiritual and material drives, holding opposing pulls to a single direction. Discipline and focused will advance the practice. The card invites directing that inner force toward mastery of the ego rather than letting competing desires scatter the path.",
+					imageUrl: "./img/tarot/major/chariot.jpg",
 				},
 			},
 		],
-		summary: "Your past (Three of Swords) has shaped your present situation (The Lovers). The future (Eight of Wands) suggests positive developments if you continue on this path.",
+		summary: "Your past (The World) has shaped your present situation (Nine of Wands reversed). The future (The Chariot) suggests positive developments if you continue on this path.",
 	},
 	"tarot-catalog": {
 		total: 78,
@@ -34477,10 +34483,10 @@ const samples = {
 				star: "Denebola",
 				point: "Moon",
 				orb: 0.0962,
-				interpretation: "The fixed star Denebola sits within 0.1 degrees of your Moon, a star of Saturn and Venus nature in classical astrology. A star this close to a chart point colors how that point expresses itself with its traditional meaning.",
+				interpretation: "The fixed star Denebola sits within 0.1° of your Moon, a star of Saturn and Venus nature in classical astrology. A star this close to a chart point colors how that point expresses itself with its traditional meaning.",
 			},
 		],
-		summary: "Fixed star positions for 1990-01-15 14:30:00 with 1 conjunctions within 1 degrees across the major named stars including Regulus, Spica, and Algol.",
+		summary: "Fixed star positions for January 15, 1990 at 2:30 PM, with 1 conjunction within 1° across the major named stars including Regulus, Spica, and Algol.",
 	},
 	progressions: {
 		birthDetails: {
@@ -35440,10 +35446,50 @@ const samples = {
 		],
 	},
 	"dream-search": {
-		total: 86,
+		total: 93,
 		limit: 12,
 		offset: 0,
 		symbols: [
+			{
+				id: "water",
+				name: "Water",
+				letter: "w",
+			},
+			{
+				id: "water-balloon",
+				name: "Water Balloon",
+				letter: "w",
+			},
+			{
+				id: "water-hose",
+				name: "Water Hose",
+				letter: "w",
+			},
+			{
+				id: "waterfall",
+				name: "Waterfall",
+				letter: "w",
+			},
+			{
+				id: "watermelon",
+				name: "Watermelon",
+				letter: "w",
+			},
+			{
+				id: "hot-water",
+				name: "Hot Water",
+				letter: "h",
+			},
+			{
+				id: "salt-water",
+				name: "Salt Water",
+				letter: "s",
+			},
+			{
+				id: "underwater",
+				name: "Underwater",
+				letter: "u",
+			},
 			{
 				id: "above",
 				name: "Above",
@@ -35455,54 +35501,14 @@ const samples = {
 				letter: "a",
 			},
 			{
+				id: "bathtub",
+				name: "Bathtub",
+				letter: "b",
+			},
+			{
 				id: "beach",
 				name: "Beach",
 				letter: "b",
-			},
-			{
-				id: "beautiful",
-				name: "Beautiful",
-				letter: "b",
-			},
-			{
-				id: "blue",
-				name: "Blue",
-				letter: "b",
-			},
-			{
-				id: "boat",
-				name: "Boat",
-				letter: "b",
-			},
-			{
-				id: "bridge",
-				name: "Bridge",
-				letter: "b",
-			},
-			{
-				id: "cage",
-				name: "Cage",
-				letter: "c",
-			},
-			{
-				id: "canoe",
-				name: "Canoe",
-				letter: "c",
-			},
-			{
-				id: "carrying",
-				name: "Carrying",
-				letter: "c",
-			},
-			{
-				id: "ceiling",
-				name: "Ceiling",
-				letter: "c",
-			},
-			{
-				id: "crabs",
-				name: "Crabs",
-				letter: "c",
 			},
 		],
 	},
@@ -35967,23 +35973,23 @@ const samples = {
 		],
 	},
 	bio: {
-		date: "2026-10-10",
-		seed: "roxy-ui-demo-2026-10-10",
-		energyRating: 7,
-		overallPhase: "high_energy",
+		date: "2026-10-19",
+		seed: "roxy-ui-demo-2026-10-19",
+		energyRating: 3,
+		overallPhase: "recovery",
 		spotlight: {
-			cycle: "physical",
-			value: 100,
-			phase: "peak",
-			message: "Your physical energy is at its maximum. Strength, endurance, and coordination are all heightened. This is the ideal time for athletic performance, physical challenges, and demanding tasks that require stamina.",
+			cycle: "emotional",
+			value: 62,
+			phase: "high",
+			message: "Your emotional cycle is elevated and positive. Mood is stable and upbeat, and you feel naturally connected to others. Creative ideas come more easily and social interactions feel rewarding.",
 		},
 		quickRead: {
-			physical: 100,
-			emotional: 43,
-			intellectual: -28,
+			physical: -82,
+			emotional: 62,
+			intellectual: -91,
 		},
-		dailyMessage: "Your biorhythm for 2026-10-10: Energy rating 7/10 (High Energy). Physical cycle is peak performance at 100%.",
-		advice: "Push your limits today. Your body is primed for peak output.",
+		dailyMessage: "Your biorhythm for 2026-10-19: Energy rating 3/10 (Low Energy). Emotional cycle is high energy at 62%.",
+		advice: "Lean into collaborative projects and relationship building.",
 	},
 	"bio-forecast": {
 		birthDate: "1990-01-15",
@@ -36467,53 +36473,53 @@ const samples = {
 		tripleCriticalDay: null,
 	},
 	hex: {
-		number: 39,
-		symbol: "䷦",
-		chinese: "蹇",
-		english: "Obstruction",
-		pinyin: "Jiǎn",
-		binary: "001010",
+		number: 48,
+		symbol: "䷯",
+		chinese: "井",
+		english: "The Well",
+		pinyin: "Jǐng",
+		binary: "011010",
 		upperTrigram: "Water",
-		lowerTrigram: "Mountain",
-		judgment: "The road ahead is blocked, and forcing it makes the block worse. Go where the ground is open, seek out the person who can actually help, and stay correct while you wait.",
-		image: "Water lies on top of the mountain, held where it cannot flow. When the way forward stops, turn the attention back on yourself and work on your own character, since that is the one direction still open.",
+		lowerTrigram: "Wind",
+		judgment: "The source itself does not change, however often the arrangements above it are rebuilt. Draw all the way down or do not draw at all, because the whole effort is wasted if the rope is short or the vessel breaks at the last moment.",
+		image: "Water is drawn up through wood from far below the surface, and the well feeds whoever comes to it. Support the people doing the work and get them helping one another, since a source only counts if it reaches the ones who need it.",
 		interpretation: {
-			general: "Obstacles block the way forward. Direct assault on the difficulty will not succeed. Instead, pause, seek help from those with wisdom, and turn inward to strengthen your own character. The greatest achievements often begin with overcoming the greatest hardships.",
-			love: "Obstacles block the path to connection. This is a time to pause, reflect, and seek help rather than push forward blindly. Examine yourself before blaming others.",
-			career: "Difficulties obstruct your progress. Do not waste energy pushing against immovable obstacles. Retreat, gather allies, and wait for conditions to change.",
-			decision: "Forward progress is blocked. Success comes from turning back, reflecting on the situation, and joining with those who can help. Do not persist alone.",
-			advice: "When faced with obstruction, the wise see it and turn back. Self-examination and gathering support precede eventual success. Obstacles are teachers.",
+			general: "Like a well that serves the entire community with life-giving water, there is a deep, unchanging source of nourishment available to you. Ensure that you and others can access it properly. Tend to the infrastructure of your inner and outer life.",
+			love: "The wellspring of love is constant, but you must draw upon it properly. Relationships are nourished from deep sources that require care. Do not neglect the depths.",
+			career: "Your value comes from deep resources that benefit all who draw from them. Maintain and develop your fundamental capabilities. Be a source that others can rely upon.",
+			decision: "The resources are there if you access them properly. Ensure your methods are sound and your tools adequate. The water is sweet: draw it up completely.",
+			advice: "The well gives without being exhausted, but the bucket must be sound and the rope long enough. Develop your capacity to bring benefit from the depths.",
 		},
 		changingLines: [
 			{
 				position: 1,
-				text: "To go on leads further into the obstruction, and to stay where you are earns respect.",
-				meaning: "The weakest line at the beginning has neither the strength nor the standing to break through anything. Waiting is not passivity here, it is an accurate reading of the odds. The credit goes to the person who recognized the wall before walking into it.",
+				text: "The well is silted with mud and no one drinks from it, and even the birds have stopped coming.",
+				meaning: "The weakest line at the very bottom is the well at its most neglected. Whatever the querent has to offer is currently unusable, and the cause is disuse rather than absence. Nothing is owed to you here, and the source has to be cleaned before anyone comes back.",
 			},
 			{
 				position: 2,
-				text: "The servant of the ruler meets obstruction upon obstruction, and none of it is for their own sake.",
-				meaning: "Weak and central, this line answers to the strong ruler above and takes on difficulty as duty rather than as ambition. The querent cannot step around this one, because the obligation is genuine. Go into it knowing the reward will not be personal and the effort is still correct.",
+				text: "The water leaks away through a hole to the small creatures in the grass, and the jug is cracked.",
+				meaning: "Strong and full of potential, this line is in the wrong place with no one drawing on it. The capacity is real, and it is being spent on trivia because nothing larger is asking for it. Repair what is broken in the delivery, since the water was never the problem.",
 			},
 			{
 				position: 3,
-				text: "Going forward only brings more obstruction, so the querent turns back toward the people they came from.",
-				meaning: "The strong line at the exposed threshold has the force to advance and nothing waiting to support it on the other side. Strength without backing is how people break themselves against a barrier. Turn around, because the ones below depend on you and are worth the return.",
+				text: "The well has been cleaned out and nobody drinks, which is a sorrow to the heart, and a clear-sighted ruler would see what is being wasted.",
+				meaning: "The strong line at the exposed threshold is ready, correct, and completely overlooked. Nothing is wrong with the querent and the waste is entirely real. Stay clean and stay available, and be clear that the fault belongs to whoever is failing to look.",
 			},
 			{
 				position: 4,
-				text: "Going forward brings obstruction, so the querent stays and joins with the one already in place above.",
-				meaning: "Weak and near power, this line cannot cross alone and should not try. The correct move is to combine with the strong line just above rather than to act on private initiative. The alliance formed now is what makes the eventual crossing possible.",
+				text: "The well is being relined with stone, and there is no fault in it.",
+				meaning: "Weak and correctly placed near power, this line takes itself out of service in order to be repaired. Nobody is being served during the work, and the work still has to happen. Accept a period in which you produce nothing, and let no one hurry you through it.",
 			},
 			{
 				position: 5,
-				text: "In the heart of the greatest obstruction, help begins to arrive.",
-				meaning: "The ruling line is strong and central, so the querent is standing at the hardest point of the entire situation and is the reason others come at all. Difficulty of this size attracts allies precisely because someone credible is carrying it. Hold the position and let them reach you.",
+				text: "The spring runs clear and cold, and people drink from it.",
+				meaning: "The ruling line is strong, central, and correct, which is the well doing precisely what a well exists to do. The querent has the capacity and the capacity is being used. This is the position the entire hexagram aims at, and there is nothing to do except let it be drawn on.",
 			},
 			{
 				position: 6,
-				text: "To press on brings obstruction, and to stay produces something great, with the one who can help close at hand.",
-				meaning: "Past the peak, this weak line is beyond the action and has every excuse to walk away from it. Coming back to serve instead is what turns exhaustion into contribution. The help you have been waiting for is directly below you, so stop looking outward for it.",
+				text: "The water is brought all the way to the top and the well is left uncovered.",
+				meaning: "Past the peak, this yielding line neither hoards nor closes. A source that is complete is one that has become permanently available to everyone, with no conditions and no lid on it. Give without measuring who is taking, because this supply does not run out.",
 			},
 		],
 	},
