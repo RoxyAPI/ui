@@ -3788,7 +3788,7 @@ describe('hide-readings', () => {
 				'ZZREADINGASPECTS',
 				'ZZREADINGPATTERN',
 			],
-			data_: ['2 planets', 'T-Square', '88% tight', 'Harmonious: 3'],
+			data_: ['Positions: 2', 'T-Square', '88% tight', 'Harmonious: 3'],
 		},
 		{
 			name: 'roxy-positions-table',
@@ -5462,6 +5462,35 @@ describe('the natal chart declares its equal-sector fallback', () => {
 		expect((caveat?.textContent ?? '').trim().length).toBeGreaterThan(20);
 		el.remove();
 	});
+
+	test('fallback house numbers lie inside the Ascendant-relative sectors', async () => {
+		const el = await mount([]);
+		for (const ascendant of [0, 15, 29, 85.7, 359]) {
+			el.data = { ...chart([]), ascendant: { longitude: ascendant } };
+			await settled(el);
+			const svg = el.shadowRoot!.querySelector('svg')!;
+			const [, , width] = svg.getAttribute('viewBox')!.split(' ').map(Number);
+			const center = width / 2;
+			for (const [i, label] of [
+				...svg.querySelectorAll('text.house-num'),
+			].entries()) {
+				const angle =
+					(Math.atan2(
+						Number(label.getAttribute('y')) - center,
+						Number(label.getAttribute('x')) - center,
+					) *
+						180) /
+					Math.PI;
+				const longitude = (((180 + ascendant - angle) % 360) + 360) % 360;
+				expect((((longitude - ascendant) % 360) + 360) % 360).toBeCloseTo(
+					i * 30 + 15,
+					6,
+				);
+				expect(label.textContent).toBe(String(i + 1));
+			}
+		}
+		el.remove();
+	});
 });
 
 /**
@@ -5636,12 +5665,12 @@ describe('roxy-hd-connection draws the combined bodygraph', () => {
 		],
 	};
 
-	const mount = async () => {
+	const mount = async (data: unknown = CONNECTION) => {
 		const el = document.createElement('roxy-hd-connection') as HTMLElement & {
 			data?: unknown;
 		};
 		document.body.appendChild(el);
-		el.data = CONNECTION;
+		el.data = data;
 		await settled(el);
 		return el;
 	};
@@ -5702,6 +5731,83 @@ describe('roxy-hd-connection draws the combined bodygraph', () => {
 		expect(halves.filter((n) => n.classList.contains('stripe'))).toHaveLength(
 			1,
 		);
+		el.remove();
+	});
+
+	test('full gate sets include hanging ownership and identify every active gate', async () => {
+		const personAGates = [
+			...new Set(CONNECTION.channels.flatMap((c) => c.personAGates)),
+			64,
+		];
+		const personBGates = [
+			...new Set(CONNECTION.channels.flatMap((c) => c.personBGates)),
+			61,
+			64,
+		];
+		const el = await mount({ ...CONNECTION, personAGates, personBGates });
+		const root = chart(el);
+		for (const gate of new Set([...personAGates, ...personBGates])) {
+			expect(sourcesOf(root, gate).sort()).toEqual([
+				...(personAGates.includes(gate) ? ['left'] : []),
+				...(personBGates.includes(gate) ? ['right'] : []),
+			]);
+		}
+		const hangingGate = [...root.querySelectorAll('.bg-gate-node')].find(
+			(g) => g.querySelector('.bg-gate')?.textContent?.trim() === '64',
+		);
+		expect(hangingGate?.querySelector('title')?.textContent).toBe(
+			'Gate 64 · A + B',
+		);
+		expect(root.querySelector('svg > title')?.textContent).toBe(
+			'Combined bodygraph',
+		);
+		expect(root.querySelector('svg')?.getAttribute('aria-label')).toBe(
+			'Combined bodygraph',
+		);
+		el.remove();
+	});
+
+	test('hanging gates render when the connection has no completed channels', async () => {
+		const el = await mount({
+			...CONNECTION,
+			totalChannels: 0,
+			channels: [],
+			centers: [],
+			personAGates: [61],
+			personBGates: [4],
+		});
+		const root = chart(el);
+		expect(sourcesOf(root, 61)).toEqual(['left']);
+		expect(sourcesOf(root, 4)).toEqual(['right']);
+		expect(sourcesOf(root, 24)).toEqual([]);
+		expect(sourcesOf(root, 63)).toEqual([]);
+		expect(root.querySelectorAll('.bg-half')).toHaveLength(2);
+		expect(root.querySelectorAll('.bg-center.defined')).toHaveLength(0);
+		el.remove();
+	});
+
+	test('an incomplete pair of full gate sets keeps the defined-channel view explicit', async () => {
+		const el = await mount({ ...CONNECTION, personAGates: [64] });
+		const root = chart(el);
+		expect(root.querySelector('svg')?.getAttribute('aria-label')).toBe(
+			'Defined channels',
+		);
+		expect(sourcesOf(root, 64)).toEqual([]);
+		expect(
+			sourcesOf(root, CONNECTION.channels[0].gateA).length,
+		).toBeGreaterThan(0);
+		el.remove();
+	});
+	test('a legacy payload labels its diagram as defined channels', async () => {
+		const el = await mount();
+		const root = chart(el);
+		expect(root.querySelector('svg > title')?.textContent).toBe(
+			'Defined channels',
+		);
+		expect(root.querySelector('svg')?.getAttribute('aria-label')).toBe(
+			'Defined channels',
+		);
+		expect(root.querySelector('.note')?.textContent).toBe('Defined channels');
 		el.remove();
 	});
 
@@ -6276,7 +6382,7 @@ describe('natal wheel degree labels never print over each other', () => {
 		]);
 		expect(overlapping(labels(el))).toEqual([]);
 		const glyphs = placedText(el, '.planet-glyph');
-		const centre = 210;
+		const centre = 270;
 		const angleOf = (g: { x: number; y: number }) =>
 			(Math.atan2(g.y - centre, g.x - centre) * 180) / Math.PI;
 		// The last glyph of the stack against the first: the ring holds forty
@@ -6338,7 +6444,6 @@ describe('natal wheel degree labels never print over each other', () => {
  */
 describe('a wheel never prints a glyph over its own degree label', () => {
 	type Size = { glyph: number; degree: number };
-	const PHONE: Size = { glyph: 18, degree: 10 };
 	const NAMES = [
 		'Sun',
 		'Moon',
@@ -6423,7 +6528,8 @@ describe('a wheel never prints a glyph over its own degree label', () => {
 			wide: NATAL_TYPE_SIZES,
 			glyph: 'text.planet-glyph',
 			glyphEm: { w: 0.95, h: 0.95 },
-			centre: 210,
+			centre: 270,
+			phone: { glyph: 24, degree: 13 },
 			hub: true,
 			data: (planets: object[]) => ({
 				planets,
@@ -6437,7 +6543,8 @@ describe('a wheel never prints a glyph over its own degree label', () => {
 			wide: TRANSIT_TYPE_SIZES,
 			glyph: 'text.natal-glyph',
 			glyphEm: { w: 0.95, h: 0.95 },
-			centre: 200,
+			centre: 320,
+			phone: { glyph: 26, degree: 14 },
 			hub: true,
 			data: (natalPlanets: object[]) => ({
 				natalPlanets,
@@ -6446,12 +6553,41 @@ describe('a wheel never prints a glyph over its own degree label', () => {
 			}),
 		},
 		{
+			tag: 'roxy-transit-wheel',
+			wide: TRANSIT_TYPE_SIZES,
+			glyph: 'text.transit-glyph',
+			glyphEm: { w: 0.95, h: 0.95 },
+			centre: 320,
+			phone: { glyph: 26, degree: 14 },
+			hub: true,
+			data: (transitPlanets: object[]) => ({
+				natalPlanets: [],
+				transitPlanets,
+				aspects: [],
+			}),
+		},
+		{
 			tag: 'roxy-synastry-chart',
 			wide: SYNASTRY_TYPE_SIZES,
 			glyph: 'text.p2',
 			glyphEm: { w: 1.3, h: 0.95 },
-			centre: 200,
-			hub: false,
+			centre: 340,
+			phone: { glyph: 28, degree: 15 },
+			hub: true,
+			data: (planets: object[]) => ({
+				person1: { planets },
+				person2: { planets },
+				interAspects: [],
+			}),
+		},
+		{
+			tag: 'roxy-synastry-chart',
+			wide: SYNASTRY_TYPE_SIZES,
+			glyph: 'text.p1',
+			glyphEm: { w: 1.3, h: 0.95 },
+			centre: 340,
+			phone: { glyph: 28, degree: 15 },
+			hub: true,
 			data: (planets: object[]) => ({
 				person1: { planets },
 				person2: { planets },
@@ -6467,7 +6603,7 @@ describe('a wheel never prints a glyph over its own degree label', () => {
 				['phone', true],
 			] as const) {
 				test(`${wheel.tag}, ${retro ? 'retrograde' : 'direct'}, ${width}`, async () => {
-					const size = phone ? PHONE : wheel.wide;
+					const size = phone ? wheel.phone : wheel.wide;
 					const found: string[] = [];
 					for (const offset of [0, 10, 20]) {
 						const el = document.createElement(wheel.tag) as HTMLElement & {

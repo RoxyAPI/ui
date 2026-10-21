@@ -2,7 +2,9 @@ import type { TemplateResult } from 'lit';
 import { html, nothing, svg } from 'lit';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetAbbr, SIGNS_ORDER, signAbbr } from '../tokens/index.js';
-import { longitudeToSignPosition } from './degree.js';
+import { formatSignPosition, longitudeToSignPosition } from './degree.js';
+import { chevron } from './disclosure.js';
+import { formatNumber } from './format.js';
 import type { Translate } from './hd-reading.js';
 import { capitalize } from './string.js';
 import { renderTablist } from './tablist.js';
@@ -40,6 +42,8 @@ const RASHI_TO_SIGN: Record<string, string> = Object.fromEntries(
  */
 export interface PlacedGraha {
 	graha: string;
+	/** The supplied longitude and nakshatra belong to D1, while the cell belongs to a varga. */
+	natalReference?: boolean;
 	longitude?: number;
 	nakshatra?: { name?: string; pada?: number; lord?: string };
 	isRetrograde?: boolean;
@@ -100,39 +104,14 @@ function signIndex(sign: string): number {
 	return (SIGNS_ORDER as readonly string[]).indexOf(sign);
 }
 
-/**
- * True when the placed graha's longitude maps to a sign other than the cell
- * it occupies. The API preserves the D1 sidereal longitude on every chart, so
- * inside a D2..D60 cell that longitude refers to the D1 sign, not the cell's
- * divisional sign. In that case the degree-within-sign is not meaningful and
- * must be hidden from the in-cell label.
- */
-function isDivisionalPlacement(p: PlacedGraha, cellSign: string): boolean {
-	if (typeof p.longitude !== 'number' || !Number.isFinite(p.longitude)) {
-		return false;
-	}
-	return (
-		longitudeToSignPosition(p.longitude).sign.toLowerCase() !==
-		cellSign.toLowerCase()
-	);
-}
-
-/**
- * Compact in-cell graha label: abbreviation, optional whole-degree, retrograde
- * mark. The degree is shown only when the longitude actually maps to the cell
- * the graha is rendered in (the D1 case); divisional placements show the
- * abbreviation alone since the API longitude refers to D1, not the divisional
- * sign. A body the library has no abbreviation for falls back to its full
- * name: the cell is the only place that name appears, so it must stay
- * visibly wrong rather than a fabricated two-letter code.
- */
-function grahaLabel(p: PlacedGraha, cellSign: string): string {
+/** Compact planet labels show degrees only on D1, with preserved natal positions labelled in varga tooltips. */
+function grahaLabel(p: PlacedGraha): string {
 	const abbr = planetAbbr(p.graha) ?? p.graha;
 	const retro = `${p.isRetrograde ? RETRO_MARK : ''}${p.combust ? COMBUST_MARK : ''}${p.war ? WAR_MARK : ''}`;
 	if (
 		typeof p.longitude !== 'number' ||
 		!Number.isFinite(p.longitude) ||
-		isDivisionalPlacement(p, cellSign)
+		p.natalReference
 	) {
 		return `${abbr}${retro}`;
 	}
@@ -140,16 +119,10 @@ function grahaLabel(p: PlacedGraha, cellSign: string): string {
 	return `${abbr} ${degree}°${retro}`;
 }
 
-/**
- * Full-detail tooltip surfaced via the SVG `<title>` for each planet label.
- * Includes planet name, the divisional placement (when the longitude does not
- * match the cell, the cell's rashi is preferred), the exact D1 longitude as
- * the original reference, nakshatra and pada, avastha, and the retrograde
- * flag. Surfaces on hover or long-press without crowding the cell.
- */
+/** Planet tooltips distinguish divisional placement from the preserved D1 longitude and nakshatra. */
 function grahaTitle(p: PlacedGraha, cellSign: string, t: Translate): string {
 	const parts: string[] = [capitalize(p.graha)];
-	const divisional = isDivisionalPlacement(p, cellSign);
+	const divisional = p.natalReference === true;
 	if (divisional) {
 		parts.push(t('in {{sign}}', { sign: cellSign }));
 	}
@@ -166,7 +139,7 @@ function grahaTitle(p: PlacedGraha, cellSign: string, t: Translate): string {
 		const pada = p.nakshatra.pada
 			? ` ${t('pada {{n}}', { n: p.nakshatra.pada })}`
 			: '';
-		parts.push(`${p.nakshatra.name}${pada}`);
+		parts.push(`${divisional ? 'D1: ' : ''}${p.nakshatra.name}${pada}`);
 	}
 	// The nakshatra lord is what a dasha is read from, so a chart that names the
 	// nakshatra and withholds its lord stops one step short of the reading.
@@ -207,10 +180,7 @@ function renderPlanetStack(
 	const startY = baseY - ((planets.length - 1) * lineHeight) / 2;
 	return planets.map((p, j) => {
 		const yPos = startY + j * lineHeight;
-		return svg`<text class="planet-text" x=${cx} y=${yPos} text-anchor="middle" dominant-baseline="central">${grahaLabel(
-			p,
-			cellSign,
-		)}<title>${grahaTitle(p, cellSign, t)}</title></text>`;
+		return svg`<text class="planet-text" x=${cx} y=${yPos} text-anchor="middle" dominant-baseline="central">${grahaLabel(p)}<title>${grahaTitle(p, cellSign, t)}</title></text>`;
 	});
 }
 
@@ -232,6 +202,7 @@ export function toKundliViewModel(
 			longitude?: number;
 			nakshatra?: { name?: string; pada?: number; lord?: string };
 			isRetrograde?: boolean;
+			house?: number;
 			awastha?: string;
 			deeptadi?: string;
 		}
@@ -240,9 +211,10 @@ export function toKundliViewModel(
 		divisionLabel?: string;
 		lagnaOverride?: string;
 		states?: GrahaStates;
+		natalReference?: boolean;
 	} = {},
 ): KundliViewModel {
-	const { divisionLabel, lagnaOverride, states } = options;
+	const { divisionLabel, lagnaOverride, states, natalReference } = options;
 	const combust = new Set(
 		(states?.combustion ?? []).map((c) => (c.planet ?? '').toLowerCase()),
 	);
@@ -277,6 +249,7 @@ export function toKundliViewModel(
 		const key = graha.toLowerCase();
 		placements[rashiKey]?.push({
 			graha,
+			natalReference,
 			longitude: pos.longitude,
 			nakshatra: pos.nakshatra,
 			isRetrograde: pos.isRetrograde,
@@ -876,4 +849,43 @@ export function renderKundliStyleTablist(
 		// announces as a broken tab set.
 		controls: true,
 	});
+}
+
+/** Divisional placements stay distinct from the natal position and nakshatra returned beside them. */
+export function renderVargaReferenceTable(
+	meta: Parameters<typeof toKundliViewModel>[0],
+	division: number,
+	locale: string | undefined,
+	t: Translate,
+): TemplateResult {
+	return html`<details class="kundli-reference" part="section positions">
+		<summary>${t('Planetary positions')}${chevron()}</summary>
+		<div class="kundli-reference-scroll" part="table" tabindex="0" role="region" aria-label=${t('Planetary positions')}>
+			<table class="kundli-reference-table">
+				<caption class="roxy-sr-only">${t('Planetary positions')}</caption>
+				<thead><tr>
+					<th scope="col">${t('Body')}</th>
+					<th scope="col">D${division} ${t('Sign')}</th>
+					<th scope="col">D${division} ${t('House')}</th>
+					<th scope="col">D1 ${t('Position')}</th>
+					<th scope="col">D1 ${t('Nakshatra')}</th>
+					<th scope="col">${t('Pada')}</th>
+					<th scope="col">${t('Star lord')}</th>
+					<th scope="col">${t('Motion')}</th>
+				</tr></thead>
+				<tbody>${Object.entries(meta).map(
+					([name, p]) => html`<tr>
+					<th scope="row">${p.graha ?? name}</th>
+					<td>${p.rashi ?? ''}</td>
+					<td>${typeof p.house === 'number' ? p.house : ''}</td>
+					<td>${typeof p.longitude === 'number' ? html`<span>${formatSignPosition(p.longitude)}</span><small>${formatNumber(locale, p.longitude, 12)}°</small>` : nothing}</td>
+					<td>${p.nakshatra?.name ?? ''}</td>
+					<td>${p.nakshatra?.pada ?? ''}</td>
+					<td>${p.nakshatra?.lord ?? ''}</td>
+					<td>${p.isRetrograde ? t('retrograde') : ''}</td>
+				</tr>`,
+				)}</tbody>
+			</table>
+		</div>
+	</details>`;
 }

@@ -6,13 +6,13 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatDate } from '../utils/format.js';
+import { formatDate, formatDateGrain } from '../utils/format.js';
 import {
 	frameCaptionStyles,
 	renderConventionsCaption,
 } from '../utils/frame.js';
 import { labelRowStyles } from '../utils/label-row.js';
-import { display, displayOption } from '../utils/localized.js';
+import { display, displayField, displayOption } from '../utils/localized.js';
 import { GRID_ORDER } from '../utils/nine-palaces.js';
 import { plateHeadingStyles } from '../utils/plate-heading.js';
 import { capitalize } from '../utils/string.js';
@@ -338,14 +338,14 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 						? html`<span><span class="lbl">${this.t('Role')}</span>${trigram.familyMember}</span>`
 						: nothing
 				}
+				${'solarYear' in d && typeof d.solarYear === 'number' ? html`<span class="solar-year"><span class="lbl">${this.t('Year')}</span><b>${formatDateGrain(locale, String(d.solarYear), 'year')}</b></span>` : nothing}
+				${'gender' in d && d.gender ? html`<span class="formula-gender"><span class="lbl">${displayField(locale, 'gender')}</span>${displayOption(locale, 'gender', d.gender)}</span>` : nothing}
 				${
 					// The formula reads the Chinese year, which turns in early February, so
 					// the boundary is what a reader born in January has to check.
 					'boundaryDate' in d && d.boundaryDate
 						? html`<span
-							>${this.t('Year from {{date}}', {
-								date: formatDate(locale, d.boundaryDate),
-							})}</span
+							>${this.t('Year boundary')} ${formatDate(locale, d.boundaryDate)}</span
 						>`
 						: nothing
 				}

@@ -209,3 +209,107 @@ describe('a North cell never prints its number into its grahas', () => {
 		});
 	}
 });
+
+describe('varga positions keep their natal reference explicit', () => {
+	for (const style of ['north', 'south', 'east']) {
+		test(`${style} distinguishes same-sign and changed-sign placements from D1`, async () => {
+			const meta = {
+				Lagna: { graha: 'Lagna', rashi: 'libra', longitude: 61.9 },
+				Sun: {
+					graha: 'Sun',
+					rashi: 'capricorn',
+					longitude: 271.675,
+					nakshatra: { name: 'Uttara Ashadha', pada: 2, lord: 'Sun' },
+				},
+				Moon: {
+					graha: 'Moon',
+					rashi: 'sagittarius',
+					longitude: 147.668,
+					nakshatra: { name: 'Uttara Phalguni', pada: 1, lord: 'Sun' },
+				},
+			};
+			const el = document.createElement(
+				'roxy-divisional-chart',
+			) as HTMLElement & { data: unknown };
+			el.setAttribute('chart-style', style);
+			el.data = {
+				division: { number: 9, name: 'Navamsa' },
+				chart: { meta },
+				vargottama: ['Sun'],
+			};
+			document.body.append(el);
+			await settled(el);
+			for (const node of root(el).querySelectorAll('.planet-text')) {
+				const label = [...node.childNodes]
+					.filter((child) => child.nodeType === Node.TEXT_NODE)
+					.map((child) => child.textContent)
+					.join('');
+				expect(label).not.toContain('°');
+				const tooltip = node.querySelector('title')?.textContent ?? '';
+				expect(tooltip).toMatch(/D1: \d+°/);
+				expect(tooltip).toMatch(/D1: Uttara/);
+			}
+			const reference = root(el).querySelector('.kundli-reference');
+			expect(reference?.querySelector('summary')).not.toBeNull();
+			expect(reference?.querySelectorAll('tbody tr')).toHaveLength(
+				Object.keys(meta).length,
+			);
+			expect(reference?.textContent).toContain('D1 Position');
+			expect(reference?.textContent).toContain('D1 Nakshatra');
+			expect(reference?.textContent).toContain('271.675°');
+			expect(reference?.textContent).toContain('61.9°');
+			expect(reference?.textContent).toContain('Uttara Ashadha');
+			expect(reference?.querySelector('[tabindex="0"]')).not.toBeNull();
+			const enlarge = root(el).querySelector(
+				'.roxy-chart-tools button',
+			) as HTMLButtonElement;
+			enlarge.click();
+			await settled(el);
+			const expanded = root(el).querySelector('.roxy-chart-expanded svg');
+			expect(expanded?.namespaceURI).toBe('http://www.w3.org/2000/svg');
+			expect(expanded?.querySelector('.planet-text')).not.toBeNull();
+			el.setAttribute('hide-readings', '');
+			await settled(el);
+			expect(
+				root(el).querySelector('.kundli-reference')?.textContent,
+			).toContain('271.675°');
+			const natal = await mount(meta, style);
+			expect(grahaLabels(natal)).toContain('Su 1°');
+			expect(
+				titles(natal).some(
+					(title) => title.startsWith('Sun') && !title.includes('D1:'),
+				),
+			).toBe(true);
+		});
+	}
+});
+
+describe('the shared chart viewport renders diagrams at both sizes', () => {
+	for (const [tag, data] of [
+		['roxy-vedic-kundli', { meta: WITH_LAGNA }],
+		['roxy-astrocartography-map', { lines: [] }],
+		['roxy-local-space-compass', { bodies: [] }],
+	] as const) {
+		test(`${tag} opens a real SVG with inherited controls`, async () => {
+			const el = document.createElement(tag) as HTMLElement & { data: unknown };
+			el.data = data;
+			document.body.append(el);
+			await settled(el);
+			expect(root(el).querySelectorAll('.roxy-chart-view')).toHaveLength(1);
+			expect(root(el).querySelector('svg')?.namespaceURI).toBe(
+				'http://www.w3.org/2000/svg',
+			);
+			(
+				root(el).querySelector('.roxy-chart-tools button') as HTMLButtonElement
+			).click();
+			await settled(el);
+			expect(
+				root(el).querySelector('.roxy-chart-expanded svg')?.namespaceURI,
+			).toBe('http://www.w3.org/2000/svg');
+			expect(
+				root(el).querySelector('.roxy-chart-expanded svg')?.children.length,
+			).toBeGreaterThan(0);
+			el.remove();
+		});
+	}
+});

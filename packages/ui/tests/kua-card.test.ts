@@ -255,3 +255,17 @@ describe('hide-readings', () => {
 		expect(body).not.toContain('ZZREADINGNORTH');
 	});
 });
+
+test('selected solar year, formula and boundary are distinct retained facts', async () => {
+	const el = await mount(KUA, { 'hide-readings': '' });
+	expect(root(el).querySelector('.solar-year')?.textContent).toContain('1989');
+	expect(root(el).querySelector('.solar-year')?.textContent).not.toContain(
+		'1,989',
+	);
+	expect(root(el).querySelector('.formula-gender')?.textContent).toMatch(
+		/female/i,
+	);
+	expect(text(el)).toContain('Year boundary');
+	expect(text(el)).toContain('1990');
+	expect(text(el)).not.toContain('Year from');
+});

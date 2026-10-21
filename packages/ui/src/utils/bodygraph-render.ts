@@ -514,7 +514,7 @@ function renderCenters(
 				: renderCenterName(
 						label,
 						centroid(c.points),
-						isDefined ? 'defined' : '',
+						isDefined ? `defined bg-${c.color}` : '',
 						widthAt(c.points, centroid(c.points).y) * 0.86,
 					),
 		];
@@ -530,7 +530,7 @@ function renderCenters(
 function renderCenterName(
 	label: string,
 	at: Point,
-	variant: 'defined' | 'bg-caption' | '',
+	variant: `defined bg-${CenterColor}` | 'bg-caption' | '',
 	room: number,
 ): TemplateResult {
 	const words = label.split(/\s+/).filter(Boolean);

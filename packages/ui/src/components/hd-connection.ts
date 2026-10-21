@@ -10,6 +10,7 @@ import {
 	renderBodygraphSvg,
 } from '../utils/bodygraph-render.js';
 import { bodygraphChartStyles } from '../utils/bodygraph-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import { hdReadingStyles, renderHdFacts } from '../utils/hd-reading.js';
 import {
@@ -32,12 +33,14 @@ type CombinedCenter = Connection['centers'][number];
  */
 @customElement('roxy-hd-connection')
 export class RoxyHdConnection extends RoxyDataElement<Connection> {
+	private readonly chartViewport = new ChartViewport(this);
 	static styles = [
 		baseStyles,
 		disclosureStyles,
 		interpAccordionStyles,
 		hdReadingStyles,
 		bodygraphChartStyles,
+		chartViewportStyles,
 		css`
 			.wrap {
 				background: var(--roxy-surface, #fff);
@@ -198,18 +201,20 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 	 * chart the two of them are when together; who defines one alone is named in
 	 * the centers section, where the badge can say it in words.
 	 */
-	private renderChart(d: Connection) {
+	private renderChart(d: Connection, label: string, complete: boolean) {
+		const left = new Set(
+			complete
+				? d.personAGates
+				: (d.channels ?? []).flatMap((c) => c.personAGates ?? []),
+		);
+		const right = new Set(
+			complete
+				? d.personBGates
+				: (d.channels ?? []).flatMap((c) => c.personBGates ?? []),
+		);
 		const gateSources = new Map<number, GateSources>();
-		for (const c of d.channels ?? []) {
-			const left = new Set(c.personAGates ?? []);
-			const right = new Set(c.personBGates ?? []);
-			for (const gate of [c.gateA, c.gateB]) {
-				if (gate == null) continue;
-				const held = gateSources.get(gate) ?? { left: false, right: false };
-				held.left ||= left.has(gate);
-				held.right ||= right.has(gate);
-				gateSources.set(gate, held);
-			}
+		for (const gate of new Set([...left, ...right])) {
+			gateSources.set(gate, { left: left.has(gate), right: right.has(gate) });
 		}
 		const definedCenters = new Set<BodygraphCenterId>(
 			(d.centers ?? [])
@@ -219,20 +224,22 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 		const centerNames = new Map<BodygraphCenterId, string>(
 			(d.centers ?? []).map((c) => [c.id as BodygraphCenterId, c.name]),
 		);
-		const gateTitles = new Map<number, string>();
+		const channelNames = new Map<number, string>();
 		for (const c of d.channels ?? []) {
-			const name = c.name;
-			for (const gate of [c.gateA, c.gateB]) {
-				if (gate == null) continue;
-				const held = gateSources.get(gate);
-				const who = [held?.left && 'A', held?.right && 'B']
+			channelNames.set(c.gateA, c.name);
+			channelNames.set(c.gateB, c.name);
+		}
+		const gateTitles = new Map<number, string>();
+		for (const [gate, held] of gateSources) {
+			const who = [held.left && 'A', held.right && 'B']
+				.filter(Boolean)
+				.join(' + ');
+			gateTitles.set(
+				gate,
+				[`Gate ${gate}`, channelNames.get(gate), who]
 					.filter(Boolean)
-					.join(' + ');
-				gateTitles.set(
-					gate,
-					[`Gate ${gate}`, name, who].filter(Boolean).join(' · '),
-				);
-			}
+					.join(' · '),
+			);
 		}
 
 		return html`<svg
@@ -241,9 +248,9 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 			viewBox=${BODYGRAPH_VIEWBOX}
 			preserveAspectRatio="xMidYMid meet"
 			role="img"
-			aria-label="Combined Human Design bodygraph for two charts, with each gate marked for the person who carries it"
+			aria-label=${label}
 		>
-			<title>Combined bodygraph</title>
+			<title>${label}</title>
 			${renderBodygraphSvg({
 				definedCenters,
 				gateSources,
@@ -252,6 +259,7 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 				stateWords: { defined: 'Defined', open: 'Open' },
 			})}
 		</svg>
+		${complete ? nothing : html`<p class="note">${label}</p>`}
 		<div class="legend" part="legend">
 			<span><span class="swatch source src-left"></span>Person A</span>
 			<span><span class="swatch source src-right"></span>Person B</span>
@@ -260,6 +268,11 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 	}
 
 	protected renderData(d: Connection) {
+		const complete =
+			Array.isArray(d.personAGates) && Array.isArray(d.personBGates);
+		const chartLabel = complete
+			? this.t('Combined bodygraph')
+			: this.t('Defined channels');
 		const channels = d.channels ?? [];
 		const centers = d.centers ?? [];
 		const definedCenters = centers.filter((c) => c.defined).length;
@@ -269,7 +282,7 @@ export class RoxyHdConnection extends RoxyDataElement<Connection> {
 				<h2 class="title">Connection</h2>
 				${typeof d.totalChannels === 'number' ? html`<span class="count">${d.totalChannels} channels</span>` : nothing}
 			</header>
-			${this.renderChart(d)}
+			${this.chartViewport.renderChartViewport(this.renderChart(d, chartLabel, complete), chartLabel, this.translator)}
 			${renderHdFacts([
 				{ label: 'Channels', value: d.totalChannels?.toString() },
 				{

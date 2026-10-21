@@ -45,9 +45,11 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// search-as-you-type picker is 2.4, the compiled-in English field labels 1.7,
 	// the option source table 0.3, the form and list chrome and the newly
 	// catalogued chrome calls the rest.
-	fullGzip: 175 * KB,
+	// Complete chart detail coverage measures 171.9 KB gzip at HEAD and 175.6 KB with shared enlargement.
+	fullGzip: 180 * KB,
 	// The world basemap holds the map card at the cap, so shared form and formatter code sets the ceiling: 30.0 KB gz before the timezone city search, 30.1 after.
-	componentGzip: 31 * KB,
+	// The map measures 30.9 KB gzip at HEAD and 31.9 KB with shared chart enlargement.
+	componentGzip: 32 * KB,
 	widgetsGzip: WIDGETS_BUDGET_BYTES,
 	// A catalogue is one download that translates every element on the page, and
 	// it is pure text, which gzip eats. The ceiling tracks how many cards are

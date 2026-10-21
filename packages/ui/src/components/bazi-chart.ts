@@ -478,6 +478,7 @@ export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
 							<span>${(i.positions ?? []).join(' ')}</span>
 							${i.transformsTo ? html`<span>${i.transformsTo}</span>` : nothing}
 							${i.variety ? html`<span>${i.variety}</span>` : nothing}
+							${i.type === 'punishment' && typeof i.complete === 'boolean' ? html`<span class="completeness">${i.complete ? this.t('Complete') : this.t('Partial')}</span>` : nothing}
 						</div>
 						${
 							i.meaning && !this.hideReadings

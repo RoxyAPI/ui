@@ -1,0 +1,587 @@
+{
+  "birthDetails": {
+    "date": "1990-01-15",
+    "time": "14:30:00",
+    "latitude": 40.7143,
+    "longitude": -74.006,
+    "timezone": -5
+  },
+  "relocation": {
+    "latitude": 51.5072,
+    "longitude": -0.1276
+  },
+  "planets": [
+    {
+      "name": "Sun",
+      "longitude": 295.39645615773384,
+      "latitude": -0.00010739564190016475,
+      "sign": "Capricorn",
+      "degree": 25.396456157733837,
+      "speed": 1.0182142389126625,
+      "isRetrograde": false,
+      "house": 5,
+      "nameLocalized": "Sol",
+      "signLocalized": "Capricornio",
+      "interpretation": {
+        "summary": "Tu Sol en Capricornio en Quinta Casa revela cómo expresas autoconciencia y ego con energía de detallista y inteligente en el ámbito de expresión creativa personal.",
+        "detailed": "Sol representa autoconciencia y ego. En Capricornio (La Cabra), esta energía se convierte en ambicioso, disciplinado, paciente. Ubicado en Quinta Casa, diriges esta energía de Sol en Capricornio hacia expresión creativa personal y placer y entretenimiento. Esto crea una expresión única donde tu autoconciencia y ego se manifiesta de forma natural a través de enfoques de detallista, inteligente, trabajador en asuntos relacionados con la quinta casa.",
+        "keywords": [
+          "activo",
+          "conciencia",
+          "brillante",
+          "confianza",
+          "consciencia",
+          "detallista",
+          "inteligente",
+          "trabajador"
+        ]
+      }
+    },
+    {
+      "name": "Moon",
+      "longitude": 171.3899208970552,
+      "latitude": -3.004446359200427,
+      "sign": "Virgo",
+      "degree": 21.38992089705519,
+      "speed": 12.409582502733727,
+      "isRetrograde": false,
+      "house": 2,
+      "nameLocalized": "Luna",
+      "signLocalized": "Virgo",
+      "interpretation": {
+        "summary": "Tu Luna en Virgo en Segunda Casa revela cómo expresas vida emocional interior con energía de elegante y organizado en el ámbito de valores materiales.",
+        "detailed": "Luna representa vida emocional interior. En Virgo (La Virgen), esta energía se convierte en elegante, organizado, amable. Ubicado en Segunda Casa, diriges esta energía de Luna en Virgo hacia valores materiales y dinero y finanzas personales. Esto crea una expresión única donde tu vida emocional interior se manifiesta de forma natural a través de enfoques de elegante, organizado, amable en asuntos relacionados con la segunda casa.",
+        "keywords": [
+          "cuidador",
+          "consuelo",
+          "emoción",
+          "sentimiento",
+          "feminidad",
+          "elegante",
+          "organizado",
+          "amable"
+        ]
+      }
+    },
+    {
+      "name": "Mercury",
+      "longitude": 281.12690652750473,
+      "latitude": 3.3534439932494053,
+      "sign": "Capricorn",
+      "degree": 11.12690652750473,
+      "speed": -0.6702376271380501,
+      "isRetrograde": true,
+      "house": 5,
+      "nameLocalized": "Mercurio",
+      "signLocalized": "Capricornio",
+      "interpretation": {
+        "summary": "Tu Mercurio en Capricornio en Quinta Casa revela cómo expresas comunicación con energía de detallista y inteligente en el ámbito de expresión creativa personal.",
+        "detailed": "Mercurio representa comunicación. En Capricornio (La Cabra), esta energía se convierte en ambicioso, disciplinado, paciente. Ubicado en Quinta Casa, diriges esta energía de Mercurio en Capricornio hacia expresión creativa personal y placer y entretenimiento. Esto crea una expresión única donde tu comunicación se manifiesta de forma natural a través de enfoques de detallista, inteligente, trabajador en asuntos relacionados con la quinta casa.",
+        "keywords": [
+          "análisis",
+          "infancia",
+          "comunicación",
+          "curiosidad",
+          "educación",
+          "detallista",
+          "inteligente",
+          "trabajador"
+        ]
+      }
+    },
+    {
+      "name": "Venus",
+      "longitude": 300.4994145604744,
+      "latitude": 5.475375180617156,
+      "sign": "Aquarius",
+      "degree": 0.49941456047440624,
+      "speed": -0.5975214911011051,
+      "isRetrograde": true,
+      "house": 5,
+      "nameLocalized": "Venus",
+      "signLocalized": "Acuario",
+      "interpretation": {
+        "summary": "Tu Venus en Acuario en Quinta Casa revela cómo expresas amor, belleza y dinero con energía de imaginativo y idealista en el ámbito de expresión creativa personal.",
+        "detailed": "Venus representa amor, belleza y dinero. En Acuario (El Aguador), esta energía se convierte en imaginativo, idealista, intuitivo. Ubicado en Quinta Casa, diriges esta energía de Venus en Acuario hacia expresión creativa personal y placer y entretenimiento. Esto crea una expresión única donde tu amor, belleza y dinero se manifiesta de forma natural a través de enfoques de imaginativo, idealista, intuitivo en asuntos relacionados con la quinta casa.",
+        "keywords": [
+          "atractivo",
+          "belleza",
+          "cultura",
+          "eros",
+          "fantasía",
+          "imaginativo",
+          "idealista",
+          "intuitivo"
+        ]
+      }
+    },
+    {
+      "name": "Mars",
+      "longitude": 260.1316134210416,
+      "latitude": -0.1957489073648688,
+      "sign": "Sagittarius",
+      "degree": 20.131613421041607,
+      "speed": 0.7121420779625396,
+      "isRetrograde": false,
+      "house": 4,
+      "nameLocalized": "Marte",
+      "signLocalized": "Sagitario",
+      "interpretation": {
+        "summary": "Tu Marte en Sagitario en Cuarta Casa revela cómo expresas asertividad y agresión con energía de aventurero y creativo en el ámbito de fundamentos y raíces psicológicas.",
+        "detailed": "Marte representa asertividad y agresión. En Sagitario (El Arquero), esta energía se convierte en aventurero, optimista, independiente. Ubicado en Cuarta Casa, diriges esta energía de Marte en Sagitario hacia fundamentos y raíces psicológicas y familia. Esto crea una expresión única donde tu asertividad y agresión se manifiesta de forma natural a través de enfoques de aventurero, creativo, voluntad fuerte en asuntos relacionados con la cuarta casa.",
+        "keywords": [
+          "acción",
+          "aventurero",
+          "atlético",
+          "valiente",
+          "valentía",
+          "aventurero",
+          "creativo",
+          "voluntad fuerte"
+        ]
+      }
+    },
+    {
+      "name": "Jupiter",
+      "longitude": 93.32951656012864,
+      "latitude": -0.08193809526444414,
+      "sign": "Cancer",
+      "degree": 3.3295165601286385,
+      "speed": -0.11666975806529933,
+      "isRetrograde": true,
+      "house": 11,
+      "nameLocalized": "Júpiter",
+      "signLocalized": "Cáncer",
+      "interpretation": {
+        "summary": "Tu Júpiter en Cáncer en Undécima Casa revela cómo expresas suerte y oportunidad con energía de intuitivo y emocional en el ámbito de conocidos y amigos.",
+        "detailed": "Júpiter representa suerte y oportunidad. En Cáncer (El Cangrejo), esta energía se convierte en intuitivo, protector, compasivo. Ubicado en Undécima Casa, diriges esta energía de Júpiter en Cáncer hacia conocidos y amigos y grupos. Esto crea una expresión única donde tu suerte y oportunidad se manifiesta de forma natural a través de enfoques de intuitivo, emocional, inteligente en asuntos relacionados con la undécima casa.",
+        "keywords": [
+          "abundancia",
+          "universidad",
+          "cultura",
+          "curiosidad",
+          "diversidad",
+          "intuitivo",
+          "emocional",
+          "inteligente",
+          "apasionado"
+        ]
+      }
+    },
+    {
+      "name": "Saturn",
+      "longitude": 287.351288854244,
+      "latitude": 0.27648740283559936,
+      "sign": "Capricorn",
+      "degree": 17.35128885424399,
+      "speed": 0.11775389097496713,
+      "isRetrograde": false,
+      "house": 5,
+      "nameLocalized": "Saturno",
+      "signLocalized": "Capricornio",
+      "interpretation": {
+        "summary": "Tu Saturno en Capricornio en Quinta Casa revela cómo expresas responsabilidad, tiempo y rutina con energía de detallista y inteligente en el ámbito de expresión creativa personal.",
+        "detailed": "Saturno representa responsabilidad, tiempo y rutina. En Capricornio (La Cabra), esta energía se convierte en ambicioso, disciplinado, paciente. Ubicado en Quinta Casa, diriges esta energía de Saturno en Capricornio hacia expresión creativa personal y placer y entretenimiento. Esto crea una expresión única donde tu responsabilidad, tiempo y rutina se manifiesta de forma natural a través de enfoques de detallista, inteligente, trabajador en asuntos relacionados con la quinta casa.",
+        "keywords": [
+          "ambición",
+          "límites",
+          "determinación",
+          "disciplina",
+          "experiencia",
+          "detallista",
+          "inteligente",
+          "trabajador"
+        ]
+      }
+    },
+    {
+      "name": "Uranus",
+      "longitude": 276.6312932562238,
+      "latitude": -0.27273930761082493,
+      "sign": "Capricorn",
+      "degree": 6.631293256223785,
+      "speed": 0.057734062616020765,
+      "isRetrograde": false,
+      "house": 5,
+      "nameLocalized": "Urano",
+      "signLocalized": "Capricornio",
+      "interpretation": {
+        "summary": "Tu Urano en Capricornio en Quinta Casa revela cómo expresas individualidad y revolución con energía de detallista y inteligente en el ámbito de expresión creativa personal.",
+        "detailed": "Urano representa individualidad y revolución. En Capricornio (La Cabra), esta energía se convierte en ambicioso, disciplinado, paciente. Ubicado en Quinta Casa, diriges esta energía de Urano en Capricornio hacia expresión creativa personal y placer y entretenimiento. Esto crea una expresión única donde tu individualidad y revolución se manifiesta de forma natural a través de enfoques de detallista, inteligente, trabajador en asuntos relacionados con la quinta casa.",
+        "keywords": [
+          "vanguardista",
+          "cambio",
+          "cómico",
+          "determinado",
+          "experimental",
+          "detallista",
+          "inteligente",
+          "trabajador"
+        ]
+      }
+    },
+    {
+      "name": "Neptune",
+      "longitude": 282.577376471795,
+      "latitude": 0.8457295896807038,
+      "sign": "Capricorn",
+      "degree": 12.577376471794992,
+      "speed": 0.037135960549363745,
+      "isRetrograde": false,
+      "house": 5,
+      "nameLocalized": "Neptuno",
+      "signLocalized": "Capricornio",
+      "interpretation": {
+        "summary": "Tu Neptuno en Capricornio en Quinta Casa revela cómo expresas sueños, sanación e intuición con energía de detallista y inteligente en el ámbito de expresión creativa personal.",
+        "detailed": "Neptuno representa sueños, sanación e intuición. En Capricornio (La Cabra), esta energía se convierte en ambicioso, disciplinado, paciente. Ubicado en Quinta Casa, diriges esta energía de Neptuno en Capricornio hacia expresión creativa personal y placer y entretenimiento. Esto crea una expresión única donde tu sueños, sanación e intuición se manifiesta de forma natural a través de enfoques de detallista, inteligente, trabajador en asuntos relacionados con la quinta casa.",
+        "keywords": [
+          "artístico",
+          "calma",
+          "compasivo",
+          "profundo",
+          "sueños",
+          "detallista",
+          "inteligente",
+          "trabajador"
+        ]
+      }
+    },
+    {
+      "name": "Pluto",
+      "longitude": 227.43448172418948,
+      "latitude": 15.380929681822114,
+      "sign": "Scorpio",
+      "degree": 17.43448172418948,
+      "speed": 0.02015202814619954,
+      "isRetrograde": false,
+      "house": 3,
+      "nameLocalized": "Plutón",
+      "signLocalized": "Escorpio",
+      "interpretation": {
+        "summary": "Tu Plutón en Escorpio en Tercera Casa revela cómo expresas sexualidad, muerte y transformación con energía de seductor y apasionado en el ámbito de la mente inferior.",
+        "detailed": "Plutón representa sexualidad, muerte y transformación. En Escorpio (El Escorpión), esta energía se convierte en seductor, apasionado, independiente. Ubicado en Tercera Casa, diriges esta energía de Plutón en Escorpio hacia la mente inferior y comunicación. Esto crea una expresión única donde tu sexualidad, muerte y transformación se manifiesta de forma natural a través de enfoques de seductor, apasionado, independiente en asuntos relacionados con la tercera casa.",
+        "keywords": [
+          "alquimia",
+          "audaz",
+          "carismático",
+          "complejo",
+          "valiente",
+          "seductor",
+          "apasionado",
+          "independiente"
+        ]
+      }
+    },
+    {
+      "name": "North Node",
+      "longitude": 316.5879268579846,
+      "latitude": 0,
+      "sign": "Aquarius",
+      "degree": 16.5879268579846,
+      "speed": 0.027192215415851706,
+      "isRetrograde": false,
+      "house": 6,
+      "nameLocalized": "Nodo Norte",
+      "signLocalized": "Acuario",
+      "interpretation": {
+        "summary": "Tu Nodo Norte en Acuario en Sexta Casa revela cómo expresas propósito de vida y destino con energía de imaginativo y idealista en el ámbito de trabajo y empleo.",
+        "detailed": "Nodo Norte representa propósito de vida y destino. En Acuario (El Aguador), esta energía se convierte en imaginativo, idealista, intuitivo. Ubicado en Sexta Casa, diriges esta energía de Nodo Norte en Acuario hacia trabajo y empleo y técnicas y métodos. Esto crea una expresión única donde tu propósito de vida y destino se manifiesta de forma natural a través de enfoques de imaginativo, idealista, intuitivo en asuntos relacionados con la sexta casa.",
+        "keywords": [
+          "destino",
+          "propósito de vida",
+          "crecimiento del alma",
+          "dirección futura",
+          "recompensa kármica",
+          "imaginativo",
+          "idealista",
+          "intuitivo"
+        ]
+      }
+    },
+    {
+      "name": "South Node",
+      "longitude": 136.5879268579846,
+      "latitude": 0,
+      "sign": "Leo",
+      "degree": 16.5879268579846,
+      "speed": 0.027192215415851706,
+      "isRetrograde": false,
+      "house": 12,
+      "nameLocalized": "Nodo Sur",
+      "signLocalized": "Leo",
+      "interpretation": {
+        "summary": "Tu Nodo Sur en Leo en Duodécima Casa revela cómo expresas dones de vidas pasadas y zona de confort con energía de orgulloso y audaz en el ámbito de lo oculto o bajo la superficie.",
+        "detailed": "Nodo Sur representa dones de vidas pasadas y zona de confort. En Leo (El León), esta energía se convierte en orgulloso, audaz, ambicioso. Ubicado en Duodécima Casa, diriges esta energía de Nodo Sur en Leo hacia lo oculto o bajo la superficie y karma. Esto crea una expresión única donde tu dones de vidas pasadas y zona de confort se manifiesta de forma natural a través de enfoques de orgulloso, audaz, ambicioso en asuntos relacionados con la duodécima casa.",
+        "keywords": [
+          "talentos innatos",
+          "sabiduría de vidas pasadas",
+          "habilidades naturales",
+          "zona de confort",
+          "habilidades dominadas",
+          "orgulloso",
+          "audaz",
+          "ambicioso"
+        ]
+      }
+    },
+    {
+      "name": "Chiron",
+      "longitude": 102.83892997545979,
+      "latitude": -7.306646843595004,
+      "sign": "Cancer",
+      "degree": 12.838929975459791,
+      "speed": -0.06653061139940064,
+      "isRetrograde": true,
+      "house": 11,
+      "nameLocalized": "Quirón",
+      "signLocalized": "Cáncer",
+      "interpretation": {
+        "summary": "Tu Quirón en Cáncer en Undécima Casa revela cómo expresas sanación y heridas internas con energía de intuitivo y emocional en el ámbito de conocidos y amigos.",
+        "detailed": "Quirón representa sanación y heridas internas. En Cáncer (El Cangrejo), esta energía se convierte en intuitivo, protector, compasivo. Ubicado en Undécima Casa, diriges esta energía de Quirón en Cáncer hacia conocidos y amigos y grupos. Esto crea una expresión única donde tu sanación y heridas internas se manifiesta de forma natural a través de enfoques de intuitivo, emocional, inteligente en asuntos relacionados con la undécima casa.",
+        "keywords": [
+          "sanación",
+          "sabiduría",
+          "mentoría",
+          "enseñanza",
+          "empatía",
+          "intuitivo",
+          "emocional",
+          "inteligente",
+          "apasionado"
+        ]
+      }
+    },
+    {
+      "name": "Black Moon Lilith",
+      "longitude": 218.0675008457844,
+      "latitude": -5.073182560177018,
+      "sign": "Scorpio",
+      "degree": 8.067500845784394,
+      "speed": 0.1120123245750051,
+      "isRetrograde": false,
+      "house": 3,
+      "nameLocalized": "Luna Negra Lilith",
+      "signLocalized": "Escorpio",
+      "interpretation": {
+        "summary": "Tu Luna Negra Lilith en Escorpio en Tercera Casa revela cómo expresas instinto primario y el yo reclamado con energía de seductor y apasionado en el ámbito de la mente inferior.",
+        "detailed": "Luna Negra Lilith representa instinto primario y el yo reclamado. En Escorpio (El Escorpión), esta energía se convierte en seductor, apasionado, independiente. Ubicado en Tercera Casa, diriges esta energía de Luna Negra Lilith en Escorpio hacia la mente inferior y comunicación. Esto crea una expresión única donde tu instinto primario y el yo reclamado se manifiesta de forma natural a través de enfoques de seductor, apasionado, independiente en asuntos relacionados con la tercera casa.",
+        "keywords": [
+          "autenticidad",
+          "autonomía",
+          "instinto",
+          "poder crudo",
+          "autoposesión",
+          "seductor",
+          "apasionado",
+          "independiente"
+        ]
+      }
+    }
+  ],
+  "houses": [
+    {
+      "number": 1,
+      "longitude": 150.04038144819262,
+      "sign": "Virgo",
+      "degree": 0.04038144819261902,
+      "signLocalized": "Virgo"
+    },
+    {
+      "number": 2,
+      "longitude": 169.90435356822337,
+      "sign": "Virgo",
+      "degree": 19.90435356822337,
+      "signLocalized": "Virgo"
+    },
+    {
+      "number": 3,
+      "longitude": 195.96620386089558,
+      "sign": "Libra",
+      "degree": 15.966203860895575,
+      "signLocalized": "Libra"
+    },
+    {
+      "number": 4,
+      "longitude": 229.80823149491746,
+      "sign": "Scorpio",
+      "degree": 19.808231494917464,
+      "signLocalized": "Escorpio"
+    },
+    {
+      "number": 5,
+      "longitude": 268.5042885508019,
+      "sign": "Sagittarius",
+      "degree": 28.504288550801903,
+      "signLocalized": "Sagitario"
+    },
+    {
+      "number": 6,
+      "longitude": 302.753969365136,
+      "sign": "Aquarius",
+      "degree": 2.7539693651360153,
+      "signLocalized": "Acuario"
+    },
+    {
+      "number": 7,
+      "longitude": 330.04038144819265,
+      "sign": "Pisces",
+      "degree": 0.04038144819264744,
+      "signLocalized": "Piscis"
+    },
+    {
+      "number": 8,
+      "longitude": 349.90435356822337,
+      "sign": "Pisces",
+      "degree": 19.90435356822337,
+      "signLocalized": "Piscis"
+    },
+    {
+      "number": 9,
+      "longitude": 15.966203860895575,
+      "sign": "Aries",
+      "degree": 15.966203860895575,
+      "signLocalized": "Aries"
+    },
+    {
+      "number": 10,
+      "longitude": 49.80823149491746,
+      "sign": "Taurus",
+      "degree": 19.808231494917457,
+      "signLocalized": "Tauro"
+    },
+    {
+      "number": 11,
+      "longitude": 88.50428855080192,
+      "sign": "Gemini",
+      "degree": 28.504288550801917,
+      "signLocalized": "Géminis"
+    },
+    {
+      "number": 12,
+      "longitude": 122.75396936513602,
+      "sign": "Leo",
+      "degree": 2.7539693651360153,
+      "signLocalized": "Leo"
+    }
+  ],
+  "houseSystem": "placidus",
+  "ascendant": {
+    "sign": "Virgo",
+    "degree": 0.04038144819261902,
+    "longitude": 150.04038144819262,
+    "signLocalized": "Virgo"
+  },
+  "midheaven": {
+    "sign": "Taurus",
+    "degree": 19.808231494917457,
+    "longitude": 49.80823149491746,
+    "signLocalized": "Tauro"
+  },
+  "vertex": {
+    "sign": "Capricorn",
+    "degree": 27.89272212578686,
+    "longitude": 297.89272212578686,
+    "house": 5,
+    "signLocalized": "Capricornio"
+  },
+  "changes": {
+    "ascendantSignChanged": true,
+    "planetsChangedHouse": [
+      {
+        "planet": "Sun",
+        "planetLocalized": "Sol",
+        "natalHouse": 8,
+        "relocatedHouse": 5
+      },
+      {
+        "planet": "Moon",
+        "planetLocalized": "Luna",
+        "natalHouse": 4,
+        "relocatedHouse": 2
+      },
+      {
+        "planet": "Mercury",
+        "planetLocalized": "Mercurio",
+        "natalHouse": 7,
+        "relocatedHouse": 5
+      },
+      {
+        "planet": "Venus",
+        "planetLocalized": "Venus",
+        "natalHouse": 8,
+        "relocatedHouse": 5
+      },
+      {
+        "planet": "Mars",
+        "planetLocalized": "Marte",
+        "natalHouse": 6,
+        "relocatedHouse": 4
+      },
+      {
+        "planet": "Jupiter",
+        "planetLocalized": "Júpiter",
+        "natalHouse": 1,
+        "relocatedHouse": 11
+      },
+      {
+        "planet": "Saturn",
+        "planetLocalized": "Saturno",
+        "natalHouse": 8,
+        "relocatedHouse": 5
+      },
+      {
+        "planet": "Uranus",
+        "planetLocalized": "Urano",
+        "natalHouse": 7,
+        "relocatedHouse": 5
+      },
+      {
+        "planet": "Neptune",
+        "planetLocalized": "Neptuno",
+        "natalHouse": 7,
+        "relocatedHouse": 5
+      },
+      {
+        "planet": "Pluto",
+        "planetLocalized": "Plutón",
+        "natalHouse": 6,
+        "relocatedHouse": 3
+      },
+      {
+        "planet": "North Node",
+        "planetLocalized": "Nodo Norte",
+        "natalHouse": 9,
+        "relocatedHouse": 6
+      },
+      {
+        "planet": "South Node",
+        "planetLocalized": "Nodo Sur",
+        "natalHouse": 3,
+        "relocatedHouse": 12
+      },
+      {
+        "planet": "Chiron",
+        "planetLocalized": "Quirón",
+        "natalHouse": 1,
+        "relocatedHouse": 11
+      },
+      {
+        "planet": "Black Moon Lilith",
+        "planetLocalized": "Luna Negra Lilith",
+        "natalHouse": 5,
+        "relocatedHouse": 3
+      }
+    ],
+    "angularPlanets": [
+      "Pluto"
+    ],
+    "angularPlanetsLocalized": [
+      "Plutón"
+    ],
+    "distanceKm": 5570.137830606993,
+    "direction": "northeast"
+  },
+  "interpretation": {
+    "summary": "Reubicada en este lugar, los ejes de tu carta se desplazan mientras los planetas conservan sus posiciones natales. El Ascendente pasa a Virgo y el Medio Cielo a Tauro, con Plutón cerca de los ángulos, donde su influencia se vuelve más intensa en la vida cotidiana aquí."
+  }
+}

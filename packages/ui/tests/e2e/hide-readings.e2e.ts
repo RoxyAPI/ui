@@ -281,15 +281,28 @@ test('hide-readings does something on every component that promises it, and noth
 				Boolean((n as Host).shadowRoot) &&
 				(n as Host).data != null,
 		) as Host[];
-		const read = (h: Host) =>
-			[...(h.shadowRoot as ShadowRoot).childNodes]
-				.filter((n) => (n as Element).tagName !== 'STYLE')
-				.map((n) => n.textContent ?? '')
-				.join('').length;
-		const before = hosts.map(read);
+		const readNode = (node: Node): number => {
+			if (node.nodeType === Node.TEXT_NODE)
+				return (node.textContent ?? '').length;
+			const element = node as Element;
+			if (element.tagName === 'STYLE') return 0;
+			const root = element.shadowRoot ?? node;
+			return [...root.childNodes].reduce(
+				(total, child) => total + readNode(child),
+				0,
+			);
+		};
+		const settle = async (h: Host): Promise<void> => {
+			await h.updateComplete;
+			for (const child of h.shadowRoot?.querySelectorAll<Host>('*') ?? []) {
+				if (child.shadowRoot) await settle(child);
+			}
+		};
+		await Promise.all(hosts.map(settle));
+		const before = hosts.map(readNode);
 		for (const h of hosts) h.hideReadings = true;
-		await Promise.all(hosts.map((h) => h.updateComplete));
-		const after = hosts.map(read);
+		await Promise.all(hosts.map(settle));
+		const after = hosts.map(readNode);
 		return hosts.map((h, i) => ({
 			tag: h.tagName.toLowerCase(),
 			id: h.id,

@@ -17,8 +17,8 @@ const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 /** A bare `YYYY-MM`, which several payloads use to name the month a forecast covers. */
 const MONTH_ONLY = /^\d{4}-\d{2}$/;
 const BARE_TIME = /^\d{2}:\d{2}(:\d{2})?$/;
-/** An ISO datetime with NO timezone designator: a wall clock, not an instant. */
-const NAIVE_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
+/** A wall-clock datetime with a T or space separator and no timezone designator. */
+const NAIVE_DATETIME = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
 
 /** Canonical form per tag seen, so a page carrying an unparseable `lang` does not throw once per rendered date. */
 const CANONICAL: Map<string, string> = new Map();
@@ -101,7 +101,7 @@ function resolveDisplayDate(input: string): {
 			: MONTH_ONLY.test(input)
 				? `${input}-01T00:00:00`
 				: NAIVE_DATETIME.test(input)
-					? input
+					? input.replace(' ', 'T')
 					: null;
 	return naive
 		? { d: new Date(`${naive}Z`), timeZone: 'UTC' }
@@ -412,26 +412,12 @@ export function formatAyanamsa(
 	return label || deg;
 }
 
-/**
- * Date plus time in one label: `Jan 15, 1990, 2:30 PM`.
- *
- * @remarks
- * Components were concatenating a raw date and a raw time (`1990-01-15 \u00b7 14:30:00`) while siblings rendered the same instant through {@link formatDate}. One helper keeps every card reading the same way.
- *
- * Birth details arrive as two fields rather than one timestamp, so `time` may be passed separately; it is merged into a naive datetime, pinned to UTC so the wall clock renders identically for every viewer.
- *
- * @example
- * ```ts
- * formatDateTime('en', '1990-01-15T14:30:00');    // 'Jan 15, 1990, 2:30 PM'
- * formatDateTime('en', '1990-01-15', '14:30:00'); // 'Jan 15, 1990, 2:30 PM'
- * formatDateTime('de', '1990-01-15T14:30:00');    // '15. Jan. 1990, 14:30'
- * formatDateTime('en', '1990-01-15');             // 'Jan 15, 1990'
- * ```
- */
+/** Localized date and clock, with optional seconds and a separate birth-time field. */
 export function formatDateTime(
 	locale: string | undefined,
 	input: unknown,
 	time?: unknown,
+	includeSeconds = false,
 ): string {
 	const merged =
 		typeof input === 'string' &&
@@ -450,6 +436,7 @@ export function formatDateTime(
 		day: 'numeric',
 		year: 'numeric',
 		...clock(locale),
+		...(includeSeconds ? { second: '2-digit' as const } : {}),
 		timeZone,
 	});
 }

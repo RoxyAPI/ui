@@ -235,6 +235,16 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 				font-size: var(--roxy-text-xs, 0.75rem);
 				color: var(--roxy-secondary, #475569);
 			}
+			.star-facts {
+				margin: var(--roxy-space-xs, 0.25rem) 0 0;
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--roxy-space-xs, 0.25rem) var(--roxy-space-md, 1rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+			}
+			.star-facts div { display: flex; gap: var(--roxy-space-xs, 0.25rem); }
+			.star-facts dt { color: var(--roxy-secondary, #475569); }
+			.star-facts dd { margin: 0; }
 			.structure {
 				margin: 0;
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -462,12 +472,12 @@ export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
 				<div class="row-body">
 					<span>${display(p, 'name')}</span>
 					${p.element ? html`<span> ${p.element}</span>` : nothing}
-					${
-						!this.hideReadings
-							? html`${p.meaning ? html`<p part="reading">${p.meaning}</p>` : nothing}
-							${p.remedy ? html`<p part="reading">${p.remedy}</p>` : nothing}`
-							: nothing
-					}
+					<dl class="star-facts">
+						${p.nature ? html`<div><dt>${this.t('Nature')}</dt><dd>${p.nature === 'auspicious' ? this.t('Favourable') : p.nature === 'inauspicious' ? this.t('Unfavourable') : p.nature}</dd></div>` : nothing}
+						${p.enhancer ? html`<div><dt>${this.t('Enhancer')}</dt><dd>${p.enhancer}</dd></div>` : nothing}
+						${p.remedy ? html`<div><dt>${this.t('Remedy')}</dt><dd>${p.remedy}</dd></div>` : nothing}
+					</dl>
+					${p.meaning && !this.hideReadings ? html`<p part="reading">${p.meaning}</p>` : nothing}
 				</div>
 			</li>`;
 		});

@@ -10,7 +10,7 @@
  *
  * **Scope is the FORM PATH (`<roxy-endpoint-form>` and `<roxy-location-search>`), the two Western chart wheels, the monthly ephemeris table, the Human Design bodygraph, type and variables cards, the dosha card, the dream symbol card and its search, the hora table, the Vedic rashi and divisional charts, the angel number and crystal cards, the two generic fallbacks (`<roxy-data>`, `<roxy-reference-card>`), and the shared chrome they inherit.** The form path is first because it is what a visitor reads first: every widget that needs birth data mounts a form, so an English form stood in front of every translated card in the library. A natal card in Spanish over an English transit wheel is the half-translated state this list exists to remove, and the generic pair is in scope for a second reason: both build their output from `Object.keys(row)`, so both fold the API localized values into it and were rendering Spanish data under `Yes`, `No` and `31 rows`. The ephemeris table joined for the first reason and the second at once: it was unbound, so a monthly ephemeris rendered through `<roxy-data>` as `Year 2026 / Month 8 / 31 Rows` on every site in every language. The other components still render English chrome; extending the scope is adding entries here and to each locale, not new machinery.
  *
- * **A component earns its vocabulary by having its chrome here, and the two move in ONE change.** Reading `nameLocalized` under an English heading is worse than reading `name` under one, so a card is either translated or it is not. `<roxy-hd-connection>` and `<roxy-hd-penta>` are deliberately absent: almost all of their chrome is Human Design doctrine the COMPONENT wrote (what an electromagnetic channel is, what the upper triangle of a penta carries), so translating them is a paragraph-level meaning risk of exactly the shape lesson 32 describes, and they stay English end to end until a practitioner pass can source them.
+ * **A component earns its vocabulary by having its chrome here, and the two move in ONE change.** Reading `nameLocalized` under an English heading is worse than reading `name` under one, so a card is either translated or it is not. Human Design connection and penta cards retain English doctrinal prose; their shared chart controls and diagram labels use the catalogue.
  *
  * **Two entries may never differ only by case.** The runtime key is {@link lookupKey} of the source string, so `harmonious` and `Harmonious` are ONE key and the second silently overwrites the first in every catalogue. A colliding pair renders one catalogue entry under the other source string, which reads as a correct translation of the wrong word. Only the capitalized forms are declared, and `tests/i18n.test.ts` fails on any new pair that collides.
  *
@@ -1450,6 +1450,23 @@ export const CHROME_STRINGS = [
 	// is the 0 to 100 rating a KP card prints, and the two are different nouns
 	// in Spanish, Portuguese and French.
 	'Points',
+
+	// Chart detail controls and response labels.
+	'Partial',
+	'Complete',
+	'Decision',
+	'Enhancer',
+	'Remedy',
+	'Daily values',
+	'Energy rating',
+	'Days since birth',
+	'Enlarge chart',
+	'Close',
+	'Zoom in',
+	'Zoom out',
+	'Reset zoom',
+	'Combined bodygraph',
+	'Defined channels',
 ] as const;
 
 /** One of the English source strings a shipped catalogue must translate. */

@@ -1283,6 +1283,22 @@ export const es: Record<ChromeString, string> = {
 	Sitting: 'Asiento',
 	Straddling: 'A caballo',
 	'Period {{n}}': 'Periodo {{n}}',
+	// Chart detail controls and response labels.
+	Partial: 'Parcial',
+	Complete: 'Completo',
+	Decision: 'Decisión',
+	Enhancer: 'Elemento que refuerza',
+	Remedy: 'Elemento que drena',
+	'Daily values': 'Valores diarios',
+	'Energy rating': 'Puntuación de energía',
+	'Days since birth': 'Días desde el nacimiento',
+	'Enlarge chart': 'Ampliar gráfico',
+	Close: 'Cerrar',
+	'Zoom in': 'Aumentar',
+	'Zoom out': 'Reducir',
+	'Reset zoom': 'Restablecer nivel de zoom',
+	'Combined bodygraph': 'Bodygraph combinado',
+	'Defined channels': 'Canales definidos',
 };
 
 registerLocale('es', es);

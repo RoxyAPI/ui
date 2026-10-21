@@ -3,6 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import type { CalculatePentaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import { hdReadingStyles, renderHdFacts } from '../utils/hd-reading.js';
 import {
 	PENTA_VIEWBOX,
@@ -28,8 +29,11 @@ type PentaGate = Penta['gates'][number];
  */
 @customElement('roxy-hd-penta')
 export class RoxyHdPenta extends RoxyDataElement<Penta> {
+	private readonly chartViewport = new ChartViewport(this);
+
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		hdReadingStyles,
 		css`
 			/* The ladder. Sizing matches the other charts so a card carrying both reads
@@ -271,7 +275,7 @@ export class RoxyHdPenta extends RoxyDataElement<Penta> {
 				<h2 class="title">Penta</h2>
 				${typeof d.memberCount === 'number' ? html`<span class="count">${d.memberCount} members</span>` : nothing}
 			</header>
-			${this.renderChart(d)}
+			${this.chartViewport.renderChartViewport(this.renderChart(d), 'Penta', this.translator)}
 			${renderHdFacts([
 				{ label: 'Members', value: d.memberCount?.toString() },
 				{

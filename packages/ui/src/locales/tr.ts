@@ -1274,6 +1274,22 @@ export const tr: Record<ChromeString, string> = {
 	Sitting: 'Oturuş',
 	Straddling: 'Sınırda',
 	'Period {{n}}': 'Dönem {{n}}',
+	// Chart detail controls and response labels.
+	Partial: 'Kısmi',
+	Complete: 'Tam',
+	Decision: 'Karar',
+	Enhancer: 'Güçlendiren element',
+	Remedy: 'Zayıflatan element',
+	'Daily values': 'Günlük değerler',
+	'Energy rating': 'Enerji puanı',
+	'Days since birth': 'Doğumdan beri geçen gün',
+	'Enlarge chart': 'Görseli büyüt',
+	Close: 'Kapat',
+	'Zoom in': 'Yakınlaştır',
+	'Zoom out': 'Uzaklaştır',
+	'Reset zoom': 'Yakınlaştırma düzeyini sıfırla',
+	'Combined bodygraph': 'Birleşik Bodygraph',
+	'Defined channels': 'Tanımlı kanallar',
 };
 
 registerLocale('tr', tr);

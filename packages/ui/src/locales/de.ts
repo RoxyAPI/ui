@@ -1266,6 +1266,22 @@ export const de: Record<ChromeString, string> = {
 	Sitting: 'Sitz',
 	Straddling: 'Grenzfall',
 	'Period {{n}}': 'Periode {{n}}',
+	// Chart detail controls and response labels.
+	Partial: 'Teilweise',
+	Complete: 'Vollständig',
+	Decision: 'Entscheidung',
+	Enhancer: 'Stärkendes Element',
+	Remedy: 'Ableitendes Element',
+	'Daily values': 'Tageswerte',
+	'Energy rating': 'Energiewert',
+	'Days since birth': 'Tage seit der Geburt',
+	'Enlarge chart': 'Grafik vergrößern',
+	Close: 'Schließen',
+	'Zoom in': 'Vergrößern',
+	'Zoom out': 'Verkleinern',
+	'Reset zoom': 'Zoomfaktor zurücksetzen',
+	'Combined bodygraph': 'Gemeinsamer Bodygraph',
+	'Defined channels': 'Definierte Kanäle',
 };
 
 registerLocale('de', de);

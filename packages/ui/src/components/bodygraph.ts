@@ -13,6 +13,7 @@ import {
 	renderBodygraphSvg,
 } from '../utils/bodygraph-render.js';
 import { bodygraphChartStyles } from '../utils/bodygraph-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDateTimeUtc } from '../utils/format.js';
 import {
@@ -72,12 +73,14 @@ function groupByGate(gates: GateActivation[]): Map<number, GateActivation[]> {
  */
 @customElement('roxy-bodygraph')
 export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
+	private readonly viewport = new ChartViewport(this);
 	/** Which chart side the activations panel is showing. View state, not configuration: the response always carries both sides. */
 	@state()
 	private side: 'personality' | 'design' = 'personality';
 
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		tablistStyles,
 		disclosureStyles,
 		interpAccordionStyles,
@@ -287,7 +290,8 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 				}
 			</header>
 			<div class="layout" part="layout">
-				<svg
+				${this.viewport.renderChartViewport(
+					html`<svg
 					class="chart"
 					part="chart"
 					viewBox=${BODYGRAPH_VIEWBOX}
@@ -310,7 +314,10 @@ export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
 						centerNames,
 						stateWords: { defined: this.t('Defined'), open: this.t('Open') },
 					})}
-				</svg>
+				</svg>`,
+					this.t('Human Design bodygraph'),
+					this.translator,
+				)}
 				${this.renderSummary(d, centerNames)}
 			</div>
 			${this.renderReading(d)}

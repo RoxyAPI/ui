@@ -7,6 +7,8 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
+import { disclosureStyles } from '../utils/disclosure.js';
 import { distinctSanskrit } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
@@ -15,6 +17,7 @@ import {
 	renderKundliCaptions,
 	renderKundliStyleTablist,
 	renderKundliSvg,
+	renderVargaReferenceTable,
 	toKundliViewModel,
 } from '../utils/kundli-render.js';
 import { kundliStyles } from '../utils/kundli-styles.js';
@@ -43,10 +46,14 @@ const divisionOf = (d: DivisionalData): Division =>
  */
 @customElement('roxy-divisional-chart')
 export class RoxyDivisionalChart extends RoxyDataElement<DivisionalData> {
+	private readonly chartViewport = new ChartViewport(this);
+
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		frameCaptionStyles,
 		kundliStyles,
+		disclosureStyles,
 		tablistStyles,
 		css`
 			.division-meta {
@@ -99,7 +106,10 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalData> {
 		if (!this.data?.chart?.meta) return null;
 		const division = divisionOf(this.data);
 		const label = `D${division.number} ${division.name}`;
-		return toKundliViewModel(this.data.chart.meta, { divisionLabel: label });
+		return toKundliViewModel(this.data.chart.meta, {
+			divisionLabel: label,
+			natalReference: true,
+		});
 	}
 
 	protected renderData(d: DivisionalData) {
@@ -138,7 +148,8 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalData> {
 				tabindex="0"
 				aria-labelledby="kundli-tab-${this.chartStyle}"
 			>
-				<svg
+				${this.chartViewport.renderChartViewport(
+					html`<svg
 					viewBox="0 0 400 400"
 					preserveAspectRatio="xMidYMid meet"
 					part="chart"
@@ -147,9 +158,13 @@ export class RoxyDivisionalChart extends RoxyDataElement<DivisionalData> {
 				>
 					<title>D${division.number} ${division.name}</title>
 					${renderKundliSvg(vm, this.chartStyle, this.translator)}
-				</svg>
+				</svg>`,
+					`D${division.number} ${division.name}`,
+					this.translator,
+				)}
 			</div>
 
+			${renderVargaReferenceTable(d.chart.meta, division.number, this.effectiveLang(), this.translator)}
 			${
 				vargottama && vargottama.length > 0
 					? html`<div class="vargottama-row" part="details" role="list" aria-label=${this.t('Vargottama planets')}>

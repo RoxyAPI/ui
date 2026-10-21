@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
 	type ChartStyle,
@@ -37,7 +38,15 @@ import { tablistStyles } from '../utils/tablist.js';
  */
 @customElement('roxy-vedic-kundli')
 export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
-	static styles = [baseStyles, frameCaptionStyles, kundliStyles, tablistStyles];
+	private readonly chartViewport = new ChartViewport(this);
+
+	static styles = [
+		baseStyles,
+		chartViewportStyles,
+		frameCaptionStyles,
+		kundliStyles,
+		tablistStyles,
+	];
 
 	@property({ type: String, reflect: true, attribute: 'chart-style' })
 	chartStyle: ChartStyle = 'north';
@@ -99,7 +108,8 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 				tabindex="0"
 				aria-labelledby="kundli-tab-${this.chartStyle}"
 			>
-				<svg
+				${this.chartViewport.renderChartViewport(
+					html`<svg
 					viewBox="0 0 400 400"
 					preserveAspectRatio="xMidYMid meet"
 					part="chart"
@@ -108,7 +118,10 @@ export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
 				>
 					<title>${this.t('Vedic kundli')}</title>
 					${renderKundliSvg(vm, this.chartStyle, this.translator)}
-				</svg>
+				</svg>`,
+					title,
+					this.translator,
+				)}
 			</div>
 		</div>`;
 	}

@@ -1,4 +1,4 @@
-import { css, html, nothing, svg } from 'lit';
+import { css, html, nothing } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { trigramGlyph } from '../tokens/index.js';
 import type {
@@ -12,7 +12,8 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { disclosureStyles } from '../utils/disclosure.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { formatDate } from '../utils/format.js';
 import {
 	type InterpSection,
 	interpAccordionStyles,
@@ -57,8 +58,26 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				gap: var(--roxy-space-lg, 1.5rem);
 			}
 
+			.result-chart {
+				display: grid;
+				grid-template-columns: 6rem minmax(0, 1fr);
+				gap: var(--roxy-space-lg, 1.5rem);
+				padding-top: var(--roxy-space-md, 1rem);
+			}
+			.result {
+				grid-column: 1 / -1;
+				border-top: 1px solid var(--roxy-border, #e4e4e7);
+				padding-top: var(--roxy-space-md, 1rem);
+			}
+			.result > summary {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: var(--roxy-space-sm, 0.5rem);
+				cursor: pointer;
+			}
 			@container (max-width: 480px) {
-				.card {
+				.card, .result-chart {
 					grid-template-columns: 1fr;
 				}
 			}
@@ -119,6 +138,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				font-size: var(--roxy-text-sm, 0.875rem);
 				margin: 0 0 var(--roxy-space-sm, 0.5rem);
 			}
+			.daily-date { display: block; margin-bottom: var(--roxy-space-sm, .5rem); font-size: var(--roxy-text-sm, .875rem); color: var(--roxy-secondary, #475569); }
 			.trigrams {
 				display: flex;
 				gap: var(--roxy-space-md, 1rem);
@@ -182,6 +202,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 		changingLinePositions?: number[];
 		changingLines?: Hexagram['changingLines'];
 		dailyMessage?: string;
+		date?: string;
 		resultingHexagram?: Hexagram;
 	} | null {
 		const d = this.data;
@@ -193,6 +214,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				return {
 					hex,
 					lines: cast.lines,
+					date: cast.date,
 					changingLinePositions: cast.changingLinePositions,
 					changingLines: cast.changingLines ?? hex.changingLines,
 					resultingHexagram: cast.resultingHexagram as Hexagram | undefined,
@@ -204,6 +226,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 				hex,
 				changingLines: hex.changingLines,
 				dailyMessage: daily.dailyMessage,
+				date: daily.date,
 			};
 		}
 		const hex = d as Hexagram;
@@ -213,21 +236,41 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	protected renderData() {
 		const resolved = this.resolveHexagram();
 		if (!resolved) return this.renderEmpty();
-
 		const {
-			hex: h,
-			lines: castLines,
+			hex,
+			lines,
 			changingLinePositions,
 			changingLines,
 			dailyMessage,
+			date,
 			resultingHexagram,
 		} = resolved;
+		return html`<article class="card" part="card" aria-label=${this.t('I Ching hexagram')}>
+			${this.renderHexagram('hexagram', hex, lines, changingLinePositions, changingLines, dailyMessage, date)}
+			${
+				resultingHexagram
+					? html`<details class="result" part="section resulting-hexagram">
+				<summary>${this.t('Becomes hexagram {{number}} {{name}}.', { number: resultingHexagram.number, name: resultingHexagram.english ?? resultingHexagram.chinese ?? '' })}${chevron()}</summary>
+				<div class="result-chart">${this.renderHexagram('result', resultingHexagram)}</div>
+			</details>`
+					: nothing
+			}
+		</article>`;
+	}
+
+	private renderHexagram(
+		name: string,
+		h: Hexagram,
+		castLines?: number[],
+		changingLinePositions?: number[],
+		changingLines?: Hexagram['changingLines'],
+		dailyMessage?: string,
+		date?: string,
+	) {
 		const lines = castLines ?? this.derivedLines(h);
 		const changing = new Set(changingLinePositions ?? []);
-
 		const readings = !this.hideReadings;
-
-		return html`<article class="card" part="card" aria-label=${this.t('I Ching hexagram')}>
+		return html`
 			<div class="glyphs" part="chart">
 				${h.symbol ? html`<div class="symbol">${h.symbol}</div>` : nothing}
 				${
@@ -245,8 +288,8 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 									return html`<div class="line ${cls}">
 										${
 											broken
-												? svg`<span class="seg"></span><span class="seg"></span>`
-												: svg`<span class="seg"></span>`
+												? html`<span class="seg"></span><span class="seg"></span>`
+												: html`<span class="seg"></span>`
 										}
 									</div>`;
 								})}
@@ -268,6 +311,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 							.join(' ')
 					}
 				</h2>
+				${date ? html`<time class="daily-date" part="details" datetime=${date}>${formatDate(this.effectiveLang(), date)}</time>` : nothing}
 				<p class="subtitle">
 					${h.chinese ? html`${h.chinese}` : nothing}
 					${h.pinyin ? html` · ${h.pinyin}` : nothing}
@@ -317,20 +361,29 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 									.sort((a, b) => a - b)
 									.join(', '),
 							})}
-							${
-								resultingHexagram?.english
-									? html` ${this.t('Becomes hexagram {{number}} {{name}}.', {
-											number: resultingHexagram.number,
-											name: resultingHexagram.english,
-										})}`
-									: nothing
-							}
+
 						</div>`
 						: nothing
 				}
-				${this.renderLines(changingLines, changing)}
+				${this.renderTopics(h, name)}
+				${this.renderLines(changingLines ?? h.changingLines, changing, `${name}-lines`)}
 			</div>
-		</article>`;
+		`;
+	}
+
+	private renderTopics(h: Hexagram, name: string) {
+		const i = h.interpretation;
+		if (!i) return nothing;
+		return this.renderInterpretation(
+			[
+				{ label: this.t('Love'), body: i.love ?? '' },
+				{ label: this.t('Career'), body: i.career ?? '' },
+				{ label: this.t('Decision'), body: i.decision ?? '' },
+				{ label: this.t('Advice'), body: i.advice ?? '' },
+			].filter((row) => row.body),
+			`${name}-topics`,
+			'Readings',
+		);
 	}
 
 	/**
@@ -342,6 +395,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 	private renderLines(
 		lines: Hexagram['changingLines'] | undefined,
 		changing: Set<number>,
+		name: string,
 	) {
 		const all = lines ?? [];
 		if (all.length === 0) return nothing;
@@ -360,7 +414,7 @@ export class RoxyHexagram extends RoxyDataElement<HexagramData> {
 
 		return this.renderInterpretation(
 			sections,
-			'hexagram-lines',
+			name,
 			isCast ? 'Changing lines' : 'Lines',
 		);
 	}

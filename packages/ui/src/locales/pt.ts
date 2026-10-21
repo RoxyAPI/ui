@@ -1261,6 +1261,22 @@ export const pt: Record<ChromeString, string> = {
 	Sitting: 'Traseira',
 	Straddling: 'Limítrofe',
 	'Period {{n}}': 'Período {{n}}',
+	// Chart detail controls and response labels.
+	Partial: 'Parcial',
+	Complete: 'Completo',
+	Decision: 'Decisão',
+	Enhancer: 'Elemento de reforço',
+	Remedy: 'Elemento de drenagem',
+	'Daily values': 'Valores diários',
+	'Energy rating': 'Pontuação de energia',
+	'Days since birth': 'Dias desde o nascimento',
+	'Enlarge chart': 'Ampliar gráfico',
+	Close: 'Fechar',
+	'Zoom in': 'Ampliar',
+	'Zoom out': 'Reduzir',
+	'Reset zoom': 'Redefinir o nível de zoom',
+	'Combined bodygraph': 'Bodygraph combinado',
+	'Defined channels': 'Canais definidos',
 };
 
 registerLocale('pt', pt);

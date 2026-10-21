@@ -23,7 +23,20 @@ async function mount(
 }
 
 const root = (el: HTMLElement): ShadowRoot => el.shadowRoot as ShadowRoot;
-const text = (el: HTMLElement): string => root(el).textContent ?? '';
+const deepText = (r: Node): string =>
+	[...r.childNodes]
+		.map((node) => {
+			const element = node as Element;
+			return node.nodeType === Node.TEXT_NODE
+				? (node.textContent ?? '')
+				: element.shadowRoot
+					? deepText(element.shadowRoot)
+					: node.childNodes.length
+						? deepText(node)
+						: '';
+		})
+		.join('');
+const text = (el: HTMLElement): string => deepText(root(el));
 
 /** Numeric attribute off an SVG node, so a coordinate can be asserted rather than eyeballed. */
 const num = (node: Element | null, attr: string): number =>
@@ -56,17 +69,17 @@ const radiusOf = (node: Element | null): number =>
  * test instead of moving the expectation with it. `polarToCartesian` puts 0
  * degrees at 3 o'clock with positive angles running clockwise on screen.
  */
-const SIZE = 400;
-const CENTER = 200;
-const NATAL_R = 94;
-const TRANSIT_R = 124;
-const TRANSIT_LINE_R = 112;
-const NATAL_LINE_R = 104;
-// The natal degree band at the top of the ring: the glyph and label half heights plus the ink gap inside the ring.
-const NATAL_DEG_R = NATAL_R - (0.95 * 13 + 0.9 * 7) / 2 - 2;
-const HUB_R = 46;
-const BAND_R = 140;
-const HOUSE_NUM_R = 34;
+const SIZE = 640;
+const CENTER = 320;
+const NATAL_R = 142;
+const TRANSIT_R = 250;
+const TRANSIT_LINE_R = 76;
+const NATAL_LINE_R = 76;
+// The natal degree band at the top clears the glyph and label half heights plus the ink gap.
+const NATAL_DEG_R = NATAL_R - (0.95 * 18 + 0.9 * 10) / 2 - 2;
+const HUB_R = 78;
+const BAND_R = 168;
+const HOUSE_NUM_R = 166;
 
 /** Where the component should place a longitude, derived from first principles. */
 function expected(longitude: number, radius: number, ascendant = 0) {
@@ -303,6 +316,59 @@ describe('roxy-transit-wheel', () => {
 		el.remove();
 	});
 
+	test('clears each ring glyph and its own label at every cardinal angle and measured size', async () => {
+		for (const size of [
+			{ glyph: 18, degree: 10 },
+			{ glyph: 26, degree: 14 },
+		]) {
+			for (const isRetrograde of [false, true]) {
+				for (const longitude of [0, 90, 180, 270]) {
+					const planet = body('Sun', longitude, 'Aries', 1, { isRetrograde });
+					const el = await mount({
+						...data,
+						natalPlanets: [planet],
+						transitPlanets: [planet],
+						aspects: [],
+						summary: undefined,
+					});
+					Object.assign(
+						(el as unknown as { type: { size: typeof size } }).type.size,
+						size,
+					);
+					(el as unknown as { requestUpdate(): void }).requestUpdate();
+					await settled(el);
+					for (const [ring, radius] of [
+						['Natal', NATAL_R],
+						['Transiting', TRANSIT_R],
+					] as const) {
+						const mark = glyph(el, ring, 'Sun');
+						const position = expected(longitude, radius);
+						expect(num(mark, 'x')).toBeCloseTo(position.x, 6);
+						expect(num(mark, 'y')).toBeCloseTo(position.y, 6);
+						const label =
+							mark?.parentElement?.querySelector('.planet-deg') ?? null;
+						expect(label).not.toBeNull();
+						const glyphInk = 0.95 * size.glyph;
+						const labelWidth = (1.85 + (isRetrograde ? 1.25 : 0)) * size.degree;
+						const labelHeight = 0.9 * size.degree;
+						const gap = Math.max(
+							Math.abs(num(label, 'x') - num(mark, 'x')) -
+								(glyphInk + labelWidth) / 2,
+							Math.abs(num(label, 'y') - num(mark, 'y')) -
+								(glyphInk + labelHeight) / 2,
+						);
+						expect(gap).toBeGreaterThanOrEqual(2 - 1e-6);
+						expect(num(label, 'x') - labelWidth / 2).toBeGreaterThan(0);
+						expect(num(label, 'x') + labelWidth / 2).toBeLessThan(SIZE);
+						expect(num(label, 'y') - labelHeight / 2).toBeGreaterThan(0);
+						expect(num(label, 'y') + labelHeight / 2).toBeLessThan(SIZE);
+					}
+					el.remove();
+				}
+			}
+		}
+	});
+
 	test('keeps the two rings at different radii, transiting outside natal', async () => {
 		const el = await mount(data);
 		const natal = [...root(el).querySelectorAll('text.natal-glyph')];
@@ -352,7 +418,7 @@ describe('roxy-transit-wheel', () => {
 		// the max of the glyph at the ring radius and the whole-degree label at its
 		// own, each a measured em width times the font size the wheel declares.
 		const minSep =
-			Math.max((0.95 * 13) / NATAL_R, (1.85 * 7) / NATAL_DEG_R) *
+			Math.max((0.95 * 18) / NATAL_R, (1.85 * 10) / NATAL_DEG_R) *
 			(180 / Math.PI);
 		const angles = glyphs
 			.map((g) => Math.atan2(num(g, 'y') - CENTER, num(g, 'x') - CENTER))
@@ -932,14 +998,23 @@ describe('roxy-transit-wheel', () => {
 			'readings',
 			'reading',
 		]) {
-			expect(parts, `transit wheel should expose part ${name}`).toContain(name);
+			expect(
+				[
+					...parts,
+					...(root(el)
+						.querySelector('roxy-aspects-table')
+						?.getAttribute('exportparts')
+						?.split(/,\s*/) ?? []),
+				],
+				`transit wheel should expose part ${name}`,
+			).toContain(name);
 		}
 		for (const p of parts) expect(p).toMatch(/^[a-z][a-z0-9-]*$/);
-		// The readings block carries the same `section readings` pair as every
-		// other component, so one ::part(readings) rule reaches it too.
 		expect(
-			root(el).querySelector('[part~="readings"]')?.getAttribute('part'),
-		).toContain('section');
+			root(el)
+				.querySelector('roxy-aspects-table')
+				?.shadowRoot?.querySelector('[part~="readings"]'),
+		).not.toBeNull();
 		el.remove();
 	});
 
@@ -956,7 +1031,7 @@ describe('roxy-transit-wheel', () => {
 		]) {
 			expect(body).toContain(s);
 		}
-		expect(body).toContain('Transit readings');
+		expect(body).toContain('Aspects (3)');
 		expect(el.hasAttribute('hide-readings')).toBe(false);
 		el.remove();
 	});

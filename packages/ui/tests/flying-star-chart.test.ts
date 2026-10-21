@@ -322,8 +322,26 @@ describe('hide-readings', () => {
 		});
 		const body = text(annual);
 		expect(body).not.toContain('ZZREADINGFIVE');
-		expect(body).not.toContain('ZZREMEDYTWO');
+		expect(body).toContain('ZZREMEDYTWO');
 		// The star names are the plate, not a reading, so they stay.
 		expect(body).toContain('Five Yellow');
 	});
+});
+
+test('annual star facts retain distinct enhancer and remedy values without readings', async () => {
+	const el = await mount(
+		{
+			...ANNUAL,
+			palaces: [{ ...ANNUAL.palaces[0], enhancer: 'Metal', remedy: 'Wood' }],
+		},
+		{ mode: 'annual', 'hide-readings': '' },
+	);
+	const facts = root(el).querySelector('.star-facts');
+	expect(
+		[...(facts?.querySelectorAll('dt') ?? [])].map((node) => node.textContent),
+	).toEqual(['Nature', 'Enhancer', 'Remedy']);
+	expect(
+		[...(facts?.querySelectorAll('dd') ?? [])].map((node) => node.textContent),
+	).toEqual(['Unfavourable', 'Metal', 'Wood']);
+	expect(text(el)).not.toContain('ZZREADINGTWO');
 });

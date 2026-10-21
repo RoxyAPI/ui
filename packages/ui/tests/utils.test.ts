@@ -589,6 +589,22 @@ describe('naive timestamps render as wall clocks, not instants', () => {
 		).toBe('2:30 AM');
 	});
 
+	test('space-separated wall clocks preserve their digits across viewer timezones', () => {
+		for (const tz of ZONES) {
+			withTz(tz, () => {
+				const value = '2026-03-08 02:30:42';
+				expect(formatTime('en', value)).toBe('2:30 AM');
+				expect(formatDate('en', value)).toBe('Mar 8, 2026');
+				expect(formatDateTime('en', value, undefined, true)).toBe(
+					'Mar 8, 2026, 2:30:42 AM',
+				);
+				expect(formatDateTime('de', value, undefined, true)).toBe(
+					'8. März 2026, 02:30:42',
+				);
+			});
+		}
+	});
+
 	test('the calendar day never rolls under the viewer timezone', () => {
 		const seen = ZONES.map((tz) =>
 			withTz(tz, () => formatDate('en', '1990-06-15T00:30:00')),
@@ -843,6 +859,24 @@ describe('shared display formatters', () => {
 		);
 		expect(formatDateTime('en', '1990-01-15')).toBe('Jan 15, 1990');
 		expect(formatDateTime('en', undefined)).toBe('');
+	});
+
+	test('formatDateTime includes seconds only when requested in the locale clock', () => {
+		expect(formatDateTime('en', '1990-01-15', '14:30:42', true)).toBe(
+			'Jan 15, 1990, 2:30:42 PM',
+		);
+		expect(formatDateTime('de', '1990-01-15', '14:30:42', true)).toBe(
+			'15. Jan. 1990, 14:30:42',
+		);
+		expect(formatDateTime('en', '1990-01-15', '14:30:42')).toBe(
+			'Jan 15, 1990, 2:30 PM',
+		);
+		expect(formatDateTime('de', '1990-01-15', '14:30:42')).toBe(
+			'15. Jan. 1990, 14:30',
+		);
+		expect(formatDateTime('de', '1990-01-15T14:30:42', undefined, true)).toBe(
+			'15. Jan. 1990, 14:30:42',
+		);
 	});
 
 	test('formatDateRange falls back to whichever end is present', () => {

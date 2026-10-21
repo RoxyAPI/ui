@@ -299,3 +299,32 @@ describe('hide-readings', () => {
 		}
 	});
 });
+
+describe('punishment completeness', () => {
+	for (const complete of [true, false]) {
+		test(`${complete ? 'complete' : 'partial'} is a retained chart fact`, async () => {
+			const interaction = {
+				...CHART.interactions[0],
+				type: 'punishment',
+				complete,
+			};
+			const el = await mount(
+				{ ...CHART, interactions: [interaction] },
+				{ 'hide-readings': '' },
+			);
+			expect(root(el).querySelector('.completeness')?.textContent).toBe(
+				complete ? 'Complete' : 'Partial',
+			);
+			expect(text(el)).not.toContain(interaction.meaning);
+		});
+	}
+	test('an unspecified completeness is not inferred', async () => {
+		const el = await mount({
+			...CHART,
+			interactions: [
+				{ ...CHART.interactions[0], type: 'punishment', complete: undefined },
+			],
+		});
+		expect(root(el).querySelector('.completeness')).toBeNull();
+	});
+});

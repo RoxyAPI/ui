@@ -1283,6 +1283,22 @@ export const hi: Record<ChromeString, string> = {
 	Sitting: 'आसन',
 	Straddling: 'सीमा पर',
 	'Period {{n}}': 'अवधि {{n}}',
+	// Chart detail controls and response labels.
+	Partial: 'आंशिक',
+	Complete: 'पूर्ण',
+	Decision: 'निर्णय',
+	Enhancer: 'शक्ति बढ़ाने वाला तत्व',
+	Remedy: 'शक्ति घटाने वाला तत्व',
+	'Daily values': 'दैनिक मान',
+	'Energy rating': 'ऊर्जा अंक',
+	'Days since birth': 'जन्म से बीते दिन',
+	'Enlarge chart': 'चार्ट बड़ा करें',
+	Close: 'बंद करें',
+	'Zoom in': 'बड़ा करें',
+	'Zoom out': 'छोटा करें',
+	'Reset zoom': 'ज़ूम स्तर पुनः सेट करें',
+	'Combined bodygraph': 'संयुक्त बॉडीग्राफ',
+	'Defined channels': 'परिभाषित चैनल',
 };
 
 registerLocale('hi', hi);

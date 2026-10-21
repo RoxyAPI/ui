@@ -1263,6 +1263,22 @@ export const ru: Record<ChromeString, string> = {
 	// The form group over the four layer weights, in the words the request field label prints.
 	Weights: 'Веса слоев',
 	Points: 'Баллы',
+	// Chart detail controls and response labels.
+	Partial: 'Частично',
+	Complete: 'Полностью',
+	Decision: 'Решение',
+	Enhancer: 'Усиливающий элемент',
+	Remedy: 'Ослабляющий элемент',
+	'Daily values': 'Значения по дням',
+	'Energy rating': 'Оценка энергии',
+	'Days since birth': 'Дни с рождения',
+	'Enlarge chart': 'Увеличить изображение',
+	Close: 'Закрыть',
+	'Zoom in': 'Увеличить',
+	'Zoom out': 'Уменьшить',
+	'Reset zoom': 'Сбросить масштаб',
+	'Combined bodygraph': 'Совместный бодиграф',
+	'Defined channels': 'Определённые каналы',
 };
 
 registerLocale('ru', ru);

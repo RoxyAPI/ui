@@ -5,6 +5,7 @@ import { planetGlyph } from '../tokens/index.js';
 import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import { fanOut } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDateTime } from '../utils/format.js';
@@ -15,8 +16,7 @@ import { WORLD_LAND_PATH } from '../utils/world-map.js';
 type LineSet = AstrocartographyResponse['lines'][number];
 type GeoPoint = LineSet['ascendant']['points'][number];
 
-// Equirectangular (plate carree) projection in a 360x180 unit canvas: one unit
-// per degree. The SVG scales to the container width; the 2:1 aspect ratio holds.
+// Equirectangular map coordinates use one user unit per degree.
 const W = 360;
 const H = 180;
 const lonToX = (lon: number): number => lon + 180;
@@ -74,8 +74,11 @@ const ANGLE_LABEL: Record<string, ChromeString> = {
  */
 @customElement('roxy-astrocartography-map')
 export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyResponse> {
+	private readonly chartViewport = new ChartViewport(this);
+
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		disclosureStyles,
 		interpAccordionStyles,
 		css`
@@ -206,6 +209,20 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 		`,
 	];
 
+	/** Fits the measured map ink without moving geographic coordinates. */
+	protected updated(): void {
+		for (const map of this.renderRoot.querySelectorAll<SVGSVGElement>(
+			'svg[part="chart"]',
+		)) {
+			if (typeof map.getBBox !== 'function') continue;
+			const { x, y, width, height } = map.getBBox();
+			map.setAttribute(
+				'viewBox',
+				[x - 1, y - 1, width + 2, height + 2].join(' '),
+			);
+		}
+	}
+
 	protected renderData(data: AstrocartographyResponse) {
 		const lines = data.lines ?? [];
 		const bd = data.birthDetails;
@@ -221,7 +238,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 						: nothing
 				}
 			</header>
-			${this.renderMap(lines, bd)}
+			${this.chartViewport.renderChartViewport(this.renderMap(lines, bd), this.t('Astrocartography'), this.translator)}
 			${this.renderLegend(lines)}
 			${
 				// The map and its key are the deliverable here; the summary is prose

@@ -1,5 +1,8 @@
 import { css, html, nothing, svg } from 'lit';
+import './aspects-table.js';
+import './western-planets-table.js';
 import { customElement, property, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import {
 	aspectSymbol,
 	planetGlyph,
@@ -10,6 +13,7 @@ import type { NatalChartResponse } from '../types/index.js';
 import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import {
 	arcMidpoint,
 	arcSeparation,
@@ -60,14 +64,14 @@ const PATTERN_ORDER: Record<string, number> = {
 	STELLIUM: 6,
 };
 
-const SIZE = 420;
+const SIZE = 540;
 const CENTER = SIZE / 2;
-const OUTER_R = 164;
-const SIGN_R = 146;
-const HOUSE_R = 120;
-const PLANET_R = 96;
-const ANGLE_TICK_R = 178;
-const ANGLE_LABEL_R = 196;
+const OUTER_R = 220;
+const SIGN_R = 202;
+const HOUSE_R = 174;
+const PLANET_R = 144;
+const ANGLE_TICK_R = 232;
+const ANGLE_LABEL_R = 249;
 /**
  * The in-wheel type sizes at a wide host, in user units, as the stylesheet
  * declares them: what the fan spaces the marks by until the rendered text has
@@ -95,7 +99,7 @@ const ANGLE_LABEL_WIDTH = 28;
 /** A second row this much further in, for a label that would touch its neighbour. */
 const DEG_LABEL_STAGGER = 13;
 /** The hub the aspect lines are drawn inside, under the deepest reach of a label beside a glyph at 3 or 9 o'clock. */
-const HUB_R = 48;
+const HUB_R = 84;
 
 /**
  * The chart shape the wheel actually renders.
@@ -139,13 +143,16 @@ export type WheelChart = Omit<NatalChartResponse, ChartExtras> &
  */
 @customElement('roxy-natal-chart')
 export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
+	private readonly viewport = new ChartViewport(this);
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		aspectLineStyles,
 		tablistStyles,
 		disclosureStyles,
 		interpAccordionStyles,
 		css`
+			roxy-aspects-table::part(card), roxy-western-planets-table::part(card) { border: 0; padding: 0; box-shadow: none; }
 			.wrap {
 				width: 100%;
 				background: var(--roxy-surface, #fff);
@@ -164,6 +171,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			}
 
 			.title {
+				overflow-wrap: anywhere;
 				font-size: var(--roxy-text-lg, 1.125rem);
 				font-weight: var(--roxy-weight-bold, 600);
 				margin: 0;
@@ -178,7 +186,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			svg {
 				display: block;
 				width: 100%;
-				max-width: var(--roxy-chart-max-width, 560px);
+				max-width: var(--roxy-chart-max-width, 680px);
 				aspect-ratio: 1 / 1;
 				height: auto;
 				margin: 0 auto;
@@ -196,7 +204,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			}
 
 			.planet-glyph {
-				fill: var(--roxy-accent, #f59e0b);
+				fill: var(--roxy-accent-ink, #b45309);
 				font-size: 14px;
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
@@ -215,10 +223,10 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			@container (max-width: 480px) {
 				.sign-glyph,
 				.planet-glyph {
-					font-size: 18px;
+					font-size: 24px;
 				}
 				.planet-deg {
-					font-size: 10px;
+					font-size: 13px;
 				}
 				.house-num {
 					font-size: 12px;
@@ -257,7 +265,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 
 			.angle-marker {
 				fill: var(--roxy-accent-ink, #b45309);
-				font-size: 10px;
+				font-size: 13px;
 				font-weight: 700;
 				font-family: var(--roxy-font-sans);
 				letter-spacing: 0.04em;
@@ -412,7 +420,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				text-align: left;
 			}
 			.em-grid td {
-				color: var(--roxy-accent, #f59e0b);
+				color: var(--roxy-accent-ink, #b45309);
 				font-size: 0.95em;
 				line-height: 1.4;
 				min-width: 1.4rem;
@@ -422,17 +430,6 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				font-weight: var(--roxy-weight-bold, 600);
 				background: color-mix(in srgb, var(--roxy-border, #e4e4e7) 25%, transparent);
 			}
-			/* The dominant element row and modality column carry the same claim as
-			 * the summary pills above the grid, so tint them: the pill and the cell
-			 * a reader lands on must agree. */
-			.em-grid .dominant {
-				background: color-mix(in srgb, var(--roxy-accent, #f59e0b) 10%, transparent);
-			}
-			.em-grid th.dominant,
-			.em-grid td.em-total.dominant {
-				color: var(--roxy-fg, #0a0a0a);
-			}
-
 			.pattern {
 				border: 1px solid var(--roxy-border, #e4e4e7);
 				border-radius: var(--roxy-radius-md, 8px);
@@ -586,7 +583,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					: this.renderWheel(planets, aspects)
 			}
 			<div class="legend" part="legend">
-				<span>${this.t('{{count}} planets', { count: planets.length })}</span>
+				<span>${this.t('Positions')}: ${formatNumber(this.effectiveLang(), planets.length, 0)}</span>
 				${aspects.length > 0 ? html`<span>${this.t('{{count}} aspects', { count: aspects.length })}</span>` : nothing}
 				${
 					// The system names the CUSPS, so it is only true while there are
@@ -603,6 +600,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 						: nothing
 				}
 			</div>
+			${this.renderPositionDetails(data)}
 			${this.renderDetails()}
 			${
 				// Ungated on purpose. The figures are chart geometry, not a reading, and
@@ -611,12 +609,14 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				// page that wants the block gone anyway, are on renderPatterns.
 				this.renderPatterns()
 			}
+			${this.renderAspectDetails(aspects)}
 			${this.renderInterpretations()}
 		</div>`;
 	}
 
 	private renderWheel(planets: PlanetEntry[], aspects: AspectEntry[]) {
-		return html`<svg
+		return this.viewport.renderChartViewport(
+			html`<svg
 			viewBox="0 0 ${SIZE} ${SIZE}"
 			part="chart"
 			role="img"
@@ -640,7 +640,10 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			${this.renderHouseNumbers()} ${this.renderCuspDegrees()}
 			${this.renderAspects(planets, aspects)} ${this.renderPlanets(planets)}
 			${this.renderAngles()}
-		</svg>`;
+		</svg>`,
+			this.t(this.heading),
+			this.translator,
+		);
 	}
 
 	/**
@@ -839,11 +842,11 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				return svg`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${house.number}</text>`;
 			});
 		}
-		const ascSignIndex = Math.floor(this.getAscendant() / 30);
+		const ascendant = this.getAscendant();
 		return Array.from({ length: 12 }, (_, i) => {
-			const angle = this.toAngle(i * 30 + 15);
+			const angle = this.toAngle(ascendant + i * 30 + 15);
 			const pos = polarToCartesian(CENTER, CENTER, HOUSE_R - 12, angle);
-			const houseNum = ((i - ascSignIndex + 12) % 12) + 1;
+			const houseNum = i + 1;
 			return svg`<text class="house-num" x=${pos.x} y=${pos.y} text-anchor="middle" dominant-baseline="central">${houseNum}</text>`;
 		});
 	}
@@ -999,6 +1002,18 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		});
 	}
 
+	private renderPositionDetails(data: WheelChart) {
+		return html`<details class="block" part="section positions">
+			<summary>${this.t('Chart details')}</summary>
+			<roxy-western-planets-table
+				bare
+				lang=${ifDefined(this.effectiveLang())}
+				exportparts="card, header, table, details, section, houses"
+				.data=${data}
+			></roxy-western-planets-table>
+		</details>`;
+	}
+
 	private renderDetails() {
 		const summary = this.data?.summary;
 		const ai = this.data?.aspectsInterpretation;
@@ -1052,16 +1067,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		</div>`;
 	}
 
-	/**
-	 * Element by modality grid: the 4x3 cross-tab astrologers read for chart balance. Each body is placed by its sign into one cell (Fire/Earth/Air/Water row, Cardinal/Fixed/Mutable column).
-	 *
-	 * @remarks
-	 * The cells are derived from the planet signs, not read from `summary.elementDistribution`, because a 1D distribution cannot fill a cross-tab. That makes the body set the reconciliation risk: the API counts every body it returns (nodes, Chiron, and Black Moon Lilith included), so the grid must too, or the totals here would contradict the dominant-element pill rendered right above it. Hence the totals count placed bodies rather than `planets.length` (an unrecognized sign would otherwise inflate the grand total past the sum of its rows), the caption names the body set, and the dominant row and column are tinted from `summary` so the pill and the grid land on the same cell.
-	 *
-	 * **The seven headers are CHROME, not response vocabulary, and that is what licenses translating them.** The axes are the component's own 4x3 construction, so six of the seven have no field in the response to defer to and the seventh (the dominant pair) would otherwise have been the only translated word in the table. They therefore go through the chrome catalogue like every other heading here, and each catalogue value is pinned to what the API returns for `dominantElementLocalized` / `dominantModalityLocalized` so the tinted pill above the grid and the header on its row cannot read two different words for one element. `tests/i18n.test.ts` re-asserts that agreement on a render.
-	 *
-	 * **The English arrays stay, because they are the CELL KEYS.** `SIGNS_ORDER.indexOf` resolves each sign to an index and the modulo picks the bucket, so the array values are compared and keyed on, never read (lesson 31). Only the header text nodes move.
-	 */
+	/** The all-body cross-tab and the API planet-only distributions keep their populations separate. */
 	private renderElementModalityGrid() {
 		const planets = this.getPlanets();
 		if (planets.length === 0) return nothing;
@@ -1089,13 +1095,6 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		};
 		const order = SIGNS_ORDER as readonly string[];
 		const summary = this.data?.summary;
-		// English on both sides, on purpose. These three are lookups, not labels:
-		// the dominant pair is COMPARED against the local element and modality
-		// arrays and each sign is resolved to its index in SIGNS_ORDER, so reading
-		// `dominantElementLocalized` or `signLocalized` here would match nothing on
-		// a translated page and everything on an English one.
-		const dominantEl = capitalize(summary?.dominantElement ?? '');
-		const dominantMod = capitalize(summary?.dominantModality ?? '');
 
 		const cells: Record<string, Record<string, string[]>> = {};
 		for (const el of ELEMENTS)
@@ -1123,7 +1122,33 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 		// dragging the card out with it. `.grid-scroll` pairs `overflow-x: auto`
 		// with `min-width: 0`, and it is the `min-width` half that actually lets a
 		// grid item scroll instead of growing to fit.
-		return html`<div class="grid-scroll">
+		const distribution = [
+			...Object.entries(summary?.elementDistribution ?? {}).map(
+				([key, count]) => ({
+					label: ELEMENT_LABEL[capitalize(key)] ?? key,
+					count,
+				}),
+			),
+			...Object.entries(summary?.modalityDistribution ?? {}).map(
+				([key, count]) => ({
+					label: MODALITY_LABEL[capitalize(key)]?.full ?? key,
+					count,
+				}),
+			),
+		];
+		const planetCount = Object.values(
+			summary?.elementDistribution ?? {},
+		).reduce((sum, count) => sum + count, 0);
+		return html`${
+			distribution.length
+				? html`<section class="block" part="section distribution">
+			<h3>${this.t('Element and modality distribution')}</h3>
+			<p>${this.t('{{count}} planets', { count: planetCount })}</p>
+			<div class="pill-row">${distribution.map(({ label, count }) => html`<span class="pill">${label}: ${formatNumber(this.effectiveLang(), count, 0)}</span>`)}</div>
+		</section>`
+				: nothing
+		}
+		<div class="grid-scroll">
 			<table
 				class="em-grid"
 				part="table element-modality"
@@ -1137,32 +1162,29 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					<th></th>
 					${MODALITIES.map(
 						(m) =>
-							html`<th scope="col" title=${MODALITY_LABEL[m]?.full ?? m} class=${m === dominantMod ? 'dominant' : ''}>${MODALITY_LABEL[m]?.abbr ?? m}</th>`,
+							html`<th scope="col" title=${MODALITY_LABEL[m]?.full ?? m}>${MODALITY_LABEL[m]?.abbr ?? m}</th>`,
 					)}
 					<th scope="col">${this.t('Total')}</th>
 				</tr>
 			</thead>
 			<tbody>
 				${ELEMENTS.map((el) => {
-					const isDomRow = el === dominantEl;
 					const rowTotal = MODALITIES.reduce(
 						(s, m) => s + (cells[el]?.[m]?.length ?? 0),
 						0,
 					);
 					return html`<tr>
-						<th scope="row" class=${isDomRow ? 'dominant' : ''}>${ELEMENT_LABEL[el] ?? el}</th>
+						<th scope="row">${ELEMENT_LABEL[el] ?? el}</th>
 						${MODALITIES.map(
-							(m) =>
-								html`<td class=${isDomRow || m === dominantMod ? 'dominant' : ''}>${(cells[el]?.[m] ?? []).join(' ')}</td>`,
+							(m) => html`<td>${(cells[el]?.[m] ?? []).join(' ')}</td>`,
 						)}
-						<td class=${isDomRow ? 'em-total dominant' : 'em-total'}>${rowTotal}</td>
+						<td class="em-total">${rowTotal}</td>
 					</tr>`;
 				})}
 				<tr>
 					<th scope="row">${this.t('Total')}</th>
 					${MODALITIES.map(
-						(m) =>
-							html`<td class=${m === dominantMod ? 'em-total dominant' : 'em-total'}>${colTotal(m)}</td>`,
+						(m) => html`<td class="em-total">${colTotal(m)}</td>`,
 					)}
 					<td class="em-total">${placed}</td>
 				</tr>
@@ -1237,6 +1259,20 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 					: nothing
 			}
 		</div>`;
+	}
+
+	private renderAspectDetails(aspects: AspectEntry[]) {
+		if (aspects.length === 0) return nothing;
+		return html`<details class="block" part="section aspects">
+			<summary>${this.t('Aspects ({{count}})', { count: aspects.length })}</summary>
+			<roxy-aspects-table
+				bare hide-sections="header"
+				lang=${ifDefined(this.effectiveLang())}
+				?hide-readings=${this.hideReadings}
+				exportparts="card, header, section, aspects, details, reading, readings, pattern, patterns, strongest"
+				.data=${{ aspects }}
+			></roxy-aspects-table>
+		</details>`;
 	}
 
 	private renderInterpretations() {

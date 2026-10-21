@@ -5,6 +5,7 @@ import { planetGlyph } from '../tokens/index.js';
 import type { LocalSpaceResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import { arcSeparation, fanOut } from '../utils/degree.js';
 import { formatDateTime } from '../utils/format.js';
 import { planetColor } from '../utils/planet-color.js';
@@ -50,8 +51,11 @@ const PRINCIPAL: ReadonlyArray<{ az: number; source: ChromeString }> = [
  */
 @customElement('roxy-local-space-compass')
 export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
+	private readonly chartViewport = new ChartViewport(this);
+
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		css`
 			.wrap {
 				width: 100%;
@@ -210,7 +214,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 						: nothing
 				}
 			</header>
-			${this.renderDial(bodies)}
+			${this.chartViewport.renderChartViewport(this.renderDial(bodies), this.t('Local space'), this.translator)}
 			${data.summary ? html`<p class="summary">${data.summary}</p>` : nothing}
 			${this.renderList(bodies)}
 		</div>`;

@@ -9,8 +9,14 @@ import { planetGlyph } from '../tokens/index.js';
 import type { RelocationChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
-import { formatInteger } from '../utils/format.js';
-import { displayOption } from '../utils/localized.js';
+import { factListStyles } from '../utils/fact-list.js';
+import { formatInteger, formatNumber } from '../utils/format.js';
+import {
+	display,
+	displayField,
+	displayList,
+	displayOption,
+} from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
 
 type HouseChange =
@@ -35,6 +41,7 @@ const glyphFor = (name: string): string => planetGlyph(name) ?? '';
 export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse> {
 	static styles = [
 		baseStyles,
+		factListStyles,
 		css`
 			.stack {
 				display: grid;
@@ -112,16 +119,18 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 
 	protected renderData(data: RelocationChartResponse) {
 		const c = data.changes;
+		const coordinateKeys = ['latitude', 'longitude'] as const;
 		return html`<div class="stack" part="stack">
 			<roxy-natal-chart
 				heading="Relocation chart"
 				lang=${ifDefined(this.effectiveLang())}
-				exportparts="card, header, tablist, tab, panel, chart, table, aspects, aspect-grid, element-modality, legend, details, section, patterns, pattern, readings, reading"
+				exportparts="chart-controls, chart-dialog, card, header, tablist, tab, panel, chart, table, aspects, aspect-grid, element-modality, legend, details, section, patterns, pattern, readings, reading, positions, distribution, houses, strongest"
 				?hide-readings=${this.hideReadings}
 				.data=${data}
 			></roxy-natal-chart>
 			<section class="changes" part="card changes">
 				<h3 class="title">${this.t('What changes at this location')}</h3>
+				${data.relocation ? html`<dl class="roxy-facts" part="details">${coordinateKeys.map((key) => html`<div><dt>${displayField(this.effectiveLang(), key === 'latitude' ? 'relocationLatitude' : 'relocationLongitude')}</dt><dd>${formatNumber(this.effectiveLang(), data.relocation[key], 5)}</dd></div>`)}</dl>` : nothing}
 				<div class="move" part="details">
 					${
 						typeof c?.distanceKm === 'number'
@@ -162,10 +171,10 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 									data.ascendant?.sign
 										? c.ascendantSignChanged
 											? this.t('Ascendant moves to {{sign}}', {
-													sign: data.ascendant.sign,
+													sign: display(data.ascendant, 'sign'),
 												})
 											: this.t('Ascendant stays in {{sign}}', {
-													sign: data.ascendant.sign,
+													sign: display(data.ascendant, 'sign'),
 												})
 										: c.ascendantSignChanged
 											? this.t('Ascendant changes sign')
@@ -187,7 +196,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 						? html`<div part="section angular-planets">
 							<p class="block-label">${this.t('Angular planets here')}</p>
 							<div class="chips">
-								${c.angularPlanets.map((p) => html`<span class="chip">${glyphFor(p)} ${p}</span>`)}
+								${displayList(c, 'angularPlanets').map(({ value, label }) => html`<span class="chip">${glyphFor(value)} ${label}</span>`)}
 							</div>
 						</div>`
 						: nothing
@@ -199,7 +208,7 @@ export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse
 							? html`<ul class="moves-list">
 								${c.planetsChangedHouse.map(
 									(m: HouseChange) =>
-										html`<li>${glyphFor(m.planet)} ${this.t('{{planet}}: house {{from}} to {{to}}', { planet: m.planet, from: m.natalHouse, to: m.relocatedHouse })}</li>`,
+										html`<li>${glyphFor(m.planet)} ${this.t('{{planet}}: house {{from}} to {{to}}', { planet: display(m, 'planet'), from: m.natalHouse, to: m.relocatedHouse })}</li>`,
 								)}
 							</ul>`
 							: html`<p class="empty-note">${this.t('No planet changes house at this location.')}</p>`

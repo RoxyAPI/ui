@@ -1,5 +1,8 @@
 import { css, html, nothing, svg } from 'lit';
+import './aspects-table.js';
+import './western-planets-table.js';
 import { customElement, property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type {
 	CalculateTransitAspectsResponse,
@@ -8,6 +11,7 @@ import type {
 import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import {
 	arcMidpoint,
 	arcSeparation,
@@ -29,11 +33,6 @@ import {
 	formatNumber,
 	normalizeAspect,
 } from '../utils/format.js';
-import {
-	type InterpSection,
-	interpAccordionStyles,
-	renderKeywordChips,
-} from '../utils/interp-accordion.js';
 import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
 import { MeasuredType } from '../utils/type-metrics.js';
@@ -43,54 +42,36 @@ type TransitAspect = CalculateTransitAspectsResponse['aspects'][number];
 type TransitSummary = CalculateTransitAspectsResponse['summary'];
 
 /**
- * The transit-aspects response plus the natal frame it now carries.
- *
- * @remarks
- * `/astrology/transit-aspects` returns `houses` and `ascendant` field for field identical to the
- * natal-chart ones, which is what lets the prop and the payload share one code path below. They are
- * declared here as OPTIONAL rather than read straight off the generated response type because
- * `specs/openapi.json` is refreshed from live only after the API deploys, so the type does not name
- * them yet and this component must compile against both the old spec and the new one. Once the spec
- * refresh lands the intersection is a no-op and this alias can go.
- */
-type TransitAspectsPayload = CalculateTransitAspectsResponse &
-	Partial<Pick<NatalChartResponse, 'houses' | 'ascendant'>>;
-
-/**
  * Radii, outermost first. Every one is explicit rather than derived from its
  * neighbour, because the two rings of glyphs and their two bands of degree
  * labels have to interleave without touching, and an offset-from-the-last-ring
  * scheme hides which pair is actually the tight one.
  */
-const SIZE = 400;
+const SIZE = 640;
 const CENTER = SIZE / 2;
 /** ASC/DSC tick and label. The tick stops short of the text, and the label sits inside the viewBox edge by more than half its own width, or the axis text clips on it. */
-const AXIS_TICK_R = 176;
-const AXIS_LABEL_R = 188;
+const AXIS_TICK_R = 212;
+const AXIS_LABEL_R = 226;
 /** Outer rim of the zodiac band. */
-const OUTER_R = 170;
+const OUTER_R = 204;
 /** Sign glyphs, and the inner edge of the band that holds them. */
-const SIGN_R = 154;
-const BAND_R = 140;
-/** Transiting bodies: the OUTER ring, which is how a bi-wheel is read. Degree labels sit outward, into the free space under the sign band. */
-const TRANSIT_R = 124;
-const TRANSIT_DEG_R = 135;
+const SIGN_R = 186;
+const BAND_R = 168;
+/** Transiting bodies sit outside the zodiac with their degree labels farther outward. */
+const TRANSIT_R = 250;
 /** Natal bodies: the INNER ring, the chart being transited. Degree labels sit inward, so the two bands of numbers never meet. */
-const NATAL_R = 94;
-/** Aspect lines run between the rings: out of the transit ring, in to the natal one. */
-const TRANSIT_LINE_R = 112;
-const NATAL_LINE_R = 104;
-/** Innermost circle, closing the wheel under the deepest reach of a natal degree label beside a glyph at 3 or 9 o'clock. */
-const HUB_R = 46;
-/** House sector numbers, inside the hub: the only band on this wheel with nothing else in it. Drawn ONLY from real cusps, the response ones or a page override. */
-const HOUSE_NUM_R = HUB_R - 12;
+const NATAL_R = 142;
+/** The central aspect circle projects true longitudes clear of the natal degree labels. */
+const HUB_R = 78;
+/** House numbers occupy the band between natal bodies and signs, using supplied cusps. */
+const HOUSE_NUM_R = 166;
 /**
  * The in-wheel type sizes at a wide host, in user units, as the stylesheet
  * declares them: what the fan spaces the marks by until the rendered text has
  * been measured, and what a unit test draws on. The phone sizes live in the
  * stylesheet alone and are read back off the rendered text, never assumed.
  */
-export const TRANSIT_TYPE_SIZES = { glyph: 13, degree: 7 } as const;
+export const TRANSIT_TYPE_SIZES = { glyph: 18, degree: 10 } as const;
 /**
  * Widths a fanned cluster has to clear, as type metrics in em measured on the
  * rendered text and multiplied by the font size in play. The glyph is on the
@@ -167,12 +148,14 @@ const byName = (list: Body[]): Map<string, Body> => {
  */
 @customElement('roxy-transit-wheel')
 export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsResponse> {
+	private readonly viewport = new ChartViewport(this);
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		aspectLineStyles,
 		disclosureStyles,
-		interpAccordionStyles,
 		css`
+			roxy-aspects-table::part(card), roxy-western-planets-table::part(card) { border: 0; padding: 0; box-shadow: none; }
 			.wrap {
 				background: var(--roxy-surface, #fff);
 				color: var(--roxy-fg, #0a0a0a);
@@ -209,7 +192,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			svg {
 				display: block;
 				width: 100%;
-				max-width: var(--roxy-chart-max-width, 560px);
+				max-width: var(--roxy-chart-max-width, 760px);
 				aspect-ratio: 1 / 1;
 				height: auto;
 				margin: 0 auto;
@@ -225,13 +208,13 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			}
 			.natal-glyph {
 				fill: var(--roxy-accent-ink, #b45309);
-				font-size: 13px;
+				font-size: 18px;
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
 			}
 			.transit-glyph {
 				fill: var(--roxy-info, #0284c7);
-				font-size: 13px;
+				font-size: 18px;
 				font-weight: 600;
 				font-family: var(--roxy-font-sans);
 			}
@@ -251,7 +234,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			}
 			.planet-deg {
 				fill: var(--roxy-muted, #71717a);
-				font-size: 7px;
+				font-size: 10px;
 				font-family: var(--roxy-font-sans);
 			}
 			.planet-deg .retro {
@@ -263,10 +246,10 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 				.sign-glyph,
 				.natal-glyph,
 				.transit-glyph {
-					font-size: 18px;
+					font-size: 26px;
 				}
 				.planet-deg {
-					font-size: 10px;
+					font-size: 14px;
 				}
 				.house-num {
 					font-size: 12px;
@@ -503,11 +486,6 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		degree: ['.planet-deg', TRANSIT_TYPE_SIZES.degree],
 	});
 
-	/** The response widened to the natal frame it carries. One cast, so nothing below repeats it. */
-	private get payload(): TransitAspectsPayload | undefined {
-		return this.data as TransitAspectsPayload | undefined;
-	}
-
 	/**
 	 * The Ascendant longitude the wheel orients on, or undefined.
 	 *
@@ -518,7 +496,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 * field.
 	 */
 	private get effectiveAscendant(): number | undefined {
-		for (const value of [this.ascendant, this.payload?.ascendant?.longitude]) {
+		for (const value of [this.ascendant, this.data?.ascendant?.longitude]) {
 			if (typeof value === 'number' && Number.isFinite(value)) return value;
 		}
 		return undefined;
@@ -550,7 +528,7 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 	 * either source asked for.
 	 */
 	private get cusps(): Array<{ number: number; longitude: number }> | null {
-		const raw = this.houses ?? this.payload?.houses;
+		const raw = this.houses ?? this.data?.houses;
 		if (!Array.isArray(raw) || raw.length !== 12) return null;
 		const out = raw
 			.map((h, i) =>
@@ -615,7 +593,8 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			${this.renderLegend(natal, transit, aspects, houses ? d.houseSystem : undefined)}
 			${this.renderSummary(d.summary)}
 			${this.renderPositions(natal, transit, houses)}
-			${this.renderReadings(aspects)}
+			${this.renderPositionDetails(d)}
+			${this.renderAspectDetails(aspects)}
 		</div>`;
 	}
 
@@ -652,7 +631,8 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		transit: Body[],
 		aspects: TransitAspect[],
 	) {
-		return html`<svg
+		return this.viewport.renderChartViewport(
+			html`<svg
 			viewBox="0 0 ${SIZE} ${SIZE}"
 			part="chart"
 			role="img"
@@ -665,15 +645,17 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			</desc>
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${OUTER_R} stroke-width="1.5" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${BAND_R} stroke-width="0.8" />
-			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${TRANSIT_LINE_R} stroke-width="0.6" />
 			<circle class="wheel-line" cx=${CENTER} cy=${CENTER} r=${HUB_R} stroke-width="0.5" />
 			${this.renderTicks()} ${this.renderSpokes()} ${this.renderSigns()}
 			${this.renderHouses()}
 			${this.renderAspectLines(natal, transit, aspects)}
 			${this.renderRing(natal, NATAL_R, (angle, glyph, label) => NATAL_R - rayClearance(angle, glyph, label, GLYPH_LABEL_GAP), 'natal-glyph', this.t('Natal'), 1)}
-			${this.renderRing(transit, TRANSIT_R, () => TRANSIT_DEG_R, 'transit-glyph', this.t('Transiting'), -1)}
+			${this.renderRing(transit, TRANSIT_R, (angle, glyph, label) => TRANSIT_R + rayClearance(angle, glyph, label, GLYPH_LABEL_GAP), 'transit-glyph', this.t('Transiting'), -1)}
 			${this.renderAxis()}
-		</svg>`;
+		</svg>`,
+			this.t('Natal and transit bi-wheel'),
+			this.translator,
+		);
 	}
 
 	/** A short mark every 5 degrees and a longer one on each sign cusp, so the band reads as a degree scale rather than a bare ring. */
@@ -876,13 +858,13 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 			const from = polarToCartesian(
 				CENTER,
 				CENTER,
-				TRANSIT_LINE_R,
+				HUB_R - 2,
 				this.toAngle(t.longitude),
 			);
 			const to = polarToCartesian(
 				CENTER,
 				CENTER,
-				NATAL_LINE_R,
+				HUB_R - 2,
 				this.toAngle(n.longitude),
 			);
 			const name = normalizeAspect(a);
@@ -1052,36 +1034,38 @@ export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsRes
 		</div>`;
 	}
 
-	/**
-	 * The written transit readings, routed through the base so one `hide-readings`
-	 * attribute drops every one of them from the markup. The aspect itself (both
-	 * bodies, the type, applying or separating, orb and strength) is data and
-	 * stays on the wheel, in the summary and in the positions table regardless.
-	 */
-	private renderReadings(aspects: TransitAspect[]) {
-		const sections: InterpSection[] = aspects
-			.filter((a) => a.transitInterpretation?.summary)
-			.map((a) => {
-				const t = a.transitInterpretation as NonNullable<
-					TransitAspect['transitInterpretation']
-				>;
-				const transiting = display(a, 'planet1');
-				const natal = display(a, 'planet2');
-				return {
-					label: `${glyphFor(a.planet1, transiting)} ${transiting} ${display(a, 'type', formatAspectName(a))} ${glyphFor(a.planet2, natal)} ${natal}`,
-					aside: `${this.t('Orb')} ${formatNumber(this.effectiveLang(), a.orb, 2)}° · ${this.t('Strength')} ${formatNumber(this.effectiveLang(), a.strength, 0)}`,
-					body: t.summary,
-					extra: html`${t.impact ? html`<p><strong>${this.t('Impact')}:</strong> ${t.impact}</p>` : nothing}
-					${t.timing ? html`<p><strong>${this.t('Timing')}:</strong> ${t.timing}</p>` : nothing}
-					${t.guidance ? html`<p><strong>${this.t('Guidance')}:</strong> ${t.guidance}</p>` : nothing}
-					${renderKeywordChips(t.keywords)}`,
-				};
-			});
-		return this.renderInterpretation(
-			sections,
-			'transit-aspect-readings',
-			'Transit readings',
-		);
+	private renderPositionDetails(data: CalculateTransitAspectsResponse) {
+		return html`<details class="block" part="section positions">
+			<summary>${this.t('Chart details')}</summary>
+			<p>${this.t('Natal')}</p>
+			<roxy-western-planets-table
+				bare hide-sections="header"
+				lang=${ifDefined(this.effectiveLang())}
+				exportparts="card, header, table, details, section, houses"
+				.data=${{ planets: data.natalPlanets, houses: data.houses, ascendant: data.ascendant }}
+			></roxy-western-planets-table>
+			<p>${this.t('Transiting')}</p>
+			<roxy-western-planets-table
+				bare hide-sections="header"
+				lang=${ifDefined(this.effectiveLang())}
+				exportparts="card, header, table, details, section, houses"
+				.data=${{ planets: data.transitPlanets }}
+			></roxy-western-planets-table>
+		</details>`;
+	}
+
+	private renderAspectDetails(aspects: TransitAspect[]) {
+		if (aspects.length === 0) return nothing;
+		return html`<details class="block" part="section aspects">
+			<summary>${this.t('Aspects ({{count}})', { count: aspects.length })}</summary>
+			<roxy-aspects-table
+				bare hide-sections="header"
+				lang=${ifDefined(this.effectiveLang())}
+				?hide-readings=${this.hideReadings}
+				exportparts="card, header, section, aspects, details, reading, readings, pattern, patterns, strongest"
+				.data=${{ aspects }}
+			></roxy-aspects-table>
+		</details>`;
 	}
 }
 

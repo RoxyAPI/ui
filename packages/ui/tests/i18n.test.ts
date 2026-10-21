@@ -1903,7 +1903,7 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	 *
 	 * **The correct response to a failure is `t()`, never a new row.**
 	 *
-	 * **One narrow exception, and it is named rather than inferred.** `hd-connection` and `hd-penta` are English end to end BY DECISION, because almost all of their chrome is doctrine the component wrote rather than a label, and a half-translated card reads worse than a consistent English one. A feature added to one of those two raises its number, in the same change that adds the feature and with the copy visible in the diff. Every other file ratchets down only; if a row that is not one of those two goes up, the answer is `t()`.
+	 * **One narrow exception, and it is named rather than inferred.** `hd-connection` and `hd-penta` retain English doctrine; shared chart controls and diagram labels use the catalogue. A feature added to one of those two raises its number, in the same change that adds the feature and with the copy visible in the diff. Every other file ratchets down only; if a row that is not one of those two goes up, the answer is `t()`.
 	 */
 	// Eleven rows are a re-baseline rather than a regression: the scan now reads
 	// copy declared in a record as well as copy written at the point of render, so
@@ -1913,7 +1913,7 @@ describe('a component may not write its own words, and the debt only shrinks', (
 	// were re-baselined the same way when the scan learned to read inside an
 	// interpolation (a fallback, a ternary branch of either case, a returned label).
 	const UNTRANSLATED_DEBT: Record<string, number> = {
-		'components/hd-connection.ts': 37,
+		'components/hd-connection.ts': 35,
 		'components/hd-penta.ts': 28,
 		'components/kp-chart.ts': 43,
 		'components/kp-planets-table.ts': 12,
@@ -2291,7 +2291,7 @@ describe('a component renders its chrome in the page language', () => {
 		const rendered = (el as unknown as { shadowRoot: ShadowRoot }).shadowRoot
 			.textContent as string;
 		expect(rendered).toContain('Carta natal');
-		expect(rendered).toContain('0 planetas');
+		expect(rendered).toContain('Posiciones: 0');
 	});
 
 	test('the birth date is formatted in that language too, not the viewer one', async () => {
@@ -2916,15 +2916,8 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		el.remove();
 	});
 
-	/**
-	 * The cross-tab axes are the one vocabulary the CATALOGUE owns, and this is the assertion that keeps that safe.
-	 *
-	 * @remarks
-	 * The 4x3 grid is the component's own construction, so six of its seven headers have no field in the response to defer to and the seventh, the dominant pair, would have been the only translated word in the table. Left English, they are the one block on a translated card that still reads English.
-	 *
-	 * Translating them re-opens exactly one risk: the dominant element and modality DO come back localized, they are rendered as a pill directly above this grid, and the grid tints the matching row and column. So the catalogue and the API have to say the same word or one card reads `Elemento dominante: Agua` over a row headed something else. This test renders both and asserts they meet.
-	 */
-	test('the dominant pill and the row it tints read the same word', async () => {
+	/** The chart uses one element/modality vocabulary across its separate populations. */
+	test('the dominant pill and the untinted cross-tab share their vocabulary', async () => {
 		const el = await mountNatal(NATAL_BOTH, 'es-AR');
 		const root = shadow(el);
 		const rendered = text(el);
@@ -2950,11 +2943,7 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		expect(
 			colHeads.map((th) => th.getAttribute('title')).filter(Boolean),
 		).toEqual(['Cardinal', 'Fija', 'Mutable']);
-		// The tint still lands on the dominant row and column, which is what makes
-		// the pill and the grid one reading rather than two.
-		expect(
-			root.querySelector('.em-grid tbody tr:nth-child(4) th')?.className,
-		).toContain('dominant');
+		expect(root.querySelector('.em-grid .dominant')).toBeNull();
 		el.remove();
 	});
 

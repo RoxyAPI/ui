@@ -19,9 +19,10 @@ const root = (el: HTMLElement): ShadowRoot => el.shadowRoot as ShadowRoot;
 
 /** Every drawn line, visual TOP first, as `solid` or `broken` plus `changing` when it is moving. */
 const rows = (el: HTMLElement): string[] =>
-	[...root(el).querySelectorAll('.lines .line')].map((l) =>
-		l.className.replace(/^line\s*/, '').trim(),
-	);
+	[
+		...(root(el).querySelector('.glyphs')?.querySelectorAll('.lines .line') ??
+			[]),
+	].map((l) => l.className.replace(/^line\s*/, '').trim());
 
 const text = (el: HTMLElement): string => {
 	const card = root(el).querySelector('[part~="card"]');
@@ -179,5 +180,106 @@ describe('the daily cast carries its line readings at the TOP level', () => {
 		// response does not send them, so nothing may invent one.
 		expect(body).toContain('4, 6');
 		expect(body).toContain('Revolution');
+	});
+});
+
+describe('every supplied hexagram reading is reachable', () => {
+	const TOPICS = {
+		general: 'PRIMARYGENERAL',
+		love: 'PRIMARYLOVE',
+		career: 'PRIMARYCAREER',
+		decision: 'PRIMARYDECISION',
+		advice: 'PRIMARYADVICE',
+	};
+	const RESULT = {
+		...HEX_13,
+		number: 49,
+		english: 'Revolution',
+		binary: '101110',
+		interpretation: {
+			general: 'RESULTGENERAL',
+			love: 'RESULTLOVE',
+			career: 'RESULTCAREER',
+			decision: 'RESULTDECISION',
+			advice: 'RESULTADVICE',
+		},
+		changingLines: [
+			{ position: 1, text: 'RESULTLINE', meaning: 'RESULTMEANING' },
+		],
+	};
+	const CAST = {
+		hexagram: { ...HEX_13, interpretation: TOPICS },
+		lines: [9, 7, 8, 7, 7, 7],
+		changingLinePositions: [1],
+		resultingHexagram: RESULT,
+	};
+	test('primary topics and the complete resulting figure share one rendering path', async () => {
+		const el = await mount(CAST);
+		for (const value of [
+			...Object.values(TOPICS),
+			...Object.values(RESULT.interpretation),
+			'RESULTLINE',
+			'RESULTMEANING',
+		])
+			expect(text(el)).toContain(value);
+		const result = root(el).querySelector('.result');
+		expect(result?.hasAttribute('open')).toBe(false);
+		expect(result?.querySelectorAll('.lines .line')).toHaveLength(6);
+		expect(
+			[...(result?.querySelectorAll('.lines .line') ?? [])].map(
+				(line) => line.className,
+			),
+		).toEqual([
+			'line broken',
+			'line solid',
+			'line solid',
+			'line solid',
+			'line broken',
+			'line solid',
+		]);
+		expect(
+			new Set(
+				[...root(el).querySelectorAll('.interp-card')].map((row) =>
+					row.getAttribute('name'),
+				),
+			).size,
+		).toBe(3);
+	});
+	test('hide-readings retains both figures and drops both sets of prose', async () => {
+		const el = await mount(CAST);
+		el.setAttribute('hide-readings', '');
+		await settled(el);
+		for (const value of [
+			...Object.values(TOPICS),
+			...Object.values(RESULT.interpretation),
+			'RESULTLINE',
+			'RESULTMEANING',
+		])
+			expect(text(el)).not.toContain(value);
+		expect(root(el).querySelectorAll('.lines .line')).toHaveLength(12);
+		expect(text(el)).toContain('Revolution');
+	});
+});
+
+describe('daily dates are returned facts', () => {
+	for (const cast of [false, true]) {
+		test(`${cast ? 'daily cast' : 'daily hexagram'} retains its date without readings`, async () => {
+			const el = await mount({
+				date: '2026-01-01',
+				hexagram: HEX_13,
+				...(cast
+					? { lines: [7, 7, 8, 7, 7, 7], changingLinePositions: [] }
+					: {}),
+			});
+			el.setAttribute('hide-readings', '');
+			await settled(el);
+			expect(root(el).querySelector('time')?.getAttribute('datetime')).toBe(
+				'2026-01-01',
+			);
+			expect(root(el).querySelector('time')?.textContent).toBe('Jan 1, 2026');
+		});
+	}
+	test('a reference hexagram has no invented date', async () => {
+		expect(root(await mount(HEX_13)).querySelector('time')).toBeNull();
 	});
 });

@@ -13,11 +13,12 @@ import {
 	CYCLE_LABEL,
 	cycleName,
 } from '../utils/biorhythm.js';
-import { disclosureStyles } from '../utils/disclosure.js';
+import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatDate,
 	formatDateRange,
 	formatList,
+	formatNumber,
 	formatPercent,
 } from '../utils/format.js';
 import {
@@ -260,6 +261,40 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 				font-variant-numeric: tabular-nums;
 			}
 
+			.forecast-data > summary {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: var(--roxy-space-sm, 0.5rem);
+				cursor: pointer;
+			}
+			.forecast-scroll {
+				overflow-x: auto;
+				min-width: 0;
+				margin-top: var(--roxy-space-sm, 0.5rem);
+			}
+			.forecast-table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: var(--roxy-text-sm, 0.875rem);
+				font-variant-numeric: tabular-nums;
+			}
+			.forecast-table th, .forecast-table td {
+				padding: var(--roxy-space-xs, 0.25rem) var(--roxy-space-sm, 0.5rem);
+				text-align: right;
+				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
+				white-space: nowrap;
+			}
+			.forecast-table th:first-child, .forecast-table td:first-child { text-align: left; }
+			.forecast-axis {
+				width: 100%;
+				max-width: var(--roxy-chart-max-width, 600px);
+				display: flex;
+				justify-content: space-between;
+				gap: var(--roxy-space-sm, 0.5rem);
+				font-size: var(--roxy-text-xs, 0.75rem);
+				color: var(--roxy-secondary, #475569);
+			}
 			.crit-note {
 				margin: 0;
 				font-size: var(--roxy-text-sm, 0.875rem);
@@ -424,6 +459,7 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 						: nothing,
 				)}
 			</svg>
+			<div class="forecast-axis" part="legend"><span>${formatDate(this.effectiveLang(), days[0]?.date)}</span><span>${formatDate(this.effectiveLang(), days.at(-1)?.date)}</span></div>
 			<div class="legend" part="legend">
 				${BIORHYTHM_CYCLES.map(
 					(cycle) => html`<span class="key">
@@ -452,12 +488,50 @@ export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
 					</dl>`
 					: nothing
 			}
+			${this.renderForecastData(d)}
 			${
 				s?.periodAdvice && !this.hideReadings
 					? html`<p class="advice">${s.periodAdvice}</p>`
 					: nothing
 			}
 		</section>`;
+	}
+
+	private renderForecastData(d: GetForecastResponse) {
+		const locale = this.effectiveLang();
+		return html`<details class="forecast-data" part="section days">
+			<summary>${this.t('Daily values')}${chevron()}</summary>
+			<div class="forecast-scroll" part="table" tabindex="0" role="region" aria-label=${this.t('Biorhythm forecast')}>
+				<table class="forecast-table">
+					<caption class="roxy-sr-only">${this.t('Biorhythm forecast')}</caption>
+					<thead><tr>
+						<th scope="col">${this.t('Date')}</th>
+						${BIORHYTHM_CYCLES.map((cycle) => html`<th scope="col">${this.t(CYCLE_LABEL[cycle])}</th>`)}
+						<th scope="col">${this.t('Energy rating')}</th>
+						<th scope="col">${this.t('Days since birth')}</th>
+						<th scope="col">${this.t('Critical days')}</th>
+					</tr></thead>
+					<tbody>${d.days.map(
+						(day) => html`<tr>
+						<th scope="row"><time datetime=${day.date}>${formatDate(locale, day.date)}</time></th>
+						${BIORHYTHM_CYCLES.map((cycle) => html`<td>${formatPercent(locale, day[cycle], 2)}</td>`)}
+						<td>${this.t('Energy {{value}}/10', { value: day.energyRating })}</td>
+						<td>${formatNumber(locale, day.daysSinceBirth, 0)}</td>
+						<td>${
+							day.isCritical
+								? formatList(
+										locale,
+										day.criticalCycles.map((cycle) =>
+											cycleName(cycle, (source) => this.t(source)),
+										),
+									) || this.t('critical day')
+								: this.t('None')
+						}</td>
+					</tr>`,
+					)}</tbody>
+				</table>
+			</div>
+		</details>`;
 	}
 
 	private renderCritical(d: GetCriticalDaysResponse) {

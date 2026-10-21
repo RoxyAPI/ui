@@ -72,14 +72,19 @@ describe('the synastry wheel fans a stellium apart and still reports the true lo
 			const glyphs = [...root(el).querySelectorAll(`text.${cls}`)];
 			expect(glyphs.length).toBe(4);
 			const angles = glyphs
-				.map((g) => Math.atan2(num(g, 'y') - 200, num(g, 'x') - 200))
+				.map((g) => Math.atan2(num(g, 'y') - 340, num(g, 'x') - 340))
 				.map((a) => (a * 180) / Math.PI)
 				.sort((a, b) => a - b);
 			// The glyph with its person tag, at its own ring's radius, in degrees of
 			// arc: the max of that and the whole-degree label at the label radius.
-			const radius = cls === 'p1' ? 124 : 96;
+			const radius = cls === 'p1' ? 160 : 258;
 			const minSep =
-				Math.max((1.3 * 13) / radius, (1.85 * 7) / (radius - 11)) *
+				Math.max(
+					(1.3 * 18) / radius,
+					(1.85 * 10) /
+						(radius +
+							(cls === 'p1' ? -1 : 1) * ((0.95 * 18 + 0.9 * 10) / 2 + 2)),
+				) *
 				(180 / Math.PI);
 			for (let i = 1; i < angles.length; i++) {
 				expect(
@@ -291,4 +296,28 @@ describe('the house overlay', () => {
 		).toBe(2);
 		expect(rows(host, 1).length).toBe(2);
 	});
+});
+
+test('matching Ascendants retain exact ticks and separate their names', async () => {
+	const el = await mount(FIXTURE);
+	const labels = [...root(el).querySelectorAll('.asc-label')];
+	expect(labels).toHaveLength(2);
+	const separation = Math.hypot(
+		Number(labels[0].getAttribute('x')) - Number(labels[1].getAttribute('x')),
+		Number(labels[0].getAttribute('y')) - Number(labels[1].getAttribute('y')),
+	);
+	expect(separation).toBeGreaterThan(33);
+	const ticks = [...root(el).querySelectorAll('.asc-tick')].filter(
+		(n) =>
+			Math.abs(
+				Math.hypot(
+					Number(n.getAttribute('x1')) - 340,
+					Number(n.getAttribute('y1')) - 340,
+				) - 204,
+			) < 0.001,
+	);
+	expect(ticks).toHaveLength(2);
+	expect(ticks[0].getAttribute('x1')).toBe(ticks[1].getAttribute('x1'));
+	expect(ticks[0].getAttribute('y1')).toBe(ticks[1].getAttribute('y1'));
+	el.remove();
 });

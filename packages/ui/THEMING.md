@@ -45,7 +45,7 @@ Layer order is decided by the order the names are first seen, and `roxy` is regi
 
 | Variable | Light default | Dark default | Used by |
 |---|---|---|---|
-| `--roxy-bg` | `#ffffff` | `#0a0a0a` | The field behind an input, the sheet under a suggestion list, the ink on a filled button |
+| `--roxy-bg` | `#ffffff` | `#0a0a0a` | The field behind an input, suggestion and enlarged chart sheets, the ink on a filled button |
 | `--roxy-surface` | `#ffffff` | `#18181b` | The card a component paints. Nearly every component reaches for it, so a re-theme that skips it shows a white or charcoal sheet on the host page |
 | `--roxy-fg` | `#0a0a0a` | `#fafafa` | Body text, headings |
 | `--roxy-primary` | `#0f172a` | `#f8fafc` | Brand base. Also the neutral end of the planet colour scale |

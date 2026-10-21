@@ -5,13 +5,15 @@ import type {
 	CalculateAspectsResponse,
 	CalculateTransitAspectsResponse,
 	DetectAspectPatternsResponse,
+	NatalChartResponse,
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
+import { factListStyles } from '../utils/fact-list.js';
 import {
 	formatAspectName,
-	formatDate,
+	formatDateTime,
 	formatList,
 	formatNumber,
 	formatPercent,
@@ -19,8 +21,10 @@ import {
 import type { Translate } from '../utils/hd-reading.js';
 import {
 	interpAccordionStyles,
+	renderKeywordChips,
 	renderReadingDetail,
 } from '../utils/interp-accordion.js';
+import { display, displayField } from '../utils/localized.js';
 
 /**
  * Natal + transit aspect grid with chart-pattern detection. Renders three endpoints that share an aspects/patterns shape: /astrology/aspects (natal aspects + patterns + a harmonious/challenging summary), /astrology/transit-aspects (transiting-to-natal aspects with timing guidance), and /astrology/aspect-patterns (patterns only: grand trines, t-squares, stelliums, yods, kites). Each aspect row shows the two bodies, the aspect type coloured by nature, its orb and strength, and an expandable interpretation; patterns render as labelled cards listing the planets they bind, apex first.
@@ -28,7 +32,8 @@ import {
 type AspectsData =
 	| CalculateAspectsResponse
 	| CalculateTransitAspectsResponse
-	| DetectAspectPatternsResponse;
+	| DetectAspectPatternsResponse
+	| Pick<NatalChartResponse, 'aspects'>;
 
 type PatternEntry = NonNullable<
 	DetectAspectPatternsResponse['patterns']
@@ -68,6 +73,7 @@ const PATTERN_ORDER: Record<string, number> = {
 export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 	static styles = [
 		baseStyles,
+		factListStyles,
 		disclosureStyles,
 		interpAccordionStyles,
 		css`
@@ -287,17 +293,20 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			return this.renderEmpty();
 
 		// Natal aspects date the chart, transits date the sky.
-		const date = formatDate(
+		const reference = formatDateTime(
 			this.effectiveLang(),
 			'transitDate' in d ? d.transitDate : 'date' in d ? d.date : '',
+			'time' in d ? d.time : undefined,
+			true,
 		);
+		const timezone = 'timezone' in d ? d.timezone : undefined;
 		const options = 'options' in d ? d.options : undefined;
 
 		return html`<div class="wrap" part="card" aria-label=${this.t('Aspects')}>
 			<div class="head" part="header">
 				<h2 class="title">${aspects.length === 0 ? this.t('Chart patterns') : this.t('Aspects')}</h2>
 				${
-					aspects.length > 0 || date
+					aspects.length > 0 || reference
 						? html`<p class="subtitle">
 							${[
 								aspects.length === 1
@@ -305,20 +314,21 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 									: aspects.length > 1
 										? this.t('{{count}} aspects', { count: aspects.length })
 										: '',
-								date,
+								reference,
 							]
 								.filter(Boolean)
 								.join(' · ')}
 						</p>`
 						: nothing
 				}
+				${typeof timezone === 'number' && Number.isFinite(timezone) ? html`<dl class="roxy-facts" part="details"><div><dt>${displayField(this.effectiveLang(), 'timezone')}</dt><dd>${formatNumber(this.effectiveLang(), timezone, 5)}</dd></div></dl>` : nothing}
 			</div>
 			${summary ? this.renderSummary(summary) : nothing}
 			${summary && 'strongest' in summary && summary.strongest ? this.renderStrongest(summary.strongest) : nothing}
 			${
 				aspects.length > 0
 					? html`<div role="list" part="section aspects" aria-label=${this.t('Aspect list')}>
-						${aspects.map((a, i) => this.renderAspect(a, i))}
+						${aspects.map((a, i) => html`<div role="listitem">${this.renderAspect(a, i)}</div>`)}
 					</div>`
 					: nothing
 			}
@@ -374,9 +384,9 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const nature = (s.interpretation ?? 'neutral').toLowerCase();
 		return html`<div class="strongest" part="details strongest">
 			<span class="label">${this.t('Strongest')}</span>
-			<span aria-hidden="true" class="glyph">${g1}</span>${s.planet1}
-			<span class="nature-badge ${nature}">${formatAspectName(s)}</span>
-			<span aria-hidden="true" class="glyph">${g2}</span>${s.planet2}
+			<span aria-hidden="true" class="glyph">${g1}</span>${display(s, 'planet1')}
+			<span class="nature-badge ${nature}">${display(s, 'type', formatAspectName(s))}</span>
+			<span aria-hidden="true" class="glyph">${g2}</span>${display(s, 'planet2')}
 			<span class="meta">${this.t(
 				'{{status}} · orb {{orb}}° · str {{strength}}',
 				{
@@ -391,7 +401,8 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 	private renderAspect(
 		a:
 			| NonNullable<CalculateAspectsResponse['aspects']>[number]
-			| NonNullable<CalculateTransitAspectsResponse['aspects']>[number],
+			| NonNullable<CalculateTransitAspectsResponse['aspects']>[number]
+			| NatalChartResponse['aspects'][number],
 		idx: number,
 	) {
 		const g1 = planetGlyph(a.planet1) ?? '';
@@ -403,10 +414,12 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		const meaning = 'meaning' in a ? a.meaning : undefined;
 		const transit =
 			'transitInterpretation' in a ? a.transitInterpretation : undefined;
-		const hasBody = Boolean(meaning || transit);
-		const header = html`<span aria-hidden="true" class="glyph">${g1}</span>${a.planet1}
-			<span class="nature-badge ${nature}">${type}</span>
-			<span aria-hidden="true" class="glyph">${g2}</span>${a.planet2}
+		const natal =
+			'aspectInterpretation' in a ? a.aspectInterpretation : undefined;
+		const hasBody = Boolean(meaning || transit || natal);
+		const header = html`<span aria-hidden="true" class="glyph">${g1}</span>${display(a, 'planet1')}
+			<span class="nature-badge ${nature}">${display(a, 'type', type)}</span>
+			<span aria-hidden="true" class="glyph">${g2}</span>${display(a, 'planet2')}
 			<span class="meta">${this.t(
 				'{{status}} · orb {{orb}}° · str {{strength}}',
 				{
@@ -420,15 +433,16 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 		// API sent no meaning for already renders flat. Hiding the readings reuses
 		// that shape rather than dropping the row.
 		if (!hasBody || this.hideReadings) {
-			return html`<div class="interp-card" part="reading" role="listitem">
+			return html`<div class="interp-card" part="reading">
 				<div class="static-head">${header}</div>
 			</div>`;
 		}
-		return html`<details class="interp-card" part="reading" role="listitem" name="aspects" ?open=${idx === 0}>
+		return html`<details class="interp-card" part="reading" name="aspects" ?open=${idx === 0}>
 			<summary>${header}${chevron()}</summary>
-			<div class="interp-body">
+			<div class="interp-body" part="readings">
 				${meaning ? this.renderMeaning(meaning) : nothing}
 				${transit ? this.renderTransit(transit) : nothing}
+				${natal ? renderReadingDetail(natal, this.translator) : nothing}
 			</div>
 		</details>`;
 	}
@@ -438,11 +452,9 @@ export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
 			NonNullable<CalculateAspectsResponse['aspects']>[number]['meaning']
 		>,
 	) {
-		const text = m.description?.short ?? m.description?.long;
-		return renderReadingDetail(
-			{ summary: text, keywords: m.keywords },
-			this.translator,
-		);
+		return html`${m.description?.short ? html`<p>${m.description.short}</p>` : nothing}
+			${m.description?.long && m.description.long !== m.description.short ? html`<p>${m.description.long}</p>` : nothing}
+			${renderKeywordChips(m.keywords)}`;
 	}
 
 	private renderTransit(

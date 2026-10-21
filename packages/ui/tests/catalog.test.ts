@@ -78,6 +78,34 @@ describe('published part vocabulary', () => {
 		}
 	});
 
+	test('chart viewport parts belong only to components that use or forward them', () => {
+		const parts = ['chart-controls', 'chart-dialog'];
+		for (const component of components) {
+			const source = code(
+				readFileSync(sourcePathForSlug(component.slug), 'utf8'),
+			);
+			const callsViewport = /new ChartViewport\(/.test(source);
+			const forwardsViewport = /exportparts="[^"]*chart-controls/.test(source);
+			const scanned = partsForSlug(component.slug);
+			for (const part of parts) {
+				expect({
+					slug: component.slug,
+					part,
+					published: scanned.includes(part),
+				}).toEqual({
+					slug: component.slug,
+					part,
+					published: callsViewport || forwardsViewport,
+				});
+			}
+			if (callsViewport) expect(scanned).toContain('chart');
+		}
+		for (const slug of ['natal-chart', 'bodygraph', 'hd-connection']) {
+			for (const part of parts) expect(partsForSlug(slug)).toContain(part);
+		}
+		for (const part of parts) expect(baseParts()).not.toContain(part);
+	});
+
 	test('only the known generic card derives part names at runtime', () => {
 		// A computed `part=${...}` cannot be resolved without running the
 		// component, so those names are absent from the published list and a

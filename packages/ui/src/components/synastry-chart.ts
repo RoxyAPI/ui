@@ -6,6 +6,7 @@ import type { CalculateSynastryResponse } from '../types/index.js';
 import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import {
 	arcSeparation,
 	fanOut,
@@ -47,24 +48,23 @@ type SynastryPerson = CalculateSynastryResponse['person1'];
 const READING_COUNT = 12;
 
 /** The viewBox leaves room past the rim for the two ascendant labels, which sit outside the zodiac like the angles on the natal wheel. */
-const SIZE = 400;
+const SIZE = 680;
 const CENTER = SIZE / 2;
-const OUTER_R = 170;
-const SIGN_R = 154;
-const P1_R = 124;
-const P2_R = 96;
+const OUTER_R = 204;
+const SIGN_R = 186;
+const P1_R = 160;
+const P2_R = 258;
 /** Ascendant tick and label: the tick stops short of the text, and the label sits inside the viewBox edge by more than half its own width. */
-const ASC_TICK_R = 176;
-const ASC_LABEL_R = 188;
-/** The first person's degree band sits this far inside their glyph ring; the second person's clears each glyph along its own ray. */
-const DEG_INSET = 11;
+const ASC_TICK_R = 212;
+const ASC_LABEL_R = 224;
+const HUB_R = 86;
 /**
  * The in-wheel type sizes at a wide host, in user units, as the stylesheet
  * declares them: what the fan spaces the marks by until the rendered text has
  * been measured, and what a unit test draws on. The phone sizes live in the
  * stylesheet alone and are read back off the rendered text, never assumed.
  */
-export const SYNASTRY_TYPE_SIZES = { glyph: 13, degree: 7 } as const;
+export const SYNASTRY_TYPE_SIZES = { glyph: 18, degree: 10 } as const;
 /**
  * Widths a fanned cluster has to clear, as type metrics in em measured on the
  * rendered text and multiplied by the font size in play. A glyph here carries
@@ -88,6 +88,7 @@ const LEADER_FOOT = 4;
  */
 @customElement('roxy-synastry-chart')
 export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse> {
+	private readonly viewport = new ChartViewport(this);
 	/** The in-wheel type sizes the stylesheet actually applied, read back after each render, because the fan spaces the marks by the width of their text and that width follows the container query. */
 	private readonly type = new MeasuredType(this, {
 		glyph: ['.p1', SYNASTRY_TYPE_SIZES.glyph],
@@ -96,10 +97,12 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 
 	static styles = [
 		baseStyles,
+		chartViewportStyles,
 		aspectLineStyles,
 		disclosureStyles,
 		interpAccordionStyles,
 		css`
+			td .interp-body { white-space: normal; min-width: 16rem; max-width: 38rem; }
 			.wrap {
 				background: var(--roxy-surface, #fff);
 				color: var(--roxy-fg, #0a0a0a);
@@ -140,7 +143,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			svg {
 				display: block;
 				width: 100%;
-				max-width: var(--roxy-chart-max-width, 560px);
+				max-width: var(--roxy-chart-max-width, 800px);
 				aspect-ratio: 1 / 1;
 				height: auto;
 				margin: 0 auto;
@@ -155,23 +158,23 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				font-size: 14px;
 			}
 			.p1 {
-				fill: var(--roxy-accent, #f59e0b);
+				fill: var(--roxy-accent-ink, #b45309);
 				font-weight: 600;
-				font-size: 13px;
+				font-size: 18px;
 			}
 			.p2 {
 				fill: var(--roxy-info, #0284c7);
 				font-weight: 600;
-				font-size: 13px;
+				font-size: 18px;
 			}
 			.person-tag {
-				font-size: 7px;
+				font-size: 10px;
 				font-weight: 700;
 				opacity: 0.85;
 			}
 			.planet-deg {
 				fill: var(--roxy-muted, #71717a);
-				font-size: 7px;
+				font-size: 10px;
 				font-family: var(--roxy-font-sans);
 			}
 			/* The size the table sets on .retro never reaches the mark inside a wheel label. */
@@ -195,11 +198,11 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				.sign,
 				.p1,
 				.p2 {
-					font-size: 18px;
+					font-size: 28px;
 				}
 				.person-tag,
 				.planet-deg {
-					font-size: 10px;
+					font-size: 15px;
 				}
 			}
 			.asc-tick {
@@ -489,7 +492,8 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			${this.renderPeople(person1, person2)}
 			${
 				hasPlanets
-					? html`<svg
+					? html`${this.viewport.renderChartViewport(
+							html`<svg
 							viewBox="0 0 ${SIZE} ${SIZE}"
 							part="chart"
 							role="img"
@@ -507,21 +511,24 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 								class="wheel-line"
 								cx=${CENTER}
 								cy=${CENTER}
-								r=${P2_R + 14}
+								r=${OUTER_R - 32}
 								stroke-width="0.8"
 							/>
 							<circle
 								class="wheel-line"
 								cx=${CENTER}
 								cy=${CENTER}
-								r=${P2_R - 14}
+								r=${HUB_R}
 								stroke-width="0.6"
 							/>
 							${this.renderSpokes()} ${this.renderSigns()}
 							${this.renderInterAspectLines(p1Planets, p2Planets, interAspects)}
-							${this.renderRing(p1Planets, P1_R, () => P1_R - DEG_INSET, 'p1', 1)} ${this.renderRing(p2Planets, P2_R, (angle, glyph, label) => P2_R - rayClearance(angle, glyph, label, GLYPH_LABEL_GAP), 'p2', 2)}
+							${this.renderRing(p1Planets, P1_R, (angle, glyph, label) => P1_R - rayClearance(angle, glyph, label, GLYPH_LABEL_GAP), 'p1', 1)} ${this.renderRing(p2Planets, P2_R, (angle, glyph, label) => P2_R + rayClearance(angle, glyph, label, GLYPH_LABEL_GAP), 'p2', 2)}
 							${this.renderAscendants(d)}
-						</svg>
+						</svg>`,
+							this.t('Synastry dual wheel'),
+							this.translator,
+						)}
 						<div class="legend-row" part="legend">
 							<span><span class="swatch" style="background: var(--roxy-accent)"></span>${this.t('Person 1')}</span>
 							<span><span class="swatch" style="background: var(--roxy-info)"></span>${this.t('Person 2')}</span>
@@ -687,7 +694,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 					second: to,
 				})}
 			</h4>
-			<div class="scroll" part="table">
+			<div class="scroll" part="table" tabindex="0" role="region" aria-labelledby=${id}>
 				<table aria-labelledby=${id}>
 					<thead>
 						<tr>
@@ -763,7 +770,10 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		// dropping the contact.
 		if (
 			this.hideReadings ||
-			(!meaning?.relationshipContext && !meaning?.description?.short)
+			(!meaning?.relationshipContext &&
+				!meaning?.description?.short &&
+				!meaning?.description?.long &&
+				!meaning?.keywords?.length)
 		) {
 			return html`<div class="interp-card" part="reading">
 				<div class="static-head">${lead}${aside}</div>
@@ -771,23 +781,24 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 		}
 		return html`<details class="interp-card" part="reading" name="synastry-aspects" ?open=${index === 0}>
 			<summary>${lead}${chevron()}${aside}</summary>
-			<div class="interp-body">
-				${
-					meaning.relationshipContext
-						? html`<p><span class="context">${this.t('In this pairing')}</span> ${meaning.relationshipContext}</p>`
-						: nothing
-				}
-				${meaning.description?.short ? html`<p>${meaning.description.short}</p>` : nothing}
-				${renderKeywordChips(meaning.keywords)}
-			</div>
+			${this.renderAspectMeaning(meaning)}
 		</details>`;
+	}
+
+	private renderAspectMeaning(meaning: NonNullable<InterAspect['meaning']>) {
+		return html`<div class="interp-body">
+			${meaning.relationshipContext ? html`<p><span class="context">${this.t('In this pairing')}</span> ${meaning.relationshipContext}</p>` : nothing}
+			${meaning.description?.short ? html`<p>${meaning.description.short}</p>` : nothing}
+			${meaning.description?.long && meaning.description.long !== meaning.description.short ? html`<p>${meaning.description.long}</p>` : nothing}
+			${renderKeywordChips(meaning.keywords)}
+		</div>`;
 	}
 
 	/** Every remaining contact, so nothing the endpoint returned is dropped. */
 	private renderCatalog(ranked: InterAspect[]) {
 		return html`<details class="catalog">
 			<summary>${chevron()} ${this.t('All {{count}} inter-aspects', { count: ranked.length })}</summary>
-			<div class="scroll" part="table">${this.renderAspects(ranked)}</div>
+			<div class="scroll" part="table" tabindex="0" role="region" aria-label=${this.t('Inter-aspects')}>${this.renderAspects(ranked)}</div>
 		</details>`;
 	}
 
@@ -798,7 +809,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 	private renderSpokes() {
 		return Array.from({ length: 12 }, (_, i) => {
 			const angle = this.toAngle(i * 30);
-			const start = polarToCartesian(CENTER, CENTER, P2_R - 14, angle);
+			const start = polarToCartesian(CENTER, CENTER, HUB_R, angle);
 			const end = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
 			return svg`<line class="wheel-line" x1=${start.x} y1=${start.y} x2=${end.x} y2=${end.y} stroke-width="0.6" />`;
 		});
@@ -875,13 +886,13 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 				const tick = polarToCartesian(
 					CENTER,
 					CENTER,
-					radius + LEADER_TICK,
+					radius + (personIndex === 1 ? LEADER_TICK : -LEADER_TICK),
 					this.toAngle(longitude),
 				);
 				const foot = polarToCartesian(
 					CENTER,
 					CENTER,
-					radius + LEADER_FOOT,
+					radius + (personIndex === 1 ? LEADER_FOOT : -LEADER_FOOT),
 					angle,
 				);
 				return svg`<g>
@@ -904,29 +915,40 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 	 * tooltips.
 	 */
 	private renderAscendants(data: CalculateSynastryResponse) {
-		const items: ReturnType<typeof svg>[] = [];
-		const make = (
-			asc: { sign: string; degree: number } | undefined,
-			personIndex: 1 | 2,
-		) => {
-			if (!asc) return;
-			const signIdx = SIGNS_ORDER.findIndex(
-				(s) => s.toLowerCase() === asc.sign.toLowerCase(),
-			);
-			if (signIdx === -1) return;
-			const longitude = signIdx * 30 + asc.degree;
+		const marks = ([data.person1, data.person2] as const).flatMap(
+			(person, i) => {
+				const asc = person?.ascendant;
+				if (!asc) return [];
+				const sign = SIGNS_ORDER.findIndex(
+					(s) => s.toLowerCase() === asc.sign.toLowerCase(),
+				);
+				return sign < 0
+					? []
+					: [{ longitude: sign * 30 + asc.degree, index: i + 1 }];
+			},
+		);
+		return fanOut(
+			marks,
+			(mark) => mark.longitude,
+			arcSeparation(34, ASC_LABEL_R),
+		).map(({ item, longitude, displayLongitude }) => {
 			const angle = this.toAngle(longitude);
+			const labelAngle = this.toAngle(displayLongitude);
 			const rim = polarToCartesian(CENTER, CENTER, OUTER_R, angle);
 			const tick = polarToCartesian(CENTER, CENTER, ASC_TICK_R, angle);
-			const label = polarToCartesian(CENTER, CENTER, ASC_LABEL_R, angle);
-			items.push(svg`<g>
+			const label = polarToCartesian(CENTER, CENTER, ASC_LABEL_R, labelAngle);
+			const foot = polarToCartesian(
+				CENTER,
+				CENTER,
+				ASC_LABEL_R - 7,
+				labelAngle,
+			);
+			return svg`<g>
 				<line class="asc-tick" x1=${rim.x} y1=${rim.y} x2=${tick.x} y2=${tick.y} />
-				<text class="asc-label" x=${label.x} y=${label.y} text-anchor="middle" dominant-baseline="central">${this.t('ASC{{n}}', { n: personIndex })}</text>
-			</g>`);
-		};
-		make(data.person1?.ascendant, 1);
-		make(data.person2?.ascendant, 2);
-		return items;
+				${Math.abs(displayLongitude - longitude) > 0.5 ? svg`<line class="asc-tick" x1=${tick.x} y1=${tick.y} x2=${foot.x} y2=${foot.y} />` : nothing}
+				<text class="asc-label" x=${label.x} y=${label.y} text-anchor="middle" dominant-baseline="central">${this.t('ASC{{n}}', { n: item.index })}</text>
+			</g>`;
+		});
 	}
 
 	private renderInterAspectLines(
@@ -949,8 +971,8 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 			const l1 = longitudeOf(p1, a.planet1);
 			const l2 = longitudeOf(p2, a.planet2);
 			if (l1 === undefined || l2 === undefined) return nothing;
-			const out = polarToCartesian(CENTER, CENTER, P1_R - 12, this.toAngle(l1));
-			const inn = polarToCartesian(CENTER, CENTER, P2_R + 8, this.toAngle(l2));
+			const out = polarToCartesian(CENTER, CENTER, HUB_R - 2, this.toAngle(l1));
+			const inn = polarToCartesian(CENTER, CENTER, HUB_R - 2, this.toAngle(l2));
 			const aspectName = normalizeAspect(a);
 			const cls = ASPECT_CLASS[aspectName] ?? 'aspect-other';
 			const orbLabel = formatNumber(this.effectiveLang(), a.orb, 1);
@@ -972,6 +994,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 					<th scope="col">${this.t('Aspect')}</th>
 					<th scope="col">${this.t('Orb')}</th>
 					<th scope="col">${this.t('Strength')}</th>
+					${!this.hideReadings ? html`<th scope="col">${this.t('Reading')}</th>` : nothing}
 				</tr>
 			</thead>
 			<tbody>
@@ -982,6 +1005,7 @@ export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse
 						<td>${display(a, 'type', formatAspectName(a))}</td>
 						<td class="orb">${formatNumber(this.effectiveLang(), a.orb, 1)}</td>
 						<td>${formatNumber(this.effectiveLang(), a.strength, 0)}</td>
+						${!this.hideReadings ? html`<td>${a.meaning ? html`<details part="reading"><summary>${chevron()} ${this.t('Reading')}</summary>${this.renderAspectMeaning(a.meaning)}</details>` : nothing}</td>` : nothing}
 					</tr>`,
 				)}
 			</tbody>

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import type { CalculateTransitAspectsResponse } from '../../src/types/index.js';
 
 /**
  * The transit bi-wheel, proved in a real browser against the captured production
@@ -20,9 +21,26 @@ import { expect, test } from '@playwright/test';
 const WHEEL = 'roxy-transit-wheel#transit-wheel';
 
 /** Geometry restated independently of the component, so a silent radius edit fails here instead of moving the expectation with it. */
-const CENTER = 200;
-const NATAL_R = 94;
-const TRANSIT_R = 124;
+const SIZE = 640;
+const CENTER = 320;
+const NATAL_R = 142;
+const TRANSIT_R = 250;
+const ASPECT_R = 76;
+const HUB_R = 78;
+const BAND_R = 168;
+const HOUSE_NUM_R = 166;
+const OUTER_R = 204;
+const SIGN_R = 186;
+const AXIS_TICK_R = 212;
+const AXIS_LABEL_R = 226;
+
+const position = (longitude: number, radius: number, ascendant: number) => {
+	const angle = ((180 + ascendant - longitude) * Math.PI) / 180;
+	return {
+		x: CENTER + radius * Math.cos(angle),
+		y: CENTER + radius * Math.sin(angle),
+	};
+};
 
 /** Wait for the demo card to be populated: the page assigns `data` after its sample bundle loads, so a bare `goto` can land before the first render. */
 async function ready(page: import('@playwright/test').Page) {
@@ -90,6 +108,10 @@ async function setProp(
 const measure = (sel: string) => {
 	const el = document.querySelector(sel) as HTMLElement;
 	const root = el.shadowRoot as ShadowRoot;
+	const aspectRoot = root.querySelector('roxy-aspects-table')?.shadowRoot;
+	const readings = [
+		...(aspectRoot?.querySelectorAll('[part~="readings"]') ?? []),
+	];
 	const read = (q: string) =>
 		[...root.querySelectorAll<SVGGraphicsElement>(q)].map((n) => {
 			const b = n.getBBox();
@@ -97,6 +119,8 @@ const measure = (sel: string) => {
 				text: (n.textContent ?? '').trim(),
 				x: b.x + b.width / 2,
 				y: b.y + b.height / 2,
+				anchorX: Number(n.getAttribute('x')),
+				anchorY: Number(n.getAttribute('y')),
 				title: n.querySelector('title')?.textContent ?? '',
 			};
 		});
@@ -109,13 +133,27 @@ const measure = (sel: string) => {
 			cls: n.getAttribute('class') ?? '',
 			title: n.querySelector('title')?.textContent ?? '',
 			weight: n.getAttribute('style') ?? '',
+			authored: {
+				x1: Number(n.getAttribute('x1')),
+				y1: Number(n.getAttribute('y1')),
+				x2: Number(n.getAttribute('x2')),
+				y2: Number(n.getAttribute('y2')),
+			},
 		}),
 	);
 	const cusps = [
 		...root.querySelectorAll<SVGLineElement>('line.house-cusp'),
 	].map((n) => ({
+		x1: n.x1.baseVal.value,
+		y1: n.y1.baseVal.value,
 		x2: n.x2.baseVal.value,
 		y2: n.y2.baseVal.value,
+		authored: {
+			x1: Number(n.getAttribute('x1')),
+			y1: Number(n.getAttribute('y1')),
+			x2: Number(n.getAttribute('x2')),
+			y2: Number(n.getAttribute('y2')),
+		},
 	}));
 	return {
 		natal: read('text.natal-glyph'),
@@ -123,17 +161,33 @@ const measure = (sel: string) => {
 		signs: read('text.sign-glyph'),
 		lines,
 		cusps,
+		housePositions: read('text.house-num'),
+		axisPositions: read('text.axis-label'),
+		axisTicks: [...root.querySelectorAll<SVGLineElement>('line.axis-tick')].map(
+			(n) => ({
+				x1: n.x1.baseVal.value,
+				y1: n.y1.baseVal.value,
+				x2: n.x2.baseVal.value,
+				y2: n.y2.baseVal.value,
+			}),
+		),
+		wheelRadii: [...root.querySelectorAll('circle.wheel-line')].map((n) =>
+			Number(n.getAttribute('r')),
+		),
+		viewBox: root.querySelector('svg[part="chart"]')?.getAttribute('viewBox'),
 		houseNums: [...root.querySelectorAll('text.house-num')].map(
 			(n) => n.textContent ?? '',
 		),
 		headers: [...root.querySelectorAll('thead th')].map((n) =>
 			(n.textContent ?? '').trim(),
 		),
-		hasReadings: Boolean(root.querySelector('[part~="readings"]')),
-		readingRows: root.querySelectorAll('[part~="reading"]').length,
-		readingText: (
-			root.querySelector('[part~="readings"]')?.textContent ?? ''
-		).trim().length,
+		hasReadings: readings.length > 0,
+		readingRows: aspectRoot?.querySelectorAll('[role="listitem"]').length ?? 0,
+		aspectText: aspectRoot?.textContent ?? '',
+		readingText: readings.reduce(
+			(length, node) => length + (node.textContent ?? '').trim().length,
+			0,
+		),
 		hasWheel: Boolean(root.querySelector('svg[part="chart"]')),
 		hasLegend: Boolean(root.querySelector('[part~="legend"]')),
 		hasTable: Boolean(root.querySelector('[part~="table"]')),
@@ -162,7 +216,12 @@ test('draws both rings and an aspect line for every returned transit', async ({
 	const m = await page.evaluate(measure, WHEEL);
 
 	expect(m.hasWheel).toBe(true);
+	expect(m.viewBox).toBe(`0 0 ${SIZE} ${SIZE}`);
+	expect(m.wheelRadii).toEqual([OUTER_R, BAND_R, HUB_R]);
 	expect(m.signs.length).toBe(12);
+	for (const sign of m.signs) {
+		expect(radius({ x: sign.anchorX, y: sign.anchorY })).toBeCloseTo(SIGN_R, 6);
+	}
 	// The live response returns all 14 bodies on each side.
 	expect(m.natal.length).toBe(14);
 	expect(m.transit.length).toBe(14);
@@ -182,6 +241,48 @@ test('draws both rings and an aspect line for every returned transit', async ({
 
 	expect(m.hasLegend).toBe(true);
 	expect(m.hasTable).toBe(true);
+});
+
+test('aspect endpoints use each returned true longitude with the correct ring roles', async ({
+	page,
+}) => {
+	await ready(page);
+	const data = await page.evaluate(
+		(sel) =>
+			(
+				document.querySelector(sel) as HTMLElement & {
+					data: CalculateTransitAspectsResponse;
+				}
+			).data,
+		WHEEL,
+	);
+	const m = await page.evaluate(measure, WHEEL);
+	const ascendant =
+		data.ascendant?.longitude ?? data.houses?.[0]?.longitude ?? 0;
+	expect(m.lines).toHaveLength(data.aspects.length);
+	for (const [i, aspect] of data.aspects.entries()) {
+		const transit = data.transitPlanets.find(
+			(planet) => planet.name === aspect.planet1,
+		);
+		const natal = data.natalPlanets.find(
+			(planet) => planet.name === aspect.planet2,
+		);
+		const line = m.lines[i];
+		if (!transit || !natal || !line)
+			throw new Error('each aspect must resolve both body roles');
+		const from = position(transit.longitude, ASPECT_R, ascendant);
+		const to = position(natal.longitude, ASPECT_R, ascendant);
+		for (const [key, expected] of [
+			['x1', from.x],
+			['y1', from.y],
+			['x2', to.x],
+			['y2', to.y],
+		] as const) {
+			expect(line.authored[key]).toBeCloseTo(expected, 6);
+			// SVGLength exposes each coordinate as a single-precision float.
+			expect(line[key]).toBe(Math.fround(line.authored[key]));
+		}
+	}
 });
 
 /**
@@ -288,6 +389,17 @@ test('a supplied ascendant rotates the wheel and marks the axis', async ({
 	const after = await page.evaluate(measure, WHEEL);
 
 	expect(after.axis).toEqual(['ASC', 'DSC']);
+	for (const [i, axis] of after.axisPositions.entries()) {
+		const direction = i === 0 ? -1 : 1;
+		expect(axis.anchorX).toBeCloseTo(CENTER + direction * AXIS_LABEL_R, 6);
+		expect(axis.anchorY).toBeCloseTo(CENTER, 6);
+		const tick = after.axisTicks[i];
+		if (!tick) throw new Error('each axis label must have a tick');
+		expect(tick.x1).toBeCloseTo(CENTER + direction * OUTER_R, 6);
+		expect(tick.y1).toBeCloseTo(CENTER, 6);
+		expect(tick.x2).toBeCloseTo(CENTER + direction * AXIS_TICK_R, 6);
+		expect(tick.y2).toBeCloseTo(CENTER, 6);
+	}
 	expect(after.legend).toContain('Ascendant on the left horizon');
 	expect(after.legend).not.toContain('Sign wheel');
 	// A rotation is still not a cusp: no sector ring appears.
@@ -409,7 +521,27 @@ test('cusps supplied by the page draw a real, unequal house ring', async ({
 	const first = m.cusps[0];
 	if (!first) throw new Error('twelve cusps expected');
 	expect(first.y2).toBeCloseTo(CENTER, 0);
-	expect(first.x2).toBeLessThan(CENTER);
+	expect(first.x2).toBeCloseTo(CENTER - BAND_R, 6);
+	for (const [i, cusp] of m.cusps.entries()) {
+		const longitude = CUSPS[i] as number;
+		const inner = position(longitude, HUB_R, CUSPS[0] as number);
+		const outer = position(longitude, BAND_R, CUSPS[0] as number);
+		for (const [key, expected] of [
+			['x1', inner.x],
+			['y1', inner.y],
+			['x2', outer.x],
+			['y2', outer.y],
+		] as const) {
+			expect(cusp.authored[key]).toBeCloseTo(expected, 6);
+			expect(cusp[key]).toBe(Math.fround(cusp.authored[key]));
+		}
+	}
+	for (const label of m.housePositions) {
+		expect(radius({ x: label.anchorX, y: label.anchorY })).toBeCloseTo(
+			HOUSE_NUM_R,
+			6,
+		);
+	}
 	const angle = (p: { x2: number; y2: number }) =>
 		(Math.atan2(p.y2 - CENTER, p.x2 - CENTER) * 180) / Math.PI;
 	const spans = m.cusps.map((_, i) => {
@@ -550,12 +682,32 @@ test('hide-readings removes the interpretations and leaves the wheel drawn', asy
 	expect(before.readingRows).toBeGreaterThan(0);
 	// Real prose from the captured response, not an empty shell of a section.
 	expect(before.readingText).toBeGreaterThan(200);
+	const prose = await page.evaluate((sel) => {
+		const data = (
+			document.querySelector(sel) as HTMLElement & {
+				data: CalculateTransitAspectsResponse;
+			}
+		).data;
+		return data.aspects
+			.flatMap((aspect) =>
+				Object.values(aspect.transitInterpretation ?? {}).flat(),
+			)
+			.filter(
+				(value): value is string =>
+					typeof value === 'string' && value.length > 30,
+			);
+	}, WHEEL);
+	expect(prose.length).toBeGreaterThan(0);
+	for (const paragraph of prose) expect(before.aspectText).toContain(paragraph);
 
 	await setProp(page, 'hideReadings', true);
 	const after = await page.evaluate(measure, WHEEL);
 
 	expect(after.hasReadings).toBe(false);
-	expect(after.readingRows).toBe(0);
+	expect(after.readingRows).toBe(before.readingRows);
+	expect(after.readingText).toBe(0);
+	for (const paragraph of prose)
+		expect(after.aspectText).not.toContain(paragraph);
 	expect(
 		await page.evaluate(
 			(sel) => document.querySelector(sel)?.hasAttribute('hide-readings'),
@@ -601,15 +753,19 @@ test('a ::part rule written outside the component reaches inside the shadow root
 		const root = (document.querySelector(sel) as HTMLElement)
 			.shadowRoot as ShadowRoot;
 		const el = (q: string) => root.querySelector(q) as HTMLElement;
+		const aspectRoot = root.querySelector('roxy-aspects-table')?.shadowRoot;
 		return {
-			readings: getComputedStyle(el('[part~="readings"]')).display,
+			readings: [
+				...(aspectRoot?.querySelectorAll('[part~="readings"]') ?? []),
+			].map((node) => getComputedStyle(node).display),
 			// Control: the rule must hit the readings and nothing else.
 			chart: getComputedStyle(el('svg[part="chart"]')).display,
 			legend: getComputedStyle(el('[part~="legend"]')).display,
 		};
 	}, WHEEL);
 
-	expect(styled.readings).toBe('none');
+	expect(styled.readings.length).toBeGreaterThan(0);
+	expect(styled.readings.every((display) => display === 'none')).toBe(true);
 	expect(styled.chart).not.toBe('none');
 	expect(styled.legend).not.toBe('none');
 });

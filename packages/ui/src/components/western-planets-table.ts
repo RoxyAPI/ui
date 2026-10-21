@@ -6,9 +6,23 @@ import type { NatalChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { formatSignPosition } from '../utils/degree.js';
-import { formatNumber } from '../utils/format.js';
-import { display } from '../utils/localized.js';
+import { factListStyles } from '../utils/fact-list.js';
+import { formatDateTime, formatNumber } from '../utils/format.js';
+import { display, displayField } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
+
+type WesternPositions = Pick<NatalChartResponse, 'planets'> &
+	Partial<
+		Pick<
+			NatalChartResponse,
+			| 'birthDetails'
+			| 'houses'
+			| 'ascendant'
+			| 'midheaven'
+			| 'partOfFortune'
+			| 'vertex'
+		>
+	>;
 
 /** A body or point row, normalized so planets and the four angles share a table. */
 interface BodyRow {
@@ -20,6 +34,8 @@ interface BodyRow {
 	/** The sign a reader sees, for the same reason. */
 	signLabel?: string;
 	longitude?: number;
+	latitude?: number;
+	sect?: NatalChartResponse['partOfFortune']['sect'];
 	house?: number;
 	speed?: number;
 	isRetrograde?: boolean;
@@ -36,9 +52,10 @@ interface BodyRow {
  * the four chart points (Ascendant, Midheaven, Part of Fortune, Vertex).
  */
 @customElement('roxy-western-planets-table')
-export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse> {
+export class RoxyWesternPlanetsTable extends RoxyDataElement<WesternPositions> {
 	static styles = [
 		baseStyles,
+		factListStyles,
 		css`
 			.wrap {
 				border: 1px solid var(--roxy-border, #e4e4e7);
@@ -52,10 +69,12 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 				border-bottom: 1px solid var(--roxy-border, #e4e4e7);
 			}
 			.title {
+				overflow-wrap: anywhere;
 				margin: 0;
 				font-size: var(--roxy-text-lg, 1.125rem);
 				font-weight: var(--roxy-weight-bold, 600);
 			}
+			.birth-date { margin: var(--roxy-space-sm, .5rem) 0 0; font-size: var(--roxy-text-sm, .875rem); color: var(--roxy-secondary, #475569); }
 			table {
 				width: 100%;
 				border-collapse: collapse;
@@ -112,6 +131,7 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 			sign: p.sign,
 			signLabel: display(p, 'sign'),
 			longitude: p.longitude,
+			latitude: p.latitude,
 			house: p.house,
 			speed: p.speed,
 			isRetrograde: p.isRetrograde,
@@ -121,7 +141,17 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 		// response names, so each is typed to its catalogue source and the compiler
 		// rejects one no catalogue carries.
 		const points: ReadonlyArray<
-			readonly [ChromeString, { sign?: string; longitude?: number } | undefined]
+			readonly [
+				ChromeString,
+				(
+					| NatalChartResponse[
+							| 'ascendant'
+							| 'midheaven'
+							| 'partOfFortune'
+							| 'vertex']
+					| undefined
+				),
+			]
 		> = [
 			['Ascendant', d.ascendant],
 			['Midheaven', d.midheaven],
@@ -136,6 +166,8 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 					sign: point.sign,
 					signLabel: display(point, 'sign'),
 					longitude: point.longitude,
+					house: 'house' in point ? point.house : undefined,
+					sect: 'sect' in point ? point.sect : undefined,
 					isPoint: true,
 				});
 			}
@@ -143,13 +175,25 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 		return rows;
 	}
 
-	protected renderData(d: NatalChartResponse) {
+	protected renderData(d: WesternPositions) {
 		if (!d.planets) return this.renderEmpty();
 		const rows = this.rows();
+		const birthDetails = d.birthDetails;
+		const latitude = rows.some((r) => Number.isFinite(r.latitude));
+		const sect = rows.some((r) => r.sect);
+		const coordinateKeys = ['latitude', 'longitude', 'timezone'] as const;
 
 		return html`<div class="wrap" part="card" aria-label=${this.t('Western planetary positions')} tabindex="0">
 			<header class="head" part="header">
 				<h2 class="title">${this.t('Planetary positions')}</h2>
+				${
+					birthDetails
+						? html`<div part="details">
+					<p class="birth-date">${formatDateTime(this.effectiveLang(), birthDetails.date, birthDetails.time, true)}</p>
+					<dl class="roxy-facts">${coordinateKeys.map((key) => html`<div><dt>${displayField(this.effectiveLang(), key)}</dt><dd>${formatNumber(this.effectiveLang(), birthDetails[key], 5)}</dd></div>`)}</dl>
+				</div>`
+						: nothing
+				}
 			</header>
 			<table role="table" part="table">
 				<caption class="roxy-sr-only">
@@ -160,18 +204,27 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 						<th scope="col">${this.t('Body')}</th>
 						<th scope="col">${this.t('Sign')}</th>
 						<th scope="col">${this.t('Degree')}</th>
+						<th scope="col">${this.t('Longitude')}</th>
+						${latitude ? html`<th scope="col">${displayField(this.effectiveLang(), 'latitude')}</th>` : nothing}
 						<th scope="col">${this.t('House')}</th>
 						<th scope="col">${this.t('Dignity')}</th>
 						<th scope="col">${this.t('Motion')}</th>
+						${sect ? html`<th scope="col">${this.t('Sect')}</th>` : nothing}
 					</tr>
 				</thead>
 				<tbody>
 					${rows.map((r) => {
 						const glyph = planetGlyph(r.name) ?? '';
+						const sectLabel =
+							r.sect === 'day'
+								? this.t('Daytime')
+								: r.sect === 'night'
+									? this.t('Night')
+									: '';
 						const sGlyph = signGlyph(r.sign) ?? '';
 						const speed =
 							typeof r.speed === 'number'
-								? formatNumber(this.effectiveLang(), r.speed, 3)
+								? formatNumber(this.effectiveLang(), r.speed, 6)
 								: '';
 						return html`<tr class=${r.isPoint ? 'point' : ''}>
 							<td class="body">
@@ -183,16 +236,30 @@ export class RoxyWesternPlanetsTable extends RoxyDataElement<NatalChartResponse>
 							<td class="num">
 								${typeof r.longitude === 'number' ? formatSignPosition(r.longitude, r.signLabel) : ''}
 							</td>
+							<td class="num">${typeof r.longitude === 'number' ? `${formatNumber(this.effectiveLang(), r.longitude, 5)}°` : nothing}</td>
+							${latitude ? html`<td class="num">${typeof r.latitude === 'number' ? `${formatNumber(this.effectiveLang(), r.latitude, 5)}°` : nothing}</td>` : nothing}
 							<td class="num">${typeof r.house === 'number' ? r.house : ''}</td>
 							<td class="dignity">${r.dignity ? capitalize(r.dignity) : ''}</td>
 							<td class="num">
 								${speed ? html`${speed}${this.t('°/day')}` : nothing}
 								${r.isRetrograde ? html`<span class="retro"> ℞</span>` : nothing}
 							</td>
+							${sect ? html`<td>${sectLabel}</td>` : nothing}
 						</tr>`;
 					})}
 				</tbody>
 			</table>
+			${
+				d.houses?.length
+					? html`<details class="head" part="section houses">
+				<summary>${this.t('Houses')}</summary>
+				<table part="table">
+					<thead><tr><th scope="col">${this.t('House')}</th><th scope="col">${this.t('Sign')}</th><th scope="col">${this.t('Degree')}</th><th scope="col">${this.t('Longitude')}</th></tr></thead>
+					<tbody>${d.houses.map((house) => html`<tr><th scope="row">${formatNumber(this.effectiveLang(), house.number, 0)}</th><td>${display(house, 'sign')}</td><td>${formatSignPosition(house.longitude, display(house, 'sign'))}</td><td>${formatNumber(this.effectiveLang(), house.longitude, 5)}°</td></tr>`)}</tbody>
+				</table>
+			</details>`
+					: nothing
+			}
 		</div>`;
 	}
 }

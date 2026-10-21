@@ -27,7 +27,7 @@ const BAR_X = 8;
 const BAR_W = VIEW_W - BAR_X * 2;
 const BAR_H = 48;
 const GATE_R = 15;
-/** Badge radius and step, sized so five holders on one gate stay inside their column. */
+/** Member badges form a centred row between each gate and its channel name. */
 const BADGE_R = 7;
 const BADGE_STEP = 16;
 
@@ -79,8 +79,8 @@ function renderHolders(
 ): TemplateResult[] {
 	return held.map(
 		(m, i) => svg`<g>
-			<circle class="pn-badge" cx=${cx + GATE_R + BADGE_R + 2 + i * BADGE_STEP} cy=${cy} r=${BADGE_R} />
-			<text class="pn-badge-text" x=${cx + GATE_R + BADGE_R + 2 + i * BADGE_STEP} y=${cy} text-anchor="middle" dominant-baseline="central">${letterFor(m)}</text>
+			<circle class="pn-badge" cx=${cx + (i - (held.length - 1) / 2) * BADGE_STEP} cy=${cy} r=${BADGE_R} />
+			<text class="pn-badge-text" x=${cx + (i - (held.length - 1) / 2) * BADGE_STEP} y=${cy} text-anchor="middle" dominant-baseline="central">${letterFor(m)}</text>
 		</g>`,
 	);
 }
@@ -91,12 +91,13 @@ function renderGate(
 	gate: number,
 	held: readonly number[],
 	letterFor: (index: number) => string,
+	holderOffset: number,
 ): TemplateResult {
 	const on = held.length > 0;
 	return svg`<g>
 		<circle class="pn-gate-dot ${on ? 'on' : ''}" cx=${cx} cy=${cy} r=${GATE_R} />
 		<text class="pn-gate ${on ? 'on' : ''}" x=${cx} y=${cy} text-anchor="middle" dominant-baseline="central">${gate}</text>
-		${renderHolders(cx, cy, held, letterFor)}
+		${renderHolders(cx, cy + holderOffset, held, letterFor)}
 	</g>`;
 }
 
@@ -129,8 +130,8 @@ export function renderPentaSvg(input: PentaRenderInput): TemplateResult {
 				<line class=${cls} x1=${cx} y1=${topCy + GATE_R} x2=${cx} y2=${mid - 13} />
 				<line class=${cls} x1=${cx} y1=${mid + 13} x2=${cx} y2=${botCy - GATE_R} />
 				<text class="pn-name ${rung.defined ? 'on' : ''}" x=${cx} y=${mid} text-anchor="middle" dominant-baseline="central">${rung.name}</text>
-				${renderGate(cx, topCy, gTop, input.holders.get(gTop) ?? [], input.letterFor)}
-				${renderGate(cx, botCy, gBottom, input.holders.get(gBottom) ?? [], input.letterFor)}
+				${renderGate(cx, topCy, gTop, input.holders.get(gTop) ?? [], input.letterFor, GATE_R + BADGE_R + 7)}
+				${renderGate(cx, botCy, gBottom, input.holders.get(gBottom) ?? [], input.letterFor, -(GATE_R + BADGE_R + 7))}
 			</g>`);
 		});
 	}

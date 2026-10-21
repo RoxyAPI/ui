@@ -20,8 +20,15 @@ export const kundliStyles = css`
 		padding: var(--roxy-space-lg, 1.5rem);
 		box-shadow: var(--roxy-shadow-sm);
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: var(--roxy-space-md, 1rem);
 	}
+	.kundli-reference { min-width: 0; }
+	.kundli-reference > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--roxy-space-sm, .5rem); cursor: pointer; }
+	.kundli-reference-scroll { min-width: 0; overflow-x: auto; margin-top: var(--roxy-space-sm, .5rem); }
+	.kundli-reference-table { width: 100%; border-collapse: collapse; font-size: var(--roxy-text-sm, .875rem); font-variant-numeric: tabular-nums; }
+	.kundli-reference-table th, .kundli-reference-table td { padding: var(--roxy-space-xs, .25rem) var(--roxy-space-sm, .5rem); text-align: left; white-space: nowrap; border-bottom: 1px solid var(--roxy-border, #e4e4e7); }
+	.kundli-reference-table small { display: block; color: var(--roxy-secondary, #475569); }
 	.header {
 		display: flex;
 		flex-wrap: wrap;

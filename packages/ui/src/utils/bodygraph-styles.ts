@@ -106,12 +106,10 @@ export const bodygraphChartStyles = css`
 	.bg-gate-dot.on {
 		stroke: none;
 	}
-	/* The centre name, drawn as ground behind the gate numbers. Muted enough to
-	 * sit under them and never compete, and it takes the knocked-out ink on a
-	 * filled centre so it stays readable on the saturated fills. */
+	/* Center labels use opaque ink matched to the fixed semantic fill. */
 	.bg-center-name {
-		fill: var(--roxy-muted, #71717a);
-		opacity: 0.5;
+		color: var(--roxy-muted, #71717a);
+		fill: currentColor;
 		font-size: ${CENTER_NAME_FONT_SIZE}px;
 		font-weight: 600;
 		letter-spacing: 0.08em;
@@ -119,8 +117,11 @@ export const bodygraphChartStyles = css`
 		pointer-events: none;
 	}
 	.bg-center-name.defined {
-		fill: var(--roxy-surface, #fff);
-		opacity: 0.62;
+		color: #ffffff;
+	}
+	.bg-center-name.bg-gold.defined,
+	.bg-center-name.bg-green.defined {
+		color: #0a0a0a;
 	}
 	.bg-gate {
 		fill: var(--roxy-muted, #71717a);
