@@ -2931,7 +2931,6 @@ describe('the vocabulary a reader sees, and the English value the code keys on',
 		expect(rowHeads).toEqual(['Fuego', 'Tierra', 'Aire', 'Agua', 'Total']);
 		const colHeads = [...root.querySelectorAll('.em-grid thead th')];
 		expect(colHeads.map((th) => (th.textContent ?? '').trim())).toEqual([
-			'',
 			'Card',
 			'Fija',
 			'Mut',

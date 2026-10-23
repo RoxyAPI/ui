@@ -865,6 +865,56 @@ describe.each(specs)('%s component', (spec: ComponentSpec<HTMLElement>) => {
 		}
 		el.remove();
 	});
+
+	test('every header cell it renders names something', async () => {
+		const el = document.createElement(spec.tag) as HTMLElement & {
+			data?: unknown;
+		};
+		for (const [k, v] of Object.entries(spec.attrs ?? {}))
+			el.setAttribute(k, v);
+		document.body.appendChild(el);
+		el.data = spec.sample;
+		await settled(el);
+		expect(unnamedHeaderCells(el.shadowRoot)).toEqual([]);
+		el.remove();
+	});
+});
+
+/** Header cells with no text and no label, which a screen reader announces as blank headers, so an empty corner is a `td`. */
+function unnamedHeaderCells(root: ShadowRoot | null): string[] {
+	return [...(root?.querySelectorAll('th') ?? [])]
+		.filter((th) => !th.textContent?.trim() && !th.getAttribute('aria-label'))
+		.map((th) => th.closest('table')?.className ?? 'table');
+}
+
+describe('roxy-natal-chart grids name every header cell', () => {
+	test('the aspect grid and the element and modality table', async () => {
+		const el = document.createElement('roxy-natal-chart') as HTMLElement & {
+			data?: unknown;
+		};
+		document.body.appendChild(el);
+		el.data = {
+			planets: [
+				{ name: 'Sun', longitude: 112.8, sign: 'Cancer' },
+				{ name: 'Moon', longitude: 24.1, sign: 'Aries' },
+				{ name: 'Mars', longitude: 31.9, sign: 'Taurus' },
+			],
+			aspects: [
+				{ planet1: 'Sun', planet2: 'Moon', aspect: 'square', orb: 1.3 },
+			],
+			houses: [],
+			// The element and modality table belongs to the summary block, so it needs one.
+			summary: { dominantElement: 'fire' },
+		};
+		await settled(el);
+		const root = el.shadowRoot;
+		root?.querySelector<HTMLElement>('#natal-tab-grid')?.click();
+		await settled(el);
+		expect(root?.querySelector('table.aspect-grid')).toBeTruthy();
+		expect(root?.querySelector('table.em-grid')).toBeTruthy();
+		expect(unnamedHeaderCells(root)).toEqual([]);
+		el.remove();
+	});
 });
 
 describe('angel-number new interpretation sections', () => {

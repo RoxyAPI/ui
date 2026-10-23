@@ -675,7 +675,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 				</caption>
 				<thead>
 					<tr>
-						<th></th>
+						<td></td>
 						${bodies.slice(0, -1).map((b) => {
 							const g = planetGlyph(b.name) ?? b.label;
 							return html`<th scope="col" title=${b.label}>${g}</th>`;
@@ -1159,7 +1159,7 @@ export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
 			</caption>
 			<thead>
 				<tr>
-					<th></th>
+					<td></td>
 					${MODALITIES.map(
 						(m) =>
 							html`<th scope="col" title=${MODALITY_LABEL[m]?.full ?? m}>${MODALITY_LABEL[m]?.abbr ?? m}</th>`,
