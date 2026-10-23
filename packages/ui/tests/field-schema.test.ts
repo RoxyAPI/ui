@@ -625,15 +625,15 @@ describe('platform-neutral render intent', () => {
 		expect(primary.groups?.find((g) => g.key === 'person')?.fold).toBe(true);
 	});
 
-	test('an either-or body asks its first input set and tucks the alternatives away', () => {
+	test('an either-or object asks its first input set and tucks the alternatives away', () => {
 		const sets = [['date', 'gender'], ['kua']];
 		const model = buildFormModel(
 			{
-				'x-required-any-of': sets,
 				requestBody: {
 					content: {
 						'application/json': {
 							schema: {
+								'x-required-any-of': sets,
 								type: 'object',
 								properties: {
 									kua: { type: 'number' },
@@ -658,6 +658,26 @@ describe('platform-neutral render intent', () => {
 		expect(
 			bodyModel({ kua: { type: 'number' } }).requiredAnyOf,
 		).toBeUndefined();
+		const nested = bodyModel(
+			{
+				plot: {
+					type: 'object',
+					'x-required-any-of': [['width', 'depth'], ['polygon']],
+					properties: {
+						width: { type: 'number' },
+						depth: { type: 'number' },
+						polygon: { type: 'string' },
+					},
+				},
+			},
+			['plot'],
+		);
+		expect(nested.fields.map((f) => [f.key, f.required])).toEqual([
+			['plot.width', true],
+			['plot.depth', true],
+			['plot.polygon', false],
+		]);
+		expect(nested.requiredAnyOf).toBeUndefined();
 	});
 
 	test('seed and optional pagination stay hidden, required pagination remains an input', () => {

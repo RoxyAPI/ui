@@ -84760,15 +84760,6 @@
     "/feng-shui/eight-mansions": {
       "post": {
         "operationId": "generateEightMansions",
-        "x-required-any-of": [
-          [
-            "date",
-            "gender"
-          ],
-          [
-            "kua"
-          ]
-        ],
         "tags": [
           "Feng Shui"
         ],
@@ -84859,6 +84850,15 @@
                     "description": "Optional compass sector the main door faces, one of North, Northeast, East, Southeast, South, Southwest, West, Northwest. When sent, the response names the star sitting on that sector so a caller can judge an entrance without scanning the whole map."
                   }
                 },
+                "x-required-any-of": [
+                  [
+                    "date",
+                    "gender"
+                  ],
+                  [
+                    "kua"
+                  ]
+                ],
                 "description": "Send either a kua number, or a date and gender to derive one. Sending neither is a 400."
               }
             }
@@ -85404,14 +85404,6 @@
     "/feng-shui/flying-stars/natal": {
       "post": {
         "operationId": "generateFlyingStarChart",
-        "x-required-any-of": [
-          [
-            "facingDegrees"
-          ],
-          [
-            "facing"
-          ]
-        ],
         "tags": [
           "Feng Shui"
         ],
@@ -85526,7 +85518,15 @@
                     "example": 180,
                     "description": "The compass bearing the front of the building faces, 0 to 360 degrees, measured looking out from inside. Resolved to one of the 24 mountains. Send this or facing, not neither."
                   }
-                }
+                },
+                "x-required-any-of": [
+                  [
+                    "facingDegrees"
+                  ],
+                  [
+                    "facing"
+                  ]
+                ]
               }
             }
           }
@@ -90815,14 +90815,6 @@
     "/mesoamerican-astrology/mayan/long-count/convert": {
       "post": {
         "operationId": "convertLongCount",
-        "x-required-any-of": [
-          [
-            "date"
-          ],
-          [
-            "longCount"
-          ]
-        ],
         "tags": [
           "Mesoamerican Astrology"
         ],
@@ -90891,6 +90883,14 @@
                     "description": "Which correlation constant ties the day count to a civil date. This is the single choice that shifts every value in the response, so it is a parameter rather than a hidden default, and the resolved value comes back under conventions. \"gmt-584283\" is the commonly accepted constant and the default, and it is the one the major institutional converter runs on. \"martinez-hernandez-584281\" sits two days earlier, \"astronomical-584285\" two days later, and \"martin-skidmore-584286\" three days later, each shifting the Long Count by exactly its difference in days. Four of the eight published constants are offered: the other four sit tens of thousands of days away and are of historical interest only. The 584281 constant is the Martínez Hernández correlation, after Juan Martínez Hernández."
                   }
                 },
+                "x-required-any-of": [
+                  [
+                    "date"
+                  ],
+                  [
+                    "longCount"
+                  ]
+                ],
                 "example": {
                   "date": "2012-12-21"
                 },
@@ -97428,6 +97428,15 @@
                         "description": "Unit the plot dimensions are given in. Every distance the response returns is in this same unit. The mandala projection is scale free, so this affects the areas and the marma size and nothing else."
                       }
                     },
+                    "x-required-any-of": [
+                      [
+                        "width",
+                        "depth"
+                      ],
+                      [
+                        "polygon"
+                      ]
+                    ],
                     "example": {
                       "width": 30,
                       "depth": 40,
@@ -97497,6 +97506,24 @@
                 },
                 "required": [
                   "plot"
+                ],
+                "x-required-any-of": [
+                  [
+                    "facing",
+                    "doorPosition"
+                  ],
+                  [
+                    "facing",
+                    "door"
+                  ],
+                  [
+                    "facingDegrees",
+                    "doorPosition"
+                  ],
+                  [
+                    "facingDegrees",
+                    "door"
+                  ]
                 ],
                 "example": {
                   "plot": {
@@ -98051,6 +98078,15 @@
                         "description": "Unit the plot dimensions are given in. Every distance the response returns is in this same unit. The mandala projection is scale free, so this affects the areas and the marma size and nothing else."
                       }
                     },
+                    "x-required-any-of": [
+                      [
+                        "width",
+                        "depth"
+                      ],
+                      [
+                        "polygon"
+                      ]
+                    ],
                     "example": {
                       "width": 30,
                       "depth": 40,
@@ -98817,6 +98853,15 @@
                         "description": "Unit the plot dimensions are given in. Every distance the response returns is in this same unit. The mandala projection is scale free, so this affects the areas and the marma size and nothing else."
                       }
                     },
+                    "x-required-any-of": [
+                      [
+                        "width",
+                        "depth"
+                      ],
+                      [
+                        "polygon"
+                      ]
+                    ],
                     "example": {
                       "width": 30,
                       "depth": 40,
@@ -98946,6 +98991,14 @@
                 },
                 "required": [
                   "plot"
+                ],
+                "x-required-any-of": [
+                  [
+                    "facing"
+                  ],
+                  [
+                    "facingDegrees"
+                  ]
                 ],
                 "example": {
                   "plot": {
@@ -100591,6 +100644,15 @@
                         "description": "Unit the plot dimensions are given in. Every distance the response returns is in this same unit. The mandala projection is scale free, so this affects the areas and the marma size and nothing else."
                       }
                     },
+                    "x-required-any-of": [
+                      [
+                        "width",
+                        "depth"
+                      ],
+                      [
+                        "polygon"
+                      ]
+                    ],
                     "example": {
                       "width": 30,
                       "depth": 40,
@@ -100705,6 +100767,14 @@
                       },
                       "required": [
                         "type"
+                      ],
+                      "x-required-any-of": [
+                        [
+                          "direction"
+                        ],
+                        [
+                          "polygon"
+                        ]
                       ]
                     },
                     "minItems": 1,
@@ -100715,6 +100785,14 @@
                 "required": [
                   "plot",
                   "rooms"
+                ],
+                "x-required-any-of": [
+                  [
+                    "facing"
+                  ],
+                  [
+                    "facingDegrees"
+                  ]
                 ],
                 "example": {
                   "plot": {
@@ -106672,28 +106750,6 @@
     "/numerology/maturity": {
       "post": {
         "operationId": "calculateMaturity",
-        "x-required-any-of": [
-          [
-            "fullName",
-            "year",
-            "month",
-            "day"
-          ],
-          [
-            "lifePath",
-            "expression"
-          ],
-          [
-            "lifePath",
-            "fullName"
-          ],
-          [
-            "expression",
-            "year",
-            "month",
-            "day"
-          ]
-        ],
         "tags": [
           "Numerology"
         ],
@@ -106778,7 +106834,29 @@
                     "example": 15,
                     "description": "Birth day (1-31). Required with year and month for automatic Life Path calculation."
                   }
-                }
+                },
+                "x-required-any-of": [
+                  [
+                    "fullName",
+                    "year",
+                    "month",
+                    "day"
+                  ],
+                  [
+                    "lifePath",
+                    "expression"
+                  ],
+                  [
+                    "lifePath",
+                    "fullName"
+                  ],
+                  [
+                    "expression",
+                    "year",
+                    "month",
+                    "day"
+                  ]
+                ]
               }
             }
           }
@@ -109142,7 +109220,20 @@
                         "example": 6,
                         "description": "Person 1 Soul Urge number (1-9, 11, 22, 33). Optional if fullName is provided."
                       }
-                    }
+                    },
+                    "x-required-any-of": [
+                      [
+                        "fullName",
+                        "year",
+                        "month",
+                        "day"
+                      ],
+                      [
+                        "lifePath",
+                        "expression",
+                        "soulUrge"
+                      ]
+                    ]
                   },
                   "person2": {
                     "type": "object",
@@ -109196,7 +109287,20 @@
                         "example": 2,
                         "description": "Person 2 Soul Urge number (1-9, 11, 22, 33). Optional if fullName is provided."
                       }
-                    }
+                    },
+                    "x-required-any-of": [
+                      [
+                        "fullName",
+                        "year",
+                        "month",
+                        "day"
+                      ],
+                      [
+                        "lifePath",
+                        "expression",
+                        "soulUrge"
+                      ]
+                    ]
                   }
                 },
                 "required": [
@@ -114209,14 +114313,6 @@
     "/kabbalah/gematria": {
       "post": {
         "operationId": "calculateGematria",
-        "x-required-any-of": [
-          [
-            "text"
-          ],
-          [
-            "textHebrew"
-          ]
-        ],
         "tags": [
           "Kabbalah"
         ],
@@ -114341,6 +114437,14 @@
                     "description": "Whether to also score the Latin text with the three Latin alphabet ciphers. They are Renaissance Christian and modern in lineage rather than rabbinic, and the response labels each one. Ignored when textHebrew was sent."
                   }
                 },
+                "x-required-any-of": [
+                  [
+                    "text"
+                  ],
+                  [
+                    "textHebrew"
+                  ]
+                ],
                 "example": {
                   "text": "Sarah",
                   "ciphers": [
@@ -115467,14 +115571,6 @@
     "/kabbalah/name-profile": {
       "post": {
         "operationId": "generateNameProfile",
-        "x-required-any-of": [
-          [
-            "name"
-          ],
-          [
-            "nameHebrew"
-          ]
-        ],
         "tags": [
           "Kabbalah"
         ],
@@ -115553,6 +115649,14 @@
                     "description": "Which method the name mispar gadol means, because the sources use it for two. Use finals-500-900 to score the five word final letters as 500 to 900, or milui to score each letter as the value of its own spelled out name."
                   }
                 },
+                "x-required-any-of": [
+                  [
+                    "name"
+                  ],
+                  [
+                    "nameHebrew"
+                  ]
+                ],
                 "example": {
                   "name": "Sarah"
                 },
@@ -119724,24 +119828,6 @@
     "/kabbalah/compatibility": {
       "post": {
         "operationId": "calculateNameCompatibility",
-        "x-required-any-of": [
-          [
-            "firstName",
-            "secondName"
-          ],
-          [
-            "firstName",
-            "secondNameHebrew"
-          ],
-          [
-            "firstNameHebrew",
-            "secondName"
-          ],
-          [
-            "firstNameHebrew",
-            "secondNameHebrew"
-          ]
-        ],
         "tags": [
           "Kabbalah"
         ],
@@ -119834,6 +119920,24 @@
                     "description": "Which method the name mispar gadol means, because the sources use it for two. Use finals-500-900 to score the five word final letters as 500 to 900, or milui to score each letter as the value of its own spelled out name."
                   }
                 },
+                "x-required-any-of": [
+                  [
+                    "firstName",
+                    "secondName"
+                  ],
+                  [
+                    "firstName",
+                    "secondNameHebrew"
+                  ],
+                  [
+                    "firstNameHebrew",
+                    "secondName"
+                  ],
+                  [
+                    "firstNameHebrew",
+                    "secondNameHebrew"
+                  ]
+                ],
                 "example": {
                   "firstName": "Sarah",
                   "secondName": "David"

@@ -37,14 +37,14 @@ export interface OpenApiSchema extends OpenApiSchemaRef {
 	example?: unknown;
 	anyOf?: OpenApiSchema[];
 	oneOf?: OpenApiSchema[];
+	/** Input sets of an object whose fields are all optional yet need one complete set; the first is the one a form asks for. */
+	'x-required-any-of'?: string[][];
 }
 
 /** One operation's request shape, as read from `spec.paths[path][method]`. */
 export interface OperationSchema {
 	operationId?: string;
 	summary?: string;
-	/** Input sets of an either-or body; read into {@link FormModel.requiredAnyOf}. */
-	'x-required-any-of'?: string[][];
 	requestBody?: {
 		content?: Record<string, { schema?: OpenApiSchema | OpenApiSchemaRef }>;
 	};
@@ -184,7 +184,7 @@ export interface FormModel {
 	opensOnLoad?: boolean;
 	/** The array-of-object properties, each already expanded into `min` groups inside `fields`. Absent when the request has none. */
 	repeats?: RepeatDef[];
-	/** Wire-key sets of an either-or body: any ONE complete set is a valid request. The first set is the one the form asks for, so its fields are marked `required`. Absent when the request has none. */
+	/** Wire-key sets of an either-or request body: any ONE complete set is a valid request. The first set's fields are marked `required`, as are a nested object's first set. Absent when the body has none. */
 	requiredAnyOf?: string[][];
 }
 
@@ -402,6 +402,14 @@ function toField(
 	};
 }
 
+/** The fields a form asks for in one object: its required ones plus the first of its input sets. */
+function requiredKeys(schema: OpenApiSchema): Set<string> {
+	return new Set([
+		...(schema.required ?? []),
+		...(schema['x-required-any-of']?.[0] ?? []),
+	]);
+}
+
 /**
  * Digest one operation into the {@link FormModel} the form renders. This is the single construction path: body properties (nested objects expand to `group.sub` keys) and path+query parameters flow through {@link toField} identically, so a query integer keeps its min/max the same as a body integer. The `lang` query parameter is dropped from `fields` and surfaced as {@link FormModel.hasLang} instead.
  */
@@ -417,12 +425,9 @@ export function buildFormModel(
 
 	const bodyRef = op.requestBody?.content?.['application/json']?.schema;
 	const bodySchema = resolveSchema(bodyRef, schemas);
-	const anyOf = op['x-required-any-of'];
+	const anyOf = bodySchema?.['x-required-any-of'];
 	if (bodySchema?.properties) {
-		const required = new Set([
-			...(bodySchema.required ?? []),
-			...(anyOf?.[0] ?? []),
-		]);
+		const required = requiredKeys(bodySchema);
 		for (const [name, sub] of Object.entries(bodySchema.properties)) {
 			const resolved = resolveSchema(sub, schemas) ?? {};
 			const item =
@@ -431,7 +436,7 @@ export function buildFormModel(
 					: undefined;
 			if (item?.type === 'object' && item.properties) {
 				const min = Math.max(1, resolved.minItems ?? 1);
-				const itemRequired = new Set(item.required ?? []);
+				const itemRequired = requiredKeys(item);
 				repeats.push({ key: name, min, max: resolved.maxItems ?? min });
 				for (let i = 0; i < min; i++) {
 					for (const [subName, subSchema] of Object.entries(item.properties)) {
@@ -446,7 +451,7 @@ export function buildFormModel(
 					}
 				}
 			} else if (resolved.type === 'object' && resolved.properties) {
-				const subRequired = new Set(resolved.required ?? []);
+				const subRequired = requiredKeys(resolved);
 				for (const [subName, subSchema] of Object.entries(
 					resolved.properties,
 				)) {
