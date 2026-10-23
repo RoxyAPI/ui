@@ -625,6 +625,41 @@ describe('platform-neutral render intent', () => {
 		expect(primary.groups?.find((g) => g.key === 'person')?.fold).toBe(true);
 	});
 
+	test('an either-or body asks its first input set and tucks the alternatives away', () => {
+		const sets = [['date', 'gender'], ['kua']];
+		const model = buildFormModel(
+			{
+				'x-required-any-of': sets,
+				requestBody: {
+					content: {
+						'application/json': {
+							schema: {
+								type: 'object',
+								properties: {
+									kua: { type: 'number' },
+									date: { type: 'string', format: 'date' },
+									gender: { type: 'string', enum: ['male', 'female'] },
+								},
+							},
+						},
+					},
+				},
+			},
+			{},
+			'feng-shui/eight-mansions',
+			'POST',
+		);
+		expect(model.requiredAnyOf).toEqual(sets);
+		expect(model.fields.map((f) => [f.key, f.required, f.fold])).toEqual([
+			['kua', false, true],
+			['date', true, undefined],
+			['gender', true, undefined],
+		]);
+		expect(
+			bodyModel({ kua: { type: 'number' } }).requiredAnyOf,
+		).toBeUndefined();
+	});
+
 	test('seed and optional pagination stay hidden, required pagination remains an input', () => {
 		const model = bodyModel(
 			{

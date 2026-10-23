@@ -43,6 +43,8 @@ export interface OpenApiSchema extends OpenApiSchemaRef {
 export interface OperationSchema {
 	operationId?: string;
 	summary?: string;
+	/** Input sets of an either-or body; read into {@link FormModel.requiredAnyOf}. */
+	'x-required-any-of'?: string[][];
 	requestBody?: {
 		content?: Record<string, { schema?: OpenApiSchema | OpenApiSchemaRef }>;
 	};
@@ -182,6 +184,8 @@ export interface FormModel {
 	opensOnLoad?: boolean;
 	/** The array-of-object properties, each already expanded into `min` groups inside `fields`. Absent when the request has none. */
 	repeats?: RepeatDef[];
+	/** Wire-key sets of an either-or body: any ONE complete set is a valid request. The first set is the one the form asks for, so its fields are marked `required`. Absent when the request has none. */
+	requiredAnyOf?: string[][];
 }
 
 /** The group key of the `index`th record of a repeating property, and its inverse. */
@@ -413,8 +417,12 @@ export function buildFormModel(
 
 	const bodyRef = op.requestBody?.content?.['application/json']?.schema;
 	const bodySchema = resolveSchema(bodyRef, schemas);
+	const anyOf = op['x-required-any-of'];
 	if (bodySchema?.properties) {
-		const required = new Set(bodySchema.required ?? []);
+		const required = new Set([
+			...(bodySchema.required ?? []),
+			...(anyOf?.[0] ?? []),
+		]);
 		for (const [name, sub] of Object.entries(bodySchema.properties)) {
 			const resolved = resolveSchema(sub, schemas) ?? {};
 			const item =
@@ -515,6 +523,7 @@ export function buildFormModel(
 			fields,
 			hasLang,
 			...(repeats.length > 0 ? { repeats } : {}),
+			...(anyOf ? { requiredAnyOf: anyOf } : {}),
 		},
 		method,
 		endpoint,
