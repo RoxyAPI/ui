@@ -1,8 +1,8 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { KpRulingPlanetsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { houseWords } from '../utils/house-themes.js';
 
 /**

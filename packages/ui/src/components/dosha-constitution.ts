@@ -1,10 +1,10 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { CalculateAyurvedicConstitutionResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { citationLine } from '../utils/citation.js';
+import { customElement } from '../utils/define.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatInteger,

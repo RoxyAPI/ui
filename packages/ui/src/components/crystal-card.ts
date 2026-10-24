@@ -1,9 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { GetCrystalResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { cssColor } from '../utils/css-color.js';
+import { customElement } from '../utils/define.js';
 import { formatNumber, monthName } from '../utils/format.js';
 
 /**

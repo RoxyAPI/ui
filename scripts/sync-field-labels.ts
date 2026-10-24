@@ -13,9 +13,12 @@
  *
  * @remarks
  * The keyless `/languages/field-labels?lang=` feed supplies all names, including `id.*` enums.
- * Shared fields and enums ride the existing `locales/{lang}.js` payload. Identifier picker names
- * and contextual operation/field labels are generated separately in `generated/form-labels.json`,
- * read only by build-forms.ts for server renderers. No browser entry imports that artifact.
+ * Shared fields and enums ride the existing `locales/{lang}.js` payload. An `id.*` name rides it
+ * too only when a bound form offers that identifier as a choice AND the language has a word of its
+ * own for it, so a catalogue name that reads as the English one (every nakshatra, rashi and yoga)
+ * costs the browser nothing. Every other identifier name and the contextual operation/field labels
+ * are generated separately in `generated/form-labels.json`, read only by build-forms.ts for server
+ * renderers. No browser entry imports that artifact.
  * `--from-disk` splits/rebuilds both outputs from persisted API names without another API read.
  * Refresh point is `bun run generate`, the same command that refreshes the spec.
  *
@@ -36,6 +39,7 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { API_LANGUAGES } from '../packages/ui/src/generated/api-languages.js';
+import { ENDPOINT_BINDINGS } from '../packages/ui/src/generated/endpoint-bindings.js';
 import { EN_FIELD_LABELS } from '../packages/ui/src/generated/field-labels-en.js';
 import {
 	labelsFor,
@@ -125,14 +129,14 @@ export const EN_FIELD_LABELS: Record<string, string> = ${JSON.stringify(Object.f
 `;
 }
 
-/** Every catalogue this script writes: one per shipped language plus the compiled-in English override. */
+/** Every catalogue this script writes: the compiled-in English override first, because every other language is compared against it, then one per shipped language. */
 const TARGETS = [
+	{ lang: 'en', out: EN_OUT, emit: emitEnglish },
 	...LANGS.map((lang) => ({
 		lang,
 		out: `${OUT_DIR}/${lang}.ts`,
 		emit: (p: LabelPayload) => emit(lang, p),
 	})),
-	{ lang: 'en', out: EN_OUT, emit: emitEnglish },
 ];
 
 const CHECK = process.argv.includes('--check');
@@ -162,15 +166,46 @@ export async function fetchLabels(lang: string): Promise<LabelPayload> {
 	return body;
 }
 
-/** Separate build-only picker names by their existing key space, keeping shared enums intact. */
-export function splitLabelPayload(payload: LabelPayload): {
+/** The identifier values a bound form offers as choices, derived from the bindings and the form model. */
+export function boundPickerIds(spec: SpecDoc): Set<string> {
+	const ids = new Set<string>();
+	for (const binding of Object.values(ENDPOINT_BINDINGS).flat()) {
+		const op = spec.paths[binding.path]?.[binding.method.toLowerCase()];
+		if (!op) continue;
+		const model = buildFormModel(
+			op,
+			spec.components?.schemas ?? {},
+			binding.path,
+			binding.method,
+		);
+		for (const field of model.fields)
+			if (field.name === 'id')
+				for (const value of field.enum ?? []) ids.add(value);
+	}
+	return ids;
+}
+
+/**
+ * Separate build-only picker names by their existing key space, keeping shared enums intact.
+ *
+ * @param english - The English feed enums, so a name that reads as the English one stays build-only.
+ * @param pickers - The identifier values a bound browser form renders, from {@link boundPickerIds}.
+ */
+export function splitLabelPayload(
+	payload: LabelPayload,
+	english: Record<string, string> = {},
+	pickers: ReadonlySet<string> = new Set(),
+): {
 	runtime: LabelPayload;
 	server: ServerLabels;
 } {
 	const runtimeEnums: Record<string, string> = {};
 	const pickerEnums: Record<string, string> = {};
 	for (const [key, label] of Object.entries(payload.enums ?? {})) {
-		(key.startsWith('id.') ? pickerEnums : runtimeEnums)[key] = label;
+		const browser =
+			!key.startsWith('id.') ||
+			(pickers.has(key.slice(3)) && label !== english[key]);
+		(browser ? runtimeEnums : pickerEnums)[key] = label;
 	}
 	return {
 		runtime: { fields: payload.fields ?? {}, enums: runtimeEnums },
@@ -183,8 +218,10 @@ async function labelOutputs(
 	lang: string,
 	payload: LabelPayload,
 	spec: SpecDoc,
+	english: Record<string, string>,
+	pickers: ReadonlySet<string>,
 ) {
-	const { runtime, server } = splitLabelPayload(payload);
+	const { runtime, server } = splitLabelPayload(payload, english, pickers);
 	if (lang !== 'en') await import(`../packages/ui/src/locales/${lang}.js`);
 	registerFieldLabels(lang, {
 		fields: runtime.fields ?? {},
@@ -228,6 +265,8 @@ async function main() {
 	const serverLabels: Record<string, ServerLabels> = existsSync(SERVER_OUT)
 		? await Bun.file(SERVER_OUT).json()
 		: {};
+	const pickers = boundPickerIds(spec);
+	let english: Record<string, string> = serverLabels.en?.enums ?? {};
 	const drifted: string[] = [];
 	let written = 0;
 	let kept = 0;
@@ -251,7 +290,8 @@ async function main() {
 					};
 				}
 			} else payload = await fetchLabels(lang);
-			const outputs = await labelOutputs(lang, payload, spec);
+			if (lang === 'en') english = payload.enums ?? {};
+			const outputs = await labelOutputs(lang, payload, spec, english, pickers);
 			const expected = formatted(out, write(outputs.runtime));
 			if (CHECK) {
 				const committed = existsSync(out) ? await Bun.file(out).text() : '';

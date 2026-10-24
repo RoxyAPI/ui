@@ -1,5 +1,5 @@
 import { css, html, nothing, svg } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GetCriticalDaysResponse,
@@ -13,6 +13,7 @@ import {
 	CYCLE_LABEL,
 	cycleName,
 } from '../utils/biorhythm.js';
+import { customElement } from '../utils/define.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatDate,

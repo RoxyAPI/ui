@@ -1,9 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { GetAngelNumberResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
 
 /**

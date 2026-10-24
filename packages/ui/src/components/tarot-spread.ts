@@ -1,5 +1,5 @@
 import { css, html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import type {
 	CastCareerSpreadResponse,
 	CastCelticCrossResponse,
@@ -12,6 +12,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { display } from '../utils/localized.js';
 import { arcanaText } from '../utils/tarot.js';
 

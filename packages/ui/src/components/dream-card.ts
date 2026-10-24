@@ -1,8 +1,8 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { GetDreamSymbolResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 
 /**
  * Dream symbol card. Renders /dreams/symbols/{id}: the symbol name as a heading, the full psychological interpretation as the body, and the dictionary letter as a chip for alphabetical context.

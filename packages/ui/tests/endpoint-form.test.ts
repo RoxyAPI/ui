@@ -1,6 +1,15 @@
-import { afterEach, describe, expect, mock, test } from 'bun:test';
+import {
+	afterAll,
+	afterEach,
+	beforeAll,
+	describe,
+	expect,
+	mock,
+	test,
+} from 'bun:test';
 import spec from '../../../specs/openapi.json';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
+import { labelsFor, registerFieldLabels } from '../src/i18n/registry.js';
 import {
 	buildFormModel,
 	type FormModel,
@@ -1276,6 +1285,229 @@ describe('every bound endpoint can be submitted from its form', () => {
 
 		expect(checked).toBeGreaterThan(20);
 		expect(hidden).toEqual([]);
+	});
+
+	/** Every input label a visitor can read on a mounted form, the Advanced ones included, beside the legend of the card it sits in. */
+	const labelsOf = (root: ShadowRoot) =>
+		Array.from(root.querySelectorAll('.field, .location-block')).flatMap(
+			(field) => {
+				const label = field
+					.querySelector('label, .label')
+					?.textContent?.replace('*', '')
+					.trim();
+				const legend = field
+					.closest('fieldset')
+					?.querySelector('legend')
+					?.textContent?.trim();
+				return label ? [{ label, legend }] : [];
+			},
+		);
+
+	test('no two inputs read the same label unless each sits in a card that names it', async () => {
+		const twins: string[] = [];
+		let checked = 0;
+		for await (const { label, mount } of boundForms()) {
+			const el = await mount();
+			const fields = labelsOf(el.shadowRoot as ShadowRoot);
+			for (const [i, a] of fields.entries())
+				for (const b of fields.slice(i + 1))
+					if (
+						a.label.toLowerCase() === b.label.toLowerCase() &&
+						(!a.legend || !b.legend || a.legend === b.legend)
+					)
+						twins.push(`${label} -> ${a.label}`);
+			checked++;
+			el.remove();
+		}
+		expect(checked).toBeGreaterThan(100);
+		expect(twins).toEqual([]);
+	});
+
+	test('beside an open card of the visitor data, the reading date and time are never behind Advanced', async () => {
+		const tucked: string[] = [];
+		let checked = 0;
+		for await (const { label, model, mount } of boundForms()) {
+			const moments = model.fields.filter(
+				(f) =>
+					!f.group &&
+					!f.role &&
+					f.default === undefined &&
+					['date', 'time', 'datetime'].includes(f.kind),
+			);
+			if (!moments.length) continue;
+			const el = await mount();
+			const root = el.shadowRoot as ShadowRoot;
+			const openCard = Array.from(
+				root.querySelectorAll('fieldset.person-group'),
+			).some((card) => !card.closest('details.advanced'));
+			if (openCard) {
+				checked++;
+				for (const f of moments)
+					if (
+						root
+							.getElementById(`roxy-form-${f.key}`)
+							?.closest('details.advanced')
+					)
+						tucked.push(`${label} -> ${f.key}`);
+			}
+			el.remove();
+		}
+		// The two transit forms, the forecast windows and the biorhythm pair today.
+		expect(checked).toBeGreaterThanOrEqual(6);
+		expect(tucked).toEqual([]);
+	});
+
+	test('a form that submits on a tile pick sends that tile again whenever another input changes', async () => {
+		const dropped: string[] = [];
+		let checked = 0;
+		for await (const { label, mount } of boundForms()) {
+			const el = await mount();
+			const sole = (el as unknown as { soleChoice: { key: string } | null })
+				.soleChoice;
+			const root = el.shadowRoot as ShadowRoot;
+			const grid = sole
+				? root
+						.getElementById(`roxy-form-${sole.key}-label`)
+						?.closest('.field')
+						?.querySelector('[role="radiogroup"]')
+				: null;
+			if (!sole || !grid) {
+				el.remove();
+				continue;
+			}
+			const sent: Record<string, unknown>[] = [];
+			el.addEventListener('roxy-submit', (e) =>
+				sent.push((e as CustomEvent).detail.values),
+			);
+			const tile = grid.querySelector('button.tile:not([disabled])');
+			(tile as HTMLButtonElement).click();
+			await flush(el);
+			const picked = sent[0]?.[sole.key];
+			if (sent.length !== 1 || !picked) dropped.push(`${label} -> no pick`);
+			const others: Array<[string, () => void]> = [];
+			for (const input of root.querySelectorAll('input'))
+				if (!input.closest('roxy-location-search') && input.id)
+					others.push([
+						input.id,
+						() => {
+							input.value =
+								input.type === 'date'
+									? '2026-12-25'
+									: input.type === 'time'
+										? '12:00'
+										: '1';
+							input.dispatchEvent(new Event('input'));
+							input.dispatchEvent(new Event('change'));
+						},
+					]);
+			for (const select of root.querySelectorAll('select'))
+				others.push([
+					select.id,
+					() => {
+						select.value =
+							Array.from(select.options).find((o) => o.value)?.value ?? '';
+						select.dispatchEvent(new Event('change'));
+					},
+				]);
+			for (const toggle of root.querySelectorAll('button.toggle'))
+				others.push([toggle.id, () => (toggle as HTMLButtonElement).click()]);
+			for (const box of root.querySelectorAll('roxy-location-search'))
+				others.push([
+					'city',
+					() =>
+						box.dispatchEvent(
+							new CustomEvent('roxy-location-select', {
+								detail: {
+									latitude: 55.75,
+									longitude: 37.62,
+									timezone: 'Europe/Moscow',
+								},
+							}),
+						),
+				]);
+			for (const [id, change] of others) {
+				const before = sent.length;
+				change();
+				await flush(el);
+				if (sent.length !== before + 1 || sent.at(-1)?.[sole.key] !== picked)
+					dropped.push(`${label} -> ${id}`);
+			}
+			if (others.length) checked++;
+			el.remove();
+		}
+		// The four horoscope periods today, each with a date and a city under Advanced.
+		expect(checked).toBeGreaterThanOrEqual(4);
+		expect(dropped).toEqual([]);
+	});
+});
+
+describe('the transit forms ask for the transit moment in the open, under its own name', () => {
+	const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+		string,
+		OpenApiSchema
+	>;
+	const ops = spec.paths as unknown as Record<
+		string,
+		Record<string, OperationSchema>
+	>;
+	// Stand-in API labels for one wire language, restored after, so the render proves where the words come from.
+	const saved = labelsFor('ru');
+	beforeAll(() =>
+		registerFieldLabels('ru', {
+			fields: { transitDate: 'XD', transitTime: 'XT', date: 'XB' },
+			enums: {},
+		}),
+	);
+	afterAll(() => registerFieldLabels('ru', saved ?? { fields: {}, enums: {} }));
+
+	test.each([
+		['roxy-transits-table', '/astrology/transits', 'date', 'time'],
+		[
+			'roxy-transit-wheel',
+			'/astrology/transit-aspects',
+			'transitDate',
+			'transitTime',
+		],
+	])('%s', async (tag, path, date, time) => {
+		const binding = ENDPOINT_BINDINGS[tag]?.find((b) => b.path === path);
+		expect(binding).toBeDefined();
+		const endpoint = path.slice(1);
+		const model = buildFormModel(
+			ops[path]?.post as OperationSchema,
+			schemas,
+			endpoint,
+		);
+		for (const [lang, expected, birth] of [
+			['', ['Transit date', 'Transit time'], 'Date'],
+			['ru', ['XD', 'XT'], 'XB'],
+		] as const) {
+			const el = await mountForm(model, {
+				'data-endpoint': endpoint,
+				method: 'POST',
+				...(lang ? { lang } : {}),
+			});
+			const root = el.shadowRoot as ShadowRoot;
+			const labelOf = (key: string) => {
+				const input = root.getElementById(`roxy-form-${key}`);
+				expect(input?.closest('details.advanced')).toBeNull();
+				expect(input?.closest('fieldset')).toBeNull();
+				return root
+					.querySelector(`label[for="roxy-form-${key}"]`)
+					?.textContent?.replace('*', '')
+					.trim();
+			};
+			expect([labelOf(date), labelOf(time)]).toEqual([...expected]);
+			// The natal card still holds the birth date, under its own label.
+			const card = root.querySelector('fieldset.person-group');
+			expect(card?.closest('details.advanced')).toBeNull();
+			expect(
+				card
+					?.querySelector('label[for="roxy-form-natalChart.date"]')
+					?.textContent?.replace('*', '')
+					.trim(),
+			).toBe(birth);
+			el.remove();
+		}
 	});
 });
 

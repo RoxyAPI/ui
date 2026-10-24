@@ -1,8 +1,8 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { GenerateDigestResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatDate, formatDateRange, formatNumber } from '../utils/format.js';
 import { humanize } from '../utils/string.js';
 

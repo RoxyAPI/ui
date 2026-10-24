@@ -1,6 +1,6 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { customElement } from '../utils/define.js';
 // Registers <roxy-natal-chart>, reused below as the wheel renderer. The
 // relocation response is structurally a natal chart (same planets, houses, and
 // angles), so the wheel is shared rather than duplicated.

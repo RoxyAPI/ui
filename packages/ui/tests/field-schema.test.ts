@@ -17,6 +17,7 @@ import {
 	optionsFrom,
 	pickerSource,
 	type SpecDoc,
+	sliceBase,
 	sliceFileName,
 } from '../src/utils/field-schema.js';
 
@@ -374,6 +375,36 @@ describe('sliceFileName', () => {
 		);
 		expect(sliceFileName('POST', '/astrology/natal-chart')).toBe(
 			'post--astrology-natal-chart.json',
+		);
+	});
+});
+
+describe('sliceBase', () => {
+	const pinned = 'https://cdn.jsdelivr.net/npm/@roxyapi/ui@1.2.3/dist/schemas';
+	test('a script on jsDelivr, or no script at all, reads the pinned copy', () => {
+		expect(sliceBase('1.2.3')).toBe(pinned);
+		expect(
+			sliceBase(
+				'1.2.3',
+				'https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js',
+			),
+		).toBe(pinned);
+	});
+	test('a bundle on its own domain reads the slices beside it, at either depth', () => {
+		expect(
+			sliceBase('1.2.3', 'https://example.org/assets/ui/dist/cdn/roxy-ui.js'),
+		).toBe('https://example.org/assets/ui/dist/schemas');
+		expect(
+			sliceBase(
+				'1.2.3',
+				'https://example.org/ui/cdn/components/natal-chart.js?v=1',
+			),
+		).toBe('https://example.org/ui/schemas');
+	});
+	test('a script that is not one of the shipped bundle files keeps the pinned copy', () => {
+		expect(sliceBase('1.2.3', 'https://example.org/cdn/app.js')).toBe(pinned);
+		expect(sliceBase('1.2.3', 'https://example.org/js/roxy-ui.js')).toBe(
+			pinned,
 		);
 	});
 });

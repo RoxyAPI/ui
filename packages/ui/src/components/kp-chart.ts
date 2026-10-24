@@ -1,8 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import type { KpChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatAyanamsa } from '../utils/format.js';
 import { houseThemeLine, houseWords } from '../utils/house-themes.js';

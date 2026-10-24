@@ -1,10 +1,11 @@
 import { css, html, nothing, type PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { comboboxStyles } from '../utils/combobox-styles.js';
 import { debounce } from '../utils/debounce.js';
+import { customElement } from '../utils/define.js';
 import { DEFAULT_BASE_URL, readApiError } from '../utils/fetch-controller.js';
 import {
 	dispatchKeyRefusal,

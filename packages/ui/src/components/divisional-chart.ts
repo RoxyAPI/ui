@@ -1,5 +1,5 @@
 import { css, html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { planetGlyph } from '../tokens/index.js';
 import type {
 	DivisionalChartResponse,
@@ -8,6 +8,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
+import { customElement } from '../utils/define.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import { distinctSanskrit } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';

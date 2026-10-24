@@ -1,5 +1,5 @@
 import { css, html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type {
@@ -10,6 +10,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { cycleName } from '../utils/biorhythm.js';
+import { customElement } from '../utils/define.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	formatList,

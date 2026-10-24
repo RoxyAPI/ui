@@ -1,9 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { CalculatePentaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
+import { customElement } from '../utils/define.js';
 import { hdReadingStyles, renderHdFacts } from '../utils/hd-reading.js';
 import {
 	PENTA_VIEWBOX,

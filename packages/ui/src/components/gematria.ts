@@ -1,9 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import type { CalculateGematriaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatInteger } from '../utils/format.js';
 import { displayField, displayOption } from '../utils/localized.js';
 import { stackedTableStyles } from '../utils/stacked-table.js';

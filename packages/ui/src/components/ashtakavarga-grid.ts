@@ -1,10 +1,11 @@
 import { css, html, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { signGlyph } from '../tokens/index.js';
 import type { AshtakavargaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 

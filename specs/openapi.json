@@ -311,7 +311,7 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Planet or point name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees. The lunar nodes follow the request nodeType, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
+                  "description": "Planet or point name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees. The lunar nodes follow the request nodeType, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected. Black Moon Lilith is always the mean lunar apogee, whatever nodeType says. POST /lilith returns the mean and the true (osculating) apogee side by side, each labelled by its variant."
                 },
                 "nameLocalized": {
                   "type": "string",
@@ -2020,7 +2020,7 @@
                 "name": {
                   "type": "string",
                   "example": "Sun",
-                  "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees. The lunar nodes follow the request nodeType, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
+                  "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use nameLocalized for anything a reader sees. The lunar nodes follow the request nodeType, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected. Black Moon Lilith is always the mean lunar apogee, whatever nodeType says. POST /lilith returns the mean and the true (osculating) apogee side by side, each labelled by its variant."
                 },
                 "nameLocalized": {
                   "type": "string",
@@ -11593,7 +11593,7 @@
                 "time": {
                   "type": "string",
                   "example": "13:53",
-                  "description": "Sublord transition time (HH:MM, 24-hour): the instant is found to the second and shown to the minute it falls in. Adjusted to requested timezone."
+                  "description": "Sublord transition time (HH:MM, 24-hour): the instant is found to the second and shown rounded to the nearest minute. Adjusted to requested timezone."
                 },
                 "datetime": {
                   "type": "string",
@@ -11763,7 +11763,7 @@
                 "time": {
                   "type": "string",
                   "example": "08:00",
-                  "description": "Ingress time (HH:MM, 24-hour): the instant is found to the second and shown to the minute it falls in. Adjusted to requested timezone."
+                  "description": "Ingress time (HH:MM, 24-hour): the instant is found to the second and shown rounded to the nearest minute. Adjusted to requested timezone."
                 },
                 "datetime": {
                   "type": "string",
@@ -19169,7 +19169,7 @@
                           "name": {
                             "type": "string",
                             "example": "Sun",
-                            "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). The lunar nodes follow the request nodeType, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected."
+                            "description": "Planet name (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node, Chiron, Black Moon Lilith). The lunar nodes follow the request nodeType, which defaults to the true (osculating) node; pass \"mean\" for the smoothed node. The two differ by up to about 1.8 degrees and no other body is affected. Black Moon Lilith is always the mean lunar apogee, whatever nodeType says. POST /lilith returns the mean and the true (osculating) apogee side by side, each labelled by its variant."
                           },
                           "longitude": {
                             "type": "number",
@@ -107695,7 +107695,21 @@
                     "example": "John William Smith",
                     "description": "Full birth name (checks Expression, Soul Urge, Personality). A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses."
                   }
-                }
+                },
+                "x-required-any-of": [
+                  [
+                    "fullName",
+                    "year",
+                    "month",
+                    "day"
+                  ],
+                  [
+                    "day"
+                  ],
+                  [
+                    "fullName"
+                  ]
+                ]
               }
             }
           }

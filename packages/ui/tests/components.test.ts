@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { readdirSync, readFileSync } from 'node:fs';
 import nakshatras from '../../../specs/fixtures/nakshatras.json' with {
 	type: 'json',
 };
@@ -14,6 +15,7 @@ import { TRANSIT_TYPE_SIZES } from '../src/components/transit-wheel.js';
 import { FAMILY_ORDER } from '../src/components/yoga-list.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
 import { baseStyles } from '../src/utils/base-styles.js';
+import { customElement } from '../src/utils/define.js';
 import { formatDateTime } from '../src/utils/format.js';
 
 /** `updateComplete` lives on LitElement, not on the `HTMLElement` that `createElement` returns, and every call site was reaching it through the same double cast. One helper, one place to change. */
@@ -77,6 +79,22 @@ describe('package exports', () => {
 			const ctor = customElements.get(`roxy-${name}`);
 			expect(ctor).toBeDefined();
 		}
+	});
+
+	test('every element registers through the one define that tolerates a second bundle', () => {
+		const dir = new URL('../src/components/', import.meta.url);
+		const direct = readdirSync(dir).filter((f) =>
+			/import \{[^}]*\bcustomElement\b[^}]*\} from 'lit\/decorators\.js'/.test(
+				readFileSync(new URL(f, dir), 'utf8'),
+			),
+		);
+		expect(direct).toEqual([]);
+		const tag = 'roxy-data';
+		const first = customElements.get(tag);
+		expect(() =>
+			customElement(tag)(class extends HTMLElement {}),
+		).not.toThrow();
+		expect(customElements.get(tag)).toBe(first);
 	});
 
 	test('PascalCase exports match tag names', () => {

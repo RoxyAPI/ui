@@ -1,5 +1,5 @@
 import { css, html, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GenerateBodygraphResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -14,6 +14,7 @@ import {
 } from '../utils/bodygraph-render.js';
 import { bodygraphChartStyles } from '../utils/bodygraph-styles.js';
 import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
+import { customElement } from '../utils/define.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDateTimeUtc } from '../utils/format.js';
 import {

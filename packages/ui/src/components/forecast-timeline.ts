@@ -1,5 +1,4 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { aspectSymbol } from '../tokens/index.js';
 import type {
 	FindSignificantDatesResponse,
@@ -8,6 +7,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import {
 	ASPECT_CLASS,
 	formatAspectName,

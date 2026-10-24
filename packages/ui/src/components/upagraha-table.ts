@@ -1,10 +1,10 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { signGlyph } from '../tokens/index.js';
 import type { UpagrahaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { formatNumber } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';

@@ -1,10 +1,10 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GetVedicDailyReadingResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import {
 	formatDateTime,
 	formatDateTimeRange,

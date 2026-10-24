@@ -1,9 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { signGlyph } from '../tokens/index.js';
 import type { ArudhaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 
 type Pada = ArudhaResponse['padas'][number];

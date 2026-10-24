@@ -1,5 +1,5 @@
 import { css, html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	CalculateZodiacAnimalResponse,
@@ -9,6 +9,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatDate, formatInteger } from '../utils/format.js';
 import {
 	frameCaptionStyles,

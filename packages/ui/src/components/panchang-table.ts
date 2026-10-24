@@ -1,11 +1,12 @@
 import { css, html, nothing, type TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import type {
 	GetBasicPanchangResponse,
 	GetDetailedPanchangResponse,
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatSignPosition } from '../utils/degree.js';
 import {
 	formatDate,

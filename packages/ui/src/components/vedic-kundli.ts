@@ -1,9 +1,10 @@
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
+import { customElement } from '../utils/define.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import {
 	type ChartStyle,

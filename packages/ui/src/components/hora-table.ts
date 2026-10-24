@@ -1,9 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GetHoraResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatDate, formatTimeRange } from '../utils/format.js';
 
 type HoraPeriod = NonNullable<GetHoraResponse['dayHoras']>[number];

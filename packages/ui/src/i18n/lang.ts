@@ -37,6 +37,11 @@ export function resolveLang(el: HTMLElement): string | undefined {
 	return document.documentElement.lang || undefined;
 }
 
+/** True when a page reads in English: no language signal, or an `en` tag of any region. */
+export function readsEnglish(lang: string | undefined): boolean {
+	return !lang || lang.toLowerCase().split('-')[0] === 'en';
+}
+
 /**
  * Which script a Chinese page is written in, read off the region it names.
  *

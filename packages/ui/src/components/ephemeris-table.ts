@@ -1,5 +1,5 @@
 import { css, html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type {
 	GetMonthlyEphemerisResponse,
@@ -7,6 +7,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { splitDegreeInSign } from '../utils/degree.js';
 import {
 	formatMonthDay,

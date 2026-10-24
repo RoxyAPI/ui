@@ -1,9 +1,9 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { CalculateTransitResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatWheelDegree } from '../utils/degree.js';
 import {
 	formatAspectName,

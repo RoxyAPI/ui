@@ -1,9 +1,10 @@
 import { css, html, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { TransitsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatDegreeInSign } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {

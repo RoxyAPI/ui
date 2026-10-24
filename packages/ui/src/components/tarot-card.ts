@@ -1,9 +1,10 @@
 import { css, html, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { GetCardResponse, GetDailyCardResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { disclosureStyles } from '../utils/disclosure.js';
 import {
 	type InterpSection,

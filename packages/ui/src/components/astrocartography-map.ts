@@ -1,11 +1,11 @@
 import { css, html, nothing, svg } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
+import { customElement } from '../utils/define.js';
 import { fanOut } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDateTime } from '../utils/format.js';

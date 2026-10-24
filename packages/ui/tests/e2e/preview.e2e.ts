@@ -127,3 +127,101 @@ test('the requested theme is on the root before the component paints', async ({
 		await page.evaluate(() => document.documentElement.dataset.theme),
 	).toBeUndefined();
 });
+
+test('a second copy of the bundle, and a component file after it, register nothing and log nothing', async ({
+	page,
+}) => {
+	const errors: string[] = [];
+	page.on('pageerror', (err) => errors.push(`uncaught: ${err.message}`));
+	page.on('console', (m) => {
+		if (m.type() === 'error' || m.type() === 'warning')
+			errors.push(`${m.type()}: ${m.text()}`);
+	});
+	await page.goto('/preview.html?c=natal-chart');
+	await page.waitForFunction(
+		() =>
+			(document.querySelector('roxy-natal-chart') as { data?: unknown } | null)
+				?.data != null,
+	);
+	await page.evaluate(() => {
+		(window as unknown as { first?: unknown }).first =
+			customElements.get('roxy-natal-chart');
+	});
+	for (const src of [
+		'dist/cdn/roxy-ui.js',
+		'dist/cdn/roxy-ui.js',
+		'dist/cdn/components/natal-chart.js',
+		'dist/cdn/components/horoscope-card.js',
+	])
+		await page.addScriptTag({ url: src });
+	expect(errors, errors.join('\n')).toEqual([]);
+	// The first bundle stays in charge, and a card placed afterwards still upgrades and draws.
+	expect(
+		await page.evaluate(
+			() =>
+				customElements.get('roxy-natal-chart') ===
+				(window as unknown as { first?: unknown }).first,
+		),
+	).toBe(true);
+	const drawn = await page.evaluate(async () => {
+		const el = document.createElement('roxy-horoscope-card') as HTMLElement & {
+			data: unknown;
+			updateComplete: Promise<unknown>;
+		};
+		el.data = {
+			sign: 'Aries',
+			date: '2026-01-01',
+			overview: 'A day to begin.',
+		};
+		document.body.append(el);
+		await el.updateComplete;
+		return el.shadowRoot?.textContent?.includes('A day to begin.') ?? false;
+	});
+	expect(drawn).toBe(true);
+	expect(
+		await page.evaluate(
+			() =>
+				(
+					document.querySelector('roxy-natal-chart')?.shadowRoot?.textContent ??
+					''
+				).length > 0,
+		),
+	).toBe(true);
+});
+
+test('a bundle served from its own domain reads each form schema beside itself, never from the public CDN', async ({
+	page,
+	baseURL,
+}) => {
+	const requested: string[] = [];
+	page.on('request', (r) => requested.push(r.url()));
+	// The full bundle and a per-component file sit at two depths under one dist folder.
+	await page.route('**/self-hosted.html', (route) =>
+		route.fulfill({
+			contentType: 'text/html',
+			body: '<!doctype html><meta charset="utf-8"><script src="dist/cdn/components/endpoint-form.js"></script><roxy-endpoint-form data-endpoint="astrology/natal-chart" method="POST"></roxy-endpoint-form>',
+		}),
+	);
+	for (const page_ of ['/self-hosted.html', '/preview.html?c=natal-chart']) {
+		await page.goto(page_);
+		await page.evaluate(() => {
+			const form = document.createElement('roxy-endpoint-form');
+			form.setAttribute('data-endpoint', 'astrology/horoscope/{sign}/daily');
+			form.setAttribute('method', 'GET');
+			document.body.append(form);
+		});
+		await page.waitForFunction(() =>
+			[...document.querySelectorAll('roxy-endpoint-form')].every(
+				(f) => f.shadowRoot?.querySelector('form') != null,
+			),
+		);
+	}
+	const slices = requested.filter((u) => u.includes('/schemas/'));
+	expect(slices.length).toBeGreaterThanOrEqual(3);
+	expect(slices.every((u) => u.startsWith(`${baseURL}/dist/schemas/`))).toBe(
+		true,
+	);
+	expect(
+		requested.filter((u) => u.includes('jsdelivr') || u.includes('openapi')),
+	).toEqual([]);
+});

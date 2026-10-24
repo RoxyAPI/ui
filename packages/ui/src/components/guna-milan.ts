@@ -1,8 +1,8 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { CompatibilityResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatNumber, formatPercent } from '../utils/format.js';
 import { frameCaptionStyles, renderFrameCaption } from '../utils/frame.js';
 import { stackedTableStyles } from '../utils/stacked-table.js';

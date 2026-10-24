@@ -312,7 +312,7 @@ describe('published forms manifest', () => {
 			}
 		});
 
-	test('Spanish Lit keeps its original picker labels while server labels stay translated', async () => {
+	test('Spanish Lit translates a picker option the language names and reads a contextual label from the chrome catalogue', async () => {
 		const rendered = JSON.parse(
 			await runBun([
 				'--preload',
@@ -332,7 +332,7 @@ describe('published forms manifest', () => {
 			for(let i=0;i<6;i++) {await el.updateComplete; await new Promise(r=>setTimeout(r,0));}
 			const options = [...el.shadowRoot.querySelectorAll('.tile-label')].slice(0,3).map(n=>n.textContent.trim());
 			const label = el.shadowRoot.querySelector('.label').textContent.replace('*','').trim();
-			// Contextual translations are server-only, including nouns already present in chrome.
+			// A contextual noun the chrome catalogue carries reads translated, as the server labels do.
 			el.fields = manifest.forms.getCenter.fields;
 			await el.updateComplete;
 			console.log(JSON.stringify({ label, options, center: el.shadowRoot.querySelector('.label').textContent.replace('*','').trim() }));
@@ -341,8 +341,8 @@ describe('published forms manifest', () => {
 		);
 		expect(rendered).toEqual({
 			label: 'Animal',
-			options: ['Rat', 'Ox', 'Tiger'],
-			center: 'Center',
+			options: ['Rata', 'Buey', 'Tigre'],
+			center: 'Centro',
 		});
 	});
 
@@ -413,7 +413,7 @@ describe('published forms manifest', () => {
 						if (label !== undefined) contextual[operationId + '.' + field.key] = label;
 					}
 				const runtime = labelsFor(lang);
-				if (Object.keys(runtime.enums).some(key => key.startsWith('id.'))) throw new Error('Picker names leaked into runtime ' + lang);
+				if (Object.keys(runtime.enums).some(key => key.startsWith('id.') && runtime.enums[key] === serverLabels.en.enums[key])) throw new Error('A picker name that reads as English rode the runtime payload in ' + lang);
 				labels[lang] = { ...runtime, enums: {...runtime.enums, ...serverLabels[lang].enums}, groups, labels: contextual };
 			}
 			console.log(JSON.stringify(labels));`,

@@ -1,7 +1,7 @@
 import { css, html, nothing, svg } from 'lit';
 import './aspects-table.js';
 import './western-planets-table.js';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type {
@@ -12,6 +12,7 @@ import { aspectLineStyle, aspectLineStyles } from '../utils/aspect-line.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
+import { customElement } from '../utils/define.js';
 import {
 	arcMidpoint,
 	arcSeparation,

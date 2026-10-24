@@ -1,10 +1,15 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test';
 import {
+	boundPickerIds,
 	fetchLabels,
 	splitLabelPayload,
 } from '../../../scripts/sync-field-labels.js';
+import specJson from '../../../specs/openapi.json';
 import { registerFieldLabels, registerLocale } from '../src/i18n/registry.js';
-import { translatedFieldLabel } from '../src/utils/field-schema.js';
+import {
+	type SpecDoc,
+	translatedFieldLabel,
+} from '../src/utils/field-schema.js';
 
 const originalFetch = globalThis.fetch;
 afterEach(() => {
@@ -59,6 +64,36 @@ describe('server/runtime label split', () => {
 			server: { enums: { 'id.rat': 'Rata' }, labels: {} },
 		});
 		expect(payload.enums['id.rat']).toBe('Rata');
+	});
+
+	test('a bound picker name rides the runtime payload only where the language has a word of its own', () => {
+		const payload = {
+			fields: {},
+			enums: { 'id.rat': 'Rata', 'id.ashwini': 'Ashwini', 'id.mesha': 'Mesa' },
+		};
+		const english = {
+			'id.rat': 'Rat',
+			'id.ashwini': 'Ashwini',
+			'id.mesha': 'Mesha',
+		};
+		const { runtime, server } = splitLabelPayload(
+			payload,
+			english,
+			new Set(['rat', 'ashwini']),
+		);
+		expect(runtime.enums).toEqual({ 'id.rat': 'Rata' });
+		expect(server.enums).toEqual({
+			'id.ashwini': 'Ashwini',
+			'id.mesha': 'Mesa',
+		});
+	});
+
+	test('the picker set is what bound forms render, and an unbound catalogue stays out', () => {
+		const ids = boundPickerIds(specJson as unknown as SpecDoc);
+		for (const id of ['ashwini', 'mesha', 'rat', 'g'])
+			expect(ids.has(id)).toBe(true);
+		// No component binds the Mayan day-sign catalogue.
+		expect(ids.has('imix')).toBe(false);
 	});
 });
 

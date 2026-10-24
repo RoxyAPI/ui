@@ -1,13 +1,14 @@
 import { css, html, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { live } from 'lit/directives/live.js';
 import { EN_FIELD_LABELS } from '../generated/field-labels-en.js';
-import { apiLang } from '../i18n/lang.js';
+import { apiLang, readsEnglish } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { signGlyph } from '../tokens/index.js';
 import type { SearchCitiesResponse } from '../types/index.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import {
 	type ApiIssue,
@@ -31,7 +32,9 @@ import {
 	type RepeatDef,
 	repeatFields,
 	repeatGroup,
+	sliceBase,
 	sliceFileName,
+	translatedFieldLabel,
 	withRenderIntent,
 } from '../utils/field-schema.js';
 import { dispatchKeyRefusal, keyRefusal } from '../utils/key-guard.js';
@@ -47,8 +50,12 @@ import { ROXY_UI_VERSION } from '../version.js';
 /** Production spec, fetched when no slice is available and no explicit `spec-url` is set. */
 const PROD_SPEC_URL = 'https://roxyapi.com/api/v2/openapi.json';
 
-/** Version-pinned jsDelivr base for the digested per-operation schema slices, mirroring the wrapper CDN pinning so a slice matches the bundle it ships beside. */
-const SLICE_BASE = `https://cdn.jsdelivr.net/npm/@roxyapi/ui@${ROXY_UI_VERSION}/dist/schemas`;
+/** The digested per-operation schema slices, read beside the script that loaded this module, so a slice always matches the bundle it ships with. */
+const SLICE_BASE = sliceBase(
+	ROXY_UI_VERSION,
+	(globalThis.document?.currentScript as HTMLScriptElement | null)?.src ||
+		undefined,
+);
 
 const specCache = new Map<string, Promise<OpenApiDoc>>();
 
@@ -790,8 +797,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		if (this.roleOf(f) === 'location' || f.city)
 			return this.locationLabel(this.cityGroup(f));
 		return f.group
-			? `${this.groupName(f.group)} ${this.fieldText(f.name, f.label)}`
-			: this.fieldText(f.name, f.label);
+			? `${this.groupName(f.group)} ${this.fieldText(f)}`
+			: this.fieldText(f);
 	}
 
 	/** The issues the API reported on a whole card or a city box, printed under it. */
@@ -823,7 +830,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			if (field) return this.fieldLabel(field);
 			const group = this.groupKeys().find((g) => g === path);
 			if (group) return this.groupName(group);
-			return this.fieldText(path.split('.')[0] ?? path);
+			return this.fieldText({ name: path.split('.')[0] ?? path });
 		};
 		return html`<div part="validation-error" class="validation-error" role="alert">
 			${issues.map(
@@ -964,11 +971,15 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * a separate key space from the chrome catalogue.
 	 *
 	 * English ships no payload, so the API English label is compiled in and comes before `humanize()`.
-	 * Contextual model labels stay in English; translated picker/context labels are server artifacts.
+	 * A contextual model label (a picker noun, a transit date) reads its translation through `translatedFieldLabel`.
 	 */
-	private fieldText(name: string, label?: string): string {
-		if (label) return label;
-		return displayField(this.requestLang(), name, EN_FIELD_LABELS[name]);
+	private fieldText(
+		f: Pick<FieldDef, 'name' | 'label'> & Partial<Pick<FieldDef, 'key'>>,
+	): string {
+		const lang = this.requestLang();
+		return f.label
+			? (translatedFieldLabel(lang, f) ?? f.label)
+			: displayField(lang, f.name, EN_FIELD_LABELS[f.name]);
 	}
 
 	/** The option text under one field, falling back the same way. */
@@ -1008,10 +1019,16 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		this.pickChoice(f, value);
 	}
 
-	/** Records a choice and submits when the form reduces to it. */
-	private pickChoice(f: FieldDef, value: string) {
+	/** Records a value, then sends a form that draws no submit button once its one choice is made. */
+	private pickChoice(f: FieldDef, value: unknown) {
 		this.setValue(f.key, value);
-		if (value && this.soleChoice?.key === f.key) this.submit();
+		this.resend();
+	}
+
+	/** A form that reduces to one choice sends itself on that pick and again on every later change to another input, carrying the choice it holds. */
+	private resend() {
+		const sole = this.soleChoice;
+		if (sole && this.values[sole.key]) this.submit();
 	}
 
 	/** Sets one filter and clears the others and the text search, so a list is narrowed one way at a time. */
@@ -1150,6 +1167,18 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		return { keys, labels };
 	}
 
+	/** True on a page that reads in English, the one language the operation summary and the field descriptions are written in. */
+	private get readsEnglish(): boolean {
+		return readsEnglish(this.effectiveLang());
+	}
+
+	/** The operation summary as the form heading, on an English page only: it is API reference copy, so another language draws no heading rather than an English one. */
+	private renderTitle() {
+		return this.readsEnglish
+			? html`<h2 part="title" class="title" id="roxy-form-title">${this.formTitle}</h2>`
+			: nothing;
+	}
+
 	private reqMark(f: FieldDef) {
 		return f.required
 			? html`<span class="req" aria-hidden="true">*</span>`
@@ -1160,10 +1189,10 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	 * A description under a field: rendered inline when short, collapsed behind a disclosure showing its first line when long.
 	 *
 	 * @remarks
-	 * Both shapes carry `part="hint"` on their outermost element, so one `::part(hint)` rule reaches every field description on the form. The words are the API reference text for the request field, which is the right register on a developer page and the wrong one on a page written for a client, and hiding them leaves the label, the input and its validation untouched.
+	 * Both shapes carry `part="hint"` on their outermost element, so one `::part(hint)` rule reaches every field description on the form. The words are the API reference text for the request field, which is the right register on a developer page and the wrong one on a page written for a client, and hiding them leaves the label, the input and its validation untouched. They are English reference copy, so a page in another language draws none.
 	 */
 	private description(f: FieldDef) {
-		if (!f.description) return nothing;
+		if (!f.description || !this.readsEnglish) return nothing;
 		if (f.description.length <= 120) {
 			return html`<small part="hint" class="help">${f.description}</small>`;
 		}
@@ -1182,7 +1211,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const cur = opts.findIndex((o) => o.value === this.values[f.key]);
 		const active = cur === -1 ? opts.findIndex((o) => !o.disabled) : cur;
 		return html`<div class="field tiles-field">
-			<span class="label" id=${labelId}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</span>
+			<span class="label" id=${labelId}>${this.fieldText(f)}${this.reqMark(f)}</span>
 			<div
 				class=${narrow ? 'tiles narrow' : 'tiles'}
 				role="radiogroup"
@@ -1219,7 +1248,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private renderSelect(f: FieldDef) {
 		const id = `roxy-form-${f.key}`;
 		return html`<div part="field" class="field">
-			<label for=${id}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label>
+			<label for=${id}>${this.fieldText(f)}${this.reqMark(f)}</label>
 			<select
 				id=${id}
 				?required=${f.required}
@@ -1244,13 +1273,13 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		</div>`;
 	}
 
-	/** A required identifier picked from its collection as the visitor types; the sole input on its form is named by the form title. */
+	/** A required identifier picked from its collection as the visitor types; the sole input on its form is named by the form title wherever one is drawn. */
 	private renderPickerField(f: FieldDef, picker: OptionPicker) {
 		const id = `roxy-form-${f.key}`;
-		const sole = this.soleChoice?.key === f.key;
+		const titled = this.soleChoice?.key === f.key && this.readsEnglish;
 		const issue = this.issueFor(f);
 		return html`<div part="field" class="field">
-			${sole ? nothing : html`<label for=${id}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label>`}
+			${titled ? nothing : html`<label for=${id}>${this.fieldText(f)}${this.reqMark(f)}</label>`}
 			${renderPicker(
 				picker,
 				id,
@@ -1260,7 +1289,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					loading: this.t('Loading'),
 				},
 				{
-					labelledby: sole ? 'roxy-form-title' : undefined,
+					labelledby: titled ? 'roxy-form-title' : undefined,
 					describedby: issue ? `${id}-error` : undefined,
 					invalid: !!issue,
 				},
@@ -1280,12 +1309,12 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					class="toggle"
 					role="switch"
 					aria-checked=${checked ? 'true' : 'false'}
-					@click=${() => this.setValue(f.key, !checked)}
+					@click=${() => this.pickChoice(f, !checked)}
 				>
 					<span class="knob"></span>
 				</button>
 				<label class="toggle-label" for=${id}
-					>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label
+					>${this.fieldText(f)}${this.reqMark(f)}</label
 				>
 			</div>
 			${this.description(f)}
@@ -1301,14 +1330,16 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 				: f.kind === 'number'
 					? 'number'
 					: f.kind;
+		// A spec example in words is English reference copy, so only a numeric one shows on another page.
+		const example = f.example != null ? String(f.example) : '';
 		const placeholder =
 			f.kind === 'array'
 				? this.t('Comma separated')
-				: f.example != null
-					? String(f.example)
+				: this.readsEnglish || !/\p{L}/u.test(example)
+					? example
 					: '';
 		return html`<div part="field" class="field">
-			<label for=${id}>${this.fieldText(f.name, f.label)}${this.reqMark(f)}</label>
+			<label for=${id}>${this.fieldText(f)}${this.reqMark(f)}</label>
 			<input
 				id=${id}
 				type=${f.kind === 'array' ? 'text' : type}
@@ -1326,6 +1357,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 					if (this.opensOnLoad && f.kind === 'text') this.setFilter(f, v);
 					else this.setValue(f.key, v);
 				}}
+				@change=${() => this.resend()}
 			/>
 			${this.description(f)}
 			${this.fieldIssue(f)}
@@ -1357,7 +1389,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		return deriveGroupLabel(
 			group,
 			(source, vars) => this.t(source, vars),
-			(name) => this.fieldText(name),
+			(name) => this.fieldText({ name }),
 		);
 	}
 
@@ -1465,7 +1497,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	private renderTimezoneCity(f: FieldDef) {
 		return html`<div part="field" class="field location-block">
 			<label>${this.locationLabel(f.group)}${this.reqMark(f)}</label>
-			${this.citySearch(f.group, (city) => this.setValue(f.key, city.timezone))}
+			${this.citySearch(f.group, (city) => this.pickChoice(f, city.timezone))}
 			${this.fieldIssue(f)}
 		</div>`;
 	}
@@ -1519,7 +1551,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const refusal = keyRefusal(this.publishableKey);
 		if (refusal) {
 			return html`<form>
-				<h2 part="title" class="title" id="roxy-form-title">${this.formTitle}</h2>
+				${this.renderTitle()}
 				<div part="validation-error" class="validation-error" role="alert">${this.t(refusal.message)}</div>
 			</form>`;
 		}
@@ -1537,7 +1569,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		const hasAdvanced = tuckedFields.length > 0 || tuckedGroups.length > 0;
 
 		return html`<form @submit=${this.onSubmit}>
-			<h2 part="title" class="title" id="roxy-form-title">${this.formTitle}</h2>
+			${this.renderTitle()}
 			${
 				this.validationErrors.length > 0
 					? html`<div part="validation-error" class="validation-error" role="alert">

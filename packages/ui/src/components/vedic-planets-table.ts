@@ -1,10 +1,10 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatSignPosition } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber, formatWithSanskrit } from '../utils/format.js';

@@ -1,5 +1,5 @@
 import { css, html, nothing, svg } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
@@ -9,6 +9,7 @@ import type {
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
 import { citationLine } from '../utils/citation.js';
+import { customElement } from '../utils/define.js';
 import { formatInteger, formatNumber } from '../utils/format.js';
 import { displayField, displayOption } from '../utils/localized.js';
 import { humanize } from '../utils/string.js';

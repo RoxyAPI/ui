@@ -225,9 +225,10 @@ export function deriveGroupLabel(
 }
 
 /**
- * A published label for a model field. Contextual identifier nouns use the existing chrome
- * catalogue; coordinates use their full wire-name label from the API. Missing nouns must
- * stay absent rather than degrading to the generic ID label. Server consumers own English fallback.
+ * A translated label for a model field, shared by the browser form and published labels.
+ * Contextual identifier nouns use the existing chrome catalogue; a label borrowed from another
+ * API field (`Transit date`) and a coordinate read the API label of that wire name. Missing
+ * translations stay absent rather than degrading to the generic ID label.
  */
 export function translatedFieldLabel(
 	lang: string | undefined,
@@ -236,7 +237,13 @@ export function translatedFieldLabel(
 	const wireName = field.key ?? field.name;
 	if (splitCoordinateName(wireName)) return fieldLabel(lang, wireName);
 	if (!field.label) return fieldLabel(lang, field.name);
-	return chromeLabel(lang, field.label);
+	const borrowed = Object.keys(EN_FIELD_LABELS).find(
+		(name) => EN_FIELD_LABELS[name] === field.label,
+	);
+	return (
+		chromeLabel(lang, field.label) ??
+		(borrowed ? fieldLabel(lang, borrowed) : undefined)
+	);
 }
 
 /** The fields of one record of a repeating property, from the fields of its first record. Every record is the same template, so the form grows a repeat by re-keying record zero. */
@@ -522,6 +529,16 @@ export function buildFormModel(
 		fields.push(field);
 	}
 
+	// A flat field that repeats a grouped field's name is the reading's own value (the transit
+	// `date` beside `natalChart.date`), so it takes the API label its description names.
+	for (const f of fields)
+		if (
+			!f.group &&
+			!f.label &&
+			fields.some((g) => g.group && g.name === f.name)
+		)
+			f.label = qualifiedLabel(f);
+
 	return withRenderIntent(
 		{
 			title: deriveTitle(op.summary, endpoint),
@@ -535,6 +552,20 @@ export function buildFormModel(
 	);
 }
 
+/** The API label of the field a description names by qualifying this one (`Transit date in YYYY-MM-DD format` names `transitDate` for `date`), else undefined. */
+function qualifiedLabel(f: FieldDef): string | undefined {
+	const name = (EN_FIELD_LABELS[f.name] ?? humanize(f.name)).toLowerCase();
+	const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const word = new RegExp(`^(\\p{L}+) ${escaped}\\b`, 'iu').exec(
+		f.description ?? '',
+	)?.[1];
+	return word
+		? EN_FIELD_LABELS[
+				word.toLowerCase() + f.name.replace(/^./, (c) => c.toUpperCase())
+			]
+		: undefined;
+}
+
 /**
  * Resolve render intent once, shared by spec digestion and compatibility with older schema slices.
  *
@@ -545,7 +576,8 @@ export function buildFormModel(
  * A city box is marked required when any of its own coordinate or timezone fields is required,
  * including a required timezone beside optional Human Design coordinates.
  * Optional named groups stay together under Advanced. With no primary required input, groups
- * and undefaulted flat fields stay open so an either-or request still offers its inputs.
+ * and undefaulted flat fields stay open so an either-or request still offers its inputs. Beside
+ * a primary group, an undefaulted flat date or time is the reading's own moment and stays open.
  */
 export function withRenderIntent(
 	model: FormModel,
@@ -616,11 +648,16 @@ export function withRenderIntent(
 		if (group.key !== undefined && hasPrimary && !primaryGroups.includes(group))
 			group.fold = true;
 	}
+	const moment = (f: FieldDef) =>
+		primaryGroups.length > 0 &&
+		f.default === undefined &&
+		(f.kind === 'date' || f.kind === 'time' || f.kind === 'datetime');
 	for (const f of fields) {
 		if (
 			f.group
 				? groups.find((g) => g.key === f.group)?.fold
-				: !f.role && (hasPrimary ? !f.required : f.default !== undefined)
+				: !f.role &&
+					(hasPrimary ? !f.required && !moment(f) : f.default !== undefined)
 		)
 			f.fold = true;
 	}
@@ -671,6 +708,19 @@ export function deriveSubmitLabel(
 	if (/horoscope|dream|angel|nakshatra|crystal|meaning|reference/.test(e))
 		return 'Get reading';
 	return 'Generate';
+}
+
+/** Where the schema slices live: beside a shipped CDN script (`dist/cdn/roxy-ui.js` or `dist/cdn/components/{slug}.js`) served from any host but jsDelivr, else the version-pinned jsDelivr copy. */
+export function sliceBase(version: string, scriptSrc?: string): string {
+	const pinned = `https://cdn.jsdelivr.net/npm/@roxyapi/ui@${version}/dist/schemas`;
+	if (!scriptSrc) return pinned;
+	const url = new URL(scriptSrc);
+	const dist = /^(.*)\/cdn\/(?:roxy-ui|components\/[\w-]+)\.js$/.exec(
+		url.pathname,
+	)?.[1];
+	return url.hostname === 'cdn.jsdelivr.net' || dist === undefined
+		? pinned
+		: `${url.origin}${dist}/schemas`;
 }
 
 /** Deterministic slice filename for one operation, shared by the generator and the runtime loader so both address the same artifact. */

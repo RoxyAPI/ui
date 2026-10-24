@@ -1,5 +1,4 @@
 import { css, html, nothing } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { trigramGlyph } from '../tokens/index.js';
 import type {
 	CastDailyReadingResponse,
@@ -12,6 +11,7 @@ import type {
 } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDate } from '../utils/format.js';
 import {

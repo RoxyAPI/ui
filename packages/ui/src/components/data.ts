@@ -1,8 +1,9 @@
 import { css, html, nothing, type TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
+import { customElement } from '../utils/define.js';
 import { formatDateTime, formatNumber } from '../utils/format.js';
 import { displayField, foldLocalized } from '../utils/localized.js';
 import { stackedTableStyles } from '../utils/stacked-table.js';

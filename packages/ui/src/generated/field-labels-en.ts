@@ -28,7 +28,7 @@ export const EN_FIELD_LABELS: Record<string, string> = {
 	coordinateSystem: 'Coordinate system',
 	correlation: 'Correlation constant',
 	count: 'How many',
-	currentYear: 'Year',
+	currentYear: 'Current year',
 	cuts: 'Cut corners',
 	dasha: 'Dasha lords',
 	datetime: 'Date and time',

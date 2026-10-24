@@ -862,6 +862,17 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
 | Components catalog (JSON: every component, domain, and endpoint) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json` |
 
+### Serve from your own domain
+
+Every file a page loads ships in the package `dist` folder, and each [GitHub release](https://github.com/RoxyAPI/ui/releases) attaches the same package as a tarball (`package/dist`). Copy `dist/cdn` and `dist/schemas` to your server side by side, as they ship, and load `cdn/roxy-ui.js` (or `cdn/widgets.js`, or one file from `cdn/components/`) from there: forms read their schemas from beside the script, and the language files sit in `cdn/locales/`. Add `submit-url` and `location-url` and the page talks only to your own domain.
+
+```html
+<script src="/roxy/cdn/roxy-ui.js" defer></script>
+<script src="/roxy/cdn/locales/es.js" defer></script>
+<roxy-natal-chart data-endpoint="astrology/natal-chart"
+  submit-url="/roxy/proxy" location-url="/roxy/location-search"></roxy-natal-chart>
+```
+
 ## Components
 
 <!-- BEGIN:COMPONENTS -->
