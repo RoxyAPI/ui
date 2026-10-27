@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { aspectsTableEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph } from '../tokens/index.js';
 import type {
 	CalculateAspectsResponse,
@@ -71,6 +72,8 @@ const PATTERN_ORDER: Record<string, number> = {
 
 @customElement('roxy-aspects-table')
 export class RoxyAspectsTable extends RoxyDataElement<AspectsData> {
+	static endpoints = aspectsTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		factListStyles,

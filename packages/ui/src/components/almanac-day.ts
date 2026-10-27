@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { almanacDayEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GetAlmanacDayResponse,
@@ -62,6 +63,8 @@ function isSingleDay(d: AlmanacData): d is GetAlmanacDayResponse {
  */
 @customElement('roxy-almanac-day')
 export class RoxyAlmanacDay extends RoxyDataElement<AlmanacData> {
+	static endpoints = almanacDayEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

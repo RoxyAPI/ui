@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { compatibilityCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type {
@@ -60,6 +61,8 @@ const PAIR_PHASE_LABEL: Record<PairPhase, ChromeString> = {
  */
 @customElement('roxy-compatibility-card')
 export class RoxyCompatibilityCard extends RoxyDataElement<CompatibilityData> {
+	static endpoints = compatibilityCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

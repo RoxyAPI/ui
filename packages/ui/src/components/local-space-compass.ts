@@ -1,4 +1,5 @@
 import { css, html, nothing, svg } from 'lit';
+import { localSpaceCompassEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { LocalSpaceResponse } from '../types/index.js';
@@ -8,6 +9,7 @@ import { ChartViewport, chartViewportStyles } from '../utils/chart-viewport.js';
 import { customElement } from '../utils/define.js';
 import { arcSeparation, fanOut } from '../utils/degree.js';
 import { formatDateTime } from '../utils/format.js';
+import { display } from '../utils/localized.js';
 import { planetColor } from '../utils/planet-color.js';
 
 type Body = LocalSpaceResponse['bodies'][number];
@@ -51,6 +53,8 @@ const PRINCIPAL: ReadonlyArray<{ az: number; source: ChromeString }> = [
  */
 @customElement('roxy-local-space-compass')
 export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
+	static endpoints = localSpaceCompassEndpoints;
+
 	private readonly chartViewport = new ChartViewport(this);
 
 	static styles = [
@@ -286,10 +290,10 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 				const glyphPos = azimuthPoint(displayLongitude, GLYPH_R);
 				// Response symbol first, then the shared table, then the full name. Never a
 				// truncation: `North Node.slice(0, 2)` drew a compass spoke labelled "No".
-				const glyph = b.symbol || planetGlyph(b.planet) || b.planet;
+				const glyph = b.symbol || planetGlyph(b.planet) || display(b, 'planet');
 				const altLabel = `${b.altitude > 0 ? '+' : ''}${Math.round(b.altitude)}°`;
 				return svg`<g>
-				<line class=${`spoke${below ? ' below' : ''}`} stroke=${color} x1=${CENTER} y1=${CENTER} x2=${end.x} y2=${end.y}><title>${this.t('{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}', { planet: b.planet, direction: b.compassDirection, azimuth: Math.round(b.azimuth), altitude: altLabel })}</title></line>
+				<line class=${`spoke${below ? ' below' : ''}`} stroke=${color} x1=${CENTER} y1=${CENTER} x2=${end.x} y2=${end.y}><title>${this.t('{{planet}} {{direction}} {{azimuth}}° altitude {{altitude}}', { planet: display(b, 'planet'), direction: b.compassDirection, azimuth: Math.round(b.azimuth), altitude: altLabel })}</title></line>
 				<text class=${`body-glyph${below ? ' below' : ''}`} fill=${color} x=${glyphPos.x} y=${glyphPos.y} text-anchor="middle" dominant-baseline="central">${glyph}</text>
 			</g>`;
 			},
@@ -321,7 +325,7 @@ export class RoxyLocalSpaceCompass extends RoxyDataElement<LocalSpaceResponse> {
 						<td>
 							<span class="body-cell">
 								<span class="body-dot" style=${`background: ${color}`}></span>
-								${b.symbol ? html`${b.symbol} ` : nothing}${b.planet}
+								${b.symbol ? html`${b.symbol} ` : nothing}${display(b, 'planet')}
 							</span>
 						</td>
 						<td>${b.compassDirection}</td>

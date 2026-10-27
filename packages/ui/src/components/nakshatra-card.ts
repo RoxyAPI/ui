@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { nakshatraCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { NakshatraResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -18,6 +19,8 @@ import { customElement } from '../utils/define.js';
  */
 @customElement('roxy-nakshatra-card')
 export class RoxyNakshatraCard extends RoxyDataElement<NakshatraResponse> {
+	static endpoints = nakshatraCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

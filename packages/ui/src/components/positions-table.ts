@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { positionsTableEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type {
 	ArabicLotsResponse,
@@ -21,6 +22,7 @@ import {
 	type InterpSection,
 	interpAccordionStyles,
 } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 import { capitalize } from '../utils/string.js';
 
 /**
@@ -36,8 +38,12 @@ type PositionsResponse =
 	| ArabicLotsResponse;
 
 interface Row {
+	/** The canonical body name a glyph is looked up by, where the printed label is its translation. */
+	body?: string;
 	label: string;
 	sign: string;
+	/** The sign as printed; the canonical `sign` keys the glyph. */
+	signLabel?: string;
 	degree: number;
 	house?: number;
 	speed?: number;
@@ -65,6 +71,8 @@ interface ViewModel {
  */
 @customElement('roxy-positions-table')
 export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
+	static endpoints = positionsTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,
@@ -237,10 +245,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 	}
 
 	private renderRow(r: Row, cols: ViewModel['cols']) {
-		const glyph = planetGlyph(r.label);
+		const glyph = planetGlyph(r.body ?? r.label);
 		return html`<tr class=${r.isAngle ? 'angle' : ''}>
 			<td class="body-cell">${glyph ? html`<span class="glyph">${glyph}</span>` : nothing}${r.label}</td>
-			<td>${this.signCell(r.sign, r.degree)}</td>
+			<td>${this.signCell(r.sign, r.degree, r.signLabel)}</td>
 			${
 				cols.natal
 					? html`<td>${r.natalLongitude != null ? this.signFromLongitude(r.natalLongitude) : html`&mdash;`}</td>`
@@ -264,9 +272,9 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		</tr>`;
 	}
 
-	private signCell(sign: string, degree: number) {
+	private signCell(sign: string, degree: number, label = sign) {
 		const g = signGlyph(sign);
-		return html`<span class="sign">${g ? html`<span class="sg">${g}</span>` : nothing}${formatDegreeInSign(degree)} ${sign}</span>`;
+		return html`<span class="sign">${g ? html`<span class="sg">${g}</span>` : nothing}${formatDegreeInSign(degree)} ${label}</span>`;
 	}
 
 	private signFromLongitude(longitude: number) {
@@ -278,10 +286,11 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 		const sections: InterpSection[] = rows
 			.filter((r) => r.interpretation)
 			.map((r) => {
-				const glyph = planetGlyph(r.label) ?? '';
+				const glyph = planetGlyph(r.body ?? r.label) ?? '';
 				return {
 					label: `${glyph} ${r.label}`.trim(),
-					aside: `${r.sign} ${formatDegreeInSign(r.degree)}`.trim(),
+					aside:
+						`${r.signLabel ?? r.sign} ${formatDegreeInSign(r.degree)}`.trim(),
 					body: r.interpretation ?? '',
 				};
 			});
@@ -302,8 +311,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				summary: data.summary,
 				cols: { house: true, motion: true, formula: false, natal: false },
 				rows: data.asteroids.map((a) => ({
-					label: a.name,
+					body: a.name,
+					label: display(a, 'name'),
 					sign: a.sign,
+					signLabel: display(a, 'sign'),
 					degree: a.degree,
 					house: a.house,
 					speed: a.speed,
@@ -322,9 +333,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				cols: { house: true, motion: true, formula: false, natal: false },
 				rows: data.lilith.map((l) => ({
 					label: this.t('{{variant}} apogee', {
-						variant: capitalize(l.variant),
+						variant: display(l, 'variant', capitalize(l.variant)),
 					}),
 					sign: l.sign,
+					signLabel: display(l, 'sign'),
 					degree: l.degree,
 					house: l.house,
 					speed: l.speed,
@@ -349,8 +361,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				summary: data.summary,
 				cols: { house: false, motion: false, formula: false, natal: true },
 				rows: data.directed.map((d) => ({
-					label: d.name,
+					body: d.name,
+					label: display(d, 'name'),
 					sign: d.sign,
+					signLabel: display(d, 'sign'),
 					degree: d.degree,
 					natalLongitude: d.natalLongitude,
 					interpretation: d.interpretation,
@@ -366,8 +380,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 				summary: data.summary,
 				cols: { house: false, motion: false, formula: true, natal: false },
 				rows: data.lots.map((l) => ({
-					label: l.name,
+					body: l.name,
+					label: display(l, 'name'),
 					sign: l.sign,
+					signLabel: display(l, 'sign'),
 					degree: l.degree,
 					formula: l.formula,
 					interpretation: l.interpretation,
@@ -380,6 +396,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 			angleRows.push({
 				label: this.t('Ascendant'),
 				sign: data.ascendant.sign,
+				signLabel: display(data.ascendant, 'sign'),
 				degree: data.ascendant.degree,
 				isAngle: true,
 			});
@@ -388,6 +405,7 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 			angleRows.push({
 				label: this.t('Midheaven'),
 				sign: data.midheaven.sign,
+				signLabel: display(data.midheaven, 'sign'),
 				degree: data.midheaven.degree,
 				isAngle: true,
 			});
@@ -411,8 +429,10 @@ export class RoxyPositionsTable extends RoxyDataElement<PositionsResponse> {
 			rows: [
 				...angleRows,
 				...data.planets.map((p) => ({
-					label: p.name,
+					body: p.name,
+					label: display(p, 'name'),
 					sign: p.sign,
+					signLabel: display(p, 'sign'),
 					degree: p.degree,
 					house: p.house,
 					speed: p.speed,

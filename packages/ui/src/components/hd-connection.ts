@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { hdConnectionEndpoints } from '../generated/endpoint-defaults.js';
 import type { CalculateConnectionResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -33,6 +34,8 @@ type CombinedCenter = Connection['centers'][number];
  */
 @customElement('roxy-hd-connection')
 export class RoxyHdConnection extends RoxyDataElement<Connection> {
+	static endpoints = hdConnectionEndpoints;
+
 	private readonly chartViewport = new ChartViewport(this);
 	static styles = [
 		baseStyles,

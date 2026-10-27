@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { vedicAspectsEndpoints } from '../generated/endpoint-defaults.js';
 import type { CalculateDrishtiResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -14,6 +15,8 @@ import { formatDateTime, formatNumber } from '../utils/format.js';
  */
 @customElement('roxy-vedic-aspects')
 export class RoxyVedicAspects extends RoxyDataElement<CalculateDrishtiResponse> {
+	static endpoints = vedicAspectsEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

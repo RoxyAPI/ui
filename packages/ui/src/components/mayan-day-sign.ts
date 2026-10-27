@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { mayanDaySignEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	CalculateTzolkinResponse,
@@ -89,6 +90,8 @@ function isChart(d: MayanData): d is MayanChart {
  */
 @customElement('roxy-mayan-day-sign')
 export class RoxyMayanDaySign extends RoxyDataElement<MayanData> {
+	static endpoints = mayanDaySignEndpoints;
+
 	static styles = [
 		baseStyles,
 		interpAccordionStyles,

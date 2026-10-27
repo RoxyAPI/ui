@@ -318,6 +318,7 @@ export const hi: Record<ChromeString, string> = {
 	Cast: 'निकालें',
 	'Get reading': 'फलादेश देखें',
 	Generate: 'बनाएं',
+	'Show right now': 'अब दिखाएँ',
 	'Schema load failed: {{message}}': 'स्कीमा लोड नहीं हो सका: {{message}}',
 	'Endpoint {{method}} {{path}} not found in OpenAPI spec':
 		'OpenAPI स्पेक में एंडपॉइंट {{method}} {{path}} नहीं मिला',

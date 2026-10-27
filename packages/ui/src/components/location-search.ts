@@ -6,7 +6,12 @@ import { baseStyles } from '../utils/base-styles.js';
 import { comboboxStyles } from '../utils/combobox-styles.js';
 import { debounce } from '../utils/debounce.js';
 import { customElement } from '../utils/define.js';
-import { DEFAULT_BASE_URL, readApiError } from '../utils/fetch-controller.js';
+import {
+	apiFetch,
+	DEFAULT_BASE_URL,
+	readApiError,
+	submitContextConverter,
+} from '../utils/fetch-controller.js';
 import {
 	dispatchKeyRefusal,
 	type KeyRefusal,
@@ -29,9 +34,11 @@ type CityResult = SearchCitiesResponse['cities'][number];
  * Attributes:
  *   api-key            optional. Direct call to roxyapi.com when set.
  *   publishable-key    optional. Browser-safe pk_* key with allowed_origins.
- *   endpoint           optional. Where the search sends its request. Absolute, or relative to the
- *                      page, so a site that routes API traffic through its own server names that
- *                      route here. Defaults to the public location endpoint.
+ *   endpoint           optional. Where the search sends its GET. Absolute, or relative to the
+ *                      page. Set, it wins over submit-url; unset, the public location endpoint.
+ *   submit-url         optional. A proxy route that holds the key. With no endpoint set, the search
+ *                      is POSTed there as one request, the way every other request of a widget is.
+ *   submit-context     optional. A JSON object sent to submit-url as `context` beside the request.
  *   placeholder        optional. Input placeholder. Translated when it is the default (see below).
  *   default-value      optional. Pre-filled query.
  *   lang               optional. Display language. Resolves from the page when absent, EXCEPT
@@ -99,9 +106,17 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 	@property({ type: String, attribute: 'publishable-key' })
 	publishableKey?: string;
 
-	/** Where the search sends its request. Built from {@link DEFAULT_BASE_URL} rather than written out again, so this box and every data request name one origin. */
+	/** Where the search sends its GET; unset, the search goes through {@link submitUrl} when one is set, else to the public location endpoint. */
 	@property({ type: String })
-	endpoint = `${DEFAULT_BASE_URL}/location/search`;
+	endpoint?: string;
+
+	/** Proxy route that holds the key; the search is POSTed there when no {@link endpoint} is set. */
+	@property({ type: String, attribute: 'submit-url' })
+	submitUrl?: string;
+
+	/** Object sent to {@link submitUrl} as `context` beside the search. */
+	@property({ attribute: 'submit-context', converter: submitContextConverter })
+	submitContext?: Record<string, unknown>;
 
 	/** Input placeholder. The default is a catalogue entry and renders in the page language; a caller-supplied one is printed as given, because a miss returns the source string unchanged. */
 	@property({ type: String })
@@ -183,28 +198,7 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 		this.abortController = controller;
 		this.isLoading = true;
 		try {
-			// Resolved against the page, so a same-origin route ("/api/roxy/location/search")
-			// is as valid an endpoint as an absolute URL. A site that proxies its API traffic
-			// writes the first shape, and a bare `new URL()` accepts only the second.
-			const url = new URL(this.endpoint, document.baseURI);
-			url.searchParams.set('q', q);
-			url.searchParams.set('limit', '8');
-			const headers: Record<string, string> = {
-				Accept: 'application/json',
-			};
-			// publishable-key wins when both are set. Surfacing the conflict at the
-			// console (not as a thrown error) avoids breaking widgets that legitimately
-			// have a stale secret key around while migrating to publishable.
-			if (this.apiKey && this.publishableKey) {
-				console.warn(
-					'[roxy-location-search] both api-key and publishable-key set; using publishable-key. Remove api-key from your widget markup.',
-				);
-			}
-			const key = this.publishableKey ?? this.apiKey;
-			if (key) headers['X-API-Key'] = key;
-			const res = await fetch(url, { headers, signal: controller.signal });
-			if (!res.ok) throw new Error(await readApiError(res));
-			const json = (await res.json()) as SearchCitiesResponse;
+			const json = await this.search(q, controller.signal);
 			if (controller.signal.aborted) return;
 			this.error = null;
 			this.results = json.cities ?? [];
@@ -224,6 +218,43 @@ export class RoxyLocationSearch extends RoxyLocalizedElement {
 			}
 			if (!controller.signal.aborted) this.isLoading = false;
 		}
+	}
+
+	/** One search: through the proxy route when it is the only route set, else a GET to the endpoint with the key. */
+	private async search(
+		q: string,
+		signal: AbortSignal,
+	): Promise<SearchCitiesResponse> {
+		if (!this.endpoint && this.submitUrl)
+			return apiFetch<SearchCitiesResponse>(
+				{ submitUrl: this.submitUrl, submitContext: this.submitContext },
+				{ path: '/location/search', method: 'GET', query: { q, limit: 8 } },
+				signal,
+			);
+		// Resolved against the page, so a same-origin route ("/api/roxy/location/search")
+		// is as valid an endpoint as an absolute URL.
+		const url = new URL(
+			this.endpoint || `${DEFAULT_BASE_URL}/location/search`,
+			document.baseURI,
+		);
+		url.searchParams.set('q', q);
+		url.searchParams.set('limit', '8');
+		const headers: Record<string, string> = {
+			Accept: 'application/json',
+		};
+		// publishable-key wins when both are set. Surfacing the conflict at the
+		// console (not as a thrown error) avoids breaking widgets that legitimately
+		// have a stale secret key around while migrating to publishable.
+		if (this.apiKey && this.publishableKey) {
+			console.warn(
+				'[roxy-location-search] both api-key and publishable-key set; using publishable-key. Remove api-key from your widget markup.',
+			);
+		}
+		const key = this.publishableKey ?? this.apiKey;
+		if (key) headers['X-API-Key'] = key;
+		const res = await fetch(url, { headers, signal });
+		if (!res.ok) throw new Error(await readApiError(res));
+		return (await res.json()) as SearchCitiesResponse;
 	}
 
 	private onInput = (e: Event) => {

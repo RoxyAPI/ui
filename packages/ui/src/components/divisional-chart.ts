@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { divisionalChartEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph } from '../tokens/index.js';
 import type {
 	DivisionalChartResponse,
@@ -47,6 +48,8 @@ const divisionOf = (d: DivisionalData): Division =>
  */
 @customElement('roxy-divisional-chart')
 export class RoxyDivisionalChart extends RoxyDataElement<DivisionalData> {
+	static endpoints = divisionalChartEndpoints;
+
 	private readonly chartViewport = new ChartViewport(this);
 
 	static styles = [

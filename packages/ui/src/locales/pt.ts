@@ -297,6 +297,7 @@ export const pt: Record<ChromeString, string> = {
 	Cast: 'Consultar',
 	'Get reading': 'Ver interpretação',
 	Generate: 'Gerar',
+	'Show right now': 'Mostrar agora',
 	'Schema load failed: {{message}}': 'Falha ao carregar o esquema: {{message}}',
 	'Endpoint {{method}} {{path}} not found in OpenAPI spec':
 		'Endpoint {{method}} {{path}} não encontrado na especificação OpenAPI',

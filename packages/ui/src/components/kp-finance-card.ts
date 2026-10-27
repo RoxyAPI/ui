@@ -1,4 +1,5 @@
 import { css, html, nothing, type TemplateResult } from 'lit';
+import { kpFinanceCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GetKpDailyFinanceResponse } from '../types/index.js';
@@ -82,6 +83,8 @@ const LEVEL_LABEL: Record<DashaRow['level'], ChromeString> = {
  */
 @customElement('roxy-kp-finance-card')
 export class RoxyKpFinanceCard extends RoxyDataElement<Finance> {
+	static endpoints = kpFinanceCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

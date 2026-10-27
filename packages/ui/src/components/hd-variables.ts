@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { hdVariablesEndpoints } from '../generated/endpoint-defaults.js';
 import type { CalculateVariablesResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -23,6 +24,8 @@ type Arrow = Variables['arrows'][number];
  */
 @customElement('roxy-hd-variables')
 export class RoxyHdVariables extends RoxyDataElement<Variables> {
+	static endpoints = hdVariablesEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,
@@ -206,7 +209,7 @@ export class RoxyHdVariables extends RoxyDataElement<Variables> {
 				// `personality` or `design`, which the component turns into a word, so
 				// that half comes from the catalogue.
 				a.activation?.planet
-					? html`<span class="ctb">${[a.activation.planet, sideWord(a.activation.side, this.translator)].filter(Boolean).join(' · ')}</span>`
+					? html`<span class="ctb">${[display(a.activation, 'planet'), sideWord(a.activation.side, this.translator)].filter(Boolean).join(' · ')}</span>`
 					: nothing
 			}
 			${

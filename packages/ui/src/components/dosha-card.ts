@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { doshaCardEndpoints } from '../generated/endpoint-defaults.js';
 import type {
 	KalsarpaResponse,
 	ManglikResponse,
@@ -27,6 +28,8 @@ const DOSHA_LABELS: Record<string, string> = {
  */
 @customElement('roxy-dosha-card')
 export class RoxyDoshaCard extends RoxyDataElement<DoshaData> {
+	static endpoints = doshaCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

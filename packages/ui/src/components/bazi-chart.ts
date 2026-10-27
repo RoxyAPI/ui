@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { baziChartEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { GenerateBaziChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -92,6 +93,8 @@ const LEVEL_LABEL: Record<string, ChromeString> = {
  */
 @customElement('roxy-bazi-chart')
 export class RoxyBaziChart extends RoxyDataElement<GenerateBaziChartResponse> {
+	static endpoints = baziChartEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

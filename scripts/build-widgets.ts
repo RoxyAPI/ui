@@ -41,11 +41,13 @@ export const WIDGETS_BUDGET_BYTES = 4096;
  * One selectable request variant a widget can resolve to. Kept minimal so the interpolated map stays small:
  *  - `m` (method) is omitted on a non-default variant, which inherits the default method (a component's endpoints share one method).
  *  - `g` marks a request that renders form mode: one that needs body or query input (birth data, a grouped person1/person2 body, a required query field), entered through the form rather than raw attributes, and one that opens on load (a read that needs nothing), whose form stays above its result exactly as on the component tag. Path parameters are derived from `p` at runtime, so a widget whose only required inputs are path parameters fetches immediately.
+ *  - `z` names the field that carries the viewer's IANA zone when the tag sets none, on a request that fetches immediately; form mode applies the same rule on submit.
  */
 interface WidgetVariant {
 	m?: string;
 	p: string;
 	g?: 1;
+	z?: string;
 }
 
 /** The generated per-slug widget descriptor: the default variant (always carries `m`), the optional selector attribute, and its non-default variants. */
@@ -81,9 +83,10 @@ function variant(spec: SpecDoc, method: string, path: string): WidgetVariant {
 	const needsForm = !!model?.fields.some(
 		(f) => f.required && f.name !== 'seed' && !inPath.has(f.key),
 	);
-	return needsForm || (model && opensOnLoad(model, method))
-		? { m: method, p: path, g: 1 }
-		: { m: method, p: path };
+	if (needsForm || (model && opensOnLoad(model, method)))
+		return { m: method, p: path, g: 1 };
+	const zone = model?.fields.find((f) => f.viewerZone)?.key;
+	return zone ? { m: method, p: path, z: zone } : { m: method, p: path };
 }
 
 /**
@@ -209,6 +212,10 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 		return (path.match(/\\{([^}]+)\\}/g) || []).map(function (t) { return t.slice(1, -1); });
 	}
 
+	function viewerZone() {
+		try { return new Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return null; }
+	}
+
 	function fillTemplate(path, attrs) {
 		return path.replace(/\\{([^}]+)\\}/g, function (_, key) {
 			return encodeURIComponent(attrs[key] || '');
@@ -277,6 +284,8 @@ export function buildWidgetsScript(map: Record<string, WidgetDef>): string {
 				if (k === def.s || params.indexOf(k) >= 0) return;
 				rest[k] = attrs[k];
 			});
+			// An unnamed timezone reads the viewer clock rather than the UTC default.
+			if (variant.z && rest[variant.z] == null) { var zone = viewerZone(); if (zone) rest[variant.z] = zone; }
 			var query = {};
 			if (rest.lang != null) { var lang = apiLang(rest.lang); if (lang) query.lang = lang; delete rest.lang; }
 			if (method !== 'POST') Object.keys(rest).forEach(function (k) { query[k] = rest[k]; });

@@ -5,19 +5,19 @@ import type { GetDreamSymbolResponse } from '../types/index.js';
 export interface RoxyDreamCardProps {
 	/** Spec-derived response payload. Pass the raw RoxyAPI response. */
 	data?: GetDreamSymbolResponse;
-	/** Endpoint path for built-in self-fetch (uncontrolled mode), e.g. "astrology/natal-chart". The component renders its own input form, fetches with the publishable key, and displays the result. Leave unset for controlled mode (pass `data`). */
+	/** Endpoint path for built-in self-fetch, e.g. "astrology/natal-chart". Optional: with a publishableKey or submitUrl and no endpoint, the component fetches its default endpoint, or the one its config prop (mode, period, type, spread, detail) selects. Set it to render any other endpoint the component draws. Pass `data` and no key for controlled mode. */
 	endpoint?: string;
-	/** HTTP method for the self-fetch request. Defaults to POST. */
+	/** HTTP method for the self-fetch request. Defaults to the method of the endpoint in use, and to POST beside an explicit endpoint. */
 	method?: 'GET' | 'POST';
 	/** Browser-safe publishable key (pk_) for self-fetch. A secret key is refused client-side and never sent. */
 	publishableKey?: string;
 	/** Override the API origin for self-hosted or proxied deployments. Absolute, or relative to the page for a same-origin route. */
 	baseUrl?: string;
-	/** Your own backend route, which holds the secret key. Self-fetch POSTs `{ path, method, body, query }` there instead of calling RoxyAPI directly and renders the JSON your route returns, so no key of any kind reaches the browser. */
+	/** Your own backend route, which holds the secret key. Every request the component makes, the city search included, is POSTed there as `{ path, method, body, query }` instead of calling RoxyAPI directly, and the component renders the JSON your route returns, so no key of any kind reaches the browser. */
 	submitUrl?: string;
 	/** An object of your own, sent to your submitUrl route as `context` beside the request, so a page can attach its own verification data to a proxied submission. Passed through untouched and never read by the component: what it holds is for your page and your route to agree on. Unset, nothing is added and the route receives the request exactly as before. Rides the submitUrl path only; a direct call sends what the endpoint declares. */
 	submitContext?: Record<string, unknown>;
-	/** Where the self-fetch form city search sends its request, absolute or relative to the page. The companion of submitUrl: the city search is a GET the form issues on its own while a visitor types, so a page that routes its API traffic through its own server names that route here as well. Unset, the search calls the public location endpoint. */
+	/** Where the self-fetch form city search sends its GET, absolute or relative to the page. Optional beside submitUrl, which carries the city search too; set it only to send the city search somewhere else. Unset with no submitUrl, the search calls the public location endpoint. */
 	locationUrl?: string;
 	/** Override the OpenAPI spec URL the self-fetch form introspects. */
 	specUrl?: string;

@@ -111,6 +111,10 @@ export interface FieldDef {
 	role?: 'seed' | 'hidden-default' | 'location';
 	/** A visible timezone input is a city picker writing an IANA zone, never a typed offset. */
 	city?: true;
+	/** Left empty, the request carries the viewer's IANA zone: an optional flat timezone no coordinate pair claims, whose API default is UTC rather than the visitor's clock. */
+	viewerZone?: true;
+	/** The reading's own date or time beside a primary group, kept open; left empty it means now. */
+	moment?: true;
 	/** True when this input (or its whole group) belongs under Advanced. */
 	fold?: true;
 	/** The other field and value that disable this one, when its binding declares them. */
@@ -572,7 +576,8 @@ function qualifiedLabel(f: FieldDef): string | undefined {
  * @remarks
  * A coordinate PAIR defines a city box, not a trio: relocation has two pairs and one birth
  * timezone. Only the first pair may claim a flat timezone; an unclaimed timezone remains a
- * visible city picker writing an IANA zone. Keys always retain their original wire identity.
+ * visible city picker writing an IANA zone, and an optional flat one sends the viewer's zone when
+ * left empty. Keys always retain their original wire identity.
  * A city box is marked required when any of its own coordinate or timezone fields is required,
  * including a required timezone beside optional Human Design coordinates.
  * Optional named groups stay together under Advanced. With no primary required input, groups
@@ -591,6 +596,8 @@ export function withRenderIntent(
 		const field = { ...f };
 		delete field.role;
 		delete field.city;
+		delete field.viewerZone;
+		delete field.moment;
 		delete field.fold;
 		return {
 			...field,
@@ -633,7 +640,10 @@ export function withRenderIntent(
 			f.role = 'hidden-default';
 		else if (locations.some((g) => g.location?.fields.includes(f.key)))
 			f.role = 'location';
-		else if (f.name === 'timezone') f.city = true;
+		else if (f.name === 'timezone') {
+			f.city = true;
+			if (!f.group && !f.required) f.viewerZone = true;
+		}
 	}
 	const primaryGroups = groups.filter(
 		(g) =>
@@ -653,15 +663,26 @@ export function withRenderIntent(
 		f.default === undefined &&
 		(f.kind === 'date' || f.kind === 'time' || f.kind === 'datetime');
 	for (const f of fields) {
-		if (
-			f.group
-				? groups.find((g) => g.key === f.group)?.fold
-				: !f.role &&
-					(hasPrimary ? !f.required && !moment(f) : f.default !== undefined)
-		)
-			f.fold = true;
+		if (f.group) {
+			if (groups.find((g) => g.key === f.group)?.fold) f.fold = true;
+		} else if (!f.role && hasPrimary && !f.required) {
+			if (moment(f)) f.moment = true;
+			else f.fold = true;
+		} else if (!f.role && !hasPrimary && f.default !== undefined) f.fold = true;
 	}
 	return { ...model, fields, groups, opensOnLoad: opensOnLoad(model, method) };
+}
+
+/** True when a form's moment carries a clock and every moment field is empty, so the request reads the sky right now. */
+export function readsNow(
+	fields: readonly FieldDef[],
+	values: Record<string, unknown>,
+): boolean {
+	const moment = fields.filter((f) => f.moment);
+	return (
+		moment.some((f) => f.kind === 'time' || f.kind === 'datetime') &&
+		moment.every((f) => values[f.key] === undefined || values[f.key] === '')
+	);
 }
 
 /**

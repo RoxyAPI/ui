@@ -1,4 +1,5 @@
 import { css, html, nothing, svg } from 'lit';
+import { natalChartEndpoints } from '../generated/endpoint-defaults.js';
 import './aspects-table.js';
 import './western-planets-table.js';
 import { property, state } from 'lit/decorators.js';
@@ -144,6 +145,8 @@ export type WheelChart = Omit<NatalChartResponse, ChartExtras> &
  */
 @customElement('roxy-natal-chart')
 export class RoxyNatalChart extends RoxyDataElement<WheelChart> {
+	static endpoints = natalChartEndpoints;
+
 	private readonly viewport = new ChartViewport(this);
 	static styles = [
 		baseStyles,

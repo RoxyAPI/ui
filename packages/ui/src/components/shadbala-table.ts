@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { shadbalaTableEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { ShadbalaResponse } from '../types/index.js';
@@ -42,6 +43,8 @@ const BALA_COMPONENTS: Array<{
  */
 @customElement('roxy-shadbala-table')
 export class RoxyShadbalaTable extends RoxyDataElement<ShadbalaResponse> {
+	static endpoints = shadbalaTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

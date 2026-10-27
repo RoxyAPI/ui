@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { luckPillarsEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { CalculateLuckPillarsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -49,6 +50,8 @@ const DIRECTION_LABEL: Record<string, ChromeString> = {
  */
 @customElement('roxy-luck-pillars')
 export class RoxyLuckPillars extends RoxyDataElement<CalculateLuckPillarsResponse> {
+	static endpoints = luckPillarsEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

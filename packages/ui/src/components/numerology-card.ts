@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { numerologyCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	CalculateBirthDayResponse,
@@ -65,6 +66,8 @@ const GUIDANCE_FIELDS: ReadonlyArray<[keyof NumerologyReading, string]> = [
  */
 @customElement('roxy-numerology-card')
 export class RoxyNumerologyCard extends RoxyDataElement<NumerologyData> {
+	static endpoints = numerologyCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

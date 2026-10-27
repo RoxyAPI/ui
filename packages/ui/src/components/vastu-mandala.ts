@@ -1,6 +1,7 @@
 import { css, html, nothing, svg } from 'lit';
 import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { vastuMandalaEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	CalculateEntrancePadaResponse,
@@ -196,6 +197,8 @@ function round(n: number): number {
  */
 @customElement('roxy-vastu-mandala')
 export class RoxyVastuMandala extends RoxyDataElement<VastuData> {
+	static endpoints = vastuMandalaEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

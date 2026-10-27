@@ -68,8 +68,6 @@ const components = ROXY_COMPONENTS.map((c) => {
 				snippets: widgetSnippets({
 					tag: c.tag,
 					slug: c.slug,
-					method: head.method,
-					path: head.path,
 					attrs: head.attrs,
 					cdnBase: CDN_BASE,
 					themeUrl: THEME_URL,

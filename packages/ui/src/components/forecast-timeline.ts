@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { forecastTimelineEndpoints } from '../generated/endpoint-defaults.js';
 import { aspectSymbol } from '../tokens/index.js';
 import type {
 	FindSignificantDatesResponse,
@@ -59,6 +60,8 @@ const DOMAIN_ORDER: readonly ForecastDomain[] = [
  */
 @customElement('roxy-forecast-timeline')
 export class RoxyForecastTimeline extends RoxyDataElement<ForecastTimelineData> {
+	static endpoints = forecastTimelineEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

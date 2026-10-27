@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { tarotCatalogEndpoints } from '../generated/endpoint-defaults.js';
 import type { ListCardsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -14,6 +15,8 @@ type CatalogCard = ListCardsResponse['cards'][number];
  */
 @customElement('roxy-tarot-catalog')
 export class RoxyTarotCatalog extends RoxyDataElement<ListCardsResponse> {
+	static endpoints = tarotCatalogEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

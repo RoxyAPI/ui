@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { gematriaEndpoints } from '../generated/endpoint-defaults.js';
 import type { CalculateGematriaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -41,6 +42,8 @@ type CipherValue = NonNullable<Gematria['values']>[number];
  */
 @customElement('roxy-gematria')
 export class RoxyGematria extends RoxyDataElement<Gematria> {
+	static endpoints = gematriaEndpoints;
+
 	static styles = [
 		baseStyles,
 		stackedTableStyles,

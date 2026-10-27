@@ -473,6 +473,16 @@ export function formatDateTimeUtc(
 	});
 }
 
+/** The viewer's IANA zone, or undefined where the runtime names none; the zone is the same in every locale. */
+export function viewerTimeZone(): string | undefined {
+	try {
+		return new Intl.DateTimeFormat(intlLocales(undefined)).resolvedOptions()
+			.timeZone;
+	} catch {
+		return undefined;
+	}
+}
+
 /**
  * The Sanskrit form of a name, but only when it actually differs from the English one.
  *

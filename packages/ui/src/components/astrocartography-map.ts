@@ -1,4 +1,5 @@
 import { css, html, nothing, svg } from 'lit';
+import { astrocartographyMapEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { AstrocartographyResponse } from '../types/index.js';
@@ -10,6 +11,7 @@ import { fanOut } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatDateTime } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 import { planetColor } from '../utils/planet-color.js';
 import { WORLD_LAND_PATH } from '../utils/world-map.js';
 
@@ -74,6 +76,8 @@ const ANGLE_LABEL: Record<string, ChromeString> = {
  */
 @customElement('roxy-astrocartography-map')
 export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyResponse> {
+	static endpoints = astrocartographyMapEndpoints;
+
 	private readonly chartViewport = new ChartViewport(this);
 
 	static styles = [
@@ -318,13 +322,17 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 	 * colour ties a displaced glyph back to it.
 	 */
 	private renderBodyLines(lines: LineSet[]) {
-		const bodies = lines.map((line, index) => ({
-			line,
-			color: planetColor(line.planet, index),
-			// Response symbol first, then the shared table, then the full name. Never a
-			// truncation: `North Node.slice(0, 2)` labelled a whole map line "No".
-			glyph: line.symbol || planetGlyph(line.planet) || line.planet,
-		}));
+		const bodies = lines.map((line, index) => {
+			const name = display(line, 'planet');
+			return {
+				line,
+				name,
+				color: planetColor(line.planet, index),
+				// Response symbol first, then the shared table, then the full name. Never a
+				// truncation: `North Node.slice(0, 2)` labelled a whole map line "No".
+				glyph: line.symbol || planetGlyph(line.planet) || name,
+			};
+		});
 		type Body = (typeof bodies)[number];
 		const nearEquator = (points: GeoPoint[]): GeoPoint =>
 			points.reduce(
@@ -348,7 +356,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 			(b) => nearEquator(b.line.descendant.points ?? []).longitude,
 		);
 		return bodies.map((b) => {
-			const { line, color, glyph } = b;
+			const { line, name, color, glyph } = b;
 			const at = (m: Map<Body, number>) => m.get(b) ?? 0;
 			return svg`${[
 				this.renderMeridian(
@@ -356,7 +364,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 					at(mcAt),
 					color,
 					glyph,
-					line.planet,
+					name,
 					'mc',
 					false,
 				),
@@ -365,7 +373,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 					at(icAt),
 					color,
 					glyph,
-					line.planet,
+					name,
 					'ic',
 					true,
 				),
@@ -377,7 +385,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 					},
 					color,
 					glyph,
-					line.planet,
+					name,
 					'ascendant',
 					false,
 				),
@@ -389,7 +397,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 					},
 					color,
 					glyph,
-					line.planet,
+					name,
 					'descendant',
 					true,
 				),
@@ -445,7 +453,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 				const color = planetColor(l.planet, i);
 				return html`<span class="legend-item">
 					<span class="legend-swatch" style=${`border-top-color: ${color}`}></span>
-					${l.symbol ? html`${l.symbol} ` : nothing}${l.planet}
+					${l.symbol ? html`${l.symbol} ` : nothing}${display(l, 'planet')}
 				</span>`;
 			})}
 			<span class="legend-note">${this.t('Solid lines are the Ascendant and Midheaven, dashed are the Descendant and IC.')}</span>
@@ -473,7 +481,7 @@ export class RoxyAstrocartographyMap extends RoxyDataElement<AstrocartographyRes
 					<summary>
 						<span class="interp-lead">
 							<span class="interp-dot" style=${`background: ${color}`}></span>
-							${l.symbol ? html`${l.symbol} ` : nothing}${l.planet}
+							${l.symbol ? html`${l.symbol} ` : nothing}${display(l, 'planet')}
 						</span>
 						${chevron()}
 					</summary>

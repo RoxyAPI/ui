@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { westernPlanetsTableEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { NatalChartResponse } from '../types/index.js';
@@ -53,6 +54,8 @@ interface BodyRow {
  */
 @customElement('roxy-western-planets-table')
 export class RoxyWesternPlanetsTable extends RoxyDataElement<WesternPositions> {
+	static endpoints = westernPlanetsTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		factListStyles,

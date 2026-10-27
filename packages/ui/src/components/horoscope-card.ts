@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { horoscopeCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { aspectSymbol, planetGlyph, signGlyph } from '../tokens/index.js';
 import type {
@@ -115,6 +116,8 @@ const BEST_AREAS = [
  */
 @customElement('roxy-horoscope-card')
 export class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
+	static endpoints = horoscopeCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		labelRowStyles,

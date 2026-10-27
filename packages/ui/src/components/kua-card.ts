@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { kuaCardEndpoints } from '../generated/endpoint-defaults.js';
 import type {
 	CalculateKuaNumberResponse,
 	GenerateEightMansionsResponse,
@@ -48,6 +49,8 @@ type KuaData = CalculateKuaNumberResponse | GenerateEightMansionsResponse;
  */
 @customElement('roxy-kua-card')
 export class RoxyKuaCard extends RoxyDataElement<KuaData> {
+	static endpoints = kuaCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,
@@ -330,7 +333,7 @@ export class RoxyKuaCard extends RoxyDataElement<KuaData> {
 						? html`<span
 							><span class="lbl">${this.t('Trigram')}</span>
 							<span lang="zh">${trigram.chinese ?? ''}</span> ${trigram.symbol ?? ''}
-							<b>${trigram.english ?? ''}</b> ${trigram.element ?? ''}</span
+							<b>${trigram.english ?? ''}</b> ${display(trigram, 'element')}</span
 						>`
 						: nothing
 				}

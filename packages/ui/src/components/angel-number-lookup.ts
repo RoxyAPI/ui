@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { angelNumberLookupEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { AnalyzeNumberSequenceResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
@@ -20,6 +21,8 @@ const ENERGY_LABEL: Record<string, ChromeString> = {
  */
 @customElement('roxy-angel-number-lookup')
 export class RoxyAngelNumberLookup extends RoxyDataElement<AnalyzeNumberSequenceResponse> {
+	static endpoints = angelNumberLookupEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

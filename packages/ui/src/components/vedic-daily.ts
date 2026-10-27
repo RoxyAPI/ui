@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { vedicDailyEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GetVedicDailyReadingResponse } from '../types/index.js';
@@ -80,6 +81,8 @@ const LEVEL_LABEL: Record<Daily['dasha'][number]['level'], ChromeString> = {
  */
 @customElement('roxy-vedic-daily')
 export class RoxyVedicDaily extends RoxyDataElement<Daily> {
+	static endpoints = vedicDailyEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

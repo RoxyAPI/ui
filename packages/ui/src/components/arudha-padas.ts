@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { arudhaPadasEndpoints } from '../generated/endpoint-defaults.js';
 import { signGlyph } from '../tokens/index.js';
 import type { ArudhaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -21,6 +22,8 @@ const LEAD_IDS = new Set(['a1', 'a12']);
  */
 @customElement('roxy-arudha-padas')
 export class RoxyArudhaPadas extends RoxyDataElement<ArudhaResponse> {
+	static endpoints = arudhaPadasEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

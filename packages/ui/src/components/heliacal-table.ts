@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { heliacalTableEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { HeliacalResponse } from '../types/index.js';
@@ -38,6 +39,8 @@ const NEXT_EVENT_WORD: Record<Event['type'], ChromeString> = {
  */
 @customElement('roxy-heliacal-table')
 export class RoxyHeliacalTable extends RoxyDataElement<HeliacalResponse> {
+	static endpoints = heliacalTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

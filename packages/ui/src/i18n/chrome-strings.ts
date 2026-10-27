@@ -333,6 +333,8 @@ export const CHROME_STRINGS = [
 	'Cast',
 	'Get reading',
 	'Generate',
+	// The submit on a form whose moment, clock included, is left empty.
+	'Show right now',
 
 	// Form failure states. `{{message}}` is one of the two below or a raw browser
 	// network error, which is a wire fact and stays as the browser worded it.

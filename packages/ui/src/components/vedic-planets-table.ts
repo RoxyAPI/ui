@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { vedicPlanetsTableEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { BirthChartResponse } from '../types/index.js';
@@ -64,6 +65,8 @@ const AVASTHA_SYSTEMS = [
  */
 @customElement('roxy-vedic-planets-table')
 export class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
+	static endpoints = vedicPlanetsTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

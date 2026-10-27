@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
+import { transitsTableEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { TransitsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -17,6 +18,7 @@ import {
 	readingDetailStyles,
 	renderReadingDetail,
 } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 import { renderTablist, tablistStyles } from '../utils/tablist.js';
 
 /**
@@ -26,6 +28,8 @@ import { renderTablist, tablistStyles } from '../utils/tablist.js';
  */
 @customElement('roxy-transits-table')
 export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
+	static endpoints = transitsTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		tablistStyles,
@@ -136,11 +140,11 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 				line-height: 1;
 			}
 
+			/* A long name wraps under its glyph's line, so a translated row fits a phone card. */
 			.planet-cell {
 				display: flex;
-				align-items: center;
+				align-items: baseline;
 				gap: 4px;
-				white-space: nowrap;
 			}
 
 			.retro-badge {
@@ -344,7 +348,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						<td>
 							<div class="planet-cell">
 								<span class="glyph" aria-hidden="true">${pGlyph}</span>
-								${p.name}
+								${display(p, 'name')}
 								${
 									p.isRetrograde
 										? html`<span class="retro-badge" aria-label=${this.t('retrograde')}>R</span>`
@@ -355,7 +359,7 @@ export class RoxyTransitsTable extends RoxyDataElement<TransitsResponse> {
 						<td>
 							<div class="planet-cell">
 								<span class="glyph" aria-hidden="true">${sGlyph}</span>
-								${p.sign}
+								${display(p, 'sign')}
 							</div>
 						</td>
 						<td class="num">${formatDegreeInSign(p.degree)}</td>

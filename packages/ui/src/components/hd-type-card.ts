@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { hdTypeCardEndpoints } from '../generated/endpoint-defaults.js';
 import type {
 	CalculateProfileResponse,
 	CalculateTypeResponse,
@@ -30,6 +31,8 @@ type HdIdentity = CalculateTypeResponse | CalculateProfileResponse;
  */
 @customElement('roxy-hd-type-card')
 export class RoxyHdTypeCard extends RoxyDataElement<HdIdentity> {
+	static endpoints = hdTypeCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

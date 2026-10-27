@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
+import { yogaListEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	DetectYogasResponse,
@@ -102,6 +103,8 @@ type Verdict = (typeof VERDICTS)[number]['id'];
  */
 @customElement('roxy-yoga-list')
 export class RoxyYogaList extends RoxyDataElement<YogaListData> {
+	static endpoints = yogaListEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

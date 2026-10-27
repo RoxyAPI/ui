@@ -8,6 +8,7 @@ import {
 } from '../../../scripts/build-widgets.js';
 import { ENDPOINT_BINDINGS } from '../src/generated/endpoint-bindings.js';
 import { ROXY_COMPONENTS } from '../src/manifest.js';
+import { withViewerZone } from './viewer-zone.js';
 
 interface FetchCall {
 	url: string;
@@ -170,20 +171,23 @@ describe('widgets.js mount paths', () => {
 		const map = await buildWidgetMap();
 		const calls = mockFetch();
 
-		const w = await runWidgets(map, [
-			{
-				slug: 'horoscope-card',
-				attrs: {
-					'data-publishable-key': 'pk_test_1',
-					'data-sign': 'aries',
-					'data-lang': 'es-AR',
+		// A runtime that names no viewer zone sends the request exactly as before.
+		const w = await withViewerZone(undefined, () =>
+			runWidgets(map, [
+				{
+					slug: 'horoscope-card',
+					attrs: {
+						'data-publishable-key': 'pk_test_1',
+						'data-sign': 'aries',
+						'data-lang': 'es-AR',
+					},
 				},
-			},
-			{
-				slug: 'horoscope-card',
-				attrs: { 'data-publishable-key': 'pk_test_1' },
-			},
-		]);
+				{
+					slug: 'horoscope-card',
+					attrs: { 'data-publishable-key': 'pk_test_1' },
+				},
+			]),
+		);
 
 		// The script sends nothing itself: the element loads through its own guarded controller.
 		expect(calls.filter(keyed).length).toBe(0);
@@ -207,6 +211,40 @@ describe('widgets.js mount paths', () => {
 		);
 		expect(el1?.getAttribute('publishable-key')).toBe('pk_test_1');
 		expect(el1?.loaded).toBeUndefined();
+	});
+
+	test('a request that loads at once reads the current period on the viewer clock, and a timezone the tag names wins', async () => {
+		const map = await buildWidgetMap();
+		mockFetch();
+		const w = await withViewerZone('Europe/Copenhagen', () =>
+			runWidgets(map, [
+				{
+					slug: 'horoscope-card',
+					attrs: { 'data-publishable-key': 'pk_test_1', 'data-sign': 'aries' },
+				},
+				{
+					slug: 'horoscope-card',
+					attrs: {
+						'data-publishable-key': 'pk_test_1',
+						'data-sign': 'leo',
+						'data-period': 'weekly',
+						'data-timezone': 'Asia/Tokyo',
+					},
+				},
+			]),
+		);
+		expect(child(w, 'w0')?.loaded).toEqual({
+			path: '/astrology/horoscope/aries/daily',
+			method: 'GET',
+			query: { timezone: 'Europe/Copenhagen' },
+			body: undefined,
+		});
+		expect(child(w, 'w1')?.loaded).toEqual({
+			path: '/astrology/horoscope/leo/weekly',
+			method: 'GET',
+			query: { timezone: 'Asia/Tokyo' },
+			body: undefined,
+		});
 	});
 
 	test('a read that needs nothing opens in form mode, so the one-tag widget keeps its filters above the result as the component tag does', async () => {

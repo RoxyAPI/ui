@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { zodiacCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	CalculateZodiacAnimalResponse,
@@ -93,6 +94,8 @@ type ZodiacAnimal = Partial<CalculateZodiacAnimalResponse['animal']>;
  */
 @customElement('roxy-zodiac-card')
 export class RoxyZodiacCard extends RoxyDataElement<ZodiacData> {
+	static endpoints = zodiacCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

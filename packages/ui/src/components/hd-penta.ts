@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { hdPentaEndpoints } from '../generated/endpoint-defaults.js';
 import type { CalculatePentaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -29,6 +30,8 @@ type PentaGate = Penta['gates'][number];
  */
 @customElement('roxy-hd-penta')
 export class RoxyHdPenta extends RoxyDataElement<Penta> {
+	static endpoints = hdPentaEndpoints;
+
 	private readonly chartViewport = new ChartViewport(this);
 
 	static styles = [

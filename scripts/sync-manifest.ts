@@ -30,8 +30,6 @@ for (const c of ROXY_COMPONENTS) {
 	SNIPPETS[c.tag] = widgetSnippets({
 		tag: c.tag,
 		slug: c.slug,
-		method: head.method,
-		path: head.path,
 		attrs: head.attrs,
 		cdnBase: CDN_BASE,
 		themeUrl: THEME_URL,

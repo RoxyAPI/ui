@@ -1,4 +1,5 @@
 import { css, html, nothing, svg } from 'lit';
+import { synastryChartEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type { CalculateSynastryResponse } from '../types/index.js';
@@ -88,6 +89,8 @@ const LEADER_FOOT = 4;
  */
 @customElement('roxy-synastry-chart')
 export class RoxySynastryChart extends RoxyDataElement<CalculateSynastryResponse> {
+	static endpoints = synastryChartEndpoints;
+
 	private readonly viewport = new ChartViewport(this);
 	/** The in-wheel type sizes the stylesheet actually applied, read back after each render, because the fan spaces the marks by the width of their text and that width follows the container query. */
 	private readonly type = new MeasuredType(this, {

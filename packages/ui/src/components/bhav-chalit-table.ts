@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { bhavChalitTableEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { BhavChalitResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -25,6 +26,8 @@ type Bhava = BhavChalitResponse['bhavas'][number];
  */
 @customElement('roxy-bhav-chalit-table')
 export class RoxyBhavChalitTable extends RoxyDataElement<BhavChalitResponse> {
+	static endpoints = bhavChalitTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

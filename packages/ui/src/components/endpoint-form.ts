@@ -30,6 +30,7 @@ import {
 	optionKind,
 	parseRepeatGroup,
 	type RepeatDef,
+	readsNow,
 	repeatFields,
 	repeatGroup,
 	sliceBase,
@@ -37,6 +38,7 @@ import {
 	translatedFieldLabel,
 	withRenderIntent,
 } from '../utils/field-schema.js';
+import { viewerTimeZone } from '../utils/format.js';
 import { dispatchKeyRefusal, keyRefusal } from '../utils/key-guard.js';
 import { displayField, displayOption } from '../utils/localized.js';
 import {
@@ -501,7 +503,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 	@property({ type: String, attribute: 'publishable-key' })
 	publishableKey?: string;
 
-	/** Where the slotted city search sends its request, absolute or relative to the page. Set it when the page routes its API traffic through its own server, so the one request this form issues on its own reaches that server too. Unset, the search keeps its own default. */
+	/** Where the slotted city search sends its GET, absolute or relative to the page. Unset, the search goes through the proxy route a component hands this form, else to the public location endpoint. */
 	@property({ type: String, attribute: 'location-url' })
 	locationUrl?: string;
 
@@ -661,10 +663,12 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		// group, so read them by group.
 		const init: Record<string, unknown> = {};
 		for (const f of model.fields) {
-			const seed =
-				this.fullPages &&
-				f.name === 'limit' &&
-				this.roleOf(f) === 'hidden-default'
+			// A viewer-zone field stays empty so the submit can tell the API default from a choice.
+			const seed = f.viewerZone
+				? undefined
+				: this.fullPages &&
+						f.name === 'limit' &&
+						this.roleOf(f) === 'hidden-default'
 					? (f.max ?? f.default)
 					: f.default;
 			if (seed !== undefined) init[f.key] = seed;
@@ -940,11 +944,12 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		}));
 	}
 
-	/** The submit-button label. A caller-supplied one is theirs and is printed verbatim; the derived verb is ours, so it goes through the catalogue. {@link deriveSubmitLabel} returns the canonical English verb, which IS the catalogue key. */
+	/** The submit-button label. A caller-supplied one is theirs and is printed verbatim; the derived verb is ours, so it goes through the catalogue. {@link deriveSubmitLabel} returns the canonical English verb, which IS the catalogue key; an empty moment with a clock reads as now. */
 	private effectiveSubmitLabel(): string {
-		return (
-			this.submitLabel || this.t(deriveSubmitLabel(this.endpoint, this.fields))
-		);
+		if (this.submitLabel) return this.submitLabel;
+		return readsNow(this.fields, this.values)
+			? this.t('Show right now')
+			: this.t(deriveSubmitLabel(this.endpoint, this.fields));
 	}
 
 	/**
@@ -1099,6 +1104,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 			let v = this.values[f.key];
 			// A hidden seed autogenerates per submit unless a value was remembered.
 			if (f.name === 'seed' && (v === undefined || v === '')) v = randomSeed();
+			if (f.viewerZone && (v === undefined || v === ''))
+				v = viewerTimeZone() ?? f.default;
 			if (v === undefined || v === '') continue;
 			if (f.kind === 'array' && typeof v === 'string') v = parseArrayValue(v);
 			const repeat = f.group ? parseRepeatGroup(f.group) : null;
@@ -1502,7 +1509,7 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		</div>`;
 	}
 
-	/** The one city search every location input draws, its placeholder named for the place; `lang` and `endpoint` are forwarded because a shadow root hides the host page from it. */
+	/** The one city search every location input draws, its placeholder named for the place; `lang`, `endpoint` and the proxy route are forwarded because a shadow root hides the host page from it. */
 	private citySearch(
 		group: string | undefined,
 		onPick: (city: PickedCity) => void,
@@ -1515,6 +1522,8 @@ export class RoxyEndpointForm extends RoxyLocalizedElement {
 		return html`<roxy-location-search
 				endpoint=${ifDefined(this.locationUrl || undefined)}
 				publishable-key=${ifDefined(this.publishableKey)}
+				.submitUrl=${this.route.submitUrl}
+				.submitContext=${this.route.submitContext}
 				lang=${ifDefined(this.effectiveLang())}
 				placeholder=${ifDefined(placeholder)}
 				@roxy-location-select=${(e: CustomEvent<PickedCity>) => onPick(e.detail)}

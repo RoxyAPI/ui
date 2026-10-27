@@ -50,7 +50,8 @@ export const DEFAULT_BUDGETS: SizeBudgets = {
 	// The world basemap holds the map card at the cap, so shared form and formatter code sets the ceiling: 30.0 KB gz before the timezone city search, 30.1 after.
 	// The map measures 30.9 KB gzip at HEAD and 31.9 KB with shared chart enlargement.
 	// It measures 32,762 bytes at HEAD and 32,770 once every element registers through the define-once helper.
-	componentGzip: 32.1 * KB,
+	// It measures 32,770 bytes at HEAD, 32,932 once each component resolves its own default endpoint, and 33,028 once its line names print the localized planet.
+	componentGzip: 32.3 * KB,
 	widgetsGzip: WIDGETS_BUDGET_BYTES,
 	// A catalogue is one download that translates every element on the page, and
 	// it is pure text, which gzip eats. The ceiling tracks how many cards are

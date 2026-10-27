@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { flyingStarChartEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GenerateFlyingStarChartResponse,
@@ -63,6 +64,8 @@ function isNatal(d: FlyingStarData): d is GenerateFlyingStarChartResponse {
  */
 @customElement('roxy-flying-star-chart')
 export class RoxyFlyingStarChart extends RoxyDataElement<FlyingStarData> {
+	static endpoints = flyingStarChartEndpoints;
+
 	static styles = [
 		baseStyles,
 		plateHeadingStyles,

@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
+import { tarotCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { GetCardResponse, GetDailyCardResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -37,6 +38,8 @@ const GUIDANCE_FIELDS: ReadonlyArray<[keyof TarotGuidance, ChromeString]> = [
  */
 @customElement('roxy-tarot-card')
 export class RoxyTarotCard extends RoxyDataElement<TarotData> {
+	static endpoints = tarotCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

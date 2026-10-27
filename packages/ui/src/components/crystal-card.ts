@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { crystalCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { GetCrystalResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -21,6 +22,8 @@ import { formatNumber, monthName } from '../utils/format.js';
  */
 @customElement('roxy-crystal-card')
 export class RoxyCrystalCard extends RoxyDataElement<GetCrystalResponse> {
+	static endpoints = crystalCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

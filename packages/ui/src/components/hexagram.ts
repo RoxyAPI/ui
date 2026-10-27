@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { hexagramEndpoints } from '../generated/endpoint-defaults.js';
 import { trigramGlyph } from '../tokens/index.js';
 import type {
 	CastDailyReadingResponse,
@@ -42,6 +43,8 @@ type HexagramData =
  */
 @customElement('roxy-hexagram')
 export class RoxyHexagram extends RoxyDataElement<HexagramData> {
+	static endpoints = hexagramEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

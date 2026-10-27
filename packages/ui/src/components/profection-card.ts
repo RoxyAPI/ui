@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { profectionCardEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { ProfectionsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -16,6 +17,8 @@ import { formatDate } from '../utils/format.js';
  */
 @customElement('roxy-profection-card')
 export class RoxyProfectionCard extends RoxyDataElement<ProfectionsResponse> {
+	static endpoints = profectionCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

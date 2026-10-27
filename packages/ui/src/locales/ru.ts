@@ -301,6 +301,7 @@ export const ru: Record<ChromeString, string> = {
 	Cast: 'Гадать',
 	'Get reading': 'Получить трактовку',
 	Generate: 'Рассчитать',
+	'Show right now': 'Показать сейчас',
 	'Schema load failed: {{message}}': 'Не удалось загрузить схему: {{message}}',
 	'Endpoint {{method}} {{path}} not found in OpenAPI spec':
 		'Эндпоинт {{method}} {{path}} не найден в спецификации OpenAPI',

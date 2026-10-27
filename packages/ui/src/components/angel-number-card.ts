@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { angelNumberCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { GetAngelNumberResponse } from '../types/index.js';
 import { buildMeaningSections } from '../utils/angel-sections.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -16,6 +17,8 @@ import { interpAccordionStyles } from '../utils/interp-accordion.js';
  */
 @customElement('roxy-angel-number-card')
 export class RoxyAngelNumberCard extends RoxyDataElement<GetAngelNumberResponse> {
+	static endpoints = angelNumberCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		interpAccordionStyles,

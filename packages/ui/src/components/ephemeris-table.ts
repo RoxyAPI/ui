@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { ephemerisTableEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph, SIGNS_ORDER, signGlyph } from '../tokens/index.js';
 import type {
 	GetMonthlyEphemerisResponse,
@@ -153,6 +154,8 @@ interface ViewModel {
  */
 @customElement('roxy-ephemeris-table')
 export class RoxyEphemerisTable extends RoxyDataElement<EphemerisResponse> {
+	static endpoints = ephemerisTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

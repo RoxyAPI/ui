@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { bhavaBalaTableEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { BhavaBalaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -43,6 +44,8 @@ const COMPONENTS: ReadonlyArray<{
  */
 @customElement('roxy-bhava-bala-table')
 export class RoxyBhavaBalaTable extends RoxyDataElement<BhavaBalaResponse> {
+	static endpoints = bhavaBalaTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

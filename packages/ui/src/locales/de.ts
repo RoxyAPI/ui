@@ -304,6 +304,7 @@ export const de: Record<ChromeString, string> = {
 	Cast: 'Ziehen',
 	'Get reading': 'Deutung anzeigen',
 	Generate: 'Berechnen',
+	'Show right now': 'Jetzt anzeigen',
 	'Schema load failed: {{message}}':
 		'Schema konnte nicht geladen werden: {{message}}',
 	'Endpoint {{method}} {{path}} not found in OpenAPI spec':

@@ -1,23 +1,20 @@
-import {
-	type ComplexAttributeConverter,
-	type CSSResultGroup,
-	html,
-	nothing,
-	type PropertyValues,
-} from 'lit';
+import { type CSSResultGroup, html, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import type { SelfFetchEndpoint } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { apiLang } from '../i18n/lang.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { baseStyles } from './base-styles.js';
 import { expandCompact } from './compact.js';
+import { defaultEndpoint } from './endpoint-default.js';
 import {
 	type ApiIssue,
 	apiFetch,
 	buildRequest,
 	FetchController,
 	type RoxyRequest,
+	submitContextConverter,
 } from './fetch-controller.js';
 import {
 	type InterpSection,
@@ -26,39 +23,13 @@ import {
 import { MarkupDataController } from './markup-data.js';
 
 /**
- * Read the `submit-context` attribute into the object a proxied submit carries.
- *
- * @remarks
- * Hand-written rather than `type: Object`, which resolves malformed JSON to `null` in silence: a page whose context never left has nothing to look at, and the route it was meant for reports only that the value it expected is not there. One warning covers both refusals (unparseable, or parsed to something that is not an object) because both leave the request without a context, which is the fact worth reading.
- */
-const submitContextConverter: ComplexAttributeConverter<
-	Record<string, unknown> | undefined
-> = {
-	fromAttribute: (value) => {
-		if (value == null) return undefined;
-		try {
-			const parsed: unknown = JSON.parse(value);
-			if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-				return parsed as Record<string, unknown>;
-			}
-		} catch {
-			// Both refusals share the warning below.
-		}
-		console.warn(
-			'[roxy-ui] submit-context must be a JSON object; sending the request without it.',
-		);
-		return undefined;
-	},
-};
-
-/**
  * Shared base for every data-driven Roxy component. Carries once what every component needs, rather than per component, and adds the self-contained, drop-in behavior: controlled-mode hydration, an opt-in self-fetch (form, request, loading, error, empty), the typed `data` slot, and the render switch. A subclass implements one method, {@link RoxyDataElement.renderData}.
  *
  * @remarks
  * Two render modes, one component, which is the whole drop-in contract:
  *
  * - Controlled: a server (WordPress, JSX SSR, static HTML) fetches the response and injects it as a direct-child `<script type="application/json" class="roxy-data">`. {@link MarkupDataController} hydrates `data` from it on connect. No key reaches the browser. This is the path the WordPress plugin drives, and it is unchanged by the base class.
- * - Uncontrolled: no data is injected, but a `data-endpoint` and a `pk_` `publishable-key` are set. The component renders its own `<roxy-endpoint-form>` (an internal detail, never placed by the consumer), and on submit fetches through {@link FetchController}, which refuses any non-publishable key. The result populates `data` and the component renders it.
+ * - Uncontrolled: no data is injected, but a `pk_` `publishable-key` or a `submit-url` is set, with or without a `data-endpoint` (absent, the endpoint its config attributes select is used). The component renders its own `<roxy-endpoint-form>` (an internal detail, never placed by the consumer), and on submit fetches through {@link FetchController}, which refuses any non-publishable key. The result populates `data` and the component renders it.
  *
  * The JavaScript `data` property always wins over markup, so a host that assigns `el.data = …` after upgrade is authoritative.
  *
@@ -86,17 +57,20 @@ export abstract class RoxyDataElement<
 > extends RoxyLocalizedElement {
 	static styles: CSSResultGroup = [baseStyles];
 
+	/** The endpoints this component renders, in binding order; each component assigns its own generated row, so its bundle carries no other. */
+	static endpoints: readonly SelfFetchEndpoint[] = [];
+
 	/** Typed RoxyAPI response. Assigned in JavaScript, hydrated from the roxy-data island, or set by a self-fetch. */
 	@property({ attribute: false })
 	data: T | null = null;
 
-	/** Endpoint path for self-fetch, e.g. "astrology/natal-chart" or "dreams/symbols/{id}". Empty disables self-fetch (controlled mode only). */
+	/** Endpoint path for self-fetch, e.g. "astrology/natal-chart" or "dreams/symbols/{id}". Empty uses the endpoint the config attributes select once a key or a `submit-url` is set. */
 	@property({ type: String, attribute: 'data-endpoint' })
 	endpoint = '';
 
-	/** HTTP method for self-fetch. */
+	/** HTTP method for self-fetch: POST beside an explicit `data-endpoint`, else the method of the endpoint in use. */
 	@property({ type: String })
-	method: 'GET' | 'POST' = 'POST';
+	method?: 'GET' | 'POST';
 
 	/** Browser-safe publishable key (pk_) for self-fetch. A secret key is refused client-side. */
 	@property({ type: String, attribute: 'publishable-key' })
@@ -125,7 +99,6 @@ export abstract class RoxyDataElement<
 	 * @example
 	 * ```html
 	 * <roxy-natal-chart
-	 *   data-endpoint="astrology/natal-chart"
 	 *   submit-url="/api/roxy/proxy"
 	 *   submit-context='{"token":"..."}'
 	 * ></roxy-natal-chart>
@@ -135,10 +108,10 @@ export abstract class RoxyDataElement<
 	submitContext?: Record<string, unknown>;
 
 	/**
-	 * Where the self-fetch form's city search sends its request, absolute or relative to the page.
+	 * Where the self-fetch form's city search sends its GET, absolute or relative to the page.
 	 *
 	 * @remarks
-	 * The companion of {@link RoxyDataElement.submitUrl}, and it is separate because the two requests have different shapes: the proxy route takes one POSTed `{ path, method, body, query }`, while the city search is a GET the search issues on its own while a visitor types. A birth-data form makes both, so a page that routes its API traffic through its own server names that route here as well. It is forwarded to the internal form, which forwards it to the search; unset, the search keeps its own default.
+	 * Optional beside {@link RoxyDataElement.submitUrl}: unset, the city search is POSTed to that route as `{ path: '/location/search', method: 'GET', query }` like every other request, so one route serves the whole widget. Set it to send the city search somewhere else. It is forwarded to the internal form, which forwards it to the search.
 	 */
 	@property({ type: String, attribute: 'location-url' })
 	locationUrl?: string;
@@ -172,7 +145,7 @@ export abstract class RoxyDataElement<
 	 * ```html
 	 * <roxy-natal-chart hide-sections="patterns"></roxy-natal-chart>
 	 * <roxy-natal-chart hide-sections="patterns, aspects"></roxy-natal-chart>
-	 * <roxy-natal-chart data-endpoint="astrology/natal-chart" hide-sections="hint"></roxy-natal-chart>
+	 * <roxy-natal-chart publishable-key="pk_live_..." hide-sections="hint"></roxy-natal-chart>
 	 * ```
 	 */
 	@property({ type: String, attribute: 'hide-sections', reflect: true })
@@ -235,6 +208,9 @@ export abstract class RoxyDataElement<
 	/** The response key a list draws its rows from (`symbols`, `crystals`, `cards`); declared by a list component so the base can page it with {@link renderMore}. */
 	protected listKey?: string;
 
+	/** True once a host handed this element a request through {@link load}, which then renders that result alone, never a form. */
+	private hostLoaded = false;
+
 	/** The request behind the data this element fetched for itself, kept so a list can ask for the page after it. */
 	private lastRequest?: RoxyRequest;
 
@@ -281,6 +257,19 @@ export abstract class RoxyDataElement<
 		if (this.baseUrl) this.fetcher.baseUrl = this.baseUrl;
 		this.fetcher.submitUrl = this.submitUrl;
 		this.fetcher.submitContext = this.submitContext;
+	}
+
+	/** The endpoint and method this element self-fetches, or undefined in controlled mode: an explicit `data-endpoint` as given, else, once it holds a key or a proxy route, the endpoint its config attributes select. */
+	protected selfFetch(): SelfFetchEndpoint | undefined {
+		const own = this.endpoint
+			? { endpoint: this.endpoint, method: 'POST' as const }
+			: this.hostLoaded || !(this.publishableKey || this.submitUrl)
+				? undefined
+				: defaultEndpoint(
+						(this.constructor as typeof RoxyDataElement).endpoints,
+						this as unknown as Record<string, unknown>,
+					);
+		return own && { endpoint: own.endpoint, method: this.method ?? own.method };
 	}
 
 	render(): unknown {
@@ -346,7 +335,7 @@ export abstract class RoxyDataElement<
 
 	/** The state machine every render goes through, split out so {@link render} can pair it with the per-instance rules above. */
 	private renderState(): unknown {
-		if (this.endpoint && this.sticky && this.selfFetched && !this.editing)
+		if (this.selfFetch() && this.sticky && this.selfFetched && !this.editing)
 			return this.renderWithForm(this.stickyBody());
 		if (this.loading) return this.renderLoading();
 		if (this.error != null) return this.renderError(this.error);
@@ -494,6 +483,7 @@ export abstract class RoxyDataElement<
 	 * Fetch one request into this element from a host that already holds the key. The result renders as assigned data (no form, no edit bar), which is what a list component needs when it opens one of its rows in place, and the key guard is the same one every self-fetch passes through: a secret key is refused before anything is sent.
 	 */
 	load(req: RoxyRequest): Promise<void> {
+		this.hostLoaded = true;
 		this.syncFetcher();
 		return this.fetchFresh(req);
 	}
@@ -562,7 +552,7 @@ export abstract class RoxyDataElement<
 
 	/** The data-absent branch: the self-fetch form when an endpoint is set, otherwise the empty state. */
 	protected renderNoData(): unknown {
-		return this.endpoint ? this.renderWithForm(nothing) : this.renderEmpty();
+		return this.selfFetch() ? this.renderWithForm(nothing) : this.renderEmpty();
 	}
 
 	/**
@@ -572,11 +562,12 @@ export abstract class RoxyDataElement<
 	 * `exportparts` forwards exactly one inner name, `hint`, so the same `::part(hint)` rule works whether the page places the form itself or runs a component in self-fetch mode. The rest of the form parts stay inside: this element is an internal detail, and a name is forwarded only when hiding or restyling that block is a decision a host page makes about ITS page rather than about our form. Field help is that case, because the text is API reference prose and a page written for a client wants its own words or none.
 	 */
 	protected renderForm(): unknown {
+		const target = this.selfFetch();
 		return html`<roxy-endpoint-form
 			part="form"
 			exportparts="hint"
-			data-endpoint=${this.endpoint}
-			method=${this.method}
+			data-endpoint=${target?.endpoint ?? ''}
+			method=${target?.method ?? 'POST'}
 			spec-url=${ifDefined(this.specUrl)}
 			publishable-key=${ifDefined(this.publishableKey)}
 			location-url=${ifDefined(this.locationUrl)}
@@ -599,6 +590,8 @@ export abstract class RoxyDataElement<
 	}
 
 	private onFormSubmit = (e: Event) => {
+		const target = this.selfFetch();
+		if (!target) return;
 		const detail = (e as CustomEvent).detail as {
 			values: Record<string, unknown>;
 			queryKeys?: string[];
@@ -611,8 +604,8 @@ export abstract class RoxyDataElement<
 		if (this.remember) this.writeRemembered(detail.values);
 		void this.fetchFresh(
 			buildRequest(
-				this.endpoint,
-				this.method,
+				target.endpoint,
+				target.method,
 				detail.values,
 				detail.queryKeys ?? [],
 			),
@@ -621,7 +614,7 @@ export abstract class RoxyDataElement<
 
 	/** sessionStorage key for this component's remembered form values, scoped by endpoint. */
 	private rememberKey(): string {
-		return `roxy-ui:form:${this.endpoint}`;
+		return `roxy-ui:form:${this.selfFetch()?.endpoint ?? ''}`;
 	}
 
 	private readRemembered(): Record<string, unknown> | undefined {
@@ -665,9 +658,10 @@ export abstract class RoxyDataElement<
 	protected renderError(message: string): unknown {
 		// A rejected request that names its fields is answered on the form, field by
 		// field, and needs no banner repeating the same words over it.
-		if (this.endpoint && this.issues) return this.renderForm();
+		const form = !!this.selfFetch();
+		if (form && this.issues) return this.renderForm();
 		const banner = this.renderErrorBanner(message);
-		return this.endpoint ? html`${banner}${this.renderForm()}` : banner;
+		return form ? html`${banner}${this.renderForm()}` : banner;
 	}
 
 	/** The failure line: the message the request failed with, or the host page's own {@link errorMessage} in place of a failure the API did not word. */

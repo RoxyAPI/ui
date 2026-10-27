@@ -83,14 +83,14 @@ describe('embed tab derivation', () => {
 			if (!e) continue;
 
 			const first = bindings[0];
-			const endpoint = first.path.replace(/^\//, '');
-			// Script snippet: the exact element tag, open and close, and the default endpoint.
-			expect(e.script).toContain(`<${demo.tag}`);
+			// Script snippet: the exact element tag, open and close, and the default binding's config attributes, which select its endpoint and method on the element.
+			const config = Object.entries(first.attrs ?? {})
+				.map(([k, v]) => ` ${k}="${v}"`)
+				.join('');
+			expect(e.script).toContain(`<${demo.tag}${config} publishable-key=`);
 			expect(e.script).toContain(`</${demo.tag}>`);
-			expect(e.script).toContain(`data-endpoint="${endpoint}"`);
-			// GET surfaces an explicit method; POST omits it (the element default).
-			if (first.method === 'POST') expect(e.script).not.toContain(' method=');
-			else expect(e.script).toContain(` method="${first.method}"`);
+			expect(e.script).not.toContain('data-endpoint=');
+			expect(e.script).not.toContain(' method=');
 			expect(e.script).toContain(`publishable-key="${SAMPLE_PUBLISHABLE_KEY}"`);
 			expect(e.hint).toContain(SAMPLE_PUBLISHABLE_KEY);
 			expect(e.script).toContain('hide-sections="hint"');

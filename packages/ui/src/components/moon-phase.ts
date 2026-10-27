@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { moonPhaseEndpoints } from '../generated/endpoint-defaults.js';
 import { moonPhaseEmoji } from '../tokens/index.js';
 import type {
 	GetCurrentMoonPhaseResponse,
@@ -32,6 +33,8 @@ type MoonListEntry =
  */
 @customElement('roxy-moon-phase')
 export class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
+	static endpoints = moonPhaseEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

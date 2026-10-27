@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { tarotSpreadEndpoints } from '../generated/endpoint-defaults.js';
 import type {
 	CastCareerSpreadResponse,
 	CastCelticCrossResponse,
@@ -45,6 +46,8 @@ function titleCase(v: string): string {
 
 @customElement('roxy-tarot-spread')
 export class RoxyTarotSpread extends RoxyDataElement<TarotSpreadData> {
+	static endpoints = tarotSpreadEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

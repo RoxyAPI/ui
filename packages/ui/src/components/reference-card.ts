@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { referenceCardEndpoints } from '../generated/endpoint-defaults.js';
 import type {
 	GetAvasthaResponse,
 	GetCenterResponse,
@@ -71,6 +72,8 @@ function objectLabel(obj: Record<string, unknown>): string {
 
 @customElement('roxy-reference-card')
 export class RoxyReferenceCard extends RoxyDataElement<ReferenceData> {
+	static endpoints = referenceCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

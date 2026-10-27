@@ -10,10 +10,14 @@ type ElementAttrs = Omit<
 export interface RoxyLocationSearchProps extends ElementAttrs {
 	className?: string;
 	style?: React.CSSProperties;
-	/** Browser-safe publishable key (pk_) the search sends with its request. A secret key is refused client-side and never sent. Leave unset when `endpoint` points at your own server route. */
+	/** Browser-safe publishable key (pk_) the search sends with its request. A secret key is refused client-side and never sent. Leave unset when `endpoint` or `submitUrl` points at your own server route. */
 	publishableKey?: string;
-	/** Where the search sends its GET while the visitor types. Defaults to the RoxyAPI location search; set an absolute URL or a page-relative path such as "/api/roxy/location" to route it through your own server and keep the key there. */
+	/** Where the search sends its GET while the visitor types, as an absolute URL or a page-relative path such as "/api/roxy/location". Wins over submitUrl. Unset with no submitUrl, the search calls the RoxyAPI location search. */
 	endpoint?: string;
+	/** Your own backend route, which holds the secret key. With no endpoint set, each search is POSTed there as `{ path: "/location/search", method: "GET", query: { q, limit } }`, the shape every component request takes there. */
+	submitUrl?: string;
+	/** An object of your own, sent to your submitUrl route as `context` beside the search. Passed through untouched and never read. */
+	submitContext?: Record<string, unknown>;
 	/** Input placeholder. The default renders in the page language; a caller-supplied one is printed as given. */
 	placeholder?: string;
 	/** Initial text in the input, for restoring a previous search. */
@@ -25,7 +29,7 @@ export interface RoxyLocationSearchProps extends ElementAttrs {
 }
 
 export const RoxyLocationSearch = React.forwardRef<HTMLElement | null, RoxyLocationSearchProps>(
-	function RoxyLocationSearch({ className, style, publishableKey, endpoint, placeholder, defaultValue, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
+	function RoxyLocationSearch({ className, style, publishableKey, endpoint, submitUrl, submitContext, placeholder, defaultValue, onRoxyLocationSelect, onRoxyValidationError, ...rest }, ref) {
 		const internal = React.useRef<HTMLElement | null>(null);
 		React.useImperativeHandle<HTMLElement | null, HTMLElement | null>(
 			ref,
@@ -63,6 +67,20 @@ export const RoxyLocationSearch = React.forwardRef<HTMLElement | null, RoxyLocat
 				(el as unknown as { endpoint: string }).endpoint = endpoint;
 			}
 		}, [endpoint, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && submitUrl !== undefined) {
+				(el as unknown as { submitUrl: string }).submitUrl = submitUrl;
+			}
+		}, [submitUrl, loaded]);
+
+		React.useEffect(() => {
+			const el = internal.current;
+			if (el && submitContext !== undefined) {
+				(el as unknown as { submitContext: Record<string, unknown> }).submitContext = submitContext;
+			}
+		}, [submitContext, loaded]);
 
 		React.useEffect(() => {
 			const el = internal.current;

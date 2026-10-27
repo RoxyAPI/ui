@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { doshaConstitutionEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { CalculateAyurvedicConstitutionResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -97,6 +98,8 @@ function formatInput(
  */
 @customElement('roxy-dosha-constitution')
 export class RoxyDoshaConstitution extends RoxyDataElement<Constitution> {
+	static endpoints = doshaConstitutionEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

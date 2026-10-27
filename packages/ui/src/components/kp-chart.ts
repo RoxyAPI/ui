@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
+import { kpChartEndpoints } from '../generated/endpoint-defaults.js';
 import type { KpChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -84,6 +85,8 @@ function dedupe(houses: readonly number[] | undefined): number[] {
  */
 @customElement('roxy-kp-chart')
 export class RoxyKpChart extends RoxyDataElement<KpChartResponse> {
+	static endpoints = kpChartEndpoints;
+
 	static styles = [
 		baseStyles,
 		tablistStyles,

@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { upagrahaTableEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { signGlyph } from '../tokens/index.js';
 import type { UpagrahaResponse } from '../types/index.js';
@@ -43,6 +44,8 @@ const GROUPS: ReadonlyArray<{
  */
 @customElement('roxy-upagraha-table')
 export class RoxyUpagrahaTable extends RoxyDataElement<UpagrahaResponse> {
+	static endpoints = upagrahaTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

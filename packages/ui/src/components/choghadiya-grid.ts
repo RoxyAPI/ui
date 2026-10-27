@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { choghadiyaGridEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GetChoghadiyaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -15,6 +16,8 @@ type ChoghadiyaPeriod = GetChoghadiyaResponse['dayChoghadiya'][number];
  */
 @customElement('roxy-choghadiya-grid')
 export class RoxyChoghadiyaGrid extends RoxyDataElement<GetChoghadiyaResponse> {
+	static endpoints = choghadiyaGridEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

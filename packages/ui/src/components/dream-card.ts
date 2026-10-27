@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { dreamCardEndpoints } from '../generated/endpoint-defaults.js';
 import type { GetDreamSymbolResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -12,6 +13,8 @@ import { customElement } from '../utils/define.js';
  */
 @customElement('roxy-dream-card')
 export class RoxyDreamCard extends RoxyDataElement<GetDreamSymbolResponse> {
+	static endpoints = dreamCardEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

@@ -1,5 +1,6 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
+import { vedicKundliEndpoints } from '../generated/endpoint-defaults.js';
 import type { BirthChartResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -39,6 +40,8 @@ import { tablistStyles } from '../utils/tablist.js';
  */
 @customElement('roxy-vedic-kundli')
 export class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
+	static endpoints = vedicKundliEndpoints;
+
 	private readonly chartViewport = new ChartViewport(this);
 
 	static styles = [

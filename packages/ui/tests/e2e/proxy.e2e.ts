@@ -104,3 +104,109 @@ test('both requests of a proxied birth-data form leave at the host origin', asyn
 	expect(submitted?.context).toEqual({ token: 'opaque-value' });
 	expect(submitted?.body).not.toHaveProperty('token');
 });
+
+test('a component with only submit-url sends its city search and its submit through that one route', async ({
+	page,
+}) => {
+	const host: string[] = [];
+	const direct: string[] = [];
+	let search: Record<string, unknown> | undefined;
+
+	await page.route('**/api/roxy/proxy', async (route) => {
+		const body = route.request().postDataJSON() as { path?: string };
+		host.push(`POST ${body?.path}`);
+		if (body?.path === '/location/search') {
+			search = body;
+			await route.fulfill({ json: CITIES });
+		} else await route.fulfill({ json: {} });
+	});
+	await page.route('**/roxyapi.com/**', async (route) => {
+		direct.push(route.request().url());
+		await route.abort();
+	});
+
+	await page.goto('/');
+	await page.evaluate(() => {
+		const el = document.createElement('roxy-natal-chart');
+		el.id = 'e2e-one-route';
+		el.setAttribute('spec-url', './openapi.json');
+		el.setAttribute('submit-url', '/api/roxy/proxy');
+		document.body.prepend(el);
+	});
+
+	const form = page.locator('#e2e-one-route roxy-endpoint-form');
+	await form.locator('#roxy-form-date').waitFor();
+	await form.locator('#roxy-form-date').fill('1990-07-15');
+	await form.locator('#roxy-form-time').fill('14:30:00');
+	await form.locator('roxy-location-search input').fill('Manila');
+	await expect
+		.poll(() => host.length + direct.length, { timeout: 10_000 })
+		.toBeGreaterThan(0);
+	expect(direct, 'the city search bypassed the host route').toEqual([]);
+	expect(search).toEqual({
+		path: '/location/search',
+		method: 'GET',
+		query: { q: 'Manila', limit: 8 },
+	});
+
+	const option = form.locator('roxy-location-search [role="option"]').first();
+	await option.waitFor({ timeout: 10_000 });
+	await option.click();
+	await form.locator('button[type="submit"]').click();
+	await expect
+		.poll(() => host.length, { timeout: 15_000 })
+		.toBeGreaterThanOrEqual(2);
+
+	expect(host).toEqual([
+		'POST /location/search',
+		'POST /astrology/natal-chart',
+	]);
+	expect(direct).toEqual([]);
+});
+
+test.describe('a transit form left on now', () => {
+	test.use({ timezoneId: 'Europe/Copenhagen' });
+
+	test('sends the viewer zone, and the birth zone the city box picked', async ({
+		page,
+	}) => {
+		let submitted: { body?: Record<string, unknown> } | undefined;
+		await page.route('**/api/roxy/location/search*', (route) =>
+			route.fulfill({ json: CITIES }),
+		);
+		await page.route('**/api/roxy/proxy', async (route) => {
+			submitted = route.request().postDataJSON();
+			await route.fulfill({ json: {} });
+		});
+		await page.route('**/roxyapi.com/**', (route) => route.abort());
+
+		await page.goto('/');
+		await page.evaluate(() => {
+			const el = document.createElement('roxy-transits-table');
+			el.id = 'e2e-now';
+			el.setAttribute('data-endpoint', 'astrology/transits');
+			el.setAttribute('method', 'POST');
+			el.setAttribute('spec-url', './openapi.json');
+			el.setAttribute('submit-url', '/api/roxy/proxy');
+			el.setAttribute('location-url', '/api/roxy/location/search');
+			document.body.prepend(el);
+		});
+
+		const form = page.locator('#e2e-now roxy-endpoint-form');
+		await form.locator('[id="roxy-form-natalChart.date"]').fill('1990-07-15');
+		await form.locator('[id="roxy-form-natalChart.time"]').fill('14:30:00');
+		await form.locator('roxy-location-search input').first().fill('Manila');
+		await form
+			.locator('roxy-location-search [role="option"]')
+			.first()
+			.click({ timeout: 10_000 });
+		await form.locator('button[type="submit"]').click();
+		await expect.poll(() => submitted, { timeout: 15_000 }).toBeTruthy();
+
+		expect(submitted?.body).toMatchObject({
+			timezone: 'Europe/Copenhagen',
+			natalChart: { timezone: 'Asia/Manila' },
+		});
+		expect(submitted?.body).not.toHaveProperty('date');
+	});
+});

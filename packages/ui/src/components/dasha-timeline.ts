@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { dashaTimelineEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GetCurrentDashaResponse,
@@ -134,6 +135,8 @@ function formatSpan(
  */
 @customElement('roxy-dasha-timeline')
 export class RoxyDashaTimeline extends RoxyDataElement<DashaData> {
+	static endpoints = dashaTimelineEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

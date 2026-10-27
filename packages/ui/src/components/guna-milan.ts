@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { gunaMilanEndpoints } from '../generated/endpoint-defaults.js';
 import type { CompatibilityResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -42,6 +43,8 @@ const KOOTA_MAX: Record<string, number> = {
  */
 @customElement('roxy-guna-milan')
 export class RoxyGunaMilan extends RoxyDataElement<CompatibilityResponse> {
+	static endpoints = gunaMilanEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

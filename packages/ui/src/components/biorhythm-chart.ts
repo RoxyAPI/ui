@@ -1,5 +1,6 @@
 import { css, html, nothing, svg } from 'lit';
 import { property } from 'lit/decorators.js';
+import { biorhythmChartEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type {
 	GetCriticalDaysResponse,
@@ -71,6 +72,8 @@ const SEVERITY_LABEL: Partial<
  */
 @customElement('roxy-biorhythm-chart')
 export class RoxyBiorhythmChart extends RoxyDataElement<BiorhythmData> {
+	static endpoints = biorhythmChartEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,

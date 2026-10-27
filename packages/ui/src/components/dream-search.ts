@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { dreamSearchEndpoints } from '../generated/endpoint-defaults.js';
 import type { SearchDreamSymbolsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -9,6 +10,8 @@ import { customElement } from '../utils/define.js';
  */
 @customElement('roxy-dream-search')
 export class RoxyDreamSearch extends RoxyDataElement<SearchDreamSymbolsResponse> {
+	static endpoints = dreamSearchEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

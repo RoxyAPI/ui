@@ -1,5 +1,6 @@
 import { css, html, nothing, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
+import { panchangTableEndpoints } from '../generated/endpoint-defaults.js';
 import type {
 	GetBasicPanchangResponse,
 	GetDetailedPanchangResponse,
@@ -63,6 +64,8 @@ function name(...parts: Array<string | undefined>): string {
  */
 @customElement('roxy-panchang-table')
 export class RoxyPanchangTable extends RoxyDataElement<PanchangData> {
+	static endpoints = panchangTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

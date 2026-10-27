@@ -15,8 +15,10 @@ import {
 	type FormModel,
 	type OpenApiSchema,
 	type OperationSchema,
+	readsNow,
 } from '../src/utils/field-schema.js';
 import { humanize } from '../src/utils/string.js';
+import { withViewerZone } from './viewer-zone.js';
 // Registers roxy-endpoint-form (and roxy-location-search it slots).
 import '../src/index.js';
 
@@ -666,11 +668,11 @@ describe('endpoint-form input registry rendering', () => {
 		});
 		const search = (el.shadowRoot as ShadowRoot).querySelector(
 			'roxy-location-search',
-		) as HTMLElement & { endpoint: string };
+		) as HTMLElement & { endpoint?: string };
 		expect(search).not.toBeNull();
-		// No attribute at all, so nothing overwrites the default the search declares.
+		// No attribute at all, so the search sends to its own default.
 		expect(search.hasAttribute('endpoint')).toBe(false);
-		expect(search.endpoint).toBe('https://roxyapi.com/api/v2/location/search');
+		expect(search.endpoint).toBeUndefined();
 		el.remove();
 	});
 
@@ -684,9 +686,9 @@ describe('endpoint-form input registry rendering', () => {
 		});
 		const search = (el.shadowRoot as ShadowRoot).querySelector(
 			'roxy-location-search',
-		) as HTMLElement & { endpoint: string };
+		) as HTMLElement & { endpoint?: string };
 		expect(search.hasAttribute('endpoint')).toBe(false);
-		expect(search.endpoint).toBe('https://roxyapi.com/api/v2/location/search');
+		expect(search.endpoint).toBeUndefined();
 		el.remove();
 	});
 
@@ -1508,6 +1510,197 @@ describe('the transit forms ask for the transit moment in the open, under its ow
 			).toBe(birth);
 			el.remove();
 		}
+	});
+});
+
+/**
+ * An optional timezone no coordinate pair claims picks which moment counts as now, and the API reads it as UTC when absent, so an empty one sends the viewer's zone. A claimed or required timezone is the visitor's to state.
+ */
+describe('an empty unclaimed timezone reads the viewer clock', () => {
+	const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+		string,
+		OpenApiSchema
+	>;
+	const ops = spec.paths as unknown as Record<
+		string,
+		Record<string, OperationSchema>
+	>;
+	const modelOf = (method: string, path: string) =>
+		buildFormModel(
+			ops[path]?.[method.toLowerCase()] as OperationSchema,
+			schemas,
+			path.slice(1),
+			method,
+		);
+
+	test('only an optional flat timezone with no coordinate pair is marked, on every bound form', () => {
+		const marked: string[] = [];
+		for (const bindings of Object.values(ENDPOINT_BINDINGS))
+			for (const b of bindings) {
+				const model = modelOf(b.method, b.path);
+				for (const f of model.fields) {
+					const unclaimed = f.name === 'timezone' && f.city === true;
+					expect(!!f.viewerZone).toBe(unclaimed && !f.group && !f.required);
+					if (f.viewerZone) marked.push(`${b.method} ${b.path}`);
+				}
+			}
+		// The transit moment, the four horoscope periods and the zodiac daily all read the current period.
+		for (const op of [
+			'POST /astrology/transits',
+			'GET /astrology/horoscope/{sign}/daily',
+			'GET /astrology/horoscope/{sign}/yearly',
+			'GET /chinese-astrology/zodiac/{id}/daily',
+			'GET /astrology/moon-phase/current',
+		])
+			expect(marked).toContain(op);
+		// A stated moment and a birth zone are never defaulted.
+		for (const op of [
+			'POST /astrology/aspects',
+			'POST /kabbalah/birth-profile',
+			'POST /astrology/natal-chart',
+		])
+			expect(marked).not.toContain(op);
+	});
+
+	/** Submit the transit form with its natal card filled, the transit moment and zone left as given. */
+	async function submitTransits(
+		zone: string | undefined,
+		patch: Record<string, unknown> = {},
+	): Promise<Record<string, unknown> | undefined> {
+		return withViewerZone(zone, async () => {
+			const el = await mountForm(modelOf('POST', '/astrology/transits'), {
+				'data-endpoint': 'astrology/transits',
+				method: 'POST',
+			});
+			(
+				el as unknown as { setValues: (p: Record<string, unknown>) => void }
+			).setValues({
+				'natalChart.date': '1990-01-15',
+				'natalChart.time': '14:30:00',
+				'natalChart.latitude': 55.68,
+				'natalChart.longitude': 12.57,
+				'natalChart.timezone': 'Asia/Kolkata',
+				...patch,
+			});
+			let values: Record<string, unknown> | undefined;
+			el.addEventListener('roxy-submit', (e) => {
+				values = (e as CustomEvent).detail.values;
+			});
+			await flush(el);
+			(el.shadowRoot as ShadowRoot).querySelector('form')?.requestSubmit();
+			await flush(el);
+			el.remove();
+			return values;
+		});
+	}
+
+	test('an empty transit zone sends the viewer zone, and the natal zone its card claimed is untouched', async () => {
+		const values = await submitTransits('Europe/Copenhagen');
+		expect(values).toMatchObject({
+			timezone: 'Europe/Copenhagen',
+			natalChart: { timezone: 'Asia/Kolkata' },
+		});
+	});
+
+	test('a zone the visitor picked wins', async () => {
+		const values = await submitTransits('Europe/Copenhagen', {
+			timezone: 'America/New_York',
+		});
+		expect(values?.timezone).toBe('America/New_York');
+	});
+
+	test('a runtime that names no zone sends the request exactly as before', async () => {
+		const values = await submitTransits(undefined);
+		expect(JSON.stringify(values)).toBe(
+			'{"timezone":0,"nodeType":"true","natalChart":{"date":"1990-01-15","time":"14:30:00","latitude":55.68,"longitude":12.57,"timezone":"Asia/Kolkata"}}',
+		);
+	});
+});
+
+/**
+ * A form whose open moment carries a clock reads the sky right now while that moment is empty, so its submit says so; any filled moment field, or a host label, restores the usual words.
+ */
+describe('an empty moment with a clock submits as now', () => {
+	const schemas = (spec.components?.schemas ?? {}) as unknown as Record<
+		string,
+		OpenApiSchema
+	>;
+	const ops = spec.paths as unknown as Record<
+		string,
+		Record<string, OperationSchema>
+	>;
+	const modelOf = (method: string, path: string) =>
+		buildFormModel(
+			ops[path]?.[method.toLowerCase()] as OperationSchema,
+			schemas,
+			path.slice(1),
+			method,
+		);
+	/** The submit button text after `patch` is written, and whether anything but its text names it. */
+	async function submitText(
+		method: string,
+		path: string,
+		patch: Record<string, unknown> = {},
+		attrs: Record<string, string> = {},
+	): Promise<string | undefined> {
+		const el = await mountForm(modelOf(method, path), {
+			'data-endpoint': path.slice(1),
+			method,
+			...attrs,
+		});
+		(
+			el as unknown as { setValues: (p: Record<string, unknown>) => void }
+		).setValues(patch);
+		await flush(el);
+		const button = (el.shadowRoot as ShadowRoot).querySelector(
+			'button[type="submit"]',
+		);
+		expect(button?.hasAttribute('aria-label')).toBe(false);
+		el.remove();
+		return button?.textContent?.trim();
+	}
+
+	test('only a bound form whose open moment has a clock reads as now when empty', () => {
+		const now: string[] = [];
+		for (const bindings of Object.values(ENDPOINT_BINDINGS))
+			for (const b of bindings) {
+				const { fields } = modelOf(b.method, b.path);
+				if (readsNow(fields, {})) now.push(`${b.method} ${b.path}`);
+			}
+		expect([...new Set(now)].sort()).toEqual([
+			'POST /astrology/transit-aspects',
+			'POST /astrology/transits',
+		]);
+	});
+
+	test('the transit form says now while its moment is empty, and its verb once any part is filled', async () => {
+		expect(await submitText('POST', '/astrology/transits')).toBe(
+			'Show right now',
+		);
+		expect(
+			await submitText('POST', '/astrology/transits', { date: '2026-10-27' }),
+		).toBe('Generate');
+		expect(
+			await submitText('POST', '/astrology/transits', { time: '13:47:00' }),
+		).toBe('Generate');
+	});
+
+	test('a host label wins over the now label', async () => {
+		expect(
+			await submitText(
+				'POST',
+				'/astrology/transits',
+				{},
+				{
+					'submit-label': 'See the sky',
+				},
+			),
+		).toBe('See the sky');
+	});
+
+	test('a form with no moment, or a moment with no clock, keeps its verb', async () => {
+		expect(await submitText('POST', '/astrology/natal-chart')).toBe('Generate');
+		expect(await submitText('POST', '/forecast/timeline')).toBe('Generate');
 	});
 });
 

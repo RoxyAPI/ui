@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { compoundNumberEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import type { GetCompoundNumberResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -26,6 +27,8 @@ const NATURE_TONE: Record<Nature, string> = {
 /** Chaldean compound number card for /numerology/compound-number/{number}: the numeral, its symbolic name, root, nature, the lower number it repeats, and the meaning, which `hide-readings` drops. */
 @customElement('roxy-compound-number')
 export class RoxyCompoundNumber extends RoxyDataElement<GetCompoundNumberResponse> {
+	static endpoints = compoundNumberEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { relocationWheelEndpoints } from '../generated/endpoint-defaults.js';
 import { customElement } from '../utils/define.js';
 // Registers <roxy-natal-chart>, reused below as the wheel renderer. The
 // relocation response is structurally a natal chart (same planets, houses, and
@@ -39,6 +40,8 @@ const glyphFor = (name: string): string => planetGlyph(name) ?? '';
  */
 @customElement('roxy-relocation-wheel')
 export class RoxyRelocationWheel extends RoxyDataElement<RelocationChartResponse> {
+	static endpoints = relocationWheelEndpoints;
+
 	static styles = [
 		baseStyles,
 		factListStyles,

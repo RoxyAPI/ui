@@ -1,4 +1,5 @@
 import { css, html, nothing, svg } from 'lit';
+import { transitWheelEndpoints } from '../generated/endpoint-defaults.js';
 import './aspects-table.js';
 import './western-planets-table.js';
 import { property } from 'lit/decorators.js';
@@ -149,6 +150,8 @@ const byName = (list: Body[]): Map<string, Body> => {
  */
 @customElement('roxy-transit-wheel')
 export class RoxyTransitWheel extends RoxyDataElement<CalculateTransitAspectsResponse> {
+	static endpoints = transitWheelEndpoints;
+
 	private readonly viewport = new ChartViewport(this);
 	static styles = [
 		baseStyles,

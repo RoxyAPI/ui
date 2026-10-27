@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { kpRulingPlanetsEndpoints } from '../generated/endpoint-defaults.js';
 import type { KpRulingPlanetsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -20,6 +21,8 @@ import { houseWords } from '../utils/house-themes.js';
  */
 @customElement('roxy-kp-ruling-planets')
 export class RoxyKpRulingPlanets extends RoxyDataElement<KpRulingPlanetsResponse> {
+	static endpoints = kpRulingPlanetsEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

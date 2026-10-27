@@ -306,6 +306,7 @@ export const tr: Record<ChromeString, string> = {
 	Cast: 'Çek',
 	'Get reading': 'Yorum al',
 	Generate: 'Oluştur',
+	'Show right now': 'Şimdi göster',
 	'Schema load failed: {{message}}': 'Şema yüklenemedi: {{message}}',
 	'Endpoint {{method}} {{path}} not found in OpenAPI spec':
 		'{{method}} {{path}} uç noktası OpenAPI belirtiminde bulunamadı',

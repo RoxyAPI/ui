@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { kpPlanetsTableEndpoints } from '../generated/endpoint-defaults.js';
 import type { KpPlanetsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -11,6 +12,8 @@ import { formatNumber } from '../utils/format.js';
  */
 @customElement('roxy-kp-planets-table')
 export class RoxyKpPlanetsTable extends RoxyDataElement<KpPlanetsResponse> {
+	static endpoints = kpPlanetsTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

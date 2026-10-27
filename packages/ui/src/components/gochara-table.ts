@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { gocharaTableEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { CalculateTransitResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -38,6 +39,8 @@ const KAKSHA_COUNT = 8;
  */
 @customElement('roxy-gochara-table')
 export class RoxyGocharaTable extends RoxyDataElement<CalculateTransitResponse> {
+	static endpoints = gocharaTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

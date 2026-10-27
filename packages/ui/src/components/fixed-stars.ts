@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { fixedStarsEndpoints } from '../generated/endpoint-defaults.js';
 import { signGlyph } from '../tokens/index.js';
 import type { FixedStarsResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -8,6 +9,7 @@ import { formatDegreeInSign } from '../utils/degree.js';
 import { chevron, disclosureStyles } from '../utils/disclosure.js';
 import { formatNumber } from '../utils/format.js';
 import { interpAccordionStyles } from '../utils/interp-accordion.js';
+import { display } from '../utils/localized.js';
 
 type Star = FixedStarsResponse['stars'][number];
 
@@ -20,6 +22,8 @@ type Star = FixedStarsResponse['stars'][number];
  */
 @customElement('roxy-fixed-stars')
 export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
+	static endpoints = fixedStarsEndpoints;
+
 	static styles = [
 		baseStyles,
 		disclosureStyles,
@@ -179,7 +183,7 @@ export class RoxyFixedStars extends RoxyDataElement<FixedStarsResponse> {
 								i,
 							) => html`<details class="interp-card" part="reading" name="fixed-star-contacts" ?open=${i === 0}>
 								<summary>
-									<span class="interp-lead">${this.t('{{point}} conjunct {{star}}', { point: c.point, star: c.star })}</span>
+									<span class="interp-lead">${this.t('{{point}} conjunct {{star}}', { point: display(c, 'point'), star: c.star })}</span>
 									${chevron()}
 									<span class="interp-aside">
 										<small>${this.t('orb {{value}}°', { value: formatNumber(this.effectiveLang(), c.orb, 2) })}</small>

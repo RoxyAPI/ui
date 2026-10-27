@@ -309,6 +309,7 @@ export const fr: Record<ChromeString, string> = {
 	Cast: 'Tirer',
 	'Get reading': 'Obtenir une interprétation',
 	Generate: 'Générer',
+	'Show right now': 'Afficher maintenant',
 	'Schema load failed: {{message}}':
 		'Échec du chargement du schéma : {{message}}',
 	'Endpoint {{method}} {{path}} not found in OpenAPI spec':

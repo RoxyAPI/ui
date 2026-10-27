@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
+import { ashtakavargaGridEndpoints } from '../generated/endpoint-defaults.js';
 import type { ChromeString } from '../i18n/chrome-strings.js';
 import { signGlyph } from '../tokens/index.js';
 import type { AshtakavargaResponse } from '../types/index.js';
@@ -37,6 +38,8 @@ type SarvaRow = AshtakavargaResponse['sarvashtakavarga'];
  */
 @customElement('roxy-ashtakavarga-grid')
 export class RoxyAshtakavargaGrid extends RoxyDataElement<AshtakavargaResponse> {
+	static endpoints = ashtakavargaGridEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

@@ -1,4 +1,8 @@
-import type { ReactiveController, ReactiveControllerHost } from 'lit';
+import type {
+	ComplexAttributeConverter,
+	ReactiveController,
+	ReactiveControllerHost,
+} from 'lit';
 import {
 	dispatchKeyRefusal,
 	type KeyRefusal,
@@ -116,6 +120,32 @@ export interface ApiRoute {
 	/** Object the host page attaches to a proxied request as `context`, passed through unread. */
 	submitContext?: Record<string, unknown>;
 }
+
+/**
+ * Read the `submit-context` attribute into the object a proxied submit carries.
+ *
+ * @remarks
+ * Hand-written rather than `type: Object`, which resolves malformed JSON to `null` in silence: a page whose context never left has nothing to look at, and the route it was meant for reports only that the value it expected is not there. One warning covers both refusals (unparseable, or parsed to something that is not an object) because both leave the request without a context, which is the fact worth reading.
+ */
+export const submitContextConverter: ComplexAttributeConverter<
+	Record<string, unknown> | undefined
+> = {
+	fromAttribute: (value) => {
+		if (value == null) return undefined;
+		try {
+			const parsed: unknown = JSON.parse(value);
+			if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+				return parsed as Record<string, unknown>;
+			}
+		} catch {
+			// Both refusals share the warning below.
+		}
+		console.warn(
+			'[roxy-ui] submit-context must be a JSON object; sending the request without it.',
+		);
+		return undefined;
+	},
+};
 
 /** A request the API answered with a failure: its own message, plus the fields it named when it rejected the request, and whether the message is a sentence it wrote rather than the status line. */
 export class ApiError extends Error {

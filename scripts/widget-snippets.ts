@@ -20,10 +20,7 @@ export interface WidgetSnippets {
 export interface SnippetInput {
 	tag: string;
 	slug: string;
-	/** The component's DEFAULT binding (`endpoints[0]`), already resolved by the caller. */
-	method: string;
-	path: string;
-	/** The default binding's selector attrs, if the component has variants. */
+	/** The default binding's config attributes, if the component has variants; the element resolves the endpoint they select. */
 	attrs?: Record<string, string>;
 	cdnBase: string;
 	themeUrl: string;
@@ -39,9 +36,7 @@ export interface SnippetInput {
  * No `lang` attribute for the same reason as the theme. A component with none resolves its language from the element, then the nearest ancestor carrying `lang`, then `<html lang>`, so a snippet pasted into a Spanish CMS speaks Spanish with no edit. Emitting `lang="en"` won that chain at the first link and pinned every embedder to English, including the ones whose page already said otherwise.
  */
 export function widgetSnippets(i: SnippetInput): WidgetSnippets {
-	const endpoint = i.path.replace(/^\//, '');
-	// POST is the element default, so only a GET binding needs an explicit method.
-	const methodAttr = i.method === 'POST' ? '' : ` method="${i.method}"`;
+	// No data-endpoint: the element fetches the endpoint these attributes select, the default binding.
 	const configAttr = Object.entries(i.attrs ?? {})
 		.map(([k, v]) => ` ${k}="${v}"`)
 		.join('');
@@ -49,7 +44,7 @@ export function widgetSnippets(i: SnippetInput): WidgetSnippets {
 	const script = `<!-- Optional: warm practitioner theme (drop this line for the default look) -->
 <!-- <link rel="stylesheet" href="${i.themeUrl}"> -->
 <script src="${i.cdnBase}/roxy-ui.js" defer></script>
-<${i.tag}${configAttr} data-endpoint="${endpoint}"${methodAttr} publishable-key="${SAMPLE_PUBLISHABLE_KEY}" hide-sections="hint"></${i.tag}>`;
+<${i.tag}${configAttr} publishable-key="${SAMPLE_PUBLISHABLE_KEY}" hide-sections="hint"></${i.tag}>`;
 
 	const oneTag = `<script src="${i.cdnBase}/widgets.js" defer></script>
 <div data-roxy-widget="${i.slug}" data-publishable-key="${SAMPLE_PUBLISHABLE_KEY}" data-hide-sections="hint"></div>`;

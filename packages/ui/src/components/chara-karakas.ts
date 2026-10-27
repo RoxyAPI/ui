@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { charaKarakasEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph, signGlyph } from '../tokens/index.js';
 import type { CharaKarakaResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -27,6 +28,8 @@ const SCHEMES: Record<string, string> = {
  */
 @customElement('roxy-chara-karakas')
 export class RoxyCharaKarakas extends RoxyDataElement<CharaKarakaResponse> {
+	static endpoints = charaKarakasEndpoints;
+
 	static styles = [
 		baseStyles,
 		frameCaptionStyles,

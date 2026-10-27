@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { forecastDigestEndpoints } from '../generated/endpoint-defaults.js';
 import type { GenerateDigestResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 import { baseStyles } from '../utils/base-styles.js';
@@ -17,6 +18,8 @@ type DigestEvent = NonNullable<DigestWindow['top']>[number];
  */
 @customElement('roxy-forecast-digest')
 export class RoxyForecastDigest extends RoxyDataElement<GenerateDigestResponse> {
+	static endpoints = forecastDigestEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

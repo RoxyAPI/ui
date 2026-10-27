@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { state } from 'lit/decorators.js';
+import { bodygraphEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GenerateBodygraphResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -74,6 +75,8 @@ function groupByGate(gates: GateActivation[]): Map<number, GateActivation[]> {
  */
 @customElement('roxy-bodygraph')
 export class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
+	static endpoints = bodygraphEndpoints;
+
 	private readonly viewport = new ChartViewport(this);
 	/** Which chart side the activations panel is showing. View state, not configuration: the response always carries both sides. */
 	@state()

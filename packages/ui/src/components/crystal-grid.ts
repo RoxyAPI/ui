@@ -1,5 +1,6 @@
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { crystalGridEndpoints } from '../generated/endpoint-defaults.js';
 import type {
 	GetBirthstonesResponse,
 	GetCrystalsByChakraResponse,
@@ -30,6 +31,8 @@ type CrystalGridData =
  */
 @customElement('roxy-crystal-grid')
 export class RoxyCrystalGrid extends RoxyDataElement<CrystalGridData> {
+	static endpoints = crystalGridEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`

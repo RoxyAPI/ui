@@ -1,4 +1,5 @@
 import { css, html, nothing } from 'lit';
+import { horaTableEndpoints } from '../generated/endpoint-defaults.js';
 import { planetGlyph } from '../tokens/index.js';
 import type { GetHoraResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
@@ -13,6 +14,8 @@ type HoraPeriod = NonNullable<GetHoraResponse['dayHoras']>[number];
  */
 @customElement('roxy-hora-table')
 export class RoxyHoraTable extends RoxyDataElement<GetHoraResponse> {
+	static endpoints = horaTableEndpoints;
+
 	static styles = [
 		baseStyles,
 		css`
