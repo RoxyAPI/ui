@@ -1,0 +1,1 @@
+{"title":"Get one dosha","fields":[{"key":"id","name":"id","inQuery":false,"kind":"tiles","required":true,"description":"Dosha identifier, case-insensitive. One of vata, pitta or kapha.","enum":["vata","pitta","kapha"],"example":"vata","label":"Dosha"}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

@@ -1,0 +1,1 @@
+{"title":"Lookup hexagram by line pattern","fields":[{"key":"lines","name":"lines","inQuery":true,"kind":"text","required":true,"description":"Six-digit binary pattern (0=yin/broken, 1=yang/solid) from bottom to top.","example":"111111"}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

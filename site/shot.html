@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<title>RoxyAPI UI preview stages (internal capture page)</title>
+
+	<link rel="stylesheet" href="./dist/styles/tokens.css">
+	<style>
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			background: var(--roxy-bg);
+			font-family: system-ui, sans-serif;
+		}
+
+		/* Stages stack vertically; each is captured on its own. */
+		#stages {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 24px;
+			padding: 24px;
+		}
+
+		/* The capture unit: 600x400 CSS px, so a 2x device pixel ratio lands at 1200x800; the stage clips the bottom bleed. */
+		.stage {
+			position: relative;
+			width: 600px;
+			height: 400px;
+			overflow: hidden;
+			color: var(--roxy-fg);
+			background: var(--roxy-bg);
+		}
+
+		.stage-eyebrow {
+			font-size: 11px;
+			font-weight: 600;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: var(--roxy-accent);
+		}
+		.stage-heading {
+			margin: 6px 0 14px;
+			font-size: 26px;
+			font-weight: 700;
+			line-height: 1.15;
+			letter-spacing: -0.02em;
+		}
+		.stage-frame {
+			flex: 0 0 auto;
+			text-align: left;
+			border-radius: var(--roxy-radius-lg);
+			box-shadow: var(--roxy-shadow-lg);
+		}
+		/* A drawing renders bare, so the frame draws the card and a small inset around it. */
+		.stage-drawing {
+			padding-block: var(--roxy-space-sm);
+			background: var(--roxy-surface);
+			border: 1px solid var(--roxy-border);
+		}
+		.stage-frame > * {
+			display: block;
+			width: 100%;
+		}
+
+		/* Hero: a centred title over the component on a faint accent wash. */
+		.stage-hero {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 30px 40px 0;
+			text-align: center;
+			background: radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--roxy-accent) 9%, var(--roxy-bg)) 0%, var(--roxy-bg) 70%);
+		}
+		.stage-hero .stage-frame {
+			width: 520px;
+		}
+
+		/* Split: a copy column on the left, the component bleeding off the right edge of a tinted panel. */
+		.stage-split {
+			display: grid;
+			grid-template-columns: 250px 1fr;
+		}
+		.stage-copy {
+			padding: 44px 0 0 40px;
+		}
+		.stage-split .stage-heading {
+			margin: 8px 0 16px;
+			line-height: 1.1;
+		}
+		.stage-benefits {
+			display: grid;
+			gap: 8px;
+			margin: 0;
+			padding: 0 16px 0 0;
+			list-style: none;
+			font-size: 13px;
+			line-height: 1.5;
+			color: var(--roxy-secondary);
+		}
+		.stage-benefits li {
+			position: relative;
+			padding-left: 20px;
+		}
+		/* A drawn check mark, so no glyph depends on the system font. */
+		.stage-benefits li::before {
+			content: "";
+			position: absolute;
+			left: 3px;
+			top: 0.3em;
+			width: 5px;
+			height: 9px;
+			border: solid var(--roxy-accent);
+			border-width: 0 2px 2px 0;
+			transform: rotate(45deg);
+		}
+		.stage-panel {
+			display: flex;
+			flex-direction: column;
+			margin-top: 22px;
+			padding: 36px 0 0 30px;
+			border-top-left-radius: 18px;
+			background: color-mix(in oklab, var(--roxy-accent) 7%, var(--roxy-bg));
+		}
+		.stage-split .stage-frame {
+			width: 380px;
+		}
+	</style>
+</head>
+<body>
+	<div id="stages"></div>
+
+	<!-- Order mirrors index.html: the bundle registers the elements, the two manifest globals feed shot.js, shot.js builds the stages, then the deferred sample-data.js module wires .data onto each element by id. -->
+	<script src="./dist/cdn/roxy-ui.js"></script>
+	<script src="./manifest.js"></script>
+	<script src="./components-manifest.js"></script>
+	<script src="./shot.js"></script>
+	<script type="module" src="./sample-data.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+{"title":"List all 17 avastha states","fields":[{"key":"system","name":"system","inQuery":true,"kind":"tiles","required":false,"description":"Return only the states of one system: \"baladi\" (5), \"jagradadi\" (3) or \"deeptadi\" (9). Omit for all 17.","enum":["baladi","jagradadi","deeptadi"],"example":"deeptadi"}],"hasLang":true,"groups":[{}],"opensOnLoad":true}

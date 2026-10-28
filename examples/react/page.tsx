@@ -1,6 +1,6 @@
 /**
  * Drop this into app/page.tsx of a Next.js 16 project.
- * Set ROXY_API_KEY in your .env.local.
+ * Set NEXT_PUBLIC_ROXY_PUBLISHABLE_KEY in your .env.local to a publishable key (pk_live_...) with this site origin allowed; a secret key never goes in a browser bundle.
  */
 'use client';
 
@@ -12,7 +12,7 @@ import {
 } from '@roxyapi/ui-react';
 import { useState } from 'react';
 
-const roxy = createRoxy(process.env.NEXT_PUBLIC_ROXY_API_KEY!);
+const roxy = createRoxy(process.env.NEXT_PUBLIC_ROXY_PUBLISHABLE_KEY!);
 
 export default function Page() {
 	const [horoscope, setHoroscope] = useState<unknown>(null);
@@ -44,7 +44,7 @@ export default function Page() {
 
 			<h2>Pick a birth city</h2>
 			<RoxyLocationSearch
-				placeholder="Mumbai"
+				placeholder="London"
 				onroxy-location-select={onLocation}
 			/>
 			{kundli && <RoxyVedicKundli data={kundli} />}

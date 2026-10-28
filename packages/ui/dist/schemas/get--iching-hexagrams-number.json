@@ -1,0 +1,1 @@
+{"title":"Get hexagram by number","fields":[{"key":"number","name":"number","inQuery":false,"kind":"number","required":true,"description":"Hexagram number in King Wen sequence (1-64).","min":1,"max":64,"example":1}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

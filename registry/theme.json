@@ -7,26 +7,21 @@
   "css": {
     "@layer base": {
       ":root": {
-        "--roxy-surface": "var(--card, #ffffff)",
-        "--roxy-bg": "var(--background, #fafafa)",
+        "--roxy-surface": "var(--card, var(--roxy-bg))",
+        "--roxy-bg": "var(--background, #ffffff)",
         "--roxy-fg": "var(--foreground, #0a0a0a)",
-        "--roxy-primary": "var(--foreground, #0f172a)",
-        "--roxy-secondary": "var(--muted-foreground, #475569)",
-        "--roxy-muted": "var(--muted-foreground, #71717a)",
-        "--roxy-border": "var(--border, #e4e4e7)",
-        "--roxy-accent": "var(--primary, #f59e0b)",
+        "--roxy-primary": "var(--foreground, var(--roxy-fg))",
+        "--roxy-secondary": "var(--muted-foreground, color-mix(in oklab, var(--roxy-fg) 78%, var(--roxy-bg)))",
+        "--roxy-muted": "var(--muted-foreground, color-mix(in oklab, var(--roxy-fg) 60%, var(--roxy-bg)))",
+        "--roxy-border": "var(--border, color-mix(in oklab, var(--roxy-fg) 14%, var(--roxy-bg)))",
+        "--roxy-accent": "var(--primary, #4a6297)",
         "--roxy-success": "var(--chart-2, #16a34a)",
-        "--roxy-warning": "var(--chart-3, #f59e0b)",
+        "--roxy-warning": "var(--chart-3, #ea580c)",
         "--roxy-danger": "var(--destructive, #dc2626)",
-        "--roxy-info": "var(--chart-1, #2563eb)",
-        "--roxy-radius-sm": "calc(var(--radius, 12px) * 0.6)",
-        "--roxy-radius-md": "var(--radius, 12px)",
-        "--roxy-radius-lg": "calc(var(--radius, 12px) * 1.4)",
-        "--roxy-shadow-md": "0 4px 12px rgba(0,0,0,0.08)",
-        "--roxy-motion-duration": "200ms"
-      },
-      ".dark": {
-        "--roxy-shadow-md": "0 4px 12px rgba(0,0,0,0.4)"
+        "--roxy-info": "var(--chart-1, #0284c7)",
+        "--roxy-radius-sm": "calc(var(--radius, 6px) / 2)",
+        "--roxy-radius-md": "var(--radius, 6px)",
+        "--roxy-radius-lg": "calc(var(--radius, 6px) * 5 / 3)"
       }
     }
   }

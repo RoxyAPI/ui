@@ -1,0 +1,1 @@
+{"title":"Annual afflictions","fields":[{"key":"year","name":"year","inQuery":false,"kind":"number","required":true,"description":"Solar year, 1900 to 2100. The year runs from Li Chun to Li Chun, so a date in January belongs to the previous year here.","min":1900,"max":2100,"example":2026}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

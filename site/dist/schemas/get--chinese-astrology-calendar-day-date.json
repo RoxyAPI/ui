@@ -1,0 +1,1 @@
+{"title":"Get the almanac for a day","fields":[{"key":"date","name":"date","inQuery":false,"kind":"date","required":true,"description":"Gregorian date in YYYY-MM-DD format, evaluated at the reference meridian. Years 1900 to 2100.","example":"1990-06-15"}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

@@ -1,0 +1,1 @@
+{"title":"Get number meaning","fields":[{"key":"number","name":"number","inQuery":false,"kind":"text","required":true,"description":"Numerology number (1-9, 11, 22, 33)","example":"5"}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

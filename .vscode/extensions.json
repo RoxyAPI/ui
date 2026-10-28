@@ -1,7 +1,0 @@
-{
-	"recommendations": [
-		"runem.lit-plugin",
-		"biomejs.biome",
-		"ms-playwright.playwright"
-	]
-}

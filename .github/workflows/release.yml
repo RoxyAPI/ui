@@ -1,56 +1,44 @@
 name: Release
 
-# Manual-only: pick the bump from the Actions UI, or
-#   gh workflow run release.yml -f version_bump=patch|minor|major
-# No daily schedule on purpose. A timed cron auto-published unwanted releases on
-# the WordPress plugin, so a spec change here never publishes without review.
-# repository_dispatch (openapi-updated) is reserved for the planned main-app
-# integration; keep it off until the manual pipeline is proven.
+# Started by the v{version} tag the source repository pushes, right after the commit that
+# holds the built tree for that version. Nothing is built here: the commit already holds the
+# packages and the shadcn registry, so this publishes exactly what was pushed.
+# Pages deploys from pages.yml on the release commit's push to main, because the
+# github-pages environment admits main only.
 on:
-  workflow_dispatch:
-    inputs:
-      version_bump:
-        description: 'patch | minor | major'
-        required: false
-        default: 'patch'
-  # repository_dispatch:
-  #   types: [openapi-updated]
+  push:
+    tags: ["v*"]
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
-    outputs:
-      version: ${{ steps.bump.outputs.version }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # Full history and tags, so the release notes can list every commit since the previous tag.
-          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Every package carries the tag version
+        id: version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION="${TAG#v}"
+          for pkg in packages/ui packages/ui-react packages/ui-vue; do
+            HAVE=$(jq -r '.version' "$pkg/package.json")
+            [ "$HAVE" = "$VERSION" ] || { echo "::error::$pkg is $HAVE, tag is $TAG"; exit 1; }
+          done
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - run: bun install --frozen-lockfile
-
-      # Trusted publishing (OIDC) CANNOT create a package. npmjs.com requires the
-      # package to already exist before a Trusted Publisher can be configured on it,
-      # so the first version of any new package must be pushed by a human once
-      # (npm/cli#8544, still open).
-      #
-      # Without this gate the run would publish @roxyapi/ui and @roxyapi/ui-react,
-      # THEN die on the first-ever @roxyapi/ui-vue publish. The job aborts before
-      # "Commit, tag, push", so npm ends up bumped while the repo has no version
-      # commit, no tag and no GitHub release, and the re-run is then rejected for
-      # republishing an existing version. Fail BEFORE anything is published instead.
-      - name: Preflight — every package must already exist on npm
+      # Trusted publishing (OIDC) cannot create a package: the first version of a new package
+      # is published by hand once, then its Trusted Publisher is set to this workflow file.
+      # Failing here, before any publish, keeps a half-published release from happening.
+      - name: Preflight, every package already exists on npm
         run: |
           MISSING=""
           for pkg in packages/ui packages/ui-react packages/ui-vue; do
@@ -59,214 +47,43 @@ jobs:
           done
           if [ -n "$MISSING" ]; then
             echo "::error::Never published, so OIDC cannot publish it either:$MISSING"
-            echo "Bootstrap each package ONCE from a logged-in machine:"
-            echo "    (cd packages/<name> && npm publish --access public)"
-            echo "then on npmjs.com open the package and set"
+            echo "Publish each package once from a logged-in machine, then on npmjs.com set"
             echo "    Trusted Publisher -> GitHub Actions -> RoxyAPI/ui -> release.yml"
-            echo "Re-run this workflow afterwards. See npm/cli#8544."
             exit 1
           fi
-          echo "All packages exist on npm. Trusted publishing can proceed."
 
-      - name: Regenerate types from spec
-        run: bun run generate
-
-      # The human-review barrier for a manual-publish repo: block the release when the committed
-      # spec is behind live, so a spec refresh always lands in a reviewed commit before it ships.
-      # `packages/ui/src/types` is gitignored and therefore cannot be asserted here.
-      - name: Spec drift gate (committed spec must already match live)
-        run: |
-          git diff --exit-code -- specs/openapi.json \
-            || { echo "::error::specs/openapi.json is behind the live API. Run 'bun run generate', commit the refresh, then release."; exit 1; }
-
-      - name: Sync docs from spec
-        run: bun run docs:sync
-
-      - name: Lint
-        run: bun run check
-
-      - name: Typecheck
-        run: bun run typecheck
-
-      - name: Build
-        run: bun run build
-
-      - name: Unit tests
-        run: bun run test
-
-      - name: Provision Playwright browsers from MCR image (bypass cdn.playwright.dev)
-        # cdn.playwright.dev browser-binary downloads stall from GitHub runners
-        # (the binaries never finish, hanging the job). Pull the exact matching
-        # browsers from the official Playwright image on Microsoft Container
-        # Registry instead, then copy them into the default browser cache.
-        # install-deps is apt-only (no CDN download). The image tag is read
-        # from the installed @playwright/test, so the two never drift.
-        run: |
-          bunx playwright install-deps
-          docker create --name pwbrowsers "mcr.microsoft.com/playwright:v$(jq -r .version node_modules/@playwright/test/package.json)-noble"
-          mkdir -p "$HOME/.cache/ms-playwright"
-          docker cp pwbrowsers:/ms-playwright/. "$HOME/.cache/ms-playwright/"
-          docker rm pwbrowsers
-          ls -1 "$HOME/.cache/ms-playwright"
-
-      - name: E2E tests
-        run: bun run test:e2e
-
-      - name: UI audit (no [object Object], no empty-state drift)
-        run: |
-          bun run preview &
-          PREVIEW_PID=$!
-          for i in $(seq 1 30); do
-            curl -sf http://localhost:3001 > /dev/null && break
-            sleep 1
-          done
-          bun run audit
-          AUDIT_EXIT=$?
-          kill $PREVIEW_PID 2>/dev/null || true
-          exit $AUDIT_EXIT
-
-      - name: Bump versions and rebuild
-        id: bump
-        run: |
-          BUMP="${{ github.event.inputs.version_bump || 'patch' }}"
-          bump() {
-            local file="$1/package.json"
-            local current new
-            current=$(jq -r '.version' "$file")
-            IFS='.' read -r MA MI PA <<< "$current"
-            case "$BUMP" in
-              major) MA=$((MA+1)); MI=0; PA=0 ;;
-              minor) MI=$((MI+1)); PA=0 ;;
-              *)     PA=$((PA+1)) ;;
-            esac
-            new="$MA.$MI.$PA"
-            jq --arg v "$new" '.version = $v' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
-            echo "$1 -> $new"
-          }
-          bump packages/ui
-          bump packages/ui-react
-          bump packages/ui-vue
-          VERSION=$(jq -r '.version' packages/ui/package.json)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          bun run build
-
-      # ORDER IS LOAD-BEARING: least-proven package FIRST.
-      #
-      # npm publishes cannot be rolled back, so a publish that dies halfway leaves
-      # npm bumped while the repo has no version commit, no tag and no release, and
-      # the re-run is then rejected for republishing an existing version. The
-      # preflight above proves each package EXISTS, but it cannot prove a Trusted
-      # Publisher is configured on it — a package can exist and still reject OIDC.
-      #
-      # Publishing the newest package first turns that unverifiable risk into a safe
-      # failure: if its trust config is missing, the job dies before the established
-      # packages are touched and nothing is published at all. Whenever a new wrapper
-      # package is added, move it to the top of this list until it has shipped once.
+      # Least-proven package FIRST: a publish cannot be rolled back, so a package whose
+      # Trusted Publisher is missing fails before the established ones are touched.
       - name: Publish @roxyapi/ui-vue
         run: |
           npm install -g npm@latest
           (cd packages/ui-vue && npm publish --access public --provenance)
 
       - name: Publish @roxyapi/ui
-        run: |
-          (cd packages/ui && npm publish --access public --provenance)
+        run: (cd packages/ui && npm publish --access public --provenance)
 
       - name: Publish @roxyapi/ui-react
-        run: |
-          (cd packages/ui-react && npm publish --access public --provenance)
-
-      - name: Commit, tag, push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          VERSION=$(node -p "require('./packages/ui/package.json').version")
-          # dist/ is gitignored: npm publish (above) already shipped it via the
-          # package.json `files` allowlist. Commit only source, version bumps,
-          # and the committed codegen (registry, manifest, docs tables).
-          # specs/ rides along so the committed spec and MCP tool list are the ones this codegen was built from; leaving them behind made the next hermetic CI run compare new bindings against an old spec.
-          git add packages/ registry/ apps/docs/manifest.js README.md AGENTS.md specs/
-          git commit -m "release: v$VERSION"
-          # These two lines are INERT and the tag you see on the remote is not from here.
-          # `git tag` makes a LIGHTWEIGHT tag and `git push --follow-tags` pushes only
-          # ANNOTATED ones, so this pushes the commit and silently drops the tag. Tagging
-          # actually happens server-side in the `action-gh-release` step below, via
-          # `tag_name`, which is why every tag on this remote is lightweight (no `^{}`
-          # dereference line in `git ls-remote --tags`). Confirmed after the same
-          # two lines were found losing every tag in a sibling repo that has no Release step.
-          # So do NOT remove `action-gh-release` or replace it with a plain `git push`
-          # believing this covers tagging. Cleanup tracked; not touched on a release day.
-          git tag "v$VERSION"
-          git push --follow-tags
-
-      # The Pages demo is deployed from THIS run, by the deploy-pages job below.
-      # It cannot be left to pages.yml: the `release: [published]` trigger there
-      # has never once fired, because GitHub does not start a workflow
-      # from an event created with the default GITHUB_TOKEN, and both the
-      # `release: vX` push and the GitHub Release here use exactly that token.
-      # The demo therefore sat one commit behind every release. `apps/docs`
-      # already holds the post-bump build from the "Bump versions and rebuild"
-      # step, so this uploads the correct artifact with no extra build.
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: apps/docs
+        run: (cd packages/ui-react && npm publish --access public --provenance)
 
       - name: Pack npm tarballs for release assets
         run: |
           mkdir -p .release-assets
-          (cd packages/ui && npm pack --pack-destination ../../.release-assets)
-          (cd packages/ui-react && npm pack --pack-destination ../../.release-assets)
-          (cd packages/ui-vue && npm pack --pack-destination ../../.release-assets)
-          ls -la .release-assets/
+          for pkg in packages/ui packages/ui-react packages/ui-vue; do
+            (cd "$pkg" && npm pack --pack-destination ../../.release-assets)
+          done
+          ls -la .release-assets
 
-      # The body lists every commit subject since the previous tag, minus the release
-      # commits and dependency bumps, so a release says what shipped.
-      - name: Release notes
-        run: |
-          PREV=$(git describe --tags --abbrev=0 HEAD^)
-          git log --no-merges --format='%an%x09- %s' "$PREV"..HEAD^ \
-            | grep -v '^dependabot' | cut -f2- | grep -v '^- release:' > .release-notes.md || true
-          [ -s .release-notes.md ] || echo '- Regenerated with no source change.' > .release-notes.md
-          cat .release-notes.md
-
+      # The tag already exists; the Release is attached to it.
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: v${{ steps.bump.outputs.version }}
-          body_path: .release-notes.md
-          generate_release_notes: true
-          make_latest: 'true'
-          files: |
-            .release-assets/*.tgz
+          tag_name: ${{ github.ref_name }}
+          body: |
+            Roxy UI v${{ steps.version.outputs.version }}.
 
-  # Deliberately a SEPARATE job. `actions/deploy-pages` requires the
-  # `github-pages` environment, and an `environment:` on the release job would
-  # add an `environment` claim to its OIDC token. The npm Trusted Publishers for
-  # all three packages were configured WITHOUT an environment, so inlining this
-  # would fail every publish. Keeping it behind `needs:` leaves those claims
-  # byte-identical.
-  deploy-pages:
-    needs: release
-    if: needs.release.outputs.version != ''
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    # Same group as pages.yml so a release deploy and a push deploy serialize
-    # instead of racing. Not cancel-in-progress: a half-applied deploy is worse
-    # than a slow one.
-    concurrency:
-      group: pages
-      cancel-in-progress: false
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
+            `@roxyapi/ui`, `@roxyapi/ui-react` and `@roxyapi/ui-vue` are on npm with provenance.
 
-  # The jsDelivr purge and the edge check are not a job here on purpose: jsDelivr resolves
-  # the aliases from the npm packument, which can list a new version minutes after publish,
-  # and a public workflow should neither poll for that long nor turn red over a cache. The
-  # releasing maintainer runs `bun run purge:cdn` from the pulled release commit; the script
-  # waits for npm, purges once and proves the edge before it exits.
+            What changed: https://roxyapi.com/changelog
+          make_latest: "true"
+          fail_on_unmatched_files: true
+          files: .release-assets/*.tgz

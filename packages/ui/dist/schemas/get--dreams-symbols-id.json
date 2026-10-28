@@ -1,0 +1,1 @@
+{"title":"Get dream symbol by id","fields":[{"key":"id","name":"id","inQuery":false,"kind":"text","required":true,"description":"Unique symbol identifier in kebab-case (e.g., \"snake\", \"chase-dreams\", \"losing-teeth\").","example":"snake","source":{"path":"/dreams/symbols","search":"q","limit":50}}],"hasLang":false,"groups":[{}],"opensOnLoad":false}

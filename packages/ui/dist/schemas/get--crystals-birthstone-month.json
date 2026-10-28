@@ -1,0 +1,1 @@
+{"title":"Birthstones by month","fields":[{"key":"month","name":"month","inQuery":false,"kind":"number","required":true,"description":"Birth month as a number from 1 (January) to 12 (December).","min":1,"max":12,"example":2}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

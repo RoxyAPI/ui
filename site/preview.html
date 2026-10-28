@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Roxy UI component preview</title>
+
+	<link rel="stylesheet" href="./dist/styles/tokens.css">
+	<style>
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			padding: clamp(calc(var(--roxy-space-unit) * 3), 3vw, var(--roxy-space-lg));
+			background: var(--roxy-bg);
+			color: var(--roxy-fg);
+			font-family: var(--roxy-font-sans, system-ui, sans-serif);
+			line-height: var(--roxy-leading-normal);
+		}
+
+		main {
+			max-width: 56rem;
+			margin-inline: auto;
+		}
+
+		/* The component fills the page the way it fills a host element, so the
+		 * frame around it decides the width and nothing here caps it. */
+		#mount > * {
+			display: block;
+			width: 100%;
+		}
+
+		.notice {
+			margin: var(--roxy-space-md) 0 0;
+			font-size: var(--roxy-text-xs);
+			color: var(--roxy-muted);
+		}
+
+		.notice code {
+			font-family: var(--roxy-font-mono);
+		}
+	</style>
+
+	<script src="./manifest.js"></script>
+	<script>
+		// Paint in the theme the frame was opened with, before the first frame, so a
+		// dark page never shows a light flash. Any other value falls through to the
+		// operating system preference the token sheet already follows.
+		(function () {
+			try {
+				var m = /[?&]theme=(dark|light)\b/.exec(window.location.search);
+				if (m) document.documentElement.dataset.theme = m[1];
+			} catch (_) {}
+		})();
+		// A named preset is matched against the shipped theme files and written by the
+		// parser, so it blocks the first paint like the token sheet above; only the
+		// matched file name reaches the document, never the query value.
+		(function () {
+			var presets = window.ROXY_THEME_PRESETS || {};
+			var name = new URLSearchParams(window.location.search).get('preset');
+			var preset = name && Object.hasOwn(presets, name) && presets[name];
+			if (preset) {
+				document.write(
+					'<link rel="stylesheet" id="theme-preset" href="./dist/styles/themes/' +
+						preset.file +
+						'">',
+				);
+			}
+		})();
+	</script>
+</head>
+<body>
+	<main>
+		<div id="mount"></div>
+		<p class="notice" id="notice">Rendered from a fixed sample response, not a live call.</p>
+	</main>
+
+	<!-- Order is load bearing: manifest.js sits in the head so the preset is chosen
+	     before the first paint, the bundle registers every element, the demo
+	     manifest feeds preview.js, preview.js writes the single mount, and the
+	     deferred sample-data.js module runs last and assigns .data onto an element
+	     that is already upgraded. -->
+	<script src="./dist/cdn/roxy-ui.js"></script>
+	<script src="./components-manifest.js"></script>
+	<script src="./preview.js"></script>
+	<script type="module" src="./sample-data.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+{"title":"Look up a Human Design gate by number","fields":[{"key":"number","name":"number","inQuery":false,"kind":"number","required":true,"description":"Gate number from 1 to 64.","min":1,"max":64,"example":34}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

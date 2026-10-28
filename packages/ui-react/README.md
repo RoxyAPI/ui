@@ -1,0 +1,1306 @@
+<p align="center">
+	<a href="https://roxyapi.com/ui">
+		<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/banner.png" alt="RoxyAPI UI components, drop in and themed. The Spiritual OS layer for agentic AI. One key, flat pricing." width="100%">
+	</a>
+</p>
+
+# @roxyapi/ui-react
+
+[![npm](https://img.shields.io/npm/v/@roxyapi/ui-react)](https://www.npmjs.com/package/@roxyapi/ui-react)
+[![Live demo](https://img.shields.io/badge/live%20demo-roxyapi.com-7c3aed)](https://roxyapi.com/ui)
+[![Docs](https://img.shields.io/badge/docs-roxyapi.com-blue)](https://roxyapi.com/ui)
+[![API Reference](https://img.shields.io/badge/api%20reference-roxyapi.com-blue)](https://roxyapi.com/api-reference)
+[![Pricing](https://img.shields.io/badge/pricing-roxyapi.com-blue)](https://roxyapi.com/pricing)
+[![License](https://img.shields.io/npm/l/@roxyapi/ui)](LICENSE)
+
+> Live demo: **<https://roxyapi.com/ui>**. Every component rendered against real API responses, light + dark, with the React/shadcn install command per card.
+
+UI component library for the RoxyAPI catalog. Drop astrology, tarot, numerology, and every other RoxyAPI domain into any framework with one script tag or one npm install. Stateless components, typed responses, theme-agnostic. Beautiful defaults out of the box; the look is yours after that.
+
+## Theme-agnostic, every component
+
+Light, dark, your brand. A handful of base tokens style the whole library and everything else derives from them, so one line restyles every component: `--roxy-accent` moves every accent mark, accent text and focus ring, `--roxy-font-sans` every heading and label, `--roxy-radius` every corner. The default look adapts to your page: it inherits your font, keeps the ink neutral and the borders hairline, and spends one restrained accent. No class overrides, no rebuild, no Tailwind required. Customize live at <https://roxyapi.com/ui> with the **Theme** menu and the **Customize colors** dialog (a picker per colour token, a copy-paste snippet).
+
+<table>
+<tr>
+<th width="50%" align="center">Light</th>
+<th width="50%" align="center">Dark</th>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-light.png" alt="Natal chart, light mode">
+</td>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-dark.png" alt="Natal chart, dark mode">
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-light.png" alt="Vedic kundli, light mode">
+</td>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-dark.png" alt="Vedic kundli, dark mode">
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-light.png" alt="Human Design bodygraph, light mode">
+</td>
+<td width="50%" align="center">
+<img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-dark.png" alt="Human Design bodygraph, dark mode">
+</td>
+</tr>
+</table>
+
+```css
+:root {
+  /* Page and ink. The card, the secondary ink, the muted text and every hairline derive from these two. */
+  --roxy-bg: #ffffff;
+  --roxy-fg: #0a0a0a;
+
+  /* Brand. The text-safe shade (--roxy-accent-ink) and the focus ring (--roxy-ring) derive from it. */
+  --roxy-accent: #4a6297;
+
+  /* Status. Each derives its own -fg ink for text on a tint of it. */
+  --roxy-success: #16a34a;
+  --roxy-warning: #ea580c;
+  --roxy-danger: #dc2626;
+  --roxy-info: #0284c7;
+
+  /* Type, space, shape, motion. Leave the font unset to keep your page font. */
+  --roxy-font-sans: 'Inter', system-ui;
+  --roxy-text-base: 1rem;
+  --roxy-space-unit: 0.25rem;
+  --roxy-radius: 6px;
+  --roxy-motion-duration: 200ms; /* 0ms when prefers-reduced-motion */
+}
+
+[data-theme="dark"] {
+  --roxy-bg: #0a0a0a;
+  --roxy-fg: #fafafa;
+  /* Only if you want a different accent in dark. Omit it to keep the default. */
+  --roxy-accent: #92aade;
+}
+```
+
+Pick a tone, set the bases, every chart and card follows. Named presets ship as one stylesheet each (Rosewater, Eucalyptus, Kiln, Moonlit, and Celeste, the roxyapi.com look). Full token reference, the presets and the drawing hooks at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). See the [FAQ](#faq) for switching between light and dark at runtime.
+
+## Gallery
+
+Every chart, table, and card adapts to light and dark automatically. Hover any image on GitHub to inspect tooltips.
+
+### Western astrology
+
+<table>
+<tr>
+<td width="50%"><strong>Natal chart</strong> · <code>&lt;roxy-natal-chart&gt;</code><br><sub>POST /astrology/natal-chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/natal-chart-light.png" alt="Natal chart wheel with 14 planets, real house cusps, IC DC Part of Fortune Vertex, aspect lines">
+</picture>
+</td>
+<td width="50%"><strong>Synastry</strong> · <code>&lt;roxy-synastry-chart&gt;</code><br><sub>POST /astrology/synastry</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/synastry-chart-light.png" alt="Synastry dual-wheel with inter-aspects table">
+</picture>
+</td>
+</tr>
+</table>
+
+### Vedic astrology
+
+<table>
+<tr>
+<td width="50%"><strong>Vedic kundli</strong> · <code>&lt;roxy-vedic-kundli&gt;</code><br><sub>POST /vedic-astrology/birth-chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vedic-kundli-light.png" alt="Vedic kundli D1 rashi chart, South Indian style with Lagna marker">
+</picture>
+</td>
+<td width="50%"><strong>KP chart</strong> · <code>&lt;roxy-kp-chart&gt;</code><br><sub>POST /vedic-astrology/kp/chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kp-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kp-chart-light.png" alt="KP chart with cusps and sub-lord stellar hierarchy">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Divisional chart</strong> · <code>&lt;roxy-divisional-chart&gt;</code><br><sub>POST /vedic-astrology/divisional-chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/divisional-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/divisional-chart-light.png" alt="D2 to D60 varga chart, D9 navamsa shown">
+</picture>
+</td>
+<td width="50%"><strong>Ashtakavarga grid</strong> · <code>&lt;roxy-ashtakavarga-grid&gt;</code><br><sub>POST /vedic-astrology/ashtakavarga</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/ashtakavarga-grid-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/ashtakavarga-grid-light.png" alt="Ashtakavarga sarva and bhinna bindu heatmap">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Dasha timeline</strong> · <code>&lt;roxy-dasha-timeline&gt;</code><br><sub>POST /vedic-astrology/dasha/&lbrace;current,major,sub/...&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dasha-timeline-light.png" alt="Vimshottari dasha timeline with the active period highlighted and progress bars">
+</picture>
+</td>
+<td width="50%"><strong>Shadbala table</strong> · <code>&lt;roxy-shadbala-table&gt;</code><br><sub>POST /vedic-astrology/shadbala</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/shadbala-table-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/shadbala-table-light.png" alt="Six-fold planetary strength bars with rupas and adequacy badges">
+</picture>
+</td>
+</tr>
+</table>
+
+### Human Design and forecast
+
+<table>
+<tr>
+<td width="50%"><strong>Bodygraph</strong> · <code>&lt;roxy-bodygraph&gt;</code><br><sub>POST /human-design/bodygraph</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bodygraph-light.png" alt="Human Design bodygraph with nine centers defined and open, channels between activated gates, plus type, authority, and profile summary">
+</picture>
+</td>
+<td width="50%"><strong>Forecast timeline</strong> · <code>&lt;roxy-forecast-timeline&gt;</code><br><sub>POST /forecast/timeline</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/forecast-timeline-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/forecast-timeline-light.png" alt="Cross-domain forecast timeline of transits, ingresses, retrograde stations, and biorhythm critical days grouped by date and weighted by significance">
+</picture>
+</td>
+</tr>
+</table>
+
+### Chinese astrology and feng shui
+
+<table>
+<tr>
+<td width="50%"><strong>Four pillars</strong> · <code>&lt;roxy-bazi-chart&gt;</code><br><sub>POST /chinese-astrology/bazi/chart</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bazi-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/bazi-chart-light.png" alt="BaZi four pillars chart, each pillar drawn as a Heavenly Stem over its Earthly Branch in hanzi with the Ten God relation, the stems the branch stores, and the Na Yin, over the five-element balance and the interactions the pillars form">
+</picture>
+</td>
+<td width="50%"><strong>Flying star chart</strong> · <code>&lt;roxy-flying-star-chart&gt;</code><br><sub>POST /feng-shui/flying-stars/natal</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/flying-star-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/flying-star-chart-light.png" alt="Xuan Kong flying star plate, nine palaces on the Chinese compass with south at the top, each carrying its mountain star, period star and water star, over the facing and sitting mountains and the structure they produce">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Chinese zodiac</strong> · <code>&lt;roxy-zodiac-card&gt;</code><br><sub>GET /chinese-astrology/zodiac/animals/&#123;id&#125;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/zodiac-card-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/zodiac-card-light.png" alt="Chinese zodiac animal card with the animal in hanzi, its element and polarity, the double hours it governs, its trine, and its secret friend, clash and harm partners">
+</picture>
+</td>
+<td width="50%"><strong>Kua and eight mansions</strong> · <code>&lt;roxy-kua-card&gt;</code><br><sub>POST /feng-shui/eight-mansions</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kua-card-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/kua-card-light.png" alt="Eight Mansions map on the nine-palace grid, four favourable and four unfavourable compass sectors each with its star, rank and life domain, and the Kua number and trigram in the centre">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Luck pillars</strong> · <code>&lt;roxy-luck-pillars&gt;</code><br><sub>POST /chinese-astrology/bazi/luck-pillars</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/luck-pillars-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/luck-pillars-light.png" alt="BaZi luck pillars as a strip of ten-year stretches, each with its stem and branch in hanzi, the Ten God relation, and the ages and years it spans">
+</picture>
+</td>
+<td width="50%"><strong>Chinese almanac</strong> · <code>&lt;roxy-almanac-day&gt;</code><br><sub>GET /chinese-astrology/calendar/day/&#123;date&#125;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/almanac-day-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/almanac-day-light.png" alt="Chinese almanac day with the day officer, what the day favours and what it avoids, the animal it clashes with, and its three pillars and lunar mansion">
+</picture>
+</td>
+</tr>
+</table>
+
+### Other domains
+
+<table>
+<tr>
+<td width="50%"><strong>Tarot spread</strong> · <code>&lt;roxy-tarot-spread&gt;</code><br><sub>POST /tarot/spreads/&lbrace;three-card,celtic-cross,love&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/tarot-spread-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/tarot-spread-light.png" alt="Three-card tarot spread with position labels and reading">
+</picture>
+</td>
+<td width="50%"><strong>Biorhythm</strong> · <code>&lt;roxy-biorhythm-chart&gt;</code><br><sub>POST /biorhythm/&lbrace;daily,forecast,critical-days&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/biorhythm-chart-light.png" alt="Physical, emotional, intellectual cycle bars">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>I Ching hexagram</strong> · <code>&lt;roxy-hexagram&gt;</code><br><sub>GET /iching/hexagrams/&lbrace;number&rbrace;, /iching/cast</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/hexagram-light.png" alt="Hexagram figure with trigrams, judgment, image, and a reading for every line">
+</picture>
+</td>
+<td width="50%"><strong>Numerology</strong> · <code>&lt;roxy-numerology-card&gt;</code><br><sub>POST /numerology/&lbrace;life-path,expression,personal-year,chart&rbrace;</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/numerology-card-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/numerology-card-light.png" alt="Life path number card with archetype, keywords, and interpretation">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Mayan day sign</strong> · <code>&lt;roxy-mayan-day-sign&gt;</code><br><sub>POST /mesoamerican-astrology/mayan/tzolkin</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/mayan-day-sign-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/mayan-day-sign-light.png" alt="Tzolkin day sign card with the coefficient and the trecena it falls in, and the composed nawal reading">
+</picture>
+</td>
+<td width="50%"><strong>Vastu mandala</strong> · <code>&lt;roxy-vastu-mandala&gt;</code><br><sub>POST /vastu/mandala</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vastu-mandala-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/vastu-mandala-light.png" alt="Vastu Purusha Mandala pada grid with a devata on every square and the brahmasthan at the centre">
+</picture>
+</td>
+</tr>
+<tr>
+<td width="50%"><strong>Gematria</strong> · <code>&lt;roxy-gematria&gt;</code><br><sub>POST /kabbalah/gematria</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/gematria-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/gematria-light.png" alt="Gematria calculator with values by cipher, every candidate Hebrew spelling and its per letter breakdown">
+</picture>
+</td>
+<td width="50%"><strong>Ayurvedic constitution</strong> · <code>&lt;roxy-dosha-constitution&gt;</code><br><sub>POST /ayurveda/constitution</sub><br>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dosha-constitution-dark.png">
+  <img src="https://raw.githubusercontent.com/RoxyAPI/ui/main/assets/screenshots/dosha-constitution-light.png" alt="Ayurvedic constitution bar with vata, pitta and kapha shares, the dominant humour, and the cited classical factors behind the blend">
+</picture>
+</td>
+</tr>
+</table>
+
+Tables, cards, forms, and helper components in the [live demo](https://roxyapi.com/ui).
+
+## Why developers use Roxy UI
+
+- One API key. Charts, tables, cards, forms for every domain in the catalog.
+- Works in React, Vue, Svelte, Angular, Solid, vanilla HTML, WordPress.
+- Stateless. Caller fetches via `@roxyapi/sdk`, passes the response as `data`.
+- Theming via CSS custom properties. No Tailwind required, no class-name overrides.
+- A11y zero violations under axe-core. Keyboard navigation. Reduced-motion honored.
+- Tree-shake friendly. Tight bundle budget enforced in CI.
+
+## Start with one component
+
+Fetch with the typed SDK, pass `data` to the component. No glue code.
+
+```tsx
+import { createRoxy } from '@roxyapi/sdk';
+import { RoxyHoroscopeCard } from '@roxyapi/ui-react';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+const { data } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });
+
+return <RoxyHoroscopeCard data={data} />;
+```
+
+Then expand into natal charts, kundli, dasha, tarot, and every other domain. The SDK returns `data`, the component renders it; the same pairing holds for every component in the catalog.
+
+> **Pass `data`, not the envelope.** The SDK returns `{ data, error, request, response }`. Pass `data`, or the component renders `[object Object]`. This is the most common integration bug.
+
+The key stays on your server. Vanilla HTML or a server-rendered page fetches the same way, then [inlines the JSON into the component](#server-rendered-no-javascript-wiring): no build step, no key in the browser. Try every component in the [live demo](https://roxyapi.com/ui), each with Preview, Code, and shadcn tabs and a live color customizer.
+
+## Install
+
+```bash
+npm install @roxyapi/ui-react
+```
+
+One package. No peer install, no stylesheet to link, no Tailwind, no config change. Every response type is exported from the package, so nothing else is needed to be fully typed.
+
+```tsx
+import { RoxyNatalChart, type NatalChartResponse } from '@roxyapi/ui-react';
+
+export function Chart({ data }: { data: NatalChartResponse }) {
+	return <RoxyNatalChart data={data} />;
+}
+```
+
+Fetch the response however you like (server component, route handler, your own client) and pass it as `data`. `@roxyapi/sdk` is a convenience for calling the API, never a requirement for rendering.
+
+For frameworks that consume custom elements directly (Svelte, Angular, Solid, vanilla HTML, WordPress) install `@roxyapi/ui` instead.
+
+```bash
+npm install @roxyapi/ui
+```
+
+## Quick start
+
+```ts
+import { createRoxy } from '@roxyapi/sdk';
+import '@roxyapi/ui';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+const { data: cities } = await roxy.location.searchCities({ query: { q: 'Mumbai' } });
+const { latitude, longitude, timezone } = cities.cities[0];
+
+const { data: kundli } = await roxy.vedicAstrology.generateBirthChart({
+	body: { date: '1990-01-15', time: '14:30:00', latitude, longitude, timezone },
+});
+
+document.querySelector('roxy-vedic-kundli')!.data = kundli;
+```
+
+Always call `/location/search` first. Every chart endpoint expects latitude, longitude, and timezone.
+
+> **Timezone format.** RoxyAPI accepts both forms: a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). Pick one and stay consistent. `/location/search` returns both, `timezone` as the IANA name and `utcOffset` as the decimal hours; the decimal form is shorter and the examples on this page use it. The IANA form is correct over DST boundaries when historical accuracy matters.
+
+## Render an AI tool result
+
+It ships inside `@roxyapi/ui`, `@roxyapi/ui-react` and `@roxyapi/ui-vue`, so whichever one you already installed has it and there is nothing else to add.
+
+Your model calls a Remote MCP tool at `roxyapi.com/mcp/{domain}` and hands you back a tool name and a JSON string. `componentForTool(name)` turns that name into the component that draws it, so a chat answer shows a real tarot spread or a real chart instead of a wall of fields. It works in any chat UI that lets you render your own markup for a tool result.
+
+```ts
+import { componentForTool } from '@roxyapi/ui';
+
+const found = componentForTool(toolName);
+if (found) {
+	const el = document.createElement(found.tag);
+	for (const [name, value] of Object.entries(found.attrs ?? {})) el.setAttribute(name, value);
+	el.data = JSON.parse(result.content[0].text);
+	container.append(el);
+}
+```
+
+In React, `pascal` is the export name, so a namespace import renders it directly:
+
+```tsx
+import * as RoxyUI from '@roxyapi/ui-react';
+import { componentForTool } from '@roxyapi/ui-react/tool-component';
+
+export function ToolWidget({ toolName, output }: { toolName: string; output: string }) {
+	const found = componentForTool(toolName);
+	if (!found) return null;
+	const Component = RoxyUI[found.pascal as keyof typeof RoxyUI] as React.ComponentType<{ data: unknown }>;
+	return <Component data={JSON.parse(output)} {...found.attrs} />;
+}
+```
+
+A compact tool result is decoded for you, and a name a host prefixed with its server (`roxy_tarot:post_tarot_daily`) resolves the same as a bare one. Full recipe, with the vendor connectors and the Vercel AI SDK: <https://roxyapi.com/docs/tutorials/ai-chat-widgets>. Runnable page: [examples/vanilla/tool-result.html](examples/vanilla/tool-result.html).
+
+**The lookup also ships on its own path**, `@roxyapi/ui/tool-component` and the same subpath on both wrapper packages, for a module that decides WHICH component to render and never renders one: a server component, a route handler, a worker. It carries `componentForTool`, `expandCompact` and the name table, and no elements, so nothing in that file pulls in the library.
+
+```ts
+import { componentForTool } from '@roxyapi/ui-react/tool-component';
+```
+
+## Server-rendered, no JavaScript wiring
+
+Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
+
+Serialize with the shipped helper, never a bare `JSON.stringify`. `@roxyapi/ui` exports `roxyDataScript(data)` (the full `<script class="roxy-data">…</script>` element) and `serializeRoxyData(data)` (just the escaped JSON). They escape `<`, `>`, and `&` so a string field containing `</script>` cannot break out of the block and corrupt the page.
+
+Load the bundle once anywhere on the page. It registers every `roxy-*` element and loads the design tokens, so every component on the page renders themed, in light or dark, from that single tag. Nothing else to add.
+
+### No-JavaScript fallback
+
+The two modes degrade differently, and only one of them can be rescued.
+
+**Controlled mode** (the `<script class="roxy-data">` island above) already holds the reading in the page. Render it server-side as ordinary HTML alongside the island and put that markup *inside* the element. Components render into a shadow root and none of them expose a `<slot>`, so light-DOM children are painted only while the element is un-upgraded, and disappear the moment the bundle registers it. You get the server HTML without JavaScript and the live component with it, from the same markup, with no flash of both.
+
+**Form mode** (a `pk_` key or a `submit-url`, no data) is a self-fetch widget: it cannot work without JavaScript, because there is nothing to render until the visitor submits the form. Give it a light-DOM fallback that says so and links out.
+
+```html
+<roxy-natal-chart publishable-key="pk_live_…">
+  <!-- Painted only when JavaScript is off. Replaced by the component otherwise. -->
+  <p>JavaScript is required to generate this chart.
+     <a href="https://roxyapi.com/products/astrology">Open it on roxyapi.com</a>.</p>
+</roxy-natal-chart>
+```
+
+A `<noscript>` block works too, and is the safer choice if you also need to hide the fallback from screen readers once the component takes over.
+
+```ts
+import { roxyDataScript } from '@roxyapi/ui';
+
+const { data } = await roxy.astrology.generateNatalChart({ body });
+const html = `
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" crossorigin="anonymous" defer></script>
+  <roxy-natal-chart>${roxyDataScript(data)}</roxy-natal-chart>
+`;
+```
+
+The emitted markup:
+
+```html
+<roxy-natal-chart>
+	<script type="application/json" class="roxy-data">{ "planets": [ ... ], "houses": [ ... ], "aspects": [ ... ] }</script>
+</roxy-natal-chart>
+```
+
+The component picks up the embedded JSON when no `data` property has been set. The JavaScript property always wins: assign `element.data` and the markup is ignored, so dynamic pages and server-rendered pages share one component with no branching. You can nest a server-rendered HTML fallback inside the same element for no-JavaScript and crawler views; the component leaves it untouched and reads only the marked script.
+
+This is how the WordPress plugin renders: PHP fetches the response server-side, caches it, and embeds it in the page. The same shape works in any framework that emits HTML.
+
+**Writing the tag in React or Next.js?** `@roxyapi/ui-react/jsx` types every `roxy-*` tag and its attributes, so a server component can render one directly and still be checked:
+
+```tsx
+import '@roxyapi/ui-react/jsx';
+
+export default function Page() {
+	return <roxy-tarot-spread spread="three-card" hide-readings />;
+}
+```
+
+One import anywhere in the project types the tags everywhere in it. The typings carry attributes only, which is what markup can carry: a page that passes a response uses the wrapper component, which sets `data` as a property. Your `tsconfig.json` needs `moduleResolution` on `bundler`, `node16` or `nodenext`, because the older `node10` resolution ignores the package export map.
+
+## Most-used components per domain
+
+The highest-demand components by domain, in the order you are most likely to ship them. Each pairing shows the SDK call that returns the response shape the component renders. Spec change in the API translates to typed change at the component boundary; the pairing below is derived from the live OpenAPI spec, not invented. Full catalog in the [Components](#components) table.
+
+### 1. Western astrology (natal chart, daily horoscope, synastry)
+
+The natal wheel, the daily horoscope and the synastry comparison, which is what most astrology products ship first. Zodiac dating apps, natal chart products, horoscope features and lunar-cycle wellness apps all build on these three.
+
+```tsx
+import { createRoxy } from '@roxyapi/sdk';
+import { RoxyNatalChart, RoxyHoroscopeCard, RoxySynastryChart } from '@roxyapi/ui-react';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+// 1. Natal chart. The #1 Western query, called on every onboarding.
+const { data: natal } = await roxy.astrology.generateNatalChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyNatalChart data={natal} />
+
+// 2. Daily horoscope. Highest per-user call frequency in the catalog, drives DAUs and push.
+const { data: horoscope } = await roxy.astrology.getDailyHoroscope({ path: { sign: 'aries' } });
+<RoxyHoroscopeCard data={horoscope} />
+
+// 3. Synastry. The dating-app pro-tier feature, full inter-aspect analysis between two charts.
+const { data: synastry } = await roxy.astrology.calculateSynastry({
+  body: {
+    person1: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+    person2: { date: '1992-07-22', time: '09:00:00', latitude: 19.07, longitude: 72.87, timezone: 5.5 },
+  },
+});
+<RoxySynastryChart data={synastry} />
+```
+
+### 2. Vedic astrology (kundli, panchang, dasha, dosha, KP, ashtakavarga, divisional)
+
+The deepest domain in the catalog. Kundli, panchang, dasha, dosha, KP horary, ashtakavarga and the divisional charts (D9 Navamsa, D10 Dasamsa) are what matrimonial platforms, kundli generators, muhurat apps and professional readers need, and each one has a component rather than a raw payload.
+
+```tsx
+import {
+  RoxyVedicKundli, RoxyVedicPlanetsTable, RoxyPanchangTable,
+  RoxyDashaTimeline, RoxyDoshaCard, RoxyKpChart, RoxyAshtakavargaGrid,
+  RoxyDivisionalChart,
+} from '@roxyapi/ui-react';
+
+// Kundli + positions table share a single API call (the same response renders both).
+const { data: kundli } = await roxy.vedicAstrology.generateBirthChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyVedicKundli data={kundli} chart-style="south" />
+<RoxyVedicPlanetsTable data={kundli} />
+
+// Panchang. Tithi, nakshatra, yoga, karana, rahu kaal, abhijit muhurta in one call.
+const { data: panchang } = await roxy.vedicAstrology.getDetailedPanchang({
+  body: { date: '2026-04-22', latitude: 19.07, longitude: 72.88 },
+});
+<RoxyPanchangTable data={panchang} />
+
+// Vimshottari dasha. The 120-year planetary period timeline.
+const { data: dasha } = await roxy.vedicAstrology.getMajorDashas({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyDashaTimeline data={dasha} period="major" />
+
+// Mangal Dosha. Most-asked matrimonial question in India.
+const { data: dosha } = await roxy.vedicAstrology.checkManglikDosha({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyDoshaCard data={dosha} />
+
+// KP chart. The horary timing tool, sub-lord stellar hierarchy on every cusp.
+const { data: kp } = await roxy.vedicAstrology.generateKpChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyKpChart data={kp} />
+
+// Ashtakavarga. Bindu strength heatmap with Sarva, Bhinna, Shodhya Pinda views.
+const { data: ashtaka } = await roxy.vedicAstrology.calculateAshtakavarga({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyAshtakavargaGrid data={ashtaka} />
+
+// Divisional chart (D9 Navamsa shown). `division` is the integer 9, not "D9".
+// Supported: 2, 3, 4, 7, 9, 10, 12, 16, 20, 24, 27, 30, 40, 45, 60.
+const { data: d9 } = await roxy.vedicAstrology.generateDivisionalChart({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5, division: 9 },
+});
+<RoxyDivisionalChart data={d9} />
+```
+
+### 3. Forecast (transits, cross-domain timeline)
+
+One stateless call merges Western transits, Vedic Vimshottari dasha boundaries, and biorhythm critical days into a single significance-scored, time-ordered timeline. Built for forecast feeds, transit alerts, and timing tools. No coordinates needed.
+
+```tsx
+import { RoxyForecastTimeline } from '@roxyapi/ui-react';
+
+// Transit forecast. The demand leader. Western transit-to-natal aspects, sign
+// ingresses, and retrograde stations over the window.
+const { data: transits } = await roxy.forecast.forecastTransits({
+  body: { birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 } },
+});
+<RoxyForecastTimeline data={transits} />
+
+// Cross-domain timeline. The same window merged with Vedic dasha boundaries and
+// biorhythm critical days into one significance-scored timeline.
+const { data: timeline } = await roxy.forecast.generateTimeline({
+  body: {
+    birthData: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+    domains: ['western', 'vedic', 'biorhythm'],
+  },
+});
+<RoxyForecastTimeline data={timeline} />
+```
+
+### 4. Human Design (bodygraph)
+
+A self-knowledge system computed from the same ephemeris as Western astrology, laid over the I Ching gate wheel and nine chakra-style centers. Self-discovery apps, dating and compatibility products, and AI coaching bots render the full bodygraph. No coordinates needed; Human Design uses the birth instant, not the observer location.
+
+The response is a reading, not a set of labels: the type, strategy, authority, profile, and definition each arrive with the text that explains them, every defined channel and every center carry their own interpretation, and each of the activations carries a gate meaning and the meaning of its line. `<RoxyBodygraph>` lays that out for you. The chart and the identity read at a glance, the Design moment prints in the header on the UTC clock so the chart can be checked against any other calculator on the instant itself, and every body of prose sits behind a disclosure, so one component renders a complete reading without becoming a wall of text.
+
+```tsx
+import { RoxyBodygraph } from '@roxyapi/ui-react';
+
+// Full bodygraph. The head term every Human Design app leads with ("human design chart").
+// Type, strategy, authority, profile, the nine centers, channels, and every gate
+// activation in one call. Pass the birth instant only, no latitude or longitude.
+const { data: bodygraph } = await roxy.humanDesign.generateBodygraph({
+  body: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+});
+<RoxyBodygraph data={bodygraph} />
+```
+
+Every interpretation is localized. Ask for the language on the request and the component renders it, because the component prints the prose the API returned and holds no copy of its own.
+
+```tsx
+const { data: bodygraph } = await roxy.humanDesign.generateBodygraph({
+  body: { date: '1990-01-15', time: '14:30:00', timezone: 5.5 },
+  query: { lang: 'de' },
+});
+```
+
+### 5. Chinese astrology (four pillars, luck pillars, zodiac, almanac)
+
+The BaZi chart a reading is built on, the ten-year luck pillars that time it, the twelve-animal zodiac, and the almanac people actually consult to pick a date. Fits date-selection tools, Chinese-new-year features and East Asian wellness apps.
+
+```tsx
+import { RoxyBaziChart, RoxyZodiacCard, RoxyAlmanacDay } from '@roxyapi/ui-react';
+
+// Four pillars. Stem over branch per pillar, hidden stems, Ten Gods, element balance.
+const { data: bazi } = await roxy.chineseAstrology.generateBaziChart({
+  body: { date: '1990-01-15', time: '14:30:00', timezone: 'America/New_York' },
+});
+<RoxyBaziChart data={bazi} />
+
+// The animal a birth date falls in, on the classical year boundary.
+const { data: sign } = await roxy.chineseAstrology.calculateZodiacAnimal({
+  body: { date: '1990-01-15' },
+});
+<RoxyZodiacCard data={sign} mode="sign" />
+
+// Almanac day. What the day favours, what it avoids, and the animal it clashes with.
+const { data: day } = await roxy.chineseAstrology.getAlmanacDay({ path: { date: '2026-09-08' } });
+<RoxyAlmanacDay data={day} mode="day" />
+```
+
+### 6. Feng shui (kua number, eight mansions, flying stars)
+
+A person's Kua number and the eight directions it ranks for them, plus the Xuan Kong flying-star plate for a building. Fits home and office consultation tools, property apps and annual-forecast features.
+
+```tsx
+import { RoxyKuaCard, RoxyFlyingStarChart } from '@roxyapi/ui-react';
+
+// Kua number and the full Eight Mansions map, four favourable sectors and four not.
+const { data: mansions } = await roxy.fengShui.generateEightMansions({
+  body: { date: '1990-01-15', gender: 'female' },
+});
+<RoxyKuaCard data={mansions} mode="mansions" />
+
+// Flying star plate for a building, from its facing degrees and construction period.
+const { data: plate } = await roxy.fengShui.generateFlyingStarChart({
+  body: { facingDegrees: 175, period: 9 },
+});
+<RoxyFlyingStarChart data={plate} mode="natal" />
+```
+
+### 7. Mesoamerican astrology (Tzolkin day sign, Calendar Round)
+
+The 260-day Tzolkin day sign and trecena for any date, plus the full Calendar Round: Haab date, Long Count and year bearer, across four correlation constants. Fits Mayan-zodiac calculators, day-sign lookup tools and Mesoamerican-calendar content.
+
+```tsx
+import { RoxyMayanDaySign } from '@roxyapi/ui-react';
+
+// Tzolkin day sign. The lead query: day sign, coefficient, the trecena it falls in, and the composed nawal reading.
+const { data: day } = await roxy.mesoamericanAstrology.calculateTzolkin({
+  body: { date: '1990-01-15' },
+});
+<RoxyMayanDaySign data={day} mode="day" />
+
+// Calendar Round. The fuller chart: Tzolkin and Haab dates, the Long Count, and the year bearer.
+const { data: chart } = await roxy.mesoamericanAstrology.generateMayanChart({
+  body: { date: '1990-01-15' },
+});
+<RoxyMayanDaySign data={chart} mode="chart" />
+```
+
+### 8. Vastu (Purusha Mandala, entrance pada)
+
+The 81-pada Vastu Purusha Mandala projected over any plot shape, and the entrance pada a main door falls on with its verse effect. Fits Vastu consultation tools, floor-plan apps and entrance-direction calculators.
+
+```tsx
+import { RoxyVastuMandala } from '@roxyapi/ui-react';
+
+// Vastu Purusha Mandala. Every pada over the plot, with the devata holding it and the brahmasthan marked.
+const { data: mandala } = await roxy.vastu.generateMandala({
+  body: { plot: { width: 30, depth: 40, unit: 'feet' } },
+});
+<RoxyVastuMandala data={mandala} mode="mandala" />
+
+// Entrance pada. Which of the 32 perimeter padas the main door falls on, and the verse effect for it.
+const { data: entrance } = await roxy.vastu.calculateEntrancePada({
+  body: { plot: { width: 30, depth: 40, unit: 'feet' }, facing: 'East', doorPosition: 0.4 },
+});
+<RoxyVastuMandala data={entrance} mode="entrance" />
+```
+
+### 9. Numerology (life path, full chart, personal year)
+
+Life path, the full chart, and the personal year. The easiest domain to integrate: a name and a birth date are enough, with no birth time and no coordinates.
+
+```tsx
+import { RoxyNumerologyCard } from '@roxyapi/ui-react';
+
+// Life Path. The #1 numerology keyword, every calculator page starts here.
+const { data: lp } = await roxy.numerology.calculateLifePath({
+  body: { year: 1990, month: 1, day: 15 },
+});
+<RoxyNumerologyCard data={lp} type="life-path" />
+
+// Full numerology chart. Premium one-shot: all six core numbers plus karmic, personal year.
+const { data: chart } = await roxy.numerology.generateNumerologyChart({
+  body: { fullName: 'Jane Smith', year: 1990, month: 1, day: 15 },
+});
+<RoxyNumerologyCard data={chart} type="chart" />
+
+// Personal Year. Annual forecast, drives January traffic spikes.
+const { data: pyear } = await roxy.numerology.calculatePersonalYear({
+  body: { month: 1, day: 15, year: 2026 },
+});
+<RoxyNumerologyCard data={pyear} type="personal-year" />
+```
+
+### 10. Kabbalah (gematria)
+
+Gematria for a Latin or Hebrew name: every candidate Hebrew spelling, the value under each cipher, and the words that share it. Fits name-numerology tools, Hebrew-calendar apps and Kabbalah content.
+
+```tsx
+import { RoxyGematria } from '@roxyapi/ui-react';
+
+// Gematria. Every candidate Hebrew spelling of a Latin name, the value under each cipher, and equal-value words.
+const { data: gematria } = await roxy.kabbalah.calculateGematria({
+  body: { text: 'Sarah', latinCiphers: true },
+});
+<RoxyGematria data={gematria} />
+```
+
+### 11. Tarot (daily card, three-card, Celtic Cross)
+
+Draw a single daily card, a three-card spread, or a full Celtic Cross. The card database is stable reference data, so fetch it once and cache it rather than calling per render.
+
+```tsx
+import { RoxyTarotCard, RoxyTarotSpread } from '@roxyapi/ui-react';
+
+// Daily card. Stickiest tarot feature. Seed per user for deterministic once-per-day behavior.
+const { data: daily } = await roxy.tarot.getDailyCard({ body: { seed: 'user-42' } });
+<RoxyTarotCard data={daily} />
+
+// Three-card past-present-future. Most-drawn spread on every tarot platform.
+const { data: three } = await roxy.tarot.castThreeCard({
+  body: { question: 'My next quarter', seed: 'user-42' },
+});
+<RoxyTarotSpread data={three} />
+
+// Celtic Cross. Professional-reader spread. Premium-tier, ten positions.
+const { data: cc } = await roxy.tarot.castCelticCross({
+  body: { question: 'What should I focus on?', seed: 'user-42' },
+});
+<RoxyTarotSpread data={cc} />
+```
+
+### 12. Biorhythm (daily, forecast)
+
+Physical, emotional and intellectual cycles from a birth date alone, as a daily reading or a forward forecast with the critical days marked. Fits wellness, productivity, sports and couples apps.
+
+```tsx
+import { RoxyBiorhythmChart } from '@roxyapi/ui-react';
+
+// Daily biorhythm. Physical, emotional, intellectual, intuitive, plus seven extended cycles.
+// Seeded for stable "biorhythm of the day" features; pass a userId for per-user determinism.
+const { data: bio } = await roxy.biorhythm.getDailyBiorhythm({
+  body: { seed: 'user-42', date: '2026-04-23' },
+});
+<RoxyBiorhythmChart data={bio} />
+
+// Multi-day forecast. Best-day / worst-day planner for calendar and coaching products.
+const { data: forecast } = await roxy.biorhythm.getForecast({
+  body: { birthDate: '1990-01-15', startDate: '2026-04-01', endDate: '2026-04-30' },
+});
+<RoxyBiorhythmChart data={forecast} mode="forecast" />
+```
+
+### 13. Ayurveda (dosha constitution)
+
+The three-humour constitution computed from a birth chart: vata, pitta and kapha shares as one blend, with the classical factors and verse citations behind it. Fits wellness apps, Ayurveda consultation tools and birth-chart products adding a dosha reading.
+
+```tsx
+import { RoxyDoshaConstitution } from '@roxyapi/ui-react';
+
+// Ayurvedic constitution. Vata, pitta and kapha shares from the birth chart, with the cited factors behind the blend.
+const { data: constitution } = await roxy.ayurveda.calculateAyurvedicConstitution({
+  body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+});
+<RoxyDoshaConstitution data={constitution} />
+```
+
+### 14. I Ching (cast a reading, hexagram lookup)
+
+Cast a reading with its changing lines and the hexagram it transforms into, or look up any of the 64 figures directly. Fits meditation apps, decision-making tools and wisdom chatbots.
+
+```tsx
+import { RoxyHexagram } from '@roxyapi/ui-react';
+
+// Cast a reading. Active divination, primary hexagram plus changing lines and transformed hexagram.
+const { data: reading } = await roxy.iching.castReading({ query: { seed: 'user-42' } });
+<RoxyHexagram data={reading} />
+
+// Random hexagram. One-shot daily-hexagram surface for ambient apps.
+const { data: random } = await roxy.iching.getRandomHexagram();
+<RoxyHexagram data={random} />
+```
+
+> **Pairing rule.** The SDK return value already matches the `data` prop on every component. No field renames, no glue code. When a new endpoint ships in the spec, the SDK and the component types regenerate together; the same pattern keeps working.
+
+## API keys
+
+Get a key at <https://roxyapi.com/account>.
+
+Two key types. **Secret keys** (`sk_*`) grant full account access: use them server side only (Node, Bun, Hono, Next.js route handlers, Workers). Never commit one, never ship one in a client bundle. **Publishable keys** (`pk_live_*` / `pk_test_*`) are browser-safe: mint one, register the origins you embed on, and any other origin gets a 403 at the gateway.
+
+Two ways to feed a component, and the key rule for each:
+
+- **Controlled (recommended for production).** Your server fetches with the secret key and passes the response in via the `data` property or a `roxy-data` JSON island. No key of any kind reaches the browser. This is what the WordPress plugin and the server-rendered patterns do.
+- **Self-fetch (no backend).** Give the component a `publishable-key` and it renders its own form and fetches in the browser. `data-endpoint` is optional: without it the component fetches its default endpoint, its config attribute (`mode`, `period`, `type`, `spread`, `detail`) picks another of the endpoints it renders, and `data-endpoint` set to a spec path (`astrology/lilith` on `<roxy-positions-table>`) chooses any endpoint it renders. Only publishable keys work here: a secret key, or the `pk_live_YOUR_KEY` sample left in a copied snippet, is refused client-side, so the component shows the reason in place of its form, sends nothing and raises a validation error. A secret key cannot leak through self-fetch.
+
+Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For self-fetch embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
+
+The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean toggle, native date and time, a city search wherever the request takes coordinates or a timezone, and one card per record for a request that takes several, with `Add` and `Remove` inside the bounds the API declares), collapses optional fields under one Advanced disclosure, reads a `lang` attribute for localized responses, and prints what the API rejects under the input it rejected, marked and summarised by label. When the page routes RoxyAPI traffic through your own server instead, `submit-url` alone names the route that answers every request the component makes, the city search included, so no key of any kind reaches the browser; add `location-url` only to send the city search somewhere else. `submit-context` takes a JSON object of your own and hands it to that route as `context` beside the request, which is where a page attaches its own verification data to a submission. For the simplest embed, load `dist/cdn/widgets.js` and drop one `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`: with the required attributes present it fetches on mount, otherwise it renders the form. That tag takes `data-submit-url`, `data-location-url` and `data-submit-context` too, so a one-tag embed can route every request through your server and carry no key at all. A single `<link>` to a theme preset (Rosewater, Eucalyptus, Kiln, Moonlit or Celeste, from the [Distribution](#distribution) table) restyles every widget on the page. A list that shows one entry per tile (the dream search, the crystal grid) opens the picked entry in place under its tiles when it holds the key, and every pick also emits `roxy-symbol-select` for a page that pairs its own card. Any element that carries a key exposes `load({ path, method, query })`, which fetches one request into it and renders the result as assigned data.
+
+## Distribution
+
+| Surface | URL |
+|---|---|
+| npm `@roxyapi/ui` | `npmjs.com/package/@roxyapi/ui` |
+| npm `@roxyapi/ui-react` | `npmjs.com/package/@roxyapi/ui-react` |
+| npm `@roxyapi/ui-vue` | `npmjs.com/package/@roxyapi/ui-vue` |
+| jsDelivr CDN (full bundle) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
+| jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
+| Widgets auto-mount (one tag, browser keys) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
+| Theme presets (one link each, by key: `practitioner` for Rosewater, `eucalyptus`, `kiln`, `moonlit`, `celeste`) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/{key}.css` |
+| shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
+| Components catalog (JSON: every component, its domain, endpoints, attributes and parts, and the theme presets) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json` |
+
+### Serve from your own domain
+
+Every file a page loads ships in the package `dist` folder, and each [GitHub release](https://github.com/RoxyAPI/ui/releases) attaches the same package as a tarball (`package/dist`): download `roxyapi-ui-{version}.tgz` from the [latest release](https://github.com/RoxyAPI/ui/releases/latest), or open any single file in the [current `dist/cdn` folder](https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/). Copy `dist/cdn` and `dist/schemas` to your server side by side, as they ship, and load `cdn/roxy-ui.js` (or `cdn/widgets.js`, or one file from `cdn/components/`) from there: forms read their schemas from beside the script, and the language files sit in `cdn/locales/`. Add `submit-url` and the page talks only to your own domain.
+
+```html
+<script src="/roxy/cdn/roxy-ui.js" defer></script>
+<script src="/roxy/cdn/locales/es.js" defer></script>
+<roxy-natal-chart submit-url="/roxy/proxy"></roxy-natal-chart>
+```
+
+## Components
+
+<!-- BEGIN:COMPONENTS -->
+| Element | Domain | Endpoint(s) | What it renders |
+|---|---|---|---|
+| `<roxy-natal-chart>` | Western | POST /astrology/natal-chart | Natal chart wheel with planet glyphs and aspect lines |
+| `<roxy-synastry-chart>` | Western | POST /astrology/synastry | Dual-wheel synastry with inter-aspects table |
+| `<roxy-western-planets-table>` | Western | POST /astrology/natal-chart | Sign, degree, house, motion columns plus ASC, MC, PoF, Vertex |
+| `<roxy-transits-table>` | Western | POST /astrology/transits | Transit planet positions plus optional aspects to a natal chart |
+| `<roxy-transit-wheel>` | Western | POST /astrology/transit-aspects | Natal chart on the inner ring, transiting bodies on the outer ring, aspect lines between them |
+| `<roxy-aspects-table>` | Western | POST /astrology/aspects, /astrology/transit-aspects, /astrology/aspect-patterns | Aspect rows coloured by nature with orb and strength, plus detected chart patterns |
+| `<roxy-moon-phase>` | Western | GET /astrology/moon-phase/{current,upcoming,calendar/...} | Moon phase card and calendar |
+| `<roxy-horoscope-card>` | Western | GET /astrology/horoscope/{sign}/{daily,weekly,monthly,yearly} | Daily, weekly, monthly, or yearly horoscope card |
+| `<roxy-astrocartography-map>` | Western | POST /astrology/astrocartography | World map of planetary MC, IC, Ascendant, and Descendant lines with per-line interpretations |
+| `<roxy-local-space-compass>` | Western | POST /astrology/local-space | Compass dial of planetary azimuth lines from the birthplace, dimmed below the horizon |
+| `<roxy-relocation-wheel>` | Western | POST /astrology/relocation-chart | Relocated chart wheel plus the move geometry, angular planets, and planets that change house |
+| `<roxy-positions-table>` | Western | POST /astrology/asteroids, /astrology/lilith, /astrology/progressions, /astrology/solar-arc, /astrology/arabic-lots | Body, sign, degree, and per-shape columns (house, motion, formula, or natal arc) plus each reading |
+| `<roxy-ephemeris-table>` | Cross | POST /astrology/planets/monthly, /vedic-astrology/planetary-positions/monthly | Per-body sign changes and retrograde windows for the month, over the full daily position grid |
+| `<roxy-fixed-stars>` | Western | POST /astrology/fixed-stars | Star to natal point conjunctions with readings, plus a catalog of position, magnitude, nature, and keywords |
+| `<roxy-profection-card>` | Western | POST /astrology/profections | Profected house and sign for the year, the lord of the year, its natal placement, and the reading |
+| `<roxy-compatibility-card>` | Cross | POST /astrology/compatibility-score, /numerology/compatibility, /biorhythm/compatibility | Score card with category breakdown |
+| `<roxy-vedic-kundli>` | Vedic | POST /vedic-astrology/birth-chart | South, North, or East Indian kundli with degree detail and optional Chandra Lagna view |
+| `<roxy-divisional-chart>` | Vedic | POST /vedic-astrology/{divisional-chart,navamsa} | Generic divisional varga wheel from D2 Hora to D60 Shashtiamsa |
+| `<roxy-kp-chart>` | Vedic (KP) | POST /vedic-astrology/kp/chart | Ascendant, cusps, planets and nodes with KP stellar hierarchy and house meanings |
+| `<roxy-vedic-planets-table>` | Vedic | POST /vedic-astrology/birth-chart | Degree, nakshatra, pada, lord, bhava, Baladi, Jagradadi and Deeptadi columns |
+| `<roxy-kp-planets-table>` | Vedic (KP) | POST /vedic-astrology/kp/planets | Sub-lord and sub-sub-lord columns |
+| `<roxy-kp-ruling-planets>` | Vedic (KP) | POST /vedic-astrology/kp/ruling-planets | Day lord, Moon/Lagna hierarchies, ruling planets, significators with house meanings |
+| `<roxy-ashtakavarga-grid>` | Vedic | POST /vedic-astrology/ashtakavarga | Sarva, Bhinna, and Shodhya Pinda views in a tabbed heatmap |
+| `<roxy-shadbala-table>` | Vedic | POST /vedic-astrology/shadbala | Six-fold planetary strength bar plus rupas and adequacy badge |
+| `<roxy-dasha-timeline>` | Vedic | POST /vedic-astrology/dasha/{current,major,sub/...} | Vimshottari mahadasha, antardasha, pratyantardasha, sookshma and prana, drill-down at every level |
+| `<roxy-guna-milan>` | Vedic | POST /vedic-astrology/compatibility | 36-point Ashtakoota with eight sub-scores |
+| `<roxy-panchang-table>` | Vedic | POST /vedic-astrology/panchang/{basic,detailed} | 15+ muhurtas in detailed mode |
+| `<roxy-vedic-aspects>` | Vedic | POST /vedic-astrology/aspects | Graha drishti rows with aspect type, strength, and orb, plus mutual aspects |
+| `<roxy-hora-table>` | Vedic | POST /vedic-astrology/panchang/hora | Day and night planetary hours with ruling planet and window |
+| `<roxy-choghadiya-grid>` | Vedic | POST /vedic-astrology/panchang/choghadiya | Day and night Choghadiya muhurta tiles colored by effect |
+| `<roxy-heliacal-table>` | Vedic | POST /vedic-astrology/heliacal | Udaya and asta windows for the six visible grahas, the calculation behind Guru Asta and Shukra Asta |
+| `<roxy-vedic-daily>` | Vedic | POST /vedic-astrology/daily | Composed Vedic daily reading with the classical rule behind every graha state, the Tara and Chandrabala windows in full, and all three sidereal frames named |
+| `<roxy-kp-finance-card>` | Vedic | POST /vedic-astrology/kp/daily-finance | KP daily finance reading with the cusp sub lords, the running dasha lords, the ruling planets and the Moon sub lord windows each scored against the gain and loss houses, weighed into one band for the day |
+| `<roxy-gochara-table>` | Vedic | POST /vedic-astrology/transit | Vedic gochara with aspects to the natal chart and the Gochara Kaksha reading drawn as a position within the sign |
+| `<roxy-bhava-bala-table>` | Vedic | POST /vedic-astrology/bhava-bala | House strength in rupas and virupas, ranked, with Bhavadhipati, Dig and Drishti Bala shown as proportions of the total |
+| `<roxy-bhav-chalit-table>` | Vedic | POST /vedic-astrology/bhav-chalit | The Chalit chart against the Rashi chart, leading with how many grahas move and which, plus the unequal bhava spans |
+| `<roxy-upagraha-table>` | Vedic | POST /vedic-astrology/upagraha | Time-based and Sun-based upagrahas with rashi, degree, longitude and nakshatra |
+| `<roxy-chara-karakas>` | Vedic | POST /vedic-astrology/chara-karakas | Karaka offices in rank order with graha, degree, scheme, and what each is read for |
+| `<roxy-arudha-padas>` | Vedic | POST /vedic-astrology/arudha | Twelve padas with bhava, lord, pada rashi, house from Lagna, and the classical exception marked |
+| `<roxy-yoga-list>` | Vedic | GET /vedic-astrology/yoga, /vedic-astrology/yoga/{id}, POST /vedic-astrology/yoga/detect | Filterable yoga cards from the 300 plus yoga catalog, grouped by verdict in detect mode |
+| `<roxy-nakshatra-card>` | Vedic | GET /vedic-astrology/nakshatras/{id} | Lord, deity, symbol, characteristics, remedies |
+| `<roxy-dosha-card>` | Vedic | POST /vedic-astrology/dosha/{manglik,kalsarpa,sadhesati} | Presence, severity, remedies, scoped effects |
+| `<roxy-numerology-card>` | Numerology | POST /numerology/{life-path,expression,soul-urge,personality,birth-day,maturity,daily,personal-day,personal-month,personal-year,chart} | Life path, expression, soul urge, personality, personal year, full chart |
+| `<roxy-compound-number>` | Numerology | GET /numerology/compound-number/{number} | Compound 10 to 52 with name, root, nature and meaning |
+| `<roxy-gematria>` | Kabbalah | POST /kabbalah/gematria | Values by cipher, every candidate Hebrew spelling with its per letter breakdown, and equal-value words |
+| `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
+| `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit; a pick opens the card in place |
+| `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love,career,custom}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
+| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, and gates, plus the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning |
+| `<roxy-hd-type-card>` | Human Design | POST /human-design/type, /human-design/profile | Type, strategy, authority, and profile tiles with the aura, signature, and not-self themes, plus the reading behind each label and the profile line keynotes |
+| `<roxy-hd-connection>` | Human Design | POST /human-design/connection | Electromagnetic, compromise, and dominance channels between two charts |
+| `<roxy-hd-penta>` | Human Design | POST /human-design/penta | Group penta channels split into upper and lower triangles |
+| `<roxy-hd-variables>` | Human Design | POST /human-design/variables | The four transformation arrows with direction, color, tone, and base, plus a reading per arrow grouped by layer and the cognition |
+| `<roxy-forecast-timeline>` | Forecast | POST /forecast/{timeline,significant-dates,transits} | Date-grouped events across Western, Vedic, and biorhythm domains, weighted by significance |
+| `<roxy-forecast-digest>` | Forecast | POST /forecast/digest | Per-window event counts, domain breakdown, and the highest-significance events |
+| `<roxy-bazi-chart>` | Chinese | POST /chinese-astrology/bazi/chart | Year, month, day and hour pillars in hanzi with hidden stems, Ten Gods, Na Yin, element balance and interactions |
+| `<roxy-luck-pillars>` | Chinese | POST /chinese-astrology/bazi/luck-pillars | Ten-year luck pillars as a strip with ages and years, the annual pillars, and the direction and start age behind them |
+| `<roxy-zodiac-card>` | Chinese | POST /chinese-astrology/zodiac/sign, GET /chinese-astrology/zodiac/{animals/{id},{id}/daily,compatibility/{sign1}/{sign2}} | The animal for a date, one animal in full, a daily reading, or a pair scored |
+| `<roxy-almanac-day>` | Chinese | GET /chinese-astrology/calendar/{day/{date},monthly}, POST /chinese-astrology/calendar/auspicious-days | Day officer, favours and avoids, clash animal and pillars, as one day, a month, or a date search |
+| `<roxy-flying-star-chart>` | Feng Shui | POST /feng-shui/flying-stars/natal, GET /feng-shui/flying-stars/annual/{year} | Nine-palace flying star plate with the mountain, period and water star per palace, the facing and sitting mountains and the structure |
+| `<roxy-kua-card>` | Feng Shui | POST /feng-shui/kua, POST /feng-shui/eight-mansions | Kua number and trigram over the eight-sector direction map, favourable and unfavourable sectors ranked |
+| `<roxy-mayan-day-sign>` | Mesoamerican | POST /mesoamerican-astrology/mayan/tzolkin, POST /mesoamerican-astrology/mayan/chart | Day sign and coefficient with the trecena, the reading, and the Calendar Round on the fuller response |
+| `<roxy-vastu-mandala>` | Vastu | POST /vastu/mandala, POST /vastu/entrance | Pada grid with a devata per square, the brahmasthan, and the entrance pada lit with its effect |
+| `<roxy-biorhythm-chart>` | Biorhythm | POST /biorhythm/{daily,forecast,critical-days} | Daily bars, forecast cycle lines, critical days |
+| `<roxy-dosha-constitution>` | Ayurveda | POST /ayurveda/constitution | Vata, pitta and kapha shares as one bar with the dominant humour and the cited factors behind it |
+| `<roxy-hexagram>` | I Ching | GET /iching/hexagrams/{number}, /iching/hexagrams/random, /iching/hexagrams/lookup, /iching/cast, POST /iching/daily, /iching/daily/cast | Hexagram figure with trigrams, judgment, image, and a reading per line (statement plus meaning); a cast highlights the moving lines and the resulting hexagram |
+| `<roxy-crystal-card>` | Crystals | GET /crystals/{id} | Photo, meaning sections, chakra, zodiac, element, hardness, keywords, and pairings |
+| `<roxy-crystal-grid>` | Crystals | GET /crystals, /crystals/chakra/{chakra}, /crystals/element/{element}, /crystals/zodiac/{sign}, /crystals/birthstone/{month}, /crystals/search | Crystal gallery with chakra, zodiac, element, colour, and planet filters; a pick opens the card in place |
+| `<roxy-dream-card>` | Dreams | GET /dreams/symbols/{id} | Symbol name, interpretation body, and letter chip |
+| `<roxy-dream-search>` | Dreams | GET /dreams/symbols | The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place |
+| `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily | Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections |
+| `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
+| `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/meanings/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
+| `<roxy-endpoint-form>` | Helper | Any endpoint, from the spec | Schema-driven form, emits roxy-submit |
+| `<roxy-location-search>` | Helper | GET /location/search | Debounced city search input, emits roxy-location-select |
+| `<roxy-data>` | Helper | Any response shape | Generic fallback renderer for unknown shapes |
+<!-- END:COMPONENTS -->
+
+## What you can build
+
+- Astrology dating apps with synastry charts and compatibility scores.
+- Kundli matching platforms with Guna Milan and Mangal Dosha checks.
+- Daily horoscope embeds for wellness, news, and lifestyle apps.
+- Tarot reading apps with daily pulls, three-card spreads, and Celtic Cross.
+- Numerology calculators with full-chart breakdowns and personal year forecasts.
+- Biorhythm dashboards with critical-day alerts.
+- I Ching apps with hexagram lookup and three-coin casting.
+
+## Theming
+
+Every component takes every colour, size, radius, space and font from `--roxy-*` CSS custom properties, and most of them derive from a handful of bases, so restyle through the tokens and never by overriding the internals of a component. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. Every component loads the default tokens when it connects, from npm and the CDN alike, and your own declarations always win over the defaults: they are declared at zero specificity and inside the `roxy` cascade layer, so one plain line beats them in both modes, with no `!important` and no extra selector weight, and it works from inside a layer of your own. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference and for the one rule a page that scopes its theme to a wrapper has to know.
+
+```css
+:root {
+	--roxy-accent: #6d28d9;
+	--roxy-radius: 12px;
+}
+
+roxy-natal-chart {
+	--roxy-accent: #ec4899;
+}
+```
+
+### Reach inside the component from your own CSS
+
+Every chart and reading component names its structural blocks with `part`, so a stylesheet outside the component can restyle or hide any of them with no JavaScript and no fork. The names are the same in every component, so one rule covers the whole library.
+
+```css
+/* Chart only. The wheel, the tables and the numbers stay; the written report goes. */
+roxy-natal-chart::part(readings) {
+	display: none;
+}
+
+/* A single named block. Every structural section carries `section` plus its own
+   name, so the chart patterns block goes without touching anything else. */
+roxy-natal-chart::part(patterns) {
+	display: none;
+}
+
+/* Or restyle it. */
+roxy-natal-chart::part(card) {
+	border: 0;
+	box-shadow: none;
+}
+```
+
+The parts: `card`, `header`, `chart`, `legend`, `details`, `table`, `tablist`, `tab`, `panel`, `section`, `readings`, `reading`, `detail` (the row a list opened in place), plus `form`, `hint`, `field-error`, `loading`, `error`, `edit-bar` and `attribution` on the built-in states. `hint` is the help text under a field of the built-in form, which quotes the API reference for that field: hide it with `::part(hint)` when the page is written for a reader who did not come for the reference, or with `hide-sections="hint"` on one element, and the label, the input and its validation stay. The copy-paste snippets carry `hide-sections="hint"` already. A `section` also carries its own name, which is what `::part(patterns)` above targets, so any single block can be dropped or restyled on its own.
+
+That list is the shared vocabulary, not the whole set. **[`components-catalog.json`](https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json) carries a `parts` array for every component**, so you can read the exact names a component answers to instead of guessing or inspecting the DOM. A name means the same block wherever it appears, which is what makes one rule enough: `::part(aspects)` reaches the aspect grid on a natal chart, the aspect list on an aspects table and the transit aspects on a transits table alike.
+
+One nesting rule worth knowing: parts reach exactly one shadow root deep, and a component that draws another one re-exports its parts, so `roxy-relocation-wheel::part(readings)` reaches the wheel nested inside it.
+
+### Chart without the written report
+
+For the same outcome in markup rather than CSS, set `hide-readings`. The component renders the chart and the data and leaves the interpretation out of the page entirely, which is what you want when your own copy supplies the words.
+
+```html
+<roxy-natal-chart hide-readings></roxy-natal-chart>
+```
+
+```tsx
+<RoxyNatalChart data={chart} hideReadings />
+```
+
+It is off by default, so nothing changes until you ask for it. Wheels, maps, tables, grids, legends, badges and every number stay; the interpretive prose is what goes.
+
+That line is drawn on the content, not on the block, so a block made of measurements stays even when it reads like analysis. The clearest case is the natal chart patterns block: a T-Square or a Stellium is a geometric fact about where the bodies sit, so the figure, its element and modality, its tightness and its planets all survive, and only the paragraph under them goes. To drop the block itself, use `hide-sections` below.
+
+#### Which components it applies to
+
+Every component that renders a written interpretation acts on it, so you never have to test a tag to find out. A pure chart or table has no interpretation to take away, so on those it is a no-op by definition and there is nothing to know.
+
+There is exactly one component where it is a no-op despite the component being mostly prose, and that is deliberate:
+
+| Component | Behaviour |
+|---|---|
+| `<roxy-dream-card>` | `hide-readings` is ignored. The dream symbol response is the symbol, its dictionary letter and the interpretation, so removing the interpretation would leave a heading over nothing. Style it with `::part(card)` or leave the card out of the page instead. |
+
+What each family keeps when you set it:
+
+- Charts and wheels keep the drawing, the legend, the glyphs, every degree and house, and the tab strip.
+- Tables keep every row and column, including the calculated ones (kaksha bindus, koota scores, significance bars, orbs and strengths).
+- Cards keep the header, the badges, the meters and the fact grids: a dosha keeps its present or absent verdict, its phase and its severity; a crystal keeps its Mohs hardness and its attribute grid; a horoscope keeps its energy meter, its Moon placement, the transits behind the reading, its key dates, and the dated sky events the reading was built on, each with its exact instant and the house it falls in.
+- Vedic responses keep the sidereal frame caption, so a chart is still reconcilable against another calculator.
+
+What goes: interpretation paragraphs, the reading accordions, keyword chips attached to a reading, remedies and action steps and strengths lists (sentences laid out as bullets), and any section whose only content was one of those, heading included.
+
+### Remove a whole block
+
+Every component also takes `hide-sections` (`hideSections` in React and Vue): a comma-separated list of `part` names, and each one named is taken off that component.
+
+```html
+<roxy-natal-chart hide-sections="patterns"></roxy-natal-chart>
+<roxy-natal-chart hide-sections="patterns, legend"></roxy-natal-chart>
+```
+
+```tsx
+<RoxyNatalChart data={chart} hideSections="patterns" />
+```
+
+The names are the same `part` names listed above, so anything you can target with `::part()` you can also drop with an attribute. The rule is generated from the name rather than from a list of components that opted in, so it works on every component, and a name no block carries hides nothing rather than erroring.
+
+**Use `hide-readings` when the words must not ship, and `hide-sections` when a block should not show.** They are different tools rather than two spellings of one. `hide-readings` drops interpretive prose out of the markup entirely, so the page never ships text it is not displaying. `hide-sections` hides the block and leaves it in the DOM, because a block is a rendering concern and its content may be measurements you have no reason to strip.
+
+**Reach for `::part()` instead when one rule should cover a whole site**, and for `hide-sections` when two components on the same page have to differ, which a stylesheet cannot express.
+
+## Languages
+
+A component reads the page language and renders its own labels in it. Set `lang` on the element, on any ancestor of it, or on `<html>`, and add the catalogue for that language.
+
+```html
+<html lang="es-AR">
+  ...
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/locales/es.js"></script>
+```
+
+```ts
+import '@roxyapi/ui';
+import '@roxyapi/ui/locales/es';
+```
+
+With `@roxyapi/ui-react` or `@roxyapi/ui-vue`, add the catalogue with the script tag above: the components themselves are loaded from the CDN, and one tag in your HTML covers the whole app.
+
+A regional tag resolves to its language, so `es-AR`, `es-MX` and `es-419` all read the `es` catalogue and a CMS that emits an accurate tag needs no configuration. English is the default and needs no catalogue, so an English-only page downloads nothing extra. Load only the languages your site serves: each is its own small file, and one of them translates every Roxy component on the page.
+
+Two things are separate on purpose. The catalogue is the wording this library writes: headings, tabs, table captions, legends, empty states. The wording the API returns is localized by the request, as shown above, and the component prints what came back. That covers the vocabulary as well as the interpretations: ask a chart for Spanish and the planet, sign and aspect names read Spanish on the wheel, in its tooltips, in the aspect grid and in the tables, with the same glyphs beside them. Ask for both and the whole card reads in one language.
+
+Dates, times and numbers follow the page as well, in the conventions that language actually uses: a Spanish page reads `15 ene 1990`, an Argentine one `15 de ene de 1990`, a German one `15. Jan. 1990, 14:30`. The hour cycle comes from the language, not from us, so nobody gets a 12-hour clock on a page that writes 24. This needs no catalogue and no attribute: it follows the same `lang` your page already declares.
+
+A catalogue ships for `de`, `es`, `fr`, `hi`, `pt`, `ru` and `tr`. Coverage grows card by card, and a card is either translated or it is not, so a component reads its own labels in your language or renders them in English, never a mixture. Every term in every catalogue is sourced from named astrology references in that language rather than translated word for word, because the words a practitioner reads are the product.
+
+Chinese is keyed by script rather than by language, so a page declaring `zh-Hant` or `zh-Hans` gets the response in that script from the endpoints that serve it. A regional tag resolves on its own: `zh-TW` and `zh-HK` read as traditional, `zh-CN` and `zh-SG` as simplified. Component labels stay English on those pages, and the response carries the vocabulary.
+
+## Reliability
+
+- Verified astronomical calculations from Roxy Ephemeris, verified against NASA JPL Horizons.
+- Stable, versioned API. New endpoints regenerate component types automatically.
+- Consistent response formats across every domain in the catalog.
+- A11y zero violations enforced in CI.
+- Tight per-component bundle budget enforced in CI.
+- Coverage of the highest-demand endpoints across every domain in the catalog: Western astrology, Vedic astrology, forecast, Human Design, Chinese astrology, feng shui, Mesoamerican astrology, Vastu, numerology, Kabbalah, tarot, biorhythm, Ayurveda, I Ching, crystals, dreams and angel numbers, plus helpers for location search and schema-driven forms.
+
+## Built for AI agents
+
+[`AGENTS.md`](AGENTS.md) is bundled inside every npm package. Once installed, agents can read it from `node_modules/@roxyapi/ui/AGENTS.md` (or `@roxyapi/ui-react/AGENTS.md`, `@roxyapi/ui-vue/AGENTS.md`) for the component decision tree, integration patterns, and rules.
+
+- Works with Claude Code, Cursor, Copilot, Codex, Gemini CLI, and any MCP-compatible client.
+- Component decision tree maps each RoxyAPI endpoint to the component that renders its response.
+- Typed prop shapes derive from the OpenAPI spec. The SDK at `@roxyapi/sdk` returns shapes that flow straight into `data`. No field renames, no glue code.
+- Remote MCP servers per domain at `roxyapi.com/mcp/{domain}`. No local setup. JSON tool-call responses feed straight into the matching component.
+- Use cases agents handle in one prompt: birth chart from city + DOB, daily tarot embed, Vedic kundli matching, numerology life-path card, biorhythm dashboard, daily horoscope by sign, panchang for the day, I Ching three-coin cast.
+
+## See every component
+
+Every component renders on sample data, light and dark, in every shipped language, at <https://roxyapi.com/ui>. See [examples](examples/) for vanilla HTML, React, Vue, and WordPress.
+
+## Stack and integrations
+
+Roxy UI runs in any framework that supports the DOM: **React, Next.js, Vue, Svelte, Angular, Solid, Astro, Qwik, Hono, Remix, Nuxt, SvelteKit, Lit, plain HTML, WordPress, Shopify themes that allow custom code, and any MCP-compatible AI agent**. Distribution paths: npm, jsDelivr CDN, shadcn registry. Use cases: astrology widgets, kundli matching, daily horoscope, BaZi four pillars chart, Chinese zodiac readings, feng shui Kua and flying star plates, almanac day picker, tarot reader, numerology calculator, biorhythm dashboard, I Ching cast, panchang almanac, dasha timeline, moon phase tracker, synastry compatibility, dosha checker.
+
+## FAQ
+
+<details>
+<summary><strong>How do I switch between light and dark mode?</strong></summary>
+
+No events. No JavaScript bridge. Components read three CSS signals in priority order:
+
+1. **`prefers-color-scheme`**: follows the operating system by default. Ship nothing, get correct behaviour.
+2. **`data-theme="dark"` or `data-theme="light"`** on any ancestor (typically `<html>` or `<body>`). Wins over system preference.
+3. **`.dark` class** on any ancestor. Equivalent to `data-theme="dark"`. Useful when the host stack already toggles a `.dark` class (Tailwind, shadcn).
+
+```ts
+// Toggle on click. No imports from this library needed.
+document.documentElement.dataset.theme =
+  document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+```
+
+```ts
+// React: bind theme to component state.
+useEffect(() => {
+  document.documentElement.dataset.theme = theme;
+}, [theme]);
+```
+
+Persist the choice in `localStorage` from your own code; the components do not own user preferences. Per-element overrides also work, so one chart can run in dark on an otherwise light page:
+
+```html
+<roxy-natal-chart data-theme="dark" .data=${chart}></roxy-natal-chart>
+```
+</details>
+
+<details>
+<summary><strong>How big is each component? What is the bundle cost?</strong></summary>
+
+Every component bundle is at most 32.3 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 180 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+</details>
+
+<details>
+<summary><strong>How tall does each component render on mobile?</strong></summary>
+
+A drawn chart (a wheel, a kundli, a bodygraph, a compass) keeps its proportions and caps itself at a width that suits it, so on a phone it takes the width of the card. Set `--roxy-chart-max-width` on one element or on `:root` to size it yourself. A grid or table figure spans the card at every width.
+
+What grows vertically is the reading around the chart. `<roxy-natal-chart>` stacks the wheel above the aspect grid, the dignity table and the planet readings, and the same holds for the synastry chart and the dasha timeline. Keep the chart and drop the prose with `hide-readings`, or drop any single block with `hide-sections`; see [Chart without the written report](#chart-without-the-written-report).
+</details>
+
+<details>
+<summary><strong>Does this work with Next.js App Router, Remix, Nuxt, SvelteKit, and Astro?</strong></summary>
+
+Yes. The components are standard custom elements; any framework that touches the DOM can mount them. Each React component ships as a client boundary, so a Next.js Server Component fetches and renders it in one file:
+
+```tsx
+// app/page.tsx (Server Component)
+import { createRoxy } from '@roxyapi/sdk';
+import { RoxyNatalChart } from '@roxyapi/ui-react';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+export default async function Page() {
+  const { data } = await roxy.astrology.generateNatalChart({
+    body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
+  });
+  return <RoxyNatalChart data={data} />;
+}
+```
+
+The markup is server rendered and hydrates in the browser. The API key never crosses the network. Nuxt pages render `@roxyapi/ui-vue` the same way, server rendered with no `<ClientOnly>`, and the same fetch shape works in Remix loaders, SvelteKit `+page.server.ts`, and Astro server endpoints.
+</details>
+
+<details>
+<summary><strong>Tailwind v3 vs v4 compatibility?</strong></summary>
+
+Both work. Components do not consume Tailwind utilities. Tailwind utilities apply outside the components on parent layout elements and containers; inside the Shadow DOM, components read `--roxy-*` CSS custom properties only.
+
+For Tailwind v4 users, the shadcn registry installs a CSS bridge that maps your existing v4 design tokens onto `--roxy-*`. For Tailwind v3 users, set `--roxy-*` directly on `:root`, or write a tiny bridge:
+
+```css
+:root {
+  --roxy-surface: theme(colors.card.DEFAULT);
+  --roxy-bg: theme(colors.background);
+  --roxy-fg: theme(colors.foreground);
+  --roxy-secondary: theme(colors.muted.foreground);
+  --roxy-accent: theme(colors.primary.DEFAULT);
+  --roxy-border: theme(colors.border);
+}
+```
+</details>
+
+<details>
+<summary><strong>How do React 17/18 vs 19 differ for custom-event handling?</strong></summary>
+
+React 19 routes hyphenated DOM events through camelCase props or lowercase attributes correctly, so `<RoxyLocationSearch onroxy-location-select={...}>` works as expected.
+
+For React 17 and 18, use a ref plus `addEventListener` in `useEffect`:
+
+```tsx
+const ref = useRef<HTMLElement>(null);
+useEffect(() => {
+  const el = ref.current;
+  if (!el) return;
+  const handler = (e: Event) => console.log((e as CustomEvent).detail);
+  el.addEventListener('roxy-location-select', handler);
+  return () => el.removeEventListener('roxy-location-select', handler);
+}, []);
+
+return <roxy-location-search ref={ref} />;
+```
+
+Upgrade to React 19 when you can; the React components route everything cleanly.
+</details>
+
+<details>
+<summary><strong>Browser support matrix?</strong></summary>
+
+Chrome 120+, Firefox 120+, Safari 17+, Edge 120+. The floor is set by ES modules, Custom Elements v1, Shadow DOM v1, container queries, and `color-mix()`. No polyfills shipped; older browsers fail loud rather than degrade silently. This covers ~95% of global traffic per Can I Use.
+</details>
+
+<details>
+<summary><strong>Are the TypeScript types reliable?</strong></summary>
+
+Yes. Component prop types are regenerated from the OpenAPI spec on every release via `@hey-api/openapi-ts`. Spec change in the API translates to typed change at the component boundary. There are no hand-written response shapes inside components, so types cannot drift from what the API returns. The SDK at `@roxyapi/sdk` shares the same type pipeline.
+</details>
+
+<details>
+<summary><strong>What is the accessibility story?</strong></summary>
+
+WAI-ARIA 1.2 throughout. Keyboard navigation on every interactive surface. Focus rings honor `--roxy-ring`. `prefers-reduced-motion: reduce` pins `--roxy-motion-duration` to `0ms` and disables entry animations. Color contrast hits WCAG AA at the defaults; verify any custom palette before shipping. CI runs axe-core against every component; zero blocking violations is a build gate.
+</details>
+
+<details>
+<summary><strong>Why can my Tailwind classes not reach the chart inside the component?</strong></summary>
+
+Components ship in Shadow DOM for style isolation; Tailwind utilities are scoped to the page tree and stop at the shadow boundary. This is by design: page styles cannot accidentally bleed into a chart, and component styles cannot leak out. Theme through `--roxy-*` custom properties (they pierce the shadow boundary) on `:root` or per element.
+</details>
+
+<details>
+<summary><strong>What is the security model for API keys?</strong></summary>
+
+Two key types. Secret keys (`sk_*`) live server side only and grant full access, so never ship one in a client bundle: fetch on your server and pass the rendered response, not the key, to the browser. Publishable keys (`pk_live_*` / `pk_test_*`) are browser-safe for direct client-side embedding: they carry an origin allowlist, so a key leaked to any other origin returns 403 instead of working. Mint either at `roxyapi.com/account`.
+
+For CSP, allow `script-src https://cdn.jsdelivr.net` if loading the bundle from the CDN. Subresource Integrity hashes are available via the jsDelivr SRI API for any pinned version.
+</details>
+
+<details>
+<summary><strong>How does versioning work?</strong></summary>
+
+Semver. Patch and minor releases are backwards compatible: tags, attributes, events, `data` shapes and part names keep working. A major release names every breaking change in its release notes. Pin a concrete version in production code:
+
+```bash
+npm install @roxyapi/ui@1
+```
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1.1.1/dist/cdn/roxy-ui.js"></script>
+```
+
+The `@latest` URL on this page is for paste-friendly examples; production code should pin.
+</details>
+
+<details>
+<summary><strong>How do I test components in my app?</strong></summary>
+
+Mock `@roxyapi/sdk` at the network boundary so unit tests do not hit the live API. Snapshot the Shadow DOM output for visual stability. End-to-end with Playwright works well; the components emit semantic ARIA roles, so locators are stable across releases.
+</details>
+
+<details>
+<summary><strong>Can I own the component file in my repo?</strong></summary>
+
+Use the shadcn registry. It drops a small typed React file per component into your repo, re-exporting the component from `@roxyapi/ui-react` so it stays in step with the package, plus a CSS theme bridge that maps your shadcn tokens onto `--roxy-*`. Rename it, wrap it, add your own props; restyle the drawing through the tokens and `::part()`.
+
+```bash
+npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json
+```
+</details>
+
+<details>
+<summary><strong>What if I need an endpoint that has no dedicated component?</strong></summary>
+
+Use `<roxy-data>`. It is the generic fallback renderer; pass any RoxyAPI response and it produces a structured layout (scrollable tables, chip lists, nested sections, formatted numbers and dates, links) without bespoke logic. New endpoints render automatically; bespoke components ship only when a novel pattern emerges.
+</details>
+
+<details>
+<summary><strong>Does this integrate with MCP-aware AI agents?</strong></summary>
+
+Yes. RoxyAPI hosts a remote MCP server per domain at `roxyapi.com/mcp/{domain}`. Configure once, render anywhere:
+
+```json
+{
+  "mcpServers": {
+    "roxy-astrology": {
+      "url": "https://roxyapi.com/mcp/astrology",
+      "headers": { "Authorization": "Bearer <your-secret-key>" }
+    }
+  }
+}
+```
+
+Tool-call JSON has the same shape as the SDK response. Pass it straight into the matching component.
+</details>
+
+<details>
+<summary><strong>What is the license?</strong></summary>
+
+MIT licensed and free to use, in commercial products too. Report bugs and ideas as [GitHub issues](https://github.com/RoxyAPI/ui/issues).
+</details>
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Links
+
+- [Documentation](https://roxyapi.com/ui)
+- [API reference](https://roxyapi.com/api-reference)
+- [Methodology](https://roxyapi.com/methodology)
+- [Pricing](https://roxyapi.com/pricing)
+- [Support](https://roxyapi.com/contact)

@@ -1,0 +1,1 @@
+{"title":"Calculate Birth Day number","fields":[{"key":"day","name":"day","kind":"number","required":true,"description":"Day of birth (1-31)","min":1,"max":31,"example":23}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

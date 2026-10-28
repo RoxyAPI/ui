@@ -1,0 +1,1 @@
+{"title":"Get zodiac sign details","fields":[{"key":"id","name":"id","inQuery":false,"kind":"text","required":true,"description":"Sign ID (lowercase, e.g., aries, taurus) or display name (case-insensitive, e.g., Aries, TAURUS).","example":"aries","source":{"path":"/astrology/signs","lang":true}}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

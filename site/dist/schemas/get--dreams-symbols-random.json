@@ -1,0 +1,1 @@
+{"title":"Random dream symbols","fields":[{"key":"count","name":"count","inQuery":true,"kind":"number","required":false,"description":"Number of random symbols to return (1-10). Default: 1.","min":1,"max":10,"default":1,"example":1,"fold":true}],"hasLang":false,"groups":[{}],"opensOnLoad":true}

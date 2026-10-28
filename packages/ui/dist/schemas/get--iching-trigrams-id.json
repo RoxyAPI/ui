@@ -1,0 +1,1 @@
+{"title":"Get trigram by number or name","fields":[{"key":"id","name":"id","inQuery":false,"kind":"text","required":true,"description":"Trigram number (1-8) or English name (Heaven, Earth, Thunder, Wind, Water, Fire, Mountain, Lake).","example":"Heaven","source":{"path":"/iching/trigrams","lang":true}}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

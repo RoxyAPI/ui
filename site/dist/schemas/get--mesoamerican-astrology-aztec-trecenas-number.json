@@ -1,0 +1,1 @@
+{"title":"Get one Aztec trecena","fields":[{"key":"number","name":"number","inQuery":false,"kind":"number","required":true,"description":"Trecena number, 1 to 20. Trecena 1 opens on 1 Cipactli, trecena 2 on 1 Ocelotl, and each subsequent period opens thirteen signs further round the twenty.","example":1}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

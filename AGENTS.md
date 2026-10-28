@@ -4,7 +4,7 @@ This file teaches AI coding agents (Claude Code, Cursor, Copilot, Codex, Gemini 
 
 This file ships inside `@roxyapi/ui`, `@roxyapi/ui-react`, and `@roxyapi/ui-vue` on npm. After install, read it at `node_modules/@roxyapi/ui/AGENTS.md`.
 
-Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component types: the combined OpenAPI spec at `https://roxyapi.com/api/v2/openapi.json`, regenerated into `packages/ui/src/types/types.gen.ts`. Per-product specs live at `https://roxyapi.com/api/v2/{slug}/openapi.json`.
+Live preview: <https://roxyapi.com/ui>. Source of truth for component types: the combined OpenAPI spec at `https://roxyapi.com/api/v2/openapi.json`, regenerated into the response types every package exports. Per-product specs live at `https://roxyapi.com/api/v2/{slug}/openapi.json`.
 
 ## Identity
 
@@ -195,16 +195,21 @@ const roxy = createRoxy(process.env.ROXY_API_KEY!);
 
 For direct client-side calls, use a **publishable key** (`pk_live_*` / `pk_test_*`) instead. Publishable keys are browser-safe: mint one at `roxyapi.com/account`, register the origins you embed on, and the API gateway returns 403 for any other origin. See the client-side pattern below.
 
-### 5. Missing `'use client'` in Next.js App Router
+### 5. Next.js App Router: render from a Server Component
 
-The React components in `@roxyapi/ui-react` mount Custom Elements, which need the DOM. In the App Router, files that import them must declare `'use client'` at the top. Server Components can fetch with the SDK; the client component renders.
+Every component in `@roxyapi/ui-react` ships as a client boundary, so a Server Component imports it and passes `data` directly, with no `'use client'` file of its own. The server fetches with the SDK, the markup is server rendered, and the element hydrates in the browser. Add `'use client'` only to a file that holds state or passes an event handler.
 
 ```tsx
-// app/chart-view.tsx
-'use client';
+// app/page.tsx (Server Component)
+import { createRoxy } from '@roxyapi/sdk';
 import { RoxyNatalChart } from '@roxyapi/ui-react';
 
-export default function ChartView({ data }) {
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+
+export default async function Page() {
+  const { data } = await roxy.astrology.generateNatalChart({
+    body: { date: '1990-01-15', time: '14:30:00', latitude: 40.71, longitude: -74.01, timezone: -5 },
+  });
   return <RoxyNatalChart data={data} />;
 }
 ```
@@ -256,7 +261,7 @@ import { RoxyVedicKundli, RoxyLocationSearch } from '@roxyapi/ui-vue';
 </template>
 ```
 
-In Nuxt, render these in a client context (`<ClientOnly>` or a `.client.vue` component): they mount Custom Elements and need the DOM, the same constraint as `'use client'` in the Next.js App Router.
+In Nuxt, render them in any page or component, server rendered or not: the markup renders on the server and the element hydrates in the browser, with no `<ClientOnly>` wrapper.
 
 ### 7. Local response interface drift
 
@@ -322,21 +327,21 @@ ensureScriptLoaded(ROXY_UI_VERSION, '/assets/roxy-ui');  // your origin
 
 The loader keeps a single shared promise, so the first call wins and every component reuses it.
 
-### 12. Theming: set the accent, not the shades
+### 12. Theming: set a base, not the shades
 
-Set `--roxy-accent` and you are done. The text-safe accent (`--roxy-accent-ink`) and the focus ring (`--roxy-ring`) are DERIVED from it, so one declaration rebrands every chart, table and card.
+**Components take every colour, size, radius, space and font from `--roxy-*` tokens, so restyle through the tokens and never by overriding the internals of a component.** A handful of tokens are bases and the rest derive from them, so one declaration restyles the library.
 
 ```css
 :root { --roxy-accent: #8b5cf6; }
 ```
 
-If you theme dark differently, set it in your dark block too, exactly as you would for any design-token system:
+The text-safe accent (`--roxy-accent-ink`) and the focus ring (`--roxy-ring`) derive from `--roxy-accent`. If you theme dark differently, set it in your dark block too, exactly as you would for any design-token system:
 
 ```css
 [data-theme='dark'] { --roxy-accent: #a78bfa; }
 ```
 
-If the page is not white or near black, also set `--roxy-surface`, the card a component paints, to the surface you place it on (and `--roxy-secondary`, the label ink, if your palette is warm): `--roxy-bg` alone leaves the card at its default sheet. Do not hardcode `--roxy-accent-ink`: you will pin it to one hue and it will stop tracking your brand. Dark mode already works with no wiring, via `prefers-color-scheme`, a `.dark` class, or `[data-theme='dark']` on any ancestor.
+If the page is not white or near black, set `--roxy-bg` and `--roxy-fg` to your page colour and ink: the card, the label ink, the muted text and every hairline derive from those two. `--roxy-font-sans` is unset by default, so components inherit your page font until you set it; `--roxy-radius` sets every corner. Do not hardcode `--roxy-accent-ink`: you will pin it to one hue and it will stop tracking your brand. To size a drawn chart, set `--roxy-chart-max-width` on it or on `:root`. Dark mode already works with no wiring, via `prefers-color-scheme`, a `.dark` class, or `[data-theme='dark']` on any ancestor. Every token, the presets and the drawing hooks are in `THEMING.md`.
 
 ## Integration patterns
 
@@ -396,7 +401,7 @@ export function BirthChartView() {
 }
 ```
 
-For a static chart with no picker, fetch in a Server Component and pass `data` to a client component (Pattern 6).
+For a static chart with no picker, fetch in a Server Component and render the component there (Pattern 6).
 
 ### Pattern 3: schema-driven form
 
@@ -454,7 +459,7 @@ In React, the same props are typed: `<RoxyNatalChart publishableKey={process.env
 
 **One tag, no element wiring.** For the simplest embed, load `dist/cdn/widgets.js` and drop a `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`. The script mounts the matching component from a generated slug map: with every path parameter supplied as a `data-*` attribute (`data-sign`, `data-id`) it fetches on mount, otherwise it renders the same input form. A second `data-*` attribute picks a variant (`data-period`, `data-mode`, `data-type`, `data-spread`). To keep every key on your own server instead, drop the publishable key and give the tag `data-submit-url`: the widget renders the form and routes every request there, the city search included, and `data-location-url` sends the city search somewhere else. `data-submit-context` rides along with each proxied request.
 
-**Theme every widget in one link.** Add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">` for a warm rosewater serif look (or `eucalyptus.css`, `kiln.css`, `moonlit.css` from the same folder), or set the `--roxy-font-display` token alone to swap result headings to a display face (it defaults to the body font, so nothing changes until you set it). See [THEMING.md](packages/ui/THEMING.md).
+**Theme every widget in one link.** Add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">` for the Rosewater preset, a warm serif look (or `eucalyptus.css`, `kiln.css`, `moonlit.css`, or `celeste.css` for the roxyapi.com look, from the same folder; `components-catalog.json` lists every preset under `themes`), or set the `--roxy-font-display` token alone to swap result headings to a display face (it defaults to the body font, so nothing changes until you set it). See [THEMING.md](packages/ui/THEMING.md).
 
 ### Pattern 5: MCP tool-call response
 
@@ -504,12 +509,12 @@ No field renames. No glue code. Use the decision tree above to pick the componen
 
 ### Pattern 6: Next.js RSC streaming
 
-Server fetches with the secret key, client renders with the React component. The API key never crosses the network.
+Server fetches with the secret key and renders the React component in the same Server Component. The API key never crosses the network.
 
 ```tsx
 // app/page.tsx (Server Component)
 import { createRoxy } from '@roxyapi/sdk';
-import BirthChartView from './birth-chart-view';
+import { RoxyVedicKundli } from '@roxyapi/ui-react';
 
 const roxy = createRoxy(process.env.ROXY_API_KEY!);
 
@@ -517,16 +522,6 @@ export default async function Page() {
 	const { data } = await roxy.vedicAstrology.generateBirthChart({
 		body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
 	});
-	return <BirthChartView data={data} />;
-}
-```
-
-```tsx
-// app/birth-chart-view.tsx (Client Component)
-'use client';
-import { RoxyVedicKundli } from '@roxyapi/ui-react';
-
-export default function BirthChartView({ data }: { data: unknown }) {
 	return <RoxyVedicKundli data={data} />;
 }
 ```
@@ -609,7 +604,7 @@ Ask for the response language AND load the matching catalogue, and the whole car
 
 ## Theming and dark mode
 
-Components react to three signals in priority order. No events to dispatch. No JS bridge to write. The CDN bundle (`dist/cdn/roxy-ui.js`) auto-loads the design tokens, so a single script tag yields full theming and dark mode with nothing else to add. The npm and React paths inherit the same tokens through the components; only set up `tokens.css` yourself if you import per component without the full bundle.
+Components react to three signals in priority order. No events to dispatch. No JS bridge to write. Every component loads the design tokens when it connects, so a single script tag or a single import yields full theming and dark mode with nothing else to add.
 
 | Signal | Where | Effect |
 |---|---|---|
@@ -712,8 +707,8 @@ When listing domains in user-visible copy, use the canonical order: Western astr
 
 ## Where to look next
 
-- **Machine-readable catalog, and the one to reach for first**: <https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json>. Every component with its `tag`, `pascal` name, `domain`, what it renders, the `endpoints` it consumes, its `parts`, and copy-paste `snippets`. Fetch and query it instead of scraping the tables in this file.
+- **Machine-readable catalog, and the one to reach for first**: <https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json>. Every component with its `tag`, `pascal` name, `domain`, what it renders, the `endpoints` it consumes, its markup `attributes`, its `parts`, and copy-paste `snippets`, plus the theme presets under `themes`. Fetch and query it instead of scraping the tables in this file.
 - Token reference: `THEMING.md`, beside this file in the package
 - Endpoint reference: <https://roxyapi.com/api-reference>
 - Integration guide: <https://roxyapi.com/docs/ui>
-- Live preview of every component: <https://roxyapi.github.io/ui/>
+- Live preview of every component: <https://roxyapi.com/ui>

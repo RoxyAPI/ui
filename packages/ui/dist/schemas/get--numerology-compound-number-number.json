@@ -1,0 +1,1 @@
+{"title":"Get compound number meaning","fields":[{"key":"number","name":"number","inQuery":false,"kind":"text","required":true,"description":"Compound number from 10 to 52.","example":"23"}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

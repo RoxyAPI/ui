@@ -1,0 +1,1 @@
+{"title":"Look up a Kua number","fields":[{"key":"number","name":"number","inQuery":false,"kind":"number","required":true,"description":"Kua number, 1 to 9.","min":1,"max":9,"example":8}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

@@ -1,0 +1,1 @@
+{"title":"List the 24 solar terms","fields":[{"key":"year","name":"year","inQuery":false,"kind":"number","required":true,"description":"Solar year, 1900 to 2100. The year opens at Li Chun rather than on 1 January, so its last two terms fall in the following January.","min":1900,"max":2100,"example":2026}],"hasLang":true,"groups":[{}],"opensOnLoad":false}

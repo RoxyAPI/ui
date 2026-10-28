@@ -7,19 +7,19 @@
 # @roxyapi/ui
 
 [![npm](https://img.shields.io/npm/v/@roxyapi/ui)](https://www.npmjs.com/package/@roxyapi/ui)
-[![Live preview](https://img.shields.io/badge/live%20preview-roxyapi.github.io%2Fui-7c3aed?logo=github)](https://roxyapi.github.io/ui/)
+[![Live demo](https://img.shields.io/badge/live%20demo-roxyapi.com-7c3aed)](https://roxyapi.com/ui)
 [![Docs](https://img.shields.io/badge/docs-roxyapi.com-blue)](https://roxyapi.com/ui)
 [![API Reference](https://img.shields.io/badge/api%20reference-roxyapi.com-blue)](https://roxyapi.com/api-reference)
 [![Pricing](https://img.shields.io/badge/pricing-roxyapi.com-blue)](https://roxyapi.com/pricing)
 [![License](https://img.shields.io/npm/l/@roxyapi/ui)](LICENSE)
 
-> Live demo: **<https://roxyapi.github.io/ui/>**. Every component rendered against real API responses, light + dark, with the React/shadcn install command per card.
+> Live demo: **<https://roxyapi.com/ui>**. Every component rendered against real API responses, light + dark, with the React/shadcn install command per card.
 
 UI component library for the RoxyAPI catalog. Drop astrology, tarot, numerology, and every other RoxyAPI domain into any framework with one script tag or one npm install. Stateless components, typed responses, theme-agnostic. Beautiful defaults out of the box; the look is yours after that.
 
 ## Theme-agnostic, every component
 
-Light, dark, your brand. Set `--roxy-accent` on `:root` and every component follows: the text-safe accent and the focus ring are derived from it, so one line rebrands the whole library. If you theme dark differently, set it in your dark block too, exactly as you would for any design-token system. No class overrides, no rebuild, no Tailwind required. Customize live at <https://roxyapi.github.io/ui/> using the **Customize colors** dialog (every colour token, a picker per token, the theme presets, copy-paste snippet).
+Light, dark, your brand. A handful of base tokens style the whole library and everything else derives from them, so one line restyles every component: `--roxy-accent` moves every accent mark, accent text and focus ring, `--roxy-font-sans` every heading and label, `--roxy-radius` every corner. The default look adapts to your page: it inherits your font, keeps the ink neutral and the borders hairline, and spends one restrained accent. No class overrides, no rebuild, no Tailwind required. Customize live at <https://roxyapi.com/ui> with the **Theme** menu and the **Customize colors** dialog (a picker per colour token, a copy-paste snippet).
 
 <table>
 <tr>
@@ -54,44 +54,36 @@ Light, dark, your brand. Set `--roxy-accent` on `:root` and every component foll
 
 ```css
 :root {
-  /* Surface. --roxy-surface is the card a component paints, so match it to the
-     surface you place the component on; --roxy-bg is the field behind an input. */
-  --roxy-surface: #ffffff;
+  /* Page and ink. The card, the secondary ink, the muted text and every hairline derive from these two. */
   --roxy-bg: #ffffff;
   --roxy-fg: #0a0a0a;
-  --roxy-secondary: #475569;
-  --roxy-muted: #71717a;
-  --roxy-border: #e4e4e7;
 
-  /* Brand. Set the accent; the text-safe shade (--roxy-accent-ink) and the focus
-     ring (--roxy-ring) are derived from it, so one line rebrands everything. */
-  --roxy-accent: #f59e0b;
+  /* Brand. The text-safe shade (--roxy-accent-ink) and the focus ring (--roxy-ring) derive from it. */
+  --roxy-accent: #4a6297;
 
-  /* Status (each has a -fg variant for WCAG-AA text contrast) */
+  /* Status. Each derives its own -fg ink for text on a tint of it. */
   --roxy-success: #16a34a;
   --roxy-warning: #ea580c;
   --roxy-danger: #dc2626;
   --roxy-info: #0284c7;
 
-  /* Shape + motion */
-  --roxy-radius-md: 8px;
-  --roxy-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.06);
+  /* Type, space, shape, motion. Leave the font unset to keep your page font. */
+  --roxy-font-sans: 'Inter', system-ui;
+  --roxy-text-base: 1rem;
+  --roxy-space-unit: 0.25rem;
+  --roxy-radius: 6px;
   --roxy-motion-duration: 200ms; /* 0ms when prefers-reduced-motion */
 }
 
 [data-theme="dark"] {
-  --roxy-surface: #18181b;
   --roxy-bg: #0a0a0a;
   --roxy-fg: #fafafa;
-  --roxy-secondary: #94a3b8;
-  --roxy-muted: #a1a1aa;
-  --roxy-border: #27272a;
   /* Only if you want a different accent in dark. Omit it to keep the default. */
-  --roxy-accent: #fbbf24;
+  --roxy-accent: #92aade;
 }
 ```
 
-Pick a tone, set the vars, every chart and card follows. Full token reference at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). Live tweaker on the [demo site](https://roxyapi.github.io/ui/). See the [FAQ](#faq) for switching between light and dark at runtime.
+Pick a tone, set the bases, every chart and card follows. Named presets ship as one stylesheet each (Rosewater, Eucalyptus, Kiln, Moonlit, and Celeste, the roxyapi.com look). Full token reference, the presets and the drawing hooks at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). See the [FAQ](#faq) for switching between light and dark at runtime.
 
 ## Gallery
 
@@ -290,7 +282,7 @@ Every chart, table, and card adapts to light and dark automatically. Hover any i
 </tr>
 </table>
 
-Tables, cards, forms, and helper components in the [live demo](https://roxyapi.github.io/ui/).
+Tables, cards, forms, and helper components in the [live demo](https://roxyapi.com/ui).
 
 ## Why developers use Roxy UI
 
@@ -320,7 +312,7 @@ Then expand into natal charts, kundli, dasha, tarot, and every other domain. The
 
 > **Pass `data`, not the envelope.** The SDK returns `{ data, error, request, response }`. Pass `data`, or the component renders `[object Object]`. This is the most common integration bug.
 
-The key stays on your server. Vanilla HTML or a server-rendered page fetches the same way, then [inlines the JSON into the component](#server-rendered-no-javascript-wiring): no build step, no key in the browser. Try every component in the [live demo](https://roxyapi.github.io/ui/), each with Preview, Code, and shadcn tabs and a live color customizer.
+The key stays on your server. Vanilla HTML or a server-rendered page fetches the same way, then [inlines the JSON into the component](#server-rendered-no-javascript-wiring): no build step, no key in the browser. Try every component in the [live demo](https://roxyapi.com/ui), each with Preview, Code, and shadcn tabs and a live color customizer.
 
 ## Install
 
@@ -412,7 +404,7 @@ In React, `pascal` is the export name, so a namespace import renders it directly
 
 ```tsx
 import * as RoxyUI from '@roxyapi/ui-react';
-import { componentForTool } from '@roxyapi/ui-react';
+import { componentForTool } from '@roxyapi/ui-react/tool-component';
 
 export function ToolWidget({ toolName, output }: { toolName: string; output: string }) {
 	const found = componentForTool(toolName);
@@ -484,7 +476,7 @@ This is how the WordPress plugin renders: PHP fetches the response server-side, 
 import '@roxyapi/ui-react/jsx';
 
 export default function Page() {
-	return <roxy-tarot-spread heading="Your reading" hide-readings />;
+	return <roxy-tarot-spread spread="three-card" hide-readings />;
 }
 ```
 
@@ -846,7 +838,7 @@ Two ways to feed a component, and the key rule for each:
 
 Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For self-fetch embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
 
-The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean toggle, native date and time, a city search wherever the request takes coordinates or a timezone, and one card per record for a request that takes several, with `Add` and `Remove` inside the bounds the API declares), collapses optional fields under one Advanced disclosure, reads a `lang` attribute for localized responses, and prints what the API rejects under the input it rejected, marked and summarised by label. When the page routes RoxyAPI traffic through your own server instead, `submit-url` alone names the route that answers every request the component makes, the city search included, so no key of any kind reaches the browser; add `location-url` only to send the city search somewhere else. `submit-context` takes a JSON object of your own and hands it to that route as `context` beside the request, which is where a page attaches its own verification data to a submission. For the simplest embed, load `dist/cdn/widgets.js` and drop one `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`: with the required attributes present it fetches on mount, otherwise it renders the form. That tag takes `data-submit-url`, `data-location-url` and `data-submit-context` too, so a one-tag embed can route every request through your server and carry no key at all. A single `<link>` to a theme preset (`practitioner`, `eucalyptus`, `kiln` or `moonlit`, from the [Distribution](#distribution) table) restyles every widget on the page. A list that shows one entry per tile (the dream search, the crystal grid) opens the picked entry in place under its tiles when it holds the key, and every pick also emits `roxy-symbol-select` for a page that pairs its own card. Any element that carries a key exposes `load({ path, method, query })`, which fetches one request into it and renders the result as assigned data.
+The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean toggle, native date and time, a city search wherever the request takes coordinates or a timezone, and one card per record for a request that takes several, with `Add` and `Remove` inside the bounds the API declares), collapses optional fields under one Advanced disclosure, reads a `lang` attribute for localized responses, and prints what the API rejects under the input it rejected, marked and summarised by label. When the page routes RoxyAPI traffic through your own server instead, `submit-url` alone names the route that answers every request the component makes, the city search included, so no key of any kind reaches the browser; add `location-url` only to send the city search somewhere else. `submit-context` takes a JSON object of your own and hands it to that route as `context` beside the request, which is where a page attaches its own verification data to a submission. For the simplest embed, load `dist/cdn/widgets.js` and drop one `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`: with the required attributes present it fetches on mount, otherwise it renders the form. That tag takes `data-submit-url`, `data-location-url` and `data-submit-context` too, so a one-tag embed can route every request through your server and carry no key at all. A single `<link>` to a theme preset (Rosewater, Eucalyptus, Kiln, Moonlit or Celeste, from the [Distribution](#distribution) table) restyles every widget on the page. A list that shows one entry per tile (the dream search, the crystal grid) opens the picked entry in place under its tiles when it holds the key, and every pick also emits `roxy-symbol-select` for a page that pairs its own card. Any element that carries a key exposes `load({ path, method, query })`, which fetches one request into it and renders the result as assigned data.
 
 ## Distribution
 
@@ -858,9 +850,9 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | jsDelivr CDN (full bundle) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
 | jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
 | Widgets auto-mount (one tag, browser keys) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
-| Theme presets (one link each: `practitioner`, `eucalyptus`, `kiln`, `moonlit`) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/{preset}.css` |
+| Theme presets (one link each, by key: `practitioner` for Rosewater, `eucalyptus`, `kiln`, `moonlit`, `celeste`) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/{key}.css` |
 | shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
-| Components catalog (JSON: every component, domain, and endpoint) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json` |
+| Components catalog (JSON: every component, its domain, endpoints, attributes and parts, and the theme presets) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json` |
 
 ### Serve from your own domain
 
@@ -967,12 +959,12 @@ Every file a page loads ships in the package `dist` folder, and each [GitHub rel
 
 ## Theming
 
-Every component reads from `--roxy-*` CSS custom properties. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. The CDN bundle auto-loads these tokens, and your own declarations always win over the defaults: they are declared at zero specificity and inside the `roxy` cascade layer, so one plain line beats them in both modes, with no `!important` and no extra selector weight, and it works from inside a layer of your own. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference and for the one rule a page that scopes its theme to a wrapper has to know.
+Every component takes every colour, size, radius, space and font from `--roxy-*` CSS custom properties, and most of them derive from a handful of bases, so restyle through the tokens and never by overriding the internals of a component. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. Every component loads the default tokens when it connects, from npm and the CDN alike, and your own declarations always win over the defaults: they are declared at zero specificity and inside the `roxy` cascade layer, so one plain line beats them in both modes, with no `!important` and no extra selector weight, and it works from inside a layer of your own. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference and for the one rule a page that scopes its theme to a wrapper has to know.
 
 ```css
 :root {
 	--roxy-accent: #6d28d9;
-	--roxy-radius-md: 12px;
+	--roxy-radius: 12px;
 }
 
 roxy-natal-chart {
@@ -1110,18 +1102,9 @@ Chinese is keyed by script rather than by language, so a page declaring `zh-Hant
 - Remote MCP servers per domain at `roxyapi.com/mcp/{domain}`. No local setup. JSON tool-call responses feed straight into the matching component.
 - Use cases agents handle in one prompt: birth chart from city + DOB, daily tarot embed, Vedic kundli matching, numerology life-path card, biorhythm dashboard, daily horoscope by sign, panchang for the day, I Ching three-coin cast.
 
-## Build anything, fast
+## See every component
 
-```bash
-git clone https://github.com/RoxyAPI/ui.git
-cd ui
-bun install
-bun run build
-bun run preview
-# http://localhost:3001
-```
-
-Local preview serves `apps/docs/` on port 3001. Same directory and same paths the live demo at <https://roxyapi.github.io/ui/> serves. See [examples](examples/) for vanilla HTML, React, Vue, and WordPress.
+Every component renders on sample data, light and dark, in every shipped language, at <https://roxyapi.com/ui>. See [examples](examples/) for vanilla HTML, React, Vue, and WordPress.
 
 ## Stack and integrations
 
@@ -1167,22 +1150,20 @@ Every component bundle is at most 32.3 KB gzipped and the full bundle (every com
 <details>
 <summary><strong>How tall does each component render on mobile?</strong></summary>
 
-Charts stay square: every wheel and grid component honours `aspect-ratio: 1 / 1` capped at `max-width: 560px`, so at a 390px phone width the chart itself is around 390px tall.
+A drawn chart (a wheel, a kundli, a bodygraph, a compass) keeps its proportions and caps itself at a width that suits it, so on a phone it takes the width of the card. Set `--roxy-chart-max-width` on one element or on `:root` to size it yourself. A grid or table figure spans the card at every width.
 
-What can grow vertically is the data card around it. `<roxy-natal-chart>` stacks the wheel above the aspect-grid tab, the dignity table, and the planet-reading accordion; the host article on the demo page measures roughly 2100px tall at 390px width because the accordion is fully expanded server-side. Production embeds usually drop the accordion or wrap the chart in a sized container, and the wheel alone fits the fold. Same applies to the synastry chart and the dasha timeline.
-
-Rule of thumb: chart-only components (`<roxy-vedic-kundli>`, `<roxy-divisional-chart>`, `<roxy-ashtakavarga-grid>`, `<roxy-tarot-card>`) stay within their aspect ratio. Components that bundle a wheel plus interpretation copy (`<roxy-natal-chart>`, `<roxy-synastry-chart>`, `<roxy-dasha-timeline>`) grow tall to fit their content. Pick the level of detail by component choice.
+What grows vertically is the reading around the chart. `<roxy-natal-chart>` stacks the wheel above the aspect grid, the dignity table and the planet readings, and the same holds for the synastry chart and the dasha timeline. Keep the chart and drop the prose with `hide-readings`, or drop any single block with `hide-sections`; see [Chart without the written report](#chart-without-the-written-report).
 </details>
 
 <details>
 <summary><strong>Does this work with Next.js App Router, Remix, Nuxt, SvelteKit, and Astro?</strong></summary>
 
-Yes. The components are standard custom elements; any framework that touches the DOM can mount them. For SSR/RSC frameworks, fetch on the server, pass the response to a client island. Next.js App Router pattern:
+Yes. The components are standard custom elements; any framework that touches the DOM can mount them. Each React component ships as a client boundary, so a Next.js Server Component fetches and renders it in one file:
 
 ```tsx
 // app/page.tsx (Server Component)
 import { createRoxy } from '@roxyapi/sdk';
-import ChartView from './chart-view';
+import { RoxyNatalChart } from '@roxyapi/ui-react';
 
 const roxy = createRoxy(process.env.ROXY_API_KEY!);
 
@@ -1190,21 +1171,11 @@ export default async function Page() {
   const { data } = await roxy.astrology.generateNatalChart({
     body: { date: '1990-01-15', time: '14:30:00', latitude: 19.07, longitude: 72.88, timezone: 5.5 },
   });
-  return <ChartView data={data} />;
-}
-```
-
-```tsx
-// app/chart-view.tsx (Client Component)
-'use client';
-import { RoxyNatalChart } from '@roxyapi/ui-react';
-
-export default function ChartView({ data }: { data: unknown }) {
   return <RoxyNatalChart data={data} />;
 }
 ```
 
-The server component fetches, the client component renders. The API key never crosses the network. Same shape works in Remix loaders, Nuxt server routes, SvelteKit `+page.server.ts`, and Astro server endpoints.
+The markup is server rendered and hydrates in the browser. The API key never crosses the network. Nuxt pages render `@roxyapi/ui-vue` the same way, server rendered with no `<ClientOnly>`, and the same fetch shape works in Remix loaders, SvelteKit `+page.server.ts`, and Astro server endpoints.
 </details>
 
 <details>
@@ -1284,17 +1255,17 @@ For CSP, allow `script-src https://cdn.jsdelivr.net` if loading the bundle from 
 <details>
 <summary><strong>How does versioning work?</strong></summary>
 
-Semver. Pre-1.0, minor bumps may include breaking changes (we will note them in the changelog). Patch bumps are always backwards-compatible. Pin a concrete version in production code:
+Semver. Patch and minor releases are backwards compatible: tags, attributes, events, `data` shapes and part names keep working. A major release names every breaking change in its release notes. Pin a concrete version in production code:
 
 ```bash
-npm install @roxyapi/ui@0.15.x
+npm install @roxyapi/ui@1
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@0.15.0/dist/cdn/roxy-ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@1.1.1/dist/cdn/roxy-ui.js"></script>
 ```
 
-The `@latest` URL on this page is for paste-friendly marketing; production code should pin.
+The `@latest` URL on this page is for paste-friendly examples; production code should pin.
 </details>
 
 <details>
@@ -1304,9 +1275,9 @@ Mock `@roxyapi/sdk` at the network boundary so unit tests do not hit the live AP
 </details>
 
 <details>
-<summary><strong>What if I want to fork or own a component?</strong></summary>
+<summary><strong>Can I own the component file in my repo?</strong></summary>
 
-Use the shadcn registry. The registry drops the React component source and a CSS theme bridge into your repo. Edit anything; the source is yours from that point.
+Use the shadcn registry. It drops a small typed React file per component into your repo, re-exporting the component from `@roxyapi/ui-react` so it stays in step with the package, plus a CSS theme bridge that maps your shadcn tokens onto `--roxy-*`. Rename it, wrap it, add your own props; restyle the drawing through the tokens and `::part()`.
 
 ```bash
 npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/natal-chart.json
@@ -1339,9 +1310,9 @@ Tool-call JSON has the same shape as the SDK response. Pass it straight into the
 </details>
 
 <details>
-<summary><strong>License and contribution?</strong></summary>
+<summary><strong>What is the license?</strong></summary>
 
-MIT. Source on [GitHub](https://github.com/RoxyAPI/ui). Open an issue or pull request for bugs and ideas. The component manifest is data-driven, so most additions are spec changes upstream rather than UI repo edits.
+MIT licensed and free to use, in commercial products too. Report bugs and ideas as [GitHub issues](https://github.com/RoxyAPI/ui/issues).
 </details>
 
 ## License
