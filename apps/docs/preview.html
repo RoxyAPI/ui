@@ -43,6 +43,7 @@
 		}
 	</style>
 
+	<script src="./manifest.js"></script>
 	<script>
 		// Paint in the theme the frame was opened with, before the first frame, so a
 		// dark page never shows a light flash. Any other value falls through to the
@@ -53,6 +54,21 @@
 				if (m) document.documentElement.dataset.theme = m[1];
 			} catch (_) {}
 		})();
+		// A named preset is matched against the shipped theme files and written by the
+		// parser, so it blocks the first paint like the token sheet above; only the
+		// matched file name reaches the document, never the query value.
+		(function () {
+			var presets = window.ROXY_THEME_PRESETS || {};
+			var name = new URLSearchParams(window.location.search).get('preset');
+			var preset = name && Object.hasOwn(presets, name) && presets[name];
+			if (preset) {
+				document.write(
+					'<link rel="stylesheet" id="theme-preset" href="./dist/styles/themes/' +
+						preset.file +
+						'">',
+				);
+			}
+		})();
 	</script>
 </head>
 <body>
@@ -61,12 +77,12 @@
 		<p class="notice" id="notice">Rendered from a fixed sample response, not a live call.</p>
 	</main>
 
-	<!-- Order is load bearing and mirrors the capture page: the bundle registers
-	     every element first, the two manifest globals feed preview.js, preview.js
-	     writes the single mount, and the deferred sample-data.js module runs last
-	     and assigns .data onto an element that is already upgraded. -->
+	<!-- Order is load bearing: manifest.js sits in the head so the preset is chosen
+	     before the first paint, the bundle registers every element, the demo
+	     manifest feeds preview.js, preview.js writes the single mount, and the
+	     deferred sample-data.js module runs last and assigns .data onto an element
+	     that is already upgraded. -->
 	<script src="./dist/cdn/roxy-ui.js"></script>
-	<script src="./manifest.js"></script>
 	<script src="./components-manifest.js"></script>
 	<script src="./preview.js"></script>
 	<script type="module" src="./sample-data.js"></script>

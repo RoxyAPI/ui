@@ -19,6 +19,11 @@
  */
 
 import { describe, expect, test } from 'bun:test';
+import {
+	type PaletteName,
+	ROXY_PALETTES,
+	SHARED_THEME,
+} from '../src/styles/palettes.js';
 import { HEX, TOKENS_CSS, tokensFromCss } from './token-source.js';
 
 const THEMING_MD = 'packages/ui/THEMING.md';
@@ -148,5 +153,88 @@ describe('THEMING.md is the token contract and may not drift from tokens.css', (
 				'wrong, which is why presence alone is not enough:\n  ' +
 				wrong.join('\n  '),
 		).toEqual([]);
+	});
+});
+
+describe('THEMING.md prints each theme preset exactly as palettes.ts defines it', () => {
+	/** The value a preset sets for a token in one mode; `danger` is shared by every preset. */
+	const presetValue = (
+		name: PaletteName,
+		mode: 'light' | 'dark',
+		token: string,
+	): string =>
+		token === 'danger'
+			? SHARED_THEME.danger[mode]
+			: ((ROXY_PALETTES[name][mode] as unknown as Record<string, string>)[
+					token
+				] ?? '');
+
+	test('the light and dark preset tables match the palettes', async () => {
+		const md = await Bun.file(THEMING_MD).text();
+		const wrong: string[] = [];
+		let checked = 0;
+		for (const mode of ['light', 'dark'] as const) {
+			const head = `| ${mode === 'light' ? 'Light' : 'Dark'} | Token |`;
+			const start = md.indexOf(head);
+			expect(
+				start,
+				`${THEMING_MD} has no ${mode} preset table`,
+			).toBeGreaterThan(-1);
+			const lines = md.slice(start).split('\n');
+			const names = (lines[0] as string)
+				.split('|')
+				.slice(3, -1)
+				.map((cell) => cell.trim().toLowerCase() as PaletteName);
+			expect([...names].sort()).toEqual(
+				(Object.keys(ROXY_PALETTES) as PaletteName[]).sort(),
+			);
+			for (const line of lines.slice(2)) {
+				if (!line.startsWith('|')) break;
+				const cells = line
+					.split('|')
+					.slice(1, -1)
+					.map((cell) => cell.trim().replace(/`/g, ''));
+				const token = (cells[1] as string).replace('--roxy-', '');
+				names.forEach((name, i) => {
+					checked++;
+					const printed = cells[i + 2] as string;
+					const actual = presetValue(name, mode, token);
+					if (printed.toLowerCase() !== actual.toLowerCase()) {
+						wrong.push(
+							`${name} ${mode} ${token}: doc says ${printed}, palettes.ts says ${actual}`,
+						);
+					}
+				});
+			}
+		}
+		expect(checked).toBeGreaterThan(0);
+		expect(wrong, wrong.join('\n')).toEqual([]);
+	});
+
+	test('the Practitioner copy-paste snippet matches its palette', async () => {
+		const md = await Bun.file(THEMING_MD).text();
+		const section = md.slice(md.indexOf('### Theme presets'));
+		const css = section.slice(
+			section.indexOf('```css'),
+			section.indexOf('```', section.indexOf('```css') + 6),
+		);
+		const blocks = {
+			light: css.split(':root[data-theme="dark"]')[0] ?? '',
+			dark: css.split(':root[data-theme="dark"]')[1] ?? '',
+		};
+		const wrong: string[] = [];
+		for (const mode of ['light', 'dark'] as const) {
+			for (const [, token, value] of blocks[mode].matchAll(
+				/--roxy-([a-z-]+):\s*(#[0-9a-fA-F]{6})/g,
+			)) {
+				const actual = presetValue('practitioner', mode, token as string);
+				if ((value as string).toLowerCase() !== actual.toLowerCase()) {
+					wrong.push(
+						`${mode} ${token}: doc says ${value}, palettes.ts says ${actual}`,
+					);
+				}
+			}
+		}
+		expect(wrong, wrong.join('\n')).toEqual([]);
 	});
 });

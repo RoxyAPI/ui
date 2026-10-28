@@ -8,7 +8,7 @@ Live preview: <https://roxyapi.github.io/ui/>. Source of truth for component typ
 
 ## Identity
 
-Roxy UI is the official web component library for the RoxyAPI catalog. Components and helpers cover Western astrology, Vedic astrology, forecast, Human Design, Chinese astrology, feng shui, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers, with the location helper for geocoding. New endpoints regenerate component types automatically.
+Roxy UI is the official web component library for the RoxyAPI catalog. Components and helpers cover Western astrology, Vedic astrology, forecast, Human Design, Chinese astrology, feng shui, Mesoamerican astrology, Vastu, numerology, Kabbalah, tarot, biorhythm, Ayurveda, I Ching, crystals, dreams, angel numbers, with the location helper for geocoding. New endpoints regenerate component types automatically.
 
 ## Decision tree for picking a component
 
@@ -169,7 +169,7 @@ element.data = data;
 
 Every chart endpoint (Western, Vedic, KP, synastry, transits, dasha, dosha, panchang) needs `latitude`, `longitude`, and `timezone`. Never ask the user to type coordinates. Call `/location/search` first, then feed the result into the chart endpoint.
 
-Two endpoints take TWO locations, and they name them differently. `POST /astrology/synastry`, `/astrology/composite-chart`, `/vedic-astrology/compatibility` and `/human-design/connection` nest a full location per person (`person1` / `person2`, or `personA` / `personB`). `POST /astrology/relocation-chart` instead takes `birthLatitude`, `birthLongitude`, `relocationLatitude`, `relocationLongitude` at the top level with a single `timezone`, which is the BIRTH timezone: relocating does not move the birth moment. `<roxy-endpoint-form>` renders a separate city search for each location automatically, so self-fetch mode needs no extra work.
+Some endpoints take TWO locations, and they name them in two different ways. `POST /astrology/synastry`, `/astrology/composite-chart`, `/vedic-astrology/compatibility` and `/human-design/connection` nest a full location per person (`person1` / `person2`, or `personA` / `personB`). `POST /astrology/relocation-chart` instead takes `birthLatitude`, `birthLongitude`, `relocationLatitude`, `relocationLongitude` at the top level with a single `timezone`, which is the BIRTH timezone: relocating does not move the birth moment. `<roxy-endpoint-form>` renders a separate city search for each location automatically, so self-fetch mode needs no extra work.
 
 ```ts
 // Right
@@ -182,7 +182,7 @@ const { data: chart } = await roxy.astrology.generateNatalChart({
 
 ### 3. Timezone format inconsistency
 
-Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). The decimal form is what `/location/search` returns; the IANA form is correct over DST boundaries. Pick one and stay consistent in a single integration. Mixing them does not break the API but makes the bug surface area larger.
+Every chart endpoint accepts `timezone` as either a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). `/location/search` returns both, `timezone` as the IANA name and `utcOffset` as the decimal hours; the IANA form is correct over DST boundaries. Pick one and stay consistent in a single integration. Mixing them does not break the API but makes the bug surface area larger.
 
 ### 4. Secret key in the browser
 
@@ -239,7 +239,7 @@ Several components select a view, mode, or chart layout in addition to `data`. T
 <RoxyPanchangTable data={panchang} detail="detailed" />
 ```
 
-The full set: `RoxyNatalChart` `houseSystem`, `RoxyHoroscopeCard` `period` and `layout`, `RoxyMoonPhase` `mode`, `RoxyZodiacCard` `mode`, `RoxyKuaCard` `mode`, `RoxyAlmanacDay` `mode`, `RoxyFlyingStarChart` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` and `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`, `RoxyHexagram` `mode`. Outside React and Vue, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
+The full set: `RoxyHoroscopeCard` `period` and `layout`, `RoxyMoonPhase` `mode`, `RoxyZodiacCard` `mode`, `RoxyKuaCard` `mode`, `RoxyMayanDaySign` `mode`, `RoxyVastuMandala` `mode`, `RoxyAlmanacDay` `mode`, `RoxyFlyingStarChart` `mode`, `RoxyCompatibilityCard` `mode`, `RoxyVedicKundli` `chartStyle` and `chartReference`, `RoxyDivisionalChart` `chartStyle`, `RoxyPanchangTable` `detail`, `RoxyDashaTimeline` `period`, `RoxyDoshaCard` `type`, `RoxyNumerologyCard` `type`, `RoxyTarotSpread` `spread`, `RoxyBiorhythmChart` `mode`. `RoxyNatalChart` reads its house system and `RoxyHexagram` its variant from the response itself, so neither takes such a prop. Outside React and Vue, set the same value as a kebab-case attribute or a JS property on the element (for example `chart-style="south"` or `el.chartStyle = 'south'`).
 
 ### 6c. Vue and Nuxt
 
@@ -454,7 +454,7 @@ In React, the same props are typed: `<RoxyNatalChart publishableKey={process.env
 
 **One tag, no element wiring.** For the simplest embed, load `dist/cdn/widgets.js` and drop a `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`. The script mounts the matching component from a generated slug map: with every path parameter supplied as a `data-*` attribute (`data-sign`, `data-id`) it fetches on mount, otherwise it renders the same input form. A second `data-*` attribute picks a variant (`data-period`, `data-mode`, `data-type`, `data-spread`). To keep every key on your own server instead, drop the publishable key and give the tag `data-submit-url`: the widget renders the form and routes every request there, the city search included, and `data-location-url` sends the city search somewhere else. `data-submit-context` rides along with each proxied request.
 
-**Theme every widget in one link.** Add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">` for a warm rosewater serif look, or set the `--roxy-font-display` token alone to swap result headings to a display face (it defaults to the body font, so nothing changes until you set it). See [THEMING.md](packages/ui/THEMING.md).
+**Theme every widget in one link.** Add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">` for a warm rosewater serif look (or `eucalyptus.css`, `kiln.css`, `moonlit.css` from the same folder), or set the `--roxy-font-display` token alone to swap result headings to a display face (it defaults to the body font, so nothing changes until you set it). See [THEMING.md](packages/ui/THEMING.md).
 
 ### Pattern 5: MCP tool-call response
 
@@ -688,7 +688,7 @@ That table is the shared vocabulary, not the whole list. **`components-catalog.j
 ## Rules every agent must follow
 
 - Always call `/location/search` first before any chart endpoint that takes latitude, longitude, or timezone. Use `<roxy-location-search>` for the input UI.
-- Pass the response object directly. Components are stateless; they do not fetch internally except for `<roxy-location-search>`, `<roxy-endpoint-form>`, and the widgets auto-mount script.
+- Pass the response object directly. Components are stateless; they fetch only in self-fetch mode (a `publishable-key` or a `submit-url`, Pattern 4), plus `<roxy-location-search>`, `<roxy-endpoint-form>`, and the widgets auto-mount script.
 - Use the typed SDK from `@roxyapi/sdk` so prop shapes match the spec automatically.
 - Theming is CSS custom properties on `:root` or per element. Switch light and dark via `data-theme` on any ancestor (see the table above). Do not write Tailwind classes inside the components; the shadow DOM ignores them.
 - Honor reduced motion. The library already respects `prefers-reduced-motion: reduce` and the `--roxy-motion-duration` variable.
@@ -697,7 +697,7 @@ That table is the shared vocabulary, not the whole list. **`components-catalog.j
 
 ## Domain ordering
 
-When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, forecast, human design, Chinese astrology, feng shui, numerology, tarot, biorhythm, I Ching, crystals, dreams, angel numbers. Sort by this list and skip any domain the catalog does not carry a component for. Location is utility, not a selling domain. The `domain` field in `components-catalog.json` carries the same names, so sort by this list rather than by whatever order you discovered components in.
+When listing domains in user-visible copy, use the canonical order: Western astrology, Vedic astrology, forecast, human design, Chinese astrology, feng shui, Mesoamerican astrology, Vastu, numerology, Kabbalah, tarot, biorhythm, Ayurveda, I Ching, crystals, dreams, angel numbers. Sort by this list and skip any domain the catalog does not carry a component for. Location is utility, not a selling domain. The `domain` field in `components-catalog.json` carries short forms of these names (`Western`, `Vedic`, `Feng Shui`), so sort by this list rather than by whatever order you discovered components in.
 
 ## What not to ship
 

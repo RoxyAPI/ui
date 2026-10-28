@@ -10,7 +10,11 @@
  * Query string, all validated against the manifests before use:
  *   c      required, a component slug. Anything else renders a plain line.
  *   theme  light or dark, applied by the head script in preview.html.
+ *   preset one of the shipped theme presets, linked by the head script in preview.html.
  *   lang   one of the language payloads the build emitted.
+ *
+ * Messages: `roxy-set-theme` from any frame, and `roxy-preview:tokens` from a
+ * TOKEN_ORIGINS parent, which paints shipped token names with hex values inline.
  */
 
 (function () {
@@ -71,9 +75,45 @@
 		}
 	}
 
-	// Same message the showcase accepts, so a host that repaints while this page is
-	// open stays in sync. Nothing is posted back: the theme arrives in the URL, and
-	// a page that announced itself would also reach every other frame on the host.
+	// The parent pages allowed to repaint tokens: the builder on the main site and its local dev server.
+	const TOKEN_ORIGINS = ['https://roxyapi.com', 'http://localhost:3000'];
+	const HEX = /^#(?:[0-9a-f]{3}){1,2}$/i;
+	const painted = new Set();
+	let shipped = new Set();
+
+	// Every --roxy-* name the linked token sheet declares, read from the shipped file itself.
+	function shippedTokens() {
+		const names = new Set();
+		const walk = (rules) => {
+			for (const rule of rules) {
+				if (rule.style)
+					for (const name of rule.style)
+						if (name.startsWith('--roxy-')) names.add(name);
+				if (rule.cssRules) walk(rule.cssRules);
+			}
+		};
+		const sheet = document.querySelector('link[href$="/tokens.css"]')?.sheet;
+		if (sheet) walk(sheet.cssRules);
+		return names;
+	}
+
+	// Each message replaces the previous set, so an empty object clears every value it painted.
+	function paintTokens(tokens) {
+		if (!shipped.size) shipped = shippedTokens();
+		const style = document.documentElement.style;
+		for (const name of painted) style.removeProperty(name);
+		painted.clear();
+		for (const [name, value] of Object.entries(tokens)) {
+			if (shipped.has(name) && typeof value === 'string' && HEX.test(value)) {
+				style.setProperty(name, value);
+				painted.add(name);
+			}
+		}
+	}
+
+	// Same theme message the showcase accepts, so a host that repaints while this
+	// page is open stays in sync. Nothing is posted back: the theme arrives in the
+	// URL, and a page that announced itself would also reach every other frame on the host.
 	window.addEventListener('message', (e) => {
 		const msg = e.data;
 		if (!msg || typeof msg !== 'object') return;
@@ -82,6 +122,14 @@
 			(msg.theme === 'light' || msg.theme === 'dark')
 		) {
 			document.documentElement.dataset.theme = msg.theme;
+		} else if (
+			msg.type === 'roxy-preview:tokens' &&
+			TOKEN_ORIGINS.includes(e.origin) &&
+			msg.tokens &&
+			typeof msg.tokens === 'object' &&
+			!Array.isArray(msg.tokens)
+		) {
+			paintTokens(msg.tokens);
 		}
 	});
 })();

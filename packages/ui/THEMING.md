@@ -200,9 +200,9 @@ If you used the shadcn registry path, this bridge installs automatically and rea
 
 ### Per-domain accent presets
 
-One accent per domain, so a multi-domain page reads as twelve related products rather than twelve identical amber cards. Scope a preset to a wrapper and every component inside it picks it up.
+One accent per domain, so a multi-domain page reads as related products rather than identical amber cards. Scope a preset to a wrapper and every component inside it picks it up.
 
-Every ink value below is measured against the page background: all twelve pass WCAG AA (4.5:1) in **both** light and dark. Set `--roxy-accent` for fills and glyphs, `--roxy-accent-ink` for accent-coloured *text*, and `--roxy-ring` for focus outlines.
+Every ink value below is measured against the page background: each passes WCAG AA (4.5:1) in **both** light and dark. Set `--roxy-accent` for fills and glyphs, `--roxy-accent-ink` for accent-coloured *text*, and `--roxy-ring` for focus outlines.
 
 | Domain | `--roxy-accent` | `--roxy-accent-ink` | Dark accent | Dark ink |
 |---|---|---|---|---|
@@ -267,9 +267,44 @@ For a low-vision or high-contrast mode. Body text hits WCAG **AAA** (7:1); every
 }
 ```
 
-### Practitioner preset
+### Theme presets
 
-An optional theme file restyles every widget on a page to a warm rosewater palette with a serif display font, shadowless with hairline borders and generous radii. It only reassigns `--roxy-*` tokens, so it layers on top of the base tokens and composes with the same dark-mode machinery. A preset sits in the `roxy.theme` layer and the defaults in `roxy.tokens`, so it outranks them whichever order the two files load, and your own declarations still outrank the preset.
+Four optional theme files restyle every widget on a page, each with a light and a dark palette, a serif display font, no shadows, hairline borders and generous radii:
+
+| Preset | File | Look |
+|---|---|---|
+| Practitioner | `dist/styles/themes/practitioner.css` | Warm rosewater, fonts bundled |
+| Eucalyptus | `dist/styles/themes/eucalyptus.css` | Sage green on warm paper |
+| Kiln | `dist/styles/themes/kiln.css` | Terracotta on cream |
+| Moonlit | `dist/styles/themes/moonlit.css` | Ink blue on cream, gold on night blue in dark mode |
+
+Practitioner self-hosts its fonts inside this package; the other three load the same two families from Google Fonts with one `@import`. All four share `--roxy-radius-sm: 0.4375rem`, `--roxy-radius-md: 0.875rem`, `--roxy-radius-lg: 1.575rem` and no shadows. The Practitioner details below hold for all four.
+
+The colours each preset sets, with the names the Customize Colors panel and the WordPress plugin show:
+
+| Light | Token | Practitioner | Eucalyptus | Kiln | Moonlit |
+|---|---|---|---|---|---|
+| Accent | `--roxy-accent` | `#914955` | `#4c7060` | `#a44a24` | `#254b5a` |
+| Labels | `--roxy-secondary` | `#503a3a` | `#3a4037` | `#493d30` | `#2d3c47` |
+| Page background | `--roxy-bg` | `#fbf6f3` | `#f8f7f2` | `#faf4ea` | `#faf6ec` |
+| Card background | `--roxy-surface` | `#f5e8e0` | `#edefe6` | `#efe6d6` | `#f1eadb` |
+| Text | `--roxy-fg` | `#3e2a2c` | `#22281f` | `#322820` | `#14232e` |
+| Secondary text | `--roxy-muted` | `#7e625f` | `#666d63` | `#74634f` | `#5c6a76` |
+| Borders | `--roxy-border` | `#ead9d2` | `#dce0d3` | `#e6d8c2` | `#e4dbc6` |
+| Warnings | `--roxy-danger` | `#b23a38` | `#b23a38` | `#b23a38` | `#b23a38` |
+
+| Dark | Token | Practitioner | Eucalyptus | Kiln | Moonlit |
+|---|---|---|---|---|---|
+| Accent | `--roxy-accent` | `#d9a2a6` | `#9cc0ac` | `#d98d5f` | `#c9a96b` |
+| Labels | `--roxy-secondary` | `#e0cecb` | `#cfd5ca` | `#dccdbc` | `#ced0c7` |
+| Page background | `--roxy-bg` | `#231619` | `#191e19` | `#211710` | `#0b1826` |
+| Card background | `--roxy-surface` | `#37272b` | `#2a312a` | `#35281e` | `#1b2a39` |
+| Text | `--roxy-fg` | `#f2e4df` | `#e9ede3` | `#f2e7d9` | `#efe7d3` |
+| Secondary text | `--roxy-muted` | `#b39698` | `#9fa89b` | `#b49d87` | `#92a4b2` |
+| Borders | `--roxy-border` | `#49353a` | `#384138` | `#463729` | `#263a4c` |
+| Warnings | `--roxy-danger` | `#e4736b` | `#e4736b` | `#e4736b` | `#e4736b` |
+
+Each file only reassigns `--roxy-*` tokens, so it layers on top of the base tokens and composes with the same dark-mode machinery. A preset sits in the `roxy.theme` layer and the defaults in `roxy.tokens`, so it outranks them whichever order the two files load, and your own declarations still outrank the preset.
 
 When authoring your own full re-theme, cover `--roxy-secondary` alongside `--roxy-fg` and `--roxy-muted`: it is the secondary ink used by form labels, the generic renderer, and several chart strokes, and the stock value is slate, so a warm or brand theme that skips it shows cool bluish labels, most visibly in dark mode.
 
@@ -293,10 +328,10 @@ Or copy the color tokens into your own stylesheet. The Customize Colors panel on
 }
 :root[data-theme="dark"] {
 	--roxy-bg: #231619;
-	--roxy-surface: #2e1e22;
+	--roxy-surface: #37272b;
 	--roxy-fg: #f2e4df;
 	--roxy-muted: #b39698;
-	--roxy-border: #402c31;
+	--roxy-border: #49353a;
 	--roxy-accent: #d9a2a6;
 	--roxy-danger: #e4736b;
 }

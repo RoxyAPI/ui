@@ -128,6 +128,225 @@ test('the requested theme is on the root before the component paints', async ({
 	).toBeUndefined();
 });
 
+/** The stylesheet links the page carries, in document order. */
+const linkedSheets = (page: import('@playwright/test').Page) =>
+	page.evaluate(() =>
+		[...document.querySelectorAll('link[rel="stylesheet"]')].map((l) =>
+			l.getAttribute('href'),
+		),
+	);
+
+test('a shipped preset is linked before the first paint and paints its accent in both themes', async ({
+	page,
+}) => {
+	// The first animation frame runs only once every render-blocking sheet has
+	// loaded, so the accent read there is the one the first paint used.
+	await page.addInitScript(() => {
+		requestAnimationFrame(() => {
+			(window as unknown as { firstFrameAccent?: string }).firstFrameAccent =
+				getComputedStyle(document.documentElement)
+					.getPropertyValue('--roxy-accent')
+					.trim()
+					.toLowerCase();
+		});
+	});
+	await page.goto('/preview.html?c=natal-chart');
+	const presets = await page.evaluate(
+		() =>
+			(
+				window as unknown as {
+					ROXY_THEME_PRESETS: Record<
+						string,
+						{
+							file: string;
+							light: { accent: string };
+							dark: { accent: string };
+						}
+					>;
+				}
+			).ROXY_THEME_PRESETS,
+	);
+	expect(Object.keys(presets).length).toBeGreaterThan(0);
+
+	for (const [name, preset] of Object.entries(presets)) {
+		for (const theme of ['light', 'dark'] as const) {
+			await page.goto(
+				`/preview.html?c=natal-chart&theme=${theme}&preset=${name}`,
+			);
+			const want = preset[theme].accent.toLowerCase();
+			await expect
+				.poll(() =>
+					page.evaluate(
+						() =>
+							(window as unknown as { firstFrameAccent?: string })
+								.firstFrameAccent,
+					),
+				)
+				.toBe(want);
+			expect(await linkedSheets(page)).toEqual([
+				'./dist/styles/tokens.css',
+				`./dist/styles/themes/${preset.file}`,
+			]);
+			// The mounted card reads the same value through its own shadow tree.
+			await page.waitForFunction(
+				() =>
+					(document.querySelector('roxy-natal-chart') as { data?: unknown })
+						?.data != null,
+			);
+			expect(
+				await page.evaluate(() =>
+					getComputedStyle(document.querySelector('roxy-natal-chart')!)
+						.getPropertyValue('--roxy-accent')
+						.trim()
+						.toLowerCase(),
+				),
+				`${name} ${theme}`,
+			).toBe(want);
+		}
+	}
+});
+
+test('an absent or unrecognised preset links nothing beyond the token sheet', async ({
+	page,
+}) => {
+	const accent = () =>
+		page.evaluate(() =>
+			getComputedStyle(document.documentElement)
+				.getPropertyValue('--roxy-accent')
+				.trim(),
+		);
+	await page.goto('/preview.html?c=natal-chart');
+	expect(await linkedSheets(page)).toEqual(['./dist/styles/tokens.css']);
+	const stock = await accent();
+
+	const hostile = '"><script>alert(1)</script>';
+	for (const value of ['sideways', '__proto__', 'constructor', hostile]) {
+		await page.goto(
+			`/preview.html?c=natal-chart&preset=${encodeURIComponent(value)}`,
+		);
+		expect(await linkedSheets(page), value).toEqual([
+			'./dist/styles/tokens.css',
+		]);
+		expect(await accent(), value).toBe(stock);
+	}
+	expect(await page.content()).not.toContain('alert(1)');
+});
+
+/**
+ * Frame the preview inside a parent served at `origin`, the way the builder on the
+ * main site does, and return the posting and reading handles.
+ */
+async function framedPreview(
+	page: import('@playwright/test').Page,
+	origin: string,
+	baseURL: string | undefined,
+) {
+	const src = `${baseURL}/preview.html?c=natal-chart&theme=light&preset=kiln`;
+	// Chromium refuses a stubbed parent framing a localhost page unless the frame is served through the same interception.
+	await page.route(`${baseURL}/**`, async (route) =>
+		route.fulfill({ response: await route.fetch() }),
+	);
+	await page.route(`${origin}/host.html`, (route) =>
+		route.fulfill({
+			contentType: 'text/html',
+			body: `<!doctype html><meta charset="utf-8"><iframe src="${src}" width="900" height="700"></iframe>`,
+		}),
+	);
+	await page.goto(`${origin}/host.html`);
+	const frame = page.frameLocator('iframe');
+	await expect(frame.locator('roxy-natal-chart')).toBeAttached();
+	const child = page.frames().find((f) => f.url().startsWith(src))!;
+	await child.waitForFunction(
+		() =>
+			(document.querySelector('roxy-natal-chart') as { data?: unknown })
+				?.data != null,
+	);
+	const post = (msg: unknown) =>
+		page.evaluate((m) => window.frames[0].postMessage(m, '*'), msg);
+	const inline = (name: string) =>
+		child.evaluate(
+			(n) => document.documentElement.style.getPropertyValue(n),
+			name,
+		);
+	const painted = () =>
+		child.evaluate(() =>
+			getComputedStyle(document.querySelector('roxy-natal-chart')!)
+				.getPropertyValue('--roxy-accent')
+				.trim()
+				.toLowerCase(),
+		);
+	const presetAccent = await child.evaluate(() =>
+		(
+			window as unknown as {
+				ROXY_THEME_PRESETS: Record<string, { light: { accent: string } }>;
+			}
+		).ROXY_THEME_PRESETS.kiln.light.accent.toLowerCase(),
+	);
+	return { child, post, inline, painted, presetAccent };
+}
+
+test('a token message from the builder paints shipped tokens over the preset, and an empty one resets', async ({
+	page,
+	baseURL,
+}) => {
+	const { post, inline, painted, presetAccent } = await framedPreview(
+		page,
+		'http://localhost:3000',
+		baseURL,
+	);
+	expect(await painted()).toBe(presetAccent);
+
+	await post({
+		type: 'roxy-preview:tokens',
+		tokens: {
+			'--roxy-accent': '#123456',
+			'--roxy-bg': '#ABC',
+			'--roxy-not-a-token': '#ffffff',
+			'--roxy-fg': 'red',
+			'--roxy-border': '#12345',
+			'--roxy-surface': '#fff; color: red',
+			color: '#000000',
+		},
+	});
+	await expect.poll(painted).toBe('#123456');
+	expect(await inline('--roxy-bg')).toBe('#ABC');
+	for (const name of [
+		'--roxy-not-a-token',
+		'--roxy-fg',
+		'--roxy-border',
+		'--roxy-surface',
+		'color',
+	])
+		expect(await inline(name), name).toBe('');
+
+	await post({ type: 'roxy-preview:tokens', tokens: {} });
+	await expect.poll(painted).toBe(presetAccent);
+	expect(await inline('--roxy-bg')).toBe('');
+});
+
+test('a token message from any other origin paints nothing', async ({
+	page,
+	baseURL,
+}) => {
+	const { child, post, inline, painted, presetAccent } = await framedPreview(
+		page,
+		'http://elsewhere.test',
+		baseURL,
+	);
+	await post({
+		type: 'roxy-preview:tokens',
+		tokens: { '--roxy-accent': '#123456' },
+	});
+	// Messages from one source arrive in order, so once the theme lands the tokens one was already handled.
+	await post({ type: 'roxy-set-theme', theme: 'dark' });
+	await expect
+		.poll(() => child.evaluate(() => document.documentElement.dataset.theme))
+		.toBe('dark');
+	expect(await inline('--roxy-accent')).toBe('');
+	await post({ type: 'roxy-set-theme', theme: 'light' });
+	await expect.poll(painted).toBe(presetAccent);
+});
+
 test('a second copy of the bundle, and a component file after it, register nothing and log nothing', async ({
 	page,
 }) => {

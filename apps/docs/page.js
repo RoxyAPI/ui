@@ -356,6 +356,12 @@
 		},
 	};
 	const state = JSON.parse(JSON.stringify(DEFAULTS));
+	// Swatch names match the WordPress plugin settings, with the token beneath for developers.
+	const LABELS = {
+		primary: 'Brand base', secondary: 'Labels', accent: 'Accent',
+		success: 'Positive', warning: 'Caution', danger: 'Warnings', info: 'Information',
+		bg: 'Page background', surface: 'Card background', fg: 'Text', muted: 'Secondary text', border: 'Borders',
+	};
 
 	// Named presets, built from window.ROXY_THEME_PRESETS (generated from the palette
 	// SSOT, so the demo never hand-copies hexes). Each palette overrides only the
@@ -438,7 +444,7 @@
 		swatchRow.innerHTML = TOKENS.map((t) => `
 			<label>
 				<input type="color" data-token="${t}" value="${state[mode][t]}">
-				<span>--roxy-${t}</span>
+				<span>${LABELS[t]}<small>--roxy-${t}</small></span>
 			</label>
 		`).join('');
 		swatchRow.querySelectorAll('input[type="color"]').forEach((input) => {

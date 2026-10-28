@@ -19,7 +19,7 @@ UI component library for the RoxyAPI catalog. Drop astrology, tarot, numerology,
 
 ## Theme-agnostic, every component
 
-Light, dark, your brand. Set `--roxy-accent` on `:root` and every component follows: the text-safe accent and the focus ring are derived from it, so one line rebrands the whole library. If you theme dark differently, set it in your dark block too, exactly as you would for any design-token system. No class overrides, no rebuild, no Tailwind required. Customize live at <https://roxyapi.github.io/ui/> using the **Customize** dialog (every token, colour picker, copy-paste snippet).
+Light, dark, your brand. Set `--roxy-accent` on `:root` and every component follows: the text-safe accent and the focus ring are derived from it, so one line rebrands the whole library. If you theme dark differently, set it in your dark block too, exactly as you would for any design-token system. No class overrides, no rebuild, no Tailwind required. Customize live at <https://roxyapi.github.io/ui/> using the **Customize colors** dialog (every colour token, a picker per token, the theme presets, copy-paste snippet).
 
 <table>
 <tr>
@@ -388,7 +388,7 @@ document.querySelector('roxy-vedic-kundli')!.data = kundli;
 
 Always call `/location/search` first. Every chart endpoint expects latitude, longitude, and timezone.
 
-> **Timezone format.** RoxyAPI accepts both forms: a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). Pick one and stay consistent. The decimal form is shorter and what `/location/search` returns; examples on this page use it. The IANA form is correct over DST boundaries when historical accuracy matters.
+> **Timezone format.** RoxyAPI accepts both forms: a decimal-hour offset (`5.5` for IST, `-5` for EST) or an IANA name (`'Asia/Kolkata'`, `'America/New_York'`). Pick one and stay consistent. `/location/search` returns both, `timezone` as the IANA name and `utcOffset` as the decimal hours; the decimal form is shorter and the examples on this page use it. The IANA form is correct over DST boundaries when historical accuracy matters.
 
 ## Render an AI tool result
 
@@ -846,7 +846,7 @@ Two ways to feed a component, and the key rule for each:
 
 Set `ROXY_API_KEY` to your secret key in your server env for the server-side SDK examples on this page. For self-fetch embedding with no backend, use a publishable key (see the fully client-side pattern in [`AGENTS.md`](AGENTS.md)).
 
-The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean toggle, native date and time, a city search wherever the request takes coordinates or a timezone, and one card per record for a request that takes several, with `Add` and `Remove` inside the bounds the API declares), collapses optional fields under one Advanced disclosure, reads a `lang` attribute for localized responses, and prints what the API rejects under the input it rejected, marked and summarised by label. When the page routes RoxyAPI traffic through your own server instead, `submit-url` alone names the route that answers every request the component makes, the city search included, so no key of any kind reaches the browser; add `location-url` only to send the city search somewhere else. `submit-context` takes a JSON object of your own and hands it to that route as `context` beside the request, which is where a page attaches its own verification data to a submission. For the simplest embed, load `dist/cdn/widgets.js` and drop one `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`: with the required attributes present it fetches on mount, otherwise it renders the form. That tag takes `data-submit-url`, `data-location-url` and `data-submit-context` too, so a one-tag embed can route every request through your server and carry no key at all. A single `<link>` to the [practitioner theme preset](https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css) restyles every widget on the page. A list that shows one entry per tile (the dream search, the crystal grid) opens the picked entry in place under its tiles when it holds the key, and every pick also emits `roxy-symbol-select` for a page that pairs its own card. Any element that carries a key exposes `load({ path, method, query })`, which fetches one request into it and renders the result as assigned data.
+The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean toggle, native date and time, a city search wherever the request takes coordinates or a timezone, and one card per record for a request that takes several, with `Add` and `Remove` inside the bounds the API declares), collapses optional fields under one Advanced disclosure, reads a `lang` attribute for localized responses, and prints what the API rejects under the input it rejected, marked and summarised by label. When the page routes RoxyAPI traffic through your own server instead, `submit-url` alone names the route that answers every request the component makes, the city search included, so no key of any kind reaches the browser; add `location-url` only to send the city search somewhere else. `submit-context` takes a JSON object of your own and hands it to that route as `context` beside the request, which is where a page attaches its own verification data to a submission. For the simplest embed, load `dist/cdn/widgets.js` and drop one `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`: with the required attributes present it fetches on mount, otherwise it renders the form. That tag takes `data-submit-url`, `data-location-url` and `data-submit-context` too, so a one-tag embed can route every request through your server and carry no key at all. A single `<link>` to a theme preset (`practitioner`, `eucalyptus`, `kiln` or `moonlit`, from the [Distribution](#distribution) table) restyles every widget on the page. A list that shows one entry per tile (the dream search, the crystal grid) opens the picked entry in place under its tiles when it holds the key, and every pick also emits `roxy-symbol-select` for a page that pairs its own card. Any element that carries a key exposes `load({ path, method, query })`, which fetches one request into it and renders the result as assigned data.
 
 ## Distribution
 
@@ -858,7 +858,7 @@ The self-fetch form renders spec-driven inputs (a zodiac tile picker, a boolean 
 | jsDelivr CDN (full bundle) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js` |
 | jsDelivr CDN (per component) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/components/{name}.js` |
 | Widgets auto-mount (one tag, browser keys) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/widgets.js` |
-| Practitioner theme preset (one link, warm rosewater) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css` |
+| Theme presets (one link each: `practitioner`, `eucalyptus`, `kiln`, `moonlit`) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/{preset}.css` |
 | shadcn registry | `npx shadcn@latest add https://cdn.jsdelivr.net/gh/RoxyAPI/ui@latest/registry/{name}.json` |
 | Components catalog (JSON: every component, domain, and endpoint) | `cdn.jsdelivr.net/npm/@roxyapi/ui@latest/components-catalog.json` |
 
@@ -1161,7 +1161,7 @@ Persist the choice in `localStorage` from your own code; the components do not o
 <details>
 <summary><strong>How big is each component? What is the bundle cost?</strong></summary>
 
-Every component bundle is under 32 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 180 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
+Every component bundle is at most 32.3 KB gzipped and the full bundle (every component, helpers, base styles, and the inlined design tokens) is under 180 KB gzipped. Both ceilings are enforced in CI on every build, measured on the compressed bytes a browser actually downloads, so a release cannot quietly grow past them. A route that renders one chart pays for one component, not the whole catalog. Pin a concrete version in production for byte-stable cache hits.
 </details>
 
 <details>
