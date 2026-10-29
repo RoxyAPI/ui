@@ -22,7 +22,7 @@
  * call wins and every component reuses it.
  */
 /** The @roxyapi/ui release this package was generated against. The loader defaults to it, so the package version in your lockfile is the runtime you actually get. */
-export declare const ROXY_UI_VERSION = "1.1.2";
+export declare const ROXY_UI_VERSION = "1.1.3";
 export declare function ensureScriptLoaded(version?: string, baseUrl?: string): Promise<void>;
 /** Every language a label catalogue ships for. English is absent on purpose: the catalogue key IS the English string, so an English page downloads nothing. */
 export declare const ROXY_UI_LOCALES: readonly ["de", "es", "fr", "hi", "pt", "ru", "tr", "zh-Hans", "zh-Hant"];

@@ -12,6 +12,7 @@
  *   theme  light or dark, applied by the head script in preview.html.
  *   preset one of the shipped theme presets, linked by the head script in preview.html.
  *   lang   one of the language payloads the build emitted.
+ *   hide-readings  present: the component leaves out its written reading.
  *
  * Messages: `roxy-set-theme` from any frame, and `roxy-preview:tokens` from a
  * TOKEN_ORIGINS parent, which paints shipped token names with hex values inline.
@@ -57,7 +58,8 @@
 	}
 
 	document.title = `${component.heading} · Roxy UI`;
-	mount.innerHTML = `<${component.tag} id="${esc(demo.id)}"${demo.attrs || ''}></${component.tag}>`;
+	const readings = params.has('hide-readings') ? ' hide-readings' : '';
+	mount.innerHTML = `<${component.tag} id="${esc(demo.id)}"${demo.attrs || ''}${readings}></${component.tag}>`;
 
 	// Language: the same switch a host page makes by setting <html lang>, plus the
 	// one payload that carries the words. English needs no payload, because the
@@ -78,28 +80,12 @@
 	// The parent pages allowed to repaint tokens: the builder on the main site and its local dev server.
 	const TOKEN_ORIGINS = ['https://roxyapi.com', 'http://localhost:3000'];
 	const HEX = /^#(?:[0-9a-f]{3}){1,2}$/i;
+	// The shipped token names, from the manifest, since a sandboxed frame may not read the rules of a stylesheet.
+	const shipped = new Set(window.ROXY_TOKENS || []);
 	const painted = new Set();
-	let shipped = new Set();
-
-	// Every --roxy-* name the linked token sheet declares, read from the shipped file itself.
-	function shippedTokens() {
-		const names = new Set();
-		const walk = (rules) => {
-			for (const rule of rules) {
-				if (rule.style)
-					for (const name of rule.style)
-						if (name.startsWith('--roxy-')) names.add(name);
-				if (rule.cssRules) walk(rule.cssRules);
-			}
-		};
-		const sheet = document.querySelector('link[href$="/tokens.css"]')?.sheet;
-		if (sheet) walk(sheet.cssRules);
-		return names;
-	}
 
 	// Each message replaces the previous set, so an empty object clears every value it painted.
 	function paintTokens(tokens) {
-		if (!shipped.size) shipped = shippedTokens();
 		const style = document.documentElement.style;
 		for (const name of painted) style.removeProperty(name);
 		painted.clear();
