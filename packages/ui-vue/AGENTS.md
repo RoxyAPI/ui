@@ -261,7 +261,7 @@ import { RoxyVedicKundli, RoxyLocationSearch } from '@roxyapi/ui-vue';
 </template>
 ```
 
-In Nuxt, render them in any page or component, server rendered or not: the markup renders on the server and the element hydrates in the browser, with no `<ClientOnly>` wrapper.
+In Nuxt, render them in any page or component, server rendered or not: the markup renders on the server and the element hydrates in the browser, with no `<ClientOnly>` boundary.
 
 ### 7. Local response interface drift
 
@@ -315,7 +315,7 @@ const data = natal as unknown as NatalChartResponse;
 
 ### 11. The components load from a CDN. Self-host if your CSP forbids that.
 
-On first mount the components fetch their rendering bundle from the CDN, pinned to the exact `@roxyapi/ui` release the wrapper was built against, so a lockfile pins your runtime too. Behind a strict Content-Security-Policy, an air-gapped network, or offline development nothing will render, and every component shows a visible `Roxy UI script load failed` error rather than failing quietly.
+On first mount the components fetch their rendering bundle from the CDN, pinned to the exact `@roxyapi/ui` release the package was built against, so a lockfile pins your runtime too. Behind a strict Content-Security-Policy, an air-gapped network, or offline development nothing will render, and every component shows a visible `Roxy UI script load failed` error rather than failing quietly.
 
 Either allowlist `cdn.jsdelivr.net` in `script-src`, or serve the bundle yourself. Copy `node_modules/@roxyapi/ui/dist/cdn/` onto your own origin and call the loader ONCE at app entry, before any component mounts:
 
@@ -557,7 +557,7 @@ Rules for this pattern:
 
 This is how the WordPress plugin renders: PHP fetches the response server-side, caches it, and writes the script into the page. The same shape works in any framework that emits HTML.
 
-- Writing the tag itself in a React or Next.js file? Import `@roxyapi/ui-react/jsx` once anywhere in the project and every `roxy-*` tag is typed, with its attributes and their legal values. It is the raw-tag path, so it carries attributes only; a page that passes a response uses the wrapper component instead, which sets `data` as a property.
+- Writing the tag itself in a React or Next.js file? Import `@roxyapi/ui-react/jsx` once anywhere in the project and every `roxy-*` tag is typed, with its attributes and their legal values. It is the raw-tag path, so it carries attributes only; a page that passes a response uses the React or Vue component instead, which sets `data` as a property.
 
 ## Localized responses
 
@@ -628,7 +628,7 @@ Per-element scope is supported:
 
 Every visible aspect of the chart is driven by `--roxy-*` CSS custom properties on `:host`. Override any token on `:root`, on `:host`, or per element. Do not write Tailwind utility classes inside the components; the Shadow DOM boundary stops them at the door.
 
-**One plain declaration is the whole override, including from inside a layer of your own.** The shipped defaults are declared at zero specificity and inside the `roxy` cascade layer, so `:root { --roxy-accent: #6d28d9 }` beats them in both modes, and so does the same line inside `@layer base`, which is where a framework maps its palette onto ours. Never reach for `html:root` or `!important`. If you link `tokens.css` after your own CSS, name the order once with `@layer roxy, base, components, utilities;`. And if your tokens are scoped to a wrapper rather than to `:root`, write the mode on that same wrapper (`data-theme="light"` or `"dark"`), because every token you did not override is still decided at the document root by the visitor OS.
+**One plain declaration is the whole override, including from inside a layer of your own.** The shipped defaults are declared at zero specificity and inside the `roxy` cascade layer, so `:root { --roxy-accent: #6d28d9 }` beats them in both modes, and so does the same line inside `@layer base`, which is where a framework maps its palette onto ours. Never reach for `html:root` or `!important`. If you link `tokens.css` after your own CSS, name the order once with `@layer roxy, base, components, utilities;`. And if your tokens are scoped to a container element rather than to `:root`, write the mode on that same container element (`data-theme="light"` or `"dark"`), because every token you did not override is still decided at the document root by the visitor OS.
 
 ## Choosing what a component renders
 
@@ -663,7 +663,7 @@ Both are off by default. `hide-sections` takes a comma-separated list, is case-i
 
 | part | What it names |
 |---|---|
-| `card` | The component's own card or wrapper root |
+| `card` | The component's own card or container root |
 | `header` | The heading row (title, meta, score) |
 | `chart` | The graphic: wheel, map, bodygraph, bar set, hexagram figure, card art |
 | `legend` | The key to the chart |

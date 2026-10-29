@@ -63,3 +63,7 @@ export declare const SHARED_THEME: ThemeChrome & {
 /** The chrome one preset ships: the shared set with its own overrides on top. */
 export declare function themeChrome(name: PaletteName): ThemeChrome;
 export declare const ROXY_PALETTES: Record<PaletteName, Palette>;
+/** Every colour one preset sets in one mode, its own tokens plus the shared `danger`; the one source for the theme stylesheets and the published catalog. */
+export declare function paletteColors(name: PaletteName, mode: 'light' | 'dark'): PaletteTokens & {
+    danger: string;
+};

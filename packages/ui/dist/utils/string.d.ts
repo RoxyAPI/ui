@@ -29,3 +29,5 @@
 export declare function lookupKey(s: string): string;
 export declare function capitalize(s: string): string;
 export declare function humanize(s: string): string;
+/** True for an http or https URL, the only value any component binds to an `href`, so a `javascript:` string renders as text, never a link. */
+export declare function isWebLink(value: unknown): value is string;

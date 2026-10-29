@@ -33,7 +33,7 @@ Layer order is decided by the order the names are first seen, and `roxy` is regi
 @layer roxy, base, components, utilities;
 ```
 
-**If you cannot own `:root`, say which mode you are in on the element you scope to.** A multi-tenant page, or a framework that owns `<html>`, puts its tokens on a wrapper instead. Custom properties inherit, so that works for every token you set. Every token you do NOT set still comes from `:root`, where the default is chosen by the visitor operating system, and a light page opened on a dark phone then draws the pale status inks onto a near-white card. Declare the mode on the same wrapper and the whole set follows it:
+**If you cannot own `:root`, say which mode you are in on the element you scope to.** A multi-tenant page, or a framework that owns `<html>`, puts its tokens on a container element instead. Custom properties inherit, so that works for every token you set. Every token you do NOT set still comes from `:root`, where the default is chosen by the visitor operating system, and a light page opened on a dark phone then draws the pale status inks onto a near-white card. Declare the mode on the same container element and the whole set follows it:
 
 ```html
 <div class="my-site" data-theme="light">
@@ -217,7 +217,7 @@ Three opt-in mechanisms work out of the box, on the CDN and the npm path alike, 
 
 Tokens set on the `:root` / `.dark` / `[data-theme]` light-DOM element inherit through the shadow boundary into every component, so a `.dark` class anywhere above a component themes it. Per-element scope works too: `<roxy-natal-chart data-theme="dark">` runs one chart in dark on an otherwise light page.
 
-"System preference: nothing to do" holds only while the mode is a whole-document question. A page that scopes its theme to a wrapper is the exception, and it is the common one on a multi-tenant site: the system preference still decides every token that wrapper does not set. Declare the mode on that wrapper, as the host contract above shows.
+"System preference: nothing to do" holds only while the mode is a whole-document question. A page that scopes its theme to a container element is the exception, and it is the common one on a multi-tenant site: the system preference still decides every token that container does not set. Declare the mode on that container element, as the host contract above shows.
 
 ### Map Tailwind tokens
 
@@ -251,7 +251,7 @@ If you used the shadcn registry path, this bridge installs automatically and rea
 
 ### Per-domain accent presets
 
-One accent per domain, so a multi-domain page reads as related products. Scope an accent to a wrapper and every component inside it picks it up.
+One accent per domain, so a multi-domain page reads as related products. Scope an accent to a container element and every component inside it picks it up.
 
 Every ink value below is measured against the default page background: each passes WCAG AA (4.5:1) in **both** light and dark. `--roxy-accent` alone is enough, since the ink and the ring derive from it; the ink column is a hand-tuned shade for accent-coloured _text_ when you want one.
 

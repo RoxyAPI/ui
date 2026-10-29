@@ -394,7 +394,7 @@ export function ToolWidget({ toolName, output }: { toolName: string; output: str
 
 A compact tool result is decoded for you, and a name a host prefixed with its server (`roxy_tarot:post_tarot_daily`) resolves the same as a bare one. Full recipe, with the vendor connectors and the Vercel AI SDK: <https://roxyapi.com/docs/tutorials/ai-chat-widgets>. Runnable page: [examples/vanilla/tool-result.html](examples/vanilla/tool-result.html).
 
-**The lookup also ships on its own path**, `@roxyapi/ui/tool-component` and the same subpath on both wrapper packages, for a module that decides WHICH component to render and never renders one: a server component, a route handler, a worker. It carries `componentForTool`, `expandCompact` and the name table, and no elements, so nothing in that file pulls in the library.
+**The lookup also ships on its own path**, `@roxyapi/ui/tool-component` and the same subpath on both framework packages, for a module that decides WHICH component to render and never renders one: a server component, a route handler, a worker. It carries `componentForTool`, `expandCompact` and the name table, and no elements, so nothing in that file pulls in the library.
 
 ```ts
 import { componentForTool } from '@roxyapi/ui-react/tool-component';
@@ -458,7 +458,7 @@ export default function Page() {
 }
 ```
 
-One import anywhere in the project types the tags everywhere in it. The typings carry attributes only, which is what markup can carry: a page that passes a response uses the wrapper component, which sets `data` as a property. Your `tsconfig.json` needs `moduleResolution` on `bundler`, `node16` or `nodenext`, because the older `node10` resolution ignores the package export map.
+One import anywhere in the project types the tags everywhere in it. The typings carry attributes only, which is what markup can carry: a page that passes a response uses the React or Vue component, which sets `data` as a property. Your `tsconfig.json` needs `moduleResolution` on `bundler`, `node16` or `nodenext`, because the older `node10` resolution ignores the package export map.
 
 ## Most-used components per domain
 
@@ -937,7 +937,7 @@ Every file a page loads ships in the package `dist` folder, and each [GitHub rel
 
 ## Theming
 
-Every component takes every colour, size, radius, space and font from `--roxy-*` CSS custom properties, and most of them derive from a handful of bases, so restyle through the tokens and never by overriding the internals of a component. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. Every component loads the default tokens when it connects, from npm and the CDN alike, and your own declarations always win over the defaults: they are declared at zero specificity and inside the `roxy` cascade layer, so one plain line beats them in both modes, with no `!important` and no extra selector weight, and it works from inside a layer of your own. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference and for the one rule a page that scopes its theme to a wrapper has to know.
+Every component takes every colour, size, radius, space and font from `--roxy-*` CSS custom properties, and most of them derive from a handful of bases, so restyle through the tokens and never by overriding the internals of a component. Override globally on `:root` or per element. Light + dark defaults, container queries for responsive layouts at 320px and up. Every component loads the default tokens when it connects, from npm and the CDN alike, and your own declarations always win over the defaults: they are declared at zero specificity and inside the `roxy` cascade layer, so one plain line beats them in both modes, with no `!important` and no extra selector weight, and it works from inside a layer of your own. See [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md) for the full token reference and for the one rule a page that scopes its theme to a container element has to know.
 
 ```css
 :root {

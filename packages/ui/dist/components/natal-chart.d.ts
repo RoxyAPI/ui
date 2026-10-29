@@ -34,7 +34,7 @@ export type WheelChart = Omit<NatalChartResponse, ChartExtras> & Partial<Pick<Na
  * chip reads. This component computes nothing astrological, so an attribute
  * could never move a cusp; all it could do is print a label contradicting the
  * cusps drawn beside it. One shipped anyway, declared and typed and wired
- * through both framework wrappers, and nothing ever read it, so a consumer who
+ * through both framework packages, and nothing ever read it, so a consumer who
  * followed our own generated types set it and got silence. Change the system in
  * the REQUEST (the self-fetch form already offers it, straight off the spec) and
  * the response relabels itself.

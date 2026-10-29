@@ -1,5 +1,5 @@
 /**
- * Raw-tag typings for the Roxy custom elements, so `<roxy-natal-chart heading="Chart">` type-checks in a React file with no wrapper component and no client JavaScript.
+ * Raw-tag typings for the Roxy custom elements, so `<roxy-natal-chart heading="Chart">` type-checks in a React file without importing a component and with no client JavaScript.
  *
  * @remarks
  * GENERATED. Import it once anywhere in your project and every Roxy tag is typed everywhere:
@@ -8,7 +8,7 @@
  * import '@roxyapi/ui-react/jsx';
  * ```
  *
- * The wrapper components remain the path for a page that passes a response: they set `data` as a property, which markup cannot carry. This file is for the other case, a tag rendered on the server and left alone.
+ * The React components remain the path for a page that passes a response: they set `data` as a property, which markup cannot carry. This file is for the other case, a tag rendered on the server and left alone.
  *
  * Attribute names are the elements' own: several are renamed at the element and the rest are lowercased, so they are read from the source rather than derived from the prop names.
  */

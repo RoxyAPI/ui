@@ -1645,7 +1645,7 @@ export type FixedStarsResponse = {
         interpretation: string;
     }>;
     /**
-     * Short overview of the fixed-star report for previews and report intros.
+     * Short overview of the fixed-star report for previews and report intros: the number of conjunctions inside the orb and the tightest one found, or a plain statement that no star touches the chart. Localized to the requested language.
      */
     summary: string;
 };
@@ -1888,7 +1888,7 @@ export type LilithResponse = {
         timezone: number;
     };
     /**
-     * House system applied when placing each variant in a house.
+     * House system actually applied when placing each variant in a house. Differs from the requested system only above the polar circle, where quadrant systems fall back to Whole Sign.
      */
     houseSystem: 'placidus' | 'whole-sign' | 'equal' | 'koch';
     /**
@@ -1971,7 +1971,7 @@ export type LilithRequest = {
      */
     nodeType?: 'mean' | 'true';
     /**
-     * House system used to place each Lilith variant in a house. Placidus (default), Whole Sign, Equal, or Koch.
+     * House system used to place each Lilith variant in a house. Placidus (default), Whole Sign, Equal, or Koch. Above the polar circle, quadrant systems fall back to Whole Sign and the echoed houseSystem reports the system actually used.
      */
     houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
 };
@@ -2042,7 +2042,7 @@ export type ProgressionsResponse = {
          */
         degree: number;
         /**
-         * Whole-sign house (1 to 12) counted from the progressed Ascendant sign. The 1st house is the entire sign the progressed Ascendant falls in.
+         * Natal house (1 to 12) the progressed body occupies, read against the natal cusps in the requested houseSystem, the same house number POST /natal-chart gives a body at this longitude. Natal houses are the standard frame for reading progressed planets, the progressed Moon through the houses above all.
          */
         house: number;
         /**
@@ -2134,6 +2134,10 @@ export type ProgressionsRequest = {
      * Date to progress the chart to, in YYYY-MM-DD format. Usually today or a forecast date. The day-for-a-year key turns the elapsed years since birth into the same number of ephemeris days after the birth moment.
      */
     targetDate: string;
+    /**
+     * House system of the natal chart that every progressed body is placed in. Pass the system the natal chart was drawn in so the house numbers match it. Placidus (default) is the most widely used in Western astrology. Whole Sign assigns one sign per house. Equal divides into 30 degree segments from the Ascendant. Koch emphasizes higher latitudes. Quadrant systems fall back to Whole Sign above the polar circle.
+     */
+    houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
 };
 export type SolarArcResponse = {
     /**
@@ -3162,7 +3166,7 @@ export type BirthChartResponse = {
         };
     };
     /**
-     * Forty-four classical yogas detected against this chart. Twelve conjunction and dignity yogas: Gajakesari (three-rule parashara definition), Sunapha, Anapha, Dhurdhura, Kemadruma, Chandra Mangala, Budha-Aditya, and the five Pancha Mahapurusha (Ruchaka, Bhadra, Hamsa, Malavya, Sasa). Plus all 32 Nabhasa distribution yogas across the Asraya, Dala, Akriti and Sankhya families, which read how the seven visible grahas are spread over the whole chart rather than any single conjunction, and which apply the four classical precedence norms so an outranked yoga is returned as absent with evidence naming the norm that silenced it. Each entry carries an `id` (matches `GET /yoga/{id}` for full glossary lookup), a `present` boolean, a `quality` (Positive, Negative, or Both = auspicious, inauspicious, or context-dependent), and classical-text `evidence` for the rule that triggered or failed. Filter on `present === true` for the active list.
+     * Forty-eight classical yogas detected against this chart. Twelve conjunction and dignity yogas: Gajakesari (three-rule parashara definition), Sunapha, Anapha, Dhurdhura, Kemadruma, Chandra Mangala, Budha-Aditya, and the five Pancha Mahapurusha (Ruchaka, Bhadra, Hamsa, Malavya, Sasa). Plus all 32 Nabhasa distribution yogas across the Asraya, Dala, Akriti and Sankhya families, which read how the seven visible grahas are spread over the whole chart rather than any single conjunction, and which apply the four classical precedence norms so an outranked yoga is returned as absent with evidence naming the norm that silenced it. Plus the four wealth and poverty verdicts (Dhana, Daridra, Lakshmi, Dhana Malika), each reading as the first rule that matched. Each entry carries an `id` (matches `GET /yoga/{id}` for full glossary lookup), a `present` boolean, a `quality` (Positive, Negative, or Both = auspicious, inauspicious, or context-dependent), and classical-text `evidence` for the rule that triggered or failed. Filter on `present === true` for the active list.
      */
     yogas?: Array<{
         /**
@@ -4741,7 +4745,7 @@ export type KpPlanetsRequest = {
      */
     time: string;
     /**
-     * Birth location latitude in decimal degrees
+     * Birth location latitude in decimal degrees. Accepted at any latitude, polar included: planet longitudes are geocentric and the star and sub lords are divisions of longitude, so no house cusp is involved.
      */
     latitude: number;
     /**
@@ -4841,7 +4845,7 @@ export type KpCuspsRequest = {
      */
     time: string;
     /**
-     * Birth location latitude in decimal degrees
+     * Birth location latitude in decimal degrees. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
      */
     latitude: number;
     /**
@@ -5215,7 +5219,7 @@ export type KpChartRequest = {
      */
     time: string;
     /**
-     * Birth location latitude in decimal degrees
+     * Birth location latitude in decimal degrees. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
      */
     latitude: number;
     /**
@@ -6068,7 +6072,7 @@ export type KpHoraryRequest = {
      */
     time: string;
     /**
-     * Latitude where the question is judged, decimal degrees. The house cusps are Placidus and therefore latitude dependent, so this is the place of judgment, not the querent birthplace.
+     * Latitude where the question is judged, decimal degrees. The house cusps are Placidus and therefore latitude dependent, so this is the place of judgment, not the querent birthplace. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
      */
     latitude: number;
     /**
@@ -6441,7 +6445,7 @@ export type KpDailyFinanceRequest = {
      */
     birthTime: string;
     /**
-     * Birth latitude in decimal degrees. Sets the Placidus cusps; also the place the ruling planets and the Moon windows are read at.
+     * Birth latitude in decimal degrees. Sets the Placidus cusps; also the place the ruling planets and the Moon windows are read at. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
      */
     latitude: number;
     /**
@@ -6449,7 +6453,7 @@ export type KpDailyFinanceRequest = {
      */
     longitude: number;
     /**
-     * Timezone as an IANA name (Asia/Kolkata) or decimal hours from UTC. Applies to the birth time, to the reading date and time, and to every local timestamp in the response. IANA names resolve to the offset in force on the date being read.
+     * Timezone as an IANA name (Asia/Kolkata) or decimal hours from UTC. Applies to the birth time, to the reading date and time, and to every local timestamp in the response. An IANA name is resolved twice, each to the offset in force at its own moment: at the birth date and time for the natal chart, and on the date being read for the reading. A decimal is applied to both as sent.
      */
     timezone?: number | string;
     /**
@@ -7601,7 +7605,7 @@ export type HeliacalResponse = {
          */
         retrograde: boolean;
         /**
-         * Plain angular separation of the two ecliptic longitudes, in degrees. Returned beside timeDegrees so the two measures can be compared: this is what a combustion flag on a birth chart uses, and the gap between them is precisely what a location-aware heliacal calculation adds.
+         * Plain angular separation of the two ecliptic longitudes, in degrees, read at the same instant as timeDegrees: the Sun crossing the horizon named in `horizon` on the requested day, sunset for west and sunrise for east, at the observer location. Returned beside timeDegrees so the two measures can be compared: this is the quantity a combustion flag on a birth chart uses, and the gap between them is precisely what a location-aware heliacal calculation adds. A birth chart reads it at the birth moment instead, so the two differ by however far the graha and the Sun moved in between, about half a degree per hour for the Moon.
          */
         longitudeSeparation: number;
         /**
@@ -18875,7 +18879,7 @@ export type GetCurrentDashaData = {
          */
         ayanamsaValue?: number;
         /**
-         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above.
+         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
          */
         significators?: boolean;
         /**
@@ -18883,7 +18887,7 @@ export type GetCurrentDashaData = {
          */
         nodeType?: 'mean' | 'true';
         /**
-         * ISO 8601 datetime (YYYY-MM-DDTHH:MM:SS) to read the running periods at, for a reading prepared for a future day, a backtest, or a chart cast for a past moment. Defaults to the current instant. Interpreted as local time in the request timezone (a trailing Z is accepted but ignored); with timezone 0 it is UTC.
+         * ISO 8601 datetime (YYYY-MM-DDTHH:MM:SS) to read the running periods at, for a reading prepared for a future day, a backtest, or a chart cast for a past moment. Defaults to the current instant. Interpreted as local time in the request timezone, an IANA name resolved at this datetime rather than at the birth (a trailing Z is accepted but ignored); with timezone 0 it is UTC.
          */
         datetime?: string;
     };
@@ -19713,7 +19717,7 @@ export type GetMajorDashasData = {
          */
         ayanamsaValue?: number;
         /**
-         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above.
+         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
          */
         significators?: boolean;
         /**
@@ -20046,7 +20050,7 @@ export type GetSubDashasData = {
          */
         ayanamsaValue?: number;
         /**
-         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above.
+         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
          */
         significators?: boolean;
         /**
@@ -20447,7 +20451,7 @@ export type GetPratyantardashasData = {
          */
         ayanamsaValue?: number;
         /**
-         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above.
+         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
          */
         significators?: boolean;
         /**
@@ -20864,7 +20868,7 @@ export type GetSookshmaDashasData = {
          */
         ayanamsaValue?: number;
         /**
-         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above.
+         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
          */
         significators?: boolean;
         /**
@@ -21297,7 +21301,7 @@ export type GetPranaDashasData = {
          */
         ayanamsaValue?: number;
         /**
-         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above.
+         * Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
          */
         significators?: boolean;
         /**
@@ -21734,7 +21738,7 @@ export type GetVedicDailyReadingData = {
          */
         longitude: number;
         /**
-         * Timezone: IANA name (e.g. "Asia/Kolkata", "America/New_York") OR decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). IANA strings are resolved to the DST-correct offset for the date being read. Interprets the birth time and the civil date below. Defaults to 5.5.
+         * Timezone: IANA name (e.g. "Asia/Kolkata", "America/New_York") OR decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). IANA strings are resolved twice, each to the DST-correct offset of its own moment: at the birth date and time for the birth chart, and on the date being read for the reading day. A decimal is applied to both as sent. Defaults to 5.5.
          */
         timezone?: number | string;
         /**
@@ -25303,7 +25307,7 @@ export type GenerateKpChartResponse = GenerateKpChartResponses[keyof GenerateKpC
 export type GetKpRulingPlanetsData = {
     body?: {
         /**
-         * Observer latitude in decimal degrees
+         * Observer latitude in decimal degrees. Any latitude for the ruling planets alone; with birthDate and birthTime the significators read Placidus cusps, so the latitude must lie below 66.56 degrees north or south and a polar latitude returns 400.
          */
         latitude: number;
         /**
@@ -25311,7 +25315,7 @@ export type GetKpRulingPlanetsData = {
          */
         longitude: number;
         /**
-         * Timezone: IANA name (e.g. "America/New_York", "Europe/London") OR decimal hours from UTC. IANA resolved to the DST-correct offset based on birthDate or datetime. Defaults to 5.5.
+         * Timezone: IANA name (e.g. "America/New_York", "Europe/London") OR decimal hours from UTC. An IANA name is resolved to the DST-correct offset of each moment separately: at datetime for the ruling planets, and at birthDate and birthTime for the significators. A decimal is applied to both as sent. Defaults to 5.5.
          */
         timezone?: number | string;
         /**
@@ -25488,7 +25492,7 @@ export type GetKpRulingIntervalData = {
          */
         intervalMinutes: number;
         /**
-         * Observer latitude in decimal degrees
+         * Observer latitude in decimal degrees. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.
          */
         latitude: number;
         /**
@@ -27049,7 +27053,7 @@ export type CalculateTransitData = {
          */
         longitude: number;
         /**
-         * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time. Defaults to 5.5 (IST).
+         * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time. The birth moment and the transit moment are each resolved at their own date and time. Defaults to 5.5 (IST).
          */
         timezone?: number | string;
         /**
@@ -35787,7 +35791,7 @@ export type CalculateLuckPillarsResponses = {
          */
         startAge: number;
         /**
-         * Additional months past startAge, 0 to 11, from the remainder of the same count at one day to four months. Calculators that round the whole count to the nearest year will differ from this by up to six months.
+         * Additional months past startAge, 0 to 11, from the remainder of the same count at one day to four months, rounded once to the nearest month. Calculators that round the whole count to the nearest year will differ from this by up to six months.
          */
         startAgeMonths: number;
         /**
@@ -35926,11 +35930,11 @@ export type CalculateLuckPillarsResponses = {
              */
             endAge: number;
             /**
-             * Gregorian year this period begins, the birth year plus startAge.
+             * Gregorian year this period begins: the year of the date that falls startAge years and startAgeMonths months after the birth date, plus ten for each later period. A birth in November with a start of 4 years 7 months begins its first period in June of the birth year plus five.
              */
             startYear: number;
             /**
-             * Gregorian year this period ends.
+             * Gregorian year this period ends and the next one begins, startYear plus ten.
              */
             endYear: number;
         }>;
@@ -35984,7 +35988,7 @@ export type CalculateLuckPillarsResponses = {
                 keynote: string;
             };
             /**
-             * Which returned luck pillar this year falls inside, by its index. 0 means the year falls before the first luck pillar begins, in the stretch still governed by the natal chart alone.
+             * Which returned luck pillar this year falls inside, by its index. The year a period begins in counts as inside it, though the handover falls in a month of that year. 0 means the year falls before the first luck pillar begins, in the stretch still governed by the natal chart alone.
              */
             luckPillarIndex: number;
         }>;
@@ -54042,9 +54046,13 @@ export type GenerateNumerologyChartData = {
          */
         day: number;
         /**
-         * Calendar year for the Personal Year, defaults to the current UTC year. It moves the Personal Year only: the nested personalMonth and maturityStatus.currentAge always read the current UTC date.
+         * Calendar year for the Personal Year. When omitted it is the year of targetDate, or of the current UTC date when targetDate is omitted too. It moves the Personal Year only: the nested personalMonth and maturityStatus.currentAge read targetDate.
          */
         currentYear?: number;
+        /**
+         * Date to read the chart on, in YYYY-MM-DD format, in the years 100 to 2100, on or after the birth date. Send the local date of the user for an exact answer: it sets maturityStatus.currentAge and isActive, the Personal Month, and the Personal Year when currentYear is absent. Defaults to today (UTC).
+         */
+        targetDate?: string;
     };
     path?: never;
     query?: {
@@ -54679,11 +54687,11 @@ export type GenerateNumerologyChartResponses = {
                  */
                 advice: string;
                 /**
-                 * Personal Month forecast for the current UTC calendar month, applied to the Personal Year above. With a currentYear other than the current year, it pairs that Personal Year with the current month.
+                 * Personal Month forecast for the calendar month of targetDate (the current UTC month when omitted), applied to the Personal Year above. With a currentYear other than the year of targetDate, it pairs that Personal Year with this month.
                  */
                 personalMonth: {
                     /**
-                     * Personal Month number (1-9): the Personal Year above plus the current UTC calendar month, reduced to one digit.
+                     * Personal Month number (1-9): the Personal Year above plus the calendar month of targetDate (the current UTC month when omitted), reduced to one digit.
                      */
                     personalMonth: number;
                     /**
@@ -54925,11 +54933,11 @@ export type GenerateNumerologyChartResponses = {
          */
         maturityStatus: {
             /**
-             * Whether the Maturity number is currently active (typically activates around age 35-40).
+             * Whether the Maturity number is currently active: true from the 35th birthday, when currentAge reaches 35 (the number typically activates around age 35-40).
              */
             isActive: boolean;
             /**
-             * The current UTC calendar year minus the birth year. The birthday is not considered, so before the birthday it reads one more than the age in whole years, and currentYear does not move it.
+             * Age in completed years on targetDate, or on the current UTC date when targetDate is omitted: the birth year subtracted, less one until the birthday has come round. A 29 February birthday comes round on 1 March in a common year. currentYear does not move it.
              */
             currentAge: number;
             /**
@@ -57382,6 +57390,10 @@ export type GenerateBirthProfileData = {
          * Set true when the moment falls after nightfall, which advances the Hebrew date by one day because the Hebrew day begins in the evening. It is a caller assertion rather than a computation, since sunset depends on a place and this conversion takes none.
          */
         afterSunset?: boolean;
+        /**
+         * Date to count the next Hebrew birthday from, in YYYY-MM-DD format. Send the local date of the user for an exact answer: on the birthday itself the answer is that day. Defaults to today (UTC).
+         */
+        targetDate?: string;
     };
     path?: never;
     query?: {
@@ -57570,15 +57582,15 @@ export type GenerateBirthProfileResponses = {
             afterSunset: boolean;
         };
         /**
-         * The next Hebrew birthday. Three Hebrew dates are missing from some years, and where the anniversary moves to is a matter of community practice rather than arithmetic, so the field is null with a note rather than a guess.
+         * The next Hebrew birthday from targetDate (the current UTC date when omitted), the anniversary of hebrewDate. Three Hebrew dates are missing from some years, and where the anniversary moves to is a matter of community practice rather than arithmetic, so the field is null with a note rather than a guess.
          */
         hebrewBirthday: {
             /**
-             * The next Gregorian date the Hebrew birthday falls on, or null when that Hebrew date does not exist in the year it would fall in.
+             * The Gregorian date of the next Hebrew birthday on or after targetDate, or the current UTC date when targetDate is omitted (that day when it is the birthday), or null when that Hebrew date does not exist in the year it falls in. It is the daytime civil date: the Hebrew day itself opens at nightfall the evening before.
              */
             date: string | null;
             /**
-             * The Hebrew year the anniversary was looked for in.
+             * The Hebrew year of that next anniversary, always later than the birth year. Present on the null branch too, naming the year the date is missing from.
              */
             hebrewYear: number;
             /**

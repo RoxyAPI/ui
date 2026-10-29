@@ -11,7 +11,7 @@ type HexagramData = GetHexagramResponse | GetRandomHexagramResponse | LookupHexa
  * shape-detected from the payload in {@link RoxyHexagram.resolveHexagram}, which
  * is the rule for every multi-endpoint component here: an attribute and a
  * response can disagree, and only one of them is the reading. A `mode` property
- * shipped anyway, reflected and typed into both framework wrappers, and nothing
+ * shipped anyway, reflected and typed into both framework packages, and nothing
  * ever read it.
  */
 export declare class RoxyHexagram extends RoxyDataElement<HexagramData> {

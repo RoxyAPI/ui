@@ -3,7 +3,7 @@
   "info": {
     "title": "RoxyAPI",
     "version": "2.0.0",
-    "description": "# RoxyAPI: the Spiritual OS layer for agentic AI\n\n> **Base URL:** `https://roxyapi.com/api/v2`. Every path below is relative to it.\n\nOne API key for 18 insight domains (Western Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 261+ endpoints, planetary positions read directly from the NASA JPL DE440 ephemeris and verified against NASA JPL Horizons, and every calculation held by 3,647 gold standard tests. Readings come back as structured data with editorial interpretation text, translated into 10+ languages via `?lang=` on translated endpoints. Remote MCP servers, typed SDKs for TypeScript, Python, PHP, C#, Go, and Rust, drop-in UI components and copy-paste widgets, and open source Templates all run on this one document.\n\n## Who builds on RoxyAPI\n\n- **Developers** shipping astrology, tarot, numerology and wellness apps without learning each system first\n- **AI agent builders** giving Claude, GPT or Gemini real calculations instead of guesses, over Remote MCP\n- **Vibe coders** building with Cursor, Claude Code, Bolt or Replit from the spec and AGENTS.md\n- **Founders and brands** launching insight products for their audience on one key\n\n## Quick start\n\n**1. Get a key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). It is ready the moment payment clears.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/astrology/horoscope/aries/daily\n```\n\n**3. Check your usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agents: Remote MCP\n\nEvery domain has its own Remote MCP server over Streamable HTTP at `https://roxyapi.com/mcp/{domain}` (for example `/mcp/astrology`), 258+ tools in all, with nothing to install or host. Add the URL to Claude, Cursor, VS Code, ChatGPT or any MCP client, or connect from the OpenAI Agents SDK and Gemini ADK. Coding agents that build against this API use the documentation server at `/mcp/docs`. Setup for every client: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp).\n\n## Authentication\n\nSend your key as `X-API-Key: YOUR_KEY` (recommended), as `Authorization: Bearer YOUR_KEY`, or as the `?api_key=` query parameter for quick tests. Keep secret keys on a server; publishable keys are for the browser.\n\n## Responses and limits\n\nClean JSON with no wrapper. An error returns `{ \"error\", \"code\", \"doc_url\" }`: `error` is readable and may change wording, `code` is stable and the one to switch on, and `doc_url` links to the fix for that exact code.\n\nEvery response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used` and `X-RateLimit-Reset` for your monthly allowance, which resets on the 1st of each month at 00:00 UTC. Each plan also has a per-minute limit for bursts, from 600 requests per minute on Starter; going over it answers `429` with a `Retry-After` and never counts against the month.\n\n## Errors\n\nEvery code the API returns, also published machine-readably as `x-error-codes` on the `info` object of this document:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | [`validation_error`](https://roxyapi.com/docs/errors#validation_error) | A field is missing or invalid. The body lists every failing field at once in issues, each with its path and the expected shape. |\n| 400 | [`bad_request`](https://roxyapi.com/docs/errors#bad_request) | The request was rejected as a whole, for example a body that is not valid JSON or a date range that ends before it starts. |\n| 400 | [`date_out_of_range`](https://roxyapi.com/docs/errors#date_out_of_range) | A date lies outside the span the planetary positions are served for. The error names the supported dates. |\n| 401 | [`api_key_required`](https://roxyapi.com/docs/errors#api_key_required) | No API key was sent. |\n| 401 | [`invalid_api_key`](https://roxyapi.com/docs/errors#invalid_api_key) | The key sent is malformed or cannot be verified. |\n| 401 | [`api_key_revoked`](https://roxyapi.com/docs/errors#api_key_revoked) | The key was valid once and has since been revoked from the account page. |\n| 401 | [`subscription_not_found`](https://roxyapi.com/docs/errors#subscription_not_found) | The key verifies, but the subscription behind it no longer exists. |\n| 401 | [`subscription_inactive`](https://roxyapi.com/docs/errors#subscription_inactive) | The subscription behind the key is cancelled, expired or suspended, or a trial is past its end date. |\n| 401 | [`publishable_key_not_allowed_on_mcp`](https://roxyapi.com/docs/errors#publishable_key_not_allowed_on_mcp) | A publishable key was used on a Remote MCP server, which takes a secret key. |\n| 401 | [`invalid_client_ip`](https://roxyapi.com/docs/errors#invalid_client_ip) | A keyless request could not be attributed to a caller. |\n| 401 | [`unauthorized`](https://roxyapi.com/docs/errors#unauthorized) | Authentication failed with no more specific reason to give. |\n| 403 | [`forbidden`](https://roxyapi.com/docs/errors#forbidden) | The key is valid, but this request is not permitted. |\n| 403 | [`origin_required`](https://roxyapi.com/docs/errors#origin_required) | A publishable key with an origin allowlist was used with no Origin header, as from a server or a native app. |\n| 403 | [`origin_not_allowed`](https://roxyapi.com/docs/errors#origin_not_allowed) | The calling site is not on the origin allowlist of this publishable key. |\n| 404 | [`not_found`](https://roxyapi.com/docs/errors#not_found) | Nothing is served at this path, or the identifier in it does not exist. A path miss adds suggestions, the closest real endpoints. |\n| 405 | [`method_not_allowed`](https://roxyapi.com/docs/errors#method_not_allowed) | The path exists for a different HTTP method. The body lists the accepted methods in allow, as does the Allow header. |\n| 409 | [`conflict`](https://roxyapi.com/docs/errors#conflict) | The request cannot be applied in the current state. |\n| 410 | [`gone`](https://roxyapi.com/docs/errors#gone) | The path was removed permanently. |\n| 413 | [`payload_too_large`](https://roxyapi.com/docs/errors#payload_too_large) | The request body is larger than the API accepts. A body far over the cap is refused before it reaches the API and returns a bare 413 with no JSON body. |\n| 415 | [`unsupported_media_type`](https://roxyapi.com/docs/errors#unsupported_media_type) | A request with a body was sent without Content-Type: application/json. |\n| 422 | [`unprocessable_entity`](https://roxyapi.com/docs/errors#unprocessable_entity) | Every field is valid, but the combination cannot be computed. |\n| 429 | [`rate_limit_exceeded`](https://roxyapi.com/docs/errors#rate_limit_exceeded) | The monthly request allowance is used up. Retry-After gives the seconds to the reset. |\n| 429 | [`rate_limit_per_minute`](https://roxyapi.com/docs/errors#rate_limit_per_minute) | The per-minute limit of the plan was reached. Retry-After gives the seconds to the next minute, and the monthly allowance is not charged. |\n| 429 | [`rate_limited`](https://roxyapi.com/docs/errors#rate_limited) | A rate limit was reached, reported without the plan detail. |\n| 429 | [`free_tier_exhausted`](https://roxyapi.com/docs/errors#free_tier_exhausted) | A keyless request has used up its trial allowance. |\n| 500 | [`internal_error`](https://roxyapi.com/docs/errors#internal_error) | The request failed inside our service. Retry with exponential backoff. |\n| 503 | [`compute_saturated`](https://roxyapi.com/docs/errors#compute_saturated) | Heavy calculations are briefly at capacity. Send the same request again after Retry-After seconds. |\n| Any | [`error`](https://roxyapi.com/docs/errors#error) | A fallback for a status with no more specific code. The status and the error field carry the signal. |\n\n## Pricing\n\nOne flat subscription covers every domain, every endpoint, Remote MCP, the SDKs, UI components, widgets and every language. Every call counts the same, a planet position or a full birth chart, with no credits and no per-product fees. From $39 per month for 50K requests, up to 3M requests, with custom volume above that: [roxyapi.com/pricing](https://roxyapi.com/pricing).\n\n## Resources\n\n- [Quickstart](https://roxyapi.com/docs/quickstart): the first call in three steps\n- [Documentation](https://roxyapi.com/docs): guides, tutorials and a reference per domain\n- [Remote MCP](https://roxyapi.com/docs/mcp): connect an AI agent\n- [SDKs](https://roxyapi.com/docs/sdk) and [UI components](https://roxyapi.com/ui)\n- [Templates](https://roxyapi.com/templates): open source apps to clone and deploy\n- [Methodology](https://roxyapi.com/methodology): how accuracy is verified\n- [Contact](https://roxyapi.com/contact): support and key recovery\n",
+    "description": "# RoxyAPI: the Spiritual OS layer for agentic AI\n\n> **Base URL:** `https://roxyapi.com/api/v2`. Every path below is relative to it.\n\nOne API key for 18 insight domains (Western Astrology, Vedic Astrology, Forecast, Human Design, Chinese Astrology, Feng Shui, Mesoamerican Astrology, Vastu Shastra, Numerology, Kabbalah, Tarot Reading, Biorhythm, Ayurveda, I-Ching Oracle, Crystals and Healing Stones, Dream Interpretation, Angel Numbers, Location and Timezone), 261+ endpoints, planetary positions read directly from the NASA JPL DE440 ephemeris and verified against NASA JPL Horizons, and every calculation held by 3,683 gold standard tests. Readings come back as structured data with editorial interpretation text, translated into 10+ languages via `?lang=` on translated endpoints. Remote MCP servers, typed SDKs for TypeScript, Python, PHP, C#, Go, and Rust, drop-in UI components and copy-paste widgets, and open source Templates all run on this one document.\n\n## Who builds on RoxyAPI\n\n- **Developers** shipping astrology, tarot, numerology and wellness apps without learning each system first\n- **AI agent builders** giving Claude, GPT or Gemini real calculations instead of guesses, over Remote MCP\n- **Vibe coders** building with Cursor, Claude Code, Bolt or Replit from the spec and AGENTS.md\n- **Founders and brands** launching insight products for their audience on one key\n\n## Quick start\n\n**1. Get a key** at [roxyapi.com/pricing](https://roxyapi.com/pricing). It is ready the moment payment clears.\n\n**2. Make your first call:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/astrology/horoscope/aries/daily\n```\n\n**3. Check your usage:**\n```bash\ncurl -H \"X-API-Key: YOUR_KEY\" https://roxyapi.com/api/v2/usage\n```\n\n## AI agents: Remote MCP\n\nEvery domain has its own Remote MCP server over Streamable HTTP at `https://roxyapi.com/mcp/{domain}` (for example `/mcp/astrology`), 258+ tools in all, with nothing to install or host. Add the URL to Claude, Cursor, VS Code, ChatGPT or any MCP client, or connect from the OpenAI Agents SDK and Gemini ADK. Coding agents that build against this API use the documentation server at `/mcp/docs`. Setup for every client: [roxyapi.com/docs/mcp](https://roxyapi.com/docs/mcp).\n\n## Authentication\n\nSend your key as `X-API-Key: YOUR_KEY` (recommended), as `Authorization: Bearer YOUR_KEY`, or as the `?api_key=` query parameter for quick tests. Keep secret keys on a server; publishable keys are for the browser.\n\n## Responses and limits\n\nClean JSON with no wrapper. An error returns `{ \"error\", \"code\", \"doc_url\" }`: `error` is readable and may change wording, `code` is stable and the one to switch on, and `doc_url` links to the fix for that exact code.\n\nEvery response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Used` and `X-RateLimit-Reset` for your monthly allowance, which resets on the 1st of each month at 00:00 UTC. Each plan also has a per-minute limit for bursts, from 600 requests per minute on Starter; going over it answers `429` with a `Retry-After` and never counts against the month.\n\n## Errors\n\nEvery code the API returns, also published machine-readably as `x-error-codes` on the `info` object of this document:\n\n| Status | Code | When |\n|--------|------|------|\n| 400 | [`validation_error`](https://roxyapi.com/docs/errors#validation_error) | A field is missing or invalid. The body lists every failing field at once in issues, each with its path and the expected shape. |\n| 400 | [`bad_request`](https://roxyapi.com/docs/errors#bad_request) | The request was rejected as a whole, for example a body that is not valid JSON or a date range that ends before it starts. |\n| 400 | [`date_out_of_range`](https://roxyapi.com/docs/errors#date_out_of_range) | A date lies outside the span the planetary positions are served for. The error names the supported dates. |\n| 401 | [`api_key_required`](https://roxyapi.com/docs/errors#api_key_required) | No API key was sent. |\n| 401 | [`invalid_api_key`](https://roxyapi.com/docs/errors#invalid_api_key) | The key sent is malformed or cannot be verified. |\n| 401 | [`api_key_revoked`](https://roxyapi.com/docs/errors#api_key_revoked) | The key was valid once and has since been revoked from the account page. |\n| 401 | [`subscription_not_found`](https://roxyapi.com/docs/errors#subscription_not_found) | The key verifies, but the subscription behind it no longer exists. |\n| 401 | [`subscription_inactive`](https://roxyapi.com/docs/errors#subscription_inactive) | The subscription behind the key is cancelled, expired or suspended, or a trial is past its end date. |\n| 401 | [`publishable_key_not_allowed_on_mcp`](https://roxyapi.com/docs/errors#publishable_key_not_allowed_on_mcp) | A publishable key was used on a Remote MCP server, which takes a secret key. |\n| 401 | [`invalid_client_ip`](https://roxyapi.com/docs/errors#invalid_client_ip) | A keyless request could not be attributed to a caller. |\n| 401 | [`unauthorized`](https://roxyapi.com/docs/errors#unauthorized) | Authentication failed with no more specific reason to give. |\n| 403 | [`forbidden`](https://roxyapi.com/docs/errors#forbidden) | The key is valid, but this request is not permitted. |\n| 403 | [`origin_required`](https://roxyapi.com/docs/errors#origin_required) | A publishable key with an origin allowlist was used with no Origin header, as from a server or a native app. |\n| 403 | [`origin_not_allowed`](https://roxyapi.com/docs/errors#origin_not_allowed) | The calling site is not on the origin allowlist of this publishable key. |\n| 404 | [`not_found`](https://roxyapi.com/docs/errors#not_found) | Nothing is served at this path, or the identifier in it does not exist. A path miss adds suggestions, the closest real endpoints. |\n| 405 | [`method_not_allowed`](https://roxyapi.com/docs/errors#method_not_allowed) | The path exists for a different HTTP method. The body lists the accepted methods in allow, as does the Allow header. |\n| 409 | [`conflict`](https://roxyapi.com/docs/errors#conflict) | The request cannot be applied in the current state. |\n| 410 | [`gone`](https://roxyapi.com/docs/errors#gone) | The path was removed permanently. |\n| 413 | [`payload_too_large`](https://roxyapi.com/docs/errors#payload_too_large) | The request body is larger than the API accepts. A body far over the cap is refused before it reaches the API and returns a bare 413 with no JSON body. |\n| 415 | [`unsupported_media_type`](https://roxyapi.com/docs/errors#unsupported_media_type) | A request with a body was sent without Content-Type: application/json. |\n| 422 | [`unprocessable_entity`](https://roxyapi.com/docs/errors#unprocessable_entity) | Every field is valid, but the combination cannot be computed. |\n| 429 | [`rate_limit_exceeded`](https://roxyapi.com/docs/errors#rate_limit_exceeded) | The monthly request allowance is used up. Retry-After gives the seconds to the reset. |\n| 429 | [`rate_limit_per_minute`](https://roxyapi.com/docs/errors#rate_limit_per_minute) | The per-minute limit of the plan was reached. Retry-After gives the seconds to the next minute, and the monthly allowance is not charged. |\n| 429 | [`rate_limited`](https://roxyapi.com/docs/errors#rate_limited) | A rate limit was reached, reported without the plan detail. |\n| 429 | [`free_tier_exhausted`](https://roxyapi.com/docs/errors#free_tier_exhausted) | A keyless request has used up its trial allowance. |\n| 500 | [`internal_error`](https://roxyapi.com/docs/errors#internal_error) | The request failed inside our service. Retry with exponential backoff. |\n| 503 | [`compute_saturated`](https://roxyapi.com/docs/errors#compute_saturated) | Heavy calculations are briefly at capacity. Send the same request again after Retry-After seconds. |\n| Any | [`error`](https://roxyapi.com/docs/errors#error) | A fallback for a status with no more specific code. The status and the error field carry the signal. |\n\n## Pricing\n\nOne flat subscription covers every domain, every endpoint, Remote MCP, the SDKs, UI components, widgets and every language. Every call counts the same, a planet position or a full birth chart, with no credits and no per-product fees. From $39 per month for 50K requests, up to 3M requests, with custom volume above that: [roxyapi.com/pricing](https://roxyapi.com/pricing).\n\n## Resources\n\n- [Quickstart](https://roxyapi.com/docs/quickstart): the first call in three steps\n- [Documentation](https://roxyapi.com/docs): guides, tutorials and a reference per domain\n- [Remote MCP](https://roxyapi.com/docs/mcp): connect an AI agent\n- [SDKs](https://roxyapi.com/docs/sdk) and [UI components](https://roxyapi.com/ui)\n- [Templates](https://roxyapi.com/templates): open source apps to clone and deploy\n- [Methodology](https://roxyapi.com/methodology): how accuracy is verified\n- [Contact](https://roxyapi.com/contact): support and key recovery\n",
     "x-error-codes": [
       {
         "code": "validation_error",
@@ -539,9 +539,10 @@
                       },
                       "example": [
                         "blend",
-                        "difficult",
-                        "unite",
-                        "united"
+                        "intensity",
+                        "focus",
+                        "unity",
+                        "emphasis"
                       ],
                       "description": "Themes this aspect activates between the two bodies. Translated in place, so they arrive in the requested language."
                     }
@@ -1500,12 +1501,11 @@
                         "type": "string"
                       },
                       "example": [
-                        "accept",
-                        "accepting",
-                        "difficult",
-                        "natural",
+                        "harmony",
+                        "flow",
+                        "talent",
                         "support",
-                        "talent"
+                        "acceptance"
                       ],
                       "description": "Keywords associated with this aspect type."
                     },
@@ -2165,9 +2165,10 @@
                       },
                       "example": [
                         "blend",
-                        "difficult",
-                        "unite",
-                        "united"
+                        "intensity",
+                        "focus",
+                        "unity",
+                        "emphasis"
                       ],
                       "description": "Key themes activated by this transit aspect."
                     }
@@ -3449,8 +3450,8 @@
           },
           "summary": {
             "type": "string",
-            "example": "Fixed star positions for July 15, 1990 at 2:30 PM, with 3 conjunctions within 1° across the major named stars including Regulus, Spica, and Algol.",
-            "description": "Short overview of the fixed-star report for previews and report intros."
+            "example": "Fixed star positions for July 15, 1990 at 2:30 PM, with 3 conjunctions within 1°, the tightest Regulus on Sun.",
+            "description": "Short overview of the fixed-star report for previews and report intros: the number of conjunctions inside the orb and the tightest one found, or a plain statement that no star touches the chart. Localized to the requested language."
           }
         },
         "required": [
@@ -3949,7 +3950,7 @@
               "koch"
             ],
             "example": "placidus",
-            "description": "House system applied when placing each variant in a house."
+            "description": "House system actually applied when placing each variant in a house. Differs from the requested system only above the polar circle, where quadrant systems fall back to Whole Sign."
           },
           "lilith": {
             "type": "array",
@@ -4113,7 +4114,7 @@
             ],
             "default": "placidus",
             "example": "placidus",
-            "description": "House system used to place each Lilith variant in a house. Placidus (default), Whole Sign, Equal, or Koch."
+            "description": "House system used to place each Lilith variant in a house. Placidus (default), Whole Sign, Equal, or Koch. Above the polar circle, quadrant systems fall back to Whole Sign and the echoed houseSystem reports the system actually used."
           }
         },
         "required": [
@@ -4231,8 +4232,8 @@
                   "type": "integer",
                   "minimum": 1,
                   "maximum": 12,
-                  "example": 2,
-                  "description": "Whole-sign house (1 to 12) counted from the progressed Ascendant sign. The 1st house is the entire sign the progressed Ascendant falls in."
+                  "example": 3,
+                  "description": "Natal house (1 to 12) the progressed body occupies, read against the natal cusps in the requested houseSystem, the same house number POST /natal-chart gives a body at this longitude. Natal houses are the standard frame for reading progressed planets, the progressed Moon through the houses above all."
                 },
                 "speed": {
                   "type": "number",
@@ -4408,6 +4409,18 @@
             "format": "date",
             "example": "2025-07-15",
             "description": "Date to progress the chart to, in YYYY-MM-DD format. Usually today or a forecast date. The day-for-a-year key turns the elapsed years since birth into the same number of ephemeris days after the birth moment."
+          },
+          "houseSystem": {
+            "type": "string",
+            "enum": [
+              "placidus",
+              "whole-sign",
+              "equal",
+              "koch"
+            ],
+            "default": "placidus",
+            "example": "placidus",
+            "description": "House system of the natal chart that every progressed body is placed in. Pass the system the natal chart was drawn in so the house numbers match it. Placidus (default) is the most widely used in Western astrology. Whole Sign assigns one sign per house. Equal divides into 30 degree segments from the Ascendant. Koch emphasizes higher latitudes. Quadrant systems fall back to Whole Sign above the polar circle."
           }
         },
         "required": [
@@ -6743,7 +6756,7 @@
                 "present"
               ]
             },
-            "description": "Forty-four classical yogas detected against this chart. Twelve conjunction and dignity yogas: Gajakesari (three-rule parashara definition), Sunapha, Anapha, Dhurdhura, Kemadruma, Chandra Mangala, Budha-Aditya, and the five Pancha Mahapurusha (Ruchaka, Bhadra, Hamsa, Malavya, Sasa). Plus all 32 Nabhasa distribution yogas across the Asraya, Dala, Akriti and Sankhya families, which read how the seven visible grahas are spread over the whole chart rather than any single conjunction, and which apply the four classical precedence norms so an outranked yoga is returned as absent with evidence naming the norm that silenced it. Each entry carries an `id` (matches `GET /yoga/{id}` for full glossary lookup), a `present` boolean, a `quality` (Positive, Negative, or Both = auspicious, inauspicious, or context-dependent), and classical-text `evidence` for the rule that triggered or failed. Filter on `present === true` for the active list."
+            "description": "Forty-eight classical yogas detected against this chart. Twelve conjunction and dignity yogas: Gajakesari (three-rule parashara definition), Sunapha, Anapha, Dhurdhura, Kemadruma, Chandra Mangala, Budha-Aditya, and the five Pancha Mahapurusha (Ruchaka, Bhadra, Hamsa, Malavya, Sasa). Plus all 32 Nabhasa distribution yogas across the Asraya, Dala, Akriti and Sankhya families, which read how the seven visible grahas are spread over the whole chart rather than any single conjunction, and which apply the four classical precedence norms so an outranked yoga is returned as absent with evidence naming the norm that silenced it. Plus the four wealth and poverty verdicts (Dhana, Daridra, Lakshmi, Dhana Malika), each reading as the first rule that matched. Each entry carries an `id` (matches `GET /yoga/{id}` for full glossary lookup), a `present` boolean, a `quality` (Positive, Negative, or Both = auspicious, inauspicious, or context-dependent), and classical-text `evidence` for the rule that triggered or failed. Filter on `present === true` for the active list."
           },
           "meta": {
             "type": "object",
@@ -9951,7 +9964,7 @@
             "minimum": -90,
             "maximum": 90,
             "example": 28.6139,
-            "description": "Birth location latitude in decimal degrees"
+            "description": "Birth location latitude in decimal degrees. Accepted at any latitude, polar included: planet longitudes are geocentric and the star and sub lords are divisions of longitude, so no house cusp is involved."
           },
           "longitude": {
             "type": "number",
@@ -10165,7 +10178,7 @@
             "minimum": -90,
             "maximum": 90,
             "example": 28.6139,
-            "description": "Birth location latitude in decimal degrees"
+            "description": "Birth location latitude in decimal degrees. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
           },
           "longitude": {
             "type": "number",
@@ -10854,7 +10867,7 @@
             "minimum": -90,
             "maximum": 90,
             "example": 28.6139,
-            "description": "Birth location latitude in decimal degrees"
+            "description": "Birth location latitude in decimal degrees. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
           },
           "longitude": {
             "type": "number",
@@ -12641,7 +12654,7 @@
             "minimum": -90,
             "maximum": 90,
             "example": 19.076,
-            "description": "Latitude where the question is judged, decimal degrees. The house cusps are Placidus and therefore latitude dependent, so this is the place of judgment, not the querent birthplace."
+            "description": "Latitude where the question is judged, decimal degrees. The house cusps are Placidus and therefore latitude dependent, so this is the place of judgment, not the querent birthplace. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
           },
           "longitude": {
             "type": "number",
@@ -13418,7 +13431,7 @@
             "minimum": -90,
             "maximum": 90,
             "example": 28.6139,
-            "description": "Birth latitude in decimal degrees. Sets the Placidus cusps; also the place the ruling planets and the Moon windows are read at."
+            "description": "Birth latitude in decimal degrees. Sets the Placidus cusps; also the place the ruling planets and the Moon windows are read at. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
           },
           "longitude": {
             "type": "number",
@@ -13439,7 +13452,7 @@
               }
             ],
             "default": 5.5,
-            "description": "Timezone as an IANA name (Asia/Kolkata) or decimal hours from UTC. Applies to the birth time, to the reading date and time, and to every local timestamp in the response. IANA names resolve to the offset in force on the date being read.",
+            "description": "Timezone as an IANA name (Asia/Kolkata) or decimal hours from UTC. Applies to the birth time, to the reading date and time, and to every local timestamp in the response. An IANA name is resolved twice, each to the offset in force at its own moment: at the birth date and time for the natal chart, and on the date being read for the reading. A decimal is applied to both as sent.",
             "example": 5.5
           },
           "date": {
@@ -15670,7 +15683,7 @@
                 "longitudeSeparation": {
                   "type": "number",
                   "example": 2.89,
-                  "description": "Plain angular separation of the two ecliptic longitudes, in degrees. Returned beside timeDegrees so the two measures can be compared: this is what a combustion flag on a birth chart uses, and the gap between them is precisely what a location-aware heliacal calculation adds."
+                  "description": "Plain angular separation of the two ecliptic longitudes, in degrees, read at the same instant as timeDegrees: the Sun crossing the horizon named in `horizon` on the requested day, sunset for west and sunrise for east, at the observer location. Returned beside timeDegrees so the two measures can be compared: this is the quantity a combustion flag on a birth chart uses, and the gap between them is precisely what a location-aware heliacal calculation adds. A birth chart reads it at the birth moment instead, so the two differ by however far the graha and the Sun moved in between, about half a degree per hour for the Moon."
                 },
                 "lastEvent": {
                   "type": [
@@ -21591,12 +21604,11 @@
                                   "type": "string"
                                 },
                                 "example": [
-                                  "accept",
-                                  "accepting",
-                                  "difficult",
-                                  "natural",
+                                  "harmony",
+                                  "flow",
+                                  "talent",
                                   "support",
-                                  "talent"
+                                  "acceptance"
                                 ],
                                 "description": "Keywords associated with this aspect type."
                               },
@@ -24769,12 +24781,11 @@
                                   "type": "string"
                                 },
                                 "example": [
-                                  "accept",
-                                  "accepting",
-                                  "difficult",
-                                  "natural",
+                                  "harmony",
+                                  "flow",
+                                  "talent",
                                   "support",
-                                  "talent"
+                                  "acceptance"
                                 ],
                                 "description": "Key themes activated by this transit aspect."
                               }
@@ -24966,12 +24977,11 @@
                                     "type": "string"
                                   },
                                   "example": [
-                                    "accept",
-                                    "accepting",
-                                    "difficult",
-                                    "natural",
+                                    "harmony",
+                                    "flow",
+                                    "talent",
                                     "support",
-                                    "talent"
+                                    "acceptance"
                                   ],
                                   "description": "Key themes activated by this transit aspect."
                                 }
@@ -35854,7 +35864,7 @@
           "Western Astrology"
         ],
         "summary": "Secondary progressions calculator - progressed chart, progressed Sun and Moon",
-        "description": "Generate the secondary progressed chart for any date using the day-for-a-year key. Each day of ephemeris motion after birth stands in for one year of life. Returns every progressed body with its sign, degree, whole-sign house, motion, and retrograde state, plus the progressed Ascendant and Midheaven via the Naibod arc. The progressed Sun and progressed Moon are the headline timing markers for inner growth and emotional chapters. Secondary progressions API, progressed chart calculator, progressed Sun and Moon, progressed Ascendant and Midheaven.",
+        "description": "Generate the secondary progressed chart for any date using the day-for-a-year key. Each day of ephemeris motion after birth stands in for one year of life. Returns every progressed body with its sign, degree, natal house, motion, and retrograde state, plus the progressed Ascendant and Midheaven via the Naibod arc. The progressed Sun and progressed Moon are the headline timing markers for inner growth and emotional chapters. Secondary progressions API, progressed chart calculator, progressed Sun and Moon, progressed Ascendant and Midheaven.",
         "security": [
           {
             "apiKey": []
@@ -39311,7 +39321,7 @@
                     "type": "boolean",
                     "default": false,
                     "example": false,
-                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above."
+                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
                   },
                   "nodeType": {
                     "type": "string",
@@ -39327,7 +39337,7 @@
                     "type": "string",
                     "format": "date-time",
                     "example": "2026-08-23T13:47:46Z",
-                    "description": "ISO 8601 datetime (YYYY-MM-DDTHH:MM:SS) to read the running periods at, for a reading prepared for a future day, a backtest, or a chart cast for a past moment. Defaults to the current instant. Interpreted as local time in the request timezone (a trailing Z is accepted but ignored); with timezone 0 it is UTC."
+                    "description": "ISO 8601 datetime (YYYY-MM-DDTHH:MM:SS) to read the running periods at, for a reading prepared for a future day, a backtest, or a chart cast for a past moment. Defaults to the current instant. Interpreted as local time in the request timezone, an IANA name resolved at this datetime rather than at the birth (a trailing Z is accepted but ignored); with timezone 0 it is UTC."
                   }
                 },
                 "required": [
@@ -41219,7 +41229,7 @@
                     "type": "boolean",
                     "default": false,
                     "example": false,
-                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above."
+                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
                   },
                   "nodeType": {
                     "type": "string",
@@ -41980,7 +41990,7 @@
                     "type": "boolean",
                     "default": false,
                     "example": false,
-                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above."
+                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
                   },
                   "nodeType": {
                     "type": "string",
@@ -42938,7 +42948,7 @@
                     "type": "boolean",
                     "default": false,
                     "example": false,
-                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above."
+                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
                   },
                   "nodeType": {
                     "type": "string",
@@ -43969,7 +43979,7 @@
                     "type": "boolean",
                     "default": false,
                     "example": false,
-                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above."
+                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
                   },
                   "nodeType": {
                     "type": "string",
@@ -45073,7 +45083,7 @@
                     "type": "boolean",
                     "default": false,
                     "example": false,
-                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above."
+                    "description": "Set true to attach the KP significators of each period lord: its star lord, sub lord, occupied house, the houses it signifies at levels L1 to L4, and a strength grade. Off by default, so responses stay exactly as they are for clients that only need dates. Requires the birth latitude and longitude, since significators are read off a Placidus house chart, and uses the same ayanamsa frame selected above. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
                   },
                   "nodeType": {
                     "type": "string",
@@ -46115,7 +46125,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"Asia/Kolkata\", \"America/New_York\") OR decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). IANA strings are resolved to the DST-correct offset for the date being read. Interprets the birth time and the civil date below. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"Asia/Kolkata\", \"America/New_York\") OR decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). IANA strings are resolved twice, each to the DST-correct offset of its own moment: at the birth date and time for the birth chart, and on the date being read for the reading day. A decimal is applied to both as sent. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "date": {
@@ -52958,7 +52968,7 @@
           "Vedic Astrology"
         ],
         "summary": "Get KP Placidus house cusps with sub-lords",
-        "description": "Calculate unequal Placidus house cusps with ruling sign-lord, nakshatra-lord, and sub-lord for each cusp. Dynamic KP-Newcomb or custom ayanamsa support. Used in KP horary astrology, cusp sub-lord analysis, and birth chart rectification. Returns all 12 house cusps with KP sub-division details. Use it as a Placidus house cusp calculator that also carries the star lord and sub lord of each cusp, which is what Krishnamurti Paddhati horary work reads first.",
+        "description": "Calculate unequal Placidus house cusps with ruling sign-lord, nakshatra-lord, and sub-lord for each cusp. Dynamic KP-Newcomb or custom ayanamsa support. Used in KP horary astrology, cusp sub-lord analysis, and birth chart rectification. Returns all 12 house cusps with KP sub-division details. Use it as a Placidus house cusp calculator that also carries the star lord and sub lord of each cusp, which is what Krishnamurti Paddhati horary work reads first. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.",
         "security": [
           {
             "apiKey": []
@@ -53266,7 +53276,7 @@
           "Vedic Astrology"
         ],
         "summary": "Generate complete KP birth chart",
-        "description": "Generate authentic Krishnamurti Paddhati birth charts with Placidus house cusps, star-lord and sub-lord calculations. Supports custom ayanamsa and dynamic KP-Newcomb ayanamsa calculation. Returns complete chart with all 9 planets (Sun through Ketu), Ascendant, 12 Placidus house cusps, nakshatra details, star-lords, sub-lords, and KP horary numbers (1-249). Perfect for KP astrology software, horary prediction apps, and event timing analysis. One call is a complete Krishnamurti Paddhati chart generator, returning the Placidus cusps and the planets with their sub lords together.",
+        "description": "Generate authentic Krishnamurti Paddhati birth charts with Placidus house cusps, star-lord and sub-lord calculations. Supports custom ayanamsa and dynamic KP-Newcomb ayanamsa calculation. Returns complete chart with all 9 planets (Sun through Ketu), Ascendant, 12 Placidus house cusps, nakshatra details, star-lords, sub-lords, and KP horary numbers (1-249). Perfect for KP astrology software, horary prediction apps, and event timing analysis. One call is a complete Krishnamurti Paddhati chart generator, returning the Placidus cusps and the planets with their sub lords together. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.",
         "security": [
           {
             "apiKey": []
@@ -53633,7 +53643,7 @@
                     "minimum": -90,
                     "maximum": 90,
                     "example": 28.6139,
-                    "description": "Observer latitude in decimal degrees"
+                    "description": "Observer latitude in decimal degrees. Any latitude for the ruling planets alone; with birthDate and birthTime the significators read Placidus cusps, so the latitude must lie below 66.56 degrees north or south and a polar latitude returns 400."
                   },
                   "longitude": {
                     "type": "number",
@@ -53654,7 +53664,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC. IANA resolved to the DST-correct offset based on birthDate or datetime. Defaults to 5.5.",
+                    "description": "Timezone: IANA name (e.g. \"America/New_York\", \"Europe/London\") OR decimal hours from UTC. An IANA name is resolved to the DST-correct offset of each moment separately: at datetime for the ruling planets, and at birthDate and birthTime for the significators. A decimal is applied to both as sent. Defaults to 5.5.",
                     "example": 5.5
                   },
                   "datetime": {
@@ -53945,7 +53955,7 @@
           "Vedic Astrology"
         ],
         "summary": "Get KP ruling planets with significators at intervals",
-        "description": "Calculate ruling planets and their KP significators at regular time intervals using Krishnamurti Paddhati prashna (horary) astrology. For each interval, a full Placidus house chart is erected and significators are computed using the 4-level KP hierarchy: Level 1 (strongest) planets in star of house occupant, Level 2 occupants, Level 3 planets in star of house owner, Level 4 house owner. Returns Day Lord (sunrise-based Hindu Vara), Moon Sign/Star/Sub/Sub-Sub Lords, Lagna Sign/Star/Sub/Sub-Sub Lords, unique ruling planets set, and per-ruling-planet house significations. No birth data needed, significators come from each moments sky chart. Use for birth time rectification, muhurta selection, and KP horary number analysis.",
+        "description": "Calculate ruling planets and their KP significators at regular time intervals using Krishnamurti Paddhati prashna (horary) astrology. For each interval, a full Placidus house chart is erected and significators are computed using the 4-level KP hierarchy: Level 1 (strongest) planets in star of house occupant, Level 2 occupants, Level 3 planets in star of house owner, Level 4 house owner. Returns Day Lord (sunrise-based Hindu Vara), Moon Sign/Star/Sub/Sub-Sub Lords, Lagna Sign/Star/Sub/Sub-Sub Lords, unique ruling planets set, and per-ruling-planet house significations. No birth data needed, significators come from each moments sky chart. Use for birth time rectification, muhurta selection, and KP horary number analysis. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.",
         "security": [
           {
             "apiKey": []
@@ -54023,7 +54033,7 @@
                     "minimum": -90,
                     "maximum": 90,
                     "example": 17.385044,
-                    "description": "Observer latitude in decimal degrees"
+                    "description": "Observer latitude in decimal degrees. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400."
                   },
                   "longitude": {
                     "type": "number",
@@ -55130,7 +55140,7 @@
           "Vedic Astrology"
         ],
         "summary": "Cast a KP horary (Prashna) chart from a number 1-249 - KP Horary API",
-        "description": "Cast a Krishnamurti Paddhati horary chart, also called Prashna, from a number between 1 and 249 given by the querent plus the moment and place the question is judged. NO BIRTH DETAILS ARE NEEDED, which is what makes horary the KP answer when birth time is unknown or unreliable. The number maps to one of the 249 KP sub divisions and sets the Ascendant; the twelve Placidus cusps follow from that Ascendant at the given latitude, and every planetary position comes from the real sky at the moment of the question. Returns the Ascendant with its sub lord, all twelve cusps with star lord and sub lord, the nine grahas placed against those cusps, the five ruling planets for validating the chart, and four-level significators for judging which houses each graha supports. KP horary API, Prashna kundali calculator, 249 horary number chart, Krishnamurti Paddhati horary, cusp sub lord question answering.",
+        "description": "Cast a Krishnamurti Paddhati horary chart, also called Prashna, from a number between 1 and 249 given by the querent plus the moment and place the question is judged. NO BIRTH DETAILS ARE NEEDED, which is what makes horary the KP answer when birth time is unknown or unreliable. The number maps to one of the 249 KP sub divisions and sets the Ascendant; the twelve Placidus cusps follow from that Ascendant at the given latitude, and every planetary position comes from the real sky at the moment of the question. Returns the Ascendant with its sub lord, all twelve cusps with star lord and sub lord, the nine grahas placed against those cusps, the five ruling planets for validating the chart, and four-level significators for judging which houses each graha supports. KP horary API, Prashna kundali calculator, 249 horary number chart, Krishnamurti Paddhati horary, cusp sub lord question answering. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.",
         "security": [
           {
             "apiKey": []
@@ -55438,7 +55448,7 @@
           "Vedic Astrology"
         ],
         "summary": "Daily finance score from four KP sub lord layers - KP Daily Finance API",
-        "description": "A Krishnamurti Paddhati daily finance reading for one native on one date. Four KP layers are each scored against the money houses and weighed into one number: the cusp sub lords of the gain and loss houses (structural promise), the four running Vimshottari lords at the reading moment (timing), the ruling planets of that moment (the pulse), and the sub lord windows the Moon passes through across the civil day (the hour hand), with the best and worst windows named. Weights cusps 30, dasha 40, rulingPlanets 15, moonWindows 15. Every input is the shipped KP arithmetic: Placidus cusps, the 249 sub lord table, the four tier significator rule, the Vimshottari chain to the sookshma level, all in the one ayanamsa you choose. Every row prints its planet, its standing against the two sets and its score, so the number can be audited rather than trusted. The house groups, the classification, the inversion on the loss cusps, the retrograde penalty, the level weights and the layer weights are a KP practitioner convention adopted as the published convention of this route: no classical KP text weighs these four layers against each other, and every table behind the number is printed so the result can be checked line by line rather than trusted. The score measures what the method outputs for the day, never the probability of a gain or a loss. Override the two house groups to run your own school.",
+        "description": "A Krishnamurti Paddhati daily finance reading for one native on one date. Four KP layers are each scored against the money houses and weighed into one number: the cusp sub lords of the gain and loss houses (structural promise), the four running Vimshottari lords at the reading moment (timing), the ruling planets of that moment (the pulse), and the sub lord windows the Moon passes through across the civil day (the hour hand), with the best and worst windows named. Weights cusps 30, dasha 40, rulingPlanets 15, moonWindows 15. Every input is the shipped KP arithmetic: Placidus cusps, the 249 sub lord table, the four tier significator rule, the Vimshottari chain to the sookshma level, all in the one ayanamsa you choose. Every row prints its planet, its standing against the two sets and its score, so the number can be audited rather than trusted. The house groups, the classification, the inversion on the loss cusps, the retrograde penalty, the level weights and the layer weights are a KP practitioner convention adopted as the published convention of this route: no classical KP text weighs these four layers against each other, and every table behind the number is printed so the result can be checked line by line rather than trusted. The score measures what the method outputs for the day, never the probability of a gain or a loss. Override the two house groups to run your own school. The latitude must lie below 66.56 degrees north or south, inside the polar circles: KP cusps are Placidus, which has no solution beyond them, so a polar latitude returns 400.",
         "security": [
           {
             "apiKey": []
@@ -57124,7 +57134,7 @@
                       }
                     ],
                     "default": 5.5,
-                    "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time. Defaults to 5.5 (IST).",
+                    "description": "Timezone: an IANA name (e.g. \"America/New_York\", \"Europe/London\", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time. The birth moment and the transit moment are each resolved at their own date and time. Defaults to 5.5 (IST).",
                     "example": 5.5
                   },
                   "coordinateSystem": {
@@ -74257,7 +74267,7 @@
                     "startAgeMonths": {
                       "type": "number",
                       "example": 2,
-                      "description": "Additional months past startAge, 0 to 11, from the remainder of the same count at one day to four months. Calculators that round the whole count to the nearest year will differ from this by up to six months."
+                      "description": "Additional months past startAge, 0 to 11, from the remainder of the same count at one day to four months, rounded once to the nearest month. Calculators that round the whole count to the nearest year will differ from this by up to six months."
                     },
                     "daysToTerm": {
                       "type": "number",
@@ -74453,12 +74463,12 @@
                           "startYear": {
                             "type": "number",
                             "example": 1997,
-                            "description": "Gregorian year this period begins, the birth year plus startAge."
+                            "description": "Gregorian year this period begins: the year of the date that falls startAge years and startAgeMonths months after the birth date, plus ten for each later period. A birth in November with a start of 4 years 7 months begins its first period in June of the birth year plus five."
                           },
                           "endYear": {
                             "type": "number",
                             "example": 2007,
-                            "description": "Gregorian year this period ends."
+                            "description": "Gregorian year this period ends and the next one begins, startYear plus ten."
                           }
                         },
                         "required": [
@@ -74548,7 +74558,7 @@
                           "luckPillarIndex": {
                             "type": "number",
                             "example": 4,
-                            "description": "Which returned luck pillar this year falls inside, by its index. 0 means the year falls before the first luck pillar begins, in the stretch still governed by the natal chart alone."
+                            "description": "Which returned luck pillar this year falls inside, by its index. The year a period begins in counts as inside it, though the handover falls in a month of that year. 0 means the year falls before the first luck pillar begins, in the stretch still governed by the natal chart alone."
                           }
                         },
                         "required": [
@@ -109721,7 +109731,7 @@
           "Numerology"
         ],
         "summary": "Generate numerology chart - Complete numerology reading API",
-        "description": "Generate a complete numerology chart from a full birth name and birth date in one call. It returns the six core numbers (Life Path, Expression, Soul Urge, Personality, Birth Day and Maturity) with their calculations and full interpretations, the four Pinnacles and four Challenges with their ages, Karmic Lessons, karmic debt in all five positions, Hidden Passion, Subconscious Self, Cornerstone, Capstone and First Vowel, the Birth Day profile for the exact day, lucky associations, the Maturity activation status, the Personal Year with the current Personal Month, and a written summary, in the language set by lang. The Personal Year uses currentYear or the current UTC year, while the Personal Month and the age behind the Maturity status read the current UTC date. Built for full numerology readings, PDF reports, onboarding profiles and AI agents.",
+        "description": "Generate a complete numerology chart from a full birth name and birth date in one call. It returns the six core numbers (Life Path, Expression, Soul Urge, Personality, Birth Day and Maturity) with their calculations and full interpretations, the four Pinnacles and four Challenges with their ages, Karmic Lessons, karmic debt in all five positions, Hidden Passion, Subconscious Self, Cornerstone, Capstone and First Vowel, the Birth Day profile for the exact day, lucky associations, the Maturity activation status, the Personal Year with the current Personal Month, and a written summary, in the language set by lang. The age behind the Maturity status, the Personal Month and the Personal Year are read on targetDate, the current UTC date when omitted, and currentYear overrides the Personal Year alone. Built for full numerology readings, PDF reports, onboarding profiles and AI agents.",
         "security": [
           {
             "apiKey": []
@@ -109792,7 +109802,13 @@
                     "minimum": 100,
                     "maximum": 2100,
                     "example": 2025,
-                    "description": "Calendar year for the Personal Year, defaults to the current UTC year. It moves the Personal Year only: the nested personalMonth and maturityStatus.currentAge always read the current UTC date."
+                    "description": "Calendar year for the Personal Year. When omitted it is the year of targetDate, or of the current UTC date when targetDate is omitted too. It moves the Personal Year only: the nested personalMonth and maturityStatus.currentAge read targetDate."
+                  },
+                  "targetDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-10-28",
+                    "description": "Date to read the chart on, in YYYY-MM-DD format, in the years 100 to 2100, on or after the birth date. Send the local date of the user for an exact answer: it sets maturityStatus.currentAge and isActive, the Personal Month, and the Personal Year when currentYear is absent. Defaults to today (UTC)."
                   }
                 },
                 "required": [
@@ -110764,7 +110780,7 @@
                                 "personalMonth": {
                                   "type": "number",
                                   "example": 3,
-                                  "description": "Personal Month number (1-9): the Personal Year above plus the current UTC calendar month, reduced to one digit."
+                                  "description": "Personal Month number (1-9): the Personal Year above plus the calendar month of targetDate (the current UTC month when omitted), reduced to one digit."
                                 },
                                 "theme": {
                                   "type": "string",
@@ -110782,7 +110798,7 @@
                                 "theme",
                                 "focus"
                               ],
-                              "description": "Personal Month forecast for the current UTC calendar month, applied to the Personal Year above. With a currentYear other than the current year, it pairs that Personal Year with the current month."
+                              "description": "Personal Month forecast for the calendar month of targetDate (the current UTC month when omitted), applied to the Personal Year above. With a currentYear other than the year of targetDate, it pairs that Personal Year with this month."
                             }
                           },
                           "required": [
@@ -111230,12 +111246,12 @@
                         "isActive": {
                           "type": "boolean",
                           "example": true,
-                          "description": "Whether the Maturity number is currently active (typically activates around age 35-40)."
+                          "description": "Whether the Maturity number is currently active: true from the 35th birthday, when currentAge reaches 35 (the number typically activates around age 35-40)."
                         },
                         "currentAge": {
                           "type": "number",
                           "example": 36,
-                          "description": "The current UTC calendar year minus the birth year. The birthday is not considered, so before the birthday it reads one more than the age in whole years, and currentYear does not move it."
+                          "description": "Age in completed years on targetDate, or on the current UTC date when targetDate is omitted: the birth year subtracted, less one until the birthday has come round. A 29 February birthday comes round on 1 March in a common year. currentYear does not move it."
                         },
                         "activationRange": {
                           "type": "string",
@@ -116302,7 +116318,7 @@
           "Kabbalah"
         ],
         "summary": "Generate a birth profile - Hebrew birthday and birth angel API",
-        "description": "Return the Hebrew date of a birth, the Hebrew birthday that follows it, the three birth names of the Renaissance angel tradition and the sephirah of the birth day, from one birth moment. The Hebrew date is computed from the published calendar algorithm rather than looked up, the sunset boundary is a typed request field because it depends on where you were, and the two rival ways of dating the first name are a typed convention the response echoes. Built for Jewish culture and education apps, birth angel features and any product that wants the Hebrew birthday on the same key as the rest of its readings.",
+        "description": "Return the Hebrew date of a birth, the next Hebrew birthday from targetDate or today, the three birth names of the Renaissance angel tradition and the sephirah of the birth day, from one birth moment. The Hebrew date is computed from the published calendar algorithm rather than looked up, the sunset boundary is a typed request field because it depends on where you were, and the two rival ways of dating the first name are a typed convention the response echoes. Built for Jewish culture and education apps, birth angel features and any product that wants the Hebrew birthday on the same key as the rest of its readings.",
         "security": [
           {
             "apiKey": []
@@ -116402,6 +116418,12 @@
                     "default": false,
                     "example": false,
                     "description": "Set true when the moment falls after nightfall, which advances the Hebrew date by one day because the Hebrew day begins in the evening. It is a caller assertion rather than a computation, since sunset depends on a place and this conversion takes none."
+                  },
+                  "targetDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-10-28",
+                    "description": "Date to count the next Hebrew birthday from, in YYYY-MM-DD format. Send the local date of the user for an exact answer: on the birthday itself the answer is that day. Defaults to today (UTC)."
                   }
                 },
                 "required": [
@@ -116505,12 +116527,12 @@
                             "null"
                           ],
                           "example": "2026-06-08",
-                          "description": "The next Gregorian date the Hebrew birthday falls on, or null when that Hebrew date does not exist in the year it would fall in."
+                          "description": "The Gregorian date of the next Hebrew birthday on or after targetDate, or the current UTC date when targetDate is omitted (that day when it is the birthday), or null when that Hebrew date does not exist in the year it falls in. It is the daytime civil date: the Hebrew day itself opens at nightfall the evening before."
                         },
                         "hebrewYear": {
                           "type": "number",
                           "example": 5786,
-                          "description": "The Hebrew year the anniversary was looked for in."
+                          "description": "The Hebrew year of that next anniversary, always later than the birth year. Present on the null branch too, naming the year the date is missing from."
                         },
                         "note": {
                           "type": "string",
@@ -116522,7 +116544,7 @@
                         "date",
                         "hebrewYear"
                       ],
-                      "description": "The next Hebrew birthday. Three Hebrew dates are missing from some years, and where the anniversary moves to is a matter of community practice rather than arithmetic, so the field is null with a note rather than a guess."
+                      "description": "The next Hebrew birthday from targetDate (the current UTC date when omitted), the anniversary of hebrewDate. Three Hebrew dates are missing from some years, and where the anniversary moves to is a matter of community practice rather than arithmetic, so the field is null with a note rather than a guess."
                     },
                     "angels": {
                       "type": "array",
