@@ -400,6 +400,44 @@ A compact tool result is decoded for you, and a name a host prefixed with its se
 import { componentForTool } from '@roxyapi/ui-react/tool-component';
 ```
 
+## Branded reports
+
+`<roxy-report>` turns any report the API publishes into a form on your page and a finished document under your brand. The visitor fills the birth details the report asks for, with the same city search and pickers as every widget, and receives the document as a PDF download or in place on the page.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer></script>
+<roxy-report
+  report="natal"
+  publishable-key="pk_live_YOUR_KEY"
+  brand-name="Luna Rivera Astrology"
+  brand-footer="Book a reading at example.com"
+  brand-color="#1e293b"
+  brand-accent="#b45309"
+  font="jost"
+  theme="moonlit"
+></roxy-report>
+```
+
+| Attribute | What it does |
+|---|---|
+| `report` | Which report: `natal`, `synastry`, `kundli`, `matchmaking`, `yearly-forecast`, `human-design`, `bazi`, `numerology`, `tarot`. The published ids are the `report` values on the `roxy-report` endpoints in `components-catalog.json`. Unset, the first one is used |
+| `format` | `pdf` (default) offers the document as a download named after the report; `html` shows it in place, sized to its content |
+| `brand-name` | Your business or practitioner name on the cover and every page |
+| `brand-logo` | An HTTPS URL of your logo, printed on the cover |
+| `brand-footer` | A line at the foot of every page, such as a disclaimer or a booking note |
+| `brand-color`, `brand-accent` | Your two colours, as `#rgb` or `#rrggbb`, on the document and on the form |
+| `font` | A `key` from `fonts[]` in `components-catalog.json`, on the document and on the form |
+| `theme` | A `key` from `themes[]` in `components-catalog.json`: the document prints in that preset. Link the same preset stylesheet (see Theme presets in THEMING.md) and the form matches it |
+| `hide-readings` | The document carries the charts and the data without the written reading |
+| `publishable-key` | Your `pk_` key, or `submit-url` to send the request through your own server |
+| `lang` | The language of the form and the document |
+
+React and Vue take the same settings as props (`report`, `format`, `brandName`, `brandLogo`, `brandFooter`, `brandColor`, `brandAccent`, `font`, `theme`, `hideReadings`). Every branding value is optional, and the document carries no mark but yours.
+
+A request the API turns down reads as one sentence in the page language above the API message: details to check, a site the key does not allow, too many requests, or a busy moment. A field the API names is marked under its own input. The page hears `roxy-validation-error` when a required field is missing and `roxy-render-error` if a result cannot be drawn.
+
+The one-tag widget takes the same settings as `data-` attributes: `<div data-roxy-widget="report" data-report="kundli" data-brand-name="Luna Rivera Astrology" data-publishable-key="pk_live_YOUR_KEY"></div>`.
+
 ## Server-rendered, no JavaScript wiring
 
 Server-rendered and cached pages (WordPress, JSX SSR, static HTML) cannot always run JavaScript to set the `data` property per element. Render the response into a child `<script type="application/json" class="roxy-data">` on the server instead. The component reads it on load. No per-element script, no API key in the browser.
@@ -953,6 +991,7 @@ Every file a page loads ships in the package `dist` folder, and each [GitHub rel
 | `<roxy-dream-search>` | Dreams | GET /dreams/symbols | The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place |
 | `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily | Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections |
 | `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
+| `<roxy-report>` | Reports | POST /reports/... | Form to finished branded report, as a PDF download or inline HTML |
 | `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/meanings/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
 | `<roxy-endpoint-form>` | Helper | Any endpoint, from the spec | Schema-driven form, emits roxy-submit |
 | `<roxy-location-search>` | Helper | GET /location/search | Debounced city search input, emits roxy-location-select |

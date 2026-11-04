@@ -271,7 +271,32 @@ ${body}
   });`}),entry({id:"crystals",tag:"roxy-crystal-grid",seoLine:"Crystal gallery filtered by chakra, element, or zodiac sign",sdkCall:`  const { data } = await roxy.crystals.getCrystalsByChakra({
     path: { chakra: 'heart' },
     query: { limit: 8 },
-  });`}),entry({id:"reference-card",tag:"roxy-reference-card",seoLine:"Glossary card for any reference lookup: sign, planet, rashi, gate, number",sdkCall:`  const { data } = await roxy.astrology.getZodiacSign({
+  });`}),entry({id:"report",tag:"roxy-report",seoLine:"White-label astrology report: a birth form that returns a branded PDF",attrs:' report="natal" data-endpoint="reports/natal" spec-url="./openapi.json" hide-sections="hint"',code:`<script src="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/cdn/roxy-ui.js" defer><\/script>
+<roxy-report
+  report="natal"
+  publishable-key="${window.ROXY_SAMPLE_KEY}"
+  brand-name="Luna Rivera Astrology"
+  brand-footer="Book a reading at example.com"
+  brand-color="#1e293b"
+  brand-accent="#b45309"
+  font="jost"
+></roxy-report>`,shadcn:`# Install via shadcn
+npx shadcn@latest add ${REGISTRY_BASE}/report.json
+
+# Use in your Next.js / React app
+'use client';
+import { RoxyReport } from '@/components/roxy-ui/report';
+
+export default function NatalReport() {
+  return (
+    <RoxyReport
+      report="natal"
+      publishableKey={process.env.NEXT_PUBLIC_ROXY_PK!}
+      brandName="Luna Rivera Astrology"
+      format="pdf"
+    />
+  );
+}`}),entry({id:"reference-card",tag:"roxy-reference-card",seoLine:"Glossary card for any reference lookup: sign, planet, rashi, gate, number",sdkCall:`  const { data } = await roxy.astrology.getZodiacSign({
     path: { id: 'aries' },
   });`}),entry({id:"reference-avastha",tag:"roxy-reference-card",heading:"Avastha reference",seoLine:"Avastha reference: the planetary state a birth chart returns",sdkCall:`  const { data } = await roxy.vedicAstrology.getAvastha({
     path: { id: 'dipta' },

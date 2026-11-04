@@ -64,6 +64,7 @@ export { RoxyPositionsTable } from './components/positions-table.js';
 export { RoxyProfectionCard } from './components/profection-card.js';
 export { RoxyReferenceCard } from './components/reference-card.js';
 export { RoxyRelocationWheel } from './components/relocation-wheel.js';
+export { RoxyReport } from './components/report.js';
 export { RoxyShadbalaTable } from './components/shadbala-table.js';
 export { RoxySynastryChart } from './components/synastry-chart.js';
 export { RoxyTarotCard } from './components/tarot-card.js';

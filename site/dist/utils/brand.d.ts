@@ -1,4 +1,5 @@
 import { type FontKey } from '../styles/fonts.js';
+import { type PaletteName } from '../styles/palette-names.js';
 /** The accent ink in light mode, as `tokens.css` and every preset derive it. */
 export declare const LIGHT_ACCENT_INK = "color-mix(in oklab, var(--roxy-accent) 70%, black)";
 /** The accent ink in dark mode, as `tokens.css` and every preset derive it. */
@@ -9,6 +10,8 @@ export declare const ACCENT_RING = "color-mix(in srgb, var(--roxy-accent) 40%, t
 export declare function brandHex(value: string | undefined): string | undefined;
 /** True for a key of a published font pair. */
 export declare function isFontKey(value: string | undefined): value is FontKey;
+/** True for a key of a published theme preset. */
+export declare function isThemeKey(value: string | undefined): value is PaletteName;
 /** The host declarations a brand colour and a brand accent ask for, each re-deriving what the tokens derive from it; a value that is not `#rgb` or `#rrggbb` adds nothing. */
 export declare function brandDeclarations(brand: {
     brandColor?: string;

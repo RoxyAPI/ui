@@ -48,6 +48,7 @@ Map the natural-language request to a component first; fall back to the table be
 | "angel number {n}", "meaning of 111 / 222 / 1111", "I keep seeing this number" | `<roxy-angel-number-card>` |
 | "what does {any number} mean", "analyze this number", "is 1234 an angel number" | `<roxy-angel-number-lookup>` |
 | "crystals for {chakra}", "healing stones", "birthstone for {month}", "crystals for {sign}" | `<roxy-crystal-grid>` |
+| "branded report", "white-label PDF", "sell a reading", "downloadable report" | `<roxy-report>` with `report` set to the report id (Pattern 8) |
 | "search a city", "geocode", "lat/long for a place" | `<roxy-location-search>` |
 | "build a form for endpoint X" | `<roxy-endpoint-form>` |
 
@@ -132,6 +133,7 @@ Use the table below for the formal endpoint to component mapping.
 | `<roxy-dream-search>` | Dreams | GET /dreams/symbols | The dream dictionary as tiles, browsed A to Z or searched; a pick opens the card in place |
 | `<roxy-angel-number-card>` | Angel Numbers | GET /angel-numbers/numbers/{number}, POST /angel-numbers/daily | Number meaning with spiritual, love, career, money, twin flame, biblical, and shadow sections |
 | `<roxy-angel-number-lookup>` | Angel Numbers | GET /angel-numbers/lookup | Pattern analysis plus known meaning and digit-root fallback |
+| `<roxy-report>` | Reports | POST /reports/... | Form to finished branded report, as a PDF download or inline HTML |
 | `<roxy-reference-card>` | Reference | GET /astrology/{signs,planet-meanings}/{id}, /vedic-astrology/{rashis,avasthas}/{id}, /iching/trigrams/{id}, /human-design/gates/{number}, /human-design/centers/{id}, /numerology/meanings/{number} | Symbol, name, description, keyword chips, and an attribute grid for any glossary lookup |
 | `<roxy-endpoint-form>` | Helper | Any endpoint, from the spec | Schema-driven form, emits roxy-submit |
 | `<roxy-location-search>` | Helper | GET /location/search | Debounced city search input, emits roxy-location-select |
@@ -559,7 +561,23 @@ This is how the WordPress plugin renders: PHP fetches the response server-side, 
 
 - Writing the tag itself in a React or Next.js file? Import `@roxyapi/ui-react/jsx` once anywhere in the project and every `roxy-*` tag is typed, with its attributes and their legal values. It is the raw-tag path, so it carries attributes only; a page that passes a response uses the React or Vue component instead, which sets `data` as a property.
 
-### Pattern 8: a chart as an SVG string on the server
+### Pattern 8: a branded report the visitor downloads
+
+`<roxy-report>` renders the form a report asks for and returns the finished document under the site owner's brand. `report` picks it by id (the `report` values on the `roxy-report` endpoints in `components-catalog.json`: `natal`, `synastry`, `kundli`, `matchmaking`, `yearly-forecast`, `human-design`, `bazi`, `numerology`, `tarot`). `format="pdf"` (default) shows a download named after the report; `format="html"` shows the document in place.
+
+```html
+<roxy-report report="natal" publishable-key="pk_live_..." brand-name="Luna Rivera Astrology" brand-logo="https://example.com/logo.png" brand-footer="Book a reading at example.com" brand-color="#1e293b" brand-accent="#b45309" font="jost" theme="moonlit"></roxy-report>
+```
+
+Rules for this pattern:
+
+- Branding comes from the element only (`brand-name`, `brand-logo`, `brand-footer`, `brand-color`, `brand-accent`, `font`, `theme`); the form never asks the visitor for it. Every value is optional.
+- `theme` takes a `key` from `themes[]` in `components-catalog.json` and prints the document in that preset; link the same preset stylesheet so the form matches. `hide-readings` returns the charts and the data without the written reading.
+- `brand-color` and `brand-accent` take `#rgb` or `#rrggbb`; `font` takes a `key` from `fonts[]` in `components-catalog.json`. The same three paint the form, so the page and the document match.
+- A rejected request reads as one sentence in the page language above the API message, and a field the API names is marked under its input. Events: `roxy-validation-error`, `roxy-render-error`.
+- One-tag widget: `<div data-roxy-widget="report" data-report="kundli" data-brand-name="..." data-publishable-key="pk_live_..."></div>`. React and Vue: `report`, `format`, `brandName`, `brandLogo`, `brandFooter`, `brandColor`, `brandAccent`, `font`, `theme`, `hideReadings`.
+
+### Pattern 9: a chart as an SVG string on the server
 
 `@roxyapi/ui/charts` returns the exact `<svg>` a component draws, as a string, with no DOM: `natalWheelSvg(natalResponse, { lang })`, `synastryWheelSvg(synastryResponse)`, `kundliSvg(toKundliViewModel(birthChart.meta), { style: 'south' })`, `bodygraphSvg(bodygraphResponse)`. Use it for a PDF, an email or a static page.
 

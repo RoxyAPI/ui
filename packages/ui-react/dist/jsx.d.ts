@@ -277,6 +277,21 @@ declare module 'react' {
             "roxy-angel-number-card": RoxyElement<RoxyBaseAttributes>;
             /** `<RoxyAngelNumberLookup>` as a tag. */
             "roxy-angel-number-lookup": RoxyElement<RoxyBaseAttributes>;
+            /** `<RoxyReport>` as a tag. */
+            "roxy-report": RoxyElement<RoxyBaseAttributes & {
+                /** Which report the form asks for and the visitor receives, by its id. Unset, the first report is used. */
+                "report"?: 'natal' | 'synastry' | 'kundli' | 'matchmaking' | 'yearly-forecast' | 'human-design' | 'bazi' | 'numerology' | 'tarot';
+                /** pdf offers the finished document as a download; html shows it in place on the page. Defaults to pdf. */
+                "format"?: 'pdf' | 'html';
+                /** Your business or practitioner name, printed on the cover and every page. */
+                "brand-name"?: string;
+                /** An HTTPS URL of your logo, printed on the cover. */
+                "brand-logo"?: string;
+                /** A line printed at the foot of every page, such as a disclaimer or a booking note. */
+                "brand-footer"?: string;
+                /** The theme preset the document is printed in, a key from `themes[]` in components-catalog.json. Any other value is ignored. */
+                "theme"?: 'practitioner' | 'eucalyptus' | 'kiln' | 'moonlit' | 'celeste';
+            }>;
             /** `<RoxyReferenceCard>` as a tag. */
             "roxy-reference-card": RoxyElement<RoxyBaseAttributes>;
             /** `<RoxyEndpointForm>` as a tag. */

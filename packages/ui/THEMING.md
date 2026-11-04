@@ -214,6 +214,8 @@ Three optional attributes on every component set the brand without CSS. A value 
 
 In an npm build, import `@roxyapi/ui/styles/fonts/{key}.css` once (or copy `dist/styles/fonts` to your origin), the same way as `tokens.css`; fonts never load from a host the page did not choose.
 
+On `<roxy-report>` the same three brand the document as well as the form, and `theme`, a `key` from `themes[]` in `components-catalog.json`, prints the document in that preset; link the same preset stylesheet ([Theme presets](#theme-presets)) and the form matches it.
+
 ### Dark mode
 
 Three opt-in mechanisms work out of the box, on the CDN and the npm path alike, because every component loads the tokens when it connects.

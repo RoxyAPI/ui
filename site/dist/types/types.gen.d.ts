@@ -8182,6 +8182,897 @@ export type DreamSymbol = {
      */
     meaning: string;
 };
+export type NatalReportRequest = {
+    /**
+     * Birth date in YYYY-MM-DD format. Determines planetary positions for the specific calendar day.
+     */
+    date: string;
+    /**
+     * Birth time in 24-hour HH:MM:SS format. Determines the Ascendant (rising sign) and house cusps. Use 12:00:00 if unknown.
+     */
+    time: string;
+    /**
+     * Birth location latitude in decimal degrees (-90 to 90). Positive = North, negative = South.
+     */
+    latitude: number;
+    /**
+     * Birth location longitude in decimal degrees (-180 to 180). Positive = East, negative = West.
+     */
+    longitude: number;
+    /**
+     * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.
+     */
+    timezone: number | string;
+    /**
+     * Lunar node convention. "mean" is the smoothed average node, which always moves retrograde; "true" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is the osculating node and the default, because it is what most Western chart software reports; mean is the smoothed node preferred by several evolutionary schools, so pass "mean" to match one. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to "true".
+     */
+    nodeType?: 'mean' | 'true';
+    /**
+     * House system for dividing the chart into 12 houses. Placidus (default) is most popular in Western astrology and time-sensitive. Whole Sign assigns one sign per house (simpler, ancient). Equal houses divide chart into 30° segments from Ascendant. Koch emphasizes houses in high latitudes.
+     */
+    houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type SynastryReportRequest = {
+    person1: {
+        /**
+         * Birth date in YYYY-MM-DD format. Determines planetary positions for the specific calendar day.
+         */
+        date: string;
+        /**
+         * Birth time in 24-hour HH:MM:SS format. Determines the Ascendant (rising sign) and house cusps. Use 12:00:00 if unknown.
+         */
+        time: string;
+        /**
+         * Birth location latitude in decimal degrees (-90 to 90). Positive = North, negative = South.
+         */
+        latitude: number;
+        /**
+         * Birth location longitude in decimal degrees (-180 to 180). Positive = East, negative = West.
+         */
+        longitude: number;
+        /**
+         * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.
+         */
+        timezone: number | string;
+        /**
+         * Lunar node convention. "mean" is the smoothed average node, which always moves retrograde; "true" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is the osculating node and the default, because it is what most Western chart software reports; mean is the smoothed node preferred by several evolutionary schools, so pass "mean" to match one. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to "true".
+         */
+        nodeType?: 'mean' | 'true';
+        /**
+         * Optional display name for this person. Included in the response for easy identification.
+         */
+        name?: string;
+    };
+    person2: {
+        /**
+         * Birth date in YYYY-MM-DD format. Determines planetary positions for the specific calendar day.
+         */
+        date: string;
+        /**
+         * Birth time in 24-hour HH:MM:SS format. Determines the Ascendant (rising sign) and house cusps. Use 12:00:00 if unknown.
+         */
+        time: string;
+        /**
+         * Birth location latitude in decimal degrees (-90 to 90). Positive = North, negative = South.
+         */
+        latitude: number;
+        /**
+         * Birth location longitude in decimal degrees (-180 to 180). Positive = East, negative = West.
+         */
+        longitude: number;
+        /**
+         * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time.
+         */
+        timezone: number | string;
+        /**
+         * Lunar node convention. "mean" is the smoothed average node, which always moves retrograde; "true" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node. True is the osculating node and the default, because it is what most Western chart software reports; mean is the smoothed node preferred by several evolutionary schools, so pass "mean" to match one. Nothing else in the chart changes, and the two agree on the sign except when the node sits within about 1.8 degrees of a cusp. Defaults to "true".
+         */
+        nodeType?: 'mean' | 'true';
+        /**
+         * Optional display name for this person. Included in the response for easy identification.
+         */
+        name?: string;
+    };
+    /**
+     * House system for both natal charts. Placidus (default), Whole Sign, Equal, or Koch.
+     */
+    houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type KundliReportRequest = {
+    /**
+     * Birth date in YYYY-MM-DD format. Date determines planetary positions and nakshatra calculations for Vedic kundli (janam patri). Accurate birth date is essential for dashas, yoga calculations, and divisional charts (vargas).
+     */
+    date: string;
+    /**
+     * Birth time in 24-hour HH:MM:SS format. Time is CRITICAL for Lagna (Ascendant) calculation and house divisions. It changes every two hours roughly. Even minutes matter for accurate nakshatra pada and divisional chart (D9, D10) calculations. Without exact time, Lagna and house-based predictions will be incorrect.
+     */
+    time: string;
+    /**
+     * Birth location latitude in decimal degrees. Location determines local sidereal time for Lagna calculation and affects bhava (house) cusps. Example: Delhi 28.6139, Mumbai 19.0760, Kathmandu 27.7172.
+     */
+    latitude: number;
+    /**
+     * Birth location longitude in decimal degrees. Affects local time calculations and ayanamsha adjustments. Example: Delhi 77.2090, Mumbai 72.8777, Kathmandu 85.3240.
+     */
+    longitude: number;
+    /**
+     * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time. Defaults to 5.5.
+     */
+    timezone?: number | string;
+    /**
+     * Sidereal frame (ayanamsa) the chart is cast in. "lahiri" is Lahiri/Chitrapaksha, the traditional Vedic standard used by most software, and is the default. "raman" is the B.V. Raman ayanamsa from Hindu Predictive Astrology, about 1.45 degrees below Lahiri. "kp-newcomb" and "kp-old" are the two Krishnamurti Paddhati frames. "custom" takes your own value in degrees via ayanamsaValue, for reconciling exactly against a specific reference program. The frame rotates the whole zodiac, so a graha sitting within 1.45 degrees of a boundary can change rashi or nakshatra when you switch: pick the one your reference software uses and keep it.
+     */
+    ayanamsa?: 'kp-newcomb' | 'kp-old' | 'lahiri' | 'raman' | 'custom';
+    /**
+     * Custom ayanamsa value in degrees. When provided, overrides the computed ayanamsa from the selected type. Use for testing with specific ayanamsa values or matching a particular reference source.
+     */
+    ayanamsaValue?: number;
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type MatchmakingReportRequest = {
+    /**
+     * Birth data of the first person (typically the boy/groom in traditional Ashtakoot matching). Date, time, and location determine Moon nakshatra for koota scoring.
+     */
+    person1: {
+        /**
+         * Birth date in YYYY-MM-DD format. Date determines planetary positions and nakshatra calculations for Vedic kundli (janam patri). Accurate birth date is essential for dashas, yoga calculations, and divisional charts (vargas).
+         */
+        date: string;
+        /**
+         * Birth time in 24-hour HH:MM:SS format. Time is CRITICAL for Lagna (Ascendant) calculation and house divisions. It changes every two hours roughly. Even minutes matter for accurate nakshatra pada and divisional chart (D9, D10) calculations. Without exact time, Lagna and house-based predictions will be incorrect.
+         */
+        time: string;
+        /**
+         * Birth location latitude in decimal degrees. Location determines local sidereal time for Lagna calculation and affects bhava (house) cusps. Example: Delhi 28.6139, Mumbai 19.0760, Kathmandu 27.7172.
+         */
+        latitude: number;
+        /**
+         * Birth location longitude in decimal degrees. Affects local time calculations and ayanamsha adjustments. Example: Delhi 77.2090, Mumbai 72.8777, Kathmandu 85.3240.
+         */
+        longitude: number;
+        /**
+         * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time. Defaults to 5.5.
+         */
+        timezone?: number | string;
+    };
+    /**
+     * Birth data of the second person (typically the girl/bride in traditional Ashtakoot matching). Moon nakshatra compared against person 1 across all 8 kootas.
+     */
+    person2: {
+        /**
+         * Birth date in YYYY-MM-DD format. Date determines planetary positions and nakshatra calculations for Vedic kundli (janam patri). Accurate birth date is essential for dashas, yoga calculations, and divisional charts (vargas).
+         */
+        date: string;
+        /**
+         * Birth time in 24-hour HH:MM:SS format. Time is CRITICAL for Lagna (Ascendant) calculation and house divisions. It changes every two hours roughly. Even minutes matter for accurate nakshatra pada and divisional chart (D9, D10) calculations. Without exact time, Lagna and house-based predictions will be incorrect.
+         */
+        time: string;
+        /**
+         * Birth location latitude in decimal degrees. Location determines local sidereal time for Lagna calculation and affects bhava (house) cusps. Example: Delhi 28.6139, Mumbai 19.0760, Kathmandu 27.7172.
+         */
+        latitude: number;
+        /**
+         * Birth location longitude in decimal degrees. Affects local time calculations and ayanamsha adjustments. Example: Delhi 77.2090, Mumbai 72.8777, Kathmandu 85.3240.
+         */
+        longitude: number;
+        /**
+         * Timezone: an IANA name (e.g. "America/New_York", "Europe/London", or `cities[0].timezone` from /location/search) or decimal hours from UTC (e.g. -5 for EST, 5.5 for IST). An IANA name is resolved to the offset in force at the given date and time. Defaults to 5.5.
+         */
+        timezone?: number | string;
+    };
+    /**
+     * Sidereal frame (ayanamsa) the chart is cast in. "lahiri" is Lahiri/Chitrapaksha, the traditional Vedic standard used by most software, and is the default. "raman" is the B.V. Raman ayanamsa from Hindu Predictive Astrology, about 1.45 degrees below Lahiri. "kp-newcomb" and "kp-old" are the two Krishnamurti Paddhati frames. "custom" takes your own value in degrees via ayanamsaValue, for reconciling exactly against a specific reference program. The frame rotates the whole zodiac, so a graha sitting within 1.45 degrees of a boundary can change rashi or nakshatra when you switch: pick the one your reference software uses and keep it.
+     */
+    ayanamsa?: 'kp-newcomb' | 'kp-old' | 'lahiri' | 'raman' | 'custom';
+    /**
+     * Custom ayanamsa value in degrees. When provided, overrides the computed ayanamsa from the selected type. Use for testing with specific ayanamsa values or matching a particular reference source.
+     */
+    ayanamsaValue?: number;
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type YearlyForecastReportRequest = {
+    /**
+     * Birth date in YYYY-MM-DD format. Anchors the natal Sun longitude the transiting Sun returns to each year.
+     */
+    date: string;
+    /**
+     * Birth time in 24-hour HH:MM:SS format. Pins the exact natal Sun position that defines the solar return moment.
+     */
+    time: string;
+    /**
+     * Year to cast the solar return for. The chart is erected for the moment in this year when the transiting Sun returns to the natal Sun longitude, on or within a day of the birthday.
+     */
+    year: number;
+    /**
+     * Latitude of the solar return location in decimal degrees. The solar return is location-sensitive: use the birthplace to anchor the chart to natal geography, or the current city for a relocated solar return.
+     */
+    latitude: number;
+    /**
+     * Longitude of the solar return location in decimal degrees. Sets the local sidereal time, so it drives the Ascendant, Midheaven, and house cusps of the return chart.
+     */
+    longitude: number;
+    /**
+     * IANA name (e.g. "America/New_York", "Europe/London", "UTC"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. "-05:00", "+01:00"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.
+     */
+    timezone: number | string;
+    /**
+     * House system for the return chart. placidus is the Western default. whole-sign, equal, and koch are also supported.
+     */
+    houseSystem?: 'placidus' | 'whole-sign' | 'equal' | 'koch';
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type HumanDesignReportRequest = {
+    /**
+     * Birth date in YYYY-MM-DD format. The anchor for both the Personality activations at birth and the Design activations 88 degrees of solar arc earlier.
+     */
+    date: string;
+    /**
+     * Birth time in 24-hour HH:MM:SS format. Precision matters: the profile lines and gate boundaries shift with the exact minute of birth.
+     */
+    time: string;
+    /**
+     * IANA name (e.g. "America/New_York", "Europe/London", "UTC"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. "-05:00", "+01:00"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.
+     */
+    timezone: number | string;
+    /**
+     * Birth latitude in decimal degrees. Optional and does not affect the bodygraph, which depends only on ecliptic longitudes. Defaults to 0.
+     */
+    latitude?: number;
+    /**
+     * Birth longitude in decimal degrees. Optional and does not affect the bodygraph. Defaults to 0.
+     */
+    longitude?: number;
+    /**
+     * Lunar node convention. "mean" is the smoothed average node, which always moves retrograde; "true" is the osculating node, which tracks the real perturbed node, oscillates up to about 1.5 degrees either side of the mean on a 173-day cycle, and can briefly turn direct. Neither is more correct and they almost always fall in the same sign. Applies to the North and South Node activations. True is what professional Human Design software uses (HumanDesign.ai, Total Human Design) and is the value RoxyAPI verifies against, so leave it unset for a standard chart. It matters only when a node sits on a gate boundary, where the choice moves a node gate. Because a gate can be half of a channel, that can change the completed channels and, with them, whether a center reads defined or open, plus the definition, authority, profile or type. A chart where only one center disagrees is the usual shape, since the type and profile often survive unchanged. If another calculator disagrees on any of those, it is almost certainly using the mean node: pass "mean" to match it. Defaults to "true".
+     */
+    nodeType?: 'mean' | 'true';
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type BaziReportRequest = {
+    /**
+     * Birth date in YYYY-MM-DD format. Sets the year, month and day pillars. The year pillar turns at Beginning of Spring rather than on 1 January, and the month pillar turns at each of the twelve minor solar terms rather than at a calendar month boundary.
+     */
+    date: string;
+    /**
+     * Birth time in 24-hour HH:MM:SS format. Sets the hour pillar, which is one of the four and carries the whole picture of later life and offspring. Each Earthly Branch covers two hours, so a birth within a few minutes of an odd hour can land in either. All four pillars are read in the local clock of the birth, and the day boundary is applied in that same clock; only the lunisolar calendar date itself is a world constant, fixed at UTC plus 8 so one instant has one Chinese date everywhere.
+     */
+    time: string;
+    /**
+     * IANA name (e.g. "America/New_York", "Europe/London", "UTC"), decimal hours (e.g. -5 for EST, 1 for CET), or a fixed UTC offset (e.g. "-05:00", "+01:00"). Prefer the IANA name: it is resolved to the offset in force at the birth date and time, historical daylight-saving rules included, while a fixed offset or decimal is taken literally and will be wrong if it does not match the daylight-saving state at that moment. On a transition day a time in the repeated hour is read as its first occurrence and a time in the skipped hour is moved forward past the gap. Invalid timezones return 400 with a validation error.
+     */
+    timezone: number | string;
+    /**
+     * Birth latitude in decimal degrees. Accepted for consistency with the other birth-data endpoints and does not affect any part of a BaZi chart. Defaults to 0.
+     */
+    latitude?: number;
+    /**
+     * Birth longitude in decimal degrees. Positive is East, negative is West. Required when hourClock is "local-mean" or "solar", which shift the hour branch to the sun over the birth place; omitting it in either case returns 400. Ignored when hourClock is "clock".
+     */
+    longitude?: number;
+    /**
+     * Which instant starts the sexagenary DAY, which only matters for a birth between 23:00 and 23:59. "midnight" is the classical position of the Ming compendium San Ming Tong Hui: the day turns at 00:00 and 23:00 to 23:59 is the late zi hour of the day that is ending, so the hour stem is taken from that day. "early-zi" turns the whole day at 23:00, the practice in Hong Kong, Taiwan and much of South East Asia. "split-zi" is the compromise most software implements and the default here: the day still turns at 00:00, but the hour stem is taken from the next day. The three give three different answers for a late-evening birth and identical answers for every other birth.
+     */
+    dayBoundary?: 'split-zi' | 'midnight' | 'early-zi';
+    /**
+     * Which instant starts the sexagenary YEAR. "li-chun" is Beginning of Spring, around 4 February, and is the classical rule every BaZi text uses, so it is the default on this endpoint. "lunar-new-year" is the folk rule people mean when they say which animal they are, and it falls between late January and late February. The two disagree for any birth in the weeks between them: 14 February 2026 is a Wood Snake year under lunar-new-year and a Fire Horse year under li-chun.
+     */
+    yearBoundary?: 'li-chun' | 'lunar-new-year';
+    /**
+     * Which clock the day boundary and the hour branch are read from, so a correction that carries a birth across midnight moves the day pillar with the hour. "clock" is civil time exactly as a birth certificate records it, which is what most calculators use and the default here. "local-mean" shifts to the mean sun over the birth longitude, a correction of up to 59 minutes at the edge of a wide time zone. "solar" adds the equation of time on top of that, up to a further 16 minutes. Both non-civil options need "longitude" in the request and return 400 without it.
+     */
+    hourClock?: 'clock' | 'local-mean' | 'solar';
+    /**
+     * Subject sex, used only to pick the luck-pillar direction: a male born in a yang-stem year and a female born in a yin-stem year run forward through the sexagenary cycle, and the other two combinations run backward. It affects nothing else in the response.
+     */
+    gender: 'male' | 'female';
+    /**
+     * Gregorian year the year-ahead section reads against the natal chart, and the first of the ten annual pillars the luck pillar section lists.
+     */
+    year: number;
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type NumerologyReportRequest = {
+    /**
+     * Full birth name as it appears on the birth certificate. Used for every letter-based number in the chart: Expression, Soul Urge, Personality, Karmic Lessons, Hidden Passion, Subconscious Self and the special letters. A name in any script is converted to Latin letters before it is counted, Cyrillic and Greek as the passport spelling and accents folded to the base letter, and the calculation lists the letters counted. For a script that does not write its vowels, send the Latin spelling the person uses.
+     */
+    fullName: string;
+    /**
+     * Birth year between 100 and 2100. Supports historical figures like Einstein (1879) and Shakespeare (1564).
+     */
+    year: number;
+    /**
+     * Birth month (1-12)
+     */
+    month: number;
+    /**
+     * Birth day (1-31)
+     */
+    day: number;
+    /**
+     * Calendar year for the Personal Year. When omitted it is the year of targetDate, or of the current UTC date when targetDate is omitted too. It moves the Personal Year only: the nested personalMonth and maturityStatus.currentAge read targetDate.
+     */
+    currentYear?: number;
+    /**
+     * Date to read the chart on, in YYYY-MM-DD format, in the years 100 to 2100, on or after the birth date. Send the local date of the user for an exact answer: it sets maturityStatus.currentAge and isActive, the Personal Month, and the Personal Year when currentYear is absent. Defaults to today (UTC).
+     */
+    targetDate?: string;
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
+export type TarotReportRequest = {
+    /**
+     * Which spread to draw: celtic-cross (ten cards, the default), three-card, love or career, the same spreads the spread routes cast.
+     */
+    spread?: 'celtic-cross' | 'three-card' | 'love' | 'career';
+    /**
+     * Optional querent question, printed on the report. Omit for a general reading.
+     */
+    question?: string;
+    /**
+     * Optional seed for a reproducible draw: the same seed and spread always produce the same report. Omit for a random draw; the report prints the seed it used.
+     */
+    seed?: string;
+    /**
+     * Output format: pdf (a print-ready PDF, base64 in the pdf field), html (one self-contained HTML document in the html field) or markdown (CommonMark in the markdown field).
+     */
+    format?: 'pdf' | 'html' | 'markdown';
+    /**
+     * White-label branding for this report. Every field is optional and nothing is stored: send it with each request.
+     */
+    branding?: {
+        /**
+         * Business or practitioner name printed on the cover and in the running header of every page.
+         */
+        name?: string;
+        /**
+         * HTTPS URL of a PNG, JPEG, WebP or SVG logo under 1 MB, printed on the cover. It is fetched for this report only and never stored.
+         */
+        logo?: string;
+        /**
+         * Line printed at the foot of every page, such as a disclaimer or a booking note.
+         */
+        footer?: string;
+        /**
+         * Website printed on the cover.
+         */
+        website?: string;
+        /**
+         * Contact email printed on the cover.
+         */
+        email?: string;
+        /**
+         * Brand colours. Each one left out keeps the theme colour.
+         */
+        colors?: {
+            /**
+             * Headings and table headers, as a six digit hex colour.
+             */
+            primary?: string;
+            /**
+             * Rules and highlights, as a six digit hex colour.
+             */
+            accent?: string;
+        };
+        /**
+         * Font pair for headings and text, the same pairs the RoxyAPI UI components take. Left out, the theme typeface is used.
+         */
+        font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+        /**
+         * Design preset shared with the RoxyAPI UI components: colours, typefaces and spacing. Left out, the neutral default is used.
+         */
+        theme?: 'celeste' | 'eucalyptus' | 'kiln' | 'moonlit' | 'practitioner';
+    };
+    /**
+     * Page layout of the PDF.
+     */
+    page?: {
+        /**
+         * Paper size of the PDF. Ignored by html and markdown.
+         */
+        size?: 'A4' | 'Letter';
+    };
+    /**
+     * Whether the report carries its written readings. false keeps the charts, tables and key figures and leaves out every interpretation, for a chart-only report at the same cost.
+     */
+    readings?: boolean;
+};
 export type GetFieldLabelsData = {
     body?: never;
     path?: never;
@@ -72130,7 +73021,7 @@ export type GetUsageStatsResponses = {
          */
         usedThisMonth: number;
         /**
-         * Monthly request allowance for the plan. One request, API or MCP, equals one unit: there is no credit weighting and no per domain fee.
+         * Monthly request allowance for the plan. Every data endpoint call, API or MCP, is one request and a report spends the cost its operation lists in x-request-cost: there is no per domain fee.
          */
         requestsPerMonth: number;
         /**
@@ -72152,6 +73043,1563 @@ export type GetUsageStatsResponses = {
     };
 };
 export type GetUsageStatsResponse = GetUsageStatsResponses[keyof GetUsageStatsResponses];
+export type GenerateNatalReportData = {
+    body?: NatalReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/natal';
+};
+export type GenerateNatalReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateNatalReportError = GenerateNatalReportErrors[keyof GenerateNatalReportErrors];
+export type GenerateNatalReportResponses = {
+    /**
+     * The natal chart report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateNatalReportResponse = GenerateNatalReportResponses[keyof GenerateNatalReportResponses];
+export type GenerateSynastryReportData = {
+    body?: SynastryReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/synastry';
+};
+export type GenerateSynastryReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateSynastryReportError = GenerateSynastryReportErrors[keyof GenerateSynastryReportErrors];
+export type GenerateSynastryReportResponses = {
+    /**
+     * The synastry report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateSynastryReportResponse = GenerateSynastryReportResponses[keyof GenerateSynastryReportResponses];
+export type GenerateKundliReportData = {
+    body?: KundliReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/kundli';
+};
+export type GenerateKundliReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateKundliReportError = GenerateKundliReportErrors[keyof GenerateKundliReportErrors];
+export type GenerateKundliReportResponses = {
+    /**
+     * The kundli report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateKundliReportResponse = GenerateKundliReportResponses[keyof GenerateKundliReportResponses];
+export type GenerateMatchmakingReportData = {
+    body?: MatchmakingReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/matchmaking';
+};
+export type GenerateMatchmakingReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateMatchmakingReportError = GenerateMatchmakingReportErrors[keyof GenerateMatchmakingReportErrors];
+export type GenerateMatchmakingReportResponses = {
+    /**
+     * The kundli matching report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateMatchmakingReportResponse = GenerateMatchmakingReportResponses[keyof GenerateMatchmakingReportResponses];
+export type GenerateYearlyForecastReportData = {
+    body?: YearlyForecastReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/yearly-forecast';
+};
+export type GenerateYearlyForecastReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateYearlyForecastReportError = GenerateYearlyForecastReportErrors[keyof GenerateYearlyForecastReportErrors];
+export type GenerateYearlyForecastReportResponses = {
+    /**
+     * The yearly forecast report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateYearlyForecastReportResponse = GenerateYearlyForecastReportResponses[keyof GenerateYearlyForecastReportResponses];
+export type GenerateHumanDesignReportData = {
+    body?: HumanDesignReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/human-design';
+};
+export type GenerateHumanDesignReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateHumanDesignReportError = GenerateHumanDesignReportErrors[keyof GenerateHumanDesignReportErrors];
+export type GenerateHumanDesignReportResponses = {
+    /**
+     * The human design report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateHumanDesignReportResponse = GenerateHumanDesignReportResponses[keyof GenerateHumanDesignReportResponses];
+export type GenerateBaziReportData = {
+    body?: BaziReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/bazi';
+};
+export type GenerateBaziReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateBaziReportError = GenerateBaziReportErrors[keyof GenerateBaziReportErrors];
+export type GenerateBaziReportResponses = {
+    /**
+     * The bazi report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateBaziReportResponse = GenerateBaziReportResponses[keyof GenerateBaziReportResponses];
+export type GenerateNumerologyReportData = {
+    body?: NumerologyReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/numerology';
+};
+export type GenerateNumerologyReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateNumerologyReportError = GenerateNumerologyReportErrors[keyof GenerateNumerologyReportErrors];
+export type GenerateNumerologyReportResponses = {
+    /**
+     * The numerology report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateNumerologyReportResponse = GenerateNumerologyReportResponses[keyof GenerateNumerologyReportResponses];
+export type GenerateTarotReportData = {
+    body?: TarotReportRequest;
+    path?: never;
+    query?: {
+        /**
+         * Report language (BCP 47): the labels, headings and readings are written in it. Supported: en, tr, de, es, hi, pt, fr, ru. Defaults to en.
+         */
+        lang?: 'en' | 'tr' | 'de' | 'es' | 'hi' | 'pt' | 'fr' | 'ru';
+    };
+    url: '/reports/tarot';
+};
+export type GenerateTarotReportErrors = {
+    /**
+     * Validation error. `issues[]` lists every failed field.
+     */
+    400: {
+        /**
+         * First issue summary.
+         */
+        error: string;
+        code: 'validation_error';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Every validation failure. Use this to rebuild a valid request.
+         */
+        issues: Array<{
+            /**
+             * Dot-separated field path, or "(root)" for top-level.
+             */
+            path: string;
+            message: string;
+            /**
+             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             */
+            code?: string;
+            /**
+             * Expected type for invalid_type.
+             */
+            expected?: string;
+            /**
+             * Minimum bound for too_small issues.
+             */
+            minimum?: number | string;
+            /**
+             * Maximum bound for too_big issues.
+             */
+            maximum?: number | string;
+            inclusive?: boolean;
+            /**
+             * Format name for string issues (regex, email, url, uuid).
+             */
+            format?: string;
+            /**
+             * Regex pattern when format is regex.
+             */
+            pattern?: string;
+        }>;
+    };
+    /**
+     * Invalid or missing API key
+     */
+    401: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Method not allowed. The path exists but only responds to the methods listed in `allow[]` and the `Allow` response header.
+     */
+    405: {
+        error: string;
+        code: 'method_not_allowed';
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+        /**
+         * Allowed HTTP methods for this path. Mirrors the Allow response header.
+         */
+        allow: Array<string>;
+        /**
+         * Link to the product page for this domain.
+         */
+        docs?: string;
+    };
+    /**
+     * Monthly rate limit exceeded
+     */
+    429: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        /**
+         * Human-readable error message. May change wording.
+         */
+        error: string;
+        /**
+         * Machine-readable error code. Stable identifier.
+         */
+        code: string;
+        /**
+         * Absolute URL of the documented explanation of this code, anchored at the code itself, for example https://roxyapi.com/docs/errors#not_found.
+         */
+        doc_url: string;
+    };
+};
+export type GenerateTarotReportError = GenerateTarotReportErrors[keyof GenerateTarotReportErrors];
+export type GenerateTarotReportResponses = {
+    /**
+     * The tarot reading report in the requested format.
+     */
+    200: {
+        /**
+         * The report template rendered.
+         */
+        template: string;
+        /**
+         * Language the report is written in.
+         */
+        lang: string;
+        /**
+         * Format of the output field present.
+         */
+        format: 'pdf' | 'html' | 'markdown';
+        /**
+         * Report title in the report language, ready for a file name or a heading.
+         */
+        title: string;
+        /**
+         * Number of PDF pages. Present when format is pdf.
+         */
+        pages?: number;
+        /**
+         * The PDF, base64 encoded. Present when format is pdf: decode it and save it as a .pdf file.
+         */
+        pdf?: string;
+        /**
+         * The report as one self-contained HTML document. Present when format is html.
+         */
+        html?: string;
+        /**
+         * The report as CommonMark. Present when format is markdown.
+         */
+        markdown?: string;
+    };
+};
+export type GenerateTarotReportResponse = GenerateTarotReportResponses[keyof GenerateTarotReportResponses];
 export type ListLanguagesData = {
     body?: never;
     path?: never;

@@ -77,6 +77,7 @@ export { RoxyDreamCard, type RoxyDreamCardProps } from './components/dream-card.
 export { RoxyDreamSearch, type RoxyDreamSearchProps } from './components/dream-search.js';
 export { RoxyAngelNumberCard, type RoxyAngelNumberCardProps } from './components/angel-number-card.js';
 export { RoxyAngelNumberLookup, type RoxyAngelNumberLookupProps } from './components/angel-number-lookup.js';
+export { RoxyReport, type RoxyReportProps } from './components/report.js';
 export { RoxyReferenceCard, type RoxyReferenceCardProps } from './components/reference-card.js';
 export { RoxyEndpointForm, type RoxyEndpointFormProps } from './components/endpoint-form.js';
 export { RoxyLocationSearch, type RoxyLocationSearchProps } from './components/location-search.js';

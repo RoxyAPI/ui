@@ -61,6 +61,7 @@ export declare const positionsTableEndpoints: readonly SelfFetchEndpoint[];
 export declare const profectionCardEndpoints: readonly SelfFetchEndpoint[];
 export declare const referenceCardEndpoints: readonly SelfFetchEndpoint[];
 export declare const relocationWheelEndpoints: readonly SelfFetchEndpoint[];
+export declare const reportEndpoints: readonly SelfFetchEndpoint[];
 export declare const shadbalaTableEndpoints: readonly SelfFetchEndpoint[];
 export declare const synastryChartEndpoints: readonly SelfFetchEndpoint[];
 export declare const tarotCardEndpoints: readonly SelfFetchEndpoint[];
