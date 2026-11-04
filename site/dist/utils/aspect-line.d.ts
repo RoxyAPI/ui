@@ -1,13 +1,4 @@
-/**
- * The aspect lines every wheel draws across its centre: the colour of each aspect family, the per-line weight that makes a tight contact read as tighter than a wide one, and the five majors a wheel draws by default.
- *
- * @remarks
- * Families follow the practitioner convention: blue for trine and sextile, red for square and opposition, green for quincunx and semi-sextile; the conjunction takes the accent and the other minors stay muted. Each family class sets `--_aspect` (stroke and swatch) and `--_aspect-ink` (text on the card), so a line, a legend swatch and a grid glyph read one map. Colour and strength weighting sit on SEPARATE properties: SVG multiplies `opacity` by `stroke-opacity`, so a minor stays muted for being minor AND scales with how exact it is.
- */
-/** The colour of each aspect family on the class {@link aspectClass} returns: text carrying it takes the family ink, plus the legend swatch. Include wherever an aspect is named. */
-export declare const aspectFamilyStyles: import("lit").CSSResult;
-/** The line every wheel draws across its centre, then the families; the order lets a family lift the minor weight. Include in a wheel's `static styles`. */
-export declare const aspectLineStyles: import("lit").CSSResult[];
+/** Which aspects a wheel draws, the class that keys each one to its family colour, and the per-line weight that makes a tight contact read tighter than a wide one. */
 /** True for a conjunction, sextile, square, trine or opposition, whatever separator the endpoint writes. */
 export declare function isMajorAspect(a: {
     type?: string;

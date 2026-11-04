@@ -61,17 +61,18 @@ Set these and the rest follows. Dark mode reassigns the colour bases only. Set a
 
 ### Type, space, shape and motion bases
 
-| Variable                 | Default                        | Notes                                                                                               |
-| ------------------------ | ------------------------------ | --------------------------------------------------------------------------------------------------- |
-| `--roxy-font-sans`       | `initial`                      | Body text. Unset, so every component inherits the page font; set a family to choose one             |
-| `--roxy-font-display`    | `var(--roxy-font-sans)`        | Every heading and the form title. Follows the body font until set; one value restyles every heading |
-| `--roxy-font-mono`       | `ui-monospace, ...`            | Numeric tables, code                                                                                |
-| `--roxy-text-base`       | `1rem`                         | Body size, the base of the type scale                                                               |
-| `--roxy-text-scale`      | `1.15`                         | The ratio between type steps                                                                        |
-| `--roxy-space-unit`      | `0.25rem`                      | Every gap, padding and margin is a multiple of it                                                   |
-| `--roxy-radius`          | `6px`                          | Every corner derives from it                                                                        |
-| `--roxy-motion-duration` | `200ms`                        | Set to `0ms` to disable transitions and entry animations                                            |
-| `--roxy-motion-easing`   | `cubic-bezier(0.4, 0, 0.2, 1)` | Standard ease                                                                                       |
+| Variable                 | Default                        | Notes                                                                                                                              |
+| ------------------------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `--roxy-font`            | `initial`                      | A font pair `key` from `fonts[]`; each component sets both stacks from it and loads only that pair. A preset sets its default here |
+| `--roxy-font-sans`       | `initial`                      | Body text. Unset, so every component inherits the page font; set a family to choose one                                            |
+| `--roxy-font-display`    | `var(--roxy-font-sans)`        | Every heading and the form title. Follows the body font until set; one value restyles every heading                                |
+| `--roxy-font-mono`       | `ui-monospace, ...`            | Numeric tables, code                                                                                                               |
+| `--roxy-text-base`       | `1rem`                         | Body size, the base of the type scale                                                                                              |
+| `--roxy-text-scale`      | `1.15`                         | The ratio between type steps                                                                                                       |
+| `--roxy-space-unit`      | `0.25rem`                      | Every gap, padding and margin is a multiple of it                                                                                  |
+| `--roxy-radius`          | `6px`                          | Every corner derives from it                                                                                                       |
+| `--roxy-motion-duration` | `200ms`                        | Set to `0ms` to disable transitions and entry animations                                                                           |
+| `--roxy-motion-easing`   | `cubic-bezier(0.4, 0, 0.2, 1)` | Standard ease                                                                                                                      |
 
 `prefers-reduced-motion: reduce` always pins the duration to `0ms`.
 
@@ -196,6 +197,22 @@ roxy-natal-chart {
 	--roxy-border: #f0abfc;
 }
 ```
+
+### Brand attributes
+
+Three optional attributes on every component set the brand without CSS. A value that does not validate is ignored, so a typo never reaches the page.
+
+| Attribute      | Accepts                                             | Sets                                                                                                                       |
+| -------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `brand-color`  | `#rgb` or `#rrggbb`                                 | `--roxy-primary`                                                                                                           |
+| `brand-accent` | `#rgb` or `#rrggbb`                                 | `--roxy-accent`, with `--roxy-accent-ink` and `--roxy-ring` derived from it in both modes                                  |
+| `font`         | a `key` from `fonts[]` in `components-catalog.json` | `--roxy-font-sans` and `--roxy-font-display` over the preset default, and loads only that pair, from beside the CDN script |
+
+```html
+<roxy-natal-chart brand-color="#3e2a2c" brand-accent="#914955" font="fraunces-jost"></roxy-natal-chart>
+```
+
+In an npm build, import `@roxyapi/ui/styles/fonts/{key}.css` once (or copy `dist/styles/fonts` to your origin), the same way as `tokens.css`; fonts never load from a host the page did not choose.
 
 ### Dark mode
 
@@ -325,13 +342,15 @@ The default look is built in and adapts to the host page. Each named preset is o
 | Preset     | Key and file                                          | Look                                                                                                 |
 | ---------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Default    | built in                                              | Inherits the page font, neutral ink, hairlines, flat cards, one restrained blue accent               |
-| Rosewater  | `practitioner`, `dist/styles/themes/practitioner.css` | Warm rosewater, serif headings, fonts bundled                                                        |
+| Rosewater  | `practitioner`, `dist/styles/themes/practitioner.css` | Warm rosewater, serif headings                                                                       |
 | Eucalyptus | `eucalyptus`, `dist/styles/themes/eucalyptus.css`     | Sage green on warm paper, serif headings                                                             |
 | Kiln       | `kiln`, `dist/styles/themes/kiln.css`                 | Terracotta on cream, serif headings                                                                  |
 | Moonlit    | `moonlit`, `dist/styles/themes/moonlit.css`           | Ink blue on cream, gold on night blue in dark mode, serif headings                                   |
 | Celeste    | `celeste`, `dist/styles/themes/celeste.css`           | The roxyapi.com look: near-black ink on near-white, a teal accent, the system font and crisp corners |
 
-Rosewater self-hosts its fonts inside this package; Eucalyptus, Kiln and Moonlit load the same two families from Google Fonts with one `@import` and share its generous radii (`--roxy-radius-sm: 0.4375rem`, `--roxy-radius-md: 0.875rem`, `--roxy-radius-lg: 1.575rem`). Celeste loads no font file and sets `--roxy-radius-sm: 0.125rem`, `--roxy-radius-md: 0.25rem`, `--roxy-radius-lg: 0.375rem`.
+In an npm build, import `@roxyapi/ui/styles/themes/{key}.css` once instead of the link.
+
+A preset loads no font. It names its default pair in `--roxy-font`, a `key` from `fonts[]` (published as `font` on each entry of `themes[]`), and each component sets both stacks from that pair and loads only its files, from where the component is served; a `font` attribute overrides it, and a font stack the page sets itself outranks the preset default. Set `--roxy-font` on `:root` to choose a pair for a whole page. Rosewater, Eucalyptus, Kiln and Moonlit default to `fraunces-jost` and share generous radii (`--roxy-radius-sm: 0.4375rem`, `--roxy-radius-md: 0.875rem`, `--roxy-radius-lg: 1.575rem`). Celeste defaults to `system` and sets `--roxy-radius-sm: 0.125rem`, `--roxy-radius-md: 0.25rem`, `--roxy-radius-lg: 0.375rem`.
 
 The colours each preset sets, with the names the Customize colors panel and the WordPress plugin show:
 

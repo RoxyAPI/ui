@@ -1,5 +1,5 @@
 import { type ReactiveController, type ReactiveControllerHost } from 'lit';
-import type { Translate } from './hd-reading.js';
+import type { Translate } from '../i18n/registry.js';
 type ChartHost = ReactiveControllerHost & {
     renderRoot: ParentNode;
 };

@@ -17,6 +17,6 @@
  *
  * Opt in with `class="stacked"` on the table plus a `data-label` per cell, and import this beside the
  * component's own styles. Everything above the breakpoint is untouched, so a card that has room keeps
- * its table.
+ * its table. A `data-inline` cell flows beside its siblings, so a row of short values costs one line rather than one each.
  */
 export declare const stackedTableStyles: import("lit").CSSResult;

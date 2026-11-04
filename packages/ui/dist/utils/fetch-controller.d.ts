@@ -60,11 +60,13 @@ export interface ApiRoute {
  * Hand-written rather than `type: Object`, which resolves malformed JSON to `null` in silence: a page whose context never left has nothing to look at, and the route it was meant for reports only that the value it expected is not there. One warning covers both refusals (unparseable, or parsed to something that is not an object) because both leave the request without a context, which is the fact worth reading.
  */
 export declare const submitContextConverter: ComplexAttributeConverter<Record<string, unknown> | undefined>;
-/** A request the API answered with a failure: its own message, plus the fields it named when it rejected the request, and whether the message is a sentence it wrote rather than the status line. */
+/** A request the API answered with a failure: its own message, plus the fields it named when it rejected the request, whether the message is a sentence it wrote rather than the status line, and the HTTP status and machine code it answered with. */
 export declare class ApiError extends Error {
     readonly issues: ApiIssue[] | null;
     readonly worded: boolean;
-    constructor(message: string, issues?: ApiIssue[] | null, worded?: boolean);
+    readonly status?: number | undefined;
+    readonly code?: string | undefined;
+    constructor(message: string, issues?: ApiIssue[] | null, worded?: boolean, status?: number | undefined, code?: string | undefined);
 }
 /** The key refusal that applies to a route, or undefined when it may send; a proxy route holds its own key, so none applies there. */
 export declare function routeRefusal(route: ApiRoute): KeyRefusal | undefined;
@@ -98,6 +100,11 @@ export declare class FetchController<T = unknown> implements ReactiveController,
     submitContext?: Record<string, unknown>;
     /** False when the last failure carried no sentence of its own: a dropped connection, or a body with no `error`. */
     worded: boolean;
+    /** The HTTP status and API code of the last failure, empty when nothing answered (a refused key, a dropped connection). */
+    failure: {
+        status?: number;
+        code?: string;
+    };
     constructor(host: FetchHost<T>);
     hostDisconnected(): void;
     /**

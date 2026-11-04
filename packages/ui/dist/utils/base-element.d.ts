@@ -105,6 +105,12 @@ export declare abstract class RoxyDataElement<T = unknown> extends RoxyLocalized
      * ```
      */
     hideSections: string;
+    /** A brand colour as `#rgb` or `#rrggbb`, painted as `--roxy-primary`; any other value is ignored. */
+    brandColor?: string;
+    /** A brand accent as `#rgb` or `#rrggbb`, painted as `--roxy-accent` with its ink and focus ring re-derived; any other value is ignored. */
+    brandAccent?: string;
+    /** A published font pair (`fonts[]` in `components-catalog.json`) for body text and headings, its stylesheet loaded from beside the CDN script that served this element (an npm build imports `styles/fonts/{key}.css`); any other value is ignored. */
+    font?: string;
     /** Override the self-fetch form's submit-button label. Empty derives one from the endpoint. */
     submitLabel?: string;
     /** The host page's own words for a failed self-fetch the API did not word (a dropped connection, a body with no message); a failure the API explains reads as the API worded it. */
@@ -162,7 +168,7 @@ export declare abstract class RoxyDataElement<T = unknown> extends RoxyLocalized
      */
     private drawn;
     /**
-     * The one rule set that acts on {@link RoxyDataElement.hideSections}, generated from the names rather than from a list of components.
+     * The one rule set that acts on {@link RoxyDataElement.hideSections}, generated from the names rather than from a list of components, led by the host declarations the brand attributes ask for.
      *
      * @remarks
      * `[part~="name"]` is the selector because `part` is a space-separated list: the natal chart's aspect grid carries `section aspects table aspect-grid`, so a `~=` match reaches it by any one of its names while `=` would reach it by none. It is emitted INSIDE the shadow root, which is the only place a rule can see a `part` attribute on the element that declares it.
@@ -173,7 +179,14 @@ export declare abstract class RoxyDataElement<T = unknown> extends RoxyLocalized
      *
      * **`!important` is load-bearing and is not a shortcut around specificity.** Lit puts static `styles` in `adoptedStyleSheets`, and the scoping spec applies those AFTER any `<style>` element inside the same shadow root, so an in-tree rule loses to the component's own stylesheet at equal specificity no matter how it is written. Measured: `patterns` is a bare `section` with no declared display and hid correctly without it, while `legend` carries `display:flex` from the static sheet and stayed visible. The WordPress site-wide rule needs no `!important` for the opposite reason, that an outer-tree `::part()` rule already outranks anything inside.
      */
-    private hiddenSectionsStyle;
+    private hostStyle;
+    /** Request properties this element fills from its own attributes, merged over the form values on submit; an undefined value leaves the property out. */
+    protected ownRequest(): Record<string, unknown>;
+    /** The HTTP status and API code of the last failed self-fetch, empty when nothing answered. */
+    protected get failure(): {
+        status?: number;
+        code?: string;
+    };
     /** The state machine every render goes through, split out so {@link render} can pair it with the per-instance rules above. */
     private renderState;
     /** Render the populated response. The single method every component implements. */

@@ -123,6 +123,13 @@ export declare function rayClearance(angleDeg: number, a: MarkSize, b: MarkSize,
  * chosen to make impossible short of three marks inside one label width.
  */
 export declare function staggerRows<T>(placed: readonly FannedPoint<T>[], boxAt: (point: FannedPoint<T>, row: number) => LabelBox): number[];
+/** Widths of a wheel degree label in em of its font size, an envelope over every face the library ships: a `dd°mm'` label, a whole `dd°` label, the retrograde mark after either, and the height of the digit ink. */
+export declare const LABEL_EM: {
+    readonly minute: 3.4;
+    readonly whole: 1.85;
+    readonly retrograde: 1.25;
+    readonly ink: 0.9;
+};
 /**
  * Degrees of arc a mark of `width` user units occupies at `radius`, which is the
  * separation {@link fanOut} needs to keep two of them from touching. One

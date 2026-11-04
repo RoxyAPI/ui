@@ -83,7 +83,7 @@ Light, dark, your brand. A handful of base tokens style the whole library and ev
 }
 ```
 
-Pick a tone, set the bases, every chart and card follows. Named presets ship as one stylesheet each (Rosewater, Eucalyptus, Kiln, Moonlit, and Celeste, the roxyapi.com look). Full token reference, the presets and the drawing hooks at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). See the [FAQ](#faq) for switching between light and dark at runtime.
+Pick a tone, set the bases, every chart and card follows. Named presets ship as one stylesheet each (Rosewater, Eucalyptus, Kiln, Moonlit, and Celeste, the roxyapi.com look), each naming a default font pair that `font` on a component overrides; only the pair in use loads, from where the components are served. Full token reference, the presets and the drawing hooks at [THEMING.md](https://github.com/RoxyAPI/ui/blob/main/packages/ui/THEMING.md). See the [FAQ](#faq) for switching between light and dark at runtime.
 
 ## Gallery
 
@@ -461,6 +461,40 @@ export default function Page() {
 ```
 
 One import anywhere in the project types the tags everywhere in it. The typings carry attributes only, which is what markup can carry: a page that passes a response uses the React or Vue component, which sets `data` as a property. Your `tsconfig.json` needs `moduleResolution` on `bundler`, `node16` or `nodenext`, because the older `node10` resolution ignores the package export map.
+
+## Draw a chart on the server
+
+`@roxyapi/ui/charts` turns a response into the same `<svg>` its component draws, as a string, with no browser and no rendering library: a PDF, an email, a static page or an image job gets the chart a visitor sees on the page.
+
+```ts
+import { createRoxy } from '@roxyapi/sdk';
+import {
+	bodygraphSvg,
+	kundliSvg,
+	natalWheelSvg,
+	synastryWheelSvg,
+	toKundliViewModel,
+} from '@roxyapi/ui/charts';
+import '@roxyapi/ui/locales/es';
+
+const roxy = createRoxy(process.env.ROXY_API_KEY!);
+const { data: natal } = await roxy.astrology.generateNatalChart({ body, throwOnError: true });
+const wheel: string = natalWheelSvg(natal, { lang: 'es' });
+
+const { data: birth } = await roxy.vedicAstrology.generateBirthChart({ body, throwOnError: true });
+const kundli: string = kundliSvg(toKundliViewModel(birth.meta), { style: 'south' });
+```
+
+`synastryWheelSvg` takes a synastry response and `bodygraphSvg` a bodygraph response the same way. `lang` writes the words the chart adds in that language once its locale is imported; English needs no import.
+
+The paint is a stylesheet per chart, published beside the tokens: `styles/charts/natal-wheel.css`, `synastry-wheel.css`, `kundli.css` and `bodygraph.css`. Link `tokens.css`, a theme if you use one, and the chart sheet next to the string, and it paints exactly as the component does, in light and dark:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/tokens.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/charts/natal-wheel.css">
+```
+
+The same path carries the published font pairs as data: `ROXY_FONTS` (keyed by the `fonts[]` keys in `components-catalog.json`, each with its `name` and its `sans` and `display` stacks) and `fontFaces(key)`, the files a pair is drawn with, so a server sets the type a page shows.
 
 ## Most-used components per domain
 
@@ -950,6 +984,14 @@ Every component takes every colour, size, radius, space and font from `--roxy-*`
 roxy-natal-chart {
 	--roxy-accent: #ec4899;
 }
+```
+
+### Brand colour and font, one attribute each
+
+Every component takes `brand-color`, `brand-accent` and `font` (`brandColor`, `brandAccent`, `font` in React and Vue), so a site sets its brand without CSS. The colours are `#rgb` or `#rrggbb`, and the accent re-derives its ink and focus ring in both modes. `font` is a `key` from `fonts[]` in `components-catalog.json`, which lists each pair with its stylesheet and files, and it overrides the theme preset's default pair. From the CDN script, the pair's stylesheet loads from the same place as the script. In an npm build, import `@roxyapi/ui/styles/fonts/{key}.css` once, the same way as `tokens.css`, or copy `dist/styles/fonts` to your own origin and link it. A value that does not validate is ignored.
+
+```html
+<roxy-natal-chart brand-color="#3e2a2c" brand-accent="#914955" font="fraunces-jost"></roxy-natal-chart>
 ```
 
 ### Reach inside the component from your own CSS

@@ -30,6 +30,13 @@ export declare function registerLocale(lang: string, catalog: Record<string, str
  */
 export declare function interpolate(template: string, vars?: Record<string, string | number>): string;
 /**
+ * A component's own `t`, threaded in so a shared render helper can name its rows.
+ *
+ * @remarks
+ * These helpers are plain functions with no host, so they cannot resolve a page language on their own, and a label they hardcode is one English word inside otherwise translated chrome. Taking the translator as an argument keeps each English source literal in the file that renders it, which is what `tests/i18n.test.ts` scans (it walks `utils/` as well as `components/`), so a string added here still cannot ship without a catalogue entry. That scanner reads comments too, so do not write a sample call in one.
+ */
+export type Translate = (source: string, vars?: Record<string, string | number>) => string;
+/**
  * The chrome string for `lang`, falling back to the English `source` it is keyed by.
  *
  * @remarks

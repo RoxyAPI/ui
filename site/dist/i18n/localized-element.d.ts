@@ -13,6 +13,10 @@ export declare abstract class RoxyLocalizedElement extends LitElement {
     constructor();
     /** Every element brings its own tokens, so a page that never links `tokens.css` still renders themed; idempotent, and a no-op without a document. */
     connectedCallback(): void;
+    /** The host declarations for the font pair this element shows (`explicit`, else the theme's `--roxy-font`), loading that pair's files once; empty when neither names a pair. Words are drawn in it, so every element resolves it here. */
+    protected fontDeclarations(explicit?: string): string;
+    /** {@link RoxyLocalizedElement.fontDeclarations} as the in-tree host rule an element with no brand attributes renders first. */
+    protected renderFontStyle(): unknown;
     /**
      * The chrome string for this element's language, keyed by its own English source text.
      *

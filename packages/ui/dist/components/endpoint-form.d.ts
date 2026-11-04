@@ -63,6 +63,7 @@ export declare class RoxyEndpointForm extends RoxyLocalizedElement {
     private repeats;
     private formTitle;
     private hasLang;
+    private langs?;
     private values;
     private loaded;
     private specError;
@@ -150,7 +151,7 @@ export declare class RoxyEndpointForm extends RoxyLocalizedElement {
      * The value this form may put on `?lang=`, or undefined to leave the request on the API default.
      *
      * @remarks
-     * NOT the display language, and the name says so: `effectiveLang()` on the base class is the full display tag every `t()` reads. `?lang=es-AR` is a 400 and `?lang=es` is a 200, and the language resolves from `<html lang>` rather than only from an attribute a developer typed, so the unfiltered tag reaching the query string would break every regional and every untranslated locale. {@link apiLang} does both narrowings; this method exists so the submit path reads as one call.
+     * NOT the display language, and the name says so: `effectiveLang()` on the base class is the full display tag every `t()` reads. `?lang=es-AR` is a 400 and `?lang=es` is a 200, and the language resolves from `<html lang>` rather than only from an attribute a developer typed, so the unfiltered tag reaching the query string would break every regional and every untranslated locale. {@link apiLang} does both narrowings, and `served` narrows it again to the languages one operation lists; this method exists so the submit path reads as one call.
      */
     private requestLang;
     /**
@@ -240,6 +241,7 @@ export declare class RoxyEndpointForm extends RoxyLocalizedElement {
     private citySearch;
     private groupCard;
     render(): import("lit").TemplateResult<1>;
+    private renderBody;
     private coerce;
 }
 declare global {

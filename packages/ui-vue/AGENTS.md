@@ -459,7 +459,7 @@ In React, the same props are typed: `<RoxyNatalChart publishableKey={process.env
 
 **One tag, no element wiring.** For the simplest embed, load `dist/cdn/widgets.js` and drop a `<div data-roxy-widget="{slug}" data-publishable-key="pk_live_...">`. The script mounts the matching component from a generated slug map: with every path parameter supplied as a `data-*` attribute (`data-sign`, `data-id`) it fetches on mount, otherwise it renders the same input form. A second `data-*` attribute picks a variant (`data-period`, `data-mode`, `data-type`, `data-spread`). To keep every key on your own server instead, drop the publishable key and give the tag `data-submit-url`: the widget renders the form and routes every request there, the city search included, and `data-location-url` sends the city search somewhere else. `data-submit-context` rides along with each proxied request.
 
-**Theme every widget in one link.** Add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">` for the Rosewater preset, a warm serif look (or `eucalyptus.css`, `kiln.css`, `moonlit.css`, or `celeste.css` for the roxyapi.com look, from the same folder; `components-catalog.json` lists every preset under `themes`), or set the `--roxy-font-display` token alone to swap result headings to a display face (it defaults to the body font, so nothing changes until you set it). See [THEMING.md](packages/ui/THEMING.md).
+**Theme every widget in one link.** Add `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@roxyapi/ui@latest/dist/styles/themes/practitioner.css">` for the Rosewater preset, a warm serif look (or `eucalyptus.css`, `kiln.css`, `moonlit.css`, or `celeste.css` for the roxyapi.com look, from the same folder; `components-catalog.json` lists every preset under `themes`; each names a default font pair and loads no font itself), or set the `--roxy-font-display` token alone to swap result headings to a display face (it defaults to the body font, so nothing changes until you set it). See [THEMING.md](packages/ui/THEMING.md).
 
 ### Pattern 5: MCP tool-call response
 
@@ -559,6 +559,20 @@ This is how the WordPress plugin renders: PHP fetches the response server-side, 
 
 - Writing the tag itself in a React or Next.js file? Import `@roxyapi/ui-react/jsx` once anywhere in the project and every `roxy-*` tag is typed, with its attributes and their legal values. It is the raw-tag path, so it carries attributes only; a page that passes a response uses the React or Vue component instead, which sets `data` as a property.
 
+### Pattern 8: a chart as an SVG string on the server
+
+`@roxyapi/ui/charts` returns the exact `<svg>` a component draws, as a string, with no DOM: `natalWheelSvg(natalResponse, { lang })`, `synastryWheelSvg(synastryResponse)`, `kundliSvg(toKundliViewModel(birthChart.meta), { style: 'south' })`, `bodygraphSvg(bodygraphResponse)`. Use it for a PDF, an email or a static page.
+
+```ts
+import { natalWheelSvg } from '@roxyapi/ui/charts';
+import '@roxyapi/ui/locales/es';
+
+const { data } = await roxy.astrology.generateNatalChart({ body, throwOnError: true });
+const svg: string = natalWheelSvg(data, { lang: 'es' });
+```
+
+Paint it with `dist/styles/tokens.css` plus the chart sheet, `dist/styles/charts/{natal-wheel,synastry-wheel,kundli,bodygraph}.css` (subpath `@roxyapi/ui/styles/charts/*.css`). Import a locale only for a language other than English. The same subpath exports the font pairs as data: `ROXY_FONTS` (keys as in `fonts[]`) and `fontFaces(key)`.
+
 ## Localized responses
 
 Most RoxyAPI endpoints return their interpretation text in the language you ask for, selected with the `lang` query parameter (`en`, `tr`, `de`, `es`, `hi`, `pt`, `fr`, `ru`, `zh-Hans`, `zh-Hant`). Human Design, for example, returns the type, strategy, authority, profile, channel, center, gate, and line readings in the requested language. Coverage varies by domain, and a field with no translation in the language you asked for comes back in English.
@@ -629,6 +643,12 @@ Per-element scope is supported:
 Every visible aspect of the chart is driven by `--roxy-*` CSS custom properties on `:host`. Override any token on `:root`, on `:host`, or per element. Do not write Tailwind utility classes inside the components; the Shadow DOM boundary stops them at the door.
 
 **One plain declaration is the whole override, including from inside a layer of your own.** The shipped defaults are declared at zero specificity and inside the `roxy` cascade layer, so `:root { --roxy-accent: #6d28d9 }` beats them in both modes, and so does the same line inside `@layer base`, which is where a framework maps its palette onto ours. Never reach for `html:root` or `!important`. If you link `tokens.css` after your own CSS, name the order once with `@layer roxy, base, components, utilities;`. And if your tokens are scoped to a container element rather than to `:root`, write the mode on that same container element (`data-theme="light"` or `"dark"`), because every token you did not override is still decided at the document root by the visitor OS.
+
+**Brand without CSS.** Every component takes `brand-color` and `brand-accent` (`#rgb` or `#rrggbb`) and `font` (a `key` from `fonts[]` in `components-catalog.json`, which lists each pair with its stylesheet and files). Theme and font are separate: a preset sets colours, radius and shadow and names a default font pair in `--roxy-font` (its `font` in `themes[]`); `font` on a component overrides it, and with neither the component keeps the page font. Only the pair in use loads. From the CDN script, the pair's stylesheet loads from the same place as the script. In an npm build, import `@roxyapi/ui/styles/fonts/{key}.css` once, the same way as `tokens.css`, or copy `dist/styles/fonts` to your own origin and link it. A value that does not validate is ignored. React and Vue: `brandColor`, `brandAccent`, `font`.
+
+```html
+<roxy-natal-chart brand-color="#3e2a2c" brand-accent="#914955" font="fraunces-jost"></roxy-natal-chart>
+```
 
 ## Choosing what a component renders
 

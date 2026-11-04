@@ -3,7 +3,7 @@
  *
  * @remarks The life-area keys (`spiritual`, `love`, `career`, `money`, `twinFlame`) mirror the `meaning` object in the angel-numbers OpenAPI response; `biblical` and `shadow` are top-level siblings present only on a known meaning, not on the digit-root fallback. Any absent field is skipped, so the one builder serves a full known meaning and the leaner digit-root reading alike.
  */
-import type { Translate } from './hd-reading.js';
+import type { Translate } from '../i18n/registry.js';
 export interface MeaningSection {
     label: string;
     body: string;

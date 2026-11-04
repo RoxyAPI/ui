@@ -39,6 +39,12 @@ interface RoxyBaseAttributes {
     "hide-readings"?: boolean;
     /** Comma-separated list of `part` names to take off this component, for example "patterns" or "patterns, legend". Per element rather than per site, so the same component can drop a block on one page and keep it on another with no CSS. Sibling of hideReadings and a different tool: this hides a whole block whatever it contains, where hideReadings drops interpretive prose out of the markup. Names come from the `parts` array in components-catalog.json; a name the component does not carry hides nothing and is not an error. */
     "hide-sections"?: string;
+    /** Brand colour as `#rgb` or `#rrggbb`, painted as `--roxy-primary` on this component. Any other value is ignored. */
+    "brand-color"?: string;
+    /** Brand accent as `#rgb` or `#rrggbb`, painted as `--roxy-accent` with its ink and focus ring re-derived. Any other value is ignored. */
+    "brand-accent"?: string;
+    /** A font pair from `fonts[]` in components-catalog.json, for body text and headings; import `@roxyapi/ui/styles/fonts/{key}.css` once to load its files. Any other value is ignored. */
+    "font"?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
     /** Override the self-fetch form submit-button label. Empty derives an outcome-first label from the endpoint (Get reading, Generate, Compare, Cast). */
     "submit-label"?: string;
     /** Your own words for a failed self-fetch the API did not explain (a dropped connection, a response with no message). A failure the API explains, such as a spent quota, reads as the API worded it. */

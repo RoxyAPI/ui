@@ -1,5 +1,5 @@
 /**
- * Pure, framework-free schema layer shared by the self-fetch form. It turns one OpenAPI operation into a digested list of {@link FieldDef}s whose {@link InputKind} decides which input widget renders, with zero Lit or DOM dependency so the build-time slice generator ({@link ../../../scripts/build-schemas.ts}) and the taxonomy-coverage test consume the exact same classification the browser does.
+ * Pure, framework-free schema layer shared by the self-fetch form. It turns one OpenAPI operation into a digested list of {@link FieldDef}s whose {@link InputKind} decides which input widget renders, with zero Lit or DOM dependency so the build-time slice generator and the taxonomy-coverage test consume the exact same classification the browser does.
  *
  * @remarks
  * The registry is by SHAPE, never by name: {@link classifyInput} inspects `enum` / `type` / `format` only, so a new API parameter gets a working widget with no code change, and the taxonomy gate fails loudly (via a `null` return) the day a genuinely new shape appears. Name-driven render intent (hidden values, city searches and the Advanced fold) is resolved here too, so browser and server renderers consume the same decisions.
@@ -49,6 +49,8 @@ export interface OperationSchema {
         required?: boolean;
         schema?: OpenApiSchema;
     }>;
+    /** The cost the spec declares for one call, when above one. */
+    'x-request-cost'?: number;
 }
 /** The minimal OpenAPI document surface the form introspects. */
 export interface OpenApiDoc {
@@ -114,7 +116,7 @@ export interface FieldCondition {
  * A GET collection on the API that lists the choices for one request field.
  *
  * @remarks
- * Two kinds reach a form, both resolved at build time into `generated/option-sources.ts`: a filter whose values the API serves as a list of their own (the letters the dream dictionary holds, the colours the crystal list filters on), and a free-string path identifier (`/dreams/symbols/{id}`), whose choices are the collection one segment up. The spec stays UI-agnostic either way: the first is a hint declared in `scripts/bindings.config.ts`, the second is derived from the paths.
+ * Two kinds reach a form, both resolved at build time into `generated/option-sources.ts`: a filter whose values the API serves as a list of their own (the letters the dream dictionary holds, the colours the crystal list filters on), and a free-string path identifier (`/dreams/symbols/{id}`), whose choices are the collection one segment up. The spec stays UI-agnostic either way: the first is a hint declared in the bindings config, the second is derived from the paths.
  */
 export interface OptionSource {
     /** Path of the collection, leading slash. */
@@ -164,6 +166,8 @@ export interface FormModel {
     fields: FieldDef[];
     /** True when the operation carries a `lang` query parameter, so the form knows to route an effective language to the query string on submit. */
     hasLang: boolean;
+    /** The languages the operation's `lang` parameter lists, so the form leaves `lang` off a request in a language the operation would answer with a 400; absent when the spec lists none. */
+    langs?: readonly string[];
     /** Resolved render intent. Optional only for older slices; normalize with withRenderIntent. */
     groups?: FormGroup[];
     /** Whether a GET can open on its result without visitor input. */
@@ -206,6 +210,8 @@ export declare function repeatFields(fields: readonly FieldDef[], key: string, i
 export declare function optionKind(values: readonly string[]): 'tiles' | 'select';
 /** True for choices that read as an index (letters, two-character codes) rather than words. */
 export declare function isIndex(values: readonly string[]): boolean;
+/** The properties a document operation (one the spec costs above a single call) takes from its host rather than its visitor: the output format, the white-label branding and whether the written reading prints. */
+export declare const DOCUMENT_ENVELOPE: readonly ['format', 'branding', 'readings'];
 /** The latitude+longitude+timezone trio the form suppresses in favour of a city search. Centralised so the render path and tests agree. */
 export declare const LOCATION_TRIO: readonly ['latitude', 'longitude', 'timezone'];
 /**
@@ -275,8 +281,8 @@ export declare function opensOnLoad(model: FormModel, method: string): boolean;
  * @param fields - The form fields, when known: a request that pages (`limit`, `offset`) lists a collection, which a visitor searches whatever domain the path names.
  */
 export declare function deriveSubmitLabel(endpoint: string, fields?: readonly FieldDef[]): string;
-/** Where the schema slices live: beside a shipped CDN script (`dist/cdn/roxy-ui.js` or `dist/cdn/components/{slug}.js`) served from any host but jsDelivr, else the version-pinned jsDelivr copy. */
-export declare function sliceBase(version: string, scriptSrc?: string): string;
+/** Where the schema slices live: the `schemas` folder beside the shipped script or module `src` that loaded this code, or undefined (an app bundle, a file path), where the form reads the spec from the API it already calls. */
+export declare function sliceBase(version: string, src?: string): string | undefined;
 /** Deterministic slice filename for one operation, shared by the generator and the runtime loader so both address the same artifact. */
 export declare function sliceFileName(method: string, endpoint: string): string;
 /**

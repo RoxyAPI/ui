@@ -1,9 +1,7 @@
 /**
- * Single source of truth for component metadata. Every consumer that needs
- * the (tag, pascal, slug, description, heading) tuple reads from here:
- * scripts/build-react.ts, scripts/build-registry.ts, scripts/sync-docs.ts,
- * scripts/build-widgets.ts, and the browser-side apps/docs/manifest.js
- * (mirrored at build time).
+ * Single source of truth for component metadata: every generator and the
+ * showcase that needs the (tag, pascal, slug, description, heading) tuple
+ * reads it from here.
  *
  * Hand-maintained. Add a component → add one entry here. The OpenAPI spec
  * does not yet carry component metadata, so this stays manual.

@@ -1,15 +1,7 @@
 import type { CalculateSynastryResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
-/**
- * The in-wheel type sizes at a wide host, in user units, as the stylesheet
- * declares them: what the fan spaces the marks by until the rendered text has
- * been measured, and what a unit test draws on. The phone sizes live in the
- * stylesheet alone and are read back off the rendered text, never assumed.
- */
-export declare const SYNASTRY_TYPE_SIZES: {
-    readonly glyph: 18;
-    readonly degree: 10;
-};
+/** Kept exported from here for consumers that import it from the component subpath. */
+export { SYNASTRY_TYPE_SIZES } from '../utils/synastry-wheel.js';
 /**
  * Dual-wheel synastry chart with inter-aspects table. Pass `data` from
  * /astrology/synastry.
@@ -56,30 +48,6 @@ export declare class RoxySynastryChart extends RoxyDataElement<CalculateSynastry
     /** Every remaining contact, so nothing the endpoint returned is dropped. */
     private renderCatalog;
     /** Person 1's Ascendant sits at nine o'clock and the zodiac runs anticlockwise from it, as on a natal wheel; with no Ascendant, 0 Aries takes that place. */
-    private toAngle;
-    private renderSpokes;
-    private renderSigns;
-    /**
-     * One person's ring, fanned apart only as far as legibility demands.
-     *
-     * @remarks
-     * A stellium is ordinary in a real chart and drawing every glyph at its
-     * exact angle prints the cluster as one mark. {@link fanOut} pushes a
-     * crowded member forward and a thin leader runs from the glyph outward to a
-     * tick at its TRUE longitude, into the gap above the ring, so the drawing
-     * never claims a position the response did not give. The separation is
-     * settled per pair from the measured width of each mark at its own radius,
-     * and `labelRadius` is where a degree label sits along its glyph's ray.
-     */
-    private renderRing;
-    /**
-     * Ascendant markers for both people. Drawn as short ticks outside the rim
-     * with the label beyond them, the way the natal wheel marks its angles, so
-     * the two rising signs are immediately scannable without depending on
-     * tooltips.
-     */
-    private renderAscendants;
-    private renderInterAspectLines;
     private renderAspects;
 }
 declare global {

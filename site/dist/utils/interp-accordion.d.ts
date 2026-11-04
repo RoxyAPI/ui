@@ -9,7 +9,7 @@
  * **Call it through `RoxyDataElement.renderInterpretation`, never directly.** That method is where `hide-readings` is honoured, so a direct call renders prose a host asked to be left out. The section it emits carries `part="section readings"` and each row `part="reading"`, which is what makes the readings of EVERY component addressable under one name from outside the shadow root.
  */
 import { nothing } from 'lit';
-import type { Translate } from './hd-reading.js';
+import type { Translate } from '../i18n/registry.js';
 /** One row: the label, the short value shown as the aside, and the interpretation body. `extra` renders under the body for a section that carries more than prose. */
 export interface InterpSection {
     label: string;

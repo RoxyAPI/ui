@@ -63,6 +63,7 @@ export declare class RoxyLocationSearch extends RoxyLocalizedElement {
     private select;
     private onKeyDown;
     render(): import("lit").TemplateResult<1>;
+    private renderBody;
 }
 declare global {
     interface HTMLElementTagNameMap {

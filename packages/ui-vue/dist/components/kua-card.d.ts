@@ -35,6 +35,12 @@ export interface RoxyKuaCardProps {
     hideReadings?: boolean;
     /** Comma-separated list of `part` names to take off this component, for example "patterns" or "patterns, legend". Per element rather than per site, so the same component can drop a block on one page and keep it on another with no CSS. Sibling of hideReadings and a different tool: this hides a whole block whatever it contains, where hideReadings drops interpretive prose out of the markup. Names come from the `parts` array in components-catalog.json; a name the component does not carry hides nothing and is not an error. */
     hideSections?: string;
+    /** Brand colour as `#rgb` or `#rrggbb`, painted as `--roxy-primary` on this component. Any other value is ignored. */
+    brandColor?: string;
+    /** Brand accent as `#rgb` or `#rrggbb`, painted as `--roxy-accent` with its ink and focus ring re-derived. Any other value is ignored. */
+    brandAccent?: string;
+    /** A font pair from `fonts[]` in components-catalog.json, for body text and headings; import `@roxyapi/ui/styles/fonts/{key}.css` once to load its files. Any other value is ignored. */
+    font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
 }
 export declare const RoxyKuaCard: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     data: {
@@ -87,6 +93,15 @@ export declare const RoxyKuaCard: import("vue").DefineComponent<import("vue").Ex
     };
     hideSections: {
         type: PropType<RoxyKuaCardProps['hideSections']>;
+    };
+    brandColor: {
+        type: PropType<RoxyKuaCardProps['brandColor']>;
+    };
+    brandAccent: {
+        type: PropType<RoxyKuaCardProps['brandAccent']>;
+    };
+    font: {
+        type: PropType<RoxyKuaCardProps['font']>;
     };
 }>, () => import("vue").VNode<import("vue").RendererNode, import("vue").RendererElement, {
     [key: string]: any;
@@ -141,5 +156,14 @@ export declare const RoxyKuaCard: import("vue").DefineComponent<import("vue").Ex
     };
     hideSections: {
         type: PropType<RoxyKuaCardProps['hideSections']>;
+    };
+    brandColor: {
+        type: PropType<RoxyKuaCardProps['brandColor']>;
+    };
+    brandAccent: {
+        type: PropType<RoxyKuaCardProps['brandAccent']>;
+    };
+    font: {
+        type: PropType<RoxyKuaCardProps['font']>;
     };
 }>> & Readonly<{}>, {}, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;

@@ -26,10 +26,6 @@ export declare class RoxyBodygraph extends RoxyDataElement<Bodygraph> {
     private side;
     static styles: (import("lit").CSSResult[] | import("lit").CSSResult)[];
     protected renderData(d: Bodygraph): import("lit").TemplateResult<1>;
-    /** The hover and accessible text for one gate circle, naming every activation on it rather than one. */
-    private buildGateTitles;
-    /** Monochrome planet glyph for an activation, or its body name when the wheel has no glyph for it. The lookup is keyed on the canonical English name, which the API keeps English in every language for exactly this; the fallback TEXT is the reader's. */
-    private gateGlyph;
     private renderSummary;
     /**
      * The chart key: what an activation colour means, then what a centre colour means.

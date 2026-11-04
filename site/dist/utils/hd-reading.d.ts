@@ -7,16 +7,10 @@
  * The disclosure accordion itself is NOT here. It lives in `utils/interp-accordion.ts`, because the same accordion serves any endpoint that returns a labelled reading (`roxy-hexagram` uses it for the changing lines), and both HD components draw it through `RoxyDataElement.renderInterpretation` so `hide-readings` is honoured. Import `interpAccordionStyles` alongside `hdReadingStyles`.
  */
 import { nothing } from 'lit';
+import type { Translate } from '../i18n/registry.js';
 import type { InterpSection } from './interp-accordion.js';
 /** One row of the reading accordion. Alias of the shared {@link InterpSection} so HD call sites keep reading naturally. */
 export type ReadingSection = InterpSection;
-/**
- * A component's own {@link RoxyDataElement.t}, threaded in so a shared render helper can name its rows.
- *
- * @remarks
- * These helpers are plain functions with no host, so they cannot resolve a page language on their own, and a label they hardcode is one English word inside otherwise translated chrome. Taking the translator as an argument keeps each English source literal in the file that renders it, which is what `tests/i18n.test.ts` scans (it walks `utils/` as well as `components/`), so a string added here still cannot ship without a catalogue entry. That scanner reads comments too, so do not write a sample call in one.
- */
-export type Translate = (source: string, vars?: Record<string, string | number>) => string;
 /** A labelled value. A fact with no value is dropped, so a narrower response renders fewer facts rather than empty ones. */
 export interface Fact {
     label: string;
@@ -31,13 +25,6 @@ export interface ProfileKeynotes {
 }
 /** The fact list, the lead paragraph and the keynotes; the facts and the theme chips read the shared recipes. */
 export declare const hdReadingStyles: import("lit").CSSResult[];
-/**
- * The chart side as a word a reader sees.
- *
- * @remarks
- * Personality is the conscious side calculated at birth, design the unconscious side 88 degrees of solar arc before it, and the wire carries them as the machine enum `personality` and `design` with no localized partner. The component is what turns an enum into a word, so this is chrome and comes from the catalogue: the same two words label the bodygraph activation tabs, name the side inside a chart tooltip, and sit under a Variables arrow. An unrecognized value is passed through rather than guessed at.
- */
-export declare function sideWord(side: string | undefined, t: Translate): string;
 /** The labelled values. Values the response does not carry are dropped rather than rendered empty. */
 export declare function renderHdFacts(facts: Fact[]): typeof nothing | import("lit").TemplateResult<1>;
 /**

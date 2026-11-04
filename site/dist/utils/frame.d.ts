@@ -1,6 +1,6 @@
 import type { TemplateResult } from 'lit';
 import { nothing } from 'lit';
-import type { Translate } from './hd-reading.js';
+import type { Translate } from '../i18n/registry.js';
 /**
  * The sidereal frame a Vedic response was computed in.
  *

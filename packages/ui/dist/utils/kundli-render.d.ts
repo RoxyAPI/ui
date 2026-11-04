@@ -1,5 +1,4 @@
-import type { TemplateResult } from 'lit';
-import type { Translate } from './hd-reading.js';
+import { type ChartOptions } from './svg-string.js';
 /**
  * A graha placed inside a kundli cell. Render-only view model fed from a
  * `meta` map on the API response. Carries enough detail to draw a compact
@@ -58,6 +57,10 @@ export interface KundliViewModel {
  * Exposed so consumers can type their own `chart-style` attribute reflection.
  */
 export type ChartStyle = 'south' | 'north' | 'east';
+/** Superscript state marks on a graha label. A cell is small, so each state that changes how a graha is READ gets one character and the tooltip carries the words. */
+export declare const RETRO_MARK = "\u02B3";
+export declare const COMBUST_MARK = "\u1D9C";
+export declare const WAR_MARK = "\u02B7";
 /**
  * Bucket a graha-keyed `meta` map (D1 birth chart or D2..D60 divisional
  * chart) into the unified {@link KundliViewModel} the renderer consumes. The
@@ -86,30 +89,16 @@ export declare function toKundliViewModel(meta: Record<string, {
     states?: GrahaStates;
     natalReference?: boolean;
 }): KundliViewModel;
-/** True when the chart carries an ascendant the house-fixed north layout can be anchored to. The one place that question is answered, so the renderer and the caller showing {@link renderMissingLagnaNote} can never disagree about it. */
+/** True when the chart carries an ascendant the house-fixed north layout can be anchored to. The one place that question is answered, so the drawing and the caption that explains a missing ascendant can never disagree about it. */
 export declare function hasLagna(vm: KundliViewModel): boolean;
-/**
- * Every caption that belongs under a kundli: why the layout changed when no ascendant arrived, and the key to the state marks the cells carry.
- *
- * @remarks
- * One entry point rather than two, because both callers need the identical set and a caller that rendered only one of them would explain the marks on a chart whose layout had silently changed, or the reverse. Uses the shared frame-caption class, so a component already showing the sidereal frame needs no extra styles.
- */
-export declare function renderKundliCaptions(vm: KundliViewModel, t: Translate): TemplateResult[];
-/**
- * Render the kundli body for the requested style. Returns the SVG inner
- * content; the caller wraps it in an `<svg>` element with the canonical
- * viewBox `0 0 400 400` and applies its own theming CSS.
- */
-export declare function renderKundliSvg(vm: KundliViewModel, style: ChartStyle, t: Translate): TemplateResult;
-/**
- * Render a WAI-ARIA-compliant tablist that lets the end user switch between
- * South / North / East kundli styles at runtime. The hosting component owns
- * the `chartStyle` state; this helper renders the buttons and wires the
- * arrow-key navigation plus click handler.
- *
- * @param active - The currently selected style.
- * @param setStyle - Callback the host component uses to update its state.
- */
-export declare function renderKundliStyleTablist(active: ChartStyle, setStyle: (next: ChartStyle) => void, t: Translate): TemplateResult;
-/** Divisional placements stay distinct from the natal position and nakshatra returned beside them. */
-export declare function renderVargaReferenceTable(meta: Parameters<typeof toKundliViewModel>[0], division: number, locale: string | undefined, t: Translate): TemplateResult;
+/** What a kundli drawing takes beside its view model. */
+export interface KundliOptions extends ChartOptions {
+    /** The regional layout; north when absent. */
+    style?: ChartStyle;
+    /** The accessible name; the birth chart wording when absent. */
+    label?: string;
+    /** The title a pointer shows; the birth chart title when absent. */
+    title?: string;
+}
+/** A kundli as one `<svg>` string from the view model {@link toKundliViewModel} builds out of a response `meta` map, painted by class so a page themes it through the `--roxy-*` custom properties. */
+export declare function kundliSvg(vm: KundliViewModel, options?: KundliOptions): string;

@@ -1,4 +1,6 @@
-import type { TemplateResult } from 'lit';
+import type { Translate } from '../i18n/registry.js';
+import type { GenerateBodygraphResponse } from '../types/index.js';
+import { type ChartOptions, type SvgMarkup } from './svg-string.js';
 /**
  * Fixed geometry and renderer for the Human Design bodygraph: nine centers, 36 channels, all 64 gates, over a front-facing silhouette. Only which centers are defined and which gates are activated changes per chart.
  *
@@ -80,5 +82,19 @@ export declare const BODYGRAPH_VIEWBOX = "0 0 432 612";
  * under gates, so the body is the backdrop, the wiring runs behind the shapes,
  * and every gate circle sits on top of whatever it lands on.
  */
-export declare function renderBodygraphSvg(input: BodygraphRenderInput): TemplateResult;
+export declare function renderBodygraphSvg(input: BodygraphRenderInput): SvgMarkup;
+/**
+ * The chart side as a word a reader sees.
+ *
+ * @remarks
+ * Personality is the conscious side calculated at birth, design the unconscious side 88 degrees of solar arc before it, and the wire carries them as the machine enum `personality` and `design` with no localized partner. The component is what turns an enum into a word, so this is chrome and comes from the catalogue: the same two words label the bodygraph activation tabs, name the side inside a chart tooltip, and sit under a Variables arrow. An unrecognized value is passed through rather than guessed at.
+ */
+export declare function sideWord(side: string | undefined, t: Translate): string;
+type GateActivation = GenerateBodygraphResponse['gates'][number];
+/** Monochrome planet glyph for an activation, or its body name when the chart has no glyph for it. The lookup is keyed on the canonical English name; the fallback TEXT is the reader's. */
+export declare function gateGlyph(g: GateActivation): string;
+/** The names a chart reads for its centres, the same words the reading under it prints. */
+export declare function bodygraphCenterNames(centers: GenerateBodygraphResponse['centers']): Map<BodygraphCenterId, string>;
+/** The bodygraph for a `/human-design/bodygraph` response as one `<svg>` string, Design on the left half of a split gate and Personality on the right, painted by class so a page themes it through the `--roxy-*` custom properties and `--src-left` and `--src-right`. */
+export declare function bodygraphSvg(data: GenerateBodygraphResponse, options?: ChartOptions): string;
 export {};

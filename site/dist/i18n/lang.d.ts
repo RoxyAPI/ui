@@ -37,6 +37,8 @@ export declare function readsEnglish(lang: string | undefined): boolean;
  * - **Chinese resolves its script**, from an explicit script subtag or from the region ({@link ZH_SCRIPT_BY_REGION}), because that is where the language actually lives.
  * - **Everything else drops its region.** A regional tag is a 400, so a Spanish WordPress site would go from English-but-working to broken the day the language chain was completed. `es-AR`, `es-419` and `ES` all send `es`.
  *
+ * `served` narrows the answer to the languages one operation lists, so a request in a language that operation rejects goes out in English instead of failing.
+ *
  * **An unsupported language is omitted, not sent.** The chain surfaces whatever the host page carries, including languages the API does not translate, and an unlisted tag is the same 400. Omitting it degrades to English, which is the behaviour those pages already had.
  */
-export declare function apiLang(el: HTMLElement): string | undefined;
+export declare function apiLang(el: HTMLElement, served?: readonly string[]): string | undefined;
