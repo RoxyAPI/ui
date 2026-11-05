@@ -534,9 +534,9 @@ The paint is a stylesheet per chart, published beside the tokens: `styles/charts
 
 The same path carries the published font pairs as data: `ROXY_FONTS` (keyed by the `fonts[]` keys in `components-catalog.json`, each with its `name` and its `sans` and `display` stacks) and `fontFaces(key)`, the files a pair is drawn with, so a server sets the type a page shows.
 
-`moonSvg({ illumination, waxing, hemisphere, eclipse, size, lang })` draws the Moon every component shows, from its lit fraction (0 to 100): the lit side, earthshine, the maria and a lunar or solar eclipse, turned for the Southern Hemisphere with `hemisphere: 'south'`. `lunarDayMoon(n)` gives the Moon of a tithi or a lunar day. Paint it with `styles/charts/moon.css`.
+`moonSvg({ illumination, waxing, hemisphere, eclipse, size, lang })` draws the Moon every component shows, from its lit fraction (0 to 100): the lit side, earthshine, the maria and a lunar or solar eclipse, turned for the Southern Hemisphere with `hemisphere: 'south'`. `lunarDayMoon(n)` gives the Moon of a tithi or a lunar day. Paint it with `styles/charts/moon.css`, or take only the lit outline on the unit disc with `litPath(k, waxing)`.
 
-Every planet, sign, aspect, trigram and hexagram glyph draws in `Roxy Symbols`, a symbol face that ships in this package. From the CDN script it loads by itself. In an npm build, import `@roxyapi/ui/styles/fonts/symbols.css` once, beside `tokens.css`; on a server, `symbolFontFaces()` lists its files and `SYMBOL_FAMILY` names it.
+Every planet, sign, aspect, trigram and hexagram glyph draws in `Roxy Symbols`, a symbol face that ships in this package. From the CDN script it loads by itself. In an npm build, import `@roxyapi/ui/styles/fonts/symbols.css` once, beside `tokens.css`; on a server, `symbolFontFaces()` lists its files, `fontFaceCss(faces, base)` writes the `@font-face` rules for them served under `base`, and `SYMBOL_FAMILY` names it. The glyphs themselves come from `planetGlyph`, `signGlyph`, `aspectSymbol`, `trigramGlyph` and `hexagramGlyph(n)`, each returning `undefined` for a name it does not know, plus `RETROGRADE_MARK`, `MUTUAL_MARK` and `BIRTHPLACE_MARK`.
 
 ## Most-used components per domain
 

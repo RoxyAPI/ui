@@ -6,7 +6,7 @@ type MoonPhaseData = GetCurrentMoonPhaseResponse | GetUpcomingMoonPhasesResponse
  * Moon phase card. Renders /astrology/moon-phase/{current,upcoming,calendar/...}.
  *
  * @remarks
- * Every Moon is drawn from its own illumination: the current one, each day of a calendar month, and each principal phase of the upcoming list, its side read from the date, so a localized phase name is never parsed. `hide-readings` keeps the whole ephemeris half: the Moon, the phase name, the date, and the illumination, age, sign and distance tiles, plus every row of the upcoming and calendar lists. Only `meaning.description` and its keyword chips go.
+ * Every Moon is drawn from its own illumination: the current one, each day of a calendar month, and each principal phase of the upcoming list, its side read from the date, so a localized phase name is never parsed; a calendar day also shows the glyph of the sign its Moon is in. `hide-readings` keeps the whole ephemeris half: the Moon, the phase name, the date, and the illumination, age, sign and distance tiles, plus every row of the upcoming and calendar lists. Only `meaning.description` and its keyword chips go.
  */
 export declare class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
     static endpoints: readonly import("../generated/endpoint-defaults.js").SelfFetchEndpoint[];
@@ -15,6 +15,8 @@ export declare class RoxyMoonPhase extends RoxyDataElement<MoonPhaseData> {
     protected renderData(d: MoonPhaseData): typeof nothing | import("lit").TemplateResult<1>;
     private renderSingle;
     private renderListItem;
+    /** The sign a calendar day's Moon is in, as its glyph named by the canonical English sign, or that name when the glyph table has none. */
+    private renderSign;
 }
 declare global {
     interface HTMLElementTagNameMap {

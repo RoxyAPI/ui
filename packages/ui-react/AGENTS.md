@@ -591,7 +591,7 @@ const svg: string = natalWheelSvg(data, { lang: 'es' });
 
 Paint it with `dist/styles/tokens.css` plus the chart sheet, `dist/styles/charts/{natal-wheel,synastry-wheel,kundli,bodygraph,moon}.css` (subpath `@roxyapi/ui/styles/charts/*.css`). Import a locale only for a language other than English. The same subpath exports the font pairs as data: `ROXY_FONTS` (keys as in `fonts[]`) and `fontFaces(key)`; the Moon as `moonSvg({ illumination, waxing, hemisphere, eclipse, size, lang })` and `lunarDayMoon(n)` for a tithi or lunar day; and the symbol face every glyph draws in as `SYMBOL_FAMILY` and `symbolFontFaces()`.
 
-Every glyph draws in the `Roxy Symbols` face. The CDN script loads it; an npm build imports `@roxyapi/ui/styles/fonts/symbols.css` once, beside `tokens.css`. `components-catalog.json` publishes it as `symbolFont` (`family`, `stylesheet`, `files`). Components that draw the Moon take `hemisphere="south"` (React and Vue `hemisphere`, one-tag widget `data-hemisphere`).
+Every glyph draws in the `Roxy Symbols` face. The CDN script loads it; an npm build imports `@roxyapi/ui/styles/fonts/symbols.css` once, beside `tokens.css`. `components-catalog.json` publishes it as `symbolFont` (`family`, `stylesheet`, `files`). On a server, `@roxyapi/ui/charts` gives the glyphs (`planetGlyph('Venus')`, `signGlyph('Gemini')`, `aspectSymbol`, `trigramGlyph`, `hexagramGlyph(n)`, each `undefined` for a name it does not know), `symbolFontFaces()` with `fontFaceCss(faces, base)` for the `@font-face` rules, `moonSvg` and `litPath(k, waxing)`, the lit outline of a unit disc. Components that draw the Moon take `hemisphere="south"` (React and Vue `hemisphere`, one-tag widget `data-hemisphere`).
 
 ## Localized responses
 
