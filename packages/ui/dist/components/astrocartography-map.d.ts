@@ -1,3 +1,4 @@
+import { type PropertyValues } from 'lit';
 import type { AstrocartographyResponse } from '../types/index.js';
 import { RoxyDataElement } from '../utils/base-element.js';
 /**
@@ -12,7 +13,7 @@ export declare class RoxyAstrocartographyMap extends RoxyDataElement<Astrocartog
     private readonly chartViewport;
     static styles: (import("lit").CSSResult[] | import("lit").CSSResult)[];
     /** Fits the measured map ink without moving geographic coordinates. */
-    protected updated(): void;
+    protected updated(changed: PropertyValues): void;
     protected renderData(data: AstrocartographyResponse): import("lit").TemplateResult<1>;
     private renderMap;
     private renderGraticule;

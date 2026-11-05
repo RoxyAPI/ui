@@ -12,6 +12,8 @@ import { nothing } from 'lit';
 import type { Translate } from '../i18n/registry.js';
 /** One row: the label, the short value shown as the aside, and the interpretation body. `extra` renders under the body for a section that carries more than prose. */
 export interface InterpSection {
+    /** Drawn in the symbol face before the label. */
+    glyph?: string;
     label: string;
     aside?: string;
     body: string;

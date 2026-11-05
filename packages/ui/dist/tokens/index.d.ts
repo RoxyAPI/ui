@@ -24,10 +24,13 @@ export declare const SIGNS_ORDER: readonly ['Aries', 'Taurus', 'Gemini', 'Cancer
 export declare const aspectSymbol: (name: string | undefined | null) => string | undefined;
 /** Trigram glyph for a trigram name in any case, or `undefined`. */
 export declare const trigramGlyph: (name: string | undefined | null) => string | undefined;
-/**
- * Emoji for a lunar phase, or `undefined`.
- *
- * @remarks
- * The live API suffixes most phase names (`Waxing Gibbous Moon`) and calls the third quarter `Third Quarter Moon`, while only new and full moon carry the suffix in the table. Both reconciliations live here rather than in the card, so any component reading a phase name resolves the same eight phases from the same four spellings.
- */
-export declare const moonPhaseEmoji: (name: string | undefined | null) => string | undefined;
+/** The Unicode hexagram for a King Wen number from 1 to 64, or `undefined`. */
+export declare const hexagramGlyph: (n: number | undefined | null) => string | undefined;
+/** The retrograde mark a chart prints beside a body moving backwards. */
+export declare const RETROGRADE_MARK = "\u211E";
+/** The mark between two bodies that aspect each other. */
+export declare const MUTUAL_MARK = "\u27F7";
+/** The mark a map puts on the place of birth. */
+export declare const BIRTHPLACE_MARK = "\u2605";
+/** Every character a glyph accessor or mark can produce, so the symbol font carries exactly these. */
+export declare function glyphCharacters(): string[];

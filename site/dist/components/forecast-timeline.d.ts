@@ -31,6 +31,8 @@ export declare class RoxyForecastTimeline extends RoxyDataElement<ForecastTimeli
      * by nature, matching the chart aspect encoding.
      */
     private renderHeadline;
+    /** The Moon of a new or full moon, and of an eclipse, which darkens the Sun when its body is the Sun and the Moon otherwise; nothing for any other event. */
+    private renderMoon;
     /** Type-specific qualifier text from the optional spec fields. */
     private typeQualifier;
 }

@@ -4,6 +4,7 @@ import type { ChromeString } from '../i18n/chrome-strings.js';
 import { RoxyLocalizedElement } from '../i18n/localized-element.js';
 import { type ApiIssue, type RoxyRequest } from './fetch-controller.js';
 import { type InterpSection } from './interp-accordion.js';
+import type { Hemisphere } from './moon.js';
 /**
  * Shared base for every data-driven Roxy component. Carries once what every component needs, rather than per component, and adds the self-contained, drop-in behavior: controlled-mode hydration, an opt-in self-fetch (form, request, loading, error, empty), the typed `data` slot, and the render switch. A subclass implements one method, {@link RoxyDataElement.renderData}.
  *
@@ -111,6 +112,8 @@ export declare abstract class RoxyDataElement<T = unknown> extends RoxyLocalized
     brandAccent?: string;
     /** A published font pair (`fonts[]` in `components-catalog.json`) for body text and headings, its stylesheet loaded from beside the CDN script that served this element (an npm build imports `styles/fonts/{key}.css`); any other value is ignored. */
     font?: string;
+    /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle, as the Southern Hemisphere sees it; absent or anything else reads as north. */
+    hemisphere?: Hemisphere;
     /** Override the self-fetch form's submit-button label. Empty derives one from the endpoint. */
     submitLabel?: string;
     /** The host page's own words for a failed self-fetch the API did not word (a dropped connection, a body with no message); a failure the API explains reads as the API worded it. */

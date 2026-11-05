@@ -48,6 +48,8 @@ export interface RoxyTransitWheelProps {
     brandAccent?: string;
     /** A font pair from `fonts[]` in components-catalog.json, for body text and headings; import `@roxyapi/ui/styles/fonts/{key}.css` once to load its files. Any other value is ignored. */
     font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+    /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle. Absent reads as north. */
+    hemisphere?: 'north' | 'south';
 }
 export declare const RoxyTransitWheel: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     data: {
@@ -115,6 +117,9 @@ export declare const RoxyTransitWheel: import("vue").DefineComponent<import("vue
     };
     font: {
         type: PropType<RoxyTransitWheelProps['font']>;
+    };
+    hemisphere: {
+        type: PropType<RoxyTransitWheelProps['hemisphere']>;
     };
 }>, () => import("vue").VNode<import("vue").RendererNode, import("vue").RendererElement, {
     [key: string]: any;
@@ -184,5 +189,8 @@ export declare const RoxyTransitWheel: import("vue").DefineComponent<import("vue
     };
     font: {
         type: PropType<RoxyTransitWheelProps['font']>;
+    };
+    hemisphere: {
+        type: PropType<RoxyTransitWheelProps['hemisphere']>;
     };
 }>> & Readonly<{}>, {}, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;

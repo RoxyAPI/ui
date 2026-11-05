@@ -39,6 +39,8 @@ export interface RoxyDreamSearchProps {
     brandAccent?: string;
     /** A font pair from `fonts[]` in components-catalog.json, for body text and headings; import `@roxyapi/ui/styles/fonts/{key}.css` once to load its files. Any other value is ignored. */
     font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+    /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle. Absent reads as north. */
+    hemisphere?: 'north' | 'south';
     /** Fires when the underlying <roxy-dream-search> dispatches `roxy-symbol-select`. */
     onRoxySymbolSelect?: (event: CustomEvent<{
         id: string;
@@ -104,6 +106,9 @@ export declare const RoxyDreamSearch: import("vue").DefineComponent<import("vue"
     font: {
         type: PropType<RoxyDreamSearchProps['font']>;
     };
+    hemisphere: {
+        type: PropType<RoxyDreamSearchProps['hemisphere']>;
+    };
     onRoxySymbolSelect: {
         type: PropType<RoxyDreamSearchProps['onRoxySymbolSelect']>;
     };
@@ -166,6 +171,9 @@ export declare const RoxyDreamSearch: import("vue").DefineComponent<import("vue"
     };
     font: {
         type: PropType<RoxyDreamSearchProps['font']>;
+    };
+    hemisphere: {
+        type: PropType<RoxyDreamSearchProps['hemisphere']>;
     };
     onRoxySymbolSelect: {
         type: PropType<RoxyDreamSearchProps['onRoxySymbolSelect']>;

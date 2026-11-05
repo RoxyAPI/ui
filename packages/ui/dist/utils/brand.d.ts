@@ -21,5 +21,7 @@ export declare function brandDeclarations(brand: {
 export declare function resolveFontKey(host: Element, explicit?: string): FontKey | undefined;
 /** The host declarations for a pair: the key, so a nested element resolves the same pair, and both stacks. */
 export declare function fontDeclarations(key: FontKey): string;
-/** Link a font pair's stylesheet into the document once, from `dist` (the release that served this code); a system pair, no `dist` and a missing document add nothing. */
+/** Link a font pair's stylesheet into the document once; a system pair adds nothing. */
 export declare function injectRoxyFont(key: FontKey, dist?: string | undefined): void;
+/** Link the symbol face stylesheet into the document once; the browser fetches a file of the face only when a glyph on the page needs it. */
+export declare function injectSymbolFont(dist?: string | undefined): void;

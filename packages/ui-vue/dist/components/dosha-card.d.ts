@@ -41,6 +41,8 @@ export interface RoxyDoshaCardProps {
     brandAccent?: string;
     /** A font pair from `fonts[]` in components-catalog.json, for body text and headings; import `@roxyapi/ui/styles/fonts/{key}.css` once to load its files. Any other value is ignored. */
     font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+    /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle. Absent reads as north. */
+    hemisphere?: 'north' | 'south';
 }
 export declare const RoxyDoshaCard: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     data: {
@@ -102,6 +104,9 @@ export declare const RoxyDoshaCard: import("vue").DefineComponent<import("vue").
     };
     font: {
         type: PropType<RoxyDoshaCardProps['font']>;
+    };
+    hemisphere: {
+        type: PropType<RoxyDoshaCardProps['hemisphere']>;
     };
 }>, () => import("vue").VNode<import("vue").RendererNode, import("vue").RendererElement, {
     [key: string]: any;
@@ -165,5 +170,8 @@ export declare const RoxyDoshaCard: import("vue").DefineComponent<import("vue").
     };
     font: {
         type: PropType<RoxyDoshaCardProps['font']>;
+    };
+    hemisphere: {
+        type: PropType<RoxyDoshaCardProps['hemisphere']>;
     };
 }>> & Readonly<{}>, {}, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;

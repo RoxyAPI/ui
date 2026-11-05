@@ -45,6 +45,8 @@ interface RoxyBaseAttributes {
     "brand-accent"?: string;
     /** A font pair from `fonts[]` in components-catalog.json, for body text and headings; import `@roxyapi/ui/styles/fonts/{key}.css` once to load its files. Any other value is ignored. */
     "font"?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+    /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle. Absent reads as north. */
+    "hemisphere"?: 'north' | 'south';
     /** Override the self-fetch form submit-button label. Empty derives an outcome-first label from the endpoint (Get reading, Generate, Compare, Cast). */
     "submit-label"?: string;
     /** Your own words for a failed self-fetch the API did not explain (a dropped connection, a response with no message). A failure the API explains, such as a spent quota, reads as the API worded it. */

@@ -1,4 +1,4 @@
-import { LitElement } from 'lit';
+import { LitElement, type PropertyValues } from 'lit';
 /**
  * The base every element that writes WORDS extends: it resolves the page language and translates its own chrome.
  *
@@ -13,6 +13,8 @@ export declare abstract class RoxyLocalizedElement extends LitElement {
     constructor();
     /** Every element brings its own tokens, so a page that never links `tokens.css` still renders themed; idempotent, and a no-op without a document. */
     connectedCallback(): void;
+    /** Every glyph draws in the symbol face, so an element that drew one loads the face's stylesheet, once per page. */
+    protected updated(changed: PropertyValues): void;
     /** The host declarations for the font pair this element shows (`explicit`, else the theme's `--roxy-font`), loading that pair's files once; empty when neither names a pair. Words are drawn in it, so every element resolves it here. */
     protected fontDeclarations(explicit?: string): string;
     /** {@link RoxyLocalizedElement.fontDeclarations} as the in-tree host rule an element with no brand attributes renders first. */

@@ -41,6 +41,8 @@ export interface RoxyTarotCatalogProps {
     brandAccent?: string;
     /** A font pair from `fonts[]` in components-catalog.json, for body text and headings; import `@roxyapi/ui/styles/fonts/{key}.css` once to load its files. Any other value is ignored. */
     font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
+    /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle. Absent reads as north. */
+    hemisphere?: 'north' | 'south';
     /** Fires when the underlying <roxy-tarot-catalog> dispatches `roxy-symbol-select`. */
     onRoxySymbolSelect?: (event: CustomEvent<{
         id: string;
@@ -108,6 +110,9 @@ export declare const RoxyTarotCatalog: import("vue").DefineComponent<import("vue
     font: {
         type: PropType<RoxyTarotCatalogProps['font']>;
     };
+    hemisphere: {
+        type: PropType<RoxyTarotCatalogProps['hemisphere']>;
+    };
     onRoxySymbolSelect: {
         type: PropType<RoxyTarotCatalogProps['onRoxySymbolSelect']>;
     };
@@ -173,6 +178,9 @@ export declare const RoxyTarotCatalog: import("vue").DefineComponent<import("vue
     };
     font: {
         type: PropType<RoxyTarotCatalogProps['font']>;
+    };
+    hemisphere: {
+        type: PropType<RoxyTarotCatalogProps['hemisphere']>;
     };
     onRoxySymbolSelect: {
         type: PropType<RoxyTarotCatalogProps['onRoxySymbolSelect']>;

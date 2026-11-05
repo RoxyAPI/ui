@@ -554,6 +554,10 @@ The paint is a stylesheet per chart, published beside the tokens: `styles/charts
 
 The same path carries the published font pairs as data: `ROXY_FONTS` (keyed by the `fonts[]` keys in `components-catalog.json`, each with its `name` and its `sans` and `display` stacks) and `fontFaces(key)`, the files a pair is drawn with, so a server sets the type a page shows.
 
+`moonSvg({ illumination, waxing, hemisphere, eclipse, size, lang })` draws the Moon every component shows, from its lit fraction (0 to 100): the lit side, earthshine, the maria and a lunar or solar eclipse, turned for the Southern Hemisphere with `hemisphere: 'south'`. `lunarDayMoon(n)` gives the Moon of a tithi or a lunar day. Paint it with `styles/charts/moon.css`.
+
+Every planet, sign, aspect, trigram and hexagram glyph draws in `Roxy Symbols`, a symbol face that ships in this package. From the CDN script it loads by itself. In an npm build, import `@roxyapi/ui/styles/fonts/symbols.css` once, beside `tokens.css`; on a server, `symbolFontFaces()` lists its files and `SYMBOL_FAMILY` names it.
+
 ## Most-used components per domain
 
 The highest-demand components by domain, in the order you are most likely to ship them. Each pairing shows the SDK call that returns the response shape the component renders. Spec change in the API translates to typed change at the component boundary; the pairing below is derived from the live OpenAPI spec, not invented. Full catalog in the [Components](#components) table.
@@ -1048,6 +1052,8 @@ roxy-natal-chart {
 ### Brand colour and font, one attribute each
 
 Every component takes `brand-color`, `brand-accent` and `font` (`brandColor`, `brandAccent`, `font` in React and Vue), so a site sets its brand without CSS. The colours are `#rgb` or `#rrggbb`, and the accent re-derives its ink and focus ring in both modes. `font` is a `key` from `fonts[]` in `components-catalog.json`, which lists each pair with its stylesheet and files, and it overrides the theme preset's default pair. From the CDN script, the pair's stylesheet loads from the same place as the script. In an npm build, import `@roxyapi/ui/styles/fonts/{key}.css` once, the same way as `tokens.css`, or copy `dist/styles/fonts` to your own origin and link it. A value that does not validate is ignored.
+
+A component that draws the Moon (the moon phase card, the panchang, the almanac, the forecast timeline) takes `hemisphere="south"` to show it as the Southern Hemisphere sees it, turned half a circle; absent reads as north. React and Vue: `hemisphere`; the one-tag widget: `data-hemisphere`.
 
 ```html
 <roxy-natal-chart brand-color="#3e2a2c" brand-accent="#914955" font="fraunces-jost"></roxy-natal-chart>
