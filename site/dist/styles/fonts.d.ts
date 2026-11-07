@@ -27,6 +27,6 @@ export declare function fontFamilies(key: FontKey): PairFamily[];
 export declare function fontFaces(key: FontKey): SelfHostedFontFace[];
 /** The files of the symbol face, each with the code points it carries, so a page downloads only the files its glyphs need. */
 export declare function symbolFontFaces(): SelfHostedFontFace[];
-/** `@font-face` rules for subset files served under `base`, the folder that holds each family's directory, one per subset so a page downloads only the script it renders. */
+/** Minified `@font-face` rules for subset files served under `base`, the folder that holds each family's directory, one per subset so a page downloads only the script it renders. */
 export declare function fontFaceCss(faces: SelfHostedFontFace[], base: string): string;
 export {};

@@ -9108,7 +9108,7 @@ export type GetFieldLabelsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -9265,7 +9265,7 @@ export type ListZodiacSignsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -9448,7 +9448,7 @@ export type GetZodiacSignErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -9704,7 +9704,7 @@ export type ListPlanetMeaningsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -9878,7 +9878,7 @@ export type GetPlanetMeaningErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -10114,7 +10114,7 @@ export type GenerateNatalChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -10279,7 +10279,7 @@ export type GetPlanetaryPositionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -10499,7 +10499,7 @@ export type GetMonthlyTropicalEphemerisErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -10702,7 +10702,7 @@ export type GetCurrentMoonPhaseErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -10908,7 +10908,7 @@ export type GetUpcomingMoonPhasesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -11071,7 +11071,7 @@ export type GetMoonCalendarErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -11310,7 +11310,7 @@ export type CalculateSynastryErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -11769,7 +11769,7 @@ export type CalculateHousesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -11909,7 +11909,7 @@ export type CalculateAspectsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -12066,7 +12066,7 @@ export type GetMonthlyTropicalAspectsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -12292,7 +12292,7 @@ export type DetectAspectPatternsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -12432,7 +12432,7 @@ export type CalculateTransitsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -12589,7 +12589,7 @@ export type GetMonthlyTropicalTransitsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -12866,7 +12866,7 @@ export type CalculateTransitAspectsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -13347,7 +13347,7 @@ export type GetMonthlyDeclinationParallelsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -13562,7 +13562,7 @@ export type GetPlanetaryNodePassagesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -13781,7 +13781,7 @@ export type GenerateSolarReturnErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -14189,7 +14189,7 @@ export type GenerateLunarReturnErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -14627,7 +14627,7 @@ export type GenerateCompositeChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -15040,7 +15040,7 @@ export type CalculateCompatibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -15549,7 +15549,7 @@ export type GetDailyHoroscopeErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -15800,7 +15800,7 @@ export type GetWeeklyHoroscopeErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -16035,7 +16035,7 @@ export type GetMonthlyHoroscopeErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -16300,7 +16300,7 @@ export type GetYearlyHoroscopeErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -16728,7 +16728,7 @@ export type GeneratePlanetaryReturnErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -17136,7 +17136,7 @@ export type GenerateAstrocartographyErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -17276,7 +17276,7 @@ export type GenerateRelocationChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -17441,7 +17441,7 @@ export type GenerateLocalSpaceErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -17610,7 +17610,7 @@ export type GenerateFixedStarsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -17750,7 +17750,7 @@ export type CalculateArabicLotsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -17890,7 +17890,7 @@ export type GenerateAsteroidsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -18030,7 +18030,7 @@ export type GenerateLilithErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -18170,7 +18170,7 @@ export type GenerateProgressionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -18310,7 +18310,7 @@ export type GenerateSolarArcErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -18450,7 +18450,7 @@ export type GenerateProfectionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -18594,7 +18594,7 @@ export type GenerateBirthChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -18734,7 +18734,7 @@ export type GenerateNavamsaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -18874,7 +18874,7 @@ export type GenerateDivisionalChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -19014,7 +19014,7 @@ export type CalculateGunMilanErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -19154,7 +19154,7 @@ export type CalculateDashakootErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -19294,7 +19294,7 @@ export type CalculatePapasamyamErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -19434,7 +19434,7 @@ export type GetPlanetPositionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -19587,7 +19587,7 @@ export type GetMonthlyEphemerisErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -19823,7 +19823,7 @@ export type GetCurrentDashaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -20657,7 +20657,7 @@ export type GetMajorDashasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -20995,7 +20995,7 @@ export type GetSubDashasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -21400,7 +21400,7 @@ export type GetPratyantardashasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -21821,7 +21821,7 @@ export type GetSookshmaDashasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -22258,7 +22258,7 @@ export type GetPranaDashasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -22682,7 +22682,7 @@ export type GetVedicDailyReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -23438,7 +23438,7 @@ export type GetBasicPanchangErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -23708,7 +23708,7 @@ export type GetDetailedPanchangErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -24398,7 +24398,7 @@ export type GetChoghadiyaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -24605,7 +24605,7 @@ export type GetHoraErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -24792,7 +24792,7 @@ export type CheckManglikDoshaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -24932,7 +24932,7 @@ export type CheckKalsarpaDoshaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -25072,7 +25072,7 @@ export type CheckSadhesatiErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -25216,7 +25216,7 @@ export type ListYogasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -25383,7 +25383,7 @@ export type GetYogaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -25523,7 +25523,7 @@ export type DetectYogasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -25671,7 +25671,7 @@ export type GetKpAyanamsaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -25806,7 +25806,7 @@ export type GetKpPlanetsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -25950,7 +25950,7 @@ export type GetKpCuspsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -26094,7 +26094,7 @@ export type GenerateKpChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -26267,7 +26267,7 @@ export type GetKpRulingPlanetsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -26444,7 +26444,7 @@ export type GetKpRulingIntervalErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -26579,7 +26579,7 @@ export type GetKpSublordChangesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -26714,7 +26714,7 @@ export type GetKpRasiChangesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -26849,7 +26849,7 @@ export type GetKpPlanetsIntervalErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -26993,7 +26993,7 @@ export type CastKpHoraryChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -27128,7 +27128,7 @@ export type GetKpDailyFinanceErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -27288,7 +27288,7 @@ export type CalculateDrishtiErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -27535,7 +27535,7 @@ export type GetMonthlyAspectsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -27758,7 +27758,7 @@ export type GetLunarAspectsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -27984,7 +27984,7 @@ export type CalculateTransitErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -28305,7 +28305,7 @@ export type GetMonthlyTransitsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -28548,7 +28548,7 @@ export type CalculateParallelsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -28752,7 +28752,7 @@ export type GetMonthlyParallelsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -28963,7 +28963,7 @@ export type GetEclipticCrossingsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -29153,7 +29153,7 @@ export type ListRashisErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -29298,7 +29298,7 @@ export type GetRashiErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -29438,7 +29438,7 @@ export type ListNakshatrasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -29583,7 +29583,7 @@ export type GetNakshatraErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -29718,7 +29718,7 @@ export type GetUpagrahaPositionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -29853,7 +29853,7 @@ export type CalculateAshtakavargaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -29993,7 +29993,7 @@ export type CalculateShadbalaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -30137,7 +30137,7 @@ export type ListAvasthasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -30303,7 +30303,7 @@ export type GetAvasthaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -30464,7 +30464,7 @@ export type CalculateArudhaPadasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -30604,7 +30604,7 @@ export type CalculateCharaKarakasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -30748,7 +30748,7 @@ export type CalculateBhavaBalaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -30892,7 +30892,7 @@ export type CalculateBhavChalitErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -31027,7 +31027,7 @@ export type GetHeliacalVisibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -31226,7 +31226,7 @@ export type GenerateTimelineErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -31503,7 +31503,7 @@ export type ForecastTransitsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -31801,7 +31801,7 @@ export type FindSignificantDatesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -32099,7 +32099,7 @@ export type GenerateDigestErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -32434,7 +32434,7 @@ export type ForecastSolarReturnErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -32821,7 +32821,7 @@ export type GenerateBodygraphErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -33301,7 +33301,7 @@ export type CalculateConnectionErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -33587,7 +33587,7 @@ export type CalculatePentaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -33865,7 +33865,7 @@ export type GenerateTransitErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -34159,7 +34159,7 @@ export type CalculateTypeErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -34385,7 +34385,7 @@ export type CalculateGatesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -34647,7 +34647,7 @@ export type GetGateErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -34867,7 +34867,7 @@ export type CalculateChannelsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -35082,7 +35082,7 @@ export type CalculateCentersErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -35277,7 +35277,7 @@ export type GetCenterErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -35471,7 +35471,7 @@ export type CalculateProfileErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -35657,7 +35657,7 @@ export type CalculateVariablesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -35974,7 +35974,7 @@ export type GenerateBaziChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -36528,7 +36528,7 @@ export type CalculateLuckPillarsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -36962,7 +36962,7 @@ export type CalculateDayMasterStrengthErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -37343,7 +37343,7 @@ export type CalculateBaziCompatibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -38114,7 +38114,7 @@ export type CalculateAnnualForecastErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -38535,7 +38535,7 @@ export type ListZodiacAnimalsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -38738,7 +38738,7 @@ export type GetZodiacAnimalErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -39106,7 +39106,7 @@ export type CalculateZodiacAnimalErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -39347,7 +39347,7 @@ export type GetZodiacCompatibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -39634,7 +39634,7 @@ export type GetDailyZodiacReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -39907,7 +39907,7 @@ export type ListSolarTermsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -40122,7 +40122,7 @@ export type CalculateLunarDateErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -40306,7 +40306,7 @@ export type GetAlmanacDayErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -40682,7 +40682,7 @@ export type GetMonthlyAlmanacErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -41089,7 +41089,7 @@ export type LookupAuspiciousDaysErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -41485,7 +41485,7 @@ export type ListFiveElementsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -41716,7 +41716,7 @@ export type CalculateKuaNumberErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -41979,7 +41979,7 @@ export type GetKuaNumberErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -42252,7 +42252,7 @@ export type GenerateEightMansionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -42590,7 +42590,7 @@ export type GenerateFlyingStarChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -42912,7 +42912,7 @@ export type GetAnnualFlyingStarsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -43114,7 +43114,7 @@ export type GetMonthlyFlyingStarsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -43320,7 +43320,7 @@ export type ListFlyingStarsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -43556,7 +43556,7 @@ export type GetAnnualAfflictionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -44004,7 +44004,7 @@ export type ListBaguaSectorsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -44313,7 +44313,7 @@ export type GetBaguaSectorErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -44621,7 +44621,7 @@ export type ListNinePeriodsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -44861,7 +44861,7 @@ export type CalculateTzolkinErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -45098,7 +45098,7 @@ export type GenerateMayanChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -45488,7 +45488,7 @@ export type ConvertLongCountErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -45674,7 +45674,7 @@ export type GetDailyMayanReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -45914,7 +45914,7 @@ export type GetMonthlyTzolkinCalendarErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -46136,7 +46136,7 @@ export type CalculateMayanCompatibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -46439,7 +46439,7 @@ export type ListMayanDaySignsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -46651,7 +46651,7 @@ export type GetMayanDaySignErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -46882,7 +46882,7 @@ export type ListTrecenasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -47069,7 +47069,7 @@ export type GetTrecenaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -47242,7 +47242,7 @@ export type ListHaabMonthsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -47433,7 +47433,7 @@ export type GetHaabMonthErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -47607,7 +47607,7 @@ export type CalculateTonalpohualliErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -47818,7 +47818,7 @@ export type GetDailyAztecReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -48037,7 +48037,7 @@ export type ListAztecDaySignsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -48232,7 +48232,7 @@ export type GetAztecDaySignErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -48413,7 +48413,7 @@ export type ListAztecTrecenasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -48596,7 +48596,7 @@ export type GetAztecTrecenaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -48820,7 +48820,7 @@ export type CalculateEntrancePadaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -49108,7 +49108,7 @@ export type GenerateMandalaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -49526,7 +49526,7 @@ export type CalculatePlotAnalysisErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -50118,7 +50118,7 @@ export type CalculateAyadiErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -50513,7 +50513,7 @@ export type CalculateRoomComplianceErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -50811,7 +50811,7 @@ export type FindGrihaPraveshDatesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -51171,7 +51171,7 @@ export type ListDikpalaDirectionsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -51421,7 +51421,7 @@ export type GetDikpalaDirectionErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -51657,7 +51657,7 @@ export type ListDevatasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -51914,7 +51914,7 @@ export type GetDevataErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -52162,7 +52162,7 @@ export type CalculateLifePathErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -52379,7 +52379,7 @@ export type CalculateExpressionErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -52608,7 +52608,7 @@ export type CalculateBridgeNumbersErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -52886,7 +52886,7 @@ export type CalculateSoulUrgeErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -53103,7 +53103,7 @@ export type CalculatePersonalityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -53320,7 +53320,7 @@ export type CalculateBirthDayErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -53557,7 +53557,7 @@ export type CalculateMaturityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -53774,7 +53774,7 @@ export type AnalyzeKarmicLessonsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -53960,7 +53960,7 @@ export type CheckKarmicDebtErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -54144,7 +54144,7 @@ export type CalculatePersonalDayErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -54334,7 +54334,7 @@ export type CalculatePersonalMonthErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -54512,7 +54512,7 @@ export type CalculatePersonalYearErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -54742,7 +54742,7 @@ export type CalculateNumCompatibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -54982,7 +54982,7 @@ export type GenerateNumerologyChartErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -55920,7 +55920,7 @@ export type GetNumberMeaningErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -56129,7 +56129,7 @@ export type GetDailyNumberErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -56329,7 +56329,7 @@ export type CalculateChaldeanErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -56651,7 +56651,7 @@ export type GetCompoundNumberErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -56821,7 +56821,7 @@ export type CalculateDualErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -57056,7 +57056,7 @@ export type CalculateBusinessNameErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -57302,7 +57302,7 @@ export type CalculateGematriaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -57660,7 +57660,7 @@ export type ListGematriaCiphersErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -57936,7 +57936,7 @@ export type GenerateNameProfileErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -58323,7 +58323,7 @@ export type GenerateBirthProfileErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -58630,7 +58630,7 @@ export type ListShemNamesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -58855,7 +58855,7 @@ export type GetShemNameErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -59069,7 +59069,7 @@ export type GetTreeOfLifeErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -59367,7 +59367,7 @@ export type GetSephirahErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -59614,7 +59614,7 @@ export type ListHebrewLettersErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -59863,7 +59863,7 @@ export type GetHebrewLetterErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -60104,7 +60104,7 @@ export type CalculateNameCompatibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -60385,7 +60385,7 @@ export type GetDailySephirahErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -60624,7 +60624,7 @@ export type ListCardsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -60786,7 +60786,7 @@ export type GetCardErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -60960,7 +60960,7 @@ export type DrawCardsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -61118,7 +61118,7 @@ export type GetDailyCardErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -61281,7 +61281,7 @@ export type CastYesNoErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -61485,7 +61485,7 @@ export type CastThreeCardErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -61669,7 +61669,7 @@ export type CastCelticCrossErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -61853,7 +61853,7 @@ export type CastLoveSpreadErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -62037,7 +62037,7 @@ export type CastCareerSpreadErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -62238,7 +62238,7 @@ export type CastCustomSpreadErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -62418,7 +62418,7 @@ export type GetReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -62668,7 +62668,7 @@ export type GetForecastErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -62901,7 +62901,7 @@ export type GetCriticalDaysErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -63112,7 +63112,7 @@ export type CalculateBioCompatibilityErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -63343,7 +63343,7 @@ export type GetPhasesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -63544,7 +63544,7 @@ export type GetDailyBiorhythmErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -63741,7 +63741,7 @@ export type CalculateAyurvedicConstitutionErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -64153,7 +64153,7 @@ export type GetDinacharyaScheduleErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -64527,7 +64527,7 @@ export type GetRitucharyaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -65061,7 +65061,7 @@ export type GetDailyAyurvedaReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -65377,7 +65377,7 @@ export type ListDoshasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -65779,7 +65779,7 @@ export type GetDoshaErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -66172,7 +66172,7 @@ export type ListRasasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -66431,7 +66431,7 @@ export type ListGunasErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -66710,7 +66710,7 @@ export type GetDailyHexagramErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -66935,7 +66935,7 @@ export type CastDailyReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -67241,7 +67241,7 @@ export type ListHexagramsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -67398,7 +67398,7 @@ export type GetRandomHexagramErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -67559,7 +67559,7 @@ export type LookupHexagramErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -67721,7 +67721,7 @@ export type GetHexagramErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -67882,7 +67882,7 @@ export type CastReadingErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -68037,7 +68037,7 @@ export type ListTrigramsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -68191,7 +68191,7 @@ export type GetTrigramErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -68361,7 +68361,7 @@ export type GetCrystalsByZodiacErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -68552,7 +68552,7 @@ export type GetCrystalsByChakraErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -68743,7 +68743,7 @@ export type GetCrystalsByElementErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -68926,7 +68926,7 @@ export type GetBirthstonesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -69112,7 +69112,7 @@ export type SearchCrystalsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -69295,7 +69295,7 @@ export type GetCrystalPairingsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -69503,7 +69503,7 @@ export type GetDailyCrystalErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -69680,7 +69680,7 @@ export type GetRandomCrystalErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -69849,7 +69849,7 @@ export type ListCrystalColorsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -69998,7 +69998,7 @@ export type ListCrystalPlanetsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -70175,7 +70175,7 @@ export type ListCrystalsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -70358,7 +70358,7 @@ export type GetCrystalErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -70605,7 +70605,7 @@ export type SearchDreamSymbolsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -70762,7 +70762,7 @@ export type GetRandomSymbolsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -70899,7 +70899,7 @@ export type GetSymbolLetterCountsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -71050,7 +71050,7 @@ export type GetDreamSymbolErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -71211,7 +71211,7 @@ export type GetDailyDreamSymbolErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -71394,7 +71394,7 @@ export type ListAngelNumbersErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -71585,7 +71585,7 @@ export type GetAngelNumberErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -71817,7 +71817,7 @@ export type AnalyzeNumberSequenceErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -72111,7 +72111,7 @@ export type GetDailyAngelNumberErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -72337,7 +72337,7 @@ export type SearchCitiesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -72535,7 +72535,7 @@ export type ListCountriesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -72718,7 +72718,7 @@ export type GetCitiesByCountryErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -72907,7 +72907,7 @@ export type GetUsageStatsErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -73082,7 +73082,7 @@ export type GenerateNatalReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -73255,7 +73255,7 @@ export type GenerateSynastryReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -73428,7 +73428,7 @@ export type GenerateKundliReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -73601,7 +73601,7 @@ export type GenerateMatchmakingReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -73774,7 +73774,7 @@ export type GenerateYearlyForecastReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -73947,7 +73947,7 @@ export type GenerateHumanDesignReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -74120,7 +74120,7 @@ export type GenerateBaziReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -74293,7 +74293,7 @@ export type GenerateNumerologyReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -74466,7 +74466,7 @@ export type GenerateTarotReportErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
@@ -74634,7 +74634,7 @@ export type ListLanguagesErrors = {
             path: string;
             message: string;
             /**
-             * Zod issue code (invalid_type, too_small, too_big, invalid_string, ...).
+             * Machine-readable issue code, such as invalid_type, too_small, too_big or invalid_format.
              */
             code?: string;
             /**
