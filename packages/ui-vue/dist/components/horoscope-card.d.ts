@@ -45,6 +45,11 @@ export interface RoxyHoroscopeCardProps {
     font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
     /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle. Absent reads as north. */
     hemisphere?: 'north' | 'south';
+    /** Fires when the underlying <roxy-horoscope-card> dispatches `roxy-symbol-select`. */
+    onRoxySymbolSelect?: (event: CustomEvent<{
+        id: string;
+        name: string;
+    }>) => void;
 }
 export declare const RoxyHoroscopeCard: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     data: {
@@ -112,6 +117,9 @@ export declare const RoxyHoroscopeCard: import("vue").DefineComponent<import("vu
     };
     hemisphere: {
         type: PropType<RoxyHoroscopeCardProps['hemisphere']>;
+    };
+    onRoxySymbolSelect: {
+        type: PropType<RoxyHoroscopeCardProps['onRoxySymbolSelect']>;
     };
 }>, () => import("vue").VNode<import("vue").RendererNode, import("vue").RendererElement, {
     [key: string]: any;
@@ -181,5 +189,8 @@ export declare const RoxyHoroscopeCard: import("vue").DefineComponent<import("vu
     };
     hemisphere: {
         type: PropType<RoxyHoroscopeCardProps['hemisphere']>;
+    };
+    onRoxySymbolSelect: {
+        type: PropType<RoxyHoroscopeCardProps['onRoxySymbolSelect']>;
     };
 }>> & Readonly<{}>, {}, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;

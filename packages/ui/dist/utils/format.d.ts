@@ -10,6 +10,8 @@
  *
  * It is required rather than optional because the failure it prevents is an omission: `toLocaleDateString(undefined, ...)` means the locale of whoever is looking, so a Spanish page renders `Carta natal` above `Jan 15, 1990, 2:30 PM` and two visitors to one page see two different strings. An optional parameter defaults straight back to that. A missing argument is now a typecheck failure at every call site.
  */
+/** An instant as the wall clock its own offset writes, so a formatter here prints the digits the response chose rather than the viewer's zone; any other input passes through unchanged. */
+export declare function ownClock(input: string | undefined): string | undefined;
 /**
  * The clock, in the page locale: `2:30 PM` in English, `14:30` in German.
  *

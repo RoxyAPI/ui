@@ -33,6 +33,6 @@ export interface ReadingDetail {
 /** Render one {@link ReadingDetail}. The three labels are copy, so this takes the translator, and they are typed {@link ChromeString} because the lookup is one indirection from the call: a scan of `t(...)` sites cannot follow that, and the compiler can. */
 export declare function renderReadingDetail(d: ReadingDetail | undefined, t: Translate): typeof nothing | import("lit").TemplateResult<1>;
 /**
- * Render the accordion. Sections with no body are dropped, so a caller can pass the full set and let a narrower response render only what it carries. `name` groups the `<details>` exclusively, so opening one closes the last.
+ * Render the accordion. Sections with no body are dropped, so a caller can pass the full set and let a narrower response render only what it carries. `name` groups the `<details>` exclusively, so opening one closes the last. The first section opens unless `collapsed`, for a reading that already leads with prose above it.
  */
-export declare function renderInterpAccordion(sections: InterpSection[], name: string, heading: string): typeof nothing | import("lit").TemplateResult<1>;
+export declare function renderInterpAccordion(sections: InterpSection[], name: string, heading: string, collapsed?: boolean): typeof nothing | import("lit").TemplateResult<1>;

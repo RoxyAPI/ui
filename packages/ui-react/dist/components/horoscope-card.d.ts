@@ -48,6 +48,11 @@ export interface RoxyHoroscopeCardProps extends ElementAttrs {
     font?: 'fraunces-jost' | 'jost' | 'geist' | 'system';
     /** The hemisphere a Moon the component draws is seen from: `south` turns it half a circle. Absent reads as north. */
     hemisphere?: 'north' | 'south';
+    /** Fires when the underlying <roxy-horoscope-card> dispatches `roxy-symbol-select`. */
+    onRoxySymbolSelect?: (event: CustomEvent<{
+        id: string;
+        name: string;
+    }>) => void;
 }
 export declare const RoxyHoroscopeCard: React.ForwardRefExoticComponent<RoxyHoroscopeCardProps & React.RefAttributes<HTMLElement | null>>;
 export {};

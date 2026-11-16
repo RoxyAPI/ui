@@ -11,10 +11,11 @@ type HoroscopePeriod = 'daily' | 'weekly' | 'monthly' | 'yearly';
  * data spine and `hide-readings` keeps all of it. The sign and its glyph, the
  * period and date, the energy meter, the sky strip (Moon sign, Moon phase and the
  * transits this reading was derived from), the dated events behind the reading,
- * the yearly themes, key periods, eclipses, retrogrades and best months, the
- * lucky number, colour, days and compatible signs, and the monthly key dates all
- * stay. The reading itself goes, in whichever shape it was rendered, along with
- * the week-by-week focus and advice. Each prose block carries its own heading, so
+ * where every body stands for the period, the yearly themes, key periods,
+ * eclipses, retrogrades and best months, the lucky number, colour, crystal, days
+ * and compatible signs, and the monthly key dates all stay. The reading itself
+ * goes, in whichever shape it was rendered, along with the week-by-week focus and
+ * advice. Each prose block carries its own heading, so
  * each goes whole rather than leaving one over nothing.
  *
  * The reading arrives in two shapes and the endpoint serves both: `column` is the
@@ -25,6 +26,8 @@ type HoroscopePeriod = 'daily' | 'weekly' | 'monthly' | 'yearly';
  * Two values on an event are canonical English in every language, by contract, so
  * they stay safe to switch on: the bodies and the aspect. Both are drawn as glyphs
  * here, which reads the same in every language, with the name beside the glyph.
+ *
+ * Every instant prints on the offset the response wrote, the clock the reading was requested on.
  */
 export declare class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
     static endpoints: readonly import("../generated/endpoint-defaults.js").SelfFetchEndpoint[];
@@ -42,6 +45,10 @@ export declare class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
      * `hide-readings` outranks this: both shapes are the reading, and both go.
      */
     layout: 'auto' | 'column' | 'sections';
+    protected rowDetail: {
+        tag: string;
+        path: string;
+    };
     protected renderData(d: HoroscopeData): import("lit").TemplateResult<1>;
     /**
      * The written reading, in exactly one of its two shapes.
@@ -66,13 +73,14 @@ export declare class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
     private paragraphs;
     /**
      * The dated sky events the reading was built from: what happened, when to the second, and
-     * which house it lands in for this sign.
+     * which sign and house each body stands in for this sign.
      *
      * @remarks
      * This is the auditable half of a horoscope and it survives `hide-readings`: every row is a
-     * dated instant rather than a claim about one. The visible time is written in the reader's own
-     * zone and locale, while the `datetime` attribute carries the exact UTC instant the response
-     * gave, to the second and unrounded, which is the value anyone verifying the reading needs.
+     * dated instant rather than a claim about one. The visible time is the clock the reading was
+     * read on, in the page locale, while the `datetime` attribute carries the exact instant the
+     * response gave, to the second and unrounded, which is the value anyone verifying it needs.
+     * With `placements`, each body carries its own sign and house; neither the event-level pair nor a window ending on the event's own instant is printed twice.
      */
     private renderEvents;
     /**
@@ -84,6 +92,12 @@ export declare class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
      * beside it is the English the response sent rather than a translation this card invented.
      */
     private renderEventBodies;
+    /** The sign and whole-sign house one body stands in, set small beside its name. */
+    private renderPlace;
+    /** Where each body stands for the period (sign, house, motion, dignity and its stay in the sign): data, so it survives `hide-readings`. */
+    private renderPositions;
+    /** The span a body holds its sign for, either end alone when the response could not date the other. */
+    private stay;
     /**
      * The four dated yearly lists and the best-month tiles.
      *
@@ -105,6 +119,8 @@ export declare class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
      * needs a machine-readable instant, which is why the caller says which it passed.
      */
     private renderRow;
+    /** A wire value in the page language where the table names it, else as the response sent it. */
+    private wireLabel;
     /** A glyph and the name it stands for. The glyph is decorative because the name is right beside it. */
     private glyphName;
     /**

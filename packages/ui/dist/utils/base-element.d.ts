@@ -203,8 +203,9 @@ export declare abstract class RoxyDataElement<T = unknown> extends RoxyLocalized
      * Prose that is NOT in an accordion (a summary paragraph, a per-item interpretation) is still the component's own to gate, since only the component knows which of its blocks are readings.
      *
      * @param heading - English source copy, translated here. Typed as {@link ChromeString} so the compiler, not a reviewer, rejects a heading no catalogue carries.
+     * @param collapsed - Every section starts closed, for a reading that already leads with prose above the accordion.
      */
-    protected renderInterpretation(sections: InterpSection[], name: string, heading?: ChromeString): unknown;
+    protected renderInterpretation(sections: InterpSection[], name: string, heading?: ChromeString, collapsed?: boolean): unknown;
     /** A self-fetch result under a compact Edit control that restores the form with the previous values. */
     protected renderResult(data: T): unknown;
     /** The form with what stands under it, from ONE call site, so the form element and the choices it read survive every refetch of a form that stays above its result. */
