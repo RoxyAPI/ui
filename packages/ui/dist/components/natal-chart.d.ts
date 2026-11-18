@@ -63,6 +63,11 @@ export declare class RoxyNatalChart extends RoxyDataElement<WheelChart> {
     private renderPatterns;
     private renderPattern;
     private renderAspectDetails;
+    /** The whole-chart reading: the opening, the three life areas and the closing, in the order the response writes them. */
+    private renderChartReading;
+    /** One angle row: the sign and degree as the aside, the summary as the lead and the paragraph under it. */
+    private angleReading;
+    /** The luminaries first, then the Ascendant and the Midheaven, then every other body; a row with no reading drops out. */
     private renderInterpretations;
 }
 declare global {

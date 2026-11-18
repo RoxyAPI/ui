@@ -29,5 +29,7 @@
 export declare function lookupKey(s: string): string;
 export declare function capitalize(s: string): string;
 export declare function humanize(s: string): string;
+/** A written field as the paragraphs the API set in it, one per blank-line break, trimmed and never empty. */
+export declare function splitParagraphs(text: string | undefined): string[];
 /** True for an http or https URL, the only value any component binds to an `href`, so a `javascript:` string renders as text, never a link. */
 export declare function isWebLink(value: unknown): value is string;

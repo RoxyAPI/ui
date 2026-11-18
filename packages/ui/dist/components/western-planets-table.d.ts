@@ -6,6 +6,7 @@ type WesternPositions = Pick<NatalChartResponse, 'planets'> & Partial<Pick<Natal
  * as the reference-grade positions grid astrologers read alongside the wheel:
  * every body with its sign, exact degree, house, and daily motion, followed by
  * the four chart points (Ascendant, Midheaven, Part of Fortune, Vertex).
+ * The written readings render in `<roxy-natal-chart>`, which nests this table.
  */
 export declare class RoxyWesternPlanetsTable extends RoxyDataElement<WesternPositions> {
     static endpoints: readonly import("../generated/endpoint-defaults.js").SelfFetchEndpoint[];
