@@ -16,13 +16,12 @@ import { RoxyDataElement } from '../utils/base-element.js';
  * last two cells are deliberately EMPTY. They are not rendered as a dash or a
  * placeholder: both read as data that failed to arrive.
  *
- * The positions grid is the default view. The same birth-chart response also
- * carries chart-wide conditions and readings, surfaced as collapsed accordions
- * below the grid so they never crowd the table: combust grahas (astangata),
- * planetary wars (graha yuddha), per-graha rashi and nakshatra interpretations,
- * the active classical yogas (present === true), and the twelve bhava
- * significations. Each accordion renders only when its source array or map is
- * non-empty.
+ * The positions grid is the default view. Under it sits the whole-chart
+ * reading, then the chart-wide conditions and readings as collapsed accordions
+ * so they never crowd the table: combust grahas (astangata), planetary wars
+ * (graha yuddha), per-graha rashi and nakshatra interpretations, the active
+ * classical yogas (present === true), and the twelve houses read for this
+ * chart. Each block renders only when its source is non-empty.
  */
 export declare class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartResponse> {
     static endpoints: readonly import("../generated/endpoint-defaults.js").SelfFetchEndpoint[];
@@ -39,9 +38,12 @@ export declare class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartRes
      * Those cells are left BLANK rather than filled with a zero or a dash, matching what the nodes and the Lagna already do two columns over. A zero would read as a measured state of zero strength, which is a different and false claim from "this system does not apply here".
      */
     private renderModernRows;
+    /** The whole-chart reading: the thesis as the lead and its paragraphs under it. */
+    private renderChartReading;
     private renderCombustion;
     private renderPlanetaryWar;
     private renderInterpretations;
+    /** Each house name with its reading for this chart; `hide-readings` keeps the names and drops the readings. */
     private renderHouses;
     private renderYogas;
 }

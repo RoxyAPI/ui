@@ -1,1 +1,1 @@
-export declare const ROXY_UI_VERSION = "1.8.0";
+export declare const ROXY_UI_VERSION = "1.9.0";

@@ -20,6 +20,8 @@ import { type ChartStyle } from '../utils/kundli-render.js';
  *
  * Theming flows through CSS custom properties on `:host`, so the chart
  * adopts the host page palette without runtime color probing.
+ *
+ * The written readings in the same response render in `<roxy-vedic-planets-table>`.
  */
 export declare class RoxyVedicKundli extends RoxyDataElement<BirthChartResponse> {
     static endpoints: readonly import("../generated/endpoint-defaults.js").SelfFetchEndpoint[];

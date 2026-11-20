@@ -3151,17 +3151,17 @@ export type BirthChartResponse = {
          */
         number: number;
         /**
-         * Classical name of the bhava (house). Present when an interpretation entry exists for this house.
+         * Classical name of the bhava (house).
          */
-        name?: string;
+        name: string;
         /**
-         * Significations of the bhava (house). Present when an interpretation entry exists for this house.
+         * Reading of the bhava (house), written for this chart in English, German, Spanish, French, Hindi, Portuguese, Russian, Turkish: where its lord sits, each graha it holds, and, for a bhava no graha occupies, the drishti Jupiter or Saturn casts on it.
          */
-        description?: string;
+        description: string;
         /**
-         * Significations of the bhava as short keywords, the compact form of description. Bhava 1 covers self, body and vitality; 2 wealth and speech; 7 marriage and partnership; 10 career and status. Suited to chart labels, table cells and legends where the full classical description is too long, and identical to the houseThemes map returned by the Vimshottari dasha and KP chart routes. Localized by the lang query parameter.
+         * Significations of the bhava as short keywords. Bhava 1 covers self, body and vitality; 2 wealth and speech; 7 marriage and partnership; 10 career and status. Suited to chart labels, table cells and legends, and identical to the houseThemes map returned by the Vimshottari dasha and KP chart routes. Localized by the lang query parameter.
          */
-        themes?: Array<string>;
+        themes: Array<string>;
     }>;
     /**
      * Combust planets (astangata graha): grahas within their combustion orb of the Sun. Combustion weakens a planet significations. Empty when no planet is combust.
@@ -3202,19 +3202,32 @@ export type BirthChartResponse = {
         winner: string;
     }>;
     /**
-     * Planet-in-rashi and planet-in-nakshatra interpretation summaries, keyed by planet name. Translated when a supported lang is requested.
+     * Rashi and nakshatra readings for every graha and the Lagna, keyed by planet name, written for this chart in English, German, Spanish, French, Hindi, Portuguese, Russian, Turkish.
      */
     interpretations: {
         [key: string]: {
             /**
-             * Interpretation of the planet placement in its rashi (sign).
+             * Reading of the graha in its rashi (sign), with its dignity, combustion, retrograde motion and planetary war where the chart holds them.
              */
             rashi: string;
             /**
-             * Interpretation of the planet placement in its nakshatra.
+             * Reading of the graha in its nakshatra and the star lord it serves; for the Moon, the janma nakshatra.
              */
             nakshatra: string;
         };
+    };
+    /**
+     * Whole-chart Vedic birth chart reading written for this birth in English, German, Spanish, French, Hindi, Portuguese, Russian, Turkish, the kundli at a glance.
+     */
+    interpretation: {
+        /**
+         * The chart thesis in two sentences: how the Lagna (ascendant) rashi and the Moon rashi relate, the two placements a Vedic reading opens on, then where the Lagna lord sits.
+         */
+        summary: string;
+        /**
+         * The whole-chart reading in three paragraphs separated by a blank line: how the Lagna (ascendant) rashi and the Moon rashi relate, counted from each other, with the paksha (lunar fortnight) of birth, or the dark Moon when the Moon is combust; where the Lagna lord sits, its strength and its distance from the Moon; then the chart signature, such as a Pancha Mahapurusha or Gajakesari yoga, a cluster of grahas in one bhava, or an exalted graha.
+         */
+        detailed: string;
     };
     /**
      * Forty-eight classical yogas detected against this chart. Twelve conjunction and dignity yogas: Gajakesari (three-rule parashara definition), Sunapha, Anapha, Dhurdhura, Kemadruma, Chandra Mangala, Budha-Aditya, and the five Pancha Mahapurusha (Ruchaka, Bhadra, Hamsa, Malavya, Sasa). Plus all 32 Nabhasa distribution yogas across the Asraya, Dala, Akriti and Sankhya families, which read how the seven visible grahas are spread over the whole chart rather than any single conjunction, and which apply the four classical precedence norms so an outranked yoga is returned as absent with evidence naming the norm that silenced it. Plus the four wealth and poverty verdicts (Dhana, Daridra, Lakshmi, Dhana Malika), each reading as the first rule that matched. Each entry carries an `id` (matches `GET /yoga/{id}` for full glossary lookup), a `present` boolean, a `quality` (Positive, Negative, or Both = auspicious, inauspicious, or context-dependent), and classical-text `evidence` for the rule that triggered or failed. Filter on `present === true` for the active list.
@@ -19038,7 +19051,7 @@ export type GenerateBirthChartErrors = {
 export type GenerateBirthChartError = GenerateBirthChartErrors[keyof GenerateBirthChartErrors];
 export type GenerateBirthChartResponses = {
     /**
-     * D1 Rashi birth chart with all 12 houses, 9 grahas plus Lagna, combustion analysis (Surya Siddhanta limits, applied as the standard ecliptic longitude orb), planetary war detection, bhava interpretations, and a meta lookup keyed by planet name.
+     * D1 Rashi birth chart with all 12 houses, 9 grahas plus Lagna, combustion analysis (Surya Siddhanta limits, applied as the standard ecliptic longitude orb), planetary war detection, a written reading of the whole chart, every graha and every bhava, and a meta lookup keyed by planet name.
      */
     200: BirthChartResponse;
 };
