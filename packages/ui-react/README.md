@@ -971,7 +971,7 @@ Every file a page loads ships in the package `dist` folder, and each [GitHub rel
 | `<roxy-tarot-card>` | Tarot | GET /tarot/cards/{id}, POST /tarot/daily | Single card with upright and reversed flip |
 | `<roxy-tarot-catalog>` | Tarot | GET /tarot/cards | Deck gallery tiles with card art, name, and arcana and suit; a pick opens the card in place |
 | `<roxy-tarot-spread>` | Tarot | POST /tarot/spreads/{three-card,celtic-cross,love,career,custom}, /tarot/yes-no, /tarot/draw | Spreads with positions and reading |
-| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, and gates, plus the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning |
+| `<roxy-bodygraph>` | Human Design | POST /human-design/bodygraph | Nine-center chart with defined and open centers, active channels, and gates, plus the whole-chart reading, the type, strategy, authority, profile, and definition readings, the channels by circuit, the centers, and every activation with its gate and line meaning |
 | `<roxy-hd-type-card>` | Human Design | POST /human-design/type, /human-design/profile | Type, strategy, authority, and profile tiles with the aura, signature, and not-self themes, plus the reading behind each label and the profile line keynotes |
 | `<roxy-hd-connection>` | Human Design | POST /human-design/connection | Electromagnetic, compromise, and dominance channels between two charts |
 | `<roxy-hd-penta>` | Human Design | POST /human-design/penta | Group penta channels split into upper and lower triangles |

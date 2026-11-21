@@ -14881,6 +14881,14 @@ export type GenerateCompositeChartResponses = {
              */
             isRetrograde: boolean;
             /**
+             * Body name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            nameLocalized?: string;
+            /**
+             * Zodiac sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            signLocalized?: string;
+            /**
              * Composite interpretation for this planet in the relationship chart.
              */
             compositeInterpretation?: {
@@ -14911,6 +14919,10 @@ export type GenerateCompositeChartResponses = {
              */
             sign: string;
             /**
+             * Zodiac sign name on this cusp in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            signLocalized?: string;
+            /**
              * Degree within the zodiac sign (0-29.999).
              */
             degree: number;
@@ -14928,6 +14940,10 @@ export type GenerateCompositeChartResponses = {
              */
             sign: string;
             /**
+             * Ascendant sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            signLocalized?: string;
+            /**
              * Degree within the sign (0-29.999).
              */
             degree: number;
@@ -14944,6 +14960,10 @@ export type GenerateCompositeChartResponses = {
              * Zodiac sign on the composite Midheaven.
              */
             sign: string;
+            /**
+             * Midheaven sign name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            signLocalized?: string;
             /**
              * Degree within the sign (0-29.999).
              */
@@ -14989,6 +15009,18 @@ export type GenerateCompositeChartResponses = {
              * Aspect nature. Harmonious (trine, sextile) flows easily. Challenging (square, opposition) creates tension and growth. Neutral (conjunction) blends energies. Always English, whatever the lang parameter says: it is an identifier consumers switch and style on. Use interpretationLocalized for anything a reader sees.
              */
             interpretation: 'harmonious' | 'challenging' | 'neutral';
+            /**
+             * First planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            planet1Localized?: string;
+            /**
+             * Second planet name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            planet2Localized?: string;
+            /**
+             * Aspect type name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            typeLocalized?: string;
         }>;
         /**
          * Composite chart interpretation with relationship strengths, challenges, and overall assessment.
@@ -33282,6 +33314,19 @@ export type GenerateBodygraphResponses = {
      */
     200: {
         /**
+         * A reading of the whole bodygraph that connects type, authority, profile, definition and incarnation cross, written for this chart in English, German, Spanish, French, Hindi, Portuguese, Russian, Turkish.
+         */
+        interpretation: {
+            /**
+             * The whole chart in two sentences: your type and inner authority as one decision rule, then the role your profile plays.
+             */
+            summary: string;
+            /**
+             * The whole-chart reading in two paragraphs separated by a blank line: the shape of your definition and what drives your Throat, then your two Sun gates and the two Earth gates that complete your incarnation cross.
+             */
+            detailed: string;
+        };
+        /**
          * Human Design energy type. One of Manifestor, Generator, Manifesting Generator, Projector, Reflector. Always English, whatever the lang parameter says, so it stays safe to compare against in code. Use typeLocalized for anything a reader sees.
          */
         type: string;
@@ -33375,7 +33420,7 @@ export type GenerateBodygraphResponses = {
          */
         definitionLocalized?: string;
         /**
-         * How energy flows through the defined centers in this configuration, and what the configuration needs. For a split, this is where the bridging gates of other people matter.
+         * How energy flows through your defined centers: which centers form each connected group and, where the definition is split, the gates in another person that would bridge the groups.
          */
         definitionDescription: string;
         /**
@@ -33409,11 +33454,15 @@ export type GenerateBodygraphResponses = {
              */
             angleCode: string;
             /**
-             * Canonical published name of the incarnation cross, determined by the Personality Sun gate and the angle. All 192 crosses (64 Personality Sun gates times three angles) carry their published name, numbered variants included, so this is never a composed placeholder. Always begins with the angle followed by Cross of. Always English, whatever the lang parameter says.
+             * Canonical published name of the incarnation cross, determined by the Personality Sun gate and the angle. All 192 crosses (64 Personality Sun gates times three angles) carry their published name, numbered variants included, so this is never a composed placeholder. Always begins with the angle followed by Cross of. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees.
              */
             name: string;
             /**
-             * The life theme of the cross, synthesized from its four gates and the orientation the angle gives them. The same Sun gate under a different angle is a genuinely different theme: Right Angle is personal destiny, Left Angle is worked out through other people, Juxtaposition is a fixed fate.
+             * Incarnation cross name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+             */
+            nameLocalized?: string;
+            /**
+             * The life theme of the cross, read from all four of its gates, the way its angle orients that theme, and the conscious Sun gate it leads with. The same Sun gate under a different angle is a different theme: Right Angle is lived through personal experience, Left Angle through other people, Juxtaposition on one fixed course.
              */
             description?: string;
         };
@@ -33446,11 +33495,11 @@ export type GenerateBodygraphResponses = {
              */
             awareness: boolean;
             /**
-             * Theme text describing the center in its current defined or undefined state.
+             * What this center does in this chart, in second person: how it works when defined, or what it takes in and learns when open. A defined Throat reads differently when a motor reaches it, which is what lets it act.
              */
             theme: string;
             /**
-             * The conditioning trap of this center when it is open. Returned on every center so a consumer can surface it the moment `defined` is false, which is where the not-self operates.
+             * The question that exposes this center going off course. On an open center it is the not-self question of the conditioning it takes in from others; on a defined center it is the trap of its own fixed energy, never the open-center question.
              */
             notSelfQuestion: string;
             /**
@@ -33495,7 +33544,7 @@ export type GenerateBodygraphResponses = {
              */
             centers: Array<string>;
             /**
-             * What this channel wires between its two centers and the nature of the energy it carries.
+             * What this channel wires between its two centers and how its energy shows up in you, in second person. Where the channel defines the center your inner authority comes from, or carries a motor to the Throat, the description says so.
              */
             description: string;
             /**
@@ -33540,7 +33589,7 @@ export type GenerateBodygraphResponses = {
              */
             gateDescription: string;
             /**
-             * Meaning of this gate at this specific line, one of 384. The finest interpretive layer in the chart and the one that makes a reading specific rather than generic. This is not the six abstract line archetypes: gate 41 line 3 carries its own meaning that neither the gate keynote nor the line-3 archetype holds alone.
+             * Meaning of this gate at this specific line, one of 384. The finest interpretive layer in the chart and the one that makes a reading specific rather than generic. This is not the six abstract line archetypes: gate 41 line 3 carries its own meaning that neither the gate keynote nor the line-3 archetype holds alone. When an earlier activation already sits on the same gate and line, this says so in one line instead of printing the meaning twice.
              */
             lineMeaning: string;
             /**
@@ -33556,9 +33605,13 @@ export type GenerateBodygraphResponses = {
                  */
                 number: number;
                 /**
-                 * English name of the corresponding I-Ching hexagram.
+                 * English name of the corresponding I-Ching hexagram. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees.
                  */
                 english: string;
+                /**
+                 * Hexagram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+                 */
+                nameLocalized?: string;
             };
         }>;
     };
@@ -34374,9 +34427,13 @@ export type GenerateTransitResponses = {
                  */
                 number: number;
                 /**
-                 * English name of the corresponding I-Ching hexagram.
+                 * English name of the corresponding I-Ching hexagram. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees.
                  */
                 english: string;
+                /**
+                 * Hexagram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+                 */
+                nameLocalized?: string;
             };
         }>;
         /**
@@ -34882,7 +34939,7 @@ export type CalculateGatesResponses = {
              */
             gateDescription: string;
             /**
-             * Meaning of this gate at this specific line, one of 384. The finest interpretive layer in the chart and the one that makes a reading specific rather than generic. This is not the six abstract line archetypes: gate 41 line 3 carries its own meaning that neither the gate keynote nor the line-3 archetype holds alone.
+             * Meaning of this gate at this specific line, one of 384. The finest interpretive layer in the chart and the one that makes a reading specific rather than generic. This is not the six abstract line archetypes: gate 41 line 3 carries its own meaning that neither the gate keynote nor the line-3 archetype holds alone. When an earlier activation already sits on the same gate and line, this says so in one line instead of printing the meaning twice.
              */
             lineMeaning: string;
             /**
@@ -34898,9 +34955,13 @@ export type CalculateGatesResponses = {
                  */
                 number: number;
                 /**
-                 * English name of the corresponding I-Ching hexagram.
+                 * English name of the corresponding I-Ching hexagram. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees.
                  */
                 english: string;
+                /**
+                 * Hexagram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+                 */
+                nameLocalized?: string;
             };
         }>;
         /**
@@ -34940,7 +35001,7 @@ export type CalculateGatesResponses = {
              */
             gateDescription: string;
             /**
-             * Meaning of this gate at this specific line, one of 384. The finest interpretive layer in the chart and the one that makes a reading specific rather than generic. This is not the six abstract line archetypes: gate 41 line 3 carries its own meaning that neither the gate keynote nor the line-3 archetype holds alone.
+             * Meaning of this gate at this specific line, one of 384. The finest interpretive layer in the chart and the one that makes a reading specific rather than generic. This is not the six abstract line archetypes: gate 41 line 3 carries its own meaning that neither the gate keynote nor the line-3 archetype holds alone. When an earlier activation already sits on the same gate and line, this says so in one line instead of printing the meaning twice.
              */
             lineMeaning: string;
             /**
@@ -34956,9 +35017,13 @@ export type CalculateGatesResponses = {
                  */
                 number: number;
                 /**
-                 * English name of the corresponding I-Ching hexagram.
+                 * English name of the corresponding I-Ching hexagram. Always English, whatever the lang parameter says. Use nameLocalized for anything a reader sees.
                  */
                 english: string;
+                /**
+                 * Hexagram name in the requested language, for display only. Present only when lang is set to a language other than English, since in English it would repeat its canonical partner field exactly. Never compare against this value, compare against the canonical field beside it.
+                 */
+                nameLocalized?: string;
             };
         }>;
     };
@@ -35360,7 +35425,7 @@ export type CalculateChannelsResponses = {
              */
             centers: Array<string>;
             /**
-             * What this channel wires between its two centers and the nature of the energy it carries.
+             * What this channel wires between its two centers and how its energy shows up in you, in second person. Where the channel defines the center your inner authority comes from, or carries a motor to the Throat, the description says so.
              */
             description: string;
             /**
@@ -35571,11 +35636,11 @@ export type CalculateCentersResponses = {
              */
             awareness: boolean;
             /**
-             * Theme text describing the center in its current defined or undefined state.
+             * What this center does in this chart, in second person: how it works when defined, or what it takes in and learns when open. A defined Throat reads differently when a motor reaches it, which is what lets it act.
              */
             theme: string;
             /**
-             * The conditioning trap of this center when it is open. Returned on every center so a consumer can surface it the moment `defined` is false, which is where the not-self operates.
+             * The question that exposes this center going off course. On an open center it is the not-self question of the conditioning it takes in from others; on a defined center it is the trap of its own fixed energy, never the open-center question.
              */
             notSelfQuestion: string;
             /**
