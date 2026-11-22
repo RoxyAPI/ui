@@ -49,6 +49,13 @@ export declare class RoxyHoroscopeCard extends RoxyDataElement<HoroscopeData> {
         tag: string;
         path: string;
     };
+    /** The period a switch asked for while its response is in flight, so the tab answers the press at once. */
+    private pendingPeriod?;
+    /** The current span of `period` on the sign of the result on screen, carrying its language and clock. */
+    private requestFor;
+    private switchPeriod;
+    /** The period switch, drawn only over a result this element fetched, so a controlled host renders exactly what it always did. */
+    private renderPeriods;
     protected renderData(d: HoroscopeData): import("lit").TemplateResult<1>;
     /**
      * The written reading, in exactly one of its two shapes.

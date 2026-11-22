@@ -64,6 +64,8 @@ export declare function formatWeekdayDay(locale: string | undefined, input: unkn
  * Takes the two NUMBERS an endpoint returns rather than a timestamp, because that is the shape a monthly payload echoes, and anchors them at UTC noon for the same reason {@link monthName} does: no timezone can roll the anchor into the neighbouring month. The connective belongs to the locale (`de` in Spanish, nothing in English), which is why this is one Intl call rather than a join of {@link monthName} and the year.
  */
 export declare function formatMonthYear(locale: string | undefined, year: unknown, month: unknown): string;
+/** The locale name of a calendar span, `day`, `week`, `month` or `year` in English, `Tag`, `Woche`, `Monat`, `Jahr` in German, from the platform data. */
+export declare function dateFieldName(locale: string | undefined, field: 'day' | 'weekOfYear' | 'month' | 'year'): string;
 /**
  * Month name from a 1-based month number: `January`, `enero`, `janvier`.
  *

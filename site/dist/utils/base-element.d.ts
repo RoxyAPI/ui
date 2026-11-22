@@ -152,6 +152,10 @@ export declare abstract class RoxyDataElement<T = unknown> extends RoxyLocalized
     private hostLoaded;
     /** The request behind the data this element fetched for itself, kept so a list can ask for the page after it. */
     private lastRequest?;
+    /** True while {@link refresh} is in flight; the result it replaces stays on screen. */
+    protected refreshing: boolean;
+    /** Message from a failed {@link refresh}, printed beside the control that asked for it; the result stays. */
+    protected refreshError: string | null;
     /** True while the next page of a list is in flight. */
     private moreLoading;
     /** Message from a failed next-page read, printed under the button that asked for it. */
@@ -219,6 +223,14 @@ export declare abstract class RoxyDataElement<T = unknown> extends RoxyLocalized
     /** The rows of a list response, or undefined when this element is not a list or the response has none. */
     private listRows;
     private onMore;
+    /** The request behind the result on screen when this element fetched it, else undefined: a controlled host owns its data, so nothing offers to fetch a sibling of it. */
+    protected get fetchedRequest(): RoxyRequest | undefined;
+    /**
+     * Fetch a sibling of the result on screen (another period of a horoscope) and swap it in when it lands, keeping the current result in view meanwhile and on failure.
+     *
+     * @returns True when the new result is the one on screen; false when it failed or a later request overtook it.
+     */
+    protected refresh(req: RoxyRequest): Promise<boolean>;
     /** Start a request that REPLACES the data: the row a previous list opened and the page state it reached belong to the old data, so they go with it. */
     private fetchFresh;
     private onEdit;
