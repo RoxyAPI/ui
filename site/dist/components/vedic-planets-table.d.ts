@@ -38,8 +38,6 @@ export declare class RoxyVedicPlanetsTable extends RoxyDataElement<BirthChartRes
      * Those cells are left BLANK rather than filled with a zero or a dash, matching what the nodes and the Lagna already do two columns over. A zero would read as a measured state of zero strength, which is a different and false claim from "this system does not apply here".
      */
     private renderModernRows;
-    /** The whole-chart reading: the thesis as the lead and its paragraphs under it. */
-    private renderChartReading;
     private renderCombustion;
     private renderPlanetaryWar;
     private renderInterpretations;
